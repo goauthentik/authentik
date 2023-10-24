@@ -31,11 +31,11 @@ hide_table_of_contents: false
 
 Late last week, on October 20, Okta publicly [shared](https://sec.okta.com/harfiles) that they had experienced a security breach. Fortunately, the damage was limited. However, the incident highlights not only how incredibly vigilant vendors (especially huge vendors of security solutions!) must be, but also how risky the careless following of seemingly reasonable requests can be.
 
-We now know that the breach was enabled by a hacker obtaining session tokens that were included in a HAR file (HTTP **_Archive_** Format) that was uploaded to the Okta support system by a customer. A HAR file is a JSON **_archive file_** format that stores session data for all browsers running during the session. It is not rare for a support team troubleshooting an issue to request a HAR file from their customer: [Zendesk](https://support.zendesk.com/hc/en-us/articles/4408828867098-Generating-a-HAR-file-for-troubleshooting) does it, [Atlassian](https://confluence.atlassian.com/kb/generating-har-files-and-analyzing-web-requests-720420612.html) does it, [Salesforce](https://help.salesforce.com/s/articleView?id=000385988&type=1) as well.
+We now know that the breach was enabled by a hacker who used stolen credentials to access the Okta support system. This malicious actor then collected session tokens that were included in HAR files (HTTP **_Archive_** Format) that were uploaded to the Okta support system by customers. A HAR file is a JSON **_archive file_** format that stores session data for all browsers running during the session. It is not rare for a support team troubleshooting an issue to request a HAR file from their customer: [Zendesk](https://support.zendesk.com/hc/en-us/articles/4408828867098-Generating-a-HAR-file-for-troubleshooting) does it, [Atlassian](https://confluence.atlassian.com/kb/generating-har-files-and-analyzing-web-requests-720420612.html) does it, [Salesforce](https://help.salesforce.com/s/articleView?id=000385988&type=1) as well.
 
 So it’s not the HAR file itself; it was what was in the file, and left in the file. And, destructively, it is our collective training to not second-guess support teams; especially the support team at one of the world’s most renowned identity protection vendors.
 
-But it is not all on Okta; every customer impacted by this hack, including BeyondTrust (the one to first identify the breach on October 2) and Cloudflare (who noticed the breach on October 18th) who were "guilty" of uploading HAR files that had not been scrubbed clean and still included session tokens and other sensitive access data. (Cleaning an HAR file is not always a simple task, there are tools like [Google's HAR Sanitizer](https://github.com/google/har-sanitizer), but even tools like that don't 100% guarantee that the resulting file will be clean)
+But it is not all on Okta; every customer impacted by this hack, including 1Password  (who communicated the breach to Okta on September 29), BeyondTrust (who communicated the breach on October 2), and Cloudflare (October 18) were "guilty" of uploading HAR files that had not been scrubbed clean and still included session tokens and other sensitive access data. (Cleaning an HAR file is not always a simple task, there are tools like [Google's HAR Sanitizer](https://github.com/google/har-sanitizer), but even tools like that don't 100% guarantee that the resulting file will be clean.)
 
 ## Target the ancillaries
 
@@ -65,13 +65,13 @@ The BeyondTrust blog provides important details about the persistence and ingenu
 
 Oddly, the BeyondTrust blog about the breach does a better job of selling Okta (by highlighting the things that went right with Okta) than the Okta announcement blog. For example, in the detailed timeline, BeyondTrust points out that one layer of prevention succeeded when the hacker attempted to access the main internal Okta dashboard, but because Okta still views dashboard access as a new sign in, it prompted for MFA thus thwarting the log in attempt.
 
-Cloudflare’s revelation of their communications timeline with Okta shows another case of poor response timing by Okta, another situation where the customer informed the breached vendor first.
+Cloudflare’s revelation of their communications timeline with Okta shows another case of poor response timing by Okta, another situation where the customer informed the breached vendor first, and the breached company took too long to publicly acknowledge the breach.
 
 > “In fact, we contacted Okta about the breach of their systems before they had notified us.” … “We detected this activity internally more than 24 hours before we were notified of the breach by Okta.” ([source](https://blog.cloudflare.com/how-cloudflare-mitigated-yet-another-okta-compromise/))
 
 In their blog about this incident, Cloudflare provides a helpful [set of recommendations](https://blog.cloudflare.com/how-cloudflare-mitigated-yet-another-okta-compromise/) to users, including sensible suggestions such as monitoring for new Okta users created, and reactivation of Okta users.
 
-Which just takes us back to the rather lean reposnse by Okta; their two customers wrote much more informative and helpful responses than Okta themselves.
+Which just takes us back to the rather lean reposnse by Okta; their customers wrote much more informative and helpful responses than Okta themselves.
 
 ## Keep telling us
 
@@ -81,7 +81,7 @@ This incident at Okta is parallel to the breach at Sourcegraph that we recently 
 
 But talk about things that keep security engineers up at night; timing was tight on this one.
 
-the initial breach attempt was noticed by BeyondTrust within only 30 minutes of their having uploaded a HAR file to Okta Support. By default (and this is a good, strong, industry-standard default) Okta session tokens have a lifespan of two hours. However, with hackers moving as quickly as these, 2 hours is plenty long for the damage to be done. So, the extra step of scrubbing clean any and all files that are uploaded would have saved the day in this case.
+The initial breach attempt was noticed by BeyondTrust within only 30 minutes of their having uploaded a HAR file to Okta Support. By default (and this is a good, strong, industry-standard default) Okta session tokens have a lifespan of two hours. However, with hackers moving as quickly as these, 2 hours is plenty long for the damage to be done. So, the extra step of scrubbing clean any and all files that are uploaded would have saved the day in this case.
 
 > Keep your enemies close, but your tokens even closer.
 
@@ -94,3 +94,7 @@ Strong security relies on multiple layers, enforced processes, and defense-in-de
 > “The failure of a single control or process should not result in breach. Here, multiple layers of controls -- e.g. Okta sign on controls, identity security monitoring, and so on, prevented a breach.” ([source](https://www.beyondtrust.com/blog/entry/okta-support-unit-breach))
 
 A [writer on HackerNews](https://news.ycombinator.com/item?id=37963074) points out that Okta has updated their [documentation](https://help.okta.com/oag/en-us/content/topics/access-gateway/troubleshooting-with-har.htm) about generating HAR files, to tell users to sanitize the files first. But whether HAR files or GutHub commits, lack of MFA or misuse of APIs, we all have to stay ever-vigilant to keep ahead of malicious hackers.
+
+## Addendum
+
+This blog was edited to provide updates about the [1Password announcement](https://blog.1password.com/okta-incident/) that they too were hacked, and to clarify that the hacker responsible for obtaining session tokens from the HAR files had originally gained entry into the Okta support system using stolen credentials.
