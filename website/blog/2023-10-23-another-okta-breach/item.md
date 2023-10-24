@@ -49,7 +49,7 @@ Similarly, the support team at Okta was used as entry point. Once the hacker gai
 
 The timing of Okta's response, not great. The initial denial of the incident, not great. And then, add insult to injury, there’s what can objectively be labeled an [abysmal “announcement” blog](https://sec.okta.com/harfiles) from Okta on October 20.
 
-Everything from the obfuscatory title to the blog’s brevity to the actual writing… and importantly, the lack of any mention at all of BeyondTrust, the company that informed Okta on Octover 2nd that they suspected a breach of the Okta support system.
+Everything from the obfuscatory title to the blog’s brevity to the actual writing… and importantly, the lack of any mention at all of BeyondTrust, the company that informed Okta on October 2nd that they suspected a breach of the Okta support system.
 
 > “_Tracking Unauthorized Access to Okta's Support System_” has to be the lamest of all confession titles in the history of security breach announcements.
 
