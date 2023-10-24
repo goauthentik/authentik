@@ -87,7 +87,7 @@
         "@storybook/blocks": "^7.1.1",
         "@storybook/web-components": "^7.5.1",
         "@storybook/web-components-vite": "^7.5.1",
-        "@trivago/prettier-plugin-sort-imports": "^4.2.0",
+        "@trivago/prettier-plugin-sort-imports": "^4.2.1",
         "@types/chart.js": "^2.9.39",
         "@types/codemirror": "5.60.12",
         "@types/grecaptcha": "^3.0.6",
