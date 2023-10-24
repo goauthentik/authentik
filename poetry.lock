@@ -2901,13 +2901,13 @@ testutils = ["gitpython (>3)"]
 
 [[package]]
 name = "pylint-django"
-version = "2.5.4"
+version = "2.5.5"
 description = "A Pylint plugin to help Pylint understand the Django web framework"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
-    {file = "pylint_django-2.5.4-py3-none-any.whl", hash = "sha256:08bedfd7ccc4c47afa09cbfee6f4b5074437178d8e51fd891e2232c0d3a5b140"},
-    {file = "pylint_django-2.5.4.tar.gz", hash = "sha256:d167b1437342543727925a98c0dee9c8de8e8e1f8cb8caf868018febd2c4e2b7"},
+    {file = "pylint_django-2.5.5-py3-none-any.whl", hash = "sha256:5abd5c2228e0e5e2a4cb6d0b4fc1d1cef1e773d0be911412f4dd4fc1a1a440b7"},
+    {file = "pylint_django-2.5.5.tar.gz", hash = "sha256:2f339e4bf55776958283395c5139c37700c91bd5ef1d8251ef6ac88b5abbba9b"},
 ]
 
 [package.dependencies]
