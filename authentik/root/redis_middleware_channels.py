@@ -22,39 +22,27 @@ logger = logging.getLogger(__name__)
 class CustomLoopLayer:
     """Custom Redis loop layer that creates new Redis connections"""
 
+    _pool_cache = {}
+
     def __init__(self, channel_layer):
         self._lock = Lock()
         self.channel_layer = channel_layer
-        self._connections = {}
 
     def get_connection(self, index):
         """Get Redis connection"""
-        if index not in self._connections:
-            pool, client_config = get_connection_pool(
-                self.channel_layer.config[index], use_async=True
-            )
-            self._connections[index] = get_client(client_config, pool)
-            # Redis cluster does not support auto close of connection pools
-            if hasattr(self._connections[index], "auto_close_connection_pool"):
-                self._connections[index].auto_close_connection_pool = True
-            connection = self._connections[index]
-        else:
-            connection = self._connections[index]
-            if hasattr(connection, "connect") and callable(getattr(connection, "connect", None)):
-                # Update connection in case master has been demoted to slave
-                connection.connect()
-
-        return connection
+        config = self.channel_layer.config[index]
+        pool, client_config = self._pool_cache.setdefault(
+            index, get_connection_pool(config, use_async=True)
+        )
+        return get_client(client_config, pool)
 
     async def flush(self):
-        """Close all open connections"""
+        """Disconnect all open connection pools"""
         async with self._lock:
-            for index in list(self._connections):
-                connection = self._connections.pop(index)
-                if hasattr(connection, "aclose") and callable(getattr(connection, "aclose", None)):
-                    await connection.aclose()
-                else:
-                    await connection.close()
+            for index in list(self._pool_cache):
+                pool, _ = self._pool_cache[index]
+                if pool is not None:
+                    await pool.disconnect()
 
 
 class CustomChannelLayer(RedisChannelLayer):
@@ -98,7 +86,9 @@ class CustomChannelLayer(RedisChannelLayer):
         # Catch bad indexes
 
         if not 0 <= index < self.ring_size:
-            raise ValueError(f"There are only {self.ring_size} hosts - you asked for {index}!")
+            raise ValueError(
+                f"There are only {self.ring_size} connection pools - you asked for {index}!"
+            )
 
         loop = get_running_loop()
         try:
