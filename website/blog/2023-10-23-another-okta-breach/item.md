@@ -1,5 +1,5 @@
 ---
-title: “Okta got breached again and they still haven’t learned their lesson”
+title: Okta got breached again and they still have not learned their lesson
 description: “HAR files uploaded to Okta support system contained session tokens.”
 slug: 2023-10-23-another-okta-breach
 authors:
@@ -12,7 +12,7 @@ tags:
     - SSO
     - malicious hacker
     - HAR file
-    - sessin token
+    - session token
     - identity provider
     - security
     - authentication
@@ -23,7 +23,7 @@ tags:
 hide_table_of_contents: false
 ---
 
-> **_authentik is an open source Identity Provider that unifies your identity needs into a single platform, replacing Okta, Active Directory, and auth0. Authentik Security is a [public benefit company](https://github.com/OpenCoreVentures/ocv-public-benefit-company/blob/main/ocv-public-benefit-company-charter.md) building on top of the open source project._**
+> **_authentik is an open source Identity Provider that unifies your identity needs into a single platform, replacing Okta, Active Directory, and Auth0. Authentik Security is a [public benefit company](https://github.com/OpenCoreVentures/ocv-public-benefit-company/blob/main/ocv-public-benefit-company-charter.md) building on top of the open source project._**
 
 ---
 
@@ -35,7 +35,7 @@ We now know that the breach was enabled by a hacker who used stolen credentials 
 
 So it’s not the HAR file itself; it was what was in the file, and left in the file. And, destructively, it is our collective training to not second-guess support teams; especially the support team at one of the world’s most renowned identity protection vendors.
 
-But it is not all on Okta; every customer impacted by this hack, including 1Password  (who communicated the breach to Okta on September 29), BeyondTrust (who communicated the breach on October 2), and Cloudflare (October 18) were "guilty" of uploading HAR files that had not been scrubbed clean and still included session tokens and other sensitive access data. (Cleaning an HAR file is not always a simple task, there are tools like [Google's HAR Sanitizer](https://github.com/google/har-sanitizer), but even tools like that don't 100% guarantee that the resulting file will be clean.)
+But it is not all on Okta; every customer impacted by this hack, including 1Password (who communicated the breach to Okta on September 29), BeyondTrust (who communicated the breach on October 2), and Cloudflare (October 18) were "guilty" of uploading HAR files that had not been scrubbed clean and still included session tokens and other sensitive access data. (Cleaning an HAR file is not always a simple task, there are tools like [Google's HAR Sanitizer](https://github.com/google/har-sanitizer), but even tools like that don't 100% guarantee that the resulting file will be clean.)
 
 ## Target the ancillaries
 
