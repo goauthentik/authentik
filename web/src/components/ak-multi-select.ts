@@ -88,7 +88,7 @@ export class AkMultiSelect extends AKElement {
     /**
      * One of two criteria (the other being the data-ak-control flag) that specifies this as a
      * control that produces values of specific interest to our REST API. This is our modern
-     * accesssor name.
+     * accessor name.
      */
     json() {
         return this.values;
@@ -107,7 +107,11 @@ export class AkMultiSelect extends AKElement {
                 .filter((option) => option.selected)
                 .map((option) => option.value);
             this.dispatchEvent(
-                new CustomEvent("ak-select", { detail: this.values, composed: true, bubbles: true })
+                new CustomEvent("ak-select", {
+                    detail: this.values,
+                    composed: true,
+                    bubbles: true,
+                }),
             );
         }
     }
@@ -134,7 +138,7 @@ export class AkMultiSelect extends AKElement {
                         ([value, label]) =>
                             html`<option value=${value} ?selected=${this.values.includes(value)}>
                                 ${label}
-                            </option>`
+                            </option>`,
                     )}
                 </select>
                 ${this.renderHelp()}

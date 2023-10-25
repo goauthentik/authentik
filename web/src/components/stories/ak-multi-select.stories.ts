@@ -51,7 +51,7 @@ export const RadioInput = () => {
         const component: AkMultiSelect | null = document.querySelector(
             'ak-multi-select[name="ak-test-multi-select"]',
         );
-        
+
         const results = html`
             <p>Results from event:</p>
             <ul style="list-style-type: disc">
@@ -59,7 +59,7 @@ export const RadioInput = () => {
             </ul>
             <p>Results from component:</p>
             <ul style="list-style-type: disc">
-${component!.json().map((v: string) => html`<li>${v}</li>`)}
+                ${component!.json().map((v: string) => html`<li>${v}</li>`)}
             </ul>
         `;
 
@@ -74,6 +74,6 @@ ${component!.json().map((v: string) => html`<li>${v}</li>`)}
                 help="This is where you would read the help messages"
                 .options=${testOptions}
             ></ak-multi-select>
-            <div>${result}</div>`
+            <div>${result}</div>`,
     );
 };
