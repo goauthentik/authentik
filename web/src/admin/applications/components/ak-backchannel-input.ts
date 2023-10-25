@@ -65,7 +65,7 @@ export class AkBackchannelProvidersInput extends AKElement {
                 <div class="pf-c-input-group">
                     <ak-provider-select-table ?backchannelOnly=${true} .confirm=${confirm}>
                         <button slot="trigger" class="pf-c-button pf-m-control" type="button">
-                            $ {this.tooltip ? this.tooltip : nothing }
+                            ${this.tooltip ? this.tooltip : nothing}
                             <i class="fas fa-plus" aria-hidden="true"></i>
                         </button>
                     </ak-provider-select-table>

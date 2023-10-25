@@ -13,6 +13,7 @@ import { me } from "@goauthentik/app/common/users";
 import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { userTypeToLabel } from "@goauthentik/common/labels";
 import "@goauthentik/components/events/ObjectChangelog";
 import "@goauthentik/components/events/UserEvents";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";
@@ -185,6 +186,16 @@ export class UserViewPage extends AKElement {
                                 <ak-label
                                     color=${user.isActive ? PFColor.Green : PFColor.Orange}
                                 ></ak-label>
+                            </div>
+                        </dd>
+                    </div>
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${msg("Type")}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">
+                                ${userTypeToLabel(user.type)}
                             </div>
                         </dd>
                     </div>
