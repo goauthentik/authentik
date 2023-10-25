@@ -659,11 +659,6 @@ Il y a <x id="0" equiv-text="${ago}"/> jour(s)</target>
         <target>Gérer les utilisateurs</target>
         
       </trans-unit>
-      <trans-unit id="s51cda7b1ebcd970f">
-        <source>Check release notes</source>
-        <target>Voir les notes de version</target>
-        
-      </trans-unit>
       <trans-unit id="s8763a33c3d46aaf5">
         <source>Outpost status</source>
         <target>Statut de l'avant-poste</target>
@@ -693,11 +688,6 @@ Il y a <x id="0" equiv-text="${ago}"/> jour(s)</target>
       <trans-unit id="s51ea3a244c781b1f">
         <source>Objects created</source>
         <target>Objets créés</target>
-        
-      </trans-unit>
-      <trans-unit id="s770baa8560fd8aa1">
-        <source>User statistics</source>
-        <target>Statistiques utilisateur</target>
         
       </trans-unit>
       <trans-unit id="sfbadb77fbc61efb8">
@@ -7875,6 +7865,24 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="se5c795faf2c07514">
   <source>Create Recovery Link</source>
+</trans-unit>
+<trans-unit id="s84fcddede27b8e2a">
+  <source>External</source>
+</trans-unit>
+<trans-unit id="s1a635369edaf4dc3">
+  <source>Service account</source>
+</trans-unit>
+<trans-unit id="sff930bf2834e2201">
+  <source>Service account (internal)</source>
+</trans-unit>
+<trans-unit id="s66313b45b69cfc88">
+  <source>Check the release notes</source>
+</trans-unit>
+<trans-unit id="sb4d7bae2440d9781">
+  <source>User Statistics</source>
+</trans-unit>
+<trans-unit id="s0924f51b028233a3">
+  <source>&lt;No name set&gt;</source>
 </trans-unit>
     </body>
   </file>
