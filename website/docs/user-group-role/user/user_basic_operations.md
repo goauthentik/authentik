@@ -19,7 +19,7 @@ The following topics are for the basic management of users: how to create, modif
 5. Fill the **_optional_** fields if needed:
 
 -   **Name**: The display name of the user.
--   **Email**: The email address of the user. That will be used if there is a [notification rule](../../events/notifications) triggered or for [email stages](../../flow/stages/email).
+-   **Email**: The email address of the user. Email addresses are used in [email stages](../../flow/stages/email) and to receive [notifications](../../events/notifications), if configured.
 -   **Is active**: Define if the newly created user account is active. Selected by default.
 -   **Attributes**: Custom attributes definition for the user, in YAML or JSON format. These attributes can be used to enforce additional prompts on authentication stages or define conditions to enforce specific policies if the current implementation does not fit your use case. The value is an empty dictionary by default.
 
@@ -56,7 +56,7 @@ To modify a user object, go to **Directory > Users**, and click the edit icon be
 
 You can grant a user specific global or object-level permissions. Alternatively, you can add a user to a group that has the appropriate permissions, and the user inherits all of the group's permissions.
 
-For more information, review ["Permissions: global and object-level"](../access-control/permissions.md).
+For more information, review ["Permissions"](../access-control/permissions.md).
 
 ## Add a user to a group
 

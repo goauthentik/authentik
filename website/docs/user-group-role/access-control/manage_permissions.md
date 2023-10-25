@@ -15,8 +15,8 @@ To view _object_ permissions for a specific user, role, or group:
 
 1. Go to the Admin interface and navigate to **Directory**.
 2. Select either **Users**, **Groups**, or **Roles**
-2. Select a specific user/group/role by clicking on the name (this opens the details page).
-3. Click the **Assigned Permissions** tab at the top of the page (to the right of the **Permissions** tab).
+3. Select a specific user/group/role by clicking on the name (this opens the details page).
+4. Click the **Assigned Permissions** tab at the top of the page (to the right of the **Permissions** tab).
 5. Scroll down to see both the global and object-level permissions.
 
 :::info
@@ -34,11 +34,11 @@ Note that groups do not have global permissions.
 
 1. Go to the Admin interface and navigate to **Flows and Stages -> Stagess**.
 2. On the row for the specific stage whose permissions you want to view, click the lock icon.
-4. View the assigned permissions using the **User Object Permissions** and the **Role Object Permissions** tabs.
+3. On the **Update Permissions** tab, you can view the assigned permissions using the **User Object Permissions** and the **Role Object Permissions** tabs.
 
 ## Manage permissions
 
-You can assign or remove permissions to a user, role, or group.
+You can assign or remove permissions to a user, role, group, flow, or stage.
 
 ### Assign, modify, or remove permissions for a user
 

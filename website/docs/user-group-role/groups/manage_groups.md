@@ -13,7 +13,7 @@ To create a new group, follow these steps:
 2. Click **Create** at the top of the Groups page.
 3. In the Create modal, define the following:
     - name of the group
-    - whether or not users in that group will all be superusers
+    - whether or not users in that group will all be superusers (means anyone in that group has all permissions on everything)
     - the parent group
     - any custom attributes
 4. Click **Create**.
