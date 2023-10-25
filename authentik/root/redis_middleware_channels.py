@@ -22,11 +22,10 @@ logger = logging.getLogger(__name__)
 class CustomLoopLayer:
     """Custom Redis loop layer that creates new Redis connections"""
 
-    _pool_cache = {}
-
     def __init__(self, channel_layer):
         self._lock = Lock()
         self.channel_layer = channel_layer
+        self._pool_cache = {}
 
     def get_connection(self, index):
         """Get Redis connection"""
@@ -40,7 +39,7 @@ class CustomLoopLayer:
         """Disconnect all open connection pools"""
         async with self._lock:
             for index in list(self._pool_cache):
-                pool, _ = self._pool_cache[index]
+                pool, _ = self._pool_cache.pop(index)
                 if pool is not None:
                     await pool.disconnect()
 
@@ -68,7 +67,7 @@ class CustomChannelLayer(RedisChannelLayer):
         super().__init__([], **kwargs)
         self._receive_index_generator = cycle(range(len(self.config)))
         self._send_index_generator = cycle(
-            [idx for idx, cfg in enumerate(self.config) if not cfg["is_slave"]]
+            [idx for idx, cfg in enumerate(self.config) if not cfg.get("is_slave", False)]
         )
 
     @property
@@ -80,6 +79,9 @@ class CustomChannelLayer(RedisChannelLayer):
     def ring_size(self, value):
         """Do not allow setting number of open connections"""
         return
+
+    def consistent_hash(self, value):
+        return next(self._send_index_generator)
 
     def connection(self, index):
         """
@@ -138,9 +140,15 @@ class CustomChannelLayer(RedisChannelLayer):
         # Go through each connection and remove all with prefix
         for i in range(self.ring_size):
             connection = self.connection(i)
-            keys = await connection.keys(self.prefix + "*")
-            for j in range(0, len(keys), 5000):
-                await connection.delete(*keys[j : j + 5000])
+            if self.config[i]["type"] != "cluster":
+                keys = await connection.keys(self.prefix + "*")
+                for j in range(0, len(keys), 5000):
+                    await connection.delete(*keys[j : j + 5000])
+            else:
+                pipeline = connection.pipeline()
+                for key in await connection.scan_iter(self.prefix + "*"):
+                    pipeline.delete(key)
+                await pipeline.execute()
         # Now clear the pools as well
         await self.close_pools()
 
