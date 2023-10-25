@@ -6,6 +6,7 @@ import "@goauthentik/admin/users/UserPasswordForm";
 import "@goauthentik/admin/users/UserResetEmailForm";
 import { me } from "@goauthentik/app/common/users";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { userTypeToLabel } from "@goauthentik/common/labels";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { DefaultUIConfig, uiConfig } from "@goauthentik/common/ui/config";
 import { first } from "@goauthentik/common/utils";
@@ -247,9 +248,9 @@ export class UserListPage extends TablePage<User> {
             item.pk !== this.me?.user.pk;
         return [
             html`<a href="#/identity/users/${item.pk}">
-                <div>${item.username}</div>
-                <small>${item.name}</small>
-            </a>`,
+                    <div>${item.username}</div>
+                    <small>${item.name === "" ? msg("<No name set>") : item.name}</small> </a
+                >&nbsp;<small>${userTypeToLabel(item.type)}</small>`,
             html`<ak-label color=${item.isActive ? PFColor.Green : PFColor.Red}>
                 ${item.isActive ? msg("Yes") : msg("No")}
             </ak-label>`,
