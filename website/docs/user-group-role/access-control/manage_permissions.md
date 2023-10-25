@@ -20,7 +20,7 @@ To view _object_ permissions for a specific user:
 To view _global_ permissions for a user:
 
 1. Go to the Admin interface and navigate to **Directory -> Users**.
-2. Select a specific user by clicking on the name, to open the user's details page.
+2. Select a specific user by clicking on the name (this opens the user's details page).
 3. Click the **Assigned Permissions** tab at the top of the page (to the right of the **Permissions** tab).
 
 ### View group permissions
