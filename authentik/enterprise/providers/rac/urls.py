@@ -5,17 +5,17 @@ from django.urls import path
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 from authentik.core.channels import TokenOutpostMiddleware
-from authentik.core.views.interface import InterfaceView
 from authentik.enterprise.providers.rac.api.providers import RACProviderViewSet
 from authentik.enterprise.providers.rac.consumer_client import RACClientConsumer
 from authentik.enterprise.providers.rac.consumer_outpost import RACOutpostConsumer
+from authentik.enterprise.providers.rac.views import RACInterface
 from authentik.root.asgi_middleware import SessionMiddleware
 from authentik.root.middleware import ChannelsLoggingMiddleware
 
 urlpatterns = [
     path(
         "if/rac/<slug:app>/",
-        ensure_csrf_cookie(InterfaceView.as_view(template_name="if/rac.html")),
+        ensure_csrf_cookie(RACInterface.as_view()),
         name="if-rac",
     ),
 ]

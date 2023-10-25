@@ -3,6 +3,7 @@ from typing import Optional
 
 from django.db import models
 from django.urls import reverse
+from django.utils.translation import gettext as _
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import Provider
@@ -71,3 +72,7 @@ class RACProvider(Provider):
         from authentik.enterprise.providers.rac.api.providers import RACProviderSerializer
 
         return RACProviderSerializer
+
+    class Meta:
+        verbose_name = _("RAC Provider")
+        verbose_name_plural = _("RAC Providers")
