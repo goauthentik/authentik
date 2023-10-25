@@ -1,5 +1,5 @@
-import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/app/elements/forms/HorizontalFormElement";
+import { AKElement } from "@goauthentik/elements/Base";
 
 import { TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -84,7 +84,7 @@ export class AkMultiSelect extends AKElement {
     get value() {
         return this.values;
     }
-    
+
     /**
      * One of two criteria (the other being the data-ak-control flag) that specifies this as a
      * control that produces values of specific interest to our REST API. This is our modern
@@ -115,29 +115,31 @@ export class AkMultiSelect extends AKElement {
     selectRef: Ref<HTMLSelectElement> = createRef();
 
     render() {
-        return html`<ak-form-element-horizontal
-            label=${this.label}
-            ?required=${this.required}
-            name=${this.name}
-        >
-            <select
-                part="select"
-                class="pf-c-form-control"
-                name=${ifDefined(this.name)}
-                multiple
-                ${ref(this.selectRef)}
-                @change=${this.handleChange}
+        return html` <div class="pf-c-form">
+            <ak-form-element-horizontal
+                label=${this.label}
+                ?required=${this.required}
+                name=${this.name}
             >
-                ${map(
-                    this.options,
-                    ([value, label]) =>
-                        html`<option value=${value} ?selected=${this.values.includes(value)}>
-                            ${label}
-                        </option>`
-                )}
-            </select>
-            ${this.renderHelp()}
-        </ak-form-element-horizontal> `;
+                <select
+                    part="select"
+                    class="pf-c-form-control"
+                    name=${ifDefined(this.name)}
+                    multiple
+                    ${ref(this.selectRef)}
+                    @change=${this.handleChange}
+                >
+                    ${map(
+                        this.options,
+                        ([value, label]) =>
+                            html`<option value=${value} ?selected=${this.values.includes(value)}>
+                                ${label}
+                            </option>`
+                    )}
+                </select>
+                ${this.renderHelp()}
+            </ak-form-element-horizontal>
+        </div>`;
     }
 }
 
