@@ -7558,11 +7558,11 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Ƒōŕ ţŕàńśƥàŕēńţ ŕēvēŕśē ƥŕōxĩēś ŵĩţĥ ŕēǫũĩŕēď àũţĥēńţĩćàţĩōń</target>
 </trans-unit>
 <trans-unit id="sadf073913458acbd">
-  <source>For nginx's auth_request or traefix's forwardAuth</source>
+  <source>For nginx's auth_request or traefik's forwardAuth</source>
   <target>Ƒōŕ ńĝĩńx'ś àũţĥ_ŕēǫũēśţ ōŕ ţŕàēƒĩx'ś ƒōŕŵàŕďÀũţĥ</target>
 </trans-unit>
 <trans-unit id="se770e9498b3bacf6">
-  <source>For nginx's auth_request or traefix's forwardAuth per root domain</source>
+  <source>For nginx's auth_request or traefik's forwardAuth per root domain</source>
   <target>Ƒōŕ ńĝĩńx'ś àũţĥ_ŕēǫũēśţ ōŕ ţŕàēƒĩx'ś ƒōŕŵàŕďÀũţĥ ƥēŕ ŕōōţ ďōmàĩń</target>
 </trans-unit>
 <trans-unit id="s40830ec037f34626">

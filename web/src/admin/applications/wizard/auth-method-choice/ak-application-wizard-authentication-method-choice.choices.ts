@@ -76,7 +76,7 @@ const _providerModelsTable: ProviderType[] = [
     [
         "proxyprovider-forwardsingle",
         msg("Forward Auth (Single Application)"),
-        msg("For nginx's auth_request or traefix's forwardAuth"),
+        msg("For nginx's auth_request or traefik's forwardAuth"),
         () =>
             html`<ak-application-wizard-authentication-for-single-forward-proxy></ak-application-wizard-authentication-for-single-forward-proxy>`,
         ProviderModelEnum.ProxyProxyprovider,
@@ -89,7 +89,7 @@ const _providerModelsTable: ProviderType[] = [
     [
         "proxyprovider-forwarddomain",
         msg("Forward Auth (Domain Level)"),
-        msg("For nginx's auth_request or traefix's forwardAuth per root domain"),
+        msg("For nginx's auth_request or traefik's forwardAuth per root domain"),
         () =>
             html`<ak-application-wizard-authentication-for-forward-proxy-domain></ak-application-wizard-authentication-for-forward-proxy-domain>`,
         ProviderModelEnum.ProxyProxyprovider,

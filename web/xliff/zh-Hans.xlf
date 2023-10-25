@@ -7621,11 +7621,11 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>适用于需要验证身份的透明反向代理</target>
 </trans-unit>
 <trans-unit id="sadf073913458acbd">
-  <source>For nginx's auth_request or traefix's forwardAuth</source>
+  <source>For nginx's auth_request or traefik's forwardAuth</source>
   <target>适用于 nginx 的 auth_request 或 traefik 的 forwardAuth</target>
 </trans-unit>
 <trans-unit id="se770e9498b3bacf6">
-  <source>For nginx's auth_request or traefix's forwardAuth per root domain</source>
+  <source>For nginx's auth_request or traefik's forwardAuth per root domain</source>
   <target>适用于按根域名配置的 nginx 的 auth_request 或 traefik 的 forwardAuth</target>
 </trans-unit>
 <trans-unit id="s40830ec037f34626">
