@@ -6,9 +6,9 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 
 from authentik.core.channels import TokenOutpostMiddleware
 from authentik.core.views.interface import InterfaceView
-from authentik.enterprise.rac.api.providers import RACProviderViewSet
-from authentik.enterprise.rac.consumer_client import RACClientConsumer
-from authentik.enterprise.rac.consumer_outpost import RACOutpostConsumer
+from authentik.enterprise.providers.rac.api.providers import RACProviderViewSet
+from authentik.enterprise.providers.rac.consumer_client import RACClientConsumer
+from authentik.enterprise.providers.rac.consumer_outpost import RACOutpostConsumer
 from authentik.root.asgi_middleware import SessionMiddleware
 from authentik.root.middleware import ChannelsLoggingMiddleware
 
@@ -32,5 +32,5 @@ websocket_urlpatterns = [
 ]
 
 api_urlpatterns = [
-    ("providers/enterprise/rac", RACProviderViewSet),
+    ("providers/rac", RACProviderViewSet),
 ]

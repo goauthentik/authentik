@@ -17,8 +17,8 @@ from kubernetes.config.kube_config import KUBE_CONFIG_DEFAULT_LOCATION
 from structlog.stdlib import get_logger
 from yaml import safe_load
 
-from authentik.enterprise.rac.controllers.docker import RACDockerController
-from authentik.enterprise.rac.controllers.kubernetes import RACKubernetesController
+from authentik.enterprise.providers.rac.controllers.docker import RACDockerController
+from authentik.enterprise.providers.rac.controllers.kubernetes import RACKubernetesController
 from authentik.events.monitored_tasks import (
     MonitoredTask,
     TaskResult,

@@ -25,7 +25,7 @@ import {
 @customElement("ak-provider-rac-form")
 export class RACProviderFormPage extends ModelForm<RACProvider, number> {
     async loadInstance(pk: number): Promise<RACProvider> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersEnterpriseRacRetrieve({
+        return new ProvidersApi(DEFAULT_CONFIG).providersRacRetrieve({
             id: pk,
         });
     }
@@ -40,12 +40,12 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
 
     async send(data: RACProvider): Promise<RACProvider> {
         if (this.instance) {
-            return new ProvidersApi(DEFAULT_CONFIG).providersEnterpriseRacUpdate({
+            return new ProvidersApi(DEFAULT_CONFIG).providersRacUpdate({
                 id: this.instance.pk || 0,
                 rACProviderRequest: data,
             });
         } else {
-            return new ProvidersApi(DEFAULT_CONFIG).providersEnterpriseRacCreate({
+            return new ProvidersApi(DEFAULT_CONFIG).providersRacCreate({
                 rACProviderRequest: data,
             });
         }

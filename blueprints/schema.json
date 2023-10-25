@@ -2787,7 +2787,7 @@
                         ],
                         "properties": {
                             "model": {
-                                "const": "authentik_enterprise_rac.racprovider"
+                                "const": "authentik_enterprise_providers_rac.racprovider"
                             },
                             "id": {
                                 "type": "string"
@@ -2809,10 +2809,10 @@
                                 }
                             },
                             "attrs": {
-                                "$ref": "#/$defs/model_authentik_enterprise_rac.racprovider"
+                                "$ref": "#/$defs/model_authentik_enterprise_providers_rac.racprovider"
                             },
                             "identifiers": {
-                                "$ref": "#/$defs/model_authentik_enterprise_rac.racprovider"
+                                "$ref": "#/$defs/model_authentik_enterprise_providers_rac.racprovider"
                             }
                         }
                     },
@@ -3515,7 +3515,7 @@
                         "authentik.blueprints",
                         "authentik.core",
                         "authentik.enterprise",
-                        "authentik.enterprise.rac"
+                        "authentik.enterprise.providers.rac"
                     ],
                     "title": "App",
                     "description": "Match events created by selected application. When left empty, all applications are matched."
@@ -3601,7 +3601,7 @@
                         "authentik_core.application",
                         "authentik_core.token",
                         "authentik_enterprise.license",
-                        "authentik_enterprise_rac.racprovider"
+                        "authentik_enterprise_providers_rac.racprovider"
                     ],
                     "title": "Model",
                     "description": "Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched."
@@ -8798,7 +8798,7 @@
             },
             "required": []
         },
-        "model_authentik_enterprise_rac.racprovider": {
+        "model_authentik_enterprise_providers_rac.racprovider": {
             "type": "object",
             "properties": {
                 "name": {

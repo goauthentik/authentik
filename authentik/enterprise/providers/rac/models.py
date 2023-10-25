@@ -38,7 +38,7 @@ class RACProvider(Provider):
         try:
             # pylint: disable=no-member
             return reverse(
-                "authentik_enterprise_rac:if-rac",
+                "authentik_enterprise_providers_rac:if-rac",
                 kwargs={"app": self.application.slug},
             )
         except Provider.application.RelatedObjectDoesNotExist:
@@ -68,6 +68,6 @@ class RACProvider(Provider):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.enterprise.rac.api.providers import RACProviderSerializer
+        from authentik.enterprise.providers.rac.api.providers import RACProviderSerializer
 
         return RACProviderSerializer

@@ -1,9 +1,9 @@
 import { AKElement } from "@goauthentik/elements/Base";
+import "@goauthentik/elements/EmptyState";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import "@goauthentik/elements/EmptyState";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-loading-overlay")

@@ -7,7 +7,7 @@ from django.http.request import QueryDict
 from guardian.shortcuts import get_objects_for_user
 
 from authentik.core.models import Application
-from authentik.enterprise.rac.models import RACProvider
+from authentik.enterprise.providers.rac.models import RACProvider
 from authentik.outposts.consumer import OUTPOST_GROUP_INSTANCE
 from authentik.outposts.models import Outpost, OutpostState, OutpostType
 

@@ -76,7 +76,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 });
                 break;
             case OutpostTypeEnum.Rac:
-                this.providers = await new ProvidersApi(DEFAULT_CONFIG).providersEnterpriseRacList({
+                this.providers = await new ProvidersApi(DEFAULT_CONFIG).providersRacList({
                     ordering: "name",
                     applicationIsnull: false,
                 });
