@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
 
-from authentik.core.models import Group
+from authentik.core.models import Group, UserTypes
 from authentik.flows.models import Stage
 
 
@@ -39,6 +39,10 @@ class UserWriteStage(Stage):
         help_text=_("Optionally add newly created users to this group."),
     )
 
+    user_type = models.TextField(
+        choices=UserTypes.choices,
+        default=UserTypes.EXTERNAL,
+    )
     user_path_template = models.TextField(
         default="",
         blank=True,

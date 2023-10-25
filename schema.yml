@@ -27494,6 +27494,20 @@ paths:
         name: user_path_template
         schema:
           type: string
+      - in: query
+        name: user_type
+        schema:
+          type: string
+          enum:
+          - external
+          - internal
+          - internal_service_account
+          - service_account
+        description: |-
+          * `internal` - Internal
+          * `external` - External
+          * `service_account` - Service Account
+          * `internal_service_account` - Internal Service Account
       tags:
       - stages
       security:
@@ -38052,6 +38066,8 @@ components:
           format: uuid
           nullable: true
           description: Optionally add newly created users to this group.
+        user_type:
+          $ref: '#/components/schemas/UserTypeEnum'
         user_path_template:
           type: string
     PatchedWebAuthnDeviceRequest:
@@ -42422,6 +42438,8 @@ components:
           format: uuid
           nullable: true
           description: Optionally add newly created users to this group.
+        user_type:
+          $ref: '#/components/schemas/UserTypeEnum'
         user_path_template:
           type: string
       required:
@@ -42452,6 +42470,8 @@ components:
           format: uuid
           nullable: true
           description: Optionally add newly created users to this group.
+        user_type:
+          $ref: '#/components/schemas/UserTypeEnum'
         user_path_template:
           type: string
       required:

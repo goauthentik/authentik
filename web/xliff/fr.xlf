@@ -7931,6 +7931,15 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>&lt;No name set&gt;</source>
   <target>&lt;No name set&gt;</target>
 </trans-unit>
+<trans-unit id="s66313b45b69cfc88">
+  <source>Check the release notes</source>
+</trans-unit>
+<trans-unit id="sb4d7bae2440d9781">
+  <source>User Statistics</source>
+</trans-unit>
+<trans-unit id="s32babfed740fd3c1">
+  <source>User type used for newly created users.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
