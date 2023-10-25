@@ -77,14 +77,14 @@ func (rs *RACServer) wsHandler(ctx context.Context, args map[string]interface{})
 	cc.OnError = func(err error) {
 		rs.connm.Lock()
 		delete(rs.conns, wsm.ConnID)
-		rs.ac.SendWSHello(map[string]interface{}{
+		_ = rs.ac.SendWSHello(map[string]interface{}{
 			"active_connections": len(rs.conns),
 		})
 		rs.connm.Unlock()
 	}
 	rs.connm.Lock()
 	rs.conns[wsm.ConnID] = *cc
-	rs.ac.SendWSHello(map[string]interface{}{
+	_ = rs.ac.SendWSHello(map[string]interface{}{
 		"active_connections": len(rs.conns),
 	})
 	rs.connm.Unlock()

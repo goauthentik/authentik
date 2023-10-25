@@ -18,15 +18,13 @@ type MessageReader interface {
 
 func (c *Connection) wsToGuacd() {
 	w := c.st.AcquireWriter()
-	var err error
-	defer c.onError(err)
 	for {
 		select {
 		default:
 			_, data, e := c.ws.ReadMessage()
 			if e != nil {
 				c.log.WithError(e).Trace("Error reading message from ws")
-				err = e
+				c.onError(e)
 				return
 			}
 
@@ -37,7 +35,7 @@ func (c *Connection) wsToGuacd() {
 
 			if _, e = w.Write(data); e != nil {
 				c.log.WithError(e).Trace("Failed writing to guacd")
-				err = e
+				c.onError(e)
 				return
 			}
 		case <-c.ctx.Done():
@@ -55,15 +53,13 @@ type MessageWriter interface {
 func (c *Connection) guacdToWs() {
 	r := c.st.AcquireReader()
 	buf := bytes.NewBuffer(make([]byte, 0, guac.MaxGuacMessage*2))
-	var err error
-	defer c.onError(err)
 	for {
 		select {
 		default:
 			ins, e := r.ReadSome()
 			if e != nil {
 				c.log.WithError(e).Trace("Error reading from guacd")
-				err = e
+				c.onError(e)
 				return
 			}
 
@@ -74,7 +70,7 @@ func (c *Connection) guacdToWs() {
 
 			if _, e = buf.Write(ins); e != nil {
 				c.log.WithError(e).Trace("Failed to buffer guacd to ws")
-				err = e
+				c.onError(e)
 				return
 			}
 
@@ -85,7 +81,7 @@ func (c *Connection) guacdToWs() {
 						return
 					}
 					c.log.WithError(e).Trace("Failed sending message to ws")
-					err = e
+					c.onError(e)
 					return
 				}
 				buf.Reset()

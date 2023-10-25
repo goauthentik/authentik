@@ -10,7 +10,7 @@ import (
 )
 
 const guacdPath = "/opt/guacamole/sbin/guacd"
-const guacdArgs = " -b 0.0.0.0 -L debug -f"
+const guacdArgs = " -b 0.0.0.0 -L trace -f"
 
 func (rs *RACServer) startGuac() error {
 	rs.guacd = exec.Command(guacdPath, strings.Split(guacdArgs, " ")...)
