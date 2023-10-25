@@ -89,10 +89,6 @@ export class ApplicationListPage extends TablePage<Application> {
         ];
     }
 
-    renderSectionBefore(): TemplateResult {
-        return html`<ak-application-wizard-hint></ak-application-wizard-hint>`;
-    }
-
     renderSidebarAfter(): TemplateResult {
         // Rendering the wizard with .open here, as if we set the attribute in
         // renderObjectCreate() it'll open two wizards, since that function gets called twice

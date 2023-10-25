@@ -1,6 +1,6 @@
 import { msg } from "@lit/localize";
 
-import { Device, EventActions, IntentEnum, SeverityEnum } from "@goauthentik/api";
+import { Device, EventActions, IntentEnum, SeverityEnum, UserTypeEnum } from "@goauthentik/api";
 
 /* Various tables in the API for which we need to supply labels */
 
@@ -65,3 +65,13 @@ export const deviceTypeToLabel = new Map<string, string>([
 
 export const deviceTypeName = (device: Device) =>
     deviceTypeToLabel.get(device.type) ?? device?.verboseName ?? "";
+
+const _userTypeToLabel = new Map<UserTypeEnum | undefined, string>([
+    [UserTypeEnum.Internal, msg("Internal")],
+    [UserTypeEnum.External, msg("External")],
+    [UserTypeEnum.ServiceAccount, msg("Service account")],
+    [UserTypeEnum.InternalServiceAccount, msg("Service account (internal)")],
+]);
+
+export const userTypeToLabel = (type?: UserTypeEnum): string =>
+    _userTypeToLabel.get(type) ?? type ?? "";
