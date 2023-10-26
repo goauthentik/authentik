@@ -1,29 +1,26 @@
 ---
 title: 3 Ways you (might be) doing containers wrong
 description: “Using containers is not a best practice in itself. Here are some mistakes beginners make with containers, and how we set them up correctly at authentik.”
-slug: 2023-10-23-3-ways-you-might-be-doing-containers wrong
 authors:
-- name: Jens Langhammer
-title: CTO at Authentik Security Inc
-url: https://github.com/BeryJu
-image_url: https://github.com/BeryJu.png
+    - name: Jens Langhammer
+      title: CTO at Authentik Security Inc
+      url: https://github.com/BeryJu
+      image_url: https://github.com/BeryJu.png
 tags:
-- application
-- runtime
-- SSO
-- Docker
-- containers
-- :latest
-- identity provider
-- security
-- authentication
+    - application
+    - runtime
+    - SSO
+    - Docker
+    - containers
+    - :latest
+    - identity provider
+    - security
+    - authentication
 hide_table_of_contents: false
 ---
-
-> *******_authentik is an open source Identity Provider that unifies your identity needs into a single platform, replacing Okta, Active Directory, and auth0. Authentik Security is a [public benefit company](*https://github.com/OpenCoreVentures/ocv-public-benefit-company/blob/main/ocv-public-benefit-company-charter.md*) building on top of the open source project._*******
+_authentik is an open source Identity Provider that unifies your identity needs into a single platform, replacing Okta, Active Directory, and Auth0. Authentik Security is a [public benefit company](https://github.com/OpenCoreVentures/ocv-public-benefit-company/blob/main/ocv-public-benefit-company-charter.md) building on top of the open source project._
 
 ---
-
 There are two ways to judge an application:
 
 1. Does it do what it’s supposed to do?
@@ -50,10 +47,10 @@ Your application usually consists of multiple services, and to my mind these sho
 
 For example, authentik consists of four components (services):
 
-1. Server
-2. Worker
-3. Database
-4. Cache
+-   Server
+-   Worker
+-   Database
+-   Cache
 
 With our deployment, that means you get four different containers because they each run one of those four services.
 
@@ -129,3 +126,5 @@ Even if you specifically want your logs to exist in a file, by default if you ru
 It’s a little simplistic, but I’d encourage you to check out [The Twelve-Factor App](https://12factor.net/) which outlines good practices for making software that’s easy to run.
 
 Are you doing containers differently and is it working for you? Let us know in the comments!
+
+
