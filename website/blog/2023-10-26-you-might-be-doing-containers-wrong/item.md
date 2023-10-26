@@ -38,7 +38,7 @@ Below are some common mistakes that I see beginners make with containers:
 2. Installing things at runtime
 3. Writing logs to files instead of stdout
 
-# Mistake #1: One container per application
+## Mistake #1: One container per application
 
 There tend to be two mindsets when approaching setting up containers:
 
@@ -56,7 +56,7 @@ For example, authentik consists of four components (services):
 
 With our deployment, that means you get four different containers because they each run one of those four services.
 
-## Why you should use one container per _service_
+### Why you should use one container per _service_
 
 At the point where you need to scale, or need High Availability, having different processes in separate containers enables horizontal scaling. Because of how authentik deploys, if we need to handle more traffic we can scale up to 50 servers, rather than having to scale up _everything_. This wouldn’t work if all those components were all bundled together.
 
@@ -66,7 +66,7 @@ Say you want to start up processes in a specific order. This isn’t possible if
 
 Of course, your application architecture and deployment model need to support this setup, which is why it’s critical to think about these things when you’re starting out. If you’re reading this and thinking, I have a small-scale, hobby project, this doesn’t apply to me—let me put it this way: you will never regret setting things up the “right” way. It’s not going to come back to bite you if your situation changes later. It also gives users who install the application a lot more freedom and flexibility in how _they_ want to run it.
 
-# Mistake #2: Installing things at runtime
+## Mistake #2: Installing things at runtime
 
 Your container image should be complete in itself: it should contain all code and dependencies—everything it needs to run. This is the point of a container—it’s self contained.
 
@@ -74,7 +74,7 @@ I’ve seen people set up their container to download an application from the ve
 
 If you have 100 instances downloading files at startup (or end up scaling to that point), this can lead to rate limiting, failed downloads, or your internet connection getting saturated—it’s just inefficient and causes problems that can be avoided.
 
-## Also, don’t use :latest
+### Also, don’t use :latest
 
 This leads me to a different but related bad practice: using the `:latest` tag. It’s a common pitfall for folks who use containers but don’t necessarily build them themselves.
 
@@ -107,7 +107,7 @@ The principle is roughly the same with any project using [SemVer](https://semver
 
 With this approach you are putting some trust in the developer not to publish any breaking changes with the wrong version number (but you’re technically always putting trust in some developer when using someone else’s software!).
 
-# Mistake #3: Writing logs to files instead of stdout
+## Mistake #3: Writing logs to files instead of stdout
 
 This is another issue on the infrastructure side that mainly happens when you put legacy applications into containers. It used to be standard that applications put their log output into a file, and you’d probably have a system daemon set up to rotate those files and archive the old ones. This was great when everything ran on the same server without containers.
 
@@ -117,7 +117,7 @@ Docker puts the logs into a JSON file that it can read itself and see the timest
 
 Not logging to `stdout` just makes it harder for everyone, including making it harder to debug: Instead of just running `docker logs` + the name of the container, you need to `exec` into the container, go to find the files, then look at the files to start debugging.
 
-## This bad practice is arguably the easiest one to work around
+### This bad practice is arguably the easiest one to work around
 
 As an engineer you can easily redirect the logs back from a file into the standard output, but there’s no real reason not to do it the “correct” way.
 
