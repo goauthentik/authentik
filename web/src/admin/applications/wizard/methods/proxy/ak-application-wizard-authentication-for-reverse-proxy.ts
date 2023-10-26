@@ -7,6 +7,8 @@ import { customElement } from "@lit/reactive-element/decorators.js";
 import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+import { ProxyProvider } from "@goauthentik/api";
+
 import AkTypeProxyApplicationWizardPage from "./AuthenticationByProxyPage";
 
 @customElement("ak-application-wizard-authentication-for-reverse-proxy")
@@ -20,9 +22,11 @@ export class AkReverseProxyApplicationWizardPage extends AkTypeProxyApplicationW
     }
 
     renderProxyMode() {
+        const provider = this.wizard.provider as ProxyProvider | undefined;
+
         return html` <ak-text-input
                 name="externalHost"
-                value=${ifDefined(this.instance?.externalHost)}
+                value=${ifDefined(provider?.externalHost)}
                 required
                 label=${msg("External host")}
                 help=${msg(
@@ -31,14 +35,14 @@ export class AkReverseProxyApplicationWizardPage extends AkTypeProxyApplicationW
             ></ak-text-input>
             <ak-text-input
                 name="internalHost"
-                value=${ifDefined(this.instance?.internalHost)}
+                value=${ifDefined(provider?.internalHost)}
                 required
                 label=${msg("Internal host")}
                 help=${msg("Upstream host that the requests are forwarded to.")}
             ></ak-text-input>
             <ak-switch-input
                 name="internalHostSslValidation"
-                ?checked=${first(this.instance?.internalHostSslValidation, true)}
+                ?checked=${first(provider?.internalHostSslValidation, true)}
                 label=${msg("Internal host SSL Validation")}
                 help=${msg("Validate SSL Certificates of upstream servers.")}
             >

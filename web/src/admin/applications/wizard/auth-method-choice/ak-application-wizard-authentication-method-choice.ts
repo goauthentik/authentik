@@ -27,7 +27,7 @@ export class ApplicationWizardAuthenticationMethodChoice extends BasePanel {
         this.dispatchWizardUpdate({
             update: {
                 ...this.wizard,
-                providerModel: target.value
+                providerModel: target.value,
             },
             status: this.valid ? "valid" : "invalid",
         });

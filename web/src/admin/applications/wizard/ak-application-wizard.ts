@@ -1,4 +1,3 @@
-import { merge } from "@goauthentik/common/merge";
 import { AkWizard } from "@goauthentik/components/ak-wizard-main/AkWizard";
 import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 
@@ -77,13 +76,13 @@ export class ApplicationWizard extends CustomListenerElement(
         if (update.providerModel && update.providerModel !== this.wizardState.providerModel) {
             const requestedProvider = this.providerCache.get(update.providerModel) ?? {
                 name: `Provider for ${this.wizardState.app.name}`,
-            }
+            };
             if (this.wizardState.providerModel) {
                 this.providerCache.set(this.wizardState.providerModel, this.wizardState.provider);
             }
             update.provider = requestedProvider;
         }
-            
+
         this.wizardState = update as ApplicationWizardState;
         this.wizardStateProvider.setValue(this.wizardState);
         console.log(this.wizardState);

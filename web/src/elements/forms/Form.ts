@@ -34,7 +34,7 @@ export interface KeyUnknown {
 // Literally the only field `assignValue()` cares about.
 type HTMLNamedElement = Pick<HTMLInputElement, "name">;
 
-type AkControlElement = HTMLInputElement & { json: () => (string | string[]) };
+type AkControlElement = HTMLInputElement & { json: () => string | string[] };
 
 /**
  * Recursively assign `value` into `json` while interpreting the dot-path of `element.name`
@@ -70,11 +70,11 @@ export function serializeForm<T extends KeyUnknown>(
         }
 
         // TODO: Tighten up the typing so that we can handle both.
-        if ('akControl' in element.dataset) {
+        if ("akControl" in element.dataset) {
             assignValue(element, (element as unknown as AkControlElement).json(), json);
-            return
+            return;
         }
-        
+
         const inputElement = element.querySelector<HTMLInputElement>("[name]");
         if (element.hidden || !inputElement) {
             return;

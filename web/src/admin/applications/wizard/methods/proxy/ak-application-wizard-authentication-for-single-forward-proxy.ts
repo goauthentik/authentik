@@ -5,6 +5,8 @@ import { customElement } from "@lit/reactive-element/decorators.js";
 import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+import { ProxyProvider } from "@goauthentik/api";
+
 import AkTypeProxyApplicationWizardPage from "./AuthenticationByProxyPage";
 
 @customElement("ak-application-wizard-authentication-for-single-forward-proxy")
@@ -21,9 +23,11 @@ export class AkForwardSingleProxyApplicationWizardPage extends AkTypeProxyApplic
     }
 
     renderProxyMode() {
+        const provider = this.wizard.provider as ProxyProvider | undefined;
+
         return html`<ak-text-input
             name="externalHost"
-            value=${ifDefined(this.instance?.externalHost)}
+            value=${ifDefined(provider?.externalHost)}
             required
             label=${msg("External host")}
             help=${msg(
