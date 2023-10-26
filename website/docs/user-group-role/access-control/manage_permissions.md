@@ -53,10 +53,7 @@ To assign or remove _object_ permissions for a specific user:
     3. Use the toggles to set which permissions on that selected user object you want to grant to (or remove from) the specific user.
     4. Click **Assign** to save your settings and close the modal.
 5. To assign or remove permissions that another _role_ has on this specific user:
-    Click the **Role Object Permissions** tab, click **Assign to new role**.
-    2. In the **User** drop-down, select the user object.
-    3. Use the toggles to set which permissions you want to grant to (or remove from) the selected role.
-    4. Click **Assign** to save your settings and close the modal.
+   Click the **Role Object Permissions** tab, click **Assign to new role**. 2. In the **User** drop-down, select the user object. 3. Use the toggles to set which permissions you want to grant to (or remove from) the selected role. 4. Click **Assign** to save your settings and close the modal.
 
 To assign or remove _global_ permissions for a user:
 
@@ -79,16 +76,13 @@ To assign or remove _object_ permissions on a specific group by users and roles:
 1. Go to the Admin interface and navigate to **Directory -> Groups**.
 2. Select a specific group by clicking the the group's name.
 3. Click the **Permissions** tab at the top of the page.
- To assign or remove permissions that another _user_ has on this specific group:
+   To assign or remove permissions that another _user_ has on this specific group:
     1. Click the **User Object Permissions** tab, click **Assign to new user**.
     2. In the **User** drop-down, select the user object.
     3. Use the toggles to set which permissions on that selected group you want to grant to (or remove from) the specific user.
     4. Click **Assign** to save your settings and close the modal.
-5. To assign or remove permissions that another _role_ has on this specific group:
-    Click the **Role Object Permissions** tab, click **Assign to new role**.
-    2. In the **Role** drop-down, select the role.
-    3. Use the toggles to set which permissions you want to grant to (or remove from ) the selected role.
-    4. Click **Assign** to save your settings and close the modal.
+4. To assign or remove permissions that another _role_ has on this specific group:
+   Click the **Role Object Permissions** tab, click **Assign to new role**. 2. In the **Role** drop-down, select the role. 3. Use the toggles to set which permissions you want to grant to (or remove from ) the selected role. 4. Click **Assign** to save your settings and close the modal.
 
 ### Assign or remove permissions for a specific role
 
@@ -97,16 +91,9 @@ To assign or remove _object_ permissions for a specific role:
 1. Go to the Admin interface and navigate to **Directory -> Roles**.
 2. Select a specific role the clicking on the role's name.
 3. Click the **Permissions** tab at the top of the page.
-To assign or remove permissions that another _user_ has on this specific role:
-    1. Click the **User Object Permissions** tab, click **Assign to new user**.
-    2. In the **User** drop-down, select the user object.
-    3. Use the toggles to set which permissions on that role you want to grant to (or remove from) the selected user.
-    4. Click **Assign** to save your settings and close the modal.
-5. To assign or remove permissions that another _role_ has on this specific group:
-    Click the **Role Object Permissions** tab, click **Assign to new role**.
-    2. In the **Role** drop-down, select the role.
-    3. Use the toggles to set which permissions you want to grant to (or remove from) the selected role.
-    4. Click **Assign** to save your settings and close the modal.
+   To assign or remove permissions that another _user_ has on this specific role: 1. Click the **User Object Permissions** tab, click **Assign to new user**. 2. In the **User** drop-down, select the user object. 3. Use the toggles to set which permissions on that role you want to grant to (or remove from) the selected user. 4. Click **Assign** to save your settings and close the modal.
+4. To assign or remove permissions that another _role_ has on this specific group:
+   Click the **Role Object Permissions** tab, click **Assign to new role**. 2. In the **Role** drop-down, select the role. 3. Use the toggles to set which permissions you want to grant to (or remove from) the selected role. 4. Click **Assign** to save your settings and close the modal.
 
 To assign or remove _global_ permissions for a role:
 
