@@ -5754,10 +5754,10 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>For transparent reverse proxies with required authentication</source>
 </trans-unit>
 <trans-unit id="sadf073913458acbd">
-  <source>For nginx's auth_request or traefix's forwardAuth</source>
+  <source>For nginx's auth_request or traefik's forwardAuth</source>
 </trans-unit>
 <trans-unit id="se770e9498b3bacf6">
-  <source>For nginx's auth_request or traefix's forwardAuth per root domain</source>
+  <source>For nginx's auth_request or traefik's forwardAuth per root domain</source>
 </trans-unit>
 <trans-unit id="s40830ec037f34626">
   <source>Configure SAML provider manually</source>

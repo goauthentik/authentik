@@ -7597,7 +7597,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).</source>
   <target>Étape de configuration d'un authentificateur WebAuthn (Yubikey, FaceID/Windows Hello).</target>
 </trans-unit>
-&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
 <trans-unit id="s1cffe58249b04669">
   <source>Internal application name used in URLs.</source>
   <target>Nom de l'application interne utilisé dans les URLs.</target>
