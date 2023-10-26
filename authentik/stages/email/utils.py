@@ -9,7 +9,7 @@ from django.utils import translation
 
 
 @lru_cache()
-def logo_data():
+def logo_data() -> MIMEImage:
     """Get logo as MIME Image for emails"""
     path = Path("web/icons/icon_left_brand.png")
     if not path.exists():
@@ -29,5 +29,4 @@ class TemplateEmailMessage(EmailMultiAlternatives):
         super().__init__(**kwargs)
         self.content_subtype = "html"
         self.mixed_subtype = "related"
-        self.attach(logo_data())
         self.attach_alternative(html_content, "text/html")
