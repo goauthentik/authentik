@@ -127,4 +127,4 @@ Even if you specifically want your logs to exist in a file, by default if you ru
 
 It’s a little simplistic, but I’d encourage you to check out [The Twelve-Factor App](https://12factor.net/) which outlines good practices for making software that’s easy to run.
 
-Are you doing containers differently and is it working for you? Let us know in the comments!
+Are you doing containers differently and is it working for you? Let us know in the comments, or send us an email at hello@goauthentik.io!
