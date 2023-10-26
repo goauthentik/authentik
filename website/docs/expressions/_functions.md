@@ -66,7 +66,7 @@ return ak_is_group_member(request.user, name="test_group")
 
 Fetch a user matching `**filters`.
 
-Returns "None" if no user was found, otherwise returns the [User](/docs/user-group/user) object.
+Returns "None" if no user was found, otherwise returns the [User](/docs/user-group-role/user) object.
 
 Example:
 
