@@ -25,17 +25,12 @@ export class ApplicationWizardAuthenticationMethodChoice extends BasePanel {
     handleChoice(ev: InputEvent) {
         const target = ev.target as HTMLInputElement;
         this.dispatchWizardUpdate({
-            update: { providerModel: target.value },
-            status: this.validator() ? "valid" : "invalid",
+            update: {
+                ...this.wizard,
+                providerModel: target.value
+            },
+            status: this.valid ? "valid" : "invalid",
         });
-    }
-
-    validator() {
-        const radios = Array.from(this.form.querySelectorAll('input[type="radio"]'));
-        const chosen = radios.find(
-            (radio: Element) => radio instanceof HTMLInputElement && radio.checked,
-        );
-        return !!chosen;
     }
 
     renderProvider(type: LocalTypeCreate) {

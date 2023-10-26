@@ -334,7 +334,7 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                         )}
                     >
                     </ak-radio-input>
-                    <ak-switch-input name="includeClaimsInIdToken">
+                    <ak-switch-input name="includeClaimsInIdToken"
                         label=${msg("Include claims in id_token")}
                         ?checked=${first(provider?.includeClaimsInIdToken, true)}
                         help=${msg(

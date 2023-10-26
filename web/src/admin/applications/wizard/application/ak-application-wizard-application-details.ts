@@ -5,7 +5,6 @@ import "@goauthentik/components/ak-slug-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
 import { msg } from "@lit/localize";
@@ -17,26 +16,14 @@ import BasePanel from "../BasePanel";
 
 @customElement("ak-application-wizard-application-details")
 export class ApplicationWizardApplicationDetails extends BasePanel {
-    handleChange(ev: Event) {
-        if (!ev.target) {
-            console.warn(`Received event with no target: ${ev}`);
-            return;
-        }
-
-        const target = ev.target as HTMLInputElement;
-        const value = target.type === "checkbox" ? target.checked : target.value;
+    handleChange(_ev: Event) {
         this.dispatchWizardUpdate({
             update: {
-                app: {
-                    [target.name]: value,
-                },
+                ...this.wizard,
+                app: this.formValues,
             },
-            status: this.form.checkValidity() ? "valid" : "invalid",
+            status: this.valid ? "valid" : "invalid",
         });
-    }
-
-    validator() {
-        return this.form.reportValidity();
     }
 
     render(): TemplateResult {

@@ -94,12 +94,12 @@ export class ApplicationListPage extends TablePage<Application> {
         // renderObjectCreate() it'll open two wizards, since that function gets called twice
 
         /* Re-enable the wizard later:
-          <ak-application-wizard
+*/
+
+        return html`           <ak-application-wizard
                 .open=${getURLParam("createWizard", false)}
                 .showButton=${false}
-                ></ak-application-wizard>*/
-
-        return html` <div class="pf-c-sidebar__panel pf-m-width-25">
+                ></ak-application-wizard><div class="pf-c-sidebar__panel pf-m-width-25">
             <div class="pf-c-card">
                 <div class="pf-c-card__body">
                     <ak-markdown .md=${MDApplication}></ak-markdown>

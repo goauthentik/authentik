@@ -37,7 +37,9 @@ export class AkRadioInput<T> extends AKElement {
     options: RadioOption<T>[] = [];
 
     handleInput(ev: CustomEvent) {
-        this.value = ev.detail.value;
+        if ("detail" in ev) {
+            this.value = ev.detail.value;
+        }
     }
 
     render() {

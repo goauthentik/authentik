@@ -87,7 +87,7 @@ export class ApplicationWizardApplicationDetails extends BaseProviderPanel {
             <ak-switch-input
                 name="openInNewTab"
                 label=${msg("Code-based MFA Support")}
-                ?checked=${provider?.mfaSupport}
+                ?checked=${provider?.mfaSupport ?? true}
                 help=${mfaSupportHelp}
             >
             </ak-switch-input>

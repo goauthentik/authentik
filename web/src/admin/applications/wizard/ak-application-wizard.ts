@@ -56,28 +56,6 @@ export class ApplicationWizard extends CustomListenerElement(
      */
     providerCache: Map<string, OneOfProvider> = new Map();
 
-    maybeProviderSwap(providerModel: string | undefined): boolean {
-        if (
-            providerModel === undefined ||
-            typeof providerModel !== "string" ||
-            providerModel === this.wizardState.providerModel
-        ) {
-            return false;
-        }
-
-        this.providerCache.set(this.wizardState.providerModel, this.wizardState.provider);
-        const prevProvider = this.providerCache.get(providerModel);
-        this.wizardState.provider = prevProvider ?? {
-            name: `Provider for ${this.wizardState.app.name}`,
-        };
-        const method = this.steps.find(({ id }) => id === "provider-details");
-        if (!method) {
-            throw new Error("Could not find Authentication Method page?");
-        }
-        method.disabled = false;
-        return true;
-    }
-
     // And this is where all the special cases go...
     handleUpdate(detail: ApplicationWizardStateUpdate) {
         if (detail.status === "submitted") {
@@ -87,18 +65,28 @@ export class ApplicationWizard extends CustomListenerElement(
         }
 
         this.step.valid = this.step.valid || detail.status === "valid";
-
         const update = detail.update;
+
         if (!update) {
             return;
         }
 
-        if (this.maybeProviderSwap(update.providerModel)) {
-            this.requestUpdate();
+        // When the providerModel enum changes, retrieve the customer's prior work for *this* wizard
+        // session (and only this wizard session) or provide an empty model with a default provider
+        // name.
+        if (update.providerModel && update.providerModel !== this.wizardState.providerModel) {
+            const requestedProvider = this.providerCache.get(update.providerModel) ?? {
+                name: `Provider for ${this.wizardState.app.name}`,
+            }
+            if (this.wizardState.providerModel) {
+                this.providerCache.set(this.wizardState.providerModel, this.wizardState.provider);
+            }
+            update.provider = requestedProvider;
         }
-
-        this.wizardState = merge(this.wizardState, update) as ApplicationWizardState;
+            
+        this.wizardState = update as ApplicationWizardState;
         this.wizardStateProvider.setValue(this.wizardState);
+        console.log(this.wizardState);
         this.requestUpdate();
     }
 

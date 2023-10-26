@@ -124,10 +124,7 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                     <ak-text-input
                         name="clientId"
                         label=${msg("Client ID")}
-                        value="${first(
-                            provider?.clientId,
-                            randomString(40, ascii_letters + digits),
-                        )}"
+                        value=${provider?.clientId ?? randomString(40, ascii_letters + digits)}
                         required
                     >
                     </ak-text-input>
@@ -135,10 +132,7 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                     <ak-text-input
                         name="clientSecret"
                         label=${msg("Client Secret")}
-                        value="${first(
-                            provider?.clientSecret,
-                            randomString(128, ascii_letters + digits),
-                        )}"
+                        value=${provider?.clientSecret ?? randomString(128, ascii_letters + digits)}
                         ?hidden=${!this.showClientSecret}
                     >
                     </ak-text-input>
@@ -209,7 +203,7 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                                 if (!provider?.propertyMappings) {
                                     selected =
                                         scope.managed?.startsWith(
-                                            "goauthentik.io/providers/oauth2/scope-",
+                                            "goauthentik.io/providers/oauth2/scope-"
                                         ) || false;
                                 } else {
                                     selected = Array.from(provider?.propertyMappings).some((su) => {
@@ -226,7 +220,7 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Select which scopes can be used by the client. The client still has to specify the scope to access the data.",
+                                "Select which scopes can be used by the client. The client still has to specify the scope to access the data."
                             )}
                         </p>
                         <p class="pf-c-form__helper-text">
@@ -241,7 +235,7 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                         .options=${subjectModeOptions}
                         .value=${provider?.subMode}
                         help=${msg(
-                            "Configure what data should be used as unique User Identifier. For most cases, the default should be fine.",
+                            "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
                         )}
                     >
                     </ak-radio-input>
@@ -250,7 +244,7 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                         label=${msg("Include claims in id_token")}
                         ?checked=${first(provider?.includeClaimsInIdToken, true)}
                         help=${msg(
-                            "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint.",
+                            "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint."
                         )}
                     ></ak-switch-input>
                     <ak-radio-input
@@ -260,7 +254,7 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                         .options=${issuerModeOptions}
                         .value=${provider?.issuerMode}
                         help=${msg(
-                            "Configure how the issuer field of the ID Token should be filled.",
+                            "Configure how the issuer field of the ID Token should be filled."
                         )}
                     >
                     </ak-radio-input>
@@ -286,7 +280,7 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.",
+                                "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider."
                             )}
                         </p>
                         <p class="pf-c-form__helper-text">
