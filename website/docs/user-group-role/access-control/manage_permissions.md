@@ -61,7 +61,7 @@ To assign or remove _global_ permissions for a user:
 2. Select a specific user the clicking on the user's name.
 3. Click the **Assigned Permissions** tab at the top of the page (to the right of the **Permissions** tab).
 4. In the **Assigned Global Permissions** area, click **Assign Permission**.
-5. In the **Assign permissions to user** modal, click the plus sign (**+**) and then click the checkbox beside each permission that you want to assign to the user. To remove permissions, deselct the checkbox.
+5. In the **Assign permissions to user** modal, click the plus sign (**+**) and then click the checkbox beside each permission that you want to assign to the user. To remove permissions, deselect the checkbox.
 6. Click **Add**, and then click **Assign** to save your changes and close the modal.
 
 ### Assign or remove permissions on a specific group
