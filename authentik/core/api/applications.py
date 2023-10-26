@@ -98,6 +98,7 @@ class ApplicationSerializer(ModelSerializer):
 class ApplicationViewSet(UsedByMixin, ModelViewSet):
     """Application Viewset"""
 
+    # pylint: disable=no-member
     queryset = Application.objects.all().prefetch_related("provider")
     serializer_class = ApplicationSerializer
     search_fields = [
