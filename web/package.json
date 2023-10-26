@@ -41,7 +41,7 @@
         "@goauthentik/api": "^2023.10.1-1698348102",
         "@lit-labs/context": "^0.4.1",
         "@lit-labs/task": "^3.1.0",
-        "@lit/localize": "^0.11.4",
+        "@lit/localize": "^0.12.0",
         "@open-wc/lit-helpers": "^0.6.0",
         "@patternfly/elements": "^2.4.0",
         "@patternfly/patternfly": "^4.224.2",
