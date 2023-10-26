@@ -98,13 +98,14 @@ To give authentik users admin access to your Nextcloud instance, you need to cre
 Create a custom SAML Property Mapping:
 
 -   Set the _SAML Attribute Name_ to `http://schemas.xmlsoap.org/claims/Group`.
--   Set the _Expression_ to:
+-   Set group names that you want to passthrough to start with 'NC-'
+-   Set the admin group to 'NC-Admin'
+-   Set the _Expression_ to (the 'NC-' will be removed before sending to Nextcloud):
 
 ```python
-for group in user.ak_groups.all():
-    yield group.name
-if ak_is_group_member(request.user, name="<authentik nextcloud admin group's name>"):
-    yield "admin"
+groups = [group.name for group in user.all_groups() if group.name.startswith("NC-")]
+for group in groups:
+    yield group[3:]
 ```
 
 Then, edit the Nextcloud SAML Provider, and replace the default Groups mapping with the one you've created above.
