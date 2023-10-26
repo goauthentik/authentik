@@ -23,6 +23,20 @@ jobs:
           docker-compose up --no-start
           docker-compose start postgresql redis
           docker-compose run -u root server test-all
+          docker-compose down -v --remove-orphans
+      - name: Pre-release test migrations
+        run: |
+          sed -e 's;AUTHENTIK_IMAGE=.*;AUTHENTIK_IMAGE=ghcr.io/goauthentik/server' -i .env
+          sed -e 's;AUTHENTIK_TAG=.*;AUTHENTIK_TAG='"$(curl https://version.goauthentik.io/version.json | jq -r .stable.version)" -i .env
+          docker-compose up --no-start
+          docker-compose start postgresql redis
+          docker-compose start server worker
+          timeout 600 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://localhost:9009/api/v3/root/config/)" != "200" ]]; do sleep 5; done' || false
+          docker-compose stop server worker
+          echo "AUTHENTIK_IMAGE=testing" >> .env
+          echo "AUTHENTIK_TAG=latest" >> .env
+          docker-compose run -u root server test-all
+          docker-compose down -v --remove-orphans
       - id: generate_token
         uses: tibdex/github-app-token@v2
         with:
