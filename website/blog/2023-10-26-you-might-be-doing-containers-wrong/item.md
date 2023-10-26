@@ -1,5 +1,5 @@
 ---
-title: 3 Ways you (might be) doing containers wrong
+title: 3 ways you (might be) doing containers wrong
 description: “Using containers is not a best practice in itself. Here are some mistakes beginners make with containers, and how we set them up correctly at authentik.”
 authors:
     - name: Jens Langhammer
