@@ -7620,14 +7620,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>For transparent reverse proxies with required authentication</source>
   <target>适用于需要验证身份的透明反向代理</target>
 </trans-unit>
-<trans-unit id="sadf073913458acbd">
-  <source>For nginx's auth_request or traefik's forwardAuth</source>
-  <target>适用于 nginx 的 auth_request 或 traefik 的 forwardAuth</target>
-</trans-unit>
-<trans-unit id="se770e9498b3bacf6">
-  <source>For nginx's auth_request or traefik's forwardAuth per root domain</source>
-  <target>适用于按根域名配置的 nginx 的 auth_request 或 traefik 的 forwardAuth</target>
-</trans-unit>
 <trans-unit id="s40830ec037f34626">
   <source>Configure SAML provider manually</source>
   <target>手动配置 SAML 提供程序</target>
@@ -7933,6 +7925,22 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s0924f51b028233a3">
   <source>&lt;No name set&gt;</source>
   <target>&lt;未设置名称&gt;</target>
+</trans-unit>
+<trans-unit id="sdc9a6ad1af30572c">
+  <source>For nginx's auth_request or traefik's forwardAuth</source>
+  <target>适用于 nginx 的 auth_request 或 traefik 的 forwardAuth</target>
+</trans-unit>
+<trans-unit id="sfc31264ef7ff86ef">
+  <source>For nginx's auth_request or traefik's forwardAuth per root domain</source>
+  <target>适用于按根域名配置的 nginx 的 auth_request 或 traefik 的 forwardAuth</target>
+</trans-unit>
+<trans-unit id="sc615309d10a9228c">
+  <source>RBAC is in preview.</source>
+  <target>RBAC 目前处于预览状态。</target>
+</trans-unit>
+<trans-unit id="s32babfed740fd3c1">
+  <source>User type used for newly created users.</source>
+  <target>新创建用户使用的用户类型。</target>
 </trans-unit>
     </body>
   </file>
