@@ -113,7 +113,7 @@ This is another issue on the infrastructure side that mainly happens when you pu
 
 A lot of software still logs to files by default, but this makes collecting and aggregating your services logs much harder. Docker (and containers in general) expect that you log to standard output so your orchestration platform can route the logs to your monitoring tool of choice.
 
-Docker puts the logs into a JSON file that it can read itself and see the timestamps and which container the log refers to. You can set up log forwarding with both [Docker]() and Kubernetes. If you have a central logging server, the plugin gets the standard output of a container and sends it to that server.
+Docker puts the logs into a JSON file that it can read itself and see the timestamps and which container the log refers to. You can set up log forwarding with both Docker and Kubernetes. If you have a central logging server, the plugin gets the standard output of a container and sends it to that server.
 
 Not logging to `stdout` just makes it harder for everyone, including making it harder to debug: Instead of just running `docker logs` + the name of the container, you need to `exec` into the container, go to find the files, then look at the files to start debugging.
 
