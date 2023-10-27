@@ -114,8 +114,8 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                         label=${msg("Client type")}
                         .value=${provider?.clientType}
                         required
-                        @change=${(ev: CustomEvent<ClientTypeEnum>) => {
-                            this.showClientSecret = ev.detail !== ClientTypeEnum.Public;
+                        @change=${(ev: CustomEvent<{ value: ClientTypeEnum }>) => {
+                            this.showClientSecret = ev.detail.value !== ClientTypeEnum.Public;
                         }}
                         .options=${clientTypeOptions}
                     >
