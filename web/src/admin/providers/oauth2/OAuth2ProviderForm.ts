@@ -210,8 +210,8 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                         label=${msg("Client type")}
                         .value=${provider?.clientType}
                         required
-                        @change=${(ev: CustomEvent<ClientTypeEnum>) => {
-                            this.showClientSecret = ev.detail !== ClientTypeEnum.Public;
+                        @change=${(ev: CustomEvent<{ value: ClientTypeEnum }>) => {
+                            this.showClientSecret = ev.detail.value !== ClientTypeEnum.Public;
                         }}
                         .options=${clientTypeOptions}
                     >
