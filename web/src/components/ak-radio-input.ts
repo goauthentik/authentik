@@ -14,7 +14,9 @@ export class AkRadioInput<T> extends HorizontalLightComponent {
     options: RadioOption<T>[] = [];
 
     handleInput(ev: CustomEvent) {
-        this.value = ev.detail.value;
+        if ("detail" in ev) {
+            this.value = ev.detail.value;
+        }
     }
 
     renderHelp() {
