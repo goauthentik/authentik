@@ -2780,13 +2780,13 @@ typing-extensions = ">=4.6.0,<4.7.0 || >4.7.0"
 
 [[package]]
 name = "pydantic-scim"
-version = "0.0.7"
+version = "0.0.8"
 description = "Pydantic types for SCIM"
 optional = false
 python-versions = ">=3.8.0"
 files = [
-    {file = "pydantic-scim-0.0.7.tar.gz", hash = "sha256:bc043da51c346051dfd372f12d1837c0846b815236340156d663a8514cba5761"},
-    {file = "pydantic_scim-0.0.7-py3-none-any.whl", hash = "sha256:058eb195f75ef32d04eaf6369c125d5fb7052891694686f8e55e04d184ab1360"},
+    {file = "pydantic-scim-0.0.8.tar.gz", hash = "sha256:b6c62031126e8c54f0fc7df837678e63934a5b068533fc52e5dfb6cfc24d59e9"},
+    {file = "pydantic_scim-0.0.8-py3-none-any.whl", hash = "sha256:407b3bf55240947155c77a6dd839881d63368c61d64076d6b167ef124ceac79a"},
 ]
 
 [package.dependencies]
@@ -4332,4 +4332,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "e6b1df989cb5c50609540c1229d05d8458ef1cc343fb5868402db8b7679ad73c"
+content-hash = "2fc746976187f4674f04575cffd6a367744723bf78c356b6951c2370bc47ceae"
