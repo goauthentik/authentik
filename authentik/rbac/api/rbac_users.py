@@ -35,7 +35,7 @@ class ExtraUserObjectPermissionSerializer(UserObjectPermissionSerializer):
         except LookupError:
             return f"{instance.content_type.app_label}.{instance.content_type.model}"
 
-    def get_object_description(self, instance: UserObjectPermission) -> Optional[str]:
+    def get_object_description(self, instance: UserObjectPermission) -> str | None:
         """Get model description from attached model. This operation takes at least
         one additional query, and the description is only shown if the user/role has the
         view_ permission on the object"""

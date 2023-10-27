@@ -8,7 +8,7 @@ from django.template.loader import render_to_string
 from django.utils import translation
 
 
-@lru_cache()
+@lru_cache
 def logo_data() -> MIMEImage:
     """Get logo as MIME Image for emails"""
     path = Path("web/icons/icon_left_brand.png")

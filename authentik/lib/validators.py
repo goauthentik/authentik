@@ -15,7 +15,7 @@ class RequiredTogetherValidator:
     requires_context = True
     message = _("The fields {field_names} must be used together.")
 
-    def __init__(self, fields: list[str], message: Optional[str] = None) -> None:
+    def __init__(self, fields: list[str], message: str | None = None) -> None:
         self.fields = fields
         self.message = message or self.message
 
@@ -29,4 +29,4 @@ class RequiredTogetherValidator:
             raise ValidationError(message, code="required")
 
     def __repr__(self):
-        return "<%s(fields=%s)>" % (self.__class__.__name__, smart_repr(self.fields))
+        return "<{}(fields={})>".format(self.__class__.__name__, smart_repr(self.fields))

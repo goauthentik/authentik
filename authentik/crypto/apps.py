@@ -43,7 +43,7 @@ class AuthentikCryptoConfig(ManagedAppConfig):
         """Ensure managed JWT certificate"""
         from authentik.crypto.models import CertificateKeyPair
 
-        cert: Optional[CertificateKeyPair] = CertificateKeyPair.objects.filter(
+        cert: CertificateKeyPair | None = CertificateKeyPair.objects.filter(
             managed=MANAGED_KEY
         ).first()
         now = datetime.now()

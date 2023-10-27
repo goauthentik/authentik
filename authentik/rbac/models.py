@@ -30,7 +30,7 @@ class Role(SerializerModel):
     # name field has the same constraints as the group model
     name = models.TextField(max_length=150, unique=True)
 
-    def assign_permission(self, *perms: str, obj: Optional[models.Model] = None):
+    def assign_permission(self, *perms: str, obj: models.Model | None = None):
         """Assign permission to role, can handle multiple permissions,
         but when assigning multiple permissions to an object the permissions
         must all belong to the object given"""
