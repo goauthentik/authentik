@@ -88,7 +88,30 @@ export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
             </ak-text-input>`;
     }
 
+    scopeMappingConfiguration(provider?: ProxyProvider) {
+        const propertyMappings = this.propertyMappings?.results ?? [];
+
+        const defaultScopes = () =>
+            propertyMappings
+                .filter((scope) => !(scope?.managed ?? "").startsWith("goauthentik.io/providers"))
+                .map((pm) => pm.pk);
+
+        const configuredScopes = (providerMappings: string[]) =>
+            propertyMappings.map((scope) => scope.pk).filter((pk) => providerMappings.includes(pk));
+
+        const scopeValues = provider?.propertyMappings
+            ? configuredScopes(provider?.propertyMappings ?? [])
+            : defaultScopes();
+
+        const scopePairs = propertyMappings.map((scope) => [scope.pk, scope.name]);
+
+        return { scopePairs, scopeValues };
+    }
+
     render() {
+        const errors = this.wizard.errors.provider;
+        const { scopePairs, scopeValues } = this.scopeMappingConfiguration(this.instance);
+
         return html` <ak-wizard-title>${msg("Configure Proxy Provider")}</ak-wizard-title>
             <form class="pf-c-form pf-m-horizontal" @input=${this.handleChange}>
                 ${this.renderModeDescription()}
@@ -96,12 +119,14 @@ export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
                     name="name"
                     value=${ifDefined(this.instance?.name)}
                     required
+                    .errorMessages=${errors?.name ?? []}
                     label=${msg("Name")}
                 ></ak-text-input>
 
                 <ak-form-element-horizontal
                     label=${msg("Authentication flow")}
                     ?required=${false}
+                    .errorMessages=${errors?.authenticationFlow ?? []}
                     name="authenticationFlow"
                 >
                     <ak-flow-search
@@ -120,6 +145,7 @@ export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
                     label=${msg("Authorization flow")}
                     ?required=${true}
                     name="authorizationFlow"
+                    .errorMessages=${errors?.authorizationFlow ?? []}
                 >
                     <ak-flow-search
                         flowType=${FlowsInstancesListDesignationEnum.Authorization}
@@ -138,49 +164,40 @@ export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
                     value=${first(this.instance?.accessTokenValidity, "hours=24")}
                     label=${msg("Token validity")}
                     help=${msg("Configure how long tokens are valid for.")}
+                    .errorMessages=${errors?.accessTokenValidity ?? []}
                 ></ak-text-input>
 
                 <ak-form-group>
                     <span slot="header">${msg("Advanced protocol settings")}</span>
                     <div slot="body" class="pf-c-form">
-                        <ak-form-element-horizontal label=${msg("Certificate")} name="certificate">
+                        <ak-form-element-horizontal
+                            label=${msg("Certificate")}
+                            name="certificate"
+                            .errorMessages=${errors?.certificate ?? []}
+                        >
                             <ak-crypto-certificate-search
                                 certificate=${ifDefined(this.instance?.certificate ?? undefined)}
                             ></ak-crypto-certificate-search>
                         </ak-form-element-horizontal>
 
-                        <ak-form-element-horizontal
-                            label=${msg("Additional scopes")}
+                        <ak-multi-select
+                            label=${msg("AdditionalScopes")}
                             name="propertyMappings"
-                        >
-                            <select class="pf-c-form-control" multiple>
-                                ${this.propertyMappings?.results
-                                    .filter((scope) => {
-                                        return !scope.managed?.startsWith(
-                                            "goauthentik.io/providers",
-                                        );
-                                    })
-                                    .map((scope) => {
-                                        const selected = (
-                                            this.instance?.propertyMappings || []
-                                        ).some((su) => {
-                                            return su == scope.pk;
-                                        });
-                                        return html`<option
-                                            value=${ifDefined(scope.pk)}
-                                            ?selected=${selected}
-                                        >
-                                            ${scope.name}
-                                        </option>`;
-                                    })}
-                            </select>
-                            <p class="pf-c-form__helper-text">
-                                ${msg("Additional scope mappings, which are passed to the proxy.")}
-                            </p>
-                            <p class="pf-c-form__helper-text">
-                                ${msg("Hold control/command to select multiple items.")}
-                            </p>
-                        </ak-form-element-horizontal>
+                            required
+                            .options=${scopePairs}
+                            .values=${scopeValues}
+                            .errorMessages=${errors?.propertyMappings ?? []}
+                            .richhelp=${html`
+                                <p class="pf-c-form__helper-text">
+                                    ${msg(
+                                        "Additional scope mappings, which are passed to the proxy.",
+                                    )}
+                                </p>
+                                <p class="pf-c-form__helper-text">
+                                    ${msg("Hold control/command to select multiple items.")}
+                                </p>
+                            `}
+                        ></ak-multi-select>
 
                         <ak-textarea-input
                             name="skipPathRegex"
@@ -188,6 +205,7 @@ export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
                                 ? msg("Unauthenticated URLs")
                                 : msg("Unauthenticated Paths")}
                             value=${ifDefined(this.instance?.skipPathRegex)}
+                            .errorMessages=${errors?.skipPathRegex ?? []}
                             .bighelp=${html` <p class="pf-c-form__helper-text">
                                     ${msg(
                                         "Regular expressions for which authentication is not required. Each new line is interpreted as a new expression.",
@@ -232,6 +250,7 @@ export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
                         <ak-form-element-horizontal
                             label=${msg("Trusted OIDC Sources")}
                             name="jwksSources"
+                            .errorMessages=${errors?.jwksSources ?? []}
                         >
                             <select class="pf-c-form-control" multiple>
                                 ${this.oauthSources?.results.map((source) => {

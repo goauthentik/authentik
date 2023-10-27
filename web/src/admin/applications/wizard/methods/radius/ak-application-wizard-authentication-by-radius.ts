@@ -20,6 +20,7 @@ import BaseProviderPanel from "../BaseProviderPanel";
 export class ApplicationWizardAuthenticationByRadius extends BaseProviderPanel {
     render() {
         const provider = this.wizard.provider as RadiusProvider | undefined;
+        const errors = this.wizard.errors.provider;
 
         return html`<ak-wizard-title>${msg("Configure Radius Provider")}</ak-wizard-title>
             <form class="pf-c-form pf-m-horizontal" @input=${this.handleChange}>
@@ -27,6 +28,7 @@ export class ApplicationWizardAuthenticationByRadius extends BaseProviderPanel {
                     name="name"
                     label=${msg("Name")}
                     value=${ifDefined(provider?.name)}
+                    .errorMessages=${errors?.name ?? []}
                     required
                 >
                 </ak-text-input>
@@ -35,6 +37,7 @@ export class ApplicationWizardAuthenticationByRadius extends BaseProviderPanel {
                     label=${msg("Authentication flow")}
                     ?required=${true}
                     name="authorizationFlow"
+                    .errorMessages=${errors?.authorizationFlow ?? []}
                 >
                     <ak-tenanted-flow-search
                         flowType=${FlowsInstancesListDesignationEnum.Authentication}
@@ -53,6 +56,7 @@ export class ApplicationWizardAuthenticationByRadius extends BaseProviderPanel {
                         <ak-text-input
                             name="sharedSecret"
                             label=${msg("Shared secret")}
+                            .errorMessages=${errors?.sharedSecret ?? []}
                             value=${first(
                                 provider?.sharedSecret,
                                 randomString(128, ascii_letters + digits),
@@ -63,6 +67,7 @@ export class ApplicationWizardAuthenticationByRadius extends BaseProviderPanel {
                             name="clientNetworks"
                             label=${msg("Client Networks")}
                             value=${first(provider?.clientNetworks, "0.0.0.0/0, ::/0")}
+                            .errorMessages=${errors?.clientNetworks ?? []}
                             required
                             help=${msg(`List of CIDRs (comma-seperated) that clients can connect from. A more specific
                             CIDR will match before a looser one. Clients connecting from a non-specified CIDR

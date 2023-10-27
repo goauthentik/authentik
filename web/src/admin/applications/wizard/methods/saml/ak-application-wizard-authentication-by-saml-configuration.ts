@@ -70,6 +70,7 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
 
     render() {
         const provider = this.wizard.provider as SAMLProvider | undefined;
+        const errors = this.wizard.errors.provider;
 
         const { pmValues, propertyPairs } = this.propertyMappingConfiguration(provider);
 
@@ -80,12 +81,14 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
                     value=${ifDefined(provider?.name)}
                     required
                     label=${msg("Name")}
+                    .errorMessages=${errors?.name ?? []}
                 ></ak-text-input>
 
                 <ak-form-element-horizontal
                     label=${msg("Authentication flow")}
                     ?required=${false}
                     name="authenticationFlow"
+                    .errorMessages=${errors?.authenticationFlow ?? []}
                 >
                     <ak-flow-search
                         flowType=${FlowsInstancesListDesignationEnum.Authentication}
@@ -103,6 +106,7 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
                     label=${msg("Authorization flow")}
                     ?required=${true}
                     name="authorizationFlow"
+                    .errorMessages=${errors?.authorizationFlow ?? []}
                 >
                     <ak-flow-search
                         flowType=${FlowsInstancesListDesignationEnum.Authorization}
@@ -122,6 +126,7 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
                             value=${ifDefined(provider?.acsUrl)}
                             required
                             label=${msg("ACS URL")}
+                            .errorMessages=${errors?.acsUrl ?? []}
                         ></ak-text-input>
 
                         <ak-text-input
@@ -130,6 +135,7 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
                             required
                             label=${msg("Issuer")}
                             help=${msg("Also known as EntityID.")}
+                            .errorMessages=${errors?.issuer ?? []}
                         ></ak-text-input>
 
                         <ak-radio-input
@@ -148,6 +154,7 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
                             name="audience"
                             value=${ifDefined(provider?.audience)}
                             label=${msg("Audience")}
+                            .errorMessages=${errors?.audience ?? []}
                         ></ak-text-input>
                     </div>
                 </ak-form-group>
@@ -221,6 +228,7 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
                             help=${msg(
                                 "Configure the maximum allowed time drift for an assertion.",
                             )}
+                            .errorMessages=${errors?.assertionValidNotBefore ?? []}
                         ></ak-text-input>
 
                         <ak-text-input
@@ -231,6 +239,7 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
                             help=${msg(
                                 "Assertion not valid on or after current time + this value.",
                             )}
+                            .errorMessages=${errors?.assertionValidNotOnOrAfter ?? []}
                         ></ak-text-input>
 
                         <ak-text-input
@@ -239,6 +248,7 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
                             required
                             label=${msg("Session valid not on or after")}
                             help=${msg("Session not valid on or after current time + this value.")}
+                            .errorMessages=${errors?.sessionValidNotOnOrAfter ?? []}
                         ></ak-text-input>
 
                         <ak-radio-input

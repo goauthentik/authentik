@@ -31,12 +31,14 @@ export class AkForwardDomainProxyApplicationWizardPage extends AkTypeProxyApplic
 
     renderProxyMode() {
         const provider = this.wizard.provider as ProxyProvider | undefined;
+        const errors = this.wizard.errors.provider;
 
         return html`
             <ak-text-input
                 name="externalHost"
                 label=${msg("External host")}
                 value=${ifDefined(provider?.externalHost)}
+                .errorMessages=${errors?.externalHost ?? []}
                 required
                 help=${msg(
                     "The external URL you'll authenticate at. The authentik core server should be reachable under this URL.",
@@ -47,6 +49,7 @@ export class AkForwardDomainProxyApplicationWizardPage extends AkTypeProxyApplic
                 name="cookieDomain"
                 label=${msg("Cookie domain")}
                 value="${ifDefined(provider?.cookieDomain)}"
+                .errorMessages=${errors?.cookieDomain ?? []}
                 required
                 help=${msg(
                     "Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'.",

@@ -35,6 +35,7 @@ import {
 export class ApplicationWizardApplicationDetails extends BaseProviderPanel {
     render() {
         const provider = this.wizard.provider as LDAPProvider | undefined;
+        const errors = this.wizard.errors.provider;
 
         return html` <ak-wizard-title>${msg("Configure LDAP Provider")}</ak-wizard-title>
             <form class="pf-c-form pf-m-horizontal" @input=${this.handleChange}>
@@ -42,6 +43,7 @@ export class ApplicationWizardApplicationDetails extends BaseProviderPanel {
                     name="name"
                     value=${ifDefined(provider?.name)}
                     label=${msg("Name")}
+                    .errorMessages=${errors?.name ?? []}
                     required
                     help=${msg("Method's display Name.")}
                 ></ak-text-input>
@@ -50,6 +52,7 @@ export class ApplicationWizardApplicationDetails extends BaseProviderPanel {
                     label=${msg("Bind flow")}
                     ?required=${true}
                     name="authorizationFlow"
+                    .errorMessages=${errors?.authorizationFlow ?? []}
                 >
                     <ak-tenanted-flow-search
                         flowType=${FlowsInstancesListDesignationEnum.Authentication}
@@ -62,7 +65,11 @@ export class ApplicationWizardApplicationDetails extends BaseProviderPanel {
                     </p>
                 </ak-form-element-horizontal>
 
-                <ak-form-element-horizontal label=${msg("Search group")} name="searchGroup">
+                <ak-form-element-horizontal
+                    label=${msg("Search group")}
+                    name="searchGroup"
+                    .errorMessages=${errors?.searchGroup ?? []}
+                >
                     <ak-core-group-search
                         name="searchGroup"
                         group=${ifDefined(provider?.searchGroup ?? nothing)}
@@ -106,13 +113,18 @@ export class ApplicationWizardApplicationDetails extends BaseProviderPanel {
                             label=${msg("Base DN")}
                             required
                             value="${first(provider?.baseDn, "DC=ldap,DC=goauthentik,DC=io")}"
+                            .errorMessages=${errors?.baseDn ?? []}
                             help=${msg(
                                 "LDAP DN under which bind requests and search requests can be made.",
                             )}
                         >
                         </ak-text-input>
 
-                        <ak-form-element-horizontal label=${msg("Certificate")} name="certificate">
+                        <ak-form-element-horizontal
+                            label=${msg("Certificate")}
+                            name="certificate"
+                            .errorMessages=${errors?.certificate ?? []}
+                        >
                             <ak-crypto-certificate-search
                                 certificate=${ifDefined(provider?.certificate ?? nothing)}
                                 name="certificate"
@@ -125,6 +137,7 @@ export class ApplicationWizardApplicationDetails extends BaseProviderPanel {
                             label=${msg("TLS Server name")}
                             name="tlsServerName"
                             value="${first(provider?.tlsServerName, "")}"
+                            .errorMessages=${errors?.tlsServerName ?? []}
                             help=${tlsServerNameHelp}
                         ></ak-text-input>
 
@@ -133,6 +146,7 @@ export class ApplicationWizardApplicationDetails extends BaseProviderPanel {
                             required
                             name="uidStartNumber"
                             value="${first(provider?.uidStartNumber, 2000)}"
+                            .errorMessages=${errors?.uidStartNumber ?? []}
                             help=${uidStartNumberHelp}
                         ></ak-number-input>
 
@@ -141,6 +155,7 @@ export class ApplicationWizardApplicationDetails extends BaseProviderPanel {
                             required
                             name="gidStartNumber"
                             value="${first(provider?.gidStartNumber, 4000)}"
+                            .errorMessages=${errors?.gidStartNumber ?? []}
                             help=${gidStartNumberHelp}
                         ></ak-number-input>
                     </div>

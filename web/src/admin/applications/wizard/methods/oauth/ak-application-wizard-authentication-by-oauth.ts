@@ -69,6 +69,7 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
 
     render() {
         const provider = this.wizard.provider as OAuth2Provider | undefined;
+        const errors = this.wizard.errors.provider;
 
         return html`<ak-wizard-title>${msg("Configure OAuth2/OpenId Provider")}</ak-wizard-title>
             <form class="pf-c-form pf-m-horizontal" @input=${this.handleChange}>
@@ -76,12 +77,14 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                     name="name"
                     label=${msg("Name")}
                     value=${ifDefined(provider?.name)}
+                    .errorMessages=${errors?.name ?? []}
                     required
                 ></ak-text-input>
 
                 <ak-form-element-horizontal
                     name="authenticationFlow"
                     label=${msg("Authentication flow")}
+                    .errorMessages=${errors?.authenticationFlow ?? []}
                 >
                     <ak-flow-search
                         flowType=${FlowsInstancesListDesignationEnum.Authentication}
@@ -97,6 +100,7 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                 <ak-form-element-horizontal
                     name="authorizationFlow"
                     label=${msg("Authorization flow")}
+                    .errorMessages=${errors?.authorizationFlow ?? []}
                     ?required=${true}
                 >
                     <ak-flow-search
@@ -128,6 +132,7 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                             name="clientId"
                             label=${msg("Client ID")}
                             value=${provider?.clientId ?? randomString(40, ascii_letters + digits)}
+                            .errorMessages=${errors?.clientId ?? []}
                             required
                         >
                         </ak-text-input>
@@ -137,6 +142,7 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                             label=${msg("Client Secret")}
                             value=${provider?.clientSecret ??
                             randomString(128, ascii_letters + digits)}
+                            .errorMessages=${errors?.clientSecret ?? []}
                             ?hidden=${!this.showClientSecret}
                         >
                         </ak-text-input>
@@ -145,11 +151,16 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                             name="redirectUris"
                             label=${msg("Redirect URIs/Origins (RegEx)")}
                             .value=${provider?.redirectUris}
+                            .errorMessages=${errors?.redirectUriHelp ?? []}
                             .bighelp=${redirectUriHelp}
                         >
                         </ak-textarea-input>
 
-                        <ak-form-element-horizontal label=${msg("Signing Key")} name="signingKey">
+                        <ak-form-element-horizontal
+                            label=${msg("Signing Key")}
+                            name="signingKey"
+                            .errorMessages=${errors?.signingKey ?? []}
+                        >
                             <ak-crypto-certificate-search
                                 certificate=${ifDefined(provider?.signingKey ?? nothing)}
                                 name="certificate"
@@ -171,6 +182,7 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                             label=${msg("Access code validity")}
                             required
                             value="${first(provider?.accessCodeValidity, "minutes=1")}"
+                            .errorMessages=${errors?.accessCodeValidity ?? []}
                             .bighelp=${html`<p class="pf-c-form__helper-text">
                                     ${msg("Configure how long access codes are valid for.")}
                                 </p>
@@ -183,6 +195,7 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                             label=${msg("Access Token validity")}
                             value="${first(provider?.accessTokenValidity, "minutes=5")}"
                             required
+                            .errorMessages=${errors?.accessTokenValidity ?? []}
                             .bighelp=${html` <p class="pf-c-form__helper-text">
                                     ${msg("Configure how long access tokens are valid for.")}
                                 </p>
@@ -194,6 +207,7 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                             name="refreshTokenValidity"
                             label=${msg("Refresh Token validity")}
                             value="${first(provider?.refreshTokenValidity, "days=30")}"
+                            .errorMessages=${errors?.refreshTokenValidity ?? []}
                             ?required=${true}
                             .bighelp=${html` <p class="pf-c-form__helper-text">
                                     ${msg("Configure how long refresh tokens are valid for.")}
@@ -202,7 +216,11 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                         >
                         </ak-text-input>
 
-                        <ak-form-element-horizontal label=${msg("Scopes")} name="propertyMappings">
+                        <ak-form-element-horizontal
+                            label=${msg("Scopes")}
+                            name="propertyMappings"
+                            .errorMessages=${errors?.propertyMappings ?? []}
+                        >
                             <select class="pf-c-form-control" multiple>
                                 ${this.propertyMappings?.results.map((scope) => {
                                     let selected = false;
@@ -275,6 +293,7 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                         <ak-form-element-horizontal
                             label=${msg("Trusted OIDC Sources")}
                             name="jwksSources"
+                            .errorMessages=${errors?.jwksSources ?? []}
                         >
                             <select class="pf-c-form-control" multiple>
                                 ${this.oauthSources?.results.map((source) => {

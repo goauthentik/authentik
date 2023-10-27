@@ -23,12 +23,14 @@ export class AkReverseProxyApplicationWizardPage extends AkTypeProxyApplicationW
 
     renderProxyMode() {
         const provider = this.wizard.provider as ProxyProvider | undefined;
+        const errors = this.wizard.errors.provider;
 
         return html` <ak-text-input
                 name="externalHost"
                 value=${ifDefined(provider?.externalHost)}
                 required
                 label=${msg("External host")}
+                .errorMessages=${errors?.externalHost ?? []}
                 help=${msg(
                     "The external URL you'll access the application at. Include any non-standard port.",
                 )}
@@ -36,6 +38,7 @@ export class AkReverseProxyApplicationWizardPage extends AkTypeProxyApplicationW
             <ak-text-input
                 name="internalHost"
                 value=${ifDefined(provider?.internalHost)}
+                .errorMessages=${errors?.internalHost ?? []}
                 required
                 label=${msg("Internal host")}
                 help=${msg("Upstream host that the requests are forwarded to.")}

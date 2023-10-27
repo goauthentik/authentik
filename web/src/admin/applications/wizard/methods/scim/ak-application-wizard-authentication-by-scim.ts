@@ -61,6 +61,7 @@ export class ApplicationWizardAuthenticationBySCIM extends BaseProviderPanel {
 
     render() {
         const provider = this.wizard.provider as SCIMProvider | undefined;
+        const errors = this.wizard.errors.provider;
 
         const { pmUserValues, pmGroupValues, propertyPairs } =
             this.propertyMappingConfiguration(provider);
@@ -71,6 +72,7 @@ export class ApplicationWizardAuthenticationBySCIM extends BaseProviderPanel {
                     name="name"
                     label=${msg("Name")}
                     value=${ifDefined(provider?.name)}
+                    .errorMessages=${errors?.name ?? []}
                     required
                 ></ak-text-input>
                 <ak-form-group expanded>
@@ -82,12 +84,14 @@ export class ApplicationWizardAuthenticationBySCIM extends BaseProviderPanel {
                             value="${first(provider?.url, "")}"
                             required
                             help=${msg("SCIM base url, usually ends in /v2.")}
+                            .errorMessages=${errors?.url ?? []}
                         >
                         </ak-text-input>
                         <ak-text-input
                             name="token"
                             label=${msg("Token")}
                             value="${first(provider?.token, "")}"
+                            .errorMessages=${errors?.token ?? []}
                             required
                             help=${msg(
                                 "Token to authenticate with. Currently only bearer authentication is supported.",
