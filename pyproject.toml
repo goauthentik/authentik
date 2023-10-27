@@ -113,7 +113,7 @@ filterwarnings = [
 
 [tool.poetry]
 name = "authentik"
-version = "2023.8.3"
+version = "2023.10.1"
 description = ""
 authors = ["authentik Team <hello@goauthentik.io>"]
 
@@ -152,7 +152,7 @@ paramiko = "*"
 psycopg = { extras = ["c"], version = "*" }
 pycryptodome = "*"
 pydantic = "<3.0.0"
-pydantic-scim = "^0.0.7"
+pydantic-scim = "^0.0.8"
 pyjwt = "*"
 python = "^3.11"
 pyyaml = "*"

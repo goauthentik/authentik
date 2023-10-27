@@ -87,14 +87,12 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                         flowType=${FlowsInstancesListDesignationEnum.Authentication}
                         .currentFlow=${provider?.authenticationFlow}
                         required
-                    ></ak-flow-search>
-                    <p class="pf-c-form__helper-text">
-                        ${msg(
-                            "Flow used when a user access this provider and is not authenticated.",
-                        )}
-                    </p>
-                </ak-form-element-horizontal>
-
+                        @change=${(ev: CustomEvent<{ value: ClientTypeEnum }>) => {
+                            this.showClientSecret = ev.detail.value !== ClientTypeEnum.Public;
+                        }}
+                        .options=${clientTypeOptions}
+                    >
+                    </ak-radio-input>
                 <ak-form-element-horizontal
                     name="authorizationFlow"
                     label=${msg("Authorization flow")}

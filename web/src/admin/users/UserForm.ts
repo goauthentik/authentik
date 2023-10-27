@@ -1,5 +1,4 @@
 import "@goauthentik/admin/users/GroupSelectModal";
-import { UserTypeEnum } from "@goauthentik/api/dist/models/UserTypeEnum";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
@@ -14,7 +13,7 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { CoreApi, User } from "@goauthentik/api";
+import { CoreApi, User, UserTypeEnum } from "@goauthentik/api";
 
 @customElement("ak-user-form")
 export class UserForm extends ModelForm<User, number> {

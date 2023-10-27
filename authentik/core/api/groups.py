@@ -139,6 +139,7 @@ class UserAccountSerializer(PassiveSerializer):
 class GroupViewSet(UsedByMixin, ModelViewSet):
     """Group Viewset"""
 
+    # pylint: disable=no-member
     queryset = Group.objects.all().select_related("parent").prefetch_related("users")
     serializer_class = GroupSerializer
     search_fields = ["name", "is_superuser"]

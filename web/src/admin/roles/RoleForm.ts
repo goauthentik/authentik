@@ -42,15 +42,13 @@ export class RoleForm extends ModelForm<Role, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
-        </form>`;
+        return html`<ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <input
+                type="text"
+                value="${ifDefined(this.instance?.name)}"
+                class="pf-c-form-control"
+                required
+            />
+        </ak-form-element-horizontal>`;
     }
 }
