@@ -28,9 +28,12 @@ class ExtraUserObjectPermissionSerializer(UserObjectPermissionSerializer):
 
     def get_model_verbose(self, instance: UserObjectPermission) -> str:
         """Get model label from permission's model"""
-        return apps.get_model(
-            instance.content_type.app_label, instance.content_type.model
-        )._meta.verbose_name
+        try:
+            return apps.get_model(
+                instance.content_type.app_label, instance.content_type.model
+            )._meta.verbose_name
+        except LookupError:
+            return f"{instance.content_type.app_label}.{instance.content_type.model}"
 
     def get_object_description(self, instance: UserObjectPermission) -> Optional[str]:
         """Get model description from attached model. This operation takes at least
@@ -38,7 +41,10 @@ class ExtraUserObjectPermissionSerializer(UserObjectPermissionSerializer):
         view_ permission on the object"""
         app_label = instance.content_type.app_label
         model = instance.content_type.model
-        model_class = apps.get_model(app_label, model)
+        try:
+            model_class = apps.get_model(app_label, model)
+        except LookupError:
+            return None
         objects = get_objects_for_user(instance.user, f"{app_label}.view_{model}", model_class)
         obj = objects.first()
         if not obj:
