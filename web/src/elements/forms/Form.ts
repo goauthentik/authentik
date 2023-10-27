@@ -32,6 +32,93 @@ export interface KeyUnknown {
 }
 
 /**
+ * Recursively assign `value` into `json` while interpreting the dot-path of `element.name`
+ */
+function assignValue(element: HTMLInputElement, value: unknown, json: KeyUnknown): void {
+    let parent = json;
+    if (!element.name?.includes(".")) {
+        parent[element.name] = value;
+        return;
+    }
+    const nameElements = element.name.split(".");
+    for (let index = 0; index < nameElements.length - 1; index++) {
+        const nameEl = nameElements[index];
+        // Ensure all nested structures exist
+        if (!(nameEl in parent)) parent[nameEl] = {};
+        parent = parent[nameEl] as { [key: string]: unknown };
+    }
+    parent[nameElements[nameElements.length - 1]] = value;
+}
+
+/**
+ * Convert the elements of the form to JSON.[4]
+ *
+ */
+export function serializeForm<T extends KeyUnknown>(
+    elements: NodeListOf<HorizontalFormElement>,
+): T | undefined {
+    const json: { [key: string]: unknown } = {};
+    elements.forEach((element) => {
+        element.requestUpdate();
+        const inputElement = element.querySelector<HTMLInputElement>("[name]");
+        if (element.hidden || !inputElement) {
+            return;
+        }
+        // Skip elements that are writeOnly where the user hasn't clicked on the value
+        if (element.writeOnly && !element.writeOnlyActivated) {
+            return;
+        }
+        if (
+            inputElement.tagName.toLowerCase() === "select" &&
+            "multiple" in inputElement.attributes
+        ) {
+            const selectElement = inputElement as unknown as HTMLSelectElement;
+            assignValue(
+                inputElement,
+                Array.from(selectElement.selectedOptions).map((v) => v.value),
+                json,
+            );
+        } else if (inputElement.tagName.toLowerCase() === "input" && inputElement.type === "date") {
+            assignValue(inputElement, inputElement.valueAsDate, json);
+        } else if (
+            inputElement.tagName.toLowerCase() === "input" &&
+            inputElement.type === "datetime-local"
+        ) {
+            assignValue(inputElement, new Date(inputElement.valueAsNumber), json);
+        } else if (
+            inputElement.tagName.toLowerCase() === "input" &&
+            "type" in inputElement.dataset &&
+            inputElement.dataset["type"] === "datetime-local"
+        ) {
+            // Workaround for Firefox <93, since 92 and older don't support
+            // datetime-local fields
+            assignValue(inputElement, new Date(inputElement.value), json);
+        } else if (
+            inputElement.tagName.toLowerCase() === "input" &&
+            inputElement.type === "checkbox"
+        ) {
+            assignValue(inputElement, inputElement.checked, json);
+        } else if ("selectedFlow" in inputElement) {
+            assignValue(inputElement, inputElement.value, json);
+        } else if (inputElement.tagName.toLowerCase() === "ak-search-select") {
+            const select = inputElement as unknown as SearchSelect<unknown>;
+            try {
+                const value = select.toForm();
+                assignValue(inputElement, value, json);
+            } catch (exc) {
+                if (exc instanceof PreventFormSubmit) {
+                    throw new PreventFormSubmit(exc.message, element);
+                }
+                throw exc;
+            }
+        } else {
+            assignValue(inputElement, inputElement.value, json);
+        }
+    });
+    return json as unknown as T;
+}
+
+/**
  * Form
  *
  * The base form element for interacting with user inputs.
@@ -177,95 +264,13 @@ export abstract class Form<T> extends AKElement {
      *
      */
     serializeForm(): T | undefined {
-        const elements =
-            this.shadowRoot?.querySelectorAll<HorizontalFormElement>(
-                "ak-form-element-horizontal",
-            ) || [];
-        const json: { [key: string]: unknown } = {};
-        elements.forEach((element) => {
-            element.requestUpdate();
-            const inputElement = element.querySelector<HTMLInputElement>("[name]");
-            if (element.hidden || !inputElement) {
-                return;
-            }
-            // Skip elements that are writeOnly where the user hasn't clicked on the value
-            if (element.writeOnly && !element.writeOnlyActivated) {
-                return;
-            }
-            if (
-                inputElement.tagName.toLowerCase() === "select" &&
-                "multiple" in inputElement.attributes
-            ) {
-                const selectElement = inputElement as unknown as HTMLSelectElement;
-                this.assignValue(
-                    inputElement,
-                    Array.from(selectElement.selectedOptions).map((v) => v.value),
-                    json,
-                );
-            } else if (
-                inputElement.tagName.toLowerCase() === "input" &&
-                inputElement.type === "date"
-            ) {
-                this.assignValue(inputElement, inputElement.valueAsDate, json);
-            } else if (
-                inputElement.tagName.toLowerCase() === "input" &&
-                inputElement.type === "datetime-local"
-            ) {
-                this.assignValue(inputElement, new Date(inputElement.valueAsNumber), json);
-            } else if (
-                inputElement.tagName.toLowerCase() === "input" &&
-                "type" in inputElement.dataset &&
-                inputElement.dataset["type"] === "datetime-local"
-            ) {
-                // Workaround for Firefox <93, since 92 and older don't support
-                // datetime-local fields
-                this.assignValue(inputElement, new Date(inputElement.value), json);
-            } else if (
-                inputElement.tagName.toLowerCase() === "input" &&
-                inputElement.type === "checkbox"
-            ) {
-                this.assignValue(inputElement, inputElement.checked, json);
-            } else if ("selectedFlow" in inputElement) {
-                this.assignValue(inputElement, inputElement.value, json);
-            } else if (inputElement.tagName.toLowerCase() === "ak-search-select") {
-                const select = inputElement as unknown as SearchSelect<unknown>;
-                try {
-                    const value = select.toForm();
-                    this.assignValue(inputElement, value, json);
-                } catch (exc) {
-                    if (exc instanceof PreventFormSubmit) {
-                        throw new PreventFormSubmit(exc.message, element);
-                    }
-                    throw exc;
-                }
-            } else {
-                this.assignValue(inputElement, inputElement.value, json);
-            }
-        });
-        return json as unknown as T;
-    }
-
-    /**
-     * Recursively assign `value` into `json` while interpreting the dot-path of `element.name`
-     */
-    private assignValue(
-        element: HTMLInputElement,
-        value: unknown,
-        json: { [key: string]: unknown },
-    ): void {
-        let parent = json;
-        if (!element.name?.includes(".")) {
-            parent[element.name] = value;
-            return;
+        const elements = this.shadowRoot?.querySelectorAll<HorizontalFormElement>(
+            "ak-form-element-horizontal",
+        );
+        if (!elements) {
+            return {} as T;
         }
-        const nameElements = element.name.split(".");
-        for (let index = 0; index < nameElements.length - 1; index++) {
-            const nameEl = nameElements[index];
-            // Ensure all nested structures exist
-            if (!(nameEl in parent)) parent[nameEl] = {};
-            parent = parent[nameEl] as { [key: string]: unknown };
-        }
-        parent[nameElements[nameElements.length - 1]] = value;
+        return serializeForm(elements) as T;
     }
 
     /**

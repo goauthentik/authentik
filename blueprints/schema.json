@@ -8368,6 +8368,16 @@
                     "title": "Create users group",
                     "description": "Optionally add newly created users to this group."
                 },
+                "user_type": {
+                    "type": "string",
+                    "enum": [
+                        "internal",
+                        "external",
+                        "service_account",
+                        "internal_service_account"
+                    ],
+                    "title": "User type"
+                },
                 "user_path_template": {
                     "type": "string",
                     "title": "User path template"
