@@ -26,7 +26,7 @@ _authentik is an open source Identity Provider that unifies your identity needs 
 There are two ways to judge an application:
 
 1. Does it do what it’s supposed to do?
-2. How easy is it to run?
+2. Is it easy to run?
 
 This post is about the second.
 
@@ -70,7 +70,7 @@ Of course, your application architecture and deployment model need to support th
 
 Your container image should be complete in itself: it should contain all code and dependencies—everything it needs to run. This is the point of a container—it’s self contained.
 
-I’ve seen people set up their container to download an application from the vendor and install it into the container on startup. While this does work, what happens if you don’t have internet access? What if the vendor shuts down?
+I’ve seen people set up their container to download an application from the vendor and install it into the container on startup. While this does work, what happens if you don’t have internet access? What if the vendor shut down and that URL now points to a malicious bit of code?
 
 If you have 100 instances downloading files at startup (or end up scaling to that point), this can lead to rate limiting, failed downloads, or your internet connection getting saturated—it’s just inefficient and causes problems that can be avoided.
 
@@ -90,9 +90,9 @@ The most reliable way to do this is with a process called GitOps:
 
 -   In the context of Kubernetes, all the YAML files you deploy with Kubernetes are stored in the central Git repository.
 -   You have software in your Kubernetes cluster that automatically pulls the files from your Git repo and installs them into the cluster.
--   Then you can use a tool like [Dependabot](https://github.com/dependabothttps://github.com/dependabot) or [Renovate](https://github.com/renovatebot/renovate) to automatically create PRs with a new version (if there is one) so you can test and approve it, and it’s all captured in your Git history.
+-   Then you can use a tool like [Dependabot](https://github.com/dependabot) or [Renovate](https://github.com/renovatebot/renovate) to automatically create PRs with a new version (if there is one) so you can test and approve it, and it’s all captured in your Git history.
 
-GitOps might be a bit excessive if you’re just running one small hobby project on a single server, but in any case you should still pin a version.
+GitOps might be a bit excessive if you’re only running a small hobby project on a single server, but in any case you should still pin a version.
 
 For a long time, authentik purposefully didn’t have a `:latest` tag, because people would use it inadvertently (sometimes not realizing they had an auto-updater running). Suddenly something wouldn’t work and there wasn’t really a way to downgrade.
 
@@ -111,9 +111,9 @@ With this approach you are putting some trust in the developer not to publish an
 
 This is another issue on the infrastructure side that mainly happens when you put legacy applications into containers. It used to be standard that applications put their log output into a file, and you’d probably have a system daemon set up to rotate those files and archive the old ones. This was great when everything ran on the same server without containers.
 
-A lot of software still does that, but sending log outputs to files makes it very hard to integrate with anything because, with Docker (and containers in general), there is the expectation that you log to the standard output (`stdout`):
+A lot of software still logs to files by default, but this makes collecting and aggregating your services logs much harder. Docker (and containers in general) expect that you log to standard output so your orchestration platform can route the logs to your monitoring tool of choice.
 
-Docker puts the logs into a JSON file that it can read itself and see the timestamps and which container the log refers to. You can set up log forwarding with both Docker and Kubernetes. If you have a central logging server, the plugin gets the standard output of a container and sends it to that server.
+Docker puts the logs into a JSON file that it can read itself and see the timestamps and which container the log refers to. You can set up log forwarding with both [Docker]() and Kubernetes. If you have a central logging server, the plugin gets the standard output of a container and sends it to that server.
 
 Not logging to `stdout` just makes it harder for everyone, including making it harder to debug: Instead of just running `docker logs` + the name of the container, you need to `exec` into the container, go to find the files, then look at the files to start debugging.
 
