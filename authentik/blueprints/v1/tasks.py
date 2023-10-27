@@ -82,7 +82,7 @@ class BlueprintEventHandler(FileSystemEventHandler):
             path = Path(event.src_path)
             root = Path(CONFIG.get("blueprints_dir")).absolute()
             rel_path = str(path.relative_to(root))
-            for instance in BlueprintInstance.objects.filter(path=rel_path):
+            for instance in BlueprintInstance.objects.filter(path=rel_path, enabled=True):
                 LOGGER.debug("modified blueprint file, starting apply", instance=instance)
                 apply_blueprint.delay(instance.pk.hex)
 
