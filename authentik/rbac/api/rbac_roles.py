@@ -1,5 +1,4 @@
 """common RBAC serializers"""
-from typing import Optional
 
 from django.apps import apps
 from django_filters.filters import UUIDFilter

@@ -1,6 +1,5 @@
 """authentik crypto app config"""
 from datetime import datetime
-from typing import Optional
 
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.generators import generate_id
