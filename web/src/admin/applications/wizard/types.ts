@@ -1,6 +1,7 @@
 import { type WizardStep } from "@goauthentik/components/ak-wizard-main/types";
 
 import {
+    type ValidationError,
     type ApplicationRequest,
     type LDAPProviderRequest,
     type OAuth2ProviderRequest,
@@ -24,12 +25,13 @@ export interface ApplicationWizardState {
     providerModel: string;
     app: Partial<ApplicationRequest>;
     provider: OneOfProvider;
+    errors: ValidationError
 }
 
 type StatusType = "invalid" | "valid" | "submitted" | "failed";
 
 export type ApplicationWizardStateUpdate = {
-    update?: Partial<ApplicationWizardState>;
+    update?: ApplicationWizardState;
     status?: StatusType;
 };
 

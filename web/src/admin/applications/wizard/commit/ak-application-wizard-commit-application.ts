@@ -18,12 +18,13 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 
 import {
-    ApplicationRequest,
+    type ApplicationRequest,
     CoreApi,
-    TransactionApplicationRequest,
-    TransactionApplicationResponse,
+    type ModelRequest,
+    type TransactionApplicationRequest,
+    type TransactionApplicationResponse,
+    ValidationErrorFromJSON,
 } from "@goauthentik/api";
-import type { ModelRequest } from "@goauthentik/api";
 
 import BasePanel from "../BasePanel";
 import providerModelsList from "../auth-method-choice/ak-application-wizard-authentication-method-choice.choices";
@@ -98,15 +99,15 @@ export class ApplicationWizardCommitApplication extends BasePanel {
             this.response = undefined;
             this.commitState = runningState;
             const providerModel = providerModelsList.find(
-                ({ formName }) => formName === this.wizard.providerModel,
+                ({ formName }) => formName === this.wizard.providerModel
             );
             if (!providerModel) {
                 throw new Error(
                     `Could not determine provider model from user request: ${JSON.stringify(
                         this.wizard,
                         null,
-                        2,
-                    )}`,
+                        2
+                    )}`
                 );
             }
 
@@ -121,27 +122,9 @@ export class ApplicationWizardCommitApplication extends BasePanel {
         }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    decodeErrors(body: Record<string, any>) {
-        const spaceify = (src: Record<string, string>) =>
-            Object.values(src).map((msg) => `\u00a0\u00a0\u00a0\u00a0${msg}`);
-
-        let errs: string[] = [];
-        if (body["app"] !== undefined) {
-            errs = [...errs, msg("In the Application:"), ...spaceify(body["app"])];
-        }
-        if (body["provider"] !== undefined) {
-            errs = [...errs, msg("In the Provider:"), ...spaceify(body["provider"])];
-        }
-        console.log(body, errs);
-        return errs;
-    }
-
     async send(
-        data: TransactionApplicationRequest,
+        data: TransactionApplicationRequest
     ): Promise<TransactionApplicationResponse | void> {
-        this.errors = [];
-
         new CoreApi(DEFAULT_CONFIG)
             .coreTransactionalApplicationsUpdate({
                 transactionApplicationRequest: data,
@@ -153,20 +136,28 @@ export class ApplicationWizardCommitApplication extends BasePanel {
                 this.commitState = successState;
             })
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            .catch((resolution: any) => {
-                resolution.response.json().then(
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    (body: Record<string, any>) => {
-                        this.errors = this.decodeErrors(body);
+            .catch(async (resolution: any) => {
+                const errors = ValidationErrorFromJSON(await resolution.response.json());
+                this.errors = [
+                    errors.detail ?? "",
+                    errors.app ? msg("There were errors in the application.") : "",
+                    errors.provider ? msg("There were errors in the provider.") : "",
+                    ...(errors.nonFieldErrors ?? []),
+                ].filter((e) => e !== "");
+                this.dispatchWizardUpdate({
+                    update: {
+                        ...this.wizard,
+                        errors,
                     },
-                );
+                    status: "failed",
+                });
                 this.commitState = errorState;
             });
     }
 
     render(): TemplateResult {
         const icon = classMap(
-            this.commitState.icon.reduce((acc, icon) => ({ ...acc, [icon]: true }), {}),
+            this.commitState.icon.reduce((acc, icon) => ({ ...acc, [icon]: true }), {})
         );
 
         return html`
@@ -187,7 +178,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
                             ${this.errors.length > 0
                                 ? html`<ul>
                                       ${this.errors.map(
-                                          (msg) => html`<li><code>${msg}</code></li>`,
+                                          (msg) => html`<li><code>${msg}</code></li>`
                                       )}
                                   </ul>`
                                 : nothing}

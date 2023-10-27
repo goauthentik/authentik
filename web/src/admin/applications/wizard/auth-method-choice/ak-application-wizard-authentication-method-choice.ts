@@ -28,6 +28,7 @@ export class ApplicationWizardAuthenticationMethodChoice extends BasePanel {
             update: {
                 ...this.wizard,
                 providerModel: target.value,
+                errors: {},
             },
             status: this.valid ? "valid" : "invalid",
         });

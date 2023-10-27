@@ -1,6 +1,7 @@
 import { WizardPanel } from "@goauthentik/components/ak-wizard-main/types";
+import { snakeToCamel } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
-import { serializeForm } from "@goauthentik/elements/forms/Form";
+import { KeyUnknown, serializeForm } from "@goauthentik/elements/forms/Form";
 import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
@@ -36,10 +37,10 @@ export class ApplicationWizardPageBase
      * Provide access to the values on the current form. Child implementations use this to craft the
      * update that will be sent using `dispatchWizardUpdate` below.
      */
-    get formValues() {
+    get formValues(): KeyUnknown | undefined {
         const elements = [
             ...Array.from(
-                this.form.querySelectorAll<HorizontalFormElement>("ak-form-element-horizontal"),
+                this.form.querySelectorAll<HorizontalFormElement>("ak-form-element-horizontal")
             ),
             ...Array.from(this.form.querySelectorAll<HTMLElement>("[data-ak-control=true]")),
         ];

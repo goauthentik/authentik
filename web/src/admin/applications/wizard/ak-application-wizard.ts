@@ -14,10 +14,11 @@ import {
     OneOfProvider,
 } from "./types";
 
-const freshWizardState = () => ({
+const freshWizardState = (): ApplicationWizardState => ({
     providerModel: "",
     app: {},
     provider: {},
+    errors: {}
 });
 
 @customElement("ak-application-wizard")
@@ -85,7 +86,6 @@ export class ApplicationWizard extends CustomListenerElement(
 
         this.wizardState = update as ApplicationWizardState;
         this.wizardStateProvider.setValue(this.wizardState);
-        console.log(this.wizardState);
         this.requestUpdate();
     }
 
