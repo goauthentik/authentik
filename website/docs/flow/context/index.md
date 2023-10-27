@@ -22,7 +22,7 @@ Keys prefixed with `goauthentik.io` are used internally by authentik and are sub
 
 ### Common keys
 
-#### `pending_user` ([User object](../../user-group/user/user_ref.md#object-properties))
+#### `pending_user` ([User object](../../user-group-role/user/user_ref.md#object-properties))
 
 `pending_user` is used by multiple stages. In the context of most flow executions, it represents the data of the user that is executing the flow. This value is not set automatically, it is set via the [Identification stage](../stages/identification/).
 
@@ -110,15 +110,23 @@ Optionally overwrite the deny message shown, has a higher priority than the mess
 
 #### User write stage
 
-##### `groups` (List of [Group objects](../../user-group/group.md))
+##### `groups` (List of [Group objects](../../user-group-role/groups/index.mdx))
 
-See [Group](../../user-group/group.md). If set in the flow context, the `pending_user` will be added to all the groups in this list.
+See [Group](../../user-group-role/groups/index.mdx). If set in the flow context, the `pending_user` will be added to all the groups in this list.
 
 If set, this must be a list of group objects and not group names.
 
 ##### `user_path` (string)
 
 Path the `pending_user` will be written to. If not set in the flow, falls back to the value set in the user_write stage, and otherwise to the `users` path.
+
+##### `user_type` (string)
+
+:::info
+Requires authentik 2023.10
+:::
+
+Type the `pending_user` will be created as. Must be one of `internal`, `external` or `service_account`.
 
 #### Password stage
 

@@ -13,6 +13,7 @@ from authentik.events.models import Event, EventAction
 from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
 from authentik.root.celery import CELERY_APP
 from authentik.stages.email.models import EmailStage
+from authentik.stages.email.utils import logo_data
 
 LOGGER = get_logger()
 
@@ -80,6 +81,10 @@ def send_mail(self: MonitoredTask, message: dict[Any, Any], email_stage_pk: Opti
             message_object.from_email = stage.from_address
         # Because we use the Message-ID as UID for the task, manually assign it
         message_object.extra_headers["Message-ID"] = message_id
+
+        # Add the logo (we can't add it in the previous message since MIMEImage
+        # can't be converted to json)
+        message_object.attach(logo_data())
 
         LOGGER.debug("Sending mail", to=message_object.to)
         backend.send_messages([message_object])

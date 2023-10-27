@@ -1,6 +1,7 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import Fuse from "fuse.js";
+import { FuseResult } from "fuse.js";
 
 import { msg } from "@lit/localize";
 import { css, html } from "lit";
@@ -66,7 +67,7 @@ export class LibraryPageApplicationList extends AKElement {
         });
     }
 
-    onSelected(apps: Fuse.FuseResult<Application>[]) {
+    onSelected(apps: FuseResult<Application>[]) {
         this.dispatchEvent(
             customEvent(SEARCH_UPDATED, {
                 apps: apps.map((app) => app.item),
