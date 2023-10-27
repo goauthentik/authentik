@@ -13,8 +13,6 @@ from authentik.core.types import UILoginButton, UserSettingSerializer
 if TYPE_CHECKING:
     from authentik.sources.oauth.types.registry import SourceType
 
-SerializerType = type[Serializer]
-
 
 class OAuthSource(Source):
     """Login using a Generic OAuth provider."""

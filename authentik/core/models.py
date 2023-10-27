@@ -50,8 +50,6 @@ USER_PATH_SERVICE_ACCOUNT = USER_PATH_SYSTEM_PREFIX + "/service-accounts"
 
 options.DEFAULT_NAMES = options.DEFAULT_NAMES + ("authentik_used_by_shadows",)
 
-SerializerType = type[Serializer]
-
 
 def default_token_duration():
     """Default duration a Token is valid"""
@@ -337,7 +335,7 @@ class Provider(SerializerModel):
         raise NotImplementedError
 
     @property
-    def serializer(self) -> SerializerType:
+    def serializer(self) -> type[Serializer]:
         """Get serializer for this model"""
         raise NotImplementedError
 
