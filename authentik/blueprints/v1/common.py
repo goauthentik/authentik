@@ -584,12 +584,17 @@ class EntryInvalidError(SentryIgnoredException):
     entry_model: Optional[str]
     entry_id: Optional[str]
     validation_error: Optional[ValidationError]
+    serializer: Optional[Serializer] = None
 
-    def __init__(self, *args: object, validation_error: Optional[ValidationError] = None) -> None:
+    def __init__(
+        self, *args: object, validation_error: Optional[ValidationError] = None, **kwargs
+    ) -> None:
         super().__init__(*args)
         self.entry_model = None
         self.entry_id = None
         self.validation_error = validation_error
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
     @staticmethod
     def from_entry(

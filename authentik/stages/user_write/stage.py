@@ -9,7 +9,7 @@ from django.utils.translation import gettext as _
 from rest_framework.exceptions import ValidationError
 
 from authentik.core.middleware import SESSION_KEY_IMPERSONATE_USER
-from authentik.core.models import USER_ATTRIBUTE_SOURCES, User, UserSourceConnection
+from authentik.core.models import USER_ATTRIBUTE_SOURCES, User, UserSourceConnection, UserTypes
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import StageView
@@ -22,6 +22,7 @@ from authentik.stages.user_write.models import UserCreationMode
 from authentik.stages.user_write.signals import user_write
 
 PLAN_CONTEXT_GROUPS = "groups"
+PLAN_CONTEXT_USER_TYPE = "user_type"
 PLAN_CONTEXT_USER_PATH = "user_path"
 
 
@@ -55,6 +56,19 @@ class UserWriteStageView(StageView):
         )
         if path == "":
             path = User.default_path()
+
+        try:
+            user_type = UserTypes(
+                self.executor.plan.context.get(
+                    PLAN_CONTEXT_USER_TYPE,
+                    self.executor.current_stage.user_type,
+                )
+            )
+        except ValueError:
+            user_type = self.executor.current_stage.user_type
+        if user_type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
+            user_type = UserTypes.SERVICE_ACCOUNT
+
         if not self.request.user.is_anonymous:
             self.executor.plan.context.setdefault(PLAN_CONTEXT_PENDING_USER, self.request.user)
         if (
@@ -66,6 +80,7 @@ class UserWriteStageView(StageView):
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = User(
                 is_active=not self.executor.current_stage.create_users_as_inactive,
                 path=path,
+                type=user_type,
             )
             self.executor.plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = BACKEND_INBUILT
             self.logger.debug(

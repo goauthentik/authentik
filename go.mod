@@ -13,7 +13,7 @@ require (
 	github.com/go-openapi/strfmt v0.21.7
 	github.com/go-redis/redismock/v9 v9.0.3
 	github.com/golang-jwt/jwt v3.2.2+incompatible
-	github.com/google/uuid v1.3.1
+	github.com/google/uuid v1.4.0
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/securecookie v1.1.1
@@ -28,7 +28,7 @@ require (
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.4
-	goauthentik.io/api/v3 v3.2023083.10
+	goauthentik.io/api/v3 v3.2023101.1
 	golang.org/x/exp v0.0.0-20230210204819-062eb4c674ab
 	golang.org/x/oauth2 v0.13.0
 	golang.org/x/sync v0.4.0

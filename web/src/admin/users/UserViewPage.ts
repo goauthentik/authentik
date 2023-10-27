@@ -13,6 +13,7 @@ import { me } from "@goauthentik/app/common/users";
 import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { userTypeToLabel } from "@goauthentik/common/labels";
 import "@goauthentik/components/events/ObjectChangelog";
 import "@goauthentik/components/events/UserEvents";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";
@@ -32,6 +33,7 @@ import { msg, str } from "@lit/localize";
 import { css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -85,6 +87,7 @@ export class UserViewPage extends AKElement {
             PFCard,
             PFDescriptionList,
             PFSizing,
+            PFBanner,
             css`
                 .ak-button-collection {
                     display: flex;
@@ -185,6 +188,16 @@ export class UserViewPage extends AKElement {
                                 <ak-label
                                     color=${user.isActive ? PFColor.Green : PFColor.Orange}
                                 ></ak-label>
+                            </div>
+                        </dd>
+                    </div>
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${msg("Type")}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">
+                                ${userTypeToLabel(user.type)}
                             </div>
                         </dd>
                     </div>
@@ -454,28 +467,38 @@ export class UserViewPage extends AKElement {
                 model=${RbacPermissionsAssignedByUsersListModelEnum.CoreUser}
                 objectPk=${this.user.pk}
             ></ak-rbac-object-permission-page>
-            <section
+            <div
                 slot="page-mfa-assigned-permissions"
                 data-tab-title="${msg("Assigned permissions")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
+                class=""
             >
-                <div class="pf-l-grid pf-m-gutter">
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        <div class="pf-c-card__title">${msg("Assigned global permissions")}</div>
-                        <div class="pf-c-card__body">
-                            <ak-user-assigned-global-permissions-table userId=${this.user.pk}>
-                            </ak-user-assigned-global-permissions-table>
-                        </div>
-                    </div>
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        <div class="pf-c-card__title">${msg("Assigned object permissions")}</div>
-                        <div class="pf-c-card__body">
-                            <ak-user-assigned-object-permissions-table userId=${this.user.pk}>
-                            </ak-user-assigned-object-permissions-table>
-                        </div>
-                    </div>
+                <div class="pf-c-banner pf-m-info">
+                    ${msg("RBAC is in preview.")}
+                    <a href="mailto:hello@goauthentik.io">${msg("Send us feedback!")}</a>
                 </div>
-            </section>
+                <section class="pf-c-page__main-section pf-m-no-padding-mobile">
+                    <div class="pf-l-grid pf-m-gutter">
+                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                            <div class="pf-c-card__title">
+                                ${msg("Assigned global permissions")}
+                            </div>
+                            <div class="pf-c-card__body">
+                                <ak-user-assigned-global-permissions-table userId=${this.user.pk}>
+                                </ak-user-assigned-global-permissions-table>
+                            </div>
+                        </div>
+                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                            <div class="pf-c-card__title">
+                                ${msg("Assigned object permissions")}
+                            </div>
+                            <div class="pf-c-card__body">
+                                <ak-user-assigned-object-permissions-table userId=${this.user.pk}>
+                                </ak-user-assigned-object-permissions-table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
         </ak-tabs>`;
     }
 }

@@ -255,7 +255,10 @@ class Importer:
         try:
             full_data = self.__update_pks_for_attrs(entry.get_attrs(self._import))
         except ValueError as exc:
-            raise EntryInvalidError.from_entry(exc, entry) from exc
+            raise EntryInvalidError.from_entry(
+                exc,
+                entry,
+            ) from exc
         always_merger.merge(full_data, updated_identifiers)
         serializer_kwargs["data"] = full_data
 
@@ -272,6 +275,7 @@ class Importer:
                 f"Serializer errors {serializer.errors}",
                 validation_error=exc,
                 entry=entry,
+                serializer=serializer,
             ) from exc
         return serializer
 
@@ -300,16 +304,18 @@ class Importer:
                 )
                 return False
             # Validate each single entry
+            serializer = None
             try:
                 serializer = self._validate_single(entry)
             except EntryInvalidError as exc:
                 # For deleting objects we don't need the serializer to be valid
                 if entry.get_state(self._import) == BlueprintEntryDesiredState.ABSENT:
-                    continue
-                self.logger.warning(f"entry invalid: {exc}", entry=entry, error=exc)
-                if raise_errors:
-                    raise exc
-                return False
+                    serializer = exc.serializer
+                else:
+                    self.logger.warning(f"entry invalid: {exc}", entry=entry, error=exc)
+                    if raise_errors:
+                        raise exc
+                    return False
             if not serializer:
                 continue
 

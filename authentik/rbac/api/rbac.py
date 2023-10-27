@@ -32,13 +32,19 @@ class PermissionSerializer(ModelSerializer):
 
     def get_app_label_verbose(self, instance: Permission) -> str:
         """Human-readable app label"""
-        return apps.get_app_config(instance.content_type.app_label).verbose_name
+        try:
+            return apps.get_app_config(instance.content_type.app_label).verbose_name
+        except LookupError:
+            return f"{instance.content_type.app_label}.{instance.content_type.model}"
 
     def get_model_verbose(self, instance: Permission) -> str:
         """Human-readable model name"""
-        return apps.get_model(
-            instance.content_type.app_label, instance.content_type.model
-        )._meta.verbose_name
+        try:
+            return apps.get_model(
+                instance.content_type.app_label, instance.content_type.model
+            )._meta.verbose_name
+        except LookupError:
+            return f"{instance.content_type.app_label}.{instance.content_type.model}"
 
     class Meta:
         model = Permission
