@@ -13,7 +13,7 @@ const docsSidebar = {
         {
             type: "category",
             label: "Installation",
-            collapsed: false,
+            collapsed: true,
             link: {
                 type: "doc",
                 id: "installation/index",
@@ -259,22 +259,51 @@ const docsSidebar = {
         },
         {
             type: "category",
-            label: "Users & Groups",
+            label: "Users, Groups, & Roles",
             items: [
                 {
                     type: "category",
                     label: "Users",
                     link: {
                         type: "doc",
-                        id: "user-group/user/index",
+                        id: "user-group-role/user/index",
                     },
                     items: [
-                        "user-group/user/user_basic_operations",
-                        "user-group/user/user_ref",
-                        "user-group/user/invitations",
+                        "user-group-role/user/user_basic_operations",
+                        "user-group-role/user/user_ref",
+                        "user-group-role/user/invitations",
                     ],
                 },
-                "user-group/group",
+                {
+                    type: "category",
+                    label: "Groups",
+                    link: {
+                        type: "doc",
+                        id: "user-group-role/groups/index",
+                    },
+                    items: ["user-group-role/groups/manage_groups"],
+                },
+                {
+                    type: "category",
+                    label: "Roles",
+                    link: {
+                        type: "doc",
+                        id: "user-group-role/roles/index",
+                    },
+                    items: ["user-group-role/roles/manage_roles"],
+                },
+                {
+                    type: "category",
+                    label: "Access control",
+                    link: {
+                        type: "doc",
+                        id: "user-group-role/access-control/index",
+                    },
+                    items: [
+                        "user-group-role/access-control/permissions",
+                        "user-group-role/access-control/manage_permissions",
+                    ],
+                },
             ],
         },
         {
@@ -287,13 +316,14 @@ const docsSidebar = {
                 description: "Release notes for recent authentik versions",
             },
             items: [
+                "releases/2023/v2023.10",
                 "releases/2023/v2023.8",
                 "releases/2023/v2023.6",
-                "releases/2023/v2023.5",
                 {
                     type: "category",
                     label: "Previous versions",
                     items: [
+                        "releases/2023/v2023.5",
                         "releases/2023/v2023.4",
                         "releases/2023/v2023.3",
                         "releases/2023/v2023.2",

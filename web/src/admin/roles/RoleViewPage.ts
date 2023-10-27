@@ -15,6 +15,7 @@ import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -52,6 +53,7 @@ export class RoleViewPage extends AKElement {
             PFContent,
             PFCard,
             PFDescriptionList,
+            PFBanner,
             css`
                 .pf-c-description-list__description ak-action-button {
                     margin-right: 6px;
@@ -85,60 +87,69 @@ export class RoleViewPage extends AKElement {
         if (!this._role) {
             return html``;
         }
-        return html`<ak-tabs>
-            <section
-                slot="page-overview"
-                data-tab-title="${msg("Overview")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-l-grid pf-m-gutter">
-                    <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
-                    >
-                        <div class="pf-c-card__title">${msg("Role Info")}</div>
-                        <div class="pf-c-card__body">
-                            <dl class="pf-c-description-list">
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
-                                            >${msg("Name")}</span
-                                        >
-                                    </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
-                                            ${this._role.name}
-                                        </div>
-                                    </dd>
-                                </div>
-                            </dl>
+        return html`<div class="pf-c-banner pf-m-info">
+                ${msg("RBAC is in preview.")}
+                <a href="mailto:hello@goauthentik.io">${msg("Send us feedback!")}</a>
+            </div>
+            <ak-tabs>
+                <section
+                    slot="page-overview"
+                    data-tab-title="${msg("Overview")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-l-grid pf-m-gutter">
+                        <div
+                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
+                        >
+                            <div class="pf-c-card__title">${msg("Role Info")}</div>
+                            <div class="pf-c-card__body">
+                                <dl class="pf-c-description-list">
+                                    <div class="pf-c-description-list__group">
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text"
+                                                >${msg("Name")}</span
+                                            >
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                ${this._role.name}
+                                            </div>
+                                        </dd>
+                                    </div>
+                                </dl>
+                            </div>
+                        </div>
+                        <div
+                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
+                        >
+                            <div class="pf-c-card__title">
+                                ${msg("Assigned global permissions")}
+                            </div>
+                            <div class="pf-c-card__body">
+                                <ak-role-permissions-global-table
+                                    roleUuid=${this._role.pk}
+                                ></ak-role-permissions-global-table>
+                            </div>
+                        </div>
+                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                            <div class="pf-c-card__title">
+                                ${msg("Assigned object permissions")}
+                            </div>
+                            <div class="pf-c-card__body">
+                                <ak-role-permissions-object-table
+                                    roleUuid=${this._role.pk}
+                                ></ak-role-permissions-object-table>
+                            </div>
                         </div>
                     </div>
-                    <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
-                    >
-                        <div class="pf-c-card__title">${msg("Assigned global permissions")}</div>
-                        <div class="pf-c-card__body">
-                            <ak-role-permissions-global-table
-                                roleUuid=${this._role.pk}
-                            ></ak-role-permissions-global-table>
-                        </div>
-                    </div>
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        <div class="pf-c-card__title">${msg("Assigned object permissions")}</div>
-                        <div class="pf-c-card__body">
-                            <ak-role-permissions-object-table
-                                roleUuid=${this._role.pk}
-                            ></ak-role-permissions-object-table>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <ak-rbac-object-permission-page
-                slot="page-permissions"
-                data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.RbacRole}
-                objectPk=${this._role.pk}
-            ></ak-rbac-object-permission-page>
-        </ak-tabs>`;
+                </section>
+                <ak-rbac-object-permission-page
+                    slot="page-permissions"
+                    data-tab-title="${msg("Permissions")}"
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.RbacRole}
+                    objectPk=${this._role.pk}
+                    .showBanner=${false}
+                ></ak-rbac-object-permission-page>
+            </ak-tabs>`;
     }
 }

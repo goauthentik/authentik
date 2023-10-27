@@ -121,7 +121,7 @@ export class AdminInterface extends Interface {
             // TODO: somehow add `access_admin_interface` to the API schema
             this.user.user.systemPermissions.includes("access_admin_interface");
         if (!canAccessAdmin && this.user.user.pk > 0) {
-            window.location.assign("/if/user");
+            window.location.assign("/if/user/");
         }
     }
 

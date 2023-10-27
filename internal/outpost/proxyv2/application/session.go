@@ -50,7 +50,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 			Domain:   *p.CookieDomain,
 			SameSite: http.SameSiteLaxMode,
 			MaxAge:   maxAge,
-			Path:     externalHost.Path,
+			Path:     "/",
 		})
 
 		a.log.Trace("using redis session backend")

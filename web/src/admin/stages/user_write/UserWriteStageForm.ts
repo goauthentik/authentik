@@ -12,7 +12,14 @@ import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { CoreApi, CoreGroupsListRequest, Group, StagesApi, UserWriteStage } from "@goauthentik/api";
+import {
+    CoreApi,
+    CoreGroupsListRequest,
+    Group,
+    StagesApi,
+    UserTypeEnum,
+    UserWriteStage,
+} from "@goauthentik/api";
 
 @customElement("ak-stage-user-write-form")
 export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
@@ -109,6 +116,42 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
                         </label>
                         <p class="pf-c-form__helper-text">
                             ${msg("Mark newly created users as inactive.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("User path template")}
+                        name="userPathTemplate"
+                    >
+                        <ak-radio
+                            .options=${[
+                                {
+                                    label: "Internal",
+                                    value: UserTypeEnum.Internal,
+                                    default: true,
+                                    description: html`${msg(
+                                        "Internal users might be users such as company employees, which will get access to the full Enterprise feature set.",
+                                    )}`,
+                                },
+                                {
+                                    label: "External",
+                                    value: UserTypeEnum.External,
+                                    description: html`${msg(
+                                        "External users might be external consultants or B2C customers. These users don't get access to enterprise features.",
+                                    )}`,
+                                },
+                                {
+                                    label: "Service account",
+                                    value: UserTypeEnum.ServiceAccount,
+                                    description: html`${msg(
+                                        "Service accounts should be used for machine-to-machine authentication or other automations.",
+                                    )}`,
+                                },
+                            ]}
+                            .value=${this.instance?.userType}
+                        >
+                        </ak-radio>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("User type used for newly created users.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal

@@ -16,8 +16,8 @@ You've logged out of {{ application }}.
 {% block card %}
 <form method="POST" class="pf-c-form">
     <p>
-        {% blocktrans with application=application.name %}
-            You've logged out of {{ application }}. You can go back to the overview to launch another application, or log out of your authentik account.
+        {% blocktrans with application=application.name branding_title=tenant.branding_title %}
+            You've logged out of {{ application }}. You can go back to the overview to launch another application, or log out of your {{ branding_title }} account.
         {% endblocktrans %}
     </p>
 

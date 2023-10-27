@@ -97,6 +97,7 @@ class SourceFlowManager:
         if self.request.user.is_authenticated:
             new_connection.user = self.request.user
             new_connection = self.update_connection(new_connection, **kwargs)
+            # pylint: disable=no-member
             new_connection.save()
             return Action.LINK, new_connection
 

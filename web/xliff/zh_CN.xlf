@@ -659,11 +659,6 @@
         <target>管理用户</target>
         
       </trans-unit>
-      <trans-unit id="s51cda7b1ebcd970f">
-        <source>Check release notes</source>
-        <target>查看发行日志</target>
-        
-      </trans-unit>
       <trans-unit id="s8763a33c3d46aaf5">
         <source>Outpost status</source>
         <target>前哨状态</target>
@@ -693,11 +688,6 @@
       <trans-unit id="s51ea3a244c781b1f">
         <source>Objects created</source>
         <target>已创建对象</target>
-        
-      </trans-unit>
-      <trans-unit id="s770baa8560fd8aa1">
-        <source>User statistics</source>
-        <target>用户统计</target>
         
       </trans-unit>
       <trans-unit id="sfbadb77fbc61efb8">
@@ -7630,14 +7620,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>For transparent reverse proxies with required authentication</source>
   <target>适用于需要验证身份的透明反向代理</target>
 </trans-unit>
-<trans-unit id="sadf073913458acbd">
-  <source>For nginx's auth_request or traefix's forwardAuth</source>
-  <target>适用于 nginx 的 auth_request 或 traefik 的 forwardAuth</target>
-</trans-unit>
-<trans-unit id="se770e9498b3bacf6">
-  <source>For nginx's auth_request or traefix's forwardAuth per root domain</source>
-  <target>适用于按根域名配置的 nginx 的 auth_request 或 traefik 的 forwardAuth</target>
-</trans-unit>
 <trans-unit id="s40830ec037f34626">
   <source>Configure SAML provider manually</source>
   <target>手动配置 SAML 提供程序</target>
@@ -7919,6 +7901,46 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="se5c795faf2c07514">
   <source>Create Recovery Link</source>
   <target>创建恢复链接</target>
+</trans-unit>
+<trans-unit id="s84fcddede27b8e2a">
+  <source>External</source>
+  <target>外部</target>
+</trans-unit>
+<trans-unit id="s1a635369edaf4dc3">
+  <source>Service account</source>
+  <target>服务账户</target>
+</trans-unit>
+<trans-unit id="sff930bf2834e2201">
+  <source>Service account (internal)</source>
+  <target>服务账户（内部）</target>
+</trans-unit>
+<trans-unit id="s66313b45b69cfc88">
+  <source>Check the release notes</source>
+  <target>查看发行日志</target>
+</trans-unit>
+<trans-unit id="sb4d7bae2440d9781">
+  <source>User Statistics</source>
+  <target>用户统计</target>
+</trans-unit>
+<trans-unit id="s0924f51b028233a3">
+  <source>&lt;No name set&gt;</source>
+  <target>&lt;未设置名称&gt;</target>
+</trans-unit>
+<trans-unit id="sdc9a6ad1af30572c">
+  <source>For nginx's auth_request or traefik's forwardAuth</source>
+  <target>适用于 nginx 的 auth_request 或 traefik 的 forwardAuth</target>
+</trans-unit>
+<trans-unit id="sfc31264ef7ff86ef">
+  <source>For nginx's auth_request or traefik's forwardAuth per root domain</source>
+  <target>适用于按根域名配置的 nginx 的 auth_request 或 traefik 的 forwardAuth</target>
+</trans-unit>
+<trans-unit id="sc615309d10a9228c">
+  <source>RBAC is in preview.</source>
+  <target>RBAC 目前处于预览状态。</target>
+</trans-unit>
+<trans-unit id="s32babfed740fd3c1">
+  <source>User type used for newly created users.</source>
+  <target>新创建用户使用的用户类型。</target>
 </trans-unit>
     </body>
   </file>

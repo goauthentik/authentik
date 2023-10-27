@@ -61,10 +61,6 @@ export class ProviderListPage extends TablePage<Provider> {
         ];
     }
 
-    renderSectionBefore(): TemplateResult {
-        return html`<ak-application-wizard-hint></ak-application-wizard-hint>`;
-    }
-
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
