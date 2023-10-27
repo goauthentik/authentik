@@ -1,5 +1,5 @@
 import { policyOptions } from "@goauthentik/admin/applications/ApplicationForm";
-import { first, snakeToCamel } from "@goauthentik/common/utils";
+import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-slug-input";
 import "@goauthentik/components/ak-switch-input";
@@ -56,7 +56,7 @@ export class ApplicationWizardApplicationDetails extends BasePanel {
                 label=${msg("Group")}
                 .errorMessages=${this.wizard.errors.app?.group ?? []}
                 help=${msg(
-                    "Optionally enter a group name. Applications with identical groups are shown grouped together."
+                    "Optionally enter a group name. Applications with identical groups are shown grouped together.",
                 )}
             ></ak-text-input>
             <ak-radio-input
@@ -75,7 +75,7 @@ export class ApplicationWizardApplicationDetails extends BasePanel {
                         label=${msg("Launch URL")}
                         value=${ifDefined(this.wizard.app?.metaLaunchUrl)}
                         help=${msg(
-                            "If left empty, authentik will try to extract the launch URL based on the selected provider."
+                            "If left empty, authentik will try to extract the launch URL based on the selected provider.",
                         )}
                         .errorMessages=${this.wizard.errors.app?.metaLaunchUrl ?? []}
                     ></ak-text-input>
@@ -84,7 +84,7 @@ export class ApplicationWizardApplicationDetails extends BasePanel {
                         ?checked=${first(this.wizard.app?.openInNewTab, false)}
                         label=${msg("Open in new tab")}
                         help=${msg(
-                            "If checked, the launch URL will open in a new browser tab or window from the user's application library."
+                            "If checked, the launch URL will open in a new browser tab or window from the user's application library.",
                         )}
                     >
                     </ak-switch-input>

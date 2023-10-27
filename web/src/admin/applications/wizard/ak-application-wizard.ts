@@ -18,7 +18,7 @@ const freshWizardState = (): ApplicationWizardState => ({
     providerModel: "",
     app: {},
     provider: {},
-    errors: {}
+    errors: {},
 });
 
 @customElement("ak-application-wizard")

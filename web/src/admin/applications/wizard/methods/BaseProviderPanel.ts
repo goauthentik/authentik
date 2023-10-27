@@ -1,7 +1,6 @@
 import BasePanel from "../BasePanel";
 
 export class ApplicationWizardProviderPageBase extends BasePanel {
-
     handleChange(_ev: InputEvent) {
         const formValues = this.formValues;
         if (!formValues) {

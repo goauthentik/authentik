@@ -1,5 +1,4 @@
 import { WizardPanel } from "@goauthentik/components/ak-wizard-main/types";
-import { snakeToCamel } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import { KeyUnknown, serializeForm } from "@goauthentik/elements/forms/Form";
 import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
@@ -40,7 +39,7 @@ export class ApplicationWizardPageBase
     get formValues(): KeyUnknown | undefined {
         const elements = [
             ...Array.from(
-                this.form.querySelectorAll<HorizontalFormElement>("ak-form-element-horizontal")
+                this.form.querySelectorAll<HorizontalFormElement>("ak-form-element-horizontal"),
             ),
             ...Array.from(this.form.querySelectorAll<HTMLElement>("[data-ak-control=true]")),
         ];
