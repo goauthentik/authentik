@@ -3,6 +3,8 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { TemplateResult, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 
+type HelpType = (TemplateResult | typeof nothing);
+
 export class HorizontalLightComponent extends AKElement {
     // Render into the lightDOM. This effectively erases the shadowDOM nature of this component, but
     // we're not actually using that and, for the meantime, we need the form handlers to be able to
@@ -20,6 +22,7 @@ export class HorizontalLightComponent extends AKElement {
 
     @property({ type: String })
     label = "";
+
     @property({ type: Boolean })
     required = false;
 
@@ -27,7 +30,7 @@ export class HorizontalLightComponent extends AKElement {
     help = "";
 
     @property({ type: Object })
-    bighelp!: TemplateResult | TemplateResult[];
+    bighelp?: TemplateResult | TemplateResult[];
 
     @property({ type: Boolean })
     hidden = false;
@@ -42,10 +45,11 @@ export class HorizontalLightComponent extends AKElement {
         throw new Error("Must be implemented in a subclass");
     }
 
-    renderHelp() {
+    renderHelp(): HelpType[] {
+        const bigHelp: HelpType[] = Array.isArray(this.bighelp) ? this.bighelp : [this.bighelp ?? nothing];
         return [
             this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing,
-            this.bighelp ? this.bighelp : nothing,
+            ...bigHelp,
         ];
     }
 
