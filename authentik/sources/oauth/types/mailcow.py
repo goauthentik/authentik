@@ -26,8 +26,8 @@ class MailcowOAuth2Client(OAuth2Client):
 
     def get_profile_info(self, token: dict[str, str]) -> Optional[dict[str, Any]]:
         "Fetch user profile information."
-        profile_url = self.source.type.profile_url or ""
-        if self.source.type.urls_customizable and self.source.profile_url:
+        profile_url = self.source.source_type.profile_url or ""
+        if self.source.source_type.urls_customizable and self.source.profile_url:
             profile_url = self.source.profile_url
         response = self.session.request(
             "get",

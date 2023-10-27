@@ -98,6 +98,16 @@ URL that the form will be submitted to.
 
 Key-value pairs of the data that is included in the form and will be submitted to `url`.
 
+#### Deny stage
+
+##### `deny_message` (string)
+
+:::info
+Requires authentik 2023.10
+:::
+
+Optionally overwrite the deny message shown, has a higher priority than the message configured in the stage.
+
 #### User write stage
 
 ##### `groups` (List of [Group objects](../../user-group/group.md))

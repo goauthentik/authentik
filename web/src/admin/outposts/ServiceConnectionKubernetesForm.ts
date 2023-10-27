@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import YAML from "yaml";
@@ -75,7 +76,7 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Kubeconfig")} name="kubeconfig">
                 <ak-codemirror
-                    mode="yaml"
+                    mode=${CodeMirrorMode.YAML}
                     value="${YAML.stringify(first(this.instance?.kubeconfig, {}))}"
                 >
                 </ak-codemirror>

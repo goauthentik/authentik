@@ -33,4 +33,8 @@ class Migration(migrations.Migration):
                 "verbose_name_plural": "License Usage Records",
             },
         ),
+        migrations.AlterModelOptions(
+            name="license",
+            options={"verbose_name": "License", "verbose_name_plural": "Licenses"},
+        ),
     ]

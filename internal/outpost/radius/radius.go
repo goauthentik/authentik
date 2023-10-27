@@ -17,6 +17,7 @@ import (
 type ProviderInstance struct {
 	ClientNetworks []*net.IPNet
 	SharedSecret   []byte
+	MFASupport     bool
 
 	appSlug  string
 	flowSlug string

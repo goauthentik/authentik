@@ -7,6 +7,7 @@ import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/rbac/ObjectPermissionModal";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
@@ -19,7 +20,12 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
-import { FlowDesignationEnum, Invitation, StagesApi } from "@goauthentik/api";
+import {
+    FlowDesignationEnum,
+    Invitation,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    StagesApi,
+} from "@goauthentik/api";
 
 @customElement("ak-stage-invitation-list")
 export class InvitationListPage extends TablePage<Invitation> {
@@ -124,15 +130,20 @@ export class InvitationListPage extends TablePage<Invitation> {
             html`${item.createdBy?.username}`,
             html`${item.expires?.toLocaleString() || msg("-")}`,
             html` <ak-forms-modal>
-                <span slot="submit"> ${msg("Update")} </span>
-                <span slot="header"> ${msg("Update Invitation")} </span>
-                <ak-invitation-form slot="form" .instancePk=${item.pk}> </ak-invitation-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit"></i>
-                    </pf-tooltip>
-                </button>
-            </ak-forms-modal>`,
+                    <span slot="submit"> ${msg("Update")} </span>
+                    <span slot="header"> ${msg("Update Invitation")} </span>
+                    <ak-invitation-form slot="form" .instancePk=${item.pk}> </ak-invitation-form>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit"></i>
+                        </pf-tooltip>
+                    </button>
+                </ak-forms-modal>
+                <ak-rbac-object-permission-modal
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.StagesInvitationInvitation}
+                    objectPk=${item.pk}
+                >
+                </ak-rbac-object-permission-modal>`,
         ];
     }
 

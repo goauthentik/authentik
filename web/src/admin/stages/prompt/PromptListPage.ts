@@ -5,6 +5,7 @@ import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/rbac/ObjectPermissionModal";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
@@ -14,7 +15,7 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { Prompt, StagesApi } from "@goauthentik/api";
+import { Prompt, RbacPermissionsAssignedByUsersListModelEnum, StagesApi } from "@goauthentik/api";
 
 @customElement("ak-stage-prompt-list")
 export class PromptListPage extends TablePage<Prompt> {
@@ -88,15 +89,20 @@ export class PromptListPage extends TablePage<Prompt> {
                 return html`<li>${stage.name}</li>`;
             })}`,
             html`<ak-forms-modal>
-                <span slot="submit"> ${msg("Update")} </span>
-                <span slot="header"> ${msg("Update Prompt")} </span>
-                <ak-prompt-form slot="form" .instancePk=${item.pk}> </ak-prompt-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit"></i>
-                    </pf-tooltip>
-                </button>
-            </ak-forms-modal>`,
+                    <span slot="submit"> ${msg("Update")} </span>
+                    <span slot="header"> ${msg("Update Prompt")} </span>
+                    <ak-prompt-form slot="form" .instancePk=${item.pk}> </ak-prompt-form>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit"></i>
+                        </pf-tooltip>
+                    </button>
+                </ak-forms-modal>
+                <ak-rbac-object-permission-modal
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.StagesPromptPrompt}
+                    objectPk=${item.pk}
+                >
+                </ak-rbac-object-permission-modal> `,
         ];
     }
 

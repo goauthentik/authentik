@@ -175,6 +175,10 @@ export class UserInterface extends Interface {
             default:
                 userDisplay = this.me.user.username;
         }
+        const canAccessAdmin =
+            this.me.user.isSuperuser ||
+            // TODO: somehow add `access_admin_interface` to the API schema
+            this.me.user.systemPermissions.includes("access_admin_interface");
         return html` <ak-locale-context>
             <ak-enterprise-status interface="user"></ak-enterprise-status>
             <div class="pf-c-page">
@@ -280,7 +284,7 @@ export class UserInterface extends Interface {
                                     </pf-tooltip>
                                 </a>
                             </div>
-                            ${this.me.user.isSuperuser
+                            ${canAccessAdmin
                                 ? html`<a
                                       class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
                                       href="/if/admin/"

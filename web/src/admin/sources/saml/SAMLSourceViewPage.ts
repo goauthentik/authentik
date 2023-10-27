@@ -1,10 +1,12 @@
 import "@goauthentik/admin/policies/BoundPoliciesList";
 import "@goauthentik/admin/sources/saml/SAMLSourceForm";
+import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ModalForm";
@@ -22,7 +24,12 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { SAMLMetadata, SAMLSource, SourcesApi } from "@goauthentik/api";
+import {
+    RbacPermissionsAssignedByUsersListModelEnum,
+    SAMLMetadata,
+    SAMLSource,
+    SourcesApi,
+} from "@goauthentik/api";
 
 @customElement("ak-source-saml-view")
 export class SAMLSourceViewPage extends AKElement {
@@ -169,7 +176,7 @@ export class SAMLSourceViewPage extends AKElement {
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                         <div class="pf-c-card__body">
                             <ak-codemirror
-                                mode="xml"
+                                mode=${CodeMirrorMode.XML}
                                 ?readOnly=${true}
                                 value="${ifDefined(this.metadata?.metadata)}"
                             ></ak-codemirror>
@@ -206,6 +213,12 @@ export class SAMLSourceViewPage extends AKElement {
                     </div>
                 </div>
             </div>
+            <ak-rbac-object-permission-page
+                slot="page-permissions"
+                data-tab-title="${msg("Permissions")}"
+                model=${RbacPermissionsAssignedByUsersListModelEnum.SourcesSamlSamlsource}
+                objectPk=${this.source.pk}
+            ></ak-rbac-object-permission-page>
         </ak-tabs>`;
     }
 }

@@ -1,11 +1,13 @@
 import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/saml/SAMLProviderForm";
+import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { MessageLevel } from "@goauthentik/common/messages";
 import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
@@ -34,6 +36,7 @@ import {
     CertificateKeyPair,
     CryptoApi,
     ProvidersApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
     SAMLMetadata,
     SAMLProvider,
 } from "@goauthentik/api";
@@ -226,6 +229,12 @@ export class SAMLProviderViewPage extends AKElement {
                     </div>
                 </div>
             </section>
+            <ak-rbac-object-permission-page
+                slot="page-permissions"
+                data-tab-title="${msg("Permissions")}"
+                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersSamlSamlprovider}
+                objectPk=${this.provider.pk}
+            ></ak-rbac-object-permission-page>
         </ak-tabs>`;
     }
 
@@ -464,7 +473,7 @@ export class SAMLProviderViewPage extends AKElement {
                               </div>
                               <div class="pf-c-card__footer">
                                   <ak-codemirror
-                                      mode="xml"
+                                      mode=${CodeMirrorMode.XML}
                                       ?readOnly=${true}
                                       value="${ifDefined(this.metadata?.metadata)}"
                                   ></ak-codemirror>

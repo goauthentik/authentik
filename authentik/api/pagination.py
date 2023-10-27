@@ -77,3 +77,10 @@ class Pagination(pagination.PageNumberPagination):
             },
             "required": ["pagination", "results"],
         }
+
+
+class SmallerPagination(Pagination):
+    """Smaller pagination for objects which might require a lot of queries
+    to retrieve all data for."""
+
+    max_page_size = 10

@@ -5,6 +5,7 @@ import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import { rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -191,7 +192,11 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                           >
                               <input
                                   type="text"
-                                  value="${ifDefined(this.instance?.oidcWellKnownUrl)}"
+                                  value="${first(
+                                      this.instance?.oidcWellKnownUrl,
+                                      this.providerType.oidcWellKnownUrl,
+                                      "",
+                                  )}"
                                   class="pf-c-form-control"
                               />
                               <p class="pf-c-form__helper-text">
@@ -206,7 +211,11 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                           >
                               <input
                                   type="text"
-                                  value="${ifDefined(this.instance?.oidcJwksUrl)}"
+                                  value="${first(
+                                      this.instance?.oidcJwksUrl,
+                                      this.providerType.oidcJwksUrl,
+                                      "",
+                                  )}"
                                   class="pf-c-form-control"
                               />
                               <p class="pf-c-form__helper-text">
@@ -218,7 +227,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
 
                           <ak-form-element-horizontal label=${msg("OIDC JWKS")} name="oidcJwks">
                               <ak-codemirror
-                                  mode="javascript"
+                                  mode=${CodeMirrorMode.JavaScript}
                                   value="${JSON.stringify(first(this.instance?.oidcJwks, {}))}"
                               >
                               </ak-codemirror>

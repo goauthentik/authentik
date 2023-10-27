@@ -405,18 +405,22 @@ class Outpost(SerializerModel, ManagedModel):
     def __str__(self) -> str:
         return f"Outpost {self.name}"
 
+    class Meta:
+        verbose_name = _("Outpost")
+        verbose_name_plural = _("Outposts")
+
 
 @dataclass
 class OutpostState:
     """Outpost instance state, last_seen and version"""
 
     uid: str
-    channel_ids: list[str] = field(default_factory=list)
     last_seen: Optional[datetime] = field(default=None)
     version: Optional[str] = field(default=None)
     version_should: Version = field(default=OUR_VERSION)
     build_hash: str = field(default="")
     hostname: str = field(default="")
+    args: dict = field(default_factory=dict)
 
     _outpost: Optional[Outpost] = field(default=None)
 

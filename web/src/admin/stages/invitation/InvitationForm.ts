@@ -2,6 +2,7 @@ import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { dateTimeLocal, first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -79,7 +80,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Custom attributes")} name="fixedData">
                 <ak-codemirror
-                    mode="yaml"
+                    mode=${CodeMirrorMode.YAML}
                     value="${YAML.stringify(first(this.instance?.fixedData, {}))}"
                 >
                 </ak-codemirror>

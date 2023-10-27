@@ -23,8 +23,8 @@ class GitHubOAuth2Client(OAuth2Client):
 
     def get_github_emails(self, token: dict[str, str]) -> list[dict[str, Any]]:
         """Get Emails from the GitHub API"""
-        profile_url = self.source.type.profile_url or ""
-        if self.source.type.urls_customizable and self.source.profile_url:
+        profile_url = self.source.source_type.profile_url or ""
+        if self.source.source_type.urls_customizable and self.source.profile_url:
             profile_url = self.source.profile_url
         profile_url += "/emails"
         response = self.do_request("get", profile_url, token=token)
@@ -76,3 +76,7 @@ class GitHubType(SourceType):
     authorization_url = "https://github.com/login/oauth/authorize"
     access_token_url = "https://github.com/login/oauth/access_token"  # nosec
     profile_url = "https://api.github.com/user"
+    oidc_well_known_url = (
+        "https://token.actions.githubusercontent.com/.well-known/openid-configuration"
+    )
+    oidc_jwks_url = "https://token.actions.githubusercontent.com/.well-known/jwks"

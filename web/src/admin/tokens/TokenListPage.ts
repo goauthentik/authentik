@@ -7,6 +7,7 @@ import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/TokenCopyButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/rbac/ObjectPermissionModal";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
@@ -16,7 +17,12 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
+import {
+    CoreApi,
+    IntentEnum,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    Token,
+} from "@goauthentik/api";
 
 @customElement("ak-token-list")
 export class TokenListPage extends TablePage<Token> {
@@ -120,7 +126,19 @@ export class TokenListPage extends TablePage<Token> {
                               </pf-tooltip>
                           </button>
                       </ak-forms-modal>`
-                    : html``}
+                    : html` <button class="pf-c-button pf-m-plain" disabled>
+                          <pf-tooltip
+                              position="top"
+                              content=${msg("Editing is disabled for managed tokens")}
+                          >
+                              <i class="fas fa-edit"></i>
+                          </pf-tooltip>
+                      </button>`}
+                <ak-rbac-object-permission-modal
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.CoreToken}
+                    objectPk=${item.pk}
+                >
+                </ak-rbac-object-permission-modal>
                 <ak-token-copy-button
                     class="pf-c-button pf-m-plain"
                     identifier="${item.identifier}"

@@ -116,7 +116,11 @@ export class AdminInterface extends Interface {
         configureSentry(true);
         this.version = await new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
         this.user = await me();
-        if (!this.user.user.isSuperuser && this.user.user.pk > 0) {
+        const canAccessAdmin =
+            this.user.user.isSuperuser ||
+            // TODO: somehow add `access_admin_interface` to the API schema
+            this.user.user.systemPermissions.includes("access_admin_interface");
+        if (!canAccessAdmin && this.user.user.pk > 0) {
             window.location.assign("/if/user");
         }
     }
@@ -189,7 +193,7 @@ export class AdminInterface extends Interface {
             ["/if/user/", msg("User interface"), { "?isAbsoluteLink": true, "?highlight": true }],
             [null, msg("Dashboards"), { "?expanded": true }, [
                 ["/administration/overview", msg("Overview")],
-                ["/administration/dashboard/users", msg("Users")],
+                ["/administration/dashboard/users", msg("User Statistics")],
                 ["/administration/system-tasks", msg("System Tasks")]]],
             [null, msg("Applications"), null, [
                 ["/core/providers", msg("Providers"), [`^/core/providers/(?<id>${ID_REGEX})$`]],
@@ -211,6 +215,7 @@ export class AdminInterface extends Interface {
             [null, msg("Directory"), null, [
                 ["/identity/users", msg("Users"), [`^/identity/users/(?<id>${ID_REGEX})$`]],
                 ["/identity/groups", msg("Groups"), [`^/identity/groups/(?<id>${UUID_REGEX})$`]],
+                ["/identity/roles", msg("Roles"), [`^/identity/roles/(?<id>${UUID_REGEX})$`]],
                 ["/core/sources", msg("Federation and Social login"), [`^/core/sources/(?<slug>${SLUG_REGEX})$`]],
                 ["/core/tokens", msg("Tokens and App passwords")],
                 ["/flow/stages/invitations", msg("Invitations")]]],

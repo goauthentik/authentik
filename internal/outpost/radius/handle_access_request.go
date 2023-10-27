@@ -22,6 +22,9 @@ func (rs *RadiusServer) Handle_AccessRequest(w radius.ResponseWriter, r *RadiusR
 
 	fe.Answers[flow.StageIdentification] = username
 	fe.Answers[flow.StagePassword] = rfc2865.UserPassword_GetString(r.Packet)
+	if r.pi.MFASupport {
+		fe.CheckPasswordInlineMFA()
+	}
 
 	passed, err := fe.Execute()
 

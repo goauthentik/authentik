@@ -10,6 +10,7 @@ import { PFSize } from "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/rbac/ObjectPermissionModal";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
@@ -23,7 +24,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { Outpost, OutpostHealth, OutpostTypeEnum, OutpostsApi } from "@goauthentik/api";
+import {
+    Outpost,
+    OutpostHealth,
+    OutpostTypeEnum,
+    OutpostsApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+} from "@goauthentik/api";
 
 export function TypeToLabel(type?: OutpostTypeEnum): string {
     if (!type) return "";
@@ -141,6 +148,11 @@ export class OutpostListPage extends TablePage<Outpost> {
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
+                <ak-rbac-object-permission-modal
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.OutpostsOutpost}
+                    objectPk=${item.pk}
+                >
+                </ak-rbac-object-permission-modal>
                 ${item.managed !== "goauthentik.io/outposts/embedded"
                     ? html`<ak-outpost-deployment-modal .outpost=${item} size=${PFSize.Medium}>
                           <button slot="trigger" class="pf-c-button pf-m-tertiary">

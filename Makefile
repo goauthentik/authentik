@@ -56,14 +56,15 @@ test: ## Run the server tests and produce a coverage report (locally)
 	coverage report
 
 lint-fix:  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
-	isort authentik $(PY_SOURCES)
-	black authentik $(PY_SOURCES)
-	ruff authentik $(PY_SOURCES)
+	isort $(PY_SOURCES)
+	black $(PY_SOURCES)
+	ruff $(PY_SOURCES)
 	codespell -w $(CODESPELL_ARGS)
 
 lint: ## Lint the python and golang sources
-	pylint $(PY_SOURCES)
 	bandit -r $(PY_SOURCES) -x node_modules
+	./web/node_modules/.bin/pyright $(PY_SOURCES)
+	pylint $(PY_SOURCES)
 	golangci-lint run -v
 
 migrate: ## Run the Authentik Django server's migrations

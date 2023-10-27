@@ -4,6 +4,7 @@ from unittest.mock import MagicMock, PropertyMock, patch
 from django.core import mail
 from django.core.mail.backends.locmem import EmailBackend
 from django.core.mail.backends.smtp import EmailBackend as SMTPEmailBackend
+from django.test import RequestFactory
 from django.urls import reverse
 from django.utils.http import urlencode
 
@@ -12,10 +13,11 @@ from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding, FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
-from authentik.flows.views.executor import QS_KEY_TOKEN, SESSION_KEY_PLAN
+from authentik.flows.views.executor import QS_KEY_TOKEN, SESSION_KEY_PLAN, FlowExecutorView
 from authentik.lib.config import CONFIG
+from authentik.lib.generators import generate_id
 from authentik.stages.email.models import EmailStage
-from authentik.stages.email.stage import PLAN_CONTEXT_EMAIL_OVERRIDE
+from authentik.stages.email.stage import PLAN_CONTEXT_EMAIL_OVERRIDE, EmailStageView
 
 
 class TestEmailStage(FlowTestCase):
@@ -23,8 +25,8 @@ class TestEmailStage(FlowTestCase):
 
     def setUp(self):
         super().setUp()
+        self.factory = RequestFactory()
         self.user = create_test_admin_user()
-
         self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
         self.stage = EmailStage.objects.create(
             name="email",
@@ -205,3 +207,97 @@ class TestEmailStage(FlowTestCase):
 
             self.assertEqual(response.status_code, 200)
             self.assertStageResponse(response, component="ak-stage-access-denied")
+
+    def test_url_no_params(self):
+        """Test generation of the URL in the EMail"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        request = self.factory.get(url)
+        stage_view = EmailStageView(
+            FlowExecutorView(
+                request=request,
+                flow=self.flow,
+            ),
+            request=request,
+        )
+        self.assertEqual(stage_view.get_full_url(), f"http://testserver/if/flow/{self.flow.slug}/")
+
+    def test_url_our_params(self):
+        """Test that all of our parameters are passed to the URL correctly"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        request = self.factory.get(url)
+        stage_view = EmailStageView(
+            FlowExecutorView(
+                request=request,
+                flow=self.flow,
+            ),
+            request=request,
+        )
+        token = generate_id()
+        self.assertEqual(
+            stage_view.get_full_url(**{QS_KEY_TOKEN: token}),
+            f"http://testserver/if/flow/{self.flow.slug}/?flow_token={token}",
+        )
+
+    def test_url_existing_params(self):
+        """Test to ensure that URL params are preserved in the URL being sent"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        url += "?foo=bar"
+        request = self.factory.get(url)
+        stage_view = EmailStageView(
+            FlowExecutorView(
+                request=request,
+                flow=self.flow,
+            ),
+            request=request,
+        )
+        token = generate_id()
+        self.assertEqual(
+            stage_view.get_full_url(**{QS_KEY_TOKEN: token}),
+            f"http://testserver/if/flow/{self.flow.slug}/?foo=bar&flow_token={token}",
+        )
+
+    def test_url_existing_params_nested(self):
+        """Test to ensure that URL params are preserved in the URL being sent (including nested)"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        url += "?foo=bar&"
+        url += "query=" + urlencode({"nested": "value"})
+        request = self.factory.get(url)
+        stage_view = EmailStageView(
+            FlowExecutorView(
+                request=request,
+                flow=self.flow,
+            ),
+            request=request,
+        )
+        token = generate_id()
+        self.assertEqual(
+            stage_view.get_full_url(**{QS_KEY_TOKEN: token}),
+            (
+                f"http://testserver/if/flow/{self.flow.slug}"
+                f"/?foo=bar&query=nested%3Dvalue&flow_token={token}"
+            ),
+        )

@@ -27,6 +27,17 @@ class RadiusProvider(OutpostModel, Provider):
         ),
     )
 
+    mfa_support = models.BooleanField(
+        default=True,
+        verbose_name="MFA Support",
+        help_text=_(
+            "When enabled, code-based multi-factor authentication can be used by appending a "
+            "semicolon and the TOTP code to the password. This should only be enabled if all "
+            "users that will bind to this provider have a TOTP device configured, as otherwise "
+            "a password may incorrectly be rejected if it contains a semicolon."
+        ),
+    )
+
     @property
     def launch_url(self) -> Optional[str]:
         """Radius never has a launch URL"""
