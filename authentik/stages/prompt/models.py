@@ -116,7 +116,7 @@ class Prompt(SerializerModel):
         help_text=_("Name of the form field, also used to store the value")
     )
     label = models.TextField()
-    type = models.CharField(max_length=100, choices=FieldTypes.choices)
+    prompt_type = models.CharField(max_length=100, choices=FieldTypes.choices)
     required = models.BooleanField(default=True)
     placeholder = models.TextField(
         blank=True,
@@ -155,7 +155,7 @@ class Prompt(SerializerModel):
         dry_run: Optional[bool] = False,
     ) -> Optional[tuple[dict[str, Any]]]:
         """Get fully interpolated list of choices"""
-        if self.type not in CHOICE_FIELDS:
+        if self.prompt_type not in CHOICE_FIELDS:
             return None
 
         raw_choices = self.placeholder
@@ -195,7 +195,7 @@ class Prompt(SerializerModel):
         dry_run: Optional[bool] = False,
     ) -> str:
         """Get fully interpolated placeholder"""
-        if self.type in CHOICE_FIELDS:
+        if self.prompt_type in CHOICE_FIELDS:
             # Choice fields use the placeholder to define all valid choices.
             # Therefore their actual placeholder is always blank
             return ""
@@ -247,7 +247,7 @@ class Prompt(SerializerModel):
         else:
             value = self.initial_value
 
-        if self.type in CHOICE_FIELDS:
+        if self.prompt_type in CHOICE_FIELDS:
             # Ensure returned value is a valid choice
             choices = self.get_choices(prompt_context, user, request)
             if not choices:
@@ -258,48 +258,48 @@ class Prompt(SerializerModel):
         return value
 
     def field(self, default: Optional[Any], choices: Optional[list[Any]] = None) -> CharField:
-        """Get field type for Challenge and response. Choices are only valid for CHOICE_FIELDS."""
+        """Get field prompt_type for Challenge and response. Choices are only valid for CHOICE_FIELDS."""
         field_class = CharField
         kwargs = {
             "required": self.required,
         }
-        if self.type in (FieldTypes.TEXT, FieldTypes.TEXT_AREA):
+        if self.prompt_type in (FieldTypes.TEXT, FieldTypes.TEXT_AREA):
             kwargs["trim_whitespace"] = False
             kwargs["allow_blank"] = not self.required
-        if self.type in (FieldTypes.TEXT_READ_ONLY, FieldTypes.TEXT_AREA_READ_ONLY):
+        if self.prompt_type in (FieldTypes.TEXT_READ_ONLY, FieldTypes.TEXT_AREA_READ_ONLY):
             field_class = ReadOnlyField
             # required can't be set for ReadOnlyField
             kwargs["required"] = False
-        if self.type == FieldTypes.EMAIL:
+        if self.prompt_type == FieldTypes.EMAIL:
             field_class = EmailField
             kwargs["allow_blank"] = not self.required
-        if self.type == FieldTypes.NUMBER:
+        if self.prompt_type == FieldTypes.NUMBER:
             field_class = IntegerField
-        if self.type == FieldTypes.CHECKBOX:
+        if self.prompt_type == FieldTypes.CHECKBOX:
             field_class = BooleanField
             kwargs["required"] = False
-        if self.type in CHOICE_FIELDS:
+        if self.prompt_type in CHOICE_FIELDS:
             field_class = ChoiceField
             kwargs["choices"] = choices or []
-        if self.type == FieldTypes.DATE:
+        if self.prompt_type == FieldTypes.DATE:
             field_class = DateField
-        if self.type == FieldTypes.DATE_TIME:
+        if self.prompt_type == FieldTypes.DATE_TIME:
             field_class = DateTimeField
-        if self.type == FieldTypes.FILE:
+        if self.prompt_type == FieldTypes.FILE:
             field_class = InlineFileField
-        if self.type == FieldTypes.SEPARATOR:
+        if self.prompt_type == FieldTypes.SEPARATOR:
             kwargs["required"] = False
             kwargs["label"] = ""
-        if self.type == FieldTypes.HIDDEN:
+        if self.prompt_type == FieldTypes.HIDDEN:
             field_class = HiddenField
             kwargs["required"] = False
             kwargs["default"] = self.placeholder
-        if self.type == FieldTypes.STATIC:
+        if self.prompt_type == FieldTypes.STATIC:
             kwargs["default"] = self.placeholder
             kwargs["required"] = False
             kwargs["label"] = ""
 
-        if self.type == FieldTypes.AK_LOCALE:
+        if self.prompt_type == FieldTypes.AK_LOCALE:
             kwargs["allow_blank"] = True
 
         if default:
@@ -310,12 +310,12 @@ class Prompt(SerializerModel):
         return field_class(**kwargs)
 
     def save(self, *args, **kwargs):
-        if self.type not in FieldTypes:
+        if self.prompt_type not in FieldTypes:
             raise ValueError
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Prompt field '{self.field_key}' type {self.type}"
+        return f"Prompt field '{self.field_key}' prompt_type {self.prompt_type}"
 
     class Meta:
         verbose_name = _("Prompt")

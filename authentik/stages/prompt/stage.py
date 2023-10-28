@@ -35,7 +35,7 @@ class StagePromptSerializer(PassiveSerializer):
 
     field_key = CharField()
     label = CharField(allow_blank=True)
-    type = ChoiceField(choices=FieldTypes.choices)
+    prompt_type = ChoiceField(choices=FieldTypes.choices)
     required = BooleanField()
     placeholder = CharField(allow_blank=True)
     initial_value = CharField(allow_blank=True)
@@ -83,7 +83,7 @@ class PromptChallengeResponse(ChallengeResponse):
             self.fields[field.field_key] = field.field(current, choices)
             # Special handling for fields with username type
             # these check for existing users with the same username
-            if field.type == FieldTypes.USERNAME:
+            if field.prompt_type == FieldTypes.USERNAME:
                 setattr(
                     self,
                     f"validate_{field.field_key}",
@@ -91,7 +91,7 @@ class PromptChallengeResponse(ChallengeResponse):
                 )
             # Check if we have a password field, add a handler that sends a signal
             # to validate it
-            if field.type == FieldTypes.PASSWORD:
+            if field.prompt_type == FieldTypes.PASSWORD:
                 setattr(
                     self,
                     f"validate_{field.field_key}",
@@ -111,7 +111,7 @@ class PromptChallengeResponse(ChallengeResponse):
         # Check if we have any static or hidden fields, and ensure they
         # still have the same value
         static_hidden_fields: QuerySet[Prompt] = self.stage_instance.fields.filter(
-            type__in=[
+            prompt_type__in=[
                 FieldTypes.HIDDEN,
                 FieldTypes.STATIC,
                 FieldTypes.TEXT_READ_ONLY,
@@ -128,7 +128,7 @@ class PromptChallengeResponse(ChallengeResponse):
 
         # Check if we have two password fields, and make sure they are the same
         password_fields: QuerySet[Prompt] = self.stage_instance.fields.filter(
-            type=FieldTypes.PASSWORD
+            prompt_type=FieldTypes.PASSWORD
         )
         if password_fields.exists() and password_fields.count() == 2:
             self._validate_password_fields(*[field.field_key for field in password_fields])

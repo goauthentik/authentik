@@ -54,7 +54,7 @@ class PromptSerializer(ModelSerializer):
             "name",
             "field_key",
             "label",
-            "type",
+            "prompt_type",
             "required",
             "placeholder",
             "initial_value",
@@ -72,8 +72,8 @@ class PromptViewSet(UsedByMixin, ModelViewSet):
     queryset = Prompt.objects.all().prefetch_related("promptstage_set")
     serializer_class = PromptSerializer
     ordering = ["field_key"]
-    filterset_fields = ["field_key", "name", "label", "type", "placeholder"]
-    search_fields = ["field_key", "name", "label", "type", "placeholder"]
+    filterset_fields = ["field_key", "name", "label", "prompt_type", "placeholder"]
+    search_fields = ["field_key", "name", "label", "prompt_type", "placeholder"]
 
     @extend_schema(
         request=PromptSerializer,
@@ -114,7 +114,7 @@ class PromptViewSet(UsedByMixin, ModelViewSet):
             )
         challenge = PromptChallenge(
             data={
-                "type": ChallengeTypes.NATIVE.value,
+                "prompt_type": ChallengeTypes.NATIVE.value,
                 "fields": fields,
             },
         )
