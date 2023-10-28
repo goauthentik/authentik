@@ -131,28 +131,19 @@ From Authentik Admin Dashboard:
 1. Open "**Applications > Providers**" page from the sidebar
 2. Click on "**Create**" from the provider list command bar
 3. Within the new provider form, select "**OAuth2/OpenID Provider**"
-4. Click on "**Next**" an fulfill the creation form as following
-    - **Name**: `auth.providerName`
-    - **Authentication flow**: default-authentication-flow
-    - **Authorization flow**: default-provider-authorization-implicit-consent
-:::note
-use the explicit flow if user consents are required
-:::
-    - **Redirect URIs / Origins**: `auth.providerRedirectURI`
-    - **Signing Key**: authentik Self-signed Certificate
-:::note
-The certificate is used for signing JWT tokens, if you change it after the integration, do not forget to update your SharePoint Trusted Certificate
-:::
-    - **Access code validity**: minutes=5
-:::note
-The minimum is 5 minutes, otherwise SharePoint backend might consider the access code expired
-:::
-    - **Access Token validity**: minutes=15
-:::note
-The minimum is 15 minutes, otherwise SharePoint backend will consider the access token expired
-:::
-    - **Scopes**: select default email, SPopenid and SPprofile
-    - **Suject mode**: Based on the User's hashed ID
+4. Click on "**Next**" an fulfill the creation form as following - **Name**: `auth.providerName` - **Authentication flow**: default-authentication-flow - **Authorization flow**: default-provider-authorization-implicit-consent
+   :::note
+   use the explicit flow if user consents are required
+   ::: - **Redirect URIs / Origins**: `auth.providerRedirectURI` - **Signing Key**: authentik Self-signed Certificate
+   :::note
+   The certificate is used for signing JWT tokens, if you change it after the integration, do not forget to update your SharePoint Trusted Certificate
+   ::: - **Access code validity**: minutes=5
+   :::note
+   The minimum is 5 minutes, otherwise SharePoint backend might consider the access code expired
+   ::: - **Access Token validity**: minutes=15
+   :::note
+   The minimum is 15 minutes, otherwise SharePoint backend will consider the access token expired
+   ::: - **Scopes**: select default email, SPopenid and SPprofile - **Suject mode**: Based on the User's hashed ID
 5. Click on "**Finish**"
 
 ### Step 3: Create Authentik Application
@@ -178,8 +169,10 @@ From Authentik Admin Dashboard:
 The following PowerShell script must be updated according to your environment and executed as **Farm Admin account** with **elevated privileges** on a SharePoint Server.
 
 :::caution
+
 -   Update placeholders
 -   Read all script's comments.
+
 :::
 
 ```PowerShell
