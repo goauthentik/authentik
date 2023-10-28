@@ -170,10 +170,9 @@ From Authentik Admin Dashboard:
 The following PowerShell script must be updated according to your environment and executed as **Farm Admin account** with **elevated privileges** on a SharePoint Server.
 
 :::caution
-
 -   Update placeholders
 -   Read all script's comments.
-    :::
+:::
 
 ```PowerShell
 Add-PSSnapin microsoft.sharepoint.powershell
@@ -223,7 +222,8 @@ The following PowerShell script must be updated according to your environment an
 
 -   Update placeholders
 -   Read all script's comments.
-    :::
+
+:::
 
 ```PowerShell
 Add-PSSnapin microsoft.sharepoint.powershell
@@ -296,7 +296,8 @@ The following PowerShell script must be updated according to your environment an
 
 -   Update placeholders
 -   Read all script's comments.
-    :::
+
+:::
 
 ```PowerShell
 Add-PSSnapin microsoft.sharepoint.powershell
