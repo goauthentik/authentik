@@ -69,9 +69,9 @@ These guidelines uses the following placeholders for the overall setup.
 # Authentication Setup
 ## Step 1: Create Authentik Open ID Property Mappings
 
-SharePoint requires additionnal properties within the openid and profile scopes in order to operate OIDC properly and be able to map incoming Authentik OID Claims with Microsoft Claims.
+SharePoint requires additional properties within the openid and profile scopes in order to operate OIDC properly and be able to map incoming Authentik OID Claims with Microsoft Claims.
 
-Additionnal information from Microsoft documentations: 
+Additional information from Microsoft documentations: 
 - https://learn.microsoft.com/en-us/entra/identity-platform/id-tokens#validate-tokens
 - https://learn.microsoft.com/en-us/entra/identity-platform/id-token-claims-reference#payload-claims
 
@@ -133,7 +133,7 @@ From Authentik Admin Dashboard:
     _Notes: use the explict flow if user consents are required_ \
     d. __Redirect URIs / Origins__: `auth.providerRedirectURI` \
     e. __Signing Key__: authentik Self-signed Certificate \
-    _Important Notes: The certificate is used for signin JWT tokens, if you change it after the integration, do not forget to update your SharePoint Trusted  Certificate_ \
+    _Important Notes: The certificate is used for signing JWT tokens, if you change it after the integration, do not forget to update your SharePoint Trusted  Certificate_ \
     f. __Access code validity__: minutes=5 \
     _Important Notes: the minimum is 5 minutes, otherwise SharePoint backend might consider the access code expired_ \
     g. __Access Token validity__: minutes=15 \
@@ -161,7 +161,7 @@ From Authentik Admin Dashboard:
 ### Pre-requisites
 #### Update SharePoint Farm properties
 
-The following PowerShell script must be updated according to your environment and exectuted as __Farm Admin account__ with __elevated priviledges__ on a SharePoint Server.
+The following PowerShell script must be updated according to your environment and executed as __Farm Admin account__ with __elevated privileges__ on a SharePoint Server.
 
 :::caution 
 - Update placeholders
@@ -199,7 +199,7 @@ $f.Farm.Update()
 
 Update the SharePoint farm to accept OAuth authentication over HTTP.
 
-The following PowerShell script must be updated according to your environment and exectuted as __Farm Admin account__ with __elevated priviledges__ on a SharePoint Server.
+The following PowerShell script must be updated according to your environment and executed as __Farm Admin account__ with __elevated privileges__ on a SharePoint Server.
 
 
 ```PowerShell
@@ -211,7 +211,7 @@ $c.update()
 
 ### Create SharePoint Authentication Provider
 
-The following PowerShell script must be updated according to your environment and exectuted as __Farm Admin account__ with __elevated priviledges__ on a SharePoint Server.
+The following PowerShell script must be updated according to your environment and executed as __Farm Admin account__ with __elevated privileges__ on a SharePoint Server.
 
 :::caution 
 - Update placeholders
@@ -261,7 +261,7 @@ From the Central Administration opened as a Farm Administrator:
 2. Select your web application `sp.webAppURL`
 3. Click on "__Authentication Providers__" from the ribbon bar
 4. According to your environment, click on the target zone such as "Default"
-5. Update the authentication profiver form as following: \
+5. Update the authentication provider form as following: \
     a. Check "__Trusted Identity Provider__" \
     b. Check the newly created provider named `sp.issuerName` \
     c. (Optional) Set "__Custom Sign In Page__": /_trust/default.aspx
@@ -283,7 +283,7 @@ Objectives :
 
 ## Step 1: Assign LDAPCP as Claim provider for the Identity Token Issuer
 
-The following PowerShell script must be updated according to your environment and exectuted as __Farm Admin account__ with __elevated priviledges__ on a SharePoint Server.
+The following PowerShell script must be updated according to your environment and executed as __Farm Admin account__ with __elevated priviledges__ on a SharePoint Server.
 
 :::caution 
 - Update placeholders
