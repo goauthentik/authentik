@@ -35,7 +35,7 @@ For all other integration models, read Microsoft official documentations.
 This setup only works starting with **Authentik** version **2023.10** and Microsoft **SharePoint** Subscription Edition starting with the **Cumulative Updates** of **September 2023**
 :::
 
-# Preparation
+## Preparation
 
 When you configure OIDC with Authentik, you need the following resources:
 
@@ -65,9 +65,9 @@ These guidelines uses the following placeholders for the overall setup.
 | SharePoint Trusted Token Issuer Name               | `sp.issuerName`                      | Authentik                                                                             |
 | SharePoint Trusted Token Issuer Description        | `sp.issuerDesc`                      | Authentik IDP                                                                         |
 
-# Authentication Setup
+## Authentication Setup
 
-## Step 1: Create Authentik Open ID Property Mappings
+### Step 1: Create Authentik Open ID Property Mappings
 
 SharePoint requires additional properties within the openid and profile scopes in order to operate OIDC properly and be able to map incoming Authentik OID Claims with Microsoft Claims.
 
@@ -76,7 +76,7 @@ Additional information from Microsoft documentations:
 -   https://learn.microsoft.com/en-us/entra/identity-platform/id-tokens#validate-tokens
 -   https://learn.microsoft.com/en-us/entra/identity-platform/id-token-claims-reference#payload-claims
 
-### Add an openid scope mapping for SharePoint
+#### Add an openid scope mapping for SharePoint
 
 From Authentik Admin Dashboard:
 
@@ -99,7 +99,7 @@ return {
 
 5. Click on "**Finish**"
 
-### Add a profile scope mapping for SharePoint
+#### Add a profile scope mapping for SharePoint
 
 From Authentik Admin Dashboard:
 
@@ -124,7 +124,7 @@ return {
 
 5. Click on "**Finish**"
 
-## Step 2: Create Authentik Open ID Connect Provider
+### Step 2: Create Authentik Open ID Connect Provider
 
 From Authentik Admin Dashboard:
 
@@ -155,7 +155,7 @@ The minimum is 15 minutes, otherwise SharePoint backend will consider the access
     - **Suject mode**: Based on the User's hashed ID
 5. Click on "**Finish**"
 
-## Step 3: Create Authentik Application
+### Step 3: Create Authentik Application
 
 From Authentik Admin Dashboard:
 
@@ -169,11 +169,11 @@ From Authentik Admin Dashboard:
     - (Optional) **Icon**: https://res-1.cdn.office.net/files/fabric-cdn-prod_20221209.001/assets/brand-icons/product/svg/sharepoint_48x1.svg
 4. Click on "**Create**"
 
-## Step 4: Setup OIDC authentication in SharePoint Server
+### Step 4: Setup OIDC authentication in SharePoint Server
 
-### Pre-requisites
+#### Pre-requisites
 
-#### Update SharePoint Farm properties
+##### Update SharePoint Farm properties
 
 The following PowerShell script must be updated according to your environment and executed as **Farm Admin account** with **elevated privileges** on a SharePoint Server.
 
@@ -209,7 +209,7 @@ $f.Farm.Properties['SP-NonceCookieHMACSecretKey']='seed'
 $f.Farm.Update()
 ```
 
-#### SharePoint settings in case of SSL Offloading
+##### SharePoint settings in case of SSL Offloading
 
 Update the SharePoint farm to accept OAuth authentication over HTTP.
 
@@ -222,7 +222,7 @@ $c.AllowOAuthOverHttp = $true
 $c.update()
 ```
 
-### Create SharePoint Authentication Provider
+#### Create SharePoint Authentication Provider
 
 The following PowerShell script must be updated according to your environment and executed as **Farm Admin account** with **elevated privileges** on a SharePoint Server.
 
@@ -268,7 +268,7 @@ New-SPAuthenticationProvider -TrustedIdentityTokenIssuer $trustedTokenIssuer
 
 ```
 
-### Configure SharePoint Web Applications
+#### Configure SharePoint Web Applications
 
 From the Central Administration opened as a Farm Administrator:
 
@@ -284,7 +284,7 @@ From the Central Administration opened as a Farm Administrator:
 
 Repeat all steps for each target web applications which matches with `auth.providerRedirectURI`.
 
-# (Optional) SharePoint Enhancements
+## (Optional) SharePoint Enhancements
 
 Objectives :
 
@@ -296,9 +296,9 @@ Objectives :
 [LDAPCP](https://www.ldapcp.com/docs/overview/introduction/) must be installed on the target SharePoint Farm.
 :::
 
-## Step 1: Assign LDAPCP as Claim provider for the Identity Token Issuer
+### Step 1: Assign LDAPCP as Claim provider for the Identity Token Issuer
 
-The following PowerShell script must be updated according to your environment and executed as **Farm Admin account** with **elevated priviledges** on a SharePoint Server.
+The following PowerShell script must be updated according to your environment and executed as **Farm Admin account** with **elevated privileges** on a SharePoint Server.
 
 :::caution
 
@@ -316,7 +316,7 @@ $sptrust.ClaimProviderName = "LDAPCP"
 $sptrust.Update()
 ```
 
-## Step 2: Configure LDAPCP Claim types
+### Step 2: Configure LDAPCP Claim types
 
 From the SharePoint Central Administration opened as a Farm Administrator:
 
@@ -331,7 +331,7 @@ From the SharePoint Central Administration opened as a Farm Administrator:
 | http://schemas.microsoft.com/ws/2008/06/identity/claims/role  | Group       | group      | cn                      |                           | DisplayName           |
 | LDAP attribute linked to the main mapping for object Group    | Group       | group      | uid                     |                           | SPGroupID             |
 
-## Step 3: Create an Authentik LDAP Outpost
+### Step 3: Create an Authentik LDAP Outpost
 
 From the Authentik Admin Dashboard:
 
@@ -356,7 +356,7 @@ For other kind of deployment, please refer to the Authentik documentation.
 
 _Note: The `ldap.outpostURI` should be the IP, Hostname or FQDN of the LDAP Outpost service deployed accessible by your SharePoint Farm._
 
-## Step 4: Configure LDAPCP global configuration
+### Step 4: Configure LDAPCP global configuration
 
 From the SharePoint Central Administration opened as a Farm Administrator:
 
