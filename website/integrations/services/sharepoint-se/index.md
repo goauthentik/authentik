@@ -14,20 +14,20 @@ title: Microsoft SharePoint Server Subscription Edition
 
 > Organizations use Microsoft SharePoint to create websites.
 >
-> You can use it as a secure place to store, organize, share, and access information from any device. \
+> You can use it as a secure place to store, organize, share, and access information from any device.
 > All you need is a web browser, such as Microsoft Edge, Internet Explorer, Chrome, or Firefox.
 >
 > -- https://support.microsoft.com/en-us/office/what-is-sharepoint-97b915e6-651b-43b2-827d-fb25777f446f
 
 :::note
-There are many ways to implement SSO mechanisim within Microsoft SharePoint Server.
+There are many ways to implement SSO mechanism within Microsoft SharePoint Server.
 
-This guidelines provides the procedure to integrate Authentik with OIDC provider based on Microsoft documentations. \
+This guidelines provides the procedure to integrate Authentik with OIDC provider based on Microsoft documentations.
 (cf. https://learn.microsoft.com/en-us/sharepoint/security-for-sharepoint-server/set-up-oidc-auth-in-sharepoint-server-with-msaad)
 
 In addition, it provides the procedure to enable claims augmentations in order to resolve group memberships.
 
-For all other integration models, read Microsoft official documentations. \
+For all other integration models, read Microsoft official documentations.
 (cf. https://learn.microsoft.com/en-us/sharepoint/security-for-sharepoint-server/plan-user-authentication)
 :::
 
@@ -135,14 +135,22 @@ From Authentik Admin Dashboard:
     - **Name**: `auth.providerName`
     - **Authentication flow**: default-authentication-flow
     - **Authorization flow**: default-provider-authorization-implicit-consent
-      _Notes: use the explict flow if user consents are required_
+:::note
+use the explicit flow if user consents are required
+:::
     - **Redirect URIs / Origins**: `auth.providerRedirectURI`
     - **Signing Key**: authentik Self-signed Certificate
-      _Important Notes: The certificate is used for signing JWT tokens, if you change it after the integration, do not forget to update your SharePoint Trusted Certificate_
-    - **Access code validity**: minutes=5 \
-      _Important Notes: the minimum is 5 minutes, otherwise SharePoint backend might consider the access code expired_
-    - **Access Token validity**: minutes=15 \
-      _Important Notes: the minimum is 15 minutes, otherwise SharePoint backend will consider the access token expired_
+:::note
+The certificate is used for signing JWT tokens, if you change it after the integration, do not forget to update your SharePoint Trusted Certificate
+:::
+    - **Access code validity**: minutes=5
+:::note
+The minimum is 5 minutes, otherwise SharePoint backend might consider the access code expired
+:::
+    - **Access Token validity**: minutes=15
+:::note
+The minimum is 15 minutes, otherwise SharePoint backend will consider the access token expired
+:::
     - **Scopes**: select default email, SPopenid and SPprofile
     - **Suject mode**: Based on the User's hashed ID
 5. Click on "**Finish**"
