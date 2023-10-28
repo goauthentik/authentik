@@ -258,7 +258,10 @@ class Prompt(SerializerModel):
         return value
 
     def field(self, default: Optional[Any], choices: Optional[list[Any]] = None) -> CharField:
-        """Get field prompt_type for Challenge and response. Choices are only valid for CHOICE_FIELDS."""
+        """
+        Get field prompt_type for Challenge and response.
+        Choices are only valid for CHOICE_FIELDS
+        """
         field_class = CharField
         kwargs = {
             "required": self.required,
