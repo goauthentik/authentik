@@ -83,10 +83,10 @@ From Authentik Admin Dashboard:
 1. Open "**Customisation > Property Mappings**" page from the sidebar
 2. Click on "**Create**" from the property mapping list command bar
 3. Within the new property mapping form, select "**Scope Mapping**"
-4. Click on "**Next**" an fulfill the creation form as following \
-   a. **Name**: SPopenid \
-   b. **Scope name**: openid \
-   c. **Expression**:
+4. Click on "**Next**" an fulfill the creation form as following
+    - **Name**: SPopenid
+    - **Scope name**: openid
+    - **Expression**:
 
 ```python
 return {
@@ -106,10 +106,10 @@ From Authentik Admin Dashboard:
 1. Open "**Customisation > Property Mappings**" page from the sidebar
 2. Click on "**Create**" from the property mapping list command bar
 3. Within the new property mapping form, select "**Scope Mapping**"
-4. Click on "**Next**" an fulfill the creation form as following \
-   a. **Name**: SPprofile \
-   b. **Scope name**: profile \
-   c. **Expression**:
+4. Click on "**Next**" an fulfill the creation form as following
+    - **Name**: SPprofile
+    - **Scope name**: profile
+    - **Expression**:
 
 ```python
 return {
@@ -131,20 +131,20 @@ From Authentik Admin Dashboard:
 1. Open "**Applications > Providers**" page from the sidebar
 2. Click on "**Create**" from the provider list command bar
 3. Within the new provider form, select "**OAuth2/OpenID Provider**"
-4. Click on "**Next**" an fulfill the creation form as following \
-   a. **Name**: `auth.providerName` \
-   b. **Authentication flow**: default-authentication-flow \
-   c. **Authorization flow**: default-provider-authorization-implicit-consent \
-   _Notes: use the explict flow if user consents are required_ \
-   d. **Redirect URIs / Origins**: `auth.providerRedirectURI` \
-   e. **Signing Key**: authentik Self-signed Certificate \
-   _Important Notes: The certificate is used for signing JWT tokens, if you change it after the integration, do not forget to update your SharePoint Trusted Certificate_ \
-   f. **Access code validity**: minutes=5 \
-   _Important Notes: the minimum is 5 minutes, otherwise SharePoint backend might consider the access code expired_ \
-   g. **Access Token validity**: minutes=15 \
-   _Important Notes: the minimum is 15 minutes, otherwise SharePoint backend will consider the access token expired_ \
-   h. **Scopes**: select default email, SPopenid and SPprofile \
-   i. **Suject mode**: Based on the User's hashed ID
+4. Click on "**Next**" an fulfill the creation form as following
+    - **Name**: `auth.providerName`
+    - **Authentication flow**: default-authentication-flow
+    - **Authorization flow**: default-provider-authorization-implicit-consent
+      _Notes: use the explict flow if user consents are required_
+    - **Redirect URIs / Origins**: `auth.providerRedirectURI`
+    - **Signing Key**: authentik Self-signed Certificate
+      _Important Notes: The certificate is used for signing JWT tokens, if you change it after the integration, do not forget to update your SharePoint Trusted Certificate_
+    - **Access code validity**: minutes=5 \
+      _Important Notes: the minimum is 5 minutes, otherwise SharePoint backend might consider the access code expired_
+    - **Access Token validity**: minutes=15 \
+      _Important Notes: the minimum is 15 minutes, otherwise SharePoint backend will consider the access token expired_
+    - **Scopes**: select default email, SPopenid and SPprofile
+    - **Suject mode**: Based on the User's hashed ID
 5. Click on "**Finish**"
 
 ## Step 3: Create Authentik Application
@@ -153,12 +153,12 @@ From Authentik Admin Dashboard:
 
 1. Open "**Applications > Applications**" page from the sidebar
 2. Click on "**Create**" from the application list command bar
-3. Within the new application form, fulfill it as following: \
-   a. **Name**: `auth.applicationName` \
-   b. **Slug**: `auth.applicationSlug` \
-   c. **Provider**: `auth.providerName` \
-   d. (Optional) **Launch URL**: `sp.webAppURL` \
-   e. (Optional) **Icon**: https://res-1.cdn.office.net/files/fabric-cdn-prod_20221209.001/assets/brand-icons/product/svg/sharepoint_48x1.svg
+3. Within the new application form, fulfill it as following:
+    - **Name**: `auth.applicationName`
+    - **Slug**: `auth.applicationSlug`
+    - **Provider**: `auth.providerName`
+    - (Optional) **Launch URL**: `sp.webAppURL`
+    - (Optional) **Icon**: https://res-1.cdn.office.net/files/fabric-cdn-prod_20221209.001/assets/brand-icons/product/svg/sharepoint_48x1.svg
 4. Click on "**Create**"
 
 ## Step 4: Setup OIDC authentication in SharePoint Server
@@ -268,10 +268,10 @@ From the Central Administration opened as a Farm Administrator:
 2. Select your web application `sp.webAppURL`
 3. Click on "**Authentication Providers**" from the ribbon bar
 4. According to your environment, click on the target zone such as "Default"
-5. Update the authentication provider form as following: \
-   a. Check "**Trusted Identity Provider**" \
-   b. Check the newly created provider named `sp.issuerName` \
-   c. (Optional) Set "**Custom Sign In Page**": /\_trust/default.aspx
+5. Update the authentication provider form as following:
+    - Check "**Trusted Identity Provider**"
+    - Check the newly created provider named `sp.issuerName`
+    - (Optional) Set "**Custom Sign In Page**": /\_trust/default.aspx
 6. Click on "**Save**"
 
 Repeat all steps for each target web applications which matches with `auth.providerRedirectURI`.
@@ -332,18 +332,18 @@ The following procedure apply to an Authentik deployment within Kubernetes.
 For other king of deployment, please refer to the Authentik documentation.
 :::
 
-1. Follow Authentik [LDAP Provider Generic Setup](https://version-2023-10.goauthentik.io/docs/providers/ldap/generic_setup) with the following steps : \
-   a. **Create User/Group** to create a "service account" for `ldap.outpostServiceAccount` and a searchable group of users & groups \
-   b. **LDAP Flow** to create the authentication flow for the LDAP Provider \
-   c. **LDAP Provider** to create an LDAP provider which can be consumed by the LDAP Application \
-   d. **LDAP Application** to create the application being used by the LDAP Outpost
-1. Open "**Applications > Outpost**" page from the sidebar
-1. Click on "**Create**" from the outpost list command bar
-1. Within the new outpost form, fulfill as following \
-   a. **Name**: `ldap.outpostName` \
-   b. **Type**: LDAP
-   c. **Applications**: select the LDAP Application previously created
-1. Click on "**Create**"
+1. Follow Authentik [LDAP Provider Generic Setup](https://version-2023-10.goauthentik.io/docs/providers/ldap/generic_setup) with the following steps :
+    - **Create User/Group** to create a "service account" for `ldap.outpostServiceAccount` and a searchable group of users & groups
+    - **LDAP Flow** to create the authentication flow for the LDAP Provider
+    - **LDAP Provider** to create an LDAP provider which can be consumed by the LDAP Application
+    - **LDAP Application** to create the application being used by the LDAP Outpost
+2. Open "**Applications > Outpost**" page from the sidebar
+3. Click on "**Create**" from the outpost list command bar
+4. Within the new outpost form, fulfill as following
+    - **Name**: `ldap.outpostName`
+    - **Type**: LDAP
+    - **Applications**: select the LDAP Application previously created
+5. Click on "**Create**"
 
 _Note: The `ldap.outpostURI` should be the IP, Hostname or FQDN of the LDAP Outpost service deployed accessible by your SharePoint Farm._
 
@@ -352,17 +352,17 @@ _Note: The `ldap.outpostURI` should be the IP, Hostname or FQDN of the LDAP Outp
 From the SharePoint Central Administration opened as a Farm Administrator:
 
 1. Open "**Security > LDAPCP Configuration > Global configuration**" page
-2. Add an LDAP connection with th following properties: \
-   a. **LDAP Path**: LDAP://`ldap.outpostURI`/dc=ldap,dc=goauthentik,dc=io \
-   b. **Username**: `ldap.outpostServiceAccount` \
-   c. **Password**: `ldap.outpostServiceAccountPassword` \
-   d. **Authentication types**: check ServerBind
+2. Add an LDAP connection with th following properties:
+    - **LDAP Path**: LDAP://`ldap.outpostURI`/dc=ldap,dc=goauthentik,dc=io
+    - **Username**: `ldap.outpostServiceAccount`
+    - **Password**: `ldap.outpostServiceAccountPassword`
+    - **Authentication types**: check ServerBind
 3. Augmentation - Check **Enable augmentation**
 4. Augmentation - Select the Role claim "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
 5. Augmentation - Check only "**Query this server**" for your `ldap.outpostURI`
-6. User identifier properties: \
-   a. **LDAP class**: user \
-   b. **LDAP attribute**: uid
-7. Display of user identifier results: \
-   a. Tick **Show the value of another LDAP attribute**: sn
+6. User identifier properties:
+    - **LDAP class**: user
+    - **LDAP attribute**: uid
+7. Display of user identifier results:
+    - Tick **Show the value of another LDAP attribute**: sn
 8. CLick on "**OK**"
