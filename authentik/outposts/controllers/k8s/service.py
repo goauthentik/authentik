@@ -34,9 +34,9 @@ class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
             raise NeedsUpdate()
         if current.spec.type != reference.spec.type:
             raise NeedsUpdate()
-        if current.spec.ipFamilyPolicy != reference.spec.ipFamilyPolicy:
+        if current.spec.ip_family_policy != reference.spec.ip_family_policy:
             raise NeedsUpdate()
-        if current.spec.ipFamilies != reference.spec.ipFamilies:
+        if current.spec.ip_families != reference.spec.ip_families:
             raise NeedsUpdate()
         super().reconcile(current, reference)
 
