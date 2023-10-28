@@ -376,4 +376,4 @@ From the SharePoint Central Administration opened as a Farm Administrator:
     - **LDAP attribute**: uid
 7. Display of user identifier results:
     - Tick **Show the value of another LDAP attribute**: sn
-8. CLick on "**OK**"
+8. Click on "**OK**"
