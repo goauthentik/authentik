@@ -159,13 +159,13 @@ class IngressReconciler(KubernetesObjectReconciler[V1Ingress]):
             rules.append(rule)
         tls_config = None
         if tls_hosts:
-            tls_config = V1IngressTLS(
+            tls_config = [V1IngressTLS(
                 hosts=tls_hosts,
                 secret_name=self.controller.outpost.config.kubernetes_ingress_secret_name,
-            )
+            )]
         spec = V1IngressSpec(
             rules=rules,
-            tls=[tls_config],
+            tls=tls_config,
         )
         if self.controller.outpost.config.kubernetes_ingress_class_name:
             spec.ingress_class_name = self.controller.outpost.config.kubernetes_ingress_class_name

@@ -73,6 +73,8 @@ class OutpostConfig:
     kubernetes_ingress_secret_name: str = field(default="authentik-outpost-tls")
     kubernetes_ingress_class_name: Optional[str] = field(default=None)
     kubernetes_service_type: str = field(default="ClusterIP")
+    kubernetes_service_ip_family_policy: Optional[str] = field(default="SingleStack")
+    kubernetes_service_ip_families: list[str] = field(default_factory=list)
     kubernetes_disabled_components: list[str] = field(default_factory=list)
     kubernetes_image_pull_secrets: list[str] = field(default_factory=list)
     kubernetes_json_patches: Optional[dict[str, list[dict[str, Any]]]] = field(default=None)

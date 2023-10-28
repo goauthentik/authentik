@@ -32,6 +32,12 @@ class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
         # priority than being updated.
         if current.spec.selector != reference.spec.selector:
             raise NeedsUpdate()
+        if current.spec.type != reference.spec.type:
+            raise NeedsUpdate()
+        if current.spec.ipFamilyPolicy != reference.spec.ipFamilyPolicy:
+            raise NeedsUpdate()
+        if current.spec.ipFamilies != reference.spec.ipFamilies:
+            raise NeedsUpdate()
         super().reconcile(current, reference)
 
     def get_reference_object(self) -> V1Service:
@@ -60,6 +66,8 @@ class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
                 ports=ports,
                 selector=selector_labels,
                 type=self.controller.outpost.config.kubernetes_service_type,
+                ip_family_policy=self.controller.outpost.config.kubernetes_service_ip_family_policy,
+                ip_families=self.controller.outpost.config.kubernetes_service_ip_families,
             ),
         )
 
