@@ -362,6 +362,7 @@ const docsSidebar = {
             },
             items: [
                 "security/policy",
+                "security/GHSA-rjvp-29xq-f62w",
                 "security/CVE-2023-39522",
                 "security/CVE-2023-36456",
                 "security/2023-06-cure53",
