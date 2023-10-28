@@ -8,6 +8,8 @@ postgresql:
   password: "env://POSTGRES_PASSWORD"
   use_pgbouncer: false
   use_pgpool: false
+  test:
+    name: test_authentik
 
 listen:
   listen_http: 0.0.0.0:9000

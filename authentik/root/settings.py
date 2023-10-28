@@ -278,6 +278,9 @@ DATABASES = {
         "SSLROOTCERT": CONFIG.get("postgresql.sslrootcert"),
         "SSLCERT": CONFIG.get("postgresql.sslcert"),
         "SSLKEY": CONFIG.get("postgresql.sslkey"),
+        "TEST": {
+            "NAME": CONFIG.get("postgresql.test.name"),
+        },
     }
 }
 
