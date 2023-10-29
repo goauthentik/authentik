@@ -35,7 +35,7 @@ class TestPromptStage(FlowTestCase):
             name=generate_id(),
             field_key="username_prompt",
             label="USERNAME_LABEL",
-            type=FieldTypes.USERNAME,
+            prompt_type=FieldTypes.USERNAME,
             required=True,
             placeholder="USERNAME_PLACEHOLDER",
             initial_value="akuser",
@@ -44,7 +44,7 @@ class TestPromptStage(FlowTestCase):
             name=generate_id(),
             field_key="text_prompt",
             label="TEXT_LABEL",
-            type=FieldTypes.TEXT,
+            prompt_type=FieldTypes.TEXT,
             required=True,
             placeholder="TEXT_PLACEHOLDER",
             initial_value="some text",
@@ -53,7 +53,7 @@ class TestPromptStage(FlowTestCase):
             name=generate_id(),
             field_key="text_area_prompt",
             label="TEXT_AREA_LABEL",
-            type=FieldTypes.TEXT_AREA,
+            prompt_type=FieldTypes.TEXT_AREA,
             required=True,
             placeholder="TEXT_AREA_PLACEHOLDER",
             initial_value="some text",
@@ -62,7 +62,7 @@ class TestPromptStage(FlowTestCase):
             name=generate_id(),
             field_key="email_prompt",
             label="EMAIL_LABEL",
-            type=FieldTypes.EMAIL,
+            prompt_type=FieldTypes.EMAIL,
             required=True,
             placeholder="EMAIL_PLACEHOLDER",
             initial_value="email@example.com",
@@ -71,7 +71,7 @@ class TestPromptStage(FlowTestCase):
             name=generate_id(),
             field_key="password_prompt",
             label="PASSWORD_LABEL",
-            type=FieldTypes.PASSWORD,
+            prompt_type=FieldTypes.PASSWORD,
             required=True,
             placeholder="PASSWORD_PLACEHOLDER",
             initial_value="supersecurepassword",
@@ -80,7 +80,7 @@ class TestPromptStage(FlowTestCase):
             name=generate_id(),
             field_key="password2_prompt",
             label="PASSWORD_LABEL",
-            type=FieldTypes.PASSWORD,
+            prompt_type=FieldTypes.PASSWORD,
             required=True,
             placeholder="PASSWORD_PLACEHOLDER",
             initial_value="supersecurepassword",
@@ -89,7 +89,7 @@ class TestPromptStage(FlowTestCase):
             name=generate_id(),
             field_key="number_prompt",
             label="NUMBER_LABEL",
-            type=FieldTypes.NUMBER,
+            prompt_type=FieldTypes.NUMBER,
             required=True,
             placeholder="NUMBER_PLACEHOLDER",
             initial_value="42",
@@ -97,7 +97,7 @@ class TestPromptStage(FlowTestCase):
         hidden_prompt = Prompt.objects.create(
             name=generate_id(),
             field_key="hidden_prompt",
-            type=FieldTypes.HIDDEN,
+            prompt_type=FieldTypes.HIDDEN,
             required=True,
             placeholder="HIDDEN_PLACEHOLDER",
             initial_value="something idk",
@@ -105,7 +105,7 @@ class TestPromptStage(FlowTestCase):
         static_prompt = Prompt.objects.create(
             name=generate_id(),
             field_key="static_prompt",
-            type=FieldTypes.STATIC,
+            prompt_type=FieldTypes.STATIC,
             required=True,
             placeholder="static",
             initial_value="something idk",
@@ -113,7 +113,7 @@ class TestPromptStage(FlowTestCase):
         radio_button_group = Prompt.objects.create(
             name=generate_id(),
             field_key="radio_button_group",
-            type=FieldTypes.RADIO_BUTTON_GROUP,
+            prompt_type=FieldTypes.RADIO_BUTTON_GROUP,
             required=True,
             placeholder="test",
             initial_value="test",
@@ -121,7 +121,7 @@ class TestPromptStage(FlowTestCase):
         dropdown = Prompt.objects.create(
             name=generate_id(),
             field_key="dropdown",
-            type=FieldTypes.DROPDOWN,
+            prompt_type=FieldTypes.DROPDOWN,
             required=True,
         )
         self.stage = PromptStage.objects.create(name="prompt-stage")
@@ -339,7 +339,7 @@ class TestPromptStage(FlowTestCase):
         prompt: Prompt = Prompt(
             field_key="text_prompt_expression",
             label="TEXT_LABEL",
-            type=FieldTypes.TEXT,
+            prompt_type=FieldTypes.TEXT,
             placeholder="return prompt_context['foo']",
             placeholder_expression=True,
         )
@@ -355,7 +355,7 @@ class TestPromptStage(FlowTestCase):
         prompt: Prompt = Prompt(
             field_key="text_prompt_expression",
             label="TEXT_LABEL",
-            type=FieldTypes.TEXT,
+            prompt_type=FieldTypes.TEXT,
             placeholder="return prompt_context['foo']",
             placeholder_expression=True,
         )
@@ -373,7 +373,7 @@ class TestPromptStage(FlowTestCase):
         prompt: Prompt = Prompt(
             field_key="text_prompt_expression",
             label="TEXT_LABEL",
-            type=FieldTypes.TEXT,
+            prompt_type=FieldTypes.TEXT,
             initial_value="return prompt_context['foo']",
             initial_value_expression=True,
         )
@@ -396,7 +396,7 @@ class TestPromptStage(FlowTestCase):
         prompt: Prompt = Prompt(
             field_key="fixed_choice_prompt_expression",
             label="LABEL",
-            type=FieldTypes.RADIO_BUTTON_GROUP,
+            prompt_type=FieldTypes.RADIO_BUTTON_GROUP,
             placeholder="return []",
             placeholder_expression=True,
             initial_value="Invalid choice",
@@ -413,7 +413,7 @@ class TestPromptStage(FlowTestCase):
         prompt: Prompt = Prompt(
             field_key="fixed_choice_prompt_expression",
             label="LABEL",
-            type=FieldTypes.DROPDOWN,
+            prompt_type=FieldTypes.DROPDOWN,
             placeholder=context["foo"],
             placeholder_expression=False,
             initial_value=context["foo"],
@@ -430,7 +430,7 @@ class TestPromptStage(FlowTestCase):
         prompt: Prompt = Prompt(
             field_key="fixed_choice_prompt_expression",
             label="LABEL",
-            type=FieldTypes.DROPDOWN,
+            prompt_type=FieldTypes.DROPDOWN,
             placeholder="return [prompt_context['foo']]",
             placeholder_expression=True,
             initial_value="return prompt_context['foo']",
@@ -451,7 +451,7 @@ class TestPromptStage(FlowTestCase):
         prompt: Prompt = Prompt(
             field_key="fixed_choice_prompt_expression",
             label="LABEL",
-            type=FieldTypes.RADIO_BUTTON_GROUP,
+            prompt_type=FieldTypes.RADIO_BUTTON_GROUP,
             placeholder="return ['test', True, 42]",
             placeholder_expression=True,
         )
@@ -466,7 +466,7 @@ class TestPromptStage(FlowTestCase):
         prompt: Prompt = Prompt(
             field_key="fixed_choice_prompt_expression",
             label="LABEL",
-            type=FieldTypes.RADIO_BUTTON_GROUP,
+            prompt_type=FieldTypes.RADIO_BUTTON_GROUP,
             placeholder="return ['test', True, 42]",
             placeholder_expression=True,
             initial_value="return True",
@@ -489,7 +489,7 @@ class TestPromptStage(FlowTestCase):
         prompt: Prompt = Prompt(
             field_key="fixed_choice_prompt_expression",
             label="LABEL",
-            type=FieldTypes.RADIO_BUTTON_GROUP,
+            prompt_type=FieldTypes.RADIO_BUTTON_GROUP,
         )
         self.assertEqual(prompt.get_placeholder(context, self.user, self.factory.get("/")), "")
         self.assertEqual(
@@ -505,7 +505,7 @@ class TestPromptStage(FlowTestCase):
         prompt: Prompt = Prompt(
             field_key="choice_prompt",
             label="TEXT_LABEL",
-            type=FieldTypes.DROPDOWN,
+            prompt_type=FieldTypes.DROPDOWN,
             placeholder="choice",
             initial_value="another_choice",
         )
@@ -524,7 +524,7 @@ class TestPromptStage(FlowTestCase):
         prompt: Prompt = Prompt(
             field_key="text_prompt_expression",
             label="TEXT_LABEL",
-            type=FieldTypes.TEXT,
+            prompt_type=FieldTypes.TEXT,
             placeholder="choice",
         )
         self.assertEqual(
@@ -538,7 +538,7 @@ class TestPromptStage(FlowTestCase):
         prompt: Prompt = Prompt(
             field_key="text_prompt_expression",
             label="TEXT_LABEL",
-            type=FieldTypes.TEXT,
+            prompt_type=FieldTypes.TEXT,
             placeholder="something invalid dunno",
             placeholder_expression=True,
         )
@@ -553,7 +553,7 @@ class TestPromptStage(FlowTestCase):
         prompt: Prompt = Prompt(
             field_key="text_prompt_expression",
             label="TEXT_LABEL",
-            type=FieldTypes.TEXT,
+            prompt_type=FieldTypes.TEXT,
             placeholder="return prompt_context['foo']",
             placeholder_expression=False,
         )
@@ -566,7 +566,7 @@ class TestPromptStage(FlowTestCase):
         prompt: Prompt = Prompt(
             field_key="text_prompt_expression",
             label="TEXT_LABEL",
-            type="foo",
+            prompt_type="foo",
             placeholder="foo",
             placeholder_expression=False,
             sub_text="test",
@@ -583,7 +583,7 @@ class TestPromptStage(FlowTestCase):
             data={
                 "field_key": "text_prompt_expression",
                 "label": "TEXT_LABEL",
-                "type": FieldTypes.TEXT,
+                "prompt_type": FieldTypes.TEXT,
                 "placeholder": 'return "Hello world"',
                 "placeholder_expression": True,
                 "initial_value": 'return "Hello Hello world"',
@@ -596,13 +596,13 @@ class TestPromptStage(FlowTestCase):
         self.assertJSONEqual(
             response.content.decode(),
             {
-                "type": ChallengeTypes.NATIVE.value,
+                "prompt_type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-prompt",
                 "fields": [
                     {
                         "field_key": "text_prompt_expression",
                         "label": "TEXT_LABEL",
-                        "type": "text",
+                        "prompt_type": "text",
                         "required": True,
                         "placeholder": "Hello world",
                         "initial_value": "Hello Hello world",
@@ -622,7 +622,7 @@ class TestPromptStage(FlowTestCase):
             data={
                 "field_key": "text_prompt_expression",
                 "label": "TEXT_LABEL",
-                "type": FieldTypes.TEXT,
+                "prompt_type": FieldTypes.TEXT,
                 "placeholder": "return [",
                 "placeholder_expression": True,
                 "sub_text": "test",
@@ -640,7 +640,7 @@ def field_type_tester_factory(field_type: FieldTypes, required: bool):
         prompt: Prompt = Prompt(
             field_key="text_prompt_expression",
             label="TEXT_LABEL",
-            type=field_type,
+            prompt_type=field_type,
             placeholder="foo",
             placeholder_expression=False,
             sub_text="test",
