@@ -27,8 +27,10 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: make empty ts client
-        run: mkdir -p ./gen-ts-client
+      - name: make empty clients
+        run: |
+          mkdir -p ./gen-ts-api
+          mkdir -p ./gen-go-api
       - name: Build Docker Image
         uses: docker/build-push-action@v5
         with:
@@ -69,6 +71,10 @@ jobs:
       - name: prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
+      - name: make empty clients
+        run: |
+          mkdir -p ./gen-ts-api
+          mkdir -p ./gen-go-api
       - name: Docker Login Registry
         uses: docker/login-action@v3
         with:
@@ -93,6 +99,7 @@ jobs:
             ghcr.io/goauthentik/${{ matrix.type }}:latest
           file: ${{ matrix.type }}.Dockerfile
           platforms: linux/amd64,linux/arm64
+          context: .
           build-args: |
             VERSION=${{ steps.ev.outputs.version }}
             VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}

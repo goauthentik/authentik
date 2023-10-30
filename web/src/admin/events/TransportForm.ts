@@ -78,8 +78,8 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Mode")} ?required=${true} name="mode">
                 <ak-radio
-                    @change=${(ev: CustomEvent<NotificationTransportModeEnum>) => {
-                        this.onModeChange(ev.detail);
+                    @change=${(ev: CustomEvent<{ value: NotificationTransportModeEnum }>) => {
+                        this.onModeChange(ev.detail.value);
                     }}
                     .options=${[
                         {
