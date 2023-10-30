@@ -86,6 +86,19 @@ entries:
     name: default-oobe-password-usable
   model: authentik_policies_expression.expressionpolicy
 - attrs:
+    expression: |
+      # This policy ensures that the setup flow can only be
+      # used one time
+      from authentik.flows.models import Flow, FlowAuthenticationRequirement
+      Flow.objects.filter(slug="initial-setup").update(
+          authentication=FlowAuthenticationRequirement.REQUIRE_SUPERUSER,
+      )
+      return True
+  id: policy-default-oobe-flow-set-authentication
+  identifiers:
+    name: default-oobe-flow-set-authentication
+  model: authentik_policies_expression.expressionpolicy
+- attrs:
     fields:
     - !KeyOf prompt-field-header
     - !KeyOf prompt-field-email
@@ -129,6 +142,7 @@ entries:
     evaluate_on_plan: true
     invalid_response_action: retry
     re_evaluate_policies: false
+  id: binding-login
   identifiers:
     order: 100
     stage: !KeyOf stage-default-authentication-login
@@ -143,4 +157,9 @@ entries:
     order: 0
     policy: !KeyOf policy-default-oobe-prefill-user
     target: !KeyOf binding-password-write
+  model: authentik_policies.policybinding
+- identifiers:
+    order: 0
+    policy: !KeyOf policy-default-oobe-flow-set-authentication
+    target: !KeyOf binding-login
   model: authentik_policies.policybinding
