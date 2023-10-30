@@ -3,7 +3,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { TemplateResult, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 
-type HelpType = (TemplateResult | typeof nothing);
+type HelpType = TemplateResult | typeof nothing;
 
 export class HorizontalLightComponent extends AKElement {
     // Render into the lightDOM. This effectively erases the shadowDOM nature of this component, but
@@ -46,7 +46,9 @@ export class HorizontalLightComponent extends AKElement {
     }
 
     renderHelp(): HelpType[] {
-        const bigHelp: HelpType[] = Array.isArray(this.bighelp) ? this.bighelp : [this.bighelp ?? nothing];
+        const bigHelp: HelpType[] = Array.isArray(this.bighelp)
+            ? this.bighelp
+            : [this.bighelp ?? nothing];
         return [
             this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing,
             ...bigHelp,
