@@ -38,6 +38,23 @@ function alignTermType(terms: DescriptionRecord[] | DescriptionPair[] = []) {
     return terms ?? [];
 }
 
+/**
+ * renderDescriptionList
+ *
+ * This function renders the most common form of the PatternFly description list used in our code.
+ * It expects either an array of term/description pairs or an array of `{ term: string, description:
+ * string | TemplateResult }`.
+ *
+ * An optional dictionary of configuration options is available. These enable the Patternfly
+ * "horizontal," "compact", "2 column on large," or "3 column on large" layouts that are (so far)
+ * the layouts used in Authentik's (and Gravity's, for that matter) code.
+ *
+ * This is not a web component and it does not bring its own styling ; calling code will still have
+ * to provide the styling necessary. It is only a function to replace the repetitious boilerplate of
+ * routine description lists. Its output is a standard TemplateResult that will be fully realized
+ * within the context of the DOM or ShadowDOM in which it is called.
+ */
+
 export function renderDescriptionList(
     terms: DescriptionRecord[] | DescriptionPair[] = [],
     config: DescriptionConfig = {
@@ -61,3 +78,5 @@ export function renderDescriptionList(
         </dl>
     `;
 }
+
+export default renderDescriptionList;
