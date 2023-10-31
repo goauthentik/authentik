@@ -14,6 +14,8 @@ import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { userTypeToLabel } from "@goauthentik/common/labels";
+import "@goauthentik/components/DescriptionList";
+import { renderDescriptionList } from "@goauthentik/components/DescriptionList";
 import "@goauthentik/components/events/ObjectChangelog";
 import "@goauthentik/components/events/UserEvents";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";
@@ -130,6 +132,100 @@ export class UserViewPage extends AKElement {
             ${this.renderBody()}`;
     }
 
+    renderActionButtons(user: User) {
+        const canImpersonate =
+            rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanImpersonate) &&
+            user.pk !== this.me?.user.pk;
+
+        return html`
+            <div class="ak-button-collection">
+                <ak-forms-modal>
+                    <span slot="submit"> ${msg("Update")} </span>
+                    <span slot="header"> ${msg("Update User")} </span>
+                    <ak-user-form slot="form" .instancePk=${user.pk}> </ak-user-form>
+                    <button slot="trigger" class="pf-m-primary pf-c-button pf-m-block">
+                        ${msg("Edit")}
+                    </button>
+                </ak-forms-modal>
+                <ak-user-active-form
+                    .obj=${user}
+                    objectLabel=${msg("User")}
+                    .delete=${() => {
+                        return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
+                            id: user.pk,
+                            patchedUserRequest: {
+                                isActive: !user.isActive,
+                            },
+                        });
+                    }}
+                >
+                    <button slot="trigger" class="pf-c-button pf-m-warning pf-m-block">
+                        <pf-tooltip
+                            position="top"
+                            content=${user.isActive
+                                ? msg("Lock the user out of this system")
+                                : msg("Allow the user to log in and use this system")}
+                        >
+                            ${user.isActive ? msg("Deactivate") : msg("Activate")}
+                        </pf-tooltip>
+                    </button>
+                </ak-user-active-form>
+                ${canImpersonate
+                    ? html`
+                          <ak-action-button
+                              class="pf-m-secondary pf-m-block"
+                              id="impersonate-user-button"
+                              .apiRequest=${() => {
+                                  return new CoreApi(DEFAULT_CONFIG)
+                                      .coreUsersImpersonateCreate({
+                                          id: user.pk,
+                                      })
+                                      .then(() => {
+                                          window.location.href = "/";
+                                      });
+                              }}
+                          >
+                              <pf-tooltip
+                                  position="top"
+                                  content=${msg("Temporarily assume the identity of this user")}
+                              >
+                                  ${msg("Impersonate")}
+                              </pf-tooltip>
+                          </ak-action-button>
+                      `
+                    : nothing}
+            </div>
+        `;
+    }
+
+    renderRecoveryButtons(user: User) {
+        return html` <div class="ak-button-collection">
+            <ak-forms-modal size=${PFSize.Medium} id="update-password-request">
+                <span slot="submit">${msg("Update password")}</span>
+                <span slot="header">${msg("Update password")}</span>
+                <ak-user-password-form slot="form" .instancePk=${user.pk}></ak-user-password-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary pf-m-block">
+                    <pf-tooltip position="top" content=${msg("Enter a new password for this user")}>
+                        ${msg("Set password")}
+                    </pf-tooltip>
+                </button>
+            </ak-forms-modal>
+            <ak-action-button
+                id="reset-password-button"
+                class="pf-m-secondary pf-m-block"
+                .apiRequest=${() => requestRecoveryLink(user)}
+            >
+                <pf-tooltip
+                    position="top"
+                    content=${msg("Create a link for this user to reset their password")}
+                >
+                    ${msg("Create Recovery Link")}
+                </pf-tooltip>
+            </ak-action-button>
+            ${user.email ? renderRecoveryEmailRequest(user) : nothing}
+        </div>`;
+    }
+
     renderUserCard() {
         if (!this.user) {
             return nothing;
@@ -137,202 +233,22 @@ export class UserViewPage extends AKElement {
 
         const user = this.user;
 
-        const canImpersonate =
-            rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanImpersonate) &&
-            this.user.pk !== this.me?.user.pk;
+        // prettier-ignore
+        const userInfo = [
+            [msg("Username"), user.username],
+            [msg("Name"), user.name],
+            [msg("Email"), user.email || "-"],
+            [msg("Last login"), user.lastLogin?.toLocaleString()],
+            [msg("Active"), html`<ak-label color=${user.isActive ? PFColor.Green : PFColor.Orange}></ak-label>`],
+            [msg("Type"), userTypeToLabel(user.type)],
+            [msg("Superuser"), html`<ak-label color=${user.isSuperuser ? PFColor.Green : PFColor.Orange} ></ak-label>`],
+            [msg("Actions"), this.renderActionButtons(user)],
+            [msg("Recovery"), this.renderRecoveryButtons(user)],
+        ];
 
         return html`
             <div class="pf-c-card__title">${msg("User Info")}</div>
-            <div class="pf-c-card__body">
-                <dl class="pf-c-description-list">
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Username")}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">${user.username}</div>
-                        </dd>
-                    </div>
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Name")}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">${user.name}</div>
-                        </dd>
-                    </div>
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Email")}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">${user.email || "-"}</div>
-                        </dd>
-                    </div>
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Last login")}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">
-                                ${user.lastLogin?.toLocaleString()}
-                            </div>
-                        </dd>
-                    </div>
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Active")}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">
-                                <ak-label
-                                    color=${user.isActive ? PFColor.Green : PFColor.Orange}
-                                ></ak-label>
-                            </div>
-                        </dd>
-                    </div>
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Type")}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">
-                                ${userTypeToLabel(user.type)}
-                            </div>
-                        </dd>
-                    </div>
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Superuser")}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">
-                                <ak-label
-                                    color=${user.isSuperuser ? PFColor.Green : PFColor.Orange}
-                                ></ak-label>
-                            </div>
-                        </dd>
-                    </div>
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Actions")}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description ak-button-collection">
-                            <div class="pf-c-description-list__text">
-                                <ak-forms-modal>
-                                    <span slot="submit"> ${msg("Update")} </span>
-                                    <span slot="header"> ${msg("Update User")} </span>
-                                    <ak-user-form slot="form" .instancePk=${user.pk}>
-                                    </ak-user-form>
-                                    <button
-                                        slot="trigger"
-                                        class="pf-m-primary pf-c-button pf-m-block"
-                                    >
-                                        ${msg("Edit")}
-                                    </button>
-                                </ak-forms-modal>
-                                <ak-user-active-form
-                                    .obj=${user}
-                                    objectLabel=${msg("User")}
-                                    .delete=${() => {
-                                        return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
-                                            id: user.pk,
-                                            patchedUserRequest: {
-                                                isActive: !user.isActive,
-                                            },
-                                        });
-                                    }}
-                                >
-                                    <button
-                                        slot="trigger"
-                                        class="pf-c-button pf-m-warning pf-m-block"
-                                    >
-                                        <pf-tooltip
-                                            position="top"
-                                            content=${user.isActive
-                                                ? msg("Lock the user out of this system")
-                                                : msg(
-                                                      "Allow the user to log in and use this system",
-                                                  )}
-                                        >
-                                            ${user.isActive ? msg("Deactivate") : msg("Activate")}
-                                        </pf-tooltip>
-                                    </button>
-                                </ak-user-active-form>
-                                ${canImpersonate
-                                    ? html`
-                                          <ak-action-button
-                                              class="pf-m-secondary pf-m-block"
-                                              id="impersonate-user-button"
-                                              .apiRequest=${() => {
-                                                  return new CoreApi(DEFAULT_CONFIG)
-                                                      .coreUsersImpersonateCreate({
-                                                          id: user.pk,
-                                                      })
-                                                      .then(() => {
-                                                          window.location.href = "/";
-                                                      });
-                                              }}
-                                          >
-                                              <pf-tooltip
-                                                  position="top"
-                                                  content=${msg(
-                                                      "Temporarily assume the identity of this user",
-                                                  )}
-                                              >
-                                                  ${msg("Impersonate")}
-                                              </pf-tooltip>
-                                          </ak-action-button>
-                                      `
-                                    : nothing}
-                            </div>
-                        </dd>
-                    </div>
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Recovery")}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text ak-button-collection">
-                                <ak-forms-modal size=${PFSize.Medium} id="update-password-request">
-                                    <span slot="submit">${msg("Update password")}</span>
-                                    <span slot="header">${msg("Update password")}</span>
-                                    <ak-user-password-form
-                                        slot="form"
-                                        .instancePk=${user.pk}
-                                    ></ak-user-password-form>
-                                    <button
-                                        slot="trigger"
-                                        class="pf-c-button pf-m-secondary pf-m-block"
-                                    >
-                                        <pf-tooltip
-                                            position="top"
-                                            content=${msg("Enter a new password for this user")}
-                                        >
-                                            ${msg("Set password")}
-                                        </pf-tooltip>
-                                    </button>
-                                </ak-forms-modal>
-                                <ak-action-button
-                                    id="reset-password-button"
-                                    class="pf-m-secondary pf-m-block"
-                                    .apiRequest=${() => requestRecoveryLink(user)}
-                                >
-                                    <pf-tooltip
-                                        position="top"
-                                        content=${msg(
-                                            "Create a link for this user to reset their password",
-                                        )}
-                                    >
-                                        ${msg("Create Recovery Link")}
-                                    </pf-tooltip>
-                                </ak-action-button>
-                                ${user.email ? renderRecoveryEmailRequest(user) : nothing}
-                            </div>
-                        </dd>
-                    </div>
-                </dl>
-            </div>
+            <div class="pf-c-card__body">${renderDescriptionList(userInfo)}</div>
         `;
     }
 
@@ -372,7 +288,7 @@ export class UserViewPage extends AKElement {
                                 : html`
                                       <p>
                                           ${msg(
-                                              "Edit the notes attribute of this user to add notes here.",
+                                              "Edit the notes attribute of this user to add notes here."
                                           )}
                                       </p>
                                   `}
