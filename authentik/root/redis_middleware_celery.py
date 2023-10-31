@@ -35,8 +35,6 @@ class CustomResultConsumer(ResultConsumer):
 
     def _reconnect_pubsub(self):
         """Reconnect failing pubsub connections"""
-        if self._pubsub:
-            self._pubsub.close()
         self._pubsub = None
         if self.backend.uses_cluster:
             self.backend.client.nodes_manager.reset()
@@ -44,7 +42,6 @@ class CustomResultConsumer(ResultConsumer):
             self.backend.client.connection_pool.reset()
         # Task state might have changed when the connection was down, so we
         # retrieve meta for all subscribed tasks before going into pubsub mode
-        metas = []
         slots = {}
         if (
             self.subscribed_to
@@ -67,6 +64,7 @@ class CustomResultConsumer(ResultConsumer):
         self._pubsub = self.backend.client.pubsub(
             ignore_subscribe_messages=True,
         )
+        # subscribed_to maybe empty after on_state_change
         if self.subscribed_to:
             self._pubsub.subscribe(*self.subscribed_to)
         else:
