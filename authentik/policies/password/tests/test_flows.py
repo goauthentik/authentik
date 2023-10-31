@@ -20,7 +20,7 @@ class TestPasswordPolicyFlow(FlowTestCase):
             name=generate_id(),
             field_key="password",
             label="PASSWORD_LABEL",
-            type=FieldTypes.PASSWORD,
+            prompt_type=FieldTypes.PASSWORD,
             required=True,
             placeholder="PASSWORD_PLACEHOLDER",
         )
