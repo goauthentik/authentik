@@ -7,7 +7,7 @@ entries:
           name: qwerweqrq
           field_key: username
           label: Username
-          type: username
+          prompt_type: username
           required: true
           placeholder: Username
           order: 0

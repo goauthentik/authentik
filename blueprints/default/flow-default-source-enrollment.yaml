@@ -16,7 +16,7 @@ entries:
     placeholder: Username
     placeholder_expression: false
     required: true
-    type: text
+    prompt_type: text
     field_key: username
     label: Username
   identifiers:

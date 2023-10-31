@@ -22,7 +22,7 @@ entries:
           return ''
     initial_value_expression: true
     required: true
-    type: text
+    prompt_type: text
     field_key: username
     label: Username
   identifiers:
@@ -40,7 +40,7 @@ entries:
           return ''
     initial_value_expression: true
     required: true
-    type: text
+    prompt_type: text
     field_key: name
     label: Name
   identifiers:
@@ -58,7 +58,7 @@ entries:
           return ''
     initial_value_expression: true
     required: true
-    type: email
+    prompt_type: email
     field_key: email
     label: Email
   identifiers:
@@ -76,7 +76,7 @@ entries:
           return ''
     initial_value_expression: true
     required: true
-    type: ak-locale
+    prompt_type: ak-locale
     field_key: attributes.settings.locale
     label: Locale
   identifiers:

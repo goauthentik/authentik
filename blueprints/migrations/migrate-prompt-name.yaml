@@ -10,7 +10,7 @@ entries:
     attrs:
       field_key: foo
       label: foo
-      type: text
+      prompt_type: text
     state: absent
   - model: authentik_stages_prompt.prompt
     identifiers:
@@ -18,7 +18,7 @@ entries:
     attrs:
       field_key: foo
       label: foo
-      type: text
+      prompt_type: text
     state: absent
   - model: authentik_stages_prompt.prompt
     identifiers:
@@ -26,7 +26,7 @@ entries:
     attrs:
       field_key: foo
       label: foo
-      type: text
+      prompt_type: text
     state: absent
   - model: authentik_stages_prompt.prompt
     identifiers:
@@ -34,7 +34,7 @@ entries:
     attrs:
       field_key: foo
       label: foo
-      type: text
+      prompt_type: text
     state: absent
   - model: authentik_stages_prompt.prompt
     identifiers:
@@ -42,7 +42,7 @@ entries:
     attrs:
       field_key: foo
       label: foo
-      type: text
+      prompt_type: text
     state: absent
   - model: authentik_stages_prompt.prompt
     identifiers:
@@ -50,7 +50,7 @@ entries:
     attrs:
       field_key: foo
       label: foo
-      type: text
+      prompt_type: text
     state: absent
   - model: authentik_stages_prompt.prompt
     identifiers:
@@ -58,7 +58,7 @@ entries:
     attrs:
       field_key: foo
       label: foo
-      type: text
+      prompt_type: text
     state: absent
   - model: authentik_stages_prompt.prompt
     identifiers:
@@ -66,5 +66,5 @@ entries:
     attrs:
       field_key: foo
       label: foo
-      type: text
+      prompt_type: text
     state: absent

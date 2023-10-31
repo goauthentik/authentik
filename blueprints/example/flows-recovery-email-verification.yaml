@@ -20,7 +20,7 @@ entries:
     attrs:
       field_key: password
       label: Password
-      type: password
+      prompt_type: password
       required: true
       placeholder: Password
       order: 0
@@ -32,7 +32,7 @@ entries:
     attrs:
       field_key: password_repeat
       label: Password (repeat)
-      type: password
+      prompt_type: password
       required: true
       placeholder: Password (repeat)
       order: 1

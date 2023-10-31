@@ -20,7 +20,7 @@ entries:
     attrs:
       field_key: username
       label: Username
-      type: username
+      prompt_type: username
       required: true
       placeholder: Username
       placeholder_expression: false
@@ -32,7 +32,7 @@ entries:
     attrs:
       field_key: password
       label: Password
-      type: password
+      prompt_type: password
       required: true
       placeholder: Password
       placeholder_expression: false
@@ -44,7 +44,7 @@ entries:
     attrs:
       field_key: password_repeat
       label: Password (repeat)
-      type: password
+      prompt_type: password
       required: true
       placeholder: Password (repeat)
       placeholder_expression: false
@@ -56,7 +56,7 @@ entries:
     attrs:
       field_key: name
       label: Name
-      type: text
+      prompt_type: text
       required: true
       placeholder: Name
       placeholder_expression: false
@@ -68,7 +68,7 @@ entries:
     attrs:
       field_key: email
       label: Email
-      type: email
+      prompt_type: email
       required: true
       placeholder: Email
       placeholder_expression: false

@@ -18,7 +18,7 @@ entries:
     placeholder_expression: false
     required: true
     sub_text: ''
-    type: static
+    prompt_type: static
     field_key: oobe-header-text
     label: oobe-header-text
   id: prompt-field-header
@@ -31,7 +31,7 @@ entries:
     placeholder_expression: false
     required: true
     sub_text: ''
-    type: email
+    prompt_type: email
     field_key: email
     label: Email
   id: prompt-field-email
@@ -44,7 +44,7 @@ entries:
     placeholder_expression: false
     required: true
     sub_text: ''
-    type: password
+    prompt_type: password
     field_key: password
     label: Password
   id: prompt-field-password
@@ -57,7 +57,7 @@ entries:
     placeholder_expression: false
     required: true
     sub_text: ''
-    type: password
+    prompt_type: password
     field_key: password_repeat
     label: Password (repeat)
   id: prompt-field-password-repeat
