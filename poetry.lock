@@ -2978,17 +2978,17 @@ testing = ["argcomplete", "attrs (>=19.2.0)", "hypothesis (>=3.56)", "mock", "no
 
 [[package]]
 name = "pytest-django"
-version = "4.5.2"
+version = "4.6.0"
 description = "A Django plugin for pytest."
 optional = false
-python-versions = ">=3.5"
+python-versions = ">=3.8"
 files = [
-    {file = "pytest-django-4.5.2.tar.gz", hash = "sha256:d9076f759bb7c36939dbdd5ae6633c18edfc2902d1a69fdbefd2426b970ce6c2"},
-    {file = "pytest_django-4.5.2-py3-none-any.whl", hash = "sha256:c60834861933773109334fe5a53e83d1ef4828f2203a1d6a0fa9972f4f75ab3e"},
+    {file = "pytest-django-4.6.0.tar.gz", hash = "sha256:ebc12a64f822a1284a281caf434d693f96bff69a9b09c677f538ecaa2f470b37"},
+    {file = "pytest_django-4.6.0-py3-none-any.whl", hash = "sha256:7e90a183dec8c715714864e5dc8da99bb219502d437a9769a3c9e524af57e43a"},
 ]
 
 [package.dependencies]
-pytest = ">=5.4.0"
+pytest = ">=7.0.0"
 
 [package.extras]
 docs = ["sphinx", "sphinx-rtd-theme"]
