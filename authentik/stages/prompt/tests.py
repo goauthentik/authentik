@@ -596,7 +596,7 @@ class TestPromptStage(FlowTestCase):
         self.assertJSONEqual(
             response.content.decode(),
             {
-                "prompt_type": ChallengeTypes.NATIVE.value,
+                "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-prompt",
                 "fields": [
                     {

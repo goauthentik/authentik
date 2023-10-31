@@ -61,7 +61,7 @@ class TestPasswordPolicyFlow(FlowTestCase):
                     "placeholder": "PASSWORD_PLACEHOLDER",
                     "initial_value": "",
                     "required": True,
-                    "type": "password",
+                    "prompt_type": "password",
                     "sub_text": "",
                 }
             ],

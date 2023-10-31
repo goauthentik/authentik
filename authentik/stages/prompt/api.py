@@ -114,7 +114,7 @@ class PromptViewSet(UsedByMixin, ModelViewSet):
             )
         challenge = PromptChallenge(
             data={
-                "prompt_type": ChallengeTypes.NATIVE.value,
+                "type": ChallengeTypes.NATIVE.value,
                 "fields": fields,
             },
         )
