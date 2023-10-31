@@ -1,5 +1,5 @@
 import { TemplateResult, html, nothing } from "lit";
-import { classMap } from "lit/directives/class-map";
+import { classMap } from "lit/directives/class-map.js";
 import { map } from "lit/directives/map.js";
 
 type DescriptionDesc = string | TemplateResult | typeof nothing;
