@@ -2,9 +2,9 @@ import { TemplateResult, html, nothing } from "lit";
 import { classMap } from "lit/directives/class-map.js";
 import { map } from "lit/directives/map.js";
 
-type DescriptionDesc = string | TemplateResult | typeof nothing;
-type DescriptionPair = [string, DescriptionDesc];
-type DescriptionRecord = { term: string; desc: DescriptionDesc };
+export type DescriptionDesc = string | TemplateResult | undefined | typeof nothing;
+export type DescriptionPair = [string, DescriptionDesc];
+export type DescriptionRecord = { term: string; desc: DescriptionDesc };
 
 interface DescriptionConfig {
     horizontal: boolean;
@@ -22,7 +22,7 @@ function renderDescriptionGroup([term, description]: DescriptionPair) {
             <span class="pf-c-description-list__text">${term}</span>
         </dt>
         <dd class="pf-c-description-list__description">
-            <div class="pf-c-description-list__text">${description}</div>
+            <div class="pf-c-description-list__text">${description ?? nothing}</div>
         </dd>
     </div>`;
 }
@@ -55,14 +55,26 @@ function alignTermType(terms: DescriptionRecord[] | DescriptionPair[] = []) {
  * within the context of the DOM or ShadowDOM in which it is called.
  */
 
+const defaultConfig = {
+    horizontal: false,
+    compact: false,
+    twocolumn: false,
+    threecolumn: false,
+};
+
+export function renderDescriptionList(
+    terms: DescriptionRecord[],
+    config?: DescriptionConfig,
+): TemplateResult;
+
+export function renderDescriptionList(
+    terms: DescriptionPair[],
+    config?: DescriptionConfig,
+): TemplateResult;
+
 export function renderDescriptionList(
     terms: DescriptionRecord[] | DescriptionPair[] = [],
-    config: DescriptionConfig = {
-        horizontal: false,
-        compact: false,
-        twocolumn: false,
-        threecolumn: false,
-    }
+    config: DescriptionConfig = defaultConfig,
 ) {
     const checkedTerms = alignTermType(terms);
     const classes = classMap({

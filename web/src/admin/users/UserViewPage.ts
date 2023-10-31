@@ -15,7 +15,10 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { userTypeToLabel } from "@goauthentik/common/labels";
 import "@goauthentik/components/DescriptionList";
-import { renderDescriptionList } from "@goauthentik/components/DescriptionList";
+import {
+    type DescriptionPair,
+    renderDescriptionList,
+} from "@goauthentik/components/DescriptionList";
 import "@goauthentik/components/events/ObjectChangelog";
 import "@goauthentik/components/events/UserEvents";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";
@@ -234,7 +237,7 @@ export class UserViewPage extends AKElement {
         const user = this.user;
 
         // prettier-ignore
-        const userInfo = [
+        const userInfo: DescriptionPair[] = [
             [msg("Username"), user.username],
             [msg("Name"), user.name],
             [msg("Email"), user.email || "-"],
@@ -288,7 +291,7 @@ export class UserViewPage extends AKElement {
                                 : html`
                                       <p>
                                           ${msg(
-                                              "Edit the notes attribute of this user to add notes here."
+                                              "Edit the notes attribute of this user to add notes here.",
                                           )}
                                       </p>
                                   `}
