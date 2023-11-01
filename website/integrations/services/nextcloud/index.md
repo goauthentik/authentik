@@ -30,27 +30,28 @@ The following placeholders will be used:
 
 Lets start by thinking what user attributes need to be available in Nextcloud:
 
-- name
-- email
-- unique user ID
-- storage quota (optional)
-- groups (optional)
+-   name
+-   email
+-   unique user ID
+-   storage quota (optional)
+-   groups (optional)
 
 authentik already provides some default _scopes_ with _claims_ inside them, such as:
 
-- `email` scope: Has claims `email` and `email_verified`
-- `profile` scope: Has claims `name`, `given_name`, `preferred_username`, `nickname`, `groups`
-- `openid` scope: This is a default scope required by the OpenID spec. It contains no claims
+-   `email` scope: Has claims `email` and `email_verified`
+-   `profile` scope: Has claims `name`, `given_name`, `preferred_username`, `nickname`, `groups`
+-   `openid` scope: This is a default scope required by the OpenID spec. It contains no claims
 
 #### Custom profile scope
 
 If you do not need storage quota or group information in Nextcloud [skip to the next step](#provider-and-application).
 
- However, if you want to be able to control how much storage users in Nextcloud can use, as well as which users are recognized as Nextcloud administrators, you would need to make this information available in Nextcloud. To achieve this you would need to create a custom `profile` scope. To do so, go to _Customisation_ -> _Property mappings_. Create a _Scope mapping_ with the following parameters:
+However, if you want to be able to control how much storage users in Nextcloud can use, as well as which users are recognized as Nextcloud administrators, you would need to make this information available in Nextcloud. To achieve this you would need to create a custom `profile` scope. To do so, go to _Customisation_ -> _Property mappings_. Create a _Scope mapping_ with the following parameters:
 
-- Name: Nextcloud Profile
-- Scope name: profile
-- Expression:
+-   Name: Nextcloud Profile
+-   Scope name: profile
+-   Expression:
+
 ```python
 # Extract all groups the user is a member of
 groups = [group.name for group in user.ak_groups.all()]
@@ -80,19 +81,19 @@ If set to a value, for example `1 GB`, user(s) will have 1GB storage quota. If t
 
 Create a provider for Nextcloud. In the Admin Interface, go to _Applications_ -> _Providers_. Create an _OAuth2/OpenID Provider_ with the following parameters:
 
-- Name: Nextcloud
-- Client type: Confidential
-- Redirect URIs/Origins (RegEx): `https://nextcloud.company/apps/user_oidc/code`
-- Signing key: Any valid certificate
-- Under advanced settings:
-    - Scopes:
-        - `authentik default Oauth Mapping email`
-        - `Nextcloud Profile` (or `authentik default Oauth Mapping profile` if you skipped the [custom profile scope](#custom-profile-scope) section)
-    - Subject mode: Based on the User's UUID
-      :::danger
-      Nextcloud will use the UUID as username. However, mapping the subject mode to authentik usernames is **not recommended** due to their mutable nature. This can lead to security issues such as user impersonation. If you still wish to map the subject mode to an username, [disable username changing](../../../docs/installation/configuration#authentik_default_user_change_username) in authentik and set this to `Based on the User's username`.
-      :::
-    - Include claims in ID token: ✔️
+-   Name: Nextcloud
+-   Client type: Confidential
+-   Redirect URIs/Origins (RegEx): `https://nextcloud.company/apps/user_oidc/code`
+-   Signing key: Any valid certificate
+-   Under advanced settings:
+    -   Scopes:
+        -   `authentik default Oauth Mapping email`
+        -   `Nextcloud Profile` (or `authentik default Oauth Mapping profile` if you skipped the [custom profile scope](#custom-profile-scope) section)
+    -   Subject mode: Based on the User's UUID
+        :::danger
+        Nextcloud will use the UUID as username. However, mapping the subject mode to authentik usernames is **not recommended** due to their mutable nature. This can lead to security issues such as user impersonation. If you still wish to map the subject mode to an username, [disable username changing](../../../docs/installation/configuration#authentik_default_user_change_username) in authentik and set this to `Based on the User's username`.
+        :::
+    -   Include claims in ID token: ✔️
 
 Before continuing, make sure to take note of your `client ID` and `secret ID`. Don't worry you can go back to see/change them at any time.
 
@@ -104,7 +105,6 @@ Currently there is a bug in the Nextcloud OIDC app, that is [limiting the size o
 Depending on your Nextcloud configuration, you might need to use `https://nextcloud.company/index.php/` instead of `https://nextcloud.company/`
 :::
 
-
 After the provider is created, link it to an app. Go to _Applications_ -> _Applications_. Create an application and choose the provider you just created. Make sure to take note of the _application slug_. You will need this later.
 
 ### Nextcloud
@@ -113,24 +113,24 @@ In Nextcloud, ensure that the `OpenID Connect user backend` app is installed. Na
 
 Add a new provider using the `+` button and set the following values:
 
-- Identifier: Authentik
-- Client ID: The client ID from the provider
-- Client secret: The secret ID from the provider
-- Discovery endpoint: `https://authentik.company/application/o/<nextcloud-app-slug>/.well-known/openid-configuration`
-  :::tip
-  If you are running both your authentik and Nextcloud instances behind a reverse proxy, you can go ahead and use your internal FQDN here (i.e. `http://authentik.local`, however, note that if you do so there is [extra configuration required](#extra-configuration-when-running-behind-a-reverse-proxy)).
-  :::
-- Scope: `email`, `profile` (you can safely omit `openid` if you prefer)
-- Attribute mappings:
-    - User ID mapping: sub
-    - Display name mapping: name
-    - Email mapping: email
-    - Quota mapping: quota (leave empty if you have skipped the [custom profile scope](#custom-profile-scope) section)
-    - Groups mapping: group (leave empty if you have skipped the [custom profile scope](#custom-profile-scope) section)
-      :::tip
-      You need to enable the "Use group provisioning" checkmark to be able to write to this field
-      :::
-- Use unique user ID: If you only have one provider you can uncheck this if you prefer.
+-   Identifier: Authentik
+-   Client ID: The client ID from the provider
+-   Client secret: The secret ID from the provider
+-   Discovery endpoint: `https://authentik.company/application/o/<nextcloud-app-slug>/.well-known/openid-configuration`
+    :::tip
+    If you are running both your authentik and Nextcloud instances behind a reverse proxy, you can go ahead and use your internal FQDN here (i.e. `http://authentik.local`, however, note that if you do so there is [extra configuration required](#extra-configuration-when-running-behind-a-reverse-proxy)).
+    :::
+-   Scope: `email`, `profile` (you can safely omit `openid` if you prefer)
+-   Attribute mappings:
+    -   User ID mapping: sub
+    -   Display name mapping: name
+    -   Email mapping: email
+    -   Quota mapping: quota (leave empty if you have skipped the [custom profile scope](#custom-profile-scope) section)
+    -   Groups mapping: group (leave empty if you have skipped the [custom profile scope](#custom-profile-scope) section)
+        :::tip
+        You need to enable the "Use group provisioning" checkmark to be able to write to this field
+        :::
+-   Use unique user ID: If you only have one provider you can uncheck this if you prefer.
 
 At this stage you should be able to login with SSO.
 
@@ -154,31 +154,34 @@ If you are configuring an unsecure (http) discovery endpoint, Nextcloud will, by
 
 :::note
 It is currently not possible force Nextcloud to connect to an https endpoint which uses an untrusted (selfsigned) certificate. If this is the case with your setup, you can do one of 3 things:
-- switch to use a trusted certificate
-- add the selfsigned certificate to Nextcloud's trust store
-- switch to using an http endpoint and add `allow_local_remote_servers => true` to your `config.php`
-:::
+
+-   switch to use a trusted certificate
+-   add the selfsigned certificate to Nextcloud's trust store
+-   switch to using an http endpoint and add `allow_local_remote_servers => true` to your `config.php`
+    :::
 
 Because authentik has no knowledge of where each endpoint is/can be accessed from, it will always return endpoints with domain names matching the one used to make the discovery endpoint request.
 
 For example, if your Nextcloud instance queries the discovery endpoint using an internal domain name (`authentik.local`), all returned endpoints will have the same domain name. In this case:
-- `http://authentik.local/application/o/<app-slug>/`
-- `http://authentik.local/application/o/authorize/`
-- `http://authentik.local/application/o/token/`
-- `http://authentik.local/application/o/userinfo/`
-- `http://authentik.local/application/o/<app-slug>/end-session/`
-- `http://authentik.local/application/o/introspect/`
-- `http://authentik.local/application/o/revoke/`
-- `http://authentik.local/application/o/device/`
-- `http://authentik.local/application/o/<app-slug>/jwks/`
+
+-   `http://authentik.local/application/o/<app-slug>/`
+-   `http://authentik.local/application/o/authorize/`
+-   `http://authentik.local/application/o/token/`
+-   `http://authentik.local/application/o/userinfo/`
+-   `http://authentik.local/application/o/<app-slug>/end-session/`
+-   `http://authentik.local/application/o/introspect/`
+-   `http://authentik.local/application/o/revoke/`
+-   `http://authentik.local/application/o/device/`
+-   `http://authentik.local/application/o/<app-slug>/jwks/`
 
 This represents a problem, because Nextcloud will attempt to redirect the user to the received `autorization` and `end-session` endpoints during login and logout respectively. When that happens, the user will try to access an internal domain and fail.
 
 The easiest way to fix this is to modify the redirect response's `Location` header coming back from Nextcloud during login and logout. Different proxies have different ways of achieving this. For example with Traefik, a 3rd party plugin called [Rewrite Header](https://plugins.traefik.io/plugins/628c9eb5108ecc83915d7758/rewrite-header) can be used.
 
 At a minimum, the `authorize` and `end-session` endpoints must be edited in-flight like so:
-- `http://authentik.local/application/o/authorize/` -> `https://authentik.company/application/o/authorize/`
-- `http://authentik.local/application/o/<app-slug>/end-session/` -> `https://authentik.company/application/o/<app-slug>/end-session/`
+
+-   `http://authentik.local/application/o/authorize/` -> `https://authentik.company/application/o/authorize/`
+-   `http://authentik.local/application/o/<app-slug>/end-session/` -> `https://authentik.company/application/o/<app-slug>/end-session/`
 
 :::note
 HTTP headers are usually capitalised (e.g. **L**ocation), however, at least some versions of Nextcloud seem to return all lowercase headers (e.g. **l**ocation). To be safe, make sure to add header replacement rules for both cases.
