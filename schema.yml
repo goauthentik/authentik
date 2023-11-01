@@ -25995,7 +25995,7 @@ paths:
         schema:
           type: string
       - in: query
-        name: type
+        name: prompt_type
         schema:
           type: string
           enum:
