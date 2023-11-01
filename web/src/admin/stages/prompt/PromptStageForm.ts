@@ -93,7 +93,7 @@ export class PromptStageForm extends ModelForm<PromptStage, string> {
                                     ?selected=${selected}
                                 >
                                     ${msg(
-                                        str`${prompt.name} ("${prompt.fieldKey}", of type ${prompt.type})`,
+                                        str`${prompt.name} ("${prompt.fieldKey}", of type ${prompt.promptType})`,
                                     )}
                                 </option>`;
                             })}

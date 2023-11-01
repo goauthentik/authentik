@@ -50,7 +50,7 @@ export class PromptListPage extends TablePage<Prompt> {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Field"), "field_key"),
-            new TableColumn(msg("Type"), "type"),
+            new TableColumn(msg("Type"), "prompt_type"),
             new TableColumn(msg("Order"), "order"),
             new TableColumn(msg("Stages")),
             new TableColumn(msg("Actions")),
@@ -83,7 +83,7 @@ export class PromptListPage extends TablePage<Prompt> {
         return [
             html`${item.name}`,
             html`<code>${item.fieldKey}</code>`,
-            html`${item.type}`,
+            html`${item.promptType}`,
             html`${item.order}`,
             html`${item.promptstageSet?.map((stage) => {
                 return html`<li>${stage.name}</li>`;

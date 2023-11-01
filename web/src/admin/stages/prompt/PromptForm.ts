@@ -126,31 +126,31 @@ export class PromptForm extends ModelForm<Prompt, string> {
         return html`
             <option
                 value=${PromptTypeEnum.Text}
-                ?selected=${this.instance?.type === PromptTypeEnum.Text}
+                ?selected=${this.instance?.promptType === PromptTypeEnum.Text}
             >
                 ${msg("Text: Simple Text input")}
             </option>
             <option
                 value=${PromptTypeEnum.TextArea}
-                ?selected=${this.instance?.type === PromptTypeEnum.TextArea}
+                ?selected=${this.instance?.promptType === PromptTypeEnum.TextArea}
             >
                 ${msg("Text Area: Multiline text input")}
             </option>
             <option
                 value=${PromptTypeEnum.TextReadOnly}
-                ?selected=${this.instance?.type === PromptTypeEnum.TextReadOnly}
+                ?selected=${this.instance?.promptType === PromptTypeEnum.TextReadOnly}
             >
                 ${msg("Text (read-only): Simple Text input, but cannot be edited.")}
             </option>
             <option
                 value=${PromptTypeEnum.TextAreaReadOnly}
-                ?selected=${this.instance?.type === PromptTypeEnum.TextAreaReadOnly}
+                ?selected=${this.instance?.promptType === PromptTypeEnum.TextAreaReadOnly}
             >
                 ${msg("Text Area (read-only): Multiline text input, but cannot be edited.")}
             </option>
             <option
                 value=${PromptTypeEnum.Username}
-                ?selected=${this.instance?.type === PromptTypeEnum.Username}
+                ?selected=${this.instance?.promptType === PromptTypeEnum.Username}
             >
                 ${msg(
                     "Username: Same as Text input, but checks for and prevents duplicate usernames.",
@@ -158,13 +158,13 @@ export class PromptForm extends ModelForm<Prompt, string> {
             </option>
             <option
                 value=${PromptTypeEnum.Email}
-                ?selected=${this.instance?.type === PromptTypeEnum.Email}
+                ?selected=${this.instance?.promptType === PromptTypeEnum.Email}
             >
                 ${msg("Email: Text field with Email type.")}
             </option>
             <option
                 value=${PromptTypeEnum.Password}
-                ?selected=${this.instance?.type === PromptTypeEnum.Password}
+                ?selected=${this.instance?.promptType === PromptTypeEnum.Password}
             >
                 ${msg(
                     "Password: Masked input, multiple inputs of this type on the same prompt need to be identical.",
@@ -172,67 +172,67 @@ export class PromptForm extends ModelForm<Prompt, string> {
             </option>
             <option
                 value=${PromptTypeEnum.Number}
-                ?selected=${this.instance?.type === PromptTypeEnum.Number}
+                ?selected=${this.instance?.promptType === PromptTypeEnum.Number}
             >
                 ${msg("Number")}
             </option>
             <option
                 value=${PromptTypeEnum.Checkbox}
-                ?selected=${this.instance?.type === PromptTypeEnum.Checkbox}
+                ?selected=${this.instance?.promptType === PromptTypeEnum.Checkbox}
             >
                 ${msg("Checkbox")}
             </option>
             <option
                 value=${PromptTypeEnum.RadioButtonGroup}
-                ?selected=${this.instance?.type === PromptTypeEnum.RadioButtonGroup}
+                ?selected=${this.instance?.promptType === PromptTypeEnum.RadioButtonGroup}
             >
                 ${msg("Radio Button Group (fixed choice)")}
             </option>
             <option
                 value=${PromptTypeEnum.Dropdown}
-                ?selected=${this.instance?.type === PromptTypeEnum.Dropdown}
+                ?selected=${this.instance?.promptType === PromptTypeEnum.Dropdown}
             >
                 ${msg("Dropdown (fixed choice)")}
             </option>
             <option
                 value=${PromptTypeEnum.Date}
-                ?selected=${this.instance?.type === PromptTypeEnum.Date}
+                ?selected=${this.instance?.promptType === PromptTypeEnum.Date}
             >
                 ${msg("Date")}
             </option>
             <option
                 value=${PromptTypeEnum.DateTime}
-                ?selected=${this.instance?.type === PromptTypeEnum.DateTime}
+                ?selected=${this.instance?.promptType === PromptTypeEnum.DateTime}
             >
                 ${msg("Date Time")}
             </option>
             <option
                 value=${PromptTypeEnum.File}
-                ?selected=${this.instance?.type === PromptTypeEnum.File}
+                ?selected=${this.instance?.promptType === PromptTypeEnum.File}
             >
                 ${msg("File")}
             </option>
             <option
                 value=${PromptTypeEnum.Separator}
-                ?selected=${this.instance?.type === PromptTypeEnum.Separator}
+                ?selected=${this.instance?.promptType === PromptTypeEnum.Separator}
             >
                 ${msg("Separator: Static Separator Line")}
             </option>
             <option
                 value=${PromptTypeEnum.Hidden}
-                ?selected=${this.instance?.type === PromptTypeEnum.Hidden}
+                ?selected=${this.instance?.promptType === PromptTypeEnum.Hidden}
             >
                 ${msg("Hidden: Hidden field, can be used to insert data into form.")}
             </option>
             <option
                 value=${PromptTypeEnum.Static}
-                ?selected=${this.instance?.type === PromptTypeEnum.Static}
+                ?selected=${this.instance?.promptType === PromptTypeEnum.Static}
             >
                 ${msg("Static: Static value, displayed as-is.")}
             </option>
             <option
                 value=${PromptTypeEnum.AkLocale}
-                ?selected=${this.instance?.type === PromptTypeEnum.AkLocale}
+                ?selected=${this.instance?.promptType === PromptTypeEnum.AkLocale}
             >
                 ${msg("authentik: Locale: Displays a list of locales authentik supports.")}
             </option>
