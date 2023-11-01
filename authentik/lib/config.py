@@ -256,7 +256,7 @@ class ConfigLoader:
             except JSONDecodeError:
                 pass
             attr_value = Attr(value, Attr.Source.ENV, relative_key)
-            self.set_path_in_dict(outer, relative_key, attr_value)
+            set_path_in_dict(outer, relative_key, attr_value)
             idx += 1
         if idx > 0:
             self.log("debug", "Loaded environment variables", count=idx)
@@ -316,8 +316,7 @@ class ConfigLoader:
 
     def set(self, path: str, value: Any, sep="."):
         """Set value using same syntax as get()"""
-        # Walk sub_dicts before parsing path
-        self._set_value_for_key_path(self.raw, path, value, sep)
+        set_path_in_dict(self.raw, path, Attr(value), sep=sep)
 
 
 CONFIG = ConfigLoader()
