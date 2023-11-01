@@ -81,7 +81,7 @@ class PromptChallengeResponse(ChallengeResponse):
                 plan.context.get(PLAN_CONTEXT_PROMPT, {}), user, self.request
             )
             self.fields[field.field_key] = field.field(current, choices)
-            # Special handling for fields with username type
+            # Special handling for fields with username prompt_type
             # these check for existing users with the same username
             if field.prompt_type == FieldTypes.USERNAME:
                 setattr(
