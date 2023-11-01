@@ -18,9 +18,6 @@ from urllib.parse import urlparse
 import yaml
 from django.conf import ImproperlyConfigured
 
-from authentik.core.models import User
-from authentik.events.models import Notification, NotificationSeverity, NotificationTransport
-
 SEARCH_PATHS = ["authentik/lib/default.yml", "/etc/authentik/config.yml", ""] + glob(
     "/etc/authentik/config.d/*.yml", recursive=True
 )
@@ -165,17 +162,13 @@ class ConfigLoader:
                     "warning",
                     message,
                 )
-                superusers = User.objects.filter(field_name="ak_groups", lookup_expr="is_superuser")
-                transport = NotificationTransport.objects.first()
-                if transport:
-                    for superuser in superusers:
-                        notification = Notification.objects.create(
-                            user=superuser,
-                            severity=NotificationSeverity.WARNING,
-                            body=message,
-                            seen=False,
-                        )
-                        transport.send_local(notification)
+                try:
+                    from authentik.events.models import Event, EventAction
+
+                    Event.new(EventAction.CONFIGURATION_ERROR, message=message)
+                except ImportError:
+                    continue
+
                 deprecated_attr = _pop_deprecated_key(self.__config, deprecation.split("."), 0)
                 self.set(replacement, deprecated_attr.value)
 
