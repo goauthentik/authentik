@@ -122,6 +122,9 @@ module.exports = async function () {
                 apiKey: "727db511300ca9aec5425645bbbddfb5",
                 indexName: "goauthentik",
             },
+            prism: {
+                additionalLanguages: ["python", "diff", "json"],
+            },
         },
         presets: [
             [

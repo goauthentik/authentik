@@ -56,6 +56,7 @@ module.exports = async function () {
             },
             colorMode: mainConfig.themeConfig.colorMode,
             tableOfContents: mainConfig.themeConfig.tableOfContents,
+            prims: mainConfig.themeConfig.prism,
         },
         presets: [
             [
