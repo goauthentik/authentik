@@ -158,6 +158,7 @@ It is currently not possible force Nextcloud to connect to an https endpoint whi
 -   switch to use a trusted certificate
 -   add the selfsigned certificate to Nextcloud's trust store
 -   switch to using an http endpoint and add `allow_local_remote_servers => true` to your `config.php`
+
 :::
 
 Because authentik has no knowledge of where each endpoint is/can be accessed from, it will always return endpoints with domain names matching the one used to make the discovery endpoint request.
