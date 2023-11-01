@@ -8,8 +8,8 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import { first } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-status-label";
 import { rootInterface } from "@goauthentik/elements/Base";
-import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -195,9 +195,7 @@ export class RelatedUserList extends Table<User> {
                 <div>${item.username}</div>
                 <small>${item.name}</small>
             </a>`,
-            html`<ak-label color=${item.isActive ? PFColor.Green : PFColor.Red}>
-                ${item.isActive ? msg("Yes") : msg("No")}
-            </ak-label>`,
+            html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
             html`${first(item.lastLogin?.toLocaleString(), msg("-"))}`,
             html`<ak-forms-modal>
                     <span slot="submit"> ${msg("Update")} </span>

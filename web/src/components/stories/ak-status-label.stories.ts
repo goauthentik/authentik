@@ -1,0 +1,92 @@
+import "@goauthentik/elements/messages/MessageContainer";
+import { spread } from "@open-wc/lit-helpers";
+import { Meta } from "@storybook/web-components";
+
+import { TemplateResult, html } from "lit";
+
+import "../ak-status-label";
+import AkStatusLabel from "../ak-status-label";
+
+const metadata: Meta<AkStatusLabel> = {
+    title: "Components / App Status Label",
+    component: "ak-status-label",
+    parameters: {
+        docs: {
+            description: {
+                component: "A status label display",
+            },
+        },
+    },
+};
+
+export default metadata;
+
+const container = (testItem: TemplateResult) =>
+    html` <div style="background: #fff; padding: 2em">
+        <style>
+            dl {
+                display: grid;
+                grid-template-columns: 21ch 1fr;
+                gap: 0.5rem;
+            }
+        </style>
+        ${testItem}
+    </div>`;
+
+export const AppIcon = () => {
+    // prettier-ignore
+    return container(html`
+        <dl>
+            <dt>Good</dt><dd>
+
+                <ak-status-label good></ak-status-label>
+
+           </dd>
+            <dt>Bad (Default)</dt><dd>
+
+                <ak-status-label></ak-status-label>
+
+           </dd>
+            <dt>Programmatically Good</dt><dd>
+
+                <ak-status-label ?good=${true}></ak-status-label>
+
+           </dd>
+            <dt>Programmatically Bad</dt><dd>
+
+                <ak-status-label ?good=${false}></ak-status-label>
+
+           </dd>
+            <dt>Good Warning</dt><dd>
+
+                <ak-status-label type="warning" good></ak-status-label>
+
+           </dd>
+            <dt>Bad Warning</dt><dd>
+
+                <ak-status-label type="warning"></ak-status-label>
+
+           </dd>
+            <dt>Good Info</dt><dd>
+
+                <ak-status-label type="info" good></ak-status-label>
+
+           </dd>
+            <dt>Bad Info</dt><dd>
+
+                <ak-status-label type="info"></ak-status-label>
+
+           </dd>
+            <dt>Good With Message</dt><dd>
+
+                <ak-status-label good good-label="Hurray!" bad-label="Boo!"></ak-status-label>
+
+           </dd>
+            <dt>Bad Info</dt><dd>
+
+                <ak-status-label good-label="Hurray!" bad-label="Boo!"></ak-status-label>
+
+           </dd>
+        </dl>
+    `);
+};
