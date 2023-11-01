@@ -249,17 +249,6 @@ class ConfigLoader:
         """Update config from dict"""
         self.__config.update(update)
 
-    @staticmethod
-    def _set_value_for_key_path(outer, path, value, sep="."):
-        # Recursively convert path from a.b.c into outer[a][b][c]
-        current_obj = outer
-        dot_parts = path.split(sep)
-        for dot_part in dot_parts[:-1]:
-            current_obj.setdefault(dot_part, {})
-            current_obj = current_obj[dot_part]
-        current_obj[dot_parts[-1]] = Attr(value, Attr.Source.ENV, path)
-        return outer
-
     def update_from_env(self):
         """Check environment variables"""
         outer = {}
@@ -273,7 +262,8 @@ class ConfigLoader:
                 value = loads(value)
             except JSONDecodeError:
                 pass
-            outer = self._set_value_for_key_path(outer, relative_key, value)
+            attr_value = Attr(value, Attr.Source.ENV, relative_key)
+            self.set_path_in_dict(outer, relative_key, attr_value)
             idx += 1
         if idx > 0:
             self.log("debug", "Loaded environment variables", count=idx)
