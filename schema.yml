@@ -25988,12 +25988,6 @@ paths:
         name: placeholder
         schema:
           type: string
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
       - in: query
         name: prompt_type
         schema:
@@ -26036,6 +26030,12 @@ paths:
           * `hidden` - Hidden: Hidden field, can be used to insert data into form.
           * `static` - Static: Static value, displayed as-is.
           * `ak-locale` - authentik: Selection of locales authentik supports
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
       tags:
       - stages
       security:
@@ -37329,7 +37329,7 @@ components:
         label:
           type: string
           minLength: 1
-        type:
+        prompt_type:
           $ref: '#/components/schemas/PromptTypeEnum'
         required:
           type: boolean
@@ -38585,7 +38585,7 @@ components:
           description: Name of the form field, also used to store the value
         label:
           type: string
-        type:
+        prompt_type:
           $ref: '#/components/schemas/PromptTypeEnum'
         required:
           type: boolean
@@ -38618,7 +38618,7 @@ components:
       - label
       - name
       - pk
-      - type
+      - prompt_type
     PromptChallenge:
       type: object
       description: Initial challenge being sent, define fields
@@ -38668,7 +38668,7 @@ components:
         label:
           type: string
           minLength: 1
-        type:
+        prompt_type:
           $ref: '#/components/schemas/PromptTypeEnum'
         required:
           type: boolean
@@ -38700,7 +38700,7 @@ components:
       - field_key
       - label
       - name
-      - type
+      - prompt_type
     PromptStage:
       type: object
       description: PromptStage Serializer
@@ -41022,7 +41022,7 @@ components:
           type: string
         label:
           type: string
-        type:
+        prompt_type:
           $ref: '#/components/schemas/PromptTypeEnum'
         required:
           type: boolean
@@ -41046,9 +41046,9 @@ components:
       - label
       - order
       - placeholder
+      - prompt_type
       - required
       - sub_text
-      - type
     StageRequest:
       type: object
       description: Stage Serializer

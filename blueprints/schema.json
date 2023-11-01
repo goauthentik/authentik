@@ -7698,7 +7698,7 @@
                     "minLength": 1,
                     "title": "Label"
                 },
-                "type": {
+                "prompt_type": {
                     "type": "string",
                     "enum": [
                         "text",
@@ -7720,7 +7720,7 @@
                         "static",
                         "ak-locale"
                     ],
-                    "title": "Type"
+                    "title": "Prompt type"
                 },
                 "required": {
                     "type": "boolean",
