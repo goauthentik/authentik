@@ -1,7 +1,8 @@
 const fs = require("fs").promises;
+import type { Config } from "@docusaurus/types";
+import type * as Preset from "@docusaurus/preset-classic";
 
-/** @type {import('@docusaurus/types').DocusaurusConfig} */
-module.exports = async function () {
+module.exports = async function (): Promise<Config> {
     const remarkGithub = (await import("remark-github")).default;
     const defaultBuildUrl = (await import("remark-github")).defaultBuildUrl;
     const footerEmail = await fs.readFile("src/footer.html", {
@@ -162,7 +163,7 @@ module.exports = async function () {
                         blogSidebarTitle: "All our posts",
                         blogSidebarCount: "ALL",
                     },
-                },
+                } satisfies Preset.Options,
             ],
         ],
         plugins: [
