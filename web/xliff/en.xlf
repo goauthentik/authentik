@@ -4350,11 +4350,11 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Fields</target>
       </trans-unit>
       <trans-unit id="s2d5f69929bb7221d">
-        <source><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", of type <x id="2" equiv-text="${prompt.type}"/>)</source>
+        <source><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", of type <x id="2" equiv-text="${prompt.promptType}"/>)</source>
         <target>
         <x id="0" equiv-text="${prompt.name}"/>(" 
         <x id="1" equiv-text="${prompt.fieldKey}"/>", of type 
-        <x id="2" equiv-text="${prompt.type}"/>)</target>
+        <x id="2" equiv-text="${prompt.promptType}"/>)</target>
       </trans-unit>
       <trans-unit id="s3b7b519444181264">
         <source>Validation Policies</source>

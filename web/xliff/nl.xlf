@@ -5661,8 +5661,8 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
         
       </trans-unit>
       <trans-unit id="s2d5f69929bb7221d">
-        <source><x id="0" equiv-text="${prompt.name}"/> (&quot;<x id="1" equiv-text="${prompt.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${prompt.type}"/>)</source>
-        <target><x id="0" equiv-text="${prompt.name}"/> (&quot;<x id="1" equiv-text="${prompt.fieldKey}"/>&quot;, van het type <x id="2" equiv-text="${prompt.type}"/>)</target>
+        <source><x id="0" equiv-text="${prompt.name}"/> (&quot;<x id="1" equiv-text="${prompt.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${prompt.promptType}"/>)</source>
+        <target><x id="0" equiv-text="${prompt.name}"/> (&quot;<x id="1" equiv-text="${prompt.fieldKey}"/>&quot;, van het type <x id="2" equiv-text="${prompt.promptType}"/>)</target>
         
       </trans-unit>
       <trans-unit id="s3b7b519444181264">
