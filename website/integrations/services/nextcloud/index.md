@@ -155,7 +155,7 @@ If you are configuring an unsecure (http) discovery endpoint, Nextcloud will, by
 :::note
 It is currently not possible force Nextcloud to connect to an https endpoint which uses an untrusted (selfsigned) certificate. If this is the case with your setup, you can do one of 3 things:
 
--   switch to use a trusted certificate
+-   switch to using a trusted certificate
 -   add the selfsigned certificate to Nextcloud's trust store
 -   switch to using an http endpoint and add `allow_local_remote_servers => true` to your `config.php`
 
