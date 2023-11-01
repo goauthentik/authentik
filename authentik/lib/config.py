@@ -166,7 +166,7 @@ class ConfigLoader:
                 try:
                     from authentik.events.models import Event, EventAction
 
-                    Event.new(EventAction.CONFIGURATION_ERROR, message=message)
+                    Event.new(EventAction.CONFIGURATION_ERROR, message=message).save()
                 except ImportError:
                     continue
 
