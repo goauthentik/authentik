@@ -50,7 +50,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
     }
 
     renderPromptInner(prompt: StagePrompt): TemplateResult {
-        switch (prompt.type) {
+        switch (prompt.promptType) {
             case PromptTypeEnum.Text:
                 return html`<input
                     type="text"
@@ -217,7 +217,7 @@ ${prompt.initialValue}</textarea
                 </select>`;
             }
             default:
-                return html`<p>invalid type '${prompt.type}'</p>`;
+                return html`<p>invalid type '${prompt.promptType}'</p>`;
         }
     }
 
@@ -231,9 +231,9 @@ ${prompt.initialValue}</textarea
     shouldRenderInWrapper(prompt: StagePrompt): boolean {
         // Special types that aren't rendered in a wrapper
         if (
-            prompt.type === PromptTypeEnum.Static ||
-            prompt.type === PromptTypeEnum.Hidden ||
-            prompt.type === PromptTypeEnum.Separator
+            prompt.promptType === PromptTypeEnum.Static ||
+            prompt.promptType === PromptTypeEnum.Hidden ||
+            prompt.promptType === PromptTypeEnum.Separator
         ) {
             return false;
         }
@@ -242,7 +242,7 @@ ${prompt.initialValue}</textarea
 
     renderField(prompt: StagePrompt): TemplateResult {
         // Checkbox is rendered differently
-        if (prompt.type === PromptTypeEnum.Checkbox) {
+        if (prompt.promptType === PromptTypeEnum.Checkbox) {
             return html`<div class="pf-c-check">
                 <input
                     type="checkbox"

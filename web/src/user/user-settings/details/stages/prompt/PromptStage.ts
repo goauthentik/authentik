@@ -10,7 +10,7 @@ import { PromptTypeEnum, StagePrompt } from "@goauthentik/api";
 @customElement("ak-user-stage-prompt")
 export class UserSettingsPromptStage extends PromptStage {
     renderPromptInner(prompt: StagePrompt): TemplateResult {
-        switch (prompt.type) {
+        switch (prompt.promptType) {
             // Checkbox requires slightly different rendering here due to the use of horizontal form elements
             case PromptTypeEnum.Checkbox:
                 return html`<input
