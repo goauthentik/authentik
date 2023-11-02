@@ -1,6 +1,6 @@
 ---
 title: “Happy Birthday to Us!”
-description: “We are celebrating our one-year anniversary since the founding of Authentic Security..”
+description: “We are celebrating our one-year anniversary since the founding of Authentik Security..”
 slug: 2023-11-1-happy-birthday-to-us
 authors:
     - name: Jens Langhammer and the authentik team
@@ -88,7 +88,7 @@ An interesting offset to our shared love of building is the shared sense of humi
 
 > To build boldly yet with humility is what sets some founders apart from others.
 
-The tone and espirit of the company is one reason it’s so meaningful to celebrate our 1-year birthday; we can happily celebrate a hard year of doing things with full, enthusiastic engagement. At authentik, nerdiness is embraced, technical curiousity flourishes, and transparency is a big part of our nature. Speaking of how we communicate with our community, our Discord forum is (in addition to GitHub) an important place where transparency matters. For example, we recently asked our community what they preferred for a release cycle. Based on the answers, we lengthened the release time from from monthly to every two or three months.
+The tone and espirit of the company is one reason it’s so meaningful to celebrate our 1-year birthday; we can happily celebrate a hard year of doing things with full, enthusiastic engagement. At authentik, nerdiness is embraced, technical curiosity flourishes, and transparency is a big part of our nature. Speaking of how we communicate with our community, our Discord forum is (in addition to GitHub) an important place where transparency matters. For example, we recently asked our community what they preferred for a release cycle. Based on the answers, we lengthened the release time from from monthly to every two or three months.
 
 Moving from a role of solo creator of an open source project, to being primary maintainer of a popular, growing project, to suddenly being CTO of a company based on that project is a quite a transition. A natural question we wanted to ask Jens is “What’s been the hardest thing about building a company?” His answers:
 
