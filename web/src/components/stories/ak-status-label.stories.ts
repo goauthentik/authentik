@@ -1,5 +1,4 @@
 import "@goauthentik/elements/messages/MessageContainer";
-import { spread } from "@open-wc/lit-helpers";
 import { Meta } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
@@ -26,7 +25,7 @@ const container = (testItem: TemplateResult) =>
         <style>
             dl {
                 display: grid;
-                grid-template-columns: 21ch 1fr;
+                grid-template-columns: 22ch 1fr;
                 gap: 0.5rem;
             }
         </style>
@@ -77,14 +76,24 @@ export const AppIcon = () => {
                 <ak-status-label type="info"></ak-status-label>
 
            </dd>
-            <dt>Good With Message</dt><dd>
+            <dt>Good With Alternative Message</dt><dd>
 
                 <ak-status-label good good-label="Hurray!" bad-label="Boo!"></ak-status-label>
 
            </dd>
-            <dt>Bad Info</dt><dd>
+            <dt>Bad with Alternative Message</dt><dd>
 
                 <ak-status-label good-label="Hurray!" bad-label="Boo!"></ak-status-label>
+
+            </dd>
+            <dt>Good, Compact</dt><dd>
+
+                <ak-status-label good compact></ak-status-label>
+
+           </dd>
+           <dt>Bad, Compact</dt><dd>
+
+                <ak-status-label compact></ak-status-label>
 
            </dd>
         </dl>

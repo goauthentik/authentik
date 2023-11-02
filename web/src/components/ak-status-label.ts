@@ -18,23 +18,33 @@ const statusToDetails = new Map<StatusName, [string, string]>([
 ]);
 
 const styles = css`
-:host {
-  --pf-c-label--m-gray--BackgroundColor: var(--pf-global--palette--black-100);
-  --pf-c-label--m-gray__icon--Color: var(--pf-global--primary-color--100);
-  --pf-c-label--m-gray__content--Color: var(--pf-global--info-color--200);
-  --pf-c-label--m-gray__content--before--BorderColor: var(--pf-global--palette--black-400);
-  --pf-c-label--m-gray__content--link--hover--before--BorderColor: var(--pf-global--primary-color--100);
-  --pf-c-label--m-gray__content--link--focus--before--BorderColor: var(--pf-global--primary-color--100);
-}
+    :host {
+        --pf-c-label--m-gray--BackgroundColor: var(--pf-global--palette--black-100);
+        --pf-c-label--m-gray__icon--Color: var(--pf-global--primary-color--100);
+        --pf-c-label--m-gray__content--Color: var(--pf-global--info-color--200);
+        --pf-c-label--m-gray__content--before--BorderColor: var(--pf-global--palette--black-400);
+        --pf-c-label--m-gray__content--link--hover--before--BorderColor: var(
+            --pf-global--primary-color--100
+        );
+        --pf-c-label--m-gray__content--link--focus--before--BorderColor: var(
+            --pf-global--primary-color--100
+        );
+    }
 
-.pf-c-label.pf-m-gray {
-  --pf-c-label--BackgroundColor: var(--pf-c-label--m-gray--BackgroundColor);
-  --pf-c-label__icon--Color: var(--pf-c-label--m-gray__icon--Color);
-  --pf-c-label__content--Color: var(--pf-c-label--m-gray__content--Color);
-  --pf-c-label__content--before--BorderColor: var(--pf-c-label--m-gray__content--before--BorderColor);
-  --pf-c-label__content--link--hover--before--BorderColor: var(--pf-c-label--m-gray__content--link--hover--before--BorderColor);
-  --pf-c-label__content--link--focus--before--BorderColor: var(--pf-c-label--m-gray__content--link--focus--before--BorderColor);
-}
+    .pf-c-label.pf-m-gray {
+        --pf-c-label--BackgroundColor: var(--pf-c-label--m-gray--BackgroundColor);
+        --pf-c-label__icon--Color: var(--pf-c-label--m-gray__icon--Color);
+        --pf-c-label__content--Color: var(--pf-c-label--m-gray__content--Color);
+        --pf-c-label__content--before--BorderColor: var(
+            --pf-c-label--m-gray__content--before--BorderColor
+        );
+        --pf-c-label__content--link--hover--before--BorderColor: var(
+            --pf-c-label--m-gray__content--link--hover--before--BorderColor
+        );
+        --pf-c-label__content--link--focus--before--BorderColor: var(
+            --pf-c-label--m-gray__content--link--focus--before--BorderColor
+        );
+    }
 `;
 
 /**
@@ -54,7 +64,7 @@ const styles = css`
  *
  * By default, the messages for "good" and "other" are "Yes" and "No" respectively, but these can be
  * customized with the attributes `good-label` and `bad-label`.
- */ 
+ */
 
 @customElement("ak-status-label")
 export class AkStatusLabel extends AKElement {
