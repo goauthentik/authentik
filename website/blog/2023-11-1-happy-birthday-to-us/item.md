@@ -38,7 +38,7 @@ Our CTO, [Jens Langhammer](https://www.linkedin.com/in/beryju), began coding aut
 
 The initial emails about building a company happened in April 2022, when [Open Core Ventures](https://opencoreventures.com/) approached Jens and expressed interest in supporting his open source project with funding and operational guidance. A matter of months later, and some hard thinking by Jens, the dotted lines were signed, the funding was there, and in November of 2022 Authentik Security was founded.
 
-There are hundreds of thousands of open source projects out there; to have authentik selected, and deemed robust and well, useful enough to receive backing and support, with an opportunity to turn it into a proper company with the resources needed to keep building new features was a remarkable opportunity.
+There are hundreds of thousands of open source projects out there; to have authentik selected, and deemed robust and useful enough to receive backing and support, with an opportunity to turn it into a proper company with the resources needed to keep building new features, was a remarkable opportunity.
 
 Sure, building a company is an exciting but also slightly terrifying opportunity. Those of us who work in open source ecosystems understand well how important it is to simultaneously demonstrate steady growth and dedication to the project, a willingness to take risks, and above all, value. Building software is almost always fun; building software that solves problems is also really hard work.
 
@@ -46,7 +46,7 @@ Sure, building a company is an exciting but also slightly terrifying opportunity
 
 ### A year flies when you’re having fun
 
-A lot happens in a year. We are, just this week, celebrating our 1st full year as an incorporated company. The past year was focused on Jens settling into his role as CTO, hiring the team, pulling us all together to keep releasing new features, and learning the joy of pre-sales work and calls with customers. (Hint: he’d rather be coding!)
+A lot happens in a year. This week we are celebrating our 1st full year as an incorporated company. The past year was focused on Jens settling into his role as CTO, hiring the team, pulling us all together to keep releasing new features, and learning the joy of pre-sales work and calls with customers. (Hint: he’d rather be coding!)
 
 Once you get to know Jens, you won’t be surprised to his answer about what he was most looked forward to about building up a team and a company and further building out the product:
 
@@ -57,7 +57,7 @@ Once you get to know Jens, you won’t be surprised to his answer about what he 
 
 That task alone will scare most of us. In software, team work is most definitely what makes the dream work, so finding the right talents and skills sets and experiences to compliment Jens’ deep technical skills and full-stack experience was of paramount importance. We now have developers with expertise in frontend and backend development, infrastructure, and security, a well as a content editor.
 
-Of course, it is not just the technical skills that a potential new hire needs; as important are less measurable skills like collaboration, communication, and perhaps most importantly, what we call “technical curiosity”.
+Of course, it is not just the technical skills that a potential new hire needs; as important are less-measurable skills like collaboration, communication, and perhaps most importantly, what we call “technical curiosity”.
 
 > How does this thing work, from whom can I learn more, and with whom can I share my knowledge?
 
@@ -67,9 +67,9 @@ We have that team now, and are grateful for it. Celebrating the one-year mark of
 
 Keeping new functionality rolling out (and keeping up with Issues and PRs in our repository) never slowed down much, even during the period of incorporating as a company and building a team. Support for new providers, becoming [OpenID certified](https://goauthentik.io/blog/2023-03-07-becoming-openid-certified-why-standards-matter), adding support for SCIM and RADIUS protocols, and a [lot more](https://goauthentik.io/docs/releases).
 
-Right at the end of our first year, we released our [Enterprise version](https://goauthentik.io/blog/2023-08-31-announcing-the-authentik-enterprise-release), with dedicated support. And just last week, we rolled out one of the most important capabilities in an identity management platform; [RBAC](https://goauthentik.io/docs/user-group-role/access-control/) (role-based access control).
+Right at the end of our first year, we released our [Enterprise version](https://goauthentik.io/blog/2023-08-31-announcing-the-authentik-enterprise-release), with dedicated support. And just last week, we rolled out one of the most important capabilities in an identity management platform: [RBAC](https://goauthentik.io/docs/user-group-role/access-control/) (role-based access control).
 
-N**ew processes, new ideas, and expected growing pains**
+**New processes, new ideas, and expected growing pains**
 
 With a new team, come new processes. Someone has to decide which emoji to use for which infrastructure task that’s completed.
 
@@ -89,7 +89,7 @@ An interesting offset to our shared love of building is the shared sense of humi
 
 > To build boldly yet with humility is what sets some founders apart from others.
 
-The tone and espirit of the company is one reason it’s so meaningful to celebrate our 1-year birthday; we can happily celebrate a hard year of doing things with full, enthusiastic engagement. At authentik, nerdiness is embraced, technical curiousity flourishs, and transparency is a big part of our nature. Speaking of how we communicate with our community, our Discord forum is (in addition to GitHub) an important place where transparency matters. For example, we recently asked our community what they preferred for a release cycle. Based on the answers, we lengthened the release time from from monthly to every two or three months.
+The tone and espirit of the company is one reason it’s so meaningful to celebrate our 1-year birthday; we can happily celebrate a hard year of doing things with full, enthusiastic engagement. At authentik, nerdiness is embraced, technical curiousity flourishes, and transparency is a big part of our nature. Speaking of how we communicate with our community, our Discord forum is (in addition to GitHub) an important place where transparency matters. For example, we recently asked our community what they preferred for a release cycle. Based on the answers, we lengthened the release time from from monthly to every two or three months.
 
 Moving from a role of solo creator of an open source project, to being primary maintainer of a popular, growing project, to suddenly being CTO of a company based on that project is a quite a transition. A natural question we wanted to ask Jens is “What’s been the hardest thing about building a company?” His answers:
 
@@ -98,7 +98,7 @@ Moving from a role of solo creator of an open source project, to being primary m
 
 ### What’s up next?
 
-Going forward, we want to of course keep our focus on building features and supporting authentication protocols that our users want, but we have also identified several specific goals for this coming year:
+Going forward, we want to keep our focus on building features and supporting authentication protocols that our users want, but we have also identified several specific goals for this coming year:
 
 -   Increase our focus on UX and ease-of-use, templatizing as much as possible of the frontend components, and developing a UI style Guide
 -   Research and implement new functionality around remote machine access and management
@@ -110,4 +110,4 @@ This space of security and authentication is a hard space, especially with large
 
 Oh, and then there is that business of actually promoting and selling your product. But, as a team, we are proud of the product and excited to share it with others who need a solid, secure authentication platform.
 
-Thanks for joining us on this celebration of our one-year birthday, and let us know any thoughts you might have. You can send an emial to hello@authentik.io, or find us on GitHub or Discord.
+Thanks for joining us on this celebration of our one-year birthday, and let us know any thoughts you might have. You can send an email to hello@authentik.io, or find us on [GitHub](https://github.com/goauthentik/authentik) or [Discord](https://discord.com/channels/809154715984199690).
