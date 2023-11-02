@@ -24,7 +24,6 @@ hide_table_of_contents: false
 Even though we are shouting _Happy Birthday to Us_, we want to start by saying:
 
 > Thank You to you all, our users and supporters and contributors, our questioners and testers!
->
 
 We simply would not be here, celebrating our 1-year mark, without your past and present support. While there are only 7 employees at Authentik Security, we know that our flagship product, [authentik](https://goauthentik.io/), has a much bigger team... you all! Our contributors and fellow builders and users are on the same team that took us this far, and we look forward to continuing the journey with you to build our amazing authentication platform on authentik!
 
@@ -34,7 +33,7 @@ We simply would not be here, celebrating our 1-year mark, without your past and 
 
 ### The backstory
 
-Our CTO, [Jens Langhammer](https://www.linkedin.com/in/beryju), began coding authentik in 2018, with the first commit on November 11, and by October of 2021 there was already excitement around the project, much of it on Reddit, not your usual suspect for open source news. The enthusiasm about the SSO project caught eyes in the ecosystem.
+Our CTO, [Jens Langhammer](https://www.linkedin.com/in/beryju), began coding authentik in 2018, with the first commit on November 11. By October of 2021 there was already excitement around the project, much of it on Reddit, not your usual suspect for open source news. The enthusiasm about the SSO project caught eyes in the ecosystem.
 
 The initial emails about building a company happened in April 2022, when [Open Core Ventures](https://opencoreventures.com/) approached Jens and expressed interest in supporting his open source project with funding and operational guidance. A matter of months later, and some hard thinking by Jens, the dotted lines were signed, the funding was there, and in November of 2022 Authentik Security was founded.
 
@@ -65,7 +64,7 @@ We have that team now, and are grateful for it. Celebrating the one-year mark of
 
 **Keep those PRs merging**
 
-Keeping new functionality rolling out (and keeping up with Issues and PRs in our repository) never slowed down much, even during the period of incorporating as a company and building a team. Support for new providers, becoming [OpenID certified](https://goauthentik.io/blog/2023-03-07-becoming-openid-certified-why-standards-matter), adding support for SCIM and RADIUS protocols, and a [lot more](https://goauthentik.io/docs/releases).
+Keeping new functionality rolling out (and keeping up with Issues and PRs in our repository) never slowed down much, even during the period of incorporating as a company and building a team. Support for new providers, becoming [OpenID certified](https://goauthentik.io/blog/2023-03-07-becoming-openid-certified-why-standards-matter), adding support for [SCIM](https://goauthentik.io/docs/providers/scim/) and [RADIUS](https://goauthentik.io/docs/providers/radius/) protocols, and a [lot more](https://goauthentik.io/docs/releases).
 
 Right at the end of our first year, we released our [Enterprise version](https://goauthentik.io/blog/2023-08-31-announcing-the-authentik-enterprise-release), with dedicated support. And just last week, we rolled out one of the most important capabilities in an identity management platform: [RBAC](https://goauthentik.io/docs/user-group-role/access-control/) (role-based access control).
 
