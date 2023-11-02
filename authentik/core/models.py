@@ -48,7 +48,7 @@ USER_ATTRIBUTE_CHANGE_EMAIL = "goauthentik.io/user/can-change-email"
 USER_PATH_SYSTEM_PREFIX = "goauthentik.io"
 USER_PATH_SERVICE_ACCOUNT = USER_PATH_SYSTEM_PREFIX + "/service-accounts"
 
-DEFAULT_TOKEN_DURATION = 'minutes=30'  # nosec
+DEFAULT_TOKEN_DURATION = "minutes=30"  # nosec
 DEFAULT_TOKEN_DURATION_DETLA = timedelta_from_string(DEFAULT_TOKEN_DURATION)
 
 options.DEFAULT_NAMES = options.DEFAULT_NAMES + (
