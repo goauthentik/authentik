@@ -70,6 +70,14 @@ Optional flag, when set to false, Tokens created by the user will not expire.
 
 Only applies when the token creation is triggered by the user with this attribute set. Additionally, the flag does not apply to superusers.
 
+### `goauthentik.io/user/token-maximum-lifetime`:
+
+Optional flag, when set, defines the maximum lifetime of user created tokens. Defaults to 30 minutes if unset.
+
+Only applies when `goauthentik.io/user/token-expires` set to true.
+
+Format is string of format `days=10;hours=1;minute=3;seconds=5`.
+
 ### `goauthentik.io/user/debug`:
 
 See [Troubleshooting access problems](../../troubleshooting/access), when set, the user gets a more detailed explanation of access decisions.
