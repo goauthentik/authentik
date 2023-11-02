@@ -39,7 +39,7 @@ The initial emails about building a company happened in April 2022, when [Open C
 
 There are hundreds of thousands of open source projects out there; to have authentik selected, and deemed robust and useful enough to receive backing and support, with an opportunity to turn it into a proper company with the resources needed to keep building new features, was a remarkable opportunity.
 
-Sure, building a company is an exciting but also slightly terrifying opportunity. Those of us who work in open source ecosystems understand well how important it is to simultaneously demonstrate steady growth and dedication to the project, a willingness to take risks, and above all, value. Building software is almost always fun; building software that solves problems is also really hard work.
+Sure, building a community is an exciting opportunity, but it's also a slightly terrifying one. Those of us who work in open source ecosystems understand well how important it is to simultaneously demonstrate steady growth and dedication to the project, a willingness to take risks, and above all, value. Building software is almost always fun; building software that solves problems is also really hard work.
 
 > Fast forward a year (and it WAS fast!)…
 
