@@ -1,5 +1,5 @@
 """authentik core models"""
-from datetime import timedelta
+from datetime import datetime, timedelta
 from hashlib import sha256
 from typing import Any, Optional, Self
 from uuid import uuid4
@@ -30,6 +30,7 @@ from authentik.lib.models import (
     DomainlessFormattedURLValidator,
     SerializerModel,
 )
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.install_id import get_install_id
 
@@ -40,12 +41,15 @@ USER_ATTRIBUTE_EXPIRES = "goauthentik.io/user/expires"
 USER_ATTRIBUTE_DELETE_ON_LOGOUT = "goauthentik.io/user/delete-on-logout"
 USER_ATTRIBUTE_SOURCES = "goauthentik.io/user/sources"
 USER_ATTRIBUTE_TOKEN_EXPIRING = "goauthentik.io/user/token-expires"  # nosec
+USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME = "goauthentik.io/user/token-maximum-lifetime"  # nosec
 USER_ATTRIBUTE_CHANGE_USERNAME = "goauthentik.io/user/can-change-username"
 USER_ATTRIBUTE_CHANGE_NAME = "goauthentik.io/user/can-change-name"
 USER_ATTRIBUTE_CHANGE_EMAIL = "goauthentik.io/user/can-change-email"
 USER_PATH_SYSTEM_PREFIX = "goauthentik.io"
 USER_PATH_SERVICE_ACCOUNT = USER_PATH_SYSTEM_PREFIX + "/service-accounts"
 
+DEFAULT_TOKEN_DURATION = 'minutes=30'  # nosec
+DEFAULT_TOKEN_DURATION_DETLA = timedelta_from_string(DEFAULT_TOKEN_DURATION)
 
 options.DEFAULT_NAMES = options.DEFAULT_NAMES + (
     # used_by API that allows models to specify if they shadow an object
@@ -59,7 +63,12 @@ options.DEFAULT_NAMES = options.DEFAULT_NAMES + (
 
 def default_token_duration():
     """Default duration a Token is valid"""
-    return now() + timedelta(minutes=30)
+    return now() + DEFAULT_TOKEN_DURATION_DETLA
+
+
+def token_expires_from_timedelta(dt: timedelta) -> datetime:
+    """Return a `datetime.datetime` object with the duration of the Token"""
+    return now() + dt
 
 
 def default_token_key():

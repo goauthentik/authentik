@@ -1,4 +1,5 @@
 """Test token API"""
+from datetime import datetime, timedelta
 from json import loads
 
 from django.urls.base import reverse
@@ -6,7 +7,13 @@ from guardian.shortcuts import get_anonymous_user
 from rest_framework.test import APITestCase
 
 from authentik.core.api.tokens import TokenSerializer
-from authentik.core.models import USER_ATTRIBUTE_TOKEN_EXPIRING, Token, TokenIntents, User
+from authentik.core.models import (
+    USER_ATTRIBUTE_TOKEN_EXPIRING,
+    USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME,
+    Token,
+    TokenIntents,
+    User,
+)
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.generators import generate_id
 
@@ -74,6 +81,77 @@ class TestTokenAPI(APITestCase):
         self.assertEqual(token.user, self.user)
         self.assertEqual(token.intent, TokenIntents.INTENT_API)
         self.assertEqual(token.expiring, False)
+
+    def test_token_create_expiring(self):
+        """Test token creation endpoint"""
+        self.user.attributes[USER_ATTRIBUTE_TOKEN_EXPIRING] = True
+        self.user.save()
+        response = self.client.post(
+            reverse("authentik_api:token-list"), {"identifier": "test-token"}
+        )
+        self.assertEqual(response.status_code, 201)
+        token = Token.objects.get(identifier="test-token")
+        self.assertEqual(token.user, self.user)
+        self.assertEqual(token.intent, TokenIntents.INTENT_API)
+        self.assertEqual(token.expiring, True)
+
+    def test_token_create_expiring_custom_ok(self):
+        """Test token creation endpoint"""
+        self.user.attributes[USER_ATTRIBUTE_TOKEN_EXPIRING] = True
+        self.user.attributes[USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME] = "hours=2"
+        self.user.save()
+        expires = datetime.now() + timedelta(hours=1)
+        response = self.client.post(
+            reverse("authentik_api:token-list"),
+            {
+                "identifier": "test-token",
+                "expires": expires,
+                "intent": TokenIntents.INTENT_APP_PASSWORD,
+            },
+        )
+        self.assertEqual(response.status_code, 201)
+        token = Token.objects.get(identifier="test-token")
+        self.assertEqual(token.user, self.user)
+        self.assertEqual(token.intent, TokenIntents.INTENT_APP_PASSWORD)
+        self.assertEqual(token.expiring, True)
+        self.assertEqual(token.expires.timestamp(), expires.timestamp())
+
+    def test_token_create_expiring_custom_nok(self):
+        """Test token creation endpoint"""
+        self.user.attributes[USER_ATTRIBUTE_TOKEN_EXPIRING] = True
+        self.user.attributes[USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME] = "hours=2"
+        self.user.save()
+        expires = datetime.now() + timedelta(hours=3)
+        response = self.client.post(
+            reverse("authentik_api:token-list"),
+            {
+                "identifier": "test-token",
+                "expires": expires,
+                "intent": TokenIntents.INTENT_APP_PASSWORD,
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_token_create_expiring_custom_api(self):
+        """Test token creation endpoint"""
+        self.user.attributes[USER_ATTRIBUTE_TOKEN_EXPIRING] = True
+        self.user.attributes[USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME] = "hours=2"
+        self.user.save()
+        expires = datetime.now() + timedelta(seconds=3)
+        response = self.client.post(
+            reverse("authentik_api:token-list"),
+            {
+                "identifier": "test-token",
+                "expires": expires,
+                "intent": TokenIntents.INTENT_API,
+            },
+        )
+        self.assertEqual(response.status_code, 201)
+        token = Token.objects.get(identifier="test-token")
+        self.assertEqual(token.user, self.user)
+        self.assertEqual(token.intent, TokenIntents.INTENT_API)
+        self.assertEqual(token.expiring, True)
+        self.assertNotEqual(token.expires.timestamp(), expires.timestamp())
 
     def test_list(self):
         """Test Token List (Test normal authentication)"""
