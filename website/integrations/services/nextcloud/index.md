@@ -191,7 +191,7 @@ HTTP headers are usually capitalised (e.g. **L**ocation), however, at least some
 If you prefer, you may also edit the rest of the endpoints, though that should not be necessary, as they should not be accessed by the user.
 
 :::tip
-If you prefer, you may also configure your proxy to only allow access to the `authorize` and `end-session` endpoints from the outside world.
+If you do not have any relying parties accessing authentik from the outside, you may also configure your proxy to only allow access to the `authorize` and `end-session` endpoints from the outside world.
 :::
 
 ## SAML auth
