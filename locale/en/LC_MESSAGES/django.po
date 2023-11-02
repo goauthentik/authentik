@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-24 12:44+0000\n"
+"POT-Creation-Date: 2024-01-26 14:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
 #: authentik/api/schema.py:25
 msgid "Generic API Error"
 msgstr ""
@@ -103,162 +102,162 @@ msgstr ""
 msgid "No empty segments in user path allowed."
 msgstr ""
 
-#: authentik/core/models.py:92
+#: authentik/core/models.py:101
 msgid "name"
 msgstr ""
 
-#: authentik/core/models.py:94
+#: authentik/core/models.py:103
 msgid "Users added to this group will be superusers."
 msgstr ""
 
-#: authentik/core/models.py:168
+#: authentik/core/models.py:177
 msgid "Group"
 msgstr ""
 
-#: authentik/core/models.py:169
+#: authentik/core/models.py:178
 msgid "Groups"
 msgstr ""
 
-#: authentik/core/models.py:184
+#: authentik/core/models.py:193
 msgid "User's display name."
 msgstr ""
 
-#: authentik/core/models.py:280 authentik/providers/oauth2/models.py:295
+#: authentik/core/models.py:289 authentik/providers/oauth2/models.py:295
 msgid "User"
 msgstr ""
 
-#: authentik/core/models.py:281
+#: authentik/core/models.py:290
 msgid "Users"
 msgstr ""
 
-#: authentik/core/models.py:283
+#: authentik/core/models.py:292
 #: authentik/stages/email/templates/email/password_reset.html:28
 msgid "Reset Password"
 msgstr ""
 
-#: authentik/core/models.py:284
+#: authentik/core/models.py:293
 msgid "Can impersonate other users"
 msgstr ""
 
-#: authentik/core/models.py:285 authentik/rbac/models.py:54
+#: authentik/core/models.py:294 authentik/rbac/models.py:54
 msgid "Can assign permissions to users"
 msgstr ""
 
-#: authentik/core/models.py:286 authentik/rbac/models.py:55
+#: authentik/core/models.py:295 authentik/rbac/models.py:55
 msgid "Can unassign permissions from users"
 msgstr ""
 
-#: authentik/core/models.py:308
+#: authentik/core/models.py:317
 msgid ""
 "Flow used for authentication when the associated application is accessed by "
 "an un-authenticated user."
 msgstr ""
 
-#: authentik/core/models.py:318
+#: authentik/core/models.py:327
 msgid "Flow used when authorizing this provider."
 msgstr ""
 
-#: authentik/core/models.py:330
+#: authentik/core/models.py:339
 msgid ""
 "Accessed from applications; optional backchannel providers for protocols "
 "like LDAP and SCIM."
 msgstr ""
 
-#: authentik/core/models.py:385
+#: authentik/core/models.py:394
 msgid "Application's display Name."
 msgstr ""
 
-#: authentik/core/models.py:386
+#: authentik/core/models.py:395
 msgid "Internal application name, used in URLs."
 msgstr ""
 
-#: authentik/core/models.py:398
+#: authentik/core/models.py:407
 msgid "Open launch URL in a new browser tab or window."
 msgstr ""
 
-#: authentik/core/models.py:462
+#: authentik/core/models.py:471
 msgid "Application"
 msgstr ""
 
-#: authentik/core/models.py:463
+#: authentik/core/models.py:472
 msgid "Applications"
 msgstr ""
 
-#: authentik/core/models.py:469
+#: authentik/core/models.py:478
 msgid "Use the source-specific identifier"
 msgstr ""
 
-#: authentik/core/models.py:471
+#: authentik/core/models.py:480
 msgid ""
 "Link to a user with identical email address. Can have security implications "
 "when a source doesn't validate email addresses."
 msgstr ""
 
-#: authentik/core/models.py:475
+#: authentik/core/models.py:484
 msgid ""
 "Use the user's email address, but deny enrollment when the email address "
 "already exists."
 msgstr ""
 
-#: authentik/core/models.py:478
+#: authentik/core/models.py:487
 msgid ""
 "Link to a user with identical username. Can have security implications when "
 "a username is used with another source."
 msgstr ""
 
-#: authentik/core/models.py:482
+#: authentik/core/models.py:491
 msgid ""
 "Use the user's username, but deny enrollment when the username already "
 "exists."
 msgstr ""
 
-#: authentik/core/models.py:489
+#: authentik/core/models.py:498
 msgid "Source's display Name."
 msgstr ""
 
-#: authentik/core/models.py:490
+#: authentik/core/models.py:499
 msgid "Internal source name, used in URLs."
 msgstr ""
 
-#: authentik/core/models.py:509
+#: authentik/core/models.py:518
 msgid "Flow to use when authenticating existing users."
 msgstr ""
 
-#: authentik/core/models.py:518
+#: authentik/core/models.py:527
 msgid "Flow to use when enrolling new users."
 msgstr ""
 
-#: authentik/core/models.py:526
+#: authentik/core/models.py:535
 msgid ""
 "How the source determines if an existing user should be authenticated or a "
 "new user enrolled."
 msgstr ""
 
-#: authentik/core/models.py:698
+#: authentik/core/models.py:707
 msgid "Token"
 msgstr ""
 
-#: authentik/core/models.py:699
+#: authentik/core/models.py:708
 msgid "Tokens"
 msgstr ""
 
-#: authentik/core/models.py:704
+#: authentik/core/models.py:713
 msgid "View token's key"
 msgstr ""
 
-#: authentik/core/models.py:740
+#: authentik/core/models.py:749
 msgid "Property Mapping"
 msgstr ""
 
-#: authentik/core/models.py:741
+#: authentik/core/models.py:750
 msgid "Property Mappings"
 msgstr ""
 
-#: authentik/core/models.py:778
+#: authentik/core/models.py:787
 msgid "Authenticated Session"
 msgstr ""
 
-#: authentik/core/models.py:779
+#: authentik/core/models.py:788
 msgid "Authenticated Sessions"
 msgstr ""
 
@@ -434,126 +433,126 @@ msgstr ""
 msgid "(You are already connected in another tab/window)"
 msgstr ""
 
-#: authentik/events/api/tasks.py:99
+#: authentik/events/api/tasks.py:100
 #, python-format
-msgid "Successfully re-scheduled Task %(name)s!"
+msgid "Successfully started task %(name)s."
 msgstr ""
 
-#: authentik/events/models.py:289
+#: authentik/events/models.py:303
 msgid "Event"
 msgstr ""
 
-#: authentik/events/models.py:290
+#: authentik/events/models.py:304
 msgid "Events"
 msgstr ""
 
-#: authentik/events/models.py:296
+#: authentik/events/models.py:310
 msgid "authentik inbuilt notifications"
 msgstr ""
 
-#: authentik/events/models.py:297
+#: authentik/events/models.py:311
 msgid "Generic Webhook"
 msgstr ""
 
-#: authentik/events/models.py:298
+#: authentik/events/models.py:312
 msgid "Slack Webhook (Slack/Discord)"
 msgstr ""
 
-#: authentik/events/models.py:299
+#: authentik/events/models.py:313
 msgid "Email"
 msgstr ""
 
-#: authentik/events/models.py:317
+#: authentik/events/models.py:331
 msgid ""
 "Only send notification once, for example when sending a webhook into a chat "
 "channel."
 msgstr ""
 
-#: authentik/events/models.py:382
+#: authentik/events/models.py:396
 msgid "Severity"
 msgstr ""
 
-#: authentik/events/models.py:387
+#: authentik/events/models.py:401
 msgid "Dispatched for user"
 msgstr ""
 
-#: authentik/events/models.py:396
+#: authentik/events/models.py:410
 msgid "Event user"
 msgstr ""
 
-#: authentik/events/models.py:490
+#: authentik/events/models.py:504
 msgid "Notification Transport"
 msgstr ""
 
-#: authentik/events/models.py:491
+#: authentik/events/models.py:505
 msgid "Notification Transports"
 msgstr ""
 
-#: authentik/events/models.py:497
+#: authentik/events/models.py:511
 msgid "Notice"
 msgstr ""
 
-#: authentik/events/models.py:498
+#: authentik/events/models.py:512
 msgid "Warning"
 msgstr ""
 
-#: authentik/events/models.py:499
+#: authentik/events/models.py:513
 msgid "Alert"
 msgstr ""
 
-#: authentik/events/models.py:524
+#: authentik/events/models.py:538
 msgid "Notification"
 msgstr ""
 
-#: authentik/events/models.py:525
+#: authentik/events/models.py:539
 msgid "Notifications"
 msgstr ""
 
-#: authentik/events/models.py:535
+#: authentik/events/models.py:549
 msgid ""
 "Select which transports should be used to notify the user. If none are "
 "selected, the notification will only be shown in the authentik UI."
 msgstr ""
 
-#: authentik/events/models.py:543
+#: authentik/events/models.py:557
 msgid "Controls which severity level the created notifications will have."
 msgstr ""
 
-#: authentik/events/models.py:548
+#: authentik/events/models.py:562
 msgid ""
 "Define which group of users this notification should be sent and shown to. "
 "If left empty, Notification won't ben sent."
 msgstr ""
 
-#: authentik/events/models.py:566
+#: authentik/events/models.py:580
 msgid "Notification Rule"
 msgstr ""
 
-#: authentik/events/models.py:567
+#: authentik/events/models.py:581
 msgid "Notification Rules"
 msgstr ""
 
-#: authentik/events/models.py:587
+#: authentik/events/models.py:601
 msgid "Webhook Mapping"
 msgstr ""
 
-#: authentik/events/models.py:588
+#: authentik/events/models.py:602
 msgid "Webhook Mappings"
 msgstr ""
 
-#: authentik/events/models.py:642
-msgid "Rerun task"
+#: authentik/events/models.py:667
+msgid "Run task"
 msgstr ""
 
-#: authentik/events/models.py:643
+#: authentik/events/models.py:668
 msgid "System Task"
 msgstr ""
 
-#: authentik/events/models.py:644
+#: authentik/events/models.py:669
 msgid "System Tasks"
 msgstr ""
 
-#: authentik/events/monitored_tasks.py:128
+#: authentik/events/system_tasks.py:126
 msgid "Task has not been run yet."
 msgstr ""
 
