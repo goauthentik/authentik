@@ -61,7 +61,7 @@
         "rapidoc": "^9.3.4",
         "style-mod": "^4.1.0",
         "webcomponent-qr-code": "^1.2.0",
-        "yaml": "^2.3.3"
+        "yaml": "^2.3.4"
     },
     "devDependencies": {
         "@babel/core": "^7.23.2",
