@@ -185,6 +185,8 @@ jobs:
   build:
     needs: ci-core-mark
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
@@ -235,6 +237,8 @@ jobs:
   build-arm64:
     needs: ci-core-mark
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4

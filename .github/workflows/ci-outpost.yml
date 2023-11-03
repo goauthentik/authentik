@@ -65,6 +65,8 @@ jobs:
           - ldap
           - radius
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     steps:
       - uses: actions/checkout@v4
         with:
