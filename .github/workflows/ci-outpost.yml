@@ -9,6 +9,7 @@ on:
   pull_request:
     branches:
       - main
+      - version-*
 
 jobs:
   lint-golint:
@@ -63,6 +64,8 @@ jobs:
           - ldap
           - radius
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     steps:
       - uses: actions/checkout@v3
         with:
