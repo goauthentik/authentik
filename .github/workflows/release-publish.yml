@@ -7,6 +7,8 @@ on:
 jobs:
   build-server:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     steps:
       - uses: actions/checkout@v4
       - name: Set up QEMU
@@ -52,6 +54,8 @@ jobs:
             VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
   build-outpost:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     strategy:
       fail-fast: false
       matrix:
