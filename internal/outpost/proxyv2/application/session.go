@@ -131,7 +131,6 @@ func (a *Application) Logout(ctx context.Context, filter func(c Claims) bool) er
 	}
 	if rs, ok := a.sessions.(*redisstore.RedisStore); ok {
 		client := rs.Client()
-		defer client.Close()
 		keys, err := client.Keys(ctx, fmt.Sprintf("%s*", RedisKeyPrefix)).Result()
 		if err != nil {
 			return err
