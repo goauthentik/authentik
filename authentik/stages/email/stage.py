@@ -52,17 +52,13 @@ class EmailStageView(ChallengeStageView):
             kwargs={"flow_slug": self.executor.flow.slug},
         )
         # Parse query string from current URL (full query string)
-        query_params = QueryDict(self.request.META.get("QUERY_STRING", ""), mutable=True)
+        # this view is only run within a flow executor, where we need to get the query string
+        # from the query= parameter (double encoded); but for the redirect
+        # we need to expand it since it'll go through the flow interface
+        query_params = QueryDict(self.request.GET.get(QS_QUERY), mutable=True)
         query_params.pop(QS_KEY_TOKEN, None)
-
-        # Check for nested query string used by flow executor, and remove any
-        # kind of flow token from that
-        if QS_QUERY in query_params:
-            inner_query_params = QueryDict(query_params.get(QS_QUERY), mutable=True)
-            inner_query_params.pop(QS_KEY_TOKEN, None)
-            query_params[QS_QUERY] = inner_query_params.urlencode()
-
         query_params.update(kwargs)
+        print(query_params)
         full_url = base_url
         if len(query_params) > 0:
             full_url = f"{full_url}?{query_params.urlencode()}"
