@@ -42,18 +42,18 @@ urlpatterns = [
         name="token-revoke",
     ),
     path(
-        "<slug:application_slug>/end-session/",
+        "end-session/<slug:application_slug>/",
         RedirectView.as_view(pattern_name="authentik_core:if-session-end", query_string=True),
         name="end-session",
     ),
-    path("<slug:application_slug>/jwks/", JWKSView.as_view(), name="jwks"),
+    path("jwks/<slug:application_slug>/", JWKSView.as_view(), name="jwks"),
     path(
-        "<slug:application_slug>/",
+        "issuer/<slug:application_slug>/",
         RedirectView.as_view(pattern_name="authentik_providers_oauth2:provider-info"),
         name="provider-root",
     ),
     path(
-        "<slug:application_slug>/.well-known/openid-configuration",
+        "discovery/<slug:application_slug>/.well-known/openid-configuration",
         ProviderInfoView.as_view(),
         name="provider-info",
     ),

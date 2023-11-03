@@ -34,7 +34,7 @@ class TestAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
         body = loads(response.content.decode())["preview"]
-        self.assertEqual(body["iss"], "http://testserver/application/o/test/")
+        self.assertEqual(body["iss"], "http://testserver/application/o/issuer/test/")
 
     def test_setup_urls(self):
         """Test Setup URLs API Endpoint"""
@@ -43,7 +43,7 @@ class TestAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
         body = loads(response.content.decode())
-        self.assertEqual(body["issuer"], "http://testserver/application/o/test/")
+        self.assertEqual(body["issuer"], "http://testserver/application/o/issuer/test/")
 
     # https://github.com/goauthentik/authentik/pull/5918
     @skipUnless(version_info >= (3, 11, 4), "This behaviour is only Python 3.11.4 and up")
