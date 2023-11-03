@@ -17,6 +17,7 @@ from jwt import PyJWK, PyJWT, PyJWTError, decode
 from sentry_sdk.hub import Hub
 from structlog.stdlib import get_logger
 
+from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.core.models import (
     USER_ATTRIBUTE_EXPIRES,
     USER_ATTRIBUTE_GENERATED,
@@ -448,6 +449,7 @@ class TokenView(View):
                 if not self.provider:
                     LOGGER.warning("OAuth2Provider does not exist", client_id=client_id)
                     raise TokenError("invalid_client")
+                CTX_AUTH_VIA.set("oauth_client_secret")
                 self.params = TokenParams.parse(request, self.provider, client_id, client_secret)
 
             with Hub.current.start_span(
