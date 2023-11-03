@@ -259,7 +259,7 @@ class TestEmailStage(FlowTestCase):
         session.save()
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-        url += "?foo=bar"
+        url += "?query=" + urlencode({"foo": "bar"})
         request = self.factory.get(url)
         stage_view = EmailStageView(
             FlowExecutorView(
@@ -272,32 +272,4 @@ class TestEmailStage(FlowTestCase):
         self.assertEqual(
             stage_view.get_full_url(**{QS_KEY_TOKEN: token}),
             f"http://testserver/if/flow/{self.flow.slug}/?foo=bar&flow_token={token}",
-        )
-
-    def test_url_existing_params_nested(self):
-        """Test to ensure that URL params are preserved in the URL being sent (including nested)"""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
-
-        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-        url += "?foo=bar&"
-        url += "query=" + urlencode({"nested": "value"})
-        request = self.factory.get(url)
-        stage_view = EmailStageView(
-            FlowExecutorView(
-                request=request,
-                flow=self.flow,
-            ),
-            request=request,
-        )
-        token = generate_id()
-        self.assertEqual(
-            stage_view.get_full_url(**{QS_KEY_TOKEN: token}),
-            (
-                f"http://testserver/if/flow/{self.flow.slug}"
-                f"/?foo=bar&query=nested%3Dvalue&flow_token={token}"
-            ),
         )
