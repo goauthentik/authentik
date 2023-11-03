@@ -11,6 +11,7 @@ on:
   pull_request:
     branches:
       - main
+      - version-*
 
 env:
   POSTGRES_DB: authentik
