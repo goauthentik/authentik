@@ -62,6 +62,7 @@
         "fuse.js": "^7.0.0",
         "lit": "^2.8.0",
         "mermaid": "^10.6.1",
+        "oidc-client-ts": "^2.4.0",
         "rapidoc": "^9.3.4",
         "style-mod": "^4.1.0",
         "webcomponent-qr-code": "^1.2.0",
