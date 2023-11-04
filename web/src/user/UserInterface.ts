@@ -1,9 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import {
-    EVENT_API_DRAWER_TOGGLE,
-    EVENT_NOTIFICATION_DRAWER_TOGGLE,
-    EVENT_WS_MESSAGE,
-} from "@goauthentik/common/constants";
+import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE, EVENT_WS_MESSAGE } from "@goauthentik/common/constants";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { UIConfig, UserDisplay } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
@@ -25,9 +21,13 @@ import { ROUTES } from "@goauthentik/user/Routes";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { match } from "ts-pattern";
 
+
+
 import { msg } from "@lit/localize";
 import { css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+
+
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFBrand from "@patternfly/patternfly/components/Brand/brand.css";
@@ -39,7 +39,11 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
+
+
 import { CoreApi, CurrentBrand, EventsApi, SessionUser } from "@goauthentik/api";
+import { WithOAuth } from "@goauthentik/common/oauth/interface";
+
 
 const customStyles = css`
     .pf-c-page__main,
@@ -206,10 +210,7 @@ class UserInterfacePresentation extends AKElement {
                             <!-- -->
                             ${this.renderSettings()}
                             <div class="pf-c-page__header-tools-item">
-                                <a
-                                    href="/flows/-/default/invalidation/"
-                                    class="pf-c-button pf-m-plain"
-                                >
+                                <a href="#/oauth-signou" class="pf-c-button pf-m-plain">
                                     <pf-tooltip position="top" content=${msg("Sign out")}>
                                         <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
                                     </pf-tooltip>
@@ -384,7 +385,7 @@ class UserInterfacePresentation extends AKElement {
 //
 //
 @customElement("ak-interface-user")
-export class UserInterface extends EnterpriseAwareInterface {
+export class UserInterface extends WithOAuth(EnterpriseAwareInterface) {
     @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 
