@@ -185,7 +185,7 @@ class CustomChannelLayer(RedisChannelLayer):
             channels_over_capacity = 0
             for key in channel_redis_keys:
                 if await connection.zcount(key, "-inf", "inf") < channel_keys_to_capacity[key]:
-                    await connection.zadd(key, time.time(), channel_keys_to_message[key])
+                    await connection.zadd(key, {channel_keys_to_message[key]: time.time()})
                     await connection.expire(key, self.expiry)
                 else:
                     channels_over_capacity += 1
