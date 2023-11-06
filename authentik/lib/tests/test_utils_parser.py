@@ -137,7 +137,8 @@ class TestParserUtils(TestCase):
         url = urlparse("redis://myredis/0?minretrybackoff=100s")
         pool_kwargs, redis_kwargs, tls_kwargs = get_redis_options(url)
         self.assertEqual(redis_kwargs["retry"]["min_backoff"], 100)
-        connection_pool, _ = get_connection_pool(pool_kwargs, redis_kwargs, tls_kwargs)
+        config = process_config(url, pool_kwargs, redis_kwargs, tls_kwargs)
+        connection_pool, _ = get_connection_pool(config)
         retry_config = connection_pool.connection_kwargs["retry"]
         self.assertIsInstance(retry_config, Retry)
         self.assertIsInstance(retry_config._backoff, ConstantBackoff)
@@ -147,7 +148,8 @@ class TestParserUtils(TestCase):
         url = urlparse("redis://myredis/0?maxretrybackoff=100s")
         pool_kwargs, redis_kwargs, tls_kwargs = get_redis_options(url)
         self.assertEqual(redis_kwargs["retry"]["max_backoff"], 100)
-        connection_pool, _ = get_connection_pool(pool_kwargs, redis_kwargs, tls_kwargs)
+        config = process_config(url, pool_kwargs, redis_kwargs, tls_kwargs)
+        connection_pool, _ = get_connection_pool(config)
         retry_config = connection_pool.connection_kwargs["retry"]
         self.assertIsInstance(retry_config, Retry)
         self.assertIsInstance(retry_config._backoff, ConstantBackoff)
@@ -350,22 +352,20 @@ class TestParserUtils(TestCase):
         self.assertEqual(config["redis_kwargs"]["socket_keepalive_options"][TCP_KEEPINTVL], 31)
 
     @patch("sys.platform", "linux")
+    @patch("socket.TCP_KEEPIDLE", 29)
     def test_get_redis_options_keepalive_linux(self):
         """Test keepalive setting for Linux"""
         url = urlparse("redis://myredis/0")
         config = process_config(url, *get_redis_options(url))
-        from socket import TCP_KEEPIDLE
-
-        self.assertEqual(config["redis_kwargs"]["socket_keepalive_options"][TCP_KEEPIDLE], 5 * 60)
+        self.assertEqual(config["redis_kwargs"]["socket_keepalive_options"][29], 5 * 60)
 
     @patch("sys.platform", "darwin")
+    @patch("socket.TCP_KEEPALIVE", 32)
     def test_get_redis_options_keepalive_darwin(self):
         """Test keepalive setting for macOS"""
         url = urlparse("redis://myredis/0")
         config = process_config(url, *get_redis_options(url))
-        from socket import TCP_KEEPALIVE
-
-        self.assertEqual(config["redis_kwargs"]["socket_keepalive_options"][TCP_KEEPALIVE], 5 * 60)
+        self.assertEqual(config["redis_kwargs"]["socket_keepalive_options"][32], 5 * 60)
 
     # TODO: This is not supported by the Go Redis URL parser!
     def test_get_redis_options_idle_check_frequency_arg_socket(self):
