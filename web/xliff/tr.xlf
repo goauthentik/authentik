@@ -5946,6 +5946,12 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s32babfed740fd3c1">
   <source>User type used for newly created users.</source>
 </trans-unit>
+<trans-unit id="s4a34a6be4c68ec87">
+  <source>Users created</source>
+</trans-unit>
+<trans-unit id="s275c956687e2e656">
+  <source>Failed logins</source>
+</trans-unit>
     </body>
   </file>
 </xliff>

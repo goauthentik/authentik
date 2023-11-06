@@ -54,6 +54,7 @@ export class DashboardUserPage extends AKElement {
                                     context__model__app: "authentik_core",
                                     context__model__model_name: "user",
                                 }}
+                                label=${msg("Users created")}
                             >
                             </ak-charts-admin-model-per-day>
                         </ak-aggregate-card>
@@ -66,7 +67,10 @@ export class DashboardUserPage extends AKElement {
                         class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl big-graph-container"
                     >
                         <ak-aggregate-card header=${msg("Logins per day in the last month")}>
-                            <ak-charts-admin-model-per-day action=${EventActions.Login}>
+                            <ak-charts-admin-model-per-day
+                                action=${EventActions.Login}
+                                label=${msg("Logins")}
+                            >
                             </ak-charts-admin-model-per-day>
                         </ak-aggregate-card>
                     </div>
@@ -74,7 +78,10 @@ export class DashboardUserPage extends AKElement {
                         class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl big-graph-container"
                     >
                         <ak-aggregate-card header=${msg("Failed Logins per day in the last month")}>
-                            <ak-charts-admin-model-per-day action=${EventActions.LoginFailed}>
+                            <ak-charts-admin-model-per-day
+                                action=${EventActions.LoginFailed}
+                                label=${msg("Failed logins")}
+                            >
                             </ak-charts-admin-model-per-day>
                         </ak-aggregate-card>
                     </div>
