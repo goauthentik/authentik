@@ -110,6 +110,8 @@ gen-diff:  ## (Release) generate the changelog diff between the current schema a
 		--markdown /local/diff.md \
 		/local/old_schema.yml /local/schema.yml
 	rm old_schema.yml
+	sed -i 's/{/&#123;/g' diff.md
+	sed -i 's/}/&#125;/g' diff.md
 	npx prettier --write diff.md
 
 gen-clean:

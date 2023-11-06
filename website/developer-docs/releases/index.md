@@ -68,8 +68,8 @@
 
 -   Create a draft GitHub Security advisory
 
-<details><summary>Template</summary>
-<p>
+<details>
+<summary>Template</summary>
 
 ```markdown
 ### Summary
@@ -99,7 +99,6 @@ If you have any questions or comments about this advisory:
 -   Email us at [security@goauthentik.io](mailto:security@goauthentik.io)
 ```
 
-</p>
 </details>
 
 -   Request a CVE via the draft advisory
@@ -118,8 +117,8 @@ If you have any questions or comments about this advisory:
 -   Wait for GitHub to assign a CVE
 -   Announce the release of the vulnerability via Mailing list and discord
 
-<details><summary>Mailing list template</summary>
-<p>
+<details>
+<summary>Mailing list template</summary>
 
 Subject: `Notice of upcoming authentik Security releases 2022.10.3 and 2022.11.3`
 
@@ -127,17 +126,15 @@ Subject: `Notice of upcoming authentik Security releases 2022.10.3 and 2022.11.3
 We'll be publishing a security Issue (CVE-2022-xxxxx) and accompanying fix on _date_, 13:00 UTC with the Severity level High. Fixed versions x, y and z will be released alongside a workaround for previous versions. For more info, see the authentik Security policy here: https://goauthentik.io/docs/security/policy.
 ```
 
-</p>
 </details>
 
-<details><summary>Discord template</summary>
-<p>
+<details>
+<summary>Discord template</summary>
 
 ```markdown
 @everyone We'll be publishing a security Issue (CVE-2022-xxxxx) and accompanying fix on _date_, 13:00 UTC with the Severity level High. Fixed versions x, y and z will be released alongside a workaround for previous versions. For more info, see the authentik Security policy here: https://goauthentik.io/docs/security/policy.
 ```
 
-</p>
 </details>
 
 ### Creating a security release
@@ -149,7 +146,8 @@ We'll be publishing a security Issue (CVE-2022-xxxxx) and accompanying fix on _d
 -   Resume the instructions above, starting with the `bumpversion` step
 -   After the release has been published, update the Discord announcement and send another mail to the mailing list to point to the new releases
 
-<details><summary>Mailing list template</summary>
+<details>
+<summary>Mailing list template</summary>
 <p>
 
 Subject: `Release of authentik Security releases 2022.10.3 and 2022.11.3`
@@ -163,7 +161,8 @@ Releases 2022.10.3 and 2022.11.3 with fixes included are available here: https:/
 </p>
 </details>
 
-<details><summary>Discord template</summary>
+<details>
+<summary>Discord template</summary>
 <p>
 
 ```markdown
