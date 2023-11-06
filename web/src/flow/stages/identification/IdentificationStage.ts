@@ -80,11 +80,12 @@ export class IdentificationStage extends BaseStage<
     }
 
     createHelperForm(): void {
+        const compatMode = "ShadyDOM" in window;
         this.form = document.createElement("form");
         document.documentElement.appendChild(this.form);
         // Only add the additional username input if we're in a shadow dom
         // otherwise it just confuses browsers
-        if (!("ShadyDOM" in window)) {
+        if (!compatMode) {
             // This is a workaround for the fact that we're in a shadow dom
             // adapted from https://github.com/home-assistant/frontend/issues/3133
             const username = document.createElement("input");
@@ -104,30 +105,33 @@ export class IdentificationStage extends BaseStage<
             };
             this.form.appendChild(username);
         }
-        const password = document.createElement("input");
-        password.setAttribute("type", "password");
-        password.setAttribute("name", "password");
-        password.setAttribute("autocomplete", "current-password");
-        password.onkeyup = (ev: KeyboardEvent) => {
-            if (ev.key == "Enter") {
-                this.submitForm(ev);
-            }
-            const el = ev.target as HTMLInputElement;
-            // Because the password field is not actually on this page,
-            // and we want to 'prefill' the password for the user,
-            // save it globally
-            PasswordManagerPrefill.password = el.value;
-            // Because password managers fill username, then password,
-            // we need to re-focus the uid_field here too
-            (this.shadowRoot || this)
-                .querySelectorAll<HTMLInputElement>("input[name=uidField]")
-                .forEach((input) => {
-                    // Because we assume only one input field exists that matches this
-                    // call focus so the user can press enter
-                    input.focus();
-                });
-        };
-        this.form.appendChild(password);
+        // Only add the password field when we don't already show a password field
+        if (!compatMode && !this.challenge.passwordFields) {
+            const password = document.createElement("input");
+            password.setAttribute("type", "password");
+            password.setAttribute("name", "password");
+            password.setAttribute("autocomplete", "current-password");
+            password.onkeyup = (ev: KeyboardEvent) => {
+                if (ev.key == "Enter") {
+                    this.submitForm(ev);
+                }
+                const el = ev.target as HTMLInputElement;
+                // Because the password field is not actually on this page,
+                // and we want to 'prefill' the password for the user,
+                // save it globally
+                PasswordManagerPrefill.password = el.value;
+                // Because password managers fill username, then password,
+                // we need to re-focus the uid_field here too
+                (this.shadowRoot || this)
+                    .querySelectorAll<HTMLInputElement>("input[name=uidField]")
+                    .forEach((input) => {
+                        // Because we assume only one input field exists that matches this
+                        // call focus so the user can press enter
+                        input.focus();
+                    });
+            };
+            this.form.appendChild(password);
+        }
         const totp = document.createElement("input");
         totp.setAttribute("type", "text");
         totp.setAttribute("name", "code");
