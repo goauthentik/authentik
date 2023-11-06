@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 from _socket import TCP_KEEPCNT, TCP_KEEPINTVL
 from django.test import TestCase
 from redis import BlockingConnectionPool, RedisCluster, SentinelConnectionPool
-from redis.backoff import ExponentialBackoff, NoBackoff, ConstantBackoff
+from redis.backoff import ConstantBackoff, ExponentialBackoff, NoBackoff
 from redis.retry import Retry
 
 from authentik.lib.utils.parser import get_connection_pool, get_redis_options, process_config
@@ -380,7 +380,7 @@ class TestParserUtils(TestCase):
         _, redis_kwargs, _ = get_redis_options(url)
         self.assertEqual(redis_kwargs["max_connections"], 52)
 
-    @patch.dict("sys.modules", {"os.sched_getaffinity", None})
+    @patch.dict("sys.modules", {"os.sched_getaffinity": None})
     def test_get_redis_options_max_idle_conns_arg_fallback(self):
         """Test Redis URL parser for fallback maxidleconns value"""
         url = urlparse("redis://myredis/0")
