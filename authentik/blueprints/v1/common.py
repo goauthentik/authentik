@@ -585,7 +585,7 @@ class EntryInvalidError(SentryIgnoredException):
     entry_model: str | None
     entry_id: str | None
     validation_error: ValidationError | None
-    serializer: Optional[Serializer] = None
+    serializer: Serializer | None = None
 
     def __init__(
         self, *args: object, validation_error: ValidationError | None = None, **kwargs

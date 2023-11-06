@@ -66,7 +66,7 @@ class OAuthSource(Source):
         return "ak-source-oauth-form"
 
     @property
-    def serializer(self) -> SerializerType:
+    def serializer(self) -> type[Serializer]:
         from authentik.sources.oauth.api.source import OAuthSourceSerializer
 
         return OAuthSourceSerializer
