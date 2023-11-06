@@ -126,6 +126,11 @@ class CustomConnectionFactory:
     def __init__(self, options):
         self.options = options
 
+    def __del__(self):
+        for pool, _ in self._pool_cache:
+            if pool is not None:
+                pool.disconnect()
+
     def connect(self, config: Dict):
         """
         Given a basic connection parameters,
