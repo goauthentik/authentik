@@ -3,12 +3,12 @@ from typing import Optional
 
 from django.utils.text import slugify
 
+from authentik.brands.models import Brand
 from authentik.core.models import Group, User
 from authentik.crypto.builder import CertificateBuilder
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.lib.generators import generate_id
-from authentik.tenants.models import Tenant
 
 
 def create_test_flow(
@@ -43,12 +43,12 @@ def create_test_admin_user(name: Optional[str] = None, **kwargs) -> User:
     return user
 
 
-def create_test_tenant(**kwargs) -> Tenant:
-    """Generate a test tenant, removing all other tenants to make sure this one
+def create_test_brand(**kwargs) -> Brand:
+    """Generate a test brand, removing all other brands to make sure this one
     matches."""
     uid = generate_id(20)
-    Tenant.objects.all().delete()
-    return Tenant.objects.create(domain=uid, default=True, **kwargs)
+    Brand.objects.all().delete()
+    return Brand.objects.create(domain=uid, default=True, **kwargs)
 
 
 def create_test_cert(use_ec_private_key=False) -> CertificateKeyPair:

@@ -21,7 +21,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import {
     ChallengeChoices,
     ChallengeTypes,
-    CurrentTenant,
+    CurrentBrand,
     FlowChallengeResponseRequest,
     FlowErrorChallenge,
     FlowsApi,
@@ -36,7 +36,7 @@ export class UserSettingsFlowExecutor extends AKElement implements StageHost {
     flowSlug?: string;
 
     @state()
-    tenant?: CurrentTenant;
+    brand?: CurrentBrand;
 
     private _challenge?: ChallengeTypes;
 
@@ -87,8 +87,8 @@ export class UserSettingsFlowExecutor extends AKElement implements StageHost {
     }
 
     firstUpdated(): void {
-        this.tenant = rootInterface()?.tenant;
-        this.flowSlug = this.tenant?.flowUserSettings;
+        this.brand = rootInterface()?.brand;
+        this.flowSlug = this.brand?.flowUserSettings;
         if (!this.flowSlug) {
             return;
         }

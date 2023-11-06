@@ -18,6 +18,7 @@ from authentik.stages.invitation.models import Invitation
 from authentik.stages.invitation.signals import invitation_used
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 from authentik.stages.user_write.signals import user_write
+from authentik.tenants.utils import get_current_tenant
 
 SESSION_LOGIN_EVENT = "login_event"
 
@@ -93,5 +94,5 @@ def event_post_save_notification(sender, instance: Event, **_):
 @receiver(pre_delete, sender=User)
 def event_user_pre_delete_cleanup(sender, instance: User, **_):
     """If gdpr_compliance is enabled, remove all the user's events"""
-    if CONFIG.get_bool("gdpr_compliance", True):
+    if get_current_tenant().avatars:
         gdpr_cleanup.delay(instance.pk)

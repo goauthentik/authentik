@@ -28,7 +28,7 @@ export function getFlowValue(flow: Flow | undefined): string | undefined {
  *
  * A wrapper around SearchSelect that understands the basic semantics of querying about Flows. This
  * code eliminates the long blocks of unreadable invocation that were embedded in every provider, as well as in
- * sources, tenants, and applications.
+ * sources, brands, and applications.
  *
  */
 
@@ -94,7 +94,7 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
     }
 
     /* This is the most commonly overridden method of this class. About half of the Flow Searches
-     * use this method, but several have more complex needs, such as relating to the tenant, or just
+     * use this method, but several have more complex needs, such as relating to the brand, or just
      * returning false.
      */
 

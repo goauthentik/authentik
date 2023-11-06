@@ -133,6 +133,7 @@ django-guardian = "*"
 django-model-utils = "*"
 django-prometheus = "*"
 django-redis = "*"
+django-tenants = { git = "https://github.com/hho6643/django-tenants.git", branch="hho6643-psycopg3_fixes" }
 djangorestframework = "*"
 djangorestframework-guardian = "*"
 docker = "*"

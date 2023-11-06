@@ -7,17 +7,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
     dependencies = [
         ("authentik_flows", "0023_flow_denied_action"),
-        ("authentik_tenants", "0003_tenant_attributes"),
+        ("authentik_brands", "0003_tenant_attributes"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name="tenant",
+            model_name="brand",
             name="flow_device_code",
             field=models.ForeignKey(
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
-                related_name="tenant_device_code",
+                related_name="brand_device_code",
                 to="authentik_flows.flow",
             ),
         ),

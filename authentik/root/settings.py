@@ -1,6 +1,7 @@
 """root settings for authentik"""
 import importlib
 import os
+from collections import OrderedDict
 from hashlib import sha512
 from pathlib import Path
 from urllib.parse import quote_plus
@@ -49,14 +50,24 @@ AUTHENTICATION_BACKENDS = [
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # Application definition
-INSTALLED_APPS = [
+SHARED_APPS = [
+    "django_tenants",
+    "authentik.tenants",
     "daphne",
-    "django.contrib.auth",
     "django.contrib.contenttypes",
-    "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
+    "rest_framework",
+    "django_filters",
+    "drf_spectacular",
+    "django_prometheus",
+    "channels",
+]
+TENANT_APPS = [
+    "django.contrib.auth",
+    "django.contrib.sessions",
+    "authentik.tenants",
     "authentik.admin",
     "authentik.api",
     "authentik.crypto",
@@ -102,15 +113,13 @@ INSTALLED_APPS = [
     "authentik.stages.user_login",
     "authentik.stages.user_logout",
     "authentik.stages.user_write",
-    "authentik.tenants",
+    "authentik.brands",
     "authentik.blueprints",
-    "rest_framework",
-    "django_filters",
-    "drf_spectacular",
     "guardian",
-    "django_prometheus",
-    "channels",
 ]
+
+TENANT_MODEL = "authentik_tenants.Tenant"
+TENANT_DOMAIN_MODEL = "authentik_tenants.Domain"
 
 GUARDIAN_MONKEY_PATCH = False
 
@@ -214,12 +223,14 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 MESSAGE_STORAGE = "authentik.root.messages.storage.ChannelsStorage"
 
 MIDDLEWARE = [
+    "django_tenants.middleware.default.DefaultTenantMiddleware",
     "authentik.root.middleware.LoggingMiddleware",
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
+    "authentik.brands.middleware.TenantMiddleware",
     "authentik.root.middleware.SessionMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "authentik.core.middleware.RequestIDMiddleware",
-    "authentik.tenants.middleware.TenantMiddleware",
+    "authentik.brands.middleware.BrandMiddleware",
     "authentik.events.middleware.AuditMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -243,7 +254,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "authentik.tenants.utils.context_processor",
+                "authentik.brands.utils.context_processor",
             ],
         },
     },
@@ -265,6 +276,7 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
+ORIGINAL_BACKEND = "django_prometheus.db.backends.postgresql"
 DATABASES = {
     "default": {
         "ENGINE": "authentik.root.db",
@@ -288,6 +300,8 @@ if CONFIG.get_bool("postgresql.use_pgbouncer", False):
     DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
     # https://docs.djangoproject.com/en/4.0/ref/databases/#persistent-connections
     DATABASES["default"]["CONN_MAX_AGE"] = None  # persistent
+
+DATABASE_ROUTERS = ("django_tenants.routers.TenantSyncRouter",)
 
 # Email
 # These values should never actually be used, emails are only sent from email stages, which
@@ -378,6 +392,8 @@ LOGGING = get_logger_config()
 
 
 _DISALLOWED_ITEMS = [
+    "SHARED_APPS",
+    "TENANT_APPS",
     "INSTALLED_APPS",
     "MIDDLEWARE",
     "AUTHENTICATION_BACKENDS",
@@ -389,7 +405,8 @@ def _update_settings(app_path: str):
     try:
         settings_module = importlib.import_module(app_path)
         CONFIG.log("debug", "Loaded app settings", path=app_path)
-        INSTALLED_APPS.extend(getattr(settings_module, "INSTALLED_APPS", []))
+        SHARED_APPS.extend(getattr(settings_module, "SHARED_APPS", []))
+        TENANT_APPS.extend(getattr(settings_module, "TENANT_APPS", []))
         MIDDLEWARE.extend(getattr(settings_module, "MIDDLEWARE", []))
         AUTHENTICATION_BACKENDS.extend(getattr(settings_module, "AUTHENTICATION_BACKENDS", []))
         CELERY["beat_schedule"].update(getattr(settings_module, "CELERY_BEAT_SCHEDULE", {}))
@@ -401,7 +418,7 @@ def _update_settings(app_path: str):
 
 
 # Load subapps's settings
-for _app in INSTALLED_APPS:
+for _app in set(SHARED_APPS + TENANT_APPS):
     if not _app.startswith("authentik"):
         continue
     _update_settings(f"{_app}.settings")
@@ -410,14 +427,14 @@ _update_settings("data.user_settings")
 if DEBUG:
     CELERY["task_always_eager"] = True
     os.environ[ENV_GIT_HASH_KEY] = "dev"
-    INSTALLED_APPS.append("silk")
+    SHARED_APPS.append("silk")
     SILKY_PYTHON_PROFILER = True
     MIDDLEWARE = ["silk.middleware.SilkyMiddleware"] + MIDDLEWARE
     REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append(
         "rest_framework.renderers.BrowsableAPIRenderer"
     )
 
-INSTALLED_APPS.append("authentik.core")
+TENANT_APPS.append("authentik.core")
 
 CONFIG.log("info", "Booting authentik", version=__version__)
 
@@ -425,7 +442,10 @@ CONFIG.log("info", "Booting authentik", version=__version__)
 try:
     importlib.import_module("authentik.enterprise.apps")
     CONFIG.log("info", "Enabled authentik enterprise")
-    INSTALLED_APPS.append("authentik.enterprise")
+    TENANT_APPS.append("authentik.enterprise")
     _update_settings("authentik.enterprise.settings")
 except ImportError:
     pass
+
+SHARED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))
+INSTALLED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))

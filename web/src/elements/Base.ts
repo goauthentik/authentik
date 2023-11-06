@@ -1,4 +1,4 @@
-import { config, tenant } from "@goauthentik/common/api/config";
+import { brand, config } from "@goauthentik/common/api/config";
 import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
 import { UIConfig, uiConfig } from "@goauthentik/common/ui/config";
 import { adaptCSS } from "@goauthentik/common/utils";
@@ -13,11 +13,11 @@ import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import ThemeDark from "@goauthentik/common/styles/theme-dark.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { Config, CurrentTenant, UiThemeEnum } from "@goauthentik/api";
+import { Config, CurrentBrand, UiThemeEnum } from "@goauthentik/api";
 
 type AkInterface = HTMLElement & {
     getTheme: () => Promise<UiThemeEnum>;
-    tenant?: CurrentTenant;
+    brand?: CurrentBrand;
     uiConfig?: UIConfig;
     config?: Config;
 };
@@ -178,7 +178,7 @@ export class AKElement extends LitElement {
 
 export class Interface extends AKElement implements AkInterface {
     @state()
-    tenant?: CurrentTenant;
+    brand?: CurrentBrand;
 
     @state()
     uiConfig?: UIConfig;
@@ -204,7 +204,7 @@ export class Interface extends AKElement implements AkInterface {
     constructor() {
         super();
         document.adoptedStyleSheets = [...document.adoptedStyleSheets, ensureCSSStyleSheet(PFBase)];
-        tenant().then((tenant) => (this.tenant = tenant));
+        brand().then((brand) => (this.brand = brand));
         config().then((config) => (this.config = config));
         this.dataset.akInterfaceRoot = "true";
     }

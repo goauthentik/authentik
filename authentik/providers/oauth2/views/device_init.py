@@ -8,6 +8,7 @@ from rest_framework.exceptions import ErrorDetail
 from rest_framework.fields import CharField, IntegerField
 from structlog.stdlib import get_logger
 
+from authentik.brands.models import Brand
 from authentik.core.models import Application
 from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
 from authentik.flows.exceptions import FlowNonApplicableException
@@ -26,7 +27,6 @@ from authentik.stages.consent.stage import (
     PLAN_CONTEXT_CONSENT_HEADER,
     PLAN_CONTEXT_CONSENT_PERMISSIONS,
 )
-from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()
 QS_KEY_CODE = "code"  # nosec
@@ -88,10 +88,10 @@ class DeviceEntryView(View):
     """View used to initiate the device-code flow, url entered by endusers"""
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
-        tenant: Tenant = request.tenant
-        device_flow = tenant.flow_device_code
+        brand: Brand = request.brand
+        device_flow = brand.flow_device_code
         if not device_flow:
-            LOGGER.info("Tenant has no device code flow configured", tenant=tenant)
+            LOGGER.info("Brand has no device code flow configured", brand=brand)
             return HttpResponse(status=404)
         if QS_KEY_CODE in request.GET:
             validation = validate_code(request.GET[QS_KEY_CODE], request)

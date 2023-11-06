@@ -56,6 +56,7 @@ from structlog.stdlib import get_logger
 from authentik.admin.api.metrics import CoordinateSerializer
 from authentik.api.decorators import permission_required
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
+from authentik.brands.models import Brand
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import LinkSerializer, PassiveSerializer, is_dict
 from authentik.core.middleware import (
@@ -81,7 +82,6 @@ from authentik.lib.config import CONFIG
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
-from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()
 
@@ -227,7 +227,7 @@ class UserSelfSerializer(ModelSerializer):
             }
 
     def get_settings(self, user: User) -> dict[str, Any]:
-        """Get user settings with tenant and group settings applied"""
+        """Get user settings with brand and group settings applied"""
         return user.group_attributes(self._context["request"]).get("settings", {})
 
     def get_system_permissions(self, user: User) -> list[str]:
@@ -388,11 +388,11 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         return User.objects.all().exclude(pk=get_anonymous_user().pk)
 
     def _create_recovery_link(self) -> tuple[Optional[str], Optional[Token]]:
-        """Create a recovery link (when the current tenant has a recovery flow set),
+        """Create a recovery link (when the current brand has a recovery flow set),
         that can either be shown to an admin or sent to the user directly"""
-        tenant: Tenant = self.request._request.tenant
+        brand: Brand = self.request._request.brand
         # Check that there is a recovery flow, if not return an error
-        flow = tenant.flow_recovery
+        flow = brand.flow_recovery
         if not flow:
             LOGGER.debug("No recovery flow set")
             return None, None
@@ -624,7 +624,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     @action(detail=True, methods=["POST"])
     def impersonate(self, request: Request, pk: int) -> Response:
         """Impersonate a user"""
-        if not CONFIG.get_bool("impersonation"):
+        if not request.tenant.impersonation:
             LOGGER.debug("User attempted to impersonate", user=request.user)
             return Response(status=401)
         if not request.user.has_perm("impersonate"):

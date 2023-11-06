@@ -1,6 +1,6 @@
 import "@goauthentik/admin/common/ak-core-group-search";
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-tenanted-flow-search";
+import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/components/ak-number-input";
 import "@goauthentik/components/ak-radio-input";

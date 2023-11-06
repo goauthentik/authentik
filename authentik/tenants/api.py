@@ -1,137 +1,114 @@
-"""Serializer for tenant models"""
-from typing import Any
+"""Serializer for tenants models"""
+from hmac import compare_digest
 
-from django.db import models
-from drf_spectacular.utils import extend_schema
-from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, ChoiceField, ListField
+from django_tenants.utils import get_tenant
+from rest_framework import permissions
+from rest_framework.authentication import get_authorization_header
+from rest_framework.fields import ReadOnlyField
 from rest_framework.filters import OrderingFilter, SearchFilter
-from rest_framework.permissions import AllowAny
+from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
-from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
+from rest_framework.views import View
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.api.authorization import SecretKeyFilter
-from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import PassiveSerializer
+from authentik.api.authentication import validate_auth
 from authentik.lib.config import CONFIG
-from authentik.tenants.models import Tenant
+from authentik.tenants.models import Domain, Tenant
 
 
-class FooterLinkSerializer(PassiveSerializer):
-    """Links returned in Config API"""
-
-    href = CharField(read_only=True)
-    name = CharField(read_only=True)
+class TenantManagementKeyPermission(permissions.BasePermission):
+    def has_permission(self, request: Request, view: View) -> bool:
+        token = validate_auth(get_authorization_header(request))
+        tenant_management_key = CONFIG.get("tenant_management_key")
+        if compare_digest("", tenant_management_key):
+            return False
+        return compare_digest(token, tenant_management_key)
 
 
 class TenantSerializer(ModelSerializer):
     """Tenant Serializer"""
 
-    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
-        if attrs.get("default", False):
-            tenants = Tenant.objects.filter(default=True)
-            if self.instance:
-                tenants = tenants.exclude(pk=self.instance.pk)
-            if tenants.exists():
-                raise ValidationError({"default": "Only a single Tenant can be set as default."})
-        return super().validate(attrs)
-
     class Meta:
         model = Tenant
         fields = [
             "tenant_uuid",
-            "domain",
-            "default",
-            "branding_title",
-            "branding_logo",
-            "branding_favicon",
-            "flow_authentication",
-            "flow_invalidation",
-            "flow_recovery",
-            "flow_unenrollment",
-            "flow_user_settings",
-            "flow_device_code",
-            "event_retention",
-            "web_certificate",
-            "attributes",
+            "schema_name",
+            "name",
         ]
 
 
-class Themes(models.TextChoices):
-    """Themes"""
-
-    AUTOMATIC = "automatic"
-    LIGHT = "light"
-    DARK = "dark"
-
-
-class CurrentTenantSerializer(PassiveSerializer):
-    """Partial tenant information for styling"""
-
-    matched_domain = CharField(source="domain")
-    branding_title = CharField()
-    branding_logo = CharField()
-    branding_favicon = CharField()
-    ui_footer_links = ListField(
-        child=FooterLinkSerializer(),
-        read_only=True,
-        default=CONFIG.get("footer_links", []),
-    )
-    ui_theme = ChoiceField(
-        choices=Themes.choices,
-        source="attributes.settings.theme.base",
-        default=Themes.AUTOMATIC,
-        read_only=True,
-    )
-
-    flow_authentication = CharField(source="flow_authentication.slug", required=False)
-    flow_invalidation = CharField(source="flow_invalidation.slug", required=False)
-    flow_recovery = CharField(source="flow_recovery.slug", required=False)
-    flow_unenrollment = CharField(source="flow_unenrollment.slug", required=False)
-    flow_user_settings = CharField(source="flow_user_settings.slug", required=False)
-    flow_device_code = CharField(source="flow_device_code.slug", required=False)
-
-    default_locale = CharField(read_only=True)
-
-
-class TenantViewSet(UsedByMixin, ModelViewSet):
+class TenantViewSet(ModelViewSet):
     """Tenant Viewset"""
 
     queryset = Tenant.objects.all()
     serializer_class = TenantSerializer
     search_fields = [
-        "domain",
-        "branding_title",
-        "web_certificate__name",
+        "name",
+        "schema_name",
+        "domains__domain",
     ]
-    filterset_fields = [
-        "tenant_uuid",
+    ordering = ["schema_name"]
+    permission_classes = [TenantManagementKeyPermission]
+    filter_backends = [OrderingFilter, SearchFilter]
+
+
+class DomainSerializer(ModelSerializer):
+    """Domain Serializer"""
+
+    class Meta:
+        model = Domain
+        fields = "__all__"
+
+
+class DomainViewSet(ModelViewSet):
+    """Domain ViewSet"""
+
+    queryset = Domain.objects.all()
+    serializer_class = DomainSerializer
+    search_fields = [
         "domain",
-        "default",
-        "branding_title",
-        "branding_logo",
-        "branding_favicon",
-        "flow_authentication",
-        "flow_invalidation",
-        "flow_recovery",
-        "flow_unenrollment",
-        "flow_user_settings",
-        "flow_device_code",
-        "event_retention",
-        "web_certificate",
+        "tenant__name",
+        "tenant__schema_name",
     ]
     ordering = ["domain"]
+    permission_classes = [TenantManagementKeyPermission]
+    filter_backends = [OrderingFilter, SearchFilter]
 
-    filter_backends = [SecretKeyFilter, OrderingFilter, SearchFilter]
 
-    @extend_schema(
-        responses=CurrentTenantSerializer(many=False),
-    )
-    @action(methods=["GET"], detail=False, permission_classes=[AllowAny])
-    def current(self, request: Request) -> Response:
-        """Get current tenant"""
-        tenant: Tenant = request._request.tenant
-        return Response(CurrentTenantSerializer(tenant).data)
+class SettingsSerializer(ModelSerializer):
+    """Settings Serializer"""
+
+    name = ReadOnlyField()
+    domains = DomainSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = Tenant
+        fields = [
+            "tenant_uuid",
+            "name",
+            "domains",
+            "avatars",
+            "default_user_change_name",
+            "default_user_change_email",
+            "default_user_change_username",
+            "gdpr_compliance",
+            "impersonation",
+            "footer_links",
+            "reputation_expiry",
+        ]
+
+
+class SettingsView(RetrieveUpdateAPIView):
+    """Settings view"""
+
+    queryset = Tenant.objects.all()
+    serializer_class = SettingsSerializer
+    permission_classes = [IsAdminUser]
+    filter_backends = []
+
+    def get_object(self):
+        obj = get_tenant(self.request)
+        self.check_object_permissions(obj)
+        return obj

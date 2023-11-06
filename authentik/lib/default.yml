@@ -35,8 +35,8 @@ redis:
   tls_reqs: "none"
 
 # broker:
-  # url: ""
-  # transport_options: ""
+# url: ""
+# transport_options: ""
 
 cache:
   # url: ""
@@ -46,10 +46,10 @@ cache:
   timeout_reputation: 300
 
 # channel:
-  # url: ""
+# url: ""
 
 # result_backend:
-  # url: ""
+# url: ""
 
 paths:
   media: ./media
@@ -105,19 +105,12 @@ reputation:
 cookie_domain: null
 disable_update_check: false
 disable_startup_analytics: false
-avatars: env://AUTHENTIK_AUTHENTIK__AVATARS?gravatar,initials
 geoip: "/geoip/GeoLite2-City.mmdb"
 
-footer_links: []
-
-default_user_change_name: true
-default_user_change_email: false
-default_user_change_username: false
-
-gdpr_compliance: true
 cert_discovery_dir: /certs
 default_token_length: 60
-impersonation: true
+
+tenant_management_key: ""
 
 blueprints_dir: /blueprints
 
