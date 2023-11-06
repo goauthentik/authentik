@@ -23,7 +23,9 @@ urlpatterns = [
 websocket_urlpatterns = [
     path(
         "ws/rac/<slug:app>/",
-        CookieMiddleware(SessionMiddleware(AuthMiddleware(RACClientConsumer.as_asgi()))),
+        ChannelsLoggingMiddleware(CookieMiddleware(
+            SessionMiddleware(AuthMiddleware(RACClientConsumer.as_asgi()))
+        )),
     ),
     path(
         "ws/outpost_rac/<str:channel>/",
