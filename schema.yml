@@ -17522,7 +17522,6 @@ paths:
           - authentik_core.user
           - authentik_crypto.certificatekeypair
           - authentik_enterprise.license
-          - authentik_enterprise_providers_rac.racprovider
           - authentik_events.event
           - authentik_events.notification
           - authentik_events.notificationrule
@@ -17548,6 +17547,7 @@ paths:
           - authentik_providers_oauth2.refreshtoken
           - authentik_providers_oauth2.scopemapping
           - authentik_providers_proxy.proxyprovider
+          - authentik_providers_rac.racprovider
           - authentik_providers_radius.radiusprovider
           - authentik_providers_saml.samlpropertymapping
           - authentik_providers_saml.samlprovider
@@ -17665,7 +17665,7 @@ paths:
           * `authentik_core.application` - Application
           * `authentik_core.token` - Token
           * `authentik_enterprise.license` - License
-          * `authentik_enterprise_providers_rac.racprovider` - RAC Provider
+          * `authentik_providers_rac.racprovider` - RAC Provider
         required: true
       - in: query
         name: object_pk
@@ -17812,7 +17812,6 @@ paths:
           - authentik_core.user
           - authentik_crypto.certificatekeypair
           - authentik_enterprise.license
-          - authentik_enterprise_providers_rac.racprovider
           - authentik_events.event
           - authentik_events.notification
           - authentik_events.notificationrule
@@ -17838,6 +17837,7 @@ paths:
           - authentik_providers_oauth2.refreshtoken
           - authentik_providers_oauth2.scopemapping
           - authentik_providers_proxy.proxyprovider
+          - authentik_providers_rac.racprovider
           - authentik_providers_radius.radiusprovider
           - authentik_providers_saml.samlpropertymapping
           - authentik_providers_saml.samlprovider
@@ -17955,7 +17955,7 @@ paths:
           * `authentik_core.application` - Application
           * `authentik_core.token` - Token
           * `authentik_enterprise.license` - License
-          * `authentik_enterprise_providers_rac.racprovider` - RAC Provider
+          * `authentik_providers_rac.racprovider` - RAC Provider
         required: true
       - in: query
         name: object_pk
@@ -31123,7 +31123,7 @@ components:
             * `authentik_core.application` - Application
             * `authentik_core.token` - Token
             * `authentik_enterprise.license` - License
-            * `authentik_enterprise_providers_rac.racprovider` - RAC Provider
+            * `authentik_providers_rac.racprovider` - RAC Provider
       required:
       - bound_to
       - component
@@ -31321,7 +31321,7 @@ components:
             * `authentik_core.application` - Application
             * `authentik_core.token` - Token
             * `authentik_enterprise.license` - License
-            * `authentik_enterprise_providers_rac.racprovider` - RAC Provider
+            * `authentik_providers_rac.racprovider` - RAC Provider
       required:
       - name
     EventRequest:
@@ -33637,7 +33637,7 @@ components:
       - authentik_core.application
       - authentik_core.token
       - authentik_enterprise.license
-      - authentik_enterprise_providers_rac.racprovider
+      - authentik_providers_rac.racprovider
       type: string
       description: |-
         * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
@@ -33714,7 +33714,7 @@ components:
         * `authentik_core.application` - Application
         * `authentik_core.token` - Token
         * `authentik_enterprise.license` - License
-        * `authentik_enterprise_providers_rac.racprovider` - RAC Provider
+        * `authentik_providers_rac.racprovider` - RAC Provider
     NameIdPolicyEnum:
       enum:
       - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
@@ -36800,7 +36800,7 @@ components:
             * `authentik_core.application` - Application
             * `authentik_core.token` - Token
             * `authentik_enterprise.license` - License
-            * `authentik_enterprise_providers_rac.racprovider` - RAC Provider
+            * `authentik_providers_rac.racprovider` - RAC Provider
     PatchedEventRequest:
       type: object
       description: Event Serializer
@@ -39484,7 +39484,7 @@ components:
       - authentik_providers_ldap.ldapprovider
       - authentik_providers_oauth2.oauth2provider
       - authentik_providers_proxy.proxyprovider
-      - authentik_enterprise_providers_rac.racprovider
+      - authentik_providers_rac.racprovider
       - authentik_providers_radius.radiusprovider
       - authentik_providers_saml.samlprovider
       - authentik_providers_scim.scimprovider
@@ -39493,7 +39493,7 @@ components:
         * `authentik_providers_ldap.ldapprovider` - authentik_providers_ldap.ldapprovider
         * `authentik_providers_oauth2.oauth2provider` - authentik_providers_oauth2.oauth2provider
         * `authentik_providers_proxy.proxyprovider` - authentik_providers_proxy.proxyprovider
-        * `authentik_enterprise_providers_rac.racprovider` - authentik_enterprise_providers_rac.racprovider
+        * `authentik_providers_rac.racprovider` - authentik_providers_rac.racprovider
         * `authentik_providers_radius.radiusprovider` - authentik_providers_radius.radiusprovider
         * `authentik_providers_saml.samlprovider` - authentik_providers_saml.samlprovider
         * `authentik_providers_scim.scimprovider` - authentik_providers_scim.scimprovider
@@ -43247,7 +43247,7 @@ components:
           authentik_providers_ldap.ldapprovider: '#/components/schemas/LDAPProviderRequest'
           authentik_providers_oauth2.oauth2provider: '#/components/schemas/OAuth2ProviderRequest'
           authentik_providers_proxy.proxyprovider: '#/components/schemas/ProxyProviderRequest'
-          authentik_enterprise_providers_rac.racprovider: '#/components/schemas/RACProviderRequest'
+          authentik_providers_rac.racprovider: '#/components/schemas/RACProviderRequest'
           authentik_providers_radius.radiusprovider: '#/components/schemas/RadiusProviderRequest'
           authentik_providers_saml.samlprovider: '#/components/schemas/SAMLProviderRequest'
           authentik_providers_scim.scimprovider: '#/components/schemas/SCIMProviderRequest'

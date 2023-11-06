@@ -42,7 +42,7 @@ class RACInterface(EnterprisePolicyAccessView, InterfaceView):
                     token=token,
                     destination=self.request.build_absolute_uri(
                         reverse(
-                            "authentik_enterprise_providers_rac:if-rac",
+                            "authentik_providers_rac:if-rac",
                             kwargs={
                                 "app": self.application.slug,
                             },

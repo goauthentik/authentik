@@ -39,7 +39,7 @@ class RACProvider(Provider):
         try:
             # pylint: disable=no-member
             return reverse(
-                "authentik_enterprise_providers_rac:if-rac",
+                "authentik_providers_rac:if-rac",
                 kwargs={"app": self.application.slug},
             )
         except Provider.application.RelatedObjectDoesNotExist:
