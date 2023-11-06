@@ -12,8 +12,9 @@ class PatreonOAuthRedirect(OAuthRedirect):
     """Patreon OAuth2 Redirect"""
 
     def get_additional_parameters(self, source: OAuthSource):  # pragma: no cover
+        # https://docs.patreon.com/#scopes
         return {
-            "scope": ["openid", "email", "profile"],
+            "scope": ["identity", "identity[email]"],
         }
 
 
