@@ -386,6 +386,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                             class="pf-c-form-control"
                             required
                         />
+                        <p class="pf-c-form__helper-text">${msg("Also known as Client ID.")}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Consumer secret")}
@@ -394,6 +395,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         name="consumerSecret"
                     >
                         <textarea class="pf-c-form-control"></textarea>
+                        <p class="pf-c-form__helper-text">${msg("Also known as Client Secret.")}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Scopes")} name="additionalScopes">
                         <input
