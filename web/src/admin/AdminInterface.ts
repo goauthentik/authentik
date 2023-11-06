@@ -220,7 +220,7 @@ export class AdminInterface extends Interface {
                 ["/core/tokens", msg("Tokens and App passwords")],
                 ["/flow/stages/invitations", msg("Invitations")]]],
             [null, msg("System"), null, [
-                ["/core/tenants", msg("Tenants")],
+                ["/core/brands", msg("Brands")],
                 ["/crypto/certificates", msg("Certificates")],
                 ["/outpost/integrations", msg("Outpost Integrations")]]]
         ];

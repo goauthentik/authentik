@@ -295,7 +295,7 @@ export class RelatedUserList extends Table<User> {
                                             ${msg("Set password")}
                                         </button>
                                     </ak-forms-modal>
-                                    ${rootInterface()?.tenant?.flowRecovery
+                                    ${rootInterface()?.brand?.flowRecovery
                                         ? html`
                                               <ak-action-button
                                                   class="pf-m-secondary"
@@ -357,7 +357,7 @@ export class RelatedUserList extends Table<User> {
                                           `
                                         : html` <p>
                                               ${msg(
-                                                  "To let a user directly reset a their password, configure a recovery flow on the currently active tenant.",
+                                                  "To let a user directly reset a their password, configure a recovery flow on the currently active brand.",
                                               )}
                                           </p>`}
                                 </div>

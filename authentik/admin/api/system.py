@@ -37,7 +37,7 @@ class SystemSerializer(PassiveSerializer):
     http_host = SerializerMethodField()
     http_is_secure = SerializerMethodField()
     runtime = SerializerMethodField()
-    tenant = SerializerMethodField()
+    brand = SerializerMethodField()
     server_time = SerializerMethodField()
     embedded_outpost_host = SerializerMethodField()
 
@@ -69,9 +69,9 @@ class SystemSerializer(PassiveSerializer):
             "uname": " ".join(platform.uname()),
         }
 
-    def get_tenant(self, request: Request) -> str:
-        """Currently active tenant"""
-        return str(request._request.tenant)
+    def get_brand(self, request: Request) -> str:
+        """Currently active brand"""
+        return str(request._request.brand)
 
     def get_server_time(self, request: Request) -> datetime:
         """Current server time"""

@@ -105,6 +105,8 @@ cert_discovery_dir: /certs
 default_token_length: 60
 impersonation: true
 
+tenant_management_key: ""
+
 blueprints_dir: /blueprints
 
 web:

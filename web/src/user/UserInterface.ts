@@ -19,7 +19,7 @@ import "@goauthentik/elements/notifications/NotificationDrawer";
 import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import "@goauthentik/elements/router/RouterOutlet";
 import "@goauthentik/elements/sidebar/Sidebar";
-import { DefaultTenant } from "@goauthentik/elements/sidebar/SidebarBrand";
+import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 import "@goauthentik/elements/sidebar/SidebarItem";
 import { ROUTES } from "@goauthentik/user/Routes";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
@@ -192,11 +192,8 @@ export class UserInterface extends Interface {
                         <a href="#/" class="pf-c-page__header-brand-link">
                             <img
                                 class="pf-c-brand"
-                                src="${first(
-                                    this.tenant?.brandingLogo,
-                                    DefaultTenant.brandingLogo,
-                                )}"
-                                alt="${(this.tenant?.brandingTitle, DefaultTenant.brandingTitle)}"
+                                src="${first(this.brand?.brandingLogo, DefaultBrand.brandingLogo)}"
+                                alt="${(this.brand?.brandingTitle, DefaultBrand.brandingTitle)}"
                             />
                         </a>
                     </div>

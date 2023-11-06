@@ -1,42 +1,42 @@
-"""Test tenants"""
+"""Test brands"""
 from django.test.client import RequestFactory
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.tests.utils import create_test_admin_user, create_test_tenant
+from authentik.brands.api import Themes
+from authentik.brands.models import Brand
+from authentik.core.tests.utils import create_test_admin_user, create_test_brand
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.tenants.api import Themes
-from authentik.tenants.models import Tenant
 
 
-class TestTenants(APITestCase):
-    """Test tenants"""
+class TestBrands(APITestCase):
+    """Test brands"""
 
-    def test_current_tenant(self):
-        """Test Current tenant API"""
-        tenant = create_test_tenant()
+    def test_current_brand(self):
+        """Test Current brand API"""
+        brand = create_test_brand()
         self.assertJSONEqual(
-            self.client.get(reverse("authentik_api:tenant-current")).content.decode(),
+            self.client.get(reverse("authentik_api:brand-current")).content.decode(),
             {
                 "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
                 "branding_title": "authentik",
-                "matched_domain": tenant.domain,
+                "matched_domain": brand.domain,
                 "ui_footer_links": CONFIG.get("footer_links"),
                 "ui_theme": Themes.AUTOMATIC,
                 "default_locale": "",
             },
         )
 
-    def test_tenant_subdomain(self):
-        """Test Current tenant API"""
-        Tenant.objects.all().delete()
-        Tenant.objects.create(domain="bar.baz", branding_title="custom")
+    def test_brand_subdomain(self):
+        """Test Current brand API"""
+        Brand.objects.all().delete()
+        Brand.objects.create(domain="bar.baz", branding_title="custom")
         self.assertJSONEqual(
             self.client.get(
-                reverse("authentik_api:tenant-current"), HTTP_HOST="foo.bar.baz"
+                reverse("authentik_api:brand-current"), HTTP_HOST="foo.bar.baz"
             ).content.decode(),
             {
                 "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
@@ -50,10 +50,10 @@ class TestTenants(APITestCase):
         )
 
     def test_fallback(self):
-        """Test fallback tenant"""
-        Tenant.objects.all().delete()
+        """Test fallback brand"""
+        Brand.objects.all().delete()
         self.assertJSONEqual(
-            self.client.get(reverse("authentik_api:tenant-current")).content.decode(),
+            self.client.get(reverse("authentik_api:brand-current")).content.decode(),
             {
                 "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
@@ -66,8 +66,8 @@ class TestTenants(APITestCase):
         )
 
     def test_event_retention(self):
-        """Test tenant's event retention"""
-        tenant = Tenant.objects.create(
+        """Test brand's event retention"""
+        brand = Brand.objects.create(
             domain="foo",
             default=True,
             branding_title="custom",
@@ -75,7 +75,7 @@ class TestTenants(APITestCase):
         )
         factory = RequestFactory()
         request = factory.get("/")
-        request.tenant = tenant
+        request.brand = brand
         event = Event.new(action=EventAction.SYSTEM_EXCEPTION, message="test").from_http(request)
         self.assertEqual(event.expires.day, (event.created + timedelta_from_string("weeks=3")).day)
         self.assertEqual(
@@ -87,8 +87,8 @@ class TestTenants(APITestCase):
         )
 
     def test_create_default_multiple(self):
-        """Test attempted creation of multiple default tenants"""
-        Tenant.objects.create(
+        """Test attempted creation of multiple default brands"""
+        Brand.objects.create(
             domain="foo",
             default=True,
             branding_title="custom",
@@ -97,6 +97,6 @@ class TestTenants(APITestCase):
         user = create_test_admin_user()
         self.client.force_login(user)
         response = self.client.post(
-            reverse("authentik_api:tenant-list"), data={"domain": "bar", "default": True}
+            reverse("authentik_api:brand-list"), data={"domain": "bar", "default": True}
         )
         self.assertEqual(response.status_code, 400)

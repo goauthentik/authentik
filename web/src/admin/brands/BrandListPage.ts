@@ -1,4 +1,4 @@
-import "@goauthentik/admin/tenants/TenantForm";
+import "@goauthentik/admin/brands/BrandForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import { PFColor } from "@goauthentik/elements/Label";
@@ -15,21 +15,21 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { CoreApi, RbacPermissionsAssignedByUsersListModelEnum, Tenant } from "@goauthentik/api";
+import { Brand, CoreApi, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
-@customElement("ak-tenant-list")
-export class TenantListPage extends TablePage<Tenant> {
+@customElement("ak-brand-list")
+export class BrandListPage extends TablePage<Brand> {
     searchEnabled(): boolean {
         return true;
     }
     pageTitle(): string {
-        return msg("Tenants");
+        return msg("Brands");
     }
     pageDescription(): string {
         return msg("Configure visual settings and defaults for different domains.");
     }
     pageIcon(): string {
-        return "pf-icon pf-icon-tenant";
+        return "pf-icon pf-icon-brand";
     }
 
     checkbox = true;
@@ -37,8 +37,8 @@ export class TenantListPage extends TablePage<Tenant> {
     @property()
     order = "domain";
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Tenant>> {
-        return new CoreApi(DEFAULT_CONFIG).coreTenantsList({
+    async apiEndpoint(page: number): Promise<PaginatedResponse<Brand>> {
+        return new CoreApi(DEFAULT_CONFIG).coreBrandsList({
             ordering: this.order,
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,
@@ -57,19 +57,19 @@ export class TenantListPage extends TablePage<Tenant> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Tenant(s)")}
+            objectLabel=${msg("Brand(s)")}
             .objects=${this.selectedElements}
-            .metadata=${(item: Tenant) => {
+            .metadata=${(item: Brand) => {
                 return [{ key: msg("Domain"), value: item.domain }];
             }}
-            .usedBy=${(item: Tenant) => {
-                return new CoreApi(DEFAULT_CONFIG).coreTenantsUsedByList({
-                    tenantUuid: item.tenantUuid,
+            .usedBy=${(item: Brand) => {
+                return new CoreApi(DEFAULT_CONFIG).coreBrandsUsedByList({
+                    brandUuid: item.brandUuid,
                 });
             }}
-            .delete=${(item: Tenant) => {
-                return new CoreApi(DEFAULT_CONFIG).coreTenantsDestroy({
-                    tenantUuid: item.tenantUuid,
+            .delete=${(item: Brand) => {
+                return new CoreApi(DEFAULT_CONFIG).coreBrandsDestroy({
+                    brandUuid: item.brandUuid,
                 });
             }}
         >
@@ -79,7 +79,7 @@ export class TenantListPage extends TablePage<Tenant> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Tenant): TemplateResult[] {
+    row(item: Brand): TemplateResult[] {
         return [
             html`${item.domain}`,
             html`<ak-label color=${item._default ? PFColor.Green : PFColor.Red}>
@@ -87,8 +87,8 @@ export class TenantListPage extends TablePage<Tenant> {
             </ak-label>`,
             html`<ak-forms-modal>
                     <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Tenant")} </span>
-                    <ak-tenant-form slot="form" .instancePk=${item.tenantUuid}> </ak-tenant-form>
+                    <span slot="header"> ${msg("Update Brand")} </span>
+                    <ak-brand-form slot="form" .instancePk=${item.brandUuid}> </ak-brand-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
                             <i class="fas fa-edit"></i>
@@ -97,8 +97,8 @@ export class TenantListPage extends TablePage<Tenant> {
                 </ak-forms-modal>
 
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.TenantsTenant}
-                    objectPk=${item.tenantUuid}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.BrandsBrand}
+                    objectPk=${item.brandUuid}
                 >
                 </ak-rbac-object-permission-modal>`,
         ];
@@ -108,8 +108,8 @@ export class TenantListPage extends TablePage<Tenant> {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Tenant")} </span>
-                <ak-tenant-form slot="form"> </ak-tenant-form>
+                <span slot="header"> ${msg("Create Brand")} </span>
+                <ak-brand-form slot="form"> </ak-brand-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
         `;

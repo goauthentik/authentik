@@ -1,42 +1,22 @@
-"""Tenant utilities"""
-from typing import Any
+import re
 
-from django.db.models import F, Q
-from django.db.models import Value as V
-from django.http.request import HttpRequest
-from sentry_sdk.hub import Hub
+from django.db.models import F, Value
+from django.http import HttpRequest
 
-from authentik import get_full_version
-from authentik.lib.config import CONFIG
-from authentik.tenants.models import Tenant
-
-_q_default = Q(default=True)
-DEFAULT_TENANT = Tenant(domain="fallback")
+from authentik.tenants.models import Tenant, get_default_tenant
 
 
 def get_tenant_for_request(request: HttpRequest) -> Tenant:
-    """Get tenant object for current request"""
-    db_tenants = (
-        Tenant.objects.annotate(host_domain=V(request.get_host()))
-        .filter(Q(host_domain__iendswith=F("domain")) | _q_default)
-        .order_by("default")
+    """Get tenant for current request"""
+    tenants = list(
+        Tenant.objects.alias(domain=Value(request.get_host()))
+        .filter(domain__iregex=F("domain_regex"))
+        .all()
     )
-    tenants = list(db_tenants.all())
-    if len(tenants) < 1:
-        return DEFAULT_TENANT
-    return tenants[0]
-
-
-def context_processor(request: HttpRequest) -> dict[str, Any]:
-    """Context Processor that injects tenant object into every template"""
-    tenant = getattr(request, "tenant", DEFAULT_TENANT)
-    trace = ""
-    span = Hub.current.scope.span
-    if span:
-        trace = span.to_traceparent()
-    return {
-        "tenant": tenant,
-        "footer_links": CONFIG.get("footer_links"),
-        "sentry_trace": trace,
-        "version": get_full_version(),
-    }
+    # We always have one match at least for the default tenant
+    if len(tenants) <= 1:
+        return tenants[0]
+    for tenant in tenants:
+        if tenant.domain_regex != ".*":
+            return tenant
+    return get_default_tenant()

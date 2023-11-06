@@ -1,5 +1,5 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-tenanted-flow-search";
+import "@goauthentik/admin/common/ak-flow-search/ak-branted-flow-search";
 import {
     clientTypeOptions,
     issuerModeOptions,

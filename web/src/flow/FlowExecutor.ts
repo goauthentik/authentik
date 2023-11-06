@@ -54,9 +54,9 @@ export class FlowExecutor extends Interface implements StageHost {
     set challenge(value: ChallengeTypes | undefined) {
         this._challenge = value;
         if (value?.flowInfo?.title) {
-            document.title = `${value.flowInfo?.title} - ${this.tenant?.brandingTitle}`;
+            document.title = `${value.flowInfo?.title} - ${this.brand?.brandingTitle}`;
         } else {
-            document.title = this.tenant?.brandingTitle || TITLE_DEFAULT;
+            document.title = this.brand?.brandingTitle || TITLE_DEFAULT;
         }
         this.requestUpdate();
     }
@@ -162,7 +162,7 @@ export class FlowExecutor extends Interface implements StageHost {
     }
 
     async getTheme(): Promise<UiThemeEnum> {
-        return globalAK()?.tenant.uiTheme || UiThemeEnum.Automatic;
+        return globalAK()?.brand.uiTheme || UiThemeEnum.Automatic;
     }
 
     submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
@@ -500,7 +500,7 @@ export class FlowExecutor extends Interface implements StageHost {
                                         <header class="pf-c-login__header">
                                             <div class="pf-c-brand ak-brand">
                                                 <img
-                                                    src="${first(this.tenant?.brandingLogo, "")}"
+                                                    src="${first(this.brand?.brandingLogo, "")}"
                                                     alt="authentik Logo"
                                                 />
                                             </div>
@@ -510,7 +510,7 @@ export class FlowExecutor extends Interface implements StageHost {
                                         </div>
                                         <footer class="pf-c-login__footer">
                                             <ul class="pf-c-list pf-m-inline">
-                                                ${this.tenant?.uiFooterLinks?.map((link) => {
+                                                ${this.brand?.uiFooterLinks?.map((link) => {
                                                     return html`<li>
                                                         <a href="${link.href || ""}"
                                                             >${link.name}</a

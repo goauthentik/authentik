@@ -50,7 +50,7 @@ export class EventListPage extends TablePage<Event> {
             new TableColumn(msg("User"), "user"),
             new TableColumn(msg("Creation Date"), "created"),
             new TableColumn(msg("Client IP"), "client_ip"),
-            new TableColumn(msg("Tenant"), "tenant_name"),
+            new TableColumn(msg("Brand"), "brand_name"),
             new TableColumn(msg("Actions")),
         ];
     }
@@ -75,7 +75,7 @@ export class EventListPage extends TablePage<Event> {
             html`<div>${item.clientIp || msg("-")}</div>
 
                 <small>${EventGeo(item)}</small>`,
-            html`<span>${item.tenant?.name || msg("-")}</span>`,
+            html`<span>${item.brand?.name || msg("-")}</span>`,
             html`<a href="#/events/log/${item.pk}">
                 <pf-tooltip position="top" content=${msg("Show details")}>
                     <i class="fas fa-share-square"></i>

@@ -63,7 +63,7 @@ export const requestRecoveryLink = (user: User) =>
                 showMessage({
                     level: MessageLevel.error,
                     message: msg(
-                        "The current tenant must have a recovery flow configured to use a recovery link",
+                        "The current brand must have a recovery flow configured to use a recovery link",
                     ),
                 }),
             ),
@@ -357,7 +357,7 @@ export class UserListPage extends TablePage<User> {
                                             ${msg("Set password")}
                                         </button>
                                     </ak-forms-modal>
-                                    ${rootInterface()?.tenant?.flowRecovery
+                                    ${rootInterface()?.brand?.flowRecovery
                                         ? html`
                                               <ak-action-button
                                                   class="pf-m-secondary"
@@ -375,7 +375,7 @@ export class UserListPage extends TablePage<User> {
                                           `
                                         : html` <p>
                                               ${msg(
-                                                  "To let a user directly reset a their password, configure a recovery flow on the currently active tenant.",
+                                                  "To let a user directly reset a their password, configure a recovery flow on the currently active brand.",
                                               )}
                                           </p>`}
                                 </div>

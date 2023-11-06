@@ -2528,6 +2528,43 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_brands.brand"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_brands.brand"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_brands.brand"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_tenants.tenant"
                             },
                             "id": {
@@ -2907,10 +2944,10 @@
                     "format": "date-time",
                     "title": "Expires"
                 },
-                "tenant": {
+                "brand": {
                     "type": "object",
                     "additionalProperties": true,
-                    "title": "Tenant"
+                    "title": "Brand"
                 }
             },
             "required": []
@@ -3016,10 +3053,10 @@
                             "format": "date-time",
                             "title": "Expires"
                         },
-                        "tenant": {
+                        "brand": {
                             "type": "object",
                             "additionalProperties": true,
-                            "title": "Tenant"
+                            "title": "Brand"
                         }
                     },
                     "required": [
@@ -3472,6 +3509,7 @@
                         "authentik.stages.user_login",
                         "authentik.stages.user_logout",
                         "authentik.stages.user_write",
+                        "authentik.brands",
                         "authentik.tenants",
                         "authentik.blueprints",
                         "authentik.core",
@@ -3554,6 +3592,7 @@
                         "authentik_stages_user_login.userloginstage",
                         "authentik_stages_user_logout.userlogoutstage",
                         "authentik_stages_user_write.userwritestage",
+                        "authentik_brands.brand",
                         "authentik_tenants.tenant",
                         "authentik_blueprints.blueprintinstance",
                         "authentik_core.group",
@@ -8385,14 +8424,14 @@
             },
             "required": []
         },
-        "model_authentik_tenants.tenant": {
+        "model_authentik_brands.brand": {
             "type": "object",
             "properties": {
                 "domain": {
                     "type": "string",
                     "minLength": 1,
                     "title": "Domain",
-                    "description": "Domain that activates this tenant. Can be a superset, i.e. `a.b` for `aa.b` and `ba.b`"
+                    "description": "Domain that activates this brand. Can be a superset, i.e. `a.b` for `aa.b` and `ba.b`"
                 },
                 "default": {
                     "type": "boolean",
@@ -8452,6 +8491,68 @@
                     "type": "object",
                     "additionalProperties": true,
                     "title": "Attributes"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_tenants.tenant": {
+            "type": "object",
+            "properties": {
+                "cookie_domain": {
+                    "type": "string",
+                    "title": "Cookie domain",
+                    "description": "Which domain the session cookie should be set to. By default, the cookie is set to the domain authentik is accessed under."
+                },
+                "avatars": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Avatars",
+                    "description": "Configure how authentik should show avatars for users."
+                },
+                "user_change_name": {
+                    "type": "boolean",
+                    "title": "User change name",
+                    "description": "Enable the ability for users to change their name."
+                },
+                "user_change_email": {
+                    "type": "boolean",
+                    "title": "User change email",
+                    "description": "Enable the ability for users to change their email address."
+                },
+                "user_change_username": {
+                    "type": "boolean",
+                    "title": "User change username",
+                    "description": "Enable the ability for users to change their username."
+                },
+                "gdpr_compliance": {
+                    "type": "boolean",
+                    "title": "Gdpr compliance",
+                    "description": "When enabled, all the events caused by a user will be deleted upon the user's deletion."
+                },
+                "default_token_length": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Default token length",
+                    "description": "Configure the length of generated tokens"
+                },
+                "impersonation": {
+                    "type": "boolean",
+                    "title": "Impersonation",
+                    "description": "Globally enable/disable impersonation."
+                },
+                "footer_links": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Footer links",
+                    "description": "The option configures the footer links on the flow executor pages."
+                },
+                "reputation_expiry": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9223372036854775807,
+                    "title": "Reputation expiry",
+                    "description": "Configure how long reputation scores should be saved for in seconds."
                 }
             },
             "required": []

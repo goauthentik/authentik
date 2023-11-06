@@ -1,5 +1,5 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-tenanted-flow-search";
+import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import { rootInterface } from "@goauthentik/elements/Base";
@@ -56,7 +56,7 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
     // All Provider objects have an Authorization flow, but not all providers have an Authentication
     // flow. LDAP needs only one field, but it is not an Authorization field, it is an
     // Authentication field. So, yeah, we're using the authorization field to store the
-    // authentication information, which is why the ak-tenanted-flow-search call down there looks so
+    // authentication information, which is why the ak-branded-flow-search call down there looks so
     // weird-- we're looking up Authentication flows, but we're storing them in the Authorization
     // field of the target Provider.
     renderForm(): TemplateResult {
@@ -73,12 +73,12 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                 ?required=${true}
                 name="authorizationFlow"
             >
-                <ak-tenanted-flow-search
+                <ak-branded-flow-search
                     flowType=${FlowsInstancesListDesignationEnum.Authentication}
                     .currentFlow=${this.instance?.authorizationFlow}
-                    .tenantFlow=${rootInterface()?.tenant?.flowAuthentication}
+                    .brandFlow=${rootInterface()?.brand?.flowAuthentication}
                     required
-                ></ak-tenanted-flow-search>
+                ></ak-branded-flow-search>
                 <p class="pf-c-form__helper-text">${msg("Flow used for users to authenticate.")}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Search group")} name="searchGroup">

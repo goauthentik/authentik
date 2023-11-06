@@ -10,13 +10,13 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { CurrentTenant, UiThemeEnum } from "@goauthentik/api";
+import { CurrentBrand, UiThemeEnum } from "@goauthentik/api";
 
 // If the viewport is wider than MIN_WIDTH, the sidebar
 // is shown besides the content, and not overlaid.
 export const MIN_WIDTH = 1200;
 
-export const DefaultTenant: CurrentTenant = {
+export const DefaultBrand: CurrentBrand = {
     brandingLogo: "/static/dist/assets/icons/icon_left_brand.svg",
     brandingFavicon: "/static/dist/assets/icons/icon.png",
     brandingTitle: "authentik",
@@ -86,8 +86,8 @@ export class SidebarBrand extends AKElement {
                 <div class="pf-c-brand ak-brand">
                     <img
                         src="${first(
-                            rootInterface()?.tenant?.brandingLogo,
-                            DefaultTenant.brandingLogo,
+                            rootInterface()?.brand?.brandingLogo,
+                            DefaultBrand.brandingLogo,
                         )}"
                         alt="authentik Logo"
                         loading="lazy"

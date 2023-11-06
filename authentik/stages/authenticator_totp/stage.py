@@ -56,7 +56,7 @@ class AuthenticatorTOTPStageView(ChallengeStageView):
             data={
                 "type": ChallengeTypes.NATIVE.value,
                 "config_url": device.config_url.replace(
-                    OTP_TOTP_ISSUER, quote(self.request.tenant.branding_title)
+                    OTP_TOTP_ISSUER, quote(self.request.brand.branding_title)
                 ),
             }
         )

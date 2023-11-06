@@ -35,9 +35,9 @@ export class PageHeader extends AKElement {
 
     @property()
     set header(value: string) {
-        const tenant = rootInterface()?.tenant;
+        const brand = rootInterface()?.brand;
         const currentIf = currentInterface();
-        let title = tenant?.brandingTitle || TITLE_DEFAULT;
+        let title = brand?.brandingTitle || TITLE_DEFAULT;
         if (currentIf === "admin") {
             title = `${msg("Admin")} - ${title}`;
         }

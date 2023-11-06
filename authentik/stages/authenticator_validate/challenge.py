@@ -201,7 +201,7 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
             type=__(
                 "%(brand_name)s Login request"
                 % {
-                    "brand_name": stage_view.request.tenant.branding_title,
+                    "brand_name": stage_view.request.brand.branding_title,
                 }
             ),
             display_username=user.username,

@@ -1,9 +1,9 @@
-"""authentik tenant app"""
+"""authentik tenants app"""
 from django.apps import AppConfig
 
 
 class AuthentikTenantsConfig(AppConfig):
-    """authentik Tenant app"""
+    """authentik tenants app"""
 
     name = "authentik.tenants"
     label = "authentik_tenants"

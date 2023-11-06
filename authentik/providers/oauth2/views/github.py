@@ -97,7 +97,7 @@ class GitHubUserTeamsView(View):
                 "created_at": "",
                 "updated_at": "",
                 "organization": {
-                    "login": slugify(request.tenant.branding_title),
+                    "login": slugify(request.brand.branding_title),
                     "id": 1,
                     "node_id": "",
                     "url": "",
@@ -109,7 +109,7 @@ class GitHubUserTeamsView(View):
                     "public_members_url": "",
                     "avatar_url": "",
                     "description": "",
-                    "name": request.tenant.branding_title,
+                    "name": request.brand.branding_title,
                     "company": "",
                     "blog": "",
                     "location": "",

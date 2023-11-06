@@ -139,12 +139,12 @@ export class EventViewPage extends AKElement {
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
-                                            >${msg("Tenant")}</span
+                                            >${msg("Brand")}</span
                                         >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
-                                            ${this.event.tenant?.name || msg("-")}
+                                            ${this.event.brand?.name || msg("-")}
                                         </div>
                                     </dd>
                                 </div>

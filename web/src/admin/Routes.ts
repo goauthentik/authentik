@@ -52,9 +52,9 @@ export const ROUTES: Route[] = [
         await import("@goauthentik/admin/tokens/TokenListPage");
         return html`<ak-token-list></ak-token-list>`;
     }),
-    new Route(new RegExp("^/core/tenants$"), async () => {
-        await import("@goauthentik/admin/tenants/TenantListPage");
-        return html`<ak-tenant-list></ak-tenant-list>`;
+    new Route(new RegExp("^/core/brands"), async () => {
+        await import("@goauthentik/admin/brands/BrandListPage");
+        return html`<ak-brand-list></ak-brand-list>`;
     }),
     new Route(new RegExp("^/policy/policies$"), async () => {
         await import("@goauthentik/admin/policies/PolicyListPage");

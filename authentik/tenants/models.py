@@ -1,94 +1,95 @@
-"""tenant models"""
+"""Tenant models"""
 from uuid import uuid4
 
 from django.db import models
+from django.db.models.deletion import ProtectedError
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
-from authentik.crypto.models import CertificateKeyPair
-from authentik.flows.models import Flow
+from authentik.lib.generators import generate_key
 from authentik.lib.models import SerializerModel
-from authentik.lib.utils.time import timedelta_string_validator
 
 LOGGER = get_logger()
 
 
 class Tenant(SerializerModel):
-    """Single tenant"""
+    """Tenant"""
 
     tenant_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
-    domain = models.TextField(
+    domain_regex = models.TextField(help_text=_("Domain regex that activates this tenant."))
+
+    cookie_domain = models.TextField(
         help_text=_(
-            "Domain that activates this tenant. Can be a superset, i.e. `a.b` for `aa.b` and `ba.b`"
-        )
-    )
-    default = models.BooleanField(
-        default=False,
-    )
-
-    branding_title = models.TextField(default="authentik")
-
-    branding_logo = models.TextField(default="/static/dist/assets/icons/icon_left_brand.svg")
-    branding_favicon = models.TextField(default="/static/dist/assets/icons/icon.png")
-
-    flow_authentication = models.ForeignKey(
-        Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_authentication"
-    )
-    flow_invalidation = models.ForeignKey(
-        Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_invalidation"
-    )
-    flow_recovery = models.ForeignKey(
-        Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_recovery"
-    )
-    flow_unenrollment = models.ForeignKey(
-        Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_unenrollment"
-    )
-    flow_user_settings = models.ForeignKey(
-        Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_user_settings"
-    )
-    flow_device_code = models.ForeignKey(
-        Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_device_code"
-    )
-
-    event_retention = models.TextField(
-        default="days=365",
-        validators=[timedelta_string_validator],
-        help_text=_(
-            "Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2)."
+            "Which domain the session cookie should be set to. By default, the cookie is set to the domain authentik is accessed under."
         ),
+        blank=True,
     )
-
-    web_certificate = models.ForeignKey(
-        CertificateKeyPair,
-        null=True,
-        default=None,
-        on_delete=models.SET_DEFAULT,
-        help_text=_("Web Certificate used by the authentik Core webserver."),
+    avatars = models.TextField(
+        help_text=_("Configure how authentik should show avatars for users."),
+        default="gravatar,initials",
     )
-    attributes = models.JSONField(default=dict, blank=True)
+    user_change_name = models.BooleanField(
+        help_text=_("Enable the ability for users to change their name."), default=True
+    )
+    user_change_email = models.BooleanField(
+        help_text=_("Enable the ability for users to change their email address."), default=False
+    )
+    user_change_username = models.BooleanField(
+        help_text=_("Enable the ability for users to change their username."), default=False
+    )
+    gdpr_compliance = models.BooleanField(
+        help_text=_(
+            "When enabled, all the events caused by a user will be deleted upon the user's deletion."
+        ),
+        default=True,
+    )
+    default_token_length = models.PositiveIntegerField(
+        help_text=_("Configure the length of generated tokens"), default=60
+    )
+    impersonation = models.BooleanField(
+        help_text=_("Globally enable/disable impersonation."), default=True
+    )
+    footer_links = models.JSONField(
+        help_text=_("The option configures the footer links on the flow executor pages."),
+        default=list,
+        blank=True,
+    )
+    reputation_expiry = models.PositiveBigIntegerField(
+        help_text=_("Configure how long reputation scores should be saved for in seconds."),
+        default=86400,
+    )
 
     @property
     def serializer(self) -> Serializer:
-        from authentik.tenants.api import TenantSerializer
+        from authentik.tenants.api import SettingsSerializer
 
-        return TenantSerializer
-
-    @property
-    def default_locale(self) -> str:
-        """Get default locale"""
-        try:
-            return self.attributes.get("settings", {}).get("locale", "")
-        # pylint: disable=broad-except
-        except Exception as exc:
-            LOGGER.warning("Failed to get default locale", exc=exc)
-            return ""
+        return SettingsSerializer
 
     def __str__(self) -> str:
-        if self.default:
-            return "Default tenant"
-        return f"Tenant {self.domain}"
+        return f"Tenant {self.domain_regex}"
 
     class Meta:
         verbose_name = _("Tenant")
         verbose_name_plural = _("Tenants")
+
+
+@receiver(pre_delete, sender=Tenant)
+def prevent_default_tenant_deletion(sender, instance, using, **kwargs):
+    if instance.domain_regex == "*":
+        raise ProtectedError(_("Default tenant cannot be deleted"))
+
+
+def get_default_tenant() -> Tenant:
+    return Tenant.objects.get(domain_regex=".*")
+
+
+class TenantModel(models.Model):
+    """Base tenant model for models that are tenant-specific"""
+
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, default=get_default_tenant)
+
+    class Meta:
+        abstract = True

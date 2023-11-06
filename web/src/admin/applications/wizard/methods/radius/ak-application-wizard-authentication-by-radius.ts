@@ -1,5 +1,5 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-tenanted-flow-search";
+import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-text-input";
 import { rootInterface } from "@goauthentik/elements/Base";
@@ -34,12 +34,12 @@ export class ApplicationWizardAuthenticationByRadius extends BaseProviderPanel {
                 ?required=${true}
                 name="authorizationFlow"
             >
-                <ak-tenanted-flow-search
+                <ak-branded-flow-search
                     flowType=${FlowsInstancesListDesignationEnum.Authentication}
                     .currentFlow=${provider?.authorizationFlow}
-                    .tenantFlow=${rootInterface()?.tenant?.flowAuthentication}
+                    .brandFlow=${rootInterface()?.brand?.flowAuthentication}
                     required
-                ></ak-tenanted-flow-search>
+                ></ak-branded-flow-search>
                 <p class="pf-c-form__helper-text">${msg("Flow used for users to authenticate.")}</p>
             </ak-form-element-horizontal>
 

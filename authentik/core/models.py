@@ -202,8 +202,8 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         """Get a dictionary containing the attributes from all groups the user belongs to,
         including the users attributes"""
         final_attributes = {}
-        if request and hasattr(request, "tenant"):
-            always_merger.merge(final_attributes, request.tenant.attributes)
+        if request and hasattr(request, "brand"):
+            always_merger.merge(final_attributes, request.brand.attributes)
         for group in self.all_groups().order_by("name"):
             always_merger.merge(final_attributes, group.attributes)
         always_merger.merge(final_attributes, self.attributes)
@@ -262,7 +262,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         except Exception as exc:
             LOGGER.warning("Failed to get default locale", exc=exc)
         if request:
-            return request.tenant.locale
+            return request.brand.locale
         return ""
 
     @property

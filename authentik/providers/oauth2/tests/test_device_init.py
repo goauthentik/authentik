@@ -4,7 +4,7 @@ from urllib.parse import urlencode
 from django.urls import reverse
 
 from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_tenant
+from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import DeviceToken, OAuth2Provider
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
@@ -28,9 +28,9 @@ class TesOAuth2DeviceInit(OAuthTestCase):
         self.user = create_test_admin_user()
         self.client.force_login(self.user)
         self.device_flow = create_test_flow()
-        self.tenant = create_test_tenant()
-        self.tenant.flow_device_code = self.device_flow
-        self.tenant.save()
+        self.brand = create_test_brand()
+        self.brand.flow_device_code = self.device_flow
+        self.brand.save()
 
     def test_device_init(self):
         """Test device init"""
@@ -48,8 +48,8 @@ class TesOAuth2DeviceInit(OAuthTestCase):
 
     def test_no_flow(self):
         """Test no flow"""
-        self.tenant.flow_device_code = None
-        self.tenant.save()
+        self.brand.flow_device_code = None
+        self.brand.save()
         res = self.client.get(reverse("authentik_providers_oauth2_root:device-login"))
         self.assertEqual(res.status_code, 404)
 
