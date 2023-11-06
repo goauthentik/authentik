@@ -38,6 +38,7 @@ _Optionally_, create a new group like `organizr users` to scope access to the or
    :::tip
    _Optionally_, bind the group to control access to the organizr to the application.
    ![](./organizr4.png)
+   :::
 
 ![](./organizr5.png)
 ::: 3. Add the Application to the authentik Embedded Outpost.
