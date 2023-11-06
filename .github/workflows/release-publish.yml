@@ -39,8 +39,8 @@ jobs:
           context: .
           push: ${{ github.event_name == 'release' }}
           secrets: |
-            GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
-            GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
+            "GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}"
+            "GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}"
           tags: |
             beryju/authentik:${{ steps.ev.outputs.version }},
             beryju/authentik:${{ steps.ev.outputs.versionFamily }},
