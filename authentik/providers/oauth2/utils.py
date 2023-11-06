@@ -188,6 +188,7 @@ def authenticate_provider(request: HttpRequest) -> Optional[OAuth2Provider]:
     if client_id != provider.client_id or client_secret != provider.client_secret:
         LOGGER.debug("(basic) Provider for basic auth does not exist")
         return None
+    CTX_AUTH_VIA.set("oauth_client_secret")
     return provider
 
 
