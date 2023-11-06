@@ -4,7 +4,7 @@ title: Get started
 
 Installing authentik is exactly the same process for both Enterprise version and our free [open source](https://github.com/goauthentik/authentik) version.
 
-> This **_Preview_** version of Enterprise authentik is available with our 2023.8.x release. Send us feedback through the Customer portal or to <hello@goauthentik.io>.
+> This **_Preview_** version of Enterprise authentik is available with our 2023.8.x release. Send us feedback through the Customer portal or to hello@goauthentik.io.
 
 ## Install Enterprise
 
