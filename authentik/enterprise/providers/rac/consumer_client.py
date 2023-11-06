@@ -5,6 +5,7 @@ from channels.exceptions import ChannelFull, DenyConnection
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.http.request import QueryDict
 from guardian.shortcuts import get_objects_for_user
+from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import Application
 from authentik.enterprise.providers.rac.models import RACProvider
@@ -28,8 +29,10 @@ class RACClientConsumer(AsyncWebsocketConsumer):
 
     dest_channel_id: str = ""
     provider: RACProvider
+    logger: BoundLogger
 
     async def connect(self):
+        self.logger = get_logger()
         await self.accept("guacamole")
         await self.channel_layer.group_add(RAC_CLIENT_GROUP, self.channel_name)
         await self.init_outpost_connection()
@@ -42,9 +45,11 @@ class RACClientConsumer(AsyncWebsocketConsumer):
             self.scope["user"], "view_application", Application.objects.filter(slug=app_slug)
         ).first()
         if not app:
+            self.logger.warning("No app found")
             raise DenyConnection()
         self.provider = RACProvider.objects.filter(application=app).first()
         if not self.provider:
+            self.logger.warning("No provider found")
             raise DenyConnection()
         params = self.provider.get_settings()
         msg = {
@@ -71,6 +76,7 @@ class RACClientConsumer(AsyncWebsocketConsumer):
             )
             if len(states) < 1:
                 continue
+            self.logger.debug("Sending out connection broadcast")
             async_to_sync(self.channel_layer.group_send)(
                 OUTPOST_GROUP_INSTANCE % {"outpost_pk": str(outpost.pk), "instance": states[0].uid},
                 msg,
@@ -99,6 +105,7 @@ class RACClientConsumer(AsyncWebsocketConsumer):
         created a connection for us"""
         if event.get("client_channel") != self.channel_name:
             return
+        self.logger.debug("Connected to a single outpost instance")
         self.dest_channel_id = event.get("outpost_channel")
 
     async def event_send(self, event: dict):
