@@ -1,6 +1,7 @@
 const config = require("./docusaurus.config");
+import type { Config } from "@docusaurus/types";
 
-module.exports = async function () {
+module.exports = async function (): Promise<Config> {
     const remarkGithub = (await import("remark-github")).default;
     const defaultBuildUrl = (await import("remark-github")).defaultBuildUrl;
     const mainConfig = await config();
@@ -56,6 +57,7 @@ module.exports = async function () {
             },
             colorMode: mainConfig.themeConfig.colorMode,
             tableOfContents: mainConfig.themeConfig.tableOfContents,
+            prims: mainConfig.themeConfig.prism,
         },
         presets: [
             [

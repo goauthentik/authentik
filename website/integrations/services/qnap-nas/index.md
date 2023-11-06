@@ -37,7 +37,7 @@ to `ldap.searchGroup`.
 
 :::caution
 It seems that QNAP LDAP client configuration has issues with too long password.
-Max password length <= 66 characters.
+Max password length \<= 66 characters.
 :::
 
 ## Deployment
