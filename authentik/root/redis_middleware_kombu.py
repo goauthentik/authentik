@@ -110,7 +110,7 @@ class ClusterPoller(MultiChannelPoller):
         self.poller.register(sock, self.eventflags)
 
     def _unregister(self, channel, client, conn, cmd):
-        """Unreegister the poller"""
+        """Unregister the poller"""
         sock = self._chan_to_sock[(channel, client, conn, cmd)]
         self.poller.unregister(sock)
 
