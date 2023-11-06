@@ -5999,6 +5999,12 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s275c956687e2e656">
   <source>Failed logins</source>
 </trans-unit>
+<trans-unit id="sb35c08e3a541188f">
+  <source>Also known as Client ID.</source>
+</trans-unit>
+<trans-unit id="sd46fd9b647cfea10">
+  <source>Also known as Client Secret.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
