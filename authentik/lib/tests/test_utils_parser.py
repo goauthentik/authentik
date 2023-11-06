@@ -1,11 +1,12 @@
 """Test Redis URL parser"""
 from asyncio import PriorityQueue
+from unittest.mock import patch
 from urllib.parse import urlparse
 
 from _socket import TCP_KEEPCNT, TCP_KEEPINTVL
 from django.test import TestCase
 from redis import BlockingConnectionPool, RedisCluster, SentinelConnectionPool
-from redis.backoff import ExponentialBackoff, NoBackoff
+from redis.backoff import ExponentialBackoff, NoBackoff, ConstantBackoff
 from redis.retry import Retry
 
 from authentik.lib.utils.parser import get_connection_pool, get_redis_options, process_config
@@ -134,14 +135,22 @@ class TestParserUtils(TestCase):
     def test_get_redis_options_min_retry_backoff_arg(self):
         """Test Redis URL parser with minretrybackoff arg"""
         url = urlparse("redis://myredis/0?minretrybackoff=100s")
-        _, redis_kwargs, _ = get_redis_options(url)
+        pool_kwargs, redis_kwargs, tls_kwargs = get_redis_options(url)
         self.assertEqual(redis_kwargs["retry"]["min_backoff"], 100)
+        connection_pool, _ = get_connection_pool(pool_kwargs, redis_kwargs, tls_kwargs)
+        retry_config = connection_pool.connection_kwargs["retry"]
+        self.assertIsInstance(retry_config, Retry)
+        self.assertIsInstance(retry_config._backoff, ConstantBackoff)
 
     def test_get_redis_options_max_retry_backoff_arg(self):
         """Test Redis URL parser with maxretrybackoff arg"""
         url = urlparse("redis://myredis/0?maxretrybackoff=100s")
-        _, redis_kwargs, _ = get_redis_options(url)
+        pool_kwargs, redis_kwargs, tls_kwargs = get_redis_options(url)
         self.assertEqual(redis_kwargs["retry"]["max_backoff"], 100)
+        connection_pool, _ = get_connection_pool(pool_kwargs, redis_kwargs, tls_kwargs)
+        retry_config = connection_pool.connection_kwargs["retry"]
+        self.assertIsInstance(retry_config, Retry)
+        self.assertIsInstance(retry_config._backoff, ConstantBackoff)
 
     def test_get_connection_pool_max_retries(self):
         """Test ConnectionPool generator with maxretries"""
@@ -315,7 +324,7 @@ class TestParserUtils(TestCase):
         pool_kwargs, _, _ = get_redis_options(url)
         self.assertEqual(pool_kwargs["timeout"], 100)
 
-    def test_get_redis_options_pool_timeout_arg_negative_numberg(self):
+    def test_get_redis_options_pool_timeout_arg_negative_number(self):
         """Test Redis URL parser with negative pooltimeout arg"""
         url = urlparse("redis://myredis/0?pooltimeout=-100s")
         pool_kwargs, _, _ = get_redis_options(url)
@@ -340,6 +349,24 @@ class TestParserUtils(TestCase):
         config = process_config(url, *get_redis_options(url))
         self.assertEqual(config["redis_kwargs"]["socket_keepalive_options"][TCP_KEEPINTVL], 31)
 
+    @patch("sys.platform", "linux")
+    def test_get_redis_options_keepalive_linux(self):
+        """Test keepalive setting for Linux"""
+        url = urlparse("redis://myredis/0")
+        config = process_config(url, *get_redis_options(url))
+        from socket import TCP_KEEPIDLE
+
+        self.assertEqual(config["redis_kwargs"]["socket_keepalive_options"][TCP_KEEPIDLE], 5 * 60)
+
+    @patch("sys.platform", "darwin")
+    def test_get_redis_options_keepalive_darwin(self):
+        """Test keepalive setting for macOS"""
+        url = urlparse("redis://myredis/0")
+        config = process_config(url, *get_redis_options(url))
+        from socket import TCP_KEEPALIVE
+
+        self.assertEqual(config["redis_kwargs"]["socket_keepalive_options"][TCP_KEEPALIVE], 5 * 60)
+
     # TODO: This is not supported by the Go Redis URL parser!
     def test_get_redis_options_idle_check_frequency_arg_socket(self):
         """Test Redis URL parser with idlecheckfrequency arg for Redis socket connection"""
@@ -352,6 +379,13 @@ class TestParserUtils(TestCase):
         url = urlparse("redis://myredis/0?maxidleconns=52")
         _, redis_kwargs, _ = get_redis_options(url)
         self.assertEqual(redis_kwargs["max_connections"], 52)
+
+    @patch.dict("sys.modules", {"os.sched_getaffinity", None})
+    def test_get_redis_options_max_idle_conns_arg_fallback(self):
+        """Test Redis URL parser for fallback maxidleconns value"""
+        url = urlparse("redis://myredis/0")
+        _, redis_kwargs, _ = get_redis_options(url)
+        self.assertEqual(redis_kwargs["max_connections"], 50)
 
     def test_get_redis_options_sentinel_master_id_arg(self):
         """Test Redis URL parser with sentinelmasterid arg"""
