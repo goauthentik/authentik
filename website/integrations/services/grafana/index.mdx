@@ -200,7 +200,7 @@ If the user is not a member of the "Grafana Admins" group, it moves on to see if
 
 ```text
 contains(info.groups[*], 'Grafana Admins') && 'Admin' || contains(info.groups[*], 'Grafana Editors') && 'Editor' || 'Viewer'
-^ attribute to search  ^ group to search for  ^ role to grant                                           ^ or grant "Viewer" role.
+         ^ attribute     ^ group to search for^ role to grant                                                       ^ or grant "Viewer" role.
 ```
 
 For more information on group/role mappings, see [Grafana's docs](https://grafana.com/docs/grafana/latest/auth/generic-oauth/#role-mapping).
