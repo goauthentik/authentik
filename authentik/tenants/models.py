@@ -1,5 +1,5 @@
 """Tenant models"""
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 from django.db import models
 from django.db.models.deletion import ProtectedError
@@ -86,10 +86,14 @@ def get_default_tenant() -> Tenant:
     return Tenant.objects.get(domain_regex=".*")
 
 
+def get_default_tenant_uuid() -> UUID:
+    return get_default_tenant().tenant_uuid
+
+
 class TenantModel(models.Model):
     """Base tenant model for models that are tenant-specific"""
 
-    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, default=get_default_tenant)
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, default=get_default_tenant_uuid)
 
     class Meta:
         abstract = True
