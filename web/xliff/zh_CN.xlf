@@ -7942,6 +7942,14 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>User type used for newly created users.</source>
   <target>新创建用户使用的用户类型。</target>
 </trans-unit>
+<trans-unit id="s4a34a6be4c68ec87">
+  <source>Users created</source>
+  <target>已创建用户</target>
+</trans-unit>
+<trans-unit id="s275c956687e2e656">
+  <source>Failed logins</source>
+  <target>失败登录</target>
+</trans-unit>
     </body>
   </file>
 </xliff>
