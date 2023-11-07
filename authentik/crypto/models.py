@@ -16,17 +16,18 @@ from structlog.stdlib import get_logger
 
 from authentik.blueprints.models import ManagedModel
 from authentik.lib.models import CreatedUpdatedModel, SerializerModel
+from authentik.tenants.models import TenantModel
 
 LOGGER = get_logger()
 
 
-class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
+class CertificateKeyPair(TenantModel, SerializerModel, ManagedModel, CreatedUpdatedModel):
     """CertificateKeyPair that can be used for signing or encrypting if `key_data`
     is set, otherwise it can be used to verify remote data."""
 
     kp_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
-    name = models.TextField(unique=True)
+    name = models.TextField()
     certificate_data = models.TextField(help_text=_("PEM-encoded Certificate data"))
     key_data = models.TextField(
         help_text=_(
@@ -100,3 +101,4 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
     class Meta:
         verbose_name = _("Certificate-Key Pair")
         verbose_name_plural = _("Certificate-Key Pairs")
+        constraints = (models.UniqueConstraint("tenant", "name", name="unique_tenant_name"),)

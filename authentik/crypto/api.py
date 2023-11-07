@@ -31,11 +31,12 @@ from authentik.crypto.builder import CertificateBuilder
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.tenants.filters import TenantFilter
+from authentik.tenants.serializers import TenantSerializer
 
 LOGGER = get_logger()
 
 
-class CertificateKeyPairSerializer(ModelSerializer):
+class CertificateKeyPairSerializer(TenantSerializer, ModelSerializer):
     """CertificateKeyPair Serializer"""
 
     fingerprint_sha256 = SerializerMethodField()
