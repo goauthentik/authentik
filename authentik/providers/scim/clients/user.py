@@ -39,7 +39,7 @@ class SCIMUserClient(SCIMClient[User, SCIMUserSchema]):
 
     def to_scim(self, obj: User) -> SCIMUserSchema:
         """Convert authentik user into SCIM"""
-        raw_scim_user = {}
+        raw_scim_user = SCIMUserSchema(userName="").model_dump()
         for mapping in self.provider.property_mappings.all().order_by("name").select_subclasses():
             if not isinstance(mapping, SCIMMapping):
                 continue
