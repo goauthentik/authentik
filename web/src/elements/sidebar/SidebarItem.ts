@@ -144,84 +144,47 @@ export class SidebarItem extends AKElement {
         return this.renderInner();
     }
 
-    renderWithChildren() {
-        return html`<li
-            class="pf-c-nav__item ${this.expanded ? "pf-m-expandable pf-m-expanded" : ""}"
-        >
-            <button
-                class="pf-c-nav__link"
-                aria-expanded="true"
-                @click=${() => {
-                    this.expanded = !this.expanded;
-                }}
-            >
-                <slot name="label"></slot>
-                <span class="pf-c-nav__toggle">
-                    <span class="pf-c-nav__toggle-icon">
-                        <i class="fas fa-angle-right" aria-hidden="true"></i>
-                    </span>
-                </span>
-            </button>
-            <section class="pf-c-nav__subnav" ?hidden=${!this.expanded}>
-                <ul class="pf-c-nav__list">
-                    <slot></slot>
-                </ul>
-            </section>
-        </li>`;
-    }
-
-    renderWithPathAndChildren() {
-        return html`<li
-            class="pf-c-nav__item ${this.expanded ? "pf-m-expandable pf-m-expanded" : ""}"
-        >
-            <slot name="label"></slot>
-            <button
-                class="pf-c-nav__link"
-                aria-expanded="true"
-                @click=${() => {
-                    this.expanded = !this.expanded;
-                }}
-            >
-                <span class="pf-c-nav__toggle">
-                    <span class="pf-c-nav__toggle-icon">
-                        <i class="fas fa-angle-right" aria-hidden="true"></i>
-                    </span>
-                </span>
-            </button>
-            <section class="pf-c-nav__subnav" ?hidden=${!this.expanded}>
-                <ul class="pf-c-nav__list">
-                    <slot></slot>
-                </ul>
-            </section>
-        </li>`;
-    }
-
-    renderWithPath() {
-        return html`
-            <a
-                href="${this.isAbsoluteLink ? "" : "#"}${this.path}"
-                class="pf-c-nav__link ${this.isActive ? "pf-m-current" : ""}"
-            >
-                <slot name="label"></slot>
-            </a>
-        `;
-    }
-
-    renderWithLabel() {
-        html`
-            <span class="pf-c-nav__link">
-                <slot name="label"></slot>
-            </span>
-        `;
-    }
-
-    renderInner() {
+    renderInner(): TemplateResult {
         if (this.childItems.length > 0) {
-            return this.path ? this.renderWithPathAndChildren() : this.renderWithChildren();
+            return html`<li
+                class="pf-c-nav__item ${this.expanded ? "pf-m-expandable pf-m-expanded" : ""}"
+            >
+                <button
+                    class="pf-c-nav__link"
+                    aria-expanded="true"
+                    @click=${() => {
+                        this.expanded = !this.expanded;
+                    }}
+                >
+                    <slot name="label"></slot>
+                    <span class="pf-c-nav__toggle">
+                        <span class="pf-c-nav__toggle-icon">
+                            <i class="fas fa-angle-right" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                </button>
+                <section class="pf-c-nav__subnav" ?hidden=${!this.expanded}>
+                    <ul class="pf-c-nav__list">
+                        <slot></slot>
+                    </ul>
+                </section>
+            </li>`;
         }
-
         return html`<li class="pf-c-nav__item">
-            ${this.path ? this.renderWithPath() : this.renderWithLabel()}
+            ${this.path
+                ? html`
+                      <a
+                          href="${this.isAbsoluteLink ? "" : "#"}${this.path}"
+                          class="pf-c-nav__link ${this.isActive ? "pf-m-current" : ""}"
+                      >
+                          <slot name="label"></slot>
+                      </a>
+                  `
+                : html`
+                      <span class="pf-c-nav__link">
+                          <slot name="label"></slot>
+                      </span>
+                  `}
         </li>`;
     }
 }
