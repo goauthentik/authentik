@@ -1,4 +1,5 @@
 """Serializer for brands models"""
+import re
 from typing import Any
 
 from django.db import models
@@ -19,6 +20,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.lib.config import CONFIG
 from authentik.tenants.filters import TenantFilter
+from authentik.tenants.serializers import TenantSerializer
 
 
 class FooterLinkSerializer(PassiveSerializer):
@@ -28,12 +30,21 @@ class FooterLinkSerializer(PassiveSerializer):
     name = CharField(read_only=True)
 
 
-class BrandSerializer(ModelSerializer):
+class BrandSerializer(TenantSerializer, ModelSerializer):
     """Brand Serializer"""
 
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
+        tenant = self.context["request"].tenant
+        domain = attrs.get("domain", None)
+        if domain and not re.match(re.compile(tenant.domain_regex), domain):
+            raise ValidationError(
+                {
+                    "domain",
+                    f"Unauthorized domain. Domain must match the following regex <{tenant.domain_regex}>",
+                }
+            )
         if attrs.get("default", False):
-            brands = Brand.objects.filter(default=True)
+            brands = Brand.objects.filter(tenant=tenant, default=True)
             if self.instance:
                 brands = brands.exclude(pk=self.instance.pk)
             if brands.exists():

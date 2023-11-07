@@ -10,11 +10,12 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
+from authentik.tenants.models import TenantModel
 
 LOGGER = get_logger()
 
 
-class Brand(SerializerModel):
+class Brand(TenantModel, SerializerModel):
     """Single brand"""
 
     brand_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
