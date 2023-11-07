@@ -116,7 +116,7 @@ export class ApplicationForm extends ModelForm<Application, string> {
         return app;
     }
 
-    handleConfirmBackchannelProviders({ items }: { items: Provider[] }) {
+    handleConfirmBackchannelProviders(items: Provider[]) {
         this.backchannelProviders = items;
         this.requestUpdate();
         return Promise.resolve();
