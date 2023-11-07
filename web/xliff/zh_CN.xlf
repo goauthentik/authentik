@@ -6585,9 +6585,9 @@ Bindings to groups/users are checked against the user of the event.</source>
         
       </trans-unit>
       <trans-unit id="s96b3cddf33e1c853">
-        <source>You're currently impersonating <x id="0" equiv-text="${this.user.user.username}"/>. Click to stop.</source>
+        <source>You're currently impersonating <x id="0" equiv-text="${this.impersonation}"/>. Click to stop.</source>
         <target>您目前正在模拟 
-        <x id="0" equiv-text="${this.user.user.username}"/>的身份。点击以停止。</target>
+        <x id="0" equiv-text="${this.impersonation}"/>的身份。点击以停止。</target>
         
       </trans-unit>
       <trans-unit id="s7031e6928c44cedd">

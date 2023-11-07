@@ -4922,9 +4922,9 @@ Bindings to groups/users are checked against the user of the event.</source>
         <target>Ön yüzün daha yeni bir sürümü mevcuttur.</target>
       </trans-unit>
       <trans-unit id="s96b3cddf33e1c853">
-        <source>You're currently impersonating <x id="0" equiv-text="${this.user.user.username}"/>. Click to stop.</source>
+        <source>You're currently impersonating <x id="0" equiv-text="${this.impersonation}"/>. Click to stop.</source>
         <target>Şu anda 
-        <x id="0" equiv-text="${this.user.user.username}"/>kimliğine bürünüyorsunuz. Durdurmak için tıklayın.</target>
+        <x id="0" equiv-text="${this.impersonation}"/>kimliğine bürünüyorsunuz. Durdurmak için tıklayın.</target>
       </trans-unit>
       <trans-unit id="s7031e6928c44cedd">
         <source>User interface</source>
