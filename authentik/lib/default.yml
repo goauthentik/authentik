@@ -91,19 +91,10 @@ reputation:
 cookie_domain: null
 disable_update_check: false
 disable_startup_analytics: false
-avatars: env://AUTHENTIK_AUTHENTIK__AVATARS?gravatar,initials
 geoip: "/geoip/GeoLite2-City.mmdb"
 
-footer_links: []
-
-default_user_change_name: true
-default_user_change_email: false
-default_user_change_username: false
-
-gdpr_compliance: true
 cert_discovery_dir: /certs
 default_token_length: 60
-impersonation: true
 
 tenant_management_key: ""
 

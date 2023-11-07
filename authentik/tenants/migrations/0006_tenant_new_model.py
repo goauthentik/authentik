@@ -1,12 +1,22 @@
 from django.db import migrations, models
 
 import authentik.lib.generators
+from authentik.lib.config import CONFIG
 
 
 def create_default_tenant(apps, schema_editor):
     Tenant = apps.get_model("authentik_tenants", "Tenant")
     db_alias = schema_editor.connection.alias
-    Tenant.objects.using(db_alias).create(domain_regex=".*")
+    Tenant.objects.using(db_alias).create(
+        domain_regex=".*",
+        avatars=CONFIG.get("avatars", "gravatar,initials"),
+        default_user_change_name=CONFIG.get_bool("user_change_name", True),
+        default_user_change_email=CONFIG.get_bool("user_change_email", False),
+        default_user_change_username=CONFIG.get_bool("user_change_email", False),
+        gdpr_compliance=CONFIG.get_bool("gdpr_compliance", True),
+        impersonation=CONFIG.get_bool("impersonation", True),
+        footer_links=CONFIG.get("footer_links", default=[]),
+    )
 
 
 def delete_all_tenants(apps, schema_editor):
@@ -87,21 +97,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="tenant",
-            name="cookie_domain",
-            field=models.TextField(
-                blank=True,
-                help_text="Which domain the session cookie should be set to. By default, the cookie is set to the domain authentik is accessed under.",
-            ),
-        ),
-        migrations.AddField(
-            model_name="tenant",
-            name="default_token_length",
-            field=models.PositiveIntegerField(
-                default=60, help_text="Configure the length of generated tokens"
-            ),
-        ),
-        migrations.AddField(
-            model_name="tenant",
             name="domain_regex",
             field=models.TextField(
                 default="*", help_text="Domain regex that activates this tenant."
@@ -134,15 +129,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="tenant",
-            name="reputation_expiry",
-            field=models.PositiveBigIntegerField(
-                default=86400,
-                help_text="Configure how long reputation scores should be saved for in seconds.",
-            ),
-        ),
-        migrations.AddField(
-            model_name="tenant",
-            name="user_change_email",
+            name="default_user_change_email",
             field=models.BooleanField(
                 default=False,
                 help_text="Enable the ability for users to change their email address.",
@@ -150,14 +137,14 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="tenant",
-            name="user_change_name",
+            name="default_user_change_name",
             field=models.BooleanField(
                 default=True, help_text="Enable the ability for users to change their name."
             ),
         ),
         migrations.AddField(
             model_name="tenant",
-            name="user_change_username",
+            name="default_user_change_username",
             field=models.BooleanField(
                 default=False, help_text="Enable the ability for users to change their username."
             ),

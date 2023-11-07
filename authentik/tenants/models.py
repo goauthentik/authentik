@@ -21,23 +21,17 @@ class Tenant(SerializerModel):
     tenant_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     domain_regex = models.TextField(help_text=_("Domain regex that activates this tenant."))
 
-    cookie_domain = models.TextField(
-        help_text=_(
-            "Which domain the session cookie should be set to. By default, the cookie is set to the domain authentik is accessed under."
-        ),
-        blank=True,
-    )
     avatars = models.TextField(
         help_text=_("Configure how authentik should show avatars for users."),
         default="gravatar,initials",
     )
-    user_change_name = models.BooleanField(
+    default_user_change_name = models.BooleanField(
         help_text=_("Enable the ability for users to change their name."), default=True
     )
-    user_change_email = models.BooleanField(
+    default_user_change_email = models.BooleanField(
         help_text=_("Enable the ability for users to change their email address."), default=False
     )
-    user_change_username = models.BooleanField(
+    default_user_change_username = models.BooleanField(
         help_text=_("Enable the ability for users to change their username."), default=False
     )
     gdpr_compliance = models.BooleanField(
@@ -46,9 +40,6 @@ class Tenant(SerializerModel):
         ),
         default=True,
     )
-    default_token_length = models.PositiveIntegerField(
-        help_text=_("Configure the length of generated tokens"), default=60
-    )
     impersonation = models.BooleanField(
         help_text=_("Globally enable/disable impersonation."), default=True
     )
@@ -56,10 +47,6 @@ class Tenant(SerializerModel):
         help_text=_("The option configures the footer links on the flow executor pages."),
         default=list,
         blank=True,
-    )
-    reputation_expiry = models.PositiveBigIntegerField(
-        help_text=_("Configure how long reputation scores should be saved for in seconds."),
-        default=86400,
     )
 
     @property

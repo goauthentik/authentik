@@ -11,7 +11,8 @@ from authentik.brands.models import Brand
 from authentik.lib.config import CONFIG
 
 _q_default = Q(default=True)
-DEFAULT_BRAND = Brand(domain="fallback")
+# TODO(risson): find a way to put the tenant in here anyway
+DEFAULT_BRAND = Brand(domain="fallback", tenant=None)
 
 
 def get_brand_for_request(request: HttpRequest) -> Brand:
@@ -37,7 +38,7 @@ def context_processor(request: HttpRequest) -> dict[str, Any]:
         trace = span.to_traceparent()
     return {
         "brand": brand,
-        "footer_links": CONFIG.get("footer_links"),
+        "footer_links": request.tenant.footer_links,
         "sentry_trace": trace,
         "version": get_full_version(),
     }

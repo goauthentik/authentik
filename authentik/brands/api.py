@@ -80,6 +80,16 @@ class Themes(models.TextChoices):
     DARK = "dark"
 
 
+class CurrentBrandUIFooterLinksDefault:
+    requires_context = True
+
+    def __call__(self, serializer_field):
+        return serializer_field.context["request"].tenant.footer_links
+
+    def __repr__(self):
+        return "%s()" % self.__class__.__name__
+
+
 class CurrentBrandSerializer(PassiveSerializer):
     """Partial brand information for styling"""
 
@@ -90,7 +100,7 @@ class CurrentBrandSerializer(PassiveSerializer):
     ui_footer_links = ListField(
         child=FooterLinkSerializer(),
         read_only=True,
-        default=CONFIG.get("footer_links", []),
+        default=CurrentBrandUIFooterLinksDefault(),
     )
     ui_theme = ChoiceField(
         choices=Themes.choices,
