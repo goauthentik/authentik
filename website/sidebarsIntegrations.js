@@ -96,6 +96,7 @@ module.exports = {
                     type: "category",
                     label: "Miscellaneous",
                     items: [
+                        "services/freshrss/index",
                         "services/gravitee/index",
                         "services/home-assistant/index",
                         "services/jellyfin/index",
