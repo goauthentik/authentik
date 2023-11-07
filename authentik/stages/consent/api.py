@@ -11,6 +11,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.consent.models import ConsentStage, UserConsent
+from authentik.tenants.filters import TenantFilter
 
 
 class ConsentStageSerializer(StageSerializer):
@@ -57,7 +58,7 @@ class UserConsentViewSet(
     ordering = ["application", "expires"]
     search_fields = ["user__username"]
     permission_classes = [OwnerSuperuserPermissions]
-    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
+    filter_backends = [TenantFilter, OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
 
     def get_queryset(self):
         user = self.request.user if self.request else get_anonymous_user()

@@ -10,6 +10,7 @@ from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.authenticator_sms.models import AuthenticatorSMSStage, SMSDevice
+from authentik.tenants.filters import TenantFilter
 
 
 class AuthenticatorSMSStageSerializer(StageSerializer):
@@ -66,7 +67,7 @@ class SMSDeviceViewSet(
     queryset = SMSDevice.objects.all()
     serializer_class = SMSDeviceSerializer
     permission_classes = [OwnerPermissions]
-    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
+    filter_backends = [TenantFilter, OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
     search_fields = ["name"]
     filterset_fields = ["name"]
     ordering = ["name"]

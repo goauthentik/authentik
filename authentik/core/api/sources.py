@@ -29,6 +29,7 @@ from authentik.lib.utils.file import (
 )
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.policies.engine import PolicyEngine
+from authentik.tenants.filters import TenantFilter
 
 LOGGER = get_logger()
 
@@ -212,5 +213,5 @@ class UserSourceConnectionViewSet(
     serializer_class = UserSourceConnectionSerializer
     permission_classes = [OwnerSuperuserPermissions]
     filterset_fields = ["user"]
-    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
+    filter_backends = [TenantFilter, OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
     ordering = ["pk"]

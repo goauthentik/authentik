@@ -22,6 +22,7 @@ from authentik.flows.api.stages import StageSerializer
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_duo.stage import SESSION_KEY_DUO_ENROLL
 from authentik.stages.authenticator_duo.tasks import duo_import_devices
+from authentik.tenants.filters import TenantFilter
 
 LOGGER = get_logger()
 
@@ -190,7 +191,7 @@ class DuoDeviceViewSet(
     filterset_fields = ["name"]
     ordering = ["name"]
     permission_classes = [OwnerPermissions]
-    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
+    filter_backends = [TenantFilter, OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
 
 
 class DuoAdminDeviceViewSet(ModelViewSet):

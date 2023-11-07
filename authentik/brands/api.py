@@ -18,6 +18,7 @@ from authentik.brands.models import Brand
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.lib.config import CONFIG
+from authentik.tenants.filters import TenantFilter
 
 
 class FooterLinkSerializer(PassiveSerializer):
@@ -125,7 +126,7 @@ class BrandViewSet(UsedByMixin, ModelViewSet):
     ]
     ordering = ["domain"]
 
-    filter_backends = [SecretKeyFilter, OrderingFilter, SearchFilter]
+    filter_backends = [TenantFilter, SecretKeyFilter, OrderingFilter, SearchFilter]
 
     @extend_schema(
         responses=CurrentBrandSerializer(many=False),

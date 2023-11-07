@@ -23,6 +23,7 @@ from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import USER_ATTRIBUTE_TOKEN_EXPIRING, Token, TokenIntents
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import model_to_dict
+from authentik.tenants.filters import TenantFilter
 
 
 class TokenSerializer(ManagedSerializer, ModelSerializer):
@@ -97,7 +98,7 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
     ]
     ordering = ["identifier", "expires"]
     permission_classes = [OwnerSuperuserPermissions]
-    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
+    filter_backends = [TenantFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
 
     def get_queryset(self):
         user = self.request.user if self.request else get_anonymous_user()

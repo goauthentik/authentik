@@ -30,6 +30,7 @@ from authentik.crypto.apps import MANAGED_KEY
 from authentik.crypto.builder import CertificateBuilder
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
+from authentik.tenants.filters import TenantFilter
 
 LOGGER = get_logger()
 
@@ -206,7 +207,7 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
     filterset_class = CertificateKeyPairFilter
     ordering = ["name"]
     search_fields = ["name"]
-    filter_backends = [SecretKeyFilter, OrderingFilter, SearchFilter]
+    filter_backends = [TenantFilter, SecretKeyFilter, OrderingFilter, SearchFilter]
 
     @extend_schema(
         parameters=[

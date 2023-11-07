@@ -158,6 +158,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "authentik.api.pagination.Pagination",
     "PAGE_SIZE": 100,
     "DEFAULT_FILTER_BACKENDS": [
+        "authentik.tenants.filters.TenantFilter",
         "authentik.rbac.filters.ObjectFilter",
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.OrderingFilter",

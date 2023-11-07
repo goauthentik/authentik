@@ -10,6 +10,7 @@ from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.authenticator_webauthn.models import AuthenticateWebAuthnStage, WebAuthnDevice
+from authentik.tenants.filters import TenantFilter
 
 
 class AuthenticateWebAuthnStageSerializer(StageSerializer):
@@ -61,7 +62,7 @@ class WebAuthnDeviceViewSet(
     filterset_fields = ["name"]
     ordering = ["name"]
     permission_classes = [OwnerPermissions]
-    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
+    filter_backends = [TenantFilter, OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
 
 
 class WebAuthnAdminDeviceViewSet(ModelViewSet):

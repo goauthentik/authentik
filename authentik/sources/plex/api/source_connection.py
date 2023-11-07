@@ -7,6 +7,7 @@ from authentik.api.authorization import OwnerFilter, OwnerSuperuserPermissions
 from authentik.core.api.sources import UserSourceConnectionSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.sources.plex.models import PlexSourceConnection
+from authentik.tenants.filters import TenantFilter
 
 
 class PlexSourceConnectionSerializer(UserSourceConnectionSerializer):
@@ -33,6 +34,6 @@ class PlexSourceConnectionViewSet(UsedByMixin, ModelViewSet):
     serializer_class = PlexSourceConnectionSerializer
     filterset_fields = ["source__slug"]
     permission_classes = [OwnerSuperuserPermissions]
-    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
+    filter_backends = [TenantFilter, OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
     ordering = ["pk"]
     search_fields = ["source__slug"]

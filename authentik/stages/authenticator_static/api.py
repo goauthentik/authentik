@@ -14,6 +14,7 @@ from authentik.stages.authenticator_static.models import (
     StaticDevice,
     StaticToken,
 )
+from authentik.tenants.filters import TenantFilter
 
 
 class AuthenticatorStaticStageSerializer(StageSerializer):
@@ -70,7 +71,7 @@ class StaticDeviceViewSet(
     queryset = StaticDevice.objects.filter(confirmed=True)
     serializer_class = StaticDeviceSerializer
     permission_classes = [OwnerPermissions]
-    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
+    filter_backends = [TenantFilter, OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
     search_fields = ["name"]
     filterset_fields = ["name"]
     ordering = ["name"]

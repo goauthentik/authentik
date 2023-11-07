@@ -7,6 +7,7 @@ from authentik.api.authorization import OwnerFilter, OwnerSuperuserPermissions
 from authentik.core.api.sources import UserSourceConnectionSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.sources.oauth.models import UserOAuthSourceConnection
+from authentik.tenants.filters import TenantFilter
 
 
 class UserOAuthSourceConnectionSerializer(UserSourceConnectionSerializer):
@@ -28,5 +29,5 @@ class UserOAuthSourceConnectionViewSet(UsedByMixin, ModelViewSet):
     filterset_fields = ["source__slug"]
     search_fields = ["source__slug"]
     permission_classes = [OwnerSuperuserPermissions]
-    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
+    filter_backends = [TenantFilter, OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
     ordering = ["source__slug"]

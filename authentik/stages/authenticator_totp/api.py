@@ -10,6 +10,7 @@ from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage, TOTPDevice
+from authentik.tenants.filters import TenantFilter
 
 
 class AuthenticatorTOTPStageSerializer(StageSerializer):
@@ -55,7 +56,7 @@ class TOTPDeviceViewSet(
     queryset = TOTPDevice.objects.filter(confirmed=True)
     serializer_class = TOTPDeviceSerializer
     permission_classes = [OwnerPermissions]
-    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
+    filter_backends = [TenantFilter, OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
     search_fields = ["name"]
     filterset_fields = ["name"]
     ordering = ["name"]

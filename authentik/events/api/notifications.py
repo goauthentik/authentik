@@ -15,6 +15,7 @@ from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.core.api.used_by import UsedByMixin
 from authentik.events.api.events import EventSerializer
 from authentik.events.models import Notification
+from authentik.tenants.filters import TenantFilter
 
 
 class NotificationSerializer(ModelSerializer):
@@ -57,7 +58,7 @@ class NotificationViewSet(
         "user",
     ]
     permission_classes = [OwnerPermissions]
-    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
+    filter_backends = [TenantFilter, OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
 
     @extend_schema(
         request=OpenApiTypes.NONE,

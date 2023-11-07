@@ -14,6 +14,7 @@ from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import MetaNameSerializer
 from authentik.providers.oauth2.api.providers import OAuth2ProviderSerializer
 from authentik.providers.oauth2.models import AccessToken, AuthorizationCode, RefreshToken
+from authentik.tenants.filters import TenantFilter
 
 
 class ExpiringBaseGrantModelSerializer(ModelSerializer, MetaNameSerializer):
@@ -67,6 +68,7 @@ class AuthorizationCodeViewSet(
     filterset_fields = ["user", "provider"]
     ordering = ["provider", "expires"]
     filter_backends = [
+        TenantFilter,
         DjangoFilterBackend,
         OrderingFilter,
         SearchFilter,
@@ -93,6 +95,7 @@ class RefreshTokenViewSet(
     filterset_fields = ["user", "provider"]
     ordering = ["provider", "expires"]
     filter_backends = [
+        TenantFilter,
         DjangoFilterBackend,
         OrderingFilter,
         SearchFilter,
@@ -119,6 +122,7 @@ class AccessTokenViewSet(
     filterset_fields = ["user", "provider"]
     ordering = ["provider", "expires"]
     filter_backends = [
+        TenantFilter,
         DjangoFilterBackend,
         OrderingFilter,
         SearchFilter,

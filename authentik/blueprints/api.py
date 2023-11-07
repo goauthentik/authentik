@@ -107,12 +107,14 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
             )
         }
     )
+    # TODO(risson): filter by tenant
     @action(detail=False, pagination_class=None, filter_backends=[])
     def available(self, request: Request) -> Response:
         """Get blueprints"""
         files: list[dict] = blueprints_find_dict.delay().get()
         return Response(files)
 
+    # TODO(risson): filter by tenant
     @permission_required("authentik_blueprints.view_blueprintinstance")
     @extend_schema(
         request=None,

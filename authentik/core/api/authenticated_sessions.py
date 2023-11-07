@@ -15,6 +15,7 @@ from authentik.api.authorization import OwnerSuperuserPermissions
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.models import AuthenticatedSession
 from authentik.events.geo import GEOIP_READER, GeoIPDict
+from authentik.tenants.filters import TenantFilter
 
 
 class UserAgentDeviceDict(TypedDict):
@@ -103,7 +104,7 @@ class AuthenticatedSessionViewSet(
     filterset_fields = ["user__username", "last_ip", "last_user_agent"]
     ordering = ["user__username"]
     permission_classes = [OwnerSuperuserPermissions]
-    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
+    filter_backends = [TenantFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
 
     def get_queryset(self):
         user = self.request.user if self.request else get_anonymous_user()
