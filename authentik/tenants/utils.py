@@ -1,5 +1,3 @@
-import re
-
 from django.db.models import F, Value
 from django.http import HttpRequest
 

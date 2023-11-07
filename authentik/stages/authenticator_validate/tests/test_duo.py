@@ -20,6 +20,7 @@ from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, Duo
 from authentik.stages.authenticator_validate.challenge import validate_challenge_duo
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.user_login.models import UserLoginStage
+from authentik.tenants.utils import get_tenant_for_request
 
 
 class AuthenticatorValidateStageDuoTests(FlowTestCase):
@@ -36,6 +37,7 @@ class AuthenticatorValidateStageDuoTests(FlowTestCase):
         middleware = SessionMiddleware(dummy_get_response)
         middleware.process_request(request)
         request.session.save()
+        setattr(request, "tenant", get_tenant_for_request(request))
         setattr(request, "brand", get_brand_for_request(request))
 
         stage = AuthenticatorDuoStage.objects.create(
