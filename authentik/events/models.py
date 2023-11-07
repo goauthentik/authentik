@@ -22,7 +22,6 @@ from structlog.stdlib import get_logger
 
 from authentik import get_full_version
 from authentik.brands.models import Brand
-from authentik.brands.utils import DEFAULT_BRAND
 from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_ORIGINAL_USER,
     SESSION_KEY_IMPERSONATE_USER,
@@ -56,7 +55,7 @@ def default_event_duration():
 
 def default_brand():
     """Get a default value for brand"""
-    return sanitize_dict(model_to_dict(DEFAULT_BRAND))
+    return sanitize_dict(model_to_dict(Brand(domain="fallback")))
 
 
 class NotificationTransportError(SentryIgnoredException):

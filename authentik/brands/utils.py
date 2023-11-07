@@ -8,11 +8,12 @@ from sentry_sdk.hub import Hub
 
 from authentik import get_full_version
 from authentik.brands.models import Brand
-from authentik.lib.config import CONFIG
 
 _q_default = Q(default=True)
-# TODO(risson): find a way to put the tenant in here anyway
-DEFAULT_BRAND = Brand(domain="fallback", tenant=None)
+
+
+def get_default_brand_for_request(request: HttpRequest) -> Brand:
+    return Brand(domain="fallback", tenant=request.tenant)
 
 
 def get_brand_for_request(request: HttpRequest) -> Brand:
@@ -25,13 +26,13 @@ def get_brand_for_request(request: HttpRequest) -> Brand:
     )
     brands = list(db_brands.all())
     if len(brands) < 1:
-        return DEFAULT_BRAND
+        return get_default_brand_for_request(request)
     return brands[0]
 
 
 def context_processor(request: HttpRequest) -> dict[str, Any]:
     """Context Processor that injects brand object into every template"""
-    brand = getattr(request, "brand", DEFAULT_BRAND)
+    brand = getattr(request, "brand", get_default_brand_for_request(request))
     trace = ""
     span = Hub.current.scope.span
     if span:
