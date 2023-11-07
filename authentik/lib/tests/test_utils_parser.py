@@ -6,10 +6,15 @@ from urllib.parse import urlparse
 from _socket import TCP_KEEPCNT, TCP_KEEPINTVL
 from django.test import TestCase
 from redis import BlockingConnectionPool, RedisCluster, SentinelConnectionPool
-from redis.backoff import ConstantBackoff, ExponentialBackoff, NoBackoff
+from redis.backoff import DEFAULT_BASE, DEFAULT_CAP, FullJitterBackoff
 from redis.retry import Retry
 
-from authentik.lib.utils.parser import get_connection_pool, get_redis_options, process_config
+from authentik.lib.utils.parser import (
+    DEFAULT_RETRIES,
+    get_connection_pool,
+    get_redis_options,
+    process_config,
+)
 
 
 # pylint: disable=too-many-public-methods
@@ -129,8 +134,13 @@ class TestParserUtils(TestCase):
     def test_get_redis_options_max_retries_arg_negative_number(self):
         """Test Redis URL parser with negative maxretries arg"""
         url = urlparse("redis://myredis:6379/0?maxretries=-432")
-        _, redis_kwargs, _ = get_redis_options(url)
+        pool_kwargs, redis_kwargs, tls_kwargs = get_redis_options(url)
         self.assertEqual(redis_kwargs["retry"]["retry"], 0)
+        config = process_config(url, pool_kwargs, redis_kwargs, tls_kwargs)
+        connection_pool, _ = get_connection_pool(config)
+        retry_config = connection_pool.connection_kwargs["retry"]
+        self.assertIsInstance(retry_config, Retry)
+        self.assertEqual(retry_config._retries, 0)
 
     def test_get_redis_options_min_retry_backoff_arg(self):
         """Test Redis URL parser with minretrybackoff arg"""
@@ -141,7 +151,22 @@ class TestParserUtils(TestCase):
         connection_pool, _ = get_connection_pool(config)
         retry_config = connection_pool.connection_kwargs["retry"]
         self.assertIsInstance(retry_config, Retry)
-        self.assertIsInstance(retry_config._backoff, ConstantBackoff)
+        self.assertIsInstance(retry_config._backoff, FullJitterBackoff)
+        self.assertEqual(retry_config._backoff._base, 100)
+        self.assertEqual(retry_config._backoff._cap, DEFAULT_CAP)
+
+    def test_get_redis_options_min_retry_backoff_arg_negative_number(self):
+        """Test Redis URL parser with negative minretrybackoff arg"""
+        url = urlparse("redis://myredis/0?minretrybackoff=-52s")
+        pool_kwargs, redis_kwargs, tls_kwargs = get_redis_options(url)
+        self.assertEqual(redis_kwargs["retry"]["min_backoff"], 0)
+        config = process_config(url, pool_kwargs, redis_kwargs, tls_kwargs)
+        connection_pool, _ = get_connection_pool(config)
+        retry_config = connection_pool.connection_kwargs["retry"]
+        self.assertIsInstance(retry_config, Retry)
+        self.assertIsInstance(retry_config._backoff, FullJitterBackoff)
+        self.assertEqual(retry_config._backoff._base, 0)
+        self.assertEqual(retry_config._backoff._cap, DEFAULT_CAP)
 
     def test_get_redis_options_max_retry_backoff_arg(self):
         """Test Redis URL parser with maxretrybackoff arg"""
@@ -152,7 +177,22 @@ class TestParserUtils(TestCase):
         connection_pool, _ = get_connection_pool(config)
         retry_config = connection_pool.connection_kwargs["retry"]
         self.assertIsInstance(retry_config, Retry)
-        self.assertIsInstance(retry_config._backoff, ConstantBackoff)
+        self.assertIsInstance(retry_config._backoff, FullJitterBackoff)
+        self.assertEqual(retry_config._backoff._base, DEFAULT_BASE)
+        self.assertEqual(retry_config._backoff._cap, 100)
+
+    def test_get_redis_options_max_retry_backoff_arg_negative_number(self):
+        """Test Redis URL parser with negative maxretrybackoff arg"""
+        url = urlparse("redis://myredis/0?maxretrybackoff=-13s")
+        pool_kwargs, redis_kwargs, tls_kwargs = get_redis_options(url)
+        self.assertEqual(redis_kwargs["retry"]["max_backoff"], 0)
+        config = process_config(url, pool_kwargs, redis_kwargs, tls_kwargs)
+        connection_pool, _ = get_connection_pool(config)
+        retry_config = connection_pool.connection_kwargs["retry"]
+        self.assertIsInstance(retry_config, Retry)
+        self.assertIsInstance(retry_config._backoff, FullJitterBackoff)
+        self.assertEqual(retry_config._backoff._base, DEFAULT_BASE)
+        self.assertEqual(retry_config._backoff._cap, 0)
 
     def test_get_connection_pool_max_retries(self):
         """Test ConnectionPool generator with maxretries"""
@@ -161,27 +201,30 @@ class TestParserUtils(TestCase):
         connection_pool, _ = get_connection_pool(config)
         retry_config = connection_pool.connection_kwargs["retry"]
         self.assertIsInstance(retry_config, Retry)
-        self.assertIsInstance(retry_config._backoff, NoBackoff)
         self.assertEqual(retry_config._retries, 123)
 
-    def test_get_connection_pool_max_retries_default(self):
-        """Test ConnectionPool generator without maxretries"""
+    def test_get_connection_pool_max_retries_and_min_and_max_backoff_default(self):
+        """Test ConnectionPool generator retrie and backoff defaults"""
         url = urlparse("redis://myredis:6379/0")
         config = process_config(url, *get_redis_options(url))
         connection_pool, _ = get_connection_pool(config)
         retry_config = connection_pool.connection_kwargs["retry"]
         self.assertIsInstance(retry_config, Retry)
-        self.assertIsInstance(retry_config._backoff, ExponentialBackoff)
-        self.assertEqual(retry_config._retries, 3)
+        self.assertIsInstance(retry_config._backoff, FullJitterBackoff)
+        self.assertEqual(retry_config._backoff._base, DEFAULT_BASE)
+        self.assertEqual(retry_config._backoff._cap, DEFAULT_CAP)
+        self.assertEqual(retry_config._retries, DEFAULT_RETRIES)
 
-    def test_get_connection_pool_min_and_max_backoff(self):
-        """Test ConnectionPool generator with minretrybackoff and maxretrybackoff"""
+    def test_get_connection_pool_max_retries_and_min_and_max_backoff(self):
+        """Test ConnectionPool generator with maxretries, minretrybackoff and maxretrybackoff"""
         url = urlparse("redis://myredis:6379/0?maxretries=32&minretrybackoff=4s&maxretrybackoff=8s")
         config = process_config(url, *get_redis_options(url))
         connection_pool, _ = get_connection_pool(config)
         retry_config = connection_pool.connection_kwargs["retry"]
         self.assertIsInstance(retry_config, Retry)
-        self.assertIsInstance(retry_config._backoff, ExponentialBackoff)
+        self.assertIsInstance(retry_config._backoff, FullJitterBackoff)
+        self.assertEqual(retry_config._backoff._base, 4)
+        self.assertEqual(retry_config._backoff._cap, 8)
         self.assertEqual(retry_config._retries, 32)
 
     def test_get_connection_pool_sentinel(self):
@@ -320,6 +363,13 @@ class TestParserUtils(TestCase):
         pool_kwargs, _, _ = get_redis_options(url)
         self.assertEqual(pool_kwargs["max_connections"], 32)
 
+    @patch.dict("sys.modules", {"os.sched_getaffinity": None})
+    def test_get_redis_options_pool_size_arg_fallback(self):
+        """Test Redis URL parser for fallback poolsize value"""
+        url = urlparse("redis://myredis/0")
+        pool_kwargs, _, _ = get_redis_options(url)
+        self.assertEqual(pool_kwargs["max_connections"], 50)
+
     def test_get_redis_options_pool_timeout_arg(self):
         """Test Redis URL parser with pooltimeout arg"""
         url = urlparse("redis://myredis/0?pooltimeout=100s")
@@ -352,7 +402,7 @@ class TestParserUtils(TestCase):
         self.assertEqual(config["redis_kwargs"]["socket_keepalive_options"][TCP_KEEPINTVL], 31)
 
     @patch("sys.platform", "linux")
-    @patch("socket.TCP_KEEPIDLE", 29)
+    @patch("socket.TCP_KEEPIDLE", 29, create=True)
     def test_get_redis_options_keepalive_linux(self):
         """Test keepalive setting for Linux"""
         url = urlparse("redis://myredis/0")
@@ -360,7 +410,7 @@ class TestParserUtils(TestCase):
         self.assertEqual(config["redis_kwargs"]["socket_keepalive_options"][29], 5 * 60)
 
     @patch("sys.platform", "darwin")
-    @patch("socket.TCP_KEEPALIVE", 32)
+    @patch("socket.TCP_KEEPALIVE", 32, create=True)
     def test_get_redis_options_keepalive_darwin(self):
         """Test keepalive setting for macOS"""
         url = urlparse("redis://myredis/0")
@@ -377,15 +427,8 @@ class TestParserUtils(TestCase):
     def test_get_redis_options_max_idle_conns_arg(self):
         """Test Redis URL parser with maxidleconns arg"""
         url = urlparse("redis://myredis/0?maxidleconns=52")
-        _, redis_kwargs, _ = get_redis_options(url)
-        self.assertEqual(redis_kwargs["max_connections"], 52)
-
-    @patch.dict("sys.modules", {"os.sched_getaffinity": None})
-    def test_get_redis_options_max_idle_conns_arg_fallback(self):
-        """Test Redis URL parser for fallback maxidleconns value"""
-        url = urlparse("redis://myredis/0")
-        _, redis_kwargs, _ = get_redis_options(url)
-        self.assertEqual(redis_kwargs["max_connections"], 50)
+        pool_kwargs, _, _ = get_redis_options(url)
+        self.assertEqual(pool_kwargs["max_idle_connections"], 52)
 
     def test_get_redis_options_sentinel_master_id_arg(self):
         """Test Redis URL parser with sentinelmasterid arg"""

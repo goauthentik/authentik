@@ -9,9 +9,11 @@ from typing import Any, Dict, Tuple
 from urllib.parse import ParseResultBytes, parse_qs, unquote, unquote_plus, urlparse
 
 from django.utils.module_loading import import_string
-from redis.backoff import DEFAULT_BASE, DEFAULT_CAP, ConstantBackoff, ExponentialBackoff, NoBackoff
+from redis.backoff import DEFAULT_BASE, DEFAULT_CAP, FullJitterBackoff
 from redis.exceptions import ConnectionError as RedisConnectionError
 from redis.exceptions import TimeoutError as RedisTimeoutError
+
+DEFAULT_RETRIES = 3
 
 
 def _to_bool(value):
@@ -259,12 +261,18 @@ def get_redis_options(
                         retries_and_backoff["retry"] = 0
                 case "minretrybackoff":
                     min_backoff = _val_to_sec(value)
-                    if min_backoff is not None and min_backoff > 0:
-                        retries_and_backoff["min_backoff"] = min_backoff
+                    if min_backoff is not None:
+                        if min_backoff > 0:
+                            retries_and_backoff["min_backoff"] = min_backoff
+                        else:
+                            retries_and_backoff["min_backoff"] = 0
                 case "maxretrybackoff":
                     max_backoff = _val_to_sec(value)
-                    if max_backoff is not None and max_backoff > 0:
-                        retries_and_backoff["max_backoff"] = max_backoff
+                    if max_backoff is not None:
+                        if max_backoff > 0:
+                            retries_and_backoff["max_backoff"] = max_backoff
+                        else:
+                            retries_and_backoff["max_backoff"] = 0
                 case "timeout":
                     timeout = _val_to_sec(value)
                     if timeout is not None and timeout <= 0:
@@ -302,7 +310,7 @@ def get_redis_options(
                 case "idlecheckfrequency":
                     redis_kwargs["idle_check_frequency"] = int(_val_to_sec(value))
                 case "maxidleconns":
-                    redis_kwargs["max_connections"] = int(value[0])
+                    pool_kwargs["max_idle_connections"] = int(value[0])
                 case "sentinelmasterid" | "mastername":
                     redis_kwargs["service_name"] = value_str
                 case "sentinelusername":
@@ -458,27 +466,12 @@ def _connection_class(config, use_async, update_connection_class):
 def _retries_and_backoff(config, retry_class):
     """Configure retry and backoff similar to how go-redis handles it"""
     retries_and_backoff = config["redis_kwargs"].pop("retry")
-    if "retry" in retries_and_backoff:
-        if "min_backoff" in retries_and_backoff and "max_backoff" in retries_and_backoff:
-            config["redis_kwargs"]["retry"] = retry_class(
-                ExponentialBackoff(
-                    retries_and_backoff["max_backoff"], retries_and_backoff["min_backoff"]
-                ),
-                retries_and_backoff["retry"],
-            )
-        elif "min_backoff" in retries_and_backoff:
-            config["redis_kwargs"]["retry"] = retry_class(
-                ConstantBackoff(retries_and_backoff["min_backoff"]), retries_and_backoff["retry"]
-            )
-        elif "max_backoff" in retries_and_backoff:
-            config["redis_kwargs"]["retry"] = retry_class(
-                ConstantBackoff(retries_and_backoff["max_backoff"]), retries_and_backoff["retry"]
-            )
-        else:
-            config["redis_kwargs"]["retry"] = retry_class(NoBackoff(), retries_and_backoff["retry"])
-
-    config["redis_kwargs"].setdefault(
-        "retry", retry_class(ExponentialBackoff(DEFAULT_CAP, DEFAULT_BASE), 3)
+    config["redis_kwargs"]["retry"] = retry_class(
+        FullJitterBackoff(
+            retries_and_backoff.get("max_backoff", DEFAULT_CAP),
+            retries_and_backoff.get("min_backoff", DEFAULT_BASE),
+        ),
+        retries_and_backoff.get("retry", DEFAULT_RETRIES),
     )
     config["redis_kwargs"].setdefault(
         "retry_on_error", [RedisConnectionError, RedisTimeoutError, SocketTimeout]
