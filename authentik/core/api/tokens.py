@@ -24,9 +24,10 @@ from authentik.core.models import USER_ATTRIBUTE_TOKEN_EXPIRING, Token, TokenInt
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import model_to_dict
 from authentik.tenants.filters import TenantFilter
+from authentik.tenants.serializers import TenantSerializer
 
 
-class TokenSerializer(ManagedSerializer, ModelSerializer):
+class TokenSerializer(TenantSerializer, ManagedSerializer, ModelSerializer):
     """Token Serializer"""
 
     user_obj = UserSerializer(required=False, source="user", read_only=True)

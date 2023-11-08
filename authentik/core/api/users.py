@@ -82,6 +82,7 @@ from authentik.lib.config import CONFIG
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
+from authentik.tenants.api import TenantSerializer
 
 LOGGER = get_logger()
 
@@ -105,7 +106,7 @@ class UserGroupSerializer(ModelSerializer):
         ]
 
 
-class UserSerializer(ModelSerializer):
+class UserSerializer(TenantSerializer, ModelSerializer):
     """User Serializer"""
 
     is_superuser = BooleanField(read_only=True)
@@ -457,6 +458,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         with atomic():
             try:
                 user: User = User.objects.create(
+                    tenant=request.tenant,
                     username=username,
                     name=username,
                     type=UserTypes.SERVICE_ACCOUNT,
@@ -473,11 +475,13 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 }
                 if create_group and self.request.user.has_perm("authentik_core.add_group"):
                     group = Group.objects.create(
+                        tenant=request.tenant,
                         name=username,
                     )
                     group.users.add(user)
                     response["group_pk"] = str(group.pk)
                 token = Token.objects.create(
+                    tenant=request.tenant,
                     identifier=slugify(f"service-account-{username}-password"),
                     intent=TokenIntents.INTENT_APP_PASSWORD,
                     user=user,

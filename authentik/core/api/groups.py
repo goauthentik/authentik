@@ -19,9 +19,10 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, is_dict
 from authentik.core.models import Group, User
 from authentik.rbac.api.roles import RoleSerializer
+from authentik.tenants.serializers import TenantSerializer
 
 
-class GroupMemberSerializer(ModelSerializer):
+class GroupMemberSerializer(TenantSerializer, ModelSerializer):
     """Stripped down user serializer to show relevant users for groups"""
 
     attributes = JSONField(validators=[is_dict], required=False)
@@ -41,7 +42,7 @@ class GroupMemberSerializer(ModelSerializer):
         ]
 
 
-class GroupSerializer(ModelSerializer):
+class GroupSerializer(TenantSerializer, ModelSerializer):
     """Group Serializer"""
 
     attributes = JSONField(validators=[is_dict], required=False)
@@ -161,6 +162,7 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         user: User = (
             get_objects_for_user(request.user, "authentik_core.view_user")
             .filter(
+                tenant=request.tenant,
                 pk=request.data.get("pk"),
             )
             .first()
@@ -185,6 +187,7 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         user: User = (
             get_objects_for_user(request.user, "authentik_core.view_user")
             .filter(
+                tenant=request.tenant,
                 pk=request.data.get("pk"),
             )
             .first()

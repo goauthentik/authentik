@@ -27,11 +27,14 @@ class AuthentikCoreConfig(ManagedAppConfig):
     def reconcile_source_inbuilt(self):
         """Reconcile inbuilt source"""
         from authentik.core.models import Source
+        from authentik.tenants.models import Tenant
 
-        Source.objects.update_or_create(
-            defaults={
-                "name": "authentik Built-in",
-                "slug": "authentik-built-in",
-            },
-            managed="goauthentik.io/sources/inbuilt",
-        )
+        for tenant in Tenant.objects.all():
+            Source.objects.update_or_create(
+                defaults={
+                    "tenant": tenant.pk,
+                    "name": "authentik Built-in",
+                    "slug": "authentik-built-in",
+                },
+                managed="goauthentik.io/sources/inbuilt",
+            )

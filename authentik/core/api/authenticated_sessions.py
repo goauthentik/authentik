@@ -16,6 +16,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.models import AuthenticatedSession
 from authentik.events.geo import GEOIP_READER, GeoIPDict
 from authentik.tenants.filters import TenantFilter
+from authentik.tenants.serializers import TenantSerializer
 
 
 class UserAgentDeviceDict(TypedDict):
@@ -54,7 +55,7 @@ class UserAgentDict(TypedDict):
     string: str
 
 
-class AuthenticatedSessionSerializer(ModelSerializer):
+class AuthenticatedSessionSerializer(TenantSerializer, ModelSerializer):
     """AuthenticatedSession Serializer"""
 
     current = SerializerMethodField()

@@ -22,6 +22,7 @@ from authentik.core.models import PropertyMapping
 from authentik.events.utils import sanitize_item
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.policies.api.exec import PolicyTestSerializer
+from authentik.tenants.serializers import TenantSerializer
 
 
 class PropertyMappingTestResultSerializer(PassiveSerializer):
@@ -31,7 +32,9 @@ class PropertyMappingTestResultSerializer(PassiveSerializer):
     successful = BooleanField(read_only=True)
 
 
-class PropertyMappingSerializer(ManagedSerializer, ModelSerializer, MetaNameSerializer):
+class PropertyMappingSerializer(
+    TenantSerializer, ManagedSerializer, ModelSerializer, MetaNameSerializer
+):
     """PropertyMapping Serializer"""
 
     component = SerializerMethodField()
@@ -126,7 +129,7 @@ class PropertyMappingViewSet(
 
         # User permission check, only allow mapping testing for users that are readable
         users = get_objects_for_user(request.user, "authentik_core.view_user").filter(
-            pk=test_params.validated_data["user"].pk
+            tenant=request.tenant, pk=test_params.validated_data["user"].pk
         )
         if not users.exists():
             raise PermissionDenied()

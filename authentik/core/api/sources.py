@@ -30,11 +30,12 @@ from authentik.lib.utils.file import (
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.policies.engine import PolicyEngine
 from authentik.tenants.filters import TenantFilter
+from authentik.tenants.serializers import TenantSerializer
 
 LOGGER = get_logger()
 
 
-class SourceSerializer(ModelSerializer, MetaNameSerializer):
+class SourceSerializer(TenantSerializer, ModelSerializer, MetaNameSerializer):
     """Source Serializer"""
 
     managed = ReadOnlyField()
@@ -161,7 +162,9 @@ class SourceViewSet(
     def user_settings(self, request: Request) -> Response:
         """Get all sources the user can configure"""
         _all_sources: Iterable[Source] = (
-            Source.objects.filter(enabled=True).select_subclasses().order_by("name")
+            Source.objects.filter(tenant=request.tenant, enabled=True)
+            .select_subclasses()
+            .order_by("name")
         )
         matching_sources: list[UserSettingSerializer] = []
         for source in _all_sources:

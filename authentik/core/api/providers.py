@@ -17,9 +17,10 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
 from authentik.core.models import Provider
 from authentik.lib.utils.reflection import all_subclasses
+from authentik.tenants.serializers import TenantSerializer
 
 
-class ProviderSerializer(ModelSerializer, MetaNameSerializer):
+class ProviderSerializer(TenantSerializer, ModelSerializer, MetaNameSerializer):
     """Provider Serializer"""
 
     assigned_application_slug = ReadOnlyField(source="application.slug")

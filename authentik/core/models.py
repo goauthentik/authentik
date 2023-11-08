@@ -33,6 +33,7 @@ from authentik.lib.models import (
 from authentik.lib.utils.http import get_client_ip
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.install_id import get_install_id
+from authentik.tenants.models import TenantModel
 
 LOGGER = get_logger()
 USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
@@ -78,7 +79,7 @@ class UserTypes(models.TextChoices):
     INTERNAL_SERVICE_ACCOUNT = "internal_service_account"
 
 
-class Group(SerializerModel):
+class Group(TenantModel, SerializerModel):
     """Group model which supports a basic hierarchy and has attributes"""
 
     group_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -164,17 +165,27 @@ class Group(SerializerModel):
 
 
 class UserManager(DjangoUserManager):
-    """User manager that doesn't assign is_superuser and is_staff"""
+    """User manager that assigns a tenant and doesn't assign is_superuser and is_staff"""
 
-    def create_user(self, username, email=None, password=None, **extra_fields):
-        """User manager that doesn't assign is_superuser and is_staff"""
-        return self._create_user(username, email, password, **extra_fields)
+    def create_user(self, tenant, username, email=None, password=None, **extra_fields):
+        """User manager that assigns a tenant and doesn't assign is_superuser and is_staff"""
+        return self._create_user(username, email, password, tenant=tenant, **extra_fields)
+
+    def create_superuser(self, tenant, username, email=None, password=None, **extra_fields):
+        """User manager that assigns a tenant"""
+        return super().create_superuser(username, email, password, tenant=tenant, **extra_fields)
 
 
-class User(SerializerModel, GuardianUserMixin, AbstractUser):
+class User(TenantModel, SerializerModel, GuardianUserMixin, AbstractUser):
     """authentik User model, based on django's contrib auth user model."""
 
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
+    username = models.CharField(
+        _("username"),
+        max_length=150,
+        help_text=_("Required. 150 characters or fewer. Letters, digits, and @/./+/-/_ only."),
+        validators=[AbstractUser.username_validator],
+    )
     name = models.TextField(help_text=_("User's display name."))
     path = models.TextField(default="users")
     type = models.TextField(choices=UserTypes.choices, default=UserTypes.INTERNAL)
@@ -279,12 +290,20 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
             ("assign_user_permissions", _("Can assign permissions to users")),
             ("unassign_user_permissions", _("Can unassign permissions from users")),
         ]
+        constraints = (
+            models.UniqueConstraint(
+                "tenant",
+                "username",
+                name="unique_core_user_tenant_username",
+                violation_error_message=_("A user with that username already exists."),
+            ),
+        )
 
 
-class Provider(SerializerModel):
+class Provider(TenantModel, SerializerModel):
     """Application-independent Provider instance. For example SAML2 Remote, OAuth2 Application"""
 
-    name = models.TextField(unique=True)
+    name = models.TextField()
 
     authentication_flow = models.ForeignKey(
         "authentik_flows.Flow",
@@ -342,6 +361,11 @@ class Provider(SerializerModel):
     def __str__(self):
         return str(self.name)
 
+    class Meta:
+        constraints = (
+            models.UniqueConstraint("tenant", "name", name="unique_core_provider_tenant_name"),
+        )
+
 
 class BackchannelProvider(Provider):
     """Base class for providers that augment other providers, for example LDAP and SCIM.
@@ -363,13 +387,13 @@ class BackchannelProvider(Provider):
         abstract = True
 
 
-class Application(SerializerModel, PolicyBindingModel):
+class Application(TenantModel, SerializerModel, PolicyBindingModel):
     """Every Application which uses authentik for authentication/identification/authorization
     needs an Application record. Other authentication types can subclass this Model to
     add custom fields and other properties"""
 
     name = models.TextField(help_text=_("Application's display Name."))
-    slug = models.SlugField(help_text=_("Internal application name, used in URLs."), unique=True)
+    slug = models.SlugField(help_text=_("Internal application name, used in URLs."))
     group = models.TextField(blank=True, default="")
 
     provider = models.OneToOneField(
@@ -447,6 +471,9 @@ class Application(SerializerModel, PolicyBindingModel):
     class Meta:
         verbose_name = _("Application")
         verbose_name_plural = _("Applications")
+        constraints = (
+            models.UniqueConstraint("tenant", "slug", name="unique_core_application_tenant_slug"),
+        )
 
 
 class SourceUserMatchingModes(models.TextChoices):
@@ -469,11 +496,11 @@ class SourceUserMatchingModes(models.TextChoices):
     )
 
 
-class Source(ManagedModel, SerializerModel, PolicyBindingModel):
+class Source(TenantModel, ManagedModel, SerializerModel, PolicyBindingModel):
     """Base Authentication source, i.e. an OAuth Provider, SAML Remote or LDAP Server"""
 
     name = models.TextField(help_text=_("Source's display Name."))
-    slug = models.SlugField(help_text=_("Internal source name, used in URLs."), unique=True)
+    slug = models.SlugField(help_text=_("Internal source name, used in URLs."))
 
     user_path_template = models.TextField(default="goauthentik.io/sources/%(slug)s")
 
@@ -568,9 +595,12 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
                 ]
             ),
         ]
+        constraints = (
+            models.UniqueConstraint("tenant", "slug", name="unique_core_source_tenant_slug"),
+        )
 
 
-class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
+class UserSourceConnection(TenantModel, SerializerModel, CreatedUpdatedModel):
     """Connection between User and Source."""
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -584,7 +614,14 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
         raise NotImplementedError
 
     class Meta:
-        unique_together = (("user", "source"),)
+        constraints = (
+            models.UniqueConstraint(
+                "tenant",
+                "user",
+                "source",
+                name="unique_core_usersourceconnection_tenant_user_source",
+            ),
+        )
 
 
 class ExpiringModel(models.Model):
@@ -635,11 +672,11 @@ class TokenIntents(models.TextChoices):
     INTENT_APP_PASSWORD = "app_password"  # nosec
 
 
-class Token(SerializerModel, ManagedModel, ExpiringModel):
+class Token(TenantModel, SerializerModel, ManagedModel, ExpiringModel):
     """Token used to authenticate the User for API Access or confirm another Stage like Email."""
 
     token_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
-    identifier = models.SlugField(max_length=255, unique=True)
+    identifier = models.SlugField(max_length=255)
     key = models.TextField(default=default_token_key)
     intent = models.TextField(
         choices=TokenIntents.choices, default=TokenIntents.INTENT_VERIFICATION
@@ -688,13 +725,18 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
             models.Index(fields=["key"]),
         ]
         permissions = [("view_token_key", _("View token's key"))]
+        constraints = (
+            models.UniqueConstraint(
+                "tenant", "identifier", name="unique_core_token_tenant_identifier"
+            ),
+        )
 
 
-class PropertyMapping(SerializerModel, ManagedModel):
+class PropertyMapping(TenantModel, SerializerModel, ManagedModel):
     """User-defined key -> x mapping which can be used by providers to expose extra data."""
 
     pm_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
-    name = models.TextField(unique=True)
+    name = models.TextField()
     expression = models.TextField()
 
     objects = InheritanceManager()
@@ -725,9 +767,14 @@ class PropertyMapping(SerializerModel, ManagedModel):
     class Meta:
         verbose_name = _("Property Mapping")
         verbose_name_plural = _("Property Mappings")
+        constraints = (
+            models.UniqueConstraint(
+                "tenant", "name", name="unique_core_propertymapping_tenant_name"
+            ),
+        )
 
 
-class AuthenticatedSession(ExpiringModel):
+class AuthenticatedSession(TenantModel, ExpiringModel):
     """Additional session class for authenticated users. Augments the standard django session
     to achieve the following:
         - Make it queryable by user
@@ -751,6 +798,7 @@ class AuthenticatedSession(ExpiringModel):
         if not hasattr(request, "session") or not request.session.session_key:
             return None
         return AuthenticatedSession(
+            tenant=request.tenant,
             session_key=request.session.session_key,
             user=user,
             last_ip=get_client_ip(request),

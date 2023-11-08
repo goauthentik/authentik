@@ -31,7 +31,7 @@ class RedirectToAppLaunch(View):
     """Application launch view, redirect to the launch URL"""
 
     def dispatch(self, request: HttpRequest, application_slug: str) -> HttpResponse:
-        app = get_object_or_404(Application, slug=application_slug)
+        app = get_object_or_404(Application, tenant=request.tenant, slug=application_slug)
         # Check here if the application has any launch URL set, if not 404
         launch = app.get_launch_url()
         if not launch:

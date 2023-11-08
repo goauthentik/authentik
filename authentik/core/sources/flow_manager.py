@@ -92,7 +92,9 @@ class SourceFlowManager:
     # pylint: disable=too-many-return-statements
     def get_action(self, **kwargs) -> tuple[Action, Optional[UserSourceConnection]]:
         """decide which action should be taken"""
-        new_connection = self.connection_type(source=self.source, identifier=self.identifier)
+        new_connection = self.connection_type(
+            tenant=self.request.tenant, source=self.source, identifier=self.identifier
+        )
         # When request is authenticated, always link
         if self.request.user.is_authenticated:
             new_connection.user = self.request.user
@@ -102,7 +104,7 @@ class SourceFlowManager:
             return Action.LINK, new_connection
 
         existing_connections = self.connection_type.objects.filter(
-            source=self.source, identifier=self.identifier
+            tenant=self.request.tenant, source=self.source, identifier=self.identifier
         )
         if existing_connections.exists():
             connection = existing_connections.first()
@@ -132,7 +134,7 @@ class SourceFlowManager:
                 return Action.DENY, None
             query = Q(username__exact=self.enroll_info.get("username", None))
         self._logger.debug("trying to link with existing user", query=query)
-        matching_users = User.objects.filter(query)
+        matching_users = User.objects.filter(tenant=self.request.tenant).filter(query)
         # No matching users, always enroll
         if not matching_users.exists():
             self._logger.debug("no matching users found, enrolling")

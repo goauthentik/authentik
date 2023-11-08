@@ -10,9 +10,10 @@ from rest_framework.viewsets import ViewSet
 from authentik.core.api.utils import MetaNameSerializer
 from authentik.stages.authenticator import device_classes, devices_for_user
 from authentik.stages.authenticator.models import Device
+from authentik.tenants.serializers import TenantSerializer
 
 
-class DeviceSerializer(MetaNameSerializer):
+class DeviceSerializer(TenantSerializer, MetaNameSerializer):
     """Serializer for Duo authenticator devices"""
 
     pk = IntegerField()
@@ -47,7 +48,7 @@ class AdminDeviceViewSet(ViewSet):
     def get_devices(self, **kwargs):
         """Get all devices in all child classes"""
         for model in device_classes():
-            device_set = model.objects.filter(**kwargs)
+            device_set = model.objects.filter(tenant=self.request.tenant, **kwargs)
             yield from device_set
 
     @extend_schema(

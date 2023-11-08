@@ -38,6 +38,7 @@ from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import PolicyResult
 from authentik.rbac.filters import ObjectFilter
+from authentik.tenants.serializers import TenantSerializer
 
 LOGGER = get_logger()
 
@@ -47,7 +48,7 @@ def user_app_cache_key(user_pk: str) -> str:
     return f"goauthentik.io/core/app_access/{user_pk}"
 
 
-class ApplicationSerializer(ModelSerializer):
+class ApplicationSerializer(TenantSerializer, ModelSerializer):
     """Application Serializer"""
 
     launch_url = SerializerMethodField()
@@ -155,12 +156,14 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         """Check access to a single application by slug"""
         # Don't use self.get_object as that checks for view_application permission
         # which the user might not have, even if they have access
-        application = get_object_or_404(Application, slug=slug)
+        application = get_object_or_404(Application, tenant=request.tenant, slug=slug)
         # If the current user is superuser, they can set `for_user`
         for_user = request.user
         if request.user.is_superuser and "for_user" in request.query_params:
             try:
-                for_user = get_object_or_404(User, pk=request.query_params.get("for_user"))
+                for_user = get_object_or_404(
+                    User, tenant=request.tenant, pk=request.query_params.get("for_user")
+                )
             except ValueError:
                 return HttpResponseBadRequest("for_user must be numerical")
         engine = PolicyEngine(application, for_user, request)

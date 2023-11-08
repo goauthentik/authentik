@@ -18,7 +18,24 @@ class InbuiltBackend(ModelBackend):
     def authenticate(
         self, request: HttpRequest, username: Optional[str], password: Optional[str], **kwargs: Any
     ) -> Optional[User]:
-        user = super().authenticate(request, username=username, password=password, **kwargs)
+        user = None
+        if username is None:
+            username = kwargs.get(User.USERNAME_FIELD)
+        if username is not None and password is not None:
+            try:
+                query_args = {
+                    "tenant": request.tenant,
+                    User.USERNAME_FIELD: username,
+                }
+                user = User._default_manager.get(**query_args)
+            except User.DoesNotExist:
+                # Run the default password hasher once to reduce the timing
+                # difference between an existing and a nonexistent user (#20760).
+                User().set_password(password)
+                user = None
+            else:
+                if not user.check_password(password) or not self.user_can_authenticate(user):
+                    user = None
         if not user:
             return None
         self.set_method("password", request)
@@ -43,7 +60,11 @@ class TokenBackend(InbuiltBackend):
         self, request: HttpRequest, username: Optional[str], password: Optional[str], **kwargs: Any
     ) -> Optional[User]:
         try:
-            user = User._default_manager.get_by_natural_key(username)
+            query_args = {
+                "tenant": request.tenant,
+                User.USERNAME_FIELD: username,
+            }
+            user = User._default_manager.get(**query_args)
         except User.DoesNotExist:
             # Run the default password hasher once to reduce the timing
             # difference between an existing and a nonexistent user (#20760).

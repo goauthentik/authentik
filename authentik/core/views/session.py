@@ -14,7 +14,9 @@ class EndSessionView(TemplateView, PolicyAccessView):
     template_name = "if/end_session.html"
 
     def resolve_provider_application(self):
-        self.application = get_object_or_404(Application, slug=self.kwargs["application_slug"])
+        self.application = get_object_or_404(
+            Application, tenant=self.request.tenant, slug=self.kwargs["application_slug"]
+        )
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
