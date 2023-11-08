@@ -16,7 +16,7 @@ from redis.exceptions import TimeoutError as RedisTimeoutError
 DEFAULT_RETRIES = 3
 
 
-class SET_DEFAULT:
+class SETDEFAULT:
     """Used to indicate that value shall be overridden by default"""
 
 
@@ -139,7 +139,7 @@ def _set_kwargs_default(kwargs: dict, defaults: dict):
     """Set multiple default values for a dictionary at once"""
     for kwarg_key, kwarg_value in defaults.items():
         kwargs.setdefault(kwarg_key, kwarg_value)
-        if kwargs.get(kwarg_key) is SET_DEFAULT:
+        if kwargs.get(kwarg_key) is SETDEFAULT:
             kwargs[kwarg_key] = kwarg_value
     return kwargs
 
@@ -186,7 +186,7 @@ def _set_config_defaults(pool_kwargs, redis_kwargs, tls_kwargs, url):
         new_addrs.append(("127.0.0.1", default_port))
 
     pool_socket_timeout = redis_kwargs.get("socket_timeout")
-    if pool_socket_timeout is None or pool_socket_timeout is SET_DEFAULT:
+    if pool_socket_timeout is None or pool_socket_timeout is SETDEFAULT:
         pool_socket_timeout = 3
 
     pool_kwargs_defaults = {
@@ -243,8 +243,8 @@ def _handle_default(
     """Handle any not supported values i.e. negative ones"""
     if condition(value):
         return value
-    elif handle_zero and value == 0:
-        return SET_DEFAULT
+    if handle_zero and value == 0:
+        return SETDEFAULT
     else:
         return default
 
