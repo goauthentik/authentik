@@ -1,6 +1,6 @@
 ---
-title: “IPv6 Addresses & Why You Need to Make the Switch Now”
-description: “IPv6 IP addresses have been commercially available since 2010. But, is there any compelling reason for sysadmins and security engineers to make the switch?”
+title: "IPv6 addresses and why you need to make the switch now"
+description: "IPv6 addresses have been commercially available since 2010. But, is there any compelling reason for sysadmins and security engineers to make the switch?"
 slug: 2023-11-09-IPv6-addresses
 authors:
     - name: Jens Langhammer
@@ -11,14 +11,8 @@ tags:
     - authentik
     - IP address
     - IPv4
-	- IPv6
-	- IP address exhaustion
+    - IPv6
 	- NAT Gateway
-	- IETF
-	- Internet Engineering Task Force
-	- IANA
-	- Internet Assigned Numbers Authority
-	- IPv6 address format
     - SSO
     - security
     - identity provider
@@ -29,6 +23,7 @@ hide_table_of_contents: false
 > **_authentik is an open source Identity Provider that unifies your identity needs into a single platform, replacing Okta, Active Directory, and auth0. Authentik Security is a [public benefit company](https://github.com/OpenCoreVentures/ocv-public-benefit-company/blob/main/ocv-public-benefit-company-charter.md) building on top of the open source project._**
 
 ---
+
 IPv6 addresses have been commercially available since 2010. Yet, after Google’s IPv6 rollout the following year, the adoption by System Administrators and security engineers responsible for an entire organization’s network has been slower than you might expect. Population size and the plethora of work and personal devices that accompany this large number of workers do not accurately predict which countries have deployed this protocol.
 
 In this blog post, I explain briefly what IP addresses are and how they work; share why at Authentik Security we went full IPv6 in May 2023; and then set out some reasons why you should switch now.
@@ -39,12 +34,12 @@ IP Addresses are locations (similar to street addresses) that are assigned to al
 
 We use domain names for websites, to avoid having to remember IP addresses, though our readers who are sysadmin —used to referencing all sorts of nodes deep within their organization’s networks—will recall them at the drop of a hat.
 
-But, increasingly, since many devices are online and [96.6% of internet users now use a smartphone](https://www.oberlo.com/statistics/how-many-people-have-smartphones), most Internet of Things (IoT) devices that we have in our workplaces and homes *also* have their own IP address. This includes:
+But, increasingly, since many devices are online and [96.6% of internet users now use a smartphone](https://www.oberlo.com/statistics/how-many-people-have-smartphones), most Internet of Things (IoT) devices that we have in our workplaces and homes _also_ have their own IP address. This includes:
 
-- Computers, laptops and smartphones
-- Database servers, web servers, mail servers, virtual servers (virtual machines), and servers that store software packages for distribution
-- Other devices such as network printers, routers and services running on computer networks
-- Domain names for websites, which are mapped to the IP address using Domain Name Servers (DNS)
+-   Computers, laptops and smartphones
+-   Database servers, web servers, mail servers, virtual servers (virtual machines), and servers that store software packages for distribution
+-   Other devices such as network printers, routers and services running on computer networks
+-   Domain names for websites, which are mapped to the IP address using Domain Name Servers (DNS)
 
 IP addresses are centrally overseen by the Internet Assigned Numbers Authority (IANA), with five [Regional Internet Registries](https://www.nro.net/about/rirs/) (RIRs).
 
@@ -60,15 +55,14 @@ IP address exhaustion was foreseen in the 1980s, which is why the Internet Engin
 
 The following realities contributed to the depletion of the IPv4 addresses:
 
-- IPv4 addresses were designed to use 32 bits and are written with decimal numbers
-- This allowed for 4.3 billion IP addresses
+-   IPv4 addresses were designed to use 32 bits and are written with decimal numbers
+-   This allowed for 4.3 billion IP addresses
 
 The IPv4 address format is written in 4 groups of 4 numbers, each group separated by a period.
 
 Even though IPv4 addresses still trade hands, it’s actually quite difficult now to buy a completely unused block. What’s more, they’re expensive for smaller organizations (currently around $39 each) and leasing is cheaper. Unless you can acquire them from those sources, you’ll likely now be issued IPv6 ones.
 
 > Interesting historical fact: IPv5 was developed specifically for streaming video and voice, becoming the basis for VoIP, though it was never widely adopted as a standard protocol.
->
 
 ### IPv6 addresses, history and adoption
 
@@ -76,13 +70,12 @@ The development of IPv6 was initiated by IETF in 1994, and was published as a dr
 
 There is an often circulated metaphor from J. Wiljakka’s IEEE paper, [Transition to IPv6 in GPRS and WCDMA Mobile Networks](https://ieeexplore.ieee.org/document/995863), stating that every grain of sand on every seashore could be allocated its own IPv6 address. Let me illustrate.
 
-- IPv6 addresses were designed to use 128 bits and are written with hexadecimal digits (10 numbers from 1-10 and 6 letters from A-F).
-- So, how many IPV6 addresses are there? In short, there are over 340 trillion IP addresses available!
+-   IPv6 addresses were designed to use 128 bits and are written with hexadecimal digits (10 numbers from 1-10 and 6 letters from A-F).
+-   So, how many IPV6 addresses are there? In short, there are over 340 trillion IP addresses available!
 
 The IPv6 address format is written in 8 groups of 4 digits (each digit can be made up of 4 bits), each group separated by a colon.
 
 > Importantly, the hierarchical structure optimizes global IP routing, keeping routing tables small.
->
 
 If you plan to make the switch to IPv6, it’s worth noting that you’ll need to ensure that your devices, router, and ISP all support it.
 
@@ -90,12 +83,12 @@ If you plan to make the switch to IPv6, it’s worth noting that you’ll need t
 
 Over 42.9% of Google users worldwide are accessing search using the IPv6 protocol. It’s intriguing to note which countries have a larger adoption of the IPv6 protocol than not:
 
-- France 74.38%
-- Germany 71.52%
-- India with 70.18%
-- Malaysia 62.67%
-- Greece 61.43%
-- Saudi Arabia 60.93%
+-   France 74.38%
+-   Germany 71.52%
+-   India with 70.18%
+-   Malaysia 62.67%
+-   Greece 61.43%
+-   Saudi Arabia 60.93%
 
 And, yet China, Indonesia, Pakistan, Nigeria, and Russia lag surprisingly far behind many others in terms of adoption (between 5-15%) given their population size. Even many ISPs have been slow to switch.
 
@@ -111,7 +104,7 @@ In the end, we determined it would be more efficient to adopt the IPv6 addresses
 
 ### Future proofing IP addresses on our network and platform
 
-While it seemed like there was no urgent reason to deploy IPv6 across our network, we knew that one day, it *would* suddenly become pressing once ISPs and larger organizations had completely run out of still-circulating IPv4 addresses.
+While it seemed like there was no urgent reason to deploy IPv6 across our network, we knew that one day, it _would_ suddenly become pressing once ISPs and larger organizations had completely run out of still-circulating IPv4 addresses.
 
 For those customers who have not yet transitioned to IPv6, we still use an edge load balancer with the services we’ve built. For those customers who have not yet shifted to IPv6, we still provide IPv4 support at the edge, configuring our load balancers to receive requests over IPv4 and IPv6, and forwarding them internally over v6 to our services (such as our customer portal, for example).
 
@@ -131,8 +124,8 @@ All original clusters were only configured for IPv4. It seemed like a good time 
 
 We’d already been planning to switch out a cluster for several reasons:
 
-- We wanted to build a new cluster using ArgoCD (to replace the existing FluxCD one) for better GitOps, since ArgoCD comes with a built-in UI and provides a test deployment of the changes made in PRs to the application.
-- We wanted to change the Container Network Interface (CNI) to select an IP from the same subnet as further future-proofing for when more clusters are added (a sandbox for Authentik Security and another sandbox for customers, for example). We enhanced our AWS-VPC-CNI with [Cilium](https://cilium.io/) to handle the interconnections between clusters and currently still use it to grab IPs.
+-   We wanted to build a new cluster using ArgoCD (to replace the existing FluxCD one) for better GitOps, since ArgoCD comes with a built-in UI and provides a test deployment of the changes made in PRs to the application.
+-   We wanted to change the Container Network Interface (CNI) to select an IP from the same subnet as further future-proofing for when more clusters are added (a sandbox for Authentik Security and another sandbox for customers, for example). We enhanced our AWS-VPC-CNI with [Cilium](https://cilium.io/) to handle the interconnections between clusters and currently still use it to grab IPs.
 
 ## IPv6 ensures everything works out-of-the-box
 
@@ -154,8 +147,8 @@ There is no need for confusing internal, private addresses and external, public 
 
 Unless you already have IPv6 deployed right across your network, if your traffic comes in via IP4 or legacy networks, you’ll have to:
 
-- Main both protocols
-- Route traffic differently, depending on what it is
+-   Main both protocols
+-   Route traffic differently, depending on what it is
 
 ### No IP addresses sharing
 
@@ -163,7 +156,7 @@ Typically, public IP addresses, particularly in Europe, are shared by multiple i
 
 However, those in charge of the system administration for  organizations and workplaces want to avoid sharing IP addresses. We are almost all subject to various country, state, and territory-based data protection and other compliance legislation. This makes it important to reduce the risks posed by improperly configured static IP addresses. And, given the virtually unlimited number of IP addresses now available with the IPv6 protocol, configuring unique IP addresses for every node on a network is possible.
 
-## OK. But are there any compelling reasons for *me* to adopt IPv6 addresses *right now*?
+## OK. But are there any compelling reasons for _me_ to adopt IPv6 addresses _right now_?
 
 If our positive experience and outcomes, as well as the out-of-the-box nature of IPv6 have not yet persuaded you, these reasons might pique your interest.
 
@@ -187,9 +180,9 @@ Since they are very long, IPv6 addresses are less memorable than IPv4 ones.
 
 However, this has been alleviated using a built-in abbreviation standard. Here are the general principles:
 
-- Dropping any leadings zeros in a group
-- Replacing a group of all zeros with a single zero
-- Replacing continuous zeros with a double colon
+-   Dropping any leadings zeros in a group
+-   Replacing a group of all zeros with a single zero
+-   Replacing continuous zeros with a double colon
 
 Though this might take a moment to memorize, familiarity comes through use.
 
@@ -197,14 +190,14 @@ Though this might take a moment to memorize, familiarity comes through use.
 
 With IPv4, the deployment of Network Address Translation (NAT) enables system administrators in larger enterprises, with hundreds or thousands of connected and online devices, to provide a sense of security. Devices with private IP addresses are displayed to the public internet via NAT firewalls and routers that mask those private addresses behind a single, public one.
 
-- This helps to keep organizations’ IP addresses, devices, and networks hidden and secure.
-- Hiding the private IP address discourages malicious attacks that would attempt to target an individual IP address.
+-   This helps to keep organizations’ IP addresses, devices, and networks hidden and secure.
+-   Hiding the private IP address discourages malicious attacks that would attempt to target an individual IP address.
 
 This lack of the need for a huge number of public IPv4 addresses offered by NAT has additional benefits for sysadmins:
 
-- Helping to manage the central problem of the limited number of available IPv4 addresses
-- Allowing for flexibility in how you build and configure your network, without having to change IP addresses of internal nodes
-- Limiting the admin burden of assigning and managing IP addresses, particularly if you manage a large number of devices across networks
+-   Helping to manage the central problem of the limited number of available IPv4 addresses
+-   Allowing for flexibility in how you build and configure your network, without having to change IP addresses of internal nodes
+-   Limiting the admin burden of assigning and managing IP addresses, particularly if you manage a large number of devices across networks
 
 ### Firewall filter rules
 
@@ -212,16 +205,16 @@ It is difficult for some to move away from this secure and familiar setup. When 
 
 Instead, while a firewall is still one of the default protective mechanisms, system administrators must deploy filter rules in place of NAT.
 
-- In your router, you’ll be able to add both IPv4 and IPv6 values—with many device vendors now enabling it by default.
-- Then, if you’ve also configured filtering rules, when packets encounter the router, they’ll meet any firewall filter rules. The filter rule will check if the packet header matches the rule’s filtering condition, including IP information.
-    - If it does, the Filter Action will be deployed
-    - If not, the packet simply proceeds to the next rule
+-   In your router, you’ll be able to add both IPv4 and IPv6 values—with many device vendors now enabling it by default.
+-   Then, if you’ve also configured filtering rules, when packets encounter the router, they’ll meet any firewall filter rules. The filter rule will check if the packet header matches the rule’s filtering condition, including IP information.
+    -   If it does, the Filter Action will be deployed
+    -   If not, the packet simply proceeds to the next rule
 
 If you configure filtering on your router, don’t forget to also enable IPv6 there, on your other devices, and on your ISP.
 
 ## Have you deployed IPv6 addresses to tackle the address exhaustion challenge?
 
-Yes, it is true that there is still a way to go before IPv6 is adopted worldwide, as we discussed  above. However, as the pace of innovative technologies, solutions, and platforms continues, we predict this will simply become one more common instrument in our tool bag.
+Yes, it is true that there is still a way to go before IPv6 is adopted worldwide, as we discussed above. However, as the pace of innovative technologies, solutions, and platforms continues, we predict this will simply become one more common instrument in our tool bag.
 
 We’d be very interested to know what you think of the IPv6 protocol, whether you’ve already converted and how you found the process. Do you have any ongoing challenges?
 
