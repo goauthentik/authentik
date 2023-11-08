@@ -90,7 +90,7 @@
         "@trivago/prettier-plugin-sort-imports": "^4.2.1",
         "@types/chart.js": "^2.9.40",
         "@types/codemirror": "5.60.13",
-        "@types/grecaptcha": "^3.0.6",
+        "@types/grecaptcha": "^3.0.7",
         "@typescript-eslint/eslint-plugin": "^6.10.0",
         "@typescript-eslint/parser": "^6.10.0",
         "babel-plugin-macros": "^3.1.0",
