@@ -245,8 +245,7 @@ def _handle_default(
         return value
     if handle_zero and value == 0:
         return SETDEFAULT
-    else:
-        return default
+    return default
 
 
 # pylint: disable=too-many-locals, too-many-statements

@@ -127,7 +127,7 @@ class CustomConnectionFactory:
         self.options = options
 
     def __del__(self):
-        for pool, _ in self._pool_cache:
+        for pool in self._pool_cache.values():
             if pool is not None:
                 pool.disconnect()
 
