@@ -25,7 +25,7 @@ The core sub-component handles most of authentik's logic, such as API requests, 
 
 #### Embedded outpost
 
-Similar to [other outposts](../outposts/index.mdx), this outposts allows using [Proxy providers](../providers/proxy/index.md) without deploying a separate outpost.
+Similar to [other outposts](../outposts/index.mdx), this outpost allows using [Proxy providers](../providers/proxy/index.md) without deploying a separate outpost.
 
 #### Persistence
 
