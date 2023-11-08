@@ -9,7 +9,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ChoiceField, ListField
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import AllowAny
-from rest_framework.request import Request
+from rest_framework.request import HttpRequest, Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
@@ -20,6 +20,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.lib.config import CONFIG
 from authentik.tenants.filters import TenantFilter
+from authentik.tenants.models import Tenant
 from authentik.tenants.serializers import TenantSerializer
 
 
@@ -33,16 +34,22 @@ class FooterLinkSerializer(PassiveSerializer):
 class BrandSerializer(TenantSerializer, ModelSerializer):
     """Brand Serializer"""
 
-    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
-        tenant = self.context["request"].tenant
+    def validate_tenant(self, request: HttpRequest, attrs: dict[str, Any]) -> Tenant:
         domain = attrs.get("domain", None)
-        if domain and not re.match(re.compile(tenant.domain_regex), domain):
+        if domain and not re.match(re.compile(request.tenant.domain_regex), domain):
             raise ValidationError(
                 {
                     "domain",
-                    f"Unauthorized domain. Domain must match the following regex <{tenant.domain_regex}>",
+                    f"Unauthorized domain. Domain must match the following regex <{request.tenant.domain_regex}>",
                 }
             )
+        return request.tenant
+
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
+        request = self.context.get("request", None)
+        tenant = None
+        if request:
+            tenant = self.validate_tenant(request, attrs)
         if attrs.get("default", False):
             brands = Brand.objects.filter(tenant=tenant, default=True)
             if self.instance:
