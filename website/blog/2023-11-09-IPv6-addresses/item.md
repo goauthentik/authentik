@@ -12,7 +12,13 @@ tags:
     - IP address
     - IPv4
     - IPv6
-	- NAT
+    - IP address exhaustion
+    - NAT Gateway
+    - IETF
+    - Internet Engineering Task Force
+    - IANA
+    - Internet Assigned Numbers Authority
+    - IPv6 address format
     - SSO
     - security
     - identity provider
