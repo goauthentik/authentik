@@ -101,4 +101,8 @@ class CertificateKeyPair(TenantModel, SerializerModel, ManagedModel, CreatedUpda
     class Meta:
         verbose_name = _("Certificate-Key Pair")
         verbose_name_plural = _("Certificate-Key Pairs")
-        constraints = (models.UniqueConstraint("tenant", "name", name="unique_tenant_name"),)
+        constraints = (
+            models.UniqueConstraint(
+                "tenant", "name", name="unique_crypto_certificatekeypair_tenant_name"
+            ),
+        )
