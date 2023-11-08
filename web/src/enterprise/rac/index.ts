@@ -94,9 +94,6 @@ export class RacInterface extends Interface {
                 this.onConnected();
             }
         };
-        this.client.onname = (name) => {
-            console.log(name);
-        };
         this.initKeyboard();
         const params = new URLSearchParams();
         params.set(
@@ -108,12 +105,6 @@ export class RacInterface extends Interface {
             (RacInterface.domSize().height * window.devicePixelRatio).toString(),
         );
         params.set("screen_dpi", (window.devicePixelRatio * 96).toString());
-        const supportedAudioTypes = Guacamole.AudioPlayer.getSupportedTypes();
-        if (supportedAudioTypes.length > 0) {
-            supportedAudioTypes.forEach((item) => {
-                params.append("audio", item + ";rate=44100,channels=2");
-            });
-        }
         this.client.connect(params.toString());
     }
 
@@ -133,7 +124,6 @@ export class RacInterface extends Interface {
             RacInterface.domSize().width * window.devicePixelRatio,
             RacInterface.domSize().height * window.devicePixelRatio,
         );
-        // this.initAudioInput();
     }
 
     initMouse(container: HTMLElement): void {
