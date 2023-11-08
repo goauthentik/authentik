@@ -9,9 +9,9 @@ export default function Comparison() {
     const tooltipPlanned = "Planned as a future feature";
     const tooltipRequiresLicense =
         "Requires additional licenses/not included in base tier";
-    const toolRequiresProductAADS =
+    const tooltipRequiresProductAADS =
         "Requires additional product: Azure AD Domain Services";
-    const toolRequiresProductWAP =
+    const tooltipRequiresProductWAP =
         "Requires additional product: Web Application Proxy";
     return (
         <>
@@ -137,7 +137,7 @@ export default function Comparison() {
                                     <AlertTriangle
                                         className="tooltip"
                                         data-tooltip-content={
-                                            toolRequiresProductAADS
+                                            tooltipRequiresProductAADS
                                         }
                                     ></AlertTriangle>
                                 </td>
@@ -532,7 +532,7 @@ export default function Comparison() {
                                     <AlertTriangle
                                         className="tooltip"
                                         data-tooltip-content={
-                                            toolRequiresProductWAP
+                                            tooltipRequiresProductWAP
                                         }
                                     ></AlertTriangle>
                                 </td>
