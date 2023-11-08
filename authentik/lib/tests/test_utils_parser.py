@@ -1,5 +1,4 @@
 """Test Redis URL parser"""
-import sys
 from asyncio import PriorityQueue
 from importlib import reload
 from unittest.mock import patch

@@ -17,7 +17,7 @@ DEFAULT_RETRIES = 3
 
 
 class SET_DEFAULT:
-    """Used to indicate that value shall be overriden by default"""
+    """Used to indicate that value shall be overridden by default"""
 
 
 def _to_bool(value):
