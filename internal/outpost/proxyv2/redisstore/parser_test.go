@@ -359,6 +359,7 @@ func TestTimeoutArgOpt(t *testing.T) {
 }
 
 func TestTimeoutArgOptFallback(t *testing.T) {
+	// Setting to zero will force the default value to be used (go-redis)
 	uri, _ := url.Parse("redis://myredis/0?timeout=1y")
 	opts := uriMustGetRedisOptions(uri)
 	expectedValue := time.Duration(0)
@@ -439,6 +440,36 @@ func TestIPv6HostAddress(t *testing.T) {
 	opts := uriMustGetRedisOptions(uri)
 
 	if len(opts.Addrs) != 1 || opts.Addrs[0] != "[2001:1:2:3:4::5]:6379" {
+		t.Fail()
+	}
+}
+
+func TestConvertStringToDurationNoUnit(t *testing.T) {
+	uri, _ := url.Parse("redis://myredis/0?timeout=200")
+	opts := uriMustGetRedisOptions(uri)
+	expectedValue := time.Duration(200) * time.Second
+
+	if opts.ReadTimeout != expectedValue {
+		t.Fail()
+	}
+}
+
+func TestConvertStringToDurationNegative(t *testing.T) {
+	// Setting to -1 will disable any timeout (go-redis)
+	uri, _ := url.Parse("redis://myredis/0?timeout=-210s")
+	opts := uriMustGetRedisOptions(uri)
+
+	if opts.ReadTimeout != -1 {
+		t.Fail()
+	}
+}
+
+func TestConvertStringToDurationNoValue(t *testing.T) {
+	// Setting to zero will force the default value to be used (go-redis)
+	uri, _ := url.Parse("redis://myredis/0?timeout=")
+	opts := uriMustGetRedisOptions(uri)
+
+	if opts.ReadTimeout != 0 {
 		t.Fail()
 	}
 }

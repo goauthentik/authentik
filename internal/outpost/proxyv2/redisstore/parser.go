@@ -210,10 +210,17 @@ func valToTimeDuration(vs []string) (result time.Duration) {
 		val int
 	)
 	for _, v := range vs {
-		result, err = time.ParseDuration(v)
+		if len(v) == 0 {
+			return 0
+		}
+		val, err = strconv.Atoi(v)
 		if err != nil {
-			val, err = strconv.Atoi(v)
-			result = time.Duration(val)
+			result, err = time.ParseDuration(v)
+		} else {
+			result = time.Duration(val) * time.Second
+		}
+		if result < 0 {
+			result = -1
 		}
 		if err == nil {
 			return
