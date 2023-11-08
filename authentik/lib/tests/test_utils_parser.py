@@ -368,6 +368,7 @@ class TestParserUtils(TestCase):
     def test_get_redis_options_pool_size_arg_fallback(self):
         """Test Redis URL parser for fallback poolsize value"""
         patch.dict("sys.modules", {"os.sched_getaffinity": None})
+        reload(authentik.lib.utils.parser)
         url = urlparse("redis://myredis/0")
         pool_kwargs, _, _ = get_redis_options(url)
         self.assertEqual(pool_kwargs["max_connections"], 50)
