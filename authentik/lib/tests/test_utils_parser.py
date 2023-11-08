@@ -1,5 +1,7 @@
 """Test Redis URL parser"""
+import sys
 from asyncio import PriorityQueue
+from importlib import reload
 from unittest.mock import patch
 from urllib.parse import urlparse
 
@@ -9,6 +11,7 @@ from redis import BlockingConnectionPool, RedisCluster, SentinelConnectionPool
 from redis.backoff import DEFAULT_BASE, DEFAULT_CAP, FullJitterBackoff
 from redis.retry import Retry
 
+import authentik.lib.utils.parser
 from authentik.lib.utils.parser import (
     DEFAULT_RETRIES,
     get_connection_pool,
@@ -259,43 +262,43 @@ class TestParserUtils(TestCase):
         """Test Redis URL parser with empty timeout arg"""
         url = urlparse("redis://myredis/0?timeout=")
         _, redis_kwargs, _ = get_redis_options(url)
-        self.assertEqual(redis_kwargs["socket_timeout"], None)
-        self.assertEqual(redis_kwargs["socket_connect_timeout"], None)
+        self.assertEqual(redis_kwargs["socket_timeout"], 3)
+        self.assertEqual(redis_kwargs["socket_connect_timeout"], 5)
 
     def test_get_redis_options_timeout_arg_invalid_format(self):
         """Test Redis URL parser with invalid format timeout arg"""
         url = urlparse("redis://myredis/0?timeout=39l")
         _, redis_kwargs, _ = get_redis_options(url)
-        self.assertEqual(redis_kwargs["socket_timeout"], None)
-        self.assertEqual(redis_kwargs["socket_connect_timeout"], None)
+        self.assertEqual(redis_kwargs["socket_timeout"], 3)
+        self.assertEqual(redis_kwargs["socket_connect_timeout"], 5)
 
     def test_get_redis_options_timeout_arg_invalid_char(self):
         """Test Redis URL parser with invalid char timeout arg"""
         url = urlparse("redis://myredis/0?timeout=39,34h")
         _, redis_kwargs, _ = get_redis_options(url)
-        self.assertEqual(redis_kwargs["socket_timeout"], None)
-        self.assertEqual(redis_kwargs["socket_connect_timeout"], None)
+        self.assertEqual(redis_kwargs["socket_timeout"], 3)
+        self.assertEqual(redis_kwargs["socket_connect_timeout"], 5)
 
     def test_get_redis_options_timeout_arg_missing_unit(self):
         """Test Redis URL parser with missing unit timeout arg"""
         url = urlparse("redis://myredis/0?timeout=43")
         _, redis_kwargs, _ = get_redis_options(url)
-        self.assertEqual(redis_kwargs["socket_timeout"], 43e-9)
-        self.assertEqual(redis_kwargs["socket_connect_timeout"], 43e-9)
+        self.assertEqual(redis_kwargs["socket_timeout"], 43)
+        self.assertEqual(redis_kwargs["socket_connect_timeout"], 43)
 
     def test_get_redis_options_timeout_arg_no_number(self):
         """Test Redis URL parser with no number timeout arg"""
         url = urlparse("redis://myredis/0?timeout=ms")
         _, redis_kwargs, _ = get_redis_options(url)
-        self.assertEqual(redis_kwargs["socket_timeout"], None)
-        self.assertEqual(redis_kwargs["socket_connect_timeout"], None)
+        self.assertEqual(redis_kwargs["socket_timeout"], 3)
+        self.assertEqual(redis_kwargs["socket_connect_timeout"], 5)
 
     def test_get_redis_options_timeout_arg_negative_number(self):
         """Test Redis URL parser with negative timeout arg"""
         url = urlparse("redis://myredis/0?timeout=-8s")
         _, redis_kwargs, _ = get_redis_options(url)
-        self.assertEqual(redis_kwargs["socket_timeout"], None)
-        self.assertEqual(redis_kwargs["socket_connect_timeout"], None)
+        self.assertEqual(redis_kwargs["socket_timeout"], 0)
+        self.assertEqual(redis_kwargs["socket_connect_timeout"], 0)
 
     def test_get_redis_options_timeout_arg_milliseconds(self):
         """Test Redis URL parser with millisecond timeout arg"""
@@ -314,7 +317,7 @@ class TestParserUtils(TestCase):
         """Test Redis URL parser with negative dialtimeout arg"""
         url = urlparse("redis://myredis/0?dialtimeout=-32s")
         _, redis_kwargs, _ = get_redis_options(url)
-        self.assertEqual(redis_kwargs["socket_connect_timeout"], None)
+        self.assertEqual(redis_kwargs["socket_connect_timeout"], 0)
 
     def test_get_redis_options_read_timeout_arg(self):
         """Test Redis URL parser with readtimeout arg"""
@@ -363,9 +366,9 @@ class TestParserUtils(TestCase):
         pool_kwargs, _, _ = get_redis_options(url)
         self.assertEqual(pool_kwargs["max_connections"], 32)
 
-    @patch.dict("sys.modules", {"os.sched_getaffinity": None})
     def test_get_redis_options_pool_size_arg_fallback(self):
         """Test Redis URL parser for fallback poolsize value"""
+        patch.dict("sys.modules", {"os.sched_getaffinity": None})
         url = urlparse("redis://myredis/0")
         pool_kwargs, _, _ = get_redis_options(url)
         self.assertEqual(pool_kwargs["max_connections"], 50)
@@ -380,7 +383,7 @@ class TestParserUtils(TestCase):
         """Test Redis URL parser with negative pooltimeout arg"""
         url = urlparse("redis://myredis/0?pooltimeout=-100s")
         pool_kwargs, _, _ = get_redis_options(url)
-        self.assertEqual(pool_kwargs["timeout"], None)
+        self.assertEqual(pool_kwargs["timeout"], 0)
 
     def test_get_redis_options_idle_timeout_arg(self):
         """Test Redis URL parser with idletimeout arg"""
@@ -401,21 +404,25 @@ class TestParserUtils(TestCase):
         config = process_config(url, *get_redis_options(url))
         self.assertEqual(config["redis_kwargs"]["socket_keepalive_options"][TCP_KEEPINTVL], 31)
 
-    @patch("sys.platform", "linux")
-    @patch("socket.TCP_KEEPIDLE", 29, create=True)
     def test_get_redis_options_keepalive_linux(self):
         """Test keepalive setting for Linux"""
-        url = urlparse("redis://myredis/0")
-        config = process_config(url, *get_redis_options(url))
-        self.assertEqual(config["redis_kwargs"]["socket_keepalive_options"][29], 5 * 60)
+        with patch("sys.platform", "linux"):
+            with patch("socket.TCP_KEEPIDLE", 29, create=True):
+                reload(authentik.lib.utils.parser)
+                url = urlparse("redis://myredis/0")
+                config = process_config(url, *get_redis_options(url))
+                self.assertEqual(config["redis_kwargs"]["socket_keepalive_options"][29], 5 * 60)
+        reload(authentik.lib.utils.parser)
 
-    @patch("sys.platform", "darwin")
-    @patch("socket.TCP_KEEPALIVE", 32, create=True)
     def test_get_redis_options_keepalive_darwin(self):
         """Test keepalive setting for macOS"""
-        url = urlparse("redis://myredis/0")
-        config = process_config(url, *get_redis_options(url))
-        self.assertEqual(config["redis_kwargs"]["socket_keepalive_options"][32], 5 * 60)
+        with patch("sys.platform", "darwin"):
+            with patch("socket.TCP_KEEPALIVE", 32, create=True):
+                reload(authentik.lib.utils.parser)
+                url = urlparse("redis://myredis/0")
+                config = process_config(url, *get_redis_options(url))
+                self.assertEqual(config["redis_kwargs"]["socket_keepalive_options"][32], 5 * 60)
+        reload(authentik.lib.utils.parser)
 
     # TODO: This is not supported by the Go Redis URL parser!
     def test_get_redis_options_idle_check_frequency_arg_socket(self):

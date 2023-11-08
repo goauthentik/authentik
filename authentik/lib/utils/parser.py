@@ -16,6 +16,10 @@ from redis.exceptions import TimeoutError as RedisTimeoutError
 DEFAULT_RETRIES = 3
 
 
+class SET_DEFAULT:
+    """Used to indicate that value shall be overriden by default"""
+
+
 def _to_bool(value):
     """Convert string to bool"""
     match value:
@@ -36,6 +40,7 @@ def _parse_duration_to_sec(duration_str: str) -> float:
     units = {"ns": 1e-9, "us": 1e-6, "ms": 1e-3, "s": 1.0, "m": 60.0, "h": 3600.0}
     result = 0.0
     num = ""
+    negative = False
     skip_loop = False
     for i, duration_char in enumerate(duration_str):
         if skip_loop:
@@ -43,6 +48,8 @@ def _parse_duration_to_sec(duration_str: str) -> float:
             continue
         if duration_char.isdigit() or duration_char == ".":
             num += duration_char
+        elif duration_char == "-":
+            negative = True
         elif duration_char.isalpha():
             if num == "":
                 raise ValueError("invalid format")
@@ -59,6 +66,8 @@ def _parse_duration_to_sec(duration_str: str) -> float:
             raise ValueError("invalid character")
     if num != "":
         raise ValueError("missing unit")
+    if negative:
+        result *= -1
     return result
 
 
@@ -66,11 +75,10 @@ def _val_to_sec(values: list[bytes]):
     """Convert a list of string bytes into a duration in seconds"""
     for value in values:
         try:
-            return _parse_duration_to_sec(str(value))
+            return int(value)
         except ValueError:
             try:
-                # Default for Golang time. Duration is nanoseconds
-                return int(value) * 1e-9
+                return _parse_duration_to_sec(str(value))
             except ValueError:
                 continue
     return 0
@@ -111,13 +119,16 @@ def _configure_tcp_keepalive(kwargs):
         from socket import TCP_KEEPIDLE
 
         activate_keepalive_sec = TCP_KEEPIDLE
+    idle_check_frequency = kwargs.pop("idle_check_frequency", None)
+    idle_check_frequency = idle_check_frequency if idle_check_frequency is not None else 60
+    idle_timeout = kwargs.pop("idle_timeout", None)
+    idle_timeout = idle_timeout if idle_timeout is not None else 5 * 60
     kwargs.setdefault(
         "socket_keepalive_options",
         {
             activate_keepalive_sec: 5 * 60,
-            TCP_KEEPINTVL: kwargs.pop("idle_check_frequency", 60),
-            TCP_KEEPCNT: kwargs.pop("idle_timeout", 5 * 60)
-            // kwargs.pop("idle_check_frequency", 60),
+            TCP_KEEPINTVL: idle_check_frequency,
+            TCP_KEEPCNT: idle_timeout // idle_check_frequency,
         },
     )
 
@@ -128,6 +139,8 @@ def _set_kwargs_default(kwargs: dict, defaults: dict):
     """Set multiple default values for a dictionary at once"""
     for kwarg_key, kwarg_value in defaults.items():
         kwargs.setdefault(kwarg_key, kwarg_value)
+        if kwargs.get(kwarg_key) is SET_DEFAULT:
+            kwargs[kwarg_key] = kwarg_value
     return kwargs
 
 
@@ -172,9 +185,13 @@ def _set_config_defaults(pool_kwargs, redis_kwargs, tls_kwargs, url):
     if len(new_addrs) == 0:
         new_addrs.append(("127.0.0.1", default_port))
 
+    pool_socket_timeout = redis_kwargs.get("socket_timeout")
+    if pool_socket_timeout is None or pool_socket_timeout is SET_DEFAULT:
+        pool_socket_timeout = 3
+
     pool_kwargs_defaults = {
         "max_connections": max_connections,
-        "timeout": (redis_kwargs.get("socket_timeout") or 3) + 1,
+        "timeout": pool_socket_timeout + 1,
     }
 
     redis_kwargs_defaults = {
@@ -220,6 +237,18 @@ def get_credentials_from_url(redis_kwargs, url):
     return redis_kwargs
 
 
+def _handle_default(
+    value, condition=lambda x: x is not None and x > 0, default=0, handle_zero=True
+):
+    """Handle any not supported values i.e. negative ones"""
+    if condition(value):
+        return value
+    elif handle_zero and value == 0:
+        return SET_DEFAULT
+    else:
+        return default
+
+
 # pylint: disable=too-many-locals, too-many-statements
 def get_redis_options(
     url: ParseResultBytes, disable_socket_timeout=False
@@ -246,71 +275,54 @@ def get_redis_options(
                 case "password":
                     redis_kwargs["password"] = value_str
                 case "database" | "db":
-                    redis_kwargs["db"] = int(value[0])
+                    redis_kwargs["db"] = _handle_default(int(value[0]), handle_zero=False)
                 case "maxretries":
+                    # Negative values for maxretries are handled differently
+                    # in Golang and Python.
+                    # Golang: Negative retries lead to no attempt -> failure
+                    # Python: Negative retries lead to infinite attempts
+                    # Therefore we do not allow them at all -> set to 0
                     retry = int(value[0])
-                    if retry > 0:
-                        retries_and_backoff["retry"] = retry
-                        redis_kwargs["cluster_error_retry_attempts"] = retry
-                    else:
-                        # Negative values for maxretries are handled differently
-                        # in Golang and Python.
-                        # Golang: Negative retries lead to no attempt -> failure
-                        # Python: Negative retries lead to infinite attempts
-                        # Therefore we do not allow them at all -> set to 0
-                        retries_and_backoff["retry"] = 0
+                    retries_and_backoff["retry"] = _handle_default(retry)
+                    redis_kwargs["cluster_error_retry_attempts"] = _handle_default(retry)
                 case "minretrybackoff":
-                    min_backoff = _val_to_sec(value)
-                    if min_backoff is not None:
-                        if min_backoff > 0:
-                            retries_and_backoff["min_backoff"] = min_backoff
-                        else:
-                            retries_and_backoff["min_backoff"] = 0
+                    retries_and_backoff["min_backoff"] = _handle_default(_val_to_sec(value))
                 case "maxretrybackoff":
-                    max_backoff = _val_to_sec(value)
-                    if max_backoff is not None:
-                        if max_backoff > 0:
-                            retries_and_backoff["max_backoff"] = max_backoff
-                        else:
-                            retries_and_backoff["max_backoff"] = 0
+                    retries_and_backoff["max_backoff"] = _handle_default(_val_to_sec(value))
                 case "timeout":
                     timeout = _val_to_sec(value)
-                    if timeout is not None and timeout <= 0:
-                        timeout = None
-                    if "socket_connect_timeout" not in redis_kwargs:
-                        redis_kwargs["socket_connect_timeout"] = timeout
-                    if "socket_timeout" not in redis_kwargs:
-                        redis_kwargs["socket_timeout"] = timeout
+                    redis_kwargs.setdefault(
+                        "socket_connect_timeout",
+                        _handle_default(timeout),
+                    )
+                    redis_kwargs.setdefault("socket_timeout", _handle_default(timeout))
                 case "dialtimeout":
-                    socket_connect_timeout = _val_to_sec(value)
-                    if socket_connect_timeout is not None and socket_connect_timeout <= 0:
-                        socket_connect_timeout = None
-                    redis_kwargs["socket_connect_timeout"] = socket_connect_timeout
+                    redis_kwargs["socket_connect_timeout"] = _handle_default(_val_to_sec(value))
                 case "readtimeout" | "writetimeout":
-                    socket_timeout = _val_to_sec(value)
-                    if socket_timeout is not None and socket_timeout <= 0:
-                        socket_timeout = None
-                    if (
-                        "socket_timeout" not in redis_kwargs
-                        or redis_kwargs.get("socket_timeout") < socket_timeout
-                    ):
-                        redis_kwargs["socket_timeout"] = socket_timeout
+                    redis_kwargs["socket_timeout"] = _handle_default(
+                        _val_to_sec(value),
+                        condition=lambda x: x > redis_kwargs.get("socket_timeout", 0),
+                        default=redis_kwargs.get("socket_timeout"),
+                    )
                 case "poolfifo":
                     if _to_bool(value[0]):
                         pool_kwargs["queue_class"] = PriorityQueue
                 case "poolsize":
-                    pool_kwargs["max_connections"] = int(value[0])
+                    pool_kwargs["max_connections"] = _handle_default(
+                        int(value[0]), condition=lambda x: x >= 1, default=1
+                    )
                 case "pooltimeout":
-                    pool_timeout = _val_to_sec(value)
-                    if pool_timeout is not None and pool_timeout <= 0:
-                        pool_timeout = None
-                    pool_kwargs["timeout"] = pool_timeout
+                    pool_kwargs["timeout"] = _handle_default(_val_to_sec(value))
                 case "idletimeout":
-                    redis_kwargs["idle_timeout"] = int(_val_to_sec(value))
+                    redis_kwargs["idle_timeout"] = _handle_default(_val_to_sec(value))
                 case "idlecheckfrequency":
-                    redis_kwargs["idle_check_frequency"] = int(_val_to_sec(value))
+                    redis_kwargs["idle_check_frequency"] = _handle_default(
+                        _val_to_sec(value), condition=lambda x: x >= 1, default=1
+                    )
                 case "maxidleconns":
-                    pool_kwargs["max_idle_connections"] = int(value[0])
+                    pool_kwargs["max_idle_connections"] = _handle_default(
+                        int(value[0]), handle_zero=False
+                    )
                 case "sentinelmasterid" | "mastername":
                     redis_kwargs["service_name"] = value_str
                 case "sentinelusername":
@@ -466,12 +478,15 @@ def _connection_class(config, use_async, update_connection_class):
 def _retries_and_backoff(config, retry_class):
     """Configure retry and backoff similar to how go-redis handles it"""
     retries_and_backoff = config["redis_kwargs"].pop("retry")
+    min_backoff = retries_and_backoff.get("min_backoff")
+    max_backoff = retries_and_backoff.get("max_backoff")
+    retries = retries_and_backoff.get("retry")
     config["redis_kwargs"]["retry"] = retry_class(
         FullJitterBackoff(
-            retries_and_backoff.get("max_backoff", DEFAULT_CAP),
-            retries_and_backoff.get("min_backoff", DEFAULT_BASE),
+            cap=max_backoff if max_backoff is not None else DEFAULT_CAP,
+            base=min_backoff if min_backoff is not None else DEFAULT_BASE,
         ),
-        retries_and_backoff.get("retry", DEFAULT_RETRIES),
+        retries if retries is not None else DEFAULT_RETRIES,
     )
     config["redis_kwargs"].setdefault(
         "retry_on_error", [RedisConnectionError, RedisTimeoutError, SocketTimeout]
