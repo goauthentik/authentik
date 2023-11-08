@@ -24,6 +24,7 @@ from rest_framework.serializers import BaseSerializer
 from authentik.core.models import ExpiringModel, User, UserTypes
 from authentik.lib.models import SerializerModel
 from authentik.root.install_id import get_install_id
+from authentik.tenants.models import Tenant, TenantModel
 
 
 @lru_cache()
@@ -86,9 +87,9 @@ class LicenseKey:
         return body
 
     @staticmethod
-    def get_total() -> "LicenseKey":
+    def get_total(tenant: Tenant) -> "LicenseKey":
         """Get a summarized version of all (not expired) licenses"""
-        active_licenses = License.objects.filter(expiry__gte=now())
+        active_licenses = License.objects.filter(tenant=tenant, expiry__gte=now())
         total = LicenseKey(get_license_aud(), 0, "Summarized license", 0, 0)
         for lic in active_licenses:
             total.internal_users += lic.internal_users
@@ -102,61 +103,65 @@ class LicenseKey:
         return total
 
     @staticmethod
-    def base_user_qs() -> QuerySet:
+    def base_user_qs(tenant: Tenant) -> QuerySet:
         """Base query set for all users"""
-        return User.objects.all().exclude(pk=get_anonymous_user().pk)
+        return User.objects.filter(tenant=tenant).exclude(pk=get_anonymous_user().pk)
 
     @staticmethod
-    def get_default_user_count():
+    def get_default_user_count(tenant: Tenant):
         """Get current default user count"""
-        return LicenseKey.base_user_qs().filter(type=UserTypes.INTERNAL).count()
+        return LicenseKey.base_user_qs(tenant).filter(type=UserTypes.INTERNAL).count()
 
     @staticmethod
-    def get_external_user_count():
+    def get_external_user_count(tenant: Tenant):
         """Get current external user count"""
         # Count since start of the month
         last_month = now().replace(day=1)
         return (
-            LicenseKey.base_user_qs()
+            LicenseKey.base_user_qs(tenant)
             .filter(type=UserTypes.EXTERNAL, last_login__gte=last_month)
             .count()
         )
 
-    def is_valid(self) -> bool:
+    def is_valid(self, tenant: Tenant) -> bool:
         """Check if the given license body covers all users
 
         Only checks the current count, no historical data is checked"""
-        default_users = self.get_default_user_count()
+        default_users = self.get_default_user_count(tenant)
         if default_users > self.internal_users:
             return False
-        active_users = self.get_external_user_count()
+        active_users = self.get_external_user_count(tenant)
         if active_users > self.external_users:
             return False
         return True
 
-    def record_usage(self):
+    def record_usage(self, tenant: Tenant):
         """Capture the current validity status and metrics and save them"""
         threshold = now() - timedelta(hours=8)
-        if LicenseUsage.objects.filter(record_date__gte=threshold).exists():
+        if LicenseUsage.objects.filter(tenant=tenant, record_date__gte=threshold).exists():
             return
         LicenseUsage.objects.create(
+            tenant=tenant,
             user_count=self.get_default_user_count(),
             external_user_count=self.get_external_user_count(),
             within_limits=self.is_valid(),
         )
 
     @staticmethod
-    def last_valid_date() -> datetime:
+    def last_valid_date(tenant: Tenant) -> datetime:
         """Get the last date the license was valid"""
         usage: LicenseUsage = (
-            LicenseUsage.filter_not_expired(within_limits=True).order_by("-record_date").first()
+            LicenseUsage.filter_not_expired(within_limits=True)
+            .filter(tenant=tenant)
+            .order_by("-record_date")
+            .first()
         )
         if not usage:
             return now()
         return usage.record_date
 
 
-class License(SerializerModel):
+class License(TenantModel, SerializerModel):
     """An authentik enterprise license"""
 
     license_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -189,7 +194,7 @@ def usage_expiry():
     return now() + timedelta(days=30 * 3)
 
 
-class LicenseUsage(ExpiringModel):
+class LicenseUsage(TenantModel, ExpiringModel):
     """a single license usage record"""
 
     expires = models.DateTimeField(default=usage_expiry)

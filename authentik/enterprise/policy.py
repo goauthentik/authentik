@@ -5,14 +5,15 @@ from authentik.core.models import User, UserTypes
 from authentik.enterprise.models import LicenseKey
 from authentik.policies.types import PolicyRequest, PolicyResult
 from authentik.policies.views import PolicyAccessView
+from authentik.tenants.models import Tenant
 
 
 class EnterprisePolicyAccessView(PolicyAccessView):
     """PolicyAccessView which also checks enterprise licensing"""
 
-    def check_license(self):
+    def check_license(self, tenant: Tenant):
         """Check license"""
-        if not LicenseKey.get_total().is_valid():
+        if not LicenseKey.get_total(tenant).is_valid(tenant):
             return False
         if self.request.user.type != UserTypes.INTERNAL:
             return False
@@ -23,7 +24,7 @@ class EnterprisePolicyAccessView(PolicyAccessView):
         request = PolicyRequest(user)
         request.http_request = self.request
         result = super().user_has_access(user)
-        enterprise_result = self.check_license()
+        enterprise_result = self.check_license(self.request.tenant)
         if not enterprise_result:
             return enterprise_result
         return result

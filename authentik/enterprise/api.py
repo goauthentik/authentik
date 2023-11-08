@@ -18,9 +18,10 @@ from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User, UserTypes
 from authentik.enterprise.models import License, LicenseKey
 from authentik.root.install_id import get_install_id
+from authentik.tenants.serializers import TenantSerializer
 
 
-class LicenseSerializer(ModelSerializer):
+class LicenseSerializer(TenantSerializer, ModelSerializer):
     """License Serializer"""
 
     def validate_key(self, key: str) -> str:
@@ -102,8 +103,8 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
     @action(detail=False, methods=["GET"], permission_classes=[IsAuthenticated])
     def summary(self, request: Request) -> Response:
         """Get the total license status"""
-        total = LicenseKey.get_total()
-        last_valid = LicenseKey.last_valid_date()
+        total = LicenseKey.get_total(request.tenant)
+        last_valid = LicenseKey.last_valid_date(request.tenant)
         # TODO: move this to a different place?
         show_admin_warning = last_valid < now() - timedelta(weeks=2)
         show_user_warning = last_valid < now() - timedelta(weeks=4)
@@ -118,7 +119,7 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
                 "show_user_warning": show_user_warning,
                 "read_only": read_only,
                 "latest_valid": latest_valid,
-                "has_license": License.objects.all().count() > 0,
+                "has_license": License.objects.filter(tenant=request.tenant).count() > 0,
             }
         )
         response.is_valid(raise_exception=True)
@@ -137,15 +138,15 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
         last_month = now() - timedelta(days=30)
         # Forecast for internal users
         internal_in_last_month = User.objects.filter(
-            type=UserTypes.INTERNAL, date_joined__gte=last_month
+            tenant=request.tenant, type=UserTypes.INTERNAL, date_joined__gte=last_month
         ).count()
         # Forecast for external users
-        external_in_last_month = LicenseKey.get_external_user_count()
+        external_in_last_month = LicenseKey.get_external_user_count(request.tenant)
         forecast_for_months = 12
         response = LicenseForecastSerializer(
             data={
-                "internal_users": LicenseKey.get_default_user_count(),
-                "external_users": LicenseKey.get_external_user_count(),
+                "internal_users": LicenseKey.get_default_user_count(request.tenant),
+                "external_users": LicenseKey.get_external_user_count(request.tenant),
                 "forecasted_internal_users": (internal_in_last_month * forecast_for_months),
                 "forecasted_external_users": (external_in_last_month * forecast_for_months),
             }
