@@ -1,6 +1,6 @@
 ---
 title: "IPv6 addresses and why you need to make the switch now"
-description: "IPv6 addresses have been commercially available since 2010. But, is there any compelling reason for sysadmins and security engineers to make the switch?"
+description: "IPv6 addresses have been commercially available since 2010. But is there any compelling reason for sysadmins and security engineers to make the switch?"
 slug: 2023-11-09-IPv6-addresses
 authors:
     - name: Jens Langhammer
@@ -12,7 +12,7 @@ tags:
     - IP address
     - IPv4
     - IPv6
-	- NAT Gateway
+	- NAT
     - SSO
     - security
     - identity provider
