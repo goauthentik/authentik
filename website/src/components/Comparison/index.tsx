@@ -433,10 +433,10 @@ export default function Comparison() {
                                 <td className="result failed">
                                     <X></X>
                                 </td>
-                                <td className="result failed">
+                                <td className="result passed">
                                     <Check></Check>
                                 </td>
-                                <td className="result failed">
+                                <td className="result passed">
                                     <Check></Check>
                                 </td>
                                 <td className="result passed">
