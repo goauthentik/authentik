@@ -47,7 +47,7 @@ But, increasingly, since many devices are online and [96.6% of internet users no
 -   Other devices such as network printers, routers and services running on computer networks
 -   Domain names for websites, which are mapped to the IP address using Domain Name Servers (DNS)
 
-IP addresses are centrally overseen by the Internet Assigned Numbers Authority (IANA), with five [Regional Internet Registries](https://www.nro.net/about/rirs/) (RIRs).
+IP addresses are centrally overseen by the Internet Assigned Numbers Authority ([IANA](https://www.iana.org/)), with five [Regional Internet Registries](https://www.nro.net/about/rirs/) (RIRs).
 
 ## What is the state of the IP landscape right now?
 
@@ -57,7 +57,7 @@ The previous version of this network layer communications protocol is known as I
 
 Add in the ubiquity of connected devices that allow us to access and consume those services and you can see the problem.
 
-IP address exhaustion was foreseen in the 1980s, which is why the Internet Engineering Task Force ([IETF](https://www.ietf.org/)) () started work on IPv6 in the early 1990s. The first RIR to run out of IPv4 addresses was ARIN (North America) in 2015, followed by the RIPE (Europe) in 2019, and LACNIC (South America) in 2020. The very last, free /8 address block of IPv4 addresses was issued by IANA in January 2011.
+IP address exhaustion was foreseen in the 1980s, which is why the Internet Engineering Task Force ([IETF](https://www.ietf.org/)) started work on IPv6 in the early 1990s. The first RIR to run out of IPv4 addresses was ARIN (North America) in 2015, followed by the RIPE (Europe) in 2019, and LACNIC (South America) in 2020. The very last, free /8 address block of IPv4 addresses was issued by IANA in January 2011.
 
 The following realities contributed to the depletion of the IPv4 addresses:
 
@@ -77,7 +77,7 @@ The development of IPv6 was initiated by IETF in 1994, and was published as a dr
 There is an often circulated metaphor from J. Wiljakka’s IEEE paper, [Transition to IPv6 in GPRS and WCDMA Mobile Networks](https://ieeexplore.ieee.org/document/995863), stating that every grain of sand on every seashore could be allocated its own IPv6 address. Let me illustrate.
 
 -   IPv6 addresses were designed to use 128 bits and are written with hexadecimal digits (10 numbers from 1-10 and 6 letters from A-F).
--   So, how many IPV6 addresses are there? In short, there are over 340 trillion IP addresses available!
+-   So, how many IPv6 addresses are there? In short, there are over 340 trillion IP addresses available!
 
 The IPv6 address format is written in 8 groups of 4 digits (each digit can be made up of 4 bits), each group separated by a colon.
 
@@ -153,7 +153,7 @@ There is no need for confusing internal, private addresses and external, public 
 
 Unless you already have IPv6 deployed right across your network, if your traffic comes in via IP4 or legacy networks, you’ll have to:
 
--   Main both protocols
+-   Maintain both protocols
 -   Route traffic differently, depending on what it is
 
 ### No IP addresses sharing
