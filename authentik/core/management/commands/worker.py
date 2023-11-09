@@ -17,9 +17,15 @@ class Command(BaseCommand):
     """Run worker"""
 
     def add_arguments(self, parser):
-        parser.add_argument("-b", "--beat", action="store_true")
+        parser.add_argument(
+            "-b",
+            "--beat",
+            action="store_false",
+            help="When set, this worker will _not_ run Beat (scheduled) tasks",
+        )
 
     def handle(self, **options):
+        LOGGER.debug("Celery options", **options)
         close_old_connections()
         if CONFIG.get_bool("remote_debug"):
             import debugpy
