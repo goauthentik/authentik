@@ -1,6 +1,7 @@
 """RAC Models"""
 from typing import Optional
 
+from deepmerge import always_merger
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext as _
@@ -47,20 +48,25 @@ class RACProvider(Provider):
 
     def get_settings(self) -> dict:
         """Get settings"""
-        settings = self.settings.copy()
-        settings["hostname"] = self.host
-        settings["enable-drive"] = "true"
-        settings["drive-name"] = "authentik"
-        settings["client-name"] = "foo"
+        default_settings = {}
+        default_settings["hostname"] = self.host
+        default_settings["enable-drive"] = "true"
+        default_settings["drive-name"] = "authentik"
+        default_settings["client-name"] = "foo"
         if self.protocol == Protocols.RDP:
-            settings["resize-method"] = "display-update"
-            settings["enable-wallpaper"] = "true"
-            settings["enable-font-smoothing"] = "true"
+            default_settings["resize-method"] = "display-update"
+            default_settings["enable-wallpaper"] = "true"
+            default_settings["enable-font-smoothing"] = "true"
             # params["enable-theming"] = "true"
             # params["enable-full-window-drag"] = "true"
             # params["enable-desktop-composition"] = "true"
             # params["enable-menu-animations"] = "true"
             # params["enable-audio-input"] = "true"
+        if self.protocol == Protocols.SSH:
+            default_settings["terminal-type"] = "xterm-256color"
+        settings = {}
+        always_merger.merge(settings, default_settings)
+        always_merger.merge(settings, self.settings)
         return settings
 
     @property
