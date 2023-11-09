@@ -171,6 +171,7 @@ Increasingly and in the same way, professionals will all simply assume that our 
 ### Man-in-the-Middle hack reduction
 
 Man-in-the-Middle (MITM) attacks rely on redirecting or otherwise changing the communication between two parties using Address Resolution Protocol (ARP) poisoning and other naming-type interceptions. This is how many malicious ecommerce hacks target consumers, via spoofed ecommerce, banking, password reset, or MFA links sent by email or SMS. Experiencing this attack is less likely when you deploy and correctly configure the IPv6 protocol, and connect to other networks and nodes on which it is similarly configured. For example, you should enable IPv6 routing, but also include DNS information and network security policies
+
 ## Are there any challenges with IPv6 that I should be aware of before starting to make the switch?
 
 Great question! Let’s address each of the stumbling blocks in turn.
