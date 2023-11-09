@@ -367,10 +367,12 @@ class TestParserUtils(TestCase):
 
     def test_get_redis_options_pool_size_arg_fallback(self):
         """Test Redis URL parser for fallback poolsize value"""
-        patch("os.sched_getaffinity", side_effect=ImportError)
-        url = urlparse("redis://myredis/0")
-        pool_kwargs, _, _ = get_redis_options(url)
-        self.assertEqual(pool_kwargs["max_connections"], 50)
+        with patch("os.sched_getaffinity", side_effect=ImportError):
+            reload(authentik.lib.utils.parser)
+            url = urlparse("redis://myredis/0")
+            pool_kwargs, _, _ = get_redis_options(url)
+            self.assertEqual(pool_kwargs["max_connections"], 50)
+        reload(authentik.lib.utils.parser)
 
     def test_get_redis_options_pool_timeout_arg(self):
         """Test Redis URL parser with pooltimeout arg"""
