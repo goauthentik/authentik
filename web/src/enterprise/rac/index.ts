@@ -64,6 +64,11 @@ export class RacInterface extends Interface {
         return document.body.getBoundingClientRect();
     }
 
+    constructor() {
+        super();
+        this.initKeyboard();
+    }
+
     firstUpdated(): void {
         this.updateTitle();
         const wsUrl = `${window.location.protocol.replace("http", "ws")}//${
@@ -94,15 +99,14 @@ export class RacInterface extends Interface {
                 this.onConnected();
             }
         };
-        this.initKeyboard();
         const params = new URLSearchParams();
         params.set(
             "screen_width",
-            (RacInterface.domSize().width * window.devicePixelRatio).toString(),
+            Math.floor(RacInterface.domSize().width).toString(),
         );
         params.set(
             "screen_height",
-            (RacInterface.domSize().height * window.devicePixelRatio).toString(),
+            Math.floor(RacInterface.domSize().height).toString(),
         );
         params.set("screen_dpi", (window.devicePixelRatio * 96).toString());
         this.client.connect(params.toString());
@@ -121,8 +125,8 @@ export class RacInterface extends Interface {
         this.container = this.client.getDisplay().getElement();
         this.initMouse(this.container);
         this.client?.sendSize(
-            RacInterface.domSize().width * window.devicePixelRatio,
-            RacInterface.domSize().height * window.devicePixelRatio,
+           Math.floor(RacInterface.domSize().width),
+           Math.floor(RacInterface.domSize().height),
         );
     }
 
