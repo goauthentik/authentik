@@ -158,7 +158,7 @@ Typically, public IP addresses, particularly in Europe, are shared by multiple i
 
 However, those in charge of the system administration for  organizations and workplaces want to avoid sharing IP addresses. We are almost all subject to various country, state, and territory-based data protection and other compliance legislation. This makes it important to reduce the risks posed by improperly configured static IP addresses. And, given the virtually unlimited number of IP addresses now available with the IPv6 protocol, configuring unique IP addresses for every node on a network is possible.
 
-## OK. But are there any compelling reasons for _me_ to adopt IPv6 addresses _right now_?
+## OK but are there any compelling reasons for _me_ to adopt IPv6 addresses _right now_
 
 If our positive experience and outcomes, as well as the out-of-the-box nature of IPv6 have not yet persuaded you, these reasons might pique your interest.
 
