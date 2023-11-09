@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 permissions:
+  # Needed to update issues and PRs
   issues: write
-  pull-requests: write
 
 jobs:
   stale:
