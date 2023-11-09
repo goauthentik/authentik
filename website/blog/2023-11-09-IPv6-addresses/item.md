@@ -38,7 +38,7 @@ In this blog post, I explain briefly what IP addresses are and how they work; sh
 
 IP Addresses are locations (similar to street addresses) that are assigned to allow system administrators and others to identify and locate every point (often referred to as a node) on a network through which traffic and communication passes via the internet. For example, every server, printer, computer, laptop, and phone in a single workplace network has its own IP address.
 
-We use domain names for websites, to avoid having to remember IP addresses, though our readers who are sysadmin —used to referencing all sorts of nodes deep within their organization’s networks—will recall them at the drop of a hat.
+We use domain names for websites, to avoid having to remember IP addresses, though our readers who are sysadmin—used to referencing all sorts of nodes deep within their organization’s networks—will recall them at the drop of a hat.
 
 But, increasingly, since many devices are online and [96.6% of internet users now use a smartphone](https://www.oberlo.com/statistics/how-many-people-have-smartphones), most Internet of Things (IoT) devices that we have in our workplaces and homes _also_ have their own IP address. This includes:
 
@@ -112,7 +112,7 @@ In the end, we determined it would be more efficient to adopt the IPv6 addresses
 
 While it seemed like there was no urgent reason to deploy IPv6 across our network, we knew that one day, it _would_ suddenly become pressing once ISPs and larger organizations had completely run out of still-circulating IPv4 addresses.
 
-For those customers who have not yet transitioned to IPv6, we still use an edge load balancer with the services we’ve built. For those customers who have not yet shifted to IPv6, we still provide IPv4 support at the edge, configuring our load balancers to receive requests over IPv4 and IPv6, and forwarding them internally over v6 to our services (such as our customer portal, for example).
+For those customers who have not yet shifted to IPv6, we still provide IPv4 support at the edge, configuring our load balancers to receive requests over IPv4 and IPv6, and forwarding them internally over IPv6 to our services (such as our customer portal, for example).
 
 ### Limiting ongoing spend
 
@@ -137,7 +137,7 @@ We’d already been planning to switch out a cluster for several reasons:
 
 If you’re a system administrator with limited time and resources, you’ll be concerned with ensuring that all devices, software, or connections are working across your network, and that traffic can flow securely without bottlenecks. So, it’s reassuring to know that IPv6 works out of the box—reducing the onboarding, expense, and maintenance feared by already overburdened sysadmins.
 
-### Stateless auto-configuration
+### Stateless address auto-configuration (SLAAC)
 
 When it comes to devices, each device on which IPv6 has been enabled will independently assign IP addresses by default. With IPv6, there is no need for static or manual DHCP IP address configuration (though manual configuration is still supported). This is how it works:
 
@@ -145,13 +145,9 @@ When it comes to devices, each device on which IPv6 has been enabled will indepe
 2. A router or routers on the link will provide the network prefix to the host.
 3. Previously, the subnet prefix was combined with an interface ID generated from an interface's MAC address. However, having a common IP based on the MAC address raises privacy concerns, so now most devices just generate a random one.
 
-### Every address is public
-
-There is no need for confusing internal, private addresses and external, public addresses and networks. With Ipv6 every address is public and there is no discernible difference between internal traffic and external traffic, as far as the actual addresses.
-
 ### No need to maintain both protocols across your network or convert IPv4 to IPv6
 
-Unless you already have IPv6 deployed right across your network, if your traffic comes in via IP4 or legacy networks, you’ll have to:
+Unless you already have IPv6 deployed right across your network, if your traffic comes in via IPv4 or legacy networks, you’ll have to:
 
 -   Maintain both protocols
 -   Route traffic differently, depending on what it is
