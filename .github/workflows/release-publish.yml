@@ -8,6 +8,7 @@ jobs:
   build-server:
     runs-on: ubuntu-latest
     permissions:
+      # Needed to upload contianer images to ghcr.io
       packages: write
     steps:
       - uses: actions/checkout@v4
@@ -55,6 +56,7 @@ jobs:
   build-outpost:
     runs-on: ubuntu-latest
     permissions:
+      # Needed to upload contianer images to ghcr.io
       packages: write
     strategy:
       fail-fast: false
@@ -110,6 +112,9 @@ jobs:
   build-outpost-binary:
     timeout-minutes: 120
     runs-on: ubuntu-latest
+    permissions:
+      # Needed to upload binaries to the release
+      contents: write
     strategy:
       fail-fast: false
       matrix:
