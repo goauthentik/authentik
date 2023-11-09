@@ -158,7 +158,7 @@ Typically, public IP addresses, particularly in Europe, are shared by multiple i
 
 However, those in charge of the system administration for  organizations and workplaces want to avoid sharing IP addresses. We are almost all subject to various country, state, and territory-based data protection and other compliance legislation. This makes it important to reduce the risks posed by improperly configured static IP addresses. And, given the virtually unlimited number of IP addresses now available with the IPv6 protocol, configuring unique IP addresses for every node on a network is possible.
 
-## OK but are there any compelling reasons for _me_ to adopt IPv6 addresses _right now_
+## OK but are there any compelling reasons for _me_ to adopt IPv6 addresses _now_?
 
 If our positive experience and outcomes, as well as the out-of-the-box nature of IPv6 have not yet persuaded you, these reasons might pique your interest.
 
@@ -171,7 +171,6 @@ Increasingly and in the same way, professionals will all simply assume that our 
 ### Man-in-the-Middle hack reduction
 
 Man-in-the-Middle (MITM) attacks rely on redirecting or otherwise changing the communication between two parties using Address Resolution Protocol (ARP) poisoning and other naming-type interceptions. This is how many malicious ecommerce hacks target consumers, via spoofed ecommerce, banking, password reset, or MFA links sent by email or SMS. Experiencing this attack is less likely when you deploy and correctly configure the IPv6 protocol, and connect to other networks and nodes on which it is similarly configured. For example, you should enable IPv6 routing, but also include DNS information and network security policies
-
 ## Are there any challenges with IPv6 that I should be aware of before starting to make the switch?
 
 Great question! Let’s address each of the stumbling blocks in turn.
@@ -214,7 +213,7 @@ Instead, while a firewall is still one of the default protective mechanisms, sys
 
 If you configure filtering on your router, don’t forget to also enable IPv6 there, on your other devices, and on your ISP.
 
-## Have you deployed IPv6 addresses to tackle the address exhaustion challenge?
+## Have you deployed IPv6 addresses to tackle address exhaustion?
 
 Yes, it is true that there is still a way to go before IPv6 is adopted worldwide, as we discussed above. However, as the pace of innovative technologies, solutions, and platforms continues, we predict this will simply become one more common instrument in our tool bag.
 
