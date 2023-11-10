@@ -24,7 +24,7 @@ Create an application in authentik. Create an OAuth2/OpenID provider with the fo
 -   Signing Key: Select any available key
 -   Redirect URIs: `https://grafana.company/login/generic_oauth`
 
-Additionally, because Grafana has its own concept of groups, we need to create a custom Scope Mapping to ensure Grafana can read the user's groups assigned within Authentik. It should contain the following expression:
+Additionally, because Grafana has its own concept of groups, we need to create a custom Scope Mapping to ensure Grafana can read the user's groups assigned within authentik. It should contain the following expression:
 
 ```json
 return {
