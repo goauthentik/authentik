@@ -1,3 +1,4 @@
+import "@goauthentik/admin/sources/ldap/LDAPSourceConnectivity";
 import "@goauthentik/admin/sources/ldap/LDAPSourceForm";
 import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
@@ -137,7 +138,17 @@ export class LDAPSourceViewPage extends AKElement {
                             </ak-forms-modal>
                         </div>
                     </div>
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                    <div class="pf-c-card pf-l-grid__item pf-m-2-col">
+                        <div class="pf-c-card__title">
+                            <p>${msg("Connectivity")}</p>
+                        </div>
+                        <div class="pf-c-card__body">
+                            <ak-source-ldap-connectivity
+                                .connectivity=${this.source.connectivity}
+                            ></ak-source-ldap-connectivity>
+                        </div>
+                    </div>
+                    <div class="pf-c-card pf-l-grid__item pf-m-10-col">
                         <div class="pf-c-card__title">
                             <p>${msg("Sync status")}</p>
                         </div>
