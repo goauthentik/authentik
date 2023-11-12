@@ -4,10 +4,12 @@ from ssl import CERT_REQUIRED
 from tempfile import NamedTemporaryFile, mkdtemp
 from typing import Optional
 
+from django.core.cache import cache
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from ldap3 import ALL, NONE, RANDOM, Connection, Server, ServerPool, Tls
 from ldap3.core.exceptions import LDAPException, LDAPInsufficientAccessRightsResult, LDAPSchemaError
+from redis.lock import Lock
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import Group, PropertyMapping, Source
@@ -188,6 +190,10 @@ class LDAPSource(Source):
             server_kwargs["get_info"] = NONE
             return self.connection(server, server_kwargs, connection_kwargs)
         return RuntimeError("Failed to bind")
+
+    @property
+    def sync_lock(self) -> Lock:
+        return Lock(cache.client.get_client(), name=f"goauthentik.io/sources/ldap/sync-{self.slug}")
 
     def check_connection(self) -> dict[str, dict[str, str]]:
         """Check LDAP Connection"""

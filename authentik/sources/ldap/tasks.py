@@ -6,9 +6,9 @@ from celery import chain, group
 from django.core.cache import cache
 from ldap3.core.exceptions import LDAPException
 from redis.exceptions import LockError
-from redis.lock import Lock
 from structlog.stdlib import get_logger
 
+from authentik.events.monitored_tasks import CACHE_KEY_PREFIX as CACHE_KEY_PREFIX_TASKS
 from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.errors import exception_to_string
@@ -62,12 +62,15 @@ def ldap_sync_single(source_pk: str):
     source: LDAPSource = LDAPSource.objects.filter(pk=source_pk).first()
     if not source:
         return
-    lock = Lock(cache.client.get_client(), name=f"goauthentik.io/sources/ldap/sync-{source.slug}")
+    lock = source.sync_lock
     if lock.locked():
         LOGGER.debug("LDAP sync locked, skipping task", source=source.slug)
         return
     try:
         with lock:
+            # Delete all sync tasks from the cache
+            keys = cache.keys(f"{CACHE_KEY_PREFIX_TASKS}ldap_sync:{source.slug}*")
+            cache.delete_many(keys)
             task = chain(
                 # User and group sync can happen at once, they have no dependencies on each other
                 group(
