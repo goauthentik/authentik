@@ -1,4 +1,5 @@
 """LDAP Sync tasks"""
+from typing import Optional
 from uuid import uuid4
 
 from celery import chain, group
@@ -26,6 +27,7 @@ SYNC_CLASSES = [
     MembershipLDAPSynchronizer,
 ]
 CACHE_KEY_PREFIX = "goauthentik.io/sources/ldap/page/"
+CACHE_KEY_STATUS = "goauthentik.io/sources/ldap/status/"
 
 
 @CELERY_APP.task()
@@ -33,6 +35,19 @@ def ldap_sync_all():
     """Sync all sources"""
     for source in LDAPSource.objects.filter(enabled=True):
         ldap_sync_single.apply_async(args=[source.pk])
+
+
+@CELERY_APP.task()
+def ldap_connectivity_check(pk: Optional[str] = None):
+    """Check connectivity for LDAP Sources"""
+    # 2 hour timeout, this task should run every hour
+    timeout = 60 * 60 * 2
+    sources = LDAPSource.objects.filter(enabled=True)
+    if pk:
+        sources = sources.filter(pk=pk)
+    for source in sources:
+        status = source.check_connection()
+        cache.set(CACHE_KEY_STATUS + source.slug, status, timeout=timeout)
 
 
 @CELERY_APP.task(

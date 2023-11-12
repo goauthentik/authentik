@@ -189,7 +189,7 @@ class LDAPSource(Source):
             return self.connection(server, server_kwargs, connection_kwargs)
         return RuntimeError("Failed to bind")
 
-    def check_connection(self) -> dict[str, str]:
+    def check_connection(self) -> dict[str, dict[str, str]]:
         """Check LDAP Connection"""
         from authentik.sources.ldap.sync.base import flatten
 

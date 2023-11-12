@@ -32798,9 +32798,19 @@ components:
             type: string
             format: uuid
           description: Property mappings used for group creation/updating.
+        connectivity:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: string
+          nullable: true
+          description: Get cached source connectivity
+          readOnly: true
       required:
       - base_dn
       - component
+      - connectivity
       - icon
       - managed
       - meta_model_name
