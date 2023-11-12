@@ -153,6 +153,12 @@ def sanitize_item(value: Any) -> Any:
         return value.isoformat()
     if isinstance(value, timedelta):
         return str(value.total_seconds())
+    if callable(value):
+        return {
+            "type": "callable",
+            "name": value.__name__,
+            "module": value.__module__,
+        }
     return value
 
 
