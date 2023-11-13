@@ -36,7 +36,7 @@
         "@codemirror/lang-xml": "^6.0.2",
         "@codemirror/legacy-modes": "^6.3.3",
         "@codemirror/theme-one-dark": "^6.1.2",
-        "@formatjs/intl-listformat": "^7.5.1",
+        "@formatjs/intl-listformat": "^7.5.2",
         "@fortawesome/fontawesome-free": "^6.4.2",
         "@goauthentik/api": "^2023.10.3-1699554078",
         "@lit-labs/context": "^0.4.0",
