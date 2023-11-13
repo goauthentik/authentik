@@ -74,7 +74,7 @@ func (ps *ProxyServer) HandleHost(rw http.ResponseWriter, r *http.Request) bool 
 	if a == nil {
 		return false
 	}
-	if a.HasQuerySignature(r) || a.Mode() == api.PROXYMODE_PROXY {
+	if a.ShouldHandleURL(r) || a.Mode() == api.PROXYMODE_PROXY {
 		a.ServeHTTP(rw, r)
 		return true
 	}
