@@ -1,13 +1,14 @@
 """LDAP Sync tasks"""
+from typing import Optional
 from uuid import uuid4
 
 from celery import chain, group
 from django.core.cache import cache
 from ldap3.core.exceptions import LDAPException
 from redis.exceptions import LockError
-from redis.lock import Lock
 from structlog.stdlib import get_logger
 
+from authentik.events.monitored_tasks import CACHE_KEY_PREFIX as CACHE_KEY_PREFIX_TASKS
 from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.errors import exception_to_string
@@ -26,6 +27,7 @@ SYNC_CLASSES = [
     MembershipLDAPSynchronizer,
 ]
 CACHE_KEY_PREFIX = "goauthentik.io/sources/ldap/page/"
+CACHE_KEY_STATUS = "goauthentik.io/sources/ldap/status/"
 
 
 @CELERY_APP.task()
@@ -33,6 +35,19 @@ def ldap_sync_all():
     """Sync all sources"""
     for source in LDAPSource.objects.filter(enabled=True):
         ldap_sync_single.apply_async(args=[source.pk])
+
+
+@CELERY_APP.task()
+def ldap_connectivity_check(pk: Optional[str] = None):
+    """Check connectivity for LDAP Sources"""
+    # 2 hour timeout, this task should run every hour
+    timeout = 60 * 60 * 2
+    sources = LDAPSource.objects.filter(enabled=True)
+    if pk:
+        sources = sources.filter(pk=pk)
+    for source in sources:
+        status = source.check_connection()
+        cache.set(CACHE_KEY_STATUS + source.slug, status, timeout=timeout)
 
 
 @CELERY_APP.task(
@@ -47,12 +62,15 @@ def ldap_sync_single(source_pk: str):
     source: LDAPSource = LDAPSource.objects.filter(pk=source_pk).first()
     if not source:
         return
-    lock = Lock(cache.client.get_client(), name=f"goauthentik.io/sources/ldap/sync-{source.slug}")
+    lock = source.sync_lock
     if lock.locked():
         LOGGER.debug("LDAP sync locked, skipping task", source=source.slug)
         return
     try:
         with lock:
+            # Delete all sync tasks from the cache
+            keys = cache.keys(f"{CACHE_KEY_PREFIX_TASKS}ldap_sync:{source.slug}*")
+            cache.delete_many(keys)
             task = chain(
                 # User and group sync can happen at once, they have no dependencies on each other
                 group(

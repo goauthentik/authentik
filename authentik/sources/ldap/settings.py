@@ -8,5 +8,10 @@ CELERY_BEAT_SCHEDULE = {
         "task": "authentik.sources.ldap.tasks.ldap_sync_all",
         "schedule": crontab(minute=fqdn_rand("sources_ldap_sync"), hour="*/2"),
         "options": {"queue": "authentik_scheduled"},
-    }
+    },
+    "sources_ldap_connectivity_check": {
+        "task": "authentik.sources.ldap.tasks.ldap_connectivity_check",
+        "schedule": crontab(minute=fqdn_rand("sources_ldap_connectivity_check"), hour="*"),
+        "options": {"queue": "authentik_scheduled"},
+    },
 }

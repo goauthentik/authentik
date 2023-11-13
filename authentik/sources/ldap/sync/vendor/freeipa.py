@@ -5,7 +5,7 @@ from typing import Any, Generator
 from pytz import UTC
 
 from authentik.core.models import User
-from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
+from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer, flatten
 
 
 class FreeIPA(BaseLDAPSynchronizer):
@@ -47,7 +47,7 @@ class FreeIPA(BaseLDAPSynchronizer):
             return
         # For some reason, nsaccountlock is not defined properly in the schema as bool
         # hence we get it as a list of strings
-        _is_locked = str(self._flatten(attributes.get("nsaccountlock", ["FALSE"])))
+        _is_locked = str(flatten(attributes.get("nsaccountlock", ["FALSE"])))
         # So we have to attempt to convert it to a bool
         is_locked = _is_locked.lower() == "true"
         # And then invert it since freeipa saves locked and we save active
