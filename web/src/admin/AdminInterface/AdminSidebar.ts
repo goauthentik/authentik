@@ -1,9 +1,10 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { VERSION } from "@goauthentik/common/constants";
+import { EVENT_SIDEBAR_TOGGLE, VERSION } from "@goauthentik/common/constants";
 import { me } from "@goauthentik/common/users";
 import { authentikConfigContext } from "@goauthentik/elements/AuthentikContexts";
 import { AKElement } from "@goauthentik/elements/Base";
 import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "@goauthentik/elements/router/Route";
+import { getRootStyle } from "@goauthentik/elements/utils/getRootStyle";
 import { spread } from "@open-wc/lit-helpers";
 
 import { consume } from "@lit-labs/context";
@@ -12,20 +13,12 @@ import { TemplateResult, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 
-import {
-    AdminApi,
-    CapabilitiesEnum,
-    type Config,
-    CoreApi,
-    type SessionUser,
-    UiThemeEnum,
-    type UserSelf,
-    Version,
-} from "@goauthentik/api";
+import { AdminApi, CapabilitiesEnum, CoreApi, UiThemeEnum, Version } from "@goauthentik/api";
+import type { Config, SessionUser, UserSelf } from "@goauthentik/api";
 
 @customElement("ak-admin-sidebar")
 export class AkAdminSidebar extends AKElement {
-    @property({ type: Boolean })
+    @property({ type: Boolean, reflect: true })
     open = true;
 
     @state()
@@ -45,6 +38,41 @@ export class AkAdminSidebar extends AKElement {
         me().then((user: SessionUser) => {
             this.impersonation = user.original ? user.user.username : null;
         });
+        this.toggleOpen = this.toggleOpen.bind(this);
+        this.checkWidth = this.checkWidth.bind(this);
+    }
+
+    // This has to be a bound method so the event listener can be removed on disconnection as
+    // needed.
+    toggleOpen() {
+        this.open = !this.open;
+    }
+
+    checkWidth() {
+        // This works just fine, but it assumes that the `--ak-sidebar--minimum-auto-width` is in
+        // REMs. If that changes, this code will have to be adjusted as well.
+        const minWidth =
+            parseFloat(getRootStyle("--ak-sidebar--minimum-auto-width")) *
+            parseFloat(getRootStyle("font-size"));
+        this.open = window.innerWidth >= minWidth;
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+        window.addEventListener(EVENT_SIDEBAR_TOGGLE, this.toggleOpen);
+        window.addEventListener("resize", this.checkWidth);
+        // After connecting to the DOM, we can now perform this check to see if the sidebar should
+        // be open by default.
+        this.checkWidth();
+    }
+
+    // The symmetry (☟, ☝) here is critical in that you want to start adding these handlers after
+    // connection, and removing them before disconnection.
+
+    disconnectedCallback() {
+        window.removeEventListener(EVENT_SIDEBAR_TOGGLE, this.toggleOpen);
+        window.removeEventListener("resize", this.checkWidth);
+        super.disconnectedCallback();
     }
 
     render() {
@@ -58,6 +86,16 @@ export class AkAdminSidebar extends AKElement {
                 ${this.renderSidebarItems()}
             </ak-sidebar>
         `;
+    }
+
+    updated() {
+        // This is permissible as`:host.classList` is not one of the properties Lit uses as a
+        // scheduling trigger. This sort of shenanigans can trigger an loop, in that it will trigger
+        // a browser reflow, which may trigger some other styling the application is monitoring,
+        // triggering a re-render which triggers a browser reflow, ad infinitum. But we've been
+        // living with that since jQuery, and it's both well-known and fortunately rare.
+        this.classList.remove("pf-m-expanded", "pf-m-collapsed");
+        this.classList.add(this.open ? "pf-m-expanded" : "pf-m-collapsed");
     }
 
     renderSidebarItems(): TemplateResult {

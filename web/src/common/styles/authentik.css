@@ -12,6 +12,9 @@
 
     /* PatternFly likes to override global variables for some reason */
     --ak-global--Color--100: var(--pf-global--Color--100);
+
+    /* Minimum width after which the sidebar becomes automatic */
+    --ak-sidebar--minimum-auto-width: 80rem;
 }
 
 ::-webkit-scrollbar {

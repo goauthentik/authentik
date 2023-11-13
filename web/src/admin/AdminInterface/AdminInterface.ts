@@ -3,7 +3,6 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
-    EVENT_SIDEBAR_TOGGLE,
 } from "@goauthentik/common/constants";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { me } from "@goauthentik/common/users";
@@ -35,9 +34,6 @@ import "./AdminSidebar";
 
 @customElement("ak-interface-admin")
 export class AdminInterface extends Interface {
-    @property({ type: Boolean })
-    sidebarOpen = true;
-
     @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 
@@ -82,13 +78,6 @@ export class AdminInterface extends Interface {
     constructor() {
         super();
         this.ws = new WebsocketClient();
-        this.sidebarOpen = window.innerWidth >= 1280;
-        window.addEventListener("resize", () => {
-            this.sidebarOpen = window.innerWidth >= 1280;
-        });
-        window.addEventListener(EVENT_SIDEBAR_TOGGLE, () => {
-            this.sidebarOpen = !this.sidebarOpen;
-        });
         window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, () => {
             this.notificationDrawerOpen = !this.notificationDrawerOpen;
             updateURLParams({
@@ -118,8 +107,6 @@ export class AdminInterface extends Interface {
 
     render(): TemplateResult {
         const sidebarClasses = {
-            "pf-m-expanded": this.sidebarOpen,
-            "pf-m-collapsed": !this.sidebarOpen,
             "pf-m-light": this.activeTheme === UiThemeEnum.Light,
         };
 
@@ -132,7 +119,6 @@ export class AdminInterface extends Interface {
         return html` <ak-locale-context>
             <div class="pf-c-page">
                 <ak-admin-sidebar
-                    ?open=${this.sidebarOpen}
                     class="pf-c-page__sidebar ${classMap(sidebarClasses)}"
                 ></ak-admin-sidebar>
                 <div class="pf-c-page__drawer">
