@@ -32,18 +32,6 @@ func (ws *WebServer) configureProxy() {
 	}
 	rp.ErrorHandler = ws.proxyErrorHandler
 	rp.ModifyResponse = ws.proxyModifyResponse
-	ws.m.PathPrefix("/outpost.goauthentik.io").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-		if ws.ProxyServer != nil {
-			before := time.Now()
-			ws.ProxyServer.Handle(rw, r)
-			elapsed := time.Since(before)
-			Requests.With(prometheus.Labels{
-				"dest": "embedded_outpost",
-			}).Observe(float64(elapsed) / float64(time.Second))
-			return
-		}
-		ws.proxyErrorHandler(rw, r, errors.New("proxy not running"))
-	})
 	ws.m.Path("/-/health/live/").HandlerFunc(sentry.SentryNoSample(func(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(204)
 	}))
@@ -53,14 +41,12 @@ func (ws *WebServer) configureProxy() {
 			return
 		}
 		before := time.Now()
-		if ws.ProxyServer != nil {
-			if ws.ProxyServer.HandleHost(rw, r) {
-				elapsed := time.Since(before)
-				Requests.With(prometheus.Labels{
-					"dest": "embedded_outpost",
-				}).Observe(float64(elapsed) / float64(time.Second))
-				return
-			}
+		if ws.ProxyServer != nil && ws.ProxyServer.HandleHost(rw, r) {
+			elapsed := time.Since(before)
+			Requests.With(prometheus.Labels{
+				"dest": "embedded_outpost",
+			}).Observe(float64(elapsed) / float64(time.Second))
+			return
 		}
 		elapsed := time.Since(before)
 		Requests.With(prometheus.Labels{

@@ -235,7 +235,10 @@ func (a *Application) Mode() api.ProxyMode {
 	return *a.proxyConfig.Mode
 }
 
-func (a *Application) HasQuerySignature(r *http.Request) bool {
+func (a *Application) ShouldHandleURL(r *http.Request) bool {
+	if strings.HasPrefix(r.URL.Path, "/outpost.goauthentik.io") {
+		return true
+	}
 	if strings.EqualFold(r.URL.Query().Get(CallbackSignature), "true") {
 		return true
 	}
