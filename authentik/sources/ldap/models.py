@@ -193,6 +193,7 @@ class LDAPSource(Source):
 
     @property
     def sync_lock(self) -> Lock:
+        """Redis lock for syncing LDAP to prevent multiple parallel syncs happening"""
         return Lock(
             cache.client.get_client(),
             name=f"goauthentik.io/sources/ldap/sync-{self.slug}",
