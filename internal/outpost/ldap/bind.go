@@ -22,11 +22,6 @@ func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LD
 			"type":         "bind",
 			"app":          selectedApp,
 		}).Observe(float64(span.EndTime.Sub(span.StartTime)) / float64(time.Second))
-		metrics.RequestsLegacy.With(prometheus.Labels{
-			"outpost_name": ls.ac.Outpost.Name,
-			"type":         "bind",
-			"app":          selectedApp,
-		}).Observe(float64(span.EndTime.Sub(span.StartTime)))
 		req.Log().WithField("took-ms", span.EndTime.Sub(span.StartTime).Milliseconds()).Info("Bind request")
 	}()
 
@@ -50,12 +45,6 @@ func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LD
 	}
 	req.Log().WithField("request", "bind").Warning("No provider found for request")
 	metrics.RequestsRejected.With(prometheus.Labels{
-		"outpost_name": ls.ac.Outpost.Name,
-		"type":         "bind",
-		"reason":       "no_provider",
-		"app":          "",
-	}).Inc()
-	metrics.RequestsRejectedLegacy.With(prometheus.Labels{
 		"outpost_name": ls.ac.Outpost.Name,
 		"type":         "bind",
 		"reason":       "no_provider",
