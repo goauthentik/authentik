@@ -193,7 +193,14 @@ class LDAPSource(Source):
 
     @property
     def sync_lock(self) -> Lock:
-        return Lock(cache.client.get_client(), name=f"goauthentik.io/sources/ldap/sync-{self.slug}")
+        return Lock(
+            cache.client.get_client(),
+            name=f"goauthentik.io/sources/ldap/sync-{self.slug}",
+            # Convert task timeout hours to seconds, and multiply times 3
+            # (see authentik/sources/ldap/tasks.py:54)
+            # multiply by 3 to add even more leeway
+            timeout=(60 * 60 * CONFIG.get_int("ldap.task_timeout_hours")) * 3,
+        )
 
     def check_connection(self) -> dict[str, dict[str, str]]:
         """Check LDAP Connection"""
