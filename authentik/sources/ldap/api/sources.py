@@ -18,7 +18,7 @@ from authentik.core.api.utils import PassiveSerializer
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.monitored_tasks import TaskInfo
 from authentik.sources.ldap.models import LDAPSource
-from authentik.sources.ldap.tasks import CACHE_KEY_STATUS, SYNC_CLASSES
+from authentik.sources.ldap.tasks import CACHE_KEY_STATUS, SYNC_CLASSES, ldap_sync_single
 
 
 class LDAPSourceSerializer(SourceSerializer):
@@ -54,6 +54,20 @@ class LDAPSourceSerializer(SourceSerializer):
                     }
                 )
         return super().validate(attrs)
+
+    def create(self, validated_data) -> LDAPSource:
+        # Create both creates the actual model and assigns m2m fields
+        instance: LDAPSource = super().create(validated_data)
+        if not instance.enabled:
+            return instance
+        # Don't sync sources when they don't have any property mappings. This will only happen if:
+        # - the user forgets to set them or
+        # - the source is newly created, this is the first save event
+        #   and the mappings are created with an m2m event
+        if not instance.property_mappings.exists() or not instance.property_mappings_group.exists():
+            return instance
+        ldap_sync_single.delay(instance.pk)
+        return instance
 
     class Meta:
         model = LDAPSource
