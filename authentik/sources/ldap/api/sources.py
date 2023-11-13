@@ -2,10 +2,7 @@
 from typing import Any, Optional
 
 from django.core.cache import cache
-from django_filters.filters import AllValuesMultipleFilter
-from django_filters.filterset import FilterSet
-from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema, extend_schema_field, inline_serializer
+from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, DictField, ListField, SerializerMethodField
@@ -15,13 +12,12 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.admin.api.tasks import TaskSerializer
-from authentik.core.api.propertymappings import PropertyMappingSerializer
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.monitored_tasks import TaskInfo
-from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
+from authentik.sources.ldap.models import LDAPSource
 from authentik.sources.ldap.tasks import CACHE_KEY_STATUS, SYNC_CLASSES
 
 
@@ -169,33 +165,3 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
                 obj.pop("raw_dn", None)
                 all_objects[class_name].append(obj)
         return Response(data=all_objects)
-
-
-class LDAPPropertyMappingSerializer(PropertyMappingSerializer):
-    """LDAP PropertyMapping Serializer"""
-
-    class Meta:
-        model = LDAPPropertyMapping
-        fields = PropertyMappingSerializer.Meta.fields + [
-            "object_field",
-        ]
-
-
-class LDAPPropertyMappingFilter(FilterSet):
-    """Filter for LDAPPropertyMapping"""
-
-    managed = extend_schema_field(OpenApiTypes.STR)(AllValuesMultipleFilter(field_name="managed"))
-
-    class Meta:
-        model = LDAPPropertyMapping
-        fields = "__all__"
-
-
-class LDAPPropertyMappingViewSet(UsedByMixin, ModelViewSet):
-    """LDAP PropertyMapping Viewset"""
-
-    queryset = LDAPPropertyMapping.objects.all()
-    serializer_class = LDAPPropertyMappingSerializer
-    filterset_class = LDAPPropertyMappingFilter
-    search_fields = ["name"]
-    ordering = ["name"]

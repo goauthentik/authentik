@@ -115,7 +115,7 @@ class LDAPSource(Source):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.ldap.api import LDAPSourceSerializer
+        from authentik.sources.ldap.api.sources import LDAPSourceSerializer
 
         return LDAPSourceSerializer
 
@@ -253,7 +253,7 @@ class LDAPPropertyMapping(PropertyMapping):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.ldap.api import LDAPPropertyMappingSerializer
+        from authentik.sources.ldap.api.property_mappings import LDAPPropertyMappingSerializer
 
         return LDAPPropertyMappingSerializer
 
