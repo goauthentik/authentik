@@ -3,7 +3,7 @@
     "private": true,
     "type": "module",
     "devDependencies": {
-        "@trivago/prettier-plugin-sort-imports": "^4.2.1",
+        "@trivago/prettier-plugin-sort-imports": "^4.3.0",
         "@typescript-eslint/eslint-plugin": "^6.10.0",
         "@typescript-eslint/parser": "^6.10.0",
         "@wdio/cli": "^8.22.1",
