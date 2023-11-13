@@ -138,14 +138,18 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
     ordering = ["name"]
 
     @extend_schema(
+        request=None,
         responses={
             200: LDAPSyncStatusSerializer(),
-        }
+        },
     )
-    @action(methods=["GET"], detail=True, pagination_class=None, filter_backends=[])
-    def sync_status(self, request: Request, slug: str) -> Response:
-        """Get source's sync status"""
-        source: LDAPSource = self.get_object()
+    @action(methods=["GET", "POST"], detail=True, pagination_class=None, filter_backends=[])
+    def sync(self, request: Request, slug: str) -> Response:
+        """Get source's sync status or start source sync"""
+        source = self.get_object()
+        if request.method == "POST":
+            # We're not waiting for the sync to finish here as it could take multiple hours
+            ldap_sync_single.delay(source.pk)
         tasks = TaskInfo.by_name(f"ldap_sync:{source.slug}:*") or []
         status = {
             "tasks": tasks,

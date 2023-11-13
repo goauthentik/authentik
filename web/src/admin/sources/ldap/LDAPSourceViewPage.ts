@@ -100,7 +100,7 @@ export class LDAPSourceViewPage extends AKElement {
 
     load(): void {
         new SourcesApi(DEFAULT_CONFIG)
-            .sourcesLdapSyncStatusRetrieve({
+            .sourcesLdapSyncRetrieve({
                 slug: this.source.slug,
             })
             .then((state) => {
@@ -198,9 +198,8 @@ export class LDAPSourceViewPage extends AKElement {
                                 ?disabled=${this.syncState?.isRunning}
                                 .apiRequest=${() => {
                                     return new SourcesApi(DEFAULT_CONFIG)
-                                        .sourcesLdapPartialUpdate({
+                                        .sourcesLdapSyncCreate({
                                             slug: this.source?.slug || "",
-                                            patchedLDAPSourceRequest: this.source,
                                         })
                                         .then(() => {
                                             this.dispatchEvent(

@@ -18940,10 +18940,43 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /sources/ldap/{slug}/sync_status/:
+  /sources/ldap/{slug}/sync/:
     get:
-      operationId: sources_ldap_sync_status_retrieve
-      description: Get source's sync status
+      operationId: sources_ldap_sync_retrieve
+      description: Get source's sync status or start source sync
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LDAPSyncStatus'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: sources_ldap_sync_create
+      description: Get source's sync status or start source sync
       parameters:
       - in: path
         name: slug
