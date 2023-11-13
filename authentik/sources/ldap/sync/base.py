@@ -17,6 +17,15 @@ from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 LDAP_UNIQUENESS = "ldap_uniq"
 
 
+def flatten(value: Any) -> Any:
+    """Flatten `value` if its a list"""
+    if isinstance(value, list):
+        if len(value) < 1:
+            return None
+        return value[0]
+    return value
+
+
 class BaseLDAPSynchronizer:
     """Sync LDAP Users and groups into authentik"""
 
@@ -122,14 +131,6 @@ class BaseLDAPSynchronizer:
                 cookie = None
             yield self._connection.response
 
-    def _flatten(self, value: Any) -> Any:
-        """Flatten `value` if its a list"""
-        if isinstance(value, list):
-            if len(value) < 1:
-                return None
-            return value[0]
-        return value
-
     def build_user_properties(self, user_dn: str, **kwargs) -> dict[str, Any]:
         """Build attributes for User object based on property mappings."""
         props = self._build_object_properties(user_dn, self._source.property_mappings, **kwargs)
@@ -163,10 +164,10 @@ class BaseLDAPSynchronizer:
                 object_field = mapping.object_field
                 if object_field.startswith("attributes."):
                     # Because returning a list might desired, we can't
-                    # rely on self._flatten here. Instead, just save the result as-is
+                    # rely on flatten here. Instead, just save the result as-is
                     set_path_in_dict(properties, object_field, value)
                 else:
-                    properties[object_field] = self._flatten(value)
+                    properties[object_field] = flatten(value)
             except PropertyMappingExpressionException as exc:
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,
@@ -177,7 +178,7 @@ class BaseLDAPSynchronizer:
                 self._logger.warning("Mapping failed to evaluate", exc=exc, mapping=mapping)
                 continue
         if self._source.object_uniqueness_field in kwargs:
-            properties["attributes"][LDAP_UNIQUENESS] = self._flatten(
+            properties["attributes"][LDAP_UNIQUENESS] = flatten(
                 kwargs.get(self._source.object_uniqueness_field)
             )
         properties["attributes"][LDAP_DISTINGUISHED_NAME] = object_dn
