@@ -1285,7 +1285,9 @@ msgid ""
 "List of CIDRs (comma-separated) that clients can connect from. A more "
 "specific CIDR will match before a looser one. Clients connecting from a non-"
 "specified CIDR will be dropped."
-msgstr "用戶端可以從中連線的CIDR列表（以逗號分隔）。較窄的CIDR會在較寬的CIDR之前優先套用。來自未指定CIDR的用戶端連線將被拒絕。"
+msgstr ""
+"在其之中的用戶端可以連線的 CIDR 列表（以逗號分隔）。更具體的 CIDR 會在較寬鬆的 CIDR 之前優先套用。來自未指定 CIDR "
+"的用戶端連線將被拒絕。"
 
 #: authentik/providers/radius/models.py:49
 msgid "Radius Provider"
