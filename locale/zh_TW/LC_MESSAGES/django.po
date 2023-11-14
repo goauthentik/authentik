@@ -981,7 +981,7 @@ msgstr "所有供應商都使用相同的識別碼"
 
 #: authentik/providers/oauth2/models.py:68
 msgid "Each provider has a different issuer, based on the application slug."
-msgstr "每個供應商都有一個不同的發行者，基於應用程式的縮寫（Slug）。"
+msgstr "基於應用程式的縮寫，每個供應商都有一個不同的發行者。"
 
 #: authentik/providers/oauth2/models.py:75
 msgid "code (Authorization Code Flow)"
