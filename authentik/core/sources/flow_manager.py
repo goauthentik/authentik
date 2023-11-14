@@ -217,7 +217,7 @@ class SourceFlowManager:
         flow: Flow,
         connection: UserSourceConnection,
         stages: Optional[list[StageView]] = None,
-        **kwargs,
+        **flow_context,
     ) -> HttpResponse:
         """Prepare Authentication Plan, redirect user FlowExecutor"""
         # Ensure redirect is carried through when user was trying to
@@ -225,7 +225,7 @@ class SourceFlowManager:
         final_redirect = self.request.session.get(SESSION_KEY_GET, {}).get(
             NEXT_ARG_NAME, "authentik_core:if-user"
         )
-        kwargs.update(
+        flow_context.update(
             {
                 # Since we authenticate the user by their token, they have no backend set
                 PLAN_CONTEXT_AUTHENTICATION_BACKEND: BACKEND_INBUILT,
@@ -235,7 +235,7 @@ class SourceFlowManager:
                 PLAN_CONTEXT_SOURCES_CONNECTION: connection,
             }
         )
-        kwargs.update(self.policy_context)
+        flow_context.update(self.policy_context)
         if not flow:
             return bad_request_message(
                 self.request,
@@ -243,7 +243,7 @@ class SourceFlowManager:
             )
         # We run the Flow planner here so we can pass the Pending user in the context
         planner = FlowPlanner(flow)
-        plan = planner.plan(self.request, kwargs)
+        plan = planner.plan(self.request, flow_context)
         for stage in self.get_stages_to_append(flow):
             plan.append_stage(stage)
         if stages:

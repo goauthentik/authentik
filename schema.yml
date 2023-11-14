@@ -19046,6 +19046,10 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: groups_claim
+        schema:
+          type: string
+      - in: query
         name: has_jwks
         schema:
           type: boolean
@@ -31733,7 +31737,6 @@ components:
           readOnly: true
         name:
           type: string
-          maxLength: 80
         is_superuser:
           type: boolean
           description: Users added to this group will be superusers.
@@ -31858,7 +31861,6 @@ components:
         name:
           type: string
           minLength: 1
-          maxLength: 80
         is_superuser:
           type: boolean
           description: Users added to this group will be superusers.
@@ -33962,6 +33964,12 @@ components:
           readOnly: true
         additional_scopes:
           type: string
+        groups_claim:
+          type: string
+          nullable: true
+          description: Sync groups and group membership from the source. Only use
+            this option with sources that you control, as otherwise unwanted users
+            might get added to groups with superuser permissions.
         type:
           allOf:
           - $ref: '#/components/schemas/SourceType'
@@ -34065,6 +34073,13 @@ components:
           minLength: 1
         additional_scopes:
           type: string
+        groups_claim:
+          type: string
+          nullable: true
+          minLength: 1
+          description: Sync groups and group membership from the source. Only use
+            this option with sources that you control, as otherwise unwanted users
+            might get added to groups with superuser permissions.
         oidc_well_known_url:
           type: string
         oidc_jwks_url:
@@ -36492,7 +36507,6 @@ components:
         name:
           type: string
           minLength: 1
-          maxLength: 80
         is_superuser:
           type: boolean
           description: Users added to this group will be superusers.
@@ -37078,6 +37092,13 @@ components:
           minLength: 1
         additional_scopes:
           type: string
+        groups_claim:
+          type: string
+          nullable: true
+          minLength: 1
+          description: Sync groups and group membership from the source. Only use
+            this option with sources that you control, as otherwise unwanted users
+            might get added to groups with superuser permissions.
         oidc_well_known_url:
           type: string
         oidc_jwks_url:
@@ -41839,7 +41860,6 @@ components:
           readOnly: true
         name:
           type: string
-          maxLength: 80
         is_superuser:
           type: boolean
           description: Users added to this group will be superusers.
@@ -41865,7 +41885,6 @@ components:
         name:
           type: string
           minLength: 1
-          maxLength: 80
         is_superuser:
           type: boolean
           description: Users added to this group will be superusers.

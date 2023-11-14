@@ -14,6 +14,10 @@ OPENID_USER = {
     "department": "Engineering",
     "birthdate": "1975-12-31",
     "nickname": "foo",
+    "groups": [
+        "foo",
+        "bar",
+    ]
 }
 
 
@@ -28,6 +32,7 @@ class TestTypeOpenID(TestCase):
             authorization_url="",
             profile_url="http://localhost/userinfo",
             consumer_key="",
+            groups_claim="groups",
         )
         self.factory = RequestFactory()
 

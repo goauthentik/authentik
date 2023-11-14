@@ -10,12 +10,17 @@ from django.utils.translation import gettext as _
 from django.views.generic import View
 from structlog.stdlib import get_logger
 
+from authentik.core.models import Group, User
 from authentik.core.sources.flow_manager import SourceFlowManager
 from authentik.events.models import Event, EventAction
+from authentik.flows.models import Flow, Stage, in_memory_stage
+from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
+from authentik.flows.stage import StageView
 from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
 from authentik.sources.oauth.views.base import OAuthClientMixin
 
 LOGGER = get_logger()
+PLAN_CONTEXT_GROUPS = "goauthentik.io/sources/oauth/groups"
 
 
 class OAuthCallback(OAuthClientMixin, View):
@@ -59,13 +64,17 @@ class OAuthCallback(OAuthClientMixin, View):
             return self.handle_login_failure("Could not determine id.")
         # Get or create access record
         enroll_info = self.get_user_enroll_context(raw_info)
+        group_info = self.get_user_group_names(raw_info)
         sfm = OAuthSourceFlowManager(
             source=self.source,
             request=self.request,
             identifier=identifier,
             enroll_info=enroll_info,
         )
-        sfm.policy_context = {"oauth_userinfo": raw_info}
+        sfm.policy_context = {
+            "oauth_userinfo": raw_info,
+            PLAN_CONTEXT_GROUPS: group_info,
+        }
         return sfm.get_flow(
             access_token=self.token.get("access_token"),
         )
@@ -84,6 +93,10 @@ class OAuthCallback(OAuthClientMixin, View):
     ) -> dict[str, Any]:
         """Create a dict of User data"""
         raise NotImplementedError()
+
+    def get_user_group_names(self, info: dict[str, Any]) -> list[str]:
+        """Return a list of all groups the user is member of"""
+        return []
 
     def get_user_id(self, info: dict[str, Any]) -> Optional[str]:
         """Return unique identifier from the profile info."""
@@ -111,6 +124,13 @@ class OAuthSourceFlowManager(SourceFlowManager):
 
     connection_type = UserOAuthSourceConnection
 
+    def get_stages_to_append(self, flow: Flow) -> list[Stage]:
+        return super().get_stages_to_append(flow) + [
+            # Always run this stage after the default `PostUserEnrollmentStage` stage
+            # as it relies on the user object existing
+            in_memory_stage(OAuthUserUpdateStage),
+        ]
+
     def update_connection(
         self,
         connection: UserOAuthSourceConnection,
@@ -119,3 +139,24 @@ class OAuthSourceFlowManager(SourceFlowManager):
         """Set the access_token on the connection"""
         connection.access_token = access_token
         return connection
+
+
+class OAuthUserUpdateStage(StageView):
+    """Dynamically injected stage which updates the user after enrollment/authentication."""
+
+    def handle_groups(self):
+        """Sync users' groups from oauth data"""
+        user: User = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
+        group_names: list[str] = self.executor.plan.context[PLAN_CONTEXT_GROUPS]
+        for group_name in group_names:
+            Group.objects.update_or_create(name=group_name, defaults={})
+        user.ak_groups.set(Group.objects.filter(name__in=[group_names]))
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Stage used after the user has been enrolled"""
+        self.handle_groups()
+        return self.executor.stage_ok()
+
+    def post(self, request: HttpRequest) -> HttpResponse:
+        """Wrapper for post requests"""
+        return self.get(request)
