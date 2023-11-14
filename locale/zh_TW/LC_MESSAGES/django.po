@@ -1065,7 +1065,7 @@ msgstr "每行輸入一個網址。"
 
 #: authentik/providers/oauth2/models.py:155
 msgid "Include claims in id_token"
-msgstr "在 id_token 中包含聲明"
+msgstr "在 id_token 中包含身分聲明"
 
 #: authentik/providers/oauth2/models.py:157
 msgid ""
