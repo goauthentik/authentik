@@ -1257,7 +1257,7 @@ msgstr "HTTP 基本身份驗證的使用者名鍵值"
 msgid ""
 "User/Group Attribute used for the user part of the HTTP-Basic Header. If not"
 " set, the user's Email address is used."
-msgstr "用於 HTTP 基本身份驗證標頭中，使用者區塊中的使用者/群組屬性。如果未設定則套用使用者的電子郵件地址。"
+msgstr "用於 HTTP 基本認證標頭中，使用者區塊中的使用者/群組屬性。如果未設定則套用使用者的電子郵件地址。"
 
 #: authentik/providers/proxy/models.py:99
 msgid "HTTP-Basic Password Key"
