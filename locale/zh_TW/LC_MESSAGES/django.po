@@ -1266,7 +1266,7 @@ msgstr "HTTP 基本身份驗證的密碼鍵值"
 #: authentik/providers/proxy/models.py:100
 msgid ""
 "User/Group Attribute used for the password part of the HTTP-Basic Header."
-msgstr "用於 HTTP 基本身份驗證標頭中，密碼區塊中的用戶/群組屬性。"
+msgstr "用於 HTTP 基本認證標頭中，密碼區塊中的用戶/群組屬性。"
 
 #: authentik/providers/proxy/models.py:154
 msgid "Proxy Provider"
