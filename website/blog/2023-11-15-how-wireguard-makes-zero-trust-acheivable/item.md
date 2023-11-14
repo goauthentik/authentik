@@ -19,29 +19,27 @@ tags:
     - identity provider
     - authentication
 hide_table_of_contents: false
-image: ./zero-trust.png
-
 ---
 
 > **_authentik is an open source Identity Provider that unifies your identity needs into a single platform, replacing Okta, Active Directory, and auth0. Authentik Security is a [public benefit company](https://github.com/OpenCoreVentures/ocv-public-benefit-company/blob/main/ocv-public-benefit-company-charter.md) building on top of the open source project._**
+
 ---
+
 Buzzwords are the scourge of the tech industry – reviled by developers, pushed by vendors, and commanded by executives.
 
 All too often, a buzzword is the first signal of rain ([or worse](https://media.licdn.com/dms/image/C4E12AQGspNcRlqpg0A/article-inline_image-shrink_1000_1488/0/1593238107360?e=1700092800&v=beta&t=SCKZ-7W_R9swJPwEpBB35OsVc0jE093ylcjxFPm6FZc)): Marketers have created a trend; vendors are using the trend to explain why you need to buy their software right now; executives are worried about a problem they didn’t know existed before they read that Gartner report; and the downpour rains on developers.
 
-“Implement zero trust!”
+“_Implement zero trust!_”
 
-“Why aren’t we shifting left?”
+“_Why aren’t we shifting left?_”
 
-“Are we resilient? Well, can we get more resilient?”
+“_Are we resilient? Well, can we get more resilient?_”
 
 After a while, buzzwords start to look like trojan horses, and the invading army feels like a swarm of tasks that will result in little reward or recognition. It’s tempting to retreat to cynicism and to ignore every Term™ that comes your way.
 
 But this can be risky. For better or worse, good ideas inevitably get branded, and if you want to keep up, you need to see past the branding – even if it involves stripping away the marketing fluff to see the nugget of an idea within.
 
 There’s no better example of this than zero trust. In this post, we’ll briefly explore the term's history, explain how it became such an untrustworthy buzzword, and argue that thanks to a few advancements (mainly Wireguard), zero trust will soon go from buzzword to reality.
-
-!["Screenshot of authentik UI"](./zero-trust.png)
 
 <!--truncate-->
 
@@ -77,11 +75,11 @@ When the zero trust model emerged, it had clear advantages, and many security ex
 
 At the time, when many enterprises were still shiftingware software to the cloud and before remote work became truly normal, many organizations thought perimeter-based security worked well enough. Leaders could read a Forrester paper on zero trust, find it interesting, and agree in theory but not feel compelled to rebuild their entire security system.
 
-Security concerns already suffer from a “But it won’t happen to me” effect, and the prospect of making a huge investment for the sake of an abstract benefit (the ROI of *not* getting a breach, maybe) was hard to calculate.
+Security concerns already suffer from a “But it won’t happen to me” effect, and the prospect of making a huge investment for the sake of an abstract benefit (the ROI of _not_ getting a breach, maybe) was hard to calculate.
 
 Vendors didn’t make these calculations easier. When it debuted, zero trust was more an abstract idea than a practical methodology, and security vendors did little to clarify things. Most vendors were not ready for zero trust at all, and even those that claimed to be couldn’t integrate and interoperate well because the ecosystem wasn’t mature yet.
 
-NIST, which published [zero trust guidance in 2020](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-207.pdf), agreed, writing, “During the technology survey, it became apparent that no one vendor offers a single solution that will provide zero trust.” They argued, too, that because there’s “no single solution” for zero trust, “It is impossible to have a single protocol or framework that enables an enterprise to move to a ZTA.”
+[NIST](https://www.nist.gov/) (National Institute of Standards and Technologies), which published [Zero Trust Architecture in 2020](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-207.pdf), agreed, writing, “During the technology survey, it became apparent that no one vendor offers a single solution that will provide zero trust.” They argued, too, that because there’s “no single solution” for zero trust, “It is impossible to have a single protocol or framework that enables an enterprise to move to a ZTA.”
 
 We’re in an awkward spot. Everyone agrees zero trust is good but few know how to implement it. Vendors have coalesced around zero trust messaging, but few can actually meet the promises on their landing pages. Many companies that claim to be zero trust aren’t, and many companies that haven’t thought much about zero trust have almost stumbled into it.
 
@@ -89,7 +87,7 @@ We’re in an awkward spot. Everyone agrees zero trust is good but few know how 
 
 In the decade after the “zero trust” concept was popularized, adoption proved so difficult that the term began to resemble a nearly meaningless buzzword.
 
-Until [NIST](https://www.nist.gov/) (National Institute of Standards and Technologies) defined the term better in 2020, there was no clear definition. Without clarity, it was hard for any developer, security engineer, or business leader to invalidate whether any vendor offered a true zero-trust solution. (And that’s not even considering whether one solution could claim to offer zero trust at all).
+Until NIST defined the term better in their above-mentioned Zero Trust Architecture article in 2020, there was no clear definition. Without clarity, it was hard for any developer, security engineer, or business leader to invalidate whether any vendor offered a true zero-trust solution. (And that’s not even considering whether one solution could claim to offer zero trust at all).
 
 Given the hype and the lack of clarity, many vendors, marketers, and “thought leaders” pushed zero-trust products that were, at best, partial solutions. This push created a lot of cynicism amongst developers and security engineers.
 
@@ -105,7 +103,7 @@ The move to SaaS, for example, created a lot of incidental zero trust security j
 
 Zero trust stumbled forward while the term lagged behind. A glance at Google Trends illustrates the narrative.
 
-https://lh7-us.googleusercontent.com/vi6dNgQuUBuY3Pv_P5y7jRj-k-z3ts8AhnJnq04lwLgJ3mouxF9gUmuvmj_o8y19zBMf251iEO-8v82jEYHRGCiXpZUets-QCW3ufhmUCFjZ3EIwLcpNkJbAlyNuOTdmW5NJ5jhisST5jY1kVZVxvfw
+![graph of Google Trends](./zero-trust-1.png)
 
 Google Trends shows that the search volume for zero trust increased way after the term originated but before the methodology really became practical. And now, search volume is flagging just as the full zero trust model becomes realistic.
 
@@ -119,13 +117,13 @@ According to [research](https://cybernews.com/what-is-vpn/wireguard-protocol/), 
 
 The company that best illustrates Wireguard’s potential, however, is Tailscale. Tailscale is a VPN service that provides mesh VPNs with remote access and a site-to-site network. If you’re frequently on Hacker News, you’ve probably seen their fantastic technical articles.
 
-https://lh7-us.googleusercontent.com/UH2V15iO9Ad9v0wAuCQtruH3MX4fhHvSK9giuB4WAxVhDzlh64VMLDlhjJadelf5mioOo3BpqXub-lAcXCAm5Dgc4CbJjNzC0f0b8RPIur8-hlEKwrN4ett2T54XI6u-kQuRlGo_C1ZkOd0bUSm19IA
+![screenshot of search results for Tailscale on Hackernews](./zero-trust-2.png)
 
 In [one of those articles](https://tailscale.com/blog/why-not-why-not-wireguard/), Avery Pennarun, founder of Tailscale, writes, “[Wireguard] is increasingly widely accepted as the future of secure VPN connectivity.” He has three main reasons:
 
-- Wireguard is open source.
-- Wireguard can run in a pure software VM and avoid hardware lock-in and bottlenecks.
-- Wireguard supports a single cipher suite that is fast and secure but can work with the key exchange mechanisms you want to layer on top.
+-   Wireguard is open source.
+-   Wireguard can run in a pure software VM and avoid hardware lock-in and bottlenecks.
+-   Wireguard supports a single cipher suite that is fast and secure but can work with the key exchange mechanisms you want to layer on top.
 
 Unlike the previous era of zero trust-adjacent vendors, the focus is shifting from an all-in-one zero trust solution to protocol-level technologies that enable a range of products that can, together, help companies pursue zero trust.
 
@@ -141,7 +139,7 @@ Big institutions, such as the United States Federal government, are [pushing zer
 
 Vendors are also catching up. With Tailscale, for example, companies can [build a zero trust architecture over time](https://tailscale.com/blog/how-tailscale-works/) instead of lifting and shifting their entire security infrastructure. Curious companies can now pursue that curiosity bit by bit.
 
-Zero trust arose because of a few macro trends, as we covered above, but the key ones – cloud and SaaS – have only become more dominant and more undeniable. Security isn’t always the fastest-moving field, especially among enterprises, but as more companies see success, even more companies will follow.
+Zero trust arose because of a few macro trends, as we covered above, but the key ones–cloud and SaaS–have only become more dominant and more undeniable. Security isn’t always the fastest-moving field, especially among enterprises, but as more companies see success, even more companies will follow.
 
 Finally, different organizations are starting to reclaim zero trust, translating it from a buzzword to an organizing principle. Zero trust is returning to its roots, again becoming an architecture that organizations build and assemble, not a single purchase.
 
