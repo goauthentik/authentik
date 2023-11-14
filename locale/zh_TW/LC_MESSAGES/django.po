@@ -965,7 +965,7 @@ msgstr "基於使用者的電子郵件。比起使用 UPN 更推薦此方法。"
 msgid ""
 "Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
 "this method only if you have different UPN and Mail domains."
-msgstr "基於使用者的 UPN，只有當使用者設定了 「upn」 屬性時才有效。只有在您的 UPN 和 Mail 有不同網域時才使用這個方法。"
+msgstr "基於使用者的 UPN，只有當使用者設定了「upn」特徵項時才有效。只有在您的 UPN 和 Mail 有不同網域時才使用這個方法。"
 
 #: authentik/providers/oauth2/models.py:43
 msgid "Confidential"
