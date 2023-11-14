@@ -22,9 +22,10 @@ from authentik.outposts.models import (
     KubernetesServiceConnection,
     OutpostServiceConnection,
 )
+from authentik.tenants.serializers import TenantSerializer
 
 
-class ServiceConnectionSerializer(ModelSerializer, MetaNameSerializer):
+class ServiceConnectionSerializer(TenantSerializer, ModelSerializer, MetaNameSerializer):
     """ServiceConnection Serializer"""
 
     component = ReadOnlyField()

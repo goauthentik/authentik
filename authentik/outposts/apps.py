@@ -38,23 +38,30 @@ class AuthentikOutpostConfig(ManagedAppConfig):
             OutpostConfig,
             OutpostType,
         )
+        from authentik.tenants.models import Tenant
 
-        outpost, updated = Outpost.objects.update_or_create(
-            defaults={
-                "name": "authentik Embedded Outpost",
-                "type": OutpostType.PROXY,
-            },
-            managed=MANAGED_OUTPOST,
-        )
-        if updated:
-            if KubernetesServiceConnection.objects.exists():
-                outpost.service_connection = KubernetesServiceConnection.objects.first()
-            elif DockerServiceConnection.objects.exists():
-                outpost.service_connection = DockerServiceConnection.objects.first()
-            outpost.config = OutpostConfig(
-                kubernetes_disabled_components=[
-                    "deployment",
-                    "secret",
-                ]
+        for tenant in Tenant.objects.all():
+            outpost, updated = Outpost.objects.update_or_create(
+                defaults={
+                    "name": "authentik Embedded Outpost",
+                    "type": OutpostType.PROXY,
+                },
+                managed=MANAGED_OUTPOST,
+                tenant=tenant,
             )
-            outpost.save()
+            if updated:
+                if KubernetesServiceConnection.objects.filter(tenant=tenant).exists():
+                    outpost.service_connection = KubernetesServiceConnection.objects.filter(
+                        tenant=tenant
+                    ).first()
+                elif DockerServiceConnection.objects.filter(tenant=tenant).exists():
+                    outpost.service_connection = DockerServiceConnection.objects.filter(
+                        tenant=tenant
+                    ).first()
+                outpost.config = OutpostConfig(
+                    kubernetes_disabled_components=[
+                        "deployment",
+                        "secret",
+                    ]
+                )
+                outpost.save()

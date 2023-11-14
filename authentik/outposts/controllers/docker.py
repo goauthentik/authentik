@@ -105,7 +105,7 @@ class DockerController(BaseController):
         return (
             self.outpost.config.object_naming_template
             % {
-                "name": slugify(self.outpost.name),
+                "name": slugify(f"{self.outpost.tenant.tenant_uuid.hex}-{self.outpost.name}"),
                 "uuid": self.outpost.uuid.hex,
             }
         ).lower()

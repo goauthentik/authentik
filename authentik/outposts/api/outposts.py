@@ -29,9 +29,10 @@ from authentik.outposts.models import (
 from authentik.providers.ldap.models import LDAPProvider
 from authentik.providers.proxy.models import ProxyProvider
 from authentik.providers.radius.models import RadiusProvider
+from authentik.tenants.serializers import TenantSerializer
 
 
-class OutpostSerializer(ModelSerializer):
+class OutpostSerializer(TenantSerializer, ModelSerializer):
     """Outpost Serializer"""
 
     config = JSONField(validators=[is_dict], source="_config")

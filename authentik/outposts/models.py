@@ -35,6 +35,7 @@ from authentik.lib.models import InheritanceForeignKey, SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.errors import exception_to_string
 from authentik.outposts.controllers.k8s.utils import get_namespace
+from authentik.tenants.models import TenantModel
 
 OUR_VERSION = parse(__version__)
 OUTPOST_HELLO_INTERVAL = 10
@@ -110,11 +111,11 @@ class OutpostServiceConnectionState:
     healthy: bool
 
 
-class OutpostServiceConnection(models.Model):
+class OutpostServiceConnection(TenantModel, models.Model):
     """Connection details for an Outpost Controller, like Docker or Kubernetes"""
 
     uuid = models.UUIDField(default=uuid4, editable=False, primary_key=True)
-    name = models.TextField(unique=True)
+    name = models.TextField()
 
     local = models.BooleanField(
         default=False,
@@ -151,6 +152,11 @@ class OutpostServiceConnection(models.Model):
     class Meta:
         verbose_name = _("Outpost Service-Connection")
         verbose_name_plural = _("Outpost Service-Connections")
+        constraints = (
+            models.UniqueConstraint(
+                "tenant", "name", name="unique_outposts_outpostserviceconnection_tenant_name"
+            ),
+        )
 
 
 class DockerServiceConnection(SerializerModel, OutpostServiceConnection):
@@ -236,11 +242,11 @@ class KubernetesServiceConnection(SerializerModel, OutpostServiceConnection):
         verbose_name_plural = _("Kubernetes Service-Connections")
 
 
-class Outpost(SerializerModel, ManagedModel):
+class Outpost(TenantModel, SerializerModel, ManagedModel):
     """Outpost instance which manages a service user and token"""
 
     uuid = models.UUIDField(default=uuid4, editable=False, primary_key=True)
-    name = models.TextField(unique=True)
+    name = models.TextField()
 
     type = models.TextField(choices=OutpostType.choices, default=OutpostType.PROXY)
     service_connection = InheritanceForeignKey(
@@ -340,10 +346,10 @@ class Outpost(SerializerModel, ManagedModel):
     @property
     def user(self) -> User:
         """Get/create user with access to all required objects"""
-        user = User.objects.filter(username=self.user_identifier).first()
+        user = User.objects.filter(tenant=self.tenant, username=self.user_identifier).first()
         user_created = False
         if not user:
-            user: User = User.objects.create(username=self.user_identifier)
+            user: User = User.objects.create(tenant=self.tenant, username=self.user_identifier)
             user.set_unusable_password()
             user_created = True
         user.type = UserTypes.INTERNAL_SERVICE_ACCOUNT
@@ -364,6 +370,7 @@ class Outpost(SerializerModel, ManagedModel):
         """Get/create token for auto-generated user"""
         managed = f"goauthentik.io/outpost/{self.token_identifier}"
         tokens = Token.filter_not_expired(
+            tenant=self.tenant,
             identifier=self.token_identifier,
             intent=TokenIntents.INTENT_API,
             managed=managed,
@@ -372,6 +379,7 @@ class Outpost(SerializerModel, ManagedModel):
             return tokens.first()
         try:
             return Token.objects.create(
+                tenant=self.tenant,
                 user=self.user,
                 identifier=self.token_identifier,
                 intent=TokenIntents.INTENT_API,
@@ -381,8 +389,8 @@ class Outpost(SerializerModel, ManagedModel):
             )
         except IntegrityError:
             # Integrity error happens mostly when managed is reused
-            Token.objects.filter(managed=managed).delete()
-            Token.objects.filter(identifier=self.token_identifier).delete()
+            Token.objects.filter(tenant=self.tenant, managed=managed).delete()
+            Token.objects.filter(tenant=self.tenant, identifier=self.token_identifier).delete()
             return self.token
 
     def get_required_objects(self) -> Iterable[models.Model | str]:
@@ -391,13 +399,17 @@ class Outpost(SerializerModel, ManagedModel):
             self,
             "authentik_events.add_event",
         ]
-        for provider in Provider.objects.filter(outpost=self).select_related().select_subclasses():
+        for provider in (
+            Provider.objects.filter(tenant=self.tenant, outpost=self)
+            .select_related()
+            .select_subclasses()
+        ):
             if isinstance(provider, OutpostModel):
                 objects.extend(provider.get_required_objects())
             else:
                 objects.append(provider)
         if self.managed:
-            for brand in Brand.objects.filter(web_certificate__isnull=False):
+            for brand in Brand.objects.filter(tenant=self.tenant, web_certificate__isnull=False):
                 objects.append(brand)
                 objects.append(brand.web_certificate)
         return objects
@@ -408,6 +420,9 @@ class Outpost(SerializerModel, ManagedModel):
     class Meta:
         verbose_name = _("Outpost")
         verbose_name_plural = _("Outposts")
+        constraints = (
+            models.UniqueConstraint("tenant", "name", name="unique_outposts_outpost_tenant_name"),
+        )
 
 
 @dataclass

@@ -68,7 +68,9 @@ class KubernetesObjectReconciler(Generic[T]):
         return (
             self.controller.outpost.config.object_naming_template
             % {
-                "name": slugify(self.controller.outpost.name),
+                "name": slugify(
+                    f"{self.controller.outpost.tenant.tenant_uuid.hex}-{self.controller.outpost.name}"
+                ),
                 "uuid": self.controller.outpost.uuid.hex,
             }
         ).lower()
