@@ -100,14 +100,8 @@ export class RacInterface extends Interface {
             }
         };
         const params = new URLSearchParams();
-        params.set(
-            "screen_width",
-            Math.floor(RacInterface.domSize().width).toString(),
-        );
-        params.set(
-            "screen_height",
-            Math.floor(RacInterface.domSize().height).toString(),
-        );
+        params.set("screen_width", Math.floor(RacInterface.domSize().width).toString());
+        params.set("screen_height", Math.floor(RacInterface.domSize().height).toString());
         params.set("screen_dpi", (window.devicePixelRatio * 96).toString());
         this.client.connect(params.toString());
     }
@@ -125,8 +119,8 @@ export class RacInterface extends Interface {
         this.container = this.client.getDisplay().getElement();
         this.initMouse(this.container);
         this.client?.sendSize(
-           Math.floor(RacInterface.domSize().width),
-           Math.floor(RacInterface.domSize().height),
+            Math.floor(RacInterface.domSize().width),
+            Math.floor(RacInterface.domSize().height),
         );
     }
 
