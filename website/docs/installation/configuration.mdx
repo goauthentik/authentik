@@ -98,7 +98,6 @@ To check if your config has been applied correctly, you can run the following co
 
 ## Cache Settings
 
--   `AUTHENTIK_CACHE__BACKEND`: Class to use as cache backend, defaults to `django_redis.cache.RedisCache`
 -   `AUTHENTIK_CACHE__URL`: Cache configuration URL, defaults to the environment variable `AUTHENTIK_REDIS__URL`
 -   `AUTHENTIK_CACHE__TIMEOUT`: Timeout for cached data until it expires in seconds, defaults to 300
 -   `AUTHENTIK_CACHE__TIMEOUT_FLOWS`: Timeout for cached flow plans until they expire in seconds, defaults to 300
@@ -109,9 +108,8 @@ To check if your config has been applied correctly, you can run the following co
     `AUTHENTIK_CACHE__TIMEOUT_REPUTATION` only applies to the cache expiry, see [`AUTHENTIK_REPUTATION__EXPIRY`](#authentik_reputation__expiry) to control how long reputation is persisted for.
     :::
 
-## Channel Settings
+## Channel Layer Settings (inter-instance communication)
 
--   `AUTHENTIK_CHANNEL__BACKEND`: Class to use as channel backend, defaults to `authentik.root.redis_middleware_channels.CustomChannelLayer`
 -   `AUTHENTIK_CHANNEL__URL`: Channel configuration URL, defaults to the environment variable `AUTHENTIK_REDIS__URL`
 
 ## Broker Settings

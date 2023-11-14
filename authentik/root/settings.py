@@ -1,5 +1,4 @@
 """root settings for authentik"""
-
 import importlib
 import os
 from hashlib import sha512
@@ -182,8 +181,8 @@ REST_FRAMEWORK = {
 
 CACHES = {
     "default": {
-        "BACKEND": CONFIG.get("cache.backend", "django_redis.cache.RedisCache"),
-        "LOCATION": CONFIG.get("cache.url", CONFIG.get("redis.url")),
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": CONFIG.get("cache.url") or CONFIG.get("redis.url"),
         "TIMEOUT": CONFIG.get_int("cache.timeout", 300),
         "OPTIONS": {
             "CLIENT_CLASS": "authentik.root.redis_middleware_django.CustomClient",
@@ -245,8 +244,7 @@ ASGI_APPLICATION = "authentik.root.asgi.application"
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": CONFIG.get("channel.backend")
-        or "authentik.root.redis_middleware_channels.CustomChannelLayer",
+        "BACKEND": "authentik.root.redis_middleware_channels.CustomChannelLayer",
         "CONFIG": {
             "url": CONFIG.get("channel.url") or CONFIG.get("redis.url"),
             "prefix": "authentik_channels_",
@@ -343,7 +341,7 @@ CELERY = {
     "task_create_missing_queues": True,
     "task_default_queue": "authentik",
     "broker_url": CONFIG.get("broker.url") or CONFIG.get("redis.url"),
-    "broker_connection_retry_on_startup": True,
+    "broker_transport_options": CONFIG.get_dict_from_b64_json("broker.transport_options"),
     "result_backend": CONFIG.get("result_backend.url") or CONFIG.get("redis.url"),
 }
 

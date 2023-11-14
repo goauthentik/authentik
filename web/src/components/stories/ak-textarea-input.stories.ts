@@ -39,9 +39,8 @@ const container = (testItem: TemplateResult) =>
 export const TextareaInput = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const displayChange = (ev: any) => {
-        document.getElementById(
-            "textarea-message-pad",
-        )!.innerText = `Value selected: ${JSON.stringify(ev.target.value, null, 2)}`;
+        document.getElementById("textarea-message-pad")!.innerText =
+            `Value selected: ${JSON.stringify(ev.target.value, null, 2)}`;
     };
 
     return container(

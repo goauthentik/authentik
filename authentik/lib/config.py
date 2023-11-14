@@ -1,4 +1,6 @@
 """authentik core config loader"""
+import base64
+import json
 import os
 from collections.abc import Mapping
 from contextlib import contextmanager
@@ -25,7 +27,8 @@ ENVIRONMENT = os.getenv(f"{ENV_PREFIX}_ENV", "local")
 
 REDIS_ENV_KEYS = [
     f"{ENV_PREFIX}_REDIS__HOST",
-    f"{ENV_PREFIX}_REDIS__PORT" f"{ENV_PREFIX}_REDIS__DB",
+    f"{ENV_PREFIX}_REDIS__PORT",
+    f"{ENV_PREFIX}_REDIS__DB",
     f"{ENV_PREFIX}_REDIS__USERNAME",
     f"{ENV_PREFIX}_REDIS__PASSWORD",
     f"{ENV_PREFIX}_REDIS__TLS",
@@ -236,11 +239,20 @@ class ConfigLoader:
 
         for deprecation, replacement in DEPRECATIONS.items():
             if self.get(deprecation, default=UNSET) is not UNSET:
+                message = (
+                    f"'{deprecation}' has been deprecated in favor of '{replacement}'! "
+                    + "Please update your configuration."
+                )
                 self.log(
                     "warning",
-                    f"'{deprecation}' has been deprecated in favor of '{replacement}'! "
-                    "Please update your configuration.",
+                    message,
                 )
+                try:
+                    from authentik.events.models import Event, EventAction
+
+                    Event.new(EventAction.CONFIGURATION_ERROR, message=message).save()
+                except ImportError:
+                    continue
 
                 deprecated_attr = _pop_deprecated_key(self.__config, deprecation.split("."), 0)
                 self.set(replacement, deprecated_attr.value)
@@ -315,17 +327,6 @@ class ConfigLoader:
         """Update config from dict"""
         self.__config.update(update)
 
-    @staticmethod
-    def _set_value_for_key_path(outer, path, value, sep="."):
-        # Recursively convert path from a.b.c into outer[a][b][c]
-        current_obj = outer
-        dot_parts = path.split(sep)
-        for dot_part in dot_parts[:-1]:
-            current_obj.setdefault(dot_part, {})
-            current_obj = current_obj[dot_part]
-        current_obj[dot_parts[-1]] = Attr(value, Attr.Source.ENV, path)
-        return outer
-
     def update_from_env(self):
         """Check environment variables"""
         outer = {}
@@ -339,7 +340,8 @@ class ConfigLoader:
                 value = loads(value)
             except JSONDecodeError:
                 pass
-            outer = self._set_value_for_key_path(outer, relative_key, value)
+            attr_value = Attr(value, Attr.Source.ENV, relative_key)
+            set_path_in_dict(outer, relative_key, attr_value)
             idx += 1
         if idx > 0:
             self.log("debug", "Loaded environment variables", count=idx)
@@ -380,10 +382,26 @@ class ConfigLoader:
         """Wrapper for get that converts value into boolean"""
         return str(self.get(path, default)).lower() == "true"
 
+    def get_dict_from_b64_json(self, path: str, default=None) -> dict:
+        """Wrapper for get that converts value from Base64 encoded string into dictionary"""
+        config_value = self.get(path)
+        if config_value is None:
+            return {}
+        try:
+            b64decoded_str = base64.b64decode(config_value).decode("utf-8")
+            b64decoded_str = b64decoded_str.strip().lstrip("{").rstrip("}")
+            b64decoded_str = "{" + b64decoded_str + "}"
+            return json.loads(b64decoded_str)
+        except (JSONDecodeError, TypeError, ValueError) as exc:
+            self.log(
+                "warning",
+                f"Ignored invalid configuration for '{path}' due to exception: {str(exc)}",
+            )
+            return default if isinstance(default, dict) else {}
+
     def set(self, path: str, value: Any, sep="."):
         """Set value using same syntax as get()"""
-        # Walk sub_dicts before parsing path
-        self._set_value_for_key_path(self.raw, path, value, sep)
+        set_path_in_dict(self.raw, path, Attr(value), sep=sep)
 
 
 CONFIG = ConfigLoader()

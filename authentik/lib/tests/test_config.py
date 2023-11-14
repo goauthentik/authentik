@@ -1,4 +1,5 @@
 """Test config loader"""
+import base64
 from json import dumps
 from os import chmod, environ, unlink, write
 from tempfile import mkstemp
@@ -139,6 +140,28 @@ class TestConfig(TestCase):
         config = ConfigLoader()
         config.set("foo", "bar")
         self.assertEqual(config.get_int("foo", 1234), 1234)
+
+    def test_get_dict_from_b64_json(self):
+        """Test get_dict_from_b64_json"""
+        config = ConfigLoader()
+        test_value = '  { "foo": "bar"   }   '.encode("utf-8")
+        b64_value = base64.b64encode(test_value)
+        config.set("foo", b64_value)
+        self.assertEqual(config.get_dict_from_b64_json("foo"), {"foo": "bar"})
+
+    def test_get_dict_from_b64_json_missing_brackets(self):
+        """Test get_dict_from_b64_json with missing brackets"""
+        config = ConfigLoader()
+        test_value = ' "foo": "bar"     '.encode("utf-8")
+        b64_value = base64.b64encode(test_value)
+        config.set("foo", b64_value)
+        self.assertEqual(config.get_dict_from_b64_json("foo"), {"foo": "bar"})
+
+    def test_get_dict_from_b64_json_invalid(self):
+        """Test get_dict_from_b64_json with invalid value"""
+        config = ConfigLoader()
+        config.set("foo", "bar")
+        self.assertEqual(config.get_dict_from_b64_json("foo"), {})
 
     def test_attr_json_encoder(self):
         """Test AttrEncoder"""

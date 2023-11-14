@@ -40,7 +40,6 @@ redis:
   # transport_options: ""
 
 cache:
-  # backend: ""
   # url: ""
   timeout: 300
   timeout_flows: 300
@@ -48,7 +47,6 @@ cache:
   timeout_reputation: 300
 
 # channel:
-  # backend: ""
   # url: ""
 
 # result_backend:
