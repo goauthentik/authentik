@@ -8,7 +8,7 @@ authors:
       url: https://github.com/BeryJu
       image_url: https://github.com/BeryJu.png
 tags:
-    - authentic
+    - authentik
     - zero trust
     - Wireguard
     - NIST
