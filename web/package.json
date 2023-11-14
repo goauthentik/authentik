@@ -67,7 +67,7 @@
         "webcomponent-qr-code": "^1.2.0",
         "yaml": "^2.3.4",
         "guacamole-common-js": "^1.5.0",
-        "@types/guacamole-common-js": "^1.3.2"
+        "@types/guacamole-common-js": "1.3.2"
     },
     "devDependencies": {
         "@babel/core": "^7.23.6",

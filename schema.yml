@@ -33173,10 +33173,6 @@ components:
           type: string
         icon:
           type: string
-          nullable: true
-          description: |-
-            Get the URL to the Icon. If the name is /static or
-            starts with http it is returned as-is
           readOnly: true
         server_uri:
           type: string
@@ -34362,10 +34358,6 @@ components:
           type: string
         icon:
           type: string
-          nullable: true
-          description: |-
-            Get the URL to the Icon. If the name is /static or
-            starts with http it is returned as-is
           readOnly: true
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
@@ -38743,10 +38735,6 @@ components:
           type: string
         icon:
           type: string
-          nullable: true
-          description: |-
-            Get the URL to the Icon. If the name is /static or
-            starts with http it is returned as-is
           readOnly: true
         client_id:
           type: string
@@ -40817,10 +40805,6 @@ components:
           type: string
         icon:
           type: string
-          nullable: true
-          description: |-
-            Get the URL to the Icon. If the name is /static or
-            starts with http it is returned as-is
           readOnly: true
         pre_authentication_flow:
           type: string
@@ -41512,10 +41496,6 @@ components:
           type: string
         icon:
           type: string
-          nullable: true
-          description: |-
-            Get the URL to the Icon. If the name is /static or
-            starts with http it is returned as-is
           readOnly: true
       required:
       - component
