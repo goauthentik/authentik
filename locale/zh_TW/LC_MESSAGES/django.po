@@ -1071,7 +1071,7 @@ msgstr "在 id_token 中包含身分聲明"
 msgid ""
 "Include User claims from scopes in the id_token, for applications that don't"
 " access the userinfo endpoint."
-msgstr "在 id_token 中包含來自範疇的使用者聲明，適用於那些不存取 userinfo 端點的應用程式。"
+msgstr "在 id_token 中包含來自範疇的使用者身分聲明，適用於那些不存取 userinfo 端點的應用程式。"
 
 #: authentik/providers/oauth2/models.py:166
 msgid ""
