@@ -1206,7 +1206,7 @@ msgstr "代表您的使用者存取 authentik API"
 
 #: authentik/providers/proxy/api.py:52
 msgid "User and password attributes must be set when basic auth is enabled."
-msgstr "啟用基本認證時必須設定使用者和密碼屬性。"
+msgstr "啟用基本認證時必須設定使用者和密碼特徵項。"
 
 #: authentik/providers/proxy/api.py:63
 msgid "Internal host cannot be empty when forward auth is disabled."
@@ -1257,7 +1257,7 @@ msgstr "HTTP 基本身份驗證的使用者名鍵值"
 msgid ""
 "User/Group Attribute used for the user part of the HTTP-Basic Header. If not"
 " set, the user's Email address is used."
-msgstr "用於 HTTP 基本認證標頭中，使用者區塊中的使用者/群組屬性。如果未設定則套用使用者的電子郵件地址。"
+msgstr "用於 HTTP 基本認證標頭中，使用者區塊中的使用者/群組特徵項。如果未設定則套用使用者的電子郵件地址。"
 
 #: authentik/providers/proxy/models.py:99
 msgid "HTTP-Basic Password Key"
