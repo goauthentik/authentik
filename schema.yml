@@ -18942,7 +18942,7 @@ paths:
           description: ''
   /sources/ldap/{slug}/sync_status/:
     get:
-      operationId: sources_ldap_sync_status_list
+      operationId: sources_ldap_sync_status_retrieve
       description: Get source's sync status
       parameters:
       - in: path
@@ -18960,9 +18960,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Task'
+                $ref: '#/components/schemas/LDAPSyncStatus'
           description: ''
         '400':
           content:
@@ -32812,9 +32810,19 @@ components:
             type: string
             format: uuid
           description: Property mappings used for group creation/updating.
+        connectivity:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: string
+          nullable: true
+          description: Get cached source connectivity
+          readOnly: true
       required:
       - base_dn
       - component
+      - connectivity
       - icon
       - managed
       - meta_model_name
@@ -32948,6 +32956,21 @@ components:
       - name
       - server_uri
       - slug
+    LDAPSyncStatus:
+      type: object
+      description: LDAP Source sync status
+      properties:
+        is_running:
+          type: boolean
+          readOnly: true
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+          readOnly: true
+      required:
+      - is_running
+      - tasks
     LayoutEnum:
       enum:
       - stacked
