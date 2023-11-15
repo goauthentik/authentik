@@ -402,7 +402,7 @@ export class RelatedUserList extends Table<User> {
                         <ak-forms-modal>
                             <span slot="submit"> ${msg("Create")} </span>
                             <span slot="header"> ${msg("Create User")} </span>
-                            <ak-user-form slot="form"> </ak-user-form>
+                            <ak-user-form .group=${this.targetGroup} slot="form"> </ak-user-form>
                             <a slot="trigger" class="pf-c-dropdown__menu-item">
                                 ${msg("Create user")}
                             </a>
@@ -415,7 +415,8 @@ export class RelatedUserList extends Table<User> {
                         >
                             <span slot="submit"> ${msg("Create")} </span>
                             <span slot="header"> ${msg("Create Service account")} </span>
-                            <ak-user-service-account slot="form"> </ak-user-service-account>
+                            <ak-user-service-account-form .group=${this.targetGroup} slot="form">
+                            </ak-user-service-account-form>
                             <a slot="trigger" class="pf-c-dropdown__menu-item">
                                 ${msg("Create Service account")}
                             </a>
