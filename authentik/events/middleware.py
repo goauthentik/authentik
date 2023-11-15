@@ -10,6 +10,7 @@ from django.db.models import Model
 from django.db.models.signals import m2m_changed, post_save, pre_delete
 from django.http import HttpRequest, HttpResponse
 from guardian.models import UserObjectPermission
+from guardian.shortcuts import get_anonymous_user
 
 from authentik.core.models import (
     AuthenticatedSession,
@@ -93,21 +94,23 @@ class AuditMiddleware:
     of models"""
 
     get_response: Callable[[HttpRequest], HttpResponse]
+    anonymous_user: User
 
     def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]):
         self.get_response = get_response
+        self.anonymous_user = get_anonymous_user()
 
     def connect(self, request: HttpRequest):
         """Connect signal for automatic logging"""
-        if not hasattr(request, "user"):
-            return
-        if not getattr(request.user, "is_authenticated", False):
-            return
+        user = getattr(request, "user", self.anonymous_user)
+        print(user, user.is_authenticated)
+        if not user.is_authenticated:
+            user = self.anonymous_user
         if not hasattr(request, "request_id"):
             return
-        post_save_handler = partial(self.post_save_handler, user=request.user, request=request)
-        pre_delete_handler = partial(self.pre_delete_handler, user=request.user, request=request)
-        m2m_changed_handler = partial(self.m2m_changed_handler, user=request.user, request=request)
+        post_save_handler = partial(self.post_save_handler, user=user, request=request)
+        pre_delete_handler = partial(self.pre_delete_handler, user=user, request=request)
+        m2m_changed_handler = partial(self.m2m_changed_handler, user=user, request=request)
         post_save.connect(
             post_save_handler,
             dispatch_uid=request.request_id,
