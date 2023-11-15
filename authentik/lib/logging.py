@@ -4,6 +4,7 @@ from logging import Logger
 from os import getpid
 
 import structlog
+from django.db import connection
 
 from authentik.lib.config import CONFIG
 
@@ -37,6 +38,7 @@ def structlog_configure():
             structlog.stdlib.add_logger_name,
             structlog.contextvars.merge_contextvars,
             add_process_id,
+            add_tenant_information,
             structlog.stdlib.PositionalArgumentsFormatter(),
             structlog.processors.TimeStamper(fmt="iso", utc=False),
             structlog.processors.StackInfoRenderer(),
@@ -111,4 +113,11 @@ def get_logger_config():
 def add_process_id(logger: Logger, method_name: str, event_dict):
     """Add the current process ID"""
     event_dict["pid"] = getpid()
+    return event_dict
+
+
+def add_tenant_information(logger: Logger, method_name: str, event_dict):
+    event_dict["schema_name"] = connection.tenant.schema_name
+    event_dict["domain_url"] = getattr(connection.tenant, "domain_url", None)
+
     return event_dict
