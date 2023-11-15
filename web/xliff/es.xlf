@@ -1922,21 +1922,6 @@
       <trans-unit id="s7b3148ffba9f4527">
         <source>If the password's score is less than or equal this value, the policy will fail.</source>
       </trans-unit>
-      <trans-unit id="s1bfe7505059d164f">
-        <source>0: Too guessable: risky password. (guesses &lt; 10^3)</source>
-      </trans-unit>
-      <trans-unit id="s423d1f2477998d0b">
-        <source>1: Very guessable: protection from throttled online attacks. (guesses &lt; 10^6)</source>
-      </trans-unit>
-      <trans-unit id="s33849cc046eb901d">
-        <source>2: Somewhat guessable: protection from unthrottled online attacks. (guesses &lt; 10^8)</source>
-      </trans-unit>
-      <trans-unit id="s578dcce295718e1b">
-        <source>3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &lt; 10^10)</source>
-      </trans-unit>
-      <trans-unit id="s7a46de49f4eba5d7">
-        <source>4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &gt;= 10^10)</source>
-      </trans-unit>
       <trans-unit id="sd6cd7ce2310a73a4">
         <source>Checks the value from the policy request against several rules, mostly used to ensure password strength.</source>
         <target>Comprueba el valor de la solicitud de política en relación con varias reglas, que se utilizan principalmente para garantizar la seguridad de la contraseña.</target>
@@ -5979,6 +5964,21 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sf36170f71cea38c2">
   <source>Connectivity</source>
+</trans-unit>
+<trans-unit id="sd94e99af8b41ff54">
+  <source>0: Too guessable: risky password. (guesses &amp;lt; 10^3)</source>
+</trans-unit>
+<trans-unit id="sc926385d1a624c3a">
+  <source>1: Very guessable: protection from throttled online attacks. (guesses &amp;lt; 10^6)</source>
+</trans-unit>
+<trans-unit id="s8aae61c41319602c">
+  <source>2: Somewhat guessable: protection from unthrottled online attacks. (guesses &amp;lt; 10^8)</source>
+</trans-unit>
+<trans-unit id="sc1f4b57e722a89d6">
+  <source>3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &amp;lt; 10^10)</source>
+</trans-unit>
+<trans-unit id="sd47f3d3c9741343d">
+  <source>4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &amp;gt;= 10^10)</source>
 </trans-unit>
     </body>
   </file>

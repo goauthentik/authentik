@@ -22,17 +22,14 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
     @state()
     showZxcvbn = false;
 
-    loadInstance(pk: string): Promise<PasswordPolicy> {
-        return new PoliciesApi(DEFAULT_CONFIG)
-            .policiesPasswordRetrieve({
-                policyUuid: pk,
-            })
-            .then((policy) => {
-                this.showStatic = policy.checkStaticRules || false;
-                this.showHIBP = policy.checkHaveIBeenPwned || false;
-                this.showZxcvbn = policy.checkZxcvbn || false;
-                return policy;
-            });
+    async loadInstance(pk: string): Promise<PasswordPolicy> {
+        const policy = await new PoliciesApi(DEFAULT_CONFIG).policiesPasswordRetrieve({
+            policyUuid: pk,
+        });
+        this.showStatic = policy.checkStaticRules || false;
+        this.showHIBP = policy.checkHaveIBeenPwned || false;
+        this.showZxcvbn = policy.checkZxcvbn || false;
+        return policy;
     }
 
     getSuccessMessage(): string {
@@ -200,26 +197,26 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
                             )}
                         </p>
                         <p class="pf-c-form__helper-text">
-                            ${msg("0: Too guessable: risky password. (guesses < 10^3)")}
+                            ${msg("0: Too guessable: risky password. (guesses &lt; 10^3)")}
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "1: Very guessable: protection from throttled online attacks. (guesses < 10^6)",
+                                "1: Very guessable: protection from throttled online attacks. (guesses &lt; 10^6)",
                             )}
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "2: Somewhat guessable: protection from unthrottled online attacks. (guesses < 10^8)",
+                                "2: Somewhat guessable: protection from unthrottled online attacks. (guesses &lt; 10^8)",
                             )}
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses < 10^10)",
+                                "3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &lt; 10^10)",
                             )}
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "4: Very unguessable: strong protection from offline slow-hash scenario. (guesses >= 10^10)",
+                                "4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &gt;= 10^10)",
                             )}
                         </p>
                     </ak-form-element-horizontal>
