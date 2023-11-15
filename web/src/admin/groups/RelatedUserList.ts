@@ -402,13 +402,15 @@ export class RelatedUserList extends Table<User> {
                         <ak-forms-modal>
                             <span slot="submit"> ${msg("Create")} </span>
                             <span slot="header"> ${msg("Create User")} </span>
-                            ${this.targetGroup ? html`
-                            <div class="pf-c-banner pf-m-info" slot="above-form">
-                                ${msg(
-                                    str`This user will be added to the group "${this.targetGroup.name}".`,
-                                )}
-                            </div>
-                            ` : nothing}
+                            ${this.targetGroup
+                                ? html`
+                                      <div class="pf-c-banner pf-m-info" slot="above-form">
+                                          ${msg(
+                                              str`This user will be added to the group "${this.targetGroup.name}".`,
+                                          )}
+                                      </div>
+                                  `
+                                : nothing}
                             <ak-user-form .group=${this.targetGroup} slot="form"> </ak-user-form>
                             <a slot="trigger" class="pf-c-dropdown__menu-item">
                                 ${msg("Create user")}
@@ -422,13 +424,15 @@ export class RelatedUserList extends Table<User> {
                         >
                             <span slot="submit"> ${msg("Create")} </span>
                             <span slot="header"> ${msg("Create Service account")} </span>
-                            ${this.targetGroup ? html`
-                            <div class="pf-c-banner pf-m-info" slot="above-form">
-                                ${msg(
-                                    str`This user will be added to the group "${this.targetGroup.name}".`,
-                                )}
-                            </div>
-                            ` : nothing}
+                            ${this.targetGroup
+                                ? html`
+                                      <div class="pf-c-banner pf-m-info" slot="above-form">
+                                          ${msg(
+                                              str`This user will be added to the group "${this.targetGroup.name}".`,
+                                          )}
+                                      </div>
+                                  `
+                                : nothing}
                             <ak-user-service-account-form .group=${this.targetGroup} slot="form">
                             </ak-user-service-account-form>
                             <a slot="trigger" class="pf-c-dropdown__menu-item">
