@@ -399,7 +399,7 @@ export class UserListPage extends TablePage<User> {
             <ak-forms-modal .closeAfterSuccessfulSubmit=${false} .cancelText=${msg("Close")}>
                 <span slot="submit"> ${msg("Create")} </span>
                 <span slot="header"> ${msg("Create Service account")} </span>
-                <ak-user-service-account slot="form"> </ak-user-service-account>
+                <ak-user-service-account-form slot="form"> </ak-user-service-account-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${msg("Create Service account")}
                 </button>
