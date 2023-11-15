@@ -73,7 +73,7 @@ Zero trust, when you think about it, is fairly intuitive, and its advantages are
 
 When the zero trust model emerged, it had clear advantages, and many security experts agreed on its value. But practical realities meant that many organizations couldn’t adopt it.
 
-At the time, when many enterprises were still shiftingware software to the cloud and before remote work became truly normal, many organizations thought perimeter-based security worked well enough. Leaders could read a Forrester paper on zero trust, find it interesting, and agree in theory but not feel compelled to rebuild their entire security system.
+At the time, when many enterprises were still shifting software to the cloud and before remote work became truly normal, many organizations thought perimeter-based security worked well enough. Leaders could read a Forrester paper on zero trust, find it interesting, and agree in theory but not feel compelled to rebuild their entire security system.
 
 Security concerns already suffer from a “But it won’t happen to me” effect, and the prospect of making a huge investment for the sake of an abstract benefit (the ROI of _not_ getting a breach, maybe) was hard to calculate.
 
@@ -87,7 +87,7 @@ We’re in an awkward spot. Everyone agrees zero trust is good but few know how 
 
 In the decade after the “zero trust” concept was popularized, adoption proved so difficult that the term began to resemble a nearly meaningless buzzword.
 
-Until NIST defined the term better in their above-mentioned Zero Trust Architecture article in 2020, there was no clear definition. Without clarity, it was hard for any developer, security engineer, or business leader to invalidate whether any vendor offered a true zero-trust solution. (And that’s not even considering whether one solution could claim to offer zero trust at all).
+Until NIST defined the term better in their above-mentioned Zero Trust Architecture article in 2020, there was no clear definition. Without clarity, it was hard for any developer, security engineer, or business leader to verify a vendor's claim that their solution was truly zero-trust. (And that’s not even considering whether one solution could claim to offer zero trust at all).
 
 Given the hype and the lack of clarity, many vendors, marketers, and “thought leaders” pushed zero-trust products that were, at best, partial solutions. This push created a lot of cynicism amongst developers and security engineers.
 
