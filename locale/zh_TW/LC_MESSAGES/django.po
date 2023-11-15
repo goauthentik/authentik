@@ -692,7 +692,7 @@ msgstr "假政策"
 msgid ""
 "Match events created by selected application. When left empty, all "
 "applications are matched."
-msgstr "匹配由所選應用程式產生的事件。如果未設定則所有應用程式都將符合。"
+msgstr "將選擇的應用程式與建立的事件配對。如果為空則將符合所有應用程式。"
 
 #: authentik/policies/event_matcher/api.py:29
 #: authentik/policies/event_matcher/models.py:64
