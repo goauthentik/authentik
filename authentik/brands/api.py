@@ -69,12 +69,12 @@ class Themes(models.TextChoices):
     DARK = "dark"
 
 
+def get_default_ui_footer_links():
+    return get_current_tenant().footer_links
+
+
 class CurrentBrandSerializer(PassiveSerializer):
     """Partial brand information for styling"""
-
-    @staticmethod
-    def get_default_ui_footer_links():
-        return get_current_tenant().footer_links
 
     matched_domain = CharField(source="domain")
     branding_title = CharField()

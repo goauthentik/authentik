@@ -228,7 +228,7 @@ MIDDLEWARE = [
     "django_tenants.middleware.default.DefaultTenantMiddleware",
     "authentik.root.middleware.LoggingMiddleware",
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
-    "authentik.brands.middleware.TenantMiddleware",
+    "authentik.brands.middleware.BrandMiddleware",
     "authentik.root.middleware.SessionMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "authentik.core.middleware.RequestIDMiddleware",

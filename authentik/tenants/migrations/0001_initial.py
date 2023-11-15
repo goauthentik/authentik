@@ -16,6 +16,7 @@ def create_default_tenant(apps, schema_editor):
     tenant = Tenant.objects.using(db_alias).create(
         schema_name="public",
         name="Default",
+        ready=True,
         avatars=CONFIG.get("avatars", "gravatar,initials"),
         default_user_change_name=CONFIG.get_bool("default_user_change_name", True),
         default_user_change_email=CONFIG.get_bool("default_user_change_email", False),
@@ -54,6 +55,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("name", models.TextField()),
+                ("ready", models.BooleanField(default=False)),
                 (
                     "avatars",
                     models.TextField(

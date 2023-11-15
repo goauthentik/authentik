@@ -119,7 +119,7 @@ def worker_ready_hook(*args, **kwargs):
             _run_task(task)
 
     for task in _get_startup_tasks_all_tenants():
-        for tenant in Tenant.objects.all():
+        for tenant in Tenant.objects.filter(ready=True):
             with tenant:
                 _run_task(task)
 

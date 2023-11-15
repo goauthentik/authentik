@@ -76,7 +76,7 @@ class BlueprintEventHandler(FileSystemEventHandler):
             return
         if event.is_directory:
             return
-        for tenant in Tenant.objects.all():
+        for tenant in Tenant.objects.filter(ready=True):
             with tenant:
                 if isinstance(event, FileCreatedEvent):
                     LOGGER.debug("new blueprint file created, starting discovery")

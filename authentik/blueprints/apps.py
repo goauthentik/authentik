@@ -39,9 +39,14 @@ class ManagedAppConfig(AppConfig):
             if not meth_name.startswith(prefix):
                 continue
             name = meth_name.replace(prefix, "")
-            tenants = Tenant.objects.all()
-            if meth_name.startswith(tenant_prefix):
-                tenants = Tenant.objects.get(schema_name=get_public_schema_name())
+            tenants = Tenant.objects.filter(ready=True)
+            if not meth_name.startswith(tenant_prefix):
+                tenants = Tenant.objects.filter(schema_name=get_public_schema_name())
+            try:
+                tenants = list(tenants)
+            except (DatabaseError, ProgrammingError, InternalError) as exc:
+                self._logger.debug("Failed to get tenants to run reconcile", name=name, exc=exc)
+                continue
             for tenant in tenants:
                 with tenant:
                     try:
