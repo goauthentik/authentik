@@ -1,16 +1,32 @@
 """Tenant models"""
 from uuid import uuid4
 
-from django.db import models
-from django.db.models.deletion import ProtectedError
-from django.db.models.signals import pre_delete
+from django.apps import apps
+from django.conf import settings
+from django.core.management import call_command
+from django.db import connections, models
+from django.db.models.base import ValidationError
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
-from django_tenants.models import DomainMixin, TenantMixin, post_schema_sync
+from django_tenants.models import (
+    DomainMixin,
+    TenantMixin,
+    post_schema_sync,
+    schema_needs_to_be_sync,
+)
+from django_tenants.postgresql_backend.base import _check_schema_name
+from django_tenants.utils import (
+    get_creation_fakes_migrations,
+    get_tenant_base_schema,
+    get_tenant_database_alias,
+    schema_exists,
+)
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
+from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.models import SerializerModel
+from authentik.tenants.clone import CloneSchema
 
 LOGGER = get_logger()
 
@@ -57,6 +73,61 @@ class Tenant(TenantMixin, SerializerModel):
         default=86400,
     )
 
+    def create_schema(self, check_if_exists=False, sync_schema=True, verbosity=1):
+        """
+        Creates the schema 'schema_name' for this tenant. Optionally checks if
+        the schema already exists before creating it. Returns true if the
+        schema was created, false otherwise.
+        """
+
+        # safety check
+        connection = connections[get_tenant_database_alias()]
+        _check_schema_name(self.schema_name)
+        cursor = connection.cursor()
+
+        if check_if_exists and schema_exists(self.schema_name):
+            return False
+
+        fake_migrations = get_creation_fakes_migrations()
+
+        if sync_schema:
+            if fake_migrations:
+                # copy tables and data from provided model schema
+                base_schema = get_tenant_base_schema()
+                clone_schema = CloneSchema()
+                clone_schema.clone_schema(base_schema, self.schema_name)
+
+                call_command(
+                    "migrate_schemas",
+                    tenant=True,
+                    fake=True,
+                    schema_name=self.schema_name,
+                    interactive=False,
+                    verbosity=verbosity,
+                )
+            else:
+                # create the schema
+                cursor.execute('CREATE SCHEMA "%s"' % self.schema_name)
+                call_command(
+                    "migrate_schemas",
+                    tenant=True,
+                    schema_name=self.schema_name,
+                    interactive=False,
+                    verbosity=verbosity,
+                )
+
+        connection.set_schema_to_public()
+
+    def save(self, *args, **kwargs):
+        if self.schema_name == "template":
+            raise Exception("Cannot create schema named template")
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        if self.schema_name in ("public", "template"):
+            raise Exception("Cannot delete schema public or template")
+        super().delete(*args, **kwargs)
+
     @property
     def serializer(self) -> Serializer:
         from authentik.tenants.api import TenantSerializer
@@ -64,7 +135,7 @@ class Tenant(TenantMixin, SerializerModel):
         return TenantSerializer
 
     def __str__(self) -> str:
-        return f"Tenant {self.domain_regex}"
+        return f"Tenant {self.name}"
 
     class Meta:
         verbose_name = _("Tenant")
@@ -87,6 +158,14 @@ class Domain(DomainMixin, SerializerModel):
 
 
 @receiver(post_schema_sync, sender=TenantMixin)
-def tenant_ready(sender, tenant, **kwargs):
+def tenant_needs_sync(sender, tenant, **kwargs):
+    if tenant.ready:
+        return
+
+    with tenant:
+        for app in apps.get_app_configs():
+            if isinstance(app, ManagedAppConfig):
+                app._reconcile(ManagedAppConfig.RECONCILE_TENANT_PREFIX)
+
     tenant.ready = True
     tenant.save()

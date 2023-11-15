@@ -14,24 +14,23 @@ class ManagedAppConfig(AppConfig):
 
     _logger: BoundLogger
 
+    RECONCILE_PREFIX: str = "reconcile_"
+    RECONCILE_TENANT_PREFIX: str = "reconcile_tenant_"
+
     def __init__(self, app_name: str, *args, **kwargs) -> None:
         super().__init__(app_name, *args, **kwargs)
         self._logger = get_logger().bind(app_name=app_name)
 
     def ready(self) -> None:
         self.reconcile()
+        self.reconcile_tenant()
         return super().ready()
 
     def import_module(self, path: str):
         """Load module"""
         import_module(path)
 
-    def reconcile(self) -> None:
-        """reconcile ourselves"""
-        from authentik.tenants.models import Tenant
-
-        prefix = "reconcile_"
-        tenant_prefix = "reconcile_tenant_"
+    def _reconcile(self, prefix: str) -> None:
         for meth_name in dir(self):
             meth = getattr(self, meth_name)
             if not ismethod(meth):
@@ -39,22 +38,37 @@ class ManagedAppConfig(AppConfig):
             if not meth_name.startswith(prefix):
                 continue
             name = meth_name.replace(prefix, "")
-            tenants = Tenant.objects.filter(ready=True)
-            if not meth_name.startswith(tenant_prefix):
-                tenants = Tenant.objects.filter(schema_name=get_public_schema_name())
             try:
-                tenants = list(tenants)
+                self._logger.debug("Starting reconciler", name=name)
+                meth()
+                self._logger.debug("Successfully reconciled", name=name)
             except (DatabaseError, ProgrammingError, InternalError) as exc:
-                self._logger.debug("Failed to get tenants to run reconcile", name=name, exc=exc)
-                continue
-            for tenant in tenants:
-                with tenant:
-                    try:
-                        self._logger.debug("Starting reconciler", name=name)
-                        meth()
-                        self._logger.debug("Successfully reconciled", name=name)
-                    except (DatabaseError, ProgrammingError, InternalError) as exc:
-                        self._logger.debug("Failed to run reconcile", name=name, exc=exc)
+                self._logger.debug("Failed to run reconcile", name=name, exc=exc)
+
+    def reconcile_tenant(self) -> None:
+        """reconcile ourselves for tenanted methods"""
+        from authentik.tenants.models import Tenant
+
+        try:
+            tenants = list(Tenant.objects.filter(ready=True))
+        except (DatabaseError, ProgrammingError, InternalError) as exc:
+            self._logger.debug("Failed to get tenants to run reconcile", exc=exc)
+            return
+        for tenant in tenants:
+            with tenant:
+                self._reconcile(self.RECONCILE_TENANT_PREFIX)
+
+    def reconcile(self) -> None:
+        """reconcile ourselves"""
+        from authentik.tenants.models import Tenant
+
+        try:
+            default_tenant = Tenant.objects.get(schema_name=get_public_schema_name())
+        except (DatabaseError, ProgrammingError, InternalError) as exc:
+            self._logger.debug("Failed to get default tenant to run reconcile", exc=exc)
+            return
+        with default_tenant:
+            self._reconcile(self.RECONCILE_PREFIX)
 
 
 class AuthentikBlueprintsConfig(ManagedAppConfig):

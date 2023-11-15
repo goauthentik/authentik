@@ -117,7 +117,8 @@ def add_process_id(logger: Logger, method_name: str, event_dict):
 
 
 def add_tenant_information(logger: Logger, method_name: str, event_dict):
-    event_dict["schema_name"] = connection.tenant.schema_name
-    event_dict["domain_url"] = getattr(connection.tenant, "domain_url", None)
-
+    tenant = getattr(connection, "tenant", None)
+    if tenant is not None:
+        event_dict["schema_name"] = tenant.schema_name
+        event_dict["domain_url"] = getattr(tenant, "domain_url", None)
     return event_dict

@@ -109,6 +109,7 @@ if __name__ == "__main__":
                 "available on your PYTHONPATH environment variable? Did you "
                 "forget to activate a virtual environment?"
             ) from exc
-        execute_from_command_line(["", "migrate"])
+        execute_from_command_line(["", "migrate_schemas"])
+        execute_from_command_line(["", "migrate_schemas", "--schema", "template", "--tenant"])
     finally:
         release_lock(curr)

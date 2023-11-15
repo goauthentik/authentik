@@ -121,6 +121,9 @@ TENANT_APPS = [
 TENANT_MODEL = "authentik_tenants.Tenant"
 TENANT_DOMAIN_MODEL = "authentik_tenants.Domain"
 
+TENANT_CREATION_FAKES_MIGRATIONS = True
+TENANT_BASE_SCHEMA = "template"
+
 GUARDIAN_MONKEY_PATCH = False
 
 SPECTACULAR_SETTINGS = {
