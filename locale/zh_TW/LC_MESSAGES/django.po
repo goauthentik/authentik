@@ -709,7 +709,7 @@ msgstr "必須設定至少一個條件。"
 msgid ""
 "Match created events with this action type. When left empty, all action "
 "types will be matched."
-msgstr "匹配由此動作類型產生的事件。如果未設定則所有動作類型都將符合。"
+msgstr "將此動作類型與建立的事件配對。如果為空則將符合所有動作類型。"
 
 #: authentik/policies/event_matcher/models.py:73
 msgid ""
