@@ -1,7 +1,7 @@
 ---
-title: How Wireguard finally makes a zero trust future achievable
+title: Everyone agrees zero trust is good but no one correctly implements it
 description: “Thanks to a few advancements (mainly Wireguard), zero trust will soon go from buzzword to reality.”
-slug: 2023-11-15-how-wireguard-makes-zero-trust-acheivable
+slug: 2023-11-15-everyone-agrees-zero-trust-is-good-but
 authors:
     - name: Jens Langhammer
       title: CTO at Authentik Security Inc
