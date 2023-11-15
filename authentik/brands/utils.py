@@ -8,7 +8,6 @@ from sentry_sdk.hub import Hub
 
 from authentik import get_full_version
 from authentik.brands.models import Brand
-from authentik.lib.config import CONFIG
 from authentik.tenants.utils import get_current_tenant
 
 _q_default = Q(default=True)

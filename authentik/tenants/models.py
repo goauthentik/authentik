@@ -2,18 +2,11 @@
 from uuid import uuid4
 
 from django.apps import apps
-from django.conf import settings
 from django.core.management import call_command
 from django.db import connections, models
-from django.db.models.base import ValidationError
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
-from django_tenants.models import (
-    DomainMixin,
-    TenantMixin,
-    post_schema_sync,
-    schema_needs_to_be_sync,
-)
+from django_tenants.models import DomainMixin, TenantMixin, post_schema_sync
 from django_tenants.postgresql_backend.base import _check_schema_name
 from django_tenants.utils import (
     get_creation_fakes_migrations,
@@ -56,7 +49,8 @@ class Tenant(TenantMixin, SerializerModel):
     )
     gdpr_compliance = models.BooleanField(
         help_text=_(
-            "When enabled, all the events caused by a user will be deleted upon the user's deletion."
+            "When enabled, all the events caused by a user "
+            "will be deleted upon the user's deletion."
         ),
         default=True,
     )

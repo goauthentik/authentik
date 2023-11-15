@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import connection, transaction
-from django.db.utils import ProgrammingError
 from django_tenants.utils import schema_exists
 
 CLONE_SCHEMA_FUNCTION = r"""
@@ -1225,7 +1224,7 @@ BEGIN
     --Fix#65 add another left join to distinguish child tables by inheritance
     -- Fix#86 add is_generated to column select
     -- Fix#91 add tblowner to the select
-    -- Fix#105 need a different kinda distint to avoid retrieving a table twice in the case of a table with multiple USER-DEFINED datatypes using DISTINCT ON instead of just DISTINCT
+    -- Fix#105 need a different kinda distinct to avoid retrieving a table twice in the case of a table with multiple USER-DEFINED datatypes using DISTINCT ON instead of just DISTINCT
     --SELECT DISTINCT c.relname, c.relpersistence, c.relispartition, c.relkind, co.data_type, co.udt_name, co.udt_schema, obj_description(c.oid), i.inhrelid,
     --                COALESCE(co.is_generated, ''), pg_catalog.pg_get_userbyid(c.relowner) as "Owner", CASE WHEN reltablespace = 0 THEN 'pg_default' ELSE ts.spcname END as tablespace
     -- fixed #108 by enclosing owner in double quotes to avoid errors for bad characters like #.@...
@@ -1519,7 +1518,7 @@ BEGIN
       IF data_type = 'USER-DEFINED' OR isGenerated = 'ALWAYS' THEN
 
         -- RAISE WARNING 'Bypassing copying rows for table (%) with user-defined data types.  You must copy them manually.', tblname;
-        -- wont work --> INSERT INTO clone1.address (id2, id3, addr) SELECT cast(id2 as clone1.udt_myint), cast(id3 as clone1.udt_myint), addr FROM sample.address;
+        -- won't work --> INSERT INTO clone1.address (id2, id3, addr) SELECT cast(id2 as clone1.udt_myint), cast(id3 as clone1.udt_myint), addr FROM sample.address;
         -- Issue#101 --> INSERT INTO clone1.address2 (id2, id3, addr) SELECT id2::text::clone1.udt_myint, id3::text::clone1.udt_myint, addr FROM sample.address;
 
         -- Issue#79 implementation follows
@@ -1554,7 +1553,7 @@ BEGIN
         IF NOT bRelispart AND NOT bChild THEN
           -- Issue#75: Must defer population of tables until child tables have been added to parents
           -- Issue#101 Offer alternative of copy to/from file. Although originally intended for tables with UDTs, it is now expanded to handle all cases for performance improvement perhaps for large tables.
-          -- Issue#106 buffer3 shouldnt be in the mix
+          -- Issue#106 buffer3 shouldn't be in the mix
           -- revisited:  buffer3 should be in play for PG versions that handle IDENTITIES
           buffer2 := 'INSERT INTO ' || buffer || buffer3 || ' SELECT * FROM ' || quote_ident(source_schema) || '.' || quote_ident(tblname) || ';';
           -- buffer2 := 'INSERT INTO ' || buffer || ' SELECT * FROM ' || quote_ident(source_schema) || '.' || quote_ident(tblname) || ';';
@@ -1602,7 +1601,7 @@ BEGIN
     --Fix#65 add another left join to distinguish child tables by inheritance
     -- Fix#86 add is_generated to column select
     -- Fix#91 add tblowner to the select
-    -- Fix#105 need a different kinda distint to avoid retrieving a table twice in the case of a table with multiple USER-DEFINED datatypes using DISTINCT ON instead of just DISTINCT
+    -- Fix#105 need a different kinda distinct to avoid retrieving a table twice in the case of a table with multiple USER-DEFINED datatypes using DISTINCT ON instead of just DISTINCT
     -- Fixed Issue#108: double quote roles to avoid problems with special characters in OWNER TO statements
     --SELECT DISTINCT c.relname, c.relpersistence, c.relispartition, c.relkind, co.data_type, co.udt_name, co.udt_schema, obj_description(c.oid), i.inhrelid,
     --                COALESCE(co.is_generated, ''), pg_catalog.pg_get_userbyid(c.relowner) as "Owner", CASE WHEN reltablespace = 0 THEN 'pg_default' ELSE ts.spcname END as tablespace
@@ -1884,7 +1883,7 @@ BEGIN
       IF data_type = 'USER-DEFINED' OR isGenerated = 'ALWAYS' THEN
 
         -- RAISE WARNING 'Bypassing copying rows for table (%) with user-defined data types.  You must copy them manually.', tblname;
-        -- wont work --> INSERT INTO clone1.address (id2, id3, addr) SELECT cast(id2 as clone1.udt_myint), cast(id3 as clone1.udt_myint), addr FROM sample.address;
+        -- won't work --> INSERT INTO clone1.address (id2, id3, addr) SELECT cast(id2 as clone1.udt_myint), cast(id3 as clone1.udt_myint), addr FROM sample.address;
         -- Issue#101 --> INSERT INTO clone1.address2 (id2, id3, addr) SELECT id2::text::clone1.udt_myint, id3::text::clone1.udt_myint, addr FROM sample.address;
 
         -- Issue#79 implementation follows
@@ -2655,7 +2654,7 @@ BEGIN
       AND n.nspname = quote_ident(source_schema) COLLATE pg_catalog.default
       AND pg_catalog.obj_description(t.oid, 'pg_type') IS NOT NULL and t.typtype = 'c'
     UNION
-    -- FIX Isse#87 by adding double quotes around collation name
+    -- FIX Issue#87 by adding double quotes around collation name
     SELECT 'COMMENT ON COLLATION ' || dest_schema || '."' || c.collname || '" IS ''' || pg_catalog.obj_description(c.oid, 'pg_collation') || ''';' as ddl
     FROM pg_catalog.pg_collation c, pg_catalog.pg_namespace n
     WHERE n.oid = c.collnamespace AND c.collencoding IN (-1, pg_catalog.pg_char_to_encoding(pg_catalog.getdatabaseencoding()))
@@ -3193,7 +3192,7 @@ BEGIN
                           || quote_ident(dest_schema) || '.') || ';'
     FROM pg_constraint ct
     JOIN pg_class rn ON rn.oid = ct.conrelid
-    -- Issue#103 needed to addd this left join
+    -- Issue#103 needed to add this left join
     LEFT JOIN pg_inherits i ON (rn.oid = i.inhrelid)
     WHERE connamespace = src_oid
         AND rn.relkind = 'r'
@@ -3263,7 +3262,7 @@ $BODY$
 
 ALTER FUNCTION public.clone_schema(text, text, cloneparms[]) OWNER TO "{db_user}";
 -- REVOKE ALL PRIVILEGES ON FUNCTION clone_schema(text, text, cloneparms[]) FROM public;
-"""
+"""  # noqa
 
 
 class CloneSchema:

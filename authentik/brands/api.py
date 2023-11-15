@@ -17,7 +17,6 @@ from authentik.api.authorization import SecretKeyFilter
 from authentik.brands.models import Brand
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
-from authentik.lib.config import CONFIG
 from authentik.tenants.utils import get_current_tenant
 
 

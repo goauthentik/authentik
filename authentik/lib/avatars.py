@@ -11,7 +11,7 @@ from lxml import etree  # nosec
 from lxml.etree import Element, SubElement  # nosec
 from requests.exceptions import RequestException
 
-from authentik.lib.config import CONFIG, get_path_from_dict
+from authentik.lib.config import get_path_from_dict
 from authentik.lib.utils.http import get_http_session
 from authentik.tenants.utils import get_current_tenant
 
