@@ -699,7 +699,7 @@ msgstr "將選擇的應用程式與建立的事件配對。如果為空則將符
 msgid ""
 "Match events created by selected model. When left empty, all models are "
 "matched. When an app is selected, all the application's models are matched."
-msgstr "當未選擇任何模型時，會匹配所有模型產生的事件。如果選擇了某一個應用程式，則會匹配該應用程式下所有模型產生的事件。"
+msgstr "將選擇的模型與建立的事件配對。如果為空則將符合所有模型。如果選擇了某一個應用程式，則會配對該應用程式下所有模型的事件。"
 
 #: authentik/policies/event_matcher/api.py:42
 msgid "At least one criteria must be set."
