@@ -10,7 +10,6 @@ from django.db.models import Model
 from django.db.models.signals import m2m_changed, post_save, pre_delete
 from django.http import HttpRequest, HttpResponse
 from guardian.models import UserObjectPermission
-from guardian.shortcuts import get_anonymous_user
 
 from authentik.core.models import (
     AuthenticatedSession,
@@ -94,16 +93,23 @@ class AuditMiddleware:
     of models"""
 
     get_response: Callable[[HttpRequest], HttpResponse]
-    anonymous_user: User
+    anonymous_user: User = None
 
     def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]):
         self.get_response = get_response
+
+    def _ensure_fallback_user(self):
+        """Defer fetching anonymous user until we have to"""
+        if self.anonymous_user:
+            return
+        from guardian.shortcuts import get_anonymous_user
+
         self.anonymous_user = get_anonymous_user()
 
     def connect(self, request: HttpRequest):
         """Connect signal for automatic logging"""
+        self._ensure_fallback_user()
         user = getattr(request, "user", self.anonymous_user)
-        print(user, user.is_authenticated)
         if not user.is_authenticated:
             user = self.anonymous_user
         if not hasattr(request, "request_id"):
