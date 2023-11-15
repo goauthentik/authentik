@@ -7950,6 +7950,34 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Failed logins</source>
   <target>失败登录</target>
 </trans-unit>
+<trans-unit id="sb35c08e3a541188f">
+  <source>Also known as Client ID.</source>
+  <target>也称为客户端 ID。</target>
+</trans-unit>
+<trans-unit id="sd46fd9b647cfea10">
+  <source>Also known as Client Secret.</source>
+  <target>也称为客户端密钥。</target>
+</trans-unit>
+<trans-unit id="s4476e9c50cfd13f4">
+  <source>Global status</source>
+  <target>全局状态</target>
+</trans-unit>
+<trans-unit id="sd21a971eea208533">
+  <source>Vendor</source>
+  <target>供应商</target>
+</trans-unit>
+<trans-unit id="sadadfe9dfa06d7dd">
+  <source>No sync status.</source>
+  <target>无同步状态。</target>
+</trans-unit>
+<trans-unit id="s2b1c81130a65a55b">
+  <source>Sync currently running.</source>
+  <target>当前正在同步。</target>
+</trans-unit>
+<trans-unit id="sf36170f71cea38c2">
+  <source>Connectivity</source>
+  <target>连接性</target>
+</trans-unit>
     </body>
   </file>
 </xliff>
