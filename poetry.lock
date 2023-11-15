@@ -3821,6 +3821,20 @@ pyyaml = "*"
 typing-extensions = "*"
 
 [[package]]
+name = "tenant-schemas-celery"
+version = "2.2.0"
+description = "Celery integration for django-tenant-schemas and django-tenants"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "tenant-schemas-celery-2.2.0.tar.gz", hash = "sha256:b4fc16959cb98597591afb30f07256f70d8470d97c22c62e3d3af344868cdd6f"},
+]
+
+[package.dependencies]
+celery = "*"
+
+[[package]]
 name = "tomlkit"
 version = "0.12.3"
 description = "Style preserving TOML library"
@@ -4648,4 +4662,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.11"
-content-hash = "f6f26ceab7fcd5b1d614069cd5423aa8e90d3892d03f302907129fbff3ff63a0"
+content-hash = "7c8fba15c50cc7ff0341b6654444d49d69e4e99659ea1cccc411bef9efdcef82"

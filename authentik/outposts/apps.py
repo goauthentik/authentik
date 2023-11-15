@@ -29,7 +29,7 @@ class AuthentikOutpostConfig(ManagedAppConfig):
         """Load outposts signals"""
         self.import_module("authentik.outposts.signals")
 
-    def reconcile_embedded_outpost(self):
+    def reconcile_tenant_embedded_outpost(self):
         """Ensure embedded outpost"""
         from authentik.outposts.models import (
             DockerServiceConnection,

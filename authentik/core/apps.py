@@ -24,7 +24,7 @@ class AuthentikCoreConfig(ManagedAppConfig):
 
             worker_ready_hook()
 
-    def reconcile_source_inbuilt(self):
+    def reconcile_tenant_source_inbuilt(self):
         """Reconcile inbuilt source"""
         from authentik.core.models import Source
 

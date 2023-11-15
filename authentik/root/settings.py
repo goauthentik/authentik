@@ -207,6 +207,8 @@ CACHES = {
         "TIMEOUT": CONFIG.get_int("cache.timeout", 300),
         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
         "KEY_PREFIX": "authentik_cache",
+        "KEY_FUNCTION": "django_tenants.cache.make_key",
+        "REVERSE_KEY_FUNCTION": "django_tenants.cache.reverse_key",
     }
 }
 DJANGO_REDIS_SCAN_ITERSIZE = 1000
@@ -360,6 +362,7 @@ CELERY = {
             "options": {"queue": "authentik_scheduled"},
         },
     },
+    "beat_scheduler": "authentik.tenants.scheduler:TenantAwarePersistentScheduler",
     "task_create_missing_queues": True,
     "task_default_queue": "authentik",
     "broker_url": CONFIG.get("broker.url")

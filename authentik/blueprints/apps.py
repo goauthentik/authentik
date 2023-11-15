@@ -5,6 +5,7 @@ from inspect import ismethod
 
 from django.apps import AppConfig
 from django.db import DatabaseError, InternalError, ProgrammingError
+from django_tenants.utils import get_public_schema_name
 from structlog.stdlib import BoundLogger, get_logger
 
 
@@ -27,7 +28,10 @@ class ManagedAppConfig(AppConfig):
 
     def reconcile(self) -> None:
         """reconcile ourselves"""
+        from authentik.tenants.models import Tenant
+
         prefix = "reconcile_"
+        tenant_prefix = "reconcile_tenant_"
         for meth_name in dir(self):
             meth = getattr(self, meth_name)
             if not ismethod(meth):
@@ -35,12 +39,17 @@ class ManagedAppConfig(AppConfig):
             if not meth_name.startswith(prefix):
                 continue
             name = meth_name.replace(prefix, "")
-            try:
-                self._logger.debug("Starting reconciler", name=name)
-                meth()
-                self._logger.debug("Successfully reconciled", name=name)
-            except (DatabaseError, ProgrammingError, InternalError) as exc:
-                self._logger.debug("Failed to run reconcile", name=name, exc=exc)
+            tenants = Tenant.objects.all()
+            if meth_name.startswith(tenant_prefix):
+                tenants = Tenant.objects.get(schema_name=get_public_schema_name())
+            for tenant in tenants:
+                with tenant:
+                    try:
+                        self._logger.debug("Starting reconciler", name=name)
+                        meth()
+                        self._logger.debug("Successfully reconciled", name=name)
+                    except (DatabaseError, ProgrammingError, InternalError) as exc:
+                        self._logger.debug("Failed to run reconcile", name=name, exc=exc)
 
 
 class AuthentikBlueprintsConfig(ManagedAppConfig):
@@ -55,7 +64,7 @@ class AuthentikBlueprintsConfig(ManagedAppConfig):
         """Load v1 tasks"""
         self.import_module("authentik.blueprints.v1.tasks")
 
-    def reconcile_blueprints_discovery(self):
+    def reconcile_tenant_blueprints_discovery(self):
         """Run blueprint discovery"""
         from authentik.blueprints.v1.tasks import blueprints_discovery, clear_failed_blueprints
 

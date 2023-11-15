@@ -38,6 +38,7 @@ from authentik.events.monitored_tasks import (
 from authentik.events.utils import sanitize_dict
 from authentik.lib.config import CONFIG
 from authentik.root.celery import CELERY_APP
+from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()
 _file_watcher_started = False
@@ -75,16 +76,17 @@ class BlueprintEventHandler(FileSystemEventHandler):
             return
         if event.is_directory:
             return
-        if isinstance(event, FileCreatedEvent):
-            LOGGER.debug("new blueprint file created, starting discovery")
-            blueprints_discovery.delay()
-        if isinstance(event, FileModifiedEvent):
-            path = Path(event.src_path)
-            root = Path(CONFIG.get("blueprints_dir")).absolute()
-            rel_path = str(path.relative_to(root))
-            for instance in BlueprintInstance.objects.filter(path=rel_path, enabled=True):
-                LOGGER.debug("modified blueprint file, starting apply", instance=instance)
-                apply_blueprint.delay(instance.pk.hex)
+        for tenant in Tenant.objects.all():
+            with tenant:
+                if isinstance(event, FileCreatedEvent):
+                    LOGGER.debug("new blueprint file created, starting discovery")
+                    blueprints_discovery.delay()
+                if isinstance(event, FileModifiedEvent):
+                    path = Path(event.src_path)
+                    root = Path(CONFIG.get("blueprints_dir")).absolute()
+                    rel_path = str(path.relative_to(root))
+                    for instance in BlueprintInstance.objects.filter(path=rel_path, enabled=True):
+                        LOGGER.debug("modified blueprint file, starting apply", instance=instance)
 
 
 @CELERY_APP.task(

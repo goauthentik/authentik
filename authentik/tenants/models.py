@@ -6,7 +6,7 @@ from django.db.models.deletion import ProtectedError
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
-from django_tenants.models import DomainMixin, TenantMixin
+from django_tenants.models import DomainMixin, TenantMixin, post_schema_sync
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
@@ -23,6 +23,7 @@ class Tenant(TenantMixin, SerializerModel):
 
     auto_create_schema = True
     auto_drop_schema = True
+    ready = models.BooleanField(default=False)
 
     avatars = models.TextField(
         help_text=_("Configure how authentik should show avatars for users."),
@@ -83,3 +84,9 @@ class Domain(DomainMixin, SerializerModel):
     class Meta:
         verbose_name = _("Domain")
         verbose_name_plural = _("Domains")
+
+
+@receiver(post_schema_sync, sender=TenantMixin)
+def tenant_ready(sender, tenant, **kwargs):
+    tenant.ready = True
+    tenant.save()
