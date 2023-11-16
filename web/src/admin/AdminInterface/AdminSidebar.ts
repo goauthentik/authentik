@@ -5,17 +5,34 @@ import { authentikConfigContext } from "@goauthentik/elements/AuthentikContexts"
 import { AKElement } from "@goauthentik/elements/Base";
 import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "@goauthentik/elements/router/Route";
 import "@goauthentik/elements/sidebar/Sidebar";
-import { SidebarAttributes, SidebarEntry, SidebarEventHandler } from "@goauthentik/elements/sidebar/SidebarItems";
+import {
+    SidebarAttributes,
+    SidebarEntry,
+    SidebarEventHandler,
+} from "@goauthentik/elements/sidebar/SidebarItems";
 import { getRootStyle } from "@goauthentik/elements/utils/getRootStyle";
 
 import { consume } from "@lit-labs/context";
 import { msg, str } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { eventActionLabels } from "@goauthentik/common/labels";
 
 import { ProvidersApi, TypeCreate } from "@goauthentik/api";
-import { AdminApi, CapabilitiesEnum, CoreApi, Version } from "@goauthentik/api";
+import {
+    AdminApi,
+    CapabilitiesEnum,
+    CoreApi,
+    OutpostsApi,
+    PoliciesApi,
+    PropertymappingsApi,
+    SourcesApi,
+    StagesApi,
+    Version,
+} from "@goauthentik/api";
 import type { Config, SessionUser, UserSelf } from "@goauthentik/api";
+
+import { flowDesignationTable } from "../flows/utils";
 
 /**
  * AdminSidebar
@@ -24,7 +41,7 @@ import type { Config, SessionUser, UserSelf } from "@goauthentik/api";
  * it.  Rendering decisions are left to the sidebar itself.
  */
 
-type LocalSidebarEntry = [
+export type LocalSidebarEntry = [
     string | SidebarEventHandler | null,
     string,
     (SidebarAttributes | string[] | null)?, // eslint-disable-line
@@ -34,12 +51,21 @@ type LocalSidebarEntry = [
 const localToSidebarEntry = (l: LocalSidebarEntry): SidebarEntry => ({
     path: l[0],
     label: l[1],
-    ...(l[2]? { attributes: Array.isArray(l[2]) ? { activeWhen: l[2] } : l[2] } : {}),
+    ...(l[2] ? { attributes: Array.isArray(l[2]) ? { activeWhen: l[2] } : l[2] } : {}),
     ...(l[3] ? { children: l[3].map(localToSidebarEntry) } : {}),
 });
 
+const typeCreateToSidebar = (baseUrl: string, tcreate: TypeCreate[]): LocalSidebarEntry[] =>
+    tcreate.map((t) => [
+        `${baseUrl};${encodeURIComponent(JSON.stringify({ search: t.name }))}`,
+        t.name,
+    ]);
+
 @customElement("ak-admin-sidebar")
 export class AkAdminSidebar extends AKElement {
+    @consume({ context: authentikConfigContext })
+    public config!: Config;
+
     @property({ type: Boolean, reflect: true })
     open = true;
 
@@ -52,8 +78,20 @@ export class AkAdminSidebar extends AKElement {
     @state()
     providerTypes: TypeCreate[] = [];
 
-    @consume({ context: authentikConfigContext })
-    public config!: Config;
+    @state()
+    stageTypes: TypeCreate[] = [];
+
+    @state()
+    mappingTypes: TypeCreate[] = [];
+
+    @state()
+    sourceTypes: TypeCreate[] = [];
+
+    @state()
+    policyTypes: TypeCreate[] = [];
+
+    @state()
+    connectionTypes: TypeCreate[] = [];
 
     constructor() {
         super();
@@ -66,6 +104,22 @@ export class AkAdminSidebar extends AKElement {
         new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList().then((types) => {
             this.providerTypes = types;
         });
+        new StagesApi(DEFAULT_CONFIG).stagesAllTypesList().then((types) => {
+            this.stageTypes = types;
+        });
+        new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllTypesList().then((types) => {
+            this.mappingTypes = types;
+        });
+        new SourcesApi(DEFAULT_CONFIG).sourcesAllTypesList().then((types) => {
+            this.sourceTypes = types;
+        });
+        new PoliciesApi(DEFAULT_CONFIG).policiesAllTypesList().then((types) => {
+            this.policyTypes = types;
+        });
+        new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllTypesList().then((types) => {
+            this.connectionTypes = types;
+        });
+
         this.toggleOpen = this.toggleOpen.bind(this);
         this.checkWidth = this.checkWidth.bind(this);
     }
@@ -79,7 +133,9 @@ export class AkAdminSidebar extends AKElement {
     checkWidth() {
         // This works just fine, but it assumes that the `--ak-sidebar--minimum-auto-width` is in
         // REMs. If that changes, this code will have to be adjusted as well.
-        const minWidth = parseFloat(getRootStyle("--ak-sidebar--minimum-auto-width")) * parseFloat(getRootStyle("font-size"));
+        const minWidth =
+            parseFloat(getRootStyle("--ak-sidebar--minimum-auto-width")) *
+            parseFloat(getRootStyle("font-size"));
         this.open = window.innerWidth >= minWidth;
     }
 
@@ -133,8 +189,21 @@ export class AkAdminSidebar extends AKElement {
             : [];
 
         // prettier-ignore
-        const providerTypes: LocalSidebarEntry[] = this.providerTypes.map((ptype) =>
-            ([`/core/providers;${encodeURIComponent(JSON.stringify({ search: ptype.modelName.replace(/provider$/, "") }))}`, ptype.name]));
+        const flowTypes: LocalSidebarEntry[] = flowDesignationTable.map(([_designation, label]) =>  
+            ([`/flow/flows;${encodeURIComponent(JSON.stringify({ search: label }))}`, label]));
+
+
+        const eventTypes: LocalSidebarEntry[] = eventActionLabels.map(([_action, label]) =>  
+            ([`/events/log;${encodeURIComponent(JSON.stringify({ search: label }))}`, label]));
+        
+        const [mappingTypes,  providerTypes, sourceTypes, stageTypes, connectionTypes, policyTypes] = [
+            typeCreateToSidebar("/core/property-mappings", this.mappingTypes),
+            typeCreateToSidebar("/core/providers", this.providerTypes),
+            typeCreateToSidebar("/core/sources", this.sourceTypes),
+            typeCreateToSidebar("/flow/stages", this.stageTypes),
+            typeCreateToSidebar("/outpost/integrations", this.connectionTypes),
+            typeCreateToSidebar("/policy/policies", this.policyTypes),
+        ];
 
         // prettier-ignore
         const localSidebar: LocalSidebarEntry[] = [
@@ -150,36 +219,38 @@ export class AkAdminSidebar extends AKElement {
                 ["/core/providers", msg("Providers"), [`^/core/providers/(?<id>${ID_REGEX})$`], providerTypes],
                 ["/outpost/outposts", msg("Outposts")]]],
             [null, msg("Events"), null, [
-                ["/events/log", msg("Logs"), [`^/events/log/(?<id>${UUID_REGEX})$`]],
+                ["/events/log", msg("Logs"), [`^/events/log/(?<id>${UUID_REGEX})$`], eventTypes],
                 ["/events/rules", msg("Notification Rules")],
                 ["/events/transports", msg("Notification Transports")]]],
             [null, msg("Customisation"), null, [
-                ["/policy/policies", msg("Policies")],
-                ["/core/property-mappings", msg("Property Mappings")],
+                ["/policy/policies", msg("Policies"), null, policyTypes],
+                ["/core/property-mappings", msg("Property Mappings"), null, mappingTypes],
                 ["/blueprints/instances", msg("Blueprints")],
                 ["/policy/reputation", msg("Reputation scores")]]],
             [null, msg("Flows and Stages"), null, [
-                ["/flow/flows", msg("Flows"), [`^/flow/flows/(?<slug>${SLUG_REGEX})$`]],
-                ["/flow/stages", msg("Stages")],
+                ["/flow/flows", msg("Flows"), [`^/flow/flows/(?<slug>${SLUG_REGEX})$`], flowTypes],
+                ["/flow/stages", msg("Stages"), null, stageTypes],
                 ["/flow/stages/prompts", msg("Prompts")]]],
             [null, msg("Directory"), null, [
                 ["/identity/users", msg("Users"), [`^/identity/users/(?<id>${ID_REGEX})$`]],
                 ["/identity/groups", msg("Groups"), [`^/identity/groups/(?<id>${UUID_REGEX})$`]],
                 ["/identity/roles", msg("Roles"), [`^/identity/roles/(?<id>${UUID_REGEX})$`]],
-                ["/core/sources", msg("Federation and Social login"), [`^/core/sources/(?<slug>${SLUG_REGEX})$`]],
+                ["/core/sources", msg("Federation and Social login"), [`^/core/sources/(?<slug>${SLUG_REGEX})$`], sourceTypes],
                 ["/core/tokens", msg("Tokens and App passwords")],
                 ["/flow/stages/invitations", msg("Invitations")]]],
             [null, msg("System"), null, [
                 ["/core/tenants", msg("Tenants")],
                 ["/crypto/certificates", msg("Certificates")],
-                ["/outpost/integrations", msg("Outpost Integrations")]]],
+                ["/outpost/integrations", msg("Outpost Integrations"), null, connectionTypes]]],
             ...(enterpriseMenu)
         ];
 
-         return localSidebar.map(localToSidebarEntry);
+        return localSidebar.map(localToSidebarEntry);
     }
 
     render() {
-        return html` <ak-sidebar class="pf-c-page__sidebar" .entries=${this.sidebarItems}></ak-sidebar> `;
+        return html`
+            <ak-sidebar class="pf-c-page__sidebar" .entries=${this.sidebarItems}></ak-sidebar>
+        `;
     }
 }

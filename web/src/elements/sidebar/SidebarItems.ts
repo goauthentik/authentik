@@ -69,6 +69,12 @@ export class SidebarItems extends AKElement {
                     max-height: 82px;
                     margin-bottom: -0.5rem;
                 }
+                .pf-c-nav__toggle {
+                    width: calc(
+                        var(--pf-c-nav__toggle--FontSize) + calc(2 * var(--pf-global--spacer--md))
+                    );
+                }
+
                 nav {
                     display: flex;
                     flex-direction: column;
@@ -86,6 +92,17 @@ export class SidebarItems extends AKElement {
                     --pf-c-nav__link--PaddingRight: 0.5rem;
                     --pf-c-nav__link--PaddingBottom: 0.5rem;
                 }
+
+                .pf-c-nav__link a {
+flex: 1 0 max-content;
+                    color: var(--pf-c-nav__link--Color);
+                }
+
+                a.pf-c-nav__link:hover {
+                    color: var(--pf-c-nav__link--Color);
+                    text-decoration: var(--pf-global--link--TextDecoration--hover);
+                }
+
                 .pf-c-nav__section-title {
                     font-size: 12px;
                 }
