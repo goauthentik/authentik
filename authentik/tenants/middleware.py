@@ -2,9 +2,8 @@
 from typing import Callable
 
 from django.http import HttpRequest, HttpResponse
+from django_tenants.utils import get_tenant
 from sentry_sdk.api import set_tag
-
-from authentik.tenants.utils import get_tenant_for_request
 
 
 class CurrentTenantMiddleware:
@@ -17,8 +16,9 @@ class CurrentTenantMiddleware:
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
         if not hasattr(request, "tenant"):
-            tenant = get_tenant_for_request(request)
+            tenant = get_tenant(request)
             setattr(request, "tenant", tenant)
-            set_tag("authentik.tenant_uuid", tenant.tenant_uuid.hex)
-            set_tag("authentik.tenant_domain_regex", tenant.domain_regex)
+            if tenant is not None:
+                set_tag("authentik.tenant_uuid", tenant.tenant_uuid.hex)
+                set_tag("authentik.tenant_domain_regex", tenant.domain_regex)
         return self.get_response(request)
