@@ -2418,14 +2418,14 @@ msgid ""
 "Optionally provide a short hint that describes the expected input value. "
 "When creating a fixed choice field, enable interpreting as expression and "
 "return a list to return multiple choices."
-msgstr "可選：提供一個簡短提示，描述預期的輸入值。當建立一個固定選擇欄位時，啟用解釋為表達式，並回傳一個列表以提供多個選擇。"
+msgstr "可選：提供一個簡短提示，描述預期的輸入值。當建立一個固定選擇欄位時，啟用解釋為表示式，並回傳一個列表以提供多個選擇。"
 
 #: authentik/stages/prompt/models.py:132
 msgid ""
 "Optionally pre-fill the input with an initial value. When creating a fixed "
 "choice field, enable interpreting as expression and return a list to return "
 "multiple default choices."
-msgstr "可選：預先填入輸入框以一個初始值。當建立一個固定選擇欄位時，啟用解釋為表達式，並回傳一個列表以提供多個預設選擇。"
+msgstr "可選：預先填入輸入框以一個初始值。當建立一個固定選擇欄位時，啟用解釋為表示式，並回傳一個列表以提供多個預設選擇。"
 
 #: authentik/stages/prompt/models.py:321
 msgid "Prompt"
