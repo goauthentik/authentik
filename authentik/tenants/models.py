@@ -3,6 +3,7 @@ from uuid import uuid4
 
 from django.apps import apps
 from django.db import models
+from django.db.utils import IntegrityError
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from django_tenants.models import DomainMixin, TenantMixin, post_schema_sync
@@ -60,12 +61,12 @@ class Tenant(TenantMixin, SerializerModel):
 
     def save(self, *args, **kwargs):
         if self.schema_name == "template":
-            raise Exception("Cannot create schema named template")
+            raise IntegrityError("Cannot create schema named template")
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         if self.schema_name in ("public", "template"):
-            raise Exception("Cannot delete schema public or template")
+            raise IntegrityError("Cannot delete schema public or template")
         super().delete(*args, **kwargs)
 
     @property
@@ -83,6 +84,8 @@ class Tenant(TenantMixin, SerializerModel):
 
 
 class Domain(DomainMixin, SerializerModel):
+    """Tenant domain"""
+
     def __str__(self) -> str:
         return f"Domain {self.domain}"
 
@@ -99,6 +102,7 @@ class Domain(DomainMixin, SerializerModel):
 
 @receiver(post_schema_sync, sender=TenantMixin)
 def tenant_needs_sync(sender, tenant, **kwargs):
+    """Reconcile apps for a specific tenant on creation"""
     if tenant.ready:
         return
 

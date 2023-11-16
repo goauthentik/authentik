@@ -19,6 +19,8 @@ from authentik.tenants.models import Domain, Tenant
 
 
 class TenantManagementKeyPermission(permissions.BasePermission):
+    """Authentication based on tenant_management_key"""
+
     def has_permission(self, request: Request, view: View) -> bool:
         token = validate_auth(get_authorization_header(request))
         tenant_management_key = CONFIG.get("tenant_management_key")
@@ -110,5 +112,5 @@ class SettingsView(RetrieveUpdateAPIView):
 
     def get_object(self):
         obj = get_tenant(self.request)
-        self.check_object_permissions(obj)
+        self.check_object_permissions(self.request, obj)
         return obj

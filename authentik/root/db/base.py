@@ -8,6 +8,7 @@ class DatabaseWrapper(BaseDatabaseWrapper):
     """database backend which supports rotating credentials"""
 
     def get_connection_params(self):
+        """Refresh DB credentials before getting connection params"""
         CONFIG.refresh("postgresql.password")
         conn_params = super().get_connection_params()
         conn_params["user"] = CONFIG.get("postgresql.user")
