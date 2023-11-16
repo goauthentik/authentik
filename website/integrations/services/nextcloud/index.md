@@ -18,14 +18,12 @@ This setup only works, when Nextcloud is running with HTTPS enabled. See [here](
 In case something goes wrong with the configuration, you can use the URL `http://nextcloud.company/login?direct=1` to log in using the built-in authentication.
 :::
 
-
 ## Authentication
 
 There are 2 ways to setup single sign on (SSO) for Nextcloud:
 
-- [via OIDC Connect (OAuth)](#openid-connect-auth)
-- [via SAML](#saml-auth)
-
+-   [via OIDC Connect (OAuth)](#openid-connect-auth)
+-   [via SAML](#saml-auth)
 
 ### OpenID Connect auth
 
