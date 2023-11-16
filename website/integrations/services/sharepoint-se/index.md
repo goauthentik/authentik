@@ -301,10 +301,8 @@ Objectives :
 The following PowerShell script must be updated according to your environment and executed as **Farm Admin account** with **elevated privileges** on a SharePoint Server.
 
 :::caution
-
 -   Update placeholders
 -   Read all script's comments.
-
 :::
 
 ```PowerShell
