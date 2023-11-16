@@ -149,7 +149,6 @@ export class SidebarItems extends AKElement {
     }
 
     toggleExpand(entry: SidebarEntry) {
-        console.log(this, entry, this.expanded.has(entry));
         if (this.expanded.has(entry)) {
             this.expanded.delete(entry);
         } else {
@@ -164,19 +163,23 @@ export class SidebarItems extends AKElement {
         // not when being forwarded to the correct renderer.
         const attr = attributes ?? undefined;
         const hasChildren = !!(children && children.length > 0);
+        console.log(entry.label, hasChildren);
 
         // This is grossly imperative, in that it HAS to come before the content is rendered
-        // to make sure the content gets the right settings with respect to expansion.  
+        // to make sure the content gets the right settings with respect to expansion.
         if (attr?.expanded) {
             this.expanded.add(entry);
             delete attr.expanded;
         }
 
-        const content = path
-            ? this.renderLink(label, path, attr)
-            : hasChildren
-            ? this.renderLabelAndChildren(entry)
-            : this.renderLabel(label, attr);
+        const content =
+            path && hasChildren
+                ? this.renderLinkAndChildren(entry)
+                : hasChildren
+                ? this.renderLabelAndChildren(entry)
+                : path
+                ? this.renderLink(label, path, attr)
+                : this.renderLabel(label, attr);
 
         const expanded = {
             "highlighted": !!attr?.highlight,
@@ -237,19 +240,21 @@ export class SidebarItems extends AKElement {
             ${this.expanded.has(entry) ? this.renderChildren(entry.children ?? []) : nothing}`;
     }
 
-    renderLinkAndChildren(
-        label: string,
-        children: SidebarEntry[],
-        attr: SidebarAttributes = {}
-    ): TemplateResult {
+    renderLinkAndChildren(entry: SidebarEntry): TemplateResult {
+        const handler = () => this.toggleExpand(entry);
         return html` <div class="pf-c-nav__link">
-                <div class="ak-nav__link">${label}</div>
-                <span class="pf-c-nav__toggle">
+                <a
+                    href="${entry.attributes?.isAbsoluteLink ? "" : "#"}${entry.path}"
+                    class="ak-nav__link"
+                >
+                    ${entry.label}
+                </a>
+                <span class="pf-c-nav__toggle" @click=${handler}>
                     <span class="pf-c-nav__toggle-icon">
                         <i class="fas fa-angle-right" aria-hidden="true"></i>
                     </span>
                 </span>
             </div>
-            ${attr.expanded ? this.renderChildren(children) : nothing}`;
+            ${this.expanded.has(entry) ? this.renderChildren(entry.children ?? []) : nothing}`;
     }
 }
