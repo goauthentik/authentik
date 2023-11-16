@@ -107,7 +107,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/System'
+                $ref: '#/components/schemas/SystemInfo'
           description: ''
         '400':
           content:
@@ -133,7 +133,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/System'
+                $ref: '#/components/schemas/SystemInfo'
           description: ''
         '400':
           content:
@@ -22451,10 +22451,10 @@ paths:
       - in: query
         name: digits
         schema:
-          type: integer
+          type: string
           enum:
-          - 6
-          - 8
+          - '6'
+          - '8'
         description: |-
           * `6` - 6 digits, widely compatible
           * `8` - 8 digits, not compatible with apps like Google Authenticator
@@ -28794,10 +28794,7 @@ components:
           type: string
           nullable: true
         digits:
-          allOf:
-          - $ref: '#/components/schemas/DigitsEnum'
-          minimum: -2147483648
-          maximum: 2147483647
+          $ref: '#/components/schemas/DigitsEnum'
       required:
       - component
       - digits
@@ -28828,10 +28825,7 @@ components:
           nullable: true
           minLength: 1
         digits:
-          allOf:
-          - $ref: '#/components/schemas/DigitsEnum'
-          minimum: -2147483648
-          maximum: 2147483647
+          $ref: '#/components/schemas/DigitsEnum'
       required:
       - digits
       - name
@@ -29920,9 +29914,9 @@ components:
         * `http://www.w3.org/2001/04/xmlenc#sha512` - SHA512
     DigitsEnum:
       enum:
-      - 6
-      - 8
-      type: integer
+      - '6'
+      - '8'
+      type: string
       description: |-
         * `6` - 6 digits, widely compatible
         * `8` - 8 digits, not compatible with apps like Google Authenticator
@@ -35909,10 +35903,7 @@ components:
           nullable: true
           minLength: 1
         digits:
-          allOf:
-          - $ref: '#/components/schemas/DigitsEnum'
-          minimum: -2147483648
-          maximum: 2147483647
+          $ref: '#/components/schemas/DigitsEnum'
     PatchedAuthenticatorValidateStageRequest:
       type: object
       description: AuthenticatorValidateStage Serializer
@@ -41152,7 +41143,7 @@ components:
         * `user_username` - Based on the username
         * `user_email` - Based on the User's Email. This is recommended over the UPN method.
         * `user_upn` - Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains.
-    System:
+    SystemInfo:
       type: object
       description: Get system information.
       properties:
