@@ -4,17 +4,39 @@ import { me } from "@goauthentik/common/users";
 import { authentikConfigContext } from "@goauthentik/elements/AuthentikContexts";
 import { AKElement } from "@goauthentik/elements/Base";
 import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "@goauthentik/elements/router/Route";
+import "@goauthentik/elements/sidebar/Sidebar";
+import { SidebarAttributes, SidebarEntry, SidebarEventHandler } from "@goauthentik/elements/sidebar/SidebarItems";
 import { getRootStyle } from "@goauthentik/elements/utils/getRootStyle";
-import { spread } from "@open-wc/lit-helpers";
 
 import { consume } from "@lit-labs/context";
 import { msg, str } from "@lit/localize";
-import { TemplateResult, html, nothing } from "lit";
+import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { map } from "lit/directives/map.js";
 
-import { AdminApi, CapabilitiesEnum, CoreApi, UiThemeEnum, Version } from "@goauthentik/api";
+import { ProvidersApi, TypeCreate } from "@goauthentik/api";
+import { AdminApi, CapabilitiesEnum, CoreApi, Version } from "@goauthentik/api";
 import type { Config, SessionUser, UserSelf } from "@goauthentik/api";
+
+/**
+ * AdminSidebar
+ *
+ * Encapsulates the logic for the administration sidebar: what to show and, initially, when to show
+ * it.  Rendering decisions are left to the sidebar itself.
+ */
+
+type LocalSidebarEntry = [
+    string | SidebarEventHandler | null,
+    string,
+    (SidebarAttributes | string[] | null)?, // eslint-disable-line
+    LocalSidebarEntry[]?,
+];
+
+const localToSidebarEntry = (l: LocalSidebarEntry): SidebarEntry => ({
+    path: l[0],
+    label: l[1],
+    ...(l[2]? { attributes: Array.isArray(l[2]) ? { activeWhen: l[2] } : l[2] } : {}),
+    ...(l[3] ? { children: l[3].map(localToSidebarEntry) } : {}),
+});
 
 @customElement("ak-admin-sidebar")
 export class AkAdminSidebar extends AKElement {
@@ -27,6 +49,9 @@ export class AkAdminSidebar extends AKElement {
     @state()
     impersonation: UserSelf["username"] | null = null;
 
+    @state()
+    providerTypes: TypeCreate[] = [];
+
     @consume({ context: authentikConfigContext })
     public config!: Config;
 
@@ -37,6 +62,9 @@ export class AkAdminSidebar extends AKElement {
         });
         me().then((user: SessionUser) => {
             this.impersonation = user.original ? user.user.username : null;
+        });
+        new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList().then((types) => {
+            this.providerTypes = types;
         });
         this.toggleOpen = this.toggleOpen.bind(this);
         this.checkWidth = this.checkWidth.bind(this);
@@ -51,9 +79,7 @@ export class AkAdminSidebar extends AKElement {
     checkWidth() {
         // This works just fine, but it assumes that the `--ak-sidebar--minimum-auto-width` is in
         // REMs. If that changes, this code will have to be adjusted as well.
-        const minWidth =
-            parseFloat(getRootStyle("--ak-sidebar--minimum-auto-width")) *
-            parseFloat(getRootStyle("font-size"));
+        const minWidth = parseFloat(getRootStyle("--ak-sidebar--minimum-auto-width")) * parseFloat(getRootStyle("font-size"));
         this.open = window.innerWidth >= minWidth;
     }
 
@@ -75,19 +101,6 @@ export class AkAdminSidebar extends AKElement {
         super.disconnectedCallback();
     }
 
-    render() {
-        return html`
-            <ak-sidebar
-                class="pf-c-page__sidebar ${this.open ? "pf-m-expanded" : "pf-m-collapsed"} ${this
-                    .activeTheme === UiThemeEnum.Light
-                    ? "pf-m-light"
-                    : ""}"
-            >
-                ${this.renderSidebarItems()}
-            </ak-sidebar>
-        `;
-    }
-
     updated() {
         // This is permissible as`:host.classList` is not one of the properties Lit uses as a
         // scheduling trigger. This sort of shenanigans can trigger an loop, in that it will trigger
@@ -98,26 +111,43 @@ export class AkAdminSidebar extends AKElement {
         this.classList.add(this.open ? "pf-m-expanded" : "pf-m-collapsed");
     }
 
-    renderSidebarItems(): TemplateResult {
-        // The second attribute type is of string[] to help with the 'activeWhen' control, which was
-        // commonplace and singular enough to merit its own handler.
-        type SidebarEntry = [
-            path: string | null,
-            label: string,
-            attributes?: Record<string, any> | string[] | null, // eslint-disable-line
-            children?: SidebarEntry[],
-        ];
+    get sidebarItems(): SidebarEntry[] {
+        const reload = () =>
+            new CoreApi(DEFAULT_CONFIG).coreUsersImpersonateEndRetrieve().then(() => {
+                window.location.reload();
+            });
 
         // prettier-ignore
-        const sidebarContent: SidebarEntry[] = [
-            ["/if/user/", msg("User interface"), { "?isAbsoluteLink": true, "?highlight": true }],
-            [null, msg("Dashboards"), { "?expanded": true }, [
+        const newVersionMessage: LocalSidebarEntry[] = this.version && this.version !== VERSION
+                ? [["https://goauthentik.io", msg("A newer version of the frontend is available."), { "?highlight": true }]]
+                : [];
+
+        // prettier-ignore
+        const impersonationMessage: LocalSidebarEntry[] = this.impersonation
+            ? [[reload, msg(str`You're currently impersonating ${this.impersonation}. Click to stop.`)]]
+            : [];
+
+        // prettier-ignore
+        const enterpriseMenu: LocalSidebarEntry[] = this.config?.capabilities.includes(CapabilitiesEnum.IsEnterprise)
+            ? [[null, msg("Enterprise"), null, [["/enterprise/licenses", msg("Licenses")]]]]
+            : [];
+
+        // prettier-ignore
+        const providerTypes: LocalSidebarEntry[] = this.providerTypes.map((ptype) =>
+            ([`/core/providers;${encodeURIComponent(JSON.stringify({ search: ptype.modelName.replace(/provider$/, "") }))}`, ptype.name]));
+
+        // prettier-ignore
+        const localSidebar: LocalSidebarEntry[] = [
+            ...(newVersionMessage),
+            ...(impersonationMessage),
+            ["/if/user/", msg("User interface"), { isAbsoluteLink: true, highlight: true }],
+            [null, msg("Dashboards"), { expanded: true }, [
                 ["/administration/overview", msg("Overview")],
                 ["/administration/dashboard/users", msg("User Statistics")],
                 ["/administration/system-tasks", msg("System Tasks")]]],
             [null, msg("Applications"), null, [
                 ["/core/applications", msg("Applications"), [`^/core/applications/(?<slug>${SLUG_REGEX})$`]],
-                ["/core/providers", msg("Providers"), [`^/core/providers/(?<id>${ID_REGEX})$`]],
+                ["/core/providers", msg("Providers"), [`^/core/providers/(?<id>${ID_REGEX})$`], providerTypes],
                 ["/outpost/outposts", msg("Outposts")]]],
             [null, msg("Events"), null, [
                 ["/events/log", msg("Logs"), [`^/events/log/(?<id>${UUID_REGEX})$`]],
@@ -142,73 +172,14 @@ export class AkAdminSidebar extends AKElement {
             [null, msg("System"), null, [
                 ["/core/tenants", msg("Tenants")],
                 ["/crypto/certificates", msg("Certificates")],
-                ["/outpost/integrations", msg("Outpost Integrations")]]]
+                ["/outpost/integrations", msg("Outpost Integrations")]]],
+            ...(enterpriseMenu)
         ];
 
-        // Typescript requires the type here to correctly type the recursive path
-        type SidebarRenderer = (_: SidebarEntry) => TemplateResult;
-
-        const renderOneSidebarItem: SidebarRenderer = ([path, label, attributes, children]) => {
-            const properties = Array.isArray(attributes)
-                ? { ".activeWhen": attributes }
-                : attributes ?? {};
-            if (path) {
-                properties["path"] = path;
-            }
-            return html`<ak-sidebar-item ${spread(properties)}>
-                ${label ? html`<span slot="label">${label}</span>` : nothing}
-                ${map(children, renderOneSidebarItem)}
-            </ak-sidebar-item>`;
-        };
-
-        // prettier-ignore
-        return html`
-            ${this.renderNewVersionMessage()}
-            ${this.renderImpersonationMessage()}
-            ${map(sidebarContent, renderOneSidebarItem)}
-            ${this.renderEnterpriseMessage()}
-        `;
+         return localSidebar.map(localToSidebarEntry);
     }
 
-    renderNewVersionMessage() {
-        return this.version && this.version !== VERSION
-            ? html`
-                  <ak-sidebar-item ?highlight=${true}>
-                      <span slot="label"
-                          >${msg("A newer version of the frontend is available.")}</span
-                      >
-                  </ak-sidebar-item>
-              `
-            : nothing;
-    }
-
-    renderImpersonationMessage() {
-        const reload = () =>
-            new CoreApi(DEFAULT_CONFIG).coreUsersImpersonateEndRetrieve().then(() => {
-                window.location.reload();
-            });
-
-        return this.impersonation
-            ? html`<ak-sidebar-item ?highlight=${true} @click=${reload}>
-                  <span slot="label"
-                      >${msg(
-                          str`You're currently impersonating ${this.impersonation}. Click to stop.`,
-                      )}</span
-                  >
-              </ak-sidebar-item>`
-            : nothing;
-    }
-
-    renderEnterpriseMessage() {
-        return this.config?.capabilities.includes(CapabilitiesEnum.IsEnterprise)
-            ? html`
-                  <ak-sidebar-item>
-                      <span slot="label">${msg("Enterprise")}</span>
-                      <ak-sidebar-item path="/enterprise/licenses">
-                          <span slot="label">${msg("Licenses")}</span>
-                      </ak-sidebar-item>
-                  </ak-sidebar-item>
-              `
-            : nothing;
+    render() {
+        return html` <ak-sidebar class="pf-c-page__sidebar" .entries=${this.sidebarItems}></ak-sidebar> `;
     }
 }

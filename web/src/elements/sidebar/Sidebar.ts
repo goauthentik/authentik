@@ -1,9 +1,10 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/sidebar/SidebarBrand";
 import "@goauthentik/elements/sidebar/SidebarUser";
+import "@goauthentik/elements/sidebar/SidebarItems";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -11,8 +12,13 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { UiThemeEnum } from "@goauthentik/api";
 
+import type { SidebarEntry } from "./SidebarItems";
+
 @customElement("ak-sidebar")
 export class Sidebar extends AKElement {
+    @property({ type: Array })
+    entries: SidebarEntry[] = [];
+
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -45,7 +51,8 @@ export class Sidebar extends AKElement {
                     height: 100%;
                     overflow-y: hidden;
                 }
-                .pf-c-nav__list {
+
+                ak-sidebar-items {
                     flex-grow: 1;
                     overflow-y: auto;
                 }
@@ -66,14 +73,10 @@ export class Sidebar extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<nav
-            class="pf-c-nav ${this.activeTheme === UiThemeEnum.Light ? "pf-m-light" : ""}"
-            aria-label="Global"
-        >
+        console.log(this.entries);
+        return html`<nav class="pf-c-nav ${this.activeTheme === UiThemeEnum.Light ? "pf-m-light" : ""}" aria-label="Global">
             <ak-sidebar-brand></ak-sidebar-brand>
-            <ul class="pf-c-nav__list">
-                <slot></slot>
-            </ul>
+            <ak-sidebar-items .entries=${this.entries}></ak-sidebar-items>
             <ak-sidebar-user></ak-sidebar-user>
         </nav>`;
     }
