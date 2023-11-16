@@ -6241,10 +6241,10 @@
                     "title": "Friendly name"
                 },
                 "digits": {
-                    "type": "integer",
+                    "type": "string",
                     "enum": [
-                        6,
-                        8
+                        "6",
+                        "8"
                     ],
                     "title": "Digits"
                 }
