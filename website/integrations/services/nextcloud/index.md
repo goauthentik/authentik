@@ -18,9 +18,18 @@ This setup only works, when Nextcloud is running with HTTPS enabled. See [here](
 In case something goes wrong with the configuration, you can use the URL `http://nextcloud.company/login?direct=1` to log in using the built-in authentication.
 :::
 
-## OpenID Connect auth
 
-### Preparation
+## Authentication
+
+There are 2 ways to setup single sign on (SSO) for Nextcloud:
+
+- [via OIDC Connect (OAuth)](#openid-connect-auth)
+- [via SAML](#saml-auth)
+
+
+### OpenID Connect auth
+
+#### Preparation
 
 The following placeholders will be used:
 
@@ -42,7 +51,7 @@ authentik already provides some default _scopes_ with _claims_ inside them, such
 -   `profile` scope: Has claims `name`, `given_name`, `preferred_username`, `nickname`, `groups`
 -   `openid` scope: This is a default scope required by the OpenID spec. It contains no claims
 
-#### Custom profile scope
+##### Custom profile scope
 
 If you do not need storage quota or group information in Nextcloud [skip to the next step](#provider-and-application).
 
@@ -77,7 +86,7 @@ To set a quota set the "nextcloud_quota" property in the user's attributes. This
 If set to a value, for example `1 GB`, user(s) will have 1GB storage quota. If the attribute is not set, user(s) will have unlimited storage.
 :::
 
-#### Provider and Application
+##### Provider and Application
 
 Create a provider for Nextcloud. In the Admin Interface, go to _Applications_ -> _Providers_. Create an _OAuth2/OpenID Provider_ with the following parameters:
 
@@ -107,7 +116,7 @@ Depending on your Nextcloud configuration, you might need to use `https://nextcl
 
 After the provider is created, link it to an app. Go to _Applications_ -> _Applications_. Create an application and choose the provider you just created. Make sure to take note of the _application slug_. You will need this later.
 
-### Nextcloud
+#### Nextcloud
 
 In Nextcloud, ensure that the `OpenID Connect user backend` app is installed. Navigate to `Settings`, then `OpenID Connect`.
 
@@ -134,7 +143,7 @@ Add a new provider using the `+` button and set the following values:
 
 At this stage you should be able to login with SSO.
 
-#### Making the OIDC provider the default login method
+##### Making the OIDC provider the default login method
 
 If you intend to only login to Nextcloud using your freshly configured authentik provider, you may wish to make it the default login method. This will allow your users to be automatically redirected to authentik when they attempt to access your Nextcloud instance, as opposed to having to manually click on "Log in with Authentik" every time they wish to login.
 
@@ -144,7 +153,7 @@ To achive this, you will need to use the `occ` command of your Nextcloud instanc
 sudo -u www-data php var/www/nextcloud/occ config:app:set --value=0 user_oidc allow_multiple_user_backends
 ```
 
-#### Extra configuration when running behind a reverse proxy
+##### Extra configuration when running behind a reverse proxy
 
 The OpendID Connect discovery endpoint is queried by Nextcloud and contains a list of endpoints for use by both the relying party (Nextcloud) and the authenticating user.
 
@@ -194,9 +203,9 @@ If you prefer, you may also edit the rest of the endpoints, though that should n
 If you do not have any relying parties accessing authentik from the outside, you may also configure your proxy to only allow access to the `authorize` and `end-session` endpoints from the outside world.
 :::
 
-## SAML auth
+### SAML auth
 
-### Preparation
+#### Preparation
 
 The following placeholders will be used:
 
@@ -218,7 +227,7 @@ Depending on your Nextcloud configuration, you might need to use `https://nextcl
 
 You can of course use a custom signing certificate, and adjust durations.
 
-### Nextcloud
+#### Nextcloud
 
 In Nextcloud, ensure that the `SSO & SAML Authentication` app is installed. Navigate to `Settings`, then `SSO & SAML Authentication`.
 
@@ -248,7 +257,7 @@ To do this you will need to add the line `'overwriteprotocol' => 'https'` to `co
 See https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/reverse_proxy_configuration.html#overwrite-parameters for additional information
 :::
 
-### Group Quotas
+#### Group Quotas
 
 Create a group for each different level of quota you want users to have. Set a custom attribute, for example called `nextcloud_quota`, to the quota you want, for example `15 GB`.
 
@@ -269,7 +278,7 @@ In Nextcloud, go to `Settings`, then `SSO & SAML Authentication`Under `Attribute
 
 -   Attribute to map the quota to.: `nextcloud_quota`
 
-### Admin Group
+#### Admin Group
 
 To give authentik users admin access to your Nextcloud instance, you need to create a custom Property Mapping that maps an authentik group to "admin". It has to be mapped to "admin" as this is static in Nextcloud and cannot be changed.
 
