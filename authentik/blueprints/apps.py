@@ -5,7 +5,6 @@ from inspect import ismethod
 
 from django.apps import AppConfig
 from django.db import DatabaseError, InternalError, ProgrammingError
-from django_tenants.utils import get_public_schema_name
 from structlog.stdlib import BoundLogger, get_logger
 
 
@@ -60,6 +59,8 @@ class ManagedAppConfig(AppConfig):
 
     def reconcile(self) -> None:
         """reconcile ourselves"""
+        from django_tenants.utils import get_public_schema_name
+
         from authentik.tenants.models import Tenant
 
         try:
