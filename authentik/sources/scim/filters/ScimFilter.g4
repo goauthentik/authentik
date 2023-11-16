@@ -11,17 +11,17 @@ filter
 	| attrPath '[' valPathFilter ']'             #valPathExp
 	| filter SP AND SP filter                    #andExp
 	| filter SP OR SP filter                     #orExp
-	;										     
-											     
-valPathFilter								     
+	;
+
+valPathFilter
 	: attrPath SP PR                             #valPathPresentExp
 	| attrPath SP COMPAREOPERATOR SP VALUE       #valPathOperatorExp
 	| NOT? SP* '(' valPathFilter ')'             #valPathBraceExp
 	| valPathFilter SP AND SP valPathFilter      #valPathAndExp
 	| valPathFilter SP OR SP valPathFilter       #valPathOrExp
 	;
-	
-attrPath 
+
+attrPath
 	: (SCHEMA)? ATTRNAME ('.' ATTRNAME)?
 	;
 

@@ -122,7 +122,6 @@ lxml = [
     # 4.9.x works with previous libxml2 versions, which is what we get on linux
     { version = "4.9.4", platform = "linux" },
 ]
-jsonpatch = "*"
 opencontainers = { extras = ["reggie"], version = "*" }
 packaging = "*"
 paramiko = "*"

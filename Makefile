@@ -11,6 +11,7 @@ DOCKER_IMAGE ?= "authentik:test"
 GEN_API_TS = "gen-ts-api"
 GEN_API_PY = "gen-py-api"
 GEN_API_GO = "gen-go-api"
+GEN_SCIM_LEXER_PY = "authentik/sources/scim/filters/"
 
 pg_user := $(shell python -m authentik.lib.config postgresql.user 2>/dev/null)
 pg_host := $(shell python -m authentik.lib.config postgresql.host 2>/dev/null)
@@ -192,6 +193,15 @@ gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
 
 gen-dev-config:  ## Generate a local development config file
 	python -m scripts.generate_config
+
+gen-scim-lexer-py:
+	docker run \
+		--rm -v ${PWD}/${GEN_SCIM_LEXER_PY}:/local \
+		--user ${UID}:${GID} \
+		docker.io/antlr/antlr4 \
+		-Dlanguage=Python3 \
+		-o /local \
+		/local/ScimFilter.g4
 
 gen: gen-build gen-client-ts
 

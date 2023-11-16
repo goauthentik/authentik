@@ -9,13 +9,15 @@ from authentik.sources.scim.filters.ScimFilterParser import ScimFilterParser
 class DjangoQueryListener(ScimFilterListener):
     """SCIM filter listener that converts it to a query"""
 
-    _query: Node
-    _last_node: Node
+    _query: Q
+    _next_query_kwargs: dict
+    _next_attribute: str
 
     def __init__(self) -> None:
         super().__init__()
         self._query = Q()
-        self._last_node = Q()
+        self._next_query_kwargs = {}
+        self._next_attribute = ""
 
     @property
     def query(self) -> Node:
@@ -64,10 +66,10 @@ class DjangoQueryListener(ScimFilterListener):
         print("exitOrExp", ctx)
 
     def enterValPathOperatorExp(self, ctx: ScimFilterParser.ValPathOperatorExpContext):
-        print("enterValPathOperatorExp", ctx)
+        print("enterValPathOperatorExp", ctx.getText())
 
     def exitValPathOperatorExp(self, ctx: ScimFilterParser.ValPathOperatorExpContext):
-        print("exitValPathOperatorExp", ctx)
+        print("exitValPathOperatorExp", ctx.getText())
 
     def enterValPathPresentExp(self, ctx: ScimFilterParser.ValPathPresentExpContext):
         print("enterValPathPresentExp", ctx)
@@ -79,13 +81,15 @@ class DjangoQueryListener(ScimFilterListener):
         print("enterValPathAndExp", ctx.getText())
 
     def exitValPathAndExp(self, ctx: ScimFilterParser.ValPathAndExpContext):
-        print("exitValPathAndExp", ctx)
+        self._query &= Q(**self._next_query_kwargs)
+        self._next_query_kwargs = {}
 
     def enterValPathOrExp(self, ctx: ScimFilterParser.ValPathOrExpContext):
         print("enterValPathOrExp", ctx)
 
     def exitValPathOrExp(self, ctx: ScimFilterParser.ValPathOrExpContext):
-        print("exitValPathOrExp", ctx)
+        self._query |= Q(**self._next_query_kwargs)
+        self._next_query_kwargs = {}
 
     def enterValPathBraceExp(self, ctx: ScimFilterParser.ValPathBraceExpContext):
         print("enterValPathBraceExp", ctx)
@@ -94,8 +98,11 @@ class DjangoQueryListener(ScimFilterListener):
         print("exitValPathBraceExp", ctx)
 
     def enterAttrPath(self, ctx: ScimFilterParser.AttrPathContext):
-        self._last_node = Q(ctx.getText())
+        if self._next_attribute != "":
+            self._next_attribute += "__"
+        self._next_attribute = ctx.getText()
 
     def exitAttrPath(self, ctx: ScimFilterParser.AttrPathContext):
-        self._query = self._last_node
-        self._last_node = Q()
+        print("exitAttrPath", ctx.getText())
+        # self._query = self._last_node
+        # self._last_node = Q()
