@@ -28,6 +28,7 @@ class TestIdentificationStage(FlowTestCase):
         self.stage = IdentificationStage.objects.create(
             name="identification",
             user_fields=[UserFields.E_MAIL],
+            pretend_user_exists=False,
         )
         self.stage.sources.set([source])
         self.stage.save()
@@ -106,6 +107,26 @@ class TestIdentificationStage(FlowTestCase):
             form_data,
         )
         self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-identification",
+            response_errors={
+                "non_field_errors": [{"string": "Failed to authenticate.", "code": "invalid"}]
+            },
+        )
+
+    def test_invalid_with_username_pretend(self):
+        """Test invalid with username (user exists but stage only allows email)"""
+        self.stage.pretend_user_exists = True
+        self.stage.save()
+        form_data = {"uid_field": self.user.username}
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            form_data,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
     def test_invalid_no_fields(self):
         """Test invalid with username (no user fields are enabled)"""
