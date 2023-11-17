@@ -33,6 +33,8 @@ export type SidebarEntry = {
 // Typescript requires the type here to correctly type the recursive path
 export type SidebarRenderer = (_: SidebarEntry) => TemplateResult;
 
+const entryKey = (entry: SidebarEntry) => `${entry.path || "no-path"}:${entry.label}`;
+
 @customElement("ak-sidebar-items")
 export class SidebarItems extends AKElement {
     static get styles(): CSSResult[] {
@@ -124,14 +126,12 @@ export class SidebarItems extends AKElement {
     entries: SidebarEntry[] = [];
 
     @state()
-    expanded: WeakSet<SidebarEntry> = new WeakSet();
+    expanded: Set<string> = new Set();
+
+    current = "";
 
     constructor() {
         super();
-        // this.onToggle = this.onToggle.bind(this);
-
-        this.onHashChange = this.onHashChange.bind(this);
-        this.isActive = this.isActive.bind(this);
         this.renderItem = this.renderItem.bind(this);
         this.toggleExpand = this.toggleExpand.bind(this);
     }
@@ -146,18 +146,6 @@ export class SidebarItems extends AKElement {
         super.disconnectedCallback();
     }
 
-    firstUpdated(): void {
-        this.onHashChange();
-    }
-
-    onHashChange(): void {
-        /* no op */
-    }
-
-    isActive(path: string) {
-        return true;
-    }
-
     render(): TemplateResult {
         const lightThemed = { "pf-m-light": this.activeTheme === UiThemeEnum.Light };
 
@@ -169,10 +157,11 @@ export class SidebarItems extends AKElement {
     }
 
     toggleExpand(entry: SidebarEntry) {
-        if (this.expanded.has(entry)) {
-            this.expanded.delete(entry);
+        const key = entryKey(entry);
+        if (this.expanded.has(key)) {
+            this.expanded.delete(key);
         } else {
-            this.expanded.add(entry);
+            this.expanded.add(key);
         }
         this.requestUpdate();
     }
@@ -183,12 +172,11 @@ export class SidebarItems extends AKElement {
         // not when being forwarded to the correct renderer.
         const attr = attributes ?? undefined;
         const hasChildren = !!(children && children.length > 0);
-        console.log(entry.label, hasChildren);
 
         // This is grossly imperative, in that it HAS to come before the content is rendered
         // to make sure the content gets the right settings with respect to expansion.
         if (attr?.expanded) {
-            this.expanded.add(entry);
+            this.expanded.add(entryKey(entry));
             delete attr.expanded;
         }
 
@@ -203,7 +191,7 @@ export class SidebarItems extends AKElement {
 
         const expanded = {
             "highlighted": !!attr?.highlight,
-            "pf-m-expanded": this.expanded.has(entry),
+            "pf-m-expanded": this.expanded.has(entryKey(entry)),
             "pf-m-expandable": hasChildren,
         };
 
@@ -257,7 +245,9 @@ export class SidebarItems extends AKElement {
                     </span>
                 </span>
             </div>
-            ${this.expanded.has(entry) ? this.renderChildren(entry.children ?? []) : nothing}`;
+            ${this.expanded.has(entryKey(entry))
+                ? this.renderChildren(entry.children ?? [])
+                : nothing}`;
     }
 
     renderLinkAndChildren(entry: SidebarEntry): TemplateResult {
@@ -275,6 +265,8 @@ export class SidebarItems extends AKElement {
                     </span>
                 </span>
             </div>
-            ${this.expanded.has(entry) ? this.renderChildren(entry.children ?? []) : nothing}`;
+            ${this.expanded.has(entryKey(entry))
+                ? this.renderChildren(entry.children ?? [])
+                : nothing}`;
     }
 }
