@@ -24,9 +24,6 @@ export type SidebarAttributes = {
 };
 
 export type SidebarEntry = {
-    // - nullish: This entry is not a link.
-    // - string: the url for the entry
-    // - SidebarEventHandler: a function to run if the entry is clicked.
     path: string | SidebarEventHandler | null;
     label: string;
     attributes?: SidebarAttributes | null; // eslint-disable-line
@@ -35,8 +32,6 @@ export type SidebarEntry = {
 
 // Typescript requires the type here to correctly type the recursive path
 export type SidebarRenderer = (_: SidebarEntry) => TemplateResult;
-
-const entryKey = (entry: SidebarEntry) => `${entry.path || "no-path"}:${entry.label}`;
 
 @customElement("ak-sidebar-items")
 export class SidebarItems extends AKElement {
@@ -64,6 +59,10 @@ export class SidebarItems extends AKElement {
                 .pf-c-nav__link.pf-m-current:hover::after,
                 .pf-c-nav__item.pf-m-current:not(.pf-m-expanded) .pf-c-nav__link::after {
                     --pf-c-nav__link--m-current--after--BorderColor: #fd4b2d;
+                }
+
+                .pf-c-nav__item .pf-c-nav__item::before {
+                    border-bottom-width: 0;
                 }
 
                 .pf-c-nav__section + .pf-c-nav__section {
@@ -127,14 +126,12 @@ export class SidebarItems extends AKElement {
     @state()
     expanded: WeakSet<SidebarEntry> = new WeakSet();
 
-    current?: SidebarEntry;
-
     constructor() {
         super();
         // this.onToggle = this.onToggle.bind(this);
 
         this.onHashChange = this.onHashChange.bind(this);
-        this.recordActive = this.recordActive.bind(this);
+        this.isActive = this.isActive.bind(this);
         this.renderItem = this.renderItem.bind(this);
         this.toggleExpand = this.toggleExpand.bind(this);
     }
@@ -157,8 +154,8 @@ export class SidebarItems extends AKElement {
         /* no op */
     }
 
-    recordActive(entry: SidebarEntry) {
-        this.current = entry;
+    isActive(path: string) {
+        return true;
     }
 
     render(): TemplateResult {
@@ -186,6 +183,7 @@ export class SidebarItems extends AKElement {
         // not when being forwarded to the correct renderer.
         const attr = attributes ?? undefined;
         const hasChildren = !!(children && children.length > 0);
+        console.log(entry.label, hasChildren);
 
         // This is grossly imperative, in that it HAS to come before the content is rendered
         // to make sure the content gets the right settings with respect to expansion.
@@ -200,8 +198,8 @@ export class SidebarItems extends AKElement {
                 : hasChildren
                 ? this.renderLabelAndChildren(entry)
                 : path
-                ? this.renderLink(entry)
-                : this.renderLabel(entry);
+                ? this.renderLink(label, path, attr)
+                : this.renderLabel(label, attr);
 
         const expanded = {
             "highlighted": !!attr?.highlight,
@@ -212,10 +210,9 @@ export class SidebarItems extends AKElement {
         return html`<li class="pf-c-nav__item ${classMap(expanded)}">${content}</li>`;
     }
 
-    toLinkClasses(entry: SidebarEntry) {
-        const attr = entry.attributes || {};
+    toLinkClasses(attr: SidebarAttributes) {
         return {
-            "pf-m-current": this.current === entry,
+            "pf-m-current": !!attr.isActive,
             "pf-c-nav__link": true,
             "highlight": !!(typeof attr.highlight === "function"
                 ? attr.highlight()
@@ -223,29 +220,22 @@ export class SidebarItems extends AKElement {
         };
     }
 
-    renderLabel(entry: SidebarEntry) {
-        return html`<div class=${classMap(this.toLinkClasses(entry))}>${entry.label}</div>`;
+    renderLabel(label: string, attr: SidebarAttributes = {}) {
+        return html`<div class=${classMap(this.toLinkClasses(attr))}>${label}</div>`;
     }
 
     // note the responsibilities pushed up to the caller
-    renderLink(entry: SidebarEntry) {
-        const record = () => this.recordActive(entry);
-        if (typeof entry.path === "function") {
-            const handler = entry.path;
-            const recordAndHandle = () => {
-                record();
-                handler();
-            };
-            return html` <a @click=${recordAndHandle} class=${classMap(this.toLinkClasses(entry))}>
-                ${entry.label}
+    renderLink(label: string, path: string | SidebarEventHandler, attr: SidebarAttributes = {}) {
+        if (typeof path === "function") {
+            return html` <a @click=${path} class=${classMap(this.toLinkClasses(attr))}>
+                ${label}
             </a>`;
         }
         return html` <a
-            @click=${record}
-            href="${entry.attributes?.isAbsoluteLink ? "" : "#"}${entry.path}"
-            class=${classMap(this.toLinkClasses(entry))}
+            href="${attr.isAbsoluteLink ? "" : "#"}${path}"
+            class=${classMap(this.toLinkClasses(attr))}
         >
-            ${entry.label}
+            ${label}
         </a>`;
     }
 
@@ -272,12 +262,9 @@ export class SidebarItems extends AKElement {
 
     renderLinkAndChildren(entry: SidebarEntry): TemplateResult {
         const handler = () => this.toggleExpand(entry);
-        const record = () => this.recordActive(entry);
-        const active = { "pf-m-current": entry === this.current };
-        return html` <div class="pf-c-nav__link ${classMap(active)}">
+        return html` <div class="pf-c-nav__link">
                 <a
                     href="${entry.attributes?.isAbsoluteLink ? "" : "#"}${entry.path}"
-                    @click=${record}
                     class="ak-nav__link"
                 >
                     ${entry.label}
