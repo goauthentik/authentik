@@ -354,7 +354,7 @@ class Outpost(SerializerModel, ManagedModel):
         for key, value in attrs.items():
             if getattr(user, key) != value:
                 dirty = True
-                setattr(user, value)
+                setattr(user, key, value)
         if user.has_usable_password():
             user.set_unusable_password()
             dirty = True
