@@ -95,7 +95,7 @@ export default function pricingPage() {
                                 <div className="card__footer">
                                     <h4>Minimum 100 users</h4>
                                     <h1>
-                                        $5 <small>/user/month</small>
+                                        $5 <small>/internal user/month</small>
                                     </h1>
                                     <h1>
                                         $0.02{" "}
