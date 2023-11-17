@@ -6,7 +6,7 @@ import { createTypesController } from "./GenericTypesController";
 
 export const ProviderTypesController = createTypesController(
     () => new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList(),
-    "/core/providers"
+    "/core/providers",
 );
 
 export default ProviderTypesController;

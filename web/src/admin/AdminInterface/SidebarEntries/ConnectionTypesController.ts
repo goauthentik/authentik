@@ -6,7 +6,7 @@ import { createTypesController } from "./GenericTypesController";
 
 export const ConnectionTypesController = createTypesController(
     () => new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllTypesList(),
-    "/outpost/integrations"
+    "/outpost/integrations",
 );
 
 export default ConnectionTypesController;

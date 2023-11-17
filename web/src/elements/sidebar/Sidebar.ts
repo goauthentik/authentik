@@ -12,7 +12,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { UiThemeEnum } from "@goauthentik/api";
 
-import type { SidebarEntry } from "./SidebarItems";
+import type { SidebarEntry } from "./types";
 
 @customElement("ak-sidebar")
 export class Sidebar extends AKElement {

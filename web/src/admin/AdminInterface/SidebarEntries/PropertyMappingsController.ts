@@ -6,7 +6,7 @@ import { createTypesController } from "./GenericTypesController";
 
 export const PropertyMappingsController = createTypesController(
     () => new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllTypesList(),
-    "/core/property-mappings"
+    "/core/property-mappings",
 );
 
 export default PropertyMappingsController;

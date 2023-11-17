@@ -1,5 +1,7 @@
 import { ReactiveControllerHost } from "lit";
+
 import { TypeCreate } from "@goauthentik/api";
+
 import { LocalSidebarEntry } from "../AdminSidebar";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,7 +29,11 @@ const typeCreateToSidebar = (baseUrl: string, tcreate: TypeCreate[]): LocalSideb
  *
  */
 
-export function createTypesController(fetch: Fetcher, path: string, converter = typeCreateToSidebar) {
+export function createTypesController(
+    fetch: Fetcher,
+    path: string,
+    converter = typeCreateToSidebar,
+) {
     return class GenericTypesController {
         createTypes: TypeCreate[] = [];
         host: ReactiveControllerHost;

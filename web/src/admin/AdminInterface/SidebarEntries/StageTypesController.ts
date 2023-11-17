@@ -6,7 +6,7 @@ import { createTypesController } from "./GenericTypesController";
 
 export const StageTypesController = createTypesController(
     () => new StagesApi(DEFAULT_CONFIG).stagesAllTypesList(),
-    "/flow/stages"
+    "/flow/stages",
 );
 
 export default StageTypesController;

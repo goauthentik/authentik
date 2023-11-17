@@ -6,7 +6,7 @@ import { createTypesController } from "./GenericTypesController";
 
 export const SourceTypesController = createTypesController(
     () => new SourcesApi(DEFAULT_CONFIG).sourcesAllTypesList(),
-    "/core/sources"
+    "/core/sources",
 );
 
 export default SourceTypesController;

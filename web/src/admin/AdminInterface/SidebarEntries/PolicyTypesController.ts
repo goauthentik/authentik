@@ -6,7 +6,7 @@ import { createTypesController } from "./GenericTypesController";
 
 export const PolicyTypesController = createTypesController(
     () => new PoliciesApi(DEFAULT_CONFIG).policiesAllTypesList(),
-    "/policy/policies"
+    "/policy/policies",
 );
 
 export default PolicyTypesController;

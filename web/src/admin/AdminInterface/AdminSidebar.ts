@@ -10,7 +10,7 @@ import {
     SidebarAttributes,
     SidebarEntry,
     SidebarEventHandler,
-} from "@goauthentik/elements/sidebar/SidebarItems";
+} from "@goauthentik/elements/sidebar/types";
 import { getRootStyle } from "@goauthentik/elements/utils/getRootStyle";
 
 import { consume } from "@lit-labs/context";
@@ -38,7 +38,7 @@ import StageTypesController from "./SidebarEntries/StageTypesController";
  *    it as an overlay or as a push.
  * 2. Control what content the sidebar will receive.  The sidebar takes a tree, maximally three deep,
  *    of type SidebarEventHandler.
-  */
+ */
 
 type SidebarUrl = string;
 
@@ -144,18 +144,30 @@ export class AkAdminSidebar extends AKElement {
                 window.location.reload();
             });
 
-        // prettier-ignore
-        const newVersionMessage: LocalSidebarEntry[] = this.version && this.version !== VERSION
-                ? [["https://goauthentik.io", msg("A newer version of the frontend is available."), { "?highlight": true }]]
+        const newVersionMessage: LocalSidebarEntry[] =
+            this.version && this.version !== VERSION
+                ? [
+                      [
+                          "https://goauthentik.io",
+                          msg("A newer version of the frontend is available."),
+                          { highlight: true },
+                      ],
+                  ]
                 : [];
 
-        // prettier-ignore
         const impersonationMessage: LocalSidebarEntry[] = this.impersonation
-            ? [[reload, msg(str`You're currently impersonating ${this.impersonation}. Click to stop.`)]]
+            ? [
+                  [
+                      reload,
+                      msg(
+                          str`You're currently impersonating ${this.impersonation}. Click to stop.`,
+                      ),
+                  ],
+              ]
             : [];
 
         const enterpriseMenu: LocalSidebarEntry[] = this.config?.capabilities.includes(
-            CapabilitiesEnum.IsEnterprise
+            CapabilitiesEnum.IsEnterprise,
         )
             ? [[null, msg("Enterprise"), null, [["/enterprise/licenses", msg("Licenses")]]]]
             : [];

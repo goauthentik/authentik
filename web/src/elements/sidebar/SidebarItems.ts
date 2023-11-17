@@ -11,29 +11,8 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { UiThemeEnum } from "@goauthentik/api";
 
-// The second attribute type is of string[] to help with the 'activeWhen' control, which was
-// commonplace and singular enough to merit its own handler.
-export type SidebarEventHandler = () => void;
-
-export type SidebarAttributes = {
-    isAbsoluteLink?: boolean | (() => boolean);
-    highlight?: boolean | (() => boolean);
-    expanded?: boolean | (() => boolean);
-    activeWhen?: string[];
-    isActive?: boolean;
-};
-
-export type SidebarEntry = {
-    path: string | SidebarEventHandler | null;
-    label: string;
-    attributes?: SidebarAttributes | null; // eslint-disable-line
-    children?: SidebarEntry[];
-};
-
-// Typescript requires the type here to correctly type the recursive path
-export type SidebarRenderer = (_: SidebarEntry) => TemplateResult;
-
-const entryKey = (entry: SidebarEntry) => `${entry.path || "no-path"}:${entry.label}`;
+import type { SidebarEntry } from "./types";
+import { entryKey, findMatchForNavbarUrl, makeParentMap } from "./utils";
 
 @customElement("ak-sidebar-items")
 export class SidebarItems extends AKElement {
@@ -146,14 +125,22 @@ export class SidebarItems extends AKElement {
         super.disconnectedCallback();
     }
 
-    render(): TemplateResult {
-        const lightThemed = { "pf-m-light": this.activeTheme === UiThemeEnum.Light };
+    expandParents(entry: SidebarEntry) {
+        const reverseMap = makeParentMap(this.entries);
+        let start: SidebarEntry | undefined = reverseMap.get(entry);
+        while (start) {
+            this.expanded.add(entryKey(start));
+            start = reverseMap.get(start);
+        }
+    }
 
-        return html` <nav class="pf-c-nav ${classMap(lightThemed)}" aria-label="Navigation">
-            <ul class="pf-c-nav__list">
-                ${map(this.entries, this.renderItem)}
-            </ul>
-        </nav>`;
+    onHashChange() {
+        this.current = "";
+        const match = findMatchForNavbarUrl(this.entries);
+        if (match) {
+            this.current = entryKey(match);
+            this.expandParents(match);
+        }
     }
 
     toggleExpand(entry: SidebarEntry) {
@@ -166,31 +153,39 @@ export class SidebarItems extends AKElement {
         this.requestUpdate();
     }
 
+    render(): TemplateResult {
+        const lightThemed = { "pf-m-light": this.activeTheme === UiThemeEnum.Light };
+
+        return html` <nav class="pf-c-nav ${classMap(lightThemed)}" aria-label="Navigation">
+            <ul class="pf-c-nav__list">
+                ${map(this.entries, this.renderItem)}
+            </ul>
+        </nav>`;
+    }
+
     renderItem(entry: SidebarEntry) {
-        const { path, label, attributes, children } = entry;
         // Ensure the attributes are undefined, not null; they can be null in the placeholders, but
         // not when being forwarded to the correct renderer.
-        const attr = attributes ?? undefined;
-        const hasChildren = !!(children && children.length > 0);
+        const hasChildren = !!(entry.children && entry.children.length > 0);
 
-        // This is grossly imperative, in that it HAS to come before the content is rendered
-        // to make sure the content gets the right settings with respect to expansion.
-        if (attr?.expanded) {
+        // This is grossly imperative, in that it HAS to come before the content is rendered to make
+        // sure the content gets the right settings with respect to expansion.
+        if (entry.attributes?.expanded) {
             this.expanded.add(entryKey(entry));
-            delete attr.expanded;
+            delete entry.attributes.expanded;
         }
 
         const content =
-            path && hasChildren
+            entry.path && hasChildren
                 ? this.renderLinkAndChildren(entry)
                 : hasChildren
-                ? this.renderLabelAndChildren(entry)
-                : path
-                ? this.renderLink(label, path, attr)
-                : this.renderLabel(label, attr);
+                  ? this.renderLabelAndChildren(entry)
+                  : entry.path
+                    ? this.renderLink(entry)
+                    : this.renderLabel(entry);
 
         const expanded = {
-            "highlighted": !!attr?.highlight,
+            "highlighted": !!entry.attributes?.highlight,
             "pf-m-expanded": this.expanded.has(entryKey(entry)),
             "pf-m-expandable": hasChildren,
         };
@@ -198,32 +193,31 @@ export class SidebarItems extends AKElement {
         return html`<li class="pf-c-nav__item ${classMap(expanded)}">${content}</li>`;
     }
 
-    toLinkClasses(attr: SidebarAttributes) {
+    getLinkClasses(entry: SidebarEntry) {
+        const a = entry.attributes ?? {};
         return {
-            "pf-m-current": !!attr.isActive,
+            "pf-m-current": a == this.current,
             "pf-c-nav__link": true,
-            "highlight": !!(typeof attr.highlight === "function"
-                ? attr.highlight()
-                : attr.highlight),
+            "highlight": !!(typeof a.highlight === "function" ? a.highlight() : a.highlight),
         };
     }
 
-    renderLabel(label: string, attr: SidebarAttributes = {}) {
-        return html`<div class=${classMap(this.toLinkClasses(attr))}>${label}</div>`;
+    renderLabel(entry: SidebarEntry) {
+        return html`<div class=${classMap(this.getLinkClasses(entry))}>${entry.label}</div>`;
     }
 
     // note the responsibilities pushed up to the caller
-    renderLink(label: string, path: string | SidebarEventHandler, attr: SidebarAttributes = {}) {
-        if (typeof path === "function") {
-            return html` <a @click=${path} class=${classMap(this.toLinkClasses(attr))}>
-                ${label}
+    renderLink(entry: SidebarEntry) {
+        if (typeof entry.path === "function") {
+            return html` <a @click=${entry.path} class=${classMap(this.getLinkClasses(entry))}>
+                ${entry.label}
             </a>`;
         }
         return html` <a
-            href="${attr.isAbsoluteLink ? "" : "#"}${path}"
-            class=${classMap(this.toLinkClasses(attr))}
+            href="${entry.attributes?.isAbsoluteLink ? "" : "#"}${entry.path}"
+            class=${classMap(this.getLinkClasses(entry))}
         >
-            ${label}
+            ${entry.label}
         </a>`;
     }
 
