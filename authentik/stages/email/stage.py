@@ -1,5 +1,6 @@
 """authentik multi-stage authentication engine"""
 from datetime import timedelta
+from uuid import uuid4
 
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
@@ -71,7 +72,7 @@ class EmailStageView(ChallengeStageView):
         valid_delta = timedelta(
             minutes=current_stage.token_expiry + 1
         )  # + 1 because django timesince always rounds down
-        identifier = slugify(f"ak-email-stage-{current_stage.name}-{pending_user}")
+        identifier = slugify(f"ak-email-stage-{current_stage.name}-{str(uuid4())}")
         # Don't check for validity here, we only care if the token exists
         tokens = FlowToken.objects.filter(identifier=identifier)
         if not tokens.exists():

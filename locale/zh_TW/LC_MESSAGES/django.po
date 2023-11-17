@@ -692,14 +692,14 @@ msgstr "假政策"
 msgid ""
 "Match events created by selected application. When left empty, all "
 "applications are matched."
-msgstr "匹配由所選應用程式產生的事件。如果未設定則所有應用程式都將符合。"
+msgstr "將選擇的應用程式與建立的事件配對。如果為空則將符合所有應用程式。"
 
 #: authentik/policies/event_matcher/api.py:29
 #: authentik/policies/event_matcher/models.py:64
 msgid ""
 "Match events created by selected model. When left empty, all models are "
 "matched. When an app is selected, all the application's models are matched."
-msgstr "當未選擇任何模型時，會匹配所有模型產生的事件。如果選擇了某一個應用程式，則會匹配該應用程式下所有模型產生的事件。"
+msgstr "將選擇的模型與建立的事件配對。如果為空則將符合所有模型。如果選擇了某一個應用程式，則會配對該應用程式下所有模型的事件。"
 
 #: authentik/policies/event_matcher/api.py:42
 msgid "At least one criteria must be set."
@@ -709,7 +709,7 @@ msgstr "必須設定至少一個條件。"
 msgid ""
 "Match created events with this action type. When left empty, all action "
 "types will be matched."
-msgstr "匹配由此動作類型產生的事件。如果未設定則所有動作類型都將符合。"
+msgstr "將此動作類型與建立的事件配對。如果為空則將符合所有動作類型。"
 
 #: authentik/policies/event_matcher/models.py:73
 msgid ""
@@ -965,7 +965,7 @@ msgstr "基於使用者的電子郵件。比起使用 UPN 更推薦此方法。"
 msgid ""
 "Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
 "this method only if you have different UPN and Mail domains."
-msgstr "基於使用者的 UPN，只有當使用者設定了 「upn」 屬性時才有效。只有在您的 UPN 和 Mail 有不同網域時才使用這個方法。"
+msgstr "基於使用者的 UPN，只有當使用者設定了「upn」特徵項時才有效。只有在您的 UPN 和 Mail 有不同網域時才使用這個方法。"
 
 #: authentik/providers/oauth2/models.py:43
 msgid "Confidential"
@@ -981,7 +981,7 @@ msgstr "所有供應商都使用相同的識別碼"
 
 #: authentik/providers/oauth2/models.py:68
 msgid "Each provider has a different issuer, based on the application slug."
-msgstr "每個供應商都有一個不同的發行者，基於應用程式的縮寫（Slug）。"
+msgstr "基於應用程式的縮寫，每個供應商都有一個不同的發行者。"
 
 #: authentik/providers/oauth2/models.py:75
 msgid "code (Authorization Code Flow)"
@@ -1065,13 +1065,13 @@ msgstr "每行輸入一個網址。"
 
 #: authentik/providers/oauth2/models.py:155
 msgid "Include claims in id_token"
-msgstr "在 id_token 中包含聲明"
+msgstr "在 id_token 中包含身分聲明"
 
 #: authentik/providers/oauth2/models.py:157
 msgid ""
 "Include User claims from scopes in the id_token, for applications that don't"
 " access the userinfo endpoint."
-msgstr "在 id_token 中包含來自範疇的使用者聲明，適用於那些不存取 userinfo 端點的應用程式。"
+msgstr "對於那些不存取 userinfo 端點的應用程式，在 id_token 中將包含來自範疇的使用者身分聲明。"
 
 #: authentik/providers/oauth2/models.py:166
 msgid ""
@@ -1206,7 +1206,7 @@ msgstr "代表您的使用者存取 authentik API"
 
 #: authentik/providers/proxy/api.py:52
 msgid "User and password attributes must be set when basic auth is enabled."
-msgstr "啟用基本認證時必須設定使用者和密碼屬性。"
+msgstr "啟用基本認證時必須設定使用者和密碼特徵項。"
 
 #: authentik/providers/proxy/api.py:63
 msgid "Internal host cannot be empty when forward auth is disabled."
@@ -1257,7 +1257,7 @@ msgstr "HTTP 基本身份驗證的使用者名鍵值"
 msgid ""
 "User/Group Attribute used for the user part of the HTTP-Basic Header. If not"
 " set, the user's Email address is used."
-msgstr "用於 HTTP 基本身份驗證標頭中，使用者區塊中的使用者/群組屬性。如果未設定則套用使用者的電子郵件地址。"
+msgstr "用於 HTTP 基本認證標頭中，使用者區塊中的使用者/群組特徵項。如果未設定則套用使用者的電子郵件地址。"
 
 #: authentik/providers/proxy/models.py:99
 msgid "HTTP-Basic Password Key"
@@ -1266,7 +1266,7 @@ msgstr "HTTP 基本身份驗證的密碼鍵值"
 #: authentik/providers/proxy/models.py:100
 msgid ""
 "User/Group Attribute used for the password part of the HTTP-Basic Header."
-msgstr "用於 HTTP 基本身份驗證標頭中，密碼區塊中的用戶/群組屬性。"
+msgstr "用於 HTTP 基本認證標頭中，密碼區塊中的使用者/群組特徵項。"
 
 #: authentik/providers/proxy/models.py:154
 msgid "Proxy Provider"
@@ -1285,7 +1285,9 @@ msgid ""
 "List of CIDRs (comma-separated) that clients can connect from. A more "
 "specific CIDR will match before a looser one. Clients connecting from a non-"
 "specified CIDR will be dropped."
-msgstr "用戶端可以從中連線的CIDR列表（以逗號分隔）。較窄的CIDR會在較寬的CIDR之前優先套用。來自未指定CIDR的用戶端連線將被拒絕。"
+msgstr ""
+"在其之中的用戶端可以連線的 CIDR 列表（以逗號分隔）。更具體的 CIDR 會在較寬鬆的 CIDR 之前優先套用。來自未指定 CIDR "
+"的用戶端連線將被拒絕。"
 
 #: authentik/providers/radius/models.py:49
 msgid "Radius Provider"
@@ -2416,14 +2418,14 @@ msgid ""
 "Optionally provide a short hint that describes the expected input value. "
 "When creating a fixed choice field, enable interpreting as expression and "
 "return a list to return multiple choices."
-msgstr "可選：提供一個簡短提示，描述預期的輸入值。當建立一個固定選擇欄位時，啟用解釋為表達式，並回傳一個列表以提供多個選擇。"
+msgstr "可選：提供一個簡短提示，描述預期的輸入值。當建立一個固定選擇欄位時，啟用解釋為表示式，並回傳一個列表以提供多個選擇。"
 
 #: authentik/stages/prompt/models.py:132
 msgid ""
 "Optionally pre-fill the input with an initial value. When creating a fixed "
 "choice field, enable interpreting as expression and return a list to return "
 "multiple default choices."
-msgstr "可選：預先填入輸入框以一個初始值。當建立一個固定選擇欄位時，啟用解釋為表達式，並回傳一個列表以提供多個預設選擇。"
+msgstr "可選：預先填入輸入框以一個初始值。當建立一個固定選擇欄位時，啟用解釋為表示式，並回傳一個列表以提供多個預設選擇。"
 
 #: authentik/stages/prompt/models.py:321
 msgid "Prompt"

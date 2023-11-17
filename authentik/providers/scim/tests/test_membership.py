@@ -89,6 +89,7 @@ class SCIMMembershipTests(TestCase):
             self.assertJSONEqual(
                 mocker.request_history[3].body,
                 {
+                    "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
                     "emails": [],
                     "active": True,
                     "externalId": user.uid,
@@ -99,7 +100,11 @@ class SCIMMembershipTests(TestCase):
             )
             self.assertJSONEqual(
                 mocker.request_history[5].body,
-                {"externalId": str(group.pk), "displayName": group.name},
+                {
+                    "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                    "externalId": str(group.pk),
+                    "displayName": group.name,
+                },
             )
 
         with Mocker() as mocker:
@@ -118,6 +123,7 @@ class SCIMMembershipTests(TestCase):
             self.assertJSONEqual(
                 mocker.request_history[1].body,
                 {
+                    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
                     "Operations": [
                         {
                             "op": "add",
@@ -125,7 +131,6 @@ class SCIMMembershipTests(TestCase):
                             "value": [{"value": user_scim_id}],
                         }
                     ],
-                    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
                 },
             )
 
@@ -174,6 +179,7 @@ class SCIMMembershipTests(TestCase):
             self.assertJSONEqual(
                 mocker.request_history[3].body,
                 {
+                    "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
                     "active": True,
                     "displayName": "",
                     "emails": [],
@@ -184,7 +190,11 @@ class SCIMMembershipTests(TestCase):
             )
             self.assertJSONEqual(
                 mocker.request_history[5].body,
-                {"externalId": str(group.pk), "displayName": group.name},
+                {
+                    "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                    "externalId": str(group.pk),
+                    "displayName": group.name,
+                },
             )
 
         with Mocker() as mocker:
@@ -203,6 +213,7 @@ class SCIMMembershipTests(TestCase):
             self.assertJSONEqual(
                 mocker.request_history[1].body,
                 {
+                    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
                     "Operations": [
                         {
                             "op": "add",
@@ -210,7 +221,6 @@ class SCIMMembershipTests(TestCase):
                             "value": [{"value": user_scim_id}],
                         }
                     ],
-                    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
                 },
             )
 
@@ -230,6 +240,7 @@ class SCIMMembershipTests(TestCase):
             self.assertJSONEqual(
                 mocker.request_history[1].body,
                 {
+                    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
                     "Operations": [
                         {
                             "op": "remove",
@@ -237,6 +248,5 @@ class SCIMMembershipTests(TestCase):
                             "value": [{"value": user_scim_id}],
                         }
                     ],
-                    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
                 },
             )
