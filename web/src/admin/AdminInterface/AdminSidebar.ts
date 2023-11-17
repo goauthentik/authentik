@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_SIDEBAR_TOGGLE, VERSION } from "@goauthentik/common/constants";
+import { eventActionLabels } from "@goauthentik/common/labels";
 import { me } from "@goauthentik/common/users";
 import { authentikConfigContext } from "@goauthentik/elements/AuthentikContexts";
 import { AKElement } from "@goauthentik/elements/Base";
@@ -16,35 +17,41 @@ import { consume } from "@lit-labs/context";
 import { msg, str } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { eventActionLabels } from "@goauthentik/common/labels";
 
-import { ProvidersApi, TypeCreate } from "@goauthentik/api";
-import {
-    AdminApi,
-    CapabilitiesEnum,
-    CoreApi,
-    OutpostsApi,
-    PoliciesApi,
-    PropertymappingsApi,
-    SourcesApi,
-    StagesApi,
-    Version,
-} from "@goauthentik/api";
+import { AdminApi, CapabilitiesEnum, CoreApi, Version } from "@goauthentik/api";
 import type { Config, SessionUser, UserSelf } from "@goauthentik/api";
 
 import { flowDesignationTable } from "../flows/utils";
+import ConnectionTypesController from "./SidebarEntries/ConnectionTypesController";
+import PolicyTypesController from "./SidebarEntries/PolicyTypesController";
+import PropertyMappingsController from "./SidebarEntries/PropertyMappingsController";
+import ProviderTypesController from "./SidebarEntries/ProviderTypesController";
+import SourceTypesController from "./SidebarEntries/SourceTypesController";
+import StageTypesController from "./SidebarEntries/StageTypesController";
 
 /**
  * AdminSidebar
  *
- * Encapsulates the logic for the administration sidebar: what to show and, initially, when to show
- * it.  Rendering decisions are left to the sidebar itself.
- */
+ * The AdminSidebar has two responsibilities:
+ *
+ * 1. Control the styling of the sidebar host, specifically when to show it and whether to show
+ *    it as an overlay or as a push.
+ * 2. Control what content the sidebar will receive.  The sidebar takes a tree, maximally three deep,
+ *    of type SidebarEventHandler.
+  */
+
+type SidebarUrl = string;
 
 export type LocalSidebarEntry = [
-    string | SidebarEventHandler | null,
+    // - null: This entry is not a link.
+    // - string: the url for the entry
+    // - SidebarEventHandler: a function to run if the entry is clicked.
+    SidebarUrl | SidebarEventHandler | null,
+    // The visible text of the entry.
     string,
+    // Attributes to which the sidebar responds. See the sidebar for details.
     (SidebarAttributes | string[] | null)?, // eslint-disable-line
+    // Children of the entry
     LocalSidebarEntry[]?,
 ];
 
@@ -54,12 +61,6 @@ const localToSidebarEntry = (l: LocalSidebarEntry): SidebarEntry => ({
     ...(l[2] ? { attributes: Array.isArray(l[2]) ? { activeWhen: l[2] } : l[2] } : {}),
     ...(l[3] ? { children: l[3].map(localToSidebarEntry) } : {}),
 });
-
-const typeCreateToSidebar = (baseUrl: string, tcreate: TypeCreate[]): LocalSidebarEntry[] =>
-    tcreate.map((t) => [
-        `${baseUrl};${encodeURIComponent(JSON.stringify({ search: t.name }))}`,
-        t.name,
-    ]);
 
 @customElement("ak-admin-sidebar")
 export class AkAdminSidebar extends AKElement {
@@ -75,23 +76,12 @@ export class AkAdminSidebar extends AKElement {
     @state()
     impersonation: UserSelf["username"] | null = null;
 
-    @state()
-    providerTypes: TypeCreate[] = [];
-
-    @state()
-    stageTypes: TypeCreate[] = [];
-
-    @state()
-    mappingTypes: TypeCreate[] = [];
-
-    @state()
-    sourceTypes: TypeCreate[] = [];
-
-    @state()
-    policyTypes: TypeCreate[] = [];
-
-    @state()
-    connectionTypes: TypeCreate[] = [];
+    private connectionTypes = new ConnectionTypesController(this);
+    private policyTypes = new PolicyTypesController(this);
+    private propertyMapper = new PropertyMappingsController(this);
+    private providerTypes = new ProviderTypesController(this);
+    private sourceTypes = new SourceTypesController(this);
+    private stageTypes = new StageTypesController(this);
 
     constructor() {
         super();
@@ -101,25 +91,6 @@ export class AkAdminSidebar extends AKElement {
         me().then((user: SessionUser) => {
             this.impersonation = user.original ? user.user.username : null;
         });
-        new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList().then((types) => {
-            this.providerTypes = types;
-        });
-        new StagesApi(DEFAULT_CONFIG).stagesAllTypesList().then((types) => {
-            this.stageTypes = types;
-        });
-        new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllTypesList().then((types) => {
-            this.mappingTypes = types;
-        });
-        new SourcesApi(DEFAULT_CONFIG).sourcesAllTypesList().then((types) => {
-            this.sourceTypes = types;
-        });
-        new PoliciesApi(DEFAULT_CONFIG).policiesAllTypesList().then((types) => {
-            this.policyTypes = types;
-        });
-        new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllTypesList().then((types) => {
-            this.connectionTypes = types;
-        });
-
         this.toggleOpen = this.toggleOpen.bind(this);
         this.checkWidth = this.checkWidth.bind(this);
     }
@@ -183,27 +154,21 @@ export class AkAdminSidebar extends AKElement {
             ? [[reload, msg(str`You're currently impersonating ${this.impersonation}. Click to stop.`)]]
             : [];
 
-        // prettier-ignore
-        const enterpriseMenu: LocalSidebarEntry[] = this.config?.capabilities.includes(CapabilitiesEnum.IsEnterprise)
+        const enterpriseMenu: LocalSidebarEntry[] = this.config?.capabilities.includes(
+            CapabilitiesEnum.IsEnterprise
+        )
             ? [[null, msg("Enterprise"), null, [["/enterprise/licenses", msg("Licenses")]]]]
             : [];
 
-        // prettier-ignore
-        const flowTypes: LocalSidebarEntry[] = flowDesignationTable.map(([_designation, label]) =>  
-            ([`/flow/flows;${encodeURIComponent(JSON.stringify({ search: label }))}`, label]));
+        const flowTypes: LocalSidebarEntry[] = flowDesignationTable.map(([_designation, label]) => [
+            `/flow/flows;${encodeURIComponent(JSON.stringify({ search: label }))}`,
+            label,
+        ]);
 
-
-        const eventTypes: LocalSidebarEntry[] = eventActionLabels.map(([_action, label]) =>  
-            ([`/events/log;${encodeURIComponent(JSON.stringify({ search: label }))}`, label]));
-        
-        const [mappingTypes,  providerTypes, sourceTypes, stageTypes, connectionTypes, policyTypes] = [
-            typeCreateToSidebar("/core/property-mappings", this.mappingTypes),
-            typeCreateToSidebar("/core/providers", this.providerTypes),
-            typeCreateToSidebar("/core/sources", this.sourceTypes),
-            typeCreateToSidebar("/flow/stages", this.stageTypes),
-            typeCreateToSidebar("/outpost/integrations", this.connectionTypes),
-            typeCreateToSidebar("/policy/policies", this.policyTypes),
-        ];
+        const eventTypes: LocalSidebarEntry[] = eventActionLabels.map(([_action, label]) => [
+            `/events/log;${encodeURIComponent(JSON.stringify({ search: label }))}`,
+            label,
+        ]);
 
         // prettier-ignore
         const localSidebar: LocalSidebarEntry[] = [
@@ -216,32 +181,32 @@ export class AkAdminSidebar extends AKElement {
                 ["/administration/system-tasks", msg("System Tasks")]]],
             [null, msg("Applications"), null, [
                 ["/core/applications", msg("Applications"), [`^/core/applications/(?<slug>${SLUG_REGEX})$`]],
-                ["/core/providers", msg("Providers"), [`^/core/providers/(?<id>${ID_REGEX})$`], providerTypes],
+                ["/core/providers", msg("Providers"), [`^/core/providers/(?<id>${ID_REGEX})$`], this.providerTypes.entries()],
                 ["/outpost/outposts", msg("Outposts")]]],
             [null, msg("Events"), null, [
                 ["/events/log", msg("Logs"), [`^/events/log/(?<id>${UUID_REGEX})$`], eventTypes],
                 ["/events/rules", msg("Notification Rules")],
                 ["/events/transports", msg("Notification Transports")]]],
             [null, msg("Customisation"), null, [
-                ["/policy/policies", msg("Policies"), null, policyTypes],
-                ["/core/property-mappings", msg("Property Mappings"), null, mappingTypes],
+                ["/policy/policies", msg("Policies"), null, this.policyTypes.entries()],
+                ["/core/property-mappings", msg("Property Mappings"), null, this.propertyMapper.entries()],
                 ["/blueprints/instances", msg("Blueprints")],
                 ["/policy/reputation", msg("Reputation scores")]]],
             [null, msg("Flows and Stages"), null, [
                 ["/flow/flows", msg("Flows"), [`^/flow/flows/(?<slug>${SLUG_REGEX})$`], flowTypes],
-                ["/flow/stages", msg("Stages"), null, stageTypes],
+                ["/flow/stages", msg("Stages"), null, this.stageTypes.entries()],
                 ["/flow/stages/prompts", msg("Prompts")]]],
             [null, msg("Directory"), null, [
                 ["/identity/users", msg("Users"), [`^/identity/users/(?<id>${ID_REGEX})$`]],
                 ["/identity/groups", msg("Groups"), [`^/identity/groups/(?<id>${UUID_REGEX})$`]],
                 ["/identity/roles", msg("Roles"), [`^/identity/roles/(?<id>${UUID_REGEX})$`]],
-                ["/core/sources", msg("Federation and Social login"), [`^/core/sources/(?<slug>${SLUG_REGEX})$`], sourceTypes],
+                ["/core/sources", msg("Federation and Social login"), [`^/core/sources/(?<slug>${SLUG_REGEX})$`], this.sourceTypes.entries()],
                 ["/core/tokens", msg("Tokens and App passwords")],
                 ["/flow/stages/invitations", msg("Invitations")]]],
             [null, msg("System"), null, [
                 ["/core/tenants", msg("Tenants")],
                 ["/crypto/certificates", msg("Certificates")],
-                ["/outpost/integrations", msg("Outpost Integrations"), null, connectionTypes]]],
+                ["/outpost/integrations", msg("Outpost Integrations"), null, this.connectionTypes.entries()]]],
             ...(enterpriseMenu)
         ];
 
