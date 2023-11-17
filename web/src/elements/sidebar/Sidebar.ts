@@ -1,7 +1,7 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/sidebar/SidebarBrand";
-import "@goauthentik/elements/sidebar/SidebarUser";
 import "@goauthentik/elements/sidebar/SidebarItems";
+import "@goauthentik/elements/sidebar/SidebarUser";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -73,8 +73,10 @@ export class Sidebar extends AKElement {
     }
 
     render(): TemplateResult {
-        console.log(this.entries);
-        return html`<nav class="pf-c-nav ${this.activeTheme === UiThemeEnum.Light ? "pf-m-light" : ""}" aria-label="Global">
+        return html`<nav
+            class="pf-c-nav ${this.activeTheme === UiThemeEnum.Light ? "pf-m-light" : ""}"
+            aria-label="Global"
+        >
             <ak-sidebar-brand></ak-sidebar-brand>
             <ak-sidebar-items .entries=${this.entries}></ak-sidebar-items>
             <ak-sidebar-user></ak-sidebar-user>

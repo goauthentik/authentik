@@ -6,9 +6,9 @@ export function RenderFlowOption(flow: Flow): string {
     return `${flow.slug} (${flow.name})`;
 }
 
-type Pair = [FlowDesignationEnum, string];
+type FlowDesignationPair = [FlowDesignationEnum, string];
 
-export const flowDesignationTable: Pair[] = [
+export const flowDesignationTable: FlowDesignationPair[] = [
     [FlowDesignationEnum.Authentication,        msg("Authentication")],
     [FlowDesignationEnum.Authorization,         msg("Authorization")],
     [FlowDesignationEnum.Enrollment,            msg("Enrollment")],
@@ -25,7 +25,7 @@ export function DesignationToLabel(designation: FlowDesignationEnum): string {
     return flowDesignations.get(designation) ?? msg("Unknown designation");
 }
 
-const layoutToLabel = new Map([
+const layoutToLabel = new Map<LayoutEnum, string>([
     [LayoutEnum.Stacked,               msg("Stacked")],
     [LayoutEnum.ContentLeft,           msg("Content left")],
     [LayoutEnum.ContentRight,          msg("Content right")],
