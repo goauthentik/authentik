@@ -15,7 +15,7 @@ COPY web .
 RUN npm run build-proxy
 
 # Stage 2: Build
-FROM --platform=${BUILDPLATFORM} docker.io/golang:1.21.3-bookworm AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/golang:1.21.4-bookworm AS builder
 
 ARG TARGETOS
 ARG TARGETARCH
