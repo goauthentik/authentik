@@ -27,5 +27,8 @@
         "precommit": "run-s lint:precommit lint:spelling prettier",
         "prettier-check": "prettier --check .",
         "prettier": "prettier --write ."
+    },
+    "engines": {
+        "node": ">=20"
     }
 }
