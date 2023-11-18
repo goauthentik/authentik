@@ -27,6 +27,7 @@ from authentik.lib.sentry import before_send
 from authentik.lib.utils.errors import exception_to_string
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
+from authentik.policies.reputation.models import Reputation
 from authentik.providers.oauth2.models import AccessToken, AuthorizationCode, RefreshToken
 from authentik.providers.scim.models import SCIMGroup, SCIMUser
 from authentik.stages.authenticator_static.models import StaticToken
@@ -52,11 +53,13 @@ IGNORED_MODELS = (
     RefreshToken,
     SCIMUser,
     SCIMGroup,
+    Reputation,
 )
 
 
 def should_log_model(model: Model) -> bool:
     """Return true if operation on `model` should be logged"""
+    # Check for silk by string so this comparison doesn't fail when silk isn't installed
     if model.__module__.startswith("silk"):
         return False
     return model.__class__ not in IGNORED_MODELS
