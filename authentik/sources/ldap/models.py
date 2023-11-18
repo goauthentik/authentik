@@ -192,7 +192,9 @@ class LDAPSource(Source):
             server_kwargs["get_info"] = NONE
             return self.connection(server, server_kwargs, connection_kwargs)
         finally:
-            if exists(connection.server.tls.certificate_file):
+            if connection.server.tls.certificate_file is not None and exists(
+                connection.server.tls.certificate_file
+            ):
                 rmtree(dirname(connection.server.tls.certificate_file))
         return RuntimeError("Failed to bind")
 
