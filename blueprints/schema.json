@@ -7425,6 +7425,11 @@
                 "show_source_labels": {
                     "type": "boolean",
                     "title": "Show source labels"
+                },
+                "pretend_user_exists": {
+                    "type": "boolean",
+                    "title": "Pretend user exists",
+                    "description": "When enabled, the stage will succeed and continue even when incorrect user info is entered."
                 }
             },
             "required": []
