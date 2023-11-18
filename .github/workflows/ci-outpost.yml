@@ -65,6 +65,7 @@ jobs:
           - radius
     runs-on: ubuntu-latest
     permissions:
+      # Needed to upload contianer images to ghcr.io
       packages: write
     steps:
       - uses: actions/checkout@v3
