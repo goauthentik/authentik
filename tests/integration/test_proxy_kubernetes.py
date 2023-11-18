@@ -1,6 +1,7 @@
 """Test Controllers"""
 from typing import Optional
 
+import pytest
 import yaml
 from django.test import TestCase
 from structlog.stdlib import get_logger
@@ -53,6 +54,7 @@ class TestProxyKubernetes(TestCase):
         manifest = self.controller.get_static_deployment()
         self.assertEqual(len(list(yaml.load_all(manifest, Loader=yaml.SafeLoader))), 4)
 
+    @pytest.mark.timeout(1)
     def test_kubernetes_controller_ingress(self):
         """Test Kubernetes Controller's Ingress"""
         provider: ProxyProvider = ProxyProvider.objects.create(
