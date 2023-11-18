@@ -184,7 +184,7 @@ REST_FRAMEWORK = {
         "authentik.rbac.filters.ObjectFilter",
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.OrderingFilter",
-        "rest_framework.filters.SearchFilter",
+        "authentik.api.search.QLSearch",
     ],
     "DEFAULT_PERMISSION_CLASSES": ("authentik.rbac.permissions.ObjectPermissions",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
