@@ -51,6 +51,10 @@ export class SourceViewPage extends AKElement {
                 return html`<ak-source-plex-view
                     sourceSlug=${this.source.slug}
                 ></ak-source-plex-view>`;
+            case "ak-source-scim-form":
+                return html`<ak-source-scim-view
+                    sourceSlug=${this.source.slug}
+                ></ak-source-scim-view>`;
             default:
                 return html`<p>Invalid source type ${this.source.component}</p>`;
         }

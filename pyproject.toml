@@ -118,6 +118,7 @@ description = ""
 authors = ["authentik Team <hello@goauthentik.io>"]
 
 [tool.poetry.dependencies]
+antlr4-python3-runtime = "*"
 argon2-cffi = "*"
 celery = "*"
 channels = { version = "*", extras = ["daphne"] }
@@ -143,6 +144,7 @@ facebook-sdk = "*"
 flower = "*"
 geoip2 = "*"
 gunicorn = "*"
+jsonpatch = "*"
 kubernetes = "*"
 ldap3 = "*"
 lxml = "*"
@@ -171,7 +173,6 @@ webauthn = "*"
 wsproto = "*"
 xmlsec = "*"
 zxcvbn = "*"
-jsonpatch = "*"
 
 [tool.poetry.dev-dependencies]
 bandit = "*"
