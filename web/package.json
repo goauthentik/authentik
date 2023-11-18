@@ -125,5 +125,8 @@
         "@esbuild/darwin-arm64": "^0.19.5",
         "@esbuild/linux-amd64": "^0.18.11",
         "@esbuild/linux-arm64": "^0.19.5"
+    },
+    "engines": {
+        "node": ">=20"
     }
 }

@@ -18,14 +18,18 @@ runs:
     - name: Setup python and restore poetry
       uses: actions/setup-python@v3
       with:
-        python-version: "3.11"
+        python-version-file: 'pyproject.toml'
         cache: "poetry"
     - name: Setup node
       uses: actions/setup-node@v3
       with:
-        node-version: "20"
+        node-version-file: web/package.json
         cache: "npm"
         cache-dependency-path: web/package-lock.json
+    - name: Setup go
+      uses: actions/setup-go@v4
+      with:
+        go-version-file: "go.mod"
     - name: Setup dependencies
       shell: bash
       run: |
