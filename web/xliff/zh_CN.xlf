@@ -7981,6 +7981,14 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
   <target>此用户将会被添加到组 &amp;quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&amp;quot;。</target>
 </trans-unit>
+<trans-unit id="s62e7f6ed7d9cb3ca">
+  <source>Pretend user exists</source>
+  <target>假作用户存在</target>
+</trans-unit>
+<trans-unit id="s52bdc80690a9a8dc">
+  <source>When enabled, the stage will always accept the given user identifier and continue.</source>
+  <target>启用时，此阶段总是会接受指定的用户 ID 并继续。</target>
+</trans-unit>
     </body>
   </file>
 </xliff>
