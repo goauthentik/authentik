@@ -1,6 +1,7 @@
 """outpost tests"""
 from unittest.mock import MagicMock, patch
 
+import pytest
 from django.test import TestCase
 from kubernetes.client import AppsV1Api
 from kubernetes.client.exceptions import OpenApiException
@@ -50,6 +51,7 @@ class OutpostKubernetesTests(TestCase):
         self.outpost.providers.add(self.provider)
         self.outpost.save()
 
+    @pytest.mark.timeout(120)
     def test_deployment_reconciler(self):
         """test that deployment requires update"""
         controller = ProxyKubernetesController(self.outpost, self.service_connection)
@@ -88,6 +90,7 @@ class OutpostKubernetesTests(TestCase):
 
         deployment_reconciler.delete(deployment_reconciler.get_reference_object())
 
+    @pytest.mark.timeout(120)
     def test_controller_rename(self):
         """test that objects get deleted and re-created with new names"""
         controller = ProxyKubernetesController(self.outpost, self.service_connection)
@@ -100,6 +103,7 @@ class OutpostKubernetesTests(TestCase):
             apps.read_namespaced_deployment("test", self.outpost.config.kubernetes_namespace)
         controller.down()
 
+    @pytest.mark.timeout(120)
     def test_controller_full_update(self):
         """Test an update that triggers all objects"""
         controller = ProxyKubernetesController(self.outpost, self.service_connection)

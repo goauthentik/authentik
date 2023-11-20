@@ -7,7 +7,12 @@ on:
     paths:
       - "!**"
       - "locale/**"
-      - "web/src/locales/**"
+      - "!locale/en/**"
+      - "web/xliff/**"
+
+permissions:
+  # Permission to write comment
+  pull-requests: write
 
 jobs:
   post-comment:

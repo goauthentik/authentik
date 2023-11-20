@@ -47,10 +47,6 @@ func (rs *RadiusServer) ServeRADIUS(w radius.ResponseWriter, r *radius.Request) 
 			"outpost_name": rs.ac.Outpost.Name,
 			"app":          selectedApp,
 		}).Observe(float64(span.EndTime.Sub(span.StartTime)) / float64(time.Second))
-		metrics.RequestsLegacy.With(prometheus.Labels{
-			"outpost_name": rs.ac.Outpost.Name,
-			"app":          selectedApp,
-		}).Observe(float64(span.EndTime.Sub(span.StartTime)))
 	}()
 
 	nr := &RadiusRequest{

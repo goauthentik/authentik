@@ -6,6 +6,7 @@ from django.urls import reverse
 from authentik.core.models import USER_ATTRIBUTE_SOURCES, Group, Source, User, UserSourceConnection
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
@@ -58,11 +59,33 @@ class TestUserWriteStage(FlowTestCase):
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
         user_qs = User.objects.filter(username=plan.context[PLAN_CONTEXT_PROMPT]["username"])
         self.assertTrue(user_qs.exists())
-        self.assertTrue(user_qs.first().check_password(password))
-        self.assertEqual(
-            list(user_qs.first().ak_groups.order_by("name")), [self.other_group, self.group]
+        user = user_qs.first()
+        self.assertTrue(user.check_password(password))
+        self.assertEqual(list(user.ak_groups.order_by("name")), [self.other_group, self.group])
+        self.assertEqual(user.attributes, {USER_ATTRIBUTE_SOURCES: [self.source.name]})
+
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.MODEL_CREATED,
+                context__model={
+                    "app": "authentik_core",
+                    "model_name": "user",
+                    "pk": user.pk,
+                    "name": "name",
+                },
+            )
         )
-        self.assertEqual(user_qs.first().attributes, {USER_ATTRIBUTE_SOURCES: [self.source.name]})
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.MODEL_UPDATED,
+                context__model={
+                    "app": "authentik_core",
+                    "model_name": "user",
+                    "pk": user.pk,
+                    "name": "name",
+                },
+            )
+        )
 
     def test_user_update(self):
         """Test update of existing user"""

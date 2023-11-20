@@ -7,6 +7,9 @@ on:
 jobs:
   build-server:
     runs-on: ubuntu-latest
+    permissions:
+      # Needed to upload contianer images to ghcr.io
+      packages: write
     steps:
       - uses: actions/checkout@v4
       - name: Set up QEMU
@@ -52,6 +55,9 @@ jobs:
             VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
   build-outpost:
     runs-on: ubuntu-latest
+    permissions:
+      # Needed to upload contianer images to ghcr.io
+      packages: write
     strategy:
       fail-fast: false
       matrix:
@@ -106,6 +112,9 @@ jobs:
   build-outpost-binary:
     timeout-minutes: 120
     runs-on: ubuntu-latest
+    permissions:
+      # Needed to upload binaries to the release
+      contents: write
     strategy:
       fail-fast: false
       matrix:
@@ -122,7 +131,7 @@ jobs:
           go-version-file: "go.mod"
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version-file: web/package.json
           cache: "npm"
           cache-dependency-path: web/package-lock.json
       - name: Build web

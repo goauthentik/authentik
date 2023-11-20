@@ -173,12 +173,6 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server) (*A
 				"method":       r.Method,
 				"host":         web.GetHost(r),
 			}).Observe(float64(elapsed) / float64(time.Second))
-			metrics.RequestsLegacy.With(prometheus.Labels{
-				"outpost_name": a.outpostName,
-				"type":         "app",
-				"method":       r.Method,
-				"host":         web.GetHost(r),
-			}).Observe(float64(elapsed))
 		})
 	})
 	if server.API().GlobalConfig.ErrorReporting.Enabled {
@@ -241,7 +235,10 @@ func (a *Application) Mode() api.ProxyMode {
 	return *a.proxyConfig.Mode
 }
 
-func (a *Application) HasQuerySignature(r *http.Request) bool {
+func (a *Application) ShouldHandleURL(r *http.Request) bool {
+	if strings.HasPrefix(r.URL.Path, "/outpost.goauthentik.io") {
+		return true
+	}
 	if strings.EqualFold(r.URL.Query().Get(CallbackSignature), "true") {
 		return true
 	}

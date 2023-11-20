@@ -24,7 +24,7 @@ import { UserOption } from "@goauthentik/elements/user/utils";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -400,7 +400,16 @@ export class RelatedUserList extends Table<User> {
                         <ak-forms-modal>
                             <span slot="submit"> ${msg("Create")} </span>
                             <span slot="header"> ${msg("Create User")} </span>
-                            <ak-user-form slot="form"> </ak-user-form>
+                            ${this.targetGroup
+                                ? html`
+                                      <div class="pf-c-banner pf-m-info" slot="above-form">
+                                          ${msg(
+                                              str`This user will be added to the group "${this.targetGroup.name}".`,
+                                          )}
+                                      </div>
+                                  `
+                                : nothing}
+                            <ak-user-form .group=${this.targetGroup} slot="form"> </ak-user-form>
                             <a slot="trigger" class="pf-c-dropdown__menu-item">
                                 ${msg("Create user")}
                             </a>
@@ -413,7 +422,17 @@ export class RelatedUserList extends Table<User> {
                         >
                             <span slot="submit"> ${msg("Create")} </span>
                             <span slot="header"> ${msg("Create Service account")} </span>
-                            <ak-user-service-account slot="form"> </ak-user-service-account>
+                            ${this.targetGroup
+                                ? html`
+                                      <div class="pf-c-banner pf-m-info" slot="above-form">
+                                          ${msg(
+                                              str`This user will be added to the group "${this.targetGroup.name}".`,
+                                          )}
+                                      </div>
+                                  `
+                                : nothing}
+                            <ak-user-service-account-form .group=${this.targetGroup} slot="form">
+                            </ak-user-service-account-form>
                             <a slot="trigger" class="pf-c-dropdown__menu-item">
                                 ${msg("Create Service account")}
                             </a>
