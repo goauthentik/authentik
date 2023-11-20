@@ -4950,9 +4950,9 @@ Bindings to groups/users are checked against the user of the event.</source>
         <target>有较新版本的前端可用。</target>
       </trans-unit>
       <trans-unit id="s96b3cddf33e1c853">
-        <source>You're currently impersonating <x id="0" equiv-text="${this.user.user.username}"/>. Click to stop.</source>
+        <source>You're currently impersonating <x id="0" equiv-text="${this.impersonation}"/>. Click to stop.</source>
         <target>你目前正在模拟 
-        <x id="0" equiv-text="${this.user.user.username}"/>。单击停止。</target>
+        <x id="0" equiv-text="${this.impersonation}"/>。单击停止。</target>
       </trans-unit>
       <trans-unit id="s7031e6928c44cedd">
         <source>User interface</source>

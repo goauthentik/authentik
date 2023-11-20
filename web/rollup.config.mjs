@@ -148,7 +148,7 @@ export default [
     },
     // Admin interface
     {
-        input: "./src/admin/AdminInterface.ts",
+        input: "./src/admin/AdminInterface/AdminInterface.ts",
         output: [
             {
                 format: "es",
