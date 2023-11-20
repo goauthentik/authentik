@@ -61,7 +61,11 @@ class SCIMGroupTests(TestCase):
         self.assertEqual(mock.request_history[1].method, "POST")
         self.assertJSONEqual(
             mock.request_history[1].body,
-            {"externalId": str(group.pk), "displayName": group.name},
+            {
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                "externalId": str(group.pk),
+                "displayName": group.name,
+            },
         )
 
     @Mocker()
@@ -96,7 +100,11 @@ class SCIMGroupTests(TestCase):
             validate(body, loads(schema.read()))
         self.assertEqual(
             body,
-            {"externalId": str(group.pk), "displayName": group.name},
+            {
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                "externalId": str(group.pk),
+                "displayName": group.name,
+            },
         )
         group.save()
         self.assertEqual(mock.call_count, 4)
@@ -129,7 +137,11 @@ class SCIMGroupTests(TestCase):
         self.assertEqual(mock.request_history[1].method, "POST")
         self.assertJSONEqual(
             mock.request_history[1].body,
-            {"externalId": str(group.pk), "displayName": group.name},
+            {
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                "externalId": str(group.pk),
+                "displayName": group.name,
+            },
         )
         group.delete()
         self.assertEqual(mock.call_count, 4)

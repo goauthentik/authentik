@@ -44,7 +44,7 @@ In the Customer portal you can remove members and invite new members to the orga
 ### Buy a license
 
 :::info
-[Learn more](#about-users) about **internal** and **external** users, and how we forecast the number of users.
+[Learn more](#about-users-and-licenses) about **internal** and **external** users, and how we forecast the number of users.
 :::
 
 1. To get a license key, log in to your authentik account with your admin credentials, and then click **Admin interface** in the upper right.

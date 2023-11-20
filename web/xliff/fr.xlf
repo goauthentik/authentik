@@ -2562,31 +2562,6 @@ Il y a <x id="0" equiv-text="${ago}"/> jour(s)</target>
         <target>Si le score du mot de passe est inférieur ou égal à cette valeur, la politique échoue.</target>
         
       </trans-unit>
-      <trans-unit id="s1bfe7505059d164f">
-        <source>0: Too guessable: risky password. (guesses &lt; 10^3)</source>
-        <target>0: Trop prévisible: mot de passe risqué. (essais &lt; 10^3)</target>
-        
-      </trans-unit>
-      <trans-unit id="s423d1f2477998d0b">
-        <source>1: Very guessable: protection from throttled online attacks. (guesses &lt; 10^6)</source>
-        <target>1: Très prévisible: protection contre les attaques en ligne limitées. (essais &lt; 10^6)</target>
-        
-      </trans-unit>
-      <trans-unit id="s33849cc046eb901d">
-        <source>2: Somewhat guessable: protection from unthrottled online attacks. (guesses &lt; 10^8)</source>
-        <target>2: Quelque peu prévisible: protection contre les attaques en ligne non limitées. (essais &lt; 10^8)</target>
-        
-      </trans-unit>
-      <trans-unit id="s578dcce295718e1b">
-        <source>3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &lt; 10^10)</source>
-        <target>3: Sûrement imprévisible: protection modérée contre les attaques de hash-lent hors ligne. (essais &lt; 10^10)</target>
-        
-      </trans-unit>
-      <trans-unit id="s7a46de49f4eba5d7">
-        <source>4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &gt;= 10^10)</source>
-        <target>4: Très imprévisible: forte protection control les attaques de hash-lent hors ligne. (essais &gt;= 10^10)</target>
-        
-      </trans-unit>
       <trans-unit id="sd6cd7ce2310a73a4">
         <source>Checks the value from the policy request against several rules, mostly used to ensure password strength.</source>
         <target>Vérifie la valeur de la requête via plusieurs règles, principalement utilisé pour s'assurer de la robustesse des mots de passe.</target>
@@ -7942,9 +7917,66 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s4a34a6be4c68ec87">
   <source>Users created</source>
+  <target>Utilisateurs créés</target>
 </trans-unit>
 <trans-unit id="s275c956687e2e656">
   <source>Failed logins</source>
+  <target>Connexions échouées</target>
+</trans-unit>
+<trans-unit id="sb35c08e3a541188f">
+  <source>Also known as Client ID.</source>
+  <target>Également appelé Client ID.</target>
+</trans-unit>
+<trans-unit id="sd46fd9b647cfea10">
+  <source>Also known as Client Secret.</source>
+  <target>Également appelé Client Secret.</target>
+</trans-unit>
+<trans-unit id="s4476e9c50cfd13f4">
+  <source>Global status</source>
+  <target>État global</target>
+</trans-unit>
+<trans-unit id="sd21a971eea208533">
+  <source>Vendor</source>
+  <target>Fournisseur</target>
+</trans-unit>
+<trans-unit id="sadadfe9dfa06d7dd">
+  <source>No sync status.</source>
+  <target>Pas d'état de synchronisation.</target>
+</trans-unit>
+<trans-unit id="s2b1c81130a65a55b">
+  <source>Sync currently running.</source>
+  <target>Synchronisation en cours.</target>
+</trans-unit>
+<trans-unit id="sf36170f71cea38c2">
+  <source>Connectivity</source>
+  <target>Connectivité</target>
+</trans-unit>
+<trans-unit id="sd94e99af8b41ff54">
+  <source>0: Too guessable: risky password. (guesses &amp;lt; 10^3)</source>
+</trans-unit>
+<trans-unit id="sc926385d1a624c3a">
+  <source>1: Very guessable: protection from throttled online attacks. (guesses &amp;lt; 10^6)</source>
+</trans-unit>
+<trans-unit id="s8aae61c41319602c">
+  <source>2: Somewhat guessable: protection from unthrottled online attacks. (guesses &amp;lt; 10^8)</source>
+</trans-unit>
+<trans-unit id="sc1f4b57e722a89d6">
+  <source>3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &amp;lt; 10^10)</source>
+</trans-unit>
+<trans-unit id="sd47f3d3c9741343d">
+  <source>4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &amp;gt;= 10^10)</source>
+</trans-unit>
+<trans-unit id="s3d2a8b86a4f5a810">
+  <source>Successfully created user and added to group <x id="0" equiv-text="${this.group.name}"/></source>
+</trans-unit>
+<trans-unit id="s824e0943a7104668">
+  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
+</trans-unit>
+<trans-unit id="s62e7f6ed7d9cb3ca">
+  <source>Pretend user exists</source>
+</trans-unit>
+<trans-unit id="s52bdc80690a9a8dc">
+  <source>When enabled, the stage will always accept the given user identifier and continue.</source>
 </trans-unit>
     </body>
   </file>

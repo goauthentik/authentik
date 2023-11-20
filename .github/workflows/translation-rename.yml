@@ -6,6 +6,10 @@ on:
   pull_request:
     types: [opened, reopened]
 
+permissions:
+  # Permission to rename PR
+  pull-requests: write
+
 jobs:
   rename_pr:
     runs-on: ubuntu-latest

@@ -75,6 +75,8 @@ export class IdentificationStage extends BaseStage<
         // meaning that without the auto-redirect the user would only have the option
         // to manually click on the source button
         if ((this.challenge.userFields || []).length !== 0) return;
+        // we also don't want to auto-redirect if there's a passwordless URL configured
+        if (this.challenge.passwordlessUrl) return;
         const source = this.challenge.sources[0];
         this.host.challenge = source.challenge;
     }

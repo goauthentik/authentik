@@ -20,18 +20,22 @@ All of these variables can be set to values, but you can also use a URI-like for
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
-<Tabs>
+<Tabs groupId="platform">
   <TabItem value="docker-compose" label="Docker Compose" default>
     If you are using Docker Compose, edit your <code>.env</code> file to append any keys that you want to add, and then run the following command to apply them:
 
+    ```
     docker-compose up -d
+    ```
 
   </TabItem>
   <TabItem value="kubernetes" label="Kubernetes">
     If you are running in Kubernetes, edit your <code>values.yaml</code> file to append any keys that you want to add, and then run the following commands to apply:
 
+    ```
     helm repo update
     helm upgrade --install authentik authentik/authentik -f values.yaml
+    ```
 
   </TabItem>
 
@@ -41,15 +45,19 @@ import TabItem from "@theme/TabItem";
 
 To check if your config has been applied correctly, you can run the following command to output the full config:
 
-<Tabs>
+<Tabs groupId="platform">
   <TabItem value="docker-compose" label="Docker Compose" default>
 
+    ```
     docker-compose run --rm worker dump_config
+    ```
 
   </TabItem>
   <TabItem value="kubernetes" label="Kubernetes">
 
+    ```
     kubectl exec -it deployment/authentik-worker -c authentik -- ak dump_config
+    ```
 
   </TabItem>
 
@@ -71,16 +79,38 @@ To check if your config has been applied correctly, you can run the following co
 
 ## Redis Settings
 
--   `AUTHENTIK_REDIS__HOST`: Hostname of your Redis Server
--   `AUTHENTIK_REDIS__PORT`: Redis port, defaults to 6379
--   `AUTHENTIK_REDIS__PASSWORD`: Password for your Redis Server
--   `AUTHENTIK_REDIS__TLS`: Use TLS to connect to Redis, defaults to false
--   `AUTHENTIK_REDIS__TLS_REQS`: Redis TLS requirements, defaults to "none"
--   `AUTHENTIK_REDIS__DB`: Database, defaults to 0
--   `AUTHENTIK_REDIS__CACHE_TIMEOUT`: Timeout for cached data until it expires in seconds, defaults to 300
--   `AUTHENTIK_REDIS__CACHE_TIMEOUT_FLOWS`: Timeout for cached flow plans until they expire in seconds, defaults to 300
--   `AUTHENTIK_REDIS__CACHE_TIMEOUT_POLICIES`: Timeout for cached policies until they expire in seconds, defaults to 300
--   `AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION`: Timeout for cached reputation until they expire in seconds, defaults to 300
+-   `AUTHENTIK_REDIS__HOST`: Redis server host when not using configuration URL
+-   `AUTHENTIK_REDIS__PORT`: Redis server port when not using configuration URL
+-   `AUTHENTIK_REDIS__DB`: Redis server database when not using configuration URL
+-   `AUTHENTIK_REDIS__USERNAME`: Redis server username when not using configuration URL
+-   `AUTHENTIK_REDIS__PASSWORD`: Redis server password when not using configuration URL
+-   `AUTHENTIK_REDIS__TLS`: Redis server connection using TLS when not using configuration URL
+-   `AUTHENTIK_REDIS__TLS_REQS`: Redis server TLS connection requirements when not using configuration URL
+
+## Result Backend Settings
+
+-   `AUTHENTIK_RESULT_BACKEND__URL`: Result backend configuration URL, uses [the Redis Settings](#redis-settings) by default
+
+## Cache Settings
+
+-   `AUTHENTIK_CACHE__URL`: Cache configuration URL, uses [the Redis Settings](#redis-settings) by default
+-   `AUTHENTIK_CACHE__TIMEOUT`: Timeout for cached data until it expires in seconds, defaults to 300
+-   `AUTHENTIK_CACHE__TIMEOUT_FLOWS`: Timeout for cached flow plans until they expire in seconds, defaults to 300
+-   `AUTHENTIK_CACHE__TIMEOUT_POLICIES`: Timeout for cached policies until they expire in seconds, defaults to 300
+-   `AUTHENTIK_CACHE__TIMEOUT_REPUTATION`: Timeout for cached reputation until they expire in seconds, defaults to 300
+
+    :::info
+    `AUTHENTIK_CACHE__TIMEOUT_REPUTATION` only applies to the cache expiry, see [`AUTHENTIK_REPUTATION__EXPIRY`](#authentik_reputation__expiry) to control how long reputation is persisted for.
+    :::
+
+## Channel Layer Settings (inter-instance communication)
+
+-   `AUTHENTIK_CHANNEL__URL`: Channel layers configuration URL, uses [the Redis Settings](#redis-settings) by default
+
+## Broker Settings
+
+-   `AUTHENTIK_BROKER__URL`: Broker configuration URL, defaults to Redis using [the respective settings](#redis-settings)
+-   `AUTHENTIK_BROKER__TRANSPORT_OPTIONS`: Base64 encoded broker transport options
 
     :::info
     `AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION` only applies to the cache expiry, see [`AUTHENTIK_REPUTATION__EXPIRY`](#authentik_reputation__expiry) to control how long reputation is persisted for.

@@ -117,7 +117,7 @@ jobs:
         uses: helm/kind-action@v1.8.0
       - name: run integration
         run: |
-          poetry run coverage run manage.py test tests/integration
+          poetry run coverage run manage.py test --randomly-seed=2100196988 tests/integration
           poetry run coverage xml
       - if: ${{ always() }}
         uses: codecov/codecov-action@v3
@@ -187,6 +187,7 @@ jobs:
     needs: ci-core-mark
     runs-on: ubuntu-latest
     permissions:
+      # Needed to upload contianer images to ghcr.io
       packages: write
     timeout-minutes: 120
     steps:
@@ -239,6 +240,7 @@ jobs:
     needs: ci-core-mark
     runs-on: ubuntu-latest
     permissions:
+      # Needed to upload contianer images to ghcr.io
       packages: write
     timeout-minutes: 120
     steps:

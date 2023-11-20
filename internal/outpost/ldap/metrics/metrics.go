@@ -22,16 +22,6 @@ var (
 		Name: "authentik_outpost_ldap_requests_rejected_total",
 		Help: "Total number of rejected requests",
 	}, []string{"outpost_name", "type", "reason", "app"})
-
-	// NOTE: the following metrics are kept for compatibility purpose
-	RequestsLegacy = promauto.NewHistogramVec(prometheus.HistogramOpts{
-		Name: "authentik_outpost_ldap_requests",
-		Help: "The total number of configured providers",
-	}, []string{"outpost_name", "type", "app"})
-	RequestsRejectedLegacy = promauto.NewCounterVec(prometheus.CounterOpts{
-		Name: "authentik_outpost_ldap_requests_rejected",
-		Help: "Total number of rejected requests",
-	}, []string{"outpost_name", "type", "reason", "app"})
 )
 
 func RunServer() {

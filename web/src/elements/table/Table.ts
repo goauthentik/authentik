@@ -186,7 +186,6 @@ export abstract class Table<T> extends AKElement {
             this.data = await this.apiEndpoint(this.page);
             this.error = undefined;
             this.page = this.data.pagination.current;
-            const newSelected: T[] = [];
             const newExpanded: T[] = [];
             this.data.results.forEach((res) => {
                 const jsonRes = JSON.stringify(res);
@@ -206,18 +205,12 @@ export abstract class Table<T> extends AKElement {
                         );
                     };
                 }
-
-                const selectedIndex = this.selectedElements.findIndex(comp);
-                if (selectedIndex > -1) {
-                    newSelected.push(res);
-                }
                 const expandedIndex = this.expandedElements.findIndex(comp);
                 if (expandedIndex > -1) {
                     newExpanded.push(res);
                 }
             });
             this.isLoading = false;
-            this.selectedElements = newSelected;
             this.expandedElements = newExpanded;
         } catch (ex) {
             this.isLoading = false;

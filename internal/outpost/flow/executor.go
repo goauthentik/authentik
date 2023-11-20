@@ -29,16 +29,6 @@ var (
 		Name: "authentik_outpost_flow_timing_post_seconds",
 		Help: "Duration it took to send a challenge in seconds",
 	}, []string{"stage", "flow"})
-
-	// NOTE: the following metrics are kept for compatibility purpose
-	FlowTimingGetLegacy = promauto.NewHistogramVec(prometheus.HistogramOpts{
-		Name: "authentik_outpost_flow_timing_get",
-		Help: "Duration it took to get a challenge",
-	}, []string{"stage", "flow"})
-	FlowTimingPostLegacy = promauto.NewHistogramVec(prometheus.HistogramOpts{
-		Name: "authentik_outpost_flow_timing_post",
-		Help: "Duration it took to send a challenge",
-	}, []string{"stage", "flow"})
 )
 
 type SolverFunction func(*api.ChallengeTypes, api.ApiFlowsExecutorSolveRequest) (api.FlowChallengeResponseRequest, error)
@@ -198,10 +188,6 @@ func (fe *FlowExecutor) getInitialChallenge() (*api.ChallengeTypes, error) {
 		"stage": ch.GetComponent(),
 		"flow":  fe.flowSlug,
 	}).Observe(float64(gcsp.EndTime.Sub(gcsp.StartTime)) / float64(time.Second))
-	FlowTimingGetLegacy.With(prometheus.Labels{
-		"stage": ch.GetComponent(),
-		"flow":  fe.flowSlug,
-	}).Observe(float64(gcsp.EndTime.Sub(gcsp.StartTime)))
 	return challenge, nil
 }
 
@@ -259,10 +245,6 @@ func (fe *FlowExecutor) solveFlowChallenge(challenge *api.ChallengeTypes, depth 
 		"stage": ch.GetComponent(),
 		"flow":  fe.flowSlug,
 	}).Observe(float64(scsp.EndTime.Sub(scsp.StartTime)) / float64(time.Second))
-	FlowTimingPostLegacy.With(prometheus.Labels{
-		"stage": ch.GetComponent(),
-		"flow":  fe.flowSlug,
-	}).Observe(float64(scsp.EndTime.Sub(scsp.StartTime)))
 
 	if depth >= 10 {
 		return false, errors.New("exceeded stage recursion depth")

@@ -19,7 +19,7 @@ from authentik.stages.authenticator.oath import TOTP
 from authentik.stages.authenticator.util import hex_validator, random_hex
 
 
-class TOTPDigits(models.IntegerChoices):
+class TOTPDigits(models.TextChoices):
     """OTP Time Digits"""
 
     SIX = 6, _("6 digits, widely compatible")
