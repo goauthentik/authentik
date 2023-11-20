@@ -6797,8 +6797,8 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
         
       </trans-unit>
       <trans-unit id="s96b3cddf33e1c853">
-        <source>You're currently impersonating <x id="0" equiv-text="${this.user.user.username}"/>. Click to stop.</source>
-        <target>Je doet momenteel alsof je <x id="0" equiv-text="${this.user.user.username}"/> bent. Klik om te stoppen.</target>
+        <source>You're currently impersonating <x id="0" equiv-text="${this.impersonation}"/>. Click to stop.</source>
+        <target>Je doet momenteel alsof je <x id="0" equiv-text="${this.impersonation}"/> bent. Klik om te stoppen.</target>
         
       </trans-unit>
       <trans-unit id="s7031e6928c44cedd">

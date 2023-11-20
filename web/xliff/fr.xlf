@@ -6558,9 +6558,9 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
         
       </trans-unit>
       <trans-unit id="s96b3cddf33e1c853">
-        <source>You're currently impersonating <x id="0" equiv-text="${this.user.user.username}"/>. Click to stop.</source>
+        <source>You're currently impersonating <x id="0" equiv-text="${this.impersonation}"/>. Click to stop.</source>
         <target>Vous vous faites actuellement passer pour 
-        <x id="0" equiv-text="${this.user.user.username}"/>. Cliquer pour arrêter.</target>
+        <x id="0" equiv-text="${this.impersonation}"/>. Cliquer pour arrêter.</target>
         
       </trans-unit>
       <trans-unit id="s7031e6928c44cedd">
