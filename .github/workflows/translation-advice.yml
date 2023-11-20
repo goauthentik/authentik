@@ -10,6 +10,10 @@ on:
       - "!locale/en/**"
       - "web/xliff/**"
 
+permissions:
+  # Permission to write comment
+  pull-requests: write
+
 jobs:
   post-comment:
     runs-on: ubuntu-latest

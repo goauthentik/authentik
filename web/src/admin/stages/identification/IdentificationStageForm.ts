@@ -68,7 +68,7 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
     }
 
     renderForm(): TemplateResult {
-        return html` <span>
+        return html`<span>
                 ${msg("Let the user identify themselves with their username or Email address.")}
             </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
@@ -166,6 +166,26 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "When enabled, user fields are matched regardless of their casing.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal name="pretendUserExists">
+                        <label class="pf-c-switch">
+                            <input
+                                class="pf-c-switch__input"
+                                type="checkbox"
+                                ?checked=${first(this.instance?.pretendUserExists, true)}
+                            />
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label">${msg("Pretend user exists")}</span>
+                        </label>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "When enabled, the stage will always accept the given user identifier and continue.",
                             )}
                         </p>
                     </ak-form-element-horizontal>

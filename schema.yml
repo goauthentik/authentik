@@ -32013,6 +32013,10 @@ components:
           description: Specify which sources should be shown.
         show_source_labels:
           type: boolean
+        pretend_user_exists:
+          type: boolean
+          description: When enabled, the stage will succeed and continue even when
+            incorrect user info is entered.
       required:
       - component
       - meta_model_name
@@ -32077,6 +32081,10 @@ components:
           description: Specify which sources should be shown.
         show_source_labels:
           type: boolean
+        pretend_user_exists:
+          type: boolean
+          description: When enabled, the stage will succeed and continue even when
+            incorrect user info is entered.
       required:
       - name
     InstallID:
@@ -36560,6 +36568,10 @@ components:
           description: Specify which sources should be shown.
         show_source_labels:
           type: boolean
+        pretend_user_exists:
+          type: boolean
+          description: When enabled, the stage will succeed and continue even when
+            incorrect user info is entered.
     PatchedInvitationRequest:
       type: object
       description: Invitation Serializer

@@ -6026,6 +6026,12 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s824e0943a7104668">
   <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
 </trans-unit>
+<trans-unit id="s62e7f6ed7d9cb3ca">
+  <source>Pretend user exists</source>
+</trans-unit>
+<trans-unit id="s52bdc80690a9a8dc">
+  <source>When enabled, the stage will always accept the given user identifier and continue.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>

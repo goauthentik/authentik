@@ -38,7 +38,7 @@
         "@codemirror/theme-one-dark": "^6.1.2",
         "@formatjs/intl-listformat": "^7.5.3",
         "@fortawesome/fontawesome-free": "^6.4.2",
-        "@goauthentik/api": "^2023.10.3-1700176062",
+        "@goauthentik/api": "^2023.10.3-1700268969",
         "@lit-labs/context": "^0.4.0",
         "@lit-labs/task": "^3.1.0",
         "@lit/localize": "^0.11.4",
@@ -53,7 +53,7 @@
         "chartjs-adapter-moment": "^1.0.1",
         "codemirror": "^6.0.1",
         "construct-style-sheets-polyfill": "^3.1.0",
-        "core-js": "^3.33.2",
+        "core-js": "^3.33.3",
         "country-flag-icons": "^1.5.7",
         "fuse.js": "^7.0.0",
         "lit": "^2.8.0",
@@ -96,7 +96,7 @@
         "babel-plugin-macros": "^3.1.0",
         "babel-plugin-tsconfig-paths": "^1.0.3",
         "cross-env": "^7.0.3",
-        "eslint": "^8.53.0",
+        "eslint": "^8.54.0",
         "eslint-config-google": "^0.14.0",
         "eslint-plugin-custom-elements": "0.0.8",
         "eslint-plugin-lit": "^1.10.1",
@@ -109,7 +109,7 @@
         "pyright": "^1.1.336",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "rollup": "^4.4.1",
+        "rollup": "^4.5.0",
         "rollup-plugin-copy": "^3.5.0",
         "rollup-plugin-cssimport": "^1.0.3",
         "rollup-plugin-postcss-lit": "^2.1.0",
@@ -122,8 +122,11 @@
         "vite-tsconfig-paths": "^4.2.1"
     },
     "optionalDependencies": {
-        "@esbuild/darwin-arm64": "^0.19.5",
+        "@esbuild/darwin-arm64": "^0.19.6",
         "@esbuild/linux-amd64": "^0.18.11",
-        "@esbuild/linux-arm64": "^0.19.5"
+        "@esbuild/linux-arm64": "^0.19.6"
+    },
+    "engines": {
+        "node": ">=20"
     }
 }
