@@ -2,7 +2,7 @@ import "@goauthentik/admin/blueprints/BlueprintForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { uiConfig } from "@goauthentik/common/ui/config";
-import { PFColor } from "@goauthentik/elements/Label";
+import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -144,9 +144,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
                 ${description ? html`<small>${description}</small>` : html``}`,
             html`${BlueprintStatus(item)}`,
             html`${item.lastApplied.toLocaleString()}`,
-            html`<ak-label color=${item.enabled ? PFColor.Green : PFColor.Red}>
-                ${item.enabled ? msg("Yes") : msg("No")}
-            </ak-label>`,
+            html`<ak-status-label ?good=${item.enabled}></ak-status-label>`,
             html`<ak-forms-modal>
                     <span slot="submit"> ${msg("Update")} </span>
                     <span slot="header"> ${msg("Update Blueprint")} </span>

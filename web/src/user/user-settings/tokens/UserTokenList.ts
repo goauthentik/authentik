@@ -2,7 +2,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { intentToLabel } from "@goauthentik/common/labels";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
-import { PFColor } from "@goauthentik/elements/Label";
+import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/TokenCopyButton";
@@ -97,9 +97,7 @@ export class UserTokenList extends Table<Token> {
                             </dt>
                             <dd class="pf-c-description-list__description">
                                 <div class="pf-c-description-list__text">
-                                    <ak-label color=${item.expiring ? PFColor.Green : PFColor.Red}>
-                                        ${item.expiring ? msg("Yes") : msg("No")}
-                                    </ak-label>
+                                    <ak-status-label ?good=${item.expiring}></ak-status-label>
                                 </div>
                             </dd>
                         </div>
