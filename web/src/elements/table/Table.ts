@@ -100,7 +100,8 @@ export abstract class Table<T> extends AKElement {
         return false;
     }
 
-    renderExpanded(_item: T): TemplateResult {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    renderExpanded(item: T): TemplateResult {
         if (this.expandable) {
             throw new Error("Expandable is enabled but renderExpanded is not overridden!");
         }
@@ -233,11 +234,10 @@ export abstract class Table<T> extends AKElement {
             <tr role="row">
                 <td role="cell" colspan="8">
                     <div class="pf-l-bullseye">
-                        ${inner
-                            ? html`<ak-empty-state header="${msg("No objects found.")}"
-                                  ><div slot="primary">${this.renderObjectCreate()}</div>
-                              </ak-empty-state>`
-                            : html``}
+                        ${inner ??
+                        html`<ak-empty-state header="${msg("No objects found.")}"
+                            ><div slot="primary">${this.renderObjectCreate()}</div>
+                        </ak-empty-state>`}
                     </div>
                 </td>
             </tr>
