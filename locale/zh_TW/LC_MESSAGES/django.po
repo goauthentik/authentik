@@ -2333,7 +2333,7 @@ msgstr "選擇要對照測試密碼的後端。"
 msgid ""
 "How many attempts a user has before the flow is canceled. To lock the user "
 "out, use a reputation policy and a user_write stage."
-msgstr "在取消流程前使用者嘗試的次數。要鎖定使用者請使用融域政策和 user_write 階段。"
+msgstr "在取消流程前使用者嘗試的次數。要鎖定使用者請使用名譽政策和 user_write 階段。"
 
 #: authentik/stages/password/models.py:75
 msgid "Password Stage"
