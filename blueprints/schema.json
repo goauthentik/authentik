@@ -2931,6 +2931,11 @@
                     "type": "object",
                     "additionalProperties": true,
                     "title": "Brand"
+                },
+                "batch_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Batch id"
                 }
             },
             "required": []
@@ -2965,6 +2970,22 @@
                     "type": "boolean",
                     "title": "Send once",
                     "description": "Only send notification once, for example when sending a webhook into a chat channel."
+                },
+                "enable_batching": {
+                    "type": "boolean",
+                    "title": "Enable batching"
+                },
+                "batch_timeout": {
+                    "type": "integer",
+                    "minimum": -2147483648,
+                    "maximum": 2147483647,
+                    "title": "Batch timeout"
+                },
+                "max_batch_size": {
+                    "type": "integer",
+                    "minimum": -2147483648,
+                    "maximum": 2147483647,
+                    "title": "Max batch size"
                 }
             },
             "required": []
@@ -3040,6 +3061,11 @@
                             "type": "object",
                             "additionalProperties": true,
                             "title": "Brand"
+                        },
+                        "batch_id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "title": "Batch id"
                         }
                     },
                     "required": [

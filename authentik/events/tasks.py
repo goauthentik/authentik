@@ -3,11 +3,13 @@
 from typing import Optional
 
 from django.db.models.query_utils import Q
+from django.utils import timezone
 from guardian.shortcuts import get_anonymous_user
 from structlog.stdlib import get_logger
 
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.models import User
+from authentik.events.models import EventBatch  # Importing the EventBatch model
 from authentik.events.models import (
     Event,
     Notification,
@@ -17,6 +19,13 @@ from authentik.events.models import (
     TaskStatus,
 )
 from authentik.events.system_tasks import SystemTask, prefill_task
+from authentik.events.monitored_tasks import (
+    MonitoredTask,
+    TaskResult,
+    TaskResultStatus,
+    shared_task,
+)
+>>>>>>> 5255207c5 (events/batch: add event batching mechanism [AUTH-134])
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyEngineMode
 from authentik.root.celery import CELERY_APP
@@ -107,20 +116,44 @@ def notification_transport(
         event = Event.objects.filter(pk=event_pk).first()
         if not event:
             return
+
         user = User.objects.filter(pk=user_pk).first()
         if not user:
             return
         trigger = NotificationRule.objects.filter(pk=trigger_pk).first()
         if not trigger:
             return
-        notification = Notification(
-            severity=trigger.severity, body=event.summary, event=event, user=user
-        )
+
+        # Check if batching is enabled and process accordingly
         transport = NotificationTransport.objects.filter(pk=transport_pk).first()
+<<<<<<< HEAD
         if not transport:
             return
         transport.send(notification)
         self.set_status(TaskStatus.SUCCESSFUL)
+=======
+        if transport and transport.enable_batching:
+            # Process the event for batching
+            batch = EventBatch.get_or_create_batch(event.action, event.app, event.user)
+            batch.add_event_to_batch(event)
+            # Check if the batch has reached its limits
+            if not batch.check_batch_limits():
+                return
+
+            batch_summary = batch.process_batch()
+            batch.delete()
+            notification = Notification(
+                severity=trigger.severity, body=batch_summary, event=event, user=user
+            )
+        else:
+            notification = Notification(
+                severity=trigger.severity, body=event.summary, event=event, user=user
+            )
+
+        transport.send_notification(notification)
+
+        self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL))
+>>>>>>> 5255207c5 (events/batch: add event batching mechanism [AUTH-134])
     except (NotificationTransportError, PropertyMappingExpressionException) as exc:
         self.set_error(exc)
         raise exc
@@ -143,4 +176,21 @@ def notification_cleanup(self: SystemTask):
     for notification in notifications:
         notification.delete()
     LOGGER.debug("Expired notifications", amount=amount)
+<<<<<<< HEAD
     self.set_status(TaskStatus.SUCCESSFUL, f"Expired {amount} Notifications")
+=======
+    self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, [f"Expired {amount} Notifications"]))
+
+# Scheduled task to check and send pending batches
+@CELERY_APP.task(base=MonitoredTask)
+@shared_task
+def check_and_send_pending_batches():
+    """Check for pending batches that haven't been sent and have been idle for a specified time."""
+    idle_time = timezone.now() - timedelta(minutes=10)  # Example idle time
+    pending_batches = EventBatch.objects.filter(sent=False, last_updated__lt=idle_time)
+    for batch in pending_batches:
+        batch.send_notification()
+        batch.sent = True
+        batch.save()
+
+>>>>>>> 5255207c5 (events/batch: add event batching mechanism [AUTH-134])
