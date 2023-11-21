@@ -67,7 +67,16 @@ def on_login_failed(
     **kwargs,
 ):
     """Failed Login, authentik custom event"""
-    Event.new(EventAction.LOGIN_FAILED, **credentials, stage=stage, **kwargs).from_http(request)
+    user_agent = request.headers.get('User-Agent')  # Get the User-Agent from the request
+
+    # Include the User-Agent in the logged information
+    Event.new(
+        EventAction.LOGIN_FAILED,
+        user_agent=user_agent,
+        credentials=credentials,
+        stage=stage,
+        **kwargs
+    ).from_http(request)
 
 
 @receiver(invitation_used)
