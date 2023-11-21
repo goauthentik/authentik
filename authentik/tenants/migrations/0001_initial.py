@@ -26,9 +26,6 @@ def create_default_tenant(apps, schema_editor):
         footer_links=CONFIG.get("footer_links", default=[]),
     )
 
-    Domain = apps.get_model("authentik_tenants", "Domain")
-    domain = Domain.objects.using(db_alias).create(domain="*", tenant=tenant, is_primary=True)
-
 
 class Migration(migrations.Migration):
     initial = True
