@@ -1,18 +1,22 @@
 """authentik tenants app"""
 from django.db import DEFAULT_DB_ALIAS
 from django.db.models.signals import post_migrate
+from django_tenants.utils import get_public_schema_name
 
 from authentik.blueprints.apps import ManagedAppConfig
 
 
 def reconcile_default_tenant(*args, using=DEFAULT_DB_ALIAS, **kwargs):
     """Make sure default tenant exists"""
+    from django_tenants.utils import schema_context
+
     from authentik.tenants.models import Tenant
 
-    Tenant.objects.using(using).update_or_create(
-        defaults={"name": "Default", "ready": True},
-        schema_name="public",
-    )
+    with schema_context(get_public_schema_name()):
+        Tenant.objects.using(using).update_or_create(
+            defaults={"name": "Default", "ready": True},
+            schema_name="public",
+        )
 
 
 class AuthentikTenantsConfig(ManagedAppConfig):
