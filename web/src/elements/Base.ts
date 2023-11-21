@@ -2,7 +2,7 @@ import { config, tenant } from "@goauthentik/common/api/config";
 import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
 import { UIConfig, uiConfig } from "@goauthentik/common/ui/config";
 import { adaptCSS } from "@goauthentik/common/utils";
-import { authentikConfigContext } from "@goauthentik/elements/AuthentikContexts";
+import { authentikConfigContext } from "@goauthentik/elements/contexts/AuthentikContexts";
 
 import { ContextProvider } from "@lit-labs/context";
 import { localized } from "@lit/localize";

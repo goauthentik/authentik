@@ -4,7 +4,10 @@ import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helper
 import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
-import { rootInterface } from "@goauthentik/elements/Base";
+import {
+    CapabilitiesEnum,
+    withCapabilitiesContext,
+} from "@goauthentik/elements/contexts/withCapabilitiesContext";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -18,7 +21,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     BindingTypeEnum,
-    CapabilitiesEnum,
     DigestAlgorithmEnum,
     FlowsInstancesListDesignationEnum,
     NameIdPolicyEnum,
@@ -29,7 +31,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-source-saml-form")
-export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
+export class SAMLSourceForm extends withCapabilitiesContext(ModelForm<SAMLSource, string>) {
     @state()
     clearIcon = false;
 
@@ -157,7 +159,7 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                     </option>
                 </select>
             </ak-form-element-horizontal>
-            ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanSaveMedia)
+            ${this.can(CapabilitiesEnum.CanSaveMedia)
                 ? html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
                           <input type="file" value="" class="pf-c-form-control" />
                           ${this.instance?.icon

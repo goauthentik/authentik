@@ -1,8 +1,11 @@
 import { DesignationToLabel, LayoutToLabel } from "@goauthentik/admin/flows/utils";
 import { AuthenticationEnum } from "@goauthentik/api/dist/models/AuthenticationEnum";
-import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
-import { rootInterface } from "@goauthentik/elements/Base";
+import {
+    CapabilitiesEnum,
+    withCapabilitiesContext,
+} from "@goauthentik/elements/contexts/withCapabilitiesContext";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -14,7 +17,6 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
-    CapabilitiesEnum,
     DeniedActionEnum,
     Flow,
     FlowDesignationEnum,
@@ -24,7 +26,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-flow-form")
-export class FlowForm extends ModelForm<Flow, string> {
+export class FlowForm extends withCapabilitiesContext(ModelForm<Flow, string>) {
     async loadInstance(pk: string): Promise<Flow> {
         const flow = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({
             slug: pk,
@@ -56,8 +58,8 @@ export class FlowForm extends ModelForm<Flow, string> {
                 flowRequest: data,
             });
         }
-        const c = await config();
-        if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
+
+        if (this.can(CapabilitiesEnum.CanSaveMedia)) {
             const icon = this.getFormFiles()["background"];
             if (icon || this.clearBackground) {
                 await new FlowsApi(DEFAULT_CONFIG).flowsInstancesSetBackgroundCreate({
@@ -335,7 +337,7 @@ export class FlowForm extends ModelForm<Flow, string> {
                             </option>
                         </select>
                     </ak-form-element-horizontal>
-                    ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanSaveMedia)
+                    ${this.can(CapabilitiesEnum.CanSaveMedia)
                         ? html`<ak-form-element-horizontal
                                   label=${msg("Background")}
                                   name="background"

@@ -3,9 +3,12 @@ import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helper
 import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
-import { rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+import {
+    CapabilitiesEnum,
+    withCapabilitiesContext,
+} from "@goauthentik/elements/contexts/withCapabilitiesContext";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -17,7 +20,6 @@ import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
-    CapabilitiesEnum,
     FlowsInstancesListDesignationEnum,
     OAuthSource,
     OAuthSourceRequest,
@@ -28,7 +30,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-source-oauth-form")
-export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
+export class OAuthSourceForm extends withCapabilitiesContext(ModelForm<OAuthSource, string>) {
     async loadInstance(pk: string): Promise<OAuthSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthRetrieve({
             slug: pk,
@@ -326,7 +328,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                 />
                 <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
             </ak-form-element-horizontal>
-            ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanSaveMedia)
+            ${this.can(CapabilitiesEnum.CanSaveMedia)
                 ? html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
                           <input type="file" value="" class="pf-c-form-control" />
                           ${this.instance?.icon
