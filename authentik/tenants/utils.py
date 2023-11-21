@@ -4,6 +4,6 @@ from django.db import connection
 from authentik.tenants.models import Tenant
 
 
-def get_current_tenant() -> Tenant:
+def get_current_tenant() -> Tenant | None:
     """Get tenant for current request"""
-    return Tenant.objects.get(schema_name=connection.schema_name)
+    return Tenant.objects.filter(schema_name=connection.schema_name).first()
