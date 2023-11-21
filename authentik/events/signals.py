@@ -35,8 +35,20 @@ def on_user_logged_in(sender, request: HttpRequest, user: User, **_):
             # Save the login method used
             kwargs[PLAN_CONTEXT_METHOD] = flow_plan.context[PLAN_CONTEXT_METHOD]
             kwargs[PLAN_CONTEXT_METHOD_ARGS] = flow_plan.context.get(PLAN_CONTEXT_METHOD_ARGS, {})
+
+    # Get user agent information from the request
+    user_agent = request.META.get('HTTP_USER_AGENT', '')
+
+    # Get user's IP address
+    user_ip = request.META.get('REMOTE_ADDR', '')
+
+    # Add user agent and IP to kwargs
+    kwargs['user_agent'] = user_agent
+    kwargs['user_ip'] = user_ip
+
     event = Event.new(EventAction.LOGIN, **kwargs).from_http(request, user=user)
     request.session[SESSION_LOGIN_EVENT] = event
+
 
 
 def get_login_event(request: HttpRequest) -> Optional[Event]:
@@ -68,11 +80,19 @@ def on_login_failed(
 ):
     """Failed Login, authentik custom event"""
     user_agent = request.headers.get('User-Agent')  # Get the User-Agent from the request
+     # Check for different headers that might contain the user's IP address
+    forwarded_for = request.headers.get('X-Forwarded-For')
+    real_ip = request.headers.get('X-Real-IP')
+    remote_addr = request.META.get('REMOTE_ADDR')
 
-    # Include the User-Agent in the logged information
+    # Determine the user's IP address considering different headers
+    user_ip = forwarded_for.split(',')[0] if forwarded_for else real_ip if real_ip else remote_addr
+
+    # Include User-Agent and user's IP in the logged information
     Event.new(
         EventAction.LOGIN_FAILED,
         user_agent=user_agent,
+        user_ip=user_ip,
         credentials=credentials,
         stage=stage,
         **kwargs
