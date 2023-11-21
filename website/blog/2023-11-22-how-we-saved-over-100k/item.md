@@ -96,7 +96,7 @@ These all contribute to ‘defense in depth’—adding layers of security and c
 
 #### Product security
 
-This layer is really anything to do with securing the actual product you’re building (not you company). This typically means getting third-party penetration testing (if you don’t have a dedicated Red Team—more on this below) and remediating vulnerabilities you’ve surfaced through your monitoring and dependency tracking efforts.
+This layer is really anything to do with securing the actual product you’re building (not your company). This typically means getting third-party penetration testing (if you don’t have a dedicated Red Team—more on this below) and remediating vulnerabilities you’ve surfaced through your monitoring and dependency tracking efforts.
 
 ## Red Team efforts
 
