@@ -5,7 +5,7 @@ slug: 2023-11-22-how-we-saved-over-100k
 authors:
     - name: authentik Security Team
       url: https://goauthentik.io
-      image_url: https://goauthentik.io/img/icon.png
+      image_url: ./Rectangle 18.png
 tags:
     - authentik
     - FOSS
