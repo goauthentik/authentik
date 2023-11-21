@@ -39,8 +39,13 @@ def on_user_logged_in(sender, request: HttpRequest, user: User, **_):
     # Get user agent information from the request
     user_agent = request.META.get('HTTP_USER_AGENT', '')
 
-    # Get user's IP address
-    user_ip = request.META.get('REMOTE_ADDR', '')
+    # Check for different headers that might contain the user's IP address
+    forwarded_for = request.headers.get('X-Forwarded-For')
+    real_ip = request.headers.get('X-Real-IP')
+    remote_addr = request.META.get('REMOTE_ADDR')
+
+    # Determine the user's IP address considering different headers
+    user_ip = forwarded_for.split(',')[0] if forwarded_for else real_ip if real_ip else remote_addr
 
     # Add user agent and IP to kwargs
     kwargs['user_agent'] = user_agent
@@ -80,7 +85,7 @@ def on_login_failed(
 ):
     """Failed Login, authentik custom event"""
     user_agent = request.headers.get('User-Agent')  # Get the User-Agent from the request
-     # Check for different headers that might contain the user's IP address
+    # Check for different headers that might contain the user's IP address
     forwarded_for = request.headers.get('X-Forwarded-For')
     real_ip = request.headers.get('X-Real-IP')
     remote_addr = request.META.get('REMOTE_ADDR')
