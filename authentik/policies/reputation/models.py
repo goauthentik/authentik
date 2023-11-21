@@ -11,7 +11,6 @@ from rest_framework.serializers import BaseSerializer
 from structlog import get_logger
 
 from authentik.core.models import ExpiringModel
-from authentik.lib.config import CONFIG
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.http import get_client_ip
 from authentik.policies.models import Policy

@@ -19,6 +19,7 @@ class TestUsersAvatars(APITestCase):
         self.user = User.objects.create(username="test-user")
 
     def set_avatar_mode(self, mode: str):
+        """Set the avatar mode on the current tenant."""
         tenant = get_current_tenant()
         tenant.avatars = mode
         tenant.save()

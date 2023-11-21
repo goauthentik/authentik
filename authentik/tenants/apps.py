@@ -5,7 +5,7 @@ from django.db.models.signals import post_migrate
 from authentik.blueprints.apps import ManagedAppConfig
 
 
-def reconcile_default_tenant(using=DEFAULT_DB_ALIAS, *args, **kwargs):
+def reconcile_default_tenant(*args, using=DEFAULT_DB_ALIAS, **kwargs):
     """Make sure default tenant exists"""
     from authentik.tenants.models import Tenant
 
@@ -24,5 +24,6 @@ class AuthentikTenantsConfig(ManagedAppConfig):
     default = True
 
     def reconcile_default_tenant(self):
+        """Make sure default tenant exists, especially after a migration"""
         reconcile_default_tenant()
         post_migrate.connect(reconcile_default_tenant)
