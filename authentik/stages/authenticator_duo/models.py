@@ -1,4 +1,5 @@
 """Duo stage"""
+from os.path import isfile
 from typing import Optional
 
 from django.contrib.auth import get_user_model
@@ -15,7 +16,10 @@ from authentik.lib.models import SerializerModel
 from authentik.lib.utils.http import authentik_user_agent
 from authentik.stages.authenticator.models import Device
 
-
+HOST_CA_CERTS = "/etc/ssl/certs/ca-certificates.crt"
+if not isfile(HOST_CA_CERTS):
+    HOST_CA_CERTS = None
+    
 class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
     """Setup Duo authenticator devices"""
 
@@ -46,6 +50,7 @@ class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
             self.client_secret,
             self.api_hostname,
             user_agent=authentik_user_agent(),
+            ca_certs=HOST_CA_CERTS,
         )
 
     def admin_client(self) -> Admin:
@@ -57,6 +62,7 @@ class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
             self.admin_secret_key,
             self.api_hostname,
             user_agent=authentik_user_agent(),
+            ca_certs=HOST_CA_CERTS,
         )
         return client
 
