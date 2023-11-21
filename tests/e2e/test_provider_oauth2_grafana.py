@@ -42,8 +42,8 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             "auto_remove": True,
             "healthcheck": Healthcheck(
                 test=["CMD", "wget", "--spider", "http://localhost:3000"],
-                interval=5 * 100 * 1000000,
-                start_period=1 * 100 * 1000000,
+                interval=5 * 1_000 * 1_000_000,
+                start_period=1 * 1_000 * 1_000_000,
             ),
             "environment": {
                 "GF_AUTH_GENERIC_OAUTH_ENABLED": "true",
