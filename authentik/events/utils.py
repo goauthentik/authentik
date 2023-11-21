@@ -21,6 +21,7 @@ from django.views.debug import SafeExceptionReporterFilter
 from geoip2.models import ASN, City
 from guardian.conf import settings
 from guardian.utils import get_anonymous_user
+from rest_framework import serializers
 
 from authentik.blueprints.v1.common import YAMLTag
 from authentik.core.models import User
@@ -193,3 +194,17 @@ def sanitize_dict(source: dict[Any, Any]) -> dict[Any, Any]:
         if new_value is not ...:
             final_dict[key] = new_value
     return final_dict
+
+
+class LogSerializer(serializers.Serializer):
+    timestamp = serializers.DateTimeField()
+    log_level = serializers.CharField()
+    message = serializers.CharField()
+    attributes = serializers.JSONField(default=dict)
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["attributes"] = {
+            k: v for k, v in instance.items() if k not in ["timestamp", "log_level", "message"]
+        }
+        return data

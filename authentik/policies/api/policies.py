@@ -17,7 +17,7 @@ from authentik.api.decorators import permission_required
 from authentik.core.api.applications import user_app_cache_key
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import CacheSerializer, MetaNameSerializer, TypeCreateSerializer
-from authentik.events.utils import sanitize_dict
+from authentik.events.utils import LogSerializer
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.policies.api.exec import PolicyTestResultSerializer, PolicyTestSerializer
 from authentik.policies.models import Policy, PolicyBinding
@@ -164,11 +164,6 @@ class PolicyViewSet(
         proc = PolicyProcess(PolicyBinding(policy=policy), p_request, None)
         with capture_logs() as logs:
             result = proc.execute()
-        log_messages = []
-        for log in logs:
-            if log.get("process", "") == "PolicyProcess":
-                continue
-            log_messages.append(sanitize_dict(log))
-        result.log_messages = log_messages
+        result.log_messages = [LogSerializer(data=log).data for log in logs]
         response = PolicyTestResultSerializer(result)
         return Response(response.data)
