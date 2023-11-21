@@ -3,9 +3,8 @@ title: Building an OSS security stack with Loki, Wazuh, and CodeQL to save $100k
 description: “You don’t have to spend a lot developing a good security posture from the beginning. Here’s how we built Authentik Security’s stack with mostly free and open source tools.”
 slug: 2023-11-22-how-we-saved-over-100k
 authors:
-    - name: authentik Security Team
+    - name:    authentik Security Team
       url: https://goauthentik.io
-      image_url: ./icon.png
 tags:
     - authentik
     - FOSS
