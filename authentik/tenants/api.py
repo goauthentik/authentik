@@ -98,7 +98,6 @@ class SettingsSerializer(ModelSerializer):
             "gdpr_compliance",
             "impersonation",
             "footer_links",
-            "reputation_expiry",
         ]
 
 

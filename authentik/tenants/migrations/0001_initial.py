@@ -24,7 +24,6 @@ def create_default_tenant(apps, schema_editor):
         gdpr_compliance=CONFIG.get_bool("gdpr_compliance", True),
         impersonation=CONFIG.get_bool("impersonation", True),
         footer_links=CONFIG.get("footer_links", default=[]),
-        reputation_expiry=CONFIG.get_int("reputation_expiry", default=86400),
     )
 
     Domain = apps.get_model("authentik_tenants", "Domain")
@@ -103,13 +102,6 @@ class Migration(migrations.Migration):
                         blank=True,
                         default=list,
                         help_text="The option configures the footer links on the flow executor pages.",
-                    ),
-                ),
-                (
-                    "reputation_expiry",
-                    models.PositiveBigIntegerField(
-                        default=86400,
-                        help_text="Configure how long reputation scores should be saved for in seconds.",
                     ),
                 ),
             ],

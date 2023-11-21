@@ -38447,13 +38447,6 @@ components:
           additionalProperties: {}
           description: The option configures the footer links on the flow executor
             pages.
-        reputation_expiry:
-          type: integer
-          maximum: 9223372036854775807
-          minimum: 0
-          format: int64
-          description: Configure how long reputation scores should be saved for in
-            seconds.
     PatchedStaticDeviceRequest:
       type: object
       description: Serializer for static authenticator devices
@@ -41362,13 +41355,6 @@ components:
           additionalProperties: {}
           description: The option configures the footer links on the flow executor
             pages.
-        reputation_expiry:
-          type: integer
-          maximum: 9223372036854775807
-          minimum: 0
-          format: int64
-          description: Configure how long reputation scores should be saved for in
-            seconds.
       required:
       - domains
       - name
@@ -41402,13 +41388,6 @@ components:
           additionalProperties: {}
           description: The option configures the footer links on the flow executor
             pages.
-        reputation_expiry:
-          type: integer
-          maximum: 9223372036854775807
-          minimum: 0
-          format: int64
-          description: Configure how long reputation scores should be saved for in
-            seconds.
     SeverityEnum:
       enum:
       - notice

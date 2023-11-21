@@ -54,10 +54,6 @@ class Tenant(TenantMixin, SerializerModel):
         default=list,
         blank=True,
     )
-    reputation_expiry = models.PositiveBigIntegerField(
-        help_text=_("Configure how long reputation scores should be saved for in seconds."),
-        default=86400,
-    )
 
     def save(self, *args, **kwargs):
         if self.schema_name == "template":
