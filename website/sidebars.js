@@ -36,7 +36,7 @@ const docsSidebar = {
             items: [
                 "core/terminology",
                 "core/applications",
-                "core/tenants",
+                "core/brands",
                 "core/certificates",
                 "core/geoip",
                 "core/architecture",

@@ -6,7 +6,6 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.lib.config import CONFIG
 from authentik.tenants.utils import get_current_tenant
 
 
