@@ -16,6 +16,7 @@ from authentik.lib.models import SerializerModel
 from authentik.lib.utils.http import get_client_ip
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult
+from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
 CACHE_KEY_PREFIX = "goauthentik.io/policies/reputation/scores/"
@@ -23,7 +24,7 @@ CACHE_KEY_PREFIX = "goauthentik.io/policies/reputation/scores/"
 
 def reputation_expiry():
     """Reputation expiry"""
-    return now() + timedelta(seconds=CONFIG.get_int("reputation.expiry"))
+    return now() + timedelta(seconds=get_current_tenant().reputation_expiry)
 
 
 class ReputationPolicy(Policy):

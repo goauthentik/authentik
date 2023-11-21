@@ -24,6 +24,7 @@ def create_default_tenant(apps, schema_editor):
         gdpr_compliance=CONFIG.get_bool("gdpr_compliance", True),
         impersonation=CONFIG.get_bool("impersonation", True),
         footer_links=CONFIG.get("footer_links", default=[]),
+        reputation_expiry=CONFIG.get_int("reputation_expiry", default=86400),
     )
 
     Domain = apps.get_model("authentik_tenants", "Domain")
