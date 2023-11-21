@@ -221,7 +221,10 @@ class TokenParams:
             raise TokenError("invalid_grant")
 
         # Validate PKCE parameters.
-        if self.code_verifier:
+        if self.authorization_code.code_challenge:
+            # Authorization code had PKCE but we didn't get one
+            if not self.code_verifier:
+                raise TokenError("invalid_request")
             if self.authorization_code.code_challenge_method == PKCE_METHOD_S256:
                 new_code_challenge = (
                     urlsafe_b64encode(sha256(self.code_verifier.encode("ascii")).digest())
