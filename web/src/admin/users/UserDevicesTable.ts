@@ -15,6 +15,8 @@ export class UserDeviceTable extends Table<Device> {
     @property({ type: Number })
     userId?: number;
 
+    checkbox = true;
+
     async apiEndpoint(): Promise<PaginatedResponse<Device>> {
         return new AuthenticatorsApi(DEFAULT_CONFIG)
             .authenticatorsAdminAllList({
@@ -62,6 +64,21 @@ export class UserDeviceTable extends Table<Device> {
             default:
                 break;
         }
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${msg("Device(s)")}
+            .objects=${this.selectedElements}
+            .delete=${(item: Device) => {
+                return this.deleteWrapper(item);
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${msg("Delete")}
+            </button>
+        </ak-forms-delete-bulk>`;
     }
 
     renderToolbar(): TemplateResult {
