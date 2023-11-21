@@ -86,6 +86,10 @@ class Tenant(TenantMixin, SerializerModel):
 class Domain(DomainMixin, SerializerModel):
     """Tenant domain"""
 
+    tenant = models.ForeignKey(
+        Tenant, db_index=True, related_name="domains", on_delete=models.CASCADE
+    )
+
     def __str__(self) -> str:
         return f"Domain {self.domain}"
 

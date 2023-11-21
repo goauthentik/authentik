@@ -67,7 +67,6 @@ SHARED_APPS = [
 TENANT_APPS = [
     "django.contrib.auth",
     "django.contrib.sessions",
-    "authentik.tenants",
     "authentik.admin",
     "authentik.api",
     "authentik.crypto",
