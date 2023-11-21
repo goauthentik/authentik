@@ -81,7 +81,7 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "/usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage 5: Python dependencies
-FROM docker.io/python:3.12.0-bookworm AS python-deps
+FROM docker.io/python:3.12.0-slim-bookworm AS python-deps
 
 WORKDIR /ak-root/poetry
 
