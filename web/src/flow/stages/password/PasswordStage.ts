@@ -28,6 +28,11 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
 
     timer?: number;
 
+    hasError(field: string): boolean {
+        const errors = (this.challenge?.responseErrors || {})[field];
+        return (errors || []).length > 0;
+    }
+
     renderInput(): HTMLInputElement {
         this.input = document.createElement("input");
         this.input.type = "password";
@@ -38,6 +43,7 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
         this.input.classList.add("pf-c-form-control");
         this.input.required = true;
         this.input.value = PasswordManagerPrefill.password || "";
+        this.input.setAttribute("aria-invalid", this.hasError("password").toString());
         // This is somewhat of a crude way to get autofocus, but in most cases the `autofocus` attribute
         // isn't enough, due to timing within shadow doms and such.
         this.timer = window.setInterval(() => {
