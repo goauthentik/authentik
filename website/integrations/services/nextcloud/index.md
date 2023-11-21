@@ -182,7 +182,7 @@ For example, if your Nextcloud instance queries the discovery endpoint using an 
 -   `http://authentik.local/application/o/device/`
 -   `http://authentik.local/application/o/<app-slug>/jwks/`
 
-This represents a problem, because Nextcloud will attempt to redirect the user to the received `autorization` and `end-session` endpoints during login and logout respectively. When that happens, the user will try to access an internal domain and fail.
+This represents a problem, because Nextcloud will attempt to redirect the user to the received `authorization` and `end-session` endpoints during login and logout respectively. When that happens, the user will try to access an internal domain and fail.
 
 The easiest way to fix this is to modify the redirect response's `Location` header coming back from Nextcloud during login and logout. Different proxies have different ways of achieving this. For example with Traefik, a 3rd party plugin called [Rewrite Header](https://plugins.traefik.io/plugins/628c9eb5108ecc83915d7758/rewrite-header) can be used.
 
