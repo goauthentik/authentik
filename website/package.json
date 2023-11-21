@@ -54,7 +54,7 @@
         "@docusaurus/types": "3.0.0",
         "@types/react": "^18.2.37",
         "prettier": "3.1.0",
-        "typescript": "~5.2.2"
+        "typescript": "~5.3.2"
     },
     "engines": {
         "node": ">=20"
