@@ -184,6 +184,7 @@ class AuthenticatorValidateStageDuoTests(FlowTestCase):
                     "args": {},
                     "method": "GET",
                     "path": f"/api/v3/flows/executor/{flow.slug}/",
+                    "user_agent": "",
                 },
             },
         )
