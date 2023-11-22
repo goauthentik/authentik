@@ -145,7 +145,7 @@ At this stage you should be able to login with SSO.
 
 If you intend to only login to Nextcloud using your freshly configured authentik provider, you may wish to make it the default login method. This will allow your users to be automatically redirected to authentik when they attempt to access your Nextcloud instance, as opposed to having to manually click on "Log in with Authentik" every time they wish to login.
 
-To achive this, you will need to use the `occ` command of your Nextcloud instance:
+To achieve this, you will need to use the `occ` command of your Nextcloud instance:
 
 ```bash
 sudo -u www-data php var/www/nextcloud/occ config:app:set --value=0 user_oidc allow_multiple_user_backends
@@ -156,7 +156,7 @@ sudo -u www-data php var/www/nextcloud/occ config:app:set --value=0 user_oidc al
 The OpendID Connect discovery endpoint is queried by Nextcloud and contains a list of endpoints for use by both the relying party (Nextcloud) and the authenticating user.
 
 :::note
-If you are configuring an unsecure (http) discovery endpoint, Nextcloud will, by default, refuse to connect to it. To change this behaviour, you must add `allow_local_remote_servers => true` to your `config.php`
+If you are configuring an insecure (http) discovery endpoint, Nextcloud will, by default, refuse to connect to it. To change this behaviour, you must add `allow_local_remote_servers => true` to your `config.php`
 :::
 
 :::note
