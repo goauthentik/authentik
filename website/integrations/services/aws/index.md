@@ -163,3 +163,7 @@ return {
 -   Click _Update_
 
 The SCIM provider syncs automatically whenever you create/update/remove users, groups, or group membership. You can manually sync by going to your SCIM provider and clicking _Run sync again_. After the SCIM provider has synced, you should see the users and groups in your AWS IAM center.
+
+:::note
+The default [https://github.com/goauthentik/authentik/blob/0e244c3ebabbf7f205a771dbc68f386cdf0de487/blueprints/system/providers-scim.yaml](SCIM User property mapping) on Authentik implies that your users have a display name with a space. If your users' display name is not composed of two strings, you can work around by writing a custom SCIM property mapping that sets the name object with a space as the familyName and a formatted value to your username **+ a space**. The formatted value must exactly match the givenName + the familyName.
+:::
