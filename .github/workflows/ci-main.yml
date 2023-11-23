@@ -98,13 +98,6 @@ jobs:
           postgresql_version: ${{ matrix.psql }}
       - name: migrate to latest
         run: poetry run python -m lifecycle.migrate
-      - name: remove poetry env
-        if: ${{ always() }}
-        run: |
-          # Delete all poetry envs, to prevent them from getting cached
-          rm -rf /home/runner/.cache/pypoetry
-          # Ensure directory exists otherwise GHA fails
-          mkdir /home/runner/.cache/pypoetry
   test-unittest:
     name: test-unittest - PostgreSQL ${{ matrix.psql }}
     runs-on: ubuntu-latest
