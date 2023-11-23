@@ -32,6 +32,9 @@ export class RacInterface extends Interface {
             PFContent,
             AKGlobal,
             css`
+                :host {
+                    cursor: none;
+                }
                 canvas {
                     z-index: unset !important;
                 }
