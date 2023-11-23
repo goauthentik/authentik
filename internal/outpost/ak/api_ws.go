@@ -55,7 +55,7 @@ func (ac *APIController) initWS(akURL url.URL, outpostUUID string) error {
 		return err
 	}
 	ac.lastWsReconnect = time.Now()
-	ac.logger.WithField("logger", "authentik.outpost.ak-ws").WithField("outpost", outpostUUID).Debug("Successfully connected websocket")
+	ac.logger.WithField("logger", "authentik.outpost.ak-ws").WithField("outpost", outpostUUID).Info("Successfully connected websocket")
 	return nil
 }
 
