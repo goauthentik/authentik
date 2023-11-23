@@ -164,9 +164,10 @@ def sanitize_item(value: Any) -> Any:
     if isinstance(value, (bool, int, float, NoneType, list, tuple, dict)):
         return value
     try:
-        return DjangoJSONEncoder.default(value)
-    finally:
+        return DjangoJSONEncoder().default(value)
+    except TypeError:
         return str(value)
+    return str(value)
 
 
 def sanitize_dict(source: dict[Any, Any]) -> dict[Any, Any]:
