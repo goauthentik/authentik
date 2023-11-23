@@ -63,6 +63,11 @@ export class RacInterface extends Interface {
     @property()
     app?: string;
 
+    @state()
+    clipboardWatcherTimer = 0;
+
+    _previousClipboardValue: unknown;
+
     static domSize(): DOMRect {
         return document.body.getBoundingClientRect();
     }
@@ -70,9 +75,32 @@ export class RacInterface extends Interface {
     constructor() {
         super();
         this.initKeyboard();
+        this.checkClipboard();
+        this.clipboardWatcherTimer = setInterval(
+            this.checkClipboard.bind(this),
+            500,
+        ) as unknown as number;
     }
 
-    firstUpdated(): void {
+    connectedCallback(): void {
+        super.connectedCallback();
+        window.addEventListener(
+            "focus",
+            () => {
+                this.checkClipboard();
+            },
+            {
+                capture: false,
+            },
+        );
+    }
+
+    disconnectedCallback(): void {
+        super.disconnectedCallback();
+        clearInterval(this.clipboardWatcherTimer);
+    }
+
+    async firstUpdated(): Promise<void> {
         this.updateTitle();
         const wsUrl = `${window.location.protocol.replace("http", "ws")}//${
             window.location.host
@@ -101,6 +129,31 @@ export class RacInterface extends Interface {
                 this.reconnecting = false;
                 this.onConnected();
             }
+        };
+        this.client.onclipboard = (stream, mimetype) => {
+            // If the received data is text, read it as a simple string
+            if (/^text\//.exec(mimetype)) {
+                const reader = new Guacamole.StringReader(stream);
+                let data = "";
+                reader.ontext = (text) => {
+                    data += text;
+                };
+                reader.onend = () => {
+                    this._previousClipboardValue = data;
+                    navigator.clipboard.writeText(data);
+                };
+            } else {
+                const reader = new Guacamole.BlobReader(stream, mimetype);
+                reader.onend = () => {
+                    const blob = reader.getBlob();
+                    navigator.clipboard.write([
+                        new ClipboardItem({
+                            [blob.type]: blob,
+                        }),
+                    ]);
+                };
+            }
+            console.debug("authentik/rac: updated clipboard from remote");
         };
         const params = new URLSearchParams();
         params.set("screen_width", Math.floor(RacInterface.domSize().width).toString());
@@ -171,6 +224,39 @@ export class RacInterface extends Interface {
         keyboard.onkeyup = (keysym) => {
             this.client?.sendKeyEvent(0, keysym);
         };
+    }
+
+    async checkClipboard(): Promise<void> {
+        try {
+            if (!this._previousClipboardValue) {
+                this._previousClipboardValue = await navigator.clipboard.readText();
+                return;
+            }
+            const newValue = await navigator.clipboard.readText();
+            if (newValue !== this._previousClipboardValue) {
+                console.debug(`authentik/rac: new clipboard value: ${newValue}`);
+                this._previousClipboardValue = newValue;
+                this.writeClipboard(newValue);
+            }
+        } catch (ex) {
+            // The error is most likely caused by the document not being in focus
+            // in which case we can ignore it and just retry
+            if (ex instanceof DOMException) {
+                return;
+            }
+            console.warn("authentik/rac: error reading clipboard", ex);
+        }
+    }
+
+    private writeClipboard(value: string) {
+        if (!this.client) {
+            return;
+        }
+        const stream = this.client.createClipboardStream("text/plain", "clipboard");
+        const writer = new Guacamole.StringWriter(stream);
+        writer.sendText(value);
+        writer.sendEnd();
+        console.debug("authentik/rac: Sent clipboard");
     }
 
     render(): TemplateResult {
