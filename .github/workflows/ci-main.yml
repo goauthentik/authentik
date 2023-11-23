@@ -58,6 +58,8 @@ jobs:
         uses: ./.github/actions/setup
       - name: checkout stable
         run: |
+          # Delete all poetry envs
+          rm -rf /home/runner/.cache/pypoetry
           # Copy current, latest config to local
           cp authentik/lib/default.yml local.env.yml
           cp -R .github ..
@@ -83,6 +85,11 @@ jobs:
         uses: ./.github/actions/setup
       - name: migrate to latest
         run: poetry run python -m lifecycle.migrate
+      - name: remove poetry env
+        if: ${{ always() }}
+        run: |
+          # Delete all poetry envs, to prevent them from getting cached
+          rm -rf /home/runner/.cache/pypoetry
   test-unittest:
     name: test-unittest - PostgreSQL ${{ matrix.psql }}
     runs-on: ubuntu-latest
