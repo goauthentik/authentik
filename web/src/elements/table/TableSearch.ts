@@ -30,6 +30,9 @@ export class TableSearch extends AKElement {
                 ::-webkit-search-cancel-button {
                     display: none;
                 }
+                .pf-c-form-control {
+                    font-family: monospace;
+                }
             `,
         ];
     }
@@ -41,23 +44,22 @@ export class TableSearch extends AKElement {
             @submit=${(e: Event) => {
                 e.preventDefault();
                 if (!this.onSearch) return;
-                const el = this.shadowRoot?.querySelector<HTMLInputElement>("input[type=search]");
+                const el = this.shadowRoot?.querySelector<HTMLInputElement>("[name=search]");
                 if (!el) return;
                 if (el.value === "") return;
                 this.onSearch(el?.value);
             }}
         >
-            <input
+            <textarea
                 class="pf-c-form-control"
                 name="search"
-                type="search"
                 placeholder=${msg("Search...")}
-                value="${ifDefined(this.value)}"
-                @search=${(ev: Event) => {
+                spellcheck="false"
+                @submit=${(ev: Event) => {
                     if (!this.onSearch) return;
                     this.onSearch((ev.target as HTMLInputElement).value);
                 }}
-            />
+            >${ifDefined(this.value)}</textarea>
             <button
                 class="pf-c-button pf-m-control"
                 type="reset"

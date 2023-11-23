@@ -175,6 +175,12 @@ export abstract class Table<T> extends AKElement implements TableLike {
             PFDropdown,
             PFPagination,
             css`
+                .pf-c-toolbar__group.pf-m-search-filter {
+                    flex-grow: 1;
+                }
+                ak-table-search {
+                    width: 100% !important;
+                }
                 .pf-c-table thead .pf-c-table__check {
                     min-width: 3rem;
                 }
