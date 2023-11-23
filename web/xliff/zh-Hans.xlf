@@ -7942,34 +7942,11 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>User type used for newly created users.</source>
   <target>新创建用户使用的用户类型。</target>
 </trans-unit>
-<trans-unit id="s4a34a6be4c68ec87">
-  <source>Users created</source>
-  <target>已创建用户</target>
-</trans-unit>
-<trans-unit id="s275c956687e2e656">
-  <source>Failed logins</source>
-  <target>失败登录</target>
-</trans-unit>
 <trans-unit id="sb35c08e3a541188f">
   <source>Also known as Client ID.</source>
 </trans-unit>
 <trans-unit id="sd46fd9b647cfea10">
   <source>Also known as Client Secret.</source>
-</trans-unit>
-<trans-unit id="s4476e9c50cfd13f4">
-  <source>Global status</source>
-</trans-unit>
-<trans-unit id="sd21a971eea208533">
-  <source>Vendor</source>
-</trans-unit>
-<trans-unit id="sadadfe9dfa06d7dd">
-  <source>No sync status.</source>
-</trans-unit>
-<trans-unit id="s2b1c81130a65a55b">
-  <source>Sync currently running.</source>
-</trans-unit>
-<trans-unit id="sf36170f71cea38c2">
-  <source>Connectivity</source>
 </trans-unit>
     </body>
   </file>
