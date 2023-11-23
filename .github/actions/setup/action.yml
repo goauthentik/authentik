@@ -2,7 +2,7 @@ name: "Setup authentik testing environment"
 description: "Setup authentik testing environment"
 
 inputs:
-  postgresql_tag:
+  postgresql_version:
     description: "Optional postgresql image tag"
     default: "12"
 
@@ -33,9 +33,8 @@ runs:
     - name: Setup dependencies
       shell: bash
       run: |
-        export PSQL_TAG=${{ inputs.postgresql_tag }}
+        export PSQL_TAG=${{ inputs.postgresql_version }}
         docker-compose -f .github/actions/setup/docker-compose.yml up -d
-        poetry env use python3.12
         poetry install
         cd web && npm ci
     - name: Generate config

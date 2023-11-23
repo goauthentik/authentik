@@ -97,7 +97,7 @@ jobs:
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
-          postgresql_tag: ${{ matrix.psql }}
+          postgresql_version: ${{ matrix.psql }}
       - name: run unittest
         run: |
           poetry run make test
