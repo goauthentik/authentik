@@ -48,14 +48,23 @@ jobs:
       - name: run migrations
         run: poetry run python -m lifecycle.migrate
   test-migrations-from-stable:
+    name: test-migrations-from-stable - PostgreSQL ${{ matrix.psql }}
     runs-on: ubuntu-latest
-    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        psql:
+          - 12-alpine
+          - 15-alpine
+          - 16-alpine
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Setup authentik env
         uses: ./.github/actions/setup
+        with:
+          postgresql_version: ${{ matrix.psql }}
       - name: checkout stable
         run: |
           # Delete all poetry envs
@@ -69,6 +78,8 @@ jobs:
           mv ../.github ../scripts .
       - name: Setup authentik env (ensure stable deps are installed)
         uses: ./.github/actions/setup
+        with:
+          postgresql_version: ${{ matrix.psql }}
       - name: run migrations to stable
         run: poetry run python -m lifecycle.migrate
       - name: checkout current code
