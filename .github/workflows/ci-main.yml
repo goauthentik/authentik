@@ -76,6 +76,8 @@ jobs:
           git reset --hard HEAD
           git clean -d -fx .
           git checkout $GITHUB_SHA
+          # Delete previous poetry env
+          rm -rf $(poetry env info --path)
           poetry install
       - name: Setup authentik env (ensure latest deps are installed)
         uses: ./.github/actions/setup
