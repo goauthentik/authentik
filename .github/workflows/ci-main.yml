@@ -94,6 +94,8 @@ jobs:
           poetry install
       - name: Setup authentik env (ensure latest deps are installed)
         uses: ./.github/actions/setup
+        with:
+          postgresql_version: ${{ matrix.psql }}
       - name: migrate to latest
         run: poetry run python -m lifecycle.migrate
       - name: remove poetry env
