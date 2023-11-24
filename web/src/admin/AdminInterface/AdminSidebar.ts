@@ -142,7 +142,8 @@ export class AkAdminSidebar extends AKElement {
             [null, msg("System"), null, [
                 ["/core/brands", msg("Brands")],
                 ["/crypto/certificates", msg("Certificates")],
-                ["/outpost/integrations", msg("Outpost Integrations")]]]
+                ["/outpost/integrations", msg("Outpost Integrations")],
+                ["/admin/settings", msg("Settings")]]],
         ];
 
         // Typescript requires the type here to correctly type the recursive path
