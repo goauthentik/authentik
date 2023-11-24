@@ -249,12 +249,6 @@ jobs:
             VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      - name: Comment on PR
-        if: github.event_name == 'pull_request'
-        continue-on-error: true
-        uses: ./.github/actions/comment-pr-instructions
-        with:
-          tag: gh-${{ steps.ev.outputs.branchNameContainer }}-${{ steps.ev.outputs.timestamp }}-${{ steps.ev.outputs.shortHash }}
   build-arm64:
     needs: ci-core-mark
     runs-on: ubuntu-latest
@@ -303,3 +297,26 @@ jobs:
           platforms: linux/arm64
           cache-from: type=gha
           cache-to: type=gha,mode=max
+  pr-comment:
+    needs:
+      - build
+      - build-arm64
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
+    permissions:
+      # Needed to write comments on PRs
+      pull-requests: write
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: prepare variables
+        uses: ./.github/actions/docker-push-variables
+        id: ev
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      - name: Comment on PR
+        uses: ./.github/actions/comment-pr-instructions
+        with:
+          tag: gh-${{ steps.ev.outputs.branchNameContainer }}-${{ steps.ev.outputs.timestamp }}-${{ steps.ev.outputs.shortHash }}
