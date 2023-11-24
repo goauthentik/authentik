@@ -83,8 +83,8 @@ class TestSourceSAML(SeleniumTestCase):
             "auto_remove": True,
             "healthcheck": Healthcheck(
                 test=["CMD", "curl", "http://localhost:8080"],
-                interval=5 * 100 * 1000000,
-                start_period=1 * 100 * 1000000,
+                interval=5 * 1_000 * 1_000_000,
+                start_period=1 * 1_000 * 1_000_000,
             ),
             "environment": {
                 "SIMPLESAMLPHP_SP_ENTITY_ID": "entity-id",

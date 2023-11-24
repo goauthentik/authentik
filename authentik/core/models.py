@@ -517,7 +517,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     objects = InheritanceManager()
 
     @property
-    def get_icon(self) -> Optional[str]:
+    def icon_url(self) -> Optional[str]:
         """Get the URL to the Icon. If the name is /static or
         starts with http it is returned as-is"""
         if not self.icon:

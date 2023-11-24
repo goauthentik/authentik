@@ -12,7 +12,7 @@ reportOptionalSubscript = false
 # so we have to disable those for now
 reportGeneralTypeIssues = false
 verboseOutput = false
-pythonVersion = "3.11"
+pythonVersion = "3.12"
 pythonPlatform = "All"
 
 [tool.black]
@@ -97,7 +97,7 @@ const-rgx = "[a-zA-Z0-9_]{1,40}$"
 
 ignored-modules = ["binascii", "socket", "zlib"]
 generated-members = ["xmlsec.constants.*", "xmlsec.tree.*", "xmlsec.template.*"]
-ignore = "migrations"
+ignore = ["migrations", "tests"]
 max-attributes = 12
 max-branches = 20
 
@@ -113,7 +113,7 @@ filterwarnings = [
 
 [tool.poetry]
 name = "authentik"
-version = "2023.10.3"
+version = "2023.10.4"
 description = ""
 authors = ["authentik Team <hello@goauthentik.io>"]
 
@@ -157,7 +157,7 @@ pycryptodome = "*"
 pydantic = "*"
 pydantic-scim = "*"
 pyjwt = "*"
-python = "~3.11"
+python = "~3.12"
 pyyaml = "*"
 requests-oauthlib = "*"
 sentry-sdk = "*"
