@@ -14,11 +14,11 @@ import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { userTypeToLabel } from "@goauthentik/common/labels";
+import "@goauthentik/components/ak-status-label";
 import "@goauthentik/components/events/ObjectChangelog";
 import "@goauthentik/components/events/UserEvents";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
-import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/PageHeader";
 import { PFSize } from "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/Tabs";
@@ -185,9 +185,10 @@ export class UserViewPage extends AKElement {
                         </dt>
                         <dd class="pf-c-description-list__description">
                             <div class="pf-c-description-list__text">
-                                <ak-label
-                                    color=${user.isActive ? PFColor.Green : PFColor.Orange}
-                                ></ak-label>
+                                <ak-status-label
+                                    type="warning"
+                                    ?good=${user.isActive}
+                                ></ak-status-label>
                             </div>
                         </dd>
                     </div>
@@ -207,9 +208,10 @@ export class UserViewPage extends AKElement {
                         </dt>
                         <dd class="pf-c-description-list__description">
                             <div class="pf-c-description-list__text">
-                                <ak-label
-                                    color=${user.isSuperuser ? PFColor.Green : PFColor.Orange}
-                                ></ak-label>
+                                <ak-status-label
+                                    type="warning"
+                                    ?good=${user.isSuperuser}
+                                ></ak-status-label>
                             </div>
                         </dd>
                     </div>

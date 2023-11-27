@@ -19,10 +19,8 @@
         "slo",
         "scim",
     ],
-    "python.linting.pylintEnabled": true,
     "todo-tree.tree.showCountsInTree": true,
     "todo-tree.tree.showBadges": true,
-    "python.formatting.provider": "black",
     "yaml.customTags": [
         "!Find sequence",
         "!KeyOf scalar",

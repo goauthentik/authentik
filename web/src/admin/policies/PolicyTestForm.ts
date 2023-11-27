@@ -1,8 +1,8 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
-import { PFColor } from "@goauthentik/elements/Label";
 import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -58,9 +58,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                 <div class="pf-c-form__group-label">
                     <div class="c-form__horizontal-group">
                         <span class="pf-c-form__label-text">
-                            <ak-label color=${this.result?.passing ? PFColor.Green : PFColor.Red}>
-                                ${this.result?.passing ? msg("Yes") : msg("No")}
-                            </ak-label>
+                            <ak-status-label ?good=${this.result?.passing}></ak-status-label>
                         </span>
                     </div>
                 </div>
