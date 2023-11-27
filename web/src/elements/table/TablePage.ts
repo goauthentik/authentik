@@ -20,6 +20,11 @@ export abstract class TablePage<T> extends Table<T> {
         return super.styles.concat(PFPage, PFContent, PFSidebar);
     }
 
+    constructor() {
+        super();
+        this.dataset.akApiTable = "true";
+    }
+
     renderSidebarBefore(): TemplateResult {
         return html``;
     }
@@ -91,4 +96,19 @@ export abstract class TablePage<T> extends Table<T> {
             </section>
             ${this.renderSectionAfter()}`;
     }
+}
+
+// This painstakingly researched path is nonetheless surprisingly robust; it works for every extant
+// TablePage, but only because Jens has been utterly consistent in where he puts his TablePage
+// elements with respect to the Interface object.  If we ever re-arrange this code, we're going
+// to have to re-arrange this as well.
+
+export function findTable<T, U extends TablePage<T>>(): U | undefined {
+    return (
+        (document.body
+            ?.querySelector("[data-ak-interface-root]")
+            ?.shadowRoot?.querySelector("ak-locale-context")
+            ?.querySelector("ak-router-outlet")
+            ?.shadowRoot?.querySelector("[data-ak-api-table]") as U) ?? undefined
+    );
 }

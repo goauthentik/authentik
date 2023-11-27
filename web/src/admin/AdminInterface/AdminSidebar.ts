@@ -160,14 +160,14 @@ export class AkAdminSidebar extends AKElement {
                   [
                       reload,
                       msg(
-                          str`You're currently impersonating ${this.impersonation}. Click to stop.`
+                          str`You're currently impersonating ${this.impersonation}. Click to stop.`,
                       ),
                   ],
               ]
             : [];
 
         const enterpriseMenu: LocalSidebarEntry[] = this.config?.capabilities.includes(
-            CapabilitiesEnum.IsEnterprise
+            CapabilitiesEnum.IsEnterprise,
         )
             ? [[null, msg("Enterprise"), null, [["/enterprise/licenses", msg("Licenses")]]]]
             : [];

@@ -1,4 +1,6 @@
+import { ROUTE_SEPARATOR } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
+import { findTable } from "@goauthentik/elements/table/TablePage";
 
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
@@ -113,6 +115,8 @@ export class SidebarItems extends AKElement {
         super();
         this.renderItem = this.renderItem.bind(this);
         this.toggleExpand = this.toggleExpand.bind(this);
+        this.onHashChange = this.onHashChange.bind(this);
+        this.reclick = this.reclick.bind(this);
     }
 
     connectedCallback() {
@@ -151,6 +155,46 @@ export class SidebarItems extends AKElement {
             this.expanded.add(key);
         }
         this.requestUpdate();
+    }
+
+    // This is gross and feels like 2007: using a path from the root through the shadowDoms (see
+    // `TablePage:findTable()`), this code finds the element that *should* be triggered by an event
+    // on the URL, and forcibly injects the text of the search and the click of the search button.
+
+    reclick(ev: Event, path: string) {
+        const oldPath = window.location.hash.split(ROUTE_SEPARATOR)[0];
+        const [curPath, ...curSearchComponents] = path.split(ROUTE_SEPARATOR);
+        const curSearch: string =
+            curSearchComponents.length > 0 ? curSearchComponents.join(ROUTE_SEPARATOR) : "";
+
+        if (curPath !== oldPath) {
+            // A Tier 1 or Tier 2 change should be handled by the router. (So should a Tier 3
+            // change, but... here we are.)
+            return;
+        }
+
+        const table = findTable();
+        if (!table) {
+            return;
+        }
+
+        // Always wrap the minimal exceptional code possible in an IIFE and supply the failure
+        // alternative. Turn exceptions into expressions with the smallest functional rewind
+        // whenever possible.
+        const search = (() => {
+            try {
+                return curSearch ? JSON.parse(decodeURIComponent(curSearch)) : { search: "" };
+            } catch {
+                return { search: "" };
+            }
+        })();
+
+        if ("search" in search) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            table.search = search.search;
+            table.fetch();
+        }
     }
 
     render(): TemplateResult {
@@ -213,8 +257,10 @@ export class SidebarItems extends AKElement {
                 ${entry.label}
             </a>`;
         }
+        const path = `${entry.attributes?.isAbsoluteLink ? "" : "#"}${entry.path}`;
         return html` <a
-            href="${entry.attributes?.isAbsoluteLink ? "" : "#"}${entry.path}"
+            href=${path}
+            @click=${(ev: Event) => this.reclick(ev, path)}
             class=${classMap(this.getLinkClasses(entry))}
         >
             ${entry.label}
@@ -246,9 +292,11 @@ export class SidebarItems extends AKElement {
 
     renderLinkAndChildren(entry: SidebarEntry): TemplateResult {
         const handler = () => this.toggleExpand(entry);
+        const path = `${entry.attributes?.isAbsoluteLink ? "" : "#"}${entry.path}`;
         return html` <div class="pf-c-nav__link">
                 <a
-                    href="${entry.attributes?.isAbsoluteLink ? "" : "#"}${entry.path}"
+                    href=${path}
+                    @click=${(ev: Event) => this.reclick(ev, path)}
                     class="ak-nav__link"
                 >
                     ${entry.label}
