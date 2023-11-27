@@ -184,28 +184,31 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                           </p>
                       </ak-form-element-horizontal> `
                     : html``}
-                ${this.providerType.slug === ProviderTypeEnum.Openidconnect
-                    ? html`
-                          <ak-form-element-horizontal
-                              label=${msg("OIDC Well-known URL")}
-                              name="oidcWellKnownUrl"
-                          >
-                              <input
-                                  type="text"
-                                  value="${first(
-                                      this.instance?.oidcWellKnownUrl,
-                                      this.providerType.oidcWellKnownUrl,
-                                      "",
-                                  )}"
-                                  class="pf-c-form-control"
-                              />
-                              <p class="pf-c-form__helper-text">
-                                  ${msg(
-                                      "OIDC well-known configuration URL. Can be used to automatically configure the URLs above.",
-                                  )}
-                              </p>
-                          </ak-form-element-horizontal>
-                          <ak-form-element-horizontal
+                ${this.providerType.slug === ProviderTypeEnum.Openidconnect ||
+                this.providerType.oidcWellKnownUrl !== ""
+                    ? html`<ak-form-element-horizontal
+                          label=${msg("OIDC Well-known URL")}
+                          name="oidcWellKnownUrl"
+                      >
+                          <input
+                              type="text"
+                              value="${first(
+                                  this.instance?.oidcWellKnownUrl,
+                                  this.providerType.oidcWellKnownUrl,
+                                  "",
+                              )}"
+                              class="pf-c-form-control"
+                          />
+                          <p class="pf-c-form__helper-text">
+                              ${msg(
+                                  "OIDC well-known configuration URL. Can be used to automatically configure the URLs above.",
+                              )}
+                          </p>
+                      </ak-form-element-horizontal>`
+                    : html``}
+                ${this.providerType.slug === ProviderTypeEnum.Openidconnect ||
+                this.providerType.oidcJwksUrl !== ""
+                    ? html`<ak-form-element-horizontal
                               label=${msg("OIDC JWKS URL")}
                               name="oidcJwksUrl"
                           >
@@ -224,7 +227,6 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                                   )}
                               </p>
                           </ak-form-element-horizontal>
-
                           <ak-form-element-horizontal label=${msg("OIDC JWKS")} name="oidcJwks">
                               <ak-codemirror
                                   mode=${CodeMirrorMode.JavaScript}
@@ -232,8 +234,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                               >
                               </ak-codemirror>
                               <p class="pf-c-form__helper-text">${msg("Raw JWKS data.")}</p>
-                          </ak-form-element-horizontal>
-                      `
+                          </ak-form-element-horizontal>`
                     : html``}
             </div>
         </ak-form-group>`;
@@ -386,6 +387,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                             class="pf-c-form-control"
                             required
                         />
+                        <p class="pf-c-form__helper-text">${msg("Also known as Client ID.")}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Consumer secret")}
@@ -394,6 +396,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         name="consumerSecret"
                     >
                         <textarea class="pf-c-form-control"></textarea>
+                        <p class="pf-c-form__helper-text">${msg("Also known as Client Secret.")}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Scopes")} name="additionalScopes">
                         <input

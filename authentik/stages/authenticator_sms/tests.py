@@ -199,11 +199,9 @@ class AuthenticatorSMSStageTests(FlowTestCase):
                 sms_send_mock,
             ),
         ):
-            print(self.client.session[SESSION_KEY_PLAN])
             response = self.client.get(
                 reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             )
-        print(response.content.decode())
         self.assertStageResponse(
             response,
             self.flow,

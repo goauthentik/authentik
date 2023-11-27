@@ -1,5 +1,12 @@
 # Stage 1: Build
-FROM docker.io/golang:1.21.3-bookworm AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/golang:1.21.4-bookworm AS builder
+
+ARG TARGETOS
+ARG TARGETARCH
+ARG TARGETVARIANT
+
+ARG GOOS=$TARGETOS
+ARG GOARCH=$TARGETARCH
 
 WORKDIR /go/src/goauthentik.io
 
@@ -13,7 +20,7 @@ ENV CGO_ENABLED=0
 COPY . .
 RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
-    go build -o /go/radius ./cmd/radius
+    GOARM="${TARGETVARIANT#v}" go build -o /go/radius ./cmd/radius
 
 # Stage 2: Run
 FROM gcr.io/distroless/static-debian11:debug

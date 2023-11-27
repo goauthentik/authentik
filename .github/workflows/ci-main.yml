@@ -11,6 +11,7 @@ on:
   pull_request:
     branches:
       - main
+      - version-*
 
 env:
   POSTGRES_DB: authentik
@@ -47,25 +48,38 @@ jobs:
       - name: run migrations
         run: poetry run python -m lifecycle.migrate
   test-migrations-from-stable:
+    name: test-migrations-from-stable - PostgreSQL ${{ matrix.psql }}
     runs-on: ubuntu-latest
-    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        psql:
+          - 12-alpine
+          - 15-alpine
+          - 16-alpine
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Setup authentik env
         uses: ./.github/actions/setup
+        with:
+          postgresql_version: ${{ matrix.psql }}
       - name: checkout stable
         run: |
+          # Delete all poetry envs
+          rm -rf /home/runner/.cache/pypoetry
           # Copy current, latest config to local
           cp authentik/lib/default.yml local.env.yml
           cp -R .github ..
           cp -R scripts ..
-          git checkout $(git describe --tags $(git rev-list --tags --max-count=1))
+          git checkout version/$(python -c "from authentik import __version__; print(__version__)")
           rm -rf .github/ scripts/
           mv ../.github ../scripts .
       - name: Setup authentik env (ensure stable deps are installed)
         uses: ./.github/actions/setup
+        with:
+          postgresql_version: ${{ matrix.psql }}
       - name: run migrations to stable
         run: poetry run python -m lifecycle.migrate
       - name: checkout current code
@@ -75,9 +89,13 @@ jobs:
           git reset --hard HEAD
           git clean -d -fx .
           git checkout $GITHUB_SHA
+          # Delete previous poetry env
+          rm -rf $(poetry env info --path)
           poetry install
       - name: Setup authentik env (ensure latest deps are installed)
         uses: ./.github/actions/setup
+        with:
+          postgresql_version: ${{ matrix.psql }}
       - name: migrate to latest
         run: poetry run python -m lifecycle.migrate
   test-unittest:
@@ -96,7 +114,7 @@ jobs:
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
-          postgresql_tag: ${{ matrix.psql }}
+          postgresql_version: ${{ matrix.psql }}
       - name: run unittest
         run: |
           poetry run make test
@@ -185,6 +203,9 @@ jobs:
   build:
     needs: ci-core-mark
     runs-on: ubuntu-latest
+    permissions:
+      # Needed to upload contianer images to ghcr.io
+      packages: write
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
@@ -235,6 +256,9 @@ jobs:
   build-arm64:
     needs: ci-core-mark
     runs-on: ubuntu-latest
+    permissions:
+      # Needed to upload contianer images to ghcr.io
+      packages: write
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4

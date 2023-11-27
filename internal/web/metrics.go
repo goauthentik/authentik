@@ -19,12 +19,6 @@ var (
 		Name: "authentik_main_request_duration_seconds",
 		Help: "API request latencies in seconds",
 	}, []string{"dest"})
-
-	// NOTE: the following metric is kept for compatibility purpose
-	RequestsLegacy = promauto.NewHistogramVec(prometheus.HistogramOpts{
-		Name: "authentik_main_requests",
-		Help: "The total number of configured providers",
-	}, []string{"dest"})
 )
 
 func (ws *WebServer) runMetricsServer() {

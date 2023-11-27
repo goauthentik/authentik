@@ -29,4 +29,14 @@ class Migration(migrations.Migration):
             name="totpdevice",
             options={"verbose_name": "TOTP Device", "verbose_name_plural": "TOTP Devices"},
         ),
+        migrations.AlterField(
+            model_name="authenticatortotpstage",
+            name="digits",
+            field=models.IntegerField(
+                choices=[
+                    ("6", "6 digits, widely compatible"),
+                    ("8", "8 digits, not compatible with apps like Google Authenticator"),
+                ]
+            ),
+        ),
     ]

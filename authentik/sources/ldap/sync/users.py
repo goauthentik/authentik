@@ -7,7 +7,7 @@ from ldap3 import ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE
 
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
-from authentik.sources.ldap.sync.base import LDAP_UNIQUENESS, BaseLDAPSynchronizer
+from authentik.sources.ldap.sync.base import LDAP_UNIQUENESS, BaseLDAPSynchronizer, flatten
 from authentik.sources.ldap.sync.vendor.freeipa import FreeIPA
 from authentik.sources.ldap.sync.vendor.ms_ad import MicrosoftActiveDirectory
 
@@ -41,7 +41,7 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
             if "attributes" not in user:
                 continue
             attributes = user.get("attributes", {})
-            user_dn = self._flatten(user.get("entryDN", user.get("dn")))
+            user_dn = flatten(user.get("entryDN", user.get("dn")))
             if self._source.object_uniqueness_field not in attributes:
                 self.message(
                     f"Cannot find uniqueness field in attributes: '{user_dn}'",
@@ -49,7 +49,7 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                     dn=user_dn,
                 )
                 continue
-            uniq = self._flatten(attributes[self._source.object_uniqueness_field])
+            uniq = flatten(attributes[self._source.object_uniqueness_field])
             try:
                 defaults = self.build_user_properties(user_dn, **attributes)
                 self._logger.debug("Writing user with attributes", **defaults)
