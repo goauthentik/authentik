@@ -5,7 +5,7 @@ title: Kubernetes installation
 You can install authentik to run on Kubernetes using Helm Chart.
 
 :::info
-You can also view a [video walk-through](https://youtu.be/owk1a_1xYe4) of the installation process on Kubernetes (with bonus details about email configuration and other important options).
+You can also [view a video walk-through](https://youtu.be/owk1a_1xYe4) of the installation process on Kubernetes (with bonus details about email configuration and other important options).
 :::
 
 ### Requirements
