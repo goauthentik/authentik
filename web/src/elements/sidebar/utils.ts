@@ -6,6 +6,13 @@ export function entryKey(entry: SidebarEntry) {
     return `${entry.path || "no-path"}:${entry.label}`;
 }
 
+// "Never store what you can calculate." (At least, if it's cheap.)
+
+/**
+ * Takes tree and creates a map where every key is an entry in the tree and every value is that
+ * entry's parent.
+ */
+
 export function makeParentMap(entries: SidebarEntry[]) {
     const reverseMap = new WeakMap<SidebarEntry, SidebarEntry>();
     function reverse(entry: SidebarEntry) {
@@ -18,20 +25,27 @@ export function makeParentMap(entries: SidebarEntry[]) {
     return reverseMap;
 }
 
+/**
+ * Given the current path and the collection of entries, identify which entry is currently live.
+ *
+ */
+
+const trailingSlash = new RegExp("/$");
+const fixed = (s: string) => s.replace(trailingSlash, "");
+
 function scanner(entry: SidebarEntry, activePath: string): SidebarEntry | undefined {
+    if (typeof entry.path === "string" && fixed(activePath) === fixed(entry.path)) {
+        return entry;
+    }
+
     for (const matcher of entry.attributes?.activeWhen ?? []) {
         const matchtest = new RegExp(matcher);
         if (matchtest.test(activePath)) {
             return entry;
         }
-        const match: SidebarEntry | undefined = (entry.children ?? []).find((e) =>
-            scanner(e, activePath),
-        );
-        if (match) {
-            return match;
-        }
     }
-    return undefined;
+
+    return (entry.children ?? []).find((e) => scanner(e, activePath));
 }
 
 export function findMatchForNavbarUrl(entries: SidebarEntry[]) {

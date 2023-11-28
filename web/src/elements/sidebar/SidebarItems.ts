@@ -2,113 +2,40 @@ import { ROUTE_SEPARATOR } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
 import { findTable } from "@goauthentik/elements/table/TablePage";
 
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { TemplateResult, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { map } from "lit/directives/map.js";
 
-import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
 import { UiThemeEnum } from "@goauthentik/api";
 
+import { sidebarItemStyles } from "./SidebarItems.css.js";
 import type { SidebarEntry } from "./types";
 import { entryKey, findMatchForNavbarUrl, makeParentMap } from "./utils";
 
+/**
+ * Display the sidebar item tree.
+ *
+ * Along with the `reclick()` complaint down below, the other thing I dislike about this design is
+ * that it's effectively two different programs glued together. The first responds to the `click`
+ * and performs the navigation, which either triggers the router or triggers a new search on the
+ * existing view. The second responds to the navigation change event when the URL is changed by the
+ * navigation event, at which point it figures out which entry to highlight as "current," which
+ * causes the re-render.
+ */
+
 @customElement("ak-sidebar-items")
 export class SidebarItems extends AKElement {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFPage,
-            PFNav,
-            css`
-                :host {
-                    z-index: 100;
-                    box-shadow: none !important;
-                }
-
-                .highlighted {
-                    background-color: var(--ak-accent);
-                    margin: 16px;
-                }
-
-                .highlighted .pf-c-nav__link {
-                    padding-left: 0.5rem;
-                }
-
-                .pf-c-nav__link.pf-m-current::after,
-                .pf-c-nav__link.pf-m-current:hover::after,
-                .pf-c-nav__item.pf-m-current:not(.pf-m-expanded) .pf-c-nav__link::after {
-                    --pf-c-nav__link--m-current--after--BorderColor: #fd4b2d;
-                }
-
-                .pf-c-nav__item .pf-c-nav__item::before {
-                    border-bottom-width: 0;
-                }
-
-                .pf-c-nav__section + .pf-c-nav__section {
-                    --pf-c-nav__section--section--MarginTop: var(--pf-global--spacer--sm);
-                }
-                .pf-c-nav__list .sidebar-brand {
-                    max-height: 82px;
-                    margin-bottom: -0.5rem;
-                }
-                .pf-c-nav__toggle {
-                    width: calc(
-                        var(--pf-c-nav__toggle--FontSize) + calc(2 * var(--pf-global--spacer--md))
-                    );
-                }
-
-                nav {
-                    display: flex;
-                    flex-direction: column;
-                    max-height: 100vh;
-                    height: 100%;
-                    overflow-y: hidden;
-                }
-                .pf-c-nav__list {
-                    flex: 1 0 1fr;
-                    overflow-y: auto;
-                }
-
-                .pf-c-nav__link {
-                    --pf-c-nav__link--PaddingTop: 0.5rem;
-                    --pf-c-nav__link--PaddingRight: 0.5rem;
-                    --pf-c-nav__link--PaddingBottom: 0.5rem;
-                }
-
-                .pf-c-nav__link a {
-                    flex: 1 0 max-content;
-                    color: var(--pf-c-nav__link--Color);
-                }
-
-                a.pf-c-nav__link:hover {
-                    color: var(--pf-c-nav__link--Color);
-                    text-decoration: var(--pf-global--link--TextDecoration--hover);
-                }
-
-                .pf-c-nav__section-title {
-                    font-size: 12px;
-                }
-                .pf-c-nav__item {
-                    --pf-c-nav__item--MarginTop: 0px;
-                }
-
-                .pf-c-nav__toggle-icon {
-                    padding: var(--pf-global--spacer--sm) var(--pf-global--spacer--md);
-                }
-            `,
-        ];
+    static get styles() {
+        return sidebarItemStyles;
     }
 
     @property({ type: Array })
     entries: SidebarEntry[] = [];
 
-    @state()
     expanded: Set<string> = new Set();
 
+    @state()
     current = "";
 
     constructor() {
@@ -121,6 +48,7 @@ export class SidebarItems extends AKElement {
 
     connectedCallback() {
         super.connectedCallback();
+        this.onHashChange();
         window.addEventListener("hashchange", this.onHashChange);
     }
 
@@ -198,6 +126,7 @@ export class SidebarItems extends AKElement {
     }
 
     render(): TemplateResult {
+        console.log("C:", this.current);
         const lightThemed = { "pf-m-light": this.activeTheme === UiThemeEnum.Light };
 
         return html` <nav class="pf-c-nav ${classMap(lightThemed)}" aria-label="Navigation">
@@ -239,8 +168,9 @@ export class SidebarItems extends AKElement {
 
     getLinkClasses(entry: SidebarEntry) {
         const a = entry.attributes ?? {};
+        const key = entryKey(entry);
         return {
-            "pf-m-current": a == this.current,
+            "pf-m-current": key === this.current,
             "pf-c-nav__link": true,
             "highlight": !!(typeof a.highlight === "function" ? a.highlight() : a.highlight),
         };
@@ -277,7 +207,9 @@ export class SidebarItems extends AKElement {
 
     renderLabelAndChildren(entry: SidebarEntry): TemplateResult {
         const handler = () => this.toggleExpand(entry);
-        return html` <div class="pf-c-nav__link">
+        const current = { "pf-m-current": this.current === entryKey(entry) };
+
+        return html` <div class="pf-c-nav__link  ${classMap(current)}">
                 <div class="ak-nav__link">${entry.label}</div>
                 <span class="pf-c-nav__toggle" @click=${handler}>
                     <span class="pf-c-nav__toggle-icon">
@@ -292,8 +224,9 @@ export class SidebarItems extends AKElement {
 
     renderLinkAndChildren(entry: SidebarEntry): TemplateResult {
         const handler = () => this.toggleExpand(entry);
+        const current = { "pf-m-current": this.current === entryKey(entry) };
         const path = `${entry.attributes?.isAbsoluteLink ? "" : "#"}${entry.path}`;
-        return html` <div class="pf-c-nav__link">
+        return html` <div class="pf-c-nav__link ${classMap(current)}">
                 <a
                     href=${path}
                     @click=${(ev: Event) => this.reclick(ev, path)}

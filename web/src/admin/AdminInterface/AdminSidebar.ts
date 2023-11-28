@@ -192,11 +192,11 @@ export class AkAdminSidebar extends AKElement {
                 ["/administration/dashboard/users", msg("User Statistics")],
                 ["/administration/system-tasks", msg("System Tasks")]]],
             [null, msg("Applications"), null, [
-                ["/core/applications", msg("Applications"), [`^/core/applications/(?<slug>${SLUG_REGEX})$`]],
-                ["/core/providers", msg("Providers"), [`^/core/providers/(?<id>${ID_REGEX})$`], this.providerTypes.entries()],
+                ["/core/applications", msg("Applications"), [`^/core/applications(/(?<slug>${SLUG_REGEX}))?$`]],
+                ["/core/providers", msg("Providers"), [`^/core/providers(/(?<id>${ID_REGEX}))?$`], this.providerTypes.entries()],
                 ["/outpost/outposts", msg("Outposts")]]],
             [null, msg("Events"), null, [
-                ["/events/log", msg("Logs"), [`^/events/log/(?<id>${UUID_REGEX})$`], eventTypes],
+                ["/events/log", msg("Logs"), [`^/events/log(/(?<id>${UUID_REGEX}))?$`], eventTypes],
                 ["/events/rules", msg("Notification Rules")],
                 ["/events/transports", msg("Notification Transports")]]],
             [null, msg("Customisation"), null, [
@@ -205,14 +205,14 @@ export class AkAdminSidebar extends AKElement {
                 ["/blueprints/instances", msg("Blueprints")],
                 ["/policy/reputation", msg("Reputation scores")]]],
             [null, msg("Flows and Stages"), null, [
-                ["/flow/flows", msg("Flows"), [`^/flow/flows/(?<slug>${SLUG_REGEX})$`], flowTypes],
+                ["/flow/flows", msg("Flows"), [`^/flow/flows(/(?<slug>${SLUG_REGEX}))?$`], flowTypes],
                 ["/flow/stages", msg("Stages"), null, this.stageTypes.entries()],
                 ["/flow/stages/prompts", msg("Prompts")]]],
             [null, msg("Directory"), null, [
-                ["/identity/users", msg("Users"), [`^/identity/users/(?<id>${ID_REGEX})$`]],
-                ["/identity/groups", msg("Groups"), [`^/identity/groups/(?<id>${UUID_REGEX})$`]],
+                ["/identity/users", msg("Users"), [`^/identity/users(/(?<id>${ID_REGEX}))?$`]],
+                ["/identity/groups", msg("Groups"), [`^/identity/groups(/(?<id>${UUID_REGEX}))?$`]],
                 ["/identity/roles", msg("Roles"), [`^/identity/roles/(?<id>${UUID_REGEX})$`]],
-                ["/core/sources", msg("Federation and Social login"), [`^/core/sources/(?<slug>${SLUG_REGEX})$`], this.sourceTypes.entries()],
+                ["/core/sources", msg("Federation and Social login"), [`^/core/sources(/(?<slug>${SLUG_REGEX}))?$`], this.sourceTypes.entries()],
                 ["/core/tokens", msg("Tokens and App passwords")],
                 ["/flow/stages/invitations", msg("Invitations")]]],
             [null, msg("System"), null, [
