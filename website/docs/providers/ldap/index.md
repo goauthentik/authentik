@@ -17,7 +17,7 @@ You can configure under which base DN the information should be available. For t
 Users are available under `ou=users,<base DN>` and groups under `ou=groups,<base DN>`. To aid compatibility, each user belongs to its own "virtual" group, as is standard on most Unix-like systems. This group does not exist in the authentik database, and is generated on the fly. These virtual groups are under the `ou=virtual-groups,<base DN>` DN.
 
 :::info
-Note: Every LDAP provider needs to have a unique base DN. You can achieve this, by prepending an app specific OU or DC. e.g. `OU=appname,DC=ldap,DC=goauthentik,DC=io`
+Note: Every LDAP provider needs to have a unique base DN. You can achieve this by prepending an application-specific OU or DC. e.g. `OU=appname,DC=ldap,DC=goauthentik,DC=io`
 :::
 
 The following fields are currently sent for users:
