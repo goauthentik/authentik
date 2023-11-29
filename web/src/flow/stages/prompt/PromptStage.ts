@@ -1,6 +1,9 @@
-import { rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Divider";
 import "@goauthentik/elements/EmptyState";
+import {
+    CapabilitiesEnum,
+    WithCapabilitiesConfig,
+} from "@goauthentik/elements/Interface/capabilitiesProvider";
 import { LOCALES } from "@goauthentik/elements/ak-locale-context/definitions";
 import "@goauthentik/elements/forms/FormElement";
 import { BaseStage } from "@goauthentik/flow/stages/base";
@@ -20,7 +23,6 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
-    CapabilitiesEnum,
     PromptChallenge,
     PromptChallengeResponseRequest,
     PromptTypeEnum,
@@ -28,7 +30,9 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-stage-prompt")
-export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeResponseRequest> {
+export class PromptStage extends WithCapabilitiesConfig(
+    BaseStage<PromptChallenge, PromptChallengeResponseRequest>,
+) {
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -193,10 +197,7 @@ ${prompt.initialValue}</textarea
                     </div> `;
                 })}`;
             case PromptTypeEnum.AkLocale: {
-                const inDebug = rootInterface()?.config?.capabilities.includes(
-                    CapabilitiesEnum.CanDebug,
-                );
-                const locales = inDebug
+                const locales = this.can(CapabilitiesEnum.CanDebug)
                     ? LOCALES
                     : LOCALES.filter((locale) => locale.code !== "debug");
                 const options = locales.map(
