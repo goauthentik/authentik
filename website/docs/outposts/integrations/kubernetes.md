@@ -25,8 +25,6 @@ The following outpost settings are used:
 -   `kubernetes_ingress_secret_name`: Name of the secret that is used for TLS connections, can be empty to disable TLS config
 -   `kubernetes_ingress_class_name`: Optionally set the ingress class used for the generated ingress, requires authentik 2022.11.0
 -   `kubernetes_service_type`: Service kind created, can be set to LoadBalancer for LDAP outposts for example
--   `kubernetes_service_ip_family_policy`: IP family policy that is applied to the service
--   `kubernetes_service_ip_families`: Specify which IP families the service will use
 -   `kubernetes_disabled_components`: Disable any components of the kubernetes integration, can be any of
     -   'secret'
     -   'deployment'

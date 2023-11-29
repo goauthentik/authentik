@@ -47,10 +47,6 @@ kubernetes_ingress_annotations: {}
 kubernetes_ingress_secret_name: authentik-outpost-tls
 # Service kind created, can be set to LoadBalancer for LDAP outposts for example
 kubernetes_service_type: ClusterIP
-# Service IP family policy, can be SingleStack, PreferDualStack or RequireDualStack
-kubernetes_service_ip_family_policy: SingleStack
-# Service IP families, can be any combination of 'IPv4' and 'IPv6'
-kubernetes_service_ip_families: []
 # Disable any components of the kubernetes integration, can be any of
 # - 'secret'
 # - 'deployment'
