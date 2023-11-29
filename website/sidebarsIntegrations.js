@@ -96,10 +96,12 @@ module.exports = {
                     type: "category",
                     label: "Miscellaneous",
                     items: [
+                        "services/freshrss/index",
                         "services/gravitee/index",
                         "services/home-assistant/index",
                         "services/jellyfin/index",
                         "services/node-red/index",
+                        "services/sonar-qube/index",
                         "services/sonarr/index",
                         "services/tautulli/index",
                         "services/weblate/index",

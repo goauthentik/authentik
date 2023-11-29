@@ -8,10 +8,10 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-import { AdminApi, OutpostsApi, System } from "@goauthentik/api";
+import { AdminApi, OutpostsApi, SystemInfo } from "@goauthentik/api";
 
 @customElement("ak-admin-status-system")
-export class SystemStatusCard extends AdminStatusCard<System> {
+export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
     now?: Date;
 
     icon = "pf-icon pf-icon-server";
@@ -19,7 +19,7 @@ export class SystemStatusCard extends AdminStatusCard<System> {
     @state()
     statusSummary?: string;
 
-    async getPrimaryValue(): Promise<System> {
+    async getPrimaryValue(): Promise<SystemInfo> {
         this.now = new Date();
         let status = await new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
         if (status.embeddedOutpostHost === "" || !status.embeddedOutpostHost.includes("http")) {
@@ -50,7 +50,7 @@ export class SystemStatusCard extends AdminStatusCard<System> {
         });
     }
 
-    getStatus(value: System): Promise<AdminStatus> {
+    getStatus(value: SystemInfo): Promise<AdminStatus> {
         if (value.embeddedOutpostHost === "") {
             this.statusSummary = msg("Warning");
             return Promise.resolve<AdminStatus>({

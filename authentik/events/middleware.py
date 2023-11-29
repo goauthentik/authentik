@@ -27,6 +27,7 @@ from authentik.lib.sentry import before_send
 from authentik.lib.utils.errors import exception_to_string
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
+from authentik.policies.reputation.models import Reputation
 from authentik.providers.oauth2.models import AccessToken, AuthorizationCode, RefreshToken
 from authentik.providers.scim.models import SCIMGroup, SCIMUser
 from authentik.stages.authenticator_static.models import StaticToken
@@ -52,11 +53,13 @@ IGNORED_MODELS = (
     RefreshToken,
     SCIMUser,
     SCIMGroup,
+    Reputation,
 )
 
 
 def should_log_model(model: Model) -> bool:
     """Return true if operation on `model` should be logged"""
+    # Check for silk by string so this comparison doesn't fail when silk isn't installed
     if model.__module__.startswith("silk"):
         return False
     return model.__class__ not in IGNORED_MODELS
@@ -93,21 +96,30 @@ class AuditMiddleware:
     of models"""
 
     get_response: Callable[[HttpRequest], HttpResponse]
+    anonymous_user: User = None
 
     def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]):
         self.get_response = get_response
 
+    def _ensure_fallback_user(self):
+        """Defer fetching anonymous user until we have to"""
+        if self.anonymous_user:
+            return
+        from guardian.shortcuts import get_anonymous_user
+
+        self.anonymous_user = get_anonymous_user()
+
     def connect(self, request: HttpRequest):
         """Connect signal for automatic logging"""
-        if not hasattr(request, "user"):
-            return
-        if not getattr(request.user, "is_authenticated", False):
-            return
+        self._ensure_fallback_user()
+        user = getattr(request, "user", self.anonymous_user)
+        if not user.is_authenticated:
+            user = self.anonymous_user
         if not hasattr(request, "request_id"):
             return
-        post_save_handler = partial(self.post_save_handler, user=request.user, request=request)
-        pre_delete_handler = partial(self.pre_delete_handler, user=request.user, request=request)
-        m2m_changed_handler = partial(self.m2m_changed_handler, user=request.user, request=request)
+        post_save_handler = partial(self.post_save_handler, user=user, request=request)
+        pre_delete_handler = partial(self.pre_delete_handler, user=user, request=request)
+        m2m_changed_handler = partial(self.m2m_changed_handler, user=user, request=request)
         post_save.connect(
             post_save_handler,
             dispatch_uid=request.request_id,

@@ -9,6 +9,7 @@ on:
   pull_request:
     branches:
       - main
+      - version-*
 
 jobs:
   lint-golint:
@@ -65,6 +66,9 @@ jobs:
           - ldap
           - radius
     runs-on: ubuntu-latest
+    permissions:
+      # Needed to upload contianer images to ghcr.io
+      packages: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -126,7 +130,7 @@ jobs:
           go-version-file: "go.mod"
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version-file: web/package.json
           cache: "npm"
           cache-dependency-path: web/package-lock.json
       - name: Generate API

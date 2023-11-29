@@ -1,5 +1,6 @@
 """authentik multi-stage authentication engine"""
 from datetime import timedelta
+from uuid import uuid4
 
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
@@ -52,16 +53,11 @@ class EmailStageView(ChallengeStageView):
             kwargs={"flow_slug": self.executor.flow.slug},
         )
         # Parse query string from current URL (full query string)
-        query_params = QueryDict(self.request.META.get("QUERY_STRING", ""), mutable=True)
+        # this view is only run within a flow executor, where we need to get the query string
+        # from the query= parameter (double encoded); but for the redirect
+        # we need to expand it since it'll go through the flow interface
+        query_params = QueryDict(self.request.GET.get(QS_QUERY), mutable=True)
         query_params.pop(QS_KEY_TOKEN, None)
-
-        # Check for nested query string used by flow executor, and remove any
-        # kind of flow token from that
-        if QS_QUERY in query_params:
-            inner_query_params = QueryDict(query_params.get(QS_QUERY), mutable=True)
-            inner_query_params.pop(QS_KEY_TOKEN, None)
-            query_params[QS_QUERY] = inner_query_params.urlencode()
-
         query_params.update(kwargs)
         full_url = base_url
         if len(query_params) > 0:
@@ -75,7 +71,7 @@ class EmailStageView(ChallengeStageView):
         valid_delta = timedelta(
             minutes=current_stage.token_expiry + 1
         )  # + 1 because django timesince always rounds down
-        identifier = slugify(f"ak-email-stage-{current_stage.name}-{pending_user}")
+        identifier = slugify(f"ak-email-stage-{current_stage.name}-{str(uuid4())}")
         # Don't check for validity here, we only care if the token exists
         tokens = FlowToken.objects.filter(identifier=identifier)
         if not tokens.exists():

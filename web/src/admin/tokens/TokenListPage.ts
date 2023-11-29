@@ -2,7 +2,7 @@ import "@goauthentik/admin/tokens/TokenForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { intentToLabel } from "@goauthentik/common/labels";
 import { uiConfig } from "@goauthentik/common/ui/config";
-import { PFColor } from "@goauthentik/elements/Label";
+import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/TokenCopyButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -109,9 +109,7 @@ export class TokenListPage extends TablePage<Token> {
                     ? html`<small>${msg("Token is managed by authentik.")}</small>`
                     : html``}`,
             html`<a href="#/identity/users/${item.userObj?.pk}">${item.userObj?.username}</a>`,
-            html` <ak-label color=${item.expiring ? PFColor.Green : PFColor.Orange}>
-                ${item.expiring ? msg("Yes") : msg("No")}
-            </ak-label>`,
+            html`<ak-status-label type="warning" ?good=${item.expiring}></ak-status-label>`,
             html`${item.expiring ? item.expires?.toLocaleString() : msg("-")}`,
             html`${intentToLabel(item.intent ?? IntentEnum.Api)}`,
             html`

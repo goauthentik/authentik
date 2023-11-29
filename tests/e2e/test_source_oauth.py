@@ -113,8 +113,8 @@ class TestSourceOAuth2(SeleniumTestCase):
             "command": "dex serve /config.yml",
             "healthcheck": Healthcheck(
                 test=["CMD", "wget", "--spider", "http://localhost:5556/dex/healthz"],
-                interval=5 * 100 * 1000000,
-                start_period=1 * 100 * 1000000,
+                interval=5 * 1_000 * 1_000_000,
+                start_period=1 * 1_000 * 1_000_000,
             ),
             "volumes": {str(Path(CONFIG_PATH).absolute()): {"bind": "/config.yml", "mode": "ro"}},
         }

@@ -154,7 +154,15 @@ def generate_avatar_from_name(
 
 def avatar_mode_generated(user: "User", mode: str) -> Optional[str]:
     """Wrapper that converts generated avatar to base64 svg"""
-    svg = generate_avatar_from_name(user.name if user.name.strip() != "" else "a k")
+    # By default generate based off of user's display name
+    name = user.name.strip()
+    if name == "":
+        # Fallback to username
+        name = user.username.strip()
+    # If we still don't have anything, fallback to `a k`
+    if name == "":
+        name = "a k"
+    svg = generate_avatar_from_name(name)
     return f"data:image/svg+xml;base64,{b64encode(svg.encode('utf-8')).decode('utf-8')}"
 
 

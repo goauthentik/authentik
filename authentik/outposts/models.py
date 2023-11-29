@@ -346,12 +346,22 @@ class Outpost(SerializerModel, ManagedModel):
         user_created = False
         if not user:
             user: User = User.objects.create(username=self.user_identifier)
-            user.set_unusable_password()
             user_created = True
-        user.type = UserTypes.INTERNAL_SERVICE_ACCOUNT
-        user.name = f"Outpost {self.name} Service-Account"
-        user.path = USER_PATH_OUTPOSTS
-        user.save()
+        attrs = {
+            "type": UserTypes.INTERNAL_SERVICE_ACCOUNT,
+            "name": f"Outpost {self.name} Service-Account",
+            "path": USER_PATH_OUTPOSTS,
+        }
+        dirty = False
+        for key, value in attrs.items():
+            if getattr(user, key) != value:
+                dirty = True
+                setattr(user, key, value)
+        if user.has_usable_password():
+            user.set_unusable_password()
+            dirty = True
+        if dirty:
+            user.save()
         if user_created:
             self.build_user_permissions(user)
         return user
