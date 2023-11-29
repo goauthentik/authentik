@@ -1,5 +1,6 @@
 """outpost tests"""
 from unittest.mock import MagicMock, patch
+from authentik.outposts.controllers.k8s.service import ServiceReconciler
 
 import pytest
 from django.test import TestCase
@@ -89,6 +90,35 @@ class OutpostKubernetesTests(TestCase):
                 )
 
         deployment_reconciler.delete(deployment_reconciler.get_reference_object())
+        
+    @pytest.mark.timeout(120)
+    def test_service_reconciler(self):
+        """test that service requires update"""
+        controller = ProxyKubernetesController(self.outpost, self.service_connection)
+        service_reconciler = ServiceReconciler(controller)
+
+        self.assertIsNotNone(service_reconciler.retrieve())
+
+        config = self.outpost.config
+        config.kubernetes_service_type = "NodePort"
+        config.kubernetes_json_patches = {
+            "service": [
+                {
+                    "op": "add",
+                    "path": "/spec/ipFamilyPolicy",
+                    "value": "PreferDualStack",
+                }
+            ]
+        }
+        self.outpost.config = config
+
+        with self.assertRaises(NeedsUpdate):
+            service_reconciler.reconcile(
+                service_reconciler.retrieve(),
+                service_reconciler.get_reference_object(),
+            )
+
+        service_reconciler.delete(service_reconciler.get_reference_object())
 
     @pytest.mark.timeout(120)
     def test_controller_rename(self):
