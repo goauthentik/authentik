@@ -12,6 +12,10 @@ import { DefaultUIConfig, uiConfig } from "@goauthentik/common/ui/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import { rootInterface } from "@goauthentik/elements/Base";
+import {
+    CapabilitiesEnum,
+    WithCapabilitiesConfig,
+} from "@goauthentik/elements/Interface/capabilitiesProvider";
 import { PFSize } from "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/TreeView";
 import "@goauthentik/elements/buttons/ActionButton";
@@ -33,14 +37,7 @@ import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import {
-    CapabilitiesEnum,
-    CoreApi,
-    ResponseError,
-    SessionUser,
-    User,
-    UserPath,
-} from "@goauthentik/api";
+import { CoreApi, ResponseError, SessionUser, User, UserPath } from "@goauthentik/api";
 
 export const requestRecoveryLink = (user: User) =>
     new CoreApi(DEFAULT_CONFIG)
@@ -93,7 +90,7 @@ const recoveryButtonStyles = css`
 `;
 
 @customElement("ak-user-list")
-export class UserListPage extends TablePage<User> {
+export class UserListPage extends WithCapabilitiesConfig(TablePage<User>) {
     expandable = true;
     checkbox = true;
 
@@ -244,8 +241,7 @@ export class UserListPage extends TablePage<User> {
 
     row(item: User): TemplateResult[] {
         const canImpersonate =
-            rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanImpersonate) &&
-            item.pk !== this.me?.user.pk;
+            this.can(CapabilitiesEnum.CanImpersonate) && item.pk !== this.me?.user.pk;
         return [
             html`<a href="#/identity/users/${item.pk}">
                     <div>${item.username}</div>

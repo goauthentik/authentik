@@ -1,10 +1,13 @@
 import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
 import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
 import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
-import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { PlexAPIClient, PlexResource, popupCenterScreen } from "@goauthentik/common/helpers/plex";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
-import { rootInterface } from "@goauthentik/elements/Base";
+import {
+    CapabilitiesEnum,
+    WithCapabilitiesConfig,
+} from "@goauthentik/elements/Interface/capabilitiesProvider";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -16,7 +19,6 @@ import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
-    CapabilitiesEnum,
     FlowsInstancesListDesignationEnum,
     PlexSource,
     SourcesApi,
@@ -24,7 +26,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-source-plex-form")
-export class PlexSourceForm extends ModelForm<PlexSource, string> {
+export class PlexSourceForm extends WithCapabilitiesConfig(ModelForm<PlexSource, string>) {
     async loadInstance(pk: string): Promise<PlexSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesPlexRetrieve({
             slug: pk,
@@ -71,8 +73,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                 plexSourceRequest: data,
             });
         }
-        const c = await config();
-        if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
+        if (this.can(CapabilitiesEnum.CanSaveMedia)) {
             const icon = this.getFormFiles()["icon"];
             if (icon || this.clearIcon) {
                 await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconCreate({
@@ -263,7 +264,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                 />
                 <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
             </ak-form-element-horizontal>
-            ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanSaveMedia)
+            ${this.can(CapabilitiesEnum.CanSaveMedia)
                 ? html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
                           <input type="file" value="" class="pf-c-form-control" />
                           ${this.instance?.icon
