@@ -12,7 +12,7 @@ export function WithAuthentikConfig<T extends Constructor<LitElement>>(
     superclass: T,
     subscribe = false,
 ) {
-    class WithAkConfigProvider extends superclass {
+    abstract class WithAkConfigProvider extends superclass {
         @consume({ context: authentikConfigContext, subscribe })
         public authentikConfig!: Config;
     }

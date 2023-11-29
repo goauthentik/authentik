@@ -1,6 +1,9 @@
 import { config, tenant } from "@goauthentik/common/api/config";
 import { UIConfig, uiConfig } from "@goauthentik/common/ui/config";
-import { authentikConfigContext } from "@goauthentik/elements/AuthentikContexts";
+import {
+    authentikConfigContext,
+    authentikTenantContext,
+} from "@goauthentik/elements/AuthentikContexts";
 import type { AdoptedStyleSheetsElement } from "@goauthentik/elements/types";
 import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
 
@@ -22,9 +25,6 @@ type AkInterface = HTMLElement & {
 
 export class Interface extends AKElement implements AkInterface {
     @state()
-    tenant?: CurrentTenant;
-
-    @state()
     uiConfig?: UIConfig;
 
     _configContext = new ContextProvider(this, {
@@ -43,6 +43,24 @@ export class Interface extends AKElement implements AkInterface {
 
     get config(): Config | undefined {
         return this._config;
+    }
+
+    _tenantContext = new ContextProvider(this, {
+        context: authentikTenantContext,
+        initialValue: undefined,
+    });
+
+    _tenant?: CurrentTenant;
+
+    @state()
+    set tenant(c: CurrentTenant) {
+        this._tenant = c;
+        this._tenantContext.setValue(c);
+        this.requestUpdate();
+    }
+
+    get tenant(): CurrentTenant | undefined {
+        return this._tenant;
     }
 
     constructor() {

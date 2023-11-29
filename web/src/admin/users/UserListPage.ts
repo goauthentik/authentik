@@ -16,6 +16,7 @@ import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
 } from "@goauthentik/elements/Interface/capabilitiesProvider";
+import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider";
 import { PFSize } from "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/TreeView";
 import "@goauthentik/elements/buttons/ActionButton";
@@ -90,7 +91,10 @@ const recoveryButtonStyles = css`
 `;
 
 @customElement("ak-user-list")
-export class UserListPage extends WithCapabilitiesConfig(TablePage<User>) {
+export class UserListPage extends WithTenantConfig(
+    WithCapabilitiesConfig(TablePage<User>, true),
+    true,
+) {
     expandable = true;
     checkbox = true;
 
@@ -351,7 +355,7 @@ export class UserListPage extends WithCapabilitiesConfig(TablePage<User>) {
                                             ${msg("Set password")}
                                         </button>
                                     </ak-forms-modal>
-                                    ${rootInterface()?.tenant?.flowRecovery
+                                    ${this.tenant.flowRecovery
                                         ? html`
                                               <ak-action-button
                                                   class="pf-m-secondary"

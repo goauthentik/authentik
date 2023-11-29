@@ -9,11 +9,11 @@ import { MessageLevel } from "@goauthentik/common/messages";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
-import { rootInterface } from "@goauthentik/elements/Base";
 import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
 } from "@goauthentik/elements/Interface/capabilitiesProvider";
+import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -110,7 +110,10 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
 }
 
 @customElement("ak-user-related-list")
-export class RelatedUserList extends WithCapabilitiesConfig(Table<User>) {
+export class RelatedUserList extends WithTenantConfig(
+    WithCapabilitiesConfig(Table<User>, true),
+    true,
+) {
     expandable = true;
     checkbox = true;
 
@@ -295,7 +298,7 @@ export class RelatedUserList extends WithCapabilitiesConfig(Table<User>) {
                                             ${msg("Set password")}
                                         </button>
                                     </ak-forms-modal>
-                                    ${rootInterface()?.tenant?.flowRecovery
+                                    ${this.tenant?.flowRecovery
                                         ? html`
                                               <ak-action-button
                                                   class="pf-m-secondary"

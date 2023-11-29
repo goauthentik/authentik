@@ -6,7 +6,7 @@ import "@goauthentik/components/ak-number-input";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
-import { rootInterface } from "@goauthentik/elements/Base";
+import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -31,7 +31,7 @@ import {
 } from "./LDAPOptionsAndHelp";
 
 @customElement("ak-application-wizard-authentication-by-ldap")
-export class ApplicationWizardApplicationDetails extends BaseProviderPanel {
+export class ApplicationWizardApplicationDetails extends WithTenantConfig(BaseProviderPanel, true) {
     render() {
         const provider = this.wizard.provider as LDAPProvider | undefined;
 
@@ -52,7 +52,7 @@ export class ApplicationWizardApplicationDetails extends BaseProviderPanel {
                 <ak-tenanted-flow-search
                     flowType=${FlowsInstancesListDesignationEnum.Authentication}
                     .currentFlow=${provider?.authorizationFlow}
-                    .tenantFlow=${rootInterface()?.tenant?.flowAuthentication}
+                    .tenantFlow=${this.tenant.flowAuthentication}
                     required
                 ></ak-tenanted-flow-search>
                 <p class="pf-c-form__helper-text">${msg("Flow used for users to authenticate.")}</p>

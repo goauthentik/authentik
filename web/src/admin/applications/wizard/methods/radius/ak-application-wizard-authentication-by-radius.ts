@@ -2,7 +2,7 @@ import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-tenanted-flow-search";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-text-input";
-import { rootInterface } from "@goauthentik/elements/Base";
+import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -16,7 +16,10 @@ import { FlowsInstancesListDesignationEnum, RadiusProvider } from "@goauthentik/
 import BaseProviderPanel from "../BaseProviderPanel";
 
 @customElement("ak-application-wizard-authentication-by-radius")
-export class ApplicationWizardAuthenticationByRadius extends BaseProviderPanel {
+export class ApplicationWizardAuthenticationByRadius extends WithTenantConfig(
+    BaseProviderPanel,
+    true,
+) {
     render() {
         const provider = this.wizard.provider as RadiusProvider | undefined;
 
@@ -37,7 +40,7 @@ export class ApplicationWizardAuthenticationByRadius extends BaseProviderPanel {
                 <ak-tenanted-flow-search
                     flowType=${FlowsInstancesListDesignationEnum.Authentication}
                     .currentFlow=${provider?.authorizationFlow}
-                    .tenantFlow=${rootInterface()?.tenant?.flowAuthentication}
+                    .tenantFlow=${this.tenant.flowAuthentication}
                     required
                 ></ak-tenanted-flow-search>
                 <p class="pf-c-form__helper-text">${msg("Flow used for users to authenticate.")}</p>
