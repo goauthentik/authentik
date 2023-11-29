@@ -7953,30 +7953,39 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="sd94e99af8b41ff54">
   <source>0: Too guessable: risky password. (guesses &amp;lt; 10^3)</source>
+  <target>0: Trop prévisible: mot de passe risqué. (essais &amp;lt; 10^3)</target>
 </trans-unit>
 <trans-unit id="sc926385d1a624c3a">
   <source>1: Very guessable: protection from throttled online attacks. (guesses &amp;lt; 10^6)</source>
+  <target>1: Très prévisible: protection contre les attaques en ligne limitées. (essais &amp;lt; 10^6)</target>
 </trans-unit>
 <trans-unit id="s8aae61c41319602c">
   <source>2: Somewhat guessable: protection from unthrottled online attacks. (guesses &amp;lt; 10^8)</source>
+  <target>2: Quelque peu prévisible: protection contre les attaques en ligne non limitées. (essais &amp;lt; 10^8)</target>
 </trans-unit>
 <trans-unit id="sc1f4b57e722a89d6">
   <source>3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &amp;lt; 10^10)</source>
+  <target>3: Sûrement imprévisible: protection modérée contre les attaques de hash-lent hors ligne. (essais &amp;lt; 10^10)</target>
 </trans-unit>
 <trans-unit id="sd47f3d3c9741343d">
   <source>4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &amp;gt;= 10^10)</source>
+  <target>4: Très imprévisible: forte protection control les attaques de hash-lent hors ligne. (essais &amp;gt;= 10^10)</target>
 </trans-unit>
 <trans-unit id="s3d2a8b86a4f5a810">
   <source>Successfully created user and added to group <x id="0" equiv-text="${this.group.name}"/></source>
+  <target>Utilisateur créé et ajouté au groupe <x id="0" equiv-text="${this.group.name}"/> avec succès</target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
   <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
+  <target>Cet utilisateur sera ajouté au groupe &amp;quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&amp;quot;.</target>
 </trans-unit>
 <trans-unit id="s62e7f6ed7d9cb3ca">
   <source>Pretend user exists</source>
+  <target>Faire comme si l'utilisateur existe</target>
 </trans-unit>
 <trans-unit id="s52bdc80690a9a8dc">
   <source>When enabled, the stage will always accept the given user identifier and continue.</source>
+  <target>Lorsqu'activé, l'étape acceptera toujours l'identifiant utilisateur donné et continuera.</target>
 </trans-unit>
     </body>
   </file>

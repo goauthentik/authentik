@@ -2,7 +2,7 @@ name: "Setup authentik testing environment"
 description: "Setup authentik testing environment"
 
 inputs:
-  postgresql_tag:
+  postgresql_version:
     description: "Optional postgresql image tag"
     default: "12"
   redis_config:
@@ -47,7 +47,7 @@ runs:
             echo "redis_url=redis://localhost:6379/0" >> $GITHUB_ENV
             ;;
         esac
-        export PSQL_TAG=${{ inputs.postgresql_tag }}
+        export PSQL_TAG=${{ inputs.postgresql_version }}
         docker-compose -f .github/actions/setup/docker-compose.yml --profile ${{ inputs.redis_config }} up -d
         poetry env use python3.11
         poetry install
