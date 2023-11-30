@@ -138,7 +138,7 @@ _Over 80% of malicious hacks are as a result of the exploitation of the widest w
 
 Even in a cybersecurity system that is maximally automated, there is human input that can never be removed. Obviously, human experts are needed to guide the automated systems in their functioning. Automation technology depends on humans to set rules and workflows, monitor results over time, and rapidly prioritize then respond to alarming findings.
 
-Once new and significant threats are detached by the automated security, it is human experts again who have to adjust the performance of the automated system as a response to this changing environment. Any further changes need humans to evaluate the performance of automated systems in real-time. Finally, it is humans who train staff in cyber threat detection for these new dangers.
+Once new and significant threats are detected by the automated security, it is human experts again who have to adjust the performance of the automated system as a response to this changing environment. Any further changes need humans to evaluate the performance of automated systems in real-time. Finally, it is humans who train staff in cyber threat detection for these new dangers.
 
 ### Human-centered cybersecurity
 
