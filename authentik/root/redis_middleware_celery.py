@@ -83,7 +83,7 @@ class CustomResultConsumer(ResultConsumer):
             # we should not lose the callback after connecting.
             # The on_connect callback will re-subscribe to
             # any channels we previously subscribed to.
-            self._pubsub.connection.register_connect_callback(self._pubsub.on_connect)
+            self._pubsub.connection._register_connect_callback(self._pubsub.on_connect)
 
 
 class CustomBackend(RedisBackend):
