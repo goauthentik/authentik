@@ -26,7 +26,7 @@ image: ./authentication.png
 
 ---
 
-Automated security plays a large and increasingly overarching role in cybersecurity. With the growth of Machine Learning (ML) and Artificial Intelligence (AI), automation is frequently assumed to be the future of cybersecurity as a whole. However, thanks to the work of computer security experts like [Bruce Schneier](https://en.wikipedia.org/wiki/Bruce_Schneier), we've gained insight into the human adversaries that create the underlying problems in cybersecurity.
+Automation plays a large and increasingly important role in cybersecurity. Cybersecurity vendors promote their Machine Learning and Artificial Intelligence products as the inevitable future. However, thanks to the work of security experts like [Bruce Schneier](https://en.wikipedia.org/wiki/Bruce_Schneier), we have more insight into the human adversaries that create the underlying risks to network security, and a better understanding of why teaching humans to have a security mindset is the critical first step to keeping your network safe.
 
 > The best response to these malicious actors is to think like a security expert and develop the security mindset.
 
@@ -43,7 +43,7 @@ Automated security is such a popular option purely because of the current dynami
 -   On the one hand, there is a growing number of security incidents, instigated by systematic threat actors who may use the exact same auto security testing tools to find and target weaknesses
 -   On the other, there is a shortage of trained cybersecurity professionals with adequate time resources to deal with those threats
 
-Meanwhile, companies concerned about the security of their networks are facing the demands of savvy insurers keen to reduce their risks in turn, while CISOs are coming under increasing personal pressure, considering some have faced new warnings of personal liabilities (including jail time, as we wrote about in a [recent blog](https://goauthentik.io/blog/2023-11-22-how-we-saved-over-100k#repercussions)) from government legislators.
+Meanwhile, companies concerned about the security of their networks are facing the demands of savvy insurers keen to reduce their risks, while CISOs are coming under increasing personal pressure, considering some have faced new warnings of personal liabilities (including jail time, as we wrote about in a [recent blog](https://goauthentik.io/blog/2023-11-22-how-we-saved-over-100k#repercussions)) from government legislators.
 
 But it's not just a personnel problem. The nature of some cybersecurity approaches, such as penetration testing, also plays a part. Many of a security engineer’s tasks are repetitive and prolonged. Automated security testing means time can be freed up to make the best use of an internal security engineer or external pentester's resources.
 
@@ -53,7 +53,7 @@ Finally, it is impossible to deny that securing the perimeter (running regular s
 
 Let’s not throw the baby out with the bath water. Automation has a place and positive role to play in cybersecurity. Auto security testing tools are best deployed for tasks that are repetitive and routine, and that require high volume processing.
 
-Examples of these include:
+Examples of these tasks include:
 
 -   Scheduled tasks such as vulnerability scanning
 -   24/7 user and other activity monitoring
@@ -87,7 +87,7 @@ To help avoid this, we need to acknowledge that automation can't:
 
 _But what else?_
 
-The first point to remember is that automated solutions can only reliably alert and respond to the threats to your network, services, databases, APIs, and applications that they've been configured to detect. This configuration is limited to the settings available in the particular software. Auto security testing tools are only as good as the rules that human security engineers have given them. They still must be configured and employed accurately.
+The first point to remember is that automated solutions can only reliably alert and respond to the threats to your network, services, databases, APIs, and applications that they've been configured to detect. This configuration is limited to the settings available in the particular software. Automated processes are only as good as the rules human engineers give them. Security processes must still be configured and employed correctly.
 
 And, your own company’s internal business logic must be factored in. This is where pentesters (who may, of course, rely on some automated tools to help them identify some vulnerabilities across your network) can delve deep on specific vulnerabilities and apply your company’s custom business logic and data breach implications. Resultant summary reports must explain the business, financial, reputational, data, and user implications of likely breaches, investigations and penalties.
 
@@ -111,7 +111,7 @@ While automated scanning tools can provide a major asset in the arsenal of any c
 
 -   An automated scanner can miss vulnerabilities if they are new and not in its database, or if the vulnerability is complex and adaptive. Scanners can only hunt for known vulnerabilities, and according to how automated scans are further configured by users.
 -   The problem of false positives can never be completely eliminated even by the most accurate scanners. In the end, a human expert is needed to filter them out.
--   Detecting vulnerabilities is only the start. And, while some scanners assign an urgent priority to their findings, human expertise is needed to assess the _specific_ implications of these vulnerabilities for the platform, system or business.
+-   Detecting vulnerabilities is only the start. While some scanners assign an urgent priority to their findings, human expertise is needed to assess the _specific_ implications of these vulnerabilities for the platform, system or business.
 -   Once vulnerabilities are detected, fixing and patching them is a manual process. A vulnerability report is a starting point. Identifying a vulnerability is one thing; successfully remediating it is another. Further, security engineers will sometimes also have to further reengineer their code, to ensure a similar problem does not recur.
 
 Of course, automatic scanners are excellent assets for speed and quick action, repeatability, ease of use, and constant monitoring. They can provide a good starting point for further investigations, not an end point. But they are not equivalent to a full penetration test and can only find risks that are known.
@@ -136,7 +136,7 @@ _Over 80% of malicious hacks are as a result of the exploitation of the widest w
 
 ### Human elements of cybersecurity
 
-Even in a cybersecurity system that is maximally automated, there is human input that can never be removed. Obviously, human experts are needed to guide the automated systems in their functioning. Automation technology depends on humans to set rules and workflows, monitor results over time, and rapidly prioritize then respond to alarming findings.
+Even in a cybersecurity system that is maximally automated there is human input that can never be removed. Obviously, human experts are needed to guide the automated systems in their functioning. Automation technology depends on humans to set rules and workflows, monitor results over time, and rapidly prioritize then respond to alarming findings.
 
 Once new and significant threats are detected by the automated security, it is human experts again who have to adjust the performance of the automated system as a response to this changing environment. Any further changes need humans to evaluate the performance of automated systems in real-time. Finally, it is humans who train staff in cyber threat detection for these new dangers.
 
@@ -144,8 +144,8 @@ Once new and significant threats are detected by the automated security, it is h
 
 Despite the growing technology around automated security, and the temptation to relax when it is deployed, there are human factors that are irreplaceable in the practice of cybersecurity. We recently wrote about the importance of the “Blue Team” and how [organizational and product hardening](https://goauthentik.io/blog/2023-11-22-how-we-saved-over-100k#hardening) are an integral part of our human-centered security mindset.
 
--   The human ability to think creatively and rapidly adapt to changing situations are invaluable to good security processes.
--   The higher the security risk, the more related processes must be supervised by skilled security professionals.
+-   The human ability to think creatively and rapidly adapt to changing situations is invaluable to good security processes.
+-   The higher the security risk, the more you need skilled security professionals to supervise the security process.
 -   After automation has quickly gathered information, humans are needed to make any well-informed security and organizational decisions that may arise.
 -   Exclusively human tasks include containment, triage, remediation, and launching new initiatives such as better responses (see [Okta got breached again and they still have not learned their lesson](https://goauthentik.io/blog/2023-10-23-another-okta-breach)).
 -   Only humans can know the commercial implications of a data breach.
