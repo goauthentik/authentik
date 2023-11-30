@@ -49,7 +49,6 @@ runs:
         esac
         export PSQL_TAG=${{ inputs.postgresql_version }}
         docker-compose -f .github/actions/setup/docker-compose.yml --profile ${{ inputs.redis_config }} up -d
-        poetry env use python3.11
         poetry install
         cd web && npm ci
     - name: Generate config
