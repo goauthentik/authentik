@@ -342,6 +342,7 @@ CELERY = {
     "task_create_missing_queues": True,
     "task_default_queue": "authentik",
     "broker_url": CONFIG.get("broker.url") or CONFIG.get("redis.url"),
+    "broker_connection_retry_on_startup": True,
     "broker_transport_options": CONFIG.get_dict_from_b64_json("broker.transport_options"),
     "result_backend": CONFIG.get("result_backend.url") or CONFIG.get("redis.url"),
 }
