@@ -1,6 +1,5 @@
 """outpost tests"""
 from unittest.mock import MagicMock, patch
-from authentik.outposts.controllers.k8s.service import ServiceReconciler
 
 import pytest
 from django.test import TestCase
@@ -10,6 +9,7 @@ from kubernetes.client.exceptions import OpenApiException
 from authentik.core.tests.utils import create_test_flow
 from authentik.lib.config import CONFIG
 from authentik.outposts.controllers.k8s.deployment import DeploymentReconciler
+from authentik.outposts.controllers.k8s.service import ServiceReconciler
 from authentik.outposts.controllers.k8s.triggers import NeedsUpdate
 from authentik.outposts.models import KubernetesServiceConnection, Outpost, OutpostType
 from authentik.outposts.tasks import outpost_connection_discovery
@@ -90,7 +90,7 @@ class OutpostKubernetesTests(TestCase):
                 )
 
         deployment_reconciler.delete(deployment_reconciler.get_reference_object())
-        
+
     @pytest.mark.timeout(120)
     def test_service_reconciler(self):
         """test that service requires update"""
