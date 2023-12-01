@@ -188,7 +188,6 @@ CACHES = {
             "CLIENT_CLASS": "authentik.root.redis_middleware_django.CustomClient",
         },
         "KEY_PREFIX": "authentik_cache",
-        "SERIALIZER": "django_redis.serializers.msgpack.MSGPackSerializer",
     }
 }
 DJANGO_REDIS_CONNECTION_FACTORY = "authentik.root.redis_middleware_django.CustomConnectionFactory"
