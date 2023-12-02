@@ -5,6 +5,7 @@ from uuid import uuid4
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
+from django.template.exceptions import TemplateSyntaxError
 from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.timezone import now
@@ -12,11 +13,14 @@ from django.utils.translation import gettext as _
 from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
 
+from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
+from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.models import FlowDesignation, FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_IS_RESTORED, PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import QS_KEY_TOKEN, QS_QUERY
+from authentik.lib.utils.errors import exception_to_string
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
@@ -103,18 +107,27 @@ class EmailStageView(ChallengeStageView):
         current_stage: EmailStage = self.executor.current_stage
         token = self.get_token()
         # Send mail to user
-        message = TemplateEmailMessage(
-            subject=_(current_stage.subject),
-            to=[email],
-            language=pending_user.locale(self.request),
-            template_name=current_stage.template,
-            template_context={
-                "url": self.get_full_url(**{QS_KEY_TOKEN: token.key}),
-                "user": pending_user,
-                "expires": token.expires,
-            },
-        )
-        send_mails(current_stage, message)
+        try:
+            message = TemplateEmailMessage(
+                subject=_(current_stage.subject),
+                to=[email],
+                language=pending_user.locale(self.request),
+                template_name=current_stage.template,
+                template_context={
+                    "url": self.get_full_url(**{QS_KEY_TOKEN: token.key}),
+                    "user": pending_user,
+                    "expires": token.expires,
+                },
+            )
+            send_mails(current_stage, message)
+        except TemplateSyntaxError as exc:
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                message=_("Exception occurred while rendering E-mail template"),
+                error=exception_to_string(exc),
+                template=current_stage.template,
+            ).from_http(self.request)
+            raise StageInvalidException from exc
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         # Check if the user came back from the email link to verify
