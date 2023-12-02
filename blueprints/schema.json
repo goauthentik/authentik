@@ -2824,6 +2824,80 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_providers_rac.endpoint"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_providers_rac.endpoint"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_providers_rac.endpoint"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_providers_rac.racpropertymapping"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_providers_rac.racpropertymapping"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_providers_rac.racpropertymapping"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_blueprints.metaapplyblueprint"
                             },
                             "id": {
@@ -3601,7 +3675,9 @@
                         "authentik_core.application",
                         "authentik_core.token",
                         "authentik_enterprise.license",
-                        "authentik_providers_rac.racprovider"
+                        "authentik_providers_rac.racprovider",
+                        "authentik_providers_rac.endpoint",
+                        "authentik_providers_rac.racpropertymapping"
                     ],
                     "title": "Model",
                     "description": "Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched."
@@ -8832,6 +8908,31 @@
                     ],
                     "title": "Protocol"
                 },
+                "settings": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Settings"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_providers_rac.endpoint": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "protocol": {
+                    "type": "string",
+                    "enum": [
+                        "rdp",
+                        "vnc",
+                        "ssh"
+                    ],
+                    "title": "Protocol"
+                },
                 "host": {
                     "type": "string",
                     "minLength": 1,
@@ -8841,6 +8942,38 @@
                     "type": "object",
                     "additionalProperties": true,
                     "title": "Settings"
+                },
+                "property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Property mappings"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_providers_rac.racpropertymapping": {
+            "type": "object",
+            "properties": {
+                "managed": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Managed by authentik",
+                    "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "expression": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Expression"
                 }
             },
             "required": []

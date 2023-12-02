@@ -6,6 +6,7 @@ from django.urls import reverse
 from authentik.core.models import Application
 from authentik.core.views.interface import InterfaceView
 from authentik.enterprise.policy import EnterprisePolicyAccessView
+from authentik.enterprise.providers.rac.models import Endpoint
 from authentik.flows.challenge import RedirectChallenge
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
@@ -14,6 +15,7 @@ from authentik.flows.stage import RedirectStage
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.urls import redirect_with_qs
+from authentik.policies.engine import PolicyEngine
 
 CONNECTION_TOKEN = "ctoken"  # nosec
 
@@ -21,10 +23,12 @@ CONNECTION_TOKEN = "ctoken"  # nosec
 class RACInterface(EnterprisePolicyAccessView, InterfaceView):
     """Start RAC connection"""
 
+    endpoint: Endpoint
     template_name = "if/rac.html"
 
     def resolve_provider_application(self):
         self.application = get_object_or_404(Application, slug=self.kwargs["app"])
+        self.endpoint = get_object_or_404(Endpoint, pk=self.kwargs["endpoint"])
         self.provider = self.application.provider
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
@@ -40,11 +44,13 @@ class RACInterface(EnterprisePolicyAccessView, InterfaceView):
                 in_memory_stage(
                     RACFinalStage,
                     token=token,
+                    endpoint=self.endpoint,
                     destination=self.request.build_absolute_uri(
                         reverse(
                             "authentik_providers_rac:if-rac",
                             kwargs={
                                 "app": self.application.slug,
+                                "endpoint": str(self.endpoint.pk),
                             },
                         )
                     ),
@@ -63,5 +69,11 @@ class RACFinalStage(RedirectStage):
     """RAC Connection final stage, set the connection token in the stage"""
 
     def get_challenge(self, *args, **kwargs) -> RedirectChallenge:
+        endpoint: Endpoint = self.executor.current_stage.endpoint
+        engine = PolicyEngine(endpoint, self.request.user, self.request)
+        engine.build()
+        passing = engine.result
+        if not passing.passing:
+            return self.executor.stage_invalid(", ".join(passing.messages))
         self.request.session[CONNECTION_TOKEN] = self.executor.current_stage.token
         return super().get_challenge(*args, **kwargs)

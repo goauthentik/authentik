@@ -63,6 +63,9 @@ export class RacInterface extends Interface {
     @property()
     app?: string;
 
+    @property()
+    endpoint?: string;
+
     @state()
     clipboardWatcherTimer = 0;
 
@@ -104,7 +107,7 @@ export class RacInterface extends Interface {
         this.updateTitle();
         const wsUrl = `${window.location.protocol.replace("http", "ws")}//${
             window.location.host
-        }/ws/rac/${this.app}/`;
+        }/ws/rac/${this.app}/${this.endpoint}/`;
         this.tunnel = new Guacamole.WebSocketTunnel(wsUrl);
         this.tunnel.onerror = (status) => {
             this.reconnecting = true;

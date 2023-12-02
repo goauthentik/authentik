@@ -3,12 +3,13 @@ from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
 from channels.exceptions import ChannelFull, DenyConnection
 from channels.generic.websocket import AsyncWebsocketConsumer
+from django.http import Http404
 from django.http.request import QueryDict
-from guardian.shortcuts import get_objects_for_user
+from django.shortcuts import get_object_or_404
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import Application
-from authentik.enterprise.providers.rac.models import RACProvider
+from authentik.enterprise.providers.rac.models import Endpoint, RACProvider
 from authentik.outposts.consumer import OUTPOST_GROUP_INSTANCE
 from authentik.outposts.models import Outpost, OutpostState, OutpostType
 
@@ -22,6 +23,14 @@ RAC_CLIENT_GROUP = "group_enterprise_rac_client"
 # Step 4: Outpost creates a websocket connection back to authentik
 #         with /ws/outpost_rac/<our_channel_id>/
 # Step 5: This consumer transfers data between the two channels
+
+
+def get_object_or_deny(*args, **kwargs):
+    """get_object_or_404 compatible with websockets"""
+    try:
+        return get_object_or_404(*args, **kwargs)
+    except Http404 as exc:
+        raise DenyConnection() from exc
 
 
 class RACClientConsumer(AsyncWebsocketConsumer):
@@ -40,18 +49,15 @@ class RACClientConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def init_outpost_connection(self):
         """Initialize guac connection settings"""
-        app_slug = self.scope["url_route"]["kwargs"]["app"]
-        app = get_objects_for_user(
-            self.scope["user"], "view_application", Application.objects.filter(slug=app_slug)
-        ).first()
-        if not app:
-            self.logger.warning("No app found")
-            raise DenyConnection()
+        app = get_object_or_deny(Application, slug=self.scope["url_route"]["kwargs"]["app"])
+        endpoint: Endpoint = get_object_or_deny(
+            Endpoint, pk=self.scope["url_route"]["kwargs"]["endpoint"]
+        )
         self.provider = RACProvider.objects.filter(application=app).first()
         if not self.provider:
             self.logger.warning("No provider found")
             raise DenyConnection()
-        params = self.provider.get_settings()
+        params = endpoint.get_settings(self.provider)
         msg = {
             "type": "event.provider.specific",
             "sub_type": "init_connection",

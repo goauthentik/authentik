@@ -5,6 +5,8 @@ from django.urls import path
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 from authentik.core.channels import TokenOutpostMiddleware
+from authentik.enterprise.providers.rac.api.endpoints import EndpointViewSet
+from authentik.enterprise.providers.rac.api.property_mappings import RACPropertyMappingViewSet
 from authentik.enterprise.providers.rac.api.providers import RACProviderViewSet
 from authentik.enterprise.providers.rac.consumer_client import RACClientConsumer
 from authentik.enterprise.providers.rac.consumer_outpost import RACOutpostConsumer
@@ -14,7 +16,7 @@ from authentik.root.middleware import ChannelsLoggingMiddleware
 
 urlpatterns = [
     path(
-        "if/rac/<slug:app>/",
+        "if/rac/<slug:app>/<uuid:endpoint>/",
         ensure_csrf_cookie(RACInterface.as_view()),
         name="if-rac",
     ),
@@ -22,7 +24,7 @@ urlpatterns = [
 
 websocket_urlpatterns = [
     path(
-        "ws/rac/<slug:app>/",
+        "ws/rac/<slug:app>/<uuid:endpoint>/",
         ChannelsLoggingMiddleware(
             CookieMiddleware(SessionMiddleware(AuthMiddleware(RACClientConsumer.as_asgi())))
         ),
@@ -35,4 +37,6 @@ websocket_urlpatterns = [
 
 api_urlpatterns = [
     ("providers/rac", RACProviderViewSet),
+    ("propertymappings/rac", RACPropertyMappingViewSet),
+    ("rac/endpoints", EndpointViewSet),
 ]

@@ -13,7 +13,6 @@ class RACProviderSerializer(ProviderSerializer):
         model = RACProvider
         fields = ProviderSerializer.Meta.fields + [
             "protocol",
-            "host",
             "settings",
         ]
         extra_kwargs = ProviderSerializer.Meta.extra_kwargs
