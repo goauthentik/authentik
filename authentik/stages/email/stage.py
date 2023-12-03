@@ -148,7 +148,11 @@ class EmailStageView(ChallengeStageView):
             return self.executor.stage_invalid()
         # Check if we've already sent the initial e-mail
         if PLAN_CONTEXT_EMAIL_SENT not in self.executor.plan.context:
-            self.send_email()
+            try:
+                self.send_email()
+            except StageInvalidException as exc:
+                self.logger.debug("Got StageInvalidException", exc=exc)
+                return self.executor.stage_invalid()
             self.executor.plan.context[PLAN_CONTEXT_EMAIL_SENT] = True
         return super().get(request, *args, **kwargs)
 
