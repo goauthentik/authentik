@@ -11,19 +11,19 @@ This recovery key will give whoever has the link direct access to your instances
 To create the key, run the following command:
 
 ```
-docker-compose run --rm server create_recovery_key 10 akadmin
+docker-compose run --rm server create_recovery_key --schema public 10 akadmin
 ```
 
 For Kubernetes, run
 
 ```
-kubectl exec -it deployment/authentik-worker -c authentik -- ak create_recovery_key 10 akadmin
+kubectl exec -it deployment/authentik-worker -c authentik -- ak create_recovery_key --schema public 10 akadmin
 ```
 
 or, for CLI, run
 
 ```
-ak create_recovery_key 10 akadmin
+ak create_recovery_key 10 --schema public akadmin
 ```
 
 This will output a link, that can be used to instantly gain access to authentik as the user specified above. The link is valid for amount of years specified above, in this case, 10 years.

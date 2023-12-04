@@ -1,5 +1,6 @@
 """LDAP Sync"""
 from django.core.management.base import BaseCommand
+from django_tenants.management.commands import TenantWrappedCommand
 from structlog.stdlib import get_logger
 
 from authentik.sources.ldap.models import LDAPSource
@@ -11,7 +12,7 @@ from authentik.sources.ldap.tasks import ldap_sync_paginator
 LOGGER = get_logger()
 
 
-class Command(BaseCommand):
+class TCommand(BaseCommand):
     """Run sync for an LDAP Source"""
 
     def add_arguments(self, parser):
@@ -30,3 +31,7 @@ class Command(BaseCommand):
             )
             for task in tasks:
                 task()
+
+
+class Command(TenantWrappedCommand):
+    COMMAND = TCommand

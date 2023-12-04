@@ -7,11 +7,12 @@ from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
+from django_tenants.management.commands import TenantWrappedCommand
 
 from authentik.core.models import Token, TokenIntents, User
 
 
-class Command(BaseCommand):
+class TCommand(BaseCommand):
     """Create Token used to recover access"""
 
     help = _("Create a Key which can be used to restore access to authentik.")
@@ -50,3 +51,7 @@ class Command(BaseCommand):
             f"Store this link safely, as it will allow anyone to access authentik as {user}."
         )
         self.stdout.write(self.get_url(token))
+
+
+class Command(TenantWrappedCommand):
+    COMMAND = TCommand

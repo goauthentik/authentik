@@ -1,11 +1,12 @@
 """authentik recovery create_admin_group"""
 from django.core.management.base import BaseCommand
 from django.utils.translation import gettext as _
+from django_tenants.management.commands import TenantWrappedCommand
 
 from authentik.core.models import Group, User
 
 
-class Command(BaseCommand):
+class TCommand(BaseCommand):
     """Create admin group if the default group gets deleted"""
 
     help = _("Create admin group if the default group gets deleted.")
@@ -28,3 +29,7 @@ class Command(BaseCommand):
         )
         group.users.add(user)
         self.stdout.write(f"User '{username}' successfully added to the group 'authentik Admins'.")
+
+
+class Command(TenantWrappedCommand):
+    COMMAND = TCommand

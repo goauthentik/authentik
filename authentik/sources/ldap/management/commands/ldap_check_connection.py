@@ -2,6 +2,7 @@
 from json import dumps
 
 from django.core.management.base import BaseCommand
+from django_tenants.management.commands import TenantWrappedCommand
 from structlog.stdlib import get_logger
 
 from authentik.sources.ldap.models import LDAPSource
@@ -9,7 +10,7 @@ from authentik.sources.ldap.models import LDAPSource
 LOGGER = get_logger()
 
 
-class Command(BaseCommand):
+class TCommand(BaseCommand):
     """Check connectivity to LDAP servers for a source"""
 
     def add_arguments(self, parser):
@@ -22,3 +23,7 @@ class Command(BaseCommand):
         for source in sources.order_by("slug"):
             status = source.check_connection()
             self.stdout.write(dumps(status, indent=4))
+
+
+class Command(TenantWrappedCommand):
+    COMMAND = TCommand

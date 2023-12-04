@@ -2,6 +2,7 @@
 from sys import exit as sys_exit
 
 from django.core.management.base import BaseCommand, no_translations
+from django_tenants.management.commands import TenantWrappedCommand
 from rest_framework.exceptions import ValidationError
 from structlog.stdlib import get_logger
 
@@ -11,7 +12,7 @@ from authentik.crypto.models import CertificateKeyPair
 LOGGER = get_logger()
 
 
-class Command(BaseCommand):
+class TCommand(BaseCommand):
     """Import certificate"""
 
     @no_translations
@@ -49,3 +50,7 @@ class Command(BaseCommand):
         parser.add_argument("--certificate", type=str, required=True)
         parser.add_argument("--private-key", type=str, required=False)
         parser.add_argument("--name", type=str, required=True)
+
+
+class Command(TenantWrappedCommand):
+    COMMAND = TCommand

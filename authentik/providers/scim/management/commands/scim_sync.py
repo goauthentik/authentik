@@ -1,5 +1,6 @@
 """SCIM Sync"""
 from django.core.management.base import BaseCommand
+from django_tenants.management.commands import TenantWrappedCommand
 from structlog.stdlib import get_logger
 
 from authentik.providers.scim.models import SCIMProvider
@@ -8,7 +9,7 @@ from authentik.providers.scim.tasks import scim_sync
 LOGGER = get_logger()
 
 
-class Command(BaseCommand):
+class TCommand(BaseCommand):
     """Run sync for an SCIM Provider"""
 
     def add_arguments(self, parser):
@@ -21,3 +22,7 @@ class Command(BaseCommand):
                 LOGGER.warning("Provider does not exist", name=provider_name)
                 continue
             scim_sync.delay(provider.pk).get()
+
+
+class Command(TenantWrappedCommand):
+    COMMAND = TCommand

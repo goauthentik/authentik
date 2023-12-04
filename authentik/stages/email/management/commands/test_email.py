@@ -2,13 +2,14 @@
 from uuid import uuid4
 
 from django.core.management.base import BaseCommand, no_translations
+from django_tenants.management.commands import TenantWrappedCommand
 
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mail
 from authentik.stages.email.utils import TemplateEmailMessage
 
 
-class Command(BaseCommand):
+class TCommand(BaseCommand):
     """Send a test-email with global settings"""
 
     @no_translations
@@ -40,4 +41,8 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("to", type=str)
-        parser.add_argument("-s", "--stage", type=str)
+        parser.add_argument("-S", "--stage", type=str)
+
+
+class Command(TenantWrappedCommand):
+    COMMAND = TCommand

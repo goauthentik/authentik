@@ -8,7 +8,7 @@ title: Export
 Requires authentik 2022.8.2
 :::
 
-To migrate existing configurations to blueprints, run `ak export_blueprint` within any authentik Worker container. This will output a blueprint for most currently created objects. Some objects will not be exported as they might have dependencies on other things.
+To migrate existing configurations to blueprints, run `ak export_blueprint --schema public` within any authentik Worker container. This will output a blueprint for most currently created objects. Some objects will not be exported as they might have dependencies on other things.
 
 Exported blueprints don't use any of the YAML Tags, they just contain a list of entries as they are in the database.
 

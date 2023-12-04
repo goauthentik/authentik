@@ -9,19 +9,19 @@ Some hosting providers block outgoing SMTP ports, in which case you'll have to h
 To test if an email stage, or the global email settings are configured correctly, you can run the following command:
 
 ```
-ak test_email <to address> [-s <stage name>]
+ak test_email --schema public <to address> [-S <stage name>]
 ```
 
-If you omit the `-s` parameter, the email will be sent using the global settings. Otherwise, the settings of the specified stage will be used.
+If you omit the `-S` parameter, the email will be sent using the global settings. Otherwise, the settings of the specified stage will be used.
 
 To run this command with docker-compose, use
 
 ```
-docker-compose exec worker ak test_email [...]
+docker-compose exec worker ak test_email --schema public [...]
 ```
 
 To run this command with Kubernetes, use
 
 ```
-kubectl exec -it deployment/authentik-worker -c authentik -- ak test_email [...]
+kubectl exec -it deployment/authentik-worker -c authentik -- ak test_email --schema public [...]
 ```
