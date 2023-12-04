@@ -12,11 +12,11 @@ import { DefaultUIConfig, uiConfig } from "@goauthentik/common/ui/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import { rootInterface } from "@goauthentik/elements/Base";
+import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
 } from "@goauthentik/elements/Interface/capabilitiesProvider";
-import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider";
 import { PFSize } from "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/TreeView";
 import "@goauthentik/elements/buttons/ActionButton";
@@ -91,10 +91,8 @@ const recoveryButtonStyles = css`
 `;
 
 @customElement("ak-user-list")
-export class UserListPage extends WithTenantConfig(
-    WithCapabilitiesConfig(TablePage<User>, true),
-    true,
-) {
+export class UserListPage extends WithBrandConfig(
+    WithCapabilitiesConfig(TablePage<User>, true)) {
     expandable = true;
     checkbox = true;
 
@@ -355,7 +353,7 @@ export class UserListPage extends WithTenantConfig(
                                             ${msg("Set password")}
                                         </button>
                                     </ak-forms-modal>
-                                    ${this.tenant.flowRecovery
+                                    ${this.brand.flowRecovery
                                         ? html`
                                               <ak-action-button
                                                   class="pf-m-secondary"

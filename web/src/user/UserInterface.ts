@@ -192,11 +192,8 @@ export class UserInterface extends Interface {
                         <a href="#/" class="pf-c-page__header-brand-link">
                             <img
                                 class="pf-c-brand"
-                                src="${first(
-                                    this.tenant?.brandingLogo,
-                                    DefaultTenant.brandingLogo,
-                                )}"
-                                alt="${(this.tenant?.brandingTitle, DefaultTenant.brandingTitle)}"
+                                src="${first(this.brand?.brandingLogo, DefaultTenant.brandingLogo)}"
+                                alt="${(this.brand?.brandingTitle, DefaultTenant.brandingTitle)}"
                             />
                         </a>
                     </div>

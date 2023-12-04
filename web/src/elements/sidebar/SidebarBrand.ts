@@ -1,6 +1,6 @@
 import { EVENT_SIDEBAR_TOGGLE } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
-import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider";
+import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
@@ -27,7 +27,7 @@ export const DefaultTenant: CurrentTenant = {
 };
 
 @customElement("ak-sidebar-brand")
-export class SidebarBrand extends WithTenantConfig(AKElement, true) {
+export class SidebarBrand extends WithBrandConfig(AKElement) {
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -85,7 +85,7 @@ export class SidebarBrand extends WithTenantConfig(AKElement, true) {
             <a href="#/" class="pf-c-page__header-brand-link">
                 <div class="pf-c-brand ak-brand">
                     <img
-                        src=${this.tenant?.brandingLogo ?? DefaultTenant.brandingLogo}
+                        src=${this.brand?.brandingLogo ?? DefaultTenant.brandingLogo}
                         alt="authentik Logo"
                         loading="lazy"
                     />

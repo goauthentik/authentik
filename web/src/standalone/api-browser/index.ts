@@ -103,7 +103,7 @@ export class APIBrowser extends Interface {
                         <img
                             alt="authentik Logo"
                             class="logo"
-                            src="${first(this.tenant?.brandingLogo, DefaultTenant.brandingLogo)}"
+                            src="${first(this.brand?.brandingLogo, DefaultTenant.brandingLogo)}"
                         />
                     </div>
                 </rapi-doc>

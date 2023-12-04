@@ -1,6 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
-import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider";
+import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -14,7 +14,7 @@ import { customElement } from "lit/decorators.js";
 import { FlowsInstancesListDesignationEnum, ProvidersApi, RadiusProvider } from "@goauthentik/api";
 
 @customElement("ak-provider-radius-form")
-export class RadiusProviderFormPage extends WithTenantConfig(
+export class RadiusProviderFormPage extends WithBrandConfig(
     ModelForm<RadiusProvider, number>,
     true,
 ) {
@@ -68,7 +68,7 @@ export class RadiusProviderFormPage extends WithTenantConfig(
                 <ak-tenanted-flow-search
                     flowType=${FlowsInstancesListDesignationEnum.Authentication}
                     .currentFlow=${this.instance?.authorizationFlow}
-                    .tenantFlow=${this.tenant?.flowAuthentication}
+                    .tenantFlow=${this.brand?.flowAuthentication}
                     required
                 ></ak-tenanted-flow-search>
                 <p class="pf-c-form__helper-text">${msg("Flow used for users to authenticate.")}</p>
