@@ -26,7 +26,7 @@ You will need to create a new project, and OAuth credentials in the Twitter Deve
 
 6. Enable **OAuth 2.0**
 7. Set **Type of App** to _Web_
-8. Set **Callback URI / Redirect URL** to `https://authenik.company/source/oauth/callback/twitter/`
+8. Set **Callback URI / Redirect URL** to `https://authentik.company/source/oauth/callback/twitter/`
 9. Set **Website URL** to `https://authentik.company`
 
 ![](./twitter2.png)

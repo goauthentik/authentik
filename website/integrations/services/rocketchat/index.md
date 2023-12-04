@@ -76,7 +76,7 @@ In Rocket.chat, follow the procedure below:
 
 3. In the top right corner, click _Add custom oauth_
 
-4. Give your new oauth the name of _Authenik_, then click _Send_
+4. Give your new oauth the name of _Authentik_, then click _Send_
 
 ![](./rocketchat6.png)
 
