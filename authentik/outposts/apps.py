@@ -61,4 +61,4 @@ class AuthentikOutpostConfig(ManagedAppConfig):
                 )
                 outpost.save()
         else:
-            Outpost.objects.delete(managed=MANAGED_OUTPOST)
+            Outpost.objects.filter(managed=MANAGED_OUTPOST).delete()
