@@ -5,7 +5,7 @@ import { ContextProvider } from "@lit-labs/context";
 import { msg } from "@lit/localize";
 import { customElement, state } from "lit/decorators.js";
 
-import applicationWizardContext from "./ContextIdentity";
+import { applicationWizardContext } from "./ContextIdentity";
 import { newSteps } from "./steps";
 import {
     ApplicationStep,

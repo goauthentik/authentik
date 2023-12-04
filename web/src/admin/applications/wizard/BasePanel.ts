@@ -29,6 +29,9 @@ export class ApplicationWizardPageBase
         return AwadStyles;
     }
 
+    @consume({ context: applicationWizardContext })
+    public wizard!: ApplicationWizardState;
+
     @query("form")
     form!: HTMLFormElement;
 
@@ -55,9 +58,6 @@ export class ApplicationWizardPageBase
     }
 
     rendered = false;
-
-    @consume({ context: applicationWizardContext })
-    public wizard!: ApplicationWizardState;
 
     /**
      * Provide a single source of truth for the token used to notify the orchestrator that an event
