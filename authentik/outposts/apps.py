@@ -3,6 +3,7 @@ from prometheus_client import Gauge
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.apps import ManagedAppConfig
+from authentik.lib.config import CONFIG
 
 LOGGER = get_logger()
 
@@ -39,22 +40,25 @@ class AuthentikOutpostConfig(ManagedAppConfig):
             OutpostType,
         )
 
-        outpost, updated = Outpost.objects.update_or_create(
-            defaults={
-                "name": "authentik Embedded Outpost",
-                "type": OutpostType.PROXY,
-            },
-            managed=MANAGED_OUTPOST,
-        )
-        if updated:
-            if KubernetesServiceConnection.objects.exists():
-                outpost.service_connection = KubernetesServiceConnection.objects.first()
-            elif DockerServiceConnection.objects.exists():
-                outpost.service_connection = DockerServiceConnection.objects.first()
-            outpost.config = OutpostConfig(
-                kubernetes_disabled_components=[
-                    "deployment",
-                    "secret",
-                ]
+        if CONFIG.get_bool("outposts.disable_embedded_outpost", False):
+            outpost, updated = Outpost.objects.update_or_create(
+                defaults={
+                    "name": "authentik Embedded Outpost",
+                    "type": OutpostType.PROXY,
+                },
+                managed=MANAGED_OUTPOST,
             )
-            outpost.save()
+            if updated:
+                if KubernetesServiceConnection.objects.exists():
+                    outpost.service_connection = KubernetesServiceConnection.objects.first()
+                elif DockerServiceConnection.objects.exists():
+                    outpost.service_connection = DockerServiceConnection.objects.first()
+                outpost.config = OutpostConfig(
+                    kubernetes_disabled_components=[
+                        "deployment",
+                        "secret",
+                    ]
+                )
+                outpost.save()
+        else:
+            Outpost.objects.delete(managed=MANAGED_OUTPOST)
