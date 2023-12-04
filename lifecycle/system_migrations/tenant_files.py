@@ -12,7 +12,7 @@ class Migration(BaseMigration):
         return not TENANT_MEDIA_ROOT.exists()
 
     def run(self):
-        TENANT_MEDIA_ROOT.mkdir()
+        TENANT_MEDIA_ROOT.mkdir(parents=True)
         for d in ("application-icons", "source-icons", "flow-backgrounds"):
             if (MEDIA_ROOT / d).exists():
                 (MEDIA_ROOT / d).rename(TENANT_MEDIA_ROOT / d)
