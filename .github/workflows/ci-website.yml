@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version-file: website/package.json
           cache: "npm"
           cache-dependency-path: website/package-lock.json
       - working-directory: website/
@@ -32,7 +32,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version-file: website/package.json
           cache: "npm"
           cache-dependency-path: website/package-lock.json
       - working-directory: website/
@@ -53,7 +53,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version-file: website/package.json
           cache: "npm"
           cache-dependency-path: website/package-lock.json
       - working-directory: website/

@@ -7,7 +7,7 @@ from ldap3 import ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE
 
 from authentik.core.models import Group
 from authentik.events.models import Event, EventAction
-from authentik.sources.ldap.sync.base import LDAP_UNIQUENESS, BaseLDAPSynchronizer
+from authentik.sources.ldap.sync.base import LDAP_UNIQUENESS, BaseLDAPSynchronizer, flatten
 
 
 class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
@@ -39,7 +39,7 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
             if "attributes" not in group:
                 continue
             attributes = group.get("attributes", {})
-            group_dn = self._flatten(self._flatten(group.get("entryDN", group.get("dn"))))
+            group_dn = flatten(flatten(group.get("entryDN", group.get("dn"))))
             if self._source.object_uniqueness_field not in attributes:
                 self.message(
                     f"Cannot find uniqueness field in attributes: '{group_dn}'",
@@ -47,7 +47,7 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                     dn=group_dn,
                 )
                 continue
-            uniq = self._flatten(attributes[self._source.object_uniqueness_field])
+            uniq = flatten(attributes[self._source.object_uniqueness_field])
             try:
                 defaults = self.build_group_properties(group_dn, **attributes)
                 defaults["parent"] = self._source.sync_parent_group

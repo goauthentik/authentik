@@ -1,5 +1,4 @@
 """root settings for authentik"""
-
 import importlib
 import os
 from hashlib import sha512
@@ -195,8 +194,8 @@ _redis_url = (
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": f"{_redis_url}/{CONFIG.get('redis.db')}",
-        "TIMEOUT": CONFIG.get_int("redis.cache_timeout", 300),
+        "LOCATION": CONFIG.get("cache.url") or f"{_redis_url}/{CONFIG.get('redis.db')}",
+        "TIMEOUT": CONFIG.get_int("cache.timeout", 300),
         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
         "KEY_PREFIX": "authentik_cache",
     }
@@ -256,7 +255,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.pubsub.RedisPubSubChannelLayer",
         "CONFIG": {
-            "hosts": [f"{_redis_url}/{CONFIG.get('redis.db')}"],
+            "hosts": [CONFIG.get("channel.url", f"{_redis_url}/{CONFIG.get('redis.db')}")],
             "prefix": "authentik_channels_",
         },
     },
@@ -349,8 +348,11 @@ CELERY = {
     },
     "task_create_missing_queues": True,
     "task_default_queue": "authentik",
-    "broker_url": f"{_redis_url}/{CONFIG.get('redis.db')}{_redis_celery_tls_requirements}",
-    "result_backend": f"{_redis_url}/{CONFIG.get('redis.db')}{_redis_celery_tls_requirements}",
+    "broker_url": CONFIG.get("broker.url")
+    or f"{_redis_url}/{CONFIG.get('redis.db')}{_redis_celery_tls_requirements}",
+    "broker_transport_options": CONFIG.get_dict_from_b64_json("broker.transport_options"),
+    "result_backend": CONFIG.get("result_backend.url")
+    or f"{_redis_url}/{CONFIG.get('redis.db')}{_redis_celery_tls_requirements}",
 }
 
 # Sentry integration
@@ -409,7 +411,6 @@ if DEBUG:
     CELERY["task_always_eager"] = True
     os.environ[ENV_GIT_HASH_KEY] = "dev"
     INSTALLED_APPS.append("silk")
-    SILKY_PYTHON_PROFILER = True
     MIDDLEWARE = ["silk.middleware.SilkyMiddleware"] + MIDDLEWARE
     REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append(
         "rest_framework.renderers.BrowsableAPIRenderer"

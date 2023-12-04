@@ -6,6 +6,10 @@ on:
     types:
       - closed
 
+permissions:
+  # Permission to delete cache
+  actions: write
+
 jobs:
   cleanup:
     runs-on: ubuntu-latest

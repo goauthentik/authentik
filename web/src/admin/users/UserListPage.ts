@@ -10,8 +10,8 @@ import { userTypeToLabel } from "@goauthentik/common/labels";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { DefaultUIConfig, uiConfig } from "@goauthentik/common/ui/config";
 import { first } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-status-label";
 import { rootInterface } from "@goauthentik/elements/Base";
-import { PFColor } from "@goauthentik/elements/Label";
 import { PFSize } from "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/TreeView";
 import "@goauthentik/elements/buttons/ActionButton";
@@ -251,9 +251,7 @@ export class UserListPage extends TablePage<User> {
                     <div>${item.username}</div>
                     <small>${item.name === "" ? msg("<No name set>") : item.name}</small> </a
                 >&nbsp;<small>${userTypeToLabel(item.type)}</small>`,
-            html`<ak-label color=${item.isActive ? PFColor.Green : PFColor.Red}>
-                ${item.isActive ? msg("Yes") : msg("No")}
-            </ak-label>`,
+            html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
             html`${first(item.lastLogin?.toLocaleString(), msg("-"))}`,
             html`<ak-forms-modal>
                     <span slot="submit"> ${msg("Update")} </span>
@@ -399,7 +397,7 @@ export class UserListPage extends TablePage<User> {
             <ak-forms-modal .closeAfterSuccessfulSubmit=${false} .cancelText=${msg("Close")}>
                 <span slot="submit"> ${msg("Create")} </span>
                 <span slot="header"> ${msg("Create Service account")} </span>
-                <ak-user-service-account slot="form"> </ak-user-service-account>
+                <ak-user-service-account-form slot="form"> </ak-user-service-account-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${msg("Create Service account")}
                 </button>

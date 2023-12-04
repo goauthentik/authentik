@@ -171,6 +171,11 @@ class UserSerializer(ModelSerializer):
             raise ValidationError("Setting a user to internal service account is not allowed.")
         return user_type
 
+    def validate(self, attrs: dict) -> dict:
+        if self.instance and self.instance.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
+            raise ValidationError("Can't modify internal service account users")
+        return super().validate(attrs)
+
     class Meta:
         model = User
         fields = [

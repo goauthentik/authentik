@@ -62,7 +62,7 @@ class PlexSource(Source):
         return PlexSourceSerializer
 
     def ui_login_button(self, request: HttpRequest) -> UILoginButton:
-        icon = self.get_icon
+        icon = self.icon_url
         if not icon:
             icon = static("authentik/sources/plex.svg")
         return UILoginButton(
@@ -79,7 +79,7 @@ class PlexSource(Source):
         )
 
     def ui_user_settings(self) -> Optional[UserSettingSerializer]:
-        icon = self.get_icon
+        icon = self.icon_url
         if not icon:
             icon = static("authentik/sources/plex.svg")
         return UserSettingSerializer(

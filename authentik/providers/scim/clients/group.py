@@ -46,7 +46,9 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
 
     def to_scim(self, obj: Group) -> SCIMGroupSchema:
         """Convert authentik user into SCIM"""
-        raw_scim_group = {}
+        raw_scim_group = {
+            "schemas": ("urn:ietf:params:scim:schemas:core:2.0:Group",),
+        }
         for mapping in (
             self.provider.property_mappings_group.all().order_by("name").select_subclasses()
         ):

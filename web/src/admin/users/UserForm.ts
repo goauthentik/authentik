@@ -8,15 +8,18 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
 import YAML from "yaml";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { CoreApi, User, UserTypeEnum } from "@goauthentik/api";
+import { CoreApi, Group, User, UserTypeEnum } from "@goauthentik/api";
 
 @customElement("ak-user-form")
 export class UserForm extends ModelForm<User, number> {
+    @property({ attribute: false })
+    group?: Group;
+
     static get defaultUserAttributes(): { [key: string]: unknown } {
         return {};
     }
@@ -42,6 +45,9 @@ export class UserForm extends ModelForm<User, number> {
         if (this.instance) {
             return msg("Successfully updated user.");
         } else {
+            if (this.group) {
+                return msg(str`Successfully created user and added to group ${this.group.name}`);
+            }
             return msg("Successfully created user.");
         }
     }
@@ -50,21 +56,31 @@ export class UserForm extends ModelForm<User, number> {
         if (data.attributes === null) {
             data.attributes = UserForm.defaultUserAttributes;
         }
+        let user;
         if (this.instance?.pk) {
-            return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
+            user = await new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
                 id: this.instance.pk,
                 patchedUserRequest: data,
             });
         } else {
             data.groups = [];
-            return new CoreApi(DEFAULT_CONFIG).coreUsersCreate({
+            user = await new CoreApi(DEFAULT_CONFIG).coreUsersCreate({
                 userRequest: data,
             });
         }
+        if (this.group) {
+            await new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
+                groupUuid: this.group.pk,
+                userAccountRequest: {
+                    pk: user.pk,
+                },
+            });
+        }
+        return user;
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal
+        return html`<ak-form-element-horizontal
                 label=${msg("Username")}
                 ?required=${true}
                 name="username"
