@@ -14,7 +14,13 @@ import { state } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { AdminApi, Config, CurrentTenant as CurrentBrand, UiThemeEnum, Version } from "@goauthentik/api";
+import {
+    AdminApi,
+    Config,
+    CurrentTenant as CurrentBrand,
+    UiThemeEnum,
+    Version,
+} from "@goauthentik/api";
 
 import { AKElement } from "../Base";
 

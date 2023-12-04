@@ -2,13 +2,13 @@ import {
     AdminStatus,
     AdminStatusCard,
 } from "@goauthentik/admin/admin-overview/cards/AdminStatusCard";
+import { WithVersionConfig } from "@goauthentik/app/elements/Interface/versionProvider";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import { Version } from "@goauthentik/api";
-import { WithVersionConfig } from "@goauthentik/app/elements/Interface/versionProvider";
 
 @customElement("ak-admin-status-version")
 export class VersionStatusCard extends WithVersionConfig(AdminStatusCard<Version>) {

@@ -1,5 +1,4 @@
 import { ROUTES } from "@goauthentik/admin/Routes";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
