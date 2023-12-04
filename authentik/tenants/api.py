@@ -1,6 +1,7 @@
 """Serializer for tenants models"""
 from hmac import compare_digest
 
+from django.http import Http404
 from django_tenants.utils import get_tenant
 from rest_framework import permissions
 from rest_framework.authentication import get_authorization_header
@@ -23,7 +24,7 @@ class TenantManagementKeyPermission(permissions.BasePermission):
 
     def has_permission(self, request: Request, view: View) -> bool:
         token = validate_auth(get_authorization_header(request))
-        key = CONFIG.get("tenants.api.key")
+        key = CONFIG.get("tenants.api_key")
         if compare_digest("", key):
             return False
         return compare_digest(token, key)
@@ -54,6 +55,11 @@ class TenantViewSet(ModelViewSet):
     ordering = ["schema_name"]
     permission_classes = [TenantManagementKeyPermission]
     filter_backends = [OrderingFilter, SearchFilter]
+
+    def dispatch(self, request, *args, **kwargs):
+        if not CONFIG.get_bool("tenants.enabled", True):
+            return Http404()
+        return super().dispatch(request, *args, **kwargs)
 
 
 class DomainSerializer(ModelSerializer):

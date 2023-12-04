@@ -111,9 +111,8 @@ cert_discovery_dir: /certs
 default_token_length: 60
 
 tenants:
-  api:
-    enabled: false
-    key: ""
+  enabled: false
+  api_key: ""
 
 blueprints_dir: /blueprints
 

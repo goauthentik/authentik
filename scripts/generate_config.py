@@ -14,15 +14,14 @@ with open("local.env.yml", "w", encoding="utf-8") as _config:
             },
             "outposts": {
                 "container_image_base": "ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s",
+                "disable_embedded_outpost": False,
             },
             "blueprints_dir": "./blueprints",
             "cert_discovery_dir": "./certs",
             "geoip": "tests/GeoLite2-City-Test.mmdb",
             "tenants": {
-                "api": {
-                    "enabled": True,
-                    "key": generate_id(),
-                },
+                "enabled": False,
+                "api_key": generate_id(),
             },
         },
         _config,
