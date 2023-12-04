@@ -110,9 +110,7 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
 }
 
 @customElement("ak-user-related-list")
-export class RelatedUserList extends WithBrandConfig(
-    WithCapabilitiesConfig(Table<User>, true),
-) {
+export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Table<User>)) {
     expandable = true;
     checkbox = true;
 

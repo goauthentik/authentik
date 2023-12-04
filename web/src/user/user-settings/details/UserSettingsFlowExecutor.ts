@@ -31,10 +31,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-user-settings-flow-executor")
-export class UserSettingsFlowExecutor
-    extends WithBrandConfig(AKElement)
-    implements StageHost
-{
+export class UserSettingsFlowExecutor extends WithBrandConfig(AKElement) implements StageHost {
     @property()
     flowSlug?: string;
 

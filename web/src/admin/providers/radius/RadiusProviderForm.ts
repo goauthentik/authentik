@@ -14,10 +14,7 @@ import { customElement } from "lit/decorators.js";
 import { FlowsInstancesListDesignationEnum, ProvidersApi, RadiusProvider } from "@goauthentik/api";
 
 @customElement("ak-provider-radius-form")
-export class RadiusProviderFormPage extends WithBrandConfig(
-    ModelForm<RadiusProvider, number>,
-    true,
-) {
+export class RadiusProviderFormPage extends WithBrandConfig(ModelForm<RadiusProvider, number>) {
     loadInstance(pk: number): Promise<RadiusProvider> {
         return new ProvidersApi(DEFAULT_CONFIG).providersRadiusRetrieve({
             id: pk,

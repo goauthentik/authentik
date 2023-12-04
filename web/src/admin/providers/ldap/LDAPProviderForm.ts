@@ -25,7 +25,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-provider-ldap-form")
-export class LDAPProviderFormPage extends WithBrandConfig(ModelForm<LDAPProvider, number>, true) {
+export class LDAPProviderFormPage extends WithBrandConfig(ModelForm<LDAPProvider, number>) {
     async loadInstance(pk: number): Promise<LDAPProvider> {
         return new ProvidersApi(DEFAULT_CONFIG).providersLdapRetrieve({
             id: pk,

@@ -47,7 +47,7 @@ class WCC {
 
 export function WithCapabilitiesConfig<T extends Constructor<LitElement>>(
     superclass: T,
-    subscribe = false,
+    subscribe = true,
 ) {
     abstract class CapabilitiesContext extends superclass {
         @consume({ context: authentikConfigContext, subscribe })
