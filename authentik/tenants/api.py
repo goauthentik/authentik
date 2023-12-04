@@ -23,10 +23,10 @@ class TenantManagementKeyPermission(permissions.BasePermission):
 
     def has_permission(self, request: Request, view: View) -> bool:
         token = validate_auth(get_authorization_header(request))
-        tenant_management_key = CONFIG.get("tenant_management_key")
-        if compare_digest("", tenant_management_key):
+        key = CONFIG.get("tenants.api.key")
+        if compare_digest("", key):
             return False
-        return compare_digest(token, tenant_management_key)
+        return compare_digest(token, key)
 
 
 class TenantSerializer(ModelSerializer):

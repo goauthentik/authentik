@@ -110,7 +110,10 @@ geoip: "/geoip/GeoLite2-City.mmdb"
 cert_discovery_dir: /certs
 default_token_length: 60
 
-tenant_management_key: ""
+tenants:
+  api:
+    enabled: false
+    key: ""
 
 blueprints_dir: /blueprints
 
