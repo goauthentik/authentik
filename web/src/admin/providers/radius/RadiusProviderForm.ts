@@ -86,7 +86,7 @@ export class RadiusProviderFormPage extends WithTenantConfig(ModelForm<RadiusPro
                 </label>
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon."
+                        "When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.",
                     )}
                 </p>
             </ak-form-element-horizontal>
@@ -103,7 +103,7 @@ export class RadiusProviderFormPage extends WithTenantConfig(ModelForm<RadiusPro
                             type="text"
                             value="${first(
                                 this.instance?.sharedSecret,
-                                randomString(128, ascii_letters + digits)
+                                randomString(128, ascii_letters + digits),
                             )}"
                             class="pf-c-form-control"
                             required
