@@ -16,12 +16,12 @@
         "test": "node --test"
     },
     "dependencies": {
-        "@docusaurus/core": "3.0.0",
-        "@docusaurus/plugin-client-redirects": "^3.0.0",
-        "@docusaurus/plugin-content-docs": "^3.0.0",
-        "@docusaurus/preset-classic": "^3.0.0",
-        "@docusaurus/theme-common": "^3.0.0",
-        "@docusaurus/theme-mermaid": "^3.0.0",
+        "@docusaurus/core": "3.0.1",
+        "@docusaurus/plugin-client-redirects": "^3.0.1",
+        "@docusaurus/plugin-content-docs": "^3.0.1",
+        "@docusaurus/preset-classic": "^3.0.1",
+        "@docusaurus/theme-common": "^3.0.1",
+        "@docusaurus/theme-mermaid": "^3.0.1",
         "@mdx-js/react": "^3.0.0",
         "clsx": "^2.0.0",
         "disqus-react": "^1.1.5",
@@ -49,10 +49,10 @@
         ]
     },
     "devDependencies": {
-        "@docusaurus/module-type-aliases": "3.0.0",
-        "@docusaurus/tsconfig": "3.0.0",
-        "@docusaurus/types": "3.0.0",
-        "@types/react": "^18.2.38",
+        "@docusaurus/module-type-aliases": "3.0.1",
+        "@docusaurus/tsconfig": "3.0.1",
+        "@docusaurus/types": "3.0.1",
+        "@types/react": "^18.2.39",
         "prettier": "3.1.0",
         "typescript": "~5.3.2"
     },

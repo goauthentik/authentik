@@ -433,7 +433,6 @@ if DEBUG:
     CELERY["task_always_eager"] = True
     os.environ[ENV_GIT_HASH_KEY] = "dev"
     SHARED_APPS.append("silk")
-    SILKY_PYTHON_PROFILER = True
     MIDDLEWARE = ["silk.middleware.SilkyMiddleware"] + MIDDLEWARE
     REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append(
         "rest_framework.renderers.BrowsableAPIRenderer"
