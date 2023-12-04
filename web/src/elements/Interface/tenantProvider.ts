@@ -10,7 +10,7 @@ type Constructor<T = object> = abstract new (...args: any[]) => T;
 
 export function WithTenantConfig<T extends Constructor<LitElement>>(
     superclass: T,
-    subscribe = false,
+    subscribe = true,
 ) {
     abstract class WithTenantProvider extends superclass {
         @consume({ context: authentikTenantContext, subscribe })

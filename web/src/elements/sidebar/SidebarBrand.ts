@@ -27,7 +27,7 @@ export const DefaultTenant: CurrentTenant = {
 };
 
 @customElement("ak-sidebar-brand")
-export class SidebarBrand extends WithTenantConfig(AKElement, true) {
+export class SidebarBrand extends WithTenantConfig(AKElement) {
     static get styles(): CSSResult[] {
         return [
             PFBase,

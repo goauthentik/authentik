@@ -24,7 +24,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { EventsApi } from "@goauthentik/api";
 
 @customElement("ak-page-header")
-export class PageHeader extends WithTenantConfig(AKElement, true) {
+export class PageHeader extends WithTenantConfig(AKElement) {
     @property()
     icon?: string;
 

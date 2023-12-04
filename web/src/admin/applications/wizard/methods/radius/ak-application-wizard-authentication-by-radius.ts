@@ -16,10 +16,7 @@ import { FlowsInstancesListDesignationEnum, RadiusProvider } from "@goauthentik/
 import BaseProviderPanel from "../BaseProviderPanel";
 
 @customElement("ak-application-wizard-authentication-by-radius")
-export class ApplicationWizardAuthenticationByRadius extends WithTenantConfig(
-    BaseProviderPanel,
-    true,
-) {
+export class ApplicationWizardAuthenticationByRadius extends WithTenantConfig(BaseProviderPanel) {
     render() {
         const provider = this.wizard.provider as RadiusProvider | undefined;
 

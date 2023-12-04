@@ -14,10 +14,7 @@ import { customElement } from "lit/decorators.js";
 import { FlowsInstancesListDesignationEnum, ProvidersApi, RadiusProvider } from "@goauthentik/api";
 
 @customElement("ak-provider-radius-form")
-export class RadiusProviderFormPage extends WithTenantConfig(
-    ModelForm<RadiusProvider, number>,
-    true,
-) {
+export class RadiusProviderFormPage extends WithTenantConfig(ModelForm<RadiusProvider, number>) {
     loadInstance(pk: number): Promise<RadiusProvider> {
         return new ProvidersApi(DEFAULT_CONFIG).providersRadiusRetrieve({
             id: pk,
@@ -89,7 +86,7 @@ export class RadiusProviderFormPage extends WithTenantConfig(
                 </label>
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.",
+                        "When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon."
                     )}
                 </p>
             </ak-form-element-horizontal>
@@ -106,7 +103,7 @@ export class RadiusProviderFormPage extends WithTenantConfig(
                             type="text"
                             value="${first(
                                 this.instance?.sharedSecret,
-                                randomString(128, ascii_letters + digits),
+                                randomString(128, ascii_letters + digits)
                             )}"
                             class="pf-c-form-control"
                             required

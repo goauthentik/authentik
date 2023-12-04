@@ -91,10 +91,7 @@ const recoveryButtonStyles = css`
 `;
 
 @customElement("ak-user-list")
-export class UserListPage extends WithTenantConfig(
-    WithCapabilitiesConfig(TablePage<User>, true),
-    true,
-) {
+export class UserListPage extends WithTenantConfig(WithCapabilitiesConfig(TablePage<User>)) {
     expandable = true;
     checkbox = true;
 

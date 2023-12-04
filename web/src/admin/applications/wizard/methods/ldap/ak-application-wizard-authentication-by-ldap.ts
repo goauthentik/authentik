@@ -31,7 +31,7 @@ import {
 } from "./LDAPOptionsAndHelp";
 
 @customElement("ak-application-wizard-authentication-by-ldap")
-export class ApplicationWizardApplicationDetails extends WithTenantConfig(BaseProviderPanel, true) {
+export class ApplicationWizardApplicationDetails extends WithTenantConfig(BaseProviderPanel) {
     render() {
         const provider = this.wizard.provider as LDAPProvider | undefined;
 
