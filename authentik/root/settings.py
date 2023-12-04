@@ -19,6 +19,8 @@ from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BAC
 BASE_DIR = Path(__file__).absolute().parent.parent.parent
 STATICFILES_DIRS = [BASE_DIR / Path("web")]
 MEDIA_ROOT = BASE_DIR / Path("media")
+DEFAULT_FILE_STORAGE = "django_tenants.files.storage.TenantFileSystemStorage"
+MULTITENANT_RELATIVE_MEDIA_ROOT = "tenants"
 
 DEBUG = CONFIG.get_bool("debug")
 SECRET_KEY = CONFIG.get("secret_key")
