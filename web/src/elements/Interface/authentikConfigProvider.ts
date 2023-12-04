@@ -10,7 +10,7 @@ type Constructor<T = object> = new (...args: any[]) => T;
 
 export function WithAuthentikConfig<T extends Constructor<LitElement>>(
     superclass: T,
-    subscribe = false,
+    subscribe = true,
 ) {
     class WithAkConfigProvider extends superclass {
         @consume({ context: authentikConfigContext, subscribe })
