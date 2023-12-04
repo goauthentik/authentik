@@ -26,4 +26,6 @@ class TCommand(BaseCommand):
 
 
 class Command(TenantWrappedCommand):
+    """Check connectivity to LDAP servers for a source"""
+
     COMMAND = TCommand

@@ -25,4 +25,6 @@ class TCommand(BaseCommand):
 
 
 class Command(TenantWrappedCommand):
+    """Run sync for an SCIM Provider"""
+
     COMMAND = TCommand

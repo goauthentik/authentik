@@ -53,4 +53,6 @@ class TCommand(BaseCommand):
 
 
 class Command(TenantWrappedCommand):
+    """Import certificate"""
+
     COMMAND = TCommand

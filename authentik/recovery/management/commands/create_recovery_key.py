@@ -54,4 +54,6 @@ class TCommand(BaseCommand):
 
 
 class Command(TenantWrappedCommand):
+    """Create Token used to recover access"""
+
     COMMAND = TCommand

@@ -19,4 +19,6 @@ class TCommand(BaseCommand):
 
 
 class Command(TenantWrappedCommand):
+    """Export blueprint of current authentik install"""
+
     COMMAND = TCommand

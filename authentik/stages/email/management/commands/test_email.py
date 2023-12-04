@@ -45,4 +45,6 @@ class TCommand(BaseCommand):
 
 
 class Command(TenantWrappedCommand):
+    """Send a test-email with global settings"""
+
     COMMAND = TCommand

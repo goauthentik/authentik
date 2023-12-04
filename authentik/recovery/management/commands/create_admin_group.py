@@ -32,4 +32,6 @@ class TCommand(BaseCommand):
 
 
 class Command(TenantWrappedCommand):
+    """Create admin group if the default group gets deleted"""
+
     COMMAND = TCommand

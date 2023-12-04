@@ -34,4 +34,6 @@ class TCommand(BaseCommand):
 
 
 class Command(TenantWrappedCommand):
+    """Run sync for an LDAP Source"""
+
     COMMAND = TCommand
