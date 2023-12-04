@@ -8,7 +8,7 @@ import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
-import { DefaultTenant } from "@goauthentik/elements/sidebar/SidebarBrand";
+import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
@@ -95,7 +95,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
                             type="text"
                             value="${first(
                                 this.instance?.brandingTitle,
-                                DefaultTenant.brandingTitle,
+                                DefaultBrand.brandingTitle,
                             )}"
                             class="pf-c-form-control"
                             required
@@ -111,10 +111,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
                     >
                         <input
                             type="text"
-                            value="${first(
-                                this.instance?.brandingLogo,
-                                DefaultTenant.brandingLogo,
-                            )}"
+                            value="${first(this.instance?.brandingLogo, DefaultBrand.brandingLogo)}"
                             class="pf-c-form-control"
                             required
                         />
@@ -131,7 +128,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
                             type="text"
                             value="${first(
                                 this.instance?.brandingFavicon,
-                                DefaultTenant.brandingFavicon,
+                                DefaultBrand.brandingFavicon,
                             )}"
                             class="pf-c-form-control"
                             required

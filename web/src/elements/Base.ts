@@ -9,13 +9,13 @@ import { LitElement } from "lit";
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import ThemeDark from "@goauthentik/common/styles/theme-dark.css";
 
-import { Config, CurrentTenant, UiThemeEnum } from "@goauthentik/api";
+import { Config, CurrentTenant as CurrentBrand, UiThemeEnum } from "@goauthentik/api";
 
 import { AdoptedStyleSheetsElement } from "./types";
 
 type AkInterface = HTMLElement & {
     getTheme: () => Promise<UiThemeEnum>;
-    tenant?: CurrentTenant;
+    brand?: CurrentBrand;
     uiConfig?: UIConfig;
     config?: Config;
 };

@@ -2,7 +2,7 @@ import { EVENT_REQUEST_POST } from "@goauthentik/common/constants";
 import { getCookie } from "@goauthentik/common/utils";
 
 import {
-    CurrentTenant,
+    CurrentTenant as CurrentBrand,
     FetchParams,
     Middleware,
     RequestContext,
@@ -18,8 +18,8 @@ export interface RequestInfo {
 }
 
 export class LoggingMiddleware implements Middleware {
-    brand: CurrentTenant;
-    constructor(brand: CurrentTenant) {
+    brand: CurrentBrand;
+    constructor(brand: CurrentBrand) {
         this.brand = brand;
     }
 

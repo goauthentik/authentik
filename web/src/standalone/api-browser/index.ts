@@ -4,7 +4,7 @@ import { globalAK } from "@goauthentik/common/global";
 import { first, getCookie } from "@goauthentik/common/utils";
 import { Interface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/ak-locale-context";
-import { DefaultTenant } from "@goauthentik/elements/sidebar/SidebarBrand";
+import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 import "rapidoc";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -103,7 +103,7 @@ export class APIBrowser extends Interface {
                         <img
                             alt="authentik Logo"
                             class="logo"
-                            src="${first(this.brand?.brandingLogo, DefaultTenant.brandingLogo)}"
+                            src="${first(this.brand?.brandingLogo, DefaultBrand.brandingLogo)}"
                         />
                     </div>
                 </rapi-doc>
