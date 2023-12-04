@@ -28,7 +28,7 @@ import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { AdminApi, SessionUser, UiThemeEnum, Version } from "@goauthentik/api";
+import { SessionUser, UiThemeEnum } from "@goauthentik/api";
 
 import "./AdminSidebar";
 
@@ -41,9 +41,6 @@ export class AdminInterface extends Interface {
     apiDrawerOpen = getURLParam("apiDrawerOpen", false);
 
     ws: WebsocketClient;
-
-    @state()
-    version?: Version;
 
     @state()
     user?: SessionUser;
@@ -94,7 +91,6 @@ export class AdminInterface extends Interface {
 
     async firstUpdated(): Promise<void> {
         configureSentry(true);
-        this.version = await new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
         this.user = await me();
         const canAccessAdmin =
             this.user.user.isSuperuser ||

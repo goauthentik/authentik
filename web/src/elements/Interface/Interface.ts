@@ -1,8 +1,10 @@
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { brand, config } from "@goauthentik/common/api/config";
 import { UIConfig, uiConfig } from "@goauthentik/common/ui/config";
 import {
     authentikBrandContext,
     authentikConfigContext,
+    authentikVersionContext,
 } from "@goauthentik/elements/AuthentikContexts";
 import type { AdoptedStyleSheetsElement } from "@goauthentik/elements/types";
 import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
@@ -12,7 +14,7 @@ import { state } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { Config, CurrentTenant as CurrentBrand, UiThemeEnum } from "@goauthentik/api";
+import { AdminApi, Config, CurrentTenant as CurrentBrand, UiThemeEnum, Version } from "@goauthentik/api";
 
 import { AKElement } from "../Base";
 
@@ -63,11 +65,33 @@ export class Interface extends AKElement implements AkInterface {
         return this._brand;
     }
 
+    _versionContext = new ContextProvider(this, {
+        context: authentikVersionContext,
+        initialValue: undefined,
+    });
+
+    _version?: Version;
+
+    @state()
+    set version(v: Version) {
+        this._version = v;
+        this._versionContext.setValue(v);
+        console.log(`Version set to ${v}`);
+        this.requestUpdate();
+    }
+
+    get version(): Version | undefined {
+        return this._version;
+    }
+
     constructor() {
         super();
         document.adoptedStyleSheets = [...document.adoptedStyleSheets, ensureCSSStyleSheet(PFBase)];
         brand().then((brand) => (this.brand = brand));
         config().then((config) => (this.config = config));
+        new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve().then((version) => {
+            this.version = version;
+        });
         this.dataset.akInterfaceRoot = "true";
     }
 

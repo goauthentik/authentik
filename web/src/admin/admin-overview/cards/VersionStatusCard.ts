@@ -2,20 +2,20 @@ import {
     AdminStatus,
     AdminStatusCard,
 } from "@goauthentik/admin/admin-overview/cards/AdminStatusCard";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import { AdminApi, Version } from "@goauthentik/api";
+import { Version } from "@goauthentik/api";
+import { WithVersionConfig } from "@goauthentik/app/elements/Interface/versionProvider";
 
 @customElement("ak-admin-status-version")
-export class VersionStatusCard extends AdminStatusCard<Version> {
+export class VersionStatusCard extends WithVersionConfig(AdminStatusCard<Version>) {
     icon = "pf-icon pf-icon-bundle";
 
-    getPrimaryValue(): Promise<Version> {
-        return new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
+    getPrimaryValue() {
+        return Promise.resolve(this.version);
     }
 
     getStatus(value: Version): Promise<AdminStatus> {
