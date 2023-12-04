@@ -155,4 +155,4 @@ In another example, a breach at Okta (not [that one](https://goauthentik.io/blog
 
 The two types of breaches above will drive further interest in zero trust. On the one hand, we see companies fail because they are too trusting; on the other hand, we see other companies fail in some ways but prevent further damage thanks to a few solid elements in their security postures. The potential becomes clear – if companies embrace zero trust, they can do even better.
 
-As always, we look forward to hearing your thoughts! Send us an email at hello@goauthentik, or join us on on [Github](https://github.com/goauthentik/authentik) or [Discord](https://discord.com/invite/jg33eMhnj6).
+As always, we look forward to hearing your thoughts! Send us an email at hello@goauthentik.io, or join us on on [Github](https://github.com/goauthentik/authentik) or [Discord](https://discord.com/invite/jg33eMhnj6).
