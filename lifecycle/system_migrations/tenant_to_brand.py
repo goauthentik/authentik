@@ -13,7 +13,7 @@ COMMIT;
 class Migration(BaseMigration):
     def needs_migration(self) -> bool:
         self.cur.execute(
-            "select * from information_schema.tables where table_name =" " 'django_migrations';"
+            "select * from information_schema.tables where table_name = 'django_migrations';"
         )
         # No migration table, assume new installation
         if not bool(self.cur.rowcount):

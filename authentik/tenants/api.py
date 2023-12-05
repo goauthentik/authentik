@@ -1,7 +1,7 @@
 """Serializer for tenants models"""
 from hmac import compare_digest
 
-from django.http import Http404
+from django.http import HttpResponseNotFound
 from django_tenants.utils import get_tenant
 from rest_framework import permissions
 from rest_framework.authentication import get_authorization_header
@@ -19,13 +19,15 @@ from authentik.lib.config import CONFIG
 from authentik.tenants.models import Domain, Tenant
 
 
-class TenantManagementKeyPermission(permissions.BasePermission):
-    """Authentication based on tenant_management_key"""
+class TenantApiKeyPermission(permissions.BasePermission):
+    """Authentication based on tenants.api_key"""
 
     def has_permission(self, request: Request, view: View) -> bool:
+        key = CONFIG.get("tenants.api_key", "")
+        if not key:
+            return False
         token = validate_auth(get_authorization_header(request))
-        key = CONFIG.get("tenants.api_key")
-        if compare_digest("", key):
+        if token is None:
             return False
         return compare_digest(token, key)
 
@@ -53,12 +55,13 @@ class TenantViewSet(ModelViewSet):
         "domains__domain",
     ]
     ordering = ["schema_name"]
-    permission_classes = [TenantManagementKeyPermission]
+    authentication_classes = []
+    permission_classes = [TenantApiKeyPermission]
     filter_backends = [OrderingFilter, SearchFilter]
 
     def dispatch(self, request, *args, **kwargs):
         if not CONFIG.get_bool("tenants.enabled", True):
-            return Http404()
+            return HttpResponseNotFound()
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -81,8 +84,14 @@ class DomainViewSet(ModelViewSet):
         "tenant__schema_name",
     ]
     ordering = ["domain"]
-    permission_classes = [TenantManagementKeyPermission]
+    authentication_classes = []
+    permission_classes = [TenantApiKeyPermission]
     filter_backends = [OrderingFilter, SearchFilter]
+
+    def dispatch(self, request, *args, **kwargs):
+        if not CONFIG.get_bool("tenants.enabled", True):
+            return HttpResponseNotFound()
+        return super().dispatch(request, *args, **kwargs)
 
 
 class SettingsSerializer(ModelSerializer):

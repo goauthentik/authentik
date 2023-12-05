@@ -6,6 +6,7 @@ import django.db.models.deletion
 import django_tenants.postgresql_backend.base
 from django.db import migrations, models
 
+import authentik.tenants.models
 from authentik.lib.config import CONFIG
 
 
@@ -42,7 +43,7 @@ class Migration(migrations.Migration):
                         db_index=True,
                         max_length=63,
                         unique=True,
-                        validators=[django_tenants.postgresql_backend.base._check_schema_name],
+                        validators=[authentik.tenants.models._validate_schema_name],
                     ),
                 ),
                 (

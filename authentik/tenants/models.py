@@ -1,7 +1,9 @@
 """Tenant models"""
+import re
 from uuid import uuid4
 
 from django.apps import apps
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.utils import IntegrityError
 from django.dispatch import receiver
@@ -16,10 +18,25 @@ from authentik.lib.models import SerializerModel
 LOGGER = get_logger()
 
 
+VALID_SCHEMA_NAME = re.compile(r"^t_[a-z0-9]{1,61}$")
+
+
+def _validate_schema_name(name):
+    if not VALID_SCHEMA_NAME.match(name):
+        raise ValidationError(
+            _(
+                "Schema name must start with t_, only contain lowercase letters and numbers and be less than 63 characters."
+            )
+        )
+
+
 class Tenant(TenantMixin, SerializerModel):
     """Tenant"""
 
     tenant_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+    schema_name = models.CharField(
+        max_length=63, unique=True, db_index=True, validators=[_validate_schema_name]
+    )
     name = models.TextField()
 
     auto_create_schema = True
