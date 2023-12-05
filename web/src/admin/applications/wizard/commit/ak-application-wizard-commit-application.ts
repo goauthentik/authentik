@@ -23,6 +23,7 @@ import {
     type ModelRequest,
     type TransactionApplicationRequest,
     type TransactionApplicationResponse,
+    ValidationError,
     ValidationErrorFromJSON,
 } from "@goauthentik/api";
 
@@ -89,7 +90,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
     commitState: State = idleState;
 
     @state()
-    errors: string[] = [];
+    errors?: ValidationError;
 
     response?: TransactionApplicationResponse;
 
@@ -125,6 +126,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
     async send(
         data: TransactionApplicationRequest,
     ): Promise<TransactionApplicationResponse | void> {
+        this.errors = undefined;
         new CoreApi(DEFAULT_CONFIG)
             .coreTransactionalApplicationsUpdate({
                 transactionApplicationRequest: data,
@@ -137,13 +139,9 @@ export class ApplicationWizardCommitApplication extends BasePanel {
             })
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .catch(async (resolution: any) => {
-                const errors = ValidationErrorFromJSON(await resolution.response.json());
-                this.errors = [
-                    errors.detail ?? "",
-                    errors.app ? msg("There were errors in the application.") : "",
-                    errors.provider ? msg("There were errors in the provider.") : "",
-                    ...(errors.nonFieldErrors ?? []),
-                ].filter((e) => e !== "");
+                const errors = (this.errors = ValidationErrorFromJSON(
+                    await resolution.response.json(),
+                ));
                 this.dispatchWizardUpdate({
                     update: {
                         ...this.wizard,
@@ -155,7 +153,42 @@ export class ApplicationWizardCommitApplication extends BasePanel {
             });
     }
 
-    render(): TemplateResult {
+    renderErrors(errors?: ValidationError) {
+        if (!errors) {
+            return nothing;
+        }
+
+        const navTo = (step: number) => () =>
+            this.dispatchCustomEvent("ak-wizard-nav", {
+                command: "goto",
+                step,
+            });
+
+        if (errors.app) {
+            return html`<p>${msg("There was an error in the application.")}</p>
+                <p><a @click=${navTo(0)}>${msg("Review the application.")}</a></p>`;
+        }
+        if (errors.provider) {
+            return html`<p>${msg("There was an error in the provider.")}</p>
+                <p><a @click=${navTo(2)}>${msg("Review the provider.")}</a></p>`;
+        }
+        if (errors.detail) {
+            return html`<p>${msg("There was an error")}: ${errors.detail}</p>`;
+        }
+        if ((errors?.nonFieldErrors ?? []).length > 0) {
+            return html`<p>$(msg("There was an error")}:</p>
+                <ul>
+                    ${(errors.nonFieldErrors ?? []).map((e: string) => html`<li>${e}</li>`)}
+                </ul>`;
+        }
+        return html`<p>
+            ${msg(
+                "There was an error creating the application, but no error message was sent. Please review the server logs.",
+            )}
+        </p>`;
+    }
+
+    render() {
         const icon = classMap(
             this.commitState.icon.reduce((acc, icon) => ({ ...acc, [icon]: true }), {}),
         );
@@ -175,13 +208,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
                             >
                                 ${this.commitState.label}
                             </h1>
-                            ${this.errors.length > 0
-                                ? html`<ul>
-                                      ${this.errors.map(
-                                          (msg) => html`<li><code>${msg}</code></li>`,
-                                      )}
-                                  </ul>`
-                                : nothing}
+                            ${this.renderErrors(this.errors)}
                         </div>
                     </div>
                 </div>

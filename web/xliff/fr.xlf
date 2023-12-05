@@ -7617,14 +7617,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Your application has been saved</source>
   <target>L'application a été sauvegardée</target>
 </trans-unit>
-<trans-unit id="sf60f1e5b76897c93">
-  <source>In the Application:</source>
-  <target>Dans l'application :</target>
-</trans-unit>
-<trans-unit id="s7ce65cf482b7bff0">
-  <source>In the Provider:</source>
-  <target>Dans le fournisseur :</target>
-</trans-unit>
 <trans-unit id="s67d858051b34c38b">
   <source>Method's display Name.</source>
   <target>Nom d'affichage de la méthode.</target>
@@ -7986,6 +7978,51 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="s52bdc80690a9a8dc">
   <source>When enabled, the stage will always accept the given user identifier and continue.</source>
   <target>Lorsqu'activé, l'étape acceptera toujours l'identifiant utilisateur donné et continuera.</target>
+</trans-unit>
+<trans-unit id="scda8dc24b561e205">
+  <source>There was an error in the application.</source>
+</trans-unit>
+<trans-unit id="sdaca9c2c0361ed3a">
+  <source>Review the application.</source>
+</trans-unit>
+<trans-unit id="sb50000a8fada5672">
+  <source>There was an error in the provider.</source>
+</trans-unit>
+<trans-unit id="s21f95eaf151d4ce3">
+  <source>Review the provider.</source>
+</trans-unit>
+<trans-unit id="s9fd39a5cb20b4e61">
+  <source>There was an error</source>
+</trans-unit>
+<trans-unit id="s7a6b3453209e1066">
+  <source>There was an error creating the application, but no error message was sent. Please review the server logs.</source>
+</trans-unit>
+<trans-unit id="s1a711c19cda48375">
+  <source>Configure LDAP Provider</source>
+</trans-unit>
+<trans-unit id="s9368e965b5c292ab">
+  <source>Configure OAuth2/OpenId Provider</source>
+</trans-unit>
+<trans-unit id="sf5cbccdc6254c8dc">
+  <source>Configure Proxy Provider</source>
+</trans-unit>
+<trans-unit id="sf6d46bb442b77e91">
+  <source>AdditionalScopes</source>
+</trans-unit>
+<trans-unit id="s2c8c6f89089b31d4">
+  <source>Configure Radius Provider</source>
+</trans-unit>
+<trans-unit id="sfe906cde5dddc041">
+  <source>Configure SAML Provider</source>
+</trans-unit>
+<trans-unit id="sb3defbacd01ad972">
+  <source>Property mappings used for user mapping.</source>
+</trans-unit>
+<trans-unit id="s7ccce0ec8d228db6">
+  <source>Configure SCIM Provider</source>
+</trans-unit>
+<trans-unit id="sd7728d2b6e1d25e9">
+  <source>Property mappings used for group creation.</source>
 </trans-unit>
     </body>
   </file>
