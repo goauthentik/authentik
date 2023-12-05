@@ -19,6 +19,8 @@ entries:
         if " " in request.user.name:
             givenName, _, familyName = request.user.name.partition(" ")
 
+        formatted = givenName + familyName
+
         # photos supports URLs to images, however authentik might return data URIs
         avatar = request.user.avatar
         photos = None
@@ -39,7 +41,7 @@ entries:
         return {
             "userName": request.user.username,
             "name": {
-                "formatted": request.user.name,
+                "formatted": formatted,
                 "givenName": givenName,
                 "familyName": familyName,
             },
