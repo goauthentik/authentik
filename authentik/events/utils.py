@@ -22,7 +22,7 @@ from guardian.utils import get_anonymous_user
 
 from authentik.blueprints.v1.common import YAMLTag
 from authentik.core.models import User
-from authentik.events.geo import GEOIP_READER
+from authentik.events.enrich.geoip import GEOIP_ENRICHER
 from authentik.policies.types import PolicyRequest
 
 # Special keys which are *not* cleaned, even when the default filter
@@ -123,7 +123,7 @@ def sanitize_item(value: Any) -> Any:
     if isinstance(value, (HttpRequest, WSGIRequest)):
         return ...
     if isinstance(value, City):
-        return GEOIP_READER.city_to_dict(value)
+        return GEOIP_ENRICHER.city_to_dict(value)
     if isinstance(value, Path):
         return str(value)
     if isinstance(value, Exception):

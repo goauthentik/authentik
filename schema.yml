@@ -18334,7 +18334,6 @@ paths:
           - tr
           - tt
           - udm
-          - ug
           - uk
           - ur
           - uz
@@ -28280,7 +28279,7 @@ components:
           readOnly: true
         geo_ip:
           type: object
-          description: Get parsed user agent
+          description: Get GeoIP Data
           properties:
             continent:
               type: string
@@ -28302,6 +28301,24 @@ components:
           - long
           nullable: true
           readOnly: true
+        asn:
+          type: object
+          description: Get ASN Data
+          properties:
+            asn:
+              type: integer
+            as_org:
+              type: string
+              nullable: true
+            network:
+              type: string
+              nullable: true
+          required:
+          - as_org
+          - asn
+          - network
+          nullable: true
+          readOnly: true
         user:
           type: integer
         last_ip:
@@ -28316,6 +28333,7 @@ components:
           type: string
           format: date-time
       required:
+      - asn
       - current
       - geo_ip
       - last_ip
@@ -29208,7 +29226,9 @@ components:
         path:
           type: string
           default: ''
-        context: {}
+        context:
+          type: object
+          additionalProperties: {}
         last_applied:
           type: string
           format: date-time
@@ -29228,6 +29248,8 @@ components:
             type: string
           readOnly: true
         metadata:
+          type: object
+          additionalProperties: {}
           readOnly: true
         content:
           type: string
@@ -29249,7 +29271,9 @@ components:
         path:
           type: string
           default: ''
-        context: {}
+        context:
+          type: object
+          additionalProperties: {}
         enabled:
           type: boolean
         content:
@@ -29283,6 +29307,7 @@ components:
       enum:
       - can_save_media
       - can_geo_ip
+      - can_asn
       - can_impersonate
       - can_debug
       - is_enterprise
@@ -29290,6 +29315,7 @@ components:
       description: |-
         * `can_save_media` - Can Save Media
         * `can_geo_ip` - Can Geo Ip
+        * `can_asn` - Can Asn
         * `can_impersonate` - Can Impersonate
         * `can_debug` - Can Debug
         * `is_enterprise` - Is Enterprise
@@ -29769,24 +29795,10 @@ components:
         cancel_url:
           type: string
         layout:
-          $ref: '#/components/schemas/ContextualFlowInfoLayoutEnum'
+          $ref: '#/components/schemas/FlowLayoutEnum'
       required:
       - cancel_url
       - layout
-    ContextualFlowInfoLayoutEnum:
-      enum:
-      - stacked
-      - content_left
-      - content_right
-      - sidebar_left
-      - sidebar_right
-      type: string
-      description: |-
-        * `stacked` - STACKED
-        * `content_left` - CONTENT_LEFT
-        * `content_right` - CONTENT_RIGHT
-        * `sidebar_left` - SIDEBAR_LEFT
-        * `sidebar_right` - SIDEBAR_RIGHT
     Coordinate:
       type: object
       description: Coordinates for diagrams
@@ -30504,12 +30516,16 @@ components:
           format: uuid
           readOnly: true
           title: Event uuid
-        user: {}
+        user:
+          type: object
+          additionalProperties: {}
         action:
           $ref: '#/components/schemas/EventActions'
         app:
           type: string
-        context: {}
+        context:
+          type: object
+          additionalProperties: {}
         client_ip:
           type: string
           nullable: true
@@ -30520,7 +30536,9 @@ components:
         expires:
           type: string
           format: date-time
-        tenant: {}
+        tenant:
+          type: object
+          additionalProperties: {}
       required:
       - action
       - app
@@ -30997,13 +31015,17 @@ components:
       type: object
       description: Event Serializer
       properties:
-        user: {}
+        user:
+          type: object
+          additionalProperties: {}
         action:
           $ref: '#/components/schemas/EventActions'
         app:
           type: string
           minLength: 1
-        context: {}
+        context:
+          type: object
+          additionalProperties: {}
         client_ip:
           type: string
           nullable: true
@@ -31011,7 +31033,9 @@ components:
         expires:
           type: string
           format: date-time
-        tenant: {}
+        tenant:
+          type: object
+          additionalProperties: {}
       required:
       - action
       - app
@@ -31507,11 +31531,11 @@ components:
       - sidebar_right
       type: string
       description: |-
-        * `stacked` - Stacked
-        * `content_left` - Content Left
-        * `content_right` - Content Right
-        * `sidebar_left` - Sidebar Left
-        * `sidebar_right` - Sidebar Right
+        * `stacked` - STACKED
+        * `content_left` - CONTENT_LEFT
+        * `content_right` - CONTENT_RIGHT
+        * `sidebar_left` - SIDEBAR_LEFT
+        * `sidebar_right` - SIDEBAR_RIGHT
     FlowRequest:
       type: object
       description: Flow Serializer
@@ -32376,6 +32400,8 @@ components:
           description: Return internal model name
           readOnly: true
         kubeconfig:
+          type: object
+          additionalProperties: {}
           description: Paste your kubeconfig here. authentik will automatically use
             the currently selected context.
         verify_ssl:
@@ -32400,6 +32426,8 @@ components:
           description: If enabled, use the local connection. Required Docker socket/Kubernetes
             Integration
         kubeconfig:
+          type: object
+          additionalProperties: {}
           description: Paste your kubeconfig here. authentik will automatically use
             the currently selected context.
         verify_ssl:
@@ -34049,7 +34077,9 @@ components:
           type: string
         oidc_jwks_url:
           type: string
-        oidc_jwks: {}
+        oidc_jwks:
+          type: object
+          additionalProperties: {}
       required:
       - callback_url
       - component
@@ -34146,7 +34176,9 @@ components:
           type: string
         oidc_jwks_url:
           type: string
-        oidc_jwks: {}
+        oidc_jwks:
+          type: object
+          additionalProperties: {}
       required:
       - consumer_key
       - consumer_secret
@@ -36035,7 +36067,9 @@ components:
         path:
           type: string
           default: ''
-        context: {}
+        context:
+          type: object
+          additionalProperties: {}
         enabled:
           type: boolean
         content:
@@ -36432,13 +36466,17 @@ components:
       type: object
       description: Event Serializer
       properties:
-        user: {}
+        user:
+          type: object
+          additionalProperties: {}
         action:
           $ref: '#/components/schemas/EventActions'
         app:
           type: string
           minLength: 1
-        context: {}
+        context:
+          type: object
+          additionalProperties: {}
         client_ip:
           type: string
           nullable: true
@@ -36446,7 +36484,9 @@ components:
         expires:
           type: string
           format: date-time
-        tenant: {}
+        tenant:
+          type: object
+          additionalProperties: {}
     PatchedExpressionPolicyRequest:
       type: object
       description: Group Membership Policy Serializer
@@ -36689,6 +36729,8 @@ components:
           description: If enabled, use the local connection. Required Docker socket/Kubernetes
             Integration
         kubeconfig:
+          type: object
+          additionalProperties: {}
           description: Paste your kubeconfig here. authentik will automatically use
             the currently selected context.
         verify_ssl:
@@ -37149,7 +37191,9 @@ components:
           type: string
         oidc_jwks_url:
           type: string
-        oidc_jwks: {}
+        oidc_jwks:
+          type: object
+          additionalProperties: {}
     PatchedOutpostRequest:
       type: object
       description: Outpost Serializer
@@ -37993,7 +38037,9 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
-        attributes: {}
+        attributes:
+          type: object
+          additionalProperties: {}
     PatchedTokenRequest:
       type: object
       description: Token Serializer
@@ -39666,7 +39712,12 @@ components:
           type: string
         ip:
           type: string
-        ip_geo_data: {}
+        ip_geo_data:
+          type: object
+          additionalProperties: {}
+        ip_asn_data:
+          type: object
+          additionalProperties: {}
         score:
           type: integer
           maximum: 9223372036854775807
@@ -41393,7 +41444,9 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
-        attributes: {}
+        attributes:
+          type: object
+          additionalProperties: {}
       required:
       - domain
       - tenant_uuid
@@ -41450,7 +41503,9 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
-        attributes: {}
+        attributes:
+          type: object
+          additionalProperties: {}
       required:
       - domain
     Token:

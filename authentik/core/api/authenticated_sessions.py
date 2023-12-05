@@ -14,7 +14,8 @@ from ua_parser import user_agent_parser
 from authentik.api.authorization import OwnerSuperuserPermissions
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.models import AuthenticatedSession
-from authentik.events.geo import GEOIP_READER, GeoIPDict
+from authentik.events.enrich.asn import ASN_ENRICHER, ASNDict
+from authentik.events.enrich.geoip import GEOIP_ENRICHER, GeoIPDict
 
 
 class UserAgentDeviceDict(TypedDict):
@@ -59,6 +60,7 @@ class AuthenticatedSessionSerializer(ModelSerializer):
     current = SerializerMethodField()
     user_agent = SerializerMethodField()
     geo_ip = SerializerMethodField()
+    asn = SerializerMethodField()
 
     def get_current(self, instance: AuthenticatedSession) -> bool:
         """Check if session is currently active session"""
@@ -70,8 +72,12 @@ class AuthenticatedSessionSerializer(ModelSerializer):
         return user_agent_parser.Parse(instance.last_user_agent)
 
     def get_geo_ip(self, instance: AuthenticatedSession) -> Optional[GeoIPDict]:  # pragma: no cover
-        """Get parsed user agent"""
-        return GEOIP_READER.city_dict(instance.last_ip)
+        """Get GeoIP Data"""
+        return GEOIP_ENRICHER.city_dict(instance.last_ip)
+
+    def get_asn(self, instance: AuthenticatedSession) -> Optional[ASNDict]:  # pragma: no cover
+        """Get ASN Data"""
+        return ASN_ENRICHER.asn_dict(instance.last_ip)
 
     class Meta:
         model = AuthenticatedSession
@@ -80,6 +86,7 @@ class AuthenticatedSessionSerializer(ModelSerializer):
             "current",
             "user_agent",
             "geo_ip",
+            "asn",
             "user",
             "last_ip",
             "last_user_agent",

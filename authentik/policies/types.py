@@ -8,7 +8,8 @@ from django.db.models import Model
 from django.http import HttpRequest
 from structlog.stdlib import get_logger
 
-from authentik.events.geo import GEOIP_READER
+from authentik.events.enrich.asn import ASN_ENRICHER
+from authentik.events.enrich.geoip import GEOIP_ENRICHER
 
 if TYPE_CHECKING:
     from authentik.core.models import User
@@ -40,12 +41,13 @@ class PolicyRequest:
         from authentik.root.middleware import ClientIPMiddleware
 
         self.http_request = request
-        if not GEOIP_READER.enabled:
-            return
         client_ip = ClientIPMiddleware.get_client_ip(request)
         if not client_ip:
             return
-        self.context["geoip"] = GEOIP_READER.city(client_ip)
+        if GEOIP_ENRICHER.enabled:
+            self.context["geoip"] = GEOIP_ENRICHER.city(client_ip)
+        if ASN_ENRICHER.enabled:
+            self.context["asn"] = ASN_ENRICHER.asn(client_ip)
 
     @property
     def should_cache(self) -> bool:

@@ -26,7 +26,8 @@ from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_USER,
 )
 from authentik.core.models import ExpiringModel, Group, PropertyMapping, User
-from authentik.events.geo import GEOIP_READER
+from authentik.events.enrich.asn import ASN_ENRICHER
+from authentik.events.enrich.geoip import GEOIP_ENRICHER
 from authentik.events.utils import (
     cleanse_dict,
     get_user,
@@ -58,6 +59,14 @@ def default_event_duration():
 def default_tenant():
     """Get a default value for tenant"""
     return sanitize_dict(model_to_dict(DEFAULT_TENANT))
+
+
+def event_enrichers():
+    """Get all enrichers"""
+    return [
+        GEOIP_ENRICHER,
+        ASN_ENRICHER,
+    ]
 
 
 class NotificationTransportError(SentryIgnoredException):
@@ -246,20 +255,14 @@ class Event(SerializerModel, ExpiringModel):
                 self.user["on_behalf_of"] = get_user(request.session[SESSION_KEY_IMPERSONATE_USER])
         # User 255.255.255.255 as fallback if IP cannot be determined
         self.client_ip = ClientIPMiddleware.get_client_ip(request)
-        # Apply GeoIP Data, when enabled
-        self.with_geoip()
+        # Enrich event data
+        for enricher in event_enrichers():
+            enricher.enrich_event(self)
         # If there's no app set, we get it from the requests too
         if not self.app:
             self.app = Event._get_app_from_request(request)
         self.save()
         return self
-
-    def with_geoip(self):  # pragma: no cover
-        """Apply GeoIP Data, when enabled"""
-        city = GEOIP_READER.city_dict(self.client_ip)
-        if not city:
-            return
-        self.context["geo"] = city
 
     def save(self, *args, **kwargs):
         if self._state.adding:

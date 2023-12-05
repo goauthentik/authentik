@@ -1,6 +1,6 @@
 """events GeoIP Reader"""
 from os import stat
-from typing import Optional, TypedDict
+from typing import TYPE_CHECKING, Optional, TypedDict
 
 from geoip2.database import Reader
 from geoip2.errors import GeoIP2Error
@@ -8,8 +8,11 @@ from geoip2.models import City
 from sentry_sdk.hub import Hub
 from structlog.stdlib import get_logger
 
+from authentik.events.enrich.base import EventEnricher
 from authentik.lib.config import CONFIG
 
+if TYPE_CHECKING:
+    from authentik.events.models import Event
 LOGGER = get_logger()
 
 
@@ -23,7 +26,7 @@ class GeoIPDict(TypedDict):
     city: str
 
 
-class GeoIPReader:
+class GeoIPEnricher(EventEnricher):
     """Slim wrapper around GeoIP API"""
 
     def __init__(self):
@@ -33,7 +36,7 @@ class GeoIPReader:
 
     def __open(self):
         """Get GeoIP Reader, if configured, otherwise none"""
-        path = CONFIG.get("geoip")
+        path = CONFIG.get("events.processors.geoip")
         if path == "" or not path:
             return
         try:
@@ -46,7 +49,7 @@ class GeoIPReader:
     def __check_expired(self):
         """Check if the modification date of the GeoIP database has
         changed, and reload it if so"""
-        path = CONFIG.get("geoip")
+        path = CONFIG.get("events.processors.geoip")
         try:
             mtime = stat(path).st_mtime
             diff = self.__last_mtime < mtime
@@ -56,6 +59,12 @@ class GeoIPReader:
         except OSError as exc:
             LOGGER.warning("Failed to check GeoIP age", exc=exc)
             return
+
+    def enrich_event(self, event: "Event"):
+        city = self.city_dict(event.client_ip)
+        if not city:
+            return
+        event.context["geo"] = city
 
     @property
     def enabled(self) -> bool:
@@ -97,4 +106,4 @@ class GeoIPReader:
         return self.city_to_dict(city)
 
 
-GEOIP_READER = GeoIPReader()
+GEOIP_ENRICHER = GeoIPEnricher()
