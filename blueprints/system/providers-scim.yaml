@@ -11,7 +11,7 @@ entries:
       name: "authentik default SCIM Mapping: User"
       expression: |
         # Some implementations require givenName and familyName to be set
-        givenName, familyName = request.user.name, ""
+        givenName, familyName = request.user.name, " "
         # This default sets givenName to the name before the first space
         # and the remainder as family name
         # if the user's name has no space the givenName is the entire name
