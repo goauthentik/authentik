@@ -147,7 +147,11 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 						fg := api.NewGroup(g.Pk, g.NumPk, g.Name, g.ParentName, []api.GroupMember{u}, []api.Role{})
 						fg.SetUsers([]int32{flag.UserPk})
 						if g.Parent.IsSet() {
-							fg.SetParent(*g.Parent.Get())
+							if p := g.Parent.Get(); p != nil {
+								fg.SetParent(*p)
+							} else {
+								fg.SetParentNil()
+							}
 						}
 						fg.SetAttributes(g.Attributes)
 						fg.SetIsSuperuser(*g.IsSuperuser)
