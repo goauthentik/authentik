@@ -7978,4 +7978,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Property mappings used for group creation.</source>
   <target>Ƥŕōƥēŕţŷ màƥƥĩńĝś ũśēď ƒōŕ ĝŕōũƥ ćŕēàţĩōń.</target>
 </trans-unit>
+<trans-unit id="s7513372fe60f6387">
+  <source>Event volume</source>
+</trans-unit>
 </body></file></xliff>
