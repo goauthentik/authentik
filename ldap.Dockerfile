@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM --platform=${BUILDPLATFORM} docker.io/golang:1.21.4-bookworm AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/golang:1.21.5-bookworm AS builder
 
 ARG TARGETOS
 ARG TARGETARCH
