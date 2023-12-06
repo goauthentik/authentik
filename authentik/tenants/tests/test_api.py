@@ -1,58 +1,18 @@
 """Test Tenant API"""
 from json import loads
 
-from django.core.management import call_command
-from django.db import connection
 from django.urls import reverse
-from rest_framework.test import APILiveServerTestCase, APITestCase, APITransactionTestCase
 
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
+from authentik.tenants.tests.utils import TenantAPITestCase
 
 TENANTS_API_KEY = generate_id()
 HEADERS = {"Authorization": f"Bearer {TENANTS_API_KEY}"}
 
 
-class TestAPI(APITransactionTestCase):
+class TestAPI(TenantAPITestCase):
     """Test api view"""
-
-    def _fixture_teardown(self):
-        for db_name in self._databases_names(include_mirrors=False):
-            call_command(
-                "flush",
-                verbosity=0,
-                interactive=False,
-                database=db_name,
-                reset_sequences=False,
-                allow_cascade=True,
-                inhibit_post_migrate=False,
-            )
-
-    def setUp(self):
-        call_command("migrate_schemas", schema="template", tenant=True)
-
-    def assertSchemaExists(self, schema_name):
-        with connection.cursor() as cursor:
-            cursor.execute(
-                f"SELECT * FROM information_schema.schemata WHERE schema_name = '{schema_name}';"
-            )
-            self.assertEqual(cursor.rowcount, 1)
-
-            cursor.execute(
-                "SELECT * FROM information_schema.tables WHERE table_schema = 'template';"
-            )
-            expected_tables = cursor.rowcount
-            cursor.execute(
-                f"SELECT * FROM information_schema.tables WHERE table_schema = '{schema_name}';"
-            )
-            self.assertEqual(cursor.rowcount, expected_tables)
-
-    def assertSchemaDoesntExist(self, schema_name):
-        with connection.cursor() as cursor:
-            cursor.execute(
-                f"SELECT * FROM information_schema.schemata WHERE schema_name = '{schema_name}';"
-            )
-            self.assertEqual(cursor.rowcount, 0)
 
     @CONFIG.patch("outposts.disable_embedded_outpost", True)
     @CONFIG.patch("tenants.enabled", True)

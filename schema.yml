@@ -27839,9 +27839,221 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /tenants/:
+  /tenants/domains/:
     get:
-      operationId: tenants_list
+      operationId: tenants_domains_list
+      description: Domain ViewSet
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - tenants
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDomainList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: tenants_domains_create
+      description: Domain ViewSet
+      tags:
+      - tenants
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DomainRequest'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Domain'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /tenants/domains/{id}/:
+    get:
+      operationId: tenants_domains_retrieve
+      description: Domain ViewSet
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Domain.
+        required: true
+      tags:
+      - tenants
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Domain'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: tenants_domains_update
+      description: Domain ViewSet
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Domain.
+        required: true
+      tags:
+      - tenants
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DomainRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Domain'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: tenants_domains_partial_update
+      description: Domain ViewSet
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Domain.
+        required: true
+      tags:
+      - tenants
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDomainRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Domain'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: tenants_domains_destroy
+      description: Domain ViewSet
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Domain.
+        required: true
+      tags:
+      - tenants
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /tenants/tenants/:
+    get:
+      operationId: tenants_tenants_list
       description: Tenant Viewset
       parameters:
       - name: ordering
@@ -27870,8 +28082,6 @@ paths:
           type: string
       tags:
       - tenants
-      security:
-      - authentik: []
       responses:
         '200':
           content:
@@ -27892,7 +28102,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     post:
-      operationId: tenants_create
+      operationId: tenants_tenants_create
       description: Tenant Viewset
       tags:
       - tenants
@@ -27902,8 +28112,6 @@ paths:
             schema:
               $ref: '#/components/schemas/TenantRequest'
         required: true
-      security:
-      - authentik: []
       responses:
         '201':
           content:
@@ -27923,9 +28131,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /tenants/{tenant_uuid}/:
+  /tenants/tenants/{tenant_uuid}/:
     get:
-      operationId: tenants_retrieve
+      operationId: tenants_tenants_retrieve
       description: Tenant Viewset
       parameters:
       - in: path
@@ -27937,8 +28145,6 @@ paths:
         required: true
       tags:
       - tenants
-      security:
-      - authentik: []
       responses:
         '200':
           content:
@@ -27959,7 +28165,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     put:
-      operationId: tenants_update
+      operationId: tenants_tenants_update
       description: Tenant Viewset
       parameters:
       - in: path
@@ -27977,8 +28183,6 @@ paths:
             schema:
               $ref: '#/components/schemas/TenantRequest'
         required: true
-      security:
-      - authentik: []
       responses:
         '200':
           content:
@@ -27999,7 +28203,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     patch:
-      operationId: tenants_partial_update
+      operationId: tenants_tenants_partial_update
       description: Tenant Viewset
       parameters:
       - in: path
@@ -28016,8 +28220,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PatchedTenantRequest'
-      security:
-      - authentik: []
       responses:
         '200':
           content:
@@ -28038,7 +28240,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     delete:
-      operationId: tenants_destroy
+      operationId: tenants_tenants_destroy
       description: Tenant Viewset
       parameters:
       - in: path
@@ -28050,8 +28252,6 @@ paths:
         required: true
       tags:
       - tenants
-      security:
-      - authentik: []
       responses:
         '204':
           description: No response body
@@ -34935,6 +35135,18 @@ components:
       required:
       - pagination
       - results
+    PaginatedDomainList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Domain'
+      required:
+      - pagination
+      - results
     PaginatedDummyPolicyList:
       type: object
       properties:
@@ -36619,6 +36831,19 @@ components:
           nullable: true
           description: Certificate/Key used for authentication. Can be left empty
             for no authentication.
+    PatchedDomainRequest:
+      type: object
+      description: Domain Serializer
+      properties:
+        domain:
+          type: string
+          minLength: 1
+          maxLength: 253
+        is_primary:
+          type: boolean
+        tenant:
+          type: string
+          format: uuid
     PatchedDummyPolicyRequest:
       type: object
       description: Dummy Policy Serializer
