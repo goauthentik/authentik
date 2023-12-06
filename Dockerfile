@@ -35,7 +35,7 @@ COPY ./gen-ts-api /work/web/node_modules/@goauthentik/api
 RUN npm run build
 
 # Stage 3: Build go proxy
-FROM --platform=${BUILDPLATFORM} docker.io/golang:1.21.4-bookworm AS go-builder
+FROM --platform=${BUILDPLATFORM} docker.io/golang:1.21.5-bookworm AS go-builder
 
 ARG TARGETOS
 ARG TARGETARCH
