@@ -6276,6 +6276,86 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /events/events/volume/:
+    get:
+      operationId: events_events_volume_list
+      description: Get event volume for specified filters and timeframe
+      parameters:
+      - in: query
+        name: action
+        schema:
+          type: string
+      - in: query
+        name: client_ip
+        schema:
+          type: string
+      - in: query
+        name: context_authorized_app
+        schema:
+          type: string
+        description: Context Authorized application
+      - in: query
+        name: context_model_app
+        schema:
+          type: string
+        description: Context Model App
+      - in: query
+        name: context_model_name
+        schema:
+          type: string
+        description: Context Model Name
+      - in: query
+        name: context_model_pk
+        schema:
+          type: string
+        description: Context Model Primary Key
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: tenant_name
+        schema:
+          type: string
+        description: Tenant name
+      - in: query
+        name: username
+        schema:
+          type: string
+        description: Username
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Coordinate'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /events/notifications/:
     get:
       operationId: events_notifications_list

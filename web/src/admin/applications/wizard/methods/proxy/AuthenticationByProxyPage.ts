@@ -1,3 +1,4 @@
+import "@goauthentik/admin/applications/wizard/ak-wizard-title";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-switch-input";
@@ -61,11 +62,11 @@ export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
         return nothing;
     }
 
-    renderProxyMode() {
-        return html`<h2>This space intentionally left blank</h2>`;
+    renderProxyMode(): TemplateResult {
+        throw new Error("Must be implemented in a child class.");
     }
 
-    renderHttpBasic(): TemplateResult {
+    renderHttpBasic() {
         return html`<ak-text-input
                 name="basicAuthUserAttribute"
                 label=${msg("HTTP-Basic Username Key")}
@@ -87,168 +88,194 @@ export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
             </ak-text-input>`;
     }
 
+    scopeMappingConfiguration(provider?: ProxyProvider) {
+        const propertyMappings = this.propertyMappings?.results ?? [];
+
+        const defaultScopes = () =>
+            propertyMappings
+                .filter((scope) => !(scope?.managed ?? "").startsWith("goauthentik.io/providers"))
+                .map((pm) => pm.pk);
+
+        const configuredScopes = (providerMappings: string[]) =>
+            propertyMappings.map((scope) => scope.pk).filter((pk) => providerMappings.includes(pk));
+
+        const scopeValues = provider?.propertyMappings
+            ? configuredScopes(provider?.propertyMappings ?? [])
+            : defaultScopes();
+
+        const scopePairs = propertyMappings.map((scope) => [scope.pk, scope.name]);
+
+        return { scopePairs, scopeValues };
+    }
+
     render() {
-        return html`<form class="pf-c-form pf-m-horizontal" @input=${this.handleChange}>
-            ${this.renderModeDescription()}
-            <ak-text-input
-                name="name"
-                value=${ifDefined(this.instance?.name)}
-                required
-                label=${msg("Name")}
-            ></ak-text-input>
+        const errors = this.wizard.errors.provider;
+        const { scopePairs, scopeValues } = this.scopeMappingConfiguration(this.instance);
 
-            <ak-form-element-horizontal
-                label=${msg("Authentication flow")}
-                ?required=${false}
-                name="authenticationFlow"
-            >
-                <ak-flow-search
-                    flowType=${FlowsInstancesListDesignationEnum.Authentication}
-                    .currentFlow=${this.instance?.authenticationFlow}
+        return html` <ak-wizard-title>${msg("Configure Proxy Provider")}</ak-wizard-title>
+            <form class="pf-c-form pf-m-horizontal" @input=${this.handleChange}>
+                ${this.renderModeDescription()}
+                <ak-text-input
+                    name="name"
+                    value=${ifDefined(this.instance?.name)}
                     required
-                ></ak-flow-search>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Flow used when a user access this provider and is not authenticated.")}
-                </p>
-            </ak-form-element-horizontal>
+                    .errorMessages=${errors?.name ?? []}
+                    label=${msg("Name")}
+                ></ak-text-input>
 
-            <ak-form-element-horizontal
-                label=${msg("Authorization flow")}
-                ?required=${true}
-                name="authorizationFlow"
-            >
-                <ak-flow-search
-                    flowType=${FlowsInstancesListDesignationEnum.Authorization}
-                    .currentFlow=${this.instance?.authorizationFlow}
-                    required
-                ></ak-flow-search>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Flow used when authorizing this provider.")}
-                </p>
-            </ak-form-element-horizontal>
+                <ak-form-element-horizontal
+                    label=${msg("Authentication flow")}
+                    ?required=${false}
+                    .errorMessages=${errors?.authenticationFlow ?? []}
+                    name="authenticationFlow"
+                >
+                    <ak-flow-search
+                        flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                        .currentFlow=${this.instance?.authenticationFlow}
+                        required
+                    ></ak-flow-search>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "Flow used when a user access this provider and is not authenticated.",
+                        )}
+                    </p>
+                </ak-form-element-horizontal>
 
-            ${this.renderProxyMode()}
+                <ak-form-element-horizontal
+                    label=${msg("Authorization flow")}
+                    ?required=${true}
+                    name="authorizationFlow"
+                    .errorMessages=${errors?.authorizationFlow ?? []}
+                >
+                    <ak-flow-search
+                        flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                        .currentFlow=${this.instance?.authorizationFlow}
+                        required
+                    ></ak-flow-search>
+                    <p class="pf-c-form__helper-text">
+                        ${msg("Flow used when authorizing this provider.")}
+                    </p>
+                </ak-form-element-horizontal>
 
-            <ak-text-input
-                name="accessTokenValidity"
-                value=${first(this.instance?.accessTokenValidity, "hours=24")}
-                label=${msg("Token validity")}
-                help=${msg("Configure how long tokens are valid for.")}
-            ></ak-text-input>
+                ${this.renderProxyMode()}
 
-            <ak-form-group>
-                <span slot="header">${msg("Advanced protocol settings")}</span>
-                <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("Certificate")} name="certificate">
-                        <ak-crypto-certificate-search
-                            certificate=${ifDefined(this.instance?.certificate ?? undefined)}
-                        ></ak-crypto-certificate-search>
-                    </ak-form-element-horizontal>
+                <ak-text-input
+                    name="accessTokenValidity"
+                    value=${first(this.instance?.accessTokenValidity, "hours=24")}
+                    label=${msg("Token validity")}
+                    help=${msg("Configure how long tokens are valid for.")}
+                    .errorMessages=${errors?.accessTokenValidity ?? []}
+                ></ak-text-input>
 
-                    <ak-form-element-horizontal
-                        label=${msg("Additional scopes")}
-                        name="propertyMappings"
-                    >
-                        <select class="pf-c-form-control" multiple>
-                            ${this.propertyMappings?.results
-                                .filter((scope) => {
-                                    return !scope.managed?.startsWith("goauthentik.io/providers");
-                                })
-                                .map((scope) => {
-                                    const selected = (this.instance?.propertyMappings || []).some(
+                <ak-form-group>
+                    <span slot="header">${msg("Advanced protocol settings")}</span>
+                    <div slot="body" class="pf-c-form">
+                        <ak-form-element-horizontal
+                            label=${msg("Certificate")}
+                            name="certificate"
+                            .errorMessages=${errors?.certificate ?? []}
+                        >
+                            <ak-crypto-certificate-search
+                                certificate=${ifDefined(this.instance?.certificate ?? undefined)}
+                            ></ak-crypto-certificate-search>
+                        </ak-form-element-horizontal>
+
+                        <ak-multi-select
+                            label=${msg("AdditionalScopes")}
+                            name="propertyMappings"
+                            required
+                            .options=${scopePairs}
+                            .values=${scopeValues}
+                            .errorMessages=${errors?.propertyMappings ?? []}
+                            .richhelp=${html`
+                                <p class="pf-c-form__helper-text">
+                                    ${msg(
+                                        "Additional scope mappings, which are passed to the proxy.",
+                                    )}
+                                </p>
+                                <p class="pf-c-form__helper-text">
+                                    ${msg("Hold control/command to select multiple items.")}
+                                </p>
+                            `}
+                        ></ak-multi-select>
+
+                        <ak-textarea-input
+                            name="skipPathRegex"
+                            label=${this.mode === ProxyMode.ForwardDomain
+                                ? msg("Unauthenticated URLs")
+                                : msg("Unauthenticated Paths")}
+                            value=${ifDefined(this.instance?.skipPathRegex)}
+                            .errorMessages=${errors?.skipPathRegex ?? []}
+                            .bighelp=${html` <p class="pf-c-form__helper-text">
+                                    ${msg(
+                                        "Regular expressions for which authentication is not required. Each new line is interpreted as a new expression.",
+                                    )}
+                                </p>
+                                <p class="pf-c-form__helper-text">
+                                    ${msg(
+                                        "When using proxy or forward auth (single application) mode, the requested URL Path is checked against the regular expressions. When using forward auth (domain mode), the full requested URL including scheme and host is matched against the regular expressions.",
+                                    )}
+                                </p>`}
+                        >
+                        </ak-textarea-input>
+                    </div>
+                </ak-form-group>
+                <ak-form-group>
+                    <span slot="header">${msg("Authentication settings")}</span>
+                    <div slot="body" class="pf-c-form">
+                        <ak-switch-input
+                            name="interceptHeaderAuth"
+                            ?checked=${first(this.instance?.interceptHeaderAuth, true)}
+                            label=${msg("Intercept header authentication")}
+                            help=${msg(
+                                "When enabled, authentik will intercept the Authorization header to authenticate the request.",
+                            )}
+                        ></ak-switch-input>
+
+                        <ak-switch-input
+                            name="basicAuthEnabled"
+                            ?checked=${first(this.instance?.basicAuthEnabled, false)}
+                            @change=${(ev: Event) => {
+                                const el = ev.target as HTMLInputElement;
+                                this.showHttpBasic = el.checked;
+                            }}
+                            label=${msg("Send HTTP-Basic Authentication")}
+                            help=${msg(
+                                "Send a custom HTTP-Basic Authentication header based on values from authentik.",
+                            )}
+                        ></ak-switch-input>
+
+                        ${this.showHttpBasic ? this.renderHttpBasic() : html``}
+
+                        <ak-form-element-horizontal
+                            label=${msg("Trusted OIDC Sources")}
+                            name="jwksSources"
+                            .errorMessages=${errors?.jwksSources ?? []}
+                        >
+                            <select class="pf-c-form-control" multiple>
+                                ${this.oauthSources?.results.map((source) => {
+                                    const selected = (this.instance?.jwksSources || []).some(
                                         (su) => {
-                                            return su == scope.pk;
+                                            return su == source.pk;
                                         },
                                     );
-                                    return html`<option
-                                        value=${ifDefined(scope.pk)}
-                                        ?selected=${selected}
-                                    >
-                                        ${scope.name}
+                                    return html`<option value=${source.pk} ?selected=${selected}>
+                                        ${source.name} (${source.slug})
                                     </option>`;
                                 })}
-                        </select>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Additional scope mappings, which are passed to the proxy.")}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
-                        </p>
-                    </ak-form-element-horizontal>
-
-                    <ak-textarea-input
-                        name="skipPathRegex"
-                        label=${this.mode === ProxyMode.ForwardDomain
-                            ? msg("Unauthenticated URLs")
-                            : msg("Unauthenticated Paths")}
-                        value=${ifDefined(this.instance?.skipPathRegex)}
-                        .bighelp=${html` <p class="pf-c-form__helper-text">
+                            </select>
+                            <p class="pf-c-form__helper-text">
                                 ${msg(
-                                    "Regular expressions for which authentication is not required. Each new line is interpreted as a new expression.",
+                                    "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.",
                                 )}
                             </p>
                             <p class="pf-c-form__helper-text">
-                                ${msg(
-                                    "When using proxy or forward auth (single application) mode, the requested URL Path is checked against the regular expressions. When using forward auth (domain mode), the full requested URL including scheme and host is matched against the regular expressions.",
-                                )}
-                            </p>`}
-                    >
-                    </ak-textarea-input>
-                </div>
-            </ak-form-group>
-            <ak-form-group>
-                <span slot="header">${msg("Authentication settings")}</span>
-                <div slot="body" class="pf-c-form">
-                    <ak-switch-input
-                        name="interceptHeaderAuth"
-                        ?checked=${first(this.instance?.interceptHeaderAuth, true)}
-                        label=${msg("Intercept header authentication")}
-                        help=${msg(
-                            "When enabled, authentik will intercept the Authorization header to authenticate the request.",
-                        )}
-                    ></ak-switch-input>
-
-                    <ak-switch-input
-                        name="basicAuthEnabled"
-                        ?checked=${first(this.instance?.basicAuthEnabled, false)}
-                        @change=${(ev: Event) => {
-                            const el = ev.target as HTMLInputElement;
-                            this.showHttpBasic = el.checked;
-                        }}
-                        label=${msg("Send HTTP-Basic Authentication")}
-                        help=${msg(
-                            "Send a custom HTTP-Basic Authentication header based on values from authentik.",
-                        )}
-                    ></ak-switch-input>
-
-                    ${this.showHttpBasic ? this.renderHttpBasic() : html``}
-
-                    <ak-form-element-horizontal
-                        label=${msg("Trusted OIDC Sources")}
-                        name="jwksSources"
-                    >
-                        <select class="pf-c-form-control" multiple>
-                            ${this.oauthSources?.results.map((source) => {
-                                const selected = (this.instance?.jwksSources || []).some((su) => {
-                                    return su == source.pk;
-                                });
-                                return html`<option value=${source.pk} ?selected=${selected}>
-                                    ${source.name} (${source.slug})
-                                </option>`;
-                            })}
-                        </select>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.",
-                            )}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
-                        </p>
-                    </ak-form-element-horizontal>
-                </div>
-            </ak-form-group>
-        </form>`;
+                                ${msg("Hold control/command to select multiple items.")}
+                            </p>
+                        </ak-form-element-horizontal>
+                    </div>
+                </ak-form-group>
+            </form>`;
     }
 }
 
