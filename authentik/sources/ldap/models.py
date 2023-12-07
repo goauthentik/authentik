@@ -170,7 +170,7 @@ class LDAPSource(Source):
             connection_kwargs.setdefault("user", self.bind_cn)
         if self.bind_password is not None:
             connection_kwargs.setdefault("password", self.bind_password)
-        connection = Connection(
+        conn = Connection(
             server or self.server(**server_kwargs),
             raise_exceptions=True,
             receive_timeout=LDAP_TIMEOUT,
@@ -178,11 +178,11 @@ class LDAPSource(Source):
         )
 
         if self.start_tls:
-            connection.start_tls(read_server_info=False)
+            conn.start_tls(read_server_info=False)
         try:
-            successful = connection.bind()
+            successful = conn.bind()
             if successful:
-                return connection
+                return conn
         except (LDAPSchemaError, LDAPInsufficientAccessRightsResult) as exc:
             # Schema error, so try connecting without schema info
             # See https://github.com/goauthentik/authentik/issues/4590
@@ -192,10 +192,10 @@ class LDAPSource(Source):
             server_kwargs["get_info"] = NONE
             return self.connection(server, server_kwargs, connection_kwargs)
         finally:
-            if connection.server.tls.certificate_file is not None and exists(
-                connection.server.tls.certificate_file
+            if conn.server.tls.certificate_file is not None and exists(
+                conn.server.tls.certificate_file
             ):
-                rmtree(dirname(connection.server.tls.certificate_file))
+                rmtree(dirname(conn.server.tls.certificate_file))
         return RuntimeError("Failed to bind")
 
     @property
@@ -220,10 +220,10 @@ class LDAPSource(Source):
         for server in servers.servers:
             server: Server
             try:
-                connection = self.connection(server=server)
+                conn = self.connection(server=server)
                 server_info[server.host] = {
-                    "vendor": str(flatten(connection.server.info.vendor_name)),
-                    "version": str(flatten(connection.server.info.vendor_version)),
+                    "vendor": str(flatten(conn.server.info.vendor_name)),
+                    "version": str(flatten(conn.server.info.vendor_version)),
                     "status": "ok",
                 }
             except LDAPException as exc:
@@ -232,10 +232,10 @@ class LDAPSource(Source):
                 }
         # Check server pool
         try:
-            connection = self.connection()
+            conn = self.connection()
             server_info["__all__"] = {
-                "vendor": str(flatten(connection.server.info.vendor_name)),
-                "version": str(flatten(connection.server.info.vendor_version)),
+                "vendor": str(flatten(conn.server.info.vendor_name)),
+                "version": str(flatten(conn.server.info.vendor_version)),
                 "status": "ok",
             }
         except LDAPException as exc:
