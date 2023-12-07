@@ -3,7 +3,7 @@ import { customElement } from "@lit/reactive-element/decorators/custom-element.j
 import { state } from "@lit/reactive-element/decorators/state.js";
 import { LitElement, html } from "lit";
 
-import applicationWizardContext from "../ContextIdentity";
+import { applicationWizardContext } from "../ContextIdentity";
 import type { ApplicationWizardState } from "../types";
 
 @customElement("ak-application-context-display-for-test")

@@ -1,3 +1,4 @@
+import "@goauthentik/admin/applications/wizard/ak-wizard-title";
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
@@ -19,54 +20,62 @@ import BaseProviderPanel from "../BaseProviderPanel";
 export class ApplicationWizardAuthenticationByRadius extends BaseProviderPanel {
     render() {
         const provider = this.wizard.provider as RadiusProvider | undefined;
+        const errors = this.wizard.errors.provider;
 
-        return html`<form class="pf-c-form pf-m-horizontal" @input=${this.handleChange}>
-            <ak-text-input
-                name="name"
-                label=${msg("Name")}
-                value=${ifDefined(provider?.name)}
-                required
-            >
-            </ak-text-input>
-
-            <ak-form-element-horizontal
-                label=${msg("Authentication flow")}
-                ?required=${true}
-                name="authorizationFlow"
-            >
-                <ak-branded-flow-search
-                    flowType=${FlowsInstancesListDesignationEnum.Authentication}
-                    .currentFlow=${provider?.authorizationFlow}
-                    .brandFlow=${rootInterface()?.brand?.flowAuthentication}
+        return html`<ak-wizard-title>${msg("Configure Radius Provider")}</ak-wizard-title>
+            <form class="pf-c-form pf-m-horizontal" @input=${this.handleChange}>
+                <ak-text-input
+                    name="name"
+                    label=${msg("Name")}
+                    value=${ifDefined(provider?.name)}
+                    .errorMessages=${errors?.name ?? []}
                     required
-                ></ak-branded-flow-search>
-                <p class="pf-c-form__helper-text">${msg("Flow used for users to authenticate.")}</p>
-            </ak-form-element-horizontal>
+                >
+                </ak-text-input>
 
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Protocol settings")} </span>
-                <div slot="body" class="pf-c-form">
-                    <ak-text-input
-                        name="sharedSecret"
-                        label=${msg("Shared secret")}
-                        value=${first(
-                            provider?.sharedSecret,
-                            randomString(128, ascii_letters + digits),
-                        )}
+                <ak-form-element-horizontal
+                    label=${msg("Authentication flow")}
+                    ?required=${true}
+                    name="authorizationFlow"
+                    .errorMessages=${errors?.authorizationFlow ?? []}
+                >
+                    <ak-branded-flow-search
+                        flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                        .currentFlow=${provider?.authorizationFlow}
+                        .brandFlow=${rootInterface()?.brand?.flowAuthentication}
                         required
-                    ></ak-text-input>
-                    <ak-text-input
-                        name="clientNetworks"
-                        label=${msg("Client Networks")}
-                        value=${first(provider?.clientNetworks, "0.0.0.0/0, ::/0")}
-                        required
-                        help=${msg(`List of CIDRs (comma-seperated) that clients can connect from. A more specific
+                    ></ak-branded-flow-search>
+                    <p class="pf-c-form__helper-text">
+                        ${msg("Flow used for users to authenticate.")}
+                    </p>
+                </ak-form-element-horizontal>
+
+                <ak-form-group expanded>
+                    <span slot="header"> ${msg("Protocol settings")} </span>
+                    <div slot="body" class="pf-c-form">
+                        <ak-text-input
+                            name="sharedSecret"
+                            label=${msg("Shared secret")}
+                            .errorMessages=${errors?.sharedSecret ?? []}
+                            value=${first(
+                                provider?.sharedSecret,
+                                randomString(128, ascii_letters + digits),
+                            )}
+                            required
+                        ></ak-text-input>
+                        <ak-text-input
+                            name="clientNetworks"
+                            label=${msg("Client Networks")}
+                            value=${first(provider?.clientNetworks, "0.0.0.0/0, ::/0")}
+                            .errorMessages=${errors?.clientNetworks ?? []}
+                            required
+                            help=${msg(`List of CIDRs (comma-seperated) that clients can connect from. A more specific
                             CIDR will match before a looser one. Clients connecting from a non-specified CIDR
                             will be dropped.`)}
-                    ></ak-text-input>
-                </div>
-            </ak-form-group>
-        </form>`;
+                        ></ak-text-input>
+                    </div>
+                </ak-form-group>
+            </form>`;
     }
 }
 

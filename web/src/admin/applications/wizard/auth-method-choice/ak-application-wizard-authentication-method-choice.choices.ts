@@ -19,13 +19,17 @@ type ProviderRenderer = () => TemplateResult;
 
 type ModelConverter = (provider: OneOfProvider) => ModelRequest;
 
+/**
+ * There's an internal key and an API key because "Proxy" has three different subtypes.
+ */
+// prettier-ignore
 type ProviderType = [
-    string,
-    string,
-    string,
-    ProviderRenderer,
-    ProviderModelEnumType,
-    ModelConverter,
+    string,                // internal key used by the wizard to distinguish between providers
+    string,                // Name of the provider
+    string,                // Description
+    ProviderRenderer,      // Function that returns the provider's wizard panel as a TemplateResult
+    ProviderModelEnumType, // key used by the API to distinguish between providers
+    ModelConverter,        // Handler that takes a generic provider and returns one specifically typed to its panel
 ];
 
 export type LocalTypeCreate = TypeCreate & {

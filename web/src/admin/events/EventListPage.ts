@@ -1,3 +1,4 @@
+import "@goauthentik/admin/events/EventVolumeChart";
 import { EventGeo } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
@@ -10,7 +11,7 @@ import { TablePage } from "@goauthentik/elements/table/TablePage";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { Event, EventsApi } from "@goauthentik/api";
@@ -35,6 +36,14 @@ export class EventListPage extends TablePage<Event> {
     @property()
     order = "-created";
 
+    static get styles(): CSSResult[] {
+        return super.styles.concat(css`
+            .pf-m-no-padding-bottom {
+                padding-bottom: 0;
+            }
+        `);
+    }
+
     async apiEndpoint(page: number): Promise<PaginatedResponse<Event>> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
             ordering: this.order,
@@ -53,6 +62,19 @@ export class EventListPage extends TablePage<Event> {
             new TableColumn(msg("Brand"), "brand_name"),
             new TableColumn(msg("Actions")),
         ];
+    }
+
+    renderSectionBefore(): TemplateResult {
+        return html`
+            <div class="pf-c-page__main-section pf-m-no-padding-bottom">
+                <ak-events-volume-chart
+                    .query=${{
+                        page: this.page,
+                        search: this.search,
+                    }}
+                ></ak-events-volume-chart>
+            </div>
+        `;
     }
 
     row(item: EventWithContext): TemplateResult[] {

@@ -54,6 +54,13 @@ export function camelToSnake(key: string): string {
     return result.split(" ").join("_").toLowerCase();
 }
 
+const capitalize = (key: string) => (key.length === 0 ? "" : key[0].toUpperCase() + key.slice(1));
+
+export function snakeToCamel(key: string) {
+    const [start, ...rest] = key.split("_");
+    return [start, ...rest.map(capitalize)].join("");
+}
+
 export function groupBy<T>(objects: T[], callback: (obj: T) => string): Array<[string, T[]]> {
     const m = new Map<string, T[]>();
     objects.forEach((obj) => {
