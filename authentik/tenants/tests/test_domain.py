@@ -26,7 +26,7 @@ class TestDomainAPI(TenantAPITestCase):
     @CONFIG.patch("tenants.enabled", True)
     @CONFIG.patch("tenants.api_key", TENANTS_API_KEY)
     def test_domain(self):
-        """Test domain creation"""
+        """Test domain"""
         response = self.client.post(
             reverse("authentik_api:domain-list"),
             headers=HEADERS,

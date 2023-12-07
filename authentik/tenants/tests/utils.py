@@ -24,7 +24,7 @@ class TenantAPITestCase(APITransactionTestCase):
                 schemas = cursor.fetchall()
                 for row in schemas:
                     schema = row[0]
-                    cursor.execute(f"DROP SCHEMA {schema}")
+                    cursor.execute(f"DROP SCHEMA {schema} CASCADE")
 
     def setUp(self):
         call_command("migrate_schemas", schema="template", tenant=True)

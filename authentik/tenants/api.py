@@ -97,15 +97,9 @@ class DomainViewSet(ModelViewSet):
 class SettingsSerializer(ModelSerializer):
     """Settings Serializer"""
 
-    name = ReadOnlyField()
-    domains = DomainSerializer(read_only=True, many=True)
-
     class Meta:
         model = Tenant
         fields = [
-            "tenant_uuid",
-            "name",
-            "domains",
             "avatars",
             "default_user_change_name",
             "default_user_change_email",
@@ -125,6 +119,6 @@ class SettingsView(RetrieveUpdateAPIView):
     filter_backends = []
 
     def get_object(self):
-        obj = get_tenant(self.request)
+        obj = self.request.tenant
         self.check_object_permissions(self.request, obj)
         return obj

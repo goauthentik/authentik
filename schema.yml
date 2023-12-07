@@ -41528,18 +41528,6 @@ components:
       type: object
       description: Settings Serializer
       properties:
-        tenant_uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          readOnly: true
-        domains:
-          type: array
-          items:
-            $ref: '#/components/schemas/Domain'
-          readOnly: true
         avatars:
           type: string
           description: Configure how authentik should show avatars for users.
@@ -41564,10 +41552,6 @@ components:
           additionalProperties: {}
           description: The option configures the footer links on the flow executor
             pages.
-      required:
-      - domains
-      - name
-      - tenant_uuid
     SettingsRequest:
       type: object
       description: Settings Serializer
