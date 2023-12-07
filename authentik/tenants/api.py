@@ -39,6 +39,7 @@ class TenantSerializer(ModelSerializer):
             "tenant_uuid",
             "schema_name",
             "name",
+            "ready",
         ]
 
 
@@ -111,7 +112,7 @@ class SettingsSerializer(ModelSerializer):
 class SettingsView(RetrieveUpdateAPIView):
     """Settings view"""
 
-    queryset = Tenant.objects.all()
+    queryset = Tenant.objects.filter(ready=True)
     serializer_class = SettingsSerializer
     permission_classes = [IsAdminUser]
     filter_backends = []

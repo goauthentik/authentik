@@ -6375,6 +6375,11 @@ paths:
         schema:
           type: string
       - in: query
+        name: brand_name
+        schema:
+          type: string
+        description: Brand name
+      - in: query
         name: client_ip
         schema:
           type: string
@@ -6410,11 +6415,6 @@ paths:
         description: A search term.
         schema:
           type: string
-      - in: query
-        name: tenant_name
-        schema:
-          type: string
-        description: Tenant name
       - in: query
         name: username
         schema:
@@ -33502,6 +33502,10 @@ components:
           type: string
         icon:
           type: string
+          nullable: true
+          description: |-
+            Get the URL to the Icon. If the name is /static or
+            starts with http it is returned as-is
           readOnly: true
         server_uri:
           type: string
@@ -34691,6 +34695,10 @@ components:
           type: string
         icon:
           type: string
+          nullable: true
+          description: |-
+            Get the URL to the Icon. If the name is /static or
+            starts with http it is returned as-is
           readOnly: true
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
@@ -38773,6 +38781,8 @@ components:
         name:
           type: string
           minLength: 1
+        ready:
+          type: boolean
     PatchedTokenRequest:
       type: object
       description: Token Serializer
@@ -39099,6 +39109,10 @@ components:
           type: string
         icon:
           type: string
+          nullable: true
+          description: |-
+            Get the URL to the Icon. If the name is /static or
+            starts with http it is returned as-is
           readOnly: true
         client_id:
           type: string
@@ -41045,6 +41059,10 @@ components:
           type: string
         icon:
           type: string
+          nullable: true
+          description: |-
+            Get the URL to the Icon. If the name is /static or
+            starts with http it is returned as-is
           readOnly: true
         pre_authentication_flow:
           type: string
@@ -41778,6 +41796,10 @@ components:
           type: string
         icon:
           type: string
+          nullable: true
+          description: |-
+            Get the URL to the Icon. If the name is /static or
+            starts with http it is returned as-is
           readOnly: true
       required:
       - component
@@ -42180,6 +42202,8 @@ components:
           maxLength: 63
         name:
           type: string
+        ready:
+          type: boolean
       required:
       - name
       - schema_name
@@ -42195,6 +42219,8 @@ components:
         name:
           type: string
           minLength: 1
+        ready:
+          type: boolean
       required:
       - name
       - schema_name

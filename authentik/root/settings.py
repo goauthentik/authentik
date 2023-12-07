@@ -56,7 +56,6 @@ SHARED_APPS = [
     "django_tenants",
     "authentik.tenants",
     "daphne",
-    "django.contrib.contenttypes",
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
@@ -68,6 +67,7 @@ SHARED_APPS = [
 ]
 TENANT_APPS = [
     "django.contrib.auth",
+    "django.contrib.contenttypes",
     "django.contrib.sessions",
     "authentik.admin",
     "authentik.api",

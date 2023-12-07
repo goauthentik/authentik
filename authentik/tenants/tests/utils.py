@@ -4,19 +4,10 @@ from rest_framework.test import APITransactionTestCase
 
 
 class TenantAPITestCase(APITransactionTestCase):
-    # Overridden to force TRUNCATE CASCADE
+    # Overridden to also remove additional schemas we may have created
     def _fixture_teardown(self):
+        super()._fixture_teardown()
         for db_name in self._databases_names(include_mirrors=False):
-            call_command(
-                "flush",
-                verbosity=0,
-                interactive=False,
-                database=db_name,
-                reset_sequences=False,
-                allow_cascade=True,
-                inhibit_post_migrate=False,
-            )
-
             with connections[db_name].cursor() as cursor:
                 cursor.execute(
                     "SELECT nspname FROM pg_catalog.pg_namespace WHERE nspname !~ 'pg_*' AND nspname != 'information_schema' AND nspname != 'public' AND nspname != 'template'"

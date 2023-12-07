@@ -2908,6 +2908,10 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Name"
+                },
+                "ready": {
+                    "type": "boolean",
+                    "title": "Ready"
                 }
             },
             "required": []
