@@ -62,9 +62,9 @@ Files are checked every 5 minutes, and will trigger an Outpost refresh if the fi
 Starting with authentik 2022.9, you can also import certificates with any folder structure directly. To do this, run the following command within the worker container:
 
 ```shell
-ak import_certificate --schema public --certificate /certs/mycert.pem --private-key /certs/something.pem --name test
+ak import_certificate --certificate /certs/mycert.pem --private-key /certs/something.pem --name test
 # --private-key can be omitted to only import a certificate, i.e. to trust other connections
-# ak import_certificate --schema public --certificate /certs/othercert.pem --name test2
+# ak import_certificate --certificate /certs/othercert.pem --name test2
 ```
 
 This will import the certificate into authentik under the given name. This command is idempotent, meaning you can run it via a cron-job and authentik will only update the certificate when it changes.

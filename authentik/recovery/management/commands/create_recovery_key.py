@@ -2,17 +2,16 @@
 from datetime import timedelta
 from getpass import getuser
 
-from django.core.management.base import BaseCommand
 from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
-from django_tenants.management.commands import TenantWrappedCommand
 
 from authentik.core.models import Token, TokenIntents, User
+from authentik.tenants.management import TenantCommand
 
 
-class TCommand(BaseCommand):
+class Command(TenantCommand):
     """Create Token used to recover access"""
 
     help = _("Create a Key which can be used to restore access to authentik.")
@@ -30,7 +29,7 @@ class TCommand(BaseCommand):
         """Get full recovery link"""
         return reverse("authentik_recovery:use-token", kwargs={"key": str(token.key)})
 
-    def handle(self, *args, **options):
+    def handle_per_tenant(self, *args, **options):
         """Create Token used to recover access"""
         duration = int(options.get("duration", 1))
         _now = now()
@@ -51,9 +50,3 @@ class TCommand(BaseCommand):
             f"Store this link safely, as it will allow anyone to access authentik as {user}."
         )
         self.stdout.write(self.get_url(token))
-
-
-class Command(TenantWrappedCommand):
-    """Create Token used to recover access"""
-
-    COMMAND = TCommand

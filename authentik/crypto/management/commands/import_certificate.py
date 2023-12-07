@@ -1,22 +1,22 @@
 """Import certificate"""
 from sys import exit as sys_exit
 
-from django.core.management.base import BaseCommand, no_translations
-from django_tenants.management.commands import TenantWrappedCommand
+from django.core.management.base import no_translations
 from rest_framework.exceptions import ValidationError
 from structlog.stdlib import get_logger
 
 from authentik.crypto.api import CertificateKeyPairSerializer
 from authentik.crypto.models import CertificateKeyPair
+from authentik.tenants.management import TenantCommand
 
 LOGGER = get_logger()
 
 
-class TCommand(BaseCommand):
+class Command(TenantCommand):
     """Import certificate"""
 
     @no_translations
-    def handle(self, *args, **options):
+    def handle_per_tenant(self, *args, **options):
         """Import certificate"""
         keypair = CertificateKeyPair.objects.filter(name=options["name"]).first()
         dirty = False
@@ -50,9 +50,3 @@ class TCommand(BaseCommand):
         parser.add_argument("--certificate", type=str, required=True)
         parser.add_argument("--private-key", type=str, required=False)
         parser.add_argument("--name", type=str, required=True)
-
-
-class Command(TenantWrappedCommand):
-    """Import certificate"""
-
-    COMMAND = TCommand
