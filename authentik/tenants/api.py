@@ -57,6 +57,7 @@ class TenantViewSet(ModelViewSet):
     authentication_classes = []
     permission_classes = [TenantApiKeyPermission]
     filter_backends = [OrderingFilter, SearchFilter]
+    filterset_fields = []
 
     def dispatch(self, request, *args, **kwargs):
         if not CONFIG.get_bool("tenants.enabled", True):
@@ -86,6 +87,7 @@ class DomainViewSet(ModelViewSet):
     authentication_classes = []
     permission_classes = [TenantApiKeyPermission]
     filter_backends = [OrderingFilter, SearchFilter]
+    filterset_fields = []
 
     def dispatch(self, request, *args, **kwargs):
         if not CONFIG.get_bool("tenants.enabled", True):
