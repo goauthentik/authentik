@@ -1,3 +1,4 @@
+"""authentik tenants management command utils"""
 from django.core.management.base import BaseCommand
 from django.db import connection
 from django_tenants.utils import get_public_schema_name
@@ -23,6 +24,7 @@ class TenantCommand(BaseCommand):
 
     def handle(self, *args, **options):
         verbosity = int(options.get("verbosity"))
+        # pylint: disable=no-member
         schema_name = options["schema_name"] or self.schema_name
         connection.set_schema_to_public()
         if verbosity >= 1:
@@ -35,6 +37,7 @@ class TenantCommand(BaseCommand):
         self.handle_per_tenant(*args, **options)
 
     def handle_per_tenant(self, *args, **options):
+        """The actual logic of the command."""
         raise NotImplementedError(
             "subclasses of TenantCommand must provide a handle_per_tenant() method"
         )

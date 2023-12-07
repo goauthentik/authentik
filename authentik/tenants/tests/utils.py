@@ -4,7 +4,7 @@ from rest_framework.test import APITransactionTestCase
 
 
 class TenantAPITestCase(APITransactionTestCase):
-    # Overriden to force TRUNCATE CASCADE
+    # Overridden to force TRUNCATE CASCADE
     def _fixture_teardown(self):
         for db_name in self._databases_names(include_mirrors=False):
             call_command(
@@ -32,7 +32,7 @@ class TenantAPITestCase(APITransactionTestCase):
     def assertSchemaExists(self, schema_name):
         with connection.cursor() as cursor:
             cursor.execute(
-                f"SELECT * FROM information_schema.schemata WHERE schema_name = %(schema_name)s",
+                "SELECT * FROM information_schema.schemata WHERE schema_name = %(schema_name)s",  # nosec
                 {"schema_name": schema_name},
             )
             self.assertEqual(cursor.rowcount, 1)
@@ -42,7 +42,7 @@ class TenantAPITestCase(APITransactionTestCase):
             )
             expected_tables = cursor.rowcount
             cursor.execute(
-                f"SELECT * FROM information_schema.tables WHERE table_schema = %(schema_name)s",
+                "SELECT * FROM information_schema.tables WHERE table_schema = %(schema_name)s",  # nosec
                 {"schema_name": schema_name},
             )
             self.assertEqual(cursor.rowcount, expected_tables)
@@ -50,7 +50,7 @@ class TenantAPITestCase(APITransactionTestCase):
     def assertSchemaDoesntExist(self, schema_name):
         with connection.cursor() as cursor:
             cursor.execute(
-                f"SELECT * FROM information_schema.schemata WHERE schema_name = %(schema_name)s",
+                "SELECT * FROM information_schema.schemata WHERE schema_name = %(schema_name)s",  # nosec
                 {"schema_name": schema_name},
             )
             self.assertEqual(cursor.rowcount, 0)

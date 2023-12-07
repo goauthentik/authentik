@@ -1,11 +1,9 @@
 """Test Settings API"""
-from json import loads
 
 from django.urls import reverse
 from django_tenants.utils import get_public_schema_name
 
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
 from authentik.tenants.models import Domain, Tenant
 from authentik.tenants.tests.utils import TenantAPITestCase

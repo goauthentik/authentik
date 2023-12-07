@@ -2,10 +2,8 @@
 from hmac import compare_digest
 
 from django.http import HttpResponseNotFound
-from django_tenants.utils import get_tenant
 from rest_framework import permissions
 from rest_framework.authentication import get_authorization_header
-from rest_framework.fields import ReadOnlyField
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import IsAdminUser

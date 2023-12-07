@@ -25,7 +25,8 @@ def _validate_schema_name(name):
     if not VALID_SCHEMA_NAME.match(name):
         raise ValidationError(
             _(
-                "Schema name must start with t_, only contain lowercase letters and numbers and be less than 63 characters."
+                "Schema name must start with t_, only contain lowercase letters and numbers and "
+                "be less than 63 characters."
             )
         )
 
