@@ -136,9 +136,9 @@ export const ROUTES: Route[] = [
         await import("@goauthentik/admin/crypto/CertificateKeyPairListPage");
         return html`<ak-crypto-certificate-list></ak-crypto-certificate-list>`;
     }),
-    new Route(new RegExp("^/admin/settings$"), async() => {
-        await import("@goauthentik/admin/admin-settings/AdminSettingsViewPage");
-        return html`<ak-admin-settings-view></ak-admin-settings-view>`;
+    new Route(new RegExp("^/admin/settings$"), async () => {
+        await import("@goauthentik/admin/admin-settings/AdminSettingsPage");
+        return html`<ak-admin-settings></ak-admin-settings>`;
     }),
     new Route(new RegExp("^/blueprints/instances$"), async () => {
         await import("@goauthentik/admin/blueprints/BlueprintListPage");
