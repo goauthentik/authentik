@@ -92,7 +92,7 @@ export class ApplicationWizardApplicationDetails extends WithBrandConfig(BasePro
                     .options=${searchModeOptions}
                     .value=${provider?.searchMode}
                     help=${msg(
-                        "Configure how the outpost queries the core authentik server's users."
+                        "Configure how the outpost queries the core authentik server's users.",
                     )}
                 >
                 </ak-radio-input>
@@ -115,7 +115,7 @@ export class ApplicationWizardApplicationDetails extends WithBrandConfig(BasePro
                             value="${first(provider?.baseDn, "DC=ldap,DC=goauthentik,DC=io")}"
                             .errorMessages=${errors?.baseDn ?? []}
                             help=${msg(
-                                "LDAP DN under which bind requests and search requests can be made."
+                                "LDAP DN under which bind requests and search requests can be made.",
                             )}
                         >
                         </ak-text-input>
