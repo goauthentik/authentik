@@ -144,31 +144,20 @@ export class AkAdminSidebar extends AKElement {
                 window.location.reload();
             });
 
+        // prettier-ignore
         const newVersionMessage: LocalSidebarEntry[] =
             this.version && this.version !== VERSION
-                ? [
-                      [
-                          "https://goauthentik.io",
-                          msg("A newer version of the frontend is available."),
-                          { highlight: true },
-                      ],
-                  ]
+                ? [[ "https://goauthentik.io", msg("A newer version of the frontend is available."),
+                     { highlight: true }]]
                 : [];
 
+        // prettier-ignore
         const impersonationMessage: LocalSidebarEntry[] = this.impersonation
-            ? [
-                  [
-                      reload,
-                      msg(
-                          str`You're currently impersonating ${this.impersonation}. Click to stop.`,
-                      ),
-                  ],
-              ]
+            ? [[reload, msg(str`You're currently impersonating ${this.impersonation}. Click to stop.`)]]
             : [];
 
-        const enterpriseMenu: LocalSidebarEntry[] = this.config?.capabilities.includes(
-            CapabilitiesEnum.IsEnterprise,
-        )
+        // prettier-ignore
+        const enterpriseMenu: LocalSidebarEntry[] = this.config?.capabilities.includes(CapabilitiesEnum.IsEnterprise)
             ? [[null, msg("Enterprise"), null, [["/enterprise/licenses", msg("Licenses")]]]]
             : [];
 
