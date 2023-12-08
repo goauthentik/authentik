@@ -62,11 +62,9 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
     clearIcon = false;
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated source.");
-        } else {
-            return msg("Successfully created source.");
-        }
+        return this.instance
+            ? msg("Successfully updated source.")
+            : msg("Successfully created source.");
     }
 
     async send(data: OAuthSource): Promise<OAuthSource> {

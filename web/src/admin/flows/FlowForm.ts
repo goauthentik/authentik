@@ -34,11 +34,9 @@ export class FlowForm extends ModelForm<Flow, string> {
     }
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated flow.");
-        } else {
-            return msg("Successfully created flow.");
-        }
+        return this.instance
+            ? msg("Successfully updated flow.")
+            : msg("Successfully created flow.");
     }
 
     @property({ type: Boolean })

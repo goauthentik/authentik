@@ -18,11 +18,9 @@ export class UserLogoutStageForm extends ModelForm<UserLogoutStage, string> {
     }
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated stage.");
-        } else {
-            return msg("Successfully created stage.");
-        }
+        return this.instance
+            ? msg("Successfully updated stage.")
+            : msg("Successfully created stage.");
     }
 
     async send(data: UserLogoutStage): Promise<UserLogoutStage> {

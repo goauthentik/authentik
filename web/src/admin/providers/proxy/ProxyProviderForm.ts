@@ -66,11 +66,9 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
     mode: ProxyMode = ProxyMode.Proxy;
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated provider.");
-        } else {
-            return msg("Successfully created provider.");
-        }
+        return this.instance
+            ? msg("Successfully updated provider.")
+            : msg("Successfully created provider.");
     }
 
     async send(data: ProxyProvider): Promise<ProxyProvider> {

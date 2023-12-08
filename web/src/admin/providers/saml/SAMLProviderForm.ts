@@ -45,11 +45,9 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
     propertyMappings?: PaginatedSAMLPropertyMappingList;
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated provider.");
-        } else {
-            return msg("Successfully created provider.");
-        }
+        return this.instance
+            ? msg("Successfully updated provider.")
+            : msg("Successfully created provider.");
     }
 
     async send(data: SAMLProvider): Promise<SAMLProvider> {

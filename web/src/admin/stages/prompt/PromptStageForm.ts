@@ -39,11 +39,9 @@ export class PromptStageForm extends ModelForm<PromptStage, string> {
     policies?: PaginatedPolicyList;
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated stage.");
-        } else {
-            return msg("Successfully created stage.");
-        }
+        return this.instance
+            ? msg("Successfully updated stage.")
+            : msg("Successfully created stage.");
     }
 
     async send(data: PromptStage): Promise<PromptStage> {

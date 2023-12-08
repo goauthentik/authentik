@@ -42,11 +42,9 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
     }
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated source.");
-        } else {
-            return msg("Successfully created source.");
-        }
+        return this.instance
+            ? msg("Successfully updated source.")
+            : msg("Successfully created source.");
     }
 
     async send(data: SAMLSource): Promise<SAMLSource> {

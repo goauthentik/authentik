@@ -21,11 +21,9 @@ export class PropertyMappingSAMLForm extends ModelForm<SAMLPropertyMapping, stri
     }
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated mapping.");
-        } else {
-            return msg("Successfully created mapping.");
-        }
+        return this.instance
+            ? msg("Successfully updated mapping.")
+            : msg("Successfully created mapping.");
     }
 
     async send(data: SAMLPropertyMapping): Promise<SAMLPropertyMapping> {

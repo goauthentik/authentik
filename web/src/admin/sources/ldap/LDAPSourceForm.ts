@@ -42,11 +42,9 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
     propertyMappings?: PaginatedLDAPPropertyMappingList;
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated source.");
-        } else {
-            return msg("Successfully created source.");
-        }
+        return this.instance
+            ? msg("Successfully updated source.")
+            : msg("Successfully created source.");
     }
 
     async send(data: LDAPSource): Promise<LDAPSource> {

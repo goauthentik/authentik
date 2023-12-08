@@ -20,11 +20,9 @@ export class DummyPolicyForm extends ModelForm<DummyPolicy, string> {
     }
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated policy.");
-        } else {
-            return msg("Successfully created policy.");
-        }
+        return this.instance
+            ? msg("Successfully updated policy.")
+            : msg("Successfully created policy.");
     }
 
     async send(data: DummyPolicy): Promise<DummyPolicy> {

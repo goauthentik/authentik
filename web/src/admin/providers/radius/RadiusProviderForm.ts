@@ -22,11 +22,9 @@ export class RadiusProviderFormPage extends ModelForm<RadiusProvider, number> {
     }
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated provider.");
-        } else {
-            return msg("Successfully created provider.");
-        }
+        return this.instance
+            ? msg("Successfully updated provider.")
+            : msg("Successfully created provider.");
     }
 
     async send(data: RadiusProvider): Promise<RadiusProvider> {

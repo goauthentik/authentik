@@ -27,11 +27,9 @@ export class AuthenticatorStaticStageForm extends ModelForm<AuthenticatorStaticS
     }
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated stage.");
-        } else {
-            return msg("Successfully created stage.");
-        }
+        return this.instance
+            ? msg("Successfully updated stage.")
+            : msg("Successfully created stage.");
     }
 
     async send(data: AuthenticatorStaticStage): Promise<AuthenticatorStaticStage> {

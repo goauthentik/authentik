@@ -40,11 +40,9 @@ export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
     propertyMappings?: PaginatedSCIMMappingList;
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated provider.");
-        } else {
-            return msg("Successfully created provider.");
-        }
+        return this.instance
+            ? msg("Successfully updated provider.")
+            : msg("Successfully created provider.");
     }
 
     async send(data: SCIMProvider): Promise<SCIMProvider> {
