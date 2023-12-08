@@ -10,7 +10,7 @@ require (
 	github.com/go-http-utils/etag v0.0.0-20161124023236-513ea8f21eb1
 	github.com/go-ldap/ldap/v3 v3.4.6
 	github.com/go-openapi/runtime v0.26.0
-	github.com/go-openapi/strfmt v0.21.8
+	github.com/go-openapi/strfmt v0.21.9
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.4.0
 	github.com/gorilla/handlers v1.5.2
@@ -27,7 +27,7 @@ require (
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.8.0
 	github.com/stretchr/testify v1.8.4
-	goauthentik.io/api/v3 v3.2023104.1
+	goauthentik.io/api/v3 v3.2023104.2
 	golang.org/x/exp v0.0.0-20230210204819-062eb4c674ab
 	golang.org/x/oauth2 v0.15.0
 	golang.org/x/sync v0.5.0
@@ -49,7 +49,7 @@ require (
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-openapi/analysis v0.21.4 // indirect
-	github.com/go-openapi/errors v0.20.3 // indirect
+	github.com/go-openapi/errors v0.20.4 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/jsonreference v0.20.0 // indirect
 	github.com/go-openapi/loads v0.21.2 // indirect
@@ -69,7 +69,7 @@ require (
 	github.com/prometheus/common v0.44.0 // indirect
 	github.com/prometheus/procfs v0.11.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	go.mongodb.org/mongo-driver v1.11.3 // indirect
+	go.mongodb.org/mongo-driver v1.13.0 // indirect
 	go.opentelemetry.io/otel v1.14.0 // indirect
 	go.opentelemetry.io/otel/trace v1.14.0 // indirect
 	golang.org/x/crypto v0.16.0 // indirect
