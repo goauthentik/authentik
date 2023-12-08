@@ -48,8 +48,3 @@ urlpatterns += [
     path("-/health/live/", LiveView.as_view(), name="health-live"),
     path("-/health/ready/", ReadyView.as_view(), name="health-ready"),
 ]
-
-if settings.DEBUG:
-    urlpatterns += [
-        path("debug/silk/", include("silk.urls", namespace="silk")),
-    ]
