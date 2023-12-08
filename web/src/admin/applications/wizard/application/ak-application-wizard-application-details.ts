@@ -5,7 +5,6 @@ import "@goauthentik/components/ak-slug-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
 import { msg } from "@lit/localize";
@@ -17,26 +16,18 @@ import BasePanel from "../BasePanel";
 
 @customElement("ak-application-wizard-application-details")
 export class ApplicationWizardApplicationDetails extends BasePanel {
-    handleChange(ev: Event) {
-        if (!ev.target) {
-            console.warn(`Received event with no target: ${ev}`);
-            return;
+    handleChange(_ev: Event) {
+        const formValues = this.formValues;
+        if (!formValues) {
+            throw new Error("No application values on form?");
         }
-
-        const target = ev.target as HTMLInputElement;
-        const value = target.type === "checkbox" ? target.checked : target.value;
         this.dispatchWizardUpdate({
             update: {
-                app: {
-                    [target.name]: value,
-                },
+                ...this.wizard,
+                app: formValues,
             },
-            status: this.form.checkValidity() ? "valid" : "invalid",
+            status: this.valid ? "valid" : "invalid",
         });
-    }
-
-    validator() {
-        return this.form.reportValidity();
     }
 
     render(): TemplateResult {
@@ -48,6 +39,7 @@ export class ApplicationWizardApplicationDetails extends BasePanel {
                 required
                 help=${msg("Application's display Name.")}
                 id="ak-application-wizard-details-name"
+                .errorMessages=${this.wizard.errors.app?.name ?? []}
             ></ak-text-input>
             <ak-slug-input
                 name="slug"
@@ -56,11 +48,13 @@ export class ApplicationWizardApplicationDetails extends BasePanel {
                 source="#ak-application-wizard-details-name"
                 required
                 help=${msg("Internal application name used in URLs.")}
+                .errorMessages=${this.wizard.errors.app?.slug ?? []}
             ></ak-slug-input>
             <ak-text-input
                 name="group"
                 value=${ifDefined(this.wizard.app?.group)}
                 label=${msg("Group")}
+                .errorMessages=${this.wizard.errors.app?.group ?? []}
                 help=${msg(
                     "Optionally enter a group name. Applications with identical groups are shown grouped together.",
                 )}
@@ -71,6 +65,7 @@ export class ApplicationWizardApplicationDetails extends BasePanel {
                 name="policyEngineMode"
                 .options=${policyOptions}
                 .value=${this.wizard.app?.policyEngineMode}
+                .errorMessages=${this.wizard.errors.app?.policyEngineMode ?? []}
             ></ak-radio-input>
             <ak-form-group aria-label="UI Settings">
                 <span slot="header"> ${msg("UI Settings")} </span>
@@ -82,6 +77,7 @@ export class ApplicationWizardApplicationDetails extends BasePanel {
                         help=${msg(
                             "If left empty, authentik will try to extract the launch URL based on the selected provider.",
                         )}
+                        .errorMessages=${this.wizard.errors.app?.metaLaunchUrl ?? []}
                     ></ak-text-input>
                     <ak-switch-input
                         name="openInNewTab"

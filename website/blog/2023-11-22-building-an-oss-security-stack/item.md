@@ -30,7 +30,7 @@ hide_table_of_contents: false
 
 ---
 
-There was an article recently about nearly 20 well-known startups’ first 10 hires—security engineers didn’t feature at all. Our third hire at Authentik Security was a security engineer so we might be biased, but even startups without the resources for a full-time security hire should have someone on your founding team wearing the security hat, so you get started on the right foot.
+There was an article recently about nearly 20 well-known startups’ [first 10 hires](https://www.lennysnewsletter.com/p/hiring-your-early-team-b2b)—security engineers didn’t feature at all. Our third hire at Authentik Security was a security engineer so we might be biased, but even startups without the resources for a full-time security hire should have someone on your founding team wearing the security hat, so you get started on the right foot.
 
 As security departments are cost centers (not revenue generators) it’s not unusual for startups to take a tightwad mentality with security. The good news is that you don’t need a big budget to have a good security posture. There are plenty of free and open source tools at your disposal, and a lot of what makes good security is actually organizational practices—many of which don’t cost a thing to implement.
 
