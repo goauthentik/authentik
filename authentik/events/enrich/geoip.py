@@ -1,12 +1,14 @@
 """events GeoIP Reader"""
 from typing import TYPE_CHECKING, Optional, TypedDict
 
+from django.http import HttpRequest
 from geoip2.errors import GeoIP2Error
 from geoip2.models import City
 from sentry_sdk.hub import Hub
 
 from authentik.events.enrich.mmdb import MMDBEnricher
 from authentik.lib.config import CONFIG
+from authentik.root.middleware import ClientIPMiddleware
 
 if TYPE_CHECKING:
     from authentik.events.models import Event
@@ -33,6 +35,10 @@ class GeoIPEnricher(MMDBEnricher):
         if not city:
             return
         event.context["geo"] = city
+
+    def enrich_context(self, request: HttpRequest) -> dict:
+        # Different key `geoip` vs `geo` for legacy reasons
+        return {"geoip": self.city(ClientIPMiddleware.get_client_ip(request))}
 
     def city(self, ip_address: str) -> Optional[City]:
         """Wrapper for Reader.city"""

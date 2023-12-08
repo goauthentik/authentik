@@ -1,12 +1,14 @@
 """ASN Enricher"""
 from typing import TYPE_CHECKING, Optional, TypedDict
 
+from django.http import HttpRequest
 from geoip2.errors import GeoIP2Error
 from geoip2.models import ASN
 from sentry_sdk import Hub
 
 from authentik.events.enrich.mmdb import MMDBEnricher
 from authentik.lib.config import CONFIG
+from authentik.root.middleware import ClientIPMiddleware
 
 if TYPE_CHECKING:
     from authentik.events.models import Event
@@ -31,6 +33,11 @@ class ASNEnricher(MMDBEnricher):
         if not asn:
             return
         event.context["asn"] = asn
+
+    def enrich_context(self, request: HttpRequest) -> dict:
+        return {
+            "asn": self.asn_dict(ClientIPMiddleware.get_client_ip(request)),
+        }
 
     def asn(self, ip_address: str) -> Optional[ASN]:
         """Wrapper for Reader.asn"""
