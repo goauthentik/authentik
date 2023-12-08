@@ -9,6 +9,7 @@ import { configureSentry } from "@goauthentik/common/sentry";
 import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import { Interface } from "@goauthentik/elements/Interface";
+import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import "@goauthentik/elements/LoadingOverlay";
 import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/flow/sources/apple/AppleLoginInit";
@@ -18,7 +19,7 @@ import "@goauthentik/flow/stages/RedirectStage";
 import { StageHost } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html, render } from "lit";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
@@ -45,8 +46,9 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-flow-executor")
-export class FlowExecutor extends Interface implements StageHost {
-    flowSlug?: string;
+export class FlowExecutor extends WithBrandConfig(Interface) implements StageHost {
+    @property()
+    flowSlug: string = window.location.pathname.split("/")[3];
 
     private _challenge?: ChallengeTypes;
 
@@ -94,6 +96,9 @@ export class FlowExecutor extends Interface implements StageHost {
 
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFDrawer, PFButton, PFTitle, PFList, PFBackgroundImage].concat(css`
+            :host {
+                --pf-c-login__main-body--PaddingBottom: var(--pf-global--spacer--2xl);
+            }
             .pf-c-background-image::before {
                 --pf-c-background-image--BackgroundImage: var(--ak-flow-background);
                 --pf-c-background-image--BackgroundImage-2x: var(--ak-flow-background);
@@ -111,6 +116,9 @@ export class FlowExecutor extends Interface implements StageHost {
                 background-color: transparent;
             }
             /* layouts */
+            .pf-c-login.stacked .pf-c-login__main {
+                margin-top: 13rem;
+            }
             .pf-c-login__container.content-right {
                 grid-template-areas:
                     "header main"
@@ -146,13 +154,27 @@ export class FlowExecutor extends Interface implements StageHost {
             :host([theme="dark"]) .pf-c-login.sidebar_right .pf-c-list {
                 color: var(--ak-dark-foreground);
             }
+            .pf-c-brand {
+                padding-top: calc(
+                    var(--pf-c-login__main-footer-links--PaddingTop) +
+                        var(--pf-c-login__main-footer-links--PaddingBottom) +
+                        var(--pf-c-login__main-body--PaddingBottom)
+                );
+                max-height: 9rem;
+            }
+            .ak-brand {
+                display: flex;
+                justify-content: center;
+            }
+            .ak-brand img {
+                padding: 0 2rem;
+            }
         `);
     }
 
     constructor() {
         super();
         this.ws = new WebsocketClient();
-        this.flowSlug = window.location.pathname.split("/")[3];
         if (window.location.search.includes("inspector")) {
             this.inspectorOpen = !this.inspectorOpen;
         }
@@ -165,75 +187,66 @@ export class FlowExecutor extends Interface implements StageHost {
         return globalAK()?.tenant.uiTheme || UiThemeEnum.Automatic;
     }
 
-    submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
+    async submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
         if (!payload) return Promise.reject();
         if (!this.challenge) return Promise.reject();
         // @ts-ignore
         payload.component = this.challenge.component;
         this.loading = true;
-        return new FlowsApi(DEFAULT_CONFIG)
-            .flowsExecutorSolve({
-                flowSlug: this.flowSlug || "",
+        try {
+            const challenge = await new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolve({
+                flowSlug: this.flowSlug,
                 query: window.location.search.substring(1),
                 flowChallengeResponseRequest: payload,
-            })
-            .then((data) => {
-                if (this.inspectorOpen) {
-                    window.dispatchEvent(
-                        new CustomEvent(EVENT_FLOW_ADVANCE, {
-                            bubbles: true,
-                            composed: true,
-                        }),
-                    );
-                }
-                this.challenge = data;
-                if (this.challenge.flowInfo) {
-                    this.flowInfo = this.challenge.flowInfo;
-                }
-                if (this.challenge.responseErrors) {
-                    return false;
-                }
-                return true;
-            })
-            .catch((e: Error | ResponseError) => {
-                this.errorMessage(e);
-                return false;
-            })
-            .finally(() => {
-                this.loading = false;
-                return false;
             });
+            if (this.inspectorOpen) {
+                window.dispatchEvent(
+                    new CustomEvent(EVENT_FLOW_ADVANCE, {
+                        bubbles: true,
+                        composed: true,
+                    }),
+                );
+            }
+            this.challenge = challenge;
+            if (this.challenge.flowInfo) {
+                this.flowInfo = this.challenge.flowInfo;
+            }
+
+            return this.challenge.responseErrors ? false : true;
+        } catch (exc: unknown) {
+            this.errorMessage(exc as Error | ResponseError);
+            return false;
+        } finally {
+            this.loading = false;
+        }
     }
 
-    firstUpdated(): void {
+    async firstUpdated(): Promise<void> {
         configureSentry();
         this.loading = true;
-        new FlowsApi(DEFAULT_CONFIG)
-            .flowsExecutorGet({
-                flowSlug: this.flowSlug || "",
+        try {
+            const challenge = await new FlowsApi(DEFAULT_CONFIG).flowsExecutorGet({
+                flowSlug: this.flowSlug,
                 query: window.location.search.substring(1),
-            })
-            .then((challenge) => {
-                if (this.inspectorOpen) {
-                    window.dispatchEvent(
-                        new CustomEvent(EVENT_FLOW_ADVANCE, {
-                            bubbles: true,
-                            composed: true,
-                        }),
-                    );
-                }
-                this.challenge = challenge;
-                if (this.challenge.flowInfo) {
-                    this.flowInfo = this.challenge.flowInfo;
-                }
-            })
-            .catch((e: Error | ResponseError) => {
-                // Catch JSON or Update errors
-                this.errorMessage(e);
-            })
-            .finally(() => {
-                this.loading = false;
             });
+            if (this.inspectorOpen) {
+                window.dispatchEvent(
+                    new CustomEvent(EVENT_FLOW_ADVANCE, {
+                        bubbles: true,
+                        composed: true,
+                    }),
+                );
+            }
+            this.challenge = challenge;
+            if (this.challenge.flowInfo) {
+                this.flowInfo = this.challenge.flowInfo;
+            }
+        } catch (exc: unknown) {
+            // Catch JSON or Update errors
+            this.errorMessage(exc as Error | ResponseError);
+        } finally {
+            this.loading = false;
+        }
     }
 
     async errorMessage(error: Error | ResponseError): Promise<void> {
@@ -412,12 +425,15 @@ export class FlowExecutor extends Interface implements StageHost {
     }
 
     renderChallengeWrapper(): TemplateResult {
+        const logo = html`<div class="pf-c-login__main-header pf-c-brand ak-brand">
+            <img src="${first(this.brand?.brandingLogo, "")}" alt="authentik Logo" />
+        </div>`;
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading=${true} header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`${logo}<ak-empty-state ?loading=${true} header=${msg("Loading")}>
+                </ak-empty-state>`;
         }
         return html`
-            ${this.loading ? html`<ak-loading-overlay></ak-loading-overlay>` : html``}
+            ${this.loading ? html`<ak-loading-overlay></ak-loading-overlay>` : nothing} ${logo}
             ${until(this.renderChallenge())}
         `;
     }
@@ -453,43 +469,9 @@ export class FlowExecutor extends Interface implements StageHost {
         }
     }
 
-    renderBackgroundOverlay(): TemplateResult {
-        const overlaySVG = html`<svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="pf-c-background-image__filter"
-            width="0"
-            height="0"
-        >
-            <filter id="image_overlay">
-                <feColorMatrix
-                    in="SourceGraphic"
-                    type="matrix"
-                    values="1.3 0 0 0 0 0 1.3 0 0 0 0 0 1.3 0 0 0 0 0 1 0"
-                />
-                <feComponentTransfer color-interpolation-filters="sRGB" result="duotone">
-                    <feFuncR
-                        type="table"
-                        tableValues="0.086274509803922 0.43921568627451"
-                    ></feFuncR>
-                    <feFuncG
-                        type="table"
-                        tableValues="0.086274509803922 0.43921568627451"
-                    ></feFuncG>
-                    <feFuncB
-                        type="table"
-                        tableValues="0.086274509803922 0.43921568627451"
-                    ></feFuncB>
-                    <feFuncA type="table" tableValues="0 1"></feFuncA>
-                </feComponentTransfer>
-            </filter>
-        </svg>`;
-        render(overlaySVG, document.body);
-        return overlaySVG;
-    }
-
     render(): TemplateResult {
         return html` <ak-locale-context>
-            <div class="pf-c-background-image">${this.renderBackgroundOverlay()}</div>
+            <div class="pf-c-background-image"></div>
             <div class="pf-c-page__drawer">
                 <div class="pf-c-drawer ${this.inspectorOpen ? "pf-m-expanded" : "pf-m-collapsed"}">
                     <div class="pf-c-drawer__main">
