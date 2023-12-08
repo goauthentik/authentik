@@ -1,7 +1,6 @@
 import "@goauthentik/admin/admin-settings/AdminSettingsForm";
+import { AdminSettingsForm } from "@goauthentik/admin/admin-settings/AdminSettingsForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { convertToTitle } from "@goauthentik/common/utils";
 import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
@@ -16,7 +15,7 @@ import "@goauthentik/elements/forms/ModalForm";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";

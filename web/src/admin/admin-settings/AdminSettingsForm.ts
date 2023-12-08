@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { dateTimeLocal, first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
@@ -11,7 +10,7 @@ import "@goauthentik/elements/forms/SearchSelect";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
 import PFList from "@patternfly/patternfly/components/List/list.css";
 
