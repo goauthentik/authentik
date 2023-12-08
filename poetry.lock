@@ -1223,7 +1223,7 @@ Django = ">=2.1,<4.3"
 type = "git"
 url = "https://github.com/rissson/django-tenants.git"
 reference = "authentik-fixes"
-resolved_reference = "31040e911d00a96e9379860d48f458c2b222afc1"
+resolved_reference = "52cf8f61bae62f6e89309ccc86193c82ab075def"
 
 [[package]]
 name = "djangorestframework"
