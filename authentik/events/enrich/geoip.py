@@ -1,19 +1,15 @@
 """events GeoIP Reader"""
-from os import stat
 from typing import TYPE_CHECKING, Optional, TypedDict
 
-from geoip2.database import Reader
 from geoip2.errors import GeoIP2Error
 from geoip2.models import City
 from sentry_sdk.hub import Hub
-from structlog.stdlib import get_logger
 
-from authentik.events.enrich.base import EventEnricher
+from authentik.events.enrich.mmdb import MMDBEnricher
 from authentik.lib.config import CONFIG
 
 if TYPE_CHECKING:
     from authentik.events.models import Event
-LOGGER = get_logger()
 
 
 class GeoIPDict(TypedDict):
@@ -26,50 +22,17 @@ class GeoIPDict(TypedDict):
     city: str
 
 
-class GeoIPEnricher(EventEnricher):
+class GeoIPEnricher(MMDBEnricher):
     """Slim wrapper around GeoIP API"""
 
-    def __init__(self):
-        self.__reader: Optional[Reader] = None
-        self.__last_mtime: float = 0.0
-        self.__open()
-
-    def __open(self):
-        """Get GeoIP Reader, if configured, otherwise none"""
-        path = CONFIG.get("events.processors.geoip")
-        if path == "" or not path:
-            return
-        try:
-            self.__reader = Reader(path)
-            self.__last_mtime = stat(path).st_mtime
-            LOGGER.info("Loaded GeoIP database", last_write=self.__last_mtime)
-        except OSError as exc:
-            LOGGER.warning("Failed to load GeoIP database", exc=exc)
-
-    def __check_expired(self):
-        """Check if the modification date of the GeoIP database has
-        changed, and reload it if so"""
-        path = CONFIG.get("events.processors.geoip")
-        try:
-            mtime = stat(path).st_mtime
-            diff = self.__last_mtime < mtime
-            if diff > 0:
-                LOGGER.info("Found new GeoIP Database, reopening", diff=diff)
-                self.__open()
-        except OSError as exc:
-            LOGGER.warning("Failed to check GeoIP age", exc=exc)
-            return
+    def path(self) -> str | None:
+        return CONFIG.get("events.processors.geoip")
 
     def enrich_event(self, event: "Event"):
         city = self.city_dict(event.client_ip)
         if not city:
             return
         event.context["geo"] = city
-
-    @property
-    def enabled(self) -> bool:
-        """Check if GeoIP is enabled"""
-        return bool(self.__reader)
 
     def city(self, ip_address: str) -> Optional[City]:
         """Wrapper for Reader.city"""
@@ -79,9 +42,9 @@ class GeoIPEnricher(EventEnricher):
         ):
             if not self.enabled:
                 return None
-            self.__check_expired()
+            self.check_expired()
             try:
-                return self.__reader.city(ip_address)
+                return self.reader.city(ip_address)
             except (GeoIP2Error, ValueError):
                 return None
 

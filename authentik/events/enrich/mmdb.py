@@ -1,0 +1,54 @@
+"""Common logic for reading MMDB files"""
+from pathlib import Path
+from typing import Optional
+
+from geoip2.database import Reader
+from structlog.stdlib import get_logger
+
+from authentik.events.enrich.base import EventEnricher
+
+
+class MMDBEnricher(EventEnricher):
+    """Common logic for reading MaxMind DB files, including re-loading if the file has changed"""
+
+    def __init__(self):
+        self.reader: Optional[Reader] = None
+        self._last_mtime: float = 0.0
+        self.logger = get_logger()
+        self.open()
+
+    def path(self) -> str | None:
+        """Get the path to the MMDB file to load"""
+        raise NotImplementedError
+
+    def open(self):
+        """Get GeoIP Reader, if configured, otherwise none"""
+        path = self.path()
+        if path == "" or not path:
+            return
+        try:
+            self.reader = Reader(path)
+            self._last_mtime = Path(path).stat().st_mtime
+            self.logger.info("Loaded MMDB database", last_write=self._last_mtime, file=path)
+        except OSError as exc:
+            self.logger.warning("Failed to load MMDB database", exc=exc)
+
+    def check_expired(self):
+        """Check if the modification date of the MMDB database has
+        changed, and reload it if so"""
+        path = self.path()
+        if path == "" or not path:
+            return
+        try:
+            mtime = Path(path).stat().st_mtime
+            diff = self._last_mtime < mtime
+            if diff > 0:
+                self.logger.info("Found new MMDB Database, reopening", diff=diff, path=path)
+                self.open()
+        except OSError as exc:
+            self.logger.warning("Failed to check MMDB age", exc=exc)
+
+    @property
+    def enabled(self) -> bool:
+        """Check if MMDB is enabled"""
+        return bool(self.reader)
