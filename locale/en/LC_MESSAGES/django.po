@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-06 16:55+0000\n"
+"POT-Creation-Date: 2023-12-08 01:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -69,9 +69,33 @@ msgstr ""
 msgid "authentik Export - %(date)s"
 msgstr ""
 
-#: authentik/blueprints/v1/tasks.py:150 authentik/crypto/tasks.py:93
+#: authentik/blueprints/v1/tasks.py:152 authentik/crypto/tasks.py:93
 #, python-format
 msgid "Successfully imported %(count)d files."
+msgstr ""
+
+#: authentik/brands/models.py:23
+msgid ""
+"Domain that activates this brand. Can be a superset, i.e. `a.b` for `aa.b` "
+"and `ba.b`"
+msgstr ""
+
+#: authentik/brands/models.py:58
+msgid ""
+"Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,"
+"seconds=2)."
+msgstr ""
+
+#: authentik/brands/models.py:67
+msgid "Web Certificate used by the authentik Core webserver."
+msgstr ""
+
+#: authentik/brands/models.py:93
+msgid "Brand"
+msgstr ""
+
+#: authentik/brands/models.py:94
+msgid "Brands"
 msgstr ""
 
 #: authentik/core/api/providers.py:120
@@ -82,11 +106,11 @@ msgstr ""
 msgid "Create a SAML Provider by importing its Metadata."
 msgstr ""
 
-#: authentik/core/api/users.py:156
+#: authentik/core/api/users.py:155
 msgid "No leading or trailing slashes allowed."
 msgstr ""
 
-#: authentik/core/api/users.py:159
+#: authentik/core/api/users.py:158
 msgid "No empty segments in user path allowed."
 msgstr ""
 
@@ -2609,26 +2633,54 @@ msgstr ""
 msgid "Failed to update user. Please try again later."
 msgstr ""
 
-#: authentik/tenants/models.py:23
+#: authentik/tenants/models.py:28
 msgid ""
-"Domain that activates this tenant. Can be a superset, i.e. `a.b` for `aa.b` "
-"and `ba.b`"
+"Schema name must start with t_, only contain lowercase letters and numbers "
+"and be less than 63 characters."
+msgstr ""
+
+#: authentik/tenants/models.py:48
+msgid "Configure how authentik should show avatars for users."
+msgstr ""
+
+#: authentik/tenants/models.py:52
+msgid "Enable the ability for users to change their name."
+msgstr ""
+
+#: authentik/tenants/models.py:55
+msgid "Enable the ability for users to change their email address."
 msgstr ""
 
 #: authentik/tenants/models.py:58
+msgid "Enable the ability for users to change their username."
+msgstr ""
+
+#: authentik/tenants/models.py:62
 msgid ""
-"Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,"
-"seconds=2)."
+"When enabled, all the events caused by a user will be deleted upon the "
+"user's deletion."
 msgstr ""
 
-#: authentik/tenants/models.py:67
-msgid "Web Certificate used by the authentik Core webserver."
+#: authentik/tenants/models.py:68
+msgid "Globally enable/disable impersonation."
 msgstr ""
 
-#: authentik/tenants/models.py:93
+#: authentik/tenants/models.py:71
+msgid "The option configures the footer links on the flow executor pages."
+msgstr ""
+
+#: authentik/tenants/models.py:96
 msgid "Tenant"
 msgstr ""
 
-#: authentik/tenants/models.py:94
+#: authentik/tenants/models.py:97
 msgid "Tenants"
+msgstr ""
+
+#: authentik/tenants/models.py:117
+msgid "Domain"
+msgstr ""
+
+#: authentik/tenants/models.py:118
+msgid "Domains"
 msgstr ""
