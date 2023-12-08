@@ -4,7 +4,7 @@ title: Full development environment
 
 ## Requirements
 
--   Python 3.11
+-   Python 3.12
 -   Poetry, which is used to manage dependencies
 -   Go 1.20
 -   Node.js 20

@@ -5,6 +5,8 @@ import { customElement } from "@lit/reactive-element/decorators.js";
 import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+import { ProxyProvider } from "@goauthentik/api";
+
 import AkTypeProxyApplicationWizardPage from "./AuthenticationByProxyPage";
 
 @customElement("ak-application-wizard-authentication-for-forward-proxy-domain")
@@ -28,11 +30,15 @@ export class AkForwardDomainProxyApplicationWizardPage extends AkTypeProxyApplic
     }
 
     renderProxyMode() {
+        const provider = this.wizard.provider as ProxyProvider | undefined;
+        const errors = this.wizard.errors.provider;
+
         return html`
             <ak-text-input
                 name="externalHost"
                 label=${msg("External host")}
-                value=${ifDefined(this.instance?.externalHost)}
+                value=${ifDefined(provider?.externalHost)}
+                .errorMessages=${errors?.externalHost ?? []}
                 required
                 help=${msg(
                     "The external URL you'll authenticate at. The authentik core server should be reachable under this URL.",
@@ -42,7 +48,8 @@ export class AkForwardDomainProxyApplicationWizardPage extends AkTypeProxyApplic
             <ak-text-input
                 name="cookieDomain"
                 label=${msg("Cookie domain")}
-                value="${ifDefined(this.instance?.cookieDomain)}"
+                value="${ifDefined(provider?.cookieDomain)}"
+                .errorMessages=${errors?.cookieDomain ?? []}
                 required
                 help=${msg(
                     "Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'.",

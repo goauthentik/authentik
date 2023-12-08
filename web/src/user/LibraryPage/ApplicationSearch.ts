@@ -38,7 +38,9 @@ export class LibraryPageApplicationList extends AKElement {
     ];
 
     @property({ attribute: false })
-    apps: Application[] = [];
+    set apps(value: Application[]) {
+        this.fuse.setCollection(value);
+    }
 
     @property()
     query = getURLParam<string | undefined>("search", undefined);
@@ -63,7 +65,7 @@ export class LibraryPageApplicationList extends AKElement {
             shouldSort: true,
             ignoreFieldNorm: true,
             useExtendedSearch: true,
-            threshold: 0.5,
+            threshold: 0.3,
         });
     }
 
@@ -77,7 +79,6 @@ export class LibraryPageApplicationList extends AKElement {
 
     connectedCallback() {
         super.connectedCallback();
-        this.fuse.setCollection(this.apps);
         if (!this.query) {
             return;
         }

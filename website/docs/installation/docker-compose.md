@@ -4,6 +4,10 @@ title: Docker Compose installation
 
 This installation method is for test-setups and small-scale production setups.
 
+:::info
+You can also [view a video walk-through](https://www.youtube.com/watch?v=O1qUbrk4Yc8) of the installation process on Docker (with bonus details about email configuration and other important options).
+:::
+
 ## Requirements
 
 -   A host with at least 2 CPU cores and 2 GB of RAM

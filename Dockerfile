@@ -35,7 +35,7 @@ COPY ./gen-ts-api /work/web/node_modules/@goauthentik/api
 RUN npm run build
 
 # Stage 3: Build go proxy
-FROM --platform=${BUILDPLATFORM} docker.io/golang:1.21.4-bookworm AS go-builder
+FROM --platform=${BUILDPLATFORM} docker.io/golang:1.21.5-bookworm AS go-builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -81,7 +81,7 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "/usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage 5: Python dependencies
-FROM docker.io/python:3.11.5-bookworm AS python-deps
+FROM docker.io/python:3.12.0-slim-bookworm AS python-deps
 
 WORKDIR /ak-root/poetry
 
@@ -104,7 +104,7 @@ RUN --mount=type=bind,target=./pyproject.toml,src=./pyproject.toml \
     poetry install --only=main --no-ansi --no-interaction
 
 # Stage 6: Run
-FROM docker.io/python:3.11.5-slim-bookworm AS final-image
+FROM docker.io/python:3.12.0-slim-bookworm AS final-image
 
 ARG GIT_BUILD_HASH
 ARG VERSION
@@ -121,7 +121,7 @@ WORKDIR /
 # We cannot cache this layer otherwise we'll end up with a bigger image
 RUN apt-get update && \
     # Required for runtime
-    apt-get install -y --no-install-recommends libpq5 openssl libxmlsec1-openssl libmaxminddb0 && \
+    apt-get install -y --no-install-recommends libpq5 openssl libxmlsec1-openssl libmaxminddb0 ca-certificates && \
     # Required for bootstrap & healtcheck
     apt-get install -y --no-install-recommends runit && \
     apt-get clean && \
