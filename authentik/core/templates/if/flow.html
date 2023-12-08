@@ -27,7 +27,7 @@ window.authentik.flow = {
 
 {% block body %}
 <ak-message-container></ak-message-container>
-<ak-flow-executor>
+<ak-flow-executor flowSlug="{{ flow.slug }}">
     <ak-loading></ak-loading>
 </ak-flow-executor>
 {% endblock %}
