@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2023.10.2
+  version: 2023.10.4
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -107,7 +107,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/System'
+                $ref: '#/components/schemas/SystemInfo'
           description: ''
         '400':
           content:
@@ -133,7 +133,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/System'
+                $ref: '#/components/schemas/SystemInfo'
           description: ''
         '400':
           content:
@@ -6263,6 +6263,86 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/EventTopPerUser'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /events/events/volume/:
+    get:
+      operationId: events_events_volume_list
+      description: Get event volume for specified filters and timeframe
+      parameters:
+      - in: query
+        name: action
+        schema:
+          type: string
+      - in: query
+        name: client_ip
+        schema:
+          type: string
+      - in: query
+        name: context_authorized_app
+        schema:
+          type: string
+        description: Context Authorized application
+      - in: query
+        name: context_model_app
+        schema:
+          type: string
+        description: Context Model App
+      - in: query
+        name: context_model_name
+        schema:
+          type: string
+        description: Context Model Name
+      - in: query
+        name: context_model_pk
+        schema:
+          type: string
+        description: Context Model Primary Key
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: tenant_name
+        schema:
+          type: string
+        description: Tenant name
+      - in: query
+        name: username
+        schema:
+          type: string
+        description: Username
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Coordinate'
           description: ''
         '400':
           content:
@@ -18942,7 +19022,7 @@ paths:
           description: ''
   /sources/ldap/{slug}/sync_status/:
     get:
-      operationId: sources_ldap_sync_status_list
+      operationId: sources_ldap_sync_status_retrieve
       description: Get source's sync status
       parameters:
       - in: path
@@ -18960,9 +19040,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Task'
+                $ref: '#/components/schemas/LDAPSyncStatus'
           description: ''
         '400':
           content:
@@ -22453,10 +22531,10 @@ paths:
       - in: query
         name: digits
         schema:
-          type: integer
+          type: string
           enum:
-          - 6
-          - 8
+          - '6'
+          - '8'
         description: |-
           * `6` - 6 digits, widely compatible
           * `8` - 8 digits, not compatible with apps like Google Authenticator
@@ -28796,10 +28874,7 @@ components:
           type: string
           nullable: true
         digits:
-          allOf:
-          - $ref: '#/components/schemas/DigitsEnum'
-          minimum: -2147483648
-          maximum: 2147483647
+          $ref: '#/components/schemas/DigitsEnum'
       required:
       - component
       - digits
@@ -28830,10 +28905,7 @@ components:
           nullable: true
           minLength: 1
         digits:
-          allOf:
-          - $ref: '#/components/schemas/DigitsEnum'
-          minimum: -2147483648
-          maximum: 2147483647
+          $ref: '#/components/schemas/DigitsEnum'
       required:
       - digits
       - name
@@ -29922,9 +29994,9 @@ components:
         * `http://www.w3.org/2001/04/xmlenc#sha512` - SHA512
     DigitsEnum:
       enum:
-      - 6
-      - 8
-      type: integer
+      - '6'
+      - '8'
+      type: string
       description: |-
         * `6` - 6 digits, widely compatible
         * `8` - 8 digits, not compatible with apps like Google Authenticator
@@ -32021,6 +32093,10 @@ components:
           description: Specify which sources should be shown.
         show_source_labels:
           type: boolean
+        pretend_user_exists:
+          type: boolean
+          description: When enabled, the stage will succeed and continue even when
+            incorrect user info is entered.
       required:
       - component
       - meta_model_name
@@ -32085,6 +32161,10 @@ components:
           description: Specify which sources should be shown.
         show_source_labels:
           type: boolean
+        pretend_user_exists:
+          type: boolean
+          description: When enabled, the stage will succeed and continue even when
+            incorrect user info is entered.
       required:
       - name
     InstallID:
@@ -32812,9 +32892,19 @@ components:
             type: string
             format: uuid
           description: Property mappings used for group creation/updating.
+        connectivity:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: string
+          nullable: true
+          description: Get cached source connectivity
+          readOnly: true
       required:
       - base_dn
       - component
+      - connectivity
       - icon
       - managed
       - meta_model_name
@@ -32948,6 +33038,21 @@ components:
       - name
       - server_uri
       - slug
+    LDAPSyncStatus:
+      type: object
+      description: LDAP Source sync status
+      properties:
+        is_running:
+          type: boolean
+          readOnly: true
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+          readOnly: true
+      required:
+      - is_running
+      - tasks
     LayoutEnum:
       enum:
       - stacked
@@ -35886,10 +35991,7 @@ components:
           nullable: true
           minLength: 1
         digits:
-          allOf:
-          - $ref: '#/components/schemas/DigitsEnum'
-          minimum: -2147483648
-          maximum: 2147483647
+          $ref: '#/components/schemas/DigitsEnum'
     PatchedAuthenticatorValidateStageRequest:
       type: object
       description: AuthenticatorValidateStage Serializer
@@ -36546,6 +36648,10 @@ components:
           description: Specify which sources should be shown.
         show_source_labels:
           type: boolean
+        pretend_user_exists:
+          type: boolean
+          description: When enabled, the stage will succeed and continue even when
+            incorrect user info is entered.
     PatchedInvitationRequest:
       type: object
       description: Invitation Serializer
@@ -41129,7 +41235,7 @@ components:
         * `user_username` - Based on the username
         * `user_email` - Based on the User's Email. This is recommended over the UPN method.
         * `user_upn` - Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains.
-    System:
+    SystemInfo:
       type: object
       description: Get system information.
       properties:

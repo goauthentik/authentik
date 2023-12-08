@@ -9,6 +9,7 @@ on:
   pull_request:
     branches:
       - main
+      - version-*
 
 jobs:
   lint-eslint:
@@ -23,7 +24,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version-file: ${{ matrix.project }}/package.json
           cache: "npm"
           cache-dependency-path: ${{ matrix.project }}/package-lock.json
       - working-directory: ${{ matrix.project }}/
@@ -39,7 +40,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version-file: web/package.json
           cache: "npm"
           cache-dependency-path: web/package-lock.json
       - working-directory: web/
@@ -61,7 +62,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version-file: ${{ matrix.project }}/package.json
           cache: "npm"
           cache-dependency-path: ${{ matrix.project }}/package-lock.json
       - working-directory: ${{ matrix.project }}/
@@ -77,7 +78,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version-file: web/package.json
           cache: "npm"
           cache-dependency-path: web/package-lock.json
       - working-directory: web/
@@ -109,7 +110,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version-file: web/package.json
           cache: "npm"
           cache-dependency-path: web/package-lock.json
       - working-directory: web/

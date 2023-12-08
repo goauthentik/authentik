@@ -71,7 +71,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 	cs.Options.Domain = *p.CookieDomain
 	cs.Options.SameSite = http.SameSiteLaxMode
 	cs.Options.MaxAge = maxAge
-	cs.Options.Path = externalHost.Path
+	cs.Options.Path = "/"
 	a.log.WithField("dir", dir).Trace("using filesystem session backend")
 	return cs
 }
@@ -131,7 +131,6 @@ func (a *Application) Logout(ctx context.Context, filter func(c Claims) bool) er
 	}
 	if rs, ok := a.sessions.(*redisstore.RedisStore); ok {
 		client := rs.Client()
-		defer client.Close()
 		keys, err := client.Keys(ctx, fmt.Sprintf("%s*", RedisKeyPrefix)).Result()
 		if err != nil {
 			return err

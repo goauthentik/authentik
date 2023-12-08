@@ -1922,21 +1922,6 @@
       <trans-unit id="s7b3148ffba9f4527">
         <source>If the password's score is less than or equal this value, the policy will fail.</source>
       </trans-unit>
-      <trans-unit id="s1bfe7505059d164f">
-        <source>0: Too guessable: risky password. (guesses &lt; 10^3)</source>
-      </trans-unit>
-      <trans-unit id="s423d1f2477998d0b">
-        <source>1: Very guessable: protection from throttled online attacks. (guesses &lt; 10^6)</source>
-      </trans-unit>
-      <trans-unit id="s33849cc046eb901d">
-        <source>2: Somewhat guessable: protection from unthrottled online attacks. (guesses &lt; 10^8)</source>
-      </trans-unit>
-      <trans-unit id="s578dcce295718e1b">
-        <source>3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &lt; 10^10)</source>
-      </trans-unit>
-      <trans-unit id="s7a46de49f4eba5d7">
-        <source>4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &gt;= 10^10)</source>
-      </trans-unit>
       <trans-unit id="sd6cd7ce2310a73a4">
         <source>Checks the value from the policy request against several rules, mostly used to ensure password strength.</source>
         <target>Comprueba el valor de la solicitud de política en relación con varias reglas, que se utilizan principalmente para garantizar la seguridad de la contraseña.</target>
@@ -4929,9 +4914,9 @@ Bindings to groups/users are checked against the user of the event.</source>
         <target>Está disponible una versión más reciente de la interfaz.</target>
       </trans-unit>
       <trans-unit id="s96b3cddf33e1c853">
-        <source>You're currently impersonating <x id="0" equiv-text="${this.user.user.username}"/>. Click to stop.</source>
+        <source>You're currently impersonating <x id="0" equiv-text="${this.impersonation}"/>. Click to stop.</source>
         <target>Estás suplantando a 
-        <x id="0" equiv-text="${this.user.user.username}"/>. Haga clic para parar.</target>
+        <x id="0" equiv-text="${this.impersonation}"/>. Haga clic para parar.</target>
       </trans-unit>
       <trans-unit id="s7031e6928c44cedd">
         <source>User interface</source>
@@ -5731,12 +5716,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s848288f8c2265aad">
   <source>Your application has been saved</source>
 </trans-unit>
-<trans-unit id="sf60f1e5b76897c93">
-  <source>In the Application:</source>
-</trans-unit>
-<trans-unit id="s7ce65cf482b7bff0">
-  <source>In the Provider:</source>
-</trans-unit>
 <trans-unit id="s67d858051b34c38b">
   <source>Method's display Name.</source>
 </trans-unit>
@@ -5952,6 +5931,108 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s32babfed740fd3c1">
   <source>User type used for newly created users.</source>
+</trans-unit>
+<trans-unit id="s4a34a6be4c68ec87">
+  <source>Users created</source>
+</trans-unit>
+<trans-unit id="s275c956687e2e656">
+  <source>Failed logins</source>
+</trans-unit>
+<trans-unit id="sb35c08e3a541188f">
+  <source>Also known as Client ID.</source>
+</trans-unit>
+<trans-unit id="sd46fd9b647cfea10">
+  <source>Also known as Client Secret.</source>
+</trans-unit>
+<trans-unit id="s4476e9c50cfd13f4">
+  <source>Global status</source>
+</trans-unit>
+<trans-unit id="sd21a971eea208533">
+  <source>Vendor</source>
+</trans-unit>
+<trans-unit id="sadadfe9dfa06d7dd">
+  <source>No sync status.</source>
+</trans-unit>
+<trans-unit id="s2b1c81130a65a55b">
+  <source>Sync currently running.</source>
+</trans-unit>
+<trans-unit id="sf36170f71cea38c2">
+  <source>Connectivity</source>
+</trans-unit>
+<trans-unit id="sd94e99af8b41ff54">
+  <source>0: Too guessable: risky password. (guesses &amp;lt; 10^3)</source>
+</trans-unit>
+<trans-unit id="sc926385d1a624c3a">
+  <source>1: Very guessable: protection from throttled online attacks. (guesses &amp;lt; 10^6)</source>
+</trans-unit>
+<trans-unit id="s8aae61c41319602c">
+  <source>2: Somewhat guessable: protection from unthrottled online attacks. (guesses &amp;lt; 10^8)</source>
+</trans-unit>
+<trans-unit id="sc1f4b57e722a89d6">
+  <source>3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &amp;lt; 10^10)</source>
+</trans-unit>
+<trans-unit id="sd47f3d3c9741343d">
+  <source>4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &amp;gt;= 10^10)</source>
+</trans-unit>
+<trans-unit id="s3d2a8b86a4f5a810">
+  <source>Successfully created user and added to group <x id="0" equiv-text="${this.group.name}"/></source>
+</trans-unit>
+<trans-unit id="s824e0943a7104668">
+  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
+</trans-unit>
+<trans-unit id="s62e7f6ed7d9cb3ca">
+  <source>Pretend user exists</source>
+</trans-unit>
+<trans-unit id="s52bdc80690a9a8dc">
+  <source>When enabled, the stage will always accept the given user identifier and continue.</source>
+</trans-unit>
+<trans-unit id="scda8dc24b561e205">
+  <source>There was an error in the application.</source>
+</trans-unit>
+<trans-unit id="sdaca9c2c0361ed3a">
+  <source>Review the application.</source>
+</trans-unit>
+<trans-unit id="sb50000a8fada5672">
+  <source>There was an error in the provider.</source>
+</trans-unit>
+<trans-unit id="s21f95eaf151d4ce3">
+  <source>Review the provider.</source>
+</trans-unit>
+<trans-unit id="s9fd39a5cb20b4e61">
+  <source>There was an error</source>
+</trans-unit>
+<trans-unit id="s7a6b3453209e1066">
+  <source>There was an error creating the application, but no error message was sent. Please review the server logs.</source>
+</trans-unit>
+<trans-unit id="s1a711c19cda48375">
+  <source>Configure LDAP Provider</source>
+</trans-unit>
+<trans-unit id="s9368e965b5c292ab">
+  <source>Configure OAuth2/OpenId Provider</source>
+</trans-unit>
+<trans-unit id="sf5cbccdc6254c8dc">
+  <source>Configure Proxy Provider</source>
+</trans-unit>
+<trans-unit id="sf6d46bb442b77e91">
+  <source>AdditionalScopes</source>
+</trans-unit>
+<trans-unit id="s2c8c6f89089b31d4">
+  <source>Configure Radius Provider</source>
+</trans-unit>
+<trans-unit id="sfe906cde5dddc041">
+  <source>Configure SAML Provider</source>
+</trans-unit>
+<trans-unit id="sb3defbacd01ad972">
+  <source>Property mappings used for user mapping.</source>
+</trans-unit>
+<trans-unit id="s7ccce0ec8d228db6">
+  <source>Configure SCIM Provider</source>
+</trans-unit>
+<trans-unit id="sd7728d2b6e1d25e9">
+  <source>Property mappings used for group creation.</source>
+</trans-unit>
+<trans-unit id="s7513372fe60f6387">
+  <source>Event volume</source>
 </trans-unit>
     </body>
   </file>

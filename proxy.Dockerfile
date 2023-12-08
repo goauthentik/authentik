@@ -15,7 +15,14 @@ COPY web .
 RUN npm run build-proxy
 
 # Stage 2: Build
-FROM docker.io/golang:1.21.3-bookworm AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/golang:1.21.5-bookworm AS builder
+
+ARG TARGETOS
+ARG TARGETARCH
+ARG TARGETVARIANT
+
+ARG GOOS=$TARGETOS
+ARG GOARCH=$TARGETARCH
 
 WORKDIR /go/src/goauthentik.io
 
@@ -29,7 +36,7 @@ ENV CGO_ENABLED=0
 COPY . .
 RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
-    go build -o /go/proxy ./cmd/proxy
+    GOARM="${TARGETVARIANT#v}" go build -o /go/proxy ./cmd/proxy
 
 # Stage 3: Run
 FROM gcr.io/distroless/static-debian11:debug

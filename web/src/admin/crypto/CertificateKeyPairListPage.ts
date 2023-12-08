@@ -2,6 +2,7 @@ import "@goauthentik/admin/crypto/CertificateGenerateForm";
 import "@goauthentik/admin/crypto/CertificateKeyPairForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
+import "@goauthentik/components/ak-status-label";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -117,11 +118,12 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
         return [
             html`<div>${item.name}</div>
                 ${item.managed ? html`<small>${managedSubText}</small>` : html``}`,
-            html`<ak-label color=${item.privateKeyAvailable ? PFColor.Green : PFColor.Grey}>
-                ${item.privateKeyAvailable
-                    ? msg(str`Yes (${item.privateKeyType?.toUpperCase()})`)
-                    : msg("No")}
-            </ak-label>`,
+            html`<ak-status-label
+                type="info"
+                ?good=${item.privateKeyAvailable}
+                good-label=${msg(str`Yes (${item.privateKeyType?.toUpperCase()})`)}
+            >
+            </ak-status-label>`,
             html`<ak-label color=${color}> ${item.certExpiry?.toLocaleString()} </ak-label>`,
             html`<ak-forms-modal>
                     <span slot="submit"> ${msg("Update")} </span>

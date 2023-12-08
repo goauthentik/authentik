@@ -217,6 +217,7 @@ class Event(SerializerModel, ExpiringModel):
                 "path": request.path,
                 "method": request.method,
                 "args": cleanse_dict(QueryDict(request.META.get("QUERY_STRING", ""))),
+                "user_agent": request.META.get("HTTP_USER_AGENT", ""),
             }
             # Special case for events created during flow execution
             # since they keep the http query within a wrapped query
