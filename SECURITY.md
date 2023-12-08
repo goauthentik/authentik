@@ -1,5 +1,9 @@
 authentik takes security very seriously. We follow the rules of [responsible disclosure](https://en.wikipedia.org/wiki/Responsible_disclosure), and we urge our community to do so as well, instead of reporting vulnerabilities publicly. This allows us to patch the issue quickly, announce it's existence and release the fixed version.
 
+## Independent audits and pentests
+
+In May/June of 2023 [Cure53](https://cure53.de) conducted an audit and pentest. The [results](https://cure53.de/pentest-report_authentik.pdf) are published on the [Cure53 website](https://cure53.de/#publications-2023). For more details about authentik's response to the findings of the audit refer to [2023-06 Cure53 Code audit](../website/docs/security/2023-06-cure53.md).
+
 ## What authentik classifies as a CVE
 
 CVE (Common Vulnerability and Exposure) is a system designed to aggregate all vulnerabilities. As such, a CVE will be issued when there is a either vulnerability or exposure. Per NIST, A vulnerability is:
