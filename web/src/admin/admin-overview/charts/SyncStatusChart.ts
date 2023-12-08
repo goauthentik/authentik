@@ -44,11 +44,11 @@ export class LDAPSyncStatusChart extends AKChart<SyncStatus[]> {
         await Promise.all(
             sources.results.map(async (element) => {
                 try {
-                    const health = await api.sourcesLdapSyncStatusList({
+                    const health = await api.sourcesLdapSyncStatusRetrieve({
                         slug: element.slug,
                     });
 
-                    health.forEach((task) => {
+                    health.tasks.forEach((task) => {
                         if (task.status !== TaskStatusEnum.Successful) {
                             metrics.failed += 1;
                         }
@@ -60,7 +60,7 @@ export class LDAPSyncStatusChart extends AKChart<SyncStatus[]> {
                             metrics.healthy += 1;
                         }
                     });
-                    if (health.length < 1) {
+                    if (health.tasks.length < 1) {
                         metrics.unsynced += 1;
                     }
                 } catch {

@@ -66,6 +66,7 @@ class SCIMUserTests(TestCase):
         self.assertJSONEqual(
             mock.request_history[1].body,
             {
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
                 "active": True,
                 "emails": [
                     {
@@ -121,6 +122,7 @@ class SCIMUserTests(TestCase):
         self.assertEqual(
             body,
             {
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
                 "active": True,
                 "emails": [
                     {
@@ -173,6 +175,7 @@ class SCIMUserTests(TestCase):
         self.assertJSONEqual(
             mock.request_history[1].body,
             {
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
                 "active": True,
                 "emails": [
                     {
@@ -240,6 +243,7 @@ class SCIMUserTests(TestCase):
         self.assertJSONEqual(
             mock.request_history[1].body,
             {
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
                 "active": True,
                 "emails": [
                     {

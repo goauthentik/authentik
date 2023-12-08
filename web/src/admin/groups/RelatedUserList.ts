@@ -8,8 +8,8 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import { first } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-status-label";
 import { rootInterface } from "@goauthentik/elements/Base";
-import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -24,7 +24,7 @@ import { UserOption } from "@goauthentik/elements/user/utils";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -195,9 +195,7 @@ export class RelatedUserList extends Table<User> {
                 <div>${item.username}</div>
                 <small>${item.name}</small>
             </a>`,
-            html`<ak-label color=${item.isActive ? PFColor.Green : PFColor.Red}>
-                ${item.isActive ? msg("Yes") : msg("No")}
-            </ak-label>`,
+            html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
             html`${first(item.lastLogin?.toLocaleString(), msg("-"))}`,
             html`<ak-forms-modal>
                     <span slot="submit"> ${msg("Update")} </span>
@@ -402,7 +400,16 @@ export class RelatedUserList extends Table<User> {
                         <ak-forms-modal>
                             <span slot="submit"> ${msg("Create")} </span>
                             <span slot="header"> ${msg("Create User")} </span>
-                            <ak-user-form slot="form"> </ak-user-form>
+                            ${this.targetGroup
+                                ? html`
+                                      <div class="pf-c-banner pf-m-info" slot="above-form">
+                                          ${msg(
+                                              str`This user will be added to the group "${this.targetGroup.name}".`,
+                                          )}
+                                      </div>
+                                  `
+                                : nothing}
+                            <ak-user-form .group=${this.targetGroup} slot="form"> </ak-user-form>
                             <a slot="trigger" class="pf-c-dropdown__menu-item">
                                 ${msg("Create user")}
                             </a>
@@ -415,7 +422,17 @@ export class RelatedUserList extends Table<User> {
                         >
                             <span slot="submit"> ${msg("Create")} </span>
                             <span slot="header"> ${msg("Create Service account")} </span>
-                            <ak-user-service-account slot="form"> </ak-user-service-account>
+                            ${this.targetGroup
+                                ? html`
+                                      <div class="pf-c-banner pf-m-info" slot="above-form">
+                                          ${msg(
+                                              str`This user will be added to the group "${this.targetGroup.name}".`,
+                                          )}
+                                      </div>
+                                  `
+                                : nothing}
+                            <ak-user-service-account-form .group=${this.targetGroup} slot="form">
+                            </ak-user-service-account-form>
                             <a slot="trigger" class="pf-c-dropdown__menu-item">
                                 ${msg("Create Service account")}
                             </a>

@@ -30,7 +30,7 @@ class RuntimeDict(TypedDict):
     uname: str
 
 
-class SystemSerializer(PassiveSerializer):
+class SystemInfoSerializer(PassiveSerializer):
     """Get system information."""
 
     http_headers = SerializerMethodField()
@@ -91,14 +91,14 @@ class SystemView(APIView):
     permission_classes = [HasPermission("authentik_rbac.view_system_info")]
     pagination_class = None
     filter_backends = []
-    serializer_class = SystemSerializer
+    serializer_class = SystemInfoSerializer
 
-    @extend_schema(responses={200: SystemSerializer(many=False)})
+    @extend_schema(responses={200: SystemInfoSerializer(many=False)})
     def get(self, request: Request) -> Response:
         """Get system information."""
-        return Response(SystemSerializer(request).data)
+        return Response(SystemInfoSerializer(request).data)
 
-    @extend_schema(responses={200: SystemSerializer(many=False)})
+    @extend_schema(responses={200: SystemInfoSerializer(many=False)})
     def post(self, request: Request) -> Response:
         """Get system information."""
-        return Response(SystemSerializer(request).data)
+        return Response(SystemInfoSerializer(request).data)

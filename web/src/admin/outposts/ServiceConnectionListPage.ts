@@ -4,6 +4,7 @@ import "@goauthentik/admin/outposts/ServiceConnectionKubernetesForm";
 import "@goauthentik/admin/outposts/ServiceConnectionWizard";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
+import "@goauthentik/components/ak-status-label";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -83,9 +84,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
         return [
             html`${item.name}`,
             html`${item.verboseName}`,
-            html`<ak-label color=${item.local ? PFColor.Grey : PFColor.Green}>
-                ${item.local ? msg("Yes") : msg("No")}
-            </ak-label>`,
+            html`<ak-status-label type="info" ?good=${item.local}></ak-status-label>`,
             html`${itemState?.healthy
                 ? html`<ak-label color=${PFColor.Green}>${ifDefined(itemState.version)}</ak-label>`
                 : html`<ak-label color=${PFColor.Red}>${msg("Unhealthy")}</ak-label>`}`,

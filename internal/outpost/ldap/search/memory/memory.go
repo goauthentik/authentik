@@ -62,22 +62,10 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 			"reason":       "empty_bind_dn",
 			"app":          ms.si.GetAppSlug(),
 		}).Inc()
-		metrics.RequestsRejectedLegacy.With(prometheus.Labels{
-			"outpost_name": ms.si.GetOutpostName(),
-			"type":         "search",
-			"reason":       "empty_bind_dn",
-			"app":          ms.si.GetAppSlug(),
-		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, fmt.Errorf("Search Error: Anonymous BindDN not allowed %s", req.BindDN)
 	}
 	if !utils.HasSuffixNoCase(req.BindDN, ","+baseDN) {
 		metrics.RequestsRejected.With(prometheus.Labels{
-			"outpost_name": ms.si.GetOutpostName(),
-			"type":         "search",
-			"reason":       "invalid_bind_dn",
-			"app":          ms.si.GetAppSlug(),
-		}).Inc()
-		metrics.RequestsRejectedLegacy.With(prometheus.Labels{
 			"outpost_name": ms.si.GetOutpostName(),
 			"type":         "search",
 			"reason":       "invalid_bind_dn",
@@ -90,12 +78,6 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 	if flag == nil || (flag.UserInfo == nil && flag.UserPk == flags.InvalidUserPK) {
 		req.Log().Debug("User info not cached")
 		metrics.RequestsRejected.With(prometheus.Labels{
-			"outpost_name": ms.si.GetOutpostName(),
-			"type":         "search",
-			"reason":       "user_info_not_cached",
-			"app":          ms.si.GetAppSlug(),
-		}).Inc()
-		metrics.RequestsRejectedLegacy.With(prometheus.Labels{
 			"outpost_name": ms.si.GetOutpostName(),
 			"type":         "search",
 			"reason":       "user_info_not_cached",
@@ -165,7 +147,11 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 						fg := api.NewGroup(g.Pk, g.NumPk, g.Name, g.ParentName, []api.GroupMember{u}, []api.Role{})
 						fg.SetUsers([]int32{flag.UserPk})
 						if g.Parent.IsSet() {
-							fg.SetParent(*g.Parent.Get())
+							if p := g.Parent.Get(); p != nil {
+								fg.SetParent(*p)
+							} else {
+								fg.SetParentNil()
+							}
 						}
 						fg.SetAttributes(g.Attributes)
 						fg.SetIsSuperuser(*g.IsSuperuser)

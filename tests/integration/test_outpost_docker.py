@@ -2,6 +2,7 @@
 from shutil import rmtree
 from tempfile import mkdtemp
 
+import pytest
 import yaml
 from channels.testing import ChannelsLiveServerTestCase
 from docker import DockerClient, from_env
@@ -34,8 +35,8 @@ class OutpostDockerTests(DockerTestCase, ChannelsLiveServerTestCase):
             privileged=True,
             healthcheck=Healthcheck(
                 test=["CMD", "docker", "info"],
-                interval=5 * 100 * 1000000,
-                start_period=5 * 100 * 1000000,
+                interval=5 * 1_000 * 1_000_000,
+                start_period=5 * 1_000 * 1_000_000,
             ),
             environment={"DOCKER_TLS_CERTDIR": "/ssl"},
             volumes={
@@ -95,12 +96,14 @@ class OutpostDockerTests(DockerTestCase, ChannelsLiveServerTestCase):
         except PermissionError:
             pass
 
+    @pytest.mark.timeout(120)
     def test_docker_controller(self):
         """test that deployment requires update"""
         controller = DockerController(self.outpost, self.service_connection)
         controller.up()
         controller.down()
 
+    @pytest.mark.timeout(120)
     def test_docker_static(self):
         """test that deployment requires update"""
         controller = DockerController(self.outpost, self.service_connection)

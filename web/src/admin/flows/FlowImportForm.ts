@@ -1,6 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { SentryIgnoredError } from "@goauthentik/common/errors";
-import { PFColor } from "@goauthentik/elements/Label";
+import "@goauthentik/components/ak-status-label";
 import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -46,9 +46,7 @@ export class FlowImportForm extends Form<Flow> {
                 <div class="pf-c-form__group-label">
                     <div class="c-form__horizontal-group">
                         <span class="pf-c-form__label-text">
-                            <ak-label color=${this.result?.success ? PFColor.Green : PFColor.Red}>
-                                ${this.result?.success ? msg("Yes") : msg("No")}
-                            </ak-label>
+                            <ak-status-label ?good=${this.result?.success}></ak-status-label>
                         </span>
                     </div>
                 </div>

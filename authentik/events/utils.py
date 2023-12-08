@@ -5,12 +5,13 @@ from dataclasses import asdict, is_dataclass
 from datetime import date, datetime, time, timedelta
 from enum import Enum
 from pathlib import Path
-from types import GeneratorType
+from types import GeneratorType, NoneType
 from typing import Any, Optional
 from uuid import UUID
 
 from django.contrib.auth.models import AnonymousUser
 from django.core.handlers.wsgi import WSGIRequest
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.db.models.base import Model
 from django.http.request import HttpRequest
@@ -153,7 +154,20 @@ def sanitize_item(value: Any) -> Any:
         return value.isoformat()
     if isinstance(value, timedelta):
         return str(value.total_seconds())
-    return value
+    if callable(value):
+        return {
+            "type": "callable",
+            "name": value.__name__,
+            "module": value.__module__,
+        }
+    # List taken from the stdlib's JSON encoder (_make_iterencode, encoder.py:415)
+    if isinstance(value, (bool, int, float, NoneType, list, tuple, dict)):
+        return value
+    try:
+        return DjangoJSONEncoder().default(value)
+    except TypeError:
+        return str(value)
+    return str(value)
 
 
 def sanitize_dict(source: dict[Any, Any]) -> dict[Any, Any]:

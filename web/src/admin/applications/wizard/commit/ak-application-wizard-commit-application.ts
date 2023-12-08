@@ -18,12 +18,14 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 
 import {
-    ApplicationRequest,
+    type ApplicationRequest,
     CoreApi,
-    TransactionApplicationRequest,
-    TransactionApplicationResponse,
+    type ModelRequest,
+    type TransactionApplicationRequest,
+    type TransactionApplicationResponse,
+    ValidationError,
+    ValidationErrorFromJSON,
 } from "@goauthentik/api";
-import type { ModelRequest } from "@goauthentik/api";
 
 import BasePanel from "../BasePanel";
 import providerModelsList from "../auth-method-choice/ak-application-wizard-authentication-method-choice.choices";
@@ -88,7 +90,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
     commitState: State = idleState;
 
     @state()
-    errors: string[] = [];
+    errors?: ValidationError;
 
     response?: TransactionApplicationResponse;
 
@@ -121,27 +123,10 @@ export class ApplicationWizardCommitApplication extends BasePanel {
         }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    decodeErrors(body: Record<string, any>) {
-        const spaceify = (src: Record<string, string>) =>
-            Object.values(src).map((msg) => `\u00a0\u00a0\u00a0\u00a0${msg}`);
-
-        let errs: string[] = [];
-        if (body["app"] !== undefined) {
-            errs = [...errs, msg("In the Application:"), ...spaceify(body["app"])];
-        }
-        if (body["provider"] !== undefined) {
-            errs = [...errs, msg("In the Provider:"), ...spaceify(body["provider"])];
-        }
-        console.log(body, errs);
-        return errs;
-    }
-
     async send(
         data: TransactionApplicationRequest,
     ): Promise<TransactionApplicationResponse | void> {
-        this.errors = [];
-
+        this.errors = undefined;
         new CoreApi(DEFAULT_CONFIG)
             .coreTransactionalApplicationsUpdate({
                 transactionApplicationRequest: data,
@@ -153,18 +138,57 @@ export class ApplicationWizardCommitApplication extends BasePanel {
                 this.commitState = successState;
             })
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            .catch((resolution: any) => {
-                resolution.response.json().then(
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    (body: Record<string, any>) => {
-                        this.errors = this.decodeErrors(body);
+            .catch(async (resolution: any) => {
+                const errors = (this.errors = ValidationErrorFromJSON(
+                    await resolution.response.json(),
+                ));
+                this.dispatchWizardUpdate({
+                    update: {
+                        ...this.wizard,
+                        errors,
                     },
-                );
+                    status: "failed",
+                });
                 this.commitState = errorState;
             });
     }
 
-    render(): TemplateResult {
+    renderErrors(errors?: ValidationError) {
+        if (!errors) {
+            return nothing;
+        }
+
+        const navTo = (step: number) => () =>
+            this.dispatchCustomEvent("ak-wizard-nav", {
+                command: "goto",
+                step,
+            });
+
+        if (errors.app) {
+            return html`<p>${msg("There was an error in the application.")}</p>
+                <p><a @click=${navTo(0)}>${msg("Review the application.")}</a></p>`;
+        }
+        if (errors.provider) {
+            return html`<p>${msg("There was an error in the provider.")}</p>
+                <p><a @click=${navTo(2)}>${msg("Review the provider.")}</a></p>`;
+        }
+        if (errors.detail) {
+            return html`<p>${msg("There was an error")}: ${errors.detail}</p>`;
+        }
+        if ((errors?.nonFieldErrors ?? []).length > 0) {
+            return html`<p>$(msg("There was an error")}:</p>
+                <ul>
+                    ${(errors.nonFieldErrors ?? []).map((e: string) => html`<li>${e}</li>`)}
+                </ul>`;
+        }
+        return html`<p>
+            ${msg(
+                "There was an error creating the application, but no error message was sent. Please review the server logs.",
+            )}
+        </p>`;
+    }
+
+    render() {
         const icon = classMap(
             this.commitState.icon.reduce((acc, icon) => ({ ...acc, [icon]: true }), {}),
         );
@@ -184,13 +208,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
                             >
                                 ${this.commitState.label}
                             </h1>
-                            ${this.errors.length > 0
-                                ? html`<ul>
-                                      ${this.errors.map(
-                                          (msg) => html`<li><code>${msg}</code></li>`,
-                                      )}
-                                  </ul>`
-                                : nothing}
+                            ${this.renderErrors(this.errors)}
                         </div>
                     </div>
                 </div>

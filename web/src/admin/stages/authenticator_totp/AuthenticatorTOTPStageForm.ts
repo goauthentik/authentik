@@ -89,14 +89,14 @@ export class AuthenticatorTOTPStageForm extends ModelForm<AuthenticatorTOTPStage
                     >
                         <select name="users" class="pf-c-form-control">
                             <option
-                                value="${DigitsEnum.NUMBER_6}"
-                                ?selected=${this.instance?.digits === DigitsEnum.NUMBER_6}
+                                value="${DigitsEnum._6}"
+                                ?selected=${this.instance?.digits === DigitsEnum._6}
                             >
                                 ${msg("6 digits, widely compatible")}
                             </option>
                             <option
-                                value="${DigitsEnum.NUMBER_8}"
-                                ?selected=${this.instance?.digits === DigitsEnum.NUMBER_8}
+                                value="${DigitsEnum._8}"
+                                ?selected=${this.instance?.digits === DigitsEnum._8}
                             >
                                 ${msg(
                                     "8 digits, not compatible with apps like Google Authenticator",

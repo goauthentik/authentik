@@ -1,7 +1,8 @@
 import "@goauthentik/admin/tenants/TenantForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
-import { PFColor } from "@goauthentik/elements/Label";
+import "@goauthentik/components/ak-status-label";
+import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
@@ -82,9 +83,7 @@ export class TenantListPage extends TablePage<Tenant> {
     row(item: Tenant): TemplateResult[] {
         return [
             html`${item.domain}`,
-            html`<ak-label color=${item._default ? PFColor.Green : PFColor.Red}>
-                ${item._default ? msg("Yes") : msg("No")}
-            </ak-label>`,
+            html`<ak-status-label ?good=${item._default}></ak-status-label>`,
             html`<ak-forms-modal>
                     <span slot="submit"> ${msg("Update")} </span>
                     <span slot="header"> ${msg("Update Tenant")} </span>

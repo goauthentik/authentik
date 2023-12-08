@@ -167,7 +167,11 @@ class ChallengeStageView(StageView):
                 stage_type=self.__class__.__name__, method="get_challenge"
             ).time(),
         ):
-            challenge = self.get_challenge(*args, **kwargs)
+            try:
+                challenge = self.get_challenge(*args, **kwargs)
+            except StageInvalidException as exc:
+                self.logger.debug("Got StageInvalidException", exc=exc)
+                return self.executor.stage_invalid()
         with Hub.current.start_span(
             op="authentik.flow.stage._get_challenge",
             description=self.__class__.__name__,

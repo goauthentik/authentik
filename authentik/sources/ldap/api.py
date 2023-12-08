@@ -1,13 +1,14 @@
 """Source API Views"""
-from typing import Any
+from typing import Any, Optional
 
+from django.core.cache import cache
 from django_filters.filters import AllValuesMultipleFilter
 from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, extend_schema_field, inline_serializer
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import DictField, ListField
+from rest_framework.fields import BooleanField, DictField, ListField, SerializerMethodField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -17,15 +18,17 @@ from authentik.admin.api.tasks import TaskSerializer
 from authentik.core.api.propertymappings import PropertyMappingSerializer
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
+from authentik.core.api.utils import PassiveSerializer
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.monitored_tasks import TaskInfo
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
-from authentik.sources.ldap.tasks import SYNC_CLASSES
+from authentik.sources.ldap.tasks import CACHE_KEY_STATUS, SYNC_CLASSES
 
 
 class LDAPSourceSerializer(SourceSerializer):
     """LDAP Source Serializer"""
 
+    connectivity = SerializerMethodField()
     client_certificate = PrimaryKeyRelatedField(
         allow_null=True,
         help_text="Client certificate to authenticate against the LDAP Server's Certificate.",
@@ -34,6 +37,10 @@ class LDAPSourceSerializer(SourceSerializer):
         ),
         required=False,
     )
+
+    def get_connectivity(self, source: LDAPSource) -> Optional[dict[str, dict[str, str]]]:
+        """Get cached source connectivity"""
+        return cache.get(CACHE_KEY_STATUS + source.slug, None)
 
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         """Check that only a single source has password_sync on"""
@@ -75,8 +82,16 @@ class LDAPSourceSerializer(SourceSerializer):
             "sync_parent_group",
             "property_mappings",
             "property_mappings_group",
+            "connectivity",
         ]
         extra_kwargs = {"bind_password": {"write_only": True}}
+
+
+class LDAPSyncStatusSerializer(PassiveSerializer):
+    """LDAP Source sync status"""
+
+    is_running = BooleanField(read_only=True)
+    tasks = TaskSerializer(many=True, read_only=True)
 
 
 class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
@@ -114,19 +129,19 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
 
     @extend_schema(
         responses={
-            200: TaskSerializer(many=True),
+            200: LDAPSyncStatusSerializer(),
         }
     )
     @action(methods=["GET"], detail=True, pagination_class=None, filter_backends=[])
     def sync_status(self, request: Request, slug: str) -> Response:
         """Get source's sync status"""
-        source = self.get_object()
-        results = []
-        tasks = TaskInfo.by_name(f"ldap_sync:{source.slug}:*")
-        if tasks:
-            for task in tasks:
-                results.append(task)
-        return Response(TaskSerializer(results, many=True).data)
+        source: LDAPSource = self.get_object()
+        tasks = TaskInfo.by_name(f"ldap_sync:{source.slug}:*") or []
+        status = {
+            "tasks": tasks,
+            "is_running": source.sync_lock.locked(),
+        }
+        return Response(LDAPSyncStatusSerializer(status).data)
 
     @extend_schema(
         responses={

@@ -14,7 +14,7 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.sources.ldap.models import LDAPSource
 from authentik.sources.ldap.password import LDAPPasswordChanger
-from authentik.sources.ldap.tasks import ldap_sync_single
+from authentik.sources.ldap.tasks import ldap_connectivity_check, ldap_sync_single
 from authentik.stages.prompt.signals import password_validate
 
 LOGGER = get_logger()
@@ -32,6 +32,7 @@ def sync_ldap_source_on_save(sender, instance: LDAPSource, **_):
     if not instance.property_mappings.exists() or not instance.property_mappings_group.exists():
         return
     ldap_sync_single.delay(instance.pk)
+    ldap_connectivity_check.delay(instance.pk)
 
 
 @receiver(password_validate)
