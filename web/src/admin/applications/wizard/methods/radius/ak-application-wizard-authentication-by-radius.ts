@@ -59,7 +59,7 @@ export class ApplicationWizardAuthenticationByRadius extends WithTenantConfig(Ba
                             .errorMessages=${errors?.sharedSecret ?? []}
                             value=${first(
                                 provider?.sharedSecret,
-                                randomString(128, ascii_letters + digits)
+                                randomString(128, ascii_letters + digits),
                             )}
                             required
                         ></ak-text-input>
