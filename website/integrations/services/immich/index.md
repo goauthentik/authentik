@@ -1,5 +1,5 @@
 ---
-Immich
+title: Immich
 ---
 
 <span class="badge badge--secondary">Support level: Community</span>
