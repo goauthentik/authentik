@@ -167,6 +167,7 @@ export class FlowExecutor extends Interface implements StageHost {
             }
             .ak-brand img {
                 padding: 0 2rem;
+                max-height: inherit;
             }
         `);
     }
