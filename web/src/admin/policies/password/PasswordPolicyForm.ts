@@ -1,8 +1,8 @@
+import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -12,7 +12,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { PasswordPolicy, PoliciesApi } from "@goauthentik/api";
 
 @customElement("ak-policy-password-form")
-export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
+export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
     @state()
     showStatic = true;
 
@@ -30,12 +30,6 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
         this.showHIBP = policy.checkHaveIBeenPwned || false;
         this.showZxcvbn = policy.checkZxcvbn || false;
         return policy;
-    }
-
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated policy.")
-            : msg("Successfully created policy.");
     }
 
     async send(data: PasswordPolicy): Promise<PasswordPolicy> {
