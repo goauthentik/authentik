@@ -61,6 +61,6 @@ Protocol Settings
 
     Signing Key: Select any available key
 
-    Redirect URIs/Origins: Authentik will save the first succesful redirect URI if you enter * in this field, but the following should work..https://servuce.company/oauth/Authentik/callback
+    Redirect URIs/Origins: Authentik will save the first succesful redirect URI if you enter * in this field, but the following should work: `https://service.company/oauth/Authentik/callback`
 
 
