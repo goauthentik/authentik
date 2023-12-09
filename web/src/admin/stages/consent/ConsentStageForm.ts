@@ -1,7 +1,7 @@
+import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
 
 import { msg } from "@lit/localize";
@@ -12,7 +12,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { ConsentStage, ConsentStageModeEnum, StagesApi } from "@goauthentik/api";
 
 @customElement("ak-stage-consent-form")
-export class ConsentStageForm extends ModelForm<ConsentStage, string> {
+export class ConsentStageForm extends BaseStageForm<ConsentStage> {
     loadInstance(pk: string): Promise<ConsentStage> {
         return new StagesApi(DEFAULT_CONFIG)
             .stagesConsentRetrieve({
@@ -26,12 +26,6 @@ export class ConsentStageForm extends ModelForm<ConsentStage, string> {
 
     @property({ type: Boolean })
     showExpiresIn = false;
-
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated stage.")
-            : msg("Successfully created stage.");
-    }
 
     async send(data: ConsentStage): Promise<ConsentStage> {
         if (this.instance) {

@@ -1,8 +1,8 @@
+import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -11,17 +11,11 @@ import { customElement } from "lit/decorators.js";
 import { InvitationStage, StagesApi } from "@goauthentik/api";
 
 @customElement("ak-stage-invitation-form")
-export class InvitationStageForm extends ModelForm<InvitationStage, string> {
+export class InvitationStageForm extends BaseStageForm<InvitationStage> {
     loadInstance(pk: string): Promise<InvitationStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesRetrieve({
             stageUuid: pk,
         });
-    }
-
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated stage.")
-            : msg("Successfully created stage.");
     }
 
     async send(data: InvitationStage): Promise<InvitationStage> {

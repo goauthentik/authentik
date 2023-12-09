@@ -1,8 +1,8 @@
+import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 
@@ -22,7 +22,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-provider-scim-form")
-export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
+export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
     loadInstance(pk: number): Promise<SCIMProvider> {
         return new ProvidersApi(DEFAULT_CONFIG).providersScimRetrieve({
             id: pk,
@@ -38,12 +38,6 @@ export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
     }
 
     propertyMappings?: PaginatedSCIMMappingList;
-
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated provider.")
-            : msg("Successfully created provider.");
-    }
 
     async send(data: SCIMProvider): Promise<SCIMProvider> {
         if (this.instance) {

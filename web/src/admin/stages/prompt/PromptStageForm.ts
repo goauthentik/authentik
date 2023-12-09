@@ -1,9 +1,9 @@
+import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import "@goauthentik/admin/stages/prompt/PromptForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/ModalForm";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -19,7 +19,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-stage-prompt-form")
-export class PromptStageForm extends ModelForm<PromptStage, string> {
+export class PromptStageForm extends BaseStageForm<PromptStage> {
     loadInstance(pk: string): Promise<PromptStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesPromptStagesRetrieve({
             stageUuid: pk,
@@ -37,12 +37,6 @@ export class PromptStageForm extends ModelForm<PromptStage, string> {
 
     prompts?: PaginatedPromptList;
     policies?: PaginatedPolicyList;
-
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated stage.")
-            : msg("Successfully created stage.");
-    }
 
     async send(data: PromptStage): Promise<PromptStage> {
         if (this.instance) {

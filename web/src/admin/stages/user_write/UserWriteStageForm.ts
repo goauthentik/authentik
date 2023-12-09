@@ -1,9 +1,9 @@
+import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { UserCreationModeEnum } from "@goauthentik/api/dist/models/UserCreationModeEnum";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 
@@ -22,17 +22,11 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-stage-user-write-form")
-export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
+export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
     loadInstance(pk: string): Promise<UserWriteStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesUserWriteRetrieve({
             stageUuid: pk,
         });
-    }
-
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated stage.")
-            : msg("Successfully created stage.");
     }
 
     async send(data: UserWriteStage): Promise<UserWriteStage> {

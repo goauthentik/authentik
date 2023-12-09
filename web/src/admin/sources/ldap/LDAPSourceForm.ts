@@ -1,10 +1,10 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import { placeholderHelperText } from "@goauthentik/admin/helperText";
+import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { msg } from "@lit/localize";
@@ -24,7 +24,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-source-ldap-form")
-export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
+export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
     loadInstance(pk: string): Promise<LDAPSource> {
         return new SourcesApi(DEFAULT_CONFIG).sourcesLdapRetrieve({
             slug: pk,
@@ -40,12 +40,6 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
     }
 
     propertyMappings?: PaginatedLDAPPropertyMappingList;
-
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated source.")
-            : msg("Successfully created source.");
-    }
 
     async send(data: LDAPSource): Promise<LDAPSource> {
         if (this.instance) {
