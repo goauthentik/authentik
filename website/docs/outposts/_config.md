@@ -64,9 +64,16 @@ kubernetes_image_pull_secrets: []
 # (Available with 2022.11.0+)
 # Applies to: proxy outposts
 kubernetes_ingress_class_name: null
-# Optionally apply an RFC 6902 compliant patch to the Kubernetes objects. This value expects
-# a mapping of a key which can be any of the values from `kubernetes_disabled_components`,
-# which configures which component the patches are applied to. For example:
+# Optionally apply an RFC 6902 compliant patch to the Kubernetes objects.
+# For an understanding of how this works, refer to the link below:
+# https://github.com/kubernetes-sigs/kustomize/blob/master/examples/jsonpatch.md
+# 
+# This value expects a mapping where the key can be any value of `kubernetes_disabled_components`.
+# This key determines the component to which the patches will be applied.
+#
+# For example use this patch to add custom resource requests and limits
+# to the outpost deployment:
+# 
 # deployment:
 #   - op: add
 #     path: "/spec/template/spec/containers/0/resources"
