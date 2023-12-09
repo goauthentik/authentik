@@ -1,9 +1,9 @@
+import { BasePropertyMappingForm } from "@goauthentik/admin/property-mappings/BasePropertyMappingForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { docLink } from "@goauthentik/common/global";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -13,17 +13,11 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { PropertymappingsApi, ScopeMapping } from "@goauthentik/api";
 
 @customElement("ak-property-mapping-scope-form")
-export class PropertyMappingScopeForm extends ModelForm<ScopeMapping, string> {
+export class PropertyMappingScopeForm extends BasePropertyMappingForm<ScopeMapping> {
     loadInstance(pk: string): Promise<ScopeMapping> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsScopeRetrieve({
             pmUuid: pk,
         });
-    }
-
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated mapping.")
-            : msg("Successfully created mapping.");
     }
 
     async send(data: ScopeMapping): Promise<ScopeMapping> {
