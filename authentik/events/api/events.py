@@ -5,7 +5,7 @@ from json import loads
 import django_filters
 from django.db.models.aggregates import Count
 from django.db.models.fields.json import KeyTextTransform, KeyTransform
-from django.db.models.functions import ExtractDay
+from django.db.models.functions import ExtractDay, ExtractHour
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
@@ -149,7 +149,15 @@ class EventViewSet(ModelViewSet):
         return Response(EventTopPerUserSerializer(instance=events, many=True).data)
 
     @extend_schema(
-        methods=["GET"],
+        responses={200: CoordinateSerializer(many=True)},
+    )
+    @action(detail=False, methods=["GET"], pagination_class=None)
+    def volume(self, request: Request) -> Response:
+        """Get event volume for specified filters and timeframe"""
+        queryset = self.filter_queryset(self.get_queryset())
+        return Response(queryset.get_events_per(timedelta(days=7), ExtractHour, 7 * 3))
+
+    @extend_schema(
         responses={200: CoordinateSerializer(many=True)},
         filters=[],
         parameters=[

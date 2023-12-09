@@ -98,7 +98,7 @@ The challenges for multi-repos are basically the inverse of the advantages of a 
 
 We are still a small company here at Authentik Security, moving fast to grow our product’s feature set and leap-frog our competitors, while staying true to our open source origins. We want to innovate, release, and at this stage, tilt towards rapid development. Our engineers and infrastructure team have the ability and desire to collaborate closely and learn from one another; this culture is important going forward, and using a monorepo works as a compelling incentive for team transparency and support across the projects.
 
-The history of authenik provides some additional insight into our use of a monorepo; as the single maintainer for many years, a monorepo was simply easier for me to manage, and even as our wonderful community grew and contributions increased and sponsors appeared, the benefits of a monorepo remain.
+The history of authentik provides some additional insight into our use of a monorepo; as the single maintainer for many years, a monorepo was simply easier for me to manage, and even as our wonderful community grew and contributions increased and sponsors appeared, the benefits of a monorepo remain.
 
 So for us, at this stage, we benefit greatly from using a monorepo for the vast majority of our code base (and documentation). Using a monorepo means that as a team, we closely integrate our work: coding, documentation, test suites, refactoring efforts, common dependencies and tooling.
 
