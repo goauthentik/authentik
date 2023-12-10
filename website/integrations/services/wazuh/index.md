@@ -185,7 +185,7 @@ Save the file and use the `securityadmin.sh` file with the following command to 
 export JAVA_HOME=/usr/share/wazuh-indexer/jdk/ && bash /usr/share/wazuh-indexer/plugins/opensearch-security/tools/securityadmin.sh -f /etc/wazuh-indexer/opensearch-security/roles_mapping.yml -icl -key /etc/wazuh-indexer/certs/admin-key.pem -cert /etc/wazuh-indexer/certs/admin.pem -cacert /etc/wazuh-indexer/certs/root-ca.pem -h localhost -nhnv
 ```
 
-If all goes well this shows `Done with success` in the end
+If all goes well, `Done with success` displays.
 
 ### Step 8 - wazuh.yml
 
