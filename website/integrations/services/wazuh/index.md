@@ -194,7 +194,7 @@ Check `/usr/share/wazuh-dashboard/data/wazuh/config/wazuh.yml` and make sure tha
 
 ### Step 9 - security role mapping
 
-open the wazuh dashboard - click on the downward pointing triangle next to the wazuh logo then on `Security` and `Roles mapping`.
+Open the wazuh dashboard, click on the downward pointing triangle next to the wazuh logo, and then click on **Security** and **Roles mapping**.
 ![](roles_mapping1.png)
 We will now add a new role mapping. Give it any descriptive name and then add the respective Roles. In this case `administrator` is the name,  and add a new custom rule at the bottom that matches (`FIND`) the `user_name` to `wazuh-admin`.
 ![](saml-admin.png)
