@@ -90,7 +90,7 @@ Now create an application to use the newly created provider. `Applications` -> `
 
 ![](./application.png)
 
-You can change the UI / upload a logo so that in the applications overview you have a nice layout and can easily identify the new wazuh app.
+You can change the UI and upload a logo so that in the **Applications** overview you have a nice layout and can easily identify the new wazuh app.
 ![](./applications_overview.png)
 
 ### Step 5 - metadata + wazuh opensearch-security configuration
