@@ -27,7 +27,7 @@ While wazuh allows both LDAP and SAML integration, in this post we will only wal
 
 The first step would be to add a certificate for wazuh.
 
-You can generate a new one under `System` -> `Certificates` -> `Generate`
+You can generate a new one under **System** -> **Certificates** -> **Generate** in the Admin interface of authentik.
 
 Add a name, set the validity period to 365 days and click `Generate`
 ![](./certificate.png)
