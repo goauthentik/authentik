@@ -37,7 +37,7 @@ If all goes well authentik will display a message like the one below
 
 ### Step 2 - saml provider
 
-Now add a SAML provider - you can find the options under `Applications` -> `Providers`
+Now add a SAML provider - you can find the options under **Applications** -> **Providers**
 
 ![](./provider.png)
 
