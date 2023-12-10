@@ -220,5 +220,5 @@ If all went well you should now only have to restart the wazuh dashboard
 
 `systemctl restart wazuh-dashboard`
 
-and then you should be greeted by the authentik login screen when you try to connect to the dashboard
+And then you should be greeted by the authentik login screen when you try to connect to the dashboard.
 ![](login.png)
