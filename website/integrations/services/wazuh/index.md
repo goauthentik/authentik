@@ -159,7 +159,7 @@ If all goes well, `Done with success` displays.
 
 ### Step 7 - roles_mapping.yml
 
-In order to map the backend roles from authentik to wazuh specific roles you need to adjust the `/etc/wazuh-indexer/opensearch-security/roles_mapping.yml`
+In order to map the backend roles from authentik to wazuh-specific roles you need to modify the `/etc/wazuh-indexer/opensearch-security/roles_mapping.yml` file.
 
 Open the file and scroll to the following section:
 ![Alt text](roles_mapping.png)
