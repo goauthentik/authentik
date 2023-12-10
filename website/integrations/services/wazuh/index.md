@@ -100,7 +100,7 @@ Now download the metadata file `saml_authentik_meta.xml` from the `Applications`
 and copy/save it on the wazuh server - ideally under `/etc/wazuh-indexer/opensearch-security/idp-metadata.xml`
 ![Alt text](./metadata.png)
 
-Next up change the `/etc/wazuh-indexer/opensearch-security/config.yml` and make sure it looks like the one below
+Next up change the `/etc/wazuh-indexer/opensearch-security/config.yml` and make sure it looks like the one below:
 
 -   you need to adjust the `metadata_file` if your name differs from the one shown above/below
 -   `entity_id` needs to change twice, once in the `idp` section and once in the `sp` section - you can look it up in the metadata xml file - search for `entityID`
