@@ -155,7 +155,7 @@ After you save the `config.yml` you need to restart the wazuh manager and tell i
 export JAVA_HOME=/usr/share/wazuh-indexer/jdk/ && bash /usr/share/wazuh-indexer/plugins/opensearch-security/tools/securityadmin.sh -f /etc/wazuh-indexer/opensearch-security/config.yml -icl -key /etc/wazuh-indexer/certs/admin-key.pem -cert /etc/wazuh-indexer/certs/admin.pem -cacert /etc/wazuh-indexer/certs/root-ca.pem -h localhost -nhnv
 ```
 
-If all goes well this shows `Done with success` in the end
+If all goes well, `Done with success` displays.
 
 ### Step 7 - roles_mapping.yml
 
