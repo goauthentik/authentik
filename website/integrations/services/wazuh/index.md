@@ -201,7 +201,7 @@ We will now add a new role mapping. Give it any descriptive name and then add th
 
 ### Step 10 - final step - opensearch_dashboards.yml
 
-The last step is to adapt the `/etc/wazuh-dashboard/opensearch_dashboards.yml` and add three lines to the bottom of the file:
+The last step is to modify `/etc/wazuh-dashboard/opensearch_dashboards.yml` and add three lines to the bottom of the file:
 
 ```yml
 opensearch_security.auth.type: "saml"
