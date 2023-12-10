@@ -216,7 +216,7 @@ opensearch_security.session.keepalive: false
 
 ![](dashboardsyml.png)
 
-If all went well you should now only have to restart the wazuh dashboard
+If all went well you should now only have to restart the wazuh dashboard.
 
 `systemctl restart wazuh-dashboard`
 
