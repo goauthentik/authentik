@@ -1,5 +1,5 @@
 ---
-title: wazuh.
+title: wazuh
 ---
 
 <span class="badge badge--secondary">Support level: Community</span>
