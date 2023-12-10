@@ -48,7 +48,7 @@ Add a descriptive name, select the appropriate Authentication/Authorization flow
 
 `https://<WAZUH_IP_OR_HOSTNAME>/_opendistro/_security/saml/acs`
 
-also make sure to give it an appropriate `EntityID` name (`issuer`), you will need that later and a valid option is e.g. `wazuh-saml`
+Also make sure to give it an appropriate `EntityID` name (`issuer`), you will need that later and a valid option is e.g. `wazuh-saml`
 
 Select `Post` as the `Service Provider Binding` and move on to the advanced protocol settings.
 ![](./provider2.png)
