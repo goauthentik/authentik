@@ -196,7 +196,7 @@ Check `/usr/share/wazuh-dashboard/data/wazuh/config/wazuh.yml` and make sure tha
 
 open the wazuh dashboard - click on the downward pointing triangle next to the wazuh logo then on `Security` and `Roles mapping`.
 ![](roles_mapping1.png)
-We will now add a new role mapping - add any name + the respective Roles -> in this case administrator and add a new custom rule at the bottom that matches (`FIND`) the `user_name` to `wazuh-admin`.
+We will now add a new role mapping. Give it any descriptive name and then add the respective Roles. In this case `administrator` is the name,  and add a new custom rule at the bottom that matches (`FIND`) the `user_name` to `wazuh-admin`.
 ![](saml-admin.png)
 
 ### Step 10 - final step - opensearch_dashboards.yml
