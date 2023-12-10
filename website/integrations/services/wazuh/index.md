@@ -95,10 +95,11 @@ You can change the UI and upload a logo so that in the **Applications** overview
 
 ### Step 5 - metadata + wazuh opensearch-security configuration
 
-Now download the metadata file `saml_authentik_meta.xml` from the `Applications` -> `Provider` -> `Related Objects` -> `Download`
+Now download the metadata file `saml_authentik_meta.xml` from the `Applications` -> `Provider` -> `Download` in the bottom left corner
+![Alt text](./metadata.png)
 
 and copy/save it on the wazuh server - ideally under `/etc/wazuh-indexer/opensearch-security/idp-metadata.xml`
-![Alt text](./metadata.png)
+
 
 Next up change the `/etc/wazuh-indexer/opensearch-security/config.yml` and make sure it looks like the one below:
 
