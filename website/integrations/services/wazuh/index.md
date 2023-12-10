@@ -149,7 +149,7 @@ authc:
 
 ### Step 6 - securityadmin.sh
 
-After you save the `config.yml` you need to restart the wazuh manager and tell it to load the modified file - this can be done automagically using the `securityadmin.sh` wazuh provides with the following command:
+After you save the `config.yml` you need to restart the wazuh manager and tell it to load the modified file - this can be done automagically using the `securityadmin.sh` file that wazuh provides with the following command:
 
 ```bash
 export JAVA_HOME=/usr/share/wazuh-indexer/jdk/ && bash /usr/share/wazuh-indexer/plugins/opensearch-security/tools/securityadmin.sh -f /etc/wazuh-indexer/opensearch-security/config.yml -icl -key /etc/wazuh-indexer/certs/admin-key.pem -cert /etc/wazuh-indexer/certs/admin.pem -cacert /etc/wazuh-indexer/certs/root-ca.pem -h localhost -nhnv
