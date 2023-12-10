@@ -79,7 +79,7 @@ if ak_is_group_member(request.user, name="wazuh-admins"):
 Make sure to adjust the provider to include the newly created property mapping in the `Advanced protocol settings`.
 ![](./property-mapping3.png)
 
-### Step 4 - saml application
+### Step 4 - SAML application
 
 Now create an application to use the newly created provider. `Applications` -> `Applications` -> `Create`
 
