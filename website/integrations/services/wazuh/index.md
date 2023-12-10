@@ -29,7 +29,7 @@ The first step would be to add a certificate for wazuh.
 
 You can generate a new one under **System** -> **Certificates** -> **Generate** in the Admin interface of authentik.
 
-Add a name, set the validity period to 365 days and click `Generate`
+Add a name, set the validity period to 365 days and click **Generate**.
 ![](./certificate.png)
 
 If all goes well authentik will display a message like the one below
