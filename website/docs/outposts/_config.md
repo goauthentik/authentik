@@ -68,8 +68,8 @@ kubernetes_ingress_class_name: null
 # For an understanding of how this works, refer to the link below:
 # https://github.com/kubernetes-sigs/kustomize/blob/master/examples/jsonpatch.md
 # 
-# This value expects a mapping where the key can be any value of `kubernetes_disabled_components`.
-# This key determines the component to which the patches will be applied.
+# This value expects a mapping where the key represents the Kubernetes component that shall be patched.
+# It can be any of the same values supported by `kubernetes_disabled_components`.
 #
 # For example use this patch to add custom resource requests and limits
 # to the outpost deployment:
