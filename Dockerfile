@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+
 # Stage 1: Build website
 FROM --platform=${BUILDPLATFORM} docker.io/node:21 as website-builder
 
@@ -7,7 +9,7 @@ WORKDIR /work/website
 
 RUN --mount=type=bind,target=/work/website/package.json,src=./website/package.json \
     --mount=type=bind,target=/work/website/package-lock.json,src=./website/package-lock.json \
-    --mount=type=cache,target=/root/.npm \
+    --mount=type=cache,id=npm-website,sharing=shared,target=/root/.npm \
     npm ci --include=dev
 
 COPY ./website /work/website/
@@ -25,7 +27,7 @@ WORKDIR /work/web
 
 RUN --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
     --mount=type=bind,target=/work/web/package-lock.json,src=./web/package-lock.json \
-    --mount=type=cache,target=/root/.npm \
+    --mount=type=cache,id=npm-web,sharing=shared,target=/root/.npm \
     npm ci --include=dev
 
 COPY ./web /work/web/
@@ -62,8 +64,8 @@ COPY ./go.sum /go/src/goauthentik.io/go.sum
 
 ENV CGO_ENABLED=0
 
-RUN --mount=type=cache,target=/go/pkg/mod \
-    --mount=type=cache,target=/root/.cache/go-build \
+RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
+    --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
     GOARM="${TARGETVARIANT#v}" go build -o /go/authentik ./cmd/server
 
 # Stage 4: MaxMind GeoIP
@@ -81,7 +83,7 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "/usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage 5: Python dependencies
-FROM docker.io/python:3.12.0-slim-bookworm AS python-deps
+FROM docker.io/python:3.12.1-slim-bookworm AS python-deps
 
 WORKDIR /ak-root/poetry
 
@@ -89,7 +91,9 @@ ENV VENV_PATH="/ak-root/venv" \
     POETRY_VIRTUALENVS_CREATE=false \
     PATH="/ak-root/venv/bin:$PATH"
 
-RUN --mount=type=cache,target=/var/cache/apt \
+RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
+
+RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/cache/apt \
     apt-get update && \
     # Required for installing pip packages
     apt-get install -y --no-install-recommends build-essential pkg-config libxmlsec1-dev zlib1g-dev libpq-dev
@@ -104,7 +108,7 @@ RUN --mount=type=bind,target=./pyproject.toml,src=./pyproject.toml \
     poetry install --only=main --no-ansi --no-interaction
 
 # Stage 6: Run
-FROM docker.io/python:3.12.0-slim-bookworm AS final-image
+FROM docker.io/python:3.12.1-slim-bookworm AS final-image
 
 ARG GIT_BUILD_HASH
 ARG VERSION
