@@ -167,6 +167,7 @@ export class FlowExecutor extends Interface implements StageHost {
             }
             .ak-brand img {
                 padding: 0 2rem;
+                max-height: inherit;
             }
         `);
     }
@@ -502,7 +503,7 @@ export class FlowExecutor extends Interface implements StageHost {
                                                     ? html`
                                                           <li>
                                                               <a
-                                                                  href="https://unsplash.com/@marcute"
+                                                                  href="https://unsplash.com/@federize"
                                                                   >${msg("Background image")}</a
                                                               >
                                                           </li>
