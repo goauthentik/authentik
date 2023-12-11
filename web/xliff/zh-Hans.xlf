@@ -7929,51 +7929,67 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="scda8dc24b561e205">
   <source>There was an error in the application.</source>
+  <target>应用程序中存在一个错误。</target>
 </trans-unit>
 <trans-unit id="sdaca9c2c0361ed3a">
   <source>Review the application.</source>
+  <target>检查此应用程序。</target>
 </trans-unit>
 <trans-unit id="sb50000a8fada5672">
   <source>There was an error in the provider.</source>
+  <target>提供程序中存在一个错误。</target>
 </trans-unit>
 <trans-unit id="s21f95eaf151d4ce3">
   <source>Review the provider.</source>
+  <target>检查此提供程序。</target>
 </trans-unit>
 <trans-unit id="s9fd39a5cb20b4e61">
   <source>There was an error</source>
+  <target>存在一个错误</target>
 </trans-unit>
 <trans-unit id="s7a6b3453209e1066">
   <source>There was an error creating the application, but no error message was sent. Please review the server logs.</source>
+  <target>创建应用程序时存在一个错误，但未发送错误消息。请检查服务器日志。</target>
 </trans-unit>
 <trans-unit id="s1a711c19cda48375">
   <source>Configure LDAP Provider</source>
+  <target>配置 LDAP 提供程序</target>
 </trans-unit>
 <trans-unit id="s9368e965b5c292ab">
   <source>Configure OAuth2/OpenId Provider</source>
+  <target>配置 OAuth2/OpenID 提供程序</target>
 </trans-unit>
 <trans-unit id="sf5cbccdc6254c8dc">
   <source>Configure Proxy Provider</source>
+  <target>配置代理提供程序</target>
 </trans-unit>
 <trans-unit id="sf6d46bb442b77e91">
   <source>AdditionalScopes</source>
+  <target>额外的作用域</target>
 </trans-unit>
 <trans-unit id="s2c8c6f89089b31d4">
   <source>Configure Radius Provider</source>
+  <target>配置 Radius 提供程序</target>
 </trans-unit>
 <trans-unit id="sfe906cde5dddc041">
   <source>Configure SAML Provider</source>
+  <target>配置 SAML 提供程序</target>
 </trans-unit>
 <trans-unit id="sb3defbacd01ad972">
   <source>Property mappings used for user mapping.</source>
+  <target>用于用户映射的属性映射。</target>
 </trans-unit>
 <trans-unit id="s7ccce0ec8d228db6">
   <source>Configure SCIM Provider</source>
+  <target>配置 SCIM 提供程序</target>
 </trans-unit>
 <trans-unit id="sd7728d2b6e1d25e9">
   <source>Property mappings used for group creation.</source>
+  <target>用于创建组的属性映射。</target>
 </trans-unit>
 <trans-unit id="s7513372fe60f6387">
   <source>Event volume</source>
+  <target>事件容量</target>
 </trans-unit>
 <trans-unit id="s744401846fea6e76">
   <source>Brand</source>
