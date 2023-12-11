@@ -2,7 +2,7 @@ authentik takes security very seriously. We follow the rules of [responsible di
 
 ## Independent audits and pentests
 
-In May/June of 2023 [Cure53](https://cure53.de) conducted an audit and pentest. The [results](https://cure53.de/pentest-report_authentik.pdf) are published on the [Cure53 website](https://cure53.de/#publications-2023). For more details about authentik's response to the findings of the audit refer to 2023-06 Cure53 Code audit.
+In May/June of 2023 [Cure53](https://cure53.de) conducted an audit and pentest. The [results](https://cure53.de/pentest-report_authentik.pdf) are published on the [Cure53 website](https://cure53.de/#publications-2023). For more details about authentik's response to the findings of the audit refer to [2023-06 Cure53 Code audit](https://goauthentik.io/docs/security/2023-06-cure53).
 
 ## What authentik classifies as a CVE
 
