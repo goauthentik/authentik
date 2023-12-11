@@ -4,6 +4,7 @@ import { fileURLToPath } from "url";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function* walkFilesystem(dir: string): Generator<string, undefined, any> {
     const openeddir = fs.opendirSync(dir);
     if (!openeddir) {
@@ -44,14 +45,14 @@ function createOneImportLine(line: string) {
 const isSourceFile = /\.ts$/;
 function getTheSourceFiles() {
     return Array.from(walkFilesystem(path.join(__dirname, "..", "src"))).filter((path) =>
-        isSourceFile.test(path),
+        isSourceFile.test(path)
     );
 }
 
 function getTheImportLines(importPaths: string[]) {
     const importLines: string[] = importPaths.reduce(
         (acc: string[], path) => [...acc, extractImportLinesFromFile(path)].flat(),
-        [],
+        []
     );
     const uniqueImportLines = new Set(importLines);
     const sortedImportLines = Array.from(uniqueImportLines.keys());
