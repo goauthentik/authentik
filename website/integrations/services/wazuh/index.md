@@ -100,7 +100,6 @@ Now download the metadata file `saml_authentik_meta.xml` from the `Applications`
 
 and copy/save it on the wazuh server - ideally under `/etc/wazuh-indexer/opensearch-security/idp-metadata.xml`
 
-
 Next up change the `/etc/wazuh-indexer/opensearch-security/config.yml` and make sure it looks like the one below:
 
 -   you need to adjust the `metadata_file` if your name differs from the one shown above/below
@@ -197,7 +196,7 @@ Check `/usr/share/wazuh-dashboard/data/wazuh/config/wazuh.yml` and make sure tha
 
 Open the wazuh dashboard, click on the downward pointing triangle next to the wazuh logo, and then click on **Security** and **Roles mapping**.
 ![](roles_mapping1.png)
-We will now add a new role mapping. Give it any descriptive name and then add the respective Roles. In this case `administrator` is the name,  and add a new custom rule at the bottom that matches (`FIND`) the `user_name` to `wazuh-admin`.
+We will now add a new role mapping. Give it any descriptive name and then add the respective Roles. In this case `administrator` is the name, and add a new custom rule at the bottom that matches (`FIND`) the `user_name` to `wazuh-admin`.
 ![](saml-admin.png)
 
 ### Step 10 - final step - opensearch_dashboards.yml
