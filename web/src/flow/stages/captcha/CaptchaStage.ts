@@ -86,7 +86,6 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
                         token: token,
                     });
                 },
-                size: "invisible",
             });
             grecaptcha.execute(captchaId);
         });
