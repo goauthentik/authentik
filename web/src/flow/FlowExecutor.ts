@@ -168,6 +168,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             }
             .ak-brand img {
                 padding: 0 2rem;
+                max-height: inherit;
             }
         `);
     }
@@ -509,7 +510,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                                                     ? html`
                                                           <li>
                                                               <a
-                                                                  href="https://unsplash.com/@marcute"
+                                                                  href="https://unsplash.com/@federize"
                                                                   >${msg("Background image")}</a
                                                               >
                                                           </li>
