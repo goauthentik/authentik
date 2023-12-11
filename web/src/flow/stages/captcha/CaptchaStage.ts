@@ -5,7 +5,7 @@ import "@goauthentik/elements/forms/FormElement";
 import "@goauthentik/flow/FormStatic";
 import "@goauthentik/flow/stages/access_denied/AccessDeniedStage";
 import { BaseStage } from "@goauthentik/flow/stages/base";
-import type { TurnstileObject, RenderParameters as TurnstileOptions } from "turnstile-types";
+import type { TurnstileObject } from "turnstile-types";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -86,6 +86,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
                         token: token,
                     });
                 },
+                size: "invisible",
             });
             grecaptcha.execute(captchaId);
         });
@@ -115,7 +116,6 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         }
         (window as unknown as TurnstileWindow).turnstile.render(container, {
             sitekey: this.challenge.siteKey,
-            size: "invisible" as TurnstileOptions["size"],
             callback: (token) => {
                 this.host?.submit({
                     token: token,
