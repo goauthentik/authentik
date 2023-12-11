@@ -1,5 +1,4 @@
 ///<reference types="@hcaptcha/types"/>
-///<reference types="turnstile-types"/>
 import "@goauthentik/elements/EmptyState";
 import { PFSize } from "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/forms/FormElement";
