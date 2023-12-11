@@ -21,8 +21,6 @@ class BrandMiddleware:
         if not hasattr(request, "brand"):
             brand = get_brand_for_request(request)
             setattr(request, "brand", brand)
-            set_tag("authentik.brand_uuid", brand.brand_uuid.hex)
-            set_tag("authentik.brand_domain", brand.domain)
             locale = brand.default_locale
             if locale != "":
                 activate(locale)

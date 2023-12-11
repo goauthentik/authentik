@@ -93,5 +93,5 @@ def event_post_save_notification(sender, instance: Event, **_):
 @receiver(pre_delete, sender=User)
 def event_user_pre_delete_cleanup(sender, instance: User, **_):
     """If gdpr_compliance is enabled, remove all the user's events"""
-    if get_current_tenant().avatars:
+    if get_current_tenant().gdpr_compliance:
         gdpr_cleanup.delay(instance.pk)
