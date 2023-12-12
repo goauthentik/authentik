@@ -27,6 +27,7 @@ const docsSidebar = {
                 "installation/automated-install",
                 "installation/air-gapped",
                 "installation/monitoring",
+                "installation/storage-s3",
             ],
         },
         {

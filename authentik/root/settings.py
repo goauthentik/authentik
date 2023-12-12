@@ -16,8 +16,6 @@ from authentik.lib.utils.reflection import get_env
 from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BACKEND_LDAP
 
 BASE_DIR = Path(__file__).absolute().parent.parent.parent
-STATICFILES_DIRS = [BASE_DIR / Path("web")]
-MEDIA_ROOT = BASE_DIR / Path("media")
 
 DEBUG = CONFIG.get_bool("debug")
 SECRET_KEY = CONFIG.get("secret_key")
@@ -372,8 +370,51 @@ if _ERROR_REPORTING:
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
+STATICFILES_DIRS = [BASE_DIR / Path("web")]
 STATIC_URL = "/static/"
-MEDIA_URL = "/media/"
+
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
+
+# Media files
+
+if CONFIG.get("storage.media.backend", "file") == "s3":
+    STORAGES["default"] = {
+        "BACKEND": "authentik.root.storages.S3Storage",
+        "OPTIONS": {
+            # How to talk to S3
+            "session_profile": CONFIG.get("storage.media.s3.session_profile", None),
+            "access_key": CONFIG.get("storage.media.s3.access_key", None),
+            "secret_key": CONFIG.get("storage.media.s3.secret_key", None),
+            "security_token": CONFIG.get("storage.media.s3.security_token", None),
+            "region_name": CONFIG.get("storage.media.s3.region", None),
+            "use_ssl": CONFIG.get_bool("storage.media.s3.use_ssl", True),
+            "endpoint_url": CONFIG.get("storage.media.s3.endpoint", None),
+            "bucket_name": CONFIG.get("storage.media.s3.bucket_name"),
+            "default_acl": "private",
+            "querystring_auth": True,
+            "signature_version": "s3v4",
+            "file_overwrite": False,
+            "location": "media",
+            "url_protocol": "https:"
+            if CONFIG.get("storage.media.s3.secure_urls", True)
+            else "http:",
+            "custom_domain": CONFIG.get("storage.media.s3.custom_domain", None),
+        },
+    }
+# Fallback on file storage backend
+else:
+    STORAGES["default"] = {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "OPTIONS": {
+            "location": Path(CONFIG.get("storage.media.file.path")),
+            "base_url": "/media/",
+        },
+    }
 
 TEST = False
 TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"

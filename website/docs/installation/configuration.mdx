@@ -116,7 +116,7 @@ To check if your config has been applied correctly, you can run the following co
     `AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION` only applies to the cache expiry, see [`AUTHENTIK_REPUTATION__EXPIRY`](#authentik_reputation__expiry) to control how long reputation is persisted for.
     :::
 
-## Listen Setting
+## Listen Settings
 
 -   `AUTHENTIK_LISTEN__HTTP`: Listening address:port (e.g. `0.0.0.0:9000`) for HTTP (Applies to Server and Proxy outpost)
 -   `AUTHENTIK_LISTEN__HTTPS`: Listening address:port (e.g. `0.0.0.0:9443`) for HTTPS (Applies to Server and Proxy outpost)
@@ -129,6 +129,22 @@ To check if your config has been applied correctly, you can run the following co
     Defaults to `127.0.0.0/8`, `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `fe80::/10`, `::1/128`.
 
     Requests directly coming from one an address within a CIDR specified here are able to set proxy headers, such as `X-Forwarded-For`. Requests coming from other addresses will not be able to set these headers.
+
+## Media Storage Settings
+
+These settings affect where media files are stored. Those files include applications and sources icons. By default, they are stored on disk in the `/media` directory of the authentik container. S3 storage is also supported.
+
+-   `AUTHENTIK_STORAGE_MEDIA_BACKEND`: Where to store files. Valid values are `file` and `s3`. For `file` storage, files are stored in a `/media` directory in the container. For `s3`, see below.
+-   `AUTHENTIK_STORAGE_MEDIA_S3_REGION`: S3 region where the bucket has been created. May be omitted depending on which S3 provider you use. No default.
+-   `AUTHENTIK_STORAGE_MEDIA_S3_USE__SSL`: Whether to use HTTPS when talking to the S3 storage providers. Defaults to `true`.
+-   `AUTHENTIK_STORAGE_MEDIA_S3_ENDPOINT`: Endpoint to use to talk to the S3 storage provider. Override the previous region and use_ssl settings. Must be a valid URL in the form of `https://s3.provider`. No default.
+-   `AUTHENTIK_STORAGE_MEDIA_S3_SESSION__PROFILE`: Profile to use when using AWS SDK authentication. No default. Supports hot-reloading.
+-   `AUTHENTIK_STORAGE_MEDIA_S3_ACCESS__KEY`: Access key to authenticate to S3. May be omitted if using AWS SDK authentication. Supports hot-reloading.
+-   `AUTHENTIK_STORAGE_MEDIA_S3_SECRET__KEY`: Secret key to authenticate to S3. May be omitted if using AWS SDK authentication. Supports hot-reloading.
+-   `AUTHENTIK_STORAGE_MEDIA_S3_SECURITY__TOKEN`: Security token to authenticate to S3. May be omitted. Supports hot-reloading.
+-   `AUTHENTIK_STORAGE_MEDIA_S3_BUCKET__NAME`: Name of the bucket to use to store files.
+-   `AUTHENTIK_STORAGE_MEDIA_S3_CUSTOM__DOMAIN`: Domain to use to create URLs for users. Mainly useful for non-AWS providers. May include a port. Must include the bucket. Example: `s3.company:8080/authentik-media`.
+-   `AUTHENTIK_STORAGE_MEDIA_S3_SECURE__URLS`: Whether URLS created for users use `http` or `https`. Defaults to `true`.
 
 ## authentik Settings
 

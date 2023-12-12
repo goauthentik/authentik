@@ -2,7 +2,7 @@ package config
 
 type Config struct {
 	// Core specific config
-	Paths          PathsConfig          `yaml:"paths"`
+	Storage        StorageConfig        `yaml:"storage"`
 	LogLevel       string               `yaml:"log_level" env:"AUTHENTIK_LOG_LEVEL"`
 	ErrorReporting ErrorReportingConfig `yaml:"error_reporting"`
 	Redis          RedisConfig          `yaml:"redis"`
@@ -45,8 +45,17 @@ type ListenConfig struct {
 	TrustedProxyCIDRs []string `yaml:"trusted_proxy_cidrs" env:"AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS"`
 }
 
-type PathsConfig struct {
-	Media string `yaml:"media"`
+type StorageConfig struct {
+	Media StorageMediaConfig `yaml:"media"`
+}
+
+type StorageMediaConfig struct {
+	Backend string            `yaml:"backend" env:"AUTHENTIK_STORAGE_MEDIA_BACKEND"`
+	File    StorageFileConfig `yaml:"file"`
+}
+
+type StorageFileConfig struct {
+	Path string `yaml:"path" env:"AUTHENTIK_STORAGE_MEDIA_FILE_PATH"`
 }
 
 type ErrorReportingConfig struct {

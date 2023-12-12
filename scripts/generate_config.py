@@ -18,6 +18,19 @@ with open("local.env.yml", "w", encoding="utf-8") as _config:
             "blueprints_dir": "./blueprints",
             "cert_discovery_dir": "./certs",
             "geoip": "tests/GeoLite2-City-Test.mmdb",
+            "storage": {
+                "media": {
+                    "backend": "file",
+                    "s3": {
+                        "endpoint": "http://localhost:8020",
+                        "access_key": "accessKey1",
+                        "secret_key": "secretKey1",
+                        "bucket_name": "authentik-media",
+                        "custom_domain": "localhost:8020/authentik-media",
+                        "secure_urls": False,
+                    },
+                },
+            },
         },
         _config,
         default_flow_style=False,
