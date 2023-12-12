@@ -1,6 +1,6 @@
 ---
 title: "Okta's October breach part two: a delayed but slightly better response"
-description: “Okta continues to revel more information about the HAR files breach first revealed in October; now we know that a service account was involved, and 100% of their customer support users were impacted.”
+description: "Okta continues to revel more information about the HAR files breach first revealed in October; now we know that a service account was involved, and 100% of their customer support users were impacted."
 slug: 2023-12-12-oktas-october-breach-part-two
 authors:
     - name: Jens Langhammer
@@ -52,21 +52,21 @@ As mentioned above, the new information revealed by Okta came from their securit
 
 **Initial access gained via a service account**
 
-This new finding, based on retracing the steps of that IP address, show that the initial breach occurred when the hacker obtained the credentials for a service account “stored in the system”, which provided access to the Customer Support dashboard and had permissions to view and update customer support cases. The hacker then reviewed customer support cases, downloaded the associated HAR files, and retrieved the session tokens.
+This new finding, based on retracing the steps of that IP address, show that the initial breach occurred when the hacker obtained the credentials for a service account "stored in the system", which provided access to the Customer Support dashboard and had permissions to view and update customer support cases. The hacker then reviewed customer support cases, downloaded the associated HAR files, and retrieved the session tokens.
 
 From the [November 3rd announcement](https://sec.okta.com/articles/2023/11/unauthorized-access-oktas-support-case-management-system-root-cause), we now know that the service account credentials were exposed through an Okta employee’s personal Google account, which the employee had accessed on the Okta-issued work laptop.
 
 In announcing the service account’s role in the breach, Okta’s CISO stated:
 
-> “During our investigation into suspicious use of this account, Okta Security identified that an employee had signed-in to their personal Google profile on the Chrome browser of their Okta-managed laptop. The username and password of the service account had been saved into the employee’s personal Google account.”
+> "During our investigation into suspicious use of this account, Okta Security identified that an employee had signed-in to their personal Google profile on the Chrome browser of their Okta-managed laptop. The username and password of the service account had been saved into the employee’s personal Google account."
 
 The use of the service account was discovered on October 16, by examining the activities of the IP address of the hacker that BeyondTrust had supplied Okta. This begs the question of why Okta did not revel the malicious use of the service account in their October 20th announcement. Perhaps they did not yet want to show details of their internal investigation?
 
 ### And a third shoe in late November
 
-Now fast-forward to Okta’s [November 29th announcement](https://sec.okta.com/harfiles). Back in October, it was known that after the hacker accessed Okta’s Support dashboard they ran queries on the support database to create reports containing customer data. In the November 3rd announcement Okta shared that the report was thought to be quite small is scope; this is the infamous “less than 1% of Okta customers” statement.
+Now fast-forward to Okta’s [November 29th announcement](https://sec.okta.com/harfiles). Back in October, it was known that after the hacker accessed Okta’s Support dashboard they ran queries on the support database to create reports containing customer data. In the November 3rd announcement Okta shared that the report was thought to be quite small is scope; this is the infamous "less than 1% of Okta customers" statement.
 
-But after more internal investigation and recreating the reports that the malicious actor ran, Okta announced on November 29th that their original statement that less than 1% of their users were impacted by the October breach was incorrect. Instead, Okta revealed that the scope of the report was much larger, and indeed concluded that “[the report contained a list of all customer support system users](https://sec.okta.com/harfiles)”. A total of 18,400 users. The only customers that were not impacted are those in FedRAMP and DoD IL4 environments, who are on a separate support platform.
+But after more internal investigation and recreating the reports that the malicious actor ran, Okta announced on November 29th that their original statement that less than 1% of their users were impacted by the October breach was incorrect. Instead, Okta revealed that the scope of the report was much larger, and indeed concluded that "[the report contained a list of all customer support system users](https://sec.okta.com/harfiles)". A total of 18,400 users. The only customers that were not impacted are those in FedRAMP and DoD IL4 environments, who are on a separate support platform.
 
 > An aside, perhaps, but the timing of Okta’s update is interesting; the announcement was released on the same date as the quarterly earnings report. This could be seen as transparency, or it could be seen as damage control. (Also, why in the heck is Nov 29th within Okta’s 3rd quarter of **fiscal year 2024**? But we aren’t writing here about Okta’s financial schedules; I digress.)
 
@@ -76,7 +76,7 @@ Apparently when the hacker ran queries to gather customer data, they used a stan
 
 In addition to removing all filters on the report, it seems that Okta’s original analysis of the logs pertaining to the breach failed to take in to account exactly HOW the hacker accessed and downloaded data:
 
-> “For a period of 14 days, while actively investigating, Okta did not identify suspicious downloads in our logs. When a user opens and views files attached to a support case, a specific log event type and ID is generated tied to that file. If a user instead navigates directly to the Files tab in the customer support system, as the threat actor did in this attack, they will instead generate an **entirely different log event** with a different record ID.””
+> "For a period of 14 days, while actively investigating, Okta did not identify suspicious downloads in our logs. When a user opens and views files attached to a support case, a specific log event type and ID is generated tied to that file. If a user instead navigates directly to the Files tab in the customer support system, as the threat actor did in this attack, they will instead generate an **entirely different log event** with a different record ID."
 
 ## Now what?
 
@@ -84,10 +84,10 @@ The third shoe has dropped, but it feels like there might still be a fourth. May
 
 So while we are all waiting with baited breath to see if Okta can squeeze even more drama into 2023, here are a few tips to consider:
 
--   If you are an Okta customer, do indeed follow each and every one of their recommendations, listed under the “**Implementing recommended best practices**” section of their [November 29th announcement](https://sec.okta.com/harfiles).
--   Be aware of Okta’s plan for a 90-day pause on new features. During the [earning report call](https://seekingalpha.com/article/4655057-okta-inc-okta-q3-2024-earnings-call-transcript) on November 29th CEO Todd McKinnon stated “"During this hyper-focused phase, no other project or even product development area is more important. In fact, the launch dates for the new products and features that we highlighted at Oktane last month will be pushed out approximately 90 days.”
+-   If you are an Okta customer, do indeed follow each and every one of their recommendations, listed under the "**Implementing recommended best practices**" section of their [November 29th announcement](https://sec.okta.com/harfiles).
+-   Be aware of Okta’s plan for a 90-day pause on new features. During the [earning report call](https://seekingalpha.com/article/4655057-okta-inc-okta-q3-2024-earnings-call-transcript) on November 29th CEO Todd McKinnon stated "During this hyper-focused phase, no other project or even product development area is more important. In fact, the launch dates for the new products and features that we highlighted at Oktane last month will be pushed out approximately 90 days."
 -   As Okta advises, be on the lookout for more phishing attempts and stay hyper-vigilant.
--   In general, across the board, be vigilant and adopt a “[security mindset](https://goauthentik.io/blog/2023-11-30-automated-security-versus-the-security-mindset)” (as valuable and maybe more than any technology).
+-   In general, across the board, be vigilant and adopt a "[security mindset](https://goauthentik.io/blog/2023-11-30-automated-security-versus-the-security-mindset)" (as valuable and maybe more than any technology).
 -   Consider breaking out of vendor lock-in and using an on-premise, open core solution such as [authentik](https://goauthentik.io/). We realize change is hard, but continual breaches and uncertainty around when a breach has been fully contained is also painful.
 
 We’d be happy to talk with you more about your security and identity management needs; reach out to us with an email to [hello@goauthentik.io](mailto:hello@goauthentik.io) or on [Discord](https://discord.com/channels/809154715984199690/809154716507963434).
