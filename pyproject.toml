@@ -133,6 +133,7 @@ django-guardian = "*"
 django-model-utils = "*"
 django-prometheus = "*"
 django-redis = "*"
+django-storages = { extras = ["s3"], version = "*" }
 djangorestframework = "*"
 djangorestframework-guardian = "*"
 docker = "*"

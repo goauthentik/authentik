@@ -21,7 +21,21 @@ with open("local.env.yml", "w", encoding="utf-8") as _config:
                 "processors": {
                     "geoip": "tests/GeoLite2-City-Test.mmdb",
                     "asn": "tests/GeoLite2-ASN-Test.mmdb",
-                }
+                },
+            },
+            "storage": {
+                "media": {
+                    "backend": "file",
+                    "s3": {
+                        "endpoint": "http://localhost:8020",
+                        "access_key": "accessKey1",
+                        "secret_key": "secretKey1",
+                        "addressing_style": "path",
+                        "bucket_name": "authentik-media",
+                        "custom_domain": "localhost:8020/authentik-media",
+                        "secure_urls": False,
+                    },
+                },
             },
         },
         _config,

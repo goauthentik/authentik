@@ -13,7 +13,7 @@ title: Full development environment
 
 ## Services Setup
 
-For PostgreSQL and Redis, you can use the `docker-compose.yml` file in `/scripts`.To use these pre-configured database instances, navigate to the `/scripts` directory in your local copy of the authentik git repo, and run `docker compose up -d`.
+For PostgreSQL and Redis, you can use the `docker-compose.yml` file in `/scripts`. To use these pre-configured database instances, navigate to the `/scripts` directory in your local copy of the authentik git repo, and run `docker compose up -d`.
 You can also use a native install, if you prefer.
 
 :::info

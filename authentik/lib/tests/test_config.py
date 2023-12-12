@@ -75,7 +75,7 @@ class TestConfig(TestCase):
 
         # Update config file
         write(file, "bar".encode())
-        config.refresh("file_test")
+        self.assertEqual(config.refresh("file_test"), "foobar")
         self.assertEqual(config.get("file_test"), "foobar")
 
         unlink(file_name)

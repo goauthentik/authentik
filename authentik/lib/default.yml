@@ -37,8 +37,8 @@ redis:
   tls_reqs: "none"
 
 # broker:
-  # url: ""
-  # transport_options: ""
+# url: ""
+# transport_options: ""
 
 cache:
   # url: ""
@@ -48,13 +48,10 @@ cache:
   timeout_reputation: 300
 
 # channel:
-  # url: ""
+# url: ""
 
 # result_backend:
-  # url: ""
-
-paths:
-  media: ./media
+# url: ""
 
 debug: false
 remote_debug: false
@@ -133,3 +130,21 @@ web:
 
 worker:
   concurrency: 2
+
+storage:
+  media:
+    backend: file # or s3
+    file:
+      path: ./media
+    s3:
+      # How to talk to s3
+      # region: "us-east-1"
+      # use_ssl: True
+      # endpoint: "https://s3.us-east-1.amazonaws.com"
+      # addressing_style: "path" # or "virtual"
+      # access_key: ""
+      # secret_key: ""
+      # bucket_name: "authentik-media"
+      # How to render file URLs
+      # custom_domain: null
+      secure_urls: True
