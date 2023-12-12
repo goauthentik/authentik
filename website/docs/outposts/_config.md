@@ -67,14 +67,14 @@ kubernetes_ingress_class_name: null
 # Optionally apply an RFC 6902 compliant patch to the Kubernetes objects.
 # For an understanding of how this works, refer to the link below:
 # https://github.com/kubernetes-sigs/kustomize/blob/master/examples/jsonpatch.md
-# 
+#
 # This value expects a mapping where the key represents
 # the Kubernetes component that shall be patched.
 # It can be any of the same values supported by `kubernetes_disabled_components`.
 #
 # For example use this patch to add custom resource requests and limits
 # to the outpost deployment:
-# 
+#
 # deployment:
 #   - op: add
 #     path: "/spec/template/spec/containers/0/resources"
