@@ -324,7 +324,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Certificate")} name="certificate">
                         <ak-crypto-certificate-search
-                            certificate=${this.instance?.certificate}
+                            .certificate=${this.instance?.certificate}
                         ></ak-crypto-certificate-search>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal

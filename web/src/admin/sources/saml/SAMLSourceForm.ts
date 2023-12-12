@@ -272,7 +272,7 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Signing keypair")} name="signingKp">
                         <ak-crypto-certificate-search
-                            certificate=${this.instance?.signingKp}
+                            .certificate=${this.instance?.signingKp}
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
@@ -285,7 +285,7 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         name="verificationKp"
                     >
                         <ak-crypto-certificate-search
-                            certificate=${this.instance?.verificationKp}
+                            .certificate=${this.instance?.verificationKp}
                             nokey
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
