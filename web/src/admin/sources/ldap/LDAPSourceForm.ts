@@ -206,7 +206,7 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                         name="peerCertificate"
                     >
                         <ak-crypto-certificate-search
-                            certificate=${this.instance?.peerCertificate}
+                            .certificate=${this.instance?.peerCertificate}
                             nokey
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
@@ -220,7 +220,7 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                         name="clientCertificate"
                     >
                         <ak-crypto-certificate-search
-                            certificate=${this.instance?.clientCertificate}
+                            .certificate=${this.instance?.clientCertificate}
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(

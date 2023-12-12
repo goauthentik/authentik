@@ -206,7 +206,7 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Certificate")} name="certificate">
                         <ak-crypto-certificate-search
-                            certificate=${this.instance?.certificate}
+                            .certificate=${this.instance?.certificate}
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(

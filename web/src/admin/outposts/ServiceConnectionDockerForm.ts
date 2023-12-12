@@ -88,7 +88,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                 name="tlsVerification"
             >
                 <ak-crypto-certificate-search
-                    certificate=${this.instance?.tlsVerification}
+                    .certificate=${this.instance?.tlsVerification}
                 ></ak-crypto-certificate-search>
                 <p class="pf-c-form__helper-text">
                     ${msg(
@@ -101,7 +101,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                 name="tlsAuthentication"
             >
                 <ak-crypto-certificate-search
-                    certificate=${this.instance?.tlsAuthentication}
+                    .certificate=${this.instance?.tlsAuthentication}
                 ></ak-crypto-certificate-search>
                 <p class="pf-c-form__helper-text">
                     ${msg(

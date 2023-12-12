@@ -142,21 +142,21 @@ export class ApplicationForm extends ModelForm<Application, string> {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-text-input
                 name="name"
-                value=${this.instance?.name}
+                .value=${this.instance?.name}
                 label=${msg("Name")}
                 required
                 help=${msg("Application's display Name.")}
             ></ak-text-input>
             <ak-text-input
                 name="slug"
-                value=${this.instance?.slug}
+                .value=${this.instance?.slug}
                 label=${msg("Slug")}
                 required
                 help=${msg("Internal application name used in URLs.")}
             ></ak-text-input>
             <ak-text-input
                 name="group"
-                value=${this.instance?.group}
+                .value=${this.instance?.group}
                 label=${msg("Group")}
                 help=${msg(
                     "Optionally enter a group name. Applications with identical groups are shown grouped together.",
@@ -165,7 +165,7 @@ export class ApplicationForm extends ModelForm<Application, string> {
             <ak-provider-search-input
                 name="provider"
                 label=${msg("Provider")}
-                value=${this.instance?.provider}
+                .value=${this.instance?.provider}
                 help=${msg("Select a provider that this application should use.")}
                 blankable
             ></ak-provider-search-input>
@@ -215,7 +215,7 @@ export class ApplicationForm extends ModelForm<Application, string> {
                         ? html`<ak-file-input
                                   label="${msg("Icon")}"
                                   name="metaIcon"
-                                  value=${this.instance?.metaIcon}
+                                  .value=${this.instance?.metaIcon}
                                   current=${msg("Currently set to:")}
                               ></ak-file-input>
                               ${this.instance?.metaIcon

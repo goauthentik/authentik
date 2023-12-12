@@ -235,7 +235,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         name="webCertificate"
                     >
                         <ak-crypto-certificate-search
-                            certificate=${this.instance?.webCertificate}
+                            .certificate=${this.instance?.webCertificate}
                         ></ak-crypto-certificate-search>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal

@@ -175,7 +175,7 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                         name="signingKp"
                     >
                         <ak-crypto-certificate-search
-                            certificate=${this.instance?.signingKp}
+                            .certificate=${this.instance?.signingKp}
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
@@ -188,7 +188,7 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                         name="verificationKp"
                     >
                         <ak-crypto-certificate-search
-                            certificate=${this.instance?.verificationKp}
+                            .certificate=${this.instance?.verificationKp}
                             nokey
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
