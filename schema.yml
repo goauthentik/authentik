@@ -18352,19 +18352,19 @@ paths:
             application/vnd.oai.openapi:
               schema:
                 type: object
-                additionalProperties: {}
+                additionalProperties: true
             application/yaml:
               schema:
                 type: object
-                additionalProperties: {}
+                additionalProperties: true
             application/vnd.oai.openapi+json:
               schema:
                 type: object
-                additionalProperties: {}
+                additionalProperties: true
             application/json:
               schema:
                 type: object
-                additionalProperties: {}
+                additionalProperties: true
           description: ''
         '400':
           content:
@@ -31009,7 +31009,7 @@ components:
       properties:
         application:
           type: object
-          additionalProperties: {}
+          additionalProperties: true
         counted_events:
           type: integer
         unique_users:
@@ -31436,7 +31436,7 @@ components:
           type: array
           items:
             type: object
-            additionalProperties: {}
+            additionalProperties: true
           readOnly: true
         success:
           type: boolean
@@ -31473,7 +31473,7 @@ components:
           readOnly: true
         plan_context:
           type: object
-          additionalProperties: {}
+          additionalProperties: true
           description: Get the plan's context, sanitized
           readOnly: true
         session_id:
@@ -32396,19 +32396,19 @@ components:
           type: array
           items:
             type: object
-            additionalProperties: {}
+            additionalProperties: true
           readOnly: true
         group:
           type: array
           items:
             type: object
-            additionalProperties: {}
+            additionalProperties: true
           readOnly: true
         membership:
           type: array
           items:
             type: object
-            additionalProperties: {}
+            additionalProperties: true
           readOnly: true
       required:
       - group
@@ -38604,7 +38604,7 @@ components:
           type: array
           items:
             type: object
-            additionalProperties: {}
+            additionalProperties: true
           readOnly: true
       required:
       - log_messages
@@ -42286,7 +42286,7 @@ components:
           readOnly: true
         settings:
           type: object
-          additionalProperties: {}
+          additionalProperties: true
           description: Get user settings with tenant and group settings applied
           readOnly: true
         type:
