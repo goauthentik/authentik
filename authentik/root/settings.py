@@ -138,6 +138,7 @@ SPECTACULAR_SETTINGS = {
         "EventActions": "authentik.events.models.EventAction",
         "ChallengeChoices": "authentik.flows.challenge.ChallengeTypes",
         "FlowDesignationEnum": "authentik.flows.models.FlowDesignation",
+        "FlowLayoutEnum": "authentik.flows.models.FlowLayout",
         "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",
         "ProxyMode": "authentik.providers.proxy.models.ProxyMode",
         "PromptTypeEnum": "authentik.stages.prompt.models.FieldTypes",

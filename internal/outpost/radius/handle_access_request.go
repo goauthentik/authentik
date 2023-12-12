@@ -15,7 +15,7 @@ func (rs *RadiusServer) Handle_AccessRequest(w radius.ResponseWriter, r *RadiusR
 	fe := flow.NewFlowExecutor(r.Context(), r.pi.flowSlug, r.pi.s.ac.Client.GetConfig(), log.Fields{
 		"username":  username,
 		"client":    r.RemoteAddr(),
-		"requestId": r.ID,
+		"requestId": r.ID(),
 	})
 	fe.DelegateClientIP(r.RemoteAddr())
 	fe.Params.Add("goauthentik.io/outpost/radius", "true")

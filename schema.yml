@@ -18334,6 +18334,7 @@ paths:
           - tr
           - tt
           - udm
+          - ug
           - uk
           - ur
           - uz
@@ -29068,9 +29069,7 @@ components:
         code:
           type: string
           minLength: 1
-        webauthn:
-          type: object
-          additionalProperties: {}
+        webauthn: {}
         duo:
           type: integer
     AuthenticatorWebAuthnChallenge:
@@ -29094,9 +29093,7 @@ components:
           type: string
         pending_user_avatar:
           type: string
-        registration:
-          type: object
-          additionalProperties: {}
+        registration: {}
       required:
       - pending_user
       - pending_user_avatar
@@ -29110,9 +29107,7 @@ components:
           type: string
           minLength: 1
           default: ak-stage-authenticator-webauthn
-        response:
-          type: object
-          additionalProperties: {}
+        response: {}
       required:
       - response
     AutoSubmitChallengeResponseRequest:
@@ -29205,9 +29200,7 @@ components:
         path:
           type: string
           default: ''
-        context:
-          type: object
-          additionalProperties: {}
+        context: {}
         last_applied:
           type: string
           format: date-time
@@ -29227,8 +29220,6 @@ components:
             type: string
           readOnly: true
         metadata:
-          type: object
-          additionalProperties: {}
           readOnly: true
         content:
           type: string
@@ -29250,9 +29241,7 @@ components:
         path:
           type: string
           default: ''
-        context:
-          type: object
-          additionalProperties: {}
+        context: {}
         enabled:
           type: boolean
         content:
@@ -29772,10 +29761,24 @@ components:
         cancel_url:
           type: string
         layout:
-          $ref: '#/components/schemas/LayoutEnum'
+          $ref: '#/components/schemas/ContextualFlowInfoLayoutEnum'
       required:
       - cancel_url
       - layout
+    ContextualFlowInfoLayoutEnum:
+      enum:
+      - stacked
+      - content_left
+      - content_right
+      - sidebar_left
+      - sidebar_right
+      type: string
+      description: |-
+        * `stacked` - STACKED
+        * `content_left` - CONTENT_LEFT
+        * `content_right` - CONTENT_RIGHT
+        * `sidebar_left` - SIDEBAR_LEFT
+        * `sidebar_right` - SIDEBAR_RIGHT
     Coordinate:
       type: object
       description: Coordinates for diagrams
@@ -29942,9 +29945,7 @@ components:
           type: string
         device_uid:
           type: string
-        challenge:
-          type: object
-          additionalProperties: {}
+        challenge: {}
       required:
       - challenge
       - device_class
@@ -29959,9 +29960,7 @@ components:
         device_uid:
           type: string
           minLength: 1
-        challenge:
-          type: object
-          additionalProperties: {}
+        challenge: {}
       required:
       - challenge
       - device_class
@@ -30493,16 +30492,12 @@ components:
           format: uuid
           readOnly: true
           title: Event uuid
-        user:
-          type: object
-          additionalProperties: {}
+        user: {}
         action:
           $ref: '#/components/schemas/EventActions'
         app:
           type: string
-        context:
-          type: object
-          additionalProperties: {}
+        context: {}
         client_ip:
           type: string
           nullable: true
@@ -30513,9 +30508,7 @@ components:
         expires:
           type: string
           format: date-time
-        tenant:
-          type: object
-          additionalProperties: {}
+        tenant: {}
       required:
       - action
       - app
@@ -30992,17 +30985,13 @@ components:
       type: object
       description: Event Serializer
       properties:
-        user:
-          type: object
-          additionalProperties: {}
+        user: {}
         action:
           $ref: '#/components/schemas/EventActions'
         app:
           type: string
           minLength: 1
-        context:
-          type: object
-          additionalProperties: {}
+        context: {}
         client_ip:
           type: string
           nullable: true
@@ -31010,9 +30999,7 @@ components:
         expires:
           type: string
           format: date-time
-        tenant:
-          type: object
-          additionalProperties: {}
+        tenant: {}
       required:
       - action
       - app
@@ -31311,7 +31298,7 @@ components:
           description: Get export URL for flow
           readOnly: true
         layout:
-          $ref: '#/components/schemas/LayoutEnum'
+          $ref: '#/components/schemas/FlowLayoutEnum'
         denied_action:
           allOf:
           - $ref: '#/components/schemas/DeniedActionEnum'
@@ -31498,6 +31485,20 @@ components:
       - next_planned_stage
       - plan_context
       - session_id
+    FlowLayoutEnum:
+      enum:
+      - stacked
+      - content_left
+      - content_right
+      - sidebar_left
+      - sidebar_right
+      type: string
+      description: |-
+        * `stacked` - Stacked
+        * `content_left` - Content Left
+        * `content_right` - Content Right
+        * `sidebar_left` - Sidebar Left
+        * `sidebar_right` - Sidebar Right
     FlowRequest:
       type: object
       description: Flow Serializer
@@ -31535,7 +31536,7 @@ components:
           description: Enable compatibility mode, increases compatibility with password
             managers on mobile devices.
         layout:
-          $ref: '#/components/schemas/LayoutEnum'
+          $ref: '#/components/schemas/FlowLayoutEnum'
         denied_action:
           allOf:
           - $ref: '#/components/schemas/DeniedActionEnum'
@@ -31613,7 +31614,7 @@ components:
           description: Get export URL for flow
           readOnly: true
         layout:
-          $ref: '#/components/schemas/LayoutEnum'
+          $ref: '#/components/schemas/FlowLayoutEnum'
         denied_action:
           allOf:
           - $ref: '#/components/schemas/DeniedActionEnum'
@@ -31669,7 +31670,7 @@ components:
           description: Enable compatibility mode, increases compatibility with password
             managers on mobile devices.
         layout:
-          $ref: '#/components/schemas/LayoutEnum'
+          $ref: '#/components/schemas/FlowLayoutEnum'
         denied_action:
           allOf:
           - $ref: '#/components/schemas/DeniedActionEnum'
@@ -31828,9 +31829,7 @@ components:
           items:
             $ref: '#/components/schemas/GroupMember'
           readOnly: true
-        attributes:
-          type: object
-          additionalProperties: {}
+        attributes: {}
         roles:
           type: array
           items:
@@ -31879,9 +31878,7 @@ components:
           format: email
           title: Email address
           maxLength: 254
-        attributes:
-          type: object
-          additionalProperties: {}
+        attributes: {}
         uid:
           type: string
           readOnly: true
@@ -31919,9 +31916,7 @@ components:
           format: email
           title: Email address
           maxLength: 254
-        attributes:
-          type: object
-          additionalProperties: {}
+        attributes: {}
       required:
       - name
       - username
@@ -31944,9 +31939,7 @@ components:
           type: array
           items:
             type: integer
-        attributes:
-          type: object
-          additionalProperties: {}
+        attributes: {}
         roles:
           type: array
           items:
@@ -32212,9 +32205,7 @@ components:
         expires:
           type: string
           format: date-time
-        fixed_data:
-          type: object
-          additionalProperties: {}
+        fixed_data: {}
         created_by:
           allOf:
           - $ref: '#/components/schemas/GroupMember'
@@ -32248,9 +32239,7 @@ components:
         expires:
           type: string
           format: date-time
-        fixed_data:
-          type: object
-          additionalProperties: {}
+        fixed_data: {}
         single_use:
           type: boolean
           description: When enabled, the invitation will be deleted after usage.
@@ -32361,8 +32350,6 @@ components:
           description: Return internal model name
           readOnly: true
         kubeconfig:
-          type: object
-          additionalProperties: {}
           description: Paste your kubeconfig here. authentik will automatically use
             the currently selected context.
         verify_ssl:
@@ -32387,8 +32374,6 @@ components:
           description: If enabled, use the local connection. Required Docker socket/Kubernetes
             Integration
         kubeconfig:
-          type: object
-          additionalProperties: {}
           description: Paste your kubeconfig here. authentik will automatically use
             the currently selected context.
         verify_ssl:
@@ -33053,20 +33038,6 @@ components:
       required:
       - is_running
       - tasks
-    LayoutEnum:
-      enum:
-      - stacked
-      - content_left
-      - content_right
-      - sidebar_left
-      - sidebar_right
-      type: string
-      description: |-
-        * `stacked` - STACKED
-        * `content_left` - CONTENT_LEFT
-        * `content_right` - CONTENT_RIGHT
-        * `sidebar_left` - SIDEBAR_LEFT
-        * `sidebar_right` - SIDEBAR_RIGHT
     License:
       type: object
       description: License Serializer
@@ -33215,9 +33186,7 @@ components:
       properties:
         name:
           type: string
-        labels:
-          type: object
-          additionalProperties: {}
+        labels: {}
       required:
       - labels
       - name
@@ -34052,9 +34021,7 @@ components:
           type: string
         oidc_jwks_url:
           type: string
-        oidc_jwks:
-          type: object
-          additionalProperties: {}
+        oidc_jwks: {}
       required:
       - callback_url
       - component
@@ -34151,9 +34118,7 @@ components:
           type: string
         oidc_jwks_url:
           type: string
-        oidc_jwks:
-          type: object
-          additionalProperties: {}
+        oidc_jwks: {}
       required:
       - consumer_key
       - consumer_secret
@@ -34242,9 +34207,7 @@ components:
           type: string
           description: Get Token identifier
           readOnly: true
-        config:
-          type: object
-          additionalProperties: {}
+        config: {}
         managed:
           type: string
           nullable: true
@@ -34267,8 +34230,6 @@ components:
       description: Global default outpost config
       properties:
         config:
-          type: object
-          additionalProperties: {}
           readOnly: true
       required:
       - config
@@ -34329,9 +34290,7 @@ components:
           nullable: true
           description: Select Service-Connection authentik should use to manage this
             outpost. Leave empty if authentik should not handle the deployment.
-        config:
-          type: object
-          additionalProperties: {}
+        config: {}
         managed:
           type: string
           nullable: true
@@ -36042,9 +36001,7 @@ components:
         path:
           type: string
           default: ''
-        context:
-          type: object
-          additionalProperties: {}
+        context: {}
         enabled:
           type: boolean
         content:
@@ -36441,17 +36398,13 @@ components:
       type: object
       description: Event Serializer
       properties:
-        user:
-          type: object
-          additionalProperties: {}
+        user: {}
         action:
           $ref: '#/components/schemas/EventActions'
         app:
           type: string
           minLength: 1
-        context:
-          type: object
-          additionalProperties: {}
+        context: {}
         client_ip:
           type: string
           nullable: true
@@ -36459,9 +36412,7 @@ components:
         expires:
           type: string
           format: date-time
-        tenant:
-          type: object
-          additionalProperties: {}
+        tenant: {}
     PatchedExpressionPolicyRequest:
       type: object
       description: Group Membership Policy Serializer
@@ -36513,7 +36464,7 @@ components:
           description: Enable compatibility mode, increases compatibility with password
             managers on mobile devices.
         layout:
-          $ref: '#/components/schemas/LayoutEnum'
+          $ref: '#/components/schemas/FlowLayoutEnum'
         denied_action:
           allOf:
           - $ref: '#/components/schemas/DeniedActionEnum'
@@ -36583,9 +36534,7 @@ components:
           type: array
           items:
             type: integer
-        attributes:
-          type: object
-          additionalProperties: {}
+        attributes: {}
         roles:
           type: array
           items:
@@ -36664,9 +36613,7 @@ components:
         expires:
           type: string
           format: date-time
-        fixed_data:
-          type: object
-          additionalProperties: {}
+        fixed_data: {}
         single_use:
           type: boolean
           description: When enabled, the invitation will be deleted after usage.
@@ -36703,8 +36650,6 @@ components:
           description: If enabled, use the local connection. Required Docker socket/Kubernetes
             Integration
         kubeconfig:
-          type: object
-          additionalProperties: {}
           description: Paste your kubeconfig here. authentik will automatically use
             the currently selected context.
         verify_ssl:
@@ -37165,9 +37110,7 @@ components:
           type: string
         oidc_jwks_url:
           type: string
-        oidc_jwks:
-          type: object
-          additionalProperties: {}
+        oidc_jwks: {}
     PatchedOutpostRequest:
       type: object
       description: Outpost Serializer
@@ -37187,9 +37130,7 @@ components:
           nullable: true
           description: Select Service-Connection authentik should use to manage this
             outpost. Leave empty if authentik should not handle the deployment.
-        config:
-          type: object
-          additionalProperties: {}
+        config: {}
         managed:
           type: string
           nullable: true
@@ -38011,9 +37952,7 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
-        attributes:
-          type: object
-          additionalProperties: {}
+        attributes: {}
     PatchedTokenRequest:
       type: object
       description: Token Serializer
@@ -38134,9 +38073,7 @@ components:
           format: email
           title: Email address
           maxLength: 254
-        attributes:
-          type: object
-          additionalProperties: {}
+        attributes: {}
         path:
           type: string
           minLength: 1
@@ -38649,9 +38586,7 @@ components:
       properties:
         user:
           type: integer
-        context:
-          type: object
-          additionalProperties: {}
+        context: {}
       required:
       - user
     PolicyTestResult:
@@ -38971,8 +38906,6 @@ components:
         selected in a provider
       properties:
         preview:
-          type: object
-          additionalProperties: {}
           readOnly: true
       required:
       - preview
@@ -39686,9 +39619,7 @@ components:
           type: string
         ip:
           type: string
-        ip_geo_data:
-          type: object
-          additionalProperties: {}
+        ip_geo_data: {}
         score:
           type: integer
           maximum: 9223372036854775807
@@ -41415,9 +41346,7 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
-        attributes:
-          type: object
-          additionalProperties: {}
+        attributes: {}
       required:
       - domain
       - tenant_uuid
@@ -41474,9 +41403,7 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
-        attributes:
-          type: object
-          additionalProperties: {}
+        attributes: {}
       required:
       - domain
     Token:
@@ -41733,9 +41660,7 @@ components:
         avatar:
           type: string
           readOnly: true
-        attributes:
-          type: object
-          additionalProperties: {}
+        attributes: {}
         uid:
           type: string
           readOnly: true
@@ -41795,9 +41720,7 @@ components:
           format: email
           title: Email address
           maxLength: 254
-        attributes:
-          type: object
-          additionalProperties: {}
+        attributes: {}
         uid:
           type: string
           readOnly: true
@@ -41933,9 +41856,7 @@ components:
         parent_name:
           type: string
           readOnly: true
-        attributes:
-          type: object
-          additionalProperties: {}
+        attributes: {}
       required:
       - name
       - num_pk
@@ -41956,9 +41877,7 @@ components:
           type: string
           format: uuid
           nullable: true
-        attributes:
-          type: object
-          additionalProperties: {}
+        attributes: {}
       required:
       - name
     UserLoginChallenge:
@@ -42281,9 +42200,7 @@ components:
           format: email
           title: Email address
           maxLength: 254
-        attributes:
-          type: object
-          additionalProperties: {}
+        attributes: {}
         path:
           type: string
           minLength: 1
