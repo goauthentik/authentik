@@ -7,6 +7,7 @@ import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
+import "@goauthentik/elements/utils/TimeDeltaHelp";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -120,6 +121,41 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 help=${msg("Enable the ability for users to change their username.")}
             >
             </ak-switch-input>
+            <ak-text-input
+                name="eventRetention"
+                label=${msg("Event retention")}
+                required
+                value="${this._settings?.eventRetention}"
+                .bighelp=${html`<p class="pf-c-form__helper-text">
+                        ${msg("Duration after which events will be deleted from the database.")}
+                    </p>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            'When using an external logging solution for archiving, this can be set to "minutes=5".',
+                        )}
+                    </p>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "This setting only affects new Events, as the expiration is saved per-event.",
+                        )}
+                    </p>
+                    <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
+            >
+            </ak-text-input>
+            <ak-textarea-input
+                name="footerLinks"
+                label=${msg("Footer links")}
+                .value="${this._settings?.footerLinks}"
+                .bighelp=${html`
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "This option configures the footer links on the flow executor pages. It must be a valid JSON list and can be used as follows:",
+                        )}
+                        <code>[{"name": "Link Name","href":"https://goauthentik.io"}]</code>
+                    </p>
+                `}
+            >
+            </ak-textarea-input>
             <ak-switch-input
                 name="gdprCompliance"
                 label=${msg("GDPR compliance")}
@@ -136,20 +172,6 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 help=${msg("Globally enable/disable impersonation.")}
             >
             </ak-switch-input>
-            <ak-textarea-input
-                name="footerLinks"
-                label=${msg("Footer links")}
-                .value="${this._settings?.footerLinks}"
-                .bighelp=${html`
-                    <p class="pf-c-form__helper-text">
-                        ${msg(
-                            "This option configures the footer links on the flow executor pages. It must be a valid JSON list and can be used as follows:",
-                        )}
-                        <code>[{"name": "Link Name","href":"https://goauthentik.io"}]</code>
-                    </p>
-                `}
-            >
-            </ak-textarea-input>
         `;
     }
 }

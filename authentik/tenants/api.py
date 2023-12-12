@@ -105,9 +105,10 @@ class SettingsSerializer(ModelSerializer):
             "default_user_change_name",
             "default_user_change_email",
             "default_user_change_username",
+            "event_retention",
+            "footer_links",
             "gdpr_compliance",
             "impersonation",
-            "footer_links",
         ]
 
 

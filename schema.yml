@@ -3374,10 +3374,6 @@ paths:
         schema:
           type: string
       - in: query
-        name: event_retention
-        schema:
-          type: string
-      - in: query
         name: flow_authentication
         schema:
           type: string
@@ -29844,9 +29840,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        event_retention:
-          type: string
-          description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
         web_certificate:
           type: string
           format: uuid
@@ -29902,10 +29895,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        event_retention:
-          type: string
-          minLength: 1
-          description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
         web_certificate:
           type: string
           format: uuid
@@ -36804,10 +36793,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        event_retention:
-          type: string
-          minLength: 1
-          description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
         web_certificate:
           type: string
           format: uuid
@@ -38740,6 +38725,15 @@ components:
         default_user_change_username:
           type: boolean
           description: Enable the ability for users to change their username.
+        event_retention:
+          type: string
+          minLength: 1
+          description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
+        footer_links:
+          type: object
+          additionalProperties: {}
+          description: The option configures the footer links on the flow executor
+            pages.
         gdpr_compliance:
           type: boolean
           description: When enabled, all the events caused by a user will be deleted
@@ -38747,11 +38741,6 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
-        footer_links:
-          type: object
-          additionalProperties: {}
-          description: The option configures the footer links on the flow executor
-            pages.
     PatchedStaticDeviceRequest:
       type: object
       description: Serializer for static authenticator devices
@@ -41638,6 +41627,14 @@ components:
         default_user_change_username:
           type: boolean
           description: Enable the ability for users to change their username.
+        event_retention:
+          type: string
+          description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
+        footer_links:
+          type: object
+          additionalProperties: {}
+          description: The option configures the footer links on the flow executor
+            pages.
         gdpr_compliance:
           type: boolean
           description: When enabled, all the events caused by a user will be deleted
@@ -41645,11 +41642,6 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
-        footer_links:
-          type: object
-          additionalProperties: {}
-          description: The option configures the footer links on the flow executor
-            pages.
     SettingsRequest:
       type: object
       description: Settings Serializer
@@ -41667,6 +41659,15 @@ components:
         default_user_change_username:
           type: boolean
           description: Enable the ability for users to change their username.
+        event_retention:
+          type: string
+          minLength: 1
+          description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
+        footer_links:
+          type: object
+          additionalProperties: {}
+          description: The option configures the footer links on the flow executor
+            pages.
         gdpr_compliance:
           type: boolean
           description: When enabled, all the events caused by a user will be deleted
@@ -41674,11 +41675,6 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
-        footer_links:
-          type: object
-          additionalProperties: {}
-          description: The option configures the footer links on the flow executor
-            pages.
     SeverityEnum:
       enum:
       - notice

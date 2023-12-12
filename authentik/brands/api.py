@@ -54,7 +54,6 @@ class BrandSerializer(ModelSerializer):
             "flow_unenrollment",
             "flow_user_settings",
             "flow_device_code",
-            "event_retention",
             "web_certificate",
             "attributes",
         ]
@@ -125,7 +124,6 @@ class BrandViewSet(UsedByMixin, ModelViewSet):
         "flow_unenrollment",
         "flow_user_settings",
         "flow_device_code",
-        "event_retention",
         "web_certificate",
     ]
     ordering = ["domain"]

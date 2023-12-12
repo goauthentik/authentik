@@ -8560,12 +8560,6 @@
                     "type": "integer",
                     "title": "Flow device code"
                 },
-                "event_retention": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Event retention",
-                    "description": "Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2)."
-                },
                 "web_certificate": {
                     "type": "integer",
                     "title": "Web certificate",

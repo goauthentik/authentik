@@ -235,34 +235,6 @@ export class BrandForm extends ModelForm<Brand, string> {
                             certificate=${this.instance?.webCertificate}
                         ></ak-crypto-certificate-search>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Event retention")}
-                        ?required=${true}
-                        name="eventRetention"
-                    >
-                        <input
-                            type="text"
-                            value="${first(this.instance?.eventRetention, "days=365")}"
-                            class="pf-c-form-control"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Duration after which events will be deleted from the database.")}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                'When using an external logging solution for archiving, this can be set to "minutes=5".',
-                            )}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "This setting only affects new Events, as the expiration is saved per-event.",
-                            )}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg('Format: "weeks=3;days=2;hours=3,seconds=2".')}
-                        </p>
-                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
                         <ak-codemirror
                             mode=${CodeMirrorMode.YAML}

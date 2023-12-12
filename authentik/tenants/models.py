@@ -14,6 +14,7 @@ from structlog.stdlib import get_logger
 
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.models import SerializerModel
+from authentik.lib.utils.time import timedelta_string_validator
 
 LOGGER = get_logger()
 
@@ -57,6 +58,18 @@ class Tenant(TenantMixin, SerializerModel):
     default_user_change_username = models.BooleanField(
         help_text=_("Enable the ability for users to change their username."), default=False
     )
+    event_retention = models.TextField(
+        default="days=365",
+        validators=[timedelta_string_validator],
+        help_text=_(
+            "Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2)."
+        ),
+    )
+    footer_links = models.JSONField(
+        help_text=_("The option configures the footer links on the flow executor pages."),
+        default=list,
+        blank=True,
+    )
     gdpr_compliance = models.BooleanField(
         help_text=_(
             "When enabled, all the events caused by a user "
@@ -66,11 +79,6 @@ class Tenant(TenantMixin, SerializerModel):
     )
     impersonation = models.BooleanField(
         help_text=_("Globally enable/disable impersonation."), default=True
-    )
-    footer_links = models.JSONField(
-        help_text=_("The option configures the footer links on the flow executor pages."),
-        default=list,
-        blank=True,
     )
 
     def save(self, *args, **kwargs):

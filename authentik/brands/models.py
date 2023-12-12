@@ -9,7 +9,6 @@ from structlog.stdlib import get_logger
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
 from authentik.lib.models import SerializerModel
-from authentik.lib.utils.time import timedelta_string_validator
 
 LOGGER = get_logger()
 
@@ -49,14 +48,6 @@ class Brand(SerializerModel):
     )
     flow_device_code = models.ForeignKey(
         Flow, null=True, on_delete=models.SET_NULL, related_name="brand_device_code"
-    )
-
-    event_retention = models.TextField(
-        default="days=365",
-        validators=[timedelta_string_validator],
-        help_text=_(
-            "Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2)."
-        ),
     )
 
     web_certificate = models.ForeignKey(

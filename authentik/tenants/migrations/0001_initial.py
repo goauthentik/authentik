@@ -6,6 +6,7 @@ import django.db.models.deletion
 import django_tenants.postgresql_backend.base
 from django.db import migrations, models
 
+import authentik.lib.utils.time
 import authentik.tenants.models
 from authentik.lib.config import CONFIG
 
@@ -22,9 +23,9 @@ def create_default_tenant(apps, schema_editor):
         default_user_change_name=CONFIG.get_bool("default_user_change_name", True),
         default_user_change_email=CONFIG.get_bool("default_user_change_email", False),
         default_user_change_username=CONFIG.get_bool("default_user_change_username", False),
+        footer_links=CONFIG.get("footer_links", default=[]),
         gdpr_compliance=CONFIG.get_bool("gdpr_compliance", True),
         impersonation=CONFIG.get_bool("impersonation", True),
-        footer_links=CONFIG.get("footer_links", default=[]),
     )
 
 
@@ -82,6 +83,22 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
+                    "event_retention",
+                    models.TextField(
+                        default="days=365",
+                        help_text="Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).",
+                        validators=[authentik.lib.utils.time.timedelta_string_validator],
+                    ),
+                ),
+                (
+                    "footer_links",
+                    models.JSONField(
+                        blank=True,
+                        default=list,
+                        help_text="The option configures the footer links on the flow executor pages.",
+                    ),
+                ),
+                (
                     "gdpr_compliance",
                     models.BooleanField(
                         default=True,
@@ -92,14 +109,6 @@ class Migration(migrations.Migration):
                     "impersonation",
                     models.BooleanField(
                         default=True, help_text="Globally enable/disable impersonation."
-                    ),
-                ),
-                (
-                    "footer_links",
-                    models.JSONField(
-                        blank=True,
-                        default=list,
-                        help_text="The option configures the footer links on the flow executor pages.",
                     ),
                 ),
             ],

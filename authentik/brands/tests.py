@@ -64,27 +64,6 @@ class TestBrands(APITestCase):
             },
         )
 
-    def test_event_retention(self):
-        """Test brand's event retention"""
-        brand = Brand.objects.create(
-            domain="foo",
-            default=True,
-            branding_title="custom",
-            event_retention="weeks=3",
-        )
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.brand = brand
-        event = Event.new(action=EventAction.SYSTEM_EXCEPTION, message="test").from_http(request)
-        self.assertEqual(event.expires.day, (event.created + timedelta_from_string("weeks=3")).day)
-        self.assertEqual(
-            event.expires.month,
-            (event.created + timedelta_from_string("weeks=3")).month,
-        )
-        self.assertEqual(
-            event.expires.year, (event.created + timedelta_from_string("weeks=3")).year
-        )
-
     def test_create_default_multiple(self):
         """Test attempted creation of multiple default brands"""
         Brand.objects.create(

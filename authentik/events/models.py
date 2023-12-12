@@ -42,6 +42,7 @@ from authentik.lib.utils.http import get_client_ip, get_http_session
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
 from authentik.stages.email.utils import TemplateEmailMessage
+from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()
 if TYPE_CHECKING:
@@ -224,12 +225,14 @@ class Event(SerializerModel, ExpiringModel):
             if QS_QUERY in self.context["http_request"]["args"]:
                 wrapped = self.context["http_request"]["args"][QS_QUERY]
                 self.context["http_request"]["args"] = cleanse_dict(QueryDict(wrapped))
-        if hasattr(request, "brand"):
-            brand: Brand = request.brand
+        if hasattr(request, "tenant"):
+            tenant: Tenant = request.tenant
             # Because self.created only gets set on save, we can't use it's value here
             # hence we set self.created to now and then use it
             self.created = now()
-            self.expires = self.created + timedelta_from_string(brand.event_retention)
+            self.expires = self.created + timedelta_from_string(tenant.event_retention)
+        if hasattr(request, "brand"):
+            brand: Brand = request.brand
             self.brand = sanitize_dict(model_to_dict(brand))
         if hasattr(request, "user"):
             original_user = None
