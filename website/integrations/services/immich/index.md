@@ -14,8 +14,7 @@ title: Immich
 
 The following placeholders will be used:
 
--   `immich.company` is the FQDN of the Immich install.
--   `192.168.0.2:2283` is the local IP address & port of the Immich install.
+-   `https://immich.company` is the URL used to access the Immich instance.
 -   `authentik.company` is the FQDN of the authentik install.
 
 ## authentik Configuration
@@ -24,15 +23,14 @@ The following placeholders will be used:
     - **Name**: Immich
 	- **Authentication flow**: default-authentication-flow
 	- **Authorization flow**: default-provider-authorization-explicit-consent
-	- **Client type**: Conidential
+	- **Client type**: Confidential
 	- **Client ID**: Either create your own Client ID or make a note of the auto-populated one
 	- **Client Secret**: Either create your own Client Secret or make a note of the auto-populated one
 	- **Redirect URIs/Origins (RegEx)**:
-	  - app.immich:/
-	  - http://192.168.0.2:2283/auth/login
-	  - http://192.168.0.2:2283/user-settings
-	  - https://immich.company/auth/login
-	  - https://immich.company/user-settings
+          _Please note that the following URIs are just examples. Ensure to include all of the domains / URLs you will be using to access Immich._
+	    - app.immich:/
+	    - https://immich.company/auth/login
+	    - https://immich.company/user-settings
 	- **Signing Key**: authentik Self-signed Certificate
     - Leave everything else as default
 2. Open the new provider you've just created
