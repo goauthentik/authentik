@@ -76,7 +76,6 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	// Because we don't know the outpost UUID, we simply do a list and pick the first
 	// The service account this token belongs to should only have access to a single outpost
 	outposts, _, err := apiClient.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
-
 	if err != nil {
 		log.WithError(err).Error("Failed to fetch outpost configuration, retrying in 3 seconds")
 		time.Sleep(time.Second * 3)
@@ -168,7 +167,6 @@ func (a *APIController) OnRefresh() error {
 	// Because we don't know the outpost UUID, we simply do a list and pick the first
 	// The service account this token belongs to should only have access to a single outpost
 	outposts, _, err := a.Client.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
-
 	if err != nil {
 		log.WithError(err).Error("Failed to fetch outpost configuration")
 		return err

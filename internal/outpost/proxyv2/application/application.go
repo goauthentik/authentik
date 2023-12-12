@@ -95,7 +95,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server) (*A
 	// Configure an OpenID Connect aware OAuth2 client.
 	endpoint := GetOIDCEndpoint(
 		p,
-		server.API().Outpost.Config["authentik_host"].(string),
+		server.API().Outpost.Config.(map[string]interface{})["authentik_host"].(string),
 		isEmbedded,
 	)
 
@@ -128,7 +128,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server) (*A
 		tokenVerifier:        verifier,
 		proxyConfig:          p,
 		httpClient:           c,
-		publicHostHTTPClient: web.NewHostInterceptor(c, server.API().Outpost.Config["authentik_host"].(string)),
+		publicHostHTTPClient: web.NewHostInterceptor(c, server.API().Outpost.Config.(map[string]interface{})["authentik_host"].(string)),
 		mux:                  mux,
 		errorTemplates:       templates.GetTemplates(),
 		ak:                   server.API(),
@@ -220,7 +220,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server) (*A
 		for _, regex := range strings.Split(*p.SkipPathRegex, "\n") {
 			re, err := regexp.Compile(regex)
 			if err != nil {
-				//TODO: maybe create event for this?
+				// TODO: maybe create event for this?
 				a.log.WithError(err).Warning("failed to compile SkipPathRegex")
 				continue
 			} else {

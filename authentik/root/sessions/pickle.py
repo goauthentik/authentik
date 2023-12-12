@@ -3,6 +3,7 @@ Module for abstract serializer/unserializer base classes.
 """
 import pickle  # nosec
 
+
 class PickleSerializer:
     """
     Simple wrapper around pickle to be used in signing.dumps()/loads() and

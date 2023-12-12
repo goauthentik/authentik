@@ -13,7 +13,7 @@ import (
 
 func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 	dn := pi.GetUserDN(u.Username)
-	attrs := utils.AttributesToLDAP(u.Attributes, func(key string) string {
+	attrs := utils.AttributesToLDAP(u.Attributes.(map[string]interface{}), func(key string) string {
 		return utils.AttributeKeySanitize(key)
 	}, func(value []string) []string {
 		for i, v := range value {

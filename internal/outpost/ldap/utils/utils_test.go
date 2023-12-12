@@ -19,7 +19,7 @@ func TestAKAttrsToLDAP_String(t *testing.T) {
 	u.Attributes = map[string]interface{}{
 		"foo": "bar",
 	}
-	mapped := AttributesToLDAP(u.Attributes, func(key string) string {
+	mapped := AttributesToLDAP(u.Attributes.(map[string]interface{}), func(key string) string {
 		return AttributeKeySanitize(key)
 	}, func(value []string) []string {
 		return value
@@ -31,7 +31,7 @@ func TestAKAttrsToLDAP_String(t *testing.T) {
 	u.Attributes = map[string]interface{}{
 		"foo": api.PtrString("bar"),
 	}
-	mapped = AttributesToLDAP(u.Attributes, func(key string) string {
+	mapped = AttributesToLDAP(u.Attributes.(map[string]interface{}), func(key string) string {
 		return AttributeKeySanitize(key)
 	}, func(value []string) []string {
 		return value
@@ -47,7 +47,7 @@ func TestAKAttrsToLDAP_String_List(t *testing.T) {
 	u.Attributes = map[string]interface{}{
 		"foo": []string{"bar"},
 	}
-	mapped := AttributesToLDAP(u.Attributes, func(key string) string {
+	mapped := AttributesToLDAP(u.Attributes.(map[string]interface{}), func(key string) string {
 		return AttributeKeySanitize(key)
 	}, func(value []string) []string {
 		return value
@@ -59,7 +59,7 @@ func TestAKAttrsToLDAP_String_List(t *testing.T) {
 	u.Attributes = map[string]interface{}{
 		"foo": &[]string{"bar"},
 	}
-	mapped = AttributesToLDAP(u.Attributes, func(key string) string {
+	mapped = AttributesToLDAP(u.Attributes.(map[string]interface{}), func(key string) string {
 		return AttributeKeySanitize(key)
 	}, func(value []string) []string {
 		return value

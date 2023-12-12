@@ -27,7 +27,6 @@ func (rs *RadiusServer) Handle_AccessRequest(w radius.ResponseWriter, r *RadiusR
 	}
 
 	passed, err := fe.Execute()
-
 	if err != nil {
 		r.Log().WithField("username", username).WithError(err).Warning("failed to execute flow")
 		metrics.RequestsRejected.With(prometheus.Labels{
