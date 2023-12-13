@@ -1,11 +1,11 @@
 ///<reference types="@hcaptcha/types"/>
-///<reference types="turnstile-types"/>
 import "@goauthentik/elements/EmptyState";
 import { PFSize } from "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/forms/FormElement";
 import "@goauthentik/flow/FormStatic";
 import "@goauthentik/flow/stages/access_denied/AccessDeniedStage";
 import { BaseStage } from "@goauthentik/flow/stages/base";
+import type { TurnstileObject } from "turnstile-types";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -20,6 +20,10 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { CaptchaChallenge, CaptchaChallengeResponseRequest } from "@goauthentik/api";
+
+interface TurnstileWindow extends Window {
+    turnstile: TurnstileObject;
+}
 
 @customElement("ak-stage-captcha")
 export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeResponseRequest> {
@@ -110,9 +114,8 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         if (!Object.hasOwn(window, "turnstile")) {
             return false;
         }
-        window.turnstile.render(container, {
+        (window as unknown as TurnstileWindow).turnstile.render(container, {
             sitekey: this.challenge.siteKey,
-            size: "invisible",
             callback: (token) => {
                 this.host?.submit({
                     token: token,
