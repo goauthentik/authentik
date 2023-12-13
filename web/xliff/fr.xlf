@@ -2562,31 +2562,6 @@ Il y a <x id="0" equiv-text="${ago}"/> jour(s)</target>
         <target>Si le score du mot de passe est inférieur ou égal à cette valeur, la politique échoue.</target>
         
       </trans-unit>
-      <trans-unit id="s1bfe7505059d164f">
-        <source>0: Too guessable: risky password. (guesses &lt; 10^3)</source>
-        <target>0: Trop prévisible: mot de passe risqué. (essais &lt; 10^3)</target>
-        
-      </trans-unit>
-      <trans-unit id="s423d1f2477998d0b">
-        <source>1: Very guessable: protection from throttled online attacks. (guesses &lt; 10^6)</source>
-        <target>1: Très prévisible: protection contre les attaques en ligne limitées. (essais &lt; 10^6)</target>
-        
-      </trans-unit>
-      <trans-unit id="s33849cc046eb901d">
-        <source>2: Somewhat guessable: protection from unthrottled online attacks. (guesses &lt; 10^8)</source>
-        <target>2: Quelque peu prévisible: protection contre les attaques en ligne non limitées. (essais &lt; 10^8)</target>
-        
-      </trans-unit>
-      <trans-unit id="s578dcce295718e1b">
-        <source>3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &lt; 10^10)</source>
-        <target>3: Sûrement imprévisible: protection modérée contre les attaques de hash-lent hors ligne. (essais &lt; 10^10)</target>
-        
-      </trans-unit>
-      <trans-unit id="s7a46de49f4eba5d7">
-        <source>4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &gt;= 10^10)</source>
-        <target>4: Très imprévisible: forte protection control les attaques de hash-lent hors ligne. (essais &gt;= 10^10)</target>
-        
-      </trans-unit>
       <trans-unit id="sd6cd7ce2310a73a4">
         <source>Checks the value from the policy request against several rules, mostly used to ensure password strength.</source>
         <target>Vérifie la valeur de la requête via plusieurs règles, principalement utilisé pour s'assurer de la robustesse des mots de passe.</target>
@@ -6583,9 +6558,9 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
         
       </trans-unit>
       <trans-unit id="s96b3cddf33e1c853">
-        <source>You're currently impersonating <x id="0" equiv-text="${this.user.user.username}"/>. Click to stop.</source>
+        <source>You're currently impersonating <x id="0" equiv-text="${this.impersonation}"/>. Click to stop.</source>
         <target>Vous vous faites actuellement passer pour 
-        <x id="0" equiv-text="${this.user.user.username}"/>. Cliquer pour arrêter.</target>
+        <x id="0" equiv-text="${this.impersonation}"/>. Cliquer pour arrêter.</target>
         
       </trans-unit>
       <trans-unit id="s7031e6928c44cedd">
@@ -7642,14 +7617,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Your application has been saved</source>
   <target>L'application a été sauvegardée</target>
 </trans-unit>
-<trans-unit id="sf60f1e5b76897c93">
-  <source>In the Application:</source>
-  <target>Dans l'application :</target>
-</trans-unit>
-<trans-unit id="s7ce65cf482b7bff0">
-  <source>In the Provider:</source>
-  <target>Dans le fournisseur :</target>
-</trans-unit>
 <trans-unit id="s67d858051b34c38b">
   <source>Method's display Name.</source>
   <target>Nom d'affichage de la méthode.</target>
@@ -7950,24 +7917,131 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="sb35c08e3a541188f">
   <source>Also known as Client ID.</source>
+  <target>Également appelé Client ID.</target>
 </trans-unit>
 <trans-unit id="sd46fd9b647cfea10">
   <source>Also known as Client Secret.</source>
+  <target>Également appelé Client Secret.</target>
 </trans-unit>
 <trans-unit id="s4476e9c50cfd13f4">
   <source>Global status</source>
+  <target>État global</target>
 </trans-unit>
 <trans-unit id="sd21a971eea208533">
   <source>Vendor</source>
+  <target>Fournisseur</target>
 </trans-unit>
 <trans-unit id="sadadfe9dfa06d7dd">
   <source>No sync status.</source>
+  <target>Pas d'état de synchronisation.</target>
 </trans-unit>
 <trans-unit id="s2b1c81130a65a55b">
   <source>Sync currently running.</source>
+  <target>Synchronisation en cours.</target>
 </trans-unit>
 <trans-unit id="sf36170f71cea38c2">
   <source>Connectivity</source>
+  <target>Connectivité</target>
+</trans-unit>
+<trans-unit id="sd94e99af8b41ff54">
+  <source>0: Too guessable: risky password. (guesses &amp;lt; 10^3)</source>
+  <target>0: Trop prévisible: mot de passe risqué. (essais &amp;lt; 10^3)</target>
+</trans-unit>
+<trans-unit id="sc926385d1a624c3a">
+  <source>1: Very guessable: protection from throttled online attacks. (guesses &amp;lt; 10^6)</source>
+  <target>1: Très prévisible: protection contre les attaques en ligne limitées. (essais &amp;lt; 10^6)</target>
+</trans-unit>
+<trans-unit id="s8aae61c41319602c">
+  <source>2: Somewhat guessable: protection from unthrottled online attacks. (guesses &amp;lt; 10^8)</source>
+  <target>2: Quelque peu prévisible: protection contre les attaques en ligne non limitées. (essais &amp;lt; 10^8)</target>
+</trans-unit>
+<trans-unit id="sc1f4b57e722a89d6">
+  <source>3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &amp;lt; 10^10)</source>
+  <target>3: Sûrement imprévisible: protection modérée contre les attaques de hash-lent hors ligne. (essais &amp;lt; 10^10)</target>
+</trans-unit>
+<trans-unit id="sd47f3d3c9741343d">
+  <source>4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &amp;gt;= 10^10)</source>
+  <target>4: Très imprévisible: forte protection control les attaques de hash-lent hors ligne. (essais &amp;gt;= 10^10)</target>
+</trans-unit>
+<trans-unit id="s3d2a8b86a4f5a810">
+  <source>Successfully created user and added to group <x id="0" equiv-text="${this.group.name}"/></source>
+  <target>Utilisateur créé et ajouté au groupe <x id="0" equiv-text="${this.group.name}"/> avec succès</target>
+</trans-unit>
+<trans-unit id="s824e0943a7104668">
+  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
+  <target>Cet utilisateur sera ajouté au groupe &amp;quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&amp;quot;.</target>
+</trans-unit>
+<trans-unit id="s62e7f6ed7d9cb3ca">
+  <source>Pretend user exists</source>
+  <target>Faire comme si l'utilisateur existe</target>
+</trans-unit>
+<trans-unit id="s52bdc80690a9a8dc">
+  <source>When enabled, the stage will always accept the given user identifier and continue.</source>
+  <target>Lorsqu'activé, l'étape acceptera toujours l'identifiant utilisateur donné et continuera.</target>
+</trans-unit>
+<trans-unit id="scda8dc24b561e205">
+  <source>There was an error in the application.</source>
+  <target>Une erreur a été rencontrée dans l'application.</target>
+</trans-unit>
+<trans-unit id="sdaca9c2c0361ed3a">
+  <source>Review the application.</source>
+  <target>Passer en revue l'application.</target>
+</trans-unit>
+<trans-unit id="sb50000a8fada5672">
+  <source>There was an error in the provider.</source>
+  <target>Une erreur a été rencontrée dans le fournisseur.</target>
+</trans-unit>
+<trans-unit id="s21f95eaf151d4ce3">
+  <source>Review the provider.</source>
+  <target>Passer en revue le fournisseur.</target>
+</trans-unit>
+<trans-unit id="s9fd39a5cb20b4e61">
+  <source>There was an error</source>
+  <target>Il y a eu une erreur</target>
+</trans-unit>
+<trans-unit id="s7a6b3453209e1066">
+  <source>There was an error creating the application, but no error message was sent. Please review the server logs.</source>
+  <target>Il y a eu une erreur lors de la création de l'application, mais aucun message d'erreur n'a été envoyé. Veuillez consulter les logs du serveur.</target>
+</trans-unit>
+<trans-unit id="s1a711c19cda48375">
+  <source>Configure LDAP Provider</source>
+  <target>Configurer le fournisseur LDAP</target>
+</trans-unit>
+<trans-unit id="s9368e965b5c292ab">
+  <source>Configure OAuth2/OpenId Provider</source>
+  <target>Configurer le fournisseur OAuth2/OpenID</target>
+</trans-unit>
+<trans-unit id="sf5cbccdc6254c8dc">
+  <source>Configure Proxy Provider</source>
+  <target>Configurer le fournisseur Proxy</target>
+</trans-unit>
+<trans-unit id="sf6d46bb442b77e91">
+  <source>AdditionalScopes</source>
+  <target>Scopes additionels</target>
+</trans-unit>
+<trans-unit id="s2c8c6f89089b31d4">
+  <source>Configure Radius Provider</source>
+  <target>Configurer le fournisseur Radius</target>
+</trans-unit>
+<trans-unit id="sfe906cde5dddc041">
+  <source>Configure SAML Provider</source>
+  <target>Configurer le fournisseur SAML</target>
+</trans-unit>
+<trans-unit id="sb3defbacd01ad972">
+  <source>Property mappings used for user mapping.</source>
+  <target>Mappages de propriété utilisés pour la correspondance des utilisateurs.</target>
+</trans-unit>
+<trans-unit id="s7ccce0ec8d228db6">
+  <source>Configure SCIM Provider</source>
+  <target>Configurer le fournisseur SCIM</target>
+</trans-unit>
+<trans-unit id="sd7728d2b6e1d25e9">
+  <source>Property mappings used for group creation.</source>
+  <target>Mappages de propriétés utilisés lors de la création des groupe</target>
+</trans-unit>
+<trans-unit id="s7513372fe60f6387">
+  <source>Event volume</source>
+  <target>Volume d'événements</target>
 </trans-unit>
     </body>
   </file>
