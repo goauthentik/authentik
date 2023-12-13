@@ -18352,19 +18352,19 @@ paths:
             application/vnd.oai.openapi:
               schema:
                 type: object
-                additionalProperties: true
+                additionalProperties: {}
             application/yaml:
               schema:
                 type: object
-                additionalProperties: true
+                additionalProperties: {}
             application/vnd.oai.openapi+json:
               schema:
                 type: object
-                additionalProperties: true
+                additionalProperties: {}
             application/json:
               schema:
                 type: object
-                additionalProperties: true
+                additionalProperties: {}
           description: ''
         '400':
           content:
@@ -29069,7 +29069,9 @@ components:
         code:
           type: string
           minLength: 1
-        webauthn: {}
+        webauthn:
+          type: object
+          additionalProperties: {}
         duo:
           type: integer
     AuthenticatorWebAuthnChallenge:
@@ -29093,7 +29095,9 @@ components:
           type: string
         pending_user_avatar:
           type: string
-        registration: {}
+        registration:
+          type: object
+          additionalProperties: {}
       required:
       - pending_user
       - pending_user_avatar
@@ -29107,7 +29111,9 @@ components:
           type: string
           minLength: 1
           default: ak-stage-authenticator-webauthn
-        response: {}
+        response:
+          type: object
+          additionalProperties: {}
       required:
       - response
     AutoSubmitChallengeResponseRequest:
@@ -29945,7 +29951,9 @@ components:
           type: string
         device_uid:
           type: string
-        challenge: {}
+        challenge:
+          type: object
+          additionalProperties: {}
       required:
       - challenge
       - device_class
@@ -29960,7 +29968,9 @@ components:
         device_uid:
           type: string
           minLength: 1
-        challenge: {}
+        challenge:
+          type: object
+          additionalProperties: {}
       required:
       - challenge
       - device_class
@@ -31009,7 +31019,7 @@ components:
       properties:
         application:
           type: object
-          additionalProperties: true
+          additionalProperties: {}
         counted_events:
           type: integer
         unique_users:
@@ -31436,7 +31446,7 @@ components:
           type: array
           items:
             type: object
-            additionalProperties: true
+            additionalProperties: {}
           readOnly: true
         success:
           type: boolean
@@ -31473,7 +31483,7 @@ components:
           readOnly: true
         plan_context:
           type: object
-          additionalProperties: true
+          additionalProperties: {}
           description: Get the plan's context, sanitized
           readOnly: true
         session_id:
@@ -31831,7 +31841,7 @@ components:
           readOnly: true
         attributes:
           type: object
-          additionalProperties: true
+          additionalProperties: {}
         roles:
           type: array
           items:
@@ -31882,7 +31892,7 @@ components:
           maxLength: 254
         attributes:
           type: object
-          additionalProperties: true
+          additionalProperties: {}
         uid:
           type: string
           readOnly: true
@@ -31922,7 +31932,7 @@ components:
           maxLength: 254
         attributes:
           type: object
-          additionalProperties: true
+          additionalProperties: {}
       required:
       - name
       - username
@@ -31947,7 +31957,7 @@ components:
             type: integer
         attributes:
           type: object
-          additionalProperties: true
+          additionalProperties: {}
         roles:
           type: array
           items:
@@ -32215,7 +32225,7 @@ components:
           format: date-time
         fixed_data:
           type: object
-          additionalProperties: true
+          additionalProperties: {}
         created_by:
           allOf:
           - $ref: '#/components/schemas/GroupMember'
@@ -32251,7 +32261,7 @@ components:
           format: date-time
         fixed_data:
           type: object
-          additionalProperties: true
+          additionalProperties: {}
         single_use:
           type: boolean
           description: When enabled, the invitation will be deleted after usage.
@@ -32408,19 +32418,19 @@ components:
           type: array
           items:
             type: object
-            additionalProperties: true
+            additionalProperties: {}
           readOnly: true
         group:
           type: array
           items:
             type: object
-            additionalProperties: true
+            additionalProperties: {}
           readOnly: true
         membership:
           type: array
           items:
             type: object
-            additionalProperties: true
+            additionalProperties: {}
           readOnly: true
       required:
       - group
@@ -33198,7 +33208,9 @@ components:
       properties:
         name:
           type: string
-        labels: {}
+        labels:
+          type: object
+          additionalProperties: {}
       required:
       - labels
       - name
@@ -34221,7 +34233,7 @@ components:
           readOnly: true
         config:
           type: object
-          additionalProperties: true
+          additionalProperties: {}
         managed:
           type: string
           nullable: true
@@ -34244,6 +34256,8 @@ components:
       description: Global default outpost config
       properties:
         config:
+          type: object
+          additionalProperties: {}
           readOnly: true
       required:
       - config
@@ -34306,7 +34320,7 @@ components:
             outpost. Leave empty if authentik should not handle the deployment.
         config:
           type: object
-          additionalProperties: true
+          additionalProperties: {}
         managed:
           type: string
           nullable: true
@@ -36552,7 +36566,7 @@ components:
             type: integer
         attributes:
           type: object
-          additionalProperties: true
+          additionalProperties: {}
         roles:
           type: array
           items:
@@ -36633,7 +36647,7 @@ components:
           format: date-time
         fixed_data:
           type: object
-          additionalProperties: true
+          additionalProperties: {}
         single_use:
           type: boolean
           description: When enabled, the invitation will be deleted after usage.
@@ -37152,7 +37166,7 @@ components:
             outpost. Leave empty if authentik should not handle the deployment.
         config:
           type: object
-          additionalProperties: true
+          additionalProperties: {}
         managed:
           type: string
           nullable: true
@@ -38097,7 +38111,7 @@ components:
           maxLength: 254
         attributes:
           type: object
-          additionalProperties: true
+          additionalProperties: {}
         path:
           type: string
           minLength: 1
@@ -38612,7 +38626,7 @@ components:
           type: integer
         context:
           type: object
-          additionalProperties: true
+          additionalProperties: {}
       required:
       - user
     PolicyTestResult:
@@ -38630,7 +38644,7 @@ components:
           type: array
           items:
             type: object
-            additionalProperties: true
+            additionalProperties: {}
           readOnly: true
       required:
       - log_messages
@@ -38932,6 +38946,8 @@ components:
         selected in a provider
       properties:
         preview:
+          type: object
+          additionalProperties: {}
           readOnly: true
       required:
       - preview
@@ -41688,7 +41704,7 @@ components:
           readOnly: true
         attributes:
           type: object
-          additionalProperties: true
+          additionalProperties: {}
         uid:
           type: string
           readOnly: true
@@ -41750,7 +41766,7 @@ components:
           maxLength: 254
         attributes:
           type: object
-          additionalProperties: true
+          additionalProperties: {}
         uid:
           type: string
           readOnly: true
@@ -41888,7 +41904,7 @@ components:
           readOnly: true
         attributes:
           type: object
-          additionalProperties: true
+          additionalProperties: {}
       required:
       - name
       - num_pk
@@ -41911,7 +41927,7 @@ components:
           nullable: true
         attributes:
           type: object
-          additionalProperties: true
+          additionalProperties: {}
       required:
       - name
     UserLoginChallenge:
@@ -42236,7 +42252,7 @@ components:
           maxLength: 254
         attributes:
           type: object
-          additionalProperties: true
+          additionalProperties: {}
         path:
           type: string
           minLength: 1
@@ -42322,7 +42338,7 @@ components:
           readOnly: true
         settings:
           type: object
-          additionalProperties: true
+          additionalProperties: {}
           description: Get user settings with tenant and group settings applied
           readOnly: true
         type:

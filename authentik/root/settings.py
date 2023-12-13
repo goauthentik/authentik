@@ -151,7 +151,6 @@ SPECTACULAR_SETTINGS = {
         "authentik.api.schema.postprocess_schema_responses",
         "drf_spectacular.hooks.postprocess_schema_enums",
     ],
-    "GENERIC_ADDITIONAL_PROPERTIES": "bool",
 }
 
 REST_FRAMEWORK = {

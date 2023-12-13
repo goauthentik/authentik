@@ -44,7 +44,7 @@ class PassiveSerializer(Serializer):
 class PropertyMappingPreviewSerializer(PassiveSerializer):
     """Preview how the current user is mapped via the property mappings selected in a provider"""
 
-    preview = JSONField(read_only=True)
+    preview = JSONDictField(read_only=True)
 
 
 class MetaNameSerializer(PassiveSerializer):

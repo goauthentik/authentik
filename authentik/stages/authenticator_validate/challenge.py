@@ -7,7 +7,7 @@ from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
-from rest_framework.fields import CharField, JSONField
+from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 from webauthn.authentication.generate_authentication_options import generate_authentication_options
@@ -16,7 +16,7 @@ from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.exceptions import InvalidAuthenticationResponse
 from webauthn.helpers.structs import AuthenticationCredential
 
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Application, User
 from authentik.core.signals import login_failed
 from authentik.events.models import Event, EventAction
@@ -40,7 +40,7 @@ class DeviceChallenge(PassiveSerializer):
 
     device_class = CharField()
     device_uid = CharField()
-    challenge = JSONField()
+    challenge = JSONDictField()
 
 
 def get_challenge_for_device(

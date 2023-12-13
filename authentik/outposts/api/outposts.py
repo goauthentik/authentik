@@ -9,7 +9,7 @@ from rest_framework.fields import BooleanField, CharField, DateTimeField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import JSONField, ModelSerializer, ValidationError
+from rest_framework.serializers import ModelSerializer, ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik import get_build_hash
@@ -95,7 +95,7 @@ class OutpostSerializer(ModelSerializer):
 class OutpostDefaultConfigSerializer(PassiveSerializer):
     """Global default outpost config"""
 
-    config = JSONField(read_only=True)
+    config = JSONDictField(read_only=True)
 
 
 class OutpostHealthSerializer(PassiveSerializer):
