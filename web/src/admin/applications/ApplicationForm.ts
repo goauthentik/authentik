@@ -75,11 +75,9 @@ export class ApplicationForm extends ModelForm<Application, string> {
     clearIcon = false;
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated application.");
-        } else {
-            return msg("Successfully created application.");
-        }
+        return this.instance
+            ? msg("Successfully updated application.")
+            : msg("Successfully created application.");
     }
 
     async send(data: Application): Promise<Application | void> {

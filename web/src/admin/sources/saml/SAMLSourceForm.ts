@@ -1,13 +1,13 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
 import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
+import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
 import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import { rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
 
@@ -29,7 +29,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-source-saml-form")
-export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
+export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
     @state()
     clearIcon = false;
 
@@ -39,14 +39,6 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
         });
         this.clearIcon = false;
         return source;
-    }
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated source.");
-        } else {
-            return msg("Successfully created source.");
-        }
     }
 
     async send(data: SAMLSource): Promise<SAMLSource> {

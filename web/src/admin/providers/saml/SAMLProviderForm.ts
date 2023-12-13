@@ -1,9 +1,9 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
+import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
@@ -27,7 +27,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-provider-saml-form")
-export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
+export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
     loadInstance(pk: number): Promise<SAMLProvider> {
         return new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({
             id: pk,
@@ -43,14 +43,6 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
     }
 
     propertyMappings?: PaginatedSAMLPropertyMappingList;
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated provider.");
-        } else {
-            return msg("Successfully created provider.");
-        }
-    }
 
     async send(data: SAMLProvider): Promise<SAMLProvider> {
         if (this.instance) {

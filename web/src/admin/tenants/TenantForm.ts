@@ -26,11 +26,9 @@ export class TenantForm extends ModelForm<Tenant, string> {
     }
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated tenant.");
-        } else {
-            return msg("Successfully created tenant.");
-        }
+        return this.instance
+            ? msg("Successfully updated tenant.")
+            : msg("Successfully created tenant.");
     }
 
     async send(data: Tenant): Promise<Tenant> {

@@ -1,11 +1,11 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
+import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-toggle-group";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
 
@@ -30,7 +30,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-provider-proxy-form")
-export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
+export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
     static get styles(): CSSResult[] {
         return [...super.styles, PFContent, PFList, PFSpacing];
     }
@@ -64,14 +64,6 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
 
     @state()
     mode: ProxyMode = ProxyMode.Proxy;
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated provider.");
-        } else {
-            return msg("Successfully created provider.");
-        }
-    }
 
     async send(data: ProxyProvider): Promise<ProxyProvider> {
         data.mode = this.mode;
