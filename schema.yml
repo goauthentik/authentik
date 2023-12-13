@@ -31829,7 +31829,9 @@ components:
           items:
             $ref: '#/components/schemas/GroupMember'
           readOnly: true
-        attributes: {}
+        attributes:
+          type: object
+          additionalProperties: true
         roles:
           type: array
           items:
@@ -31878,7 +31880,9 @@ components:
           format: email
           title: Email address
           maxLength: 254
-        attributes: {}
+        attributes:
+          type: object
+          additionalProperties: true
         uid:
           type: string
           readOnly: true
@@ -31916,7 +31920,9 @@ components:
           format: email
           title: Email address
           maxLength: 254
-        attributes: {}
+        attributes:
+          type: object
+          additionalProperties: true
       required:
       - name
       - username
@@ -31939,7 +31945,9 @@ components:
           type: array
           items:
             type: integer
-        attributes: {}
+        attributes:
+          type: object
+          additionalProperties: true
         roles:
           type: array
           items:
@@ -32205,7 +32213,9 @@ components:
         expires:
           type: string
           format: date-time
-        fixed_data: {}
+        fixed_data:
+          type: object
+          additionalProperties: true
         created_by:
           allOf:
           - $ref: '#/components/schemas/GroupMember'
@@ -32239,7 +32249,9 @@ components:
         expires:
           type: string
           format: date-time
-        fixed_data: {}
+        fixed_data:
+          type: object
+          additionalProperties: true
         single_use:
           type: boolean
           description: When enabled, the invitation will be deleted after usage.
@@ -34207,7 +34219,9 @@ components:
           type: string
           description: Get Token identifier
           readOnly: true
-        config: {}
+        config:
+          type: object
+          additionalProperties: true
         managed:
           type: string
           nullable: true
@@ -34290,7 +34304,9 @@ components:
           nullable: true
           description: Select Service-Connection authentik should use to manage this
             outpost. Leave empty if authentik should not handle the deployment.
-        config: {}
+        config:
+          type: object
+          additionalProperties: true
         managed:
           type: string
           nullable: true
@@ -36534,7 +36550,9 @@ components:
           type: array
           items:
             type: integer
-        attributes: {}
+        attributes:
+          type: object
+          additionalProperties: true
         roles:
           type: array
           items:
@@ -36613,7 +36631,9 @@ components:
         expires:
           type: string
           format: date-time
-        fixed_data: {}
+        fixed_data:
+          type: object
+          additionalProperties: true
         single_use:
           type: boolean
           description: When enabled, the invitation will be deleted after usage.
@@ -37130,7 +37150,9 @@ components:
           nullable: true
           description: Select Service-Connection authentik should use to manage this
             outpost. Leave empty if authentik should not handle the deployment.
-        config: {}
+        config:
+          type: object
+          additionalProperties: true
         managed:
           type: string
           nullable: true
@@ -38073,7 +38095,9 @@ components:
           format: email
           title: Email address
           maxLength: 254
-        attributes: {}
+        attributes:
+          type: object
+          additionalProperties: true
         path:
           type: string
           minLength: 1
@@ -38586,7 +38610,9 @@ components:
       properties:
         user:
           type: integer
-        context: {}
+        context:
+          type: object
+          additionalProperties: true
       required:
       - user
     PolicyTestResult:
@@ -41660,7 +41686,9 @@ components:
         avatar:
           type: string
           readOnly: true
-        attributes: {}
+        attributes:
+          type: object
+          additionalProperties: true
         uid:
           type: string
           readOnly: true
@@ -41720,7 +41748,9 @@ components:
           format: email
           title: Email address
           maxLength: 254
-        attributes: {}
+        attributes:
+          type: object
+          additionalProperties: true
         uid:
           type: string
           readOnly: true
@@ -41856,7 +41886,9 @@ components:
         parent_name:
           type: string
           readOnly: true
-        attributes: {}
+        attributes:
+          type: object
+          additionalProperties: true
       required:
       - name
       - num_pk
@@ -41877,7 +41909,9 @@ components:
           type: string
           format: uuid
           nullable: true
-        attributes: {}
+        attributes:
+          type: object
+          additionalProperties: true
       required:
       - name
     UserLoginChallenge:
@@ -42200,7 +42234,9 @@ components:
           format: email
           title: Email address
           maxLength: 254
-        attributes: {}
+        attributes:
+          type: object
+          additionalProperties: true
         path:
           type: string
           minLength: 1

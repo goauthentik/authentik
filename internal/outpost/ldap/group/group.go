@@ -54,7 +54,7 @@ func FromAPIGroup(g api.Group, si server.LDAPServerInstance) *LDAPGroup {
 		Member:         si.UsersForGroup(g),
 		IsVirtualGroup: false,
 		IsSuperuser:    *g.IsSuperuser,
-		Attributes:     g.Attributes.(map[string]interface{}),
+		Attributes:     g.Attributes,
 	}
 }
 

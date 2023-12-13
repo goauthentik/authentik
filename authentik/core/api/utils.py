@@ -2,6 +2,9 @@
 from typing import Any
 
 from django.db.models import Model
+from drf_spectacular.extensions import OpenApiSerializerFieldExtension
+from drf_spectacular.plumbing import build_basic_type
+from drf_spectacular.types import OpenApiTypes
 from rest_framework.fields import CharField, IntegerField, JSONField
 from rest_framework.serializers import Serializer, SerializerMethodField, ValidationError
 
@@ -11,6 +14,21 @@ def is_dict(value: Any):
     if isinstance(value, dict):
         return
     raise ValidationError("Value must be a dictionary, and not have any duplicate keys.")
+
+
+class JSONDictField(JSONField):
+    """JSON Field which only allows dictionaries"""
+
+    default_validators = [is_dict]
+
+
+class JSONExtension(OpenApiSerializerFieldExtension):
+    """Generate API Schema for JSON fields as"""
+
+    target_class = "authentik.core.api.utils.JSONDictField"
+
+    def map_serializer_field(self, auto_schema, direction):
+        return build_basic_type(OpenApiTypes.OBJECT)
 
 
 class PassiveSerializer(Serializer):

@@ -22,7 +22,7 @@ var (
 func doGlobalSetup(outpost api.Outpost, globalConfig *api.Config) {
 	l := log.WithField("logger", "authentik.outpost")
 	m := outpost.Managed.Get()
-	level, ok := outpost.Config.(map[string]interface{})[ConfigLogLevel]
+	level, ok := outpost.Config[ConfigLogLevel]
 	if !ok {
 		level = "info"
 	}

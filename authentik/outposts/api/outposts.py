@@ -15,7 +15,7 @@ from rest_framework.viewsets import ModelViewSet
 from authentik import get_build_hash
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import PassiveSerializer, is_dict
+from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Provider
 from authentik.outposts.api.service_connections import ServiceConnectionSerializer
 from authentik.outposts.apps import MANAGED_OUTPOST
@@ -34,7 +34,7 @@ from authentik.providers.radius.models import RadiusProvider
 class OutpostSerializer(ModelSerializer):
     """Outpost Serializer"""
 
-    config = JSONField(validators=[is_dict], source="_config")
+    config = JSONDictField(source="_config")
     # Need to set allow_empty=True for the embedded outpost with no providers
     # is checked for other providers in the API Viewset
     providers = PrimaryKeyRelatedField(

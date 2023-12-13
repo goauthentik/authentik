@@ -36,7 +36,7 @@ func (pi *ProviderInstance) GetVirtualGroupDN(group string) string {
 }
 
 func (pi *ProviderInstance) GetUidNumber(user api.User) string {
-	uidNumber, ok := user.GetAttributes().(map[string]interface{})["uidNumber"].(string)
+	uidNumber, ok := user.GetAttributes()["uidNumber"].(string)
 
 	if ok {
 		return uidNumber
@@ -46,7 +46,7 @@ func (pi *ProviderInstance) GetUidNumber(user api.User) string {
 }
 
 func (pi *ProviderInstance) GetGidNumber(group api.Group) string {
-	gidNumber, ok := group.GetAttributes().(map[string]interface{})["gidNumber"].(string)
+	gidNumber, ok := group.GetAttributes()["gidNumber"].(string)
 
 	if ok {
 		return gidNumber
