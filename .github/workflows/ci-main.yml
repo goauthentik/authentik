@@ -91,13 +91,14 @@ jobs:
           git checkout $GITHUB_SHA
           # Delete previous poetry env
           rm -rf $(poetry env info --path)
-          poetry install
       - name: Setup authentik env (ensure latest deps are installed)
         uses: ./.github/actions/setup
         with:
           postgresql_version: ${{ matrix.psql }}
       - name: migrate to latest
-        run: poetry run python -m lifecycle.migrate
+        run: |
+          poetry install
+          poetry run python -m lifecycle.migrate
   test-unittest:
     name: test-unittest - PostgreSQL ${{ matrix.psql }}
     runs-on: ubuntu-latest
