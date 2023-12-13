@@ -183,7 +183,7 @@ export class UserInterface extends Interface {
             <ak-enterprise-status interface="user"></ak-enterprise-status>
             <div class="pf-c-page">
                 <div class="background-wrapper" style="${this.uiConfig.theme.background}">
-                    ${this.uiConfig.theme.background === ""
+                    ${(this.uiConfig.theme.background || "") === ""
                         ? html`<div class="background-default-slant"></div>`
                         : html``}
                 </div>
