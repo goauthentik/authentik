@@ -13,7 +13,7 @@ interface DescriptionConfig {
     threecolumn: boolean;
 }
 
-const isDescriptionRecordCollection = (v: Array<any>): v is DescriptionRecord[] =>
+const isDescriptionRecordCollection = (v: Array<unknown>): v is DescriptionRecord[] =>
     v.length > 0 && typeof v[0] === "object" && !Array.isArray(v[0]);
 
 function renderDescriptionGroup([term, description]: DescriptionPair) {
