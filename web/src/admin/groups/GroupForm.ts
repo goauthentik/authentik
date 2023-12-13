@@ -46,11 +46,9 @@ export class GroupForm extends ModelForm<Group, string> {
     }
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated group.");
-        } else {
-            return msg("Successfully created group.");
-        }
+        return this.instance
+            ? msg("Successfully updated group.")
+            : msg("Successfully created group.");
     }
 
     async load(): Promise<void> {

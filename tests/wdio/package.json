@@ -4,8 +4,8 @@
     "type": "module",
     "devDependencies": {
         "@trivago/prettier-plugin-sort-imports": "^4.3.0",
-        "@typescript-eslint/eslint-plugin": "^6.13.2",
-        "@typescript-eslint/parser": "^6.13.2",
+        "@typescript-eslint/eslint-plugin": "^6.14.0",
+        "@typescript-eslint/parser": "^6.14.0",
         "@wdio/cli": "^8.26.1",
         "@wdio/local-runner": "^8.26.1",
         "@wdio/mocha-framework": "^8.24.12",
@@ -17,7 +17,7 @@
         "prettier": "^3.1.1",
         "ts-node": "^10.9.2",
         "typescript": "^5.3.3",
-        "wdio-wait-for": "^3.0.9"
+        "wdio-wait-for": "^3.0.10"
     },
     "scripts": {
         "wdio": "wdio run ./wdio.conf.ts",

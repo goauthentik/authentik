@@ -1,5 +1,6 @@
 import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
 import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
+import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
 import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
@@ -8,7 +9,6 @@ import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { msg } from "@lit/localize";
@@ -28,7 +28,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-source-oauth-form")
-export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
+export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
     async loadInstance(pk: string): Promise<OAuthSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthRetrieve({
             slug: pk,
@@ -60,14 +60,6 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
 
     @state()
     clearIcon = false;
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated source.");
-        } else {
-            return msg("Successfully created source.");
-        }
-    }
 
     async send(data: OAuthSource): Promise<OAuthSource> {
         data.providerType = (this.providerType?.slug || "") as ProviderTypeEnum;

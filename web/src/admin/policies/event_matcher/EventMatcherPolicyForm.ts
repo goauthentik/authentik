@@ -1,8 +1,8 @@
+import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { msg } from "@lit/localize";
@@ -20,19 +20,11 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-policy-event-matcher-form")
-export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string> {
+export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
     loadInstance(pk: string): Promise<EventMatcherPolicy> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherRetrieve({
             policyUuid: pk,
         });
-    }
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated policy.");
-        } else {
-            return msg("Successfully created policy.");
-        }
     }
 
     async send(data: EventMatcherPolicy): Promise<EventMatcherPolicy> {
