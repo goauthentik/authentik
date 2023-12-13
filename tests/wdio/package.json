@@ -17,7 +17,7 @@
         "prettier": "^3.1.1",
         "ts-node": "^10.9.2",
         "typescript": "^5.3.3",
-        "wdio-wait-for": "^3.0.9"
+        "wdio-wait-for": "^3.0.10"
     },
     "scripts": {
         "wdio": "wdio run ./wdio.conf.ts",
