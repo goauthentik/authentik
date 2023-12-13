@@ -9,6 +9,22 @@ from authentik.flows.models import Stage
 from authentik.lib.utils.time import timedelta_string_validator
 
 
+class NetworkBinding(models.TextChoices):
+    NO_BINDING = "no_binding"
+    BIND_ASN = "bind_asn"  # Bind to ASN only
+    BIND_ASN_NETWORK = "bind_asn_network"  # Bind to ASN and Network
+    BIND_ASN_NETWORK_IP = "bind_asn_network_ip"  # Bind to ASN, Network and IP
+
+
+class GeoIPBinding(models.TextChoices):
+    NO_BINDING = "no_binding"
+    BIND_CONTINENT = "bind_continent"  # Bind to continent only
+    BIND_CONTINENT_COUNTRY = "bind_continent_country"  # Bind to continent and country
+    BIND_CONTINENT_COUNTRY_CITY = (
+        "bind_continent_country_city"  # Bind to continent, country and city
+    )
+
+
 class UserLoginStage(Stage):
     """Attaches the currently pending user to the current session."""
 
@@ -20,6 +36,16 @@ class UserLoginStage(Stage):
             "that the sessions lasts until the browser is closed. "
             "(Format: hours=-1;minutes=-2;seconds=-3)"
         ),
+    )
+    network_binding = models.TextField(
+        choices=NetworkBinding.choices,
+        default=NetworkBinding.NO_BINDING,
+        help_text=_("Bind sessions created by this stage to the configured network"),
+    )
+    geoip_binding = models.TextField(
+        choices=GeoIPBinding.choices,
+        default=GeoIPBinding.NO_BINDING,
+        help_text=_("Bind sessions created by this stage to the configured GeoIP location"),
     )
     terminate_other_sessions = models.BooleanField(
         default=False, help_text=_("Terminate all other sessions of the user logging in.")

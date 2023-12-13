@@ -15,6 +15,8 @@ class UserLoginStageSerializer(StageSerializer):
             "session_duration",
             "terminate_other_sessions",
             "remember_me_offset",
+            "network_binding",
+            "geoip_binding",
         ]
 
 

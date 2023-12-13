@@ -52,7 +52,7 @@ class GeoIPContextProcessor(MMDBContextProcessor):
             op="authentik.events.geo.city",
             description=ip_address,
         ):
-            if not self.enabled:
+            if not self.configured():
                 return None
             self.check_expired()
             try:
@@ -60,8 +60,10 @@ class GeoIPContextProcessor(MMDBContextProcessor):
             except (GeoIP2Error, ValueError):
                 return None
 
-    def city_to_dict(self, city: City) -> GeoIPDict:
+    def city_to_dict(self, city: City | None) -> GeoIPDict:
         """Convert City to dict"""
+        if not city:
+            return {}
         city_dict: GeoIPDict = {
             "continent": city.continent.code,
             "country": city.country.iso_code,

@@ -56,7 +56,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
             pass
         return session_key
 
-    def process_request(self, request):
+    def process_request(self, request: HttpRequest):
         raw_session = request.COOKIES.get(settings.SESSION_COOKIE_NAME)
         session_key = SessionMiddleware.decode_session_key(raw_session)
         request.session = self.SessionStore(session_key)

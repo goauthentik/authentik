@@ -1,4 +1,6 @@
 """Login stage logic"""
+from datetime import timedelta
+
 from django.contrib import messages
 from django.contrib.auth import login
 from django.http import HttpRequest, HttpResponse
@@ -9,9 +11,15 @@ from authentik.core.models import AuthenticatedSession, User
 from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, WithUserInfoChallenge
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, PLAN_CONTEXT_SOURCE
 from authentik.flows.stage import ChallengeStageView
+from authentik.lib.utils.http import get_client_ip
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
+from authentik.stages.user_login.middleware import (
+    SESSION_KEY_BINDING_GEO,
+    SESSION_KEY_BINDING_NET,
+    SESSION_KEY_LAST_IP,
+)
 from authentik.stages.user_login.models import UserLoginStage
 
 
@@ -51,6 +59,25 @@ class UserLoginStageView(ChallengeStageView):
     def challenge_valid(self, response: UserLoginChallengeResponse) -> HttpResponse:
         return self.do_login(self.request, response.validated_data["remember_me"])
 
+    def set_session_duration(self, remember: bool) -> timedelta:
+        """Update the sessions' expiry"""
+        delta = timedelta_from_string(self.executor.current_stage.session_duration)
+        if remember:
+            offset = timedelta_from_string(self.executor.current_stage.remember_me_offset)
+            delta = delta + offset
+        if delta.total_seconds() == 0:
+            self.request.session.set_expiry(0)
+        else:
+            self.request.session.set_expiry(delta)
+        return delta
+
+    def set_session_ip(self):
+        stage: UserLoginStage = self.executor.current_stage
+
+        self.request.session[SESSION_KEY_LAST_IP] = get_client_ip(self.request)
+        self.request.session[SESSION_KEY_BINDING_NET] = stage.network_binding
+        self.request.session[SESSION_KEY_BINDING_GEO] = stage.geoip_binding
+
     def do_login(self, request: HttpRequest, remember: bool = False) -> HttpResponse:
         """Attach the currently pending user to the current session"""
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
@@ -64,14 +91,8 @@ class UserLoginStageView(ChallengeStageView):
         user: User = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
         if not user.is_active:
             self.logger.warning("User is not active, login will not work.")
-        delta = timedelta_from_string(self.executor.current_stage.session_duration)
-        if remember:
-            offset = timedelta_from_string(self.executor.current_stage.remember_me_offset)
-            delta = delta + offset
-        if delta.total_seconds() == 0:
-            self.request.session.set_expiry(0)
-        else:
-            self.request.session.set_expiry(delta)
+        delta = self.set_session_duration(remember)
+        self.set_session_ip()
         login(
             self.request,
             user,
