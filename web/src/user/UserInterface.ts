@@ -82,9 +82,9 @@ export class UserInterface extends Interface {
                 :host([theme="dark"]) .pf-c-page__header {
                     color: var(--ak-dark-foreground) !important;
                 }
-                .pf-c-page__header-tools-item .fas,
-                .pf-c-notification-badge__count,
-                .pf-c-page__header-tools-group .pf-c-button {
+                :host([theme="light"]) .pf-c-page__header-tools-item .fas,
+                :host([theme="light"]) .pf-c-notification-badge__count,
+                :host([theme="light"]) .pf-c-page__header-tools-group .pf-c-button {
                     color: var(--ak-global--Color--100) !important;
                 }
                 .pf-c-page {
