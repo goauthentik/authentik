@@ -6,11 +6,12 @@ from geoip2.errors import GeoIP2Error
 from geoip2.models import City
 from sentry_sdk.hub import Hub
 
-from authentik.events.enrich.mmdb import MMDBEnricher
+from authentik.events.context_processors.mmdb import MMDBContextProcessor
 from authentik.lib.config import CONFIG
 from authentik.root.middleware import ClientIPMiddleware
 
 if TYPE_CHECKING:
+    from authentik.api.v3.config import Capabilities
     from authentik.events.models import Event
 
 
@@ -24,11 +25,16 @@ class GeoIPDict(TypedDict):
     city: str
 
 
-class GeoIPEnricher(MMDBEnricher):
+class GeoIPContextProcessor(MMDBContextProcessor):
     """Slim wrapper around GeoIP API"""
 
+    def capability(self) -> Optional["Capabilities"]:
+        from authentik.api.v3.config import Capabilities
+
+        return Capabilities.CAN_GEO_IP
+
     def path(self) -> str | None:
-        return CONFIG.get("events.processors.geoip")
+        return CONFIG.get("events.context_processors.geoip")
 
     def enrich_event(self, event: "Event"):
         city = self.city_dict(event.client_ip)
@@ -75,4 +81,4 @@ class GeoIPEnricher(MMDBEnricher):
         return self.city_to_dict(city)
 
 
-GEOIP_ENRICHER = GeoIPEnricher()
+GEOIP_CONTEXT_PROCESSOR = GeoIPContextProcessor()

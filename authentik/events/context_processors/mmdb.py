@@ -5,10 +5,10 @@ from typing import Optional
 from geoip2.database import Reader
 from structlog.stdlib import get_logger
 
-from authentik.events.enrich.base import EventEnricher
+from authentik.events.context_processors.base import EventContextProcessor
 
 
-class MMDBEnricher(EventEnricher):
+class MMDBContextProcessor(EventContextProcessor):
     """Common logic for reading MaxMind DB files, including re-loading if the file has changed"""
 
     def __init__(self):

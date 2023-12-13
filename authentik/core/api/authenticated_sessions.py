@@ -14,8 +14,8 @@ from ua_parser import user_agent_parser
 from authentik.api.authorization import OwnerSuperuserPermissions
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.models import AuthenticatedSession
-from authentik.events.enrich.asn import ASN_ENRICHER, ASNDict
-from authentik.events.enrich.geoip import GEOIP_ENRICHER, GeoIPDict
+from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR, ASNDict
+from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR, GeoIPDict
 
 
 class UserAgentDeviceDict(TypedDict):
@@ -73,11 +73,11 @@ class AuthenticatedSessionSerializer(ModelSerializer):
 
     def get_geo_ip(self, instance: AuthenticatedSession) -> Optional[GeoIPDict]:  # pragma: no cover
         """Get GeoIP Data"""
-        return GEOIP_ENRICHER.city_dict(instance.last_ip)
+        return GEOIP_CONTEXT_PROCESSOR.city_dict(instance.last_ip)
 
     def get_asn(self, instance: AuthenticatedSession) -> Optional[ASNDict]:  # pragma: no cover
         """Get ASN Data"""
-        return ASN_ENRICHER.asn_dict(instance.last_ip)
+        return ASN_CONTEXT_PROCESSOR.asn_dict(instance.last_ip)
 
     class Meta:
         model = AuthenticatedSession

@@ -1,14 +1,14 @@
 """Test GeoIP Wrapper"""
 from django.test import TestCase
 
-from authentik.events.enrich.geoip import GeoIPEnricher
+from authentik.events.context_processors.geoip import GeoIPContextProcessor
 
 
 class TestGeoIP(TestCase):
     """Test GeoIP Wrapper"""
 
     def setUp(self) -> None:
-        self.reader = GeoIPEnricher()
+        self.reader = GeoIPContextProcessor()
 
     def test_simple(self):
         """Test simple city wrapper"""

@@ -26,8 +26,7 @@ from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_USER,
 )
 from authentik.core.models import ExpiringModel, Group, PropertyMapping, User
-from authentik.events.enrich.asn import ASN_ENRICHER
-from authentik.events.enrich.geoip import GEOIP_ENRICHER
+from authentik.events.context_processors.base import get_context_processors
 from authentik.events.utils import (
     cleanse_dict,
     get_user,
@@ -59,14 +58,6 @@ def default_event_duration():
 def default_tenant():
     """Get a default value for tenant"""
     return sanitize_dict(model_to_dict(DEFAULT_TENANT))
-
-
-def event_enrichers():
-    """Get all enrichers"""
-    return [
-        GEOIP_ENRICHER,
-        ASN_ENRICHER,
-    ]
 
 
 class NotificationTransportError(SentryIgnoredException):
@@ -256,8 +247,8 @@ class Event(SerializerModel, ExpiringModel):
         # User 255.255.255.255 as fallback if IP cannot be determined
         self.client_ip = ClientIPMiddleware.get_client_ip(request)
         # Enrich event data
-        for enricher in event_enrichers():
-            enricher.enrich_event(self)
+        for processor in get_context_processors():
+            processor.enrich_event(self)
         # If there's no app set, we get it from the requests too
         if not self.app:
             self.app = Event._get_app_from_request(request)

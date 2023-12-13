@@ -1,14 +1,14 @@
 """Test ASN Wrapper"""
 from django.test import TestCase
 
-from authentik.events.enrich.asn import ASNEnricher
+from authentik.events.context_processors.asn import ASNContextProcessor
 
 
 class TestASN(TestCase):
     """Test ASN Wrapper"""
 
     def setUp(self) -> None:
-        self.reader = ASNEnricher()
+        self.reader = ASNContextProcessor()
 
     def test_simple(self):
         """Test simple asn wrapper"""

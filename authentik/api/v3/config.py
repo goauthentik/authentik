@@ -19,8 +19,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentik.core.api.utils import PassiveSerializer
-from authentik.events.enrich.asn import ASN_ENRICHER
-from authentik.events.enrich.geoip import GEOIP_ENRICHER
+from authentik.events.context_processors.base import get_context_processors
 from authentik.lib.config import CONFIG
 
 capabilities = Signal()
@@ -70,10 +69,9 @@ class ConfigView(APIView):
         deb_test = settings.DEBUG or settings.TEST
         if Path(settings.MEDIA_ROOT).is_mount() or deb_test:
             caps.append(Capabilities.CAN_SAVE_MEDIA)
-        if GEOIP_ENRICHER.enabled:
-            caps.append(Capabilities.CAN_GEO_IP)
-        if ASN_ENRICHER.enabled:
-            caps.append(Capabilities.CAN_ASN)
+        for processor in get_context_processors():
+            if cap := processor.capability():
+                caps.append(cap)
         if CONFIG.get_bool("impersonation"):
             caps.append(Capabilities.CAN_IMPERSONATE)
         if settings.DEBUG:  # pragma: no cover

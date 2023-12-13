@@ -109,7 +109,7 @@ disable_update_check: false
 disable_startup_analytics: false
 avatars: env://AUTHENTIK_AUTHENTIK__AVATARS?gravatar,initials
 events:
-  processors:
+  context_processors:
     geoip: "env://AUTHENTIK_GEOIP?/geoip/GeoLite2-City.mmdb"
     asn: "/geoip/GeoLite2-ASN.mmdb"
 geoip: /geoip/GeoLite2-City.mmdb
