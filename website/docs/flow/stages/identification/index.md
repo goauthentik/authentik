@@ -39,7 +39,7 @@ By default, sources are only shown with their icon, which can be changed with th
 Furthermore, it is also possible to deselect any [user field option](#user-fields) for an Identification stage, which will result in users only being able to use currently configured sources.
 
 :::info
-Starting with authentik 2023.5, when no user fields are selected and only one source is selected, authentik will automatically redirect the user to that source. This only applies when the **Passwordless flow** option is *not* configured.
+Starting with authentik 2023.5, when no user fields are selected and only one source is selected, authentik will automatically redirect the user to that source. This only applies when the **Passwordless flow** option is _not_ configured.
 :::
 
 ## Flow settings

@@ -23,7 +23,7 @@ Create an OAuth2/OpenID provider with the following parameters:
 -   Scopes: OpenID, Email and Profile
 -   **Signing Key**: Select any available key
 
-Note the Client ID and Client Secret values for the provider. 
+Note the Client ID and Client Secret values for the provider.
 
 Next, create an application, using the provider you've created above. Note the slug of the application you create.
 
