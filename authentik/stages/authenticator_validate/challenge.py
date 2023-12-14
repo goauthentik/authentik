@@ -105,16 +105,56 @@ def get_webauthn_challenge(
     )
 
 
-def select_challenge(request: HttpRequest, device: Device):
+def select_challenge(request: HttpRequest,stage_view: StageView, device: Device):
     """Callback when the user selected a challenge in the frontend."""
     if isinstance(device, SMSDevice):
-        select_challenge_sms(request, device)
+        select_challenge_sms(request, stage_view, device)
+    if isinstance(device, MobileDevice):
+        select_challenge_mobile(request, stage_view, device)
 
 
-def select_challenge_sms(request: HttpRequest, device: SMSDevice):
+def select_challenge_sms(request: HttpRequest, stage_view: StageView, device: SMSDevice):
     """Send SMS"""
     device.generate_token()
     device.stage.send(device.token, device)
+
+
+def select_challenge_mobile(request: HttpRequest, stage_view: StageView, device: MobileDevice):
+    """Send mobile notification"""
+    # Get additional context for push
+    push_context = {
+        __("Domain"): stage_view.request.get_host(),
+    }
+    if SESSION_KEY_APPLICATION_PRE in stage_view.request.session:
+        push_context[__("Application")] = stage_view.request.session.get(
+            SESSION_KEY_APPLICATION_PRE, Application()
+        ).name
+
+    try:
+        transaction = device.create_transaction()
+        transaction.send_message(stage_view.request, **push_context)
+        status = transaction.wait_for_response()
+        if status == TransactionStates.DENY:
+            LOGGER.debug("mobile push response", result=status)
+            login_failed.send(
+                sender=__name__,
+                credentials={"username": user.username},
+                request=stage_view.request,
+                stage=stage_view.executor.current_stage,
+                device_class=DeviceClasses.MOBILE.value,
+                mobile_response=status,
+            )
+            raise ValidationError("Mobile denied access", code="denied")
+        return device
+    except TimeoutError:
+        raise ValidationError("Mobile push notification timed out.")
+    except RuntimeError as exc:
+        Event.new(
+            EventAction.CONFIGURATION_ERROR,
+            message=f"Failed to Mobile authenticate user: {str(exc)}",
+            user=user,
+        ).from_http(stage_view.request, user)
+        raise ValidationError("Mobile denied access", code="denied")
 
 
 def validate_challenge_code(code: str, stage_view: StageView, user: User) -> Device:

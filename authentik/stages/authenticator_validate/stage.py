@@ -127,7 +127,7 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         devices = SMSDevice.objects.filter(pk=int(challenge.get("device_uid", "0")))
         if not devices.exists():
             raise ValidationError("invalid challenge selected")
-        select_challenge(self.stage.request, devices.first())
+        select_challenge(self.stage.request, self.stage, devices.first())
         return challenge
 
     def validate_selected_stage(self, stage_pk: str) -> str:
