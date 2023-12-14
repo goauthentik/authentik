@@ -5,11 +5,12 @@ import { AuthenticatorValidateStage } from "@goauthentik/flow/stages/authenticat
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
@@ -20,6 +21,7 @@ import {
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest,
     DeviceChallenge,
+    ItemMatchingModeEnum,
 } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-validate-mobile")
@@ -34,13 +36,32 @@ export class AuthenticatorValidateStageWebMobile extends BaseStage<
     showBackButton = false;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
+        return [
+            PFBase,
+            PFContent,
+            PFLogin,
+            PFForm,
+            PFFormControl,
+            PFTitle,
+            PFButton,
+            css`
+                .pf-c-content {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: center;
+                }
+                .pf-c-content h1 {
+                    font-size: calc(var(--pf-c-content--h1--FontSize) * 2);
+                }
+            `,
+        ];
     }
 
     firstUpdated(): void {
         this.host?.submit({
             mobile: this.deviceChallenge?.deviceUid,
         });
+        this.host.loading = false;
     }
 
     render(): TemplateResult {
@@ -49,6 +70,21 @@ export class AuthenticatorValidateStageWebMobile extends BaseStage<
             </ak-empty-state>`;
         }
         const errors = this.challenge.responseErrors?.mobile || [];
+        const challengeData = this.deviceChallenge?.challenge as {
+            item_mode: ItemMatchingModeEnum;
+            item: string;
+        };
+        let body = html``;
+        if (
+            challengeData.item_mode === ItemMatchingModeEnum.NumberMatching2 ||
+            challengeData.item_mode === ItemMatchingModeEnum.NumberMatching3
+        ) {
+            body = html`
+                <div class="pf-c-content">
+                    <h1>${challengeData.item}</h1>
+                </div>
+            `;
+        }
         return html`<div class="pf-c-login__main-body">
                 <form
                     class="pf-c-form"
@@ -67,7 +103,7 @@ export class AuthenticatorValidateStageWebMobile extends BaseStage<
                             >
                         </div>
                     </ak-form-static>
-
+                    ${body}
                     ${errors.length > 0
                         ? errors.map((err) => {
                               if (err.code === "denied") {

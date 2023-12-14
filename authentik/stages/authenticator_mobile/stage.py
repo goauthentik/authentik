@@ -16,6 +16,8 @@ from authentik.stages.authenticator_mobile.models import MobileDevice, MobileDev
 FLOW_PLAN_MOBILE_ENROLL_TOKEN = "authentik/stages/authenticator_mobile/enroll/token"  # nosec
 FLOW_PLAN_MOBILE_ENROLL_DEVICE = "authentik/stages/authenticator_mobile/enroll/device"
 
+SESSION_KEY_MOBILE_TRANSACTION = "authentik/stages/authenticator_mobile/transaction"
+
 
 class AuthenticatorMobilePayloadChallenge(PassiveSerializer):
     """Payload within the QR code given to the mobile app, hence the short variable names"""

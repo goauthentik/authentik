@@ -67,6 +67,7 @@ from authentik.rbac.models import Role
 from authentik.sources.scim.models import SCIMSourceGroup, SCIMSourceUser
 from authentik.stages.authenticator_webauthn.models import WebAuthnDeviceType
 from authentik.tenants.models import Tenant
+from authentik.stages.authenticator_mobile.models import MobileTransaction
 
 # Context set when the serializer is created in a blueprint context
 # Update website/developer-docs/blueprints/v1/models.md when used
@@ -119,6 +120,7 @@ def excluded_models() -> list[type[Model]]:
         GoogleWorkspaceProviderGroup,
         MicrosoftEntraProviderUser,
         MicrosoftEntraProviderGroup,
+        MobileTransaction,
     )
 
 
