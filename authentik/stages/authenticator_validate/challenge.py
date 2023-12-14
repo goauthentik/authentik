@@ -22,11 +22,13 @@ from authentik.core.signals import login_failed
 from authentik.events.models import Event, EventAction
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE
+from authentik.lib.utils.errors import exception_to_string
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.authenticator import match_token
 from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_mobile.models import MobileDevice, TransactionStates
+from authentik.stages.authenticator_mobile.stage import SESSION_KEY_MOBILE_TRANSACTION
 from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnDevice
@@ -50,6 +52,8 @@ def get_challenge_for_device(
     """Generate challenge for a single device"""
     if isinstance(device, WebAuthnDevice):
         return get_webauthn_challenge(request, stage, device)
+    if isinstance(device, MobileDevice):
+        return get_mobile_challenge(request, stage, device)
     # Code-based challenges have no hints
     return {}
 
@@ -105,7 +109,20 @@ def get_webauthn_challenge(
     )
 
 
-def select_challenge(request: HttpRequest,stage_view: StageView, device: Device):
+def get_mobile_challenge(
+    request: HttpRequest, stage: AuthenticatorValidateStage, device: Optional[MobileDevice] = None
+) -> dict:
+    """Create a mobile transaction"""
+    request.session.pop(SESSION_KEY_MOBILE_TRANSACTION, None)
+    transaction = device.create_transaction()
+    request.session[SESSION_KEY_MOBILE_TRANSACTION] = transaction
+    return {
+        "item_mode": transaction.device.stage.item_matching_mode,
+        "item": transaction.correct_item,
+    }
+
+
+def select_challenge(request: HttpRequest, stage_view: StageView, device: Device):
     """Callback when the user selected a challenge in the frontend."""
     if isinstance(device, SMSDevice):
         select_challenge_sms(request, stage_view, device)
@@ -129,31 +146,19 @@ def select_challenge_mobile(request: HttpRequest, stage_view: StageView, device:
         push_context[__("Application")] = stage_view.request.session.get(
             SESSION_KEY_APPLICATION_PRE, Application()
         ).name
+    if SESSION_KEY_MOBILE_TRANSACTION not in request.session:
+        raise ValidationError()
 
     try:
-        transaction = device.create_transaction()
+        transaction = request.session.get(SESSION_KEY_MOBILE_TRANSACTION)
         transaction.send_message(stage_view.request, **push_context)
-        status = transaction.wait_for_response()
-        if status == TransactionStates.DENY:
-            LOGGER.debug("mobile push response", result=status)
-            login_failed.send(
-                sender=__name__,
-                credentials={"username": user.username},
-                request=stage_view.request,
-                stage=stage_view.executor.current_stage,
-                device_class=DeviceClasses.MOBILE.value,
-                mobile_response=status,
-            )
-            raise ValidationError("Mobile denied access", code="denied")
-        return device
-    except TimeoutError:
-        raise ValidationError("Mobile push notification timed out.")
     except RuntimeError as exc:
         Event.new(
             EventAction.CONFIGURATION_ERROR,
-            message=f"Failed to Mobile authenticate user: {str(exc)}",
-            user=user,
-        ).from_http(stage_view.request, user)
+            message="Failed to Mobile authenticate user",
+            exception=exception_to_string(exc),
+            user=device.user,
+        ).from_http(stage_view.request, device.user)
         raise ValidationError("Mobile denied access", code="denied")
 
 
@@ -224,18 +229,9 @@ def validate_challenge_mobile(device_pk: str, stage_view: StageView, user: User)
         LOGGER.warning("device mismatch")
         raise Http404
 
-    # Get additional context for push
-    push_context = {
-        __("Domain"): stage_view.request.get_host(),
-    }
-    if SESSION_KEY_APPLICATION_PRE in stage_view.request.session:
-        push_context[__("Application")] = stage_view.request.session.get(
-            SESSION_KEY_APPLICATION_PRE, Application()
-        ).name
+    transaction = stage_view.request.session[SESSION_KEY_MOBILE_TRANSACTION]
 
     try:
-        transaction = device.create_transaction()
-        transaction.send_message(stage_view.request, **push_context)
         status = transaction.wait_for_response()
         if status == TransactionStates.DENY:
             LOGGER.debug("mobile push response", result=status)
@@ -258,6 +254,8 @@ def validate_challenge_mobile(device_pk: str, stage_view: StageView, user: User)
             user=user,
         ).from_http(stage_view.request, user)
         raise ValidationError("Mobile denied access", code="denied")
+    finally:
+        stage_view.request.session.delete(SESSION_KEY_MOBILE_TRANSACTION)
 
 
 def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) -> Device:

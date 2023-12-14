@@ -21,6 +21,7 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.install_id import get_install_id
 from authentik.stages.authenticator import devices_for_user
 from authentik.stages.authenticator.models import Device
+from authentik.stages.authenticator_mobile.models import MobileDevice
 from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_validate.challenge import (
     DeviceChallenge,
@@ -122,12 +123,16 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         if not allowed:
             raise ValidationError("invalid challenge selected")
 
-        if challenge.get("device_class", "") != "sms":
-            return challenge
-        devices = SMSDevice.objects.filter(pk=int(challenge.get("device_uid", "0")))
-        if not devices.exists():
+        device = None
+        match challenge.get("device_class", ""):
+            # This is a bit unclean and hardcoded, but alas
+            case "mobile":
+                device = MobileDevice.objects.filter(pk=challenge.get("device_uid")).first()
+            case "sms":
+                device = SMSDevice.objects.filter(pk=int(challenge.get("device_uid"))).first()
+        if not device:
             raise ValidationError("invalid challenge selected")
-        select_challenge(self.stage.request, self.stage, devices.first())
+        select_challenge(self.stage.request, self.stage, device)
         return challenge
 
     def validate_selected_stage(self, stage_pk: str) -> str:

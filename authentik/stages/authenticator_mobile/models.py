@@ -1,5 +1,6 @@
 """Mobile authenticator stage"""
 from json import dumps
+from secrets import choice
 from time import sleep
 from typing import Optional
 from uuid import uuid4
@@ -61,11 +62,22 @@ class AuthenticatorMobileStage(ConfigurableStage, FriendlyNamedStage, Stage):
         """Create a transaction for `device` with the config of this stage."""
         transaction = MobileTransaction(device=device)
         if self.item_matching_mode == ItemMatchingMode.ACCEPT_DENY:
-            transaction.item_matching = [TransactionStates.ACCEPT, TransactionStates.DENY]
+            transaction.decision_items = [TransactionStates.ACCEPT, TransactionStates.DENY]
+            transaction.correct_item = TransactionStates.ACCEPT
         if self.item_matching_mode == ItemMatchingMode.NUMBER_MATCHING_2:
-            transaction.item_matching = [generate_code_fixed_length(2)] * 3
+            transaction.decision_items = [
+                generate_code_fixed_length(2),
+                generate_code_fixed_length(2),
+                generate_code_fixed_length(2),
+            ]
+            transaction.correct_item = choice(transaction.decision_items)
         if self.item_matching_mode == ItemMatchingMode.NUMBER_MATCHING_3:
-            transaction.item_matching = [generate_code_fixed_length(3)] * 3
+            transaction.decision_items = [
+                generate_code_fixed_length(3),
+                generate_code_fixed_length(3),
+                generate_code_fixed_length(3),
+            ]
+            transaction.correct_item = choice(transaction.decision_items)
         transaction.save()
         return transaction
 
@@ -160,6 +172,9 @@ class MobileTransaction(ExpiringModel):
         """Get the status"""
         if not self.selected_item:
             return TransactionStates.WAIT
+        # These are two different failure cases, but currently they are handled the same
+        if self.selected_item not in self.decision_items:
+            return TransactionStates.DENY
         if self.selected_item != self.correct_item:
             return TransactionStates.DENY
         return TransactionStates.ACCEPT
@@ -190,8 +205,8 @@ class MobileTransaction(ExpiringModel):
                 priority="normal",
                 notification=AndroidNotification(icon="stock_ticker_update", color="#f45342"),
                 data={
-                    "tx_id": str(self.tx_id),
-                    "user_decision_items": dumps(self.item_matching),
+                    "authentik_tx_id": str(self.tx_id),
+                    "authentik_user_decision_items": dumps(self.decision_items),
                 },
             ),
             apns=APNSConfig(
@@ -204,17 +219,17 @@ class MobileTransaction(ExpiringModel):
                         category="cat_authentik_push_authorization",
                     ),
                     interruption_level="time-sensitive",
-                    tx_id=str(self.tx_id),
-                    user_decision_items=self.item_matching,
+                    authentik_tx_id=str(self.tx_id),
+                    authentik_user_decision_items=self.decision_items,
                 ),
             ),
             token=self.device.firebase_token,
         )
         try:
             response = send(message, app=app)
-            LOGGER.debug("Sent notification", id=response)
+            LOGGER.debug("Sent notification", id=response, tx_id=self.tx_id)
         except (ValueError, FirebaseError) as exc:
-            LOGGER.warning("failed to push", exc=exc)
+            LOGGER.warning("failed to push", exc=exc, tx_id=self.tx_id)
         return True
 
     def wait_for_response(self, max_checks=30) -> TransactionStates:
