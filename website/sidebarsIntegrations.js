@@ -75,6 +75,7 @@ module.exports = {
                         "services/fortimanager/index",
                         "services/harbor/index",
                         "services/hashicorp-vault/index",
+                        "services/jenkins/index",
                         "services/minio/index",
                         "services/netbox/index",
                         "services/opnsense/index",
