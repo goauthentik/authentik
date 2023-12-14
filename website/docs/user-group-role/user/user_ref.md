@@ -72,7 +72,7 @@ Only applies when the token creation is triggered by the user with this attribut
 
 ### `goauthentik.io/user/token-maximum-lifetime`:
 
-Optional flag, when set, defines the maximum lifetime of user created tokens. Defaults to 30 minutes if unset.
+Optional flag, when set, defines the maximum lifetime of user-created tokens. Defaults to 30 minutes if not set.
 
 Only applies when `goauthentik.io/user/token-expires` set to true.
 
