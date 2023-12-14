@@ -1,4 +1,5 @@
 """Mobile authenticator stage"""
+from json import dumps
 from time import sleep
 from typing import Optional
 from uuid import uuid4
@@ -150,6 +151,10 @@ class MobileTransaction(ExpiringModel):
             android=AndroidConfig(
                 priority="normal",
                 notification=AndroidNotification(icon="stock_ticker_update", color="#f45342"),
+                data={
+                    "tx_id": str(self.tx_id),
+                    "numbers": dumps([123, 456, 789]),
+                },
             ),
             apns=APNSConfig(
                 headers={"apns-push-type": "alert", "apns-priority": "10"},
@@ -162,6 +167,11 @@ class MobileTransaction(ExpiringModel):
                     ),
                     interruption_level="time-sensitive",
                     tx_id=str(self.tx_id),
+                    numbers=[
+                        123,
+                        456,
+                        789,
+                    ],
                     options=["foo", "bar", "baz"],
                 ),
             ),
