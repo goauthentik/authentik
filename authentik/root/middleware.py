@@ -297,7 +297,7 @@ class LoggingMiddleware:
         response = self.get_response(request)
         status_code = response.status_code
         kwargs = {
-            "request_id": request.request_id,
+            "request_id": getattr(request, "request_id", None),
         }
         kwargs.update(getattr(response, "ak_context", {}))
         self.log(request, status_code, int((default_timer() - start) * 1000), **kwargs)

@@ -1,5 +1,7 @@
 """Sessions bound to ASN/Network and GeoIP/Continent/etc"""
 from django.conf import settings
+from django.contrib.auth.middleware import AuthenticationMiddleware
+from django.contrib.auth.signals import user_logged_out
 from django.http.request import HttpRequest
 from django.shortcuts import redirect
 from structlog.stdlib import get_logger
@@ -31,6 +33,34 @@ class SessionBindingBroken(SentryIgnoredException):
             f"old value: {self.old_value}, new value: {self.new_value}"
         )
 
+    def to_event(self) -> dict:
+        """Convert to dict for usage with event"""
+        return {
+            "logout_reason": "Session binding broken",
+            "binding": {
+                "reason": self.reason,
+                "previous_value": self.old_value,
+                "new_value": self.new_value,
+            },
+        }
+
+
+def logout_extra(request: HttpRequest, exc: SessionBindingBroken):
+    """Similar to django's logout method, but able to carry more info to the signal"""
+    # Dispatch the signal before the user is logged out so the receivers have a
+    # chance to find out *who* logged out.
+    user = getattr(request, "user", None)
+    if not getattr(user, "is_authenticated", True):
+        user = None
+    user_logged_out.send(
+        sender=user.__class__, request=request, user=user, event_extra=exc.to_event()
+    )
+    request.session.flush()
+    if hasattr(request, "user"):
+        from django.contrib.auth.models import AnonymousUser
+
+        request.user = AnonymousUser()
+
 
 class BoundSessionMiddleware(SessionMiddleware):
     """Sessions bound to ASN/Network and GeoIP/Continent/etc"""
@@ -41,6 +71,12 @@ class BoundSessionMiddleware(SessionMiddleware):
             self.recheck_session(request)
         except SessionBindingBroken as exc:
             LOGGER.warning("Session binding broken", exc=exc)
+            # At this point, we need to logout the current user
+            # however since this middleware has to run before the `AuthenticationMiddleware`
+            # we don't have access to the user yet
+            # Logout will still work, however event logs won't display the user being logged out
+            AuthenticationMiddleware(lambda request: request).process_request(request)
+            logout_extra(request, exc)
             request.session.clear()
             return redirect(settings.LOGIN_URL)
 
