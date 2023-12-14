@@ -17,6 +17,7 @@ import {
     FlowsApi,
     FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
+    ItemMatchingModeEnum,
     StagesApi,
 } from "@goauthentik/api";
 
@@ -83,6 +84,31 @@ export class AuthenticatorMobileStageForm extends ModelForm<AuthenticatorMobileS
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("User decision mode")}
+                        ?required=${true}
+                        name="itemMatchingMode"
+                    >
+                        <ak-radio
+                            .options=${[
+                                {
+                                    label: msg("Accept/Deny"),
+                                    value: ItemMatchingModeEnum.AcceptDeny,
+                                },
+                                {
+                                    label: msg("Number matching (2 digit numbers)"),
+                                    value: ItemMatchingModeEnum.NumberMatching2,
+                                },
+                                {
+                                    label: msg("Number matching (3 digit numbers)"),
+                                    value: ItemMatchingModeEnum.NumberMatching3,
+                                    default: true,
+                                },
+                            ]}
+                            .value=${this.instance?.itemMatchingMode}
+                        >
+                        </ak-radio>
+                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Firebase config")}
                         ?required=${false}

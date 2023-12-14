@@ -14,6 +14,7 @@ class AuthenticatorMobileStageSerializer(StageSerializer):
         fields = StageSerializer.Meta.fields + [
             "configure_flow",
             "friendly_name",
+            "item_matching_mode",
             "firebase_config",
         ]
 

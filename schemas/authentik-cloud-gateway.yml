@@ -505,17 +505,9 @@ components:
       type: object
       properties:
         status:
-          $ref: '#/components/schemas/MobileDeviceEnrollmentStatusStatusEnum'
+          $ref: '#/components/schemas/StatusEnum'
       required:
       - status
-    MobileDeviceEnrollmentStatusStatusEnum:
-      enum:
-      - success
-      - waiting
-      type: string
-      description: |-
-        * `success` - Success
-        * `waiting` - Waiting
     MobileDeviceInfo:
       type: object
       description: Info about a mobile device
@@ -593,21 +585,12 @@ components:
         tx_id:
           type: string
           format: uuid
-        status:
-          $ref: '#/components/schemas/MobileDeviceResponseStatusEnum'
+        selected_item:
+          type: string
+          minLength: 1
       required:
-      - status
+      - selected_item
       - tx_id
-    MobileDeviceResponseStatusEnum:
-      enum:
-      - wait
-      - accept
-      - deny
-      type: string
-      description: |-
-        * `wait` - Wait
-        * `accept` - Accept
-        * `deny` - Deny
     MobileDeviceSetPushKeyRequest:
       type: object
       description: Set notification key
@@ -674,10 +657,20 @@ components:
       enum:
       - ios
       - android
+      - other
       type: string
       description: |-
         * `ios` - iOS
         * `android` - Android
+        * `other` - Other
+    StatusEnum:
+      enum:
+      - success
+      - waiting
+      type: string
+      description: |-
+        * `success` - Success
+        * `waiting` - Waiting
     UsedBy:
       type: object
       description: A list of all objects referencing the queried object
