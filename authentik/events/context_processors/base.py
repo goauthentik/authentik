@@ -29,7 +29,7 @@ class EventContextProcessor:
         raise NotImplementedError
 
 
-@cache()
+@cache
 def get_context_processors() -> list[EventContextProcessor]:
     """Get a list of all configured context processors"""
     from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR
