@@ -6023,6 +6023,15 @@
                     "minLength": 1,
                     "title": "Friendly name"
                 },
+                "item_matching_mode": {
+                    "type": "string",
+                    "enum": [
+                        "accept_deny",
+                        "number_matching_2",
+                        "number_matching_3"
+                    ],
+                    "title": "Item matching mode"
+                },
                 "firebase_config": {
                     "type": "object",
                     "additionalProperties": true,

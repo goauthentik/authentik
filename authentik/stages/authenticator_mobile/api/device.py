@@ -21,19 +21,13 @@ from authentik.stages.authenticator_mobile.models import (
     MobileDevice,
     MobileDeviceToken,
     MobileTransaction,
-    TransactionStates,
 )
 
 
 class MobileDeviceInfoSerializer(PassiveSerializer):
     """Info about a mobile device"""
 
-    platform = ChoiceField(
-        (
-            ("ios", "iOS"),
-            ("android", "Android"),
-        )
-    )
+    platform = ChoiceField((("ios", "iOS"), ("android", "Android"), ("other", "Other")))
     os_version = CharField()
     model = CharField()
     hostname = CharField()
@@ -76,10 +70,7 @@ class MobileDeviceResponseSerializer(PassiveSerializer):
     """Response from push sent to phone"""
 
     tx_id = UUIDField(required=True)
-    status = ChoiceField(
-        TransactionStates.choices,
-        required=True,
-    )
+    selected_item = CharField(required=True)
 
 
 class MobileDeviceViewSet(
@@ -214,7 +205,7 @@ class MobileDeviceViewSet(
         transaction = MobileTransaction.objects.filter(tx_id=data.validated_data["tx_id"]).first()
         if not transaction:
             raise Http404
-        transaction.status = data.validated_data["status"]
+        transaction.selected_item = data.validated_data["selected_item"]
         transaction.save()
         return Response(status=204)
 

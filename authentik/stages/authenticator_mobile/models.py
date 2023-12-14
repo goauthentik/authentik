@@ -28,7 +28,7 @@ from structlog.stdlib import get_logger
 from authentik.core.models import ExpiringModel, User
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
-from authentik.lib.generators import generate_id
+from authentik.lib.generators import generate_code_fixed_length, generate_id
 from authentik.lib.models import SerializerModel
 from authentik.stages.authenticator.models import Device
 from authentik.tenants.utils import DEFAULT_TENANT
@@ -41,10 +41,33 @@ def default_token_key():
     return generate_id(40)
 
 
+class ItemMatchingMode(models.TextChoices):
+    """Configure which items the app shows the user, and what the user must select"""
+
+    ACCEPT_DENY = "accept_deny"
+    NUMBER_MATCHING_2 = "number_matching_2"
+    NUMBER_MATCHING_3 = "number_matching_3"
+
+
 class AuthenticatorMobileStage(ConfigurableStage, FriendlyNamedStage, Stage):
     """Setup Mobile authenticator devices"""
 
+    item_matching_mode = models.TextField(
+        choices=ItemMatchingMode.choices, default=ItemMatchingMode.NUMBER_MATCHING_3
+    )
     firebase_config = models.JSONField(default=dict, help_text="temp")
+
+    def create_transaction(self, device: "MobileDevice") -> "MobileTransaction":
+        """Create a transaction for `device` with the config of this stage."""
+        transaction = MobileTransaction(device=device)
+        if self.item_matching_mode == ItemMatchingMode.ACCEPT_DENY:
+            transaction.item_matching = [TransactionStates.ACCEPT, TransactionStates.DENY]
+        if self.item_matching_mode == ItemMatchingMode.NUMBER_MATCHING_2:
+            transaction.item_matching = [generate_code_fixed_length(2)] * 3
+        if self.item_matching_mode == ItemMatchingMode.NUMBER_MATCHING_3:
+            transaction.item_matching = [generate_code_fixed_length(3)] * 3
+        transaction.save()
+        return transaction
 
     @property
     def serializer(self) -> type[BaseSerializer]:
@@ -96,6 +119,11 @@ class MobileDevice(SerializerModel, Device):
     state = models.JSONField(default=dict)
     last_checkin = models.DateTimeField(auto_now=True)
 
+    def create_transaction(self) -> "MobileTransaction":
+        """Create a transaction for this device with the config of its stage."""
+        stage: AuthenticatorMobileStage = self.stage
+        return stage.create_transaction(self)
+
     @property
     def serializer(self) -> Serializer:
         from authentik.stages.authenticator_mobile.api.device import MobileDeviceSerializer
@@ -123,8 +151,18 @@ class MobileTransaction(ExpiringModel):
 
     tx_id = models.UUIDField(default=uuid4, primary_key=True)
     device = models.ForeignKey(MobileDevice, on_delete=models.CASCADE)
+    decision_items = models.JSONField(default=list)
+    correct_item = models.TextField()
+    selected_item = models.TextField(default=None, null=True)
 
-    status = models.TextField(choices=TransactionStates.choices, default=TransactionStates.WAIT)
+    @property
+    def status(self) -> TransactionStates:
+        """Get the status"""
+        if not self.selected_item:
+            return TransactionStates.WAIT
+        if self.selected_item != self.correct_item:
+            return TransactionStates.DENY
+        return TransactionStates.ACCEPT
 
     def send_message(self, request: Optional[HttpRequest], **context):
         """Send mobile message"""
@@ -153,7 +191,7 @@ class MobileTransaction(ExpiringModel):
                 notification=AndroidNotification(icon="stock_ticker_update", color="#f45342"),
                 data={
                     "tx_id": str(self.tx_id),
-                    "numbers": dumps([123, 456, 789]),
+                    "user_decision_items": dumps(self.item_matching),
                 },
             ),
             apns=APNSConfig(
@@ -167,12 +205,7 @@ class MobileTransaction(ExpiringModel):
                     ),
                     interruption_level="time-sensitive",
                     tx_id=str(self.tx_id),
-                    numbers=[
-                        123,
-                        456,
-                        789,
-                    ],
-                    options=["foo", "bar", "baz"],
+                    user_decision_items=self.item_matching,
                 ),
             ),
             token=self.device.firebase_token,
