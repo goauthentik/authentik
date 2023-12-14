@@ -32,7 +32,7 @@ The following placeholders will be used:
 -   `dc=company,dc=com` the Base DN of the LDAP outpost.
 -   `ldap_bind_user` the username of the desired LDAP Bind User
 
-## Jellyfin Configuration
+## Jellyfin configuration
 
 1. If you don't have one already create an LDAP bind user before starting these steps.
     - Ideally, this user doesn't have any permissions other than the ability to view other users. However, some functions do require an account with permissions.
