@@ -46,7 +46,7 @@ As first stage, add an _Authentication validation_ stage, with the WebAuthn devi
 After this stage you can bind any additional verification stages.
 As final stage, bind a _User login_ stage.
 
-Users can either access this flow directly via it's URL, or you can modify any Identification stage's _Passwordless flow_ setting to add a direct link to this flow.
+Users can either access this flow directly via its URL, or you can modify any Identification stage's _Passwordless flow_ setting to add a direct link to this flow.
 
 ### Logging
 
