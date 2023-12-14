@@ -85,7 +85,6 @@ entries:
     model: authentik_stages_prompt.prompt
   - attrs:
       expression: |
-        from authentik.lib.config import CONFIG
         from authentik.core.models import (
             USER_ATTRIBUTE_CHANGE_EMAIL,
             USER_ATTRIBUTE_CHANGE_NAME,
