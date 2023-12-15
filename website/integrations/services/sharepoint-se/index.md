@@ -41,7 +41,7 @@ When you configure OIDC with authentik, you need the following resources:
 
 1. A SharePoint Server Subscription Edition farm starting with CU of September 2023
 2. An Authentik instance starting with version 2023.10
-3. (Optional) [LDAPCP](https://www.ldapcp.com/docs/overview/introduction/) installed on the target SharePoint Farm
+3. (Optional) [LDAPCP](https://www.ldapcp.com/docs/overview/introduction/) installed on the target SharePoint farm
 
 :::info
 Ensure Authentik and SharePoint Server clocks are synchronized.
