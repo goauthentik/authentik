@@ -18,29 +18,30 @@ The following placeholders will be used:
 -   `port` is the port on which the FreshRSS install is running (usually 443)
 -   `authentik.company` is the FQDN of the authentik install.
 
-## authentik Configuration
+## authentik configuration
 
-In Authentik, create an _OAuth2/OpenID Provider_ under _Applications > Providers_.
-
-** Protocol Settings **
-_Client Type_ : _Confidential_
-
+1. Create an **OAuth2/OpenID Provider** under **Applications** > **Providers** using the following settings:
+    - **Name**: FreshRSS
+    - **Authorization flow**: default-provider-authorization-explicit-consent
+    - **Protocol Settings**:
+      - **Client Type**: Confidential
+      - **Client ID**: Either create your own Client ID or use the auto-populated ID
+      - **Client Secret**: Either create your own Client Secret or use the auto-populated secret
 :::note
 Take note of the `Client ID` and `Client Secret`, you'll need them later.
 :::
+    - **Redirect URIs/Origins**:
+      - `https://freshrss.company/i/oidc/`
+      - `https://freshrss.company:port/i/oidc`
+    - **Signing Key**: Any of your signing keys
+    - Leave everything else as default
+2. Create an **Application** under **Applications** > **Applications** using the following settings:
+    - **Name**: FreshRSS
+    - **Slug**: freshrss
+    - **Provider**: FreshRSS _(the provider you created in step 1)_
+    - Leave everything else as default
 
-_Redirect URIs/Origins_ :
-
--   `https://freshrss.company/i/oidc/`
--   `https://freshrss.company:port/i/oidc`
-
-_Signing Key_ : Any of your signing keys
-
-Then click _Finish_ to create your provider.
-
-Then create an _Application_, note its slug, and assign it to the provider you've just created.
-
-## FreshRSS Configuration
+## FreshRSS configuration
 
 :::info
 This integration only works with the Docker or Kubernetes install of FreshRSS, using [FreshRSS docker image](https://hub.docker.com/r/freshrss/freshrss/), on x86_64 systems and without the Alpine version of the image. More information can be found on [this issue on FreshRSS GitHub](https://github.com/FreshRSS/FreshRSS/issues/5722)
