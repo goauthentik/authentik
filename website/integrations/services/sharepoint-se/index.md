@@ -56,14 +56,14 @@ These guidelines use the following placeholders for the overall setup:
 | authentik OIDC Name                                | `auth.providerName`                  | OIDC-SP                                                                                |
 | authentik OIDC Configuration URL                   | `auth.providerConfigURL`             | https://authentik.company/application/o/sharepoint-se/.well-known/openid-configuration |
 | authentik OIDC Client ID                           | `auth.providerClientID`              | 0ab1c234d567ef8a90123bc4567890e12fa3b45c                                               |
-| authentik OIDC Redirect URIs                       | `auth.providerRedirectURI`           | https://contoso.com/.\*                                                                |
+| authentik OIDC Redirect URIs                       | `auth.providerRedirectURI`           | https://sharepoint.company/.\*                                                         |
 | (Optional) authentik LDAP Outpost Name             | `ldap.outpostName`                   | LDAP                                                                                   |
 | (Optional) authentik LDAP Outpost URI              | `ldap.outpostURI`                    | ak-outpost-ldap.authentik.svc.cluster.local                                            |
 | (Optional) authentik LDAP Service Account          | `ldap.outpostServiceAccount`         | cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io                                   |
 | (Optional) authentik LDAP Service Account Password | `ldap.outpostServiceAccountPassword` | mystrongpassword                                                                       |
-| SharePoint Default Web Application URL             | `sp.webAppURL`                       | https://contoso.com                                                                    |
+| SharePoint Default Web Application URL             | `sp.webAppURL`                       | https://sharepoint.company                                                             |
 | SharePoint Trusted Token Issuer Name               | `sp.issuerName`                      | Authentik                                                                              |
-| SharePoint Trusted Token Issuer Description        | `sp.issuerDesc`                      | Authentik IDP                                                                          |
+| SharePoint Trusted Token Issuer Description        | `sp.issuerDesc`                      | authentik IDP                                                                          |
 
 ## authentik configuration
 
