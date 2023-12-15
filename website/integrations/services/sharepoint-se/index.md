@@ -47,7 +47,7 @@ When you configure OIDC with authentik, you need the following resources:
 Ensure Authentik and SharePoint Server clocks are synchronized.
 :::
 
-These guidelines uses the following placeholders for the overall setup.
+These guidelines use the following placeholders for the overall setup:
 
 | Name                                               | Placeholder                          | Sample value                                                                          |
 | -------------------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------- |
