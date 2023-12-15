@@ -100,6 +100,7 @@ module.exports = {
                         "services/freshrss/index",
                         "services/gravitee/index",
                         "services/home-assistant/index",
+                        "services/immich/index",
                         "services/jellyfin/index",
                         "services/node-red/index",
                         "services/sonar-qube/index",
