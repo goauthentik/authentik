@@ -50,7 +50,7 @@ class AuthenticatorMobileStage(ConfigurableStage, FriendlyNamedStage, Stage):
     item_matching_mode = models.TextField(
         choices=ItemMatchingMode.choices, default=ItemMatchingMode.NUMBER_MATCHING_3
     )
-    cgw_endpoint = models.URLField()
+    cgw_endpoint = models.TextField()
 
     def create_transaction(self, device: "MobileDevice") -> "MobileTransaction":
         """Create a transaction for `device` with the config of this stage."""
