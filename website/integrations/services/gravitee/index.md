@@ -18,43 +18,52 @@ The following placeholders will be used:
 
 -   `gravitee.company` is the FQDN of the Gravitee install.
 -   `authentik.company` is the FQDN of the authentik install.
--   `applicationName` is the Application name you set.
 
-### Step 1 - authentik
+## authentik configuration
 
-In authentik, under _Providers_, create an _OAuth2/OpenID Provider_ with these settings:
+1. Create an **OAuth2/OpenID Provider** under **Applications** > **Providers** using the following settings:
+:::note
+Only settings that have been modified from default have been listed.
+:::
+    - **Name**: Gravitee
+    - **Protocol Settings**:
+      - **Client ID**: Either create your own Client ID or use the auto-populated ID
+      - **Client Secret**: Either create your own Client Secret or use the auto-populated secret
+:::note
+Take note of the `Client ID` and `Client Secret` as they are required when configuring Gravitee
+:::
+      - **Redirect URIs/Origins**:
+        - https://gravitee.company/user/login
+        - https://gravitee.company/console/ # Make sure to add the trailing / at the end, at the time of writing it does not work without it
+:::note
+Be sure to add the trailing `/` at the end of the `https://gravitee.company/console/` URI, at the time of writing Gravitee does not work without this.
+:::
+
+2. Create an **Application** under **Applications** > **Applications** using the following settings:
+    - **Name**: Gravitee
+    - **Slug**: gravitee
+    - **Provider**: Gravitee (the provider you created in step 1)
+3. Open the new provider you've just created.
+4. Make a note of the following URLs: 
+    - **Authorize URL**
+    - **Token URL**
+    - **Userinfo URL**
+    - **Logout URL**
+
+
+## Gravitee configuration
+
+In the Gravitee Management Console, navigate to _Organizations_ (gravitee.company/console/#!/organization/settings/identities) , under **Console** > **Authentication**. Click _Add an identity provider_, select _OpenID Connect_, and fill in the following:
 
 :::note
 Only settings that have been modified from default have been listed.
 :::
 
-**Protocol Settings**
-
--   Name: applicationName
--   Client ID: Copy and Save this for Later
--   Client Secret: Copy and Save this for later
--   Redirect URIs/Origins:
-
-```
-https://gravitee.company/user/login
-https://gravitee.company/console/ # Make sure to add the trailing / at the end, at the time of writing it does not work without it
-```
-
-Now, under _Applications_, create an application with the name `applicationName` and select the provider you've created above.
-
-### Step 2 - Gravitee
-
-In the Gravitee Management Console, head to _Organizations_(gravitee.company/console/#!/organization/settings/identities) , under _Console_, _Authentication_, click _Add an identity provider_, select _OpenID Connect_, and fill in the following:
-
-:::note
-Only settings that have been modified from default have been listed.
-:::
-
--   Allow portal authentication to use this identity provider: enable this
--   Client ID: Client ID from step 1
--   Client Secret: Client Secret from step 1
--   Token Endpoint: `https://authentik.company/application/o/token/`
--   Authorize Endpoint: `https://authentik.company/application/o/authorize/`
--   Userinfo Endpoint: `https://authentik.company/application/o/userinfo/`
--   Userinfo Logout Endpoint: `https://authentik.company/if/session-end/applicationName/`
--   Scopes: `email openid profile`
+-   **Allow portal authentication to use this identity provider**: enable this
+-   **Client ID**: Enter the Client ID from authentik that you noted in step 1
+-   **Client Secret**: Enter the Client Secret from authentik that you noted in step 1
+-   **Token Endpoint**: Populate this field with the **Token URL**
+-   **Authorize Endpoint**: Populate this field with the **Authorize URL**
+-   **Userinfo Endpoint**: Populate this field with the **Userinfo URL**
+-   **Userinfo Logout Endpoint**: Populate this field with the **Logout URL**
+-   **Scopes**: `email openid profile`
