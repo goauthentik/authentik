@@ -19,15 +19,20 @@ The following placeholders will be used:
 
 ## authentik configuration
 
-1. Create a new OAuth2/OpenID Provider using the following settings:
+1. Create a new OAuth2/OpenID Provider under **Applications** > **Providers** using the following settings:
     - **Name**: Immich
     - **Authentication flow**: default-authentication-flow
     - **Authorization flow**: default-provider-authorization-explicit-consent
     - **Client type**: Confidential
-    - **Client ID**: Either create your own Client ID or make a note of the auto-populated one
-    - **Client Secret**: Either create your own Client Secret or make a note of the auto-populated one
+    - **Client ID**: Either create your own Client ID or use the auto-populated ID
+    - **Client Secret**: Either create your own Client Secret or use the auto-populated secret
+:::note
+Take note of the `Client ID` and `Client Secret`, as they are required when configuring Immich.
+:::
     - **Redirect URIs/Origins (RegEx)**:
-      _Please note that the following URIs are just examples. Be sure to include all of the domains / URLs that you will use to access Immich._
+:::note
+Please note that the following URIs are just examples. Be sure to include all of the domains / URLs that you will use to access Immich.
+:::
         - app.immich:/
         - https://immich.company/auth/login
         - https://immich.company/user-settings
@@ -36,7 +41,7 @@ The following placeholders will be used:
 2. Open the new provider you've just created.
 3. Make a note of the **OpenID Configuration Issuer**.
 
-## Immich Configuration
+## Immich configuration
 
 Immich documentation can be found here: https://immich.app/docs/administration/oauth
 
