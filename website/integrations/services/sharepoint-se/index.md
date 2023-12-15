@@ -54,7 +54,7 @@ These guidelines use the following placeholders for the overall setup:
 | authentik Application Name                         | `auth.applicationName`               | SharePoint SE                                                                         |
 | authentik Application Slug                         | `auth.applicationSlug`               | sharepoint-se                                                                         |
 | authentik OIDC Name                                | `auth.providerName`                  | OIDC-SP                                                                               |
-| authentik OIDC Configuration URL                   | `auth.providerConfigURL`             | https://auth.contoso.com/application/o/sharepoint-se/.well-known/openid-configuration |
+| authentik OIDC Configuration URL                   | `auth.providerConfigURL`             | https://authentik.company/application/o/sharepoint-se/.well-known/openid-configuration |
 | authentik OIDC Client ID                           | `auth.providerClientID`              | 0ab1c234d567ef8a90123bc4567890e12fa3b45c                                              |
 | authentik OIDC Redirect URIs                       | `auth.providerRedirectURI`           | https://contoso.com/.\*                                                               |
 | (Optional) authentik LDAP Outpost Name             | `ldap.outpostName`                   | LDAP                                                                                  |
