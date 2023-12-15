@@ -68,7 +68,7 @@ These guidelines use the following placeholders for the overall setup:
 
 ### Step 1: Create authentik OpenID Property Mappings
 
-SharePoint requires additional properties within the openid and profile scopes in order to operate OIDC properly and be able to map incoming authentik OID Claims with Microsoft Claims.
+SharePoint requires additional properties within the OpenID and profile scopes in order to operate OIDC properly and be able to map incoming authentik OID Claims with Microsoft Claims.
 
 Additional information from Microsoft documentation:
 
