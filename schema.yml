@@ -29544,8 +29544,6 @@ components:
           $ref: '#/components/schemas/ItemMatchingModeEnum'
         cgw_endpoint:
           type: string
-          format: uri
-          maxLength: 200
       required:
       - cgw_endpoint
       - component
@@ -29579,9 +29577,7 @@ components:
           $ref: '#/components/schemas/ItemMatchingModeEnum'
         cgw_endpoint:
           type: string
-          format: uri
           minLength: 1
-          maxLength: 200
       required:
       - cgw_endpoint
       - name
@@ -37192,9 +37188,7 @@ components:
           $ref: '#/components/schemas/ItemMatchingModeEnum'
         cgw_endpoint:
           type: string
-          format: uri
           minLength: 1
-          maxLength: 200
     PatchedAuthenticatorSMSStageRequest:
       type: object
       description: AuthenticatorSMSStage Serializer

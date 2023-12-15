@@ -1,7 +1,7 @@
 """Mobile stage"""
 from django.http import HttpResponse
 from rest_framework.fields import CharField
-
+from django.conf import settings
 from authentik.core.api.utils import PassiveSerializer
 from authentik.flows.challenge import (
     Challenge,
@@ -65,10 +65,13 @@ class AuthenticatorMobileStageView(ChallengeStageView):
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
         self.prepare()
+        endpoint = f"https://{self.executor.current_stage.cgw_endpoint}/"
+        if settings.DEBUG:
+            endpoint = endpoint.replace(":3415", ":3416")
+            endpoint = endpoint.replace("https", "http")
         payload = AuthenticatorMobilePayloadChallenge(
             data={
-                # TODO: use cloud gateway?
-                "u": self.request.build_absolute_uri("/"),
+                "u": endpoint,
                 "s": str(self.executor.plan.context[FLOW_PLAN_MOBILE_ENROLL_DEVICE].pk),
                 "t": self.executor.plan.context[FLOW_PLAN_MOBILE_ENROLL_TOKEN].token,
             }

@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
                         default="number_matching_3",
                     ),
                 ),
-                ("cgw_endpoint", models.URLField()),
+                ("cgw_endpoint", models.TextField()),
                 (
                     "configure_flow",
                     models.ForeignKey(
