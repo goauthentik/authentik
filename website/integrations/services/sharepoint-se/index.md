@@ -22,7 +22,7 @@ title: Microsoft SharePoint Server Subscription Edition
 :::note
 There are many ways to implement SSO mechanism within Microsoft SharePoint Server.
 
-These guidelines provides the procedure to integrate Authentik with OIDC provider based on Microsoft documentations.
+These guidelines provides the procedure to integrate authentik with an OIDC provider based on Microsoft documentation.
 (cf. https://learn.microsoft.com/en-us/sharepoint/security-for-sharepoint-server/set-up-oidc-auth-in-sharepoint-server-with-msaad)
 
 In addition, it provides the procedure to enable claims augmentations in order to resolve group memberships.
