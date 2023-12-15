@@ -32,7 +32,7 @@ For all other integration models, read Microsoft official documentation.
 :::
 
 :::caution
-This setup only works starting with **Authentik** version **2023.10** and Microsoft **SharePoint** Subscription Edition starting with the **Cumulative Updates** of **September 2023**
+This setup only works starting with **authentik** version **2023.10** and Microsoft **SharePoint** Subscription Edition starting with the **Cumulative Updates** of **September 2023**.
 :::
 
 ## Preparation
