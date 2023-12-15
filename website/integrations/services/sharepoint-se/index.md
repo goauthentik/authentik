@@ -27,7 +27,7 @@ These guidelines provides the procedure to integrate authentik with an OIDC prov
 
 In addition, it provides the procedure to enable claims augmentations in order to resolve group memberships.
 
-For all other integration models, read Microsoft official documentations.
+For all other integration models, read Microsoft official documentation.
 (cf. https://learn.microsoft.com/en-us/sharepoint/security-for-sharepoint-server/plan-user-authentication)
 :::
 
