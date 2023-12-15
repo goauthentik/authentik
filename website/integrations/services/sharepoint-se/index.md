@@ -44,7 +44,7 @@ When you configure OIDC with authentik, you need the following resources:
 3. (Optional) [LDAPCP](https://www.ldapcp.com/docs/overview/introduction/) installed on the target SharePoint farm
 
 :::info
-Ensure Authentik and SharePoint Server clocks are synchronized.
+Ensure that the authentik and SharePoint Server clocks are synchronized.
 :::
 
 These guidelines use the following placeholders for the overall setup:
@@ -66,7 +66,7 @@ These guidelines use the following placeholders for the overall setup:
 
 ## authentik configuration
 
-### Step 1: Create authentik Open ID Property Mappings
+### Step 1: Create authentik OpenID Property Mappings
 
 SharePoint requires additional properties within the openid and profile scopes in order to operate OIDC properly and be able to map incoming authentik OID Claims with Microsoft Claims.
 
@@ -75,7 +75,7 @@ Additional information from Microsoft documentation:
 -   https://learn.microsoft.com/en-us/entra/identity-platform/id-tokens#validate-tokens
 -   https://learn.microsoft.com/en-us/entra/identity-platform/id-token-claims-reference#payload-claims
 
-#### Add an openid scope mapping for SharePoint
+#### Add an OpenID scope mapping for SharePoint
 
 From the authentik Admin Dashboard:
 
@@ -210,7 +210,7 @@ $f.Farm.Properties['SP-NonceCookieHMACSecretKey']='seed'
 $f.Farm.Update()
 ```
 
-##### SharePoint settings in case of SSL Offloading
+##### SharePoint settings in case of SSL offloading
 
 Update the SharePoint farm to accept OAuth authentication over HTTP.
 
@@ -223,7 +223,7 @@ $c.AllowOAuthOverHttp = $true
 $c.update()
 ```
 
-#### Create SharePoint Authentication Provider
+#### Create SharePoint authentication provider
 
 The following PowerShell script must be updated according to your environment and executed as **Farm Admin account** with **elevated privileges** on a SharePoint Server.
 
@@ -270,23 +270,23 @@ New-SPAuthenticationProvider -TrustedIdentityTokenIssuer $trustedTokenIssuer
 
 ```
 
-#### Configure SharePoint Web Applications
+#### Configure SharePoint web applications
 
 From the Central Administration opened as a Farm Administrator:
 
-1. Open "**Application Management > Manage web applications**" page.
+1. Open the **Application Management > Manage web applications** page.
 2. Select your web application `sp.webAppURL`.
-3. Click on "**Authentication Providers**" from the ribbon bar.
+3. Click **Authentication Providers** from the ribbon bar.
 4. According to your environment, click on the target zone such as "Default".
 5. Update the authentication provider form as following:
-    - Check "**Trusted Identity Provider**"
+    - Check **Trusted Identity Provider**
     - Check the newly created provider named `sp.issuerName`
-    - (Optional) Set "**Custom Sign In Page**": /\_trust/default.aspx
+    - (Optional) Set **Custom Sign In Page**: /\_trust/default.aspx
 6. Click **Save**.
 
 Repeat all steps for each target web applications that matches with `auth.providerRedirectURI`.
 
-## (Optional) SharePoint Enhancements
+## (Optional) SharePoint enhancements
 
 Objectives :
 
@@ -298,7 +298,7 @@ Objectives :
 [LDAPCP](https://www.ldapcp.com/docs/overview/introduction/) must be installed on the target SharePoint farm.
 :::
 
-### Step 1: Assign LDAPCP as Claim provider for the Identity Token Issuer
+### Step 1: Assign LDAPCP as claim provider for the identity token issuer
 
 The following PowerShell script must be updated according to your environment and executed as **Farm Admin account** with **elevated privileges** on a SharePoint Server.
 
@@ -318,12 +318,12 @@ $sptrust.ClaimProviderName = "LDAPCP"
 $sptrust.Update()
 ```
 
-### Step 2: Configure LDAPCP Claim types
+### Step 2: Configure LDAPCP claim types
 
 From the SharePoint Central Administration opened as a Farm Administrator:
 
 1. Open **Security > LDAPCP Configuration > Claim types configuration** page.
-2. Update the mapping table to match these value:.
+2. Update the mapping table to match these value:
 
 | Claim type                                                    | Entity type | LDAP class | LDAP Attribute to query | LDAP attribute to display | PickerEntity metadata |
 | ------------------------------------------------------------- | ----------- | ---------- | ----------------------- | ------------------------- | --------------------- |
@@ -340,7 +340,7 @@ From the authentik Admin Dashboard:
 :::note
 The following procedure apply to an authentik deployment within Kubernetes.
 
-For other kind of deployment, please refer to the [authentik documentation](https://goauthentik.io/docs/).
+For other kinds of deployment, please refer to the [authentik documentation](https://goauthentik.io/docs/).
 :::
 
 1. Follow authentik [LDAP Provider Generic Setup](https://version-2023-10.goauthentik.io/docs/providers/ldap/generic_setup) with the following steps :
