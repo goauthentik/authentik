@@ -15,7 +15,7 @@ class AuthenticatorMobileStageSerializer(StageSerializer):
             "configure_flow",
             "friendly_name",
             "item_matching_mode",
-            "firebase_config",
+            "cgw_endpoint",
         ]
 
 

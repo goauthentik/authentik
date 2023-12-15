@@ -6032,11 +6032,12 @@
                     ],
                     "title": "Item matching mode"
                 },
-                "firebase_config": {
-                    "type": "object",
-                    "additionalProperties": true,
-                    "title": "Firebase config",
-                    "description": "temp"
+                "cgw_endpoint": {
+                    "type": "string",
+                    "format": "uri",
+                    "maxLength": 200,
+                    "minLength": 1,
+                    "title": "Cgw endpoint"
                 }
             },
             "required": []

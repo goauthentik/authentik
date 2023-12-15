@@ -62,7 +62,7 @@ class LicenseKey:
         except PyJWTError:
             raise ValidationError("Unable to verify license")
         x5c: list[str] = headers.get("x5c", [])
-        if len(x5c) < 1:
+        if len(x5c) < 2:
             raise ValidationError("Unable to verify license")
         try:
             our_cert = load_der_x509_certificate(b64decode(x5c[0]))

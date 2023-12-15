@@ -110,16 +110,15 @@ export class AuthenticatorMobileStageForm extends ModelForm<AuthenticatorMobileS
                         </ak-radio>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("Firebase config")}
+                        label=${msg("Cloud Gateway endpoint")}
                         ?required=${false}
-                        name="firebaseConfig"
+                        name="cgwEndpoint"
                     >
-                        <ak-codemirror
-                            mode="javascript"
-                            value="${first(this.instance?.firebaseConfig, {})}"
-                        >
-                        </ak-codemirror>
-                        <p class="pf-c-form__helper-text">${msg("Firebase JSON.")}</p>
+                        <input
+                            type="text"
+                            value="${first(this.instance?.cgwEndpoint, "http://localhost:3415")}"
+                            class="pf-c-form-control"
+                        />
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Configuration flow")}

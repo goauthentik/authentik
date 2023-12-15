@@ -1,28 +1,21 @@
 """Mobile authenticator stage"""
-from json import dumps
 from secrets import choice
-from time import sleep
 from typing import Optional
 from uuid import uuid4
 
+from authentik_cloud_gateway_client.authenticationPush_pb2 import (
+    AuthenticationCheckRequest,
+    AuthenticationRequest,
+    AuthenticationResponse,
+    AuthenticationResponseStatus,
+)
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.http import HttpRequest
 from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from firebase_admin import credentials, initialize_app
-from firebase_admin.exceptions import FirebaseError
-from firebase_admin.messaging import (
-    AndroidConfig,
-    AndroidNotification,
-    APNSConfig,
-    APNSPayload,
-    Aps,
-    Message,
-    Notification,
-    send,
-)
+from grpc import RpcError
 from rest_framework.serializers import BaseSerializer, Serializer
 from structlog.stdlib import get_logger
 
@@ -32,6 +25,7 @@ from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.generators import generate_code_fixed_length, generate_id
 from authentik.lib.models import SerializerModel
 from authentik.stages.authenticator.models import Device
+from authentik.stages.authenticator_mobile.cloud_gateway import get_client
 from authentik.tenants.utils import DEFAULT_TENANT
 
 LOGGER = get_logger()
@@ -56,7 +50,7 @@ class AuthenticatorMobileStage(ConfigurableStage, FriendlyNamedStage, Stage):
     item_matching_mode = models.TextField(
         choices=ItemMatchingMode.choices, default=ItemMatchingMode.NUMBER_MATCHING_3
     )
-    firebase_config = models.JSONField(default=dict, help_text="temp")
+    cgw_endpoint = models.URLField()
 
     def create_transaction(self, device: "MobileDevice") -> "MobileTransaction":
         """Create a transaction for `device` with the config of this stage."""
@@ -66,16 +60,16 @@ class AuthenticatorMobileStage(ConfigurableStage, FriendlyNamedStage, Stage):
             transaction.correct_item = TransactionStates.ACCEPT
         if self.item_matching_mode == ItemMatchingMode.NUMBER_MATCHING_2:
             transaction.decision_items = [
-                generate_code_fixed_length(2),
-                generate_code_fixed_length(2),
-                generate_code_fixed_length(2),
+                str(generate_code_fixed_length(2)),
+                str(generate_code_fixed_length(2)),
+                str(generate_code_fixed_length(2)),
             ]
             transaction.correct_item = choice(transaction.decision_items)
         if self.item_matching_mode == ItemMatchingMode.NUMBER_MATCHING_3:
             transaction.decision_items = [
-                generate_code_fixed_length(3),
-                generate_code_fixed_length(3),
-                generate_code_fixed_length(3),
+                str(generate_code_fixed_length(3)),
+                str(generate_code_fixed_length(3)),
+                str(generate_code_fixed_length(3)),
             ]
             transaction.correct_item = choice(transaction.decision_items)
         transaction.save()
@@ -181,70 +175,56 @@ class MobileTransaction(ExpiringModel):
 
     def send_message(self, request: Optional[HttpRequest], **context):
         """Send mobile message"""
-        app = initialize_app(
-            credentials.Certificate(self.device.stage.firebase_config), name=str(self.tx_id)
-        )
         branding = DEFAULT_TENANT.branding_title
         domain = ""
         if request:
             branding = request.tenant.branding_title
             domain = request.get_host()
         user: User = self.device.user
-        message = Message(
-            notification=Notification(
-                title=__("%(brand)s authentication request" % {"brand": branding}),
-                body=__(
-                    "%(user)s is attempting to log in to %(domain)s"
-                    % {
-                        "user": user.username,  # pylint: disable=no-member
-                        "domain": domain,
-                    }
-                ),
-            ),
-            android=AndroidConfig(
-                priority="normal",
-                notification=AndroidNotification(icon="stock_ticker_update", color="#f45342"),
-                data={
-                    "authentik_tx_id": str(self.tx_id),
-                    "authentik_user_decision_items": dumps(self.decision_items),
-                },
-            ),
-            apns=APNSConfig(
-                headers={"apns-push-type": "alert", "apns-priority": "10"},
-                payload=APNSPayload(
-                    aps=Aps(
-                        badge=0,
-                        sound="default",
-                        content_available=True,
-                        category="cat_authentik_push_authorization",
-                    ),
-                    interruption_level="time-sensitive",
-                    authentik_tx_id=str(self.tx_id),
-                    authentik_user_decision_items=self.decision_items,
-                ),
-            ),
-            token=self.device.firebase_token,
-        )
+
+        client = get_client(self.device.stage.cgw_endpoint)
         try:
-            response = send(message, app=app)
+            response = client.SendRequest(
+                AuthenticationRequest(
+                    device_token=self.device.firebase_token,
+                    title=__("%(brand)s authentication request" % {"brand": branding}),
+                    body=__(
+                        "%(user)s is attempting to log in to %(domain)s"
+                        % {
+                            "user": user.username,  # pylint: disable=no-member
+                            "domain": domain,
+                        }
+                    ),
+                    tx_id=str(self.tx_id),
+                    items=self.decision_items,
+                    mode=self.device.stage.item_matching_mode,
+                )
+            )
             LOGGER.debug("Sent notification", id=response, tx_id=self.tx_id)
-        except (ValueError, FirebaseError) as exc:
+        except RpcError as exc:
+            LOGGER.warning("failed to push", exc=exc, code=exc.code(), tx_id=self.tx_id)
+        except ValueError as exc:
             LOGGER.warning("failed to push", exc=exc, tx_id=self.tx_id)
         return True
 
     def wait_for_response(self, max_checks=30) -> TransactionStates:
         """Wait for a change in status"""
-        checks = 0
-        while True:
-            self.refresh_from_db()
-            if self.status in [TransactionStates.ACCEPT, TransactionStates.DENY]:
-                self.delete()
-                return self.status
-            checks += 1
-            if checks > max_checks:
-                self.delete()
+        client = get_client(self.device.stage.cgw_endpoint)
+        for response in client.CheckStatus(
+            AuthenticationCheckRequest(tx_id=self.tx_id, attempts=max_checks)
+        ).next():
+            response: AuthenticationResponse
+            if response.status == AuthenticationResponseStatus.ANSWERED:
+                self.selected_item = response.decided_item
+                self.save()
+            elif response.status == AuthenticationResponseStatus.FAILED:
                 raise TimeoutError()
-            sleep(1)
+            elif response.status in [
+                AuthenticationResponseStatus.UNKNOWN,
+                AuthenticationResponseStatus.SENT,
+            ]:
+                continue
+        self.delete()
 
 
 class MobileDeviceToken(ExpiringModel):
