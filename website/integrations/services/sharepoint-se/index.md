@@ -1,5 +1,5 @@
 ---
-title: Microsoft SharePoint Server Subscription Edition
+title: SharePoint Server SE
 ---
 
 <span class="badge badge--secondary">Support level: Community</span>
@@ -20,7 +20,7 @@ title: Microsoft SharePoint Server Subscription Edition
 > -- https://support.microsoft.com/en-us/office/what-is-sharepoint-97b915e6-651b-43b2-827d-fb25777f446f
 
 :::note
-There are many ways to implement SSO mechanism within Microsoft SharePoint Server.
+There are many ways to implement SSO mechanism within Microsoft SharePoint Server Subscription Edition.
 
 These guidelines provides the procedure to integrate authentik with an OIDC provider based on Microsoft documentation.
 (cf. https://learn.microsoft.com/en-us/sharepoint/security-for-sharepoint-server/set-up-oidc-auth-in-sharepoint-server-with-msaad)
@@ -40,7 +40,7 @@ This setup only works starting with **authentik** version **2023.10** and Micros
 When you configure OIDC with authentik, you need the following resources:
 
 1. A SharePoint Server Subscription Edition farm starting with CU of September 2023
-2. An Authentik instance starting with version 2023.10
+2. An authentik instance starting with version 2023.10
 3. (Optional) [LDAPCP](https://www.ldapcp.com/docs/overview/introduction/) installed on the target SharePoint farm
 
 :::info
@@ -51,9 +51,9 @@ These guidelines use the following placeholders for the overall setup:
 
 | Name                                               | Placeholder                          | Sample value                                                                          |
 | -------------------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------- |
-| Authentik Application Name                         | `auth.applicationName`               | SharePoint SE                                                                         |
-| Authentik Application Slug                         | `auth.applicationSlug`               | sharepoint-se                                                                         |
-| Authentik OIDC Name                                | `auth.providerName`                  | OIDC-SP                                                                               |
+| authentik Application Name                         | `auth.applicationName`               | SharePoint SE                                                                         |
+| authentik Application Slug                         | `auth.applicationSlug`               | sharepoint-se                                                                         |
+| authentik OIDC Name                                | `auth.providerName`                  | OIDC-SP                                                                               |
 | authentik OIDC Configuration URL                   | `auth.providerConfigURL`             | https://auth.contoso.com/application/o/sharepoint-se/.well-known/openid-configuration |
 | authentik OIDC Client ID                           | `auth.providerClientID`              | 0ab1c234d567ef8a90123bc4567890e12fa3b45c                                              |
 | authentik OIDC Redirect URIs                       | `auth.providerRedirectURI`           | https://contoso.com/.\*                                                               |
