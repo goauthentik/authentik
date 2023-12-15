@@ -57,7 +57,6 @@ These guidelines use the following placeholders for the overall setup:
 | authentik OIDC Configuration URL                   | `auth.providerConfigURL`             | https://authentik.company/application/o/sharepoint-se/.well-known/openid-configuration |
 | authentik OIDC Client ID                           | `auth.providerClientID`              | 0ab1c234d567ef8a90123bc4567890e12fa3b45c                                               |
 | authentik OIDC Redirect URIs                       | `auth.providerRedirectURI`           | https://sharepoint.company/.\*                                                         |
-| (Optional) authentik LDAP Outpost Name             | `ldap.outpostName`                   | LDAP                                                                                   |
 | (Optional) authentik LDAP Outpost URI              | `ldap.outpostURI`                    | ak-outpost-ldap.authentik.svc.cluster.local                                            |
 | (Optional) authentik LDAP Service Account          | `ldap.outpostServiceAccount`         | cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io                                   |
 | (Optional) authentik LDAP Service Account Password | `ldap.outpostServiceAccountPassword` | mystrongpassword                                                                       |
@@ -348,15 +347,11 @@ For other kind of deployment, please refer to the [authentik documentation](http
     - **LDAP Flow** to create the authentication flow for the LDAP Provider
     - **LDAP Provider** to create an LDAP provider which can be consumed by the LDAP Application
     - **LDAP Application** to create the application being used by the LDAP Outpost
-2. Open **Applications > Outpost** page from the sidebar.
-3. Click **Create** from the outpost list command bar.
-4. In the new outpost form, enter the following values:
-    - **Name**: `ldap.outpostName`
-    - **Type**: LDAP
-    - **Applications**: select the LDAP Application previously created
-5. Click **Create**.
-
-_Note: The `ldap.outpostURI` should be the IP, hostname, or FQDN of the LDAP Outpost service deployed accessible by your SharePoint farm_.
+2. Open **Applications > Applications** page from the sidebar.
+3. Open the edit form of your application `auth.applicationName`.
+4. In the edit form:
+    - **Backchannel Providers**: add the LDAP provider previously created
+5. Click **Update**.
 
 ### Step 4: Configure LDAPCP global configuration
 
@@ -377,3 +372,5 @@ From the SharePoint Central Administration opened as a Farm Administrator:
 7. Display of user identifier results:
     - Tick **Show the value of another LDAP attribute**: sn
 8. Click on "**OK**"
+
+_Note: The `ldap.outpostURI` should be the IP, hostname, or FQDN of the LDAP Outpost service deployed accessible by your SharePoint farm_.
