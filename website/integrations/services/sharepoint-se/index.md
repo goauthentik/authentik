@@ -37,7 +37,7 @@ This setup only works starting with **authentik** version **2023.10** and Micros
 
 ## Preparation
 
-When you configure OIDC with Authentik, you need the following resources:
+When you configure OIDC with authentik, you need the following resources:
 
 1. A SharePoint Server Subscription Edition farm starting with CU of September 2023
 2. An Authentik instance starting with version 2023.10
