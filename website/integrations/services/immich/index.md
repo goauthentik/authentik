@@ -27,7 +27,7 @@ The following placeholders will be used:
     - **Client ID**: Either create your own Client ID or use the auto-populated ID
     - **Client Secret**: Either create your own Client Secret or use the auto-populated secret
 :::note
-Take note of the `Client ID` and `Client Secret`, as they are required when configuring Immich.
+Take note of the `Client ID` and `Client Secret` as they are required when configuring Immich.
 :::
     - **Redirect URIs/Origins (RegEx)**:
 :::note
