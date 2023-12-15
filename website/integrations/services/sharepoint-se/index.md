@@ -263,6 +263,7 @@ $claims = @(
 
 # Trust 3rd party identity token issuer
 $trustedTokenIssuer = New-SPTrustedIdentityTokenIssuer -Name $trustedTokenIssuerName -Description $trustedTokenIssuerDescription -ClaimsMappings $claims -IdentifierClaim $idClaim.InputClaimType -DefaultClientIdentifier $clientIdentifier -MetadataEndPoint $metadataendpointurl -Scope "openid email profile"
+#Note: Remove the profile scope if you plan to use the LDAPCP claims augmentation.
 
 # Create the SharePoint authentication provider based on the trusted token issuer
 New-SPAuthenticationProvider -TrustedIdentityTokenIssuer $trustedTokenIssuer
