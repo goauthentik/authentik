@@ -347,7 +347,6 @@ For other kinds of deployment, please refer to the [authentik documentation](htt
     - **Create User/Group** to create a "service account" for `ldap.outpostServiceAccount` and a searchable group of users & groups
     - **LDAP Flow** to create the authentication flow for the LDAP Provider
     - **LDAP Provider** to create an LDAP provider which can be consumed by the LDAP Application
-    - **LDAP Application** to create the application being used by the LDAP Outpost
 2. Open **Applications > Applications** page from the sidebar.
 3. Open the edit form of your application `auth.applicationName`.
 4. In the edit form:
