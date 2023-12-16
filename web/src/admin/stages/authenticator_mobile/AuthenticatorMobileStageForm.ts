@@ -1,32 +1,60 @@
 import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
+import { KeyUnknown } from "@goauthentik/app/elements/forms/Form";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
+import "@goauthentik/elements/Alert";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { CSSResult, TemplateResult, html, nothing } from "lit";
+import { customElement, state } from "lit/decorators.js";
+
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 import {
     AuthenticatorMobileStage,
     AuthenticatorMobileStageRequest,
+    EnterpriseApi,
     Flow,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
     ItemMatchingModeEnum,
+    LicenseSummary,
     StagesApi,
 } from "@goauthentik/api";
 
+const hostedCGWs: Map<string, string> = new Map([
+    ["prod-eu-central-1.cgw.a7k.io", msg("authentik Enterprise eu-central-1")],
+]);
+
 @customElement("ak-stage-authenticator-mobile-form")
 export class AuthenticatorMobileStageForm extends ModelForm<AuthenticatorMobileStage, string> {
-    loadInstance(pk: string): Promise<AuthenticatorMobileStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorMobileRetrieve({
+    @state()
+    showCustomCGWInput = false;
+
+    @state()
+    enterpriseStatus?: LicenseSummary;
+
+    static get styles(): CSSResult[] {
+        return super.styles.concat(PFBanner);
+    }
+
+    async load(): Promise<void> {
+        this.enterpriseStatus = await new EnterpriseApi(
+            DEFAULT_CONFIG,
+        ).enterpriseLicenseSummaryRetrieve();
+    }
+
+    async loadInstance(pk: string): Promise<AuthenticatorMobileStage> {
+        const instance = await new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorMobileRetrieve({
             stageUuid: pk,
         });
+        this.showCustomCGWInput = !hostedCGWs.has(instance.cgwEndpoint);
+        return instance;
     }
 
     getSuccessMessage(): string {
@@ -38,6 +66,9 @@ export class AuthenticatorMobileStageForm extends ModelForm<AuthenticatorMobileS
     }
 
     async send(data: AuthenticatorMobileStage): Promise<AuthenticatorMobileStage> {
+        if (this.showCustomCGWInput) {
+            data.cgwEndpoint = (data as unknown as KeyUnknown)["customCgwEndpoint"] as string;
+        }
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorMobilePartialUpdate({
                 stageUuid: this.instance.pk || "",
@@ -51,7 +82,11 @@ export class AuthenticatorMobileStageForm extends ModelForm<AuthenticatorMobileS
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
+        return html`
+            <div class="pf-c-banner pf-m-info" slot="above-form">
+                ${msg("Mobile stage is in preview.")}
+                <a href="mailto:hello@goauthentik.io">${msg("Send us feedback!")}</a>
+            </div>
             <div class="form-help-text">
                 ${msg(
                     "Stage used to configure a mobile-based authenticator. This stage should be used for configuration flows.",
@@ -114,12 +149,48 @@ export class AuthenticatorMobileStageForm extends ModelForm<AuthenticatorMobileS
                         ?required=${false}
                         name="cgwEndpoint"
                     >
-                        <input
-                            type="text"
-                            value="${first(this.instance?.cgwEndpoint, "http://localhost:3415")}"
-                            class="pf-c-form-control"
-                        />
+                        <ak-radio
+                            @change=${(ev: CustomEvent<{ value: string }>) => {
+                                this.showCustomCGWInput = !hostedCGWs.has(ev.detail.value);
+                            }}
+                            .options=${[
+                                ...Array.from(hostedCGWs, ([endpoint, label]) => {
+                                    return {
+                                        label: label,
+                                        value: endpoint,
+                                    };
+                                }),
+                                {
+                                    label: msg("Custom Endpoint"),
+                                    value: hostedCGWs.has(this.instance?.cgwEndpoint || "")
+                                        ? false
+                                        : this.instance?.cgwEndpoint,
+                                },
+                            ]}
+                            .value=${this.instance?.cgwEndpoint}
+                        >
+                        </ak-radio>
+                        ${!this.showCustomCGWInput ?? !this.enterpriseStatus?.valid
+                            ? html`
+                                  <ak-alert ?inline=${true}>
+                                      ${msg("Hosted cloud gateways require authentik Enterprise.")}
+                                  </ak-alert>
+                              `
+                            : html``}
                     </ak-form-element-horizontal>
+                    ${this.showCustomCGWInput
+                        ? html`<ak-form-element-horizontal
+                              label=${msg("Custom Cloud Gateway endpoint")}
+                              ?required=${false}
+                              name="customCgwEndpoint"
+                          >
+                              <input
+                                  type="text"
+                                  value="${first(this.instance?.cgwEndpoint, "")}"
+                                  class="pf-c-form-control"
+                              />
+                          </ak-form-element-horizontal>`
+                        : nothing}
                     <ak-form-element-horizontal
                         label=${msg("Configuration flow")}
                         name="configureFlow"
@@ -162,6 +233,6 @@ export class AuthenticatorMobileStageForm extends ModelForm<AuthenticatorMobileS
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-        </form>`;
+        `;
     }
 }
