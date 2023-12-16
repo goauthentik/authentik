@@ -71,7 +71,9 @@ class AuthenticatorMobileStageView(ChallengeStageView):
             endpoint = endpoint.replace("https", "http")
         payload = AuthenticatorMobilePayloadChallenge(
             data={
-                "u": endpoint,
+                # "u": endpoint,
+                # For now the app talks back directly to authentik
+                "u": self.request.build_absolute_uri("/"),
                 "s": str(self.executor.plan.context[FLOW_PLAN_MOBILE_ENROLL_DEVICE].pk),
                 "t": self.executor.plan.context[FLOW_PLAN_MOBILE_ENROLL_TOKEN].token,
             }
