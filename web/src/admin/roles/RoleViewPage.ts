@@ -89,7 +89,7 @@ export class RoleViewPage extends AKElement {
         }
         return html`<div class="pf-c-banner pf-m-info">
                 ${msg("RBAC is in preview.")}
-                <a href="mailto:hello@goauthentik.io">${msg("Send us feedback!")}</a>
+                <a href="mailto:hello+feature/rbac@goauthentik.io">${msg("Send us feedback!")}</a>
             </div>
             <ak-tabs>
                 <section

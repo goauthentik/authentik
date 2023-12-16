@@ -61,7 +61,9 @@ export class ObjectPermissionModal extends AKElement {
                 <span slot="header"> ${msg("Update Permissions")} </span>
                 <div class="pf-c-banner pf-m-info" slot="above-form">
                     ${msg("RBAC is in preview.")}
-                    <a href="mailto:hello@goauthentik.io">${msg("Send us feedback!")}</a>
+                    <a href="mailto:hello+feature/rbac@goauthentik.io"
+                        >${msg("Send us feedback!")}</a
+                    >
                 </div>
                 <ak-rbac-object-permission-modal-form
                     slot="form"

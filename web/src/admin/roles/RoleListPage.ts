@@ -85,7 +85,7 @@ export class RoleListPage extends TablePage<Role> {
             </ak-page-header>
             <div class="pf-c-banner pf-m-info">
                 ${msg("RBAC is in preview.")}
-                <a href="mailto:hello@goauthentik.io">${msg("Send us feedback!")}</a>
+                <a href="mailto:hello+feature/rbac@goauthentik.io">${msg("Send us feedback!")}</a>
             </div>
             <section class="pf-c-page__main-section pf-m-no-padding-mobile">
                 <div class="pf-c-card">${this.renderTable()}</div>

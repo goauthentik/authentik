@@ -85,7 +85,9 @@ export class AuthenticatorMobileStageForm extends ModelForm<AuthenticatorMobileS
         return html`
             <div class="pf-c-banner pf-m-info" slot="above-form">
                 ${msg("Mobile stage is in preview.")}
-                <a href="mailto:hello@goauthentik.io">${msg("Send us feedback!")}</a>
+                <a href="mailto:hello+feature/mobile_authenticator@goauthentik.io"
+                    >${msg("Send us feedback!")}</a
+                >
             </div>
             <div class="form-help-text">
                 ${msg(

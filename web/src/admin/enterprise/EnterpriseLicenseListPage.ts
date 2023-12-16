@@ -150,7 +150,9 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         return html`
             <div class="pf-c-banner pf-m-info">
                 ${msg("Enterprise is in preview.")}
-                <a href="mailto:hello@goauthentik.io">${msg("Send us feedback!")}</a>
+                <a href="mailto:hello+feature/enterprise@goauthentik.io"
+                    >${msg("Send us feedback!")}</a
+                >
             </div>
             <section class="pf-c-page__main-section pf-m-no-padding-bottom">
                 <div
