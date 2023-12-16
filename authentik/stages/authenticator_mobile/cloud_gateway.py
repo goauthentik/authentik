@@ -8,6 +8,8 @@ from grpc import (
     UnaryUnaryClientInterceptor,
     insecure_channel,
     intercept_channel,
+    ssl_channel_credentials,
+    secure_channel,
 )
 from grpc._interceptor import _ClientCallDetails
 
@@ -49,11 +51,27 @@ class AuthInterceptor(UnaryUnaryClientInterceptor, UnaryStreamClientInterceptor)
 
 
 @lru_cache()
+def get_enterprise_token() -> str:
+    """Get enterprise license key, if a license is installed, otherwise use the install ID"""
+    from authentik.root.install_id import get_install_id
+
+    try:
+        from authentik.enterprise.models import License
+
+        license = License.non_expired().order_by("-expiry").first()
+        if not license:
+            return get_install_id()
+        return license.key
+    except ImportError:
+        return get_install_id()
+
+
+@lru_cache()
 def get_client(addr: str):
     """get a cached client to a cloud-gateway"""
-    target = addr
+    channel = secure_channel(addr, ssl_channel_credentials)
     if settings.DEBUG:
-        target = insecure_channel(target)
-    channel = intercept_channel(target, AuthInterceptor("foo"))
+        channel = insecure_channel(addr)
+    channel = intercept_channel(addr, AuthInterceptor(get_enterprise_token()))
     client = AuthenticationPushStub(channel)
     return client

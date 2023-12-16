@@ -88,7 +88,7 @@ class LicenseKey:
     @staticmethod
     def get_total() -> "LicenseKey":
         """Get a summarized version of all (not expired) licenses"""
-        active_licenses = License.objects.filter(expiry__gte=now())
+        active_licenses = License.non_expired()
         total = LicenseKey(get_license_aud(), 0, "Summarized license", 0, 0)
         for lic in active_licenses:
             total.internal_users += lic.internal_users
@@ -166,6 +166,10 @@ class License(SerializerModel):
     expiry = models.DateTimeField()
     internal_users = models.BigIntegerField()
     external_users = models.BigIntegerField()
+
+    @classmethod
+    def non_expired(cls) -> QuerySet["License"]:
+        return License.objects.filter(expiry__gte=now())
 
     @property
     def serializer(self) -> type[BaseSerializer]:
