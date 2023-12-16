@@ -172,7 +172,7 @@ wsproto = "*"
 xmlsec = "*"
 zxcvbn = "*"
 jsonpatch = "*"
-authentik-cloud-gateway-client-dev = {version = "*", allow-prereleases = true, source = "test-pypi"}
+authentik-cloud-gateway-client-dev = {version = "0.1.6", allow-prereleases = true, source = "test-pypi"}
 
 [tool.poetry.dev-dependencies]
 bandit = "*"
