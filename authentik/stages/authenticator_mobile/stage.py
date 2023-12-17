@@ -1,7 +1,8 @@
 """Mobile stage"""
+from django.conf import settings
 from django.http import HttpResponse
 from rest_framework.fields import CharField
-from django.conf import settings
+
 from authentik.core.api.utils import PassiveSerializer
 from authentik.flows.challenge import (
     Challenge,

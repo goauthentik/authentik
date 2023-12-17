@@ -15,7 +15,6 @@ from django.http import HttpRequest
 from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from grpc import RpcError
 from rest_framework.serializers import BaseSerializer, Serializer
 from structlog.stdlib import get_logger
 
@@ -201,8 +200,6 @@ class MobileTransaction(ExpiringModel):
                 )
             )
             LOGGER.debug("Sent notification", id=response, tx_id=self.tx_id)
-        except RpcError as exc:
-            LOGGER.warning("failed to push", exc=exc, code=exc.code(), tx_id=self.tx_id)
         except ValueError as exc:
             LOGGER.warning("failed to push", exc=exc, tx_id=self.tx_id)
         return True
