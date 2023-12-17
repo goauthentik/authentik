@@ -1,14 +1,10 @@
 """Mobile authenticator stage"""
 from secrets import choice
+from time import sleep
 from typing import Optional
 from uuid import uuid4
 
-from authentik_cloud_gateway_client.authenticationPush_pb2 import (
-    AuthenticationCheckRequest,
-    AuthenticationRequest,
-    AuthenticationResponse,
-    AuthenticationResponseStatus,
-)
+from authentik_cloud_gateway_client.authenticationPush_pb2 import AuthenticationRequest
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.http import HttpRequest
@@ -206,22 +202,17 @@ class MobileTransaction(ExpiringModel):
 
     def wait_for_response(self, max_checks=30) -> TransactionStates:
         """Wait for a change in status"""
-        client = get_client(self.device.stage.cgw_endpoint)
-        for response in client.CheckStatus(
-            AuthenticationCheckRequest(tx_id=self.tx_id, attempts=max_checks)
-        ).next():
-            response: AuthenticationResponse
-            if response.status == AuthenticationResponseStatus.ANSWERED:
-                self.selected_item = response.decided_item
-                self.save()
-            elif response.status == AuthenticationResponseStatus.FAILED:
+        checks = 0
+        while True:
+            self.refresh_from_db()
+            if self.status in [TransactionStates.ACCEPT, TransactionStates.DENY]:
+                self.delete()
+                return self.status
+            checks += 1
+            if checks > max_checks:
+                self.delete()
                 raise TimeoutError()
-            elif response.status in [
-                AuthenticationResponseStatus.UNKNOWN,
-                AuthenticationResponseStatus.SENT,
-            ]:
-                continue
-        self.delete()
+            sleep(1)
 
 
 class MobileDeviceToken(ExpiringModel):
