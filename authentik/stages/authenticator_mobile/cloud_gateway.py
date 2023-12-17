@@ -72,6 +72,6 @@ def get_client(addr: str):
     channel = secure_channel(addr, ssl_channel_credentials())
     if settings.DEBUG:
         channel = insecure_channel(addr)
-    channel = intercept_channel(addr, AuthInterceptor(get_enterprise_token()))
+    channel = intercept_channel(channel, AuthInterceptor(get_enterprise_token()))
     client = AuthenticationPushStub(channel)
     return client
