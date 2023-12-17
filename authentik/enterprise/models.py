@@ -169,6 +169,7 @@ class License(SerializerModel):
 
     @classmethod
     def non_expired(cls) -> QuerySet["License"]:
+        """Filter all non expired licenses"""
         return License.objects.filter(expiry__gte=now())
 
     @property

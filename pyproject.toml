@@ -95,7 +95,9 @@ extension-pkg-whitelist = ["lxml", "xmlsec"]
 # Allow constants to be shorter than normal (and lowercase, for settings.py)
 const-rgx = "[a-zA-Z0-9_]{1,40}$"
 
-ignored-modules = ["binascii", "socket", "zlib"]
+ignored-modules = [
+    "authentik_cloud_gateway_client"
+]
 generated-members = ["xmlsec.constants.*", "xmlsec.tree.*", "xmlsec.template.*"]
 ignore = ["migrations", "tests"]
 max-attributes = 12

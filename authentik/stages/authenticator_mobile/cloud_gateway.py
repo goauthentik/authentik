@@ -8,8 +8,8 @@ from grpc import (
     UnaryUnaryClientInterceptor,
     insecure_channel,
     intercept_channel,
-    ssl_channel_credentials,
     secure_channel,
+    ssl_channel_credentials,
 )
 from grpc._interceptor import _ClientCallDetails
 
@@ -58,10 +58,10 @@ def get_enterprise_token() -> str:
     try:
         from authentik.enterprise.models import License
 
-        license = License.non_expired().order_by("-expiry").first()
-        if not license:
+        valid_license = License.non_expired().order_by("-expiry").first()
+        if not valid_license:
             return get_install_id()
-        return license.key
+        return valid_license.key
     except ImportError:
         return get_install_id()
 

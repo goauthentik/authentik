@@ -130,9 +130,8 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
                 device = MobileDevice.objects.filter(pk=challenge.get("device_uid")).first()
             case "sms":
                 device = SMSDevice.objects.filter(pk=int(challenge.get("device_uid"))).first()
-        if not device:
-            raise ValidationError("invalid challenge selected")
-        select_challenge(self.stage.request, self.stage, device)
+        if device:
+            select_challenge(self.stage.request, self.stage, device)
         return challenge
 
     def validate_selected_stage(self, stage_pk: str) -> str:
