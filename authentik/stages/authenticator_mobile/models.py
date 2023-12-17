@@ -204,14 +204,22 @@ class MobileTransaction(ExpiringModel):
     def wait_for_response(self, max_checks=30) -> TransactionStates:
         """Wait for a change in status"""
         checks = 0
+        # calling self.refresh_from_db can raise an impossible to catch exception
+        # (in this case authentik.stages.authenticator_mobile.models.DoesNotExist)
+        obj = MobileTransaction.objects.filter(pk=self.pk).first()
+        if not obj:
+            return TransactionStates.DENY
         while True:
-            self.refresh_from_db()
-            if self.status in [TransactionStates.ACCEPT, TransactionStates.DENY]:
-                self.delete()
-                return self.status
+            try:
+                obj.refresh_from_db()
+            except MobileTransaction.DoesNotExist:
+                return TransactionStates.DENY
+            if obj.status in [TransactionStates.ACCEPT, TransactionStates.DENY]:
+                obj.delete()
+                return obj.status
             checks += 1
             if checks > max_checks:
-                self.delete()
+                obj.delete()
                 raise TimeoutError()
             sleep(1)
 
