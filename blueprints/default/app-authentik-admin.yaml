@@ -1,0 +1,41 @@
+version: 1
+metadata:
+  name: Default - authentik Admin Interface
+entries:
+  - model: authentik_providers_oauth2.oauth2provider
+    id: provider
+    identifiers:
+      name: authentik-admin-interface
+    attrs:
+      authorization_flow:
+        !Find [
+          authentik_flows.flow,
+          [slug, default-provider-authorization-implicit-consent],
+        ]
+      client_type: public
+      client_id: authentik-admin-interface
+      property_mappings:
+        - !Find [
+            authentik_providers_oauth2.scopemapping,
+            [managed, goauthentik.io/providers/oauth2/scope-openid],
+          ]
+        - !Find [
+            authentik_providers_oauth2.scopemapping,
+            [managed, goauthentik.io/providers/oauth2/scope-email],
+          ]
+        - !Find [
+            authentik_providers_oauth2.scopemapping,
+            [managed, goauthentik.io/providers/oauth2/scope-profile],
+          ]
+      signing_key:
+        !Find [
+          authentik_crypto.certificatekeypair,
+          [name, authentik Self-signed Certificate],
+        ]
+  - model: authentik_core.application
+    identifiers:
+      slug: authentik-admin-interface
+    attrs:
+      name: authentik Admin interface
+      icon: https://goauthentik.io/img/icon.png
+      provider: !KeyOf provider
