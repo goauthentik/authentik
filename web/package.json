@@ -28,7 +28,10 @@
         "tsc:execute": "tsc --noEmit -p .",
         "tsc": "run-s build-locales tsc:execute",
         "storybook": "storybook dev -p 6006",
-        "storybook:build": "cross-env NODE_OPTIONS='--max_old_space_size=4096' storybook build"
+        "storybook:build": "cross-env NODE_OPTIONS='--max_old_space_size=4096' storybook build",
+        "storybook:build-import-map": "run-s storybook:build-import-map-script storybook:run-import-map-script",
+        "storybook:build-import-map-script": "cd scripts && tsc --esModuleInterop --module es2020 --target es2020 --moduleResolution 'node' build-storybook-import-maps.ts && mv build-storybook-import-maps.js build-storybook-import-maps.mjs",
+        "storybook:run-import-map-script": "node scripts/build-storybook-import-maps.mjs"
     },
     "dependencies": {
         "@codemirror/lang-html": "^6.4.7",
@@ -115,6 +118,7 @@
         "rollup": "^4.9.1",
         "rollup-plugin-copy": "^3.5.0",
         "rollup-plugin-cssimport": "^1.0.3",
+        "rollup-plugin-modify": "^3.0.0",
         "rollup-plugin-postcss-lit": "^2.1.0",
         "storybook": "^7.6.5",
         "storybook-addon-mock": "^4.3.0",
