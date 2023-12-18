@@ -1,10 +1,11 @@
+
 ---
-title: Home-Assistant
+title: Home Assistant
 ---
 
 <span class="badge badge--secondary">Support level: Community</span>
 
-## What is Home-Assistant
+## What is Home Assistant
 
 > Open source home automation that puts local control and privacy first. Powered by a worldwide community of tinkerers and DIY enthusiasts. Perfect to run on a Raspberry Pi or a local server.
 >
@@ -13,54 +14,62 @@ title: Home-Assistant
 :::caution
 You might run into CSRF errors, this is caused by a technology Home-assistant uses and not authentik, see [this GitHub issue](https://github.com/goauthentik/authentik/issues/884#issuecomment-851542477).
 :::
+:::note
+For Home Assistant to work with authentik, a custom integration needs to be installed for Home Assistant. 
+:::
 
 ## Preparation
 
 The following placeholders will be used:
 
--   `hass.company` is the FQDN of the Home-Assistant install.
+-   `hass.company` is the FQDN of the Home Assistant install.
 -   `authentik.company` is the FQDN of the authentik install.
 
-## Home-Assistant
+## Home Assistant configuration
 
-This guide requires https://github.com/BeryJu/hass-auth-header, which can be installed as described in the Readme.
+1. Configure [trusted_proxies](https://www.home-assistant.io/integrations/http/#trusted_proxies) for the HTTP integration with the IP(s) of the Host(s) authentik is running on.
+2. If you don't already have it set up, install https://github.com/BeryJu/hass-auth-header, using the installation guide.
+3. There are two ways to configure the custom component.
 
-Afterwards, make sure the `trusted_proxies` setting contains the IP(s) of the Host(s) authentik is running on.
+    1. To match on the user's authentik username, use the following configuration:
 
-Use this configuration to match on the user's authentik username.
+    ```yaml
+    auth_header:
+        username_header: X-authentik-username
+    ```
 
-```yaml
-auth_header:
-    username_header: X-authentik-username
-```
+   2.  Alternatively, you can associate an existing Home Assistant username to an authentik username.
+       1.  Within authentik, naviagte to **Directory** > **Users**.
+       2.  Select **Edit** for the user then add the following configuration to the **Attributes** section. Be sure to replace `hassusername` with the Home Assistant username.
 
-If this is not the case, you can simply add an additional header for your user, which contains the Home-Assistant Name and authenticate based on that.
+       :::note
+       This configuration will add an additional header for the authentik user which will contain the Home Assistant username and allow Home Assistant to authenticate based on that. 
+       :::
 
-For example add this to your user's properties and set the Header to `X-ak-hass-user`.
+        ```yaml
+        additionalHeaders:
+            X-ak-hass-user: hassusername
+        ```
 
-```yaml
-additionalHeaders:
-    X-ak-hass-user: some other name
-```
+       3. Then configure the Home Assistant custom component to use this header:
+        ```yaml
+        auth_header:
+            username_header: X-ak-hass-user
+        ```
 
-## authentik
+## authentik configuration
 
-Create a Proxy Provider with the following values
+1. Create a **Proxy Provider** under **Applications** > **Providers** using the following settings:
 
--   Internal host
+   - **Name**: Home Assistant
+   - **Authentication flow**: default-authentication-flow
+   - **Authorization flow**: default-provider-authorization-explicit-consent
+   - **External Host**: Set this to the external URL you will be accessing Home Assistant from
+   - **Internal Host**: `http://hass.company:8123`
 
-    If Home-Assistant is running in docker, and you're deploying the authentik proxy on the same host, set the value to `http://homeassistant:8123`, where Home-Assistant is the name of your container.
+2. Create an **Application** under **Applications** > **Applications** using the following settings:
+    - **Name**: Home Assistant
+    - **Slug**: homeassistant
+    - **Provider**: Home Assistant (the provider you created in step 1)
 
-    If Home-Assistant is running on a different server than where you are deploying the authentik proxy, set the value to `http://hass.company:8123`.
-
--   External host
-
-    Set this to the external URL you will be accessing Home-Assistant from.
-
-Create an application in authentik and select the provider you've created above.
-
-## Deployment
-
-Create an outpost deployment for the provider you've created above, as described [here](../../../docs/outposts/). Deploy this Outpost either on the same host or a different host that can access Home-Assistant.
-
-The outpost will connect to authentik and configure itself.
+3. Create an outpost deployment for the provider you've created above, as described [here](../../../docs/outposts/). Deploy this Outpost either on the same host or a different host that can access Home Assistant. The outpost will connect to authentik and configure itself.
