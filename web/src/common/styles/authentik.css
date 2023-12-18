@@ -148,3 +148,15 @@ html > form > input {
         margin-top: 13rem;
     }
 }
+
+/* View transition */
+::view-transition-image-pair(ak-flow-container) {
+    isolation: auto;
+}
+
+::view-transition-old(ak-flow-container),
+::view-transition-new(ak-flow-container) {
+    animation: none;
+    mix-blend-mode: normal;
+    display: block;
+}

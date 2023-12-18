@@ -105,12 +105,13 @@ export class FlowExecutor extends Interface implements StageHost {
                 --pf-c-background-image--BackgroundImage--sm-2x: var(--ak-flow-background);
                 --pf-c-background-image--BackgroundImage--lg: var(--ak-flow-background);
             }
-            .ak-hidden {
-                display: none;
-            }
             :host {
                 position: relative;
             }
+            .pf-c-login__main {
+                view-transition-name: ak-flow-container;
+            }
+
             .pf-c-drawer__content {
                 background-color: transparent;
             }
@@ -189,6 +190,15 @@ export class FlowExecutor extends Interface implements StageHost {
         return globalAK()?.tenant.uiTheme || UiThemeEnum.Automatic;
     }
 
+    transitionChallenge(data: ChallengeTypes): void {
+        document.startViewTransition(() => {
+            this.challenge = data;
+            if (this.challenge.flowInfo) {
+                this.flowInfo = this.challenge.flowInfo;
+            }
+        });
+    }
+
     async submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
         if (!payload) return Promise.reject();
         if (!this.challenge) return Promise.reject();
@@ -209,7 +219,7 @@ export class FlowExecutor extends Interface implements StageHost {
                     }),
                 );
             }
-            this.challenge = challenge;
+            this.transitionChallenge(challenge);
             if (this.challenge.flowInfo) {
                 this.flowInfo = this.challenge.flowInfo;
             }
@@ -241,10 +251,7 @@ export class FlowExecutor extends Interface implements StageHost {
                     }),
                 );
             }
-            this.challenge = challenge;
-            if (this.challenge.flowInfo) {
-                this.flowInfo = this.challenge.flowInfo;
-            }
+            this.transitionChallenge(challenge);
         } catch (exc: unknown) {
             // Catch JSON or Update errors
             this.errorMessage(exc as Error | ResponseError);

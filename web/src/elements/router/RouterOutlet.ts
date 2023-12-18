@@ -58,6 +58,7 @@ export class RouterOutlet extends AKElement {
             css`
                 :host {
                     background-color: transparent !important;
+                    view-transition-name: ak-router-outlet;
                 }
                 *:first-child {
                     flex-direction: column;
@@ -111,7 +112,9 @@ export class RouterOutlet extends AKElement {
             matchedRoute.arguments = route.url.exec(activeUrl)?.groups || {};
             matchedRoute.fullUrl = activeUrl;
         }
-        this.current = matchedRoute;
+        document.startViewTransition(() => {
+            this.current = matchedRoute!;
+        });
     }
 
     render(): TemplateResult | undefined {
