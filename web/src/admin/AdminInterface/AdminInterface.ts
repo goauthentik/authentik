@@ -1,5 +1,6 @@
 import { ROUTES } from "@goauthentik/admin/Routes";
 import { OAuthInterface } from "@goauthentik/app/common/oauth/interface";
+import { adminSettings } from "@goauthentik/app/common/oauth/settings";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import {
     EVENT_API_DRAWER_TOGGLE,
@@ -18,6 +19,7 @@ import { getURLParam, updateURLParams } from "@goauthentik/elements/router/Route
 import "@goauthentik/elements/router/RouterOutlet";
 import "@goauthentik/elements/sidebar/Sidebar";
 import "@goauthentik/elements/sidebar/SidebarItem";
+import { UserManagerSettings } from "oidc-client-ts";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
@@ -47,6 +49,10 @@ export class AdminInterface extends OAuthInterface {
 
     @state()
     user?: SessionUser;
+
+    get oauthSettings(): UserManagerSettings {
+        return adminSettings;
+    }
 
     static get styles(): CSSResult[] {
         return [

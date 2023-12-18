@@ -1,16 +1,17 @@
 import { state } from "@goauthentik/app/common/oauth/constants";
-import { settings } from "@goauthentik/app/common/oauth/settings";
 import { Interface } from "@goauthentik/app/elements/Base";
-import { UserManager } from "oidc-client-ts";
+import { UserManager, UserManagerSettings } from "oidc-client-ts";
 
-export class OAuthInterface extends Interface {
+export abstract class OAuthInterface extends Interface {
+    abstract get oauthSettings(): UserManagerSettings;
+
     private async ensureLoggedIn() {
-        const client = new UserManager(settings);
+        const client = new UserManager(this.oauthSettings);
         const user = await client.getUser();
         if (user !== null) {
             return;
         }
-        if (window.location.href.startsWith(settings.redirect_uri)) {
+        if (window.location.href.startsWith(this.oauthSettings.redirect_uri)) {
             return;
         }
         const s = new state();

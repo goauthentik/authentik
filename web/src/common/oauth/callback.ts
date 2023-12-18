@@ -1,7 +1,6 @@
 import { state } from "@goauthentik/app/common/oauth/constants";
-import { settings } from "@goauthentik/app/common/oauth/settings";
 import { refreshMe } from "@goauthentik/app/common/users";
-import { User, UserManager } from "oidc-client-ts";
+import { User, UserManager, UserManagerSettings } from "oidc-client-ts";
 
 import { LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -10,8 +9,13 @@ import { customElement, property } from "lit/decorators.js";
 export class OAuthCallback extends LitElement {
     @property()
     params?: string;
+    @property({ attribute: false })
+    settings?: UserManagerSettings;
     async firstUpdated(): Promise<void> {
-        const client = new UserManager(settings);
+        if (!this.settings) {
+            return;
+        }
+        const client = new UserManager(this.settings);
         const user = (await client.signinCallback(`#${this.params}`)) as User;
         const st = user.state as state;
         window.location.assign(st.url);

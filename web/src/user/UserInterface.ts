@@ -1,4 +1,5 @@
 import { OAuthInterface } from "@goauthentik/app/common/oauth/interface";
+import { userSettings } from "@goauthentik/app/common/oauth/settings";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import {
     EVENT_API_DRAWER_TOGGLE,
@@ -23,6 +24,7 @@ import { DefaultTenant } from "@goauthentik/elements/sidebar/SidebarBrand";
 import "@goauthentik/elements/sidebar/SidebarItem";
 import { ROUTES } from "@goauthentik/user/Routes";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import { UserManagerSettings } from "oidc-client-ts";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -55,6 +57,10 @@ export class UserInterface extends OAuthInterface {
 
     @state()
     me?: SessionUser;
+
+    get oauthSettings(): UserManagerSettings {
+        return userSettings;
+    }
 
     static get styles(): CSSResult[] {
         return [
