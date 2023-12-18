@@ -227,6 +227,7 @@ class MobileTransaction(ExpiringModel):
 class MobileDeviceToken(ExpiringModel):
     """Mobile device token"""
 
+    token_uuid = models.UUIDField(default=uuid4, primary_key=True)
     device = models.ForeignKey(MobileDevice, on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     token = models.TextField(default=default_token_key)
