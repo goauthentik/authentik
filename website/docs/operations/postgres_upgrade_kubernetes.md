@@ -2,6 +2,10 @@
 title: Upgrade PostgreSQL on Kubernetes
 ---
 
+::::note
+The following instructions are for upgrading from PostgreSQL major version 11 to 15. Adapt as needed.
+::::
+
 ## Preparation
 
 -   `authentik-postgresql-0` is the Kubernetes Pod running PostgreSQL.

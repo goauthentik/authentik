@@ -29,6 +29,28 @@
   status = 301
   force = true
 
+# URL retro-compatibility
+[[redirects]]
+  from = "/docs/installation/air-gapped"
+  to = "/docs/operations/air-gapped"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/docs/installation/automated-install"
+  to = "/docs/operations/automated-install"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/docs/installation/monitoring"
+  to = "/docs/operations/monitoring"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/docs/troubleshooting/postgres/upgrade_kubernetes"
+  to = "/docs/operations/postgres_upgrade_kubernetes"
+  status = 301
+  force = true
+
 # Container registry
 [[redirects]]
   from = "/v2"
