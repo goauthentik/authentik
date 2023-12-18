@@ -19,11 +19,9 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
     }
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated certificate-key pair.");
-        } else {
-            return msg("Successfully created certificate-key pair.");
-        }
+        return this.instance
+            ? msg("Successfully updated certificate-key pair.")
+            : msg("Successfully created certificate-key pair.");
     }
 
     async send(data: CertificateKeyPair): Promise<CertificateKeyPair> {

@@ -3744,11 +3744,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>此設定僅會影響新的事件紀錄，舊的紀錄到期時間已經設定。</target>
         
       </trans-unit>
-      <trans-unit id="s3bb51cabb02b997e">
-        <source>Format: "weeks=3;days=2;hours=3,seconds=2".</source>
-        <target>格式：（weeks=3;days=2;hours=3,seconds=2）。</target>
-        
-      </trans-unit>
       <trans-unit id="s164be9a7537b99f6">
         <source>Configure visual settings and defaults for different domains.</source>
         <target>為不同的網域設定視覺化設定和各項預設值。</target>

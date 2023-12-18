@@ -2885,10 +2885,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>This setting only affects new Events, as the expiration is saved per-event.</source>
         <target>Diese Einstellung betrifft nur neue Ereignisse, da die Ablaufzeit für jedes Ereignis gespeichert wird.</target>
       </trans-unit>
-      <trans-unit id="s3bb51cabb02b997e">
-        <source>Format: "weeks=3;days=2;hours=3,seconds=2".</source>
-        <target>Format: "Wochen=3;Tage=2;Stunden=3,Sekunden=2".</target>
-      </trans-unit>
       <trans-unit id="s164be9a7537b99f6">
         <source>Configure visual settings and defaults for different domains.</source>
         <target>Konfiguriere visuelle Einstellungen und Standards für verschiedene Domains.</target>

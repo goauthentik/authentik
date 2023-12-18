@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-11 10:16+0000\n"
+"POT-Creation-Date: 2023-12-18 09:56+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -74,27 +74,21 @@ msgstr ""
 msgid "Successfully imported %(count)d files."
 msgstr ""
 
-#: authentik/brands/models.py:23
+#: authentik/brands/models.py:22
 msgid ""
 "Domain that activates this brand. Can be a superset, i.e. `a.b` for `aa.b` "
 "and `ba.b`"
 msgstr ""
 
 #: authentik/brands/models.py:58
-msgid ""
-"Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,"
-"seconds=2)."
-msgstr ""
-
-#: authentik/brands/models.py:67
 msgid "Web Certificate used by the authentik Core webserver."
 msgstr ""
 
-#: authentik/brands/models.py:93
+#: authentik/brands/models.py:84
 msgid "Brand"
 msgstr ""
 
-#: authentik/brands/models.py:94
+#: authentik/brands/models.py:85
 msgid "Brands"
 msgstr ""
 
@@ -344,7 +338,7 @@ msgstr ""
 msgid "Go home"
 msgstr ""
 
-#: authentik/core/templates/login/base_full.html:89
+#: authentik/core/templates/login/base_full.html:90
 msgid "Powered by authentik"
 msgstr ""
 
@@ -394,105 +388,105 @@ msgstr ""
 msgid "License Usage Records"
 msgstr ""
 
-#: authentik/events/models.py:291
+#: authentik/events/models.py:294
 msgid "Event"
 msgstr ""
 
-#: authentik/events/models.py:292
+#: authentik/events/models.py:295
 msgid "Events"
 msgstr ""
 
-#: authentik/events/models.py:298
+#: authentik/events/models.py:301
 msgid "authentik inbuilt notifications"
 msgstr ""
 
-#: authentik/events/models.py:299
+#: authentik/events/models.py:302
 msgid "Generic Webhook"
 msgstr ""
 
-#: authentik/events/models.py:300
+#: authentik/events/models.py:303
 msgid "Slack Webhook (Slack/Discord)"
 msgstr ""
 
-#: authentik/events/models.py:301
+#: authentik/events/models.py:304
 msgid "Email"
 msgstr ""
 
-#: authentik/events/models.py:319
+#: authentik/events/models.py:322
 msgid ""
 "Only send notification once, for example when sending a webhook into a chat "
 "channel."
 msgstr ""
 
-#: authentik/events/models.py:384
+#: authentik/events/models.py:387
 msgid "Severity"
 msgstr ""
 
-#: authentik/events/models.py:389
+#: authentik/events/models.py:392
 msgid "Dispatched for user"
 msgstr ""
 
-#: authentik/events/models.py:398
+#: authentik/events/models.py:401
 msgid "Event user"
 msgstr ""
 
-#: authentik/events/models.py:492
+#: authentik/events/models.py:495
 msgid "Notification Transport"
 msgstr ""
 
-#: authentik/events/models.py:493
+#: authentik/events/models.py:496
 msgid "Notification Transports"
 msgstr ""
 
-#: authentik/events/models.py:499
+#: authentik/events/models.py:502
 msgid "Notice"
 msgstr ""
 
-#: authentik/events/models.py:500
+#: authentik/events/models.py:503
 msgid "Warning"
 msgstr ""
 
-#: authentik/events/models.py:501
+#: authentik/events/models.py:504
 msgid "Alert"
 msgstr ""
 
-#: authentik/events/models.py:526
+#: authentik/events/models.py:529
 msgid "Notification"
 msgstr ""
 
-#: authentik/events/models.py:527
+#: authentik/events/models.py:530
 msgid "Notifications"
 msgstr ""
 
-#: authentik/events/models.py:537
+#: authentik/events/models.py:540
 msgid ""
 "Select which transports should be used to notify the user. If none are "
 "selected, the notification will only be shown in the authentik UI."
 msgstr ""
 
-#: authentik/events/models.py:545
+#: authentik/events/models.py:548
 msgid "Controls which severity level the created notifications will have."
 msgstr ""
 
-#: authentik/events/models.py:550
+#: authentik/events/models.py:553
 msgid ""
 "Define which group of users this notification should be sent and shown to. "
 "If left empty, Notification won't ben sent."
 msgstr ""
 
-#: authentik/events/models.py:568
+#: authentik/events/models.py:571
 msgid "Notification Rule"
 msgstr ""
 
-#: authentik/events/models.py:569
+#: authentik/events/models.py:572
 msgid "Notification Rules"
 msgstr ""
 
-#: authentik/events/models.py:589
+#: authentik/events/models.py:592
 msgid "Webhook Mapping"
 msgstr ""
 
-#: authentik/events/models.py:590
+#: authentik/events/models.py:593
 msgid "Webhook Mappings"
 msgstr ""
 
@@ -2633,54 +2627,60 @@ msgstr ""
 msgid "Failed to update user. Please try again later."
 msgstr ""
 
-#: authentik/tenants/models.py:28
+#: authentik/tenants/models.py:29
 msgid ""
 "Schema name must start with t_, only contain lowercase letters and numbers "
 "and be less than 63 characters."
 msgstr ""
 
-#: authentik/tenants/models.py:48
+#: authentik/tenants/models.py:49
 msgid "Configure how authentik should show avatars for users."
 msgstr ""
 
-#: authentik/tenants/models.py:52
+#: authentik/tenants/models.py:53
 msgid "Enable the ability for users to change their name."
 msgstr ""
 
-#: authentik/tenants/models.py:55
+#: authentik/tenants/models.py:56
 msgid "Enable the ability for users to change their email address."
 msgstr ""
 
-#: authentik/tenants/models.py:58
+#: authentik/tenants/models.py:59
 msgid "Enable the ability for users to change their username."
 msgstr ""
 
-#: authentik/tenants/models.py:62
+#: authentik/tenants/models.py:65
+msgid ""
+"Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,"
+"seconds=2)."
+msgstr ""
+
+#: authentik/tenants/models.py:69
+msgid "The option configures the footer links on the flow executor pages."
+msgstr ""
+
+#: authentik/tenants/models.py:75
 msgid ""
 "When enabled, all the events caused by a user will be deleted upon the "
 "user's deletion."
 msgstr ""
 
-#: authentik/tenants/models.py:68
+#: authentik/tenants/models.py:81
 msgid "Globally enable/disable impersonation."
 msgstr ""
 
-#: authentik/tenants/models.py:71
-msgid "The option configures the footer links on the flow executor pages."
-msgstr ""
-
-#: authentik/tenants/models.py:96
+#: authentik/tenants/models.py:104
 msgid "Tenant"
 msgstr ""
 
-#: authentik/tenants/models.py:97
+#: authentik/tenants/models.py:105
 msgid "Tenants"
 msgstr ""
 
-#: authentik/tenants/models.py:117
+#: authentik/tenants/models.py:125
 msgid "Domain"
 msgstr ""
 
-#: authentik/tenants/models.py:118
+#: authentik/tenants/models.py:126
 msgid "Domains"
 msgstr ""

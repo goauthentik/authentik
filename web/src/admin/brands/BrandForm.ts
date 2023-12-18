@@ -26,11 +26,9 @@ export class BrandForm extends ModelForm<Brand, string> {
     }
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated brand.");
-        } else {
-            return msg("Successfully created brand.");
-        }
+        return this.instance
+            ? msg("Successfully updated brand.")
+            : msg("Successfully created brand.");
     }
 
     async send(data: Brand): Promise<Brand> {
@@ -232,7 +230,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         name="webCertificate"
                     >
                         <ak-crypto-certificate-search
-                            certificate=${this.instance?.webCertificate}
+                            .certificate=${this.instance?.webCertificate}
                         ></ak-crypto-certificate-search>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">

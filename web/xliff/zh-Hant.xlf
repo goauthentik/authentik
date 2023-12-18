@@ -2864,10 +2864,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>This setting only affects new Events, as the expiration is saved per-event.</source>
         <target>此设置仅影响新事件，因为过期时间是按事件保存的。</target>
       </trans-unit>
-      <trans-unit id="s3bb51cabb02b997e">
-        <source>Format: "weeks=3;days=2;hours=3,seconds=2".</source>
-        <target>格式："weeks=3;days=2;hours=3,seconds=2"。</target>
-      </trans-unit>
       <trans-unit id="s164be9a7537b99f6">
         <source>Configure visual settings and defaults for different domains.</source>
         <target>配置不同域的可视化设置和默认值。</target>

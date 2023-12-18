@@ -1,9 +1,9 @@
+import { BasePropertyMappingForm } from "@goauthentik/admin/property-mappings/BasePropertyMappingForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { docLink } from "@goauthentik/common/global";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -13,19 +13,11 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { LDAPPropertyMapping, PropertymappingsApi } from "@goauthentik/api";
 
 @customElement("ak-property-mapping-ldap-form")
-export class PropertyMappingLDAPForm extends ModelForm<LDAPPropertyMapping, string> {
+export class PropertyMappingLDAPForm extends BasePropertyMappingForm<LDAPPropertyMapping> {
     loadInstance(pk: string): Promise<LDAPPropertyMapping> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsLdapRetrieve({
             pmUuid: pk,
         });
-    }
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated mapping.");
-        } else {
-            return msg("Successfully created mapping.");
-        }
     }
 
     async send(data: LDAPPropertyMapping): Promise<LDAPPropertyMapping> {

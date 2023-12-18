@@ -1,9 +1,9 @@
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
+import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first, groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { msg } from "@lit/localize";
@@ -23,7 +23,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-stage-identification-form")
-export class IdentificationStageForm extends ModelForm<IdentificationStage, string> {
+export class IdentificationStageForm extends BaseStageForm<IdentificationStage> {
     loadInstance(pk: string): Promise<IdentificationStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesIdentificationRetrieve({
             stageUuid: pk,
@@ -37,14 +37,6 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
     }
 
     sources?: PaginatedSourceList;
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated stage.");
-        } else {
-            return msg("Successfully created stage.");
-        }
-    }
 
     async send(data: IdentificationStage): Promise<IdentificationStage> {
         if (this.instance) {
