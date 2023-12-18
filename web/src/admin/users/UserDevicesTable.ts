@@ -49,18 +49,21 @@ export class UserDeviceTable extends Table<Device> {
 
     async deleteWrapper(device: Device) {
         const api = new AuthenticatorsApi(DEFAULT_CONFIG);
-        const id = { id: device.pk };
-        switch (device.type) {
-            case "authentik_stages_authenticator_duo.DuoDevice":
-                return api.authenticatorsAdminDuoDestroy(id);
-            case "authentik_stages_authenticator_sms.SMSDevice":
-                return api.authenticatorsAdminSmsDestroy(id);
-            case "authentik_stages_authenticator_totp.TOTPDevice":
-                return api.authenticatorsAdminTotpDestroy(id);
-            case "authentik_stages_authenticator_static.StaticDevice":
-                return api.authenticatorsAdminStaticDestroy(id);
-            case "authentik_stages_authenticator_webauthn.WebAuthnDevice":
-                return api.authenticatorsAdminWebauthnDestroy(id);
+        switch (device.type.toLowerCase()) {
+            case "authentik_stages_authenticator_duo.duodevice":
+                return api.authenticatorsAdminDuoDestroy({ id: parseInt(device.pk, 10) });
+            case "authentik_stages_authenticator_sms.smsdevice":
+                return api.authenticatorsAdminSmsDestroy({ id: parseInt(device.pk, 10) });
+            case "authentik_stages_authenticator_totp.totpdevice":
+                return api.authenticatorsAdminTotpDestroy({ id: parseInt(device.pk, 10) });
+            case "authentik_stages_authenticator_static.staticdevice":
+                return api.authenticatorsAdminStaticDestroy({ id: parseInt(device.pk, 10) });
+            case "authentik_stages_authenticator_webauthn.webauthndevice":
+                return api.authenticatorsAdminWebauthnDestroy({ id: parseInt(device.pk, 10) });
+            case "authentik_stages_authenticator_mobile.mobiledevice":
+                return api.authenticatorsMobileDestroy({
+                    uuid: device.pk,
+                });
             default:
                 break;
         }

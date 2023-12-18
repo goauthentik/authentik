@@ -464,24 +464,42 @@ components:
       type: object
       description: Serializer for Mobile authenticator devices
       properties:
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
         pk:
           type: string
-          format: uuid
-          title: Uuid
         name:
           type: string
-          description: The human-readable name of this device.
-          maxLength: 64
-        state:
-          type: object
-          additionalProperties: {}
+        type:
+          type: string
+          description: Get type of device
+          readOnly: true
+        confirmed:
+          type: boolean
+          readOnly: true
         last_checkin:
           allOf:
           - $ref: '#/components/schemas/MobileDeviceInfo'
           readOnly: true
       required:
+      - confirmed
       - last_checkin
+      - meta_model_name
       - name
+      - pk
+      - type
+      - verbose_name
+      - verbose_name_plural
     MobileDeviceEnrollmentCallback:
       type: object
       properties:
@@ -566,18 +584,13 @@ components:
       properties:
         pk:
           type: string
-          format: uuid
-          title: Uuid
+          minLength: 1
         name:
           type: string
           minLength: 1
-          description: The human-readable name of this device.
-          maxLength: 64
-        state:
-          type: object
-          additionalProperties: {}
       required:
       - name
+      - pk
     MobileDeviceResponseRequest:
       type: object
       description: Response from push sent to phone
@@ -643,16 +656,10 @@ components:
       properties:
         pk:
           type: string
-          format: uuid
-          title: Uuid
+          minLength: 1
         name:
           type: string
           minLength: 1
-          description: The human-readable name of this device.
-          maxLength: 64
-        state:
-          type: object
-          additionalProperties: {}
     PlatformEnum:
       enum:
       - ios

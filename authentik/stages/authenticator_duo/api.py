@@ -11,12 +11,12 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.api.decorators import permission_required
+from authentik.core.api.devices import DeviceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
@@ -165,7 +165,7 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
         return Response(data=result, status=200 if result["error"] == "" else 400)
 
 
-class DuoDeviceSerializer(ModelSerializer):
+class DuoDeviceSerializer(DeviceSerializer):
     """Serializer for Duo authenticator devices"""
 
     class Meta:

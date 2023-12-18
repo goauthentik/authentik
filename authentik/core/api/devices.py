@@ -1,7 +1,7 @@
 """Authenticator Devices API Views"""
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
-from rest_framework.fields import BooleanField, CharField, IntegerField, SerializerMethodField
+from rest_framework.fields import BooleanField, CharField, SerializerMethodField
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -15,10 +15,10 @@ from authentik.stages.authenticator.models import Device
 class DeviceSerializer(MetaNameSerializer):
     """Serializer for Duo authenticator devices"""
 
-    pk = IntegerField()
+    pk = CharField()
     name = CharField()
     type = SerializerMethodField()
-    confirmed = BooleanField()
+    confirmed = BooleanField(read_only=True)
 
     def get_type(self, instance: Device) -> str:
         """Get type of device"""

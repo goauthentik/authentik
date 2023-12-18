@@ -7,6 +7,7 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.api.authorization import OwnerFilter, OwnerPermissions
+from authentik.core.api.devices import DeviceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.authenticator_static.models import (
@@ -47,7 +48,7 @@ class StaticDeviceTokenSerializer(ModelSerializer):
         fields = ["token"]
 
 
-class StaticDeviceSerializer(ModelSerializer):
+class StaticDeviceSerializer(DeviceSerializer):
     """Serializer for static authenticator devices"""
 
     token_set = StaticDeviceTokenSerializer(many=True, read_only=True)
