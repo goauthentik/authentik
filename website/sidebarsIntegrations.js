@@ -32,6 +32,7 @@ module.exports = {
                         "services/paperless-ng/index",
                         "services/rocketchat/index",
                         "services/roundcube/index",
+                        "services/sharepoint-se/index",
                         "services/vikunja/index",
                         "services/wekan/index",
                         "services/wiki-js/index",
