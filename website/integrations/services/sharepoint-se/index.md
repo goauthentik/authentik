@@ -7,12 +7,12 @@ title: Microsoft SharePoint Server Subscription Edition
 ## What is Microsoft SharePoint
 
 > SharePoint is a proprietary, web-based collaborative platform that integrates natively with Microsoft 365.
-> 
+>
 > Launched in 2001, SharePoint is primarily sold as a document management and storage system, although it is also used for sharing information through an intranet, implementing internal applications, and for implementing business processes.
 >
 > -- https://en.wikipedia.org/wiki/SharePoint
 
-> Organizations use Microsoft SharePoint to create websites. 
+> Organizations use Microsoft SharePoint to create websites.
 >
 > You can use it as a secure place to store, organize, share, and access information from any device. \
 > All you need is a web browser, such as Microsoft Edge, Internet Explorer, Chrome, or Firefox.
@@ -32,7 +32,7 @@ For all other integration models, read Microsoft official documentations. \
 :::
 
 :::caution
-This setup only works starting with __Authentik__ version __2023.10__ and Microsoft __SharePoint__ Subscription Edition starting with the __Cumulative Updates__ of __September 2023__
+This setup only works starting with **Authentik** version **2023.10** and Microsoft **SharePoint** Subscription Edition starting with the **Cumulative Updates** of **September 2023**
 :::
 
 # Preparation
@@ -49,43 +49,45 @@ Ensure Authentik and SharePoint Server clocks are synchronized.
 
 These guidelines uses the following placeholders for the overall setup.
 
-| Name | Placeholder | Sample value |
-| ---- | ------------ | ----- |
-| Authentik Application Name   | `auth.applicationName` | SharePoint SE |
-| Authentik Application Slug   | `auth.applicationSlug` | sharepoint-se |
-| Authentik OIDC Name | `auth.providerName` | OIDC-SP |
-| Authentik OIDC Configuration URL | `auth.providerConfigURL` | https://auth.contoso.com/application/o/sharepoint-se/.well-known/openid-configuration |
-| Authentik OIDC Client ID | `auth.providerClientID` | 0ab1c234d567ef8a90123bc4567890e12fa3b45c |
-| Authentik OIDC Redirect URIs | `auth.providerRedirectURI` | https://contoso.com/.* |
-| (Optional) Authentik LDAP Outpost Name | `ldap.outpostName` | LDAP |
-| (Optional) Authentik LDAP Outpost URI | `ldap.outpostURI` | ak-outpost-ldap.authentik.svc.cluster.local |
-| (Optional) Authentik LDAP Service Account | `ldap.outpostServiceAccount` | cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io |
-| (Optional) Authentik LDAP Service Account Password | `ldap.outpostServiceAccountPassword` | mystrongpassword |
-| SharePoint Default Web Application URL | `sp.webAppURL` | https://contoso.com |
-| SharePoint Trusted Token Issuer Name | `sp.issuerName` | Authentik |
-| SharePoint Trusted Token Issuer Description | `sp.issuerDesc` | Authentik IDP |
-
+| Name                                               | Placeholder                          | Sample value                                                                          |
+| -------------------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------- |
+| Authentik Application Name                         | `auth.applicationName`               | SharePoint SE                                                                         |
+| Authentik Application Slug                         | `auth.applicationSlug`               | sharepoint-se                                                                         |
+| Authentik OIDC Name                                | `auth.providerName`                  | OIDC-SP                                                                               |
+| Authentik OIDC Configuration URL                   | `auth.providerConfigURL`             | https://auth.contoso.com/application/o/sharepoint-se/.well-known/openid-configuration |
+| Authentik OIDC Client ID                           | `auth.providerClientID`              | 0ab1c234d567ef8a90123bc4567890e12fa3b45c                                              |
+| Authentik OIDC Redirect URIs                       | `auth.providerRedirectURI`           | https://contoso.com/.\*                                                               |
+| (Optional) Authentik LDAP Outpost Name             | `ldap.outpostName`                   | LDAP                                                                                  |
+| (Optional) Authentik LDAP Outpost URI              | `ldap.outpostURI`                    | ak-outpost-ldap.authentik.svc.cluster.local                                           |
+| (Optional) Authentik LDAP Service Account          | `ldap.outpostServiceAccount`         | cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io                                  |
+| (Optional) Authentik LDAP Service Account Password | `ldap.outpostServiceAccountPassword` | mystrongpassword                                                                      |
+| SharePoint Default Web Application URL             | `sp.webAppURL`                       | https://contoso.com                                                                   |
+| SharePoint Trusted Token Issuer Name               | `sp.issuerName`                      | Authentik                                                                             |
+| SharePoint Trusted Token Issuer Description        | `sp.issuerDesc`                      | Authentik IDP                                                                         |
 
 # Authentication Setup
+
 ## Step 1: Create Authentik Open ID Property Mappings
 
 SharePoint requires additional properties within the openid and profile scopes in order to operate OIDC properly and be able to map incoming Authentik OID Claims with Microsoft Claims.
 
-Additional information from Microsoft documentations: 
-- https://learn.microsoft.com/en-us/entra/identity-platform/id-tokens#validate-tokens
-- https://learn.microsoft.com/en-us/entra/identity-platform/id-token-claims-reference#payload-claims
+Additional information from Microsoft documentations:
+
+-   https://learn.microsoft.com/en-us/entra/identity-platform/id-tokens#validate-tokens
+-   https://learn.microsoft.com/en-us/entra/identity-platform/id-token-claims-reference#payload-claims
 
 ### Add an openid scope mapping for SharePoint
 
 From Authentik Admin Dashboard:
 
-1. Open "__Customisation > Property Mappings__" page from the sidebar 
-2. Click on "__Create__" from the property mapping list command bar
-3. Within the new property mapping form, select "__Scope Mapping__"
-4. Click on "__Next__" an fulfill the creation form as following \
-    a. __Name__: SPopenid \
-    b. __Scope name__: openid \
-    c. __Expression__:
+1. Open "**Customisation > Property Mappings**" page from the sidebar
+2. Click on "**Create**" from the property mapping list command bar
+3. Within the new property mapping form, select "**Scope Mapping**"
+4. Click on "**Next**" an fulfill the creation form as following \
+   a. **Name**: SPopenid \
+   b. **Scope name**: openid \
+   c. **Expression**:
+
 ```python
 return {
   "nbf": "0",           # Identifies the time before which the JWT can't be accepted for processing.
@@ -94,19 +96,21 @@ return {
   "upn": user.username  # (Optional) User Principal Name, used for troubleshooting within JWT tokens or to setup SharePoint like ADFS
 }
 ```
-5. Click on "__Finish__"
+
+5. Click on "**Finish**"
 
 ### Add a profile scope mapping for SharePoint
 
 From Authentik Admin Dashboard:
 
-1. Open "__Customisation > Property Mappings__" page from the sidebar 
-2. Click on "__Create__" from the property mapping list command bar
-3. Within the new property mapping form, select "__Scope Mapping__"
-4. Click on "__Next__" an fulfill the creation form as following \
-    a. __Name__: SPprofile \
-    b. __Scope name__: profile \
-    c. __Expression__:
+1. Open "**Customisation > Property Mappings**" page from the sidebar
+2. Click on "**Create**" from the property mapping list command bar
+3. Within the new property mapping form, select "**Scope Mapping**"
+4. Click on "**Next**" an fulfill the creation form as following \
+   a. **Name**: SPprofile \
+   b. **Scope name**: profile \
+   c. **Expression**:
+
 ```python
 return {
     "name": request.user.name,                                         # The name claim provides a human-readable value that identifies the subject of the token.
@@ -117,56 +121,59 @@ return {
     "roles": [group.name for group in request.user.ak_groups.all()],   # The set of roles that were assigned to the user who is logging in.
 }
 ```
-5. Click on "__Finish__"
+
+5. Click on "**Finish**"
 
 ## Step 2: Create Authentik Open ID Connect Provider
 
 From Authentik Admin Dashboard:
 
-1. Open "__Applications > Providers__" page from the sidebar 
-2. Click on "__Create__" from the provider list command bar
-3. Within the new provider form, select "__OAuth2/OpenID Provider__"
-4. Click on "__Next__" an fulfill the creation form as following \
-    a. __Name__: `auth.providerName` \
-    b. __Authentication flow__: default-authentication-flow \
-    c. __Authorization flow__: default-provider-authorization-implicit-consent \
-    _Notes: use the explict flow if user consents are required_ \
-    d. __Redirect URIs / Origins__: `auth.providerRedirectURI` \
-    e. __Signing Key__: authentik Self-signed Certificate \
-    _Important Notes: The certificate is used for signing JWT tokens, if you change it after the integration, do not forget to update your SharePoint Trusted  Certificate_ \
-    f. __Access code validity__: minutes=5 \
-    _Important Notes: the minimum is 5 minutes, otherwise SharePoint backend might consider the access code expired_ \
-    g. __Access Token validity__: minutes=15 \
-    _Important Notes: the minimum is 15 minutes, otherwise SharePoint backend will consider the access token expired_ \
-    h. __Scopes__: select default email, SPopenid and SPprofile \
-    i. __Suject mode__: Based on the User's hashed ID
-5. Click on "__Finish__"
-
+1. Open "**Applications > Providers**" page from the sidebar
+2. Click on "**Create**" from the provider list command bar
+3. Within the new provider form, select "**OAuth2/OpenID Provider**"
+4. Click on "**Next**" an fulfill the creation form as following \
+   a. **Name**: `auth.providerName` \
+   b. **Authentication flow**: default-authentication-flow \
+   c. **Authorization flow**: default-provider-authorization-implicit-consent \
+   _Notes: use the explict flow if user consents are required_ \
+   d. **Redirect URIs / Origins**: `auth.providerRedirectURI` \
+   e. **Signing Key**: authentik Self-signed Certificate \
+   _Important Notes: The certificate is used for signing JWT tokens, if you change it after the integration, do not forget to update your SharePoint Trusted Certificate_ \
+   f. **Access code validity**: minutes=5 \
+   _Important Notes: the minimum is 5 minutes, otherwise SharePoint backend might consider the access code expired_ \
+   g. **Access Token validity**: minutes=15 \
+   _Important Notes: the minimum is 15 minutes, otherwise SharePoint backend will consider the access token expired_ \
+   h. **Scopes**: select default email, SPopenid and SPprofile \
+   i. **Suject mode**: Based on the User's hashed ID
+5. Click on "**Finish**"
 
 ## Step 3: Create Authentik Application
+
 From Authentik Admin Dashboard:
 
-1. Open "__Applications > Applications__" page from the sidebar 
-2. Click on "__Create__" from the application list command bar
+1. Open "**Applications > Applications**" page from the sidebar
+2. Click on "**Create**" from the application list command bar
 3. Within the new application form, fulfill it as following: \
-    a. __Name__: `auth.applicationName` \
-    b. __Slug__: `auth.applicationSlug` \
-    c. __Provider__: `auth.providerName` \
-    d. (Optional) __Launch URL__: `sp.webAppURL` \
-    e. (Optional) __Icon__: https://res-1.cdn.office.net/files/fabric-cdn-prod_20221209.001/assets/brand-icons/product/svg/sharepoint_48x1.svg
-4. Click on "__Create__"
+   a. **Name**: `auth.applicationName` \
+   b. **Slug**: `auth.applicationSlug` \
+   c. **Provider**: `auth.providerName` \
+   d. (Optional) **Launch URL**: `sp.webAppURL` \
+   e. (Optional) **Icon**: https://res-1.cdn.office.net/files/fabric-cdn-prod_20221209.001/assets/brand-icons/product/svg/sharepoint_48x1.svg
+4. Click on "**Create**"
 
 ## Step 4: Setup OIDC authentication in SharePoint Server
 
 ### Pre-requisites
+
 #### Update SharePoint Farm properties
 
-The following PowerShell script must be updated according to your environment and executed as __Farm Admin account__ with __elevated privileges__ on a SharePoint Server.
+The following PowerShell script must be updated according to your environment and executed as **Farm Admin account** with **elevated privileges** on a SharePoint Server.
 
-:::caution 
-- Update placeholders
-- Read all script's comments.
-:::
+:::caution
+
+-   Update placeholders
+-   Read all script's comments.
+    :::
 
 ```PowerShell
 Add-PSSnapin microsoft.sharepoint.powershell
@@ -176,7 +183,7 @@ $cert = New-SelfSignedCertificate -CertStoreLocation Cert:\LocalMachine\My -Prov
 $rsaCert = [System.Security.Cryptography.X509Certificates.RSACertificateExtensions]::GetRSAPrivateKey($cert)
 $fileName = $rsaCert.key.UniqueName
 
-#if you have multiple SharePoint servers in the farm, you need to export certificate by Export-PfxCertificate and import certificate to all other SharePoint servers in the farm by Import-PfxCertificate and apply the same permissions as below. 
+#if you have multiple SharePoint servers in the farm, you need to export certificate by Export-PfxCertificate and import certificate to all other SharePoint servers in the farm by Import-PfxCertificate and apply the same permissions as below.
 
 #After certificate is successfully imported to SharePoint Server, we will need to grant access permission to certificate private key.
 
@@ -199,8 +206,7 @@ $f.Farm.Update()
 
 Update the SharePoint farm to accept OAuth authentication over HTTP.
 
-The following PowerShell script must be updated according to your environment and executed as __Farm Admin account__ with __elevated privileges__ on a SharePoint Server.
-
+The following PowerShell script must be updated according to your environment and executed as **Farm Admin account** with **elevated privileges** on a SharePoint Server.
 
 ```PowerShell
 Add-PSSnapin microsoft.sharepoint.powershell
@@ -211,12 +217,13 @@ $c.update()
 
 ### Create SharePoint Authentication Provider
 
-The following PowerShell script must be updated according to your environment and executed as __Farm Admin account__ with __elevated privileges__ on a SharePoint Server.
+The following PowerShell script must be updated according to your environment and executed as **Farm Admin account** with **elevated privileges** on a SharePoint Server.
 
-:::caution 
-- Update placeholders
-- Read all script's comments.
-:::
+:::caution
+
+-   Update placeholders
+-   Read all script's comments.
+    :::
 
 ```PowerShell
 Add-PSSnapin microsoft.sharepoint.powershell
@@ -257,15 +264,15 @@ New-SPAuthenticationProvider -TrustedIdentityTokenIssuer $trustedTokenIssuer
 
 From the Central Administration opened as a Farm Administrator:
 
-1. Open "__Application Management > Manage web applications__" page
+1. Open "**Application Management > Manage web applications**" page
 2. Select your web application `sp.webAppURL`
-3. Click on "__Authentication Providers__" from the ribbon bar
+3. Click on "**Authentication Providers**" from the ribbon bar
 4. According to your environment, click on the target zone such as "Default"
 5. Update the authentication provider form as following: \
-    a. Check "__Trusted Identity Provider__" \
-    b. Check the newly created provider named `sp.issuerName` \
-    c. (Optional) Set "__Custom Sign In Page__": /_trust/default.aspx
-6. Click on "__Save__"
+   a. Check "**Trusted Identity Provider**" \
+   b. Check the newly created provider named `sp.issuerName` \
+   c. (Optional) Set "**Custom Sign In Page**": /\_trust/default.aspx
+6. Click on "**Save**"
 
 Repeat all steps for each target web applications which matches with `auth.providerRedirectURI`.
 
@@ -273,9 +280,9 @@ Repeat all steps for each target web applications which matches with `auth.provi
 
 Objectives :
 
-- Integrate SharePoint People Picker with Authentik to search users and groups
-- Augment SharePoint user claims at login stage
-- Resolve user's membership
+-   Integrate SharePoint People Picker with Authentik to search users and groups
+-   Augment SharePoint user claims at login stage
+-   Resolve user's membership
 
 :::caution
 [LDAPCP](https://www.ldapcp.com/docs/overview/introduction/) must be installed on the target SharePoint Farm.
@@ -283,12 +290,13 @@ Objectives :
 
 ## Step 1: Assign LDAPCP as Claim provider for the Identity Token Issuer
 
-The following PowerShell script must be updated according to your environment and executed as __Farm Admin account__ with __elevated priviledges__ on a SharePoint Server.
+The following PowerShell script must be updated according to your environment and executed as **Farm Admin account** with **elevated priviledges** on a SharePoint Server.
 
-:::caution 
-- Update placeholders
-- Read all script's comments.
-:::
+:::caution
+
+-   Update placeholders
+-   Read all script's comments.
+    :::
 
 ```PowerShell
 Add-PSSnapin microsoft.sharepoint.powershell
@@ -303,16 +311,16 @@ $sptrust.Update()
 
 From the SharePoint Central Administration opened as a Farm Administrator:
 
-1. Open "__Security > LDAPCP Configuration > Claim types configuration__" page
+1. Open "**Security > LDAPCP Configuration > Claim types configuration**" page
 2. Update the mapping table as the following.
 
-| Claim type | Entity type | LDAP class | LDAP Attribute to query | LDAP attribute to display | PickerEntity metadata |
-| ---------- | ----------- | ---------- | ----------------------- | ------------------------- | --------------------- |
-| http://schemas.microsoft.com/identity/claims/objectidentifier | User | user | uid | sn | UserId |
-| LDAP attribute linked to the main mapping for object User | User | user | mail |  | Email |
-| LDAP attribute linked to the main mapping for object User | User | user | sn |  | DisplayName |
-| http://schemas.microsoft.com/ws/2008/06/identity/claims/role | Group | group | cn |  | DisplayName |
-| LDAP attribute linked to the main mapping for object Group | Group | group | uid |  | SPGroupID |
+| Claim type                                                    | Entity type | LDAP class | LDAP Attribute to query | LDAP attribute to display | PickerEntity metadata |
+| ------------------------------------------------------------- | ----------- | ---------- | ----------------------- | ------------------------- | --------------------- |
+| http://schemas.microsoft.com/identity/claims/objectidentifier | User        | user       | uid                     | sn                        | UserId                |
+| LDAP attribute linked to the main mapping for object User     | User        | user       | mail                    |                           | Email                 |
+| LDAP attribute linked to the main mapping for object User     | User        | user       | sn                      |                           | DisplayName           |
+| http://schemas.microsoft.com/ws/2008/06/identity/claims/role  | Group       | group      | cn                      |                           | DisplayName           |
+| LDAP attribute linked to the main mapping for object Group    | Group       | group      | uid                     |                           | SPGroupID             |
 
 ## Step 3: Create an Authentik LDAP Outpost
 
@@ -324,18 +332,18 @@ The following procedure apply to an Authentik deployment within Kubernetes.
 For other king of deployment, please refer to the Authentik documentation.
 :::
 
-1. Follow Authentik [LDAP Provider Generic Setup]( https://version-2023-10.goauthentik.io/docs/providers/ldap/generic_setup) with the following steps : \
-    a. __Create User/Group__ to create a "service account" for `ldap.outpostServiceAccount` and a searchable group of users & groups \
-    b. __LDAP Flow__ to create the authentication flow for the LDAP Provider \
-    c. __LDAP Provider__ to create an LDAP provider which can be consumed by the LDAP Application \
-    d. __LDAP Application__ to create the application being used by the LDAP Outpost
-1. Open "__Applications > Outpost__" page from the sidebar 
-2. Click on "__Create__" from the outpost list command bar
-3. Within the new outpost form, fulfill as following \
-    a. __Name__: `ldap.outpostName` \
-    b. __Type__: LDAP
-    c. __Applications__: select the LDAP Application previously created
-4. Click on "__Create__"
+1. Follow Authentik [LDAP Provider Generic Setup](https://version-2023-10.goauthentik.io/docs/providers/ldap/generic_setup) with the following steps : \
+   a. **Create User/Group** to create a "service account" for `ldap.outpostServiceAccount` and a searchable group of users & groups \
+   b. **LDAP Flow** to create the authentication flow for the LDAP Provider \
+   c. **LDAP Provider** to create an LDAP provider which can be consumed by the LDAP Application \
+   d. **LDAP Application** to create the application being used by the LDAP Outpost
+1. Open "**Applications > Outpost**" page from the sidebar
+1. Click on "**Create**" from the outpost list command bar
+1. Within the new outpost form, fulfill as following \
+   a. **Name**: `ldap.outpostName` \
+   b. **Type**: LDAP
+   c. **Applications**: select the LDAP Application previously created
+1. Click on "**Create**"
 
 _Note: The `ldap.outpostURI` should be the IP, Hostname or FQDN of the LDAP Outpost service deployed accessible by your SharePoint Farm._
 
@@ -343,18 +351,18 @@ _Note: The `ldap.outpostURI` should be the IP, Hostname or FQDN of the LDAP Outp
 
 From the SharePoint Central Administration opened as a Farm Administrator:
 
-1. Open "__Security > LDAPCP Configuration > Global configuration__" page
+1. Open "**Security > LDAPCP Configuration > Global configuration**" page
 2. Add an LDAP connection with th following properties: \
-    a. __LDAP Path__: LDAP://`ldap.outpostURI`/dc=ldap,dc=goauthentik,dc=io \
-    b. __Username__: `ldap.outpostServiceAccount` \
-    c. __Password__: `ldap.outpostServiceAccountPassword` \
-    d. __Authentication types__: check ServerBind
-3. Augmentation - Check __Enable augmentation__
+   a. **LDAP Path**: LDAP://`ldap.outpostURI`/dc=ldap,dc=goauthentik,dc=io \
+   b. **Username**: `ldap.outpostServiceAccount` \
+   c. **Password**: `ldap.outpostServiceAccountPassword` \
+   d. **Authentication types**: check ServerBind
+3. Augmentation - Check **Enable augmentation**
 4. Augmentation - Select the Role claim "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-5. Augmentation - Check only "__Query this server__" for your `ldap.outpostURI`
+5. Augmentation - Check only "**Query this server**" for your `ldap.outpostURI`
 6. User identifier properties: \
-    a. __LDAP class__: user \
-    b. __LDAP attribute__: uid
+   a. **LDAP class**: user \
+   b. **LDAP attribute**: uid
 7. Display of user identifier results: \
-    a. Tick __Show the value of another LDAP attribute__: sn
-8. CLick on "__OK__"
+   a. Tick **Show the value of another LDAP attribute**: sn
+8. CLick on "**OK**"
