@@ -93,7 +93,7 @@ class SCIMMembershipTests(TestCase):
                     "emails": [],
                     "active": True,
                     "externalId": user.uid,
-                    "name": {"familyName": "", "formatted": "", "givenName": ""},
+                    "name": {"familyName": " ", "formatted": " ", "givenName": ""},
                     "displayName": "",
                     "userName": user.username,
                 },
@@ -184,7 +184,7 @@ class SCIMMembershipTests(TestCase):
                     "displayName": "",
                     "emails": [],
                     "externalId": user.uid,
-                    "name": {"familyName": "", "formatted": "", "givenName": ""},
+                    "name": {"familyName": " ", "formatted": " ", "givenName": ""},
                     "userName": user.username,
                 },
             )
