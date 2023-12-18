@@ -9,6 +9,7 @@ from rest_framework.fields import (
     IntegerField,
     SerializerMethodField,
 )
+from rest_framework.fields import BooleanField, CharField, SerializerMethodField
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -22,13 +23,13 @@ from authentik.stages.authenticator.models import Device
 class DeviceSerializer(MetaNameSerializer):
     """Serializer for Duo authenticator devices"""
 
-    pk = IntegerField()
+    pk = CharField()
     name = CharField()
     type = SerializerMethodField()
-    confirmed = BooleanField()
     created = DateTimeField(read_only=True)
     last_updated = DateTimeField(read_only=True)
     last_used = DateTimeField(read_only=True, allow_null=True)
+    confirmed = BooleanField(read_only=True)
 
     def get_type(self, instance: Device) -> str:
         """Get type of device"""

@@ -22,7 +22,7 @@ from authentik.lib.generators import generate_code_fixed_length, generate_id
 from authentik.lib.models import SerializerModel
 from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_mobile.cloud_gateway import get_client
-from authentik.tenants.utils import DEFAULT_TENANT
+from authentik.brands.utils import DEFAULT_BRAND
 
 LOGGER = get_logger()
 
@@ -171,7 +171,7 @@ class MobileTransaction(ExpiringModel):
 
     def send_message(self, request: Optional[HttpRequest], **context):
         """Send mobile message"""
-        branding = DEFAULT_TENANT.branding_title
+        branding = DEFAULT_BRAND.branding_title
         domain = ""
         if request:
             branding = request.tenant.branding_title

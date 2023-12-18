@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.api.authorization import OwnerFilter, OwnerPermissions
+from authentik.core.api.devices import DeviceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.flows.api.stages import StageSerializer
@@ -42,7 +43,7 @@ class AuthenticatorSMSStageViewSet(UsedByMixin, ModelViewSet):
     search_fields = ["name"]
 
 
-class SMSDeviceSerializer(ModelSerializer):
+class SMSDeviceSerializer(DeviceSerializer):
     """Serializer for sms authenticator devices"""
 
     class Meta:

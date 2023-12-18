@@ -10,10 +10,10 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.api.authorization import OwnerFilter, OwnerPermissions
+from authentik.core.api.devices import DeviceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.stages.authenticator_mobile.api.auth import MobileDeviceTokenAuthentication
@@ -36,7 +36,7 @@ class MobileDeviceInfoSerializer(PassiveSerializer):
     others = JSONField()
 
 
-class MobileDeviceSerializer(ModelSerializer):
+class MobileDeviceSerializer(DeviceSerializer):
     """Serializer for Mobile authenticator devices"""
 
     last_checkin = MobileDeviceInfoSerializer(read_only=True)
