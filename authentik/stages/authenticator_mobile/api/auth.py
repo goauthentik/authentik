@@ -3,6 +3,7 @@ from typing import Any
 
 from drf_spectacular.extensions import OpenApiAuthenticationExtension
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.request import Request
 
 from authentik.api.authentication import validate_auth
@@ -17,7 +18,10 @@ class MobileDeviceTokenAuthentication(BaseAuthentication):
     def authenticate(self, request: Request) -> tuple[User, Any] | None:
         """Token-based authentication using HTTP Bearer authentication"""
         auth = get_authorization_header(request)
-        raw_token = validate_auth(auth)
+        try:
+            raw_token = validate_auth(auth)
+        except AuthenticationFailed:
+            return None
         device_token: MobileDeviceToken = MobileDeviceToken.filter_not_expired(
             token=raw_token
         ).first()

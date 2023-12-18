@@ -499,9 +499,9 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         pagination_class=None,
         filter_backends=[],
         authentication_classes=[
+            MobileDeviceTokenAuthentication,
             TokenAuthentication,
             SessionAuthentication,
-            MobileDeviceTokenAuthentication,
         ],
     )
     def user_me(self, request: Request) -> Response:
