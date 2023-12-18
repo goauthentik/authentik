@@ -18,8 +18,8 @@ import {
     DeniedActionEnum,
     Flow,
     FlowDesignationEnum,
+    FlowLayoutEnum,
     FlowsApi,
-    LayoutEnum,
     PolicyEngineMode,
 } from "@goauthentik/api";
 
@@ -302,34 +302,34 @@ export class FlowForm extends ModelForm<Flow, string> {
                     >
                         <select class="pf-c-form-control">
                             <option
-                                value=${LayoutEnum.Stacked}
-                                ?selected=${this.instance?.layout === LayoutEnum.Stacked}
+                                value=${FlowLayoutEnum.Stacked}
+                                ?selected=${this.instance?.layout === FlowLayoutEnum.Stacked}
                             >
-                                ${LayoutToLabel(LayoutEnum.Stacked)}
+                                ${LayoutToLabel(FlowLayoutEnum.Stacked)}
                             </option>
                             <option
-                                value=${LayoutEnum.ContentLeft}
-                                ?selected=${this.instance?.layout === LayoutEnum.ContentLeft}
+                                value=${FlowLayoutEnum.ContentLeft}
+                                ?selected=${this.instance?.layout === FlowLayoutEnum.ContentLeft}
                             >
-                                ${LayoutToLabel(LayoutEnum.ContentLeft)}
+                                ${LayoutToLabel(FlowLayoutEnum.ContentLeft)}
                             </option>
                             <option
-                                value=${LayoutEnum.ContentRight}
-                                ?selected=${this.instance?.layout === LayoutEnum.ContentRight}
+                                value=${FlowLayoutEnum.ContentRight}
+                                ?selected=${this.instance?.layout === FlowLayoutEnum.ContentRight}
                             >
-                                ${LayoutToLabel(LayoutEnum.ContentRight)}
+                                ${LayoutToLabel(FlowLayoutEnum.ContentRight)}
                             </option>
                             <option
-                                value=${LayoutEnum.SidebarLeft}
-                                ?selected=${this.instance?.layout === LayoutEnum.SidebarLeft}
+                                value=${FlowLayoutEnum.SidebarLeft}
+                                ?selected=${this.instance?.layout === FlowLayoutEnum.SidebarLeft}
                             >
-                                ${LayoutToLabel(LayoutEnum.SidebarLeft)}
+                                ${LayoutToLabel(FlowLayoutEnum.SidebarLeft)}
                             </option>
                             <option
-                                value=${LayoutEnum.SidebarRight}
-                                ?selected=${this.instance?.layout === LayoutEnum.SidebarRight}
+                                value=${FlowLayoutEnum.SidebarRight}
+                                ?selected=${this.instance?.layout === FlowLayoutEnum.SidebarRight}
                             >
-                                ${LayoutToLabel(LayoutEnum.SidebarRight)}
+                                ${LayoutToLabel(FlowLayoutEnum.SidebarRight)}
                             </option>
                         </select>
                     </ak-form-element-horizontal>

@@ -115,8 +115,9 @@ gen-diff:  ## (Release) generate the changelog diff between the current schema a
 	npx prettier --write diff.md
 
 gen-clean:
-	rm -rf web/api/src/
-	rm -rf api/
+	rm -rf gen-go-api/
+	rm -rf gen-ts-api/
+	rm -rf web/node_modules/@goauthentik/api/
 
 gen-client-ts:  ## Build and install the authentik API for Typescript into the authentik UI Application
 	docker run \
