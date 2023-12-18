@@ -10,7 +10,7 @@ require (
 	github.com/go-http-utils/etag v0.0.0-20161124023236-513ea8f21eb1
 	github.com/go-ldap/ldap/v3 v3.4.6
 	github.com/go-openapi/runtime v0.26.2
-	github.com/go-openapi/strfmt v0.21.9
+	github.com/go-openapi/strfmt v0.21.10
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.5.0
 	github.com/gorilla/handlers v1.5.2
@@ -49,7 +49,7 @@ require (
 	github.com/go-logr/logr v1.3.0 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-openapi/analysis v0.21.4 // indirect
-	github.com/go-openapi/errors v0.20.4 // indirect
+	github.com/go-openapi/errors v0.21.0 // indirect
 	github.com/go-openapi/jsonpointer v0.20.0 // indirect
 	github.com/go-openapi/jsonreference v0.20.2 // indirect
 	github.com/go-openapi/loads v0.21.2 // indirect
