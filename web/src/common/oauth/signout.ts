@@ -1,13 +1,17 @@
-import { settings } from "@goauthentik/app/common/oauth/settings";
-import { UserManager } from "oidc-client-ts";
+import { UserManager, UserManagerSettings } from "oidc-client-ts";
 
 import { LitElement } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-oauth-signout")
 export class OAuthSignout extends LitElement {
+    @property({ attribute: false })
+    settings?: UserManagerSettings;
     async firstUpdated(): Promise<void> {
-        const client = new UserManager(settings);
+        if (!this.settings) {
+            return;
+        }
+        const client = new UserManager(this.settings);
         await client.signoutRedirect();
     }
 }

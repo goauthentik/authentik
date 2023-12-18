@@ -1,7 +1,11 @@
 import { ROUTES } from "@goauthentik/admin/Routes";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE } from "@goauthentik/common/constants";
+import {
+    EVENT_API_DRAWER_TOGGLE,
+    EVENT_NOTIFICATION_DRAWER_TOGGLE,
+} from "@goauthentik/common/constants";
 import { WithOAuth } from "@goauthentik/common/oauth/interface";
+import { adminSettings } from "@goauthentik/common/oauth/settings";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
@@ -17,30 +21,21 @@ import "@goauthentik/elements/router/RouterOutlet";
 import "@goauthentik/elements/sidebar/Sidebar";
 import "@goauthentik/elements/sidebar/SidebarItem";
 
-
-
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
-
-
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-
-
 import { AdminApi, SessionUser, UiThemeEnum, Version } from "@goauthentik/api";
-
-
 
 import "./AdminSidebar";
 
-
 @customElement("ak-interface-admin")
-export class AdminInterface extends WithOAuth(EnterpriseAwareInterface) {
+export class AdminInterface extends WithOAuth(EnterpriseAwareInterface, adminSettings) {
     @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 
