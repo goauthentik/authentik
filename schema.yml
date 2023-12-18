@@ -5739,8 +5739,8 @@ paths:
       tags:
       - core
       security:
-      - authentik: []
       - mobile_device_token: []
+      - authentik: []
       responses:
         '200':
           content:
