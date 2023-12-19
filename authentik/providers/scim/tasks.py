@@ -12,7 +12,7 @@ from structlog.stdlib import get_logger
 from authentik.core.models import Group, User
 from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
 from authentik.lib.utils.reflection import path_to_class
-from authentik.providers.scim.clients import PAGE_SIZE
+from authentik.providers.scim.clients import PAGE_SIZE, PAGE_TIMEOUT
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.clients.exceptions import SCIMRequestException, StopSync
 from authentik.providers.scim.clients.group import SCIMGroupClient
@@ -53,6 +53,9 @@ def scim_sync(self: MonitoredTask, provider_pk: int) -> None:
     LOGGER.debug("Starting SCIM sync")
     users_paginator = Paginator(provider.get_user_qs(), PAGE_SIZE)
     groups_paginator = Paginator(provider.get_group_qs(), PAGE_SIZE)
+    self.soft_time_limit = self.time_limit = (
+        users_paginator.count + groups_paginator.count
+    ) * PAGE_TIMEOUT
     with allow_join_result():
         try:
             for page in users_paginator.page_range:
@@ -69,7 +72,10 @@ def scim_sync(self: MonitoredTask, provider_pk: int) -> None:
     self.set_status(result)
 
 
-@CELERY_APP.task()
+@CELERY_APP.task(
+    soft_time_limit=PAGE_TIMEOUT,
+    task_time_limit=PAGE_TIMEOUT,
+)
 def scim_sync_users(page: int, provider_pk: int):
     """Sync single or multiple users to SCIM"""
     messages = []
