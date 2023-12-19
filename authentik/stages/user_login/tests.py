@@ -16,8 +16,8 @@ from authentik.flows.tests import FlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
-from authentik.lib.utils.http import DEFAULT_IP
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.user_login.models import UserLoginStage
 
 
@@ -76,7 +76,7 @@ class TestUserLoginStage(FlowTestCase):
         other_session = AuthenticatedSession.objects.create(
             user=self.user,
             session_key=key,
-            last_ip=DEFAULT_IP,
+            last_ip=ClientIPMiddleware.default_ip,
         )
         cache.set(f"{KEY_PREFIX}{other_session.session_key}", "foo")
 

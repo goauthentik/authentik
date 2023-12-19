@@ -3167,7 +3167,8 @@
                         "none",
                         "require_authenticated",
                         "require_unauthenticated",
-                        "require_superuser"
+                        "require_superuser",
+                        "require_outpost"
                     ],
                     "title": "Authentication",
                     "description": "Required level of authentication and authorization to access a flow."

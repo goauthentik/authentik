@@ -6118,6 +6118,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s7513372fe60f6387">
   <source>Event volume</source>
 </trans-unit>
+<trans-unit id="s047a5f0211fedc72">
+  <source>Require Outpost (flow can only be executed from an outpost).</source>
+</trans-unit>
     </body>
   </file>
 </xliff>

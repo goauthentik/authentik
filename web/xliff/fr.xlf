@@ -8043,6 +8043,9 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Event volume</source>
   <target>Volume d'événements</target>
 </trans-unit>
+<trans-unit id="s047a5f0211fedc72">
+  <source>Require Outpost (flow can only be executed from an outpost).</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
