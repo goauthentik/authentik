@@ -115,8 +115,10 @@ export class FlowExecutor extends Interface implements StageHost {
                 background-color: transparent;
             }
             /* layouts */
-            .pf-c-login.stacked .pf-c-login__main {
-                margin-top: 13rem;
+            @media (min-height: 60rem) {
+                .pf-c-login.stacked .pf-c-login__main {
+                    margin-top: 13rem;
+                }
             }
             .pf-c-login__container.content-right {
                 grid-template-areas:

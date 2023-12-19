@@ -143,6 +143,8 @@ html > form > input {
     max-height: inherit;
 }
 
-.pf-c-login.stacked .pf-c-login__main {
-    margin-top: 13rem;
+@media (min-height: 60rem) {
+    .pf-c-login.stacked .pf-c-login__main {
+        margin-top: 13rem;
+    }
 }
