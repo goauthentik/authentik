@@ -26,16 +26,13 @@ The following placeholders will be used:
     - **Client type**: Confidential
     - **Client ID**: Either create your own Client ID or use the auto-populated ID
     - **Client Secret**: Either create your own Client Secret or use the auto-populated secret
-    :::note
-    Take note of the `Client ID` and `Client Secret` as they are required when configuring Immich.
-    :::
+      :::note
+      Take note of the `Client ID` and `Client Secret` as they are required when configuring Immich.
+      :::
     - **Redirect URIs/Origins (RegEx)**:
-    :::note
-    Please note that the following URIs are just examples. Be sure to include all of the domains / URLs that you will use to access Immich.
-    :::
-        - app.immich:/
-        - https://immich.company/auth/login
-        - https://immich.company/user-settings
+      :::note
+      Please note that the following URIs are just examples. Be sure to include all of the domains / URLs that you will use to access Immich.
+      ::: - app.immich:/ - https://immich.company/auth/login - https://immich.company/user-settings
     - **Signing Key**: authentik Self-signed Certificate
     - Leave everything else as default
 2. Open the new provider you've just created.
