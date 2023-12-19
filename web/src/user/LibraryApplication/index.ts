@@ -96,7 +96,7 @@ export class LibraryApplication extends AKElement {
             this.application.metaPublisher !== "" ||
             this.application.metaDescription !== "";
 
-        const classes = { "pf-m-selectable pf-m-selected": this.selected };
+        const classes = { "pf-m-selectable": this.selected, "pf-m-selected": this.selected };
         const styles = this.background ? { background: this.background } : {};
 
         return html` <div
