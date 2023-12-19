@@ -3,7 +3,6 @@ from django.test import RequestFactory, TestCase
 
 from authentik.core.models import Token, TokenIntents, UserTypes
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.lib.utils.http import OUTPOST_REMOTE_IP_HEADER, OUTPOST_TOKEN_HEADER
 from authentik.lib.views import bad_request_message
 from authentik.root.middleware import ClientIPMiddleware
 
@@ -39,8 +38,8 @@ class TestHTTP(TestCase):
         request = self.factory.get(
             "/",
             **{
-                OUTPOST_REMOTE_IP_HEADER: "1.2.3.4",
-                OUTPOST_TOKEN_HEADER: "abc",
+                ClientIPMiddleware.outpost_remote_ip_header: "1.2.3.4",
+                ClientIPMiddleware.outpost_token_header: "abc",
             },
         )
         self.assertEqual(ClientIPMiddleware.get_client_ip(request), "127.0.0.1")
@@ -48,8 +47,8 @@ class TestHTTP(TestCase):
         request = self.factory.get(
             "/",
             **{
-                OUTPOST_REMOTE_IP_HEADER: "1.2.3.4",
-                OUTPOST_TOKEN_HEADER: token.key,
+                ClientIPMiddleware.outpost_remote_ip_header: "1.2.3.4",
+                ClientIPMiddleware.outpost_token_header: token.key,
             },
         )
         self.assertEqual(ClientIPMiddleware.get_client_ip(request), "127.0.0.1")
@@ -59,8 +58,8 @@ class TestHTTP(TestCase):
         request = self.factory.get(
             "/",
             **{
-                OUTPOST_REMOTE_IP_HEADER: "1.2.3.4",
-                OUTPOST_TOKEN_HEADER: token.key,
+                ClientIPMiddleware.outpost_remote_ip_header: "1.2.3.4",
+                ClientIPMiddleware.outpost_token_header: token.key,
             },
         )
         self.assertEqual(ClientIPMiddleware.get_client_ip(request), "1.2.3.4")
