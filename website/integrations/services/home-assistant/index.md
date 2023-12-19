@@ -1,4 +1,3 @@
-
 ---
 title: Home Assistant
 ---
@@ -28,39 +27,32 @@ The following placeholders will be used:
 ## Home Assistant configuration
 
 1. Configure [trusted_proxies](https://www.home-assistant.io/integrations/http/#trusted_proxies) for the HTTP integration with the IP(s) of the Host(s) authentik is running on.
-2. If you don't already have it set up, install https://github.com/BeryJu/hass-auth-header, using the installation guide.
+2. If you don't already have it set up, https://github.com/BeryJu/hass-auth-header, using the installation guide.
 3. There are two ways to configure the custom component.
-
     1. To match on the user's authentik username, use the following configuration:
-
-    ```yaml
-    auth_header:
-        username_header: X-authentik-username
-    ```
-
+        ```yaml
+        auth_header:
+            username_header: X-authentik-username
+        ```
    2.  Alternatively, you can associate an existing Home Assistant username to an authentik username.
        1.  Within authentik, naviagte to **Directory** > **Users**.
        2.  Select **Edit** for the user then add the following configuration to the **Attributes** section. Be sure to replace `hassusername` with the Home Assistant username.
-
-       :::note
-       This configuration will add an additional header for the authentik user which will contain the Home Assistant username and allow Home Assistant to authenticate based on that. 
-       :::
-
-        ```yaml
-        additionalHeaders:
-            X-ak-hass-user: hassusername
-        ```
-
+           :::note
+           This configuration will add an additional header for the authentik user which will contain the Home Assistant username and allow Home Assistant to authenticate based on that. 
+           :::
+            ```yaml
+            additionalHeaders:
+                X-ak-hass-user: hassusername
+            ```
        3. Then configure the Home Assistant custom component to use this header:
-        ```yaml
-        auth_header:
-            username_header: X-ak-hass-user
-        ```
+            ```yaml
+            auth_header:
+                username_header: X-ak-hass-user
+            ```
 
 ## authentik configuration
 
 1. Create a **Proxy Provider** under **Applications** > **Providers** using the following settings:
-
    - **Name**: Home Assistant
    - **Authentication flow**: default-authentication-flow
    - **Authorization flow**: default-provider-authorization-explicit-consent

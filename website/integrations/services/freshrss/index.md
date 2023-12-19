@@ -27,14 +27,15 @@ The following placeholders will be used:
       - **Client Type**: Confidential
       - **Client ID**: Either create your own Client ID or use the auto-populated ID
       - **Client Secret**: Either create your own Client Secret or use the auto-populated secret
-:::note
-Take note of the `Client ID` and `Client Secret`, you'll need them later.
-:::
+    :::note
+    Take note of the `Client ID` and `Client Secret`, you'll need them later.
+    :::
     - **Redirect URIs/Origins**:
-      - `https://freshrss.company/i/oidc/`
-      - `https://freshrss.company:port/i/oidc`
+        - `https://freshrss.company/i/oidc/`
+        - `https://freshrss.company:port/i/oidc`
     - **Signing Key**: Any of your signing keys
     - Leave everything else as default
+
 2. Create an **Application** under **Applications** > **Applications** using the following settings:
     - **Name**: FreshRSS
     - **Slug**: freshrss
