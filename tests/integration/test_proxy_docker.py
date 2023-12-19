@@ -34,8 +34,8 @@ class TestProxyDocker(DockerTestCase, ChannelsLiveServerTestCase):
             privileged=True,
             healthcheck=Healthcheck(
                 test=["CMD", "docker", "info"],
-                interval=5 * 100 * 1000000,
-                start_period=5 * 100 * 1000000,
+                interval=5 * 1_000 * 1_000_000,
+                start_period=5 * 1_000 * 1_000_000,
             ),
             environment={"DOCKER_TLS_CERTDIR": "/ssl"},
             volumes={
