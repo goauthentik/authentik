@@ -247,12 +247,18 @@ class ClientIPMiddleware:
     def get_client_ip(request: HttpRequest) -> str:
         """Get correct client IP, including any overrides from outposts that
         have the permission to do so"""
+        if request and not hasattr(request, ClientIPMiddleware.request_attr_client_ip):
+            ClientIPMiddleware(lambda request: request).set_ip(request)
         return getattr(
             request, ClientIPMiddleware.request_attr_client_ip, ClientIPMiddleware.default_ip
         )
 
-    def __call__(self, request: HttpRequest) -> HttpResponse:
+    def set_ip(self, request: HttpRequest):
+        """Set the IP"""
         setattr(request, self.request_attr_client_ip, self._get_client_ip(request))
+
+    def __call__(self, request: HttpRequest) -> HttpResponse:
+        self.set_ip(request)
         return self.get_response(request)
 
 
