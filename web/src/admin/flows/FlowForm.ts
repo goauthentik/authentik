@@ -196,6 +196,13 @@ export class FlowForm extends ModelForm<Flow, string> {
                     >
                         ${msg("Require superuser.")}
                     </option>
+                    <option
+                        value=${AuthenticationEnum.RequireOutpost}
+                        ?selected=${this.instance?.authentication ===
+                        AuthenticationEnum.RequireOutpost}
+                    >
+                        ${msg("Require Outpost (flow can only be executed from an outpost).")}
+                    </option>
                 </select>
                 <p class="pf-c-form__helper-text">
                     ${msg("Required authentication level for this flow.")}

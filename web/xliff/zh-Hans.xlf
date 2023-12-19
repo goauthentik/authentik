@@ -8045,6 +8045,9 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Event volume</source>
   <target>事件容量</target>
 </trans-unit>
+<trans-unit id="s047a5f0211fedc72">
+  <source>Require Outpost (flow can only be executed from an outpost).</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
