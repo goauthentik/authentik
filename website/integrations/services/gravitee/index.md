@@ -22,34 +22,26 @@ The following placeholders will be used:
 ## authentik configuration
 
 1. Create an **OAuth2/OpenID Provider** under **Applications** > **Providers** using the following settings:
-:::note
-Only settings that have been modified from default have been listed.
-:::
-    - **Name**: Gravitee
-    - **Protocol Settings**:
-      - **Client ID**: Either create your own Client ID or use the auto-populated ID
-      - **Client Secret**: Either create your own Client Secret or use the auto-populated secret
-:::note
-Take note of the `Client ID` and `Client Secret` as they are required when configuring Gravitee
-:::
-      - **Redirect URIs/Origins**:
-        - https://gravitee.company/user/login
-        - https://gravitee.company/console/ # Make sure to add the trailing / at the end, at the time of writing it does not work without it
-:::note
-Be sure to add the trailing `/` at the end of the `https://gravitee.company/console/` URI, at the time of writing Gravitee does not work without this.
-:::
+   :::note
+   Only settings that have been modified from default have been listed.
+   ::: - **Name**: Gravitee - **Protocol Settings**: - **Client ID**: Either create your own Client ID or use the auto-populated ID - **Client Secret**: Either create your own Client Secret or use the auto-populated secret
+   :::note
+   Take note of the `Client ID` and `Client Secret` as they are required when configuring Gravitee
+   ::: - **Redirect URIs/Origins**: - https://gravitee.company/user/login - https://gravitee.company/console/ # Make sure to add the trailing / at the end, at the time of writing it does not work without it
+   :::note
+   Be sure to add the trailing `/` at the end of the `https://gravitee.company/console/` URI, at the time of writing Gravitee does not work without this.
+   :::
 
 2. Create an **Application** under **Applications** > **Applications** using the following settings:
     - **Name**: Gravitee
     - **Slug**: gravitee
     - **Provider**: Gravitee (the provider you created in step 1)
 3. Open the new provider you've just created.
-4. Make a note of the following URLs: 
+4. Make a note of the following URLs:
     - **Authorize URL**
     - **Token URL**
     - **Userinfo URL**
     - **Logout URL**
-
 
 ## Gravitee configuration
 
