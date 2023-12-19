@@ -240,10 +240,13 @@ class ClientIPMiddleware:
 
     @staticmethod
     def get_outpost_user(request: HttpRequest) -> Optional[User]:
+        """Get outpost user that authenticated this request"""
         return getattr(request, ClientIPMiddleware.request_attr_outpost_user, None)
 
     @staticmethod
     def get_client_ip(request: HttpRequest) -> str:
+        """Get correct client IP, including any overrides from outposts that
+        have the permission to do so"""
         return getattr(
             request, ClientIPMiddleware.request_attr_client_ip, ClientIPMiddleware.default_ip
         )

@@ -754,7 +754,7 @@ class AuthenticatedSession(ExpiringModel):
         return AuthenticatedSession(
             session_key=request.session.session_key,
             user=user,
-            last_ip=ClientIPMiddleware.ClientIPMiddleware.get_client_ip(request),
+            last_ip=ClientIPMiddleware.get_client_ip(request),
             last_user_agent=request.META.get("HTTP_USER_AGENT", ""),
             expires=request.session.get_expiry_date(),
         )
