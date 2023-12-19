@@ -14,7 +14,7 @@ title: Home Assistant
 You might run into CSRF errors, this is caused by a technology Home-assistant uses and not authentik, see [this GitHub issue](https://github.com/goauthentik/authentik/issues/884#issuecomment-851542477).
 :::
 :::note
-For Home Assistant to work with authentik, a custom integration needs to be installed for Home Assistant. 
+For Home Assistant to work with authentik, a custom integration needs to be installed for Home Assistant.
 :::
 
 ## Preparation
@@ -34,17 +34,17 @@ The following placeholders will be used:
         auth_header:
             username_header: X-authentik-username
         ```
-   2.  Alternatively, you can associate an existing Home Assistant username to an authentik username.
-       1.  Within authentik, naviagte to **Directory** > **Users**.
-       2.  Select **Edit** for the user then add the following configuration to the **Attributes** section. Be sure to replace `hassusername` with the Home Assistant username.
+    2. Alternatively, you can associate an existing Home Assistant username to an authentik username.
+        1. Within authentik, naviagte to **Directory** > **Users**.
+        2. Select **Edit** for the user then add the following configuration to the **Attributes** section. Be sure to replace `hassusername` with the Home Assistant username.
            :::note
-           This configuration will add an additional header for the authentik user which will contain the Home Assistant username and allow Home Assistant to authenticate based on that. 
+           This configuration will add an additional header for the authentik user which will contain the Home Assistant username and allow Home Assistant to authenticate based on that.
            :::
             ```yaml
             additionalHeaders:
                 X-ak-hass-user: hassusername
             ```
-       3. Then configure the Home Assistant custom component to use this header:
+        3. Then configure the Home Assistant custom component to use this header:
             ```yaml
             auth_header:
                 username_header: X-ak-hass-user
@@ -53,13 +53,15 @@ The following placeholders will be used:
 ## authentik configuration
 
 1. Create a **Proxy Provider** under **Applications** > **Providers** using the following settings:
-   - **Name**: Home Assistant
-   - **Authentication flow**: default-authentication-flow
-   - **Authorization flow**: default-provider-authorization-explicit-consent
-   - **External Host**: Set this to the external URL you will be accessing Home Assistant from
-   - **Internal Host**: `http://hass.company:8123`
+
+    - **Name**: Home Assistant
+    - **Authentication flow**: default-authentication-flow
+    - **Authorization flow**: default-provider-authorization-explicit-consent
+    - **External Host**: Set this to the external URL you will be accessing Home Assistant from
+    - **Internal Host**: `http://hass.company:8123`
 
 2. Create an **Application** under **Applications** > **Applications** using the following settings:
+
     - **Name**: Home Assistant
     - **Slug**: homeassistant
     - **Provider**: Home Assistant (the provider you created in step 1)

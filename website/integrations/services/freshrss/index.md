@@ -21,15 +21,16 @@ The following placeholders will be used:
 ## authentik configuration
 
 1. Create an **OAuth2/OpenID Provider** under **Applications** > **Providers** using the following settings:
+
     - **Name**: FreshRSS
     - **Authorization flow**: default-provider-authorization-explicit-consent
     - **Protocol Settings**:
-      - **Client Type**: Confidential
-      - **Client ID**: Either create your own Client ID or use the auto-populated ID
-      - **Client Secret**: Either create your own Client Secret or use the auto-populated secret
-    :::note
-    Take note of the `Client ID` and `Client Secret`, you'll need them later.
-    :::
+        - **Client Type**: Confidential
+        - **Client ID**: Either create your own Client ID or use the auto-populated ID
+        - **Client Secret**: Either create your own Client Secret or use the auto-populated secret
+          :::note
+          Take note of the `Client ID` and `Client Secret`, you'll need them later.
+          :::
     - **Redirect URIs/Origins**:
         - `https://freshrss.company/i/oidc/`
         - `https://freshrss.company:port/i/oidc`
