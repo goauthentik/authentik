@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+
 # Stage 1: Build website
 FROM --platform=${BUILDPLATFORM} docker.io/node:21 as web-builder
 
@@ -34,8 +36,8 @@ RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
 
 ENV CGO_ENABLED=0
 COPY . .
-RUN --mount=type=cache,target=/go/pkg/mod \
-    --mount=type=cache,target=/root/.cache/go-build \
+RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
+    --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
     GOARM="${TARGETVARIANT#v}" go build -o /go/proxy ./cmd/proxy
 
 # Stage 3: Run
