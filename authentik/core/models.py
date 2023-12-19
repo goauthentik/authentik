@@ -30,7 +30,6 @@ from authentik.lib.models import (
     DomainlessFormattedURLValidator,
     SerializerModel,
 )
-from authentik.lib.utils.http import get_client_ip
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.install_id import get_install_id
 
@@ -748,12 +747,14 @@ class AuthenticatedSession(ExpiringModel):
     @staticmethod
     def from_request(request: HttpRequest, user: User) -> Optional["AuthenticatedSession"]:
         """Create a new session from a http request"""
+        from authentik.root.middleware import ClientIPMiddleware
+
         if not hasattr(request, "session") or not request.session.session_key:
             return None
         return AuthenticatedSession(
             session_key=request.session.session_key,
             user=user,
-            last_ip=get_client_ip(request),
+            last_ip=ClientIPMiddleware.ClientIPMiddleware.get_client_ip(request),
             last_user_agent=request.META.get("HTTP_USER_AGENT", ""),
             expires=request.session.get_expiry_date(),
         )

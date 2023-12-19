@@ -12,7 +12,8 @@ from authentik.flows.challenge import (
     WithUserInfoChallenge,
 )
 from authentik.flows.stage import ChallengeStageView
-from authentik.lib.utils.http import get_client_ip, get_http_session
+from authentik.lib.utils.http import get_http_session
+from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.captcha.models import CaptchaStage
 
 
@@ -42,7 +43,7 @@ class CaptchaChallengeResponse(ChallengeResponse):
                 data={
                     "secret": stage.private_key,
                     "response": token,
-                    "remoteip": get_client_ip(self.stage.request),
+                    "remoteip": ClientIPMiddleware.get_client_ip(self.stage.request),
                 },
             )
             response.raise_for_status()

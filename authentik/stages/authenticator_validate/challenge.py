@@ -22,7 +22,7 @@ from authentik.core.signals import login_failed
 from authentik.events.models import Event, EventAction
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE
-from authentik.lib.utils.http import get_client_ip
+from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.authenticator import match_token
 from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
@@ -197,7 +197,7 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
         response = stage.auth_client().auth(
             "auto",
             user_id=device.duo_user_id,
-            ipaddr=get_client_ip(stage_view.request),
+            ipaddr=ClientIPMiddleware.get_client_ip(stage_view.request),
             type=__(
                 "%(brand_name)s Login request"
                 % {
