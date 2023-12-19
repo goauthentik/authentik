@@ -63,7 +63,6 @@ class EmailStageView(ChallengeStageView):
         query_params = QueryDict(self.request.GET.get(QS_QUERY), mutable=True)
         query_params.pop(QS_KEY_TOKEN, None)
         query_params.update(kwargs)
-        print(query_params)
         full_url = base_url
         if len(query_params) > 0:
             full_url = f"{full_url}?{query_params.urlencode()}"
