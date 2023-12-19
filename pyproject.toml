@@ -148,6 +148,7 @@ webauthn = "*"
 wsproto = "*"
 xmlsec = "*"
 zxcvbn = "*"
+authentik_cloud_gateway_client = {version = "*", allow-prereleases = true}
 
 [tool.poetry.dev-dependencies]
 bandit = "*"
@@ -170,16 +171,6 @@ pytest-timeout = "*"
 requests-mock = "*"
 ruff = "*"
 selenium = "*"
-
-[[tool.poetry.source]]
-name = "test-pypi"
-url = "https://test.pypi.org/simple/"
-priority = "primary"
-
-
-[[tool.poetry.source]]
-name = "PyPI"
-priority = "primary"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
