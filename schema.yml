@@ -28328,12 +28328,14 @@ components:
       - require_authenticated
       - require_unauthenticated
       - require_superuser
+      - require_outpost
       type: string
       description: |-
         * `none` - None
         * `require_authenticated` - Require Authenticated
         * `require_unauthenticated` - Require Unauthenticated
         * `require_superuser` - Require Superuser
+        * `require_outpost` - Require Outpost
     AuthenticatorAttachmentEnum:
       enum:
       - platform
@@ -31328,6 +31330,7 @@ components:
             * `require_authenticated` - Require Authenticated
             * `require_unauthenticated` - Require Unauthenticated
             * `require_superuser` - Require Superuser
+            * `require_outpost` - Require Outpost
       required:
       - background
       - cache_count
@@ -31566,6 +31569,7 @@ components:
             * `require_authenticated` - Require Authenticated
             * `require_unauthenticated` - Require Unauthenticated
             * `require_superuser` - Require Superuser
+            * `require_outpost` - Require Outpost
       required:
       - designation
       - name
@@ -36514,6 +36518,7 @@ components:
             * `require_authenticated` - Require Authenticated
             * `require_unauthenticated` - Require Unauthenticated
             * `require_superuser` - Require Superuser
+            * `require_outpost` - Require Outpost
     PatchedFlowStageBindingRequest:
       type: object
       description: FlowStageBinding Serializer
