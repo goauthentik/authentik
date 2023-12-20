@@ -4,6 +4,7 @@ from functools import lru_cache
 from pathlib import Path
 
 from django.core.mail import EmailMultiAlternatives
+from django.template.exceptions import TemplateDoesNotExist
 from django.template.loader import render_to_string
 from django.utils import translation
 
@@ -24,9 +25,16 @@ class TemplateEmailMessage(EmailMultiAlternatives):
     """Wrapper around EmailMultiAlternatives with integrated template rendering"""
 
     def __init__(self, template_name=None, template_context=None, language="", **kwargs):
+        super().__init__(**kwargs)
         with translation.override(language):
             html_content = render_to_string(template_name, template_context)
-        super().__init__(**kwargs)
+            try:
+                text_content = render_to_string(
+                    template_name.replace("html", "txt"), template_context
+                )
+                self.body = text_content
+            except TemplateDoesNotExist:
+                pass
         self.content_subtype = "html"
         self.mixed_subtype = "related"
         self.attach_alternative(html_content, "text/html")
