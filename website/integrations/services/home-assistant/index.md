@@ -35,7 +35,7 @@ The following placeholders will be used:
             username_header: X-authentik-username
         ```
     2. Alternatively, you can associate an existing Home Assistant username to an authentik username.
-        1. Within authentik, naviagte to **Directory** > **Users**.
+        1. Within authentik, navigate to **Directory** > **Users**.
         2. Select **Edit** for the user then add the following configuration to the **Attributes** section. Be sure to replace `hassusername` with the Home Assistant username.
            :::note
            This configuration will add an additional header for the authentik user which will contain the Home Assistant username and allow Home Assistant to authenticate based on that.
