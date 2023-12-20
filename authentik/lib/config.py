@@ -35,6 +35,7 @@ REDIS_ENV_KEYS = [
 ]
 
 DEPRECATIONS = {
+    "geoip": "events.context_processors.geoip",
     "redis.broker_url": "broker.url",
     "redis.broker_transport_options": "broker.transport_options",
     "redis.cache_timeout": "cache.timeout",

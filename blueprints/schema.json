@@ -3756,6 +3756,11 @@
                     "additionalProperties": true,
                     "title": "Ip geo data"
                 },
+                "ip_asn_data": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Ip asn data"
+                },
                 "score": {
                     "type": "integer",
                     "minimum": -9223372036854775808,

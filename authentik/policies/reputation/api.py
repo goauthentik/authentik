@@ -47,6 +47,7 @@ class ReputationSerializer(ModelSerializer):
             "identifier",
             "ip",
             "ip_geo_data",
+            "ip_asn_data",
             "score",
             "updated",
         ]
