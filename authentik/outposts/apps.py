@@ -40,7 +40,7 @@ class AuthentikOutpostConfig(ManagedAppConfig):
             OutpostType,
         )
 
-        if CONFIG.get_bool("outposts.disable_embedded_outpost", False):
+        if not CONFIG.get_bool("outposts.disable_embedded_outpost", False):
             outpost, updated = Outpost.objects.update_or_create(
                 defaults={
                     "name": "authentik Embedded Outpost",
