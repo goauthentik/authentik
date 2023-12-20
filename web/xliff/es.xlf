@@ -1660,9 +1660,6 @@
       <trans-unit id="sc6c575c5ff64cdb1">
         <source>Update SCIM Provider</source>
       </trans-unit>
-      <trans-unit id="s7da38af36522ff6a">
-        <source>Sync not run yet.</source>
-      </trans-unit>
       <trans-unit id="sbecf8dc03c978d15">
         <source>Run sync again</source>
         <target>Vuelve a ejecutar la sincronización</target>

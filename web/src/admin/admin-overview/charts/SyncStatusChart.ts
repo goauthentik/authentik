@@ -93,15 +93,16 @@ export class LDAPSyncStatusChart extends AKChart<SyncStatus[]> {
                     const health = await api.providersScimSyncStatusRetrieve({
                         id: element.pk,
                     });
-
-                    if (health.status !== TaskStatusEnum.Successful) {
-                        sourceKey = "failed";
-                    }
-                    const now = new Date().getTime();
-                    const maxDelta = 3600000; // 1 hour
-                    if (!health || now - health.taskFinishTimestamp.getTime() > maxDelta) {
-                        sourceKey = "unsynced";
-                    }
+                    health.tasks.forEach((task) => {
+                        if (task.status !== TaskStatusEnum.Successful) {
+                            sourceKey = "failed";
+                        }
+                        const now = new Date().getTime();
+                        const maxDelta = 3600000; // 1 hour
+                        if (!health || now - task.taskFinishTimestamp.getTime() > maxDelta) {
+                            sourceKey = "unsynced";
+                        }
+                    });
                 } catch {
                     sourceKey = "unsynced";
                 }

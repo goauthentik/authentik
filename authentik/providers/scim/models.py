@@ -4,8 +4,11 @@ from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.serializers import Serializer
+from redis.lock import Lock
+from django.core.cache import cache
 
 from authentik.core.models import BackchannelProvider, Group, PropertyMapping, User, UserTypes
+from authentik.providers.scim.clients import PAGE_TIMEOUT
 
 
 class SCIMProvider(BackchannelProvider):
@@ -26,6 +29,15 @@ class SCIMProvider(BackchannelProvider):
         blank=True,
         help_text=_("Property mappings used for group creation/updating."),
     )
+
+    @property
+    def sync_lock(self) -> Lock:
+        """Redis lock for syncing SCIM to prevent multiple parallel syncs happening"""
+        return Lock(
+            cache.client.get_client(),
+            name=f"goauthentik.io/providers/scim/sync-{self.slug}",
+            timeout=(60 * 60 * PAGE_TIMEOUT) * 3,
+        )
 
     def get_user_qs(self) -> QuerySet[User]:
         """Get queryset of all users with consistent ordering

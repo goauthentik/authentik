@@ -2217,11 +2217,6 @@ Il y a <x id="0" equiv-text="${ago}"/> jour(s)</target>
         <target>Mettre à jour le fournisseur SCIM</target>
         
       </trans-unit>
-      <trans-unit id="s7da38af36522ff6a">
-        <source>Sync not run yet.</source>
-        <target>La synchronisation n'a pas encore été lancée.</target>
-        
-      </trans-unit>
       <trans-unit id="sbecf8dc03c978d15">
         <source>Run sync again</source>
         <target>Relancer la synchro</target>
