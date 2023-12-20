@@ -1,11 +1,11 @@
 """SCIM Provider models"""
+from django.core.cache import cache
 from django.db import models
 from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
 from guardian.shortcuts import get_anonymous_user
-from rest_framework.serializers import Serializer
 from redis.lock import Lock
-from django.core.cache import cache
+from rest_framework.serializers import Serializer
 
 from authentik.core.models import BackchannelProvider, Group, PropertyMapping, User, UserTypes
 from authentik.providers.scim.clients import PAGE_TIMEOUT
@@ -35,7 +35,7 @@ class SCIMProvider(BackchannelProvider):
         """Redis lock for syncing SCIM to prevent multiple parallel syncs happening"""
         return Lock(
             cache.client.get_client(),
-            name=f"goauthentik.io/providers/scim/sync-{self.slug}",
+            name=f"goauthentik.io/providers/scim/sync-{str(self.pk)}",
             timeout=(60 * 60 * PAGE_TIMEOUT) * 3,
         )
 
