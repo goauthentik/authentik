@@ -154,9 +154,13 @@ Defaults to `info`.
 
 Which domain the session cookie should be set to. By default, the cookie is set to the domain authentik is accessed under.
 
-### `AUTHENTIK_GEOIP`
+### `AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__GEOIP`
 
-Path to the GeoIP database. Defaults to `/geoip/GeoLite2-City.mmdb`. If the file is not found, authentik will skip GeoIP support.
+Path to the GeoIP City database. Defaults to `/geoip/GeoLite2-City.mmdb`. If the file is not found, authentik will skip GeoIP support.
+
+### `AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__ASN`
+
+Path to the GeoIP ASN database. Defaults to `/geoip/GeoLite2-ASN.mmdb`. If the file is not found, authentik will skip GeoIP support.
 
 ### `AUTHENTIK_DISABLE_UPDATE_CHECK`
 
