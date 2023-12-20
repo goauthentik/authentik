@@ -18334,6 +18334,7 @@ paths:
           - tr
           - tt
           - udm
+          - ug
           - uk
           - ur
           - uz
@@ -29226,9 +29227,7 @@ components:
         path:
           type: string
           default: ''
-        context:
-          type: object
-          additionalProperties: {}
+        context: {}
         last_applied:
           type: string
           format: date-time
@@ -29248,8 +29247,6 @@ components:
             type: string
           readOnly: true
         metadata:
-          type: object
-          additionalProperties: {}
           readOnly: true
         content:
           type: string
@@ -29271,9 +29268,7 @@ components:
         path:
           type: string
           default: ''
-        context:
-          type: object
-          additionalProperties: {}
+        context: {}
         enabled:
           type: boolean
         content:
@@ -29795,10 +29790,24 @@ components:
         cancel_url:
           type: string
         layout:
-          $ref: '#/components/schemas/FlowLayoutEnum'
+          $ref: '#/components/schemas/ContextualFlowInfoLayoutEnum'
       required:
       - cancel_url
       - layout
+    ContextualFlowInfoLayoutEnum:
+      enum:
+      - stacked
+      - content_left
+      - content_right
+      - sidebar_left
+      - sidebar_right
+      type: string
+      description: |-
+        * `stacked` - STACKED
+        * `content_left` - CONTENT_LEFT
+        * `content_right` - CONTENT_RIGHT
+        * `sidebar_left` - SIDEBAR_LEFT
+        * `sidebar_right` - SIDEBAR_RIGHT
     Coordinate:
       type: object
       description: Coordinates for diagrams
@@ -30516,16 +30525,12 @@ components:
           format: uuid
           readOnly: true
           title: Event uuid
-        user:
-          type: object
-          additionalProperties: {}
+        user: {}
         action:
           $ref: '#/components/schemas/EventActions'
         app:
           type: string
-        context:
-          type: object
-          additionalProperties: {}
+        context: {}
         client_ip:
           type: string
           nullable: true
@@ -30536,9 +30541,7 @@ components:
         expires:
           type: string
           format: date-time
-        tenant:
-          type: object
-          additionalProperties: {}
+        tenant: {}
       required:
       - action
       - app
@@ -31015,17 +31018,13 @@ components:
       type: object
       description: Event Serializer
       properties:
-        user:
-          type: object
-          additionalProperties: {}
+        user: {}
         action:
           $ref: '#/components/schemas/EventActions'
         app:
           type: string
           minLength: 1
-        context:
-          type: object
-          additionalProperties: {}
+        context: {}
         client_ip:
           type: string
           nullable: true
@@ -31033,9 +31032,7 @@ components:
         expires:
           type: string
           format: date-time
-        tenant:
-          type: object
-          additionalProperties: {}
+        tenant: {}
       required:
       - action
       - app
@@ -31531,11 +31528,11 @@ components:
       - sidebar_right
       type: string
       description: |-
-        * `stacked` - STACKED
-        * `content_left` - CONTENT_LEFT
-        * `content_right` - CONTENT_RIGHT
-        * `sidebar_left` - SIDEBAR_LEFT
-        * `sidebar_right` - SIDEBAR_RIGHT
+        * `stacked` - Stacked
+        * `content_left` - Content Left
+        * `content_right` - Content Right
+        * `sidebar_left` - Sidebar Left
+        * `sidebar_right` - Sidebar Right
     FlowRequest:
       type: object
       description: Flow Serializer
@@ -32400,8 +32397,6 @@ components:
           description: Return internal model name
           readOnly: true
         kubeconfig:
-          type: object
-          additionalProperties: {}
           description: Paste your kubeconfig here. authentik will automatically use
             the currently selected context.
         verify_ssl:
@@ -32426,8 +32421,6 @@ components:
           description: If enabled, use the local connection. Required Docker socket/Kubernetes
             Integration
         kubeconfig:
-          type: object
-          additionalProperties: {}
           description: Paste your kubeconfig here. authentik will automatically use
             the currently selected context.
         verify_ssl:
@@ -34077,9 +34070,7 @@ components:
           type: string
         oidc_jwks_url:
           type: string
-        oidc_jwks:
-          type: object
-          additionalProperties: {}
+        oidc_jwks: {}
       required:
       - callback_url
       - component
@@ -34176,9 +34167,7 @@ components:
           type: string
         oidc_jwks_url:
           type: string
-        oidc_jwks:
-          type: object
-          additionalProperties: {}
+        oidc_jwks: {}
       required:
       - consumer_key
       - consumer_secret
@@ -36067,9 +36056,7 @@ components:
         path:
           type: string
           default: ''
-        context:
-          type: object
-          additionalProperties: {}
+        context: {}
         enabled:
           type: boolean
         content:
@@ -36466,17 +36453,13 @@ components:
       type: object
       description: Event Serializer
       properties:
-        user:
-          type: object
-          additionalProperties: {}
+        user: {}
         action:
           $ref: '#/components/schemas/EventActions'
         app:
           type: string
           minLength: 1
-        context:
-          type: object
-          additionalProperties: {}
+        context: {}
         client_ip:
           type: string
           nullable: true
@@ -36484,9 +36467,7 @@ components:
         expires:
           type: string
           format: date-time
-        tenant:
-          type: object
-          additionalProperties: {}
+        tenant: {}
     PatchedExpressionPolicyRequest:
       type: object
       description: Group Membership Policy Serializer
@@ -36729,8 +36710,6 @@ components:
           description: If enabled, use the local connection. Required Docker socket/Kubernetes
             Integration
         kubeconfig:
-          type: object
-          additionalProperties: {}
           description: Paste your kubeconfig here. authentik will automatically use
             the currently selected context.
         verify_ssl:
@@ -37191,9 +37170,7 @@ components:
           type: string
         oidc_jwks_url:
           type: string
-        oidc_jwks:
-          type: object
-          additionalProperties: {}
+        oidc_jwks: {}
     PatchedOutpostRequest:
       type: object
       description: Outpost Serializer
@@ -38037,9 +38014,7 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
-        attributes:
-          type: object
-          additionalProperties: {}
+        attributes: {}
     PatchedTokenRequest:
       type: object
       description: Token Serializer
@@ -39712,12 +39687,8 @@ components:
           type: string
         ip:
           type: string
-        ip_geo_data:
-          type: object
-          additionalProperties: {}
-        ip_asn_data:
-          type: object
-          additionalProperties: {}
+        ip_geo_data: {}
+        ip_asn_data: {}
         score:
           type: integer
           maximum: 9223372036854775807
@@ -41444,9 +41415,7 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
-        attributes:
-          type: object
-          additionalProperties: {}
+        attributes: {}
       required:
       - domain
       - tenant_uuid
@@ -41503,9 +41472,7 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
-        attributes:
-          type: object
-          additionalProperties: {}
+        attributes: {}
       required:
       - domain
     Token:
