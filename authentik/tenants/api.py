@@ -6,7 +6,7 @@ from rest_framework import permissions
 from rest_framework.authentication import get_authorization_header
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.generics import RetrieveUpdateAPIView
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import SAFE_METHODS, IsAdminUser
 from rest_framework.request import Request
 from rest_framework.serializers import ModelSerializer
 from rest_framework.views import View
@@ -14,6 +14,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.authentication import validate_auth
 from authentik.lib.config import CONFIG
+from authentik.rbac.permissions import HasPermission
 from authentik.tenants.models import Domain, Tenant
 
 
@@ -117,8 +118,16 @@ class SettingsView(RetrieveUpdateAPIView):
 
     queryset = Tenant.objects.filter(ready=True)
     serializer_class = SettingsSerializer
-    permission_classes = [IsAdminUser]
     filter_backends = []
+
+    def get_permissions(self):
+        return [
+            HasPermission(
+                "authentik_rbac.view_system_settings"
+                if self.request.method in SAFE_METHODS
+                else "authentik_rbac.edit_system_settings"
+            )()
+        ]
 
     def get_object(self):
         obj = self.request.tenant
