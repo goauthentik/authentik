@@ -10,6 +10,8 @@ from authentik.lib.utils.time import timedelta_string_validator
 
 
 class NetworkBinding(models.TextChoices):
+    """Network session binding modes"""
+
     NO_BINDING = "no_binding"
     BIND_ASN = "bind_asn"  # Bind to ASN only
     BIND_ASN_NETWORK = "bind_asn_network"  # Bind to ASN and Network
@@ -17,6 +19,8 @@ class NetworkBinding(models.TextChoices):
 
 
 class GeoIPBinding(models.TextChoices):
+    """Geo session binding modes"""
+
     NO_BINDING = "no_binding"
     BIND_CONTINENT = "bind_continent"  # Bind to continent only
     BIND_CONTINENT_COUNTRY = "bind_continent_country"  # Bind to continent and country

@@ -11,8 +11,8 @@ from authentik.core.models import AuthenticatedSession, User
 from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, WithUserInfoChallenge
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, PLAN_CONTEXT_SOURCE
 from authentik.flows.stage import ChallengeStageView
-from authentik.lib.utils.http import get_client_ip
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.user_login.middleware import (
@@ -72,9 +72,10 @@ class UserLoginStageView(ChallengeStageView):
         return delta
 
     def set_session_ip(self):
+        """Set the sessions' last IP and session bindings"""
         stage: UserLoginStage = self.executor.current_stage
 
-        self.request.session[SESSION_KEY_LAST_IP] = get_client_ip(self.request)
+        self.request.session[SESSION_KEY_LAST_IP] = ClientIPMiddleware.get_client_ip(self.request)
         self.request.session[SESSION_KEY_BINDING_NET] = stage.network_binding
         self.request.session[SESSION_KEY_BINDING_GEO] = stage.geoip_binding
 

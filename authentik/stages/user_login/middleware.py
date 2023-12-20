@@ -9,8 +9,7 @@ from structlog.stdlib import get_logger
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR
 from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR
 from authentik.lib.sentry import SentryIgnoredException
-from authentik.lib.utils.http import get_client_ip
-from authentik.root.middleware import SessionMiddleware
+from authentik.root.middleware import ClientIPMiddleware, SessionMiddleware
 from authentik.stages.user_login.models import GeoIPBinding, NetworkBinding
 
 SESSION_KEY_LAST_IP = "authentik/stages/user_login/last_ip"
@@ -79,11 +78,12 @@ class BoundSessionMiddleware(SessionMiddleware):
             logout_extra(request, exc)
             request.session.clear()
             return redirect(settings.LOGIN_URL)
+        return None
 
     def recheck_session(self, request: HttpRequest):
         """Check if a session is still valid with a changed IP"""
         last_ip = request.session.get(SESSION_KEY_LAST_IP)
-        new_ip = get_client_ip(request)
+        new_ip = ClientIPMiddleware.get_client_ip(request)
         # Check changed IP
         if new_ip == last_ip:
             return
@@ -97,6 +97,10 @@ class BoundSessionMiddleware(SessionMiddleware):
             self.recheck_session_net(configured_binding_net, last_ip, new_ip)
         if configured_binding_geo != GeoIPBinding.NO_BINDING:
             self.recheck_session_geo(configured_binding_geo, last_ip, new_ip)
+        # If we got to this point without any error being raised, we need to
+        # update the last saved IP to the current one
+        # TODO: Also update AuthenticatedSession object
+        request.session[SESSION_KEY_LAST_IP] = new_ip
 
     def recheck_session_net(self, binding: NetworkBinding, last_ip: str, new_ip: str):
         """Check network/ASN binding"""
