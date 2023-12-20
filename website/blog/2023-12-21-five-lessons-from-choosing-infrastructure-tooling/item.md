@@ -1,6 +1,6 @@
 ---
 title: "5 lessons from choosing infrastructure tooling for a security startup"
-description: "What’s in our stack: the tools we use to build authentik (and why we chose them).”
+description: "What's in our stack: the tools we use to build authentik (and why we chose them)."
 slug: 2023-12-21-five-lessons-from-choosing-infrastructure-tooling
 authors:
     - name: March Schmitt
@@ -25,7 +25,6 @@ tags:
     - Authentik Security
 hide_table_of_contents: false
 image: ./tech-stack.png
-
 ---
 
 > **_authentik is an open source Identity Provider that unifies your identity needs into a single platform, replacing Okta, Active Directory, and auth0. Authentik Security is a [public benefit company](https://github.com/OpenCoreVentures/ocv-public-benefit-company/blob/main/ocv-public-benefit-company-charter.md) building on top of the open source project._**
@@ -34,15 +33,21 @@ image: ./tech-stack.png
 
 With great power (to choose your own tools) comes great responsibility. Not inheriting a legacy toolchain is an infrastructure engineer’s dream, but it can be hard to know where to start.
 
-As the first infrastructure engineer hired to work on authentik, I saw the green field opportunities, but also the responsibility and long-term importance of choosing the best stack of tools and build processes. From my past roles, I already knew many of the considerations that we would need to make. For example, we know that ease-of-maintenance is a primary consideration, as is the stability and probable longevity of the tool, how well the tools integrate, and of course, the level of support we were likely to get for each tool.
+As the first infrastructure engineer hired to work on authentik I saw the green field opportunities, but also the responsibility and long-term importance of choosing the best stack of tools and build processes. From my past roles, I already knew many of the considerations that we would need to look closely at.
+
+For example, we know that ease-of-maintenance is a primary consideration, as is the stability and probable longevity of the tool, how well the tools integrate, and of course the level of support we were likely to get for each tool.
 
 In this post we share what we’re using to build authentik, and the lessons behind those choices.
+
+![technology stack for startups](./tech-stack.png)
+
+<!--truncate-->
 
 ## #1 Choices are often human, not technical
 
 If there isn’t much difference between two tools, the choice isn’t a technical decision. It’s going to come down to human factors like ease of use or the team’s familiarity with the tool. This is why we use [GitHub Actions](https://docs.github.com/en/actions) for our CI—[we’re already on GitHub](https://github.com/goauthentik) so it just makes sense.
 
-Familiarity with a tool means that you and your team can move faster, leading to higher business efficiency.
+Familiarity with a tool means that you and your team can move faster, leading to higher business efficiency and a happier team.
 
 ### We use Argo CD for GitOps
 
@@ -87,9 +92,9 @@ If your users are developers they are probably used to working with tools in Eng
 
 We use [Lit](https://lit.dev/) for our frontend (Jens has written about [choosing Lit over React](https://goauthentik.io/blog/2023-05-04-i-gambled-against-react-and-lost)), which supports translation by default:
 
-- With Lit, we’re able to extract strings of text that we want to translate.
-- Those strings are sent to Transifex, where we can crowdsource translations.
-- We do this by marking strings as “source strings” with just three extra characters per string, which is not that much of an effort if you’re doing it from the outset vs implementing afterwards.
+-   With Lit, we’re able to extract strings of text that we want to translate.
+-   Those strings are sent to Transifex, where we can crowdsource translations.
+-   We do this by marking strings as “source strings” with just three extra characters per string, which is not that much of an effort if you’re doing it from the outset vs implementing afterwards.
 
 Native speakers of a given language can help us polish our translations; a great way to enable people to contribute to the product  (not everyone can or wants to contribute code, for example).
 
@@ -143,9 +148,9 @@ Prometheus stores metrics for ~1 day before [Thanos](https://thanos.io/) fetches
 
 Thanos compresses the metrics data and also does downsampling:
 
-- For 30 days we keep everything that’s scraped (every 30/60 seconds)
-- Beyond that, for 90 days we keep only a metric point every five minutes
-- For a year, we keep just one metric point per hour
+-   For 30 days we keep everything that’s scraped (every 30/60 seconds)
+-   Beyond that, for 90 days we keep only a metric point every five minutes
+-   For a year, we keep just one metric point per hour
 
 By retaining less data as time passes, queries are faster and storage is cheaper. Why keep metrics for such a long time? It gives us a view of the seasonality of traffic so we can do better capacity planning.
 
