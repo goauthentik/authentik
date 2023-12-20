@@ -43,6 +43,7 @@ from authentik.lib.sentry import SentryIgnoredException
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
 from authentik.providers.scim.models import SCIMGroup, SCIMUser
+from authentik.tenants.models import Tenant
 
 # Context set when the serializer is created in a blueprint context
 # Update website/developer-docs/blueprints/v1/models.md when used
@@ -57,6 +58,7 @@ def excluded_models() -> list[type[Model]]:
     from django.contrib.auth.models import User as DjangoUser
 
     return (
+        Tenant,
         DjangoUser,
         DjangoGroup,
         # Base classes
