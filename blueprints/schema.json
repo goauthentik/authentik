@@ -5416,8 +5416,22 @@
                     "title": "Icon"
                 },
                 "provider_type": {
-                    "type": [],
-                    "enum": [],
+                    "type": "string",
+                    "enum": [
+                        "apple",
+                        "azuread",
+                        "discord",
+                        "facebook",
+                        "github",
+                        "google",
+                        "mailcow",
+                        "openidconnect",
+                        "okta",
+                        "patreon",
+                        "reddit",
+                        "twitch",
+                        "twitter"
+                    ],
                     "title": "Provider type"
                 },
                 "request_token_url": {

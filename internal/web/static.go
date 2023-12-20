@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-http-utils/etag"
 	"github.com/gorilla/mux"
+
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/utils/web"
@@ -17,8 +18,6 @@ func (ws *WebServer) configureStatic() {
 	statRouter.Use(ws.staticHeaderMiddleware)
 	indexLessRouter := statRouter.NewRoute().Subrouter()
 	indexLessRouter.Use(web.DisableIndex)
-	// Media files, always local
-	fs := http.FileServer(http.Dir(config.Get().Paths.Media))
 	distFs := http.FileServer(http.Dir("./web/dist"))
 	distHandler := http.StripPrefix("/static/dist/", distFs)
 	authentikHandler := http.StripPrefix("/static/authentik/", http.FileServer(http.Dir("./web/authentik")))
@@ -35,7 +34,11 @@ func (ws *WebServer) configureStatic() {
 	indexLessRouter.PathPrefix("/if/admin/assets").Handler(http.StripPrefix("/if/admin", distFs))
 	indexLessRouter.PathPrefix("/if/user/assets").Handler(http.StripPrefix("/if/user", distFs))
 
-	indexLessRouter.PathPrefix("/media/").Handler(http.StripPrefix("/media", fs))
+	// Media files, if backend is file
+	if config.Get().Storage.Media.Backend == "file" {
+		fsMedia := http.FileServer(http.Dir(config.Get().Storage.Media.File.Path))
+		indexLessRouter.PathPrefix("/media/").Handler(http.StripPrefix("/media", fsMedia))
+	}
 
 	statRouter.PathPrefix("/if/help/").Handler(http.StripPrefix("/if/help/", helpHandler))
 	statRouter.PathPrefix("/help").Handler(http.RedirectHandler("/if/help/", http.StatusMovedPermanently))

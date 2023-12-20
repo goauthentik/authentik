@@ -34,6 +34,7 @@ REDIS_ENV_KEYS = [
     f"{ENV_PREFIX}_REDIS__TLS_REQS",
 ]
 
+# Old key -> new key
 DEPRECATIONS = {
     "redis.broker_url": "broker.url",
     "redis.broker_transport_options": "broker.transport_options",
@@ -200,12 +201,13 @@ class ConfigLoader:
                 root[key] = value
         return root
 
-    def refresh(self, key: str):
+    def refresh(self, key: str, default=None, sep=".") -> Any:
         """Update a single value"""
-        attr: Attr = get_path_from_dict(self.raw, key)
+        attr: Attr = get_path_from_dict(self.raw, key, sep=sep, default=Attr(default))
         if attr.source_type != Attr.Source.URI:
-            return
+            return attr.value
         attr.value = self.parse_uri(attr.source).value
+        return attr.value
 
     def parse_uri(self, value: str) -> Attr:
         """Parse string values which start with a URI"""
