@@ -1,7 +1,7 @@
 import React from "react";
 import Layout from "@theme/Layout";
 import Head from "@docusaurus/Head";
-import BrowserOnly from "@docusaurus/core/lib/client/exports/BrowserOnly";
+import BrowserOnly from "@docusaurus/BrowserOnly";
 
 function APIPage() {
     return (

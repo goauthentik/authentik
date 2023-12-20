@@ -3,7 +3,7 @@ import clsx from "clsx";
 import Layout from "@theme/Layout";
 import Link from "@docusaurus/Link";
 import Head from "@docusaurus/Head";
-import BrowserOnly from "@docusaurus/core/lib/client/exports/BrowserOnly";
+import BrowserOnly from "@docusaurus/BrowserOnly";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import styles from "./styles.module.css";
