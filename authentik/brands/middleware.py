@@ -4,7 +4,6 @@ from typing import Callable
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse
 from django.utils.translation import activate
-from sentry_sdk.api import set_tag
 
 from authentik.brands.utils import get_brand_for_request
 

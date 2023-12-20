@@ -12,16 +12,21 @@ from authentik.lib.config import CONFIG
 
 
 class FileStorage(FileSystemStorage):
+    """File storage backend"""
+
+    # pylint: disable=invalid-overridden-method
     @property
     def base_location(self):
         return os.path.join(
             self._value_or_setting(self._location, settings.MEDIA_ROOT), connection.schema_name
         )
 
+    # pylint: disable=invalid-overridden-method
     @property
     def location(self):
         return os.path.abspath(self.base_location)
 
+    # pylint: disable=invalid-overridden-method
     @property
     def base_url(self):
         if self._base_url is not None and not self._base_url.endswith("/"):
@@ -71,6 +76,7 @@ class S3Storage(BaseS3Storage):
 
     def _normalize_name(self, name):
         try:
+            # pylint: disable=no-member
             return safe_join(self.location, connection.schema_name, name)
         except ValueError:
             raise SuspiciousOperation("Attempted access to '%s' denied." % name)

@@ -1,13 +1,10 @@
 """Test brands"""
-from django.test.client import RequestFactory
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.brands.api import Themes
 from authentik.brands.models import Brand
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand
-from authentik.events.models import Event, EventAction
-from authentik.lib.utils.time import timedelta_from_string
 
 
 class TestBrands(APITestCase):
