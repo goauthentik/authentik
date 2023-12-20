@@ -1,0 +1,8 @@
+{% load i18n %}authentik Test-Email
+{% blocktrans %}
+This is a test email to inform you, that you've successfully configured authentik emails.
+{% endblocktrans %}
+
+---
+
+Powered by goauthentik.io.

@@ -35,6 +35,5 @@ class TemplateEmailMessage(EmailMultiAlternatives):
                 self.body = text_content
             except TemplateDoesNotExist:
                 pass
-        self.content_subtype = "html"
         self.mixed_subtype = "related"
         self.attach_alternative(html_content, "text/html")
