@@ -8,7 +8,7 @@ from django_filters.filterset import FilterSet
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, IntegerField, JSONField
+from rest_framework.fields import CharField, IntegerField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer, ModelSerializer, ValidationError
@@ -16,7 +16,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.decorators import permission_required
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import PassiveSerializer, is_dict
+from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Group, User
 from authentik.rbac.api.roles import RoleSerializer
 
@@ -24,7 +24,7 @@ from authentik.rbac.api.roles import RoleSerializer
 class GroupMemberSerializer(ModelSerializer):
     """Stripped down user serializer to show relevant users for groups"""
 
-    attributes = JSONField(validators=[is_dict], required=False)
+    attributes = JSONDictField(required=False)
     uid = CharField(read_only=True)
 
     class Meta:
@@ -44,7 +44,7 @@ class GroupMemberSerializer(ModelSerializer):
 class GroupSerializer(ModelSerializer):
     """Group Serializer"""
 
-    attributes = JSONField(validators=[is_dict], required=False)
+    attributes = JSONDictField(required=False)
     users_obj = ListSerializer(
         child=GroupMemberSerializer(), read_only=True, source="users", required=False
     )

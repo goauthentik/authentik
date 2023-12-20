@@ -3282,7 +3282,8 @@
                         "none",
                         "require_authenticated",
                         "require_unauthenticated",
-                        "require_superuser"
+                        "require_superuser",
+                        "require_outpost"
                     ],
                     "title": "Authentication",
                     "description": "Required level of authentication and authorization to access a flow."
@@ -5415,22 +5416,8 @@
                     "title": "Icon"
                 },
                 "provider_type": {
-                    "type": "string",
-                    "enum": [
-                        "apple",
-                        "azuread",
-                        "discord",
-                        "facebook",
-                        "github",
-                        "google",
-                        "mailcow",
-                        "openidconnect",
-                        "okta",
-                        "patreon",
-                        "reddit",
-                        "twitch",
-                        "twitter"
-                    ],
+                    "type": [],
+                    "enum": [],
                     "title": "Provider type"
                 },
                 "request_token_url": {

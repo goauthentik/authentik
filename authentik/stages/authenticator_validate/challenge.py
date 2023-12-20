@@ -7,7 +7,7 @@ from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
-from rest_framework.fields import CharField, JSONField
+from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 from webauthn.authentication.generate_authentication_options import generate_authentication_options
@@ -16,13 +16,13 @@ from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.exceptions import InvalidAuthenticationResponse
 from webauthn.helpers.structs import AuthenticationCredential
 
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Application, User
 from authentik.core.signals import login_failed
 from authentik.events.models import Event, EventAction
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE
-from authentik.lib.utils.http import get_client_ip
+from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.authenticator import match_token
 from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
@@ -40,7 +40,7 @@ class DeviceChallenge(PassiveSerializer):
 
     device_class = CharField()
     device_uid = CharField()
-    challenge = JSONField()
+    challenge = JSONDictField()
 
 
 def get_challenge_for_device(
@@ -197,7 +197,7 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
         response = stage.auth_client().auth(
             "auto",
             user_id=device.duo_user_id,
-            ipaddr=get_client_ip(stage_view.request),
+            ipaddr=ClientIPMiddleware.get_client_ip(stage_view.request),
             type=__(
                 "%(brand_name)s Login request"
                 % {

@@ -61,7 +61,7 @@ class SCIMUserTests(TestCase):
         uid = generate_id()
         user = User.objects.create(
             username=uid,
-            name=uid,
+            name=f"{uid} {uid}",
             email=f"{uid}@goauthentik.io",
         )
         self.assertEqual(mock.call_count, 2)
@@ -81,11 +81,11 @@ class SCIMUserTests(TestCase):
                 ],
                 "externalId": user.uid,
                 "name": {
-                    "familyName": "",
-                    "formatted": uid,
+                    "familyName": uid,
+                    "formatted": f"{uid} {uid}",
                     "givenName": uid,
                 },
-                "displayName": uid,
+                "displayName": f"{uid} {uid}",
                 "userName": uid,
             },
         )
@@ -114,7 +114,7 @@ class SCIMUserTests(TestCase):
         uid = generate_id()
         user = User.objects.create(
             username=uid,
-            name=uid,
+            name=f"{uid} {uid}",
             email=f"{uid}@goauthentik.io",
         )
         self.assertEqual(mock.call_count, 2)
@@ -135,11 +135,11 @@ class SCIMUserTests(TestCase):
                         "value": f"{uid}@goauthentik.io",
                     }
                 ],
-                "displayName": uid,
+                "displayName": f"{uid} {uid}",
                 "externalId": user.uid,
                 "name": {
-                    "familyName": "",
-                    "formatted": uid,
+                    "familyName": uid,
+                    "formatted": f"{uid} {uid}",
                     "givenName": uid,
                 },
                 "userName": uid,
@@ -170,7 +170,7 @@ class SCIMUserTests(TestCase):
         uid = generate_id()
         user = User.objects.create(
             username=uid,
-            name=uid,
+            name=f"{uid} {uid}",
             email=f"{uid}@goauthentik.io",
         )
         self.assertEqual(mock.call_count, 2)
@@ -190,11 +190,11 @@ class SCIMUserTests(TestCase):
                 ],
                 "externalId": user.uid,
                 "name": {
-                    "familyName": "",
-                    "formatted": uid,
+                    "familyName": uid,
+                    "formatted": f"{uid} {uid}",
                     "givenName": uid,
                 },
-                "displayName": uid,
+                "displayName": f"{uid} {uid}",
                 "userName": uid,
             },
         )
@@ -234,7 +234,7 @@ class SCIMUserTests(TestCase):
         )
         user = User.objects.create(
             username=uid,
-            name=uid,
+            name=f"{uid} {uid}",
             email=f"{uid}@goauthentik.io",
         )
 
@@ -258,11 +258,11 @@ class SCIMUserTests(TestCase):
                 ],
                 "externalId": user.uid,
                 "name": {
-                    "familyName": "",
-                    "formatted": uid,
+                    "familyName": uid,
+                    "formatted": f"{uid} {uid}",
                     "givenName": uid,
                 },
-                "displayName": uid,
+                "displayName": f"{uid} {uid}",
                 "userName": uid,
             },
         )

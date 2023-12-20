@@ -143,7 +143,7 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 				// as a member.
 				for _, u := range g.UsersObj {
 					if flag.UserPk == u.Pk {
-						//TODO: Is there a better way to clone this object?
+						// TODO: Is there a better way to clone this object?
 						fg := api.NewGroup(g.Pk, g.NumPk, g.Name, g.ParentName, []api.GroupMember{u}, []api.Role{})
 						fg.SetUsers([]int32{flag.UserPk})
 						if g.Parent.IsSet() {
