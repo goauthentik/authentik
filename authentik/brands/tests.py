@@ -67,7 +67,6 @@ class TestBrands(APITestCase):
             domain="foo",
             default=True,
             branding_title="custom",
-            event_retention="weeks=3",
         )
         user = create_test_admin_user()
         self.client.force_login(user)
