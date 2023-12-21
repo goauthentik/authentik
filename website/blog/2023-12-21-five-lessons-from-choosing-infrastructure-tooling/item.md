@@ -47,7 +47,7 @@ In this post we share what we’re using to build authentik, and the lessons beh
 
 If there isn’t much difference between two tools, the choice isn’t a technical decision. It’s going to come down to human factors like ease of use or the team’s familiarity with the tool. This is why we use [GitHub Actions](https://docs.github.com/en/actions) for our CI—[we’re already on GitHub](https://github.com/goauthentik) so it just makes sense.
 
-Familiarity with a tool means that you and your team can move faster, leading to higher business efficiency and a happier team.
+>Familiarity with a tool means that you and your team can move faster, leading to higher business efficiency and a happier team.
 
 ### We use Argo CD for GitOps
 
@@ -128,7 +128,7 @@ Of course, budget is going to play a role in the tools you choose. You have to b
 
 We talked about this in our recent [post about building a security stack with mostly free and open source software](https://goauthentik.io/blog/2023-11-22-how-we-saved-over-100k). [Loki](https://grafana.com/oss/loki/) is free, open source, and cheap to run. We could have gone with something like Elasticsearch (and the whole Elastic Stack) but it’s so expensive to run in terms of processing power and memory resources. Loki isn’t as easy to run, but we save on costs.
 
-It comes back to the idea of “you either pay in time or money” for software, and for most of authentik’s tooling I’ve already paid in time for it.
+>It comes back to the idea of “you either pay in time or money” for software, and for most of authentik’s tooling I’ve already paid in time for it.
 
 ## #5 Optimize for stability and support
 
