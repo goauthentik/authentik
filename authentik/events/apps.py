@@ -29,15 +29,17 @@ class AuthentikEventsConfig(ManagedAppConfig):
 
         for key_replace, msg in CONFIG.deprecations.items():
             key, replace = key_replace
-            key_env = f"{ENV_PREFIX}_{key.replace(".", "__")}".upper()
-            replace_env = f"{ENV_PREFIX}_{replace.replace(".", "__")}".upper()
+            key_env = f"{ENV_PREFIX}_{key.replace('.', '__')}".upper()
+            replace_env = f"{ENV_PREFIX}_{replace.replace('.', '__')}".upper()
             if Event.objects.filter(
                 action=EventAction.CONFIGURATION_ERROR, context__deprecated_option=key
             ).exists():
                 continue
-            Event.new(EventAction.CONFIGURATION_ERROR,
-                      deprecated_option=key,
-                      deprecated_env=key_env,
-                      replacement_option=replace,
-                      replacement_env=replace_env,
-                        message=msg).save()
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                deprecated_option=key,
+                deprecated_env=key_env,
+                replacement_option=replace,
+                replacement_env=replace_env,
+                message=msg,
+            ).save()
