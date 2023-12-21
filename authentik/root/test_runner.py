@@ -32,7 +32,8 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         settings.TEST = True
         settings.CELERY["task_always_eager"] = True
         CONFIG.set("avatars", "none")
-        CONFIG.set("geoip", "tests/GeoLite2-City-Test.mmdb")
+        CONFIG.set("events.context_processors.geoip", "tests/GeoLite2-City-Test.mmdb")
+        CONFIG.set("events.context_processors.asn", "tests/GeoLite2-ASN-Test.mmdb")
         CONFIG.set("blueprints_dir", "./blueprints")
         CONFIG.set(
             "outposts.container_image_base",

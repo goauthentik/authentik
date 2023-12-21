@@ -1,0 +1,18 @@
+{% load authentik_stages_email %}{% load i18n %}{% translate "Dear authentik user," %}
+
+{% translate "The following notification was created:" %}
+
+    {{ body|indent }}
+
+{% if key_value %}
+{% translate "Additional attributes:" %}
+{% for key, value in key_value.items %}
+    {{ key }}: {{ value|indent }}{% endfor %}
+{% endif %}
+
+{% if source %}{% blocktranslate with name=source.from %}
+This email was sent from the notification transport {{ name }}.
+{% endblocktranslate %}{% endif %}
+
+-- 
+Powered by goauthentik.io.
