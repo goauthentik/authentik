@@ -120,6 +120,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
         this.observer.observe(this);
         this.dropdownUID = `dropdown-${randomString(10, ascii_letters + digits)}`;
         this.onMenuItemClick = this.onMenuItemClick.bind(this);
+        this.renderWithMenuGroupTitle = this.renderWithMenuGroupTitle.bind(this);
     }
 
     toForm(): unknown {
@@ -295,7 +296,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
                 >
                     ${this.blankable ? this.renderEmptyMenuItem() : html``}
                     ${shouldRenderGroups
-                        ? html`groupedItems.map(this.renderWithMenuGroupTitle)`
+                        ? html`${groupedItems.map(this.renderWithMenuGroupTitle)}`
                         : html`${this.renderMenuGroup(groupedItems[0][1], 0)}`}
                 </ul>
             </div>`,
