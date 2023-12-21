@@ -10,7 +10,7 @@ authors:
     - name: Rebecca Dodd
       title: Contributing Writer
       url: https://github.com/rebeccadee
-      image_url: https://avatars.githubusercontent.com/u/82806852?v=4
+      image_url: https://github.com/rebeccadee.png
 tags:
     - authentik
     - startups
