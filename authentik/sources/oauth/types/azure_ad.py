@@ -4,8 +4,8 @@ from typing import Any
 from structlog.stdlib import get_logger
 
 from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
+from authentik.sources.oauth.types.oidc import OpenIDConnectOAuth2Callback
 from authentik.sources.oauth.types.registry import SourceType, registry
-from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 LOGGER = get_logger()
@@ -20,7 +20,7 @@ class AzureADOAuthRedirect(OAuthRedirect):
         }
 
 
-class AzureADOAuthCallback(OAuthCallback):
+class AzureADOAuthCallback(OpenIDConnectOAuth2Callback):
     """AzureAD OAuth2 Callback"""
 
     client_class = UserprofileHeaderAuthClient
@@ -50,7 +50,7 @@ class AzureADType(SourceType):
 
     authorization_url = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize"
     access_token_url = "https://login.microsoftonline.com/common/oauth2/v2.0/token"  # nosec
-    profile_url = "https://graph.microsoft.com/v1.0/me"
+    profile_url = "https://login.microsoftonline.com/common/openid/userinfo"
     oidc_well_known_url = (
         "https://login.microsoftonline.com/common/.well-known/openid-configuration"
     )
