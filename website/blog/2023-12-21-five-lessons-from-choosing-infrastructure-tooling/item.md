@@ -149,7 +149,7 @@ Prometheus stores metrics for ~1 day before [Thanos](https://thanos.io/) fetches
 Thanos compresses the metrics data and also does downsampling:
 
 -   For 30 days we keep everything that’s scraped (every 30/60 seconds)
--   Beyond that, for 90 days we keep only a metric point every five minutes
+-  Beyond that, for 90 days we keep only a metric point every five minutes
 -   For a year, we keep just one metric point per hour
 
 By retaining less data as time passes, queries are faster and storage is cheaper. Why keep metrics for such a long time? It gives us a view of the seasonality of traffic so we can do better capacity planning.
