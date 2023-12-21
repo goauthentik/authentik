@@ -55,7 +55,7 @@ When I joined Authentik Security, we were using [Flux CD](https://fluxcd.io/). J
 
 If you’re not familiar, Flux and [Argo CD](https://argo-cd.readthedocs.io/en/stable/) enable you to do GitOps: Whatever you want to deploy, you push that to a Git repository and then synchronize whatever is in production from that Git repository. Everything is committed and tracked in the Git history (helping you to understand what has changed and why).
 
-You also don’t need to do anything manually on the production servers or clusters—it’s all done in Git. This helps with auditing, as history is tracked, and you can easily find who made a change. And, since you don’t need to give access to your production servers and cluster to whoever is conducting the audit. They can see how everything is configured in the Git repo.
+You also don’t need to do anything manually on the production servers or clusters—it’s all done in Git. This helps with auditing, as history is tracked, and you can easily find who made a change. You don’t need to give access to your production servers and cluster to whoever is conducting the audit, since they can see how everything is configured in the Git repo.
 
 #### Flux and Argo CD essentially do the same thing
 
