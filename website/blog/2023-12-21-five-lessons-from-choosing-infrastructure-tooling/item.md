@@ -33,7 +33,7 @@ image: ./tech-stack.png
 
 With great power (to choose your own tools) comes great responsibility. Not inheriting a legacy toolchain is an infrastructure engineer’s dream, but it can be hard to know where to start.
 
-As the first infrastructure engineer hired to work on authentik I saw the green field opportunities, but also the responsibility and long-term importance of choosing the best stack of tools and build processes. From my past roles, I already knew many of the considerations that we would need to look closely at.
+As the first infrastructure engineer hired to work on authentik, I saw the greenfield opportunities, but also the responsibility and long-term importance of choosing the best stack of tools and build processes. From my past roles, I already knew many of the considerations we would need to factor in.
 
 For example, we know that ease-of-maintenance is a primary consideration, as is the stability and probable longevity of the tool, how well the tools integrate, and of course the level of support we were likely to get for each tool.
 
