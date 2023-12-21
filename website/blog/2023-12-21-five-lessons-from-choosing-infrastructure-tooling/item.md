@@ -9,7 +9,7 @@ authors:
       image_url: https://github.com/rissson.png
     - name: Rebecca Dodd
       title: Contributing Writer
-      url: https://github.com/rebeccadee
+      url: https://www.thebasementoffice.co.uk
       image_url: https://github.com/rebeccadee.png
 tags:
     - authentik
