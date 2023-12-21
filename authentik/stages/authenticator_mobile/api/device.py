@@ -39,7 +39,7 @@ class MobileDeviceInfoSerializer(PassiveSerializer):
 class MobileDeviceSerializer(DeviceSerializer):
     """Serializer for Mobile authenticator devices"""
 
-    last_checkin = MobileDeviceInfoSerializer(read_only=True)
+    state = MobileDeviceInfoSerializer(read_only=True)
 
     class Meta:
         model = MobileDevice
