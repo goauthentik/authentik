@@ -82,7 +82,7 @@ Our founder, Jens, has written before about [building apps with scale in mind](h
 
 As an infrastructure engineer especially, it can be so hard to deal with legacy tools and solutions (sometimes you just want to burn it all down and start over). It’s just so much easier to maintain things if you do it properly from the beginning. Part of why I wanted to join Authentik Security was because there wasn’t any legacy to deal with!
 
-Yes, premature optimization is the root of all evil, but that doesn’t mean you can’t think about scalability when designing something. Having a design that can scale up if we need it to, but that can also run with few resources (human or machine)—even if a few compromises are necessary to allow it to do so—is oftentimes better that having a design that wasn’t built with scale in mind. This can spare you having to redesign it later (and then on top of that migrate the old one).
+Yes, premature optimization is the root of all evil, but that doesn’t mean you can’t think about scalability when designing something. Having a design that can scale up if we need it to, but that can also run with few resources (human or machine)—even if a few compromises are necessary to allow it to do so—is oftentimes better that having a design that wasn’t built with scale in mind. This can spare you having to redesign it later (and then on top of that, migrate the old one).
 
 ### We use Transifex for translation
 
