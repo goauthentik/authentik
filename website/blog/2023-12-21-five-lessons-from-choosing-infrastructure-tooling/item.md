@@ -7,7 +7,6 @@ authors:
       title: Infrastructure Engineer at Authentik Security Inc
       url: https://github.com/rissson
       image_url: https://github.com/rissson.png
-      image_url: https://avatars.githubusercontent.com/u/18313093?v=4
     - name: Rebecca Dodd
       title: Technical Analyst
       url: https://github.com/rebeccadee
