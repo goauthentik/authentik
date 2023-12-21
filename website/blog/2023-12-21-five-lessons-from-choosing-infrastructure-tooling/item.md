@@ -3,7 +3,7 @@ title: "Building the dream infrastructure stack for a security startup: preparin
 description: "What's in our stack: the tools we use to build authentik (and why we chose them)."
 slug: 2023-12-21-five-lessons-from-choosing-infrastructure-tooling
 authors:
-    - name: March Schmitt
+    - name: Marc Schmitt
       title: Infrastructure Engineer at Authentik Security Inc
       url: https://github.com/rissson
       image_url: https://github.com/rissson.png
