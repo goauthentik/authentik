@@ -53,7 +53,7 @@ Familiarity with a tool means that you and your team can move faster, leading to
 
 When I joined Authentik Security, we were using [Flux CD](https://fluxcd.io/). Jens, our founder and CTO, had set up a small Kubernetes cluster to run an authentik instance for us to log into different services (some monitoring tools), and he was also deploying all of this using Flux CD.
 
-If you’re not familiar, Flux and [Argo CD](https://argo-cd.readthedocs.io/en/stable/) enable you to do GitOps: Whatever you want to deploy, you push that to a Git repository and then synchronize whatever is in production from that Git repository. Everything is committed and tracked in the Git history (helping you to understand what has changed and why).
+If you’re not familiar, Flux and [Argo CD](https://argo-cd.readthedocs.io/en/stable/) enable you to do GitOps: whatever you want to deploy, you push that to a Git repository and then synchronize whatever is in production from that Git repository. Everything is committed and tracked in the Git history (helping you to understand what has changed and why).
 
 You also don’t need to do anything manually on the production servers or clusters—it’s all done in Git. This helps with auditing, as history is tracked, and you can easily find who made a change. You don’t need to give access to your production servers and cluster to whoever is conducting the audit, since they can see how everything is configured in the Git repo.
 
