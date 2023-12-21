@@ -26,7 +26,7 @@ return True
 You can also use custom email templates, to use your own design or layout.
 
 :::info
-Starting with authentik 2024.1, it is possible to create `.txt` files with the same name as the `.html` template, which will be attached to the email.
+Starting with authentik 2024.1, it is possible to create `.txt` files with the same name as the `.html` template. If a matching `.txt` file exists, the email sent will be a multipart email with both the text and HTML template.
 :::
 
 import Tabs from "@theme/Tabs";
