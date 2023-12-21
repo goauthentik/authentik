@@ -17,12 +17,12 @@ pythonPlatform = "All"
 
 [tool.black]
 line-length = 100
-target-version = ['py311']
+target-version = ['py312']
 exclude = 'node_modules'
 
 [tool.ruff]
 line-length = 100
-target-version = "py311"
+target-version = "py312"
 exclude = ["**/migrations/**", "**/node_modules/**"]
 
 [tool.isort]
