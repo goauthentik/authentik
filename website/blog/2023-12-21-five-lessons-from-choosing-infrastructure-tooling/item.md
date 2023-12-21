@@ -114,7 +114,7 @@ We have two use cases for Redis:
 
 If someone tries to log in and fails, we temporarily store ‘bad reputation’ weights associated with their IP address in Redis. This enables authentik admins to manage logins more securely: If someone has a reputation of less than a certain threshold (because they tried bad login details a few too many times), the authentik admin can block them.
 
-That data is stored in Redis temporarily; have a subsequent task that fetches it from Redis and stores it in the database. That way, if you want to keep updating the reputation data for a user (because they keep trying to log in with bad inputs), we’re just updating Redis and not PostgreSQL every time. Then when that data is moved from Redis to PostgreSQL, it’s compacted.
+That data is stored in Redis temporarily; we have a subsequent task that fetches it from Redis and stores it in the database. That way, if you want to keep updating the reputation data for a user (because they keep trying to log in with bad inputs), we’re just updating Redis and not PostgreSQL every time. Then when that data is moved from Redis to PostgreSQL, it’s compacted.
 
 #### Session data
 
