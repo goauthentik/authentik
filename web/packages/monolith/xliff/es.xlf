@@ -1275,7 +1275,7 @@
         <target>la referencia se establecerá en un valor vacío</target>
       </trans-unit>
       <trans-unit id="s55fa598b754cc3cc">
-        <source><x id="0" equiv-text="${policy.name}"/> (<x id="1" equiv-text="${policy.verboseName}"/>)</source>
+        <source><x id="0" equiv-text="${ub.name}"/> (<x id="1" equiv-text="${consequence}"/>)</source>
         <target>
         <x id="0" equiv-text="${ub.name}"/>( 
         <x id="1" equiv-text="${consequence}"/>)</target>
@@ -1337,7 +1337,7 @@
         <target>Actualización</target>
       </trans-unit>
       <trans-unit id="sc9175cb129fdc306">
-        <source>Update <x id="0" equiv-text="${item.stageObj?.verboseName}"/></source>
+        <source>Update <x id="0" equiv-text="${item.verboseName}"/></source>
         <target>Actualización 
         <x id="0" equiv-text="${item.verboseName}"/></target>
       </trans-unit>
@@ -2039,7 +2039,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         <x id="0" equiv-text="${item.policyObj?.name}"/></target>
       </trans-unit>
       <trans-unit id="s2a64d2dca3da9b0e">
-        <source>Group <x id="0" equiv-text="${this.group?.name || &quot;&quot;}"/></source>
+        <source>Group <x id="0" equiv-text="${item.groupObj?.name}"/></source>
         <target>Grupo 
         <x id="0" equiv-text="${item.groupObj?.name}"/></target>
       </trans-unit>
