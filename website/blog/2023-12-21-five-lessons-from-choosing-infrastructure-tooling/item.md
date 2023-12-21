@@ -1,5 +1,5 @@
 ---
-title: "Building the dream infrastructure for a security startup: preparing for technical and human scale"
+title: "Building the dream infrastructure stack for a security startup: preparing for human and technical scaling"
 description: "What's in our stack: the tools we use to build authentik (and why we chose them)."
 slug: 2023-12-21-five-lessons-from-choosing-infrastructure-tooling
 authors:
@@ -7,6 +7,11 @@ authors:
       title: Infrastructure Engineer at Authentik Security Inc
       url: https://github.com/rissson
       image_url: https://github.com/rissson.png
+      image_url: https://avatars.githubusercontent.com/u/18313093?v=4
+    - name: Rebecca Dodd
+      title: Technical Analyst
+      url: https://github.com/rebeccadee
+      image_url: https://avatars.githubusercontent.com/u/82806852?v=4
 tags:
     - authentik
     - startups
@@ -47,7 +52,7 @@ In this post we share what we’re using to build authentik, and the lessons beh
 
 If there isn’t much difference between two tools, the choice isn’t a technical decision. It’s going to come down to human factors like ease of use or the team’s familiarity with the tool. This is why we use [GitHub Actions](https://docs.github.com/en/actions) for our CI—[we’re already on GitHub](https://github.com/goauthentik) so it just makes sense.
 
->Familiarity with a tool means that you and your team can move faster, leading to higher business efficiency and a happier team.
+> Familiarity with a tool means that you and your team can move faster, leading to higher business efficiency and a happier team.
 
 ### We use Argo CD for GitOps
 
@@ -92,11 +97,11 @@ If your users are developers they are probably used to working with tools in Eng
 
 We use [Lit](https://lit.dev/) for our frontend (Jens has written about [choosing Lit over React](https://goauthentik.io/blog/2023-05-04-i-gambled-against-react-and-lost)), which supports translation by default:
 
--  With Lit, we’re able to extract strings of text that we want to translate.
--  Those strings are sent to Transifex, where we can crowdsource translations.
--  We do this by marking strings as “source strings” with just three extra characters per string, which is not that much of an effort if you’re doing it from the outset vs implementing afterwards.
+-   With Lit, we’re able to extract strings of text that we want to translate.
+-   Those strings are sent to Transifex, where we can crowdsource translations.
+-   We do this by marking strings as “source strings” with just three extra characters per string, which is not that much of an effort if you’re doing it from the outset vs implementing afterwards.
 
-Native speakers of a given language can help us polish our translations; a great way to enable people to contribute to the product  (not everyone can or wants to contribute code, for example).
+Native speakers of a given language can help us polish our translations; this is a great way to enable people to contribute to the product (not everyone can or wants to contribute code, for example).
 
 ## #3 Think about product-specific requirements
 
@@ -112,7 +117,7 @@ We have two use cases for Redis:
 
 #### Reputation data
 
-If someone tries to log in and fails, we temporarily store ‘bad reputation’ weights associated with their IP address in Redis. This enables authentik admins to manage logins more securely: If someone has a reputation of less than a certain threshold (because they tried bad login details a few too many times), the authentik admin can block them.
+If someone tries to log in and fails, we temporarily store ‘bad reputation’ weights associated with their IP address in Redis. This enables authentik admins to manage logins more securely; if someone has a reputation of less than a certain threshold (because they tried bad login details a few too many times), the authentik admin can block them.
 
 That data is stored in Redis temporarily; we have a subsequent task that fetches it from Redis and stores it in the database. That way, if you want to keep updating the reputation data for a user (because they keep trying to log in with bad inputs), we’re just updating Redis and not PostgreSQL every time. Then when that data is moved from Redis to PostgreSQL, it’s compacted.
 
@@ -126,9 +131,9 @@ Of course, budget is going to play a role in the tools you choose. You have to b
 
 ### We use Loki for logging
 
-We talked about this in our recent [post about building a security stack with mostly free and open source software](https://goauthentik.io/blog/2023-11-22-how-we-saved-over-100k). [Loki](https://grafana.com/oss/loki/) is free, open source, and cheap to run. We could have gone with something like Elasticsearch (and the whole Elastic Stack) but it’s so expensive to run in terms of processing power and memory resources. Loki isn’t as easy to run, but we save on costs.
+We talked about this in our recent [post about building a security stack with mostly free and open source software](https://goauthentik.io/blog/2023-11-22-how-we-saved-over-100k). As we wrote, [Loki](https://grafana.com/oss/loki/) is free, open source, and cheap to run. We could have gone with something like Elasticsearch (and the whole Elastic Stack) but it’s so expensive to run in terms of processing power and memory resources. Loki isn’t as easy to run, but we save on costs.
 
->It comes back to the idea of “you either pay in time or money” for software, and for most of authentik’s tooling I’ve already paid in time for it.
+> It comes back to the idea of “you either pay in time or money” for software, and for most of authentik’s tooling I’ve already paid in time for it.
 
 ## #5 Optimize for stability and support
 
@@ -148,9 +153,9 @@ Prometheus stores metrics for ~1 day before [Thanos](https://thanos.io/) fetches
 
 Thanos compresses the metrics data and also does downsampling:
 
--  For 30 days we keep everything that’s scraped (every 30/60 seconds)
--  Beyond that, for 90 days we keep only a metric point every five minutes
--  For a year, we keep just one metric point per hour
+-   For 30 days we keep everything that’s scraped (every 30/60 seconds)
+-   Beyond that, for 90 days we keep only a metric point every five minutes
+-   For a year, we keep just one metric point per hour
 
 By retaining less data as time passes, queries are faster and storage is cheaper. Why keep metrics for such a long time? It gives us a view of the seasonality of traffic so we can do better capacity planning.
 
