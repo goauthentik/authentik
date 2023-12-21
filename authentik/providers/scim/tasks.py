@@ -47,6 +47,10 @@ def scim_sync(self: MonitoredTask, provider_pk: int) -> None:
     ).first()
     if not provider:
         return
+    lock = provider.sync_lock
+    if lock.locked():
+        LOGGER.debug("SCIM sync locked, skipping task", source=provider.name)
+        return
     self.set_uid(slugify(provider.name))
     result = TaskResult(TaskResultStatus.SUCCESSFUL, [])
     result.messages.append(_("Starting full SCIM sync"))
