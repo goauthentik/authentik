@@ -1,21 +1,11 @@
 {
     "compilerOptions": {
         "strict": true,
-        "paths": {
-            "@goauthentik/app/*": ["src/*"],
-            "@goauthentik/admin/*": ["src/admin/*"],
-            "@goauthentik/common/*": ["src/common/*"],
-            "@goauthentik/components/*": ["src/components/*"],
-            "@goauthentik/docs/*": ["../website/docs/*"],
-            "@goauthentik/elements/*": ["src/elements/*"],
-            "@goauthentik/flow/*": ["src/flow/*"],
-            "@goauthentik/locales/*": ["src/locales/*"],
-            "@goauthentik/polyfill/*": ["src/polyfill/*"],
-            "@goauthentik/standalone/*": ["src/standalone/*"],
-            "@goauthentik/user/*": ["src/user/*"]
-        },
-        "baseUrl": ".",
         "esModuleInterop": true,
+        "baseUrl": ".",
+        "paths": {
+            "@goauthentik/docs/*": ["../website/docs/*"]
+        },
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
         "experimentalDecorators": true,
