@@ -92,7 +92,7 @@ If your users are developers they are probably used to working with tools in Eng
 
 We use [Lit](https://lit.dev/) for our frontend (Jens has written about [choosing Lit over React](https://goauthentik.io/blog/2023-05-04-i-gambled-against-react-and-lost)), which supports translation by default:
 
--   With Lit, we’re able to extract strings of text that we want to translate.
+-  With Lit, we’re able to extract strings of text that we want to translate.
 -   Those strings are sent to Transifex, where we can crowdsource translations.
 -  We do this by marking strings as “source strings” with just three extra characters per string, which is not that much of an effort if you’re doing it from the outset vs implementing afterwards.
 
