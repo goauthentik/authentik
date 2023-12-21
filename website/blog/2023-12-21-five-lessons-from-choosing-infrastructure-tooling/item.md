@@ -126,7 +126,7 @@ Of course, budget is going to play a role in the tools you choose. You have to b
 
 ### We use Loki for logging
 
-We talked about this in our recent [post about building a security stack with mostly free and open source software](https://goauthentik.io/blog/2023-11-22-how-we-saved-over-100k). [Loki](https://grafana.com/oss/loki/) is free, open source, and cheap to run. We could have gone with something like Elasticsearch (and the whole Elastic Stack) but it’s so expensive to run in terms of processing power and memory resources.Loki isn’t as easy to run, but we save on costs.
+We talked about this in our recent [post about building a security stack with mostly free and open source software](https://goauthentik.io/blog/2023-11-22-how-we-saved-over-100k). [Loki](https://grafana.com/oss/loki/) is free, open source, and cheap to run. We could have gone with something like Elasticsearch (and the whole Elastic Stack) but it’s so expensive to run in terms of processing power and memory resources. Loki isn’t as easy to run, but we save on costs.
 
 It comes back to the idea of “you either pay in time or money” for software, and for most of authentik’s tooling I’ve already paid in time for it.
 
