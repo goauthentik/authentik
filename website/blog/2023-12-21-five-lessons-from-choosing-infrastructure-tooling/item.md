@@ -148,7 +148,7 @@ Prometheus stores metrics for ~1 day before [Thanos](https://thanos.io/) fetches
 
 Thanos compresses the metrics data and also does downsampling:
 
--   For 30 days we keep everything that’s scraped (every 30/60 seconds)
+-  For 30 days we keep everything that’s scraped (every 30/60 seconds)
 -  Beyond that, for 90 days we keep only a metric point every five minutes
 -   For a year, we keep just one metric point per hour
 
