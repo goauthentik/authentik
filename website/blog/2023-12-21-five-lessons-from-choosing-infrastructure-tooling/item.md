@@ -9,7 +9,7 @@ authors:
       image_url: https://github.com/rissson.png
     - name: Rebecca Dodd
       title: Contributing Writer
-      url: https://github.com/rebeccadee
+      url: https://www.thebasementoffice.co.uk
       image_url: https://github.com/rebeccadee.png
 tags:
     - authentik
@@ -41,7 +41,7 @@ As the first infrastructure engineer hired to work on authentik, I saw the green
 
 For example, we know that ease of maintenance is a primary consideration, as is the stability and probable longevity of the tool, how well the tools integrate, and of course the level of support we were likely to get for each tool.
 
-In this post we share some of what we’re using to build authentik, and the lessons behind those choices.
+In this post we share some of what we are using to build authentik, and the lessons behind those choices.
 ![technology stack for startups](./tech-stack1.png)
 
 <!--truncate-->
