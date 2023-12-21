@@ -35,7 +35,7 @@ With great power (to choose your own tools) comes great responsibility. Not inhe
 
 As the first infrastructure engineer hired to work on authentik, I saw the greenfield opportunities, but also the responsibility and long-term importance of choosing the best stack of tools and build processes. From my past roles, I already knew many of the considerations we would need to factor in.
 
-For example, we know that ease-of-maintenance is a primary consideration, as is the stability and probable longevity of the tool, how well the tools integrate, and of course the level of support we were likely to get for each tool.
+For example, we know that ease of maintenance is a primary consideration, as is the stability and probable longevity of the tool, how well the tools integrate, and of course the level of support we were likely to get for each tool.
 
 In this post we share what we’re using to build authentik, and the lessons behind those choices.
 
