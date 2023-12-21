@@ -62,7 +62,7 @@ You also don’t need to do anything manually on the production servers or clust
 
 #### Flux and Argo CD essentially do the same thing
 
-Despite there being little difference between Flux and Argo CD, I advocated for switching to Argo CD because I have always worked with it and that familiarity with the tool meant I’d be able to work with much greater efficiency and velocity.
+Despite Flux and Argo CD both being good at what they do, I advocated for switching to Argo CD because I have always worked with it and that familiarity with the tool meant I’d be able to work with much greater efficiency and velocity.
 
 Since switching to Argo CD, we’ve automated deployment of new pull requests with the `deploy me` label. A developer can add that label to one of their open PRs, and the changes get deployed to a production-like environment so they can test those changes with a real domain and real certificates—it’s exactly the same as how a client would interact with those changes. It’s especially useful for mobile app development because instead of launching an authentik instance locally, you can test the mobile app against a production-like environment. This ability to access this “test deployment” is great for QA, tech writers, technical marketing teams, and anyone else who needs early access to a feature before it even gets merged.
 
