@@ -21,7 +21,7 @@ tags:
     - Argo CD
     - Prometheus
     - Thanos
-    - Transifix
+    - Transifex
     - Lit
     - Redis
     - Grafana
