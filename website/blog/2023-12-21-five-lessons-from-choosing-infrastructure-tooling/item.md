@@ -1,5 +1,5 @@
 ---
-title: "5 lessons from choosing infrastructure tooling for a security startup"
+title: "Building the dream infrastructure for a security startup: preparing for technical and human scale"
 description: "What's in our stack: the tools we use to build authentik (and why we chose them)."
 slug: 2023-12-21-five-lessons-from-choosing-infrastructure-tooling
 authors:
