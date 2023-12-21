@@ -1,7 +1,8 @@
+import { PreventFormSubmit } from "@goauthentik/app/elements/forms/helpers";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { ascii_letters, digits, groupBy, randomString } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
-import { PreventFormSubmit } from "@goauthentik/elements/forms/Form";
+import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html, render } from "lit";
@@ -17,7 +18,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 type Group<T> = [string, T[]];
 
 @customElement("ak-search-select")
-export class SearchSelect<T> extends AKElement {
+export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
     // A function which takes the query state object (accepting that it may be empty) and returns a
     // new collection of objects.
     @property({ attribute: false })
