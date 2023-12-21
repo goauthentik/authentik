@@ -8,7 +8,7 @@ authors:
       url: https://github.com/rissson
       image_url: https://github.com/rissson.png
     - name: Rebecca Dodd
-      title: Technical Analyst
+      title: Contributing Writer
       url: https://github.com/rebeccadee
       image_url: https://avatars.githubusercontent.com/u/82806852?v=4
 tags:
