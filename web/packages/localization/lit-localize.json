@@ -13,7 +13,7 @@
         "zh-Hant",
         "de"
     ],
-    "tsConfig": "./tsconfig.json",
+    "inputFiles": ["../monolith/src/**/*.ts"],
     "output": {
         "mode": "runtime",
         "outputDir": "./src/locales",

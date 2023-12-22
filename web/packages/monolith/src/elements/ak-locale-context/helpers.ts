@@ -14,7 +14,7 @@ const TOMBSTONE = "⛼⛼tombstone⛼⛼";
 // application is first instantiated.
 
 export const LOCALES = RAW_LOCALES.map((locale) =>
-    locale.code === "en" ? { ...locale, locale: async () => enLocale } : locale,
+    locale.code === "en" ? { ...locale, locale: async () => enLocale } : locale
 );
 
 export function getBestMatchLocale(locale: string): AkLocale | undefined {
@@ -47,8 +47,8 @@ const isLocaleCandidate = (v: unknown): v is string =>
 
 export function autoDetectLanguage(requestedCode?: string): string {
     const localeCandidates: string[] = [
-        globalAK()?.locale ?? TOMBSTONE,
         localeCodeFromUrl("locale"),
+        globalAK()?.locale ?? TOMBSTONE,
         requestedCode ?? TOMBSTONE,
         window.navigator?.language ?? TOMBSTONE,
         DEFAULT_LOCALE,
@@ -58,7 +58,7 @@ export function autoDetectLanguage(requestedCode?: string): string {
 
     if (!firstSupportedLocale) {
         console.debug(
-            `authentik/locale: No locale found for '[${localeCandidates}.join(',')]', falling back to ${DEFAULT_LOCALE}`,
+            `authentik/locale: No locale found for '[${localeCandidates}.join(',')]', falling back to ${DEFAULT_LOCALE}`
         );
         return DEFAULT_LOCALE;
     }

@@ -1,0 +1,34 @@
+{
+    "name": "@goauthentik/localization",
+    "version": "0.0.0",
+    "private": true,
+    "license": "MIT",
+    "type": "module",
+    "main": "./src/locale-codes.js",
+    "scripts": {
+        "localization:extract": "lit-localize extract",
+        "extract": "run-s localization-extract",
+        "build:localize": "lit-localize build",
+        "build": "run-s build:localize compile",
+        "compile": "esbuild src/locale-codes.ts --outfile=src/locale-codes.js",
+        "prettier": "prettier --write ./src/**/* ./package.json ./lit-localize.json",
+        "pseudolocalize:build-extract-script": "cd scripts && tsc --esModuleInterop --module es2020 --moduleResolution 'node' pseudolocalize.ts && mv pseudolocalize.js pseudolocalize.mjs",
+        "pseudolocalize:extract": "node scripts/pseudolocalize.mjs",
+        "pseudolocalize": "run-s pseudolocalize:build-extract-script pseudolocalize:extract"
+    },
+    "exports": {
+        ".": "./src/locale-codes.js",
+        "./*": "./src/locales/*"
+    },
+    "files": [
+        "./src/"
+    ],
+    "devDependencies": {
+        "@lit/localize-tools": "^0.7.1",
+        "npm-run-all": "^4.1.5",
+        "prettier": "^3.1.1",
+        "pseudolocale": "^2.0.0",
+        "typescript": "^5.3.3",
+        "esbuild": "^0.19.10"
+    }
+}
