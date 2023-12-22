@@ -6,6 +6,7 @@ from django.http.request import HttpRequest
 from django.shortcuts import redirect
 from structlog.stdlib import get_logger
 
+from authentik.core.models import AuthenticatedSession
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR
 from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR
 from authentik.lib.sentry import SentryIgnoredException
@@ -99,8 +100,10 @@ class BoundSessionMiddleware(SessionMiddleware):
             self.recheck_session_geo(configured_binding_geo, last_ip, new_ip)
         # If we got to this point without any error being raised, we need to
         # update the last saved IP to the current one
-        # TODO: Also update AuthenticatedSession object
         request.session[SESSION_KEY_LAST_IP] = new_ip
+        AuthenticatedSession.objects.filter(session_key=request.session.session_key).update(
+            last_ip=new_ip, last_user_agent=request.META.get("HTTP_USER_AGENT", "")
+        )
 
     def recheck_session_net(self, binding: NetworkBinding, last_ip: str, new_ip: str):
         """Check network/ASN binding"""
