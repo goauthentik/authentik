@@ -22,10 +22,15 @@ LOGGER = get_logger()
 class SessionBindingBroken(SentryIgnoredException):
     """Session binding was broken due to specified `reason`"""
 
-    def __init__(self, reason: str, old_value: str, new_value: str) -> None:
+    # pylint: disable=too-many-arguments
+    def __init__(
+        self, reason: str, old_value: str, new_value: str, old_ip: str, new_ip: str
+    ) -> None:
         self.reason = reason
         self.old_value = old_value
         self.new_value = new_value
+        self.old_ip = old_ip
+        self.new_ip = new_ip
 
     def __repr__(self) -> str:
         return (
@@ -41,6 +46,10 @@ class SessionBindingBroken(SentryIgnoredException):
                 "reason": self.reason,
                 "previous_value": self.old_value,
                 "new_value": self.new_value,
+            },
+            "ip": {
+                "previous": self.old_ip,
+                "new": self.new_ip,
             },
         }
 
@@ -114,6 +123,8 @@ class BoundSessionMiddleware(SessionMiddleware):
                 "network.missing",
                 ASN_CONTEXT_PROCESSOR.asn_to_dict(last_asn),
                 ASN_CONTEXT_PROCESSOR.asn_to_dict(new_asn),
+                last_ip,
+                new_ip,
             )
         if binding in [
             NetworkBinding.BIND_ASN,
@@ -126,15 +137,29 @@ class BoundSessionMiddleware(SessionMiddleware):
                     "network.asn",
                     last_asn.autonomous_system_number,
                     new_asn.autonomous_system_number,
+                    last_ip,
+                    new_ip,
                 )
         if binding in [NetworkBinding.BIND_ASN_NETWORK, NetworkBinding.BIND_ASN_NETWORK_IP]:
             # Check Network afterwards
             if last_asn.network != new_asn.network:
-                raise SessionBindingBroken("network.asn_network", last_asn.network, new_asn.network)
+                raise SessionBindingBroken(
+                    "network.asn_network",
+                    last_asn.network,
+                    new_asn.network,
+                    last_ip,
+                    new_ip,
+                )
         if binding in [NetworkBinding.BIND_ASN_NETWORK_IP]:
             # Only require strict IP checking
             if last_ip != new_ip:
-                raise SessionBindingBroken("network.ip", last_ip, new_ip)
+                raise SessionBindingBroken(
+                    "network.ip",
+                    last_ip,
+                    new_ip,
+                    last_ip,
+                    new_ip,
+                )
 
     def recheck_session_geo(self, binding: GeoIPBinding, last_ip: str, new_ip: str):
         """Check GeoIP binding"""
@@ -145,6 +170,8 @@ class BoundSessionMiddleware(SessionMiddleware):
                 "geoip.missing",
                 GEOIP_CONTEXT_PROCESSOR.city_to_dict(last_geo),
                 GEOIP_CONTEXT_PROCESSOR.city_to_dict(new_geo),
+                last_ip,
+                new_ip,
             )
         if binding in [
             GeoIPBinding.BIND_CONTINENT,
@@ -153,15 +180,33 @@ class BoundSessionMiddleware(SessionMiddleware):
         ]:
             # Check Continent which is required for all 3 modes
             if last_geo.continent != new_geo.continent:
-                raise SessionBindingBroken("geoip.continent", last_geo.continent, new_geo.continent)
+                raise SessionBindingBroken(
+                    "geoip.continent",
+                    last_geo.continent,
+                    new_geo.continent,
+                    last_ip,
+                    new_ip,
+                )
         if binding in [
             GeoIPBinding.BIND_CONTINENT_COUNTRY,
             GeoIPBinding.BIND_CONTINENT_COUNTRY_CITY,
         ]:
             # Check Country afterwards
             if last_geo.country != new_geo.country:
-                raise SessionBindingBroken("geoip.country", last_geo.country, new_geo.country)
+                raise SessionBindingBroken(
+                    "geoip.country",
+                    last_geo.country,
+                    new_geo.country,
+                    last_ip,
+                    new_ip,
+                )
         if binding in [GeoIPBinding.BIND_CONTINENT_COUNTRY_CITY]:
             # Check city afterwards
             if last_geo.city != new_geo.city:
-                raise SessionBindingBroken("geoip.city", last_geo.city, new_geo.city)
+                raise SessionBindingBroken(
+                    "geoip.city",
+                    last_geo.city,
+                    new_geo.city,
+                    last_ip,
+                    new_ip,
+                )
