@@ -1,5 +1,9 @@
-import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { AndNext } from "@goauthentik/common/api/config";
 import { deviceTypeName } from "@goauthentik/common/labels";
+import {
+    destroyAuthenticatorDevice,
+    retrieveAuthenticatorsAllList,
+} from "@goauthentik/connectors/authenticators";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/TokenCopyButton";
@@ -14,7 +18,7 @@ import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { AuthenticatorsApi, Device, UserSetting } from "@goauthentik/api";
+import { Device, UserSetting } from "@goauthentik/api";
 
 export const stageToAuthenticatorName = (stage: UserSetting) =>
     stage.title ?? `Invalid stage component ${stage.component}`;
@@ -27,7 +31,7 @@ export class MFADevicesPage extends Table<Device> {
     checkbox = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<Device>> {
-        const devices = await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAllList();
+        const devices = await retrieveAuthenticatorsAllList();
         return {
             pagination: {
                 current: 0,
@@ -84,25 +88,7 @@ export class MFADevicesPage extends Table<Device> {
     }
 
     async deleteWrapper(device: Device) {
-        const api = new AuthenticatorsApi(DEFAULT_CONFIG);
-        switch (device.type.toLowerCase()) {
-            case "authentik_stages_authenticator_duo.duodevice":
-                return api.authenticatorsDuoDestroy({ id: parseInt(device.pk, 10) });
-            case "authentik_stages_authenticator_sms.smsdevice":
-                return api.authenticatorsSmsDestroy({ id: parseInt(device.pk, 10) });
-            case "authentik_stages_authenticator_totp.totpdevice":
-                return api.authenticatorsTotpDestroy({ id: parseInt(device.pk, 10) });
-            case "authentik_stages_authenticator_static.staticdevice":
-                return api.authenticatorsStaticDestroy({ id: parseInt(device.pk, 10) });
-            case "authentik_stages_authenticator_webauthn.webauthndevice":
-                return api.authenticatorsWebauthnDestroy({ id: parseInt(device.pk, 10) });
-            case "authentik_stages_authenticator_mobile.mobiledevice":
-                return api.authenticatorsMobileDestroy({
-                    uuid: device.pk,
-                });
-            default:
-                break;
-        }
+        return destroyAuthenticatorDevice(device.type, device.pk);
     }
 
     renderToolbarSelected(): TemplateResult {

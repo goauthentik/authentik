@@ -1,5 +1,8 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { deviceTypeName } from "@goauthentik/common/labels";
+import {
+    destroyAuthenticatorDevice,
+    retrieveAuthenticatorsAdminAllList,
+} from "@goauthentik/connectors/authenticators";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
@@ -8,7 +11,7 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { AuthenticatorsApi, Device } from "@goauthentik/api";
+import { Device } from "@goauthentik/api";
 
 @customElement("ak-user-device-table")
 export class UserDeviceTable extends Table<Device> {
@@ -18,24 +21,22 @@ export class UserDeviceTable extends Table<Device> {
     checkbox = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<Device>> {
-        return new AuthenticatorsApi(DEFAULT_CONFIG)
-            .authenticatorsAdminAllList({
-                user: this.userId,
-            })
-            .then((res) => {
-                return {
-                    pagination: {
-                        count: res.length,
-                        current: 1,
-                        totalPages: 1,
-                        startIndex: 1,
-                        endIndex: res.length,
-                        next: 0,
-                        previous: 0,
-                    },
-                    results: res,
-                };
-            });
+        if (!this.userId) {
+            throw new Error(`Attempted to retrieve authenticator list for undefined user`);
+        }
+        const results = await retrieveAuthenticatorsAdminAllList(this.userId);
+        return {
+            pagination: {
+                count: results.length,
+                current: 1,
+                totalPages: 1,
+                startIndex: 1,
+                endIndex: results.length,
+                next: 0,
+                previous: 0,
+            },
+            results,
+        };
     }
 
     columns(): TableColumn[] {
@@ -48,25 +49,7 @@ export class UserDeviceTable extends Table<Device> {
     }
 
     async deleteWrapper(device: Device) {
-        const api = new AuthenticatorsApi(DEFAULT_CONFIG);
-        switch (device.type.toLowerCase()) {
-            case "authentik_stages_authenticator_duo.duodevice":
-                return api.authenticatorsAdminDuoDestroy({ id: parseInt(device.pk, 10) });
-            case "authentik_stages_authenticator_sms.smsdevice":
-                return api.authenticatorsAdminSmsDestroy({ id: parseInt(device.pk, 10) });
-            case "authentik_stages_authenticator_totp.totpdevice":
-                return api.authenticatorsAdminTotpDestroy({ id: parseInt(device.pk, 10) });
-            case "authentik_stages_authenticator_static.staticdevice":
-                return api.authenticatorsAdminStaticDestroy({ id: parseInt(device.pk, 10) });
-            case "authentik_stages_authenticator_webauthn.webauthndevice":
-                return api.authenticatorsAdminWebauthnDestroy({ id: parseInt(device.pk, 10) });
-            case "authentik_stages_authenticator_mobile.mobiledevice":
-                return api.authenticatorsMobileDestroy({
-                    uuid: device.pk,
-                });
-            default:
-                break;
-        }
+        return destroyAuthenticatorDevice(device.type, device.pk);
     }
 
     renderToolbarSelected(): TemplateResult {

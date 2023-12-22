@@ -6,6 +6,7 @@
             "@goauthentik/admin/*": ["src/admin/*"],
             "@goauthentik/common/*": ["src/common/*"],
             "@goauthentik/components/*": ["src/components/*"],
+            "@goauthentik/connectors/*": ["src/connectors/*"],
             "@goauthentik/docs/*": ["../website/docs/*"],
             "@goauthentik/elements/*": ["src/elements/*"],
             "@goauthentik/flow/*": ["src/flow/*"],
