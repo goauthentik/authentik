@@ -487,6 +487,7 @@ class TokenView(View):
             # Keep same scopes as previous token
             scope=self.params.authorization_code.scope,
             auth_time=self.params.authorization_code.auth_time,
+            session_id=self.params.authorization_code.session_id,
         )
         access_token.id_token = IDToken.new(
             self.provider,
@@ -502,6 +503,7 @@ class TokenView(View):
             expires=refresh_token_expiry,
             provider=self.provider,
             auth_time=self.params.authorization_code.auth_time,
+            session_id=self.params.authorization_code.session_id,
         )
         id_token = IDToken.new(
             self.provider,
@@ -539,6 +541,7 @@ class TokenView(View):
             # Keep same scopes as previous token
             scope=self.params.refresh_token.scope,
             auth_time=self.params.refresh_token.auth_time,
+            session_id=self.params.refresh_token.session_id,
         )
         access_token.id_token = IDToken.new(
             self.provider,
@@ -554,6 +557,7 @@ class TokenView(View):
             expires=refresh_token_expiry,
             provider=self.provider,
             auth_time=self.params.refresh_token.auth_time,
+            session_id=self.params.refresh_token.session_id,
         )
         id_token = IDToken.new(
             self.provider,
