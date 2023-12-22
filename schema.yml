@@ -39187,13 +39187,13 @@ components:
     ProviderTypeEnum:
       enum:
       - apple
+      - openidconnect
       - azuread
       - discord
       - facebook
       - github
       - google
       - mailcow
-      - openidconnect
       - okta
       - patreon
       - reddit
@@ -39202,13 +39202,13 @@ components:
       type: string
       description: |-
         * `apple` - Apple
+        * `openidconnect` - OpenID Connect
         * `azuread` - Azure AD
         * `discord` - Discord
         * `facebook` - Facebook
         * `github` - GitHub
         * `google` - Google
         * `mailcow` - Mailcow
-        * `openidconnect` - OpenID Connect
         * `okta` - Okta
         * `patreon` - Patreon
         * `reddit` - Reddit
