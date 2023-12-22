@@ -36,6 +36,7 @@ func (ps *ProxyServer) handleWSMessage(ctx context.Context, args map[string]inte
 	switch msg.SubType {
 	case WSProviderSubTypeLogout:
 		for _, p := range ps.apps {
+			ps.log.WithField("provider", p.Host).Debug("Logging out")
 			err := p.Logout(ctx, func(c application.Claims) bool {
 				return c.Sid == msg.SessionID
 			})
