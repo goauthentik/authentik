@@ -26,8 +26,10 @@ export const retrieveAuthenticatorsAdminAllList = (user: number) =>
     api().authenticatorsAdminAllList({ user });
 
 export async function destroyAuthenticatorDevice(deviceType: string, id: number | string) {
-    id = typeof id === "string" ? parseInt(id, 10) : id;
     deviceType = deviceType.toLowerCase();
+    const uuid = id;
+    id = typeof id === "string" ? parseInt(id, 10) : id;
+
     switch (deviceType) {
         case DeviceType.Duo:
             return api().authenticatorsDuoDestroy({ id });
@@ -39,8 +41,12 @@ export async function destroyAuthenticatorDevice(deviceType: string, id: number 
             return api().authenticatorsStaticDestroy({ id });
         case DeviceType.WebAuthn:
             return api().authenticatorsWebauthnDestroy({ id });
-        case DeviceType.Mobile:
-            return api().authenticatorsMobileDestroy({ uuid: `${id}` });
+        case DeviceType.Mobile: {
+            if (typeof uuid !== "string") {
+                throw new Error(`authenticatorMobile expects full UUID, received ${uuid}`);
+            }
+            return api().authenticatorsMobileDestroy({ uuid });
+        }
         default:
             return exhaustiveGuard(deviceType);
     }
@@ -51,8 +57,10 @@ export async function updateAuthenticatorDevice(
     id: number | string,
     device: Device,
 ) {
-    id = typeof id === "string" ? parseInt(id, 10) : id;
     deviceType = deviceType.toLowerCase();
+    const uuid = id;
+    id = typeof id === "string" ? parseInt(id, 10) : id;
+
     switch (deviceType) {
         case DeviceType.Duo:
             return api().authenticatorsDuoUpdate({ id, duoDeviceRequest: device });
@@ -64,8 +72,12 @@ export async function updateAuthenticatorDevice(
             return api().authenticatorsStaticUpdate({ id, staticDeviceRequest: device });
         case DeviceType.WebAuthn:
             return api().authenticatorsWebauthnUpdate({ id, webAuthnDeviceRequest: device });
-        case DeviceType.Mobile:
-            return api().authenticatorsMobileUpdate({ uuid: `${id}`, mobileDeviceRequest: device });
+        case DeviceType.Mobile: {
+            if (typeof uuid !== "string") {
+                throw new Error(`authenticatorMobile expects full UUID, received ${uuid}`);
+            }
+            return api().authenticatorsMobileUpdate({ uuid, mobileDeviceRequest: device });
+        }
         default:
             return exhaustiveGuard(deviceType);
     }
