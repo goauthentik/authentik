@@ -2326,7 +2326,7 @@ msgid ""
 "      "
 msgstr ""
 "\n"
-"      %(username)님께,\n"
+"      %(username)s 님께,\n"
 "      "
 
 #: authentik/stages/email/templates/email/password_reset.html:21
