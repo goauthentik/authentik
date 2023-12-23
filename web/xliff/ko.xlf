@@ -5949,7 +5949,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s624256f8a4bb4c89">
         <source>Notification transport(s)</source>
-        <target>통지 전송방법</target>
+        <target>통지 전송</target>
         
       </trans-unit>
       <trans-unit id="sac1332e6f421526e">
