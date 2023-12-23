@@ -5213,7 +5213,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s1c6ba8d100453392">
         <source>Time in minutes the token sent is valid.</source>
-        <target>전송한 토큰이 유효한 시간(분)입니다.</target>
+        <target>전송한 토큰이 유효한 시간입니다.</target>
         
       </trans-unit>
       <trans-unit id="se47baf2fd16b9d2b">
