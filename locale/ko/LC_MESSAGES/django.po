@@ -2395,7 +2395,7 @@ msgstr "활성화되면 잘못된 사용자 정보가 입력되더라도 단계�
 
 #: authentik/stages/identification/models.py:72
 msgid "Optional enrollment flow, which is linked at the bottom of the page."
-msgstr "페이지 하단에 링크된, 등록 플로우(선택 사항)를 참조하세요."
+msgstr "페이지 하단에 링크된,  선택적 등록 플로우를 참조하세요."
 
 #: authentik/stages/identification/models.py:81
 msgid "Optional recovery flow, which is linked at the bottom of the page."
