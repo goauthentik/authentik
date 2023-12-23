@@ -1365,7 +1365,7 @@
       </trans-unit>
       <trans-unit id="sc9fc206433f67588">
         <source>Regular expressions for which authentication is not required. Each new line is interpreted as a new expression.</source>
-        <target>Regular expressions for which authentication is not required. Each new line is interpreted as a new expression.</target>
+        <target>인증이 필요하지 않은 정규 표현식. 각 새 줄은 새 표현식으로 해석됩니다.</target>
         
       </trans-unit>
       <trans-unit id="sd503fabef9691134">
