@@ -2399,7 +2399,7 @@ msgstr "페이지 하단에 링크된,  선택적 등록 플로우를 참조하�
 
 #: authentik/stages/identification/models.py:81
 msgid "Optional recovery flow, which is linked at the bottom of the page."
-msgstr "페이지 하단에 링크된, 복구 플로우(선택 사항)을 참조하세요."
+msgstr "페이지 하단에 링크된,  선택적 복구 플로우를 참조하세요."
 
 #: authentik/stages/identification/models.py:90
 msgid "Optional passwordless flow, which is linked at the bottom of the page."
