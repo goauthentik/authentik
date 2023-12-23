@@ -1269,7 +1269,7 @@ msgstr "디바이스 토큰"
 #: authentik/providers/saml/views/flows.py:87
 #, python-format
 msgid "Redirecting to %(app)s..."
-msgstr "%(app)으로 리디렉션 중..."
+msgstr "%(app)s 으로 리디렉션 중..."
 
 #: authentik/providers/oauth2/views/device_init.py:151
 msgid "Invalid code"
