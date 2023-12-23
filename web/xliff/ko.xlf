@@ -4008,7 +4008,8 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s5d7748b1d2363478">
         <source>Are you sure you want to remove the selected users from the group <x id="0" equiv-text="${this.targetGroup?.name}"/>?</source>
-        <target>그룹 <x id="0" equiv-text="${this.targetGroup?.name}"/>에서 선택한 사용자를 제거하시겠습니까?</target>
+        <target>그룹 <x id="0" equiv-text="${this.targetGroup?.name}"/>에서 
+선택한 사용자를 제거하시겠습니까?</target>
         
       </trans-unit>
       <trans-unit id="sea4f08110bb8f15d">
@@ -4018,7 +4019,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="sf466142da6a65052">
         <source>Impersonate</source>
-        <target>가장(Impersonate)</target>
+        <target>사용자 위장</target>
         
       </trans-unit>
       <trans-unit id="s58888ef1ee9b5bb8">
