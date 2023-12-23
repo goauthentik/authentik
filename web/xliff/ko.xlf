@@ -4299,7 +4299,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="sb57dbcda1929c642">
         <source>Edit the notes attribute of this user to add notes here.</source>
-        <target>이 사용자의 참고 속성(Attribute)을 편집하여 여기에 참고를 추가합니다.</target>
+        <target>이 사용자의 참고 특성(Attribute)을 편집하여 여기에 참고를 추가합니다.</target>
         
       </trans-unit>
       <trans-unit id="s5c18cae48b93138c">
