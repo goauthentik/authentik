@@ -283,12 +283,12 @@
       </trans-unit>
       <trans-unit id="sb1c91762ae3a9bee">
         <source>Impersonation started</source>
-        <target>가장(Impersonation) 시작</target>
+        <target>사용자 위장 시작</target>
         
       </trans-unit>
       <trans-unit id="s9c73bd29b279d26b">
         <source>Impersonation ended</source>
-        <target>가장(Impersonation) 끝</target>
+        <target>사용자 위장 종료</target>
         
       </trans-unit>
       <trans-unit id="s1cd264012278c047">
