@@ -4379,7 +4379,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s57448f10eb973100">
         <source>Create Invitation Links to enroll Users, and optionally force specific attributes of their account.</source>
-        <target>초대 링크를 생성하여 사용자를 등록하고 선택적으로 계정의 특정 속성(Attribute)을 강제로 적용합니다.</target>
+        <target>초대 링크를 생성하여 사용자를 등록하고 선택적으로 계정의 특정 특성(Attribute)을 강제로 적용합니다.</target>
         
       </trans-unit>
       <trans-unit id="s4aee34a672e5cfc0">
