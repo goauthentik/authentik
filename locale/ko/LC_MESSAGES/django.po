@@ -94,7 +94,7 @@ msgstr "앞 또는 뒤에 슬래시가 허용되지 않습니다."
 
 #: authentik/core/api/users.py:159
 msgid "No empty segments in user path allowed."
-msgstr "사용자 경로에 빈 세그먼트가 허용되지 않는다."
+msgstr "사용자 경로에 빈 세그먼트가 허용되지 않습니다."
 
 #: authentik/core/models.py:86
 msgid "name"
