@@ -6460,7 +6460,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="saab79cd956ee56a9">
         <source>Blueprints</source>
-        <target>Blueprints</target>
+        <target>블루프린트</target>
         
       </trans-unit>
       <trans-unit id="s6835db03209b4f94">
@@ -6475,7 +6475,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="s2708cac1f4942708">
         <source>Blueprint(s)</source>
-        <target>Blueprint(s)</target>
+        <target>블루프린트</target>
         
       </trans-unit>
       <trans-unit id="s880b8b70b22f9977">
