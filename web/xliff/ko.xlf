@@ -1793,7 +1793,7 @@
       </trans-unit>
       <trans-unit id="sa90b7809586c35ce">
         <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
-        <target>전체 URL, 상대 경로를 입력하거나 또는 'fa://fa-test'를 사용하여 Font Awesome 아이콘 &quot;fa-test&quot;를 사용합니다.</target>
+        <target>전체 URL, 상대 경로를 입력하거나, 또는 'fa://fa-test'를 사용하여 Font Awesome 아이콘 &quot;fa-test&quot;를 사용합니다.</target>
         
       </trans-unit>
       <trans-unit id="s0410779cb47de312">
