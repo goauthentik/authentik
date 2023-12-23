@@ -5093,7 +5093,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s170b705c55ecb2ae">
         <source>URL to fetch JavaScript from, defaults to recaptcha. Can be replaced with any compatible alternative.</source>
-        <target>자바스크립트를 가져올 URL(기본값은 보안 문자)입니다. 호환되는 다른 비밀번호로 대체할 수 있습니다.</target>
+        <target>JavaScript를 가져올 URL입니다. 기본값은 recaptcha입니다. 호환되는 대체 사이트로 교체할 수 있습니다.</target>
         
       </trans-unit>
       <trans-unit id="s275021658614ce9e">
