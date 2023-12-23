@@ -31,7 +31,7 @@ class MMDBContextProcessor(EventContextProcessor):
             self._last_mtime = Path(path).stat().st_mtime
             self.logger.info("Loaded MMDB database", last_write=self._last_mtime, file=path)
         except OSError as exc:
-            self.logger.warning("Failed to load MMDB database", exc=exc)
+            self.logger.warning("Failed to load MMDB database", path=path, exc=exc)
 
     def check_expired(self):
         """Check if the modification date of the MMDB database has
@@ -48,7 +48,6 @@ class MMDBContextProcessor(EventContextProcessor):
         except OSError as exc:
             self.logger.warning("Failed to check MMDB age", exc=exc)
 
-    @property
-    def enabled(self) -> bool:
-        """Check if MMDB is enabled"""
+    def configured(self) -> bool:
+        """Return true if this context processor is configured"""
         return bool(self.reader)

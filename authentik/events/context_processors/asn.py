@@ -51,7 +51,7 @@ class ASNContextProcessor(MMDBContextProcessor):
             op="authentik.events.asn.asn",
             description=ip_address,
         ):
-            if not self.enabled:
+            if not self.configured():
                 return None
             self.check_expired()
             try:
@@ -59,8 +59,10 @@ class ASNContextProcessor(MMDBContextProcessor):
             except (GeoIP2Error, ValueError):
                 return None
 
-    def asn_to_dict(self, asn: ASN) -> ASNDict:
+    def asn_to_dict(self, asn: ASN | None) -> ASNDict:
         """Convert ASN to dict"""
+        if not asn:
+            return {}
         asn_dict: ASNDict = {
             "asn": asn.autonomous_system_number,
             "as_org": asn.autonomous_system_organization,

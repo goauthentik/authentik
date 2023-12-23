@@ -26956,9 +26956,41 @@ paths:
       description: UserLoginStage Viewset
       parameters:
       - in: query
+        name: geoip_binding
+        schema:
+          type: string
+          enum:
+          - bind_continent
+          - bind_continent_country
+          - bind_continent_country_city
+          - no_binding
+        description: |-
+          Bind sessions created by this stage to the configured GeoIP location
+
+          * `no_binding` - No Binding
+          * `bind_continent` - Bind Continent
+          * `bind_continent_country` - Bind Continent Country
+          * `bind_continent_country_city` - Bind Continent Country City
+      - in: query
         name: name
         schema:
           type: string
+      - in: query
+        name: network_binding
+        schema:
+          type: string
+          enum:
+          - bind_asn
+          - bind_asn_network
+          - bind_asn_network_ip
+          - no_binding
+        description: |-
+          Bind sessions created by this stage to the configured network
+
+          * `no_binding` - No Binding
+          * `bind_asn` - Bind Asn
+          * `bind_asn_network` - Bind Asn Network
+          * `bind_asn_network_ip` - Bind Asn Network Ip
       - name: ordering
         required: false
         in: query
@@ -31829,6 +31861,18 @@ components:
           type: string
       required:
       - detail
+    GeoipBindingEnum:
+      enum:
+      - no_binding
+      - bind_continent
+      - bind_continent_country
+      - bind_continent_country_city
+      type: string
+      description: |-
+        * `no_binding` - No Binding
+        * `bind_continent` - Bind Continent
+        * `bind_continent_country` - Bind Continent Country
+        * `bind_continent_country_city` - Bind Continent Country City
     Group:
       type: object
       description: Group Serializer
@@ -33405,6 +33449,18 @@ components:
         * `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName` - X509
         * `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName` - Windows
         * `urn:oasis:names:tc:SAML:2.0:nameid-format:transient` - Transient
+    NetworkBindingEnum:
+      enum:
+      - no_binding
+      - bind_asn
+      - bind_asn_network
+      - bind_asn_network_ip
+      type: string
+      description: |-
+        * `no_binding` - No Binding
+        * `bind_asn` - Bind Asn
+        * `bind_asn_network` - Bind Asn Network
+        * `bind_asn_network_ip` - Bind Asn Network Ip
     NotConfiguredActionEnum:
       enum:
       - skip
@@ -38080,6 +38136,26 @@ components:
           description: 'Offset the session will be extended by when the user picks
             the remember me option. Default of 0 means that the remember me option
             will not be shown. (Format: hours=-1;minutes=-2;seconds=-3)'
+        network_binding:
+          allOf:
+          - $ref: '#/components/schemas/NetworkBindingEnum'
+          description: |-
+            Bind sessions created by this stage to the configured network
+
+            * `no_binding` - No Binding
+            * `bind_asn` - Bind Asn
+            * `bind_asn_network` - Bind Asn Network
+            * `bind_asn_network_ip` - Bind Asn Network Ip
+        geoip_binding:
+          allOf:
+          - $ref: '#/components/schemas/GeoipBindingEnum'
+          description: |-
+            Bind sessions created by this stage to the configured GeoIP location
+
+            * `no_binding` - No Binding
+            * `bind_continent` - Bind Continent
+            * `bind_continent_country` - Bind Continent Country
+            * `bind_continent_country_city` - Bind Continent Country City
     PatchedUserLogoutStageRequest:
       type: object
       description: UserLogoutStage Serializer
@@ -39111,13 +39187,13 @@ components:
     ProviderTypeEnum:
       enum:
       - apple
+      - openidconnect
       - azuread
       - discord
       - facebook
       - github
       - google
       - mailcow
-      - openidconnect
       - okta
       - patreon
       - reddit
@@ -39126,13 +39202,13 @@ components:
       type: string
       description: |-
         * `apple` - Apple
+        * `openidconnect` - OpenID Connect
         * `azuread` - Azure AD
         * `discord` - Discord
         * `facebook` - Facebook
         * `github` - GitHub
         * `google` - Google
         * `mailcow` - Mailcow
-        * `openidconnect` - OpenID Connect
         * `okta` - Okta
         * `patreon` - Patreon
         * `reddit` - Reddit
@@ -42052,6 +42128,26 @@ components:
           description: 'Offset the session will be extended by when the user picks
             the remember me option. Default of 0 means that the remember me option
             will not be shown. (Format: hours=-1;minutes=-2;seconds=-3)'
+        network_binding:
+          allOf:
+          - $ref: '#/components/schemas/NetworkBindingEnum'
+          description: |-
+            Bind sessions created by this stage to the configured network
+
+            * `no_binding` - No Binding
+            * `bind_asn` - Bind Asn
+            * `bind_asn_network` - Bind Asn Network
+            * `bind_asn_network_ip` - Bind Asn Network Ip
+        geoip_binding:
+          allOf:
+          - $ref: '#/components/schemas/GeoipBindingEnum'
+          description: |-
+            Bind sessions created by this stage to the configured GeoIP location
+
+            * `no_binding` - No Binding
+            * `bind_continent` - Bind Continent
+            * `bind_continent_country` - Bind Continent Country
+            * `bind_continent_country_city` - Bind Continent Country City
       required:
       - component
       - meta_model_name
@@ -42084,6 +42180,26 @@ components:
           description: 'Offset the session will be extended by when the user picks
             the remember me option. Default of 0 means that the remember me option
             will not be shown. (Format: hours=-1;minutes=-2;seconds=-3)'
+        network_binding:
+          allOf:
+          - $ref: '#/components/schemas/NetworkBindingEnum'
+          description: |-
+            Bind sessions created by this stage to the configured network
+
+            * `no_binding` - No Binding
+            * `bind_asn` - Bind Asn
+            * `bind_asn_network` - Bind Asn Network
+            * `bind_asn_network_ip` - Bind Asn Network Ip
+        geoip_binding:
+          allOf:
+          - $ref: '#/components/schemas/GeoipBindingEnum'
+          description: |-
+            Bind sessions created by this stage to the configured GeoIP location
+
+            * `no_binding` - No Binding
+            * `bind_continent` - Bind Continent
+            * `bind_continent_country` - Bind Continent Country
+            * `bind_continent_country_city` - Bind Continent Country City
       required:
       - name
     UserLogoutStage:
