@@ -1,5 +1,6 @@
 """RAC Models"""
 from typing import Optional
+from uuid import uuid4
 
 from deepmerge import always_merger
 from django.db import models
@@ -7,7 +8,7 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import PropertyMapping, Provider
+from authentik.core.models import ExpiringModel, PropertyMapping, Provider, default_token_key
 from authentik.lib.models import SerializerModel
 from authentik.policies.models import PolicyBindingModel
 
@@ -44,7 +45,7 @@ class RACProvider(Provider):
         try:
             # pylint: disable=no-member
             return reverse(
-                "authentik_providers_rac:if-rac",
+                "authentik_providers_rac:start",
                 kwargs={"app": self.application.slug},
             )
         except Provider.application.RelatedObjectDoesNotExist:
@@ -72,6 +73,7 @@ class Endpoint(SerializerModel, PolicyBindingModel):
     host = models.TextField()
     protocol = models.TextField(choices=Protocols.choices)
     settings = models.JSONField(default=dict)
+    auth_mode = models.TextField(choices=AuthenticationMode.choices)
 
     property_mappings = models.ManyToManyField(
         "authentik_core.PropertyMapping", default=None, blank=True
@@ -130,3 +132,11 @@ class RACPropertyMapping(PropertyMapping):
     class Meta:
         verbose_name = _("RAC Property Mapping")
         verbose_name_plural = _("RAC Property Mappings")
+
+
+class ConnectionToken(ExpiringModel):
+
+    connection_token_uuid = models.UUIDField(default=uuid4, primary_key=True)
+    provider = models.ForeignKey(RACProvider, on_delete=models.CASCADE)
+    endpoint = models.ForeignKey(Endpoint, on_delete=models.CASCADE)
+    token = models.TextField(default=default_token_key)

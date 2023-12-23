@@ -16,7 +16,12 @@ from authentik.root.middleware import ChannelsLoggingMiddleware
 
 urlpatterns = [
     path(
-        "if/rac/<slug:app>/<uuid:endpoint>/",
+        "application/rac/<slug:app>/<uuid:endpoint>/",
+        ensure_csrf_cookie(RACInterface.as_view()),
+        name="start",
+    ),
+    path(
+        "if/rac/<str:token>/",
         ensure_csrf_cookie(RACInterface.as_view()),
         name="if-rac",
     ),
@@ -24,7 +29,7 @@ urlpatterns = [
 
 websocket_urlpatterns = [
     path(
-        "ws/rac/<slug:app>/<uuid:endpoint>/",
+        "ws/rac/<str:token>/",
         ChannelsLoggingMiddleware(
             CookieMiddleware(SessionMiddleware(AuthMiddleware(RACClientConsumer.as_asgi())))
         ),

@@ -28954,6 +28954,14 @@ components:
       required:
       - name
       - slug
+    AuthModeEnum:
+      enum:
+      - static
+      - prompt
+      type: string
+      description: |-
+        * `static` - Static
+        * `prompt` - Prompt
     AuthTypeEnum:
       enum:
       - basic
@@ -31333,15 +31341,16 @@ components:
           $ref: '#/components/schemas/ProtocolEnum'
         host:
           type: string
-        settings:
-          type: object
-          additionalProperties: {}
+        settings: {}
         property_mappings:
           type: array
           items:
             type: string
             format: uuid
+        auth_mode:
+          $ref: '#/components/schemas/AuthModeEnum'
       required:
+      - auth_mode
       - host
       - name
       - protocol
@@ -31357,15 +31366,16 @@ components:
         host:
           type: string
           minLength: 1
-        settings:
-          type: object
-          additionalProperties: {}
+        settings: {}
         property_mappings:
           type: array
           items:
             type: string
             format: uuid
+        auth_mode:
+          $ref: '#/components/schemas/AuthModeEnum'
       required:
+      - auth_mode
       - host
       - name
       - protocol
@@ -33761,6 +33771,10 @@ components:
           type: string
         icon:
           type: string
+          nullable: true
+          description: |-
+            Get the URL to the Icon. If the name is /static or
+            starts with http it is returned as-is
           readOnly: true
         server_uri:
           type: string
@@ -34950,6 +34964,10 @@ components:
           type: string
         icon:
           type: string
+          nullable: true
+          description: |-
+            Get the URL to the Icon. If the name is /static or
+            starts with http it is returned as-is
           readOnly: true
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
@@ -37231,14 +37249,14 @@ components:
         host:
           type: string
           minLength: 1
-        settings:
-          type: object
-          additionalProperties: {}
+        settings: {}
         property_mappings:
           type: array
           items:
             type: string
             format: uuid
+        auth_mode:
+          $ref: '#/components/schemas/AuthModeEnum'
     PatchedEventMatcherPolicyRequest:
       type: object
       description: Event Matcher Policy Serializer
@@ -38600,9 +38618,7 @@ components:
             format: uuid
         protocol:
           $ref: '#/components/schemas/ProtocolEnum'
-        settings:
-          type: object
-          additionalProperties: {}
+        settings: {}
     PatchedRadiusProviderRequest:
       type: object
       description: RadiusProvider Serializer
@@ -39389,6 +39405,10 @@ components:
           type: string
         icon:
           type: string
+          nullable: true
+          description: |-
+            Get the URL to the Icon. If the name is /static or
+            starts with http it is returned as-is
           readOnly: true
         client_id:
           type: string
@@ -40669,9 +40689,7 @@ components:
           readOnly: true
         protocol:
           $ref: '#/components/schemas/ProtocolEnum'
-        settings:
-          type: object
-          additionalProperties: {}
+        settings: {}
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -40709,9 +40727,7 @@ components:
             format: uuid
         protocol:
           $ref: '#/components/schemas/ProtocolEnum'
-        settings:
-          type: object
-          additionalProperties: {}
+        settings: {}
       required:
       - authorization_flow
       - name
@@ -41519,6 +41535,10 @@ components:
           type: string
         icon:
           type: string
+          nullable: true
+          description: |-
+            Get the URL to the Icon. If the name is /static or
+            starts with http it is returned as-is
           readOnly: true
         pre_authentication_flow:
           type: string
@@ -42210,6 +42230,10 @@ components:
           type: string
         icon:
           type: string
+          nullable: true
+          description: |-
+            Get the URL to the Icon. If the name is /static or
+            starts with http it is returned as-is
           readOnly: true
       required:
       - component

@@ -24,7 +24,7 @@ class EndpointSerializer(ModelSerializer):
 
     class Meta:
         model = Endpoint
-        fields = ["name", "protocol", "host", "settings", "property_mappings"]
+        fields = ["name", "protocol", "host", "settings", "property_mappings", "auth_mode"]
 
 
 class EndpointViewSet(UsedByMixin, ModelViewSet):

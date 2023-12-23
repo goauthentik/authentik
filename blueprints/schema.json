@@ -8949,6 +8949,14 @@
                         "type": "integer"
                     },
                     "title": "Property mappings"
+                },
+                "auth_mode": {
+                    "type": "string",
+                    "enum": [
+                        "static",
+                        "prompt"
+                    ],
+                    "title": "Auth mode"
                 }
             },
             "required": []

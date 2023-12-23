@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import Application
-from authentik.enterprise.providers.rac.models import Endpoint, RACProvider
+from authentik.enterprise.providers.rac.models import ConnectionToken, Endpoint, RACProvider
 from authentik.outposts.consumer import OUTPOST_GROUP_INSTANCE
 from authentik.outposts.models import Outpost, OutpostState, OutpostType
 
@@ -49,14 +49,9 @@ class RACClientConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def init_outpost_connection(self):
         """Initialize guac connection settings"""
-        app = get_object_or_deny(Application, slug=self.scope["url_route"]["kwargs"]["app"])
-        endpoint: Endpoint = get_object_or_deny(
-            Endpoint, pk=self.scope["url_route"]["kwargs"]["endpoint"]
-        )
-        self.provider = RACProvider.objects.filter(application=app).first()
-        if not self.provider:
-            self.logger.warning("No provider found")
-            raise DenyConnection()
+        token: ConnectionToken = get_object_or_deny(ConnectionToken, token=self.scope["url_route"]["kwargs"]["token"])
+        self.provider = token.provider
+        endpoint = token.endpoint
         params = endpoint.get_settings(self.provider)
         msg = {
             "type": "event.provider.specific",
