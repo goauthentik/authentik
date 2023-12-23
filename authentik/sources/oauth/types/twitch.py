@@ -3,8 +3,8 @@ from json import dumps
 from typing import Any, Optional
 
 from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
+from authentik.sources.oauth.types.oidc import OpenIDConnectOAuth2Callback
 from authentik.sources.oauth.types.registry import SourceType, registry
-from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 
@@ -27,13 +27,10 @@ class TwitchOAuthRedirect(OAuthRedirect):
         }
 
 
-class TwitchOAuth2Callback(OAuthCallback):
+class TwitchOAuth2Callback(OpenIDConnectOAuth2Callback):
     """Twitch OAuth2 Callback"""
 
     client_class = TwitchClient
-
-    def get_user_id(self, info: dict[str, str]) -> str:
-        return info.get("sub", "")
 
     def get_user_enroll_context(
         self,

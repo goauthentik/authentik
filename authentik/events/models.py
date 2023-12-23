@@ -461,7 +461,7 @@ class NotificationTransport(SerializerModel):
             }
         mail = TemplateEmailMessage(
             subject=subject_prefix + context["title"],
-            to=[notification.user.email],
+            to=[f"{notification.user.name} <{notification.user.email}>"],
             language=notification.user.locale(),
             template_name="email/event_notification.html",
             template_context=context,

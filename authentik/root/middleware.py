@@ -56,7 +56,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
             pass
         return session_key
 
-    def process_request(self, request):
+    def process_request(self, request: HttpRequest):
         raw_session = request.COOKIES.get(settings.SESSION_COOKIE_NAME)
         session_key = SessionMiddleware.decode_session_key(raw_session)
         request.session = self.SessionStore(session_key)
@@ -297,7 +297,7 @@ class LoggingMiddleware:
         response = self.get_response(request)
         status_code = response.status_code
         kwargs = {
-            "request_id": request.request_id,
+            "request_id": getattr(request, "request_id", None),
         }
         kwargs.update(getattr(response, "ak_context", {}))
         self.log(request, status_code, int((default_timer() - start) * 1000), **kwargs)

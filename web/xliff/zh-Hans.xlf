@@ -2218,11 +2218,6 @@
         <target>更新 SCIM 提供程序</target>
         
       </trans-unit>
-      <trans-unit id="s7da38af36522ff6a">
-        <source>Sync not run yet.</source>
-        <target>尚未同步过。</target>
-        
-      </trans-unit>
       <trans-unit id="sbecf8dc03c978d15">
         <source>Run sync again</source>
         <target>再次运行同步</target>
