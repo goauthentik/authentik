@@ -44,6 +44,7 @@ class PropertyMappingEvaluator(BaseEvaluator):
         if request:
             req.http_request = request
         self._context["request"] = req
+        req.context.update(**kwargs)
         self._context.update(**kwargs)
         self.dry_run = dry_run
 
