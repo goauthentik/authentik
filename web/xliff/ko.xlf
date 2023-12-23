@@ -1470,7 +1470,7 @@
       </trans-unit>
       <trans-unit id="s256b8452664ccae4">
         <source>Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected.</source>
-        <target>NameID 값이 어떻게 생성될지 구성합니다. 비워 둘 경우, 들어오는 요청의 NameID 정책을 존중합니다.</target>
+        <target>NameID 값이 어떻게 생성될지 구성합니다. 비워 둘 경우, 들어오는 요청의 NameIDPolicy를 존중합니다.</target>
         
       </trans-unit>
       <trans-unit id="s9f91cc8bcfabb40f">
