@@ -90,7 +90,7 @@ msgstr "메타데이터를 가져와 SAML 공급자를 생성합니다."
 
 #: authentik/core/api/users.py:156
 msgid "No leading or trailing slashes allowed."
-msgstr "앞 또는 뒤에 슬래시가 허용되지 않는다."
+msgstr "앞 또는 뒤에 슬래시가 허용되지 않습니다."
 
 #: authentik/core/api/users.py:159
 msgid "No empty segments in user path allowed."
