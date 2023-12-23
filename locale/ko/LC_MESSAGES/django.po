@@ -517,7 +517,7 @@ msgstr "정책 통과됨"
 #: authentik/flows/api/flows_diagram.py:122
 #, python-format
 msgid "Stage (%(type)s)"
-msgstr "스테이지 (%(type))"
+msgstr "스테이지 (%(type)s)"
 
 #: authentik/flows/api/flows_diagram.py:146
 #: authentik/flows/api/flows_diagram.py:206
