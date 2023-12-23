@@ -4580,7 +4580,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s4a953e6234cb4808">
         <source>When checked, the placeholder will be evaluated in the same way a property mapping is.
             If the evaluation fails, the placeholder itself is returned.</source>
-        <target>이 옵션을 선택하면 속성(Attribute) 매핑과 동일한 방식으로 플레이스홀더가 평가됩니다.
+        <target>이 옵션을 선택하면 특성(Attribute) 매핑과 동일한 방식으로 플레이스홀더가 평가됩니다.
             평가에 실패하면 플레이스홀더 자체가 반환됩니다.</target>
       </trans-unit>
       <trans-unit id="sf90be97cb08f3d5a">
