@@ -503,12 +503,12 @@ msgstr "현재 사용자/요청에는 플로우를 적용할 수 없습니다: %
 #: authentik/flows/api/flows_diagram.py:94
 #, python-format
 msgid "Policy (%(type)s)"
-msgstr "정책 (%(type))"
+msgstr "정책 (%(type)s)"
 
 #: authentik/flows/api/flows_diagram.py:71
 #, python-format
 msgid "Binding %(order)d"
-msgstr "바인딩 %(order)"
+msgstr "바인딩 %(order)d"
 
 #: authentik/flows/api/flows_diagram.py:118
 msgid "Policy passed"
