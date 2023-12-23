@@ -5313,7 +5313,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s82188c9542510212">
         <source>Optional recovery flow, which is linked at the bottom of the page.</source>
-        <target>페이지 하단에 링크된, 복구 플로우(선택 사항)을 참조하세요.</target>
+        <target>페이지 하단에 링크된,  선택적 복구 플로우를 참조하세요.</target>
         
       </trans-unit>
       <trans-unit id="s3e59b8b2debf0209">
