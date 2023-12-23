@@ -5303,7 +5303,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s0c8c4d2bb0a9162a">
         <source>Optional passwordless flow, which is linked at the bottom of the page. When configured, users can use this flow to authenticate with a WebAuthn authenticator, without entering any details.</source>
-        <target>페이지 하단에 링크된 비밀번호 없는 플로우(선택 사항)입니다. 이 플로우를 구성하면 사용자는 세부 정보를 입력하지 않고도 이 플로우를 사용하여 WebAuthn 인증기로 인증할 수 있습니다.</target>
+        <target>페이지 하단에 링크된 선택적 비밀번호 없는 플로우입니다. 이 플로우를 구성하면 사용자는 세부 정보를 입력하지 않고도 이 플로우를 사용하여 WebAuthn 인증기로 인증할 수 있습니다.</target>
         
       </trans-unit>
       <trans-unit id="s01a3a7f48ee4edaf">
