@@ -803,7 +803,7 @@ msgstr "이벤트 일치 정책"
 #: authentik/policies/expiry/models.py:45
 #, python-format
 msgid "Password expired %(days)d days ago. Please update your password."
-msgstr "비밀번호가 %(days)일 전에 만료되었습니다. 비밀번호를 업데이트하세요."
+msgstr "비밀번호가 %(days)d 일 전에 만료되었습니다. 비밀번호를 업데이트하세요."
 
 #: authentik/policies/expiry/models.py:49
 msgid "Password has expired."
