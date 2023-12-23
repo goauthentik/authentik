@@ -2347,7 +2347,7 @@ msgid ""
 "    "
 msgstr ""
 "\n"
-"    비밀번호 변경을 요청하지 않은 경우 이 이메일을 무시하세요. 위의 링크는 %(expires)후에 유효합니다.\n"
+"    비밀번호 변경을 요청하지 않은 경우 이 이메일을 무시하세요. 위의 링크는 %(expires)s후에 유효합니다.\n"
 "    "
 
 #: authentik/stages/email/templates/email/setup.html:9
