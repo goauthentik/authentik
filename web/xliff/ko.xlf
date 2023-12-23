@@ -6415,7 +6415,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="s92e91071c6a45eb4">
         <source>Disabled blueprints are never applied.</source>
-        <target>비활성화된 Blueprints는 적용되지 않습니다.</target>
+        <target>비활성화된 블루프린트는 적용되지 않습니다.</target>
         
       </trans-unit>
       <trans-unit id="sf63c89c0604c288f">
