@@ -3,6 +3,7 @@ from datetime import timedelta
 from json import loads
 
 import django_filters
+from django.db.models.query_utils import Q
 from django.db.models.aggregates import Count
 from django.db.models.fields.json import KeyTextTransform, KeyTransform
 from django.db.models.functions import ExtractDay, ExtractHour
@@ -87,7 +88,12 @@ class EventsFilter(django_filters.FilterSet):
         we need to remove the dashes that a client may send. We can't use a
         UUIDField for this, as some models might not have a UUID PK"""
         value = str(value).replace("-", "")
-        return queryset.filter(context__model__pk=value)
+        query = Q(context__model__pk=value)
+        try:
+            query |= Q(context__model__pk=int(value))
+        except ValueError:
+            pass
+        return queryset.filter(query)
 
     class Meta:
         model = Event
