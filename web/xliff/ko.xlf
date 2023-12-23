@@ -5053,7 +5053,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="sdf1d8edef27236f0">
         <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
-        <target>YubiKey 같은 '로밍' 인증기</target>
+        <target>YubiKey 같은 &quot;로밍&quot; 인증기</target>
         
       </trans-unit>
       <trans-unit id="sfffba7b23d8fb40c">
