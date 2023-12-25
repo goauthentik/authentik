@@ -18,7 +18,7 @@ The fastest way to create an invitation is to use our pre-defined `default-enrol
 To download the `default-enrollment-flow` file, run this command:
 
 ```
-wget https://raw.githubusercontent.com/goauthentik/authentik/main/blueprints/example/flows-enrollment-2-stage.yaml
+wget https://goauthentik.io/blueprints/example/flows-enrollment-2-stage.yaml
 ```
 
 Alternatively, use this [link](/blueprints/example/flows-enrollment-2-stage.yaml) to view and save the file. For more details, refer to the [documentation](https://goauthentik.io/docs/flow/examples/flows#enrollment-2-stage).
