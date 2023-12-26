@@ -3,10 +3,10 @@ from datetime import timedelta
 from json import loads
 
 import django_filters
-from django.db.models.query_utils import Q
 from django.db.models.aggregates import Count
 from django.db.models.fields.json import KeyTextTransform, KeyTransform
 from django.db.models.functions import ExtractDay, ExtractHour
+from django.db.models.query_utils import Q
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user

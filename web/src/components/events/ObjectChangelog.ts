@@ -1,3 +1,5 @@
+import { EventGeo } from "@goauthentik/app/admin/events/utils";
+import { actionToLabel } from "@goauthentik/app/common/labels";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { uiConfig } from "@goauthentik/common/ui/config";
@@ -73,7 +75,7 @@ export class ObjectChangelog extends Table<Event> {
 
     row(item: EventWithContext): TemplateResult[] {
         return [
-            html`${item.action}`,
+            html`${actionToLabel(item.action)}`,
             html`<div>${item.user?.username}</div>
                 ${item.user.on_behalf_of
                     ? html`<small>
@@ -81,7 +83,9 @@ export class ObjectChangelog extends Table<Event> {
                       </small>`
                     : html``}`,
             html`<span>${item.created?.toLocaleString()}</span>`,
-            html`<span>${item.clientIp || msg("-")}</span>`,
+            html`<div>${item.clientIp || msg("-")}</div>
+
+                <small>${EventGeo(item)}</small>`,
         ];
     }
 
