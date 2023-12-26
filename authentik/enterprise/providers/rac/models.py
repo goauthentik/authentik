@@ -38,7 +38,7 @@ class RACProvider(Provider):
     def launch_url(self) -> Optional[str]:
         """URL to this provider and initiate authorization for the user.
         Can return None for providers that are not URL-based"""
-        return None
+        return "goauthentik.io://providers/rac/launch"
 
     @property
     def component(self) -> str:

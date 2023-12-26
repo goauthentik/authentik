@@ -90,7 +90,7 @@ export class LibraryApplication extends AKElement {
         if (!this.application) {
             return html``;
         }
-        if (this.application?.providerObj.metaModelName === "authentik_providers_rac.racprovider") {
+        if (this.application?.launchUrl === "goauthentik.io://providers/rac/launch") {
             return html`<ak-library-rac-endpoint-launch .app=${this.application}>
                 <a slot="trigger"> ${this.application.name} </a>
             </ak-library-rac-endpoint-launch>`;
