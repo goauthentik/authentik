@@ -61,10 +61,7 @@ export class RacInterface extends Interface {
     reconnecting = false;
 
     @property()
-    app?: string;
-
-    @property()
-    endpoint?: string;
+    token?: string;
 
     @state()
     clipboardWatcherTimer = 0;
@@ -96,6 +93,12 @@ export class RacInterface extends Interface {
                 capture: false,
             },
         );
+        window.addEventListener("resize", () => {
+            this.client?.sendSize(
+                Math.floor(RacInterface.domSize().width),
+                Math.floor(RacInterface.domSize().height),
+            );
+        });
     }
 
     disconnectedCallback(): void {
@@ -107,7 +110,7 @@ export class RacInterface extends Interface {
         this.updateTitle();
         const wsUrl = `${window.location.protocol.replace("http", "ws")}//${
             window.location.host
-        }/ws/rac/${this.app}/${this.endpoint}/`;
+        }/ws/rac/${this.token}/`;
         this.tunnel = new Guacamole.WebSocketTunnel(wsUrl);
         this.tunnel.onerror = (status) => {
             this.reconnecting = true;
@@ -167,7 +170,7 @@ export class RacInterface extends Interface {
 
     updateTitle(): void {
         const title = this.tenant?.brandingTitle || TITLE_DEFAULT;
-        document.title = `${this.app} - ${title}`;
+        document.title = `${title}`;
     }
 
     onConnected(): void {

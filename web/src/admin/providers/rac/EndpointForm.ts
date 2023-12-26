@@ -1,8 +1,10 @@
+import { first } from "@goauthentik/app/common/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import YAML from "yaml";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -30,7 +32,11 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
 
     async send(data: Endpoint): Promise<Endpoint> {
         data.authMode = AuthModeEnum.Prompt;
-        data.provider = this.providerID || 0;
+        if (!this.instance) {
+            data.provider = this.providerID || 0;
+        } else {
+            data.provider = this.instance.provider;
+        }
         if (this.instance) {
             return new RacApi(DEFAULT_CONFIG).racEndpointsPartialUpdate({
                 pbmUuid: this.instance.pk || "",
@@ -81,6 +87,14 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
                     required
                 />
                 <p class="pf-c-form__helper-text">${msg("Hostname/IP to connect to.")}</p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${msg("Settings")} name="settings">
+                <ak-codemirror
+                    mode="yaml"
+                    value="${YAML.stringify(first(this.instance?.settings, {}))}"
+                >
+                </ak-codemirror>
+                <p class="pf-c-form__helper-text">${msg("Connection settings.")}</p>
             </ak-form-element-horizontal>
         `;
     }

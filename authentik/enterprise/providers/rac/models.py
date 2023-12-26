@@ -69,30 +69,6 @@ class Endpoint(SerializerModel, PolicyBindingModel):
         "authentik_core.PropertyMapping", default=None, blank=True
     )
 
-    def get_settings(self, provider: RACProvider) -> dict:
-        """Get settings"""
-        default_settings = {}
-        default_settings["hostname"] = self.host
-        # default_settings["enable-drive"] = "true"
-        # default_settings["drive-name"] = "authentik"
-        # default_settings["client-name"] = "foo"
-        if self.protocol == Protocols.RDP:
-            default_settings["resize-method"] = "display-update"
-            default_settings["enable-wallpaper"] = "true"
-            default_settings["enable-font-smoothing"] = "true"
-            # params["enable-theming"] = "true"
-            # params["enable-full-window-drag"] = "true"
-            # params["enable-desktop-composition"] = "true"
-            # params["enable-menu-animations"] = "true"
-            # params["enable-audio-input"] = "true"
-        if self.protocol == Protocols.SSH:
-            default_settings["terminal-type"] = "xterm-256color"
-        settings = {}
-        always_merger.merge(settings, default_settings)
-        always_merger.merge(settings, provider.settings)
-        always_merger.merge(settings, self.settings)
-        return settings
-
     @property
     def serializer(self) -> type[Serializer]:
         from authentik.enterprise.providers.rac.api.endpoints import EndpointSerializer
@@ -128,7 +104,36 @@ class RACPropertyMapping(PropertyMapping):
 
 
 class ConnectionToken(ExpiringModel):
+    """Token for a single connection to a specified endpoint"""
+
     connection_token_uuid = models.UUIDField(default=uuid4, primary_key=True)
     provider = models.ForeignKey(RACProvider, on_delete=models.CASCADE)
     endpoint = models.ForeignKey(Endpoint, on_delete=models.CASCADE)
     token = models.TextField(default=default_token_key)
+    settings = models.JSONField(default=dict)
+    session = models.ForeignKey("authentik_core.AuthenticatedSession", on_delete=models.CASCADE)
+
+    def get_settings(self) -> dict:
+        """Get settings"""
+        default_settings = {}
+        default_settings["hostname"] = self.endpoint.host
+        default_settings["client-name"] = "authentik"
+        # default_settings["enable-drive"] = "true"
+        # default_settings["drive-name"] = "authentik"
+        if self.endpoint.protocol == Protocols.RDP:
+            default_settings["resize-method"] = "display-update"
+            default_settings["enable-wallpaper"] = "true"
+            default_settings["enable-font-smoothing"] = "true"
+            # params["enable-theming"] = "true"
+            # params["enable-full-window-drag"] = "true"
+            # params["enable-desktop-composition"] = "true"
+            # params["enable-menu-animations"] = "true"
+            # params["enable-audio-input"] = "true"
+        if self.endpoint.protocol == Protocols.SSH:
+            default_settings["terminal-type"] = "xterm-256color"
+        settings = {}
+        always_merger.merge(settings, default_settings)
+        always_merger.merge(settings, self.endpoint.provider.settings)
+        always_merger.merge(settings, self.endpoint.settings)
+        always_merger.merge(settings, self.settings)
+        return settings

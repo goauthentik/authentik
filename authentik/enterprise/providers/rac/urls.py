@@ -10,14 +10,14 @@ from authentik.enterprise.providers.rac.api.property_mappings import RACProperty
 from authentik.enterprise.providers.rac.api.providers import RACProviderViewSet
 from authentik.enterprise.providers.rac.consumer_client import RACClientConsumer
 from authentik.enterprise.providers.rac.consumer_outpost import RACOutpostConsumer
-from authentik.enterprise.providers.rac.views import RACInterface
+from authentik.enterprise.providers.rac.views import RACInterface, RACStartView
 from authentik.root.asgi_middleware import SessionMiddleware
 from authentik.root.middleware import ChannelsLoggingMiddleware
 
 urlpatterns = [
     path(
         "application/rac/<slug:app>/<uuid:endpoint>/",
-        ensure_csrf_cookie(RACInterface.as_view()),
+        ensure_csrf_cookie(RACStartView.as_view()),
         name="start",
     ),
     path(

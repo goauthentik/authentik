@@ -3,7 +3,7 @@ from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 
-from authentik.core.models import Application
+from authentik.core.models import Application, AuthenticatedSession
 from authentik.core.views.interface import InterfaceView
 from authentik.enterprise.policy import EnterprisePolicyAccessView
 from authentik.enterprise.providers.rac.models import ConnectionToken, Endpoint, RACProvider
@@ -18,10 +18,14 @@ from authentik.policies.engine import PolicyEngine
 
 
 class RACStartView(EnterprisePolicyAccessView):
+    """Start a RAC connection by checking access and creating a connection token"""
+
+    # TODO: Check access for endpoint
+
     def resolve_provider_application(self):
         self.application = get_object_or_404(Application, slug=self.kwargs["app"])
         self.endpoint = get_object_or_404(Endpoint, pk=self.kwargs["endpoint"])
-        self.provider = self.application.provider
+        self.provider = RACProvider.objects.get(application=self.application)
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         planner = FlowPlanner(self.provider.authorization_flow)
@@ -35,15 +39,6 @@ class RACStartView(EnterprisePolicyAccessView):
                 RACFinalStage,
                 endpoint=self.endpoint,
                 provider=self.provider,
-                destination=self.request.build_absolute_uri(
-                    reverse(
-                        "authentik_providers_rac:if-rac",
-                        kwargs={
-                            "app": self.application.slug,
-                            "endpoint": str(self.endpoint.pk),
-                        },
-                    )
-                ),
             )
         )
         request.session[SESSION_KEY_PLAN] = plan
@@ -71,8 +66,24 @@ class RACFinalStage(RedirectStage):
         passing = engine.result
         if not passing.passing:
             return self.executor.stage_invalid(", ".join(passing.messages))
-        ConnectionToken.objects.create(
+        token = ConnectionToken.objects.create(
             provider=provider,
             endpoint=endpoint,
+            settings=self.executor.plan.context.get("connection_settings", {}),
+            session=AuthenticatedSession.objects.filter(
+                session_key=self.request.session.session_key
+            ).first(),
+        )
+        setattr(
+            self.executor.current_stage,
+            "destination",
+            self.request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_rac:if-rac",
+                    kwargs={
+                        "token": str(token.token),
+                    },
+                )
+            ),
         )
         return super().get_challenge(*args, **kwargs)

@@ -52,8 +52,7 @@ class RACClientConsumer(AsyncWebsocketConsumer):
             ConnectionToken, token=self.scope["url_route"]["kwargs"]["token"]
         )
         self.provider = token.provider
-        endpoint = token.endpoint
-        params = endpoint.get_settings(self.provider)
+        params = token.get_settings()
         msg = {
             "type": "event.provider.specific",
             "sub_type": "init_connection",
