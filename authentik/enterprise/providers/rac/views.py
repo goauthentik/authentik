@@ -13,7 +13,6 @@ from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import FlowPlanner
 from authentik.flows.stage import RedirectStage
 from authentik.flows.views.executor import SESSION_KEY_PLAN
-from authentik.lib.generators import generate_id
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.policies.engine import PolicyEngine
 
@@ -53,6 +52,7 @@ class RACStartView(EnterprisePolicyAccessView):
             request.GET,
             flow_slug=self.provider.authorization_flow.slug,
         )
+
 
 class RACInterface(InterfaceView):
     """Start RAC connection"""

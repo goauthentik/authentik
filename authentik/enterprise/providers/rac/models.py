@@ -4,7 +4,6 @@ from uuid import uuid4
 
 from deepmerge import always_merger
 from django.db import models
-from django.urls import reverse
 from django.utils.translation import gettext as _
 from rest_framework.serializers import Serializer
 
@@ -34,22 +33,12 @@ class RACProvider(Provider):
     protocol = models.TextField(choices=Protocols.choices)
     settings = models.JSONField(default=dict)
     auth_mode = models.TextField(choices=AuthenticationMode.choices)
-    endpoints = models.ManyToManyField("Endpoint", blank=True)
 
     @property
     def launch_url(self) -> Optional[str]:
         """URL to this provider and initiate authorization for the user.
         Can return None for providers that are not URL-based"""
-        if len(self.endpoints.all()) < 1:
-            return None
-        try:
-            # pylint: disable=no-member
-            return reverse(
-                "authentik_providers_rac:start",
-                kwargs={"app": self.application.slug},
-            )
-        except Provider.application.RelatedObjectDoesNotExist:
-            return None
+        return None
 
     @property
     def component(self) -> str:
@@ -74,6 +63,7 @@ class Endpoint(SerializerModel, PolicyBindingModel):
     protocol = models.TextField(choices=Protocols.choices)
     settings = models.JSONField(default=dict)
     auth_mode = models.TextField(choices=AuthenticationMode.choices)
+    provider = models.ForeignKey("RACProvider", on_delete=models.CASCADE)
 
     property_mappings = models.ManyToManyField(
         "authentik_core.PropertyMapping", default=None, blank=True
@@ -109,6 +99,9 @@ class Endpoint(SerializerModel, PolicyBindingModel):
 
         return EndpointSerializer
 
+    def __str__(self):
+        return f"RAC Endpoint {self.name}"
+
     class Meta:
         verbose_name = _("RAC Endpoint")
         verbose_name_plural = _("RAC Endpoints")
@@ -135,7 +128,6 @@ class RACPropertyMapping(PropertyMapping):
 
 
 class ConnectionToken(ExpiringModel):
-
     connection_token_uuid = models.UUIDField(default=uuid4, primary_key=True)
     provider = models.ForeignKey(RACProvider, on_delete=models.CASCADE)
     endpoint = models.ForeignKey(Endpoint, on_delete=models.CASCADE)

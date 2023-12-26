@@ -17667,8 +17667,12 @@ paths:
   /rac/endpoints/:
     get:
       operationId: rac_endpoints_list
-      description: Custom list method that checks Policy based access instead of guardian
+      description: List accessible endpoints
       parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -17687,12 +17691,18 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
+      - in: query
+        name: provider
+        schema:
+          type: integer
+      - in: query
+        name: search
         schema:
           type: string
+      - in: query
+        name: superuser_full_list
+        schema:
+          type: boolean
       tags:
       - rac
       security:
@@ -17705,11 +17715,7 @@ paths:
                 $ref: '#/components/schemas/PaginatedEndpointList'
           description: ''
         '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
+          description: Bad request
         '403':
           content:
             application/json:
@@ -31335,8 +31341,19 @@ components:
       type: object
       description: Endpoint Serializer
       properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pbm uuid
         name:
           type: string
+        provider:
+          type: integer
+        provider_obj:
+          allOf:
+          - $ref: '#/components/schemas/RACProvider'
+          readOnly: true
         protocol:
           $ref: '#/components/schemas/ProtocolEnum'
         host:
@@ -31349,11 +31366,19 @@ components:
             format: uuid
         auth_mode:
           $ref: '#/components/schemas/AuthModeEnum'
+        launch_url:
+          type: string
+          nullable: true
+          readOnly: true
       required:
       - auth_mode
       - host
+      - launch_url
       - name
+      - pk
       - protocol
+      - provider
+      - provider_obj
     EndpointRequest:
       type: object
       description: Endpoint Serializer
@@ -31361,6 +31386,8 @@ components:
         name:
           type: string
           minLength: 1
+        provider:
+          type: integer
         protocol:
           $ref: '#/components/schemas/ProtocolEnum'
         host:
@@ -31379,6 +31406,7 @@ components:
       - host
       - name
       - protocol
+      - provider
     ErrorDetail:
       type: object
       description: Serializer for rest_framework's error messages
@@ -37244,6 +37272,8 @@ components:
         name:
           type: string
           minLength: 1
+        provider:
+          type: integer
         protocol:
           $ref: '#/components/schemas/ProtocolEnum'
         host:
@@ -40690,6 +40720,11 @@ components:
         protocol:
           $ref: '#/components/schemas/ProtocolEnum'
         settings: {}
+        outpost_set:
+          type: array
+          items:
+            type: string
+          readOnly: true
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -40699,6 +40734,7 @@ components:
       - component
       - meta_model_name
       - name
+      - outpost_set
       - pk
       - protocol
       - verbose_name

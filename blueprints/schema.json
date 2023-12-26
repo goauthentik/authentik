@@ -8924,6 +8924,10 @@
                     "minLength": 1,
                     "title": "Name"
                 },
+                "provider": {
+                    "type": "integer",
+                    "title": "Provider"
+                },
                 "protocol": {
                     "type": "string",
                     "enum": [
