@@ -35,7 +35,10 @@ class EndpointSerializer(ModelSerializer):
     launch_url = SerializerMethodField()
 
     def get_launch_url(self, endpoint: Endpoint) -> Optional[str]:
+        """Build actual launch URL (the provider itself does not have one, just
+        individual endpoints)"""
         try:
+            # pylint: disable=no-member
             return reverse(
                 "authentik_providers_rac:start",
                 kwargs={"app": endpoint.provider.application.slug, "endpoint": endpoint.pk},

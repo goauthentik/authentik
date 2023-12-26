@@ -13,6 +13,7 @@ from authentik.outposts.consumer import OUTPOST_GROUP_INSTANCE
 from authentik.outposts.models import Outpost, OutpostState, OutpostType
 
 RAC_CLIENT_GROUP = "group_enterprise_rac_client"
+RAC_CLIENT_GROUP_SESSION = "group_enterprise_rac_client_%(session)s"
 
 # Step 1: Client connects to this websocket endpoint
 # Step 2: We prepare all the connection args for Guac
@@ -43,6 +44,10 @@ class RACClientConsumer(AsyncWebsocketConsumer):
         self.logger = get_logger()
         await self.accept("guacamole")
         await self.channel_layer.group_add(RAC_CLIENT_GROUP, self.channel_name)
+        await self.channel_layer.group_add(
+            RAC_CLIENT_GROUP_SESSION % {"session": self.scope["session"].session_key},
+            self.channel_name,
+        )
         await self.init_outpost_connection()
 
     @database_sync_to_async
@@ -88,7 +93,6 @@ class RACClientConsumer(AsyncWebsocketConsumer):
         which is the channel talking to guacd"""
         if self.dest_channel_id == "":
             return
-        # print(f"client - receive - {text_data[:50]}")
         try:
             await self.channel_layer.send(
                 self.dest_channel_id,
@@ -112,5 +116,8 @@ class RACClientConsumer(AsyncWebsocketConsumer):
     async def event_send(self, event: dict):
         """Handler called by outpost websocket that sends data to this specific
         client connection"""
-        # print(f"client - send - {event['text_data'][:50]}")
         await self.send(text_data=event.get("text_data"), bytes_data=event.get("bytes_data"))
+
+    async def event_disconnect(self, event: dict):
+        """Disconnect when the session ends"""
+        await self.close()

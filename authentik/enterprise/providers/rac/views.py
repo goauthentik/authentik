@@ -1,6 +1,8 @@
 """RAC Views"""
+from typing import Any
+
 from django.http import Http404, HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 
 from authentik.core.models import Application, AuthenticatedSession
@@ -22,12 +24,15 @@ class RACStartView(EnterprisePolicyAccessView):
 
     # TODO: Check access for endpoint
 
+    endpoint: Endpoint
+
     def resolve_provider_application(self):
         self.application = get_object_or_404(Application, slug=self.kwargs["app"])
         self.endpoint = get_object_or_404(Endpoint, pk=self.kwargs["endpoint"])
         self.provider = RACProvider.objects.get(application=self.application)
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Start flow planner for RAC provider"""
         planner = FlowPlanner(self.provider.authorization_flow)
         planner.allow_empty_flows = True
         try:
@@ -53,6 +58,12 @@ class RACInterface(InterfaceView):
     """Start RAC connection"""
 
     template_name = "if/rac.html"
+
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        # Early sanity check to ensure token still exists
+        if not ConnectionToken.filter_not_expired(token=self.kwargs["token"]).exists():
+            return redirect("authentik_core:if-user")
+        return super().dispatch(request, *args, **kwargs)
 
 
 class RACFinalStage(RedirectStage):
