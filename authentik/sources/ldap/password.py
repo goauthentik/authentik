@@ -4,7 +4,11 @@ from re import split
 from typing import Optional
 
 from ldap3 import BASE
-from ldap3.core.exceptions import LDAPAttributeError, LDAPUnwillingToPerformResult
+from ldap3.core.exceptions import (
+    LDAPAttributeError,
+    LDAPNoSuchAttributeResult,
+    LDAPUnwillingToPerformResult,
+)
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
@@ -97,7 +101,7 @@ class LDAPPasswordChanger:
             return
         try:
             self._connection.extend.microsoft.modify_password(user_dn, password)
-        except (LDAPAttributeError, LDAPUnwillingToPerformResult):
+        except (LDAPAttributeError, LDAPUnwillingToPerformResult, LDAPNoSuchAttributeResult):
             self._connection.extend.standard.modify_password(user_dn, new_password=password)
 
     def _ad_check_password_existing(self, password: str, user_dn: str) -> bool:
