@@ -4,7 +4,11 @@ from re import split
 from typing import Optional
 
 from ldap3 import BASE
-from ldap3.core.exceptions import LDAPAttributeError, LDAPUnwillingToPerformResult, LDAPNoSuchAttributeResult
+from ldap3.core.exceptions import (
+    LDAPAttributeError,
+    LDAPNoSuchAttributeResult,
+    LDAPUnwillingToPerformResult,
+)
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
