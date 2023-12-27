@@ -114,12 +114,16 @@ gen-diff:  ## (Release) generate the changelog diff between the current schema a
 	sed -i 's/}/&#125;/g' diff.md
 	npx prettier --write diff.md
 
-gen-clean:
-	rm -rf gen-go-api/
+gen-clean-ts:  ## Remove generated API client for Typescript
 	rm -rf gen-ts-api/
 	rm -rf web/node_modules/@goauthentik/api/
 
-gen-client-ts:  ## Build and install the authentik API for Typescript into the authentik UI Application
+gen-clean-go:  ## Remove generated API client for Go
+	rm -rf gen-go-api/
+
+gen-clean: gen-clean-ts gen-clean-go  ## Remove generated API clients
+
+gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescript into the authentik UI Application
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
@@ -135,7 +139,7 @@ gen-client-ts:  ## Build and install the authentik API for Typescript into the a
 	cd gen-ts-api && npm i
 	\cp -rfv gen-ts-api/* web/node_modules/@goauthentik/api
 
-gen-client-go:  ## Build and install the authentik API for Golang
+gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
 	mkdir -p ./gen-go-api ./gen-go-api/templates
 	wget https://raw.githubusercontent.com/goauthentik/client-go/main/config.yaml -O ./gen-go-api/config.yaml
 	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/README.mustache -O ./gen-go-api/templates/README.mustache
@@ -155,7 +159,7 @@ gen-client-go:  ## Build and install the authentik API for Golang
 gen-dev-config:  ## Generate a local development config file
 	python -m scripts.generate_config
 
-gen: gen-build gen-clean gen-client-ts
+gen: gen-build gen-client-ts
 
 #########################
 ## Web
