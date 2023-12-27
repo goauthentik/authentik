@@ -120,10 +120,20 @@ class RACClientConsumer(AsyncWebsocketConsumer):
     async def event_outpost_connected(self, event: dict):
         """Handle event broadcasted from outpost consumer, and check if they
         created a connection for us"""
+        outpost_channel = event.get("outpost_channel")
         if event.get("client_channel") != self.channel_name:
             return
+        if self.dest_channel_id != "":
+            # We've already selected an outpost channel, so tell the other channel to disconnect
+            await self.channel_layer.send(
+                outpost_channel,
+                {
+                    "type": "event.disconnect",
+                },
+            )
+            return
         self.logger.debug("Connected to a single outpost instance")
-        self.dest_channel_id = event.get("outpost_channel")
+        self.dest_channel_id = outpost_channel
 
     async def event_send(self, event: dict):
         """Handler called by outpost websocket that sends data to this specific
