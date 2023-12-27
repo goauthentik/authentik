@@ -49,43 +49,6 @@
                         ],
                         "properties": {
                             "model": {
-                                "const": "authentik_tenants.tenant"
-                            },
-                            "id": {
-                                "type": "string"
-                            },
-                            "state": {
-                                "type": "string",
-                                "enum": [
-                                    "absent",
-                                    "present",
-                                    "created",
-                                    "must_created"
-                                ],
-                                "default": "present"
-                            },
-                            "conditions": {
-                                "type": "array",
-                                "items": {
-                                    "type": "boolean"
-                                }
-                            },
-                            "attrs": {
-                                "$ref": "#/$defs/model_authentik_tenants.tenant"
-                            },
-                            "identifiers": {
-                                "$ref": "#/$defs/model_authentik_tenants.tenant"
-                            }
-                        }
-                    },
-                    {
-                        "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
-                        "properties": {
-                            "model": {
                                 "const": "authentik_tenants.domain"
                             },
                             "id": {
@@ -2895,27 +2858,6 @@
         }
     },
     "$defs": {
-        "model_authentik_tenants.tenant": {
-            "type": "object",
-            "properties": {
-                "schema_name": {
-                    "type": "string",
-                    "maxLength": 63,
-                    "minLength": 1,
-                    "title": "Schema name"
-                },
-                "name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Name"
-                },
-                "ready": {
-                    "type": "boolean",
-                    "title": "Ready"
-                }
-            },
-            "required": []
-        },
         "model_authentik_tenants.domain": {
             "type": "object",
             "properties": {
@@ -3604,7 +3546,6 @@
                     ],
                     "enum": [
                         null,
-                        "authentik_tenants.tenant",
                         "authentik_tenants.domain",
                         "authentik_crypto.certificatekeypair",
                         "authentik_events.event",

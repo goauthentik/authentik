@@ -17407,9 +17407,7 @@ paths:
           - authentik_stages_user_logout.userlogoutstage
           - authentik_stages_user_write.userwritestage
           - authentik_tenants.domain
-          - authentik_tenants.tenant
         description: |-
-          * `authentik_tenants.tenant` - Tenant
           * `authentik_tenants.domain` - Domain
           * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
           * `authentik_events.event` - Event
@@ -17699,9 +17697,7 @@ paths:
           - authentik_stages_user_logout.userlogoutstage
           - authentik_stages_user_write.userwritestage
           - authentik_tenants.domain
-          - authentik_tenants.tenant
         description: |-
-          * `authentik_tenants.tenant` - Tenant
           * `authentik_tenants.domain` - Domain
           * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
           * `authentik_events.event` - Event
@@ -31436,7 +31432,6 @@ components:
           description: |-
             Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
 
-            * `authentik_tenants.tenant` - Tenant
             * `authentik_tenants.domain` - Domain
             * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
             * `authentik_events.event` - Event
@@ -31635,7 +31630,6 @@ components:
           description: |-
             Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
 
-            * `authentik_tenants.tenant` - Tenant
             * `authentik_tenants.domain` - Domain
             * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
             * `authentik_events.event` - Event
@@ -33952,7 +33946,6 @@ components:
       - name
     ModelEnum:
       enum:
-      - authentik_tenants.tenant
       - authentik_tenants.domain
       - authentik_crypto.certificatekeypair
       - authentik_events.event
@@ -34030,7 +34023,6 @@ components:
       - authentik_enterprise.license
       type: string
       description: |-
-        * `authentik_tenants.tenant` - Tenant
         * `authentik_tenants.domain` - Domain
         * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
         * `authentik_events.event` - Event
@@ -37190,7 +37182,6 @@ components:
           description: |-
             Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
 
-            * `authentik_tenants.tenant` - Tenant
             * `authentik_tenants.domain` - Domain
             * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
             * `authentik_events.event` - Event
