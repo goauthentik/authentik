@@ -8,7 +8,6 @@ from textwrap import indent
 from typing import Any
 
 from cachetools import TLRUCache, cached
-from django.apps import apps
 from django.core.exceptions import FieldError
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.serializers import ValidationError
@@ -17,10 +16,16 @@ from sentry_sdk.hub import Hub
 from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
 
-from authentik.core.models import User
+from authentik.core.models import (
+    USER_ATTRIBUTE_CHANGE_EMAIL,
+    USER_ATTRIBUTE_CHANGE_NAME,
+    USER_ATTRIBUTE_CHANGE_USERNAME,
+    User,
+)
 from authentik.events.models import Event
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import get_http_session
+from authentik.lib.utils.reflection import get_apps
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.policies.process import PolicyProcess
 from authentik.policies.types import PolicyRequest, PolicyResult
@@ -59,8 +64,13 @@ class BaseEvaluator:
             "requests": get_http_session(),
             "resolve_dns": BaseEvaluator.expr_resolve_dns,
             "reverse_dns": BaseEvaluator.expr_reverse_dns,
+            # Temporary addition of config until #7590 is through and this is not needed anymore
+            "CONFIG": CONFIG,
+            "USER_ATTRIBUTE_CHANGE_EMAIL": USER_ATTRIBUTE_CHANGE_EMAIL,
+            "USER_ATTRIBUTE_CHANGE_NAME": USER_ATTRIBUTE_CHANGE_NAME,
+            "USER_ATTRIBUTE_CHANGE_USERNAME": USER_ATTRIBUTE_CHANGE_USERNAME,
         }
-        for app in apps.get_app_configs():
+        for app in get_apps():
             # Load models from each app
             for model in app.get_models():
                 self._globals[model.__name__] = model

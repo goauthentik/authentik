@@ -89,9 +89,8 @@ entries:
     expression: |
       # This policy ensures that the setup flow can only be
       # used one time
-      from authentik.flows.models import Flow, FlowAuthenticationRequirement
       Flow.objects.filter(slug="initial-setup").update(
-          authentication=FlowAuthenticationRequirement.REQUIRE_SUPERUSER,
+          authentication=Flow.authentication.field.default.__class__.REQUIRE_SUPERUSER,
       )
       return True
   id: policy-default-oobe-flow-set-authentication
