@@ -28,9 +28,8 @@ class AuthenticationMode(models.TextChoices):
 
 
 class RACProvider(Provider):
-    """Remote access provider"""
+    """Remotely access computers/servers"""
 
-    protocol = models.TextField(choices=Protocols.choices)
     settings = models.JSONField(default=dict)
     auth_mode = models.TextField(choices=AuthenticationMode.choices)
 
@@ -84,7 +83,7 @@ class Endpoint(SerializerModel, PolicyBindingModel):
 
 
 class RACPropertyMapping(PropertyMapping):
-    """RAC Property mapping"""
+    """Configure settings for remote access endpoints."""
 
     @property
     def component(self) -> str:

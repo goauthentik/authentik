@@ -38649,8 +38649,6 @@ components:
           items:
             type: string
             format: uuid
-        protocol:
-          $ref: '#/components/schemas/ProtocolEnum'
         settings: {}
     PatchedRadiusProviderRequest:
       type: object
@@ -40720,8 +40718,6 @@ components:
           type: string
           description: Return internal model name
           readOnly: true
-        protocol:
-          $ref: '#/components/schemas/ProtocolEnum'
         settings: {}
         outpost_set:
           type: array
@@ -40739,7 +40735,6 @@ components:
       - name
       - outpost_set
       - pk
-      - protocol
       - verbose_name
       - verbose_name_plural
     RACProviderRequest:
@@ -40764,13 +40759,10 @@ components:
           items:
             type: string
             format: uuid
-        protocol:
-          $ref: '#/components/schemas/ProtocolEnum'
         settings: {}
       required:
       - authorization_flow
       - name
-      - protocol
     RadiusOutpostConfig:
       type: object
       description: RadiusProvider Serializer

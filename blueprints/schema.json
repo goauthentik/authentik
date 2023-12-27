@@ -8899,15 +8899,6 @@
                     },
                     "title": "Property mappings"
                 },
-                "protocol": {
-                    "type": "string",
-                    "enum": [
-                        "rdp",
-                        "vnc",
-                        "ssh"
-                    ],
-                    "title": "Protocol"
-                },
                 "settings": {
                     "type": "object",
                     "additionalProperties": true,

@@ -10,27 +10,32 @@ import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 import YAML from "yaml";
 
+
+
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import {
-    FlowsInstancesListDesignationEnum,
-    PaginatedEndpointList,
-    ProtocolEnum,
-    ProvidersApi,
-    RACProvider,
-    RacApi,
-} from "@goauthentik/api";
+
+
+import { FlowsInstancesListDesignationEnum, PaginatedEndpointList, PaginatedRACPropertyMappingList, PropertymappingsApi, ProvidersApi, RACProvider, RacApi } from "@goauthentik/api";
+
 
 @customElement("ak-provider-rac-form")
 export class RACProviderFormPage extends ModelForm<RACProvider, number> {
     @state()
     endpoints?: PaginatedEndpointList;
 
+    propertyMappings?: PaginatedRACPropertyMappingList;
+
     async load(): Promise<void> {
         this.endpoints = await new RacApi(DEFAULT_CONFIG).racEndpointsList({});
+        this.propertyMappings = await new PropertymappingsApi(
+            DEFAULT_CONFIG,
+        ).propertymappingsRacList({
+            ordering: "name",
+        });
     }
 
     async loadInstance(pk: number): Promise<RACProvider> {
@@ -88,28 +93,38 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-radio-input
-                        name="protocol"
-                        label=${msg("Client type")}
-                        .value=${this.instance?.protocol}
-                        required
-                        .options=${[
-                            {
-                                label: msg("RDP"),
-                                value: ProtocolEnum.Rdp,
-                                default: true,
-                            },
-                            {
-                                label: msg("SSH"),
-                                value: ProtocolEnum.Ssh,
-                            },
-                            {
-                                label: msg("VNC"),
-                                value: ProtocolEnum.Vnc,
-                            },
-                        ]}
+                    <ak-form-element-horizontal
+                        label=${msg("Property mappings")}
+                        ?required=${true}
+                        name="propertyMappings"
                     >
-                    </ak-radio-input>
+                        <select class="pf-c-form-control" multiple>
+                            ${this.propertyMappings?.results.map((mapping) => {
+                                let selected = false;
+                                if (!this.instance?.propertyMappings) {
+                                    selected =
+                                        mapping.managed?.startsWith(
+                                            "goauthentik.io/providers/rac",
+                                        ) || false;
+                                } else {
+                                    selected = Array.from(this.instance?.propertyMappings).some(
+                                        (su) => {
+                                            return su == mapping.pk;
+                                        },
+                                    );
+                                }
+                                return html`<option
+                                    value=${ifDefined(mapping.pk)}
+                                    ?selected=${selected}
+                                >
+                                    ${mapping.name}
+                                </option>`;
+                            })}
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Hold control/command to select multiple items.")}
+                        </p>
+                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Settings")} name="settings">
                         <ak-codemirror
                             mode="yaml"

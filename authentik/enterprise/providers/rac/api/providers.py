@@ -14,7 +14,7 @@ class RACProviderSerializer(ProviderSerializer):
 
     class Meta:
         model = RACProvider
-        fields = ProviderSerializer.Meta.fields + ["protocol", "settings", "outpost_set"]
+        fields = ProviderSerializer.Meta.fields + ["settings", "outpost_set"]
         extra_kwargs = ProviderSerializer.Meta.extra_kwargs
 
 
@@ -27,5 +27,5 @@ class RACProviderViewSet(UsedByMixin, ModelViewSet):
         "application": ["isnull"],
         "name": ["iexact"],
     }
-    search_fields = ["name", "protocol"]
-    ordering = ["name", "protocol"]
+    search_fields = ["name"]
+    ordering = ["name"]
