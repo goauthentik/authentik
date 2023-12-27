@@ -52,7 +52,11 @@ export class EndpointListPage extends Table<Endpoint> {
     }
 
     columns(): TableColumn[] {
-        return [new TableColumn(msg("Name"), "name"), new TableColumn(msg("Host"), "host"), new TableColumn(msg("Actions"))];
+        return [
+            new TableColumn(msg("Name"), "name"),
+            new TableColumn(msg("Host"), "host"),
+            new TableColumn(msg("Actions")),
+        ];
     }
 
     renderToolbarSelected(): TemplateResult {

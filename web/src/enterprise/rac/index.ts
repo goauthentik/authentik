@@ -3,7 +3,7 @@ import { Interface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/LoadingOverlay";
 import Guacamole from "guacamole-common-js";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
@@ -22,6 +22,8 @@ enum GuacClientState {
 }
 
 const AUDIO_INPUT_MIMETYPE = "audio/L16;rate=44100,channels=2";
+const RECONNECT_ATTEMPTS_INITIAL = 5;
+const RECONNECT_ATTEMPTS = 5;
 
 @customElement("ak-rac")
 export class RacInterface extends Interface {
@@ -63,7 +65,7 @@ export class RacInterface extends Interface {
     clientState?: GuacClientState;
 
     @state()
-    reconnecting = false;
+    reconnectingMessage = "";
 
     @property()
     token?: string;
@@ -72,6 +74,11 @@ export class RacInterface extends Interface {
     clipboardWatcherTimer = 0;
 
     _previousClipboardValue: unknown;
+
+    // Set to `true` if we've successfully connected once
+    hasConnected = false;
+    // Keep track of current connection attempt
+    connectionAttempt = 0;
 
     static domSize(): DOMRect {
         return document.body.getBoundingClientRect();
@@ -117,27 +124,19 @@ export class RacInterface extends Interface {
             window.location.host
         }/ws/rac/${this.token}/`;
         this.tunnel = new Guacamole.WebSocketTunnel(wsUrl);
+        this.tunnel.receiveTimeout = 10 * 1000; // 10 seconds
         this.tunnel.onerror = (status) => {
-            this.reconnecting = true;
-            this.clientState = undefined;
             console.debug("authentik/rac: tunnel error: ", status);
-            setTimeout(() => {
-                this.firstUpdated();
-            }, 150);
+            this.reconnect();
         };
         this.client = new Guacamole.Client(this.tunnel);
         this.client.onerror = (err) => {
-            this.reconnecting = true;
-            this.clientState = undefined;
             console.debug("authentik/rac: error: ", err);
-            setTimeout(() => {
-                this.firstUpdated();
-            }, 150);
+            this.reconnect();
         };
         this.client.onstatechange = (state) => {
             this.clientState = state;
             if (state === GuacClientState.CONNECTED) {
-                this.reconnecting = false;
                 this.onConnected();
             }
         };
@@ -173,6 +172,34 @@ export class RacInterface extends Interface {
         this.client.connect(params.toString());
     }
 
+    reconnect(): void {
+        this.clientState = undefined;
+        this.connectionAttempt += 1;
+        if (!this.hasConnected) {
+            // Check connection attempts if we haven't had a successful connection
+            if (this.connectionAttempt >= RECONNECT_ATTEMPTS_INITIAL) {
+                this.reconnectingMessage = msg(
+                    str`Connection failed after ${this.connectionAttempt} attempts.`,
+                );
+                return;
+            }
+        } else {
+            if (this.connectionAttempt >= RECONNECT_ATTEMPTS) {
+                this.reconnectingMessage = msg(
+                    str`Connection failed after ${this.connectionAttempt} attempts.`,
+                );
+                return;
+            }
+        }
+        const delay = 500 * this.connectionAttempt;
+        this.reconnectingMessage = msg(
+            str`Re-connecting in ${Math.max(1, delay / 1000)} second(s).`,
+        );
+        setTimeout(() => {
+            this.firstUpdated();
+        }, delay);
+    }
+
     updateTitle(): void {
         const title = this.tenant?.brandingTitle || TITLE_DEFAULT;
         document.title = `${title}`;
@@ -183,6 +210,7 @@ export class RacInterface extends Interface {
         if (!this.client) {
             return;
         }
+        this.hasConnected = true;
         this.container = this.client.getDisplay().getElement();
         this.initMouse(this.container);
         this.client?.sendSize(
@@ -276,8 +304,8 @@ export class RacInterface extends Interface {
                 ? html`
                       <ak-loading-overlay>
                           <span slot="body">
-                              ${this.reconnecting
-                                  ? html`${msg("Re-connecting...")}`
+                              ${this.hasConnected
+                                  ? html`${this.reconnectingMessage}`
                                   : html`${msg("Connecting...")}`}
                           </span>
                       </ak-loading-overlay>
