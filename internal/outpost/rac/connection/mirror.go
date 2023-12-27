@@ -8,7 +8,10 @@ import (
 	"github.com/wwt/guac"
 )
 
-var internalOpcodeIns = []byte(fmt.Sprint(len(guac.InternalDataOpcode), ".", guac.InternalDataOpcode))
+var (
+	internalOpcodeIns = []byte(fmt.Sprint(len(guac.InternalDataOpcode), ".", guac.InternalDataOpcode))
+	authentikOpcode   = []byte("0.authentik.")
+)
 
 // MessageReader wraps a websocket connection and only permits Reading
 type MessageReader interface {
@@ -27,8 +30,15 @@ func (c *Connection) wsToGuacd() {
 				c.onError(e)
 				return
 			}
-
 			if bytes.HasPrefix(data, internalOpcodeIns) {
+				if bytes.HasPrefix(data, authentikOpcode) {
+					switch string(bytes.Replace(data, authentikOpcode, []byte{}, 1)) {
+					case "disconnect":
+						_, e := w.Write([]byte(guac.NewInstruction("disconnect").String()))
+						c.onError(e)
+						return
+					}
+				}
 				// messages starting with the InternalDataOpcode are never sent to guacd
 				continue
 			}

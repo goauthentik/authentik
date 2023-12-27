@@ -9,8 +9,10 @@ import (
 	"goauthentik.io/internal/config"
 )
 
-const guacdPath = "/opt/guacamole/sbin/guacd"
-const guacdArgs = " -b 0.0.0.0 -L debug -f"
+const (
+	guacdPath = "/opt/guacamole/sbin/guacd"
+	guacdArgs = " -b 0.0.0.0 -L debug -f"
+)
 
 func (rs *RACServer) startGuac() error {
 	rs.guacd = exec.Command(guacdPath, strings.Split(guacdArgs, " ")...)

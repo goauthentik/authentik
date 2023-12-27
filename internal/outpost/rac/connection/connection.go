@@ -27,6 +27,7 @@ type Connection struct {
 	ctx       context.Context
 	ctxCancel context.CancelFunc
 	OnError   func(error)
+	closing   bool
 }
 
 func NewConnection(ac *ak.APIController, forChannel string, cfg *guac.Config) (*Connection, error) {
@@ -37,6 +38,7 @@ func NewConnection(ac *ak.APIController, forChannel string, cfg *guac.Config) (*
 		ctx:       ctx,
 		ctxCancel: canc,
 		OnError:   func(err error) {},
+		closing:   false,
 	}
 	err := c.initGuac(cfg)
 	if err != nil {
@@ -108,7 +110,15 @@ func (c *Connection) initMirror() {
 }
 
 func (c *Connection) onError(err error) {
-	c.log.WithError(err).Debug("removing connection")
+	if c.closing {
+		return
+	}
+	c.closing = true
+	e := c.st.Close()
+	if e != nil {
+		c.log.WithError(e).Warning("failed to close guacd connection")
+	}
+	c.log.WithError(err).Info("removing connection")
 	c.ctxCancel()
 	c.OnError(err)
 }

@@ -81,7 +81,6 @@ var rootCmd = &cobra.Command{
 		for {
 			<-ex
 		}
-
 	},
 }
 

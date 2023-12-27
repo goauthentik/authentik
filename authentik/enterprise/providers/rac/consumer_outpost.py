@@ -25,7 +25,6 @@ class RACOutpostConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data=None, bytes_data=None):
         """Mirror data received from guacd running in the outpost
         to the dest_channel_id which is the channel talking to the browser"""
-        # print(f"outpost - receive - {text_data[:50]}")
         try:
             await self.channel_layer.send(
                 self.dest_channel_id,
@@ -41,5 +40,9 @@ class RACOutpostConsumer(AsyncWebsocketConsumer):
     async def event_send(self, event: dict):
         """Handler called by client websocket that sends data to this specific
         outpost connection"""
-        # print(f"outpost - send - {event['text_data'][:50]}")
         await self.send(text_data=event.get("text_data"), bytes_data=event.get("bytes_data"))
+
+    async def event_disconnect(self, event: dict):
+        """Tell outpost we're about to disconnect"""
+        await self.send(text_data="0.authentik.disconnect")
+        await self.close()

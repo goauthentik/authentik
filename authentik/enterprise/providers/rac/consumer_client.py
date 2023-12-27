@@ -41,7 +41,6 @@ class RACClientConsumer(AsyncWebsocketConsumer):
     logger: BoundLogger
 
     async def connect(self):
-        self.logger = get_logger()
         await self.accept("guacamole")
         await self.channel_layer.group_add(RAC_CLIENT_GROUP, self.channel_name)
         await self.channel_layer.group_add(
@@ -49,6 +48,16 @@ class RACClientConsumer(AsyncWebsocketConsumer):
             self.channel_name,
         )
         await self.init_outpost_connection()
+
+    async def disconnect(self, code):
+        self.logger.debug("Disconnecting")
+        # Tell the outpost we're disconnecting
+        await self.channel_layer.send(
+            self.dest_channel_id,
+            {
+                "type": "event.disconnect",
+            },
+        )
 
     @database_sync_to_async
     def init_outpost_connection(self):
@@ -58,6 +67,9 @@ class RACClientConsumer(AsyncWebsocketConsumer):
         )
         self.provider = token.provider
         params = token.get_settings()
+        self.logger = get_logger().bind(
+            endpoint=token.endpoint.name, user=self.scope["user"].username
+        )
         msg = {
             "type": "event.provider.specific",
             "sub_type": "init_connection",
