@@ -99,10 +99,10 @@ class RACPropertyMapping(PropertyMapping):
     @property
     def serializer(self) -> type[Serializer]:
         from authentik.enterprise.providers.rac.api.property_mappings import (
-            PropertyMappingSerializer,
+            RACPropertyMappingSerializer,
         )
 
-        return PropertyMappingSerializer
+        return RACPropertyMappingSerializer
 
     class Meta:
         verbose_name = _("RAC Property Mapping")
@@ -131,17 +131,6 @@ class ConnectionToken(ExpiringModel):
         default_settings["client-name"] = "authentik"
         # default_settings["enable-drive"] = "true"
         # default_settings["drive-name"] = "authentik"
-        if self.endpoint.protocol == Protocols.RDP:
-            default_settings["resize-method"] = "display-update"
-            default_settings["enable-wallpaper"] = "true"
-            default_settings["enable-font-smoothing"] = "true"
-            # params["enable-theming"] = "true"
-            # params["enable-full-window-drag"] = "true"
-            # params["enable-desktop-composition"] = "true"
-            # params["enable-menu-animations"] = "true"
-            # params["enable-audio-input"] = "true"
-        if self.endpoint.protocol == Protocols.SSH:
-            default_settings["terminal-type"] = "xterm-256color"
         settings = {}
         always_merger.merge(settings, default_settings)
         always_merger.merge(settings, self.endpoint.provider.settings)
@@ -168,4 +157,15 @@ class ConnectionToken(ExpiringModel):
                     mapping=mapping,
                 ).set_user(self.session.user).save()
                 LOGGER.warning("Failed to evaluate property mapping", exc=exc)
+        settings["drive-path"] = f"/tmp/connection/{self.token}"
+        settings["create-drive-path"] = "true"
+        # Ensure all values of the settings dict are strings
+        for key, value in settings.items():
+            if isinstance(value, str):
+                continue
+            # Special case for bools
+            if isinstance(value, bool):
+                settings[key] = str(value).lower()
+                continue
+            settings[key] = str(value)
         return settings

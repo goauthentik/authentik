@@ -10,17 +10,20 @@ import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 import YAML from "yaml";
 
-
-
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-
-
-import { FlowsInstancesListDesignationEnum, PaginatedEndpointList, PaginatedRACPropertyMappingList, PropertymappingsApi, ProvidersApi, RACProvider, RacApi } from "@goauthentik/api";
-
+import {
+    FlowsInstancesListDesignationEnum,
+    PaginatedEndpointList,
+    PaginatedRACPropertyMappingList,
+    PropertymappingsApi,
+    ProvidersApi,
+    RACProvider,
+    RacApi,
+} from "@goauthentik/api";
 
 @customElement("ak-provider-rac-form")
 export class RACProviderFormPage extends ModelForm<RACProvider, number> {
@@ -101,12 +104,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                         <select class="pf-c-form-control" multiple>
                             ${this.propertyMappings?.results.map((mapping) => {
                                 let selected = false;
-                                if (!this.instance?.propertyMappings) {
-                                    selected =
-                                        mapping.managed?.startsWith(
-                                            "goauthentik.io/providers/rac",
-                                        ) || false;
-                                } else {
+                                if (this.instance?.propertyMappings) {
                                     selected = Array.from(this.instance?.propertyMappings).some(
                                         (su) => {
                                             return su == mapping.pk;

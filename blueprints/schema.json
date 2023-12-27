@@ -8975,8 +8975,12 @@
                 },
                 "expression": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Expression"
+                },
+                "static_settings": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Static settings"
                 }
             },
             "required": []

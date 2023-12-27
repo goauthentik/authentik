@@ -38626,7 +38626,6 @@ components:
           minLength: 1
         expression:
           type: string
-          minLength: 1
         static_settings:
           type: object
           additionalProperties: {}
@@ -40639,7 +40638,6 @@ components:
           additionalProperties: {}
       required:
       - component
-      - expression
       - meta_model_name
       - name
       - pk
@@ -40664,12 +40662,10 @@ components:
           minLength: 1
         expression:
           type: string
-          minLength: 1
         static_settings:
           type: object
           additionalProperties: {}
       required:
-      - expression
       - name
       - static_settings
     RACProvider:

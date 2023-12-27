@@ -178,6 +178,7 @@ export class RacInterface extends Interface {
         if (!this.hasConnected) {
             // Check connection attempts if we haven't had a successful connection
             if (this.connectionAttempt >= RECONNECT_ATTEMPTS_INITIAL) {
+                this.hasConnected = true;
                 this.reconnectingMessage = msg(
                     str`Connection failed after ${this.connectionAttempt} attempts.`,
                 );
