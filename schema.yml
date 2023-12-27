@@ -38627,6 +38627,9 @@ components:
         expression:
           type: string
           minLength: 1
+        static_settings:
+          type: object
+          additionalProperties: {}
     PatchedRACProviderRequest:
       type: object
       description: RACProvider Serializer
@@ -40631,12 +40634,16 @@ components:
           type: string
           description: Return internal model name
           readOnly: true
+        static_settings:
+          type: object
+          additionalProperties: {}
       required:
       - component
       - expression
       - meta_model_name
       - name
       - pk
+      - static_settings
       - verbose_name
       - verbose_name_plural
     RACPropertyMappingRequest:
@@ -40658,9 +40665,13 @@ components:
         expression:
           type: string
           minLength: 1
+        static_settings:
+          type: object
+          additionalProperties: {}
       required:
       - expression
       - name
+      - static_settings
     RACProvider:
       type: object
       description: RACProvider Serializer

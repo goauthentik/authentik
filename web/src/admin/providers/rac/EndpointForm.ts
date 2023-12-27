@@ -2,6 +2,7 @@ import { first } from "@goauthentik/app/common/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import YAML from "yaml";
@@ -11,12 +12,29 @@ import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { AuthModeEnum, Endpoint, ProtocolEnum, RacApi } from "@goauthentik/api";
+import {
+    AuthModeEnum,
+    Endpoint,
+    PaginatedRACPropertyMappingList,
+    PropertymappingsApi,
+    ProtocolEnum,
+    RacApi,
+} from "@goauthentik/api";
 
 @customElement("ak-rac-endpoint-form")
 export class EndpointForm extends ModelForm<Endpoint, string> {
     @property({ type: Number })
     providerID?: number;
+
+    propertyMappings?: PaginatedRACPropertyMappingList;
+
+    async load(): Promise<void> {
+        this.propertyMappings = await new PropertymappingsApi(
+            DEFAULT_CONFIG,
+        ).propertymappingsRacList({
+            ordering: "name",
+        });
+    }
 
     loadInstance(pk: string): Promise<Endpoint> {
         return new RacApi(DEFAULT_CONFIG).racEndpointsRetrieve({
@@ -88,14 +106,45 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
                 />
                 <p class="pf-c-form__helper-text">${msg("Hostname/IP to connect to.")}</p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Settings")} name="settings">
-                <ak-codemirror
-                    mode="yaml"
-                    value="${YAML.stringify(first(this.instance?.settings, {}))}"
-                >
-                </ak-codemirror>
-                <p class="pf-c-form__helper-text">${msg("Connection settings.")}</p>
+            <ak-form-element-horizontal
+                label=${msg("Property mappings")}
+                ?required=${true}
+                name="propertyMappings"
+            >
+                <select class="pf-c-form-control" multiple>
+                    ${this.propertyMappings?.results.map((mapping) => {
+                        let selected = false;
+                        if (!this.instance?.propertyMappings) {
+                            selected =
+                                mapping.managed?.startsWith("goauthentik.io/providers/rac") ||
+                                false;
+                        } else {
+                            selected = Array.from(this.instance?.propertyMappings).some((su) => {
+                                return su == mapping.pk;
+                            });
+                        }
+                        return html`<option value=${ifDefined(mapping.pk)} ?selected=${selected}>
+                            ${mapping.name}
+                        </option>`;
+                    })}
+                </select>
+                <p class="pf-c-form__helper-text">
+                    ${msg("Hold control/command to select multiple items.")}
+                </p>
             </ak-form-element-horizontal>
+            <ak-form-group>
+                <span slot="header"> ${msg("Advanced settings")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal label=${msg("Settings")} name="settings">
+                        <ak-codemirror
+                            mode="yaml"
+                            value="${YAML.stringify(first(this.instance?.settings, {}))}"
+                        >
+                        </ak-codemirror>
+                        <p class="pf-c-form__helper-text">${msg("Connection settings.")}</p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
         `;
     }
 }

@@ -6,10 +6,15 @@ from deepmerge import always_merger
 from django.db import models
 from django.utils.translation import gettext as _
 from rest_framework.serializers import Serializer
+from structlog.stdlib import get_logger
 
+from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.models import ExpiringModel, PropertyMapping, Provider, default_token_key
+from authentik.events.models import Event, EventAction
 from authentik.lib.models import SerializerModel
 from authentik.policies.models import PolicyBindingModel
+
+LOGGER = get_logger()
 
 
 class Protocols(models.TextChoices):
@@ -85,6 +90,8 @@ class Endpoint(SerializerModel, PolicyBindingModel):
 class RACPropertyMapping(PropertyMapping):
     """Configure settings for remote access endpoints."""
 
+    static_settings = models.JSONField(default=dict)
+
     @property
     def component(self) -> str:
         return "ak-property-mapping-rac-form"
@@ -140,4 +147,25 @@ class ConnectionToken(ExpiringModel):
         always_merger.merge(settings, self.endpoint.provider.settings)
         always_merger.merge(settings, self.endpoint.settings)
         always_merger.merge(settings, self.settings)
+
+        for mapping in RACPropertyMapping.objects.filter(provider__in=[self.provider]).order_by(
+            "name"
+        ) | RACPropertyMapping.objects.filter(endpoint__in=[self.endpoint]).order_by("name"):
+            mapping: RACPropertyMapping
+            if mapping.expression == "":
+                always_merger.merge(settings, mapping.static_settings)
+                continue
+            try:
+                mapping_settings = mapping.evaluate(
+                    self.session.user, None, endpoint=self.endpoint, provider=self.provider
+                )
+                always_merger.merge(settings, mapping_settings)
+            except PropertyMappingExpressionException as exc:
+                Event.new(
+                    EventAction.CONFIGURATION_ERROR,
+                    message=f"Failed to evaluate property-mapping: '{mapping.name}'",
+                    provider=self.provider,
+                    mapping=mapping,
+                ).set_user(self.session.user).save()
+                LOGGER.warning("Failed to evaluate property mapping", exc=exc)
         return settings
