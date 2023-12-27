@@ -157,7 +157,7 @@ class ConnectionToken(ExpiringModel):
                     mapping=mapping,
                 ).set_user(self.session.user).save()
                 LOGGER.warning("Failed to evaluate property mapping", exc=exc)
-        settings["drive-path"] = f"/tmp/connection/{self.token}"
+        settings["drive-path"] = f"/tmp/connection/{self.token}"  # nosec
         settings["create-drive-path"] = "true"
         # Ensure all values of the settings dict are strings
         for key, value in settings.items():

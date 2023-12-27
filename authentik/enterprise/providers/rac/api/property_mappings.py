@@ -1,6 +1,6 @@
 """RAC Provider API Views"""
-from rest_framework.viewsets import ModelViewSet
 from rest_framework.fields import CharField
+from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.propertymappings import PropertyMappingSerializer
 from authentik.core.api.used_by import UsedByMixin
@@ -18,7 +18,7 @@ class RACPropertyMappingSerializer(PropertyMappingSerializer):
         """Test Syntax"""
         if expression == "":
             return expression
-        return super.validate_expression(expression)
+        return super().validate_expression(expression)
 
     class Meta:
         model = RACPropertyMapping
@@ -32,3 +32,4 @@ class RACPropertyMappingViewSet(UsedByMixin, ModelViewSet):
     serializer_class = RACPropertyMappingSerializer
     search_fields = ["name"]
     ordering = ["name"]
+    filterset_fields = ["name", "managed"]
