@@ -31369,6 +31369,9 @@ components:
         launch_url:
           type: string
           nullable: true
+          description: |-
+            Build actual launch URL (the provider itself does not have one, just
+            individual endpoints)
           readOnly: true
       required:
       - auth_mode

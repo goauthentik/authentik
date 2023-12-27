@@ -1,3 +1,4 @@
+import "@goauthentik/admin/policies/BoundPoliciesList";
 import "@goauthentik/app/admin/providers/rac/EndpointForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
@@ -24,6 +25,7 @@ import {
 
 @customElement("ak-rac-endpoint-list")
 export class EndpointListPage extends Table<Endpoint> {
+    expandable = true;
     checkbox = true;
 
     searchEnabled(): boolean {
@@ -108,6 +110,22 @@ export class EndpointListPage extends Table<Endpoint> {
                 >
                 </ak-rbac-object-permission-modal>`,
         ];
+    }
+
+    renderExpanded(item: Endpoint): TemplateResult {
+        return html` <td></td>
+            <td role="cell" colspan="4">
+                <div class="pf-c-table__expandable-row-content">
+                    <div class="pf-c-content">
+                        <p>
+                            ${msg(
+                                "These bindings control which users will have access to this endpoint. Users must also have access to the application.",
+                            )}
+                        </p>
+                        <ak-bound-policies-list .target=${item.pk}> </ak-bound-policies-list>
+                    </div>
+                </div>
+            </td>`;
     }
 
     renderObjectCreate(): TemplateResult {

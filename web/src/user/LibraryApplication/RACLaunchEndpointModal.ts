@@ -13,6 +13,9 @@ export class RACLaunchEndpointModal extends TableModal<Endpoint> {
     clickable = true;
 
     clickHandler = (item: Endpoint) => {
+        if (!item.launchUrl) {
+            return;
+        }
         if (this.app?.openInNewTab) {
             window.open(item.launchUrl);
         } else {
