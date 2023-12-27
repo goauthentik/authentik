@@ -31,11 +31,11 @@ export class RACLaunchEndpointModal extends TableModal<Endpoint> {
     }
 
     columns(): TableColumn[] {
-        return [new TableColumn("Host")];
+        return [new TableColumn("Name")];
     }
 
     row(item: Endpoint): TemplateResult[] {
-        return [html`${item.host}`];
+        return [html`${item.name}`];
     }
 
     renderModalInner(): TemplateResult {
