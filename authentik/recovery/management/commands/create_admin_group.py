@@ -1,7 +1,8 @@
 """authentik recovery create_admin_group"""
 from django.utils.translation import gettext as _
 
-from authentik.core.models import Group, User
+from authentik.core.models import User
+from authentik.recovery.lib import create_admin_group
 from authentik.tenants.management import TenantCommand
 
 
@@ -20,11 +21,5 @@ class Command(TenantCommand):
         if not user:
             self.stderr.write(f"User '{username}' not found.")
             return
-        group, _ = Group.objects.update_or_create(
-            name="authentik Admins",
-            defaults={
-                "is_superuser": True,
-            },
-        )
-        group.users.add(user)
-        self.stdout.write(f"User '{username}' successfully added to the group 'authentik Admins'.")
+        group = create_admin_group(user)
+        self.stdout.write(f"User '{username}' successfully added to the group '{group.name}'.")

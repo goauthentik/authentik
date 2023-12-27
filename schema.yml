@@ -28371,6 +28371,76 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /tenants/tenants/{tenant_uuid}/create_admin_group/:
+    post:
+      operationId: tenants_tenants_create_admin_group_create
+      description: Create admin group and add user to it.
+      parameters:
+      - in: path
+        name: tenant_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Tenant.
+        required: true
+      tags:
+      - tenants
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantAdminGroupRequestRequest'
+        required: true
+      responses:
+        '204':
+          description: Group created successfully.
+        '400':
+          description: Bad request
+        '404':
+          description: User not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /tenants/tenants/{tenant_uuid}/create_recovery_key/:
+    post:
+      operationId: tenants_tenants_create_recovery_key_create
+      description: Create recovery key for user.
+      parameters:
+      - in: path
+        name: tenant_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Tenant.
+        required: true
+      tags:
+      - tenants
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantRecoveryKeyRequestRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantRecoveryKeyResponse'
+          description: ''
+        '400':
+          description: Bad request
+        '404':
+          description: User not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
 components:
   schemas:
     AccessDeniedChallenge:
@@ -42275,6 +42345,39 @@ components:
       - name
       - schema_name
       - tenant_uuid
+    TenantAdminGroupRequestRequest:
+      type: object
+      description: Tenant admin group creation request serializer
+      properties:
+        user:
+          type: string
+          minLength: 1
+      required:
+      - user
+    TenantRecoveryKeyRequestRequest:
+      type: object
+      description: Tenant recovery key creation request serializer
+      properties:
+        user:
+          type: string
+          minLength: 1
+        duration_days:
+          type: integer
+      required:
+      - duration_days
+      - user
+    TenantRecoveryKeyResponse:
+      type: object
+      description: Tenant recovery key creation response serializer
+      properties:
+        expiry:
+          type: string
+          format: date-time
+        url:
+          type: string
+      required:
+      - expiry
+      - url
     TenantRequest:
       type: object
       description: Tenant Serializer
