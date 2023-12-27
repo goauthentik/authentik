@@ -8,12 +8,14 @@ from authentik.lib.config import CONFIG
 LOGGER = get_logger()
 
 GAUGE_OUTPOSTS_CONNECTED = Gauge(
-    "authentik_outposts_connected", "Currently connected outposts", ["outpost", "uid", "expected"]
+    "authentik_outposts_connected",
+    "Currently connected outposts",
+    ["tenant", "outpost", "uid", "expected"],
 )
 GAUGE_OUTPOSTS_LAST_UPDATE = Gauge(
     "authentik_outposts_last_update",
     "Last update from any outpost",
-    ["outpost", "uid", "version"],
+    ["tenant", "outpost", "uid", "version"],
 )
 MANAGED_OUTPOST = "goauthentik.io/outposts/embedded"
 

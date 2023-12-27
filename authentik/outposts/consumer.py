@@ -14,6 +14,7 @@ from structlog.stdlib import BoundLogger, get_logger
 from authentik.core.channels import AuthJsonConsumer
 from authentik.outposts.apps import GAUGE_OUTPOSTS_CONNECTED, GAUGE_OUTPOSTS_LAST_UPDATE
 from authentik.outposts.models import OUTPOST_HELLO_INTERVAL, Outpost, OutpostState
+from authentik.tenants.utils import get_current_tenant
 
 OUTPOST_GROUP = "group_outpost_%(outpost_pk)s"
 
@@ -76,6 +77,7 @@ class OutpostConsumer(AuthJsonConsumer):
             OUTPOST_GROUP % {"outpost_pk": str(self.outpost.pk)}, self.channel_name
         )
         GAUGE_OUTPOSTS_CONNECTED.labels(
+            tenant=get_current_tenant().tenant_uuid,
             outpost=self.outpost.name,
             uid=self.last_uid,
             expected=self.outpost.config.kubernetes_replicas,
@@ -88,6 +90,7 @@ class OutpostConsumer(AuthJsonConsumer):
             )
         if self.outpost and self.last_uid:
             GAUGE_OUTPOSTS_CONNECTED.labels(
+                tenant=get_current_tenant().tenant_uuid,
                 outpost=self.outpost.name,
                 uid=self.last_uid,
                 expected=self.outpost.config.kubernetes_replicas,
@@ -112,6 +115,7 @@ class OutpostConsumer(AuthJsonConsumer):
         elif msg.instruction == WebsocketMessageInstruction.ACK:
             return
         GAUGE_OUTPOSTS_LAST_UPDATE.labels(
+            tenant=get_current_tenant().tenant_uuid,
             outpost=self.outpost.name,
             uid=self.last_uid or "",
             version=state.version or "",

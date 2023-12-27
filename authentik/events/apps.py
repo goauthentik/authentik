@@ -7,7 +7,7 @@ from authentik.lib.config import CONFIG, ENV_PREFIX
 GAUGE_TASKS = Gauge(
     "authentik_system_tasks",
     "System tasks and their status",
-    ["task_name", "task_uid", "status"],
+    ["tenant", "task_name", "task_uid", "status"],
 )
 
 

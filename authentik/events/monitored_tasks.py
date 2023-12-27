@@ -13,6 +13,7 @@ from tenant_schemas_celery.task import TenantTask
 from authentik.events.apps import GAUGE_TASKS
 from authentik.events.models import Event, EventAction
 from authentik.lib.utils.errors import exception_to_string
+from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
 CACHE_KEY_PREFIX = "goauthentik.io/events/tasks/"
@@ -101,6 +102,7 @@ class TaskInfo:
         except TypeError:
             duration = 0
         GAUGE_TASKS.labels(
+            tenant=get_current_tenant().tenant_uuid,
             task_name=self.task_name.split(":")[0],
             task_uid=self.result.uid or "",
             status=self.result.status.name.lower(),

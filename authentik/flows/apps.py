@@ -7,6 +7,7 @@ from authentik.lib.utils.reflection import all_subclasses
 GAUGE_FLOWS_CACHED = Gauge(
     "authentik_flows_cached",
     "Cached flows",
+    ["tenant"],
 )
 HIST_FLOW_EXECUTION_STAGE_TIME = Histogram(
     "authentik_flows_execution_stage_time",

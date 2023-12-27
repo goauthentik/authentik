@@ -10,6 +10,7 @@ from authentik.policies.apps import GAUGE_POLICIES_CACHED
 from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel
 from authentik.policies.types import CACHE_PREFIX
 from authentik.root.monitoring import monitoring_set
+from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
 
@@ -17,7 +18,9 @@ LOGGER = get_logger()
 @receiver(monitoring_set)
 def monitoring_set_policies(sender, **kwargs):
     """set policy gauges"""
-    GAUGE_POLICIES_CACHED.set(len(cache.keys(f"{CACHE_PREFIX}*") or []))
+    GAUGE_POLICIES_CACHED.labels(tenant=get_current_tenant().tenant_uuid).set(
+        len(cache.keys(f"{CACHE_PREFIX}*") or [])
+    )
 
 
 @receiver(post_save, sender=Policy)
