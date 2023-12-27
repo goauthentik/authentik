@@ -13,14 +13,12 @@ Depending on what kind of device you want to require the user to have:
 #### WebAuthn
 
 ```python
-from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 return WebAuthnDevice.objects.filter(user=request.context['pending_user'], confirmed=True).exists()
 ```
 
 #### Duo
 
 ```python
-from authentik.stages.authenticator_duo.models import DuoDevice
 return DuoDevice.objects.filter(user=request.context['pending_user'], confirmed=True).exists()
 ```
 
