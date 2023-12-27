@@ -231,6 +231,11 @@ A user authorizes an application.
     "action": "authorize_application",
     "app": "authentik.providers.oauth2.views.authorize",
     "context": {
+        "asn": {
+            "asn": 6805,
+            "as_org": "Telefonica Germany",
+            "network": "5.4.0.0/14"
+        },
         "geo": {
             "lat": 42.0,
             "city": "placeholder",

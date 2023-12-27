@@ -76,6 +76,7 @@ class Reputation(ExpiringModel, SerializerModel):
     identifier = models.TextField()
     ip = models.GenericIPAddressField()
     ip_geo_data = models.JSONField(default=dict)
+    ip_asn_data = models.JSONField(default=dict)
     score = models.BigIntegerField(default=0)
 
     expires = models.DateTimeField(default=reputation_expiry)

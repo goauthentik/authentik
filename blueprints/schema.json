@@ -3874,6 +3874,11 @@
                     "additionalProperties": true,
                     "title": "Ip geo data"
                 },
+                "ip_asn_data": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Ip asn data"
+                },
                 "score": {
                     "type": "integer",
                     "minimum": -9223372036854775808,
@@ -5419,13 +5424,13 @@
                     "type": "string",
                     "enum": [
                         "apple",
+                        "openidconnect",
                         "azuread",
                         "discord",
                         "facebook",
                         "github",
                         "google",
                         "mailcow",
-                        "openidconnect",
                         "okta",
                         "patreon",
                         "reddit",
@@ -8286,6 +8291,28 @@
                     "minLength": 1,
                     "title": "Remember me offset",
                     "description": "Offset the session will be extended by when the user picks the remember me option. Default of 0 means that the remember me option will not be shown. (Format: hours=-1;minutes=-2;seconds=-3)"
+                },
+                "network_binding": {
+                    "type": "string",
+                    "enum": [
+                        "no_binding",
+                        "bind_asn",
+                        "bind_asn_network",
+                        "bind_asn_network_ip"
+                    ],
+                    "title": "Network binding",
+                    "description": "Bind sessions created by this stage to the configured network"
+                },
+                "geoip_binding": {
+                    "type": "string",
+                    "enum": [
+                        "no_binding",
+                        "bind_continent",
+                        "bind_continent_country",
+                        "bind_continent_country_city"
+                    ],
+                    "title": "Geoip binding",
+                    "description": "Bind sessions created by this stage to the configured GeoIP location"
                 }
             },
             "required": []

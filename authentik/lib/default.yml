@@ -37,8 +37,8 @@ redis:
   tls_reqs: "none"
 
 # broker:
-# url: ""
-# transport_options: ""
+#   url: ""
+#   transport_options: ""
 
 cache:
   # url: ""
@@ -48,10 +48,10 @@ cache:
   timeout_reputation: 300
 
 # channel:
-# url: ""
+#   url: ""
 
 # result_backend:
-# url: ""
+#   url: ""
 
 debug: false
 remote_debug: false
@@ -104,7 +104,10 @@ reputation:
 cookie_domain: null
 disable_update_check: false
 disable_startup_analytics: false
-geoip: "/geoip/GeoLite2-City.mmdb"
+events:
+  context_processors:
+    geoip: "/geoip/GeoLite2-City.mmdb"
+    asn: "/geoip/GeoLite2-ASN.mmdb"
 
 cert_discovery_dir: /certs
 default_token_length: 60

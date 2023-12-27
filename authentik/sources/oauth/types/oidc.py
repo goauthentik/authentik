@@ -23,7 +23,7 @@ class OpenIDConnectOAuth2Callback(OAuthCallback):
     client_class = UserprofileHeaderAuthClient
 
     def get_user_id(self, info: dict[str, str]) -> str:
-        return info.get("sub", "")
+        return info.get("sub", None)
 
     def get_user_enroll_context(
         self,

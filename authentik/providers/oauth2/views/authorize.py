@@ -1,6 +1,7 @@
 """authentik OAuth2 Authorization views"""
 from dataclasses import dataclass, field
 from datetime import timedelta
+from hashlib import sha256
 from json import dumps
 from re import error as RegexError
 from re import fullmatch
@@ -282,6 +283,7 @@ class OAuthAuthorizationParams:
             expires=now + timedelta_from_string(self.provider.access_code_validity),
             scope=self.scope,
             nonce=self.nonce,
+            session_id=sha256(request.session.session_key.encode("ascii")).hexdigest(),
         )
 
         if self.code_challenge and self.code_challenge_method:
@@ -569,6 +571,7 @@ class OAuthFulfillmentStage(StageView):
             expires=access_token_expiry,
             provider=self.provider,
             auth_time=auth_event.created if auth_event else now,
+            session_id=sha256(self.request.session.session_key.encode("ascii")).hexdigest(),
         )
 
         id_token = IDToken.new(self.provider, token, self.request)

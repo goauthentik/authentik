@@ -110,7 +110,7 @@ class EmailStageView(ChallengeStageView):
         try:
             message = TemplateEmailMessage(
                 subject=_(current_stage.subject),
-                to=[email],
+                to=[f"{pending_user.name} <{email}>"],
                 language=pending_user.locale(self.request),
                 template_name=current_stage.template,
                 template_context={

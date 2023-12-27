@@ -296,6 +296,7 @@ class BaseGrantModel(models.Model):
     revoked = models.BooleanField(default=False)
     _scope = models.TextField(default="", verbose_name=_("Scopes"))
     auth_time = models.DateTimeField(verbose_name="Authentication time")
+    session_id = models.CharField(default="", blank=True)
 
     @property
     def scope(self) -> list[str]:
