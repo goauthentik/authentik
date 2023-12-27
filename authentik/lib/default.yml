@@ -95,6 +95,9 @@ outposts:
   discover: true
   disable_embedded_outpost: false
 
+expressions:
+  restricted: false
+
 ldap:
   task_timeout_hours: 2
   page_size: 50

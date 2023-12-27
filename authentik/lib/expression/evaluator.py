@@ -8,15 +8,18 @@ from textwrap import indent
 from typing import Any
 
 from cachetools import TLRUCache, cached
+from django.apps import apps
 from django.core.exceptions import FieldError
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.serializers import ValidationError
+from RestrictedPython import compile_restricted, limited_builtins, safe_builtins, utility_builtins
 from sentry_sdk.hub import Hub
 from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
 from authentik.events.models import Event
+from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import get_http_session
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.policies.process import PolicyProcess
@@ -57,6 +60,10 @@ class BaseEvaluator:
             "resolve_dns": BaseEvaluator.expr_resolve_dns,
             "reverse_dns": BaseEvaluator.expr_reverse_dns,
         }
+        for app in apps.get_app_configs():
+            # Load models from each app
+            for model in app.get_models():
+                self._globals[model.__name__] = model
         self._context = {}
 
     @cached(cache=TLRUCache(maxsize=32, ttu=lambda key, value, now: now + 180))
@@ -185,7 +192,14 @@ class BaseEvaluator:
     def compile(self, expression: str) -> Any:
         """Parse expression. Raises SyntaxError or ValueError if the syntax is incorrect."""
         param_keys = self._context.keys()
-        return compile(self.wrap_expression(expression, param_keys), self._filename, "exec")
+        compiler = (
+            compile_restricted if CONFIG.get_bool("epxressions.restricted", False) else compile
+        )
+        return compiler(
+            self.wrap_expression(expression, param_keys),
+            self._filename,
+            "exec",
+        )
 
     def evaluate(self, expression_source: str) -> Any:
         """Parse and evaluate expression. If the syntax is incorrect, a SyntaxError is raised.
@@ -201,6 +215,12 @@ class BaseEvaluator:
                 self.handle_error(exc, expression_source)
                 raise exc
             try:
+                if CONFIG.get_bool("expressions.restricted", False):
+                    self._globals["__builtins__"] = {
+                        **safe_builtins,
+                        **limited_builtins,
+                        **utility_builtins,
+                    }
                 _locals = self._context
                 # Yes this is an exec, yes it is potentially bad. Since we limit what variables are
                 # available here, and these policies can only be edited by admins, this is a risk
