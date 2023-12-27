@@ -75,7 +75,7 @@ class RACClientConsumer(AsyncWebsocketConsumer):
             "sub_type": "init_connection",
             "dest_channel_id": self.channel_name,
             "params": params,
-            "protocol": self.provider.protocol,
+            "protocol": token.endpoint.protocol,
         }
         query = QueryDict(self.scope["query_string"].decode())
         for key in ["screen_width", "screen_height", "screen_dpi", "audio"]:

@@ -6,24 +6,21 @@ import (
 	"strings"
 
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/internal/config"
+	"goauthentik.io/internal/outpost/ak"
 )
 
 const (
-	guacdPath = "/opt/guacamole/sbin/guacd"
-	guacdArgs = " -b 0.0.0.0 -L debug -f"
+	guacdPath        = "/opt/guacamole/sbin/guacd"
+	guacdDefaultArgs = " -b 0.0.0.0 -f"
 )
 
 func (rs *RACServer) startGuac() error {
-	rs.guacd = exec.Command(guacdPath, strings.Split(guacdArgs, " ")...)
+	guacdArgs := strings.Split(guacdDefaultArgs, " ")
+	guacdArgs = append(guacdArgs, "-L", rs.ac.Outpost.Config[ak.ConfigLogLevel].(string))
+	rs.guacd = exec.Command(guacdPath, guacdArgs...)
 	rs.guacd.Env = os.Environ()
-	if config.Get().Debug {
-		rs.guacd.Stdout = os.Stdout
-		rs.guacd.Stderr = os.Stderr
-	} else {
-		rs.guacd.Stdout = rs.log.WithField("logger", "authentik.outpost.rac.guacd").WriterLevel(log.InfoLevel)
-		rs.guacd.Stderr = rs.log.WithField("logger", "authentik.outpost.rac.guacd").WriterLevel(log.WarnLevel)
-	}
+	rs.guacd.Stdout = rs.log.WithField("logger", "authentik.outpost.rac.guacd").WriterLevel(log.InfoLevel)
+	rs.guacd.Stderr = rs.log.WithField("logger", "authentik.outpost.rac.guacd").WriterLevel(log.InfoLevel)
 	rs.log.Info("starting guacd")
 	return rs.guacd.Start()
 }

@@ -116,7 +116,12 @@ class ConnectionToken(ExpiringModel):
     def get_settings(self) -> dict:
         """Get settings"""
         default_settings = {}
-        default_settings["hostname"] = self.endpoint.host
+        if ":" in self.endpoint.host:
+            host, _, port = self.endpoint.host.partition(":")
+            default_settings["hostname"] = host
+            default_settings["port"] = str(port)
+        else:
+            default_settings["hostname"] = self.endpoint.host
         default_settings["client-name"] = "authentik"
         # default_settings["enable-drive"] = "true"
         # default_settings["drive-name"] = "authentik"
