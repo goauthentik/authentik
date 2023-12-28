@@ -5,7 +5,7 @@ from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 
-from authentik.core.models import Application, AuthenticatedSession, User
+from authentik.core.models import Application, AuthenticatedSession
 from authentik.core.views.interface import InterfaceView
 from authentik.enterprise.policy import EnterprisePolicyAccessView
 from authentik.enterprise.providers.rac.models import ConnectionToken, Endpoint, RACProvider
@@ -17,7 +17,6 @@ from authentik.flows.stage import RedirectStage
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.policies.engine import PolicyEngine
-from authentik.policies.types import PolicyResult
 
 
 class RACStartView(EnterprisePolicyAccessView):
@@ -25,19 +24,9 @@ class RACStartView(EnterprisePolicyAccessView):
 
     endpoint: Endpoint
 
-    def user_has_access(self, user: User | None = None) -> PolicyResult:
-        policy_engine = PolicyEngine(self.endpoint, user or self.request.user, self.request)
-        policy_engine.use_cache = False
-        policy_engine.request = self.modify_policy_request(policy_engine.request)
-        policy_engine.build()
-        endpoint_result = policy_engine.result
-        result = super().user_has_access(user)
-        if not result.passing:
-            return result
-        return endpoint_result
-
     def resolve_provider_application(self):
         self.application = get_object_or_404(Application, slug=self.kwargs["app"])
+        # Endpoint permissions are validated in the RACFinalStage below
         self.endpoint = get_object_or_404(Endpoint, pk=self.kwargs["endpoint"])
         self.provider = RACProvider.objects.get(application=self.application)
 
@@ -79,14 +68,19 @@ class RACInterface(InterfaceView):
 class RACFinalStage(RedirectStage):
     """RAC Connection final stage, set the connection token in the stage"""
 
-    def get_challenge(self, *args, **kwargs) -> RedirectChallenge:
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         endpoint: Endpoint = self.executor.current_stage.endpoint
-        provider: RACProvider = self.executor.current_stage.provider
         engine = PolicyEngine(endpoint, self.request.user, self.request)
+        engine.use_cache = False
         engine.build()
         passing = engine.result
         if not passing.passing:
             return self.executor.stage_invalid(", ".join(passing.messages))
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_challenge(self, *args, **kwargs) -> RedirectChallenge:
+        endpoint: Endpoint = self.executor.current_stage.endpoint
+        provider: RACProvider = self.executor.current_stage.provider
         token = ConnectionToken.objects.create(
             provider=provider,
             endpoint=endpoint,
