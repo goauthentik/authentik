@@ -59,7 +59,7 @@ export class AdminSettingsPage extends AKElement {
         this.loadSettings();
     }
 
-    async save(): void {
+    async save(): Promise<void> {
         const form = this.shadowRoot?.querySelector<AdminSettingsForm>("ak-admin-settings-form");
         if (!form) {
             return;
@@ -74,7 +74,7 @@ export class AdminSettingsPage extends AKElement {
             return;
         }
         this.loadSettings();
-        form.settings = this.settings;
+        form.settings = this.settings!;
         form.resetForm();
     }
 

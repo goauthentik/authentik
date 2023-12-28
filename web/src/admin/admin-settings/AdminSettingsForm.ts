@@ -10,8 +10,9 @@ import "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFList from "@patternfly/patternfly/components/List/list.css";
 
@@ -45,47 +46,55 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             <ak-text-input
                 name="avatars"
                 label=${msg("Avatars")}
-                value="${this._settings?.avatars}"
+                value="${ifDefined(this._settings?.avatars)}"
                 .bighelp=${html`
                     <p class="pf-c-form__helper-text">
                         ${msg(
                             "Configure how authentik should show avatars for users. The following values can be set:",
                         )}
                     </p>
-                    <p class="pf-c-form__helper-text">
-                        <ul class="pf-c-list">
-                            <li class="pf-c-form__helper-text"><code>none</code>: ${msg(
+                    <ul class="pf-c-list">
+                        <li class="pf-c-form__helper-text">
+                            <code>none</code>:
+                            ${msg(
                                 "Disables per-user avatars and just shows a 1x1 pixel transparent picture",
-                            )}</li>
-                            <li class="pf-c-form__helper-text"><code>gravatar</code>: ${msg(
-                                "Uses gravatar with the user's email address",
-                            )}</li>
-                            <li class="pf-c-form__helper-text"><code>initials</code>: ${msg(
-                                "Generated avatars based on the user's name",
-                            )}</li>
-                            <li class="pf-c-form__helper-text">${msg(
+                            )}
+                        </li>
+                        <li class="pf-c-form__helper-text">
+                            <code>gravatar</code>:
+                            ${msg("Uses gravatar with the user's email address")}
+                        </li>
+                        <li class="pf-c-form__helper-text">
+                            <code>initials</code>:
+                            ${msg("Generated avatars based on the user's name")}
+                        </li>
+                        <li class="pf-c-form__helper-text">
+                            ${msg(
                                 "Any URL: If you want to use images hosted on another server, you can set any URL. Additionally, these placeholders can be used:",
                             )}
-                                <ul class="pf-c-list">
-                                    <li class="pf-c-form__helper-text"><code>%(username)s</code>: ${msg(
-                                        "The user's username",
-                                    )}</li>
-                                    <li class="pf-c-form__helper-text"><code>%(mail_hash)s</code>: ${msg(
-                                        "The email address, md5 hashed",
-                                    )}</li>
-                                    <li class="pf-c-form__helper-text"><code>%(upn)s</code>: ${msg(
-                                        "The user's UPN, if set (otherwise an empty string)",
-                                    )}</li>
-                                </ul>
-                            </li>
-                            <li class="pf-c-form__helper-text">${msg(
+                            <ul class="pf-c-list">
+                                <li class="pf-c-form__helper-text">
+                                    <code>%(username)s</code>: ${msg("The user's username")}
+                                </li>
+                                <li class="pf-c-form__helper-text">
+                                    <code>%(mail_hash)s</code>:
+                                    ${msg("The email address, md5 hashed")}
+                                </li>
+                                <li class="pf-c-form__helper-text">
+                                    <code>%(upn)s</code>:
+                                    ${msg("The user's UPN, if set (otherwise an empty string)")}
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="pf-c-form__helper-text">
+                            ${msg(
                                 html`An attribute path like
                                     <code>attributes.something.avatar</code>, which can be used in
                                     combination with the file field to allow users to upload custom
                                     avatars for themselves.`,
-                            )}</li>
-                        </ul>
-                    </p>
+                            )}
+                        </li>
+                    </ul>
                     <p class="pf-c-form__helper-text">
                         ${msg(
                             "Multiple values can be set, comma-separated, and authentik will fallback to the next mode when no avatar could be found.",
@@ -125,7 +134,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 name="eventRetention"
                 label=${msg("Event retention")}
                 required
-                value="${this._settings?.eventRetention}"
+                value="${ifDefined(this._settings?.eventRetention)}"
                 .bighelp=${html`<p class="pf-c-form__helper-text">
                         ${msg("Duration after which events will be deleted from the database.")}
                     </p>
