@@ -1,4 +1,5 @@
 """Event API tests"""
+from json import loads
 
 from django.urls import reverse
 from rest_framework.test import APITestCase
@@ -11,6 +12,9 @@ from authentik.events.models import (
     NotificationSeverity,
     TransportMode,
 )
+from authentik.events.utils import model_to_dict
+from authentik.lib.generators import generate_id
+from authentik.providers.oauth2.models import OAuth2Provider
 
 
 class TestEventsAPI(APITestCase):
@@ -19,6 +23,25 @@ class TestEventsAPI(APITestCase):
     def setUp(self) -> None:
         self.user = create_test_admin_user()
         self.client.force_login(self.user)
+
+    def test_filter_model_pk_int(self):
+        """Test event list with context_model_pk and integer PKs"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+        )
+        event = Event.new(EventAction.MODEL_CREATED, model=model_to_dict(provider))
+        event.save()
+        response = self.client.get(
+            reverse("authentik_api:event-list"),
+            data={
+                "context_model_pk": provider.pk,
+                "context_model_app": "authentik_providers_oauth2",
+                "context_model_name": "oauth2provider",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        self.assertEqual(body["pagination"]["count"], 1)
 
     def test_top_n(self):
         """Test top_per_user"""
