@@ -14,7 +14,6 @@ export function CustomEmitterElement<T extends Constructor<LitElement>>(supercla
             const fullDetail =
                 typeof detail === "object" && !Array.isArray(detail)
                     ? {
-                          target: this,
                           ...detail,
                       }
                     : detail;
