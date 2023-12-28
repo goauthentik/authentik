@@ -5,7 +5,7 @@ from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 
-from authentik.core.models import Application, AuthenticatedSession
+from authentik.core.models import Application, AuthenticatedSession, User
 from authentik.core.views.interface import InterfaceView
 from authentik.enterprise.policy import EnterprisePolicyAccessView
 from authentik.enterprise.providers.rac.models import ConnectionToken, Endpoint, RACProvider
@@ -17,14 +17,24 @@ from authentik.flows.stage import RedirectStage
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.policies.engine import PolicyEngine
+from authentik.policies.types import PolicyResult
 
 
 class RACStartView(EnterprisePolicyAccessView):
     """Start a RAC connection by checking access and creating a connection token"""
 
-    # TODO: Check access for endpoint
-
     endpoint: Endpoint
+
+    def user_has_access(self, user: User | None = None) -> PolicyResult:
+        policy_engine = PolicyEngine(self.endpoint, user or self.request.user, self.request)
+        policy_engine.use_cache = False
+        policy_engine.request = self.modify_policy_request(policy_engine.request)
+        policy_engine.build()
+        endpoint_result = policy_engine.result
+        result = super().user_has_access(user)
+        if not result.passing:
+            return result
+        return endpoint_result
 
     def resolve_provider_application(self):
         self.application = get_object_or_404(Application, slug=self.kwargs["app"])

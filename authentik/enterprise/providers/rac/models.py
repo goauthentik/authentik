@@ -36,7 +36,9 @@ class RACProvider(Provider):
     """Remotely access computers/servers"""
 
     settings = models.JSONField(default=dict)
-    auth_mode = models.TextField(choices=AuthenticationMode.choices)
+    auth_mode = models.TextField(
+        choices=AuthenticationMode.choices, default=AuthenticationMode.PROMPT
+    )
 
     @property
     def launch_url(self) -> Optional[str]:
@@ -141,7 +143,7 @@ class ConnectionToken(ExpiringModel):
             "name"
         ) | RACPropertyMapping.objects.filter(endpoint__in=[self.endpoint]).order_by("name"):
             mapping: RACPropertyMapping
-            if mapping.expression == "":
+            if len(mapping.static_settings) > 0:
                 always_merger.merge(settings, mapping.static_settings)
                 continue
             try:

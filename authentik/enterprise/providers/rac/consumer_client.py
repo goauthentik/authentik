@@ -83,10 +83,14 @@ class RACClientConsumer(AsyncWebsocketConsumer):
             if not value:
                 continue
             msg[key] = str(value)
-        for outpost in Outpost.objects.filter(
+        outposts = Outpost.objects.filter(
             type=OutpostType.RAC,
             providers__in=[self.provider],
-        ):
+        )
+        if not outposts.exists():
+            self.logger.warning("Provider has no outpost")
+            raise DenyConnection()
+        for outpost in outposts:
             # Sort all states for the outpost by connection count
             states = sorted(
                 OutpostState.for_outpost(outpost),
