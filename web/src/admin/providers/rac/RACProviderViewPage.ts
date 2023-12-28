@@ -87,17 +87,6 @@ export class RACProviderViewPage extends AKElement {
                 ${this.renderTabOverview()}
             </section>
             <section
-                slot="page-endpoints"
-                data-tab-title="${msg("Endpoints")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-rac-endpoint-list .provider=${this.provider}> </ak-rac-endpoint-list>
-                    </div>
-                </div>
-            </section>
-            <section
                 slot="page-changelog"
                 data-tab-title="${msg("Changelog")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
@@ -125,7 +114,11 @@ export class RACProviderViewPage extends AKElement {
         if (!this.provider) {
             return html``;
         }
-        return html`${this.provider?.assignedApplicationName
+        return html` <div slot="header" class="pf-c-banner pf-m-info">
+                ${msg("RAC is in preview.")}
+                <a href="mailto:hello+feature/rac@goauthentik.io">${msg("Send us feedback!")}</a>
+            </div>
+            ${this.provider?.assignedApplicationName
                 ? html``
                 : html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg("Warning: Provider is not used by an Application.")}
@@ -178,16 +171,10 @@ export class RACProviderViewPage extends AKElement {
                     </div>
                 </div>
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                    <div class="pf-c-card__title">${msg("Protocol Settings")}</div>
+                    <div class="pf-c-card__title">${msg("Endpoints")}</div>
                     <div class="pf-c-card__body">
-                        <dl class="pf-c-description-list pf-m-3-col-on-lg">
-                            <div class="pf-c-description-list__group"></div>
-                        </dl>
+                        <ak-rac-endpoint-list .provider=${this.provider}> </ak-rac-endpoint-list>
                     </div>
-                </div>
-                <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                    <div class="pf-c-card__title">${msg("Setup")}</div>
-                    <div class="pf-c-card__body"></div>
                 </div>
             </div>`;
     }
