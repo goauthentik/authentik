@@ -1,9 +1,9 @@
+"""Recovery helper functions."""
 from datetime import datetime
 
 from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.timezone import now
-from rest_framework.request import Request
 
 from authentik.core.models import Group, Token, TokenIntents, User
 

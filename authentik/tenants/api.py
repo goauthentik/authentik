@@ -56,17 +56,20 @@ class TenantSerializer(ModelSerializer):
 
 class TenantAdminGroupRequestSerializer(PassiveSerializer):
     """Tenant admin group creation request serializer"""
+
     user = CharField()
 
 
 class TenantRecoveryKeyRequestSerializer(PassiveSerializer):
     """Tenant recovery key creation request serializer"""
+
     user = CharField()
     duration_days = IntegerField(initial=365)
 
 
 class TenantRecoveryKeyResponseSerializer(PassiveSerializer):
     """Tenant recovery key creation response serializer"""
+
     expiry = DateTimeField()
     url = CharField()
 
