@@ -9,6 +9,11 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RenameField(
+            model_name="brand",
+            old_name="tenant_uuid",
+            new_name="brand_uuid",
+        ),
         migrations.RemoveField(
             model_name="brand",
             name="event_retention",
