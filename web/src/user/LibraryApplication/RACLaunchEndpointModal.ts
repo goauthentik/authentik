@@ -11,6 +11,9 @@ import { Application, Endpoint, RacApi } from "@goauthentik/api";
 @customElement("ak-library-rac-endpoint-launch")
 export class RACLaunchEndpointModal extends TableModal<Endpoint> {
     clickable = true;
+    searchEnabled(): boolean {
+        return true;
+    }
 
     clickHandler = (item: Endpoint) => {
         if (!item.launchUrl) {
@@ -27,10 +30,16 @@ export class RACLaunchEndpointModal extends TableModal<Endpoint> {
     app?: Application;
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<Endpoint>> {
-        return new RacApi(DEFAULT_CONFIG).racEndpointsList({
+        const endpoints = await new RacApi(DEFAULT_CONFIG).racEndpointsList({
             provider: this.app?.provider || 0,
             page: page,
+            search: this.search,
         });
+        if (endpoints.pagination.count === 1) {
+            this.clickHandler(endpoints.results[0]);
+            this.open = false;
+        }
+        return endpoints;
     }
 
     columns(): TableColumn[] {

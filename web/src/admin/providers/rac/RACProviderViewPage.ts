@@ -82,7 +82,7 @@ export class RACProviderViewPage extends AKElement {
         if (!this.provider) {
             return html``;
         }
-        return html` <ak-tabs>
+        return html`<ak-tabs>
             <section slot="page-overview" data-tab-title="${msg("Overview")}">
                 ${this.renderTabOverview()}
             </section>
