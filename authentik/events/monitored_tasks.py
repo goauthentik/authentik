@@ -6,7 +6,7 @@ from timeit import default_timer
 from typing import Any, Optional
 
 from django.core.cache import cache
-from django.db.utils import ProgrammingError
+from django.db import connection
 from django.utils.translation import gettext_lazy as _
 from structlog.stdlib import get_logger
 from tenant_schemas_celery.task import TenantTask
@@ -14,7 +14,6 @@ from tenant_schemas_celery.task import TenantTask
 from authentik.events.apps import GAUGE_TASKS
 from authentik.events.models import Event, EventAction
 from authentik.lib.utils.errors import exception_to_string
-from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
 CACHE_KEY_PREFIX = "goauthentik.io/events/tasks/"
@@ -102,13 +101,8 @@ class TaskInfo:
             duration = max(self.finish_timestamp - start, 0)
         except TypeError:
             duration = 0
-        try:
-            tenant = get_current_tenant().tenant_uuid
-        # DB not yet initialized, let's not fail
-        except ProgrammingError:
-            tenant = ""
         GAUGE_TASKS.labels(
-            tenant=tenant,
+            tenant=connection.schema_name,
             task_name=self.task_name.split(":")[0],
             task_uid=self.result.uid or "",
             status=self.result.status.name.lower(),
