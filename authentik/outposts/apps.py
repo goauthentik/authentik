@@ -40,12 +40,16 @@ class AuthentikOutpostConfig(ManagedAppConfig):
             OutpostType,
         )
 
+        if outpost := Outpost.objects.filter(name=MANAGED_OUTPOST_NAME, managed="").first():
+            outpost.managed = MANAGED_OUTPOST
+            outpost.save()
+            return
         outpost, updated = Outpost.objects.update_or_create(
             defaults={
                 "type": OutpostType.PROXY,
-                "managed": MANAGED_OUTPOST,
+                "name": MANAGED_OUTPOST_NAME,
             },
-            name=MANAGED_OUTPOST_NAME,
+            managed=MANAGED_OUTPOST,
         )
         if updated:
             if KubernetesServiceConnection.objects.exists():
