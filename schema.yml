@@ -13958,6 +13958,14 @@ paths:
       operationId: propertymappings_rac_list
       description: RACPropertyMapping Viewset
       parameters:
+      - in: query
+        name: managed
+        schema:
+          type: string
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -19150,7 +19158,6 @@ paths:
           - tr
           - tt
           - udm
-          - ug
           - uk
           - ur
           - uz
