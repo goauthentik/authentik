@@ -8,8 +8,8 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { CustomEmitterElement } from "../utils/eventEmitter";
-import type { BasePagination } from "./types";
+import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
+import type { BasePagination } from "../types";
 
 const styles = [
     PFBase,

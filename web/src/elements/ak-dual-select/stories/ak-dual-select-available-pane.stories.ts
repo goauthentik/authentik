@@ -4,12 +4,13 @@ import { slug } from "github-slugger";
 
 import { TemplateResult, html } from "lit";
 
-import "./ak-dual-select-selected-pane";
-import { AkDualSelectSelectedPane } from "./ak-dual-select-selected-pane";
+import "../components/ak-dual-select-available-pane";
+import "./sb-host-provider";
+import { AkDualSelectAvailablePane } from "../components/ak-dual-select-available-pane";
 
-const metadata: Meta<AkDualSelectSelectedPane> = {
-    title: "Elements / Dual Select / Selected Items Pane",
-    component: "ak-dual-select-selected-pane",
+const metadata: Meta<AkDualSelectAvailablePane> = {
+    title: "Elements / Dual Select / Available Items Pane",
+    component: "ak-dual-select-available-pane",
     parameters: {
         docs: {
             description: {
@@ -21,6 +22,10 @@ const metadata: Meta<AkDualSelectSelectedPane> = {
         options: {
             type: "string",
             description: "An array of [key, label] pairs of what to show",
+        },
+        selected: {
+            type: "string",
+            description: "An array of [key] of what has already been selected",
         },
         toMove: {
             type: "string",
@@ -42,7 +47,9 @@ const container = (testItem: TemplateResult) =>
             }
         </style>
         <ak-message-container></ak-message-container>
+<sb-dual-select-host-provider>
         ${testItem}
+</sb-dual-select-host-provider>
         <p>Messages received from the button:</p>
         <ul id="action-button-message-pad" style="margin-top: 1em"></ul>
     </div>`;
@@ -56,7 +63,7 @@ const handleMoveChanged = (result: any) => {
     });
 };
 
-window.addEventListener("ak-dual-select-selected-move-changed", handleMoveChanged);
+window.addEventListener("ak-dual-select-available-move-changed", handleMoveChanged);
 
 type Story = StoryObj;
 
@@ -87,8 +94,24 @@ const goodForYouPairs = goodForYou.map((key) => [slug(key), key]);
 export const Default: Story = {
     render: () =>
         container(
-            html` <ak-dual-select-selected-pane
+            html` <ak-dual-select-available-pane
                 .options=${goodForYouPairs}
-            ></ak-dual-select-selected-pane>`,
+            ></ak-dual-select-available-pane>`,
+        ),
+};
+
+const someSelected = new Set([
+    goodForYouPairs[2][0],
+    goodForYouPairs[8][0],
+    goodForYouPairs[14][0],
+]);
+
+export const SomeSelected: Story = {
+    render: () =>
+        container(
+            html` <ak-dual-select-available-pane
+                .options=${goodForYouPairs}
+                .selected=${someSelected}
+></ak-dual-select-available-pane>`,
         ),
 };

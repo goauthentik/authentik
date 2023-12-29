@@ -3,8 +3,8 @@ import { Meta, StoryObj } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
 
-import "./ak-pagination";
-import { AkPagination } from "./ak-pagination";
+import "../components/ak-pagination";
+import { AkPagination } from "../components/ak-pagination";
 
 const metadata: Meta<AkPagination> = {
     title: "Elements / Dual Select / Pagination Control",
