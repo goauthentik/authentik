@@ -70,6 +70,9 @@ export class RacInterface extends Interface {
     @property()
     token?: string;
 
+    @property()
+    endpointName?: string;
+
     @state()
     clipboardWatcherTimer = 0;
 
@@ -202,7 +205,10 @@ export class RacInterface extends Interface {
     }
 
     updateTitle(): void {
-        const title = this.tenant?.brandingTitle || TITLE_DEFAULT;
+        let title = this.tenant?.brandingTitle || TITLE_DEFAULT;
+        if (this.endpointName) {
+            title = `${this.endpointName} - ${title}`;
+        }
         document.title = `${title}`;
     }
 
