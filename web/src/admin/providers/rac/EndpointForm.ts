@@ -114,11 +114,7 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
                 <select class="pf-c-form-control" multiple>
                     ${this.propertyMappings?.results.map((mapping) => {
                         let selected = false;
-                        if (!this.instance?.propertyMappings) {
-                            selected =
-                                mapping.managed?.startsWith("goauthentik.io/providers/rac") ||
-                                false;
-                        } else {
+                        if (this.instance?.propertyMappings) {
                             selected = Array.from(this.instance?.propertyMappings).some((su) => {
                                 return su == mapping.pk;
                             });
