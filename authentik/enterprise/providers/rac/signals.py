@@ -23,7 +23,7 @@ def user_logged_out_session(sender, request: HttpRequest, user: User, **_):
         % {
             "session": request.session.session_key,
         },
-        {"type": "event.disconnect", "reason": "logout"},
+        {"type": "event.disconnect", "reason": "session_logout"},
     )
 
 

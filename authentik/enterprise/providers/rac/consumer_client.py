@@ -3,9 +3,7 @@ from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
 from channels.exceptions import ChannelFull, DenyConnection
 from channels.generic.websocket import AsyncWebsocketConsumer
-from django.http import Http404
 from django.http.request import QueryDict
-from django.shortcuts import get_object_or_404
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.enterprise.providers.rac.models import ConnectionToken, RACProvider
@@ -25,19 +23,12 @@ RAC_CLIENT_GROUP_SESSION = "group_enterprise_rac_client_%(session)s"
 # Step 5: This consumer transfers data between the two channels
 
 
-def get_object_or_deny(*args, **kwargs):
-    """get_object_or_404 compatible with websockets"""
-    try:
-        return get_object_or_404(*args, **kwargs)
-    except Http404 as exc:
-        raise DenyConnection() from exc
-
-
 class RACClientConsumer(AsyncWebsocketConsumer):
     """RAC client consumer the browser connects to"""
 
     dest_channel_id: str = ""
     provider: RACProvider
+    token: ConnectionToken
     logger: BoundLogger
 
     async def connect(self):
@@ -62,20 +53,22 @@ class RACClientConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def init_outpost_connection(self):
         """Initialize guac connection settings"""
-        token: ConnectionToken = get_object_or_deny(
-            ConnectionToken, token=self.scope["url_route"]["kwargs"]["token"]
-        )
-        self.provider = token.provider
-        params = token.get_settings()
+        self.token = ConnectionToken.filter_not_expired(
+            token=self.scope["url_route"]["kwargs"]["token"]
+        ).first()
+        if not self.token:
+            raise DenyConnection()
+        self.provider = self.token.provider
+        params = self.token.get_settings()
         self.logger = get_logger().bind(
-            endpoint=token.endpoint.name, user=self.scope["user"].username
+            endpoint=self.token.endpoint.name, user=self.scope["user"].username
         )
         msg = {
             "type": "event.provider.specific",
             "sub_type": "init_connection",
             "dest_channel_id": self.channel_name,
             "params": params,
-            "protocol": token.endpoint.protocol,
+            "protocol": self.token.endpoint.protocol,
         }
         query = QueryDict(self.scope["query_string"].decode())
         for key in ["screen_width", "screen_height", "screen_dpi", "audio"]:
@@ -108,6 +101,9 @@ class RACClientConsumer(AsyncWebsocketConsumer):
         """Mirror data received from client to the dest_channel_id
         which is the channel talking to guacd"""
         if self.dest_channel_id == "":
+            return
+        if self.token.is_expired:
+            await self.event_disconnect({"reason": "token_expiry"})
             return
         try:
             await self.channel_layer.send(
@@ -142,8 +138,12 @@ class RACClientConsumer(AsyncWebsocketConsumer):
     async def event_send(self, event: dict):
         """Handler called by outpost websocket that sends data to this specific
         client connection"""
+        if self.token.is_expired:
+            await self.event_disconnect({"reason": "token_expiry"})
+            return
         await self.send(text_data=event.get("text_data"), bytes_data=event.get("bytes_data"))
 
     async def event_disconnect(self, event: dict):
         """Disconnect when the session ends"""
+        self.logger.info("Disconnecting RAC connection", reason=event.get("reason"))
         await self.close()
