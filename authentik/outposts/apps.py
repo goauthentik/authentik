@@ -15,6 +15,7 @@ GAUGE_OUTPOSTS_LAST_UPDATE = Gauge(
     ["outpost", "uid", "version"],
 )
 MANAGED_OUTPOST = "goauthentik.io/outposts/embedded"
+MANAGED_OUTPOST_NAME = "authentik Embedded Outpost"
 
 
 class AuthentikOutpostConfig(ManagedAppConfig):
@@ -41,10 +42,10 @@ class AuthentikOutpostConfig(ManagedAppConfig):
 
         outpost, updated = Outpost.objects.update_or_create(
             defaults={
-                "name": "authentik Embedded Outpost",
                 "type": OutpostType.PROXY,
+                "managed": MANAGED_OUTPOST,
             },
-            managed=MANAGED_OUTPOST,
+            name=MANAGED_OUTPOST_NAME,
         )
         if updated:
             if KubernetesServiceConnection.objects.exists():

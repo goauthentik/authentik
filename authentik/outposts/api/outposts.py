@@ -18,7 +18,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Provider
 from authentik.outposts.api.service_connections import ServiceConnectionSerializer
-from authentik.outposts.apps import MANAGED_OUTPOST
+from authentik.outposts.apps import MANAGED_OUTPOST, MANAGED_OUTPOST_NAME
 from authentik.outposts.models import (
     Outpost,
     OutpostConfig,
@@ -46,6 +46,16 @@ class OutpostSerializer(ModelSerializer):
     service_connection_obj = ServiceConnectionSerializer(
         source="service_connection", read_only=True
     )
+
+    def validate_name(self, name: str) -> str:
+        """Validate name (especially for embedded outpost)"""
+        if not self.instance:
+            return name
+        if self.instance.managed == MANAGED_OUTPOST:
+            raise ValidationError("Embedded outpost's name cannot be changed")
+        if self.instance.name == MANAGED_OUTPOST_NAME:
+            self.instance.managed = MANAGED_OUTPOST
+        return name
 
     def validate_providers(self, providers: list[Provider]) -> list[Provider]:
         """Check that all providers match the type of the outpost"""
