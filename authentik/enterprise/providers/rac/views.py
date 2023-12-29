@@ -4,6 +4,7 @@ from typing import Any
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
+from django.utils.timezone import now
 
 from authentik.core.models import Application, AuthenticatedSession
 from authentik.core.views.interface import InterfaceView
@@ -15,6 +16,7 @@ from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import FlowPlanner
 from authentik.flows.stage import RedirectStage
 from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.policies.engine import PolicyEngine
 
@@ -95,6 +97,8 @@ class RACFinalStage(RedirectStage):
             session=AuthenticatedSession.objects.filter(
                 session_key=self.request.session.session_key
             ).first(),
+            expires=now() + timedelta_from_string(provider.connection_expiry),
+            expiring=True,
         )
         setattr(
             self.executor.current_stage,

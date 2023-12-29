@@ -14,7 +14,7 @@ class RACProviderSerializer(ProviderSerializer):
 
     class Meta:
         model = RACProvider
-        fields = ProviderSerializer.Meta.fields + ["settings", "outpost_set"]
+        fields = ProviderSerializer.Meta.fields + ["settings", "outpost_set", "connection_expiry"]
         extra_kwargs = ProviderSerializer.Meta.extra_kwargs
 
 

@@ -8,6 +8,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
+import "@goauthentik/elements/utils/TimeDeltaHelp";
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
@@ -93,6 +94,25 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                     ${msg("Flow used when authorizing this provider.")}
                 </p>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${msg("Connection expiry")}
+                ?required=${true}
+                name="connectionExpiry"
+            >
+                <input
+                    type="text"
+                    value="${first(this.instance?.connectionExpiry, "hours=8")}"
+                    class="pf-c-form-control"
+                    required
+                />
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "Determines how long a session lasts before being disconnected and requiring re-authorization.",
+                    )}
+                </p>
+                <ak-utils-time-delta-help></ak-utils-time-delta-help>
+            </ak-form-element-horizontal>
+
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">

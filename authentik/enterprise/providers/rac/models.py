@@ -12,6 +12,7 @@ from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.models import ExpiringModel, PropertyMapping, Provider, default_token_key
 from authentik.events.models import Event, EventAction
 from authentik.lib.models import SerializerModel
+from authentik.lib.utils.time import timedelta_string_validator
 from authentik.policies.models import PolicyBindingModel
 
 LOGGER = get_logger()
@@ -38,6 +39,15 @@ class RACProvider(Provider):
     settings = models.JSONField(default=dict)
     auth_mode = models.TextField(
         choices=AuthenticationMode.choices, default=AuthenticationMode.PROMPT
+    )
+    connection_expiry = models.TextField(
+        default="hours=8",
+        validators=[timedelta_string_validator],
+        help_text=_(
+            "Determines how long a session lasts. Default of 0 means "
+            "that the sessions lasts until the browser is closed. "
+            "(Format: hours=-1;minutes=-2;seconds=-3)"
+        ),
     )
 
     @property

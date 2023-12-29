@@ -38659,6 +38659,11 @@ components:
             type: string
             format: uuid
         settings: {}
+        connection_expiry:
+          type: string
+          minLength: 1
+          description: 'Determines how long a session lasts. Default of 0 means that
+            the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
     PatchedRadiusProviderRequest:
       type: object
       description: RadiusProvider Serializer
@@ -40738,6 +40743,10 @@ components:
           items:
             type: string
           readOnly: true
+        connection_expiry:
+          type: string
+          description: 'Determines how long a session lasts. Default of 0 means that
+            the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -40774,6 +40783,11 @@ components:
             type: string
             format: uuid
         settings: {}
+        connection_expiry:
+          type: string
+          minLength: 1
+          description: 'Determines how long a session lasts. Default of 0 means that
+            the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
       required:
       - authorization_flow
       - name
