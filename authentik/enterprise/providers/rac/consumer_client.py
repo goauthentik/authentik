@@ -10,8 +10,18 @@ from authentik.enterprise.providers.rac.models import ConnectionToken, RACProvid
 from authentik.outposts.consumer import OUTPOST_GROUP_INSTANCE
 from authentik.outposts.models import Outpost, OutpostState, OutpostType
 
+# Global broadcast group, which messages are sent to when the outpost connects back
+# to authentik for a specific connection
+# The `RACClientConsumer` consumer adds itself to this group on connection,
+# and removes itself once it has been assigned a specific outpost channel
 RAC_CLIENT_GROUP = "group_enterprise_rac_client"
+# A group for all connections in a given authentik session ID
+# A disconnect message is sent to this group when the session expires/is deleted
 RAC_CLIENT_GROUP_SESSION = "group_enterprise_rac_client_%(session)s"
+# A group for all connections with a specific token, which in almost all cases
+# is just one connection, however this is used to disconnect the connection
+# when the token is deleted
+RAC_CLIENT_GROUP_TOKEN = "group_enterprise_rac_token_%(token)s"  # nosec
 
 # Step 1: Client connects to this websocket endpoint
 # Step 2: We prepare all the connection args for Guac
@@ -125,6 +135,7 @@ class RACClientConsumer(AsyncWebsocketConsumer):
             return
         if self.dest_channel_id != "":
             # We've already selected an outpost channel, so tell the other channel to disconnect
+            # This should never happen since we remove ourselves from the broadcast group
             await self.channel_layer.send(
                 outpost_channel,
                 {
@@ -134,6 +145,9 @@ class RACClientConsumer(AsyncWebsocketConsumer):
             return
         self.logger.debug("Connected to a single outpost instance")
         self.dest_channel_id = outpost_channel
+        # Since we have a specific outpost channel now, we can remove
+        # ourselves from the global broadcast group
+        await self.channel_layer.group_discard(RAC_CLIENT_GROUP, self.channel_name)
 
     async def event_send(self, event: dict):
         """Handler called by outpost websocket that sends data to this specific
