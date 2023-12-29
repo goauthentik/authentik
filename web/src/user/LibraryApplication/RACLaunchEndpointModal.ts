@@ -35,7 +35,7 @@ export class RACLaunchEndpointModal extends TableModal<Endpoint> {
             page: page,
             search: this.search,
         });
-        if (endpoints.pagination.count === 1) {
+        if (this.open && endpoints.pagination.count === 1) {
             this.clickHandler(endpoints.results[0]);
             this.open = false;
         }
