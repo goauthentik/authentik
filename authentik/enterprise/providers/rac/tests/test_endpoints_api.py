@@ -25,13 +25,13 @@ class TestEndpointsAPI(APITestCase):
             provider=self.provider,
         )
         self.allowed = Endpoint.objects.create(
-            name=generate_id(),
+            name=f"a-{generate_id()}",
             host=generate_id(),
             protocol=Protocols.RDP,
             provider=self.provider,
         )
         self.denied = Endpoint.objects.create(
-            name=generate_id(),
+            name=f"b-{generate_id()}",
             host=generate_id(),
             protocol=Protocols.RDP,
             provider=self.provider,
@@ -69,6 +69,7 @@ class TestEndpointsAPI(APITestCase):
                             "authentication_flow": None,
                             "authorization_flow": None,
                             "property_mappings": [],
+                            "connection_expiry": "hours=8",
                             "component": "ak-provider-rac-form",
                             "assigned_application_slug": self.app.slug,
                             "assigned_application_name": self.app.name,
@@ -121,6 +122,7 @@ class TestEndpointsAPI(APITestCase):
                             "component": "ak-provider-rac-form",
                             "assigned_application_slug": self.app.slug,
                             "assigned_application_name": self.app.name,
+                            "connection_expiry": "hours=8",
                             "verbose_name": "RAC Provider",
                             "verbose_name_plural": "RAC Providers",
                             "meta_model_name": "authentik_providers_rac.racprovider",
@@ -147,6 +149,7 @@ class TestEndpointsAPI(APITestCase):
                             "component": "ak-provider-rac-form",
                             "assigned_application_slug": self.app.slug,
                             "assigned_application_name": self.app.name,
+                            "connection_expiry": "hours=8",
                             "verbose_name": "RAC Provider",
                             "verbose_name_plural": "RAC Providers",
                             "meta_model_name": "authentik_providers_rac.racprovider",

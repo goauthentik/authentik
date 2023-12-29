@@ -4,6 +4,7 @@ from uuid import uuid4
 
 from deepmerge import always_merger
 from django.db import models
+from django.db.models import QuerySet
 from django.utils.translation import gettext as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
@@ -149,26 +150,33 @@ class ConnectionToken(ExpiringModel):
         always_merger.merge(settings, self.endpoint.settings)
         always_merger.merge(settings, self.settings)
 
-        for mapping in RACPropertyMapping.objects.filter(provider__in=[self.provider]).order_by(
-            "name"
-        ) | RACPropertyMapping.objects.filter(endpoint__in=[self.endpoint]).order_by("name"):
-            mapping: RACPropertyMapping
-            if len(mapping.static_settings) > 0:
-                always_merger.merge(settings, mapping.static_settings)
-                continue
-            try:
-                mapping_settings = mapping.evaluate(
-                    self.session.user, None, endpoint=self.endpoint, provider=self.provider
-                )
-                always_merger.merge(settings, mapping_settings)
-            except PropertyMappingExpressionException as exc:
-                Event.new(
-                    EventAction.CONFIGURATION_ERROR,
-                    message=f"Failed to evaluate property-mapping: '{mapping.name}'",
-                    provider=self.provider,
-                    mapping=mapping,
-                ).set_user(self.session.user).save()
-                LOGGER.warning("Failed to evaluate property mapping", exc=exc)
+        def mapping_evaluator(mappings: QuerySet):
+            for mapping in mappings:
+                mapping: RACPropertyMapping
+                if len(mapping.static_settings) > 0:
+                    always_merger.merge(settings, mapping.static_settings)
+                    continue
+                try:
+                    mapping_settings = mapping.evaluate(
+                        self.session.user, None, endpoint=self.endpoint, provider=self.provider
+                    )
+                    always_merger.merge(settings, mapping_settings)
+                except PropertyMappingExpressionException as exc:
+                    Event.new(
+                        EventAction.CONFIGURATION_ERROR,
+                        message=f"Failed to evaluate property-mapping: '{mapping.name}'",
+                        provider=self.provider,
+                        mapping=mapping,
+                    ).set_user(self.session.user).save()
+                    LOGGER.warning("Failed to evaluate property mapping", exc=exc)
+
+        mapping_evaluator(
+            RACPropertyMapping.objects.filter(provider__in=[self.provider]).order_by("name")
+        )
+        mapping_evaluator(
+            RACPropertyMapping.objects.filter(endpoint__in=[self.endpoint]).order_by("name")
+        )
+
         settings["drive-path"] = f"/tmp/connection/{self.token}"  # nosec
         settings["create-drive-path"] = "true"
         # Ensure all values of the settings dict are strings
