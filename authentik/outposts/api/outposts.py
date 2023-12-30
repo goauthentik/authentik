@@ -51,7 +51,7 @@ class OutpostSerializer(ModelSerializer):
         """Validate name (especially for embedded outpost)"""
         if not self.instance:
             return name
-        if self.instance.managed == MANAGED_OUTPOST:
+        if self.instance.managed == MANAGED_OUTPOST and name != MANAGED_OUTPOST_NAME:
             raise ValidationError("Embedded outpost's name cannot be changed")
         if self.instance.name == MANAGED_OUTPOST_NAME:
             self.instance.managed = MANAGED_OUTPOST
