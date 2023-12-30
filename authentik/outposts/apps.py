@@ -15,6 +15,7 @@ GAUGE_OUTPOSTS_LAST_UPDATE = Gauge(
     ["outpost", "uid", "version"],
 )
 MANAGED_OUTPOST = "goauthentik.io/outposts/embedded"
+MANAGED_OUTPOST_NAME = "authentik Embedded Outpost"
 
 
 class AuthentikOutpostConfig(ManagedAppConfig):
@@ -39,10 +40,14 @@ class AuthentikOutpostConfig(ManagedAppConfig):
             OutpostType,
         )
 
+        if outpost := Outpost.objects.filter(name=MANAGED_OUTPOST_NAME, managed="").first():
+            outpost.managed = MANAGED_OUTPOST
+            outpost.save()
+            return
         outpost, updated = Outpost.objects.update_or_create(
             defaults={
-                "name": "authentik Embedded Outpost",
                 "type": OutpostType.PROXY,
+                "name": MANAGED_OUTPOST_NAME,
             },
             managed=MANAGED_OUTPOST,
         )
