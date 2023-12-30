@@ -36,7 +36,6 @@ class AuthentikOutpostConfig(ManagedAppConfig):
             DockerServiceConnection,
             KubernetesServiceConnection,
             Outpost,
-            OutpostConfig,
             OutpostType,
         )
 
@@ -56,10 +55,4 @@ class AuthentikOutpostConfig(ManagedAppConfig):
                 outpost.service_connection = KubernetesServiceConnection.objects.first()
             elif DockerServiceConnection.objects.exists():
                 outpost.service_connection = DockerServiceConnection.objects.first()
-            outpost.config = OutpostConfig(
-                kubernetes_disabled_components=[
-                    "deployment",
-                    "secret",
-                ]
-            )
             outpost.save()
