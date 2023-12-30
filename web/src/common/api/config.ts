@@ -1,3 +1,4 @@
+import { TokenMiddleware } from "@goauthentik/app/common/oauth/middleware";
 import {
     CSRFMiddleware,
     EventMiddleware,
@@ -73,6 +74,7 @@ export const DEFAULT_CONFIG = new Configuration({
         "sentry-trace": getMetaContent("sentry-trace"),
     },
     middleware: [
+        new TokenMiddleware(),
         new CSRFMiddleware(),
         new EventMiddleware(),
         new LoggingMiddleware(globalAK().tenant),

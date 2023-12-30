@@ -15,6 +15,7 @@ from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.generic import View
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, PolymorphicProxySerializer, extend_schema
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from sentry_sdk import capture_exception
@@ -22,6 +23,7 @@ from sentry_sdk.api import set_tag
 from sentry_sdk.hub import Hub
 from structlog.stdlib import BoundLogger, get_logger
 
+from authentik.api.authentication import TokenAuthentication
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction, cleanse_dict
 from authentik.flows.apps import HIST_FLOW_EXECUTION_STAGE_TIME
@@ -103,6 +105,10 @@ class FlowExecutorView(APIView):
     """Flow executor, passing requests to Stage Views"""
 
     permission_classes = [AllowAny]
+    authentication_classes = [
+        TokenAuthentication,
+        SessionAuthentication,
+    ]
 
     flow: Flow
 

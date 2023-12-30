@@ -1,3 +1,5 @@
+import { OAuthInterface } from "@goauthentik/app/common/oauth/interface";
+import { userSettings } from "@goauthentik/app/common/oauth/settings";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import {
     EVENT_API_DRAWER_TOGGLE,
@@ -9,7 +11,6 @@ import { UserDisplay } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
 import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
-import { Interface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/enterprise/EnterpriseStatusBanner";
@@ -23,6 +24,7 @@ import { DefaultTenant } from "@goauthentik/elements/sidebar/SidebarBrand";
 import "@goauthentik/elements/sidebar/SidebarItem";
 import { ROUTES } from "@goauthentik/user/Routes";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import { UserManagerSettings } from "oidc-client-ts";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -41,7 +43,7 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import { CoreApi, EventsApi, SessionUser } from "@goauthentik/api";
 
 @customElement("ak-interface-user")
-export class UserInterface extends Interface {
+export class UserInterface extends OAuthInterface {
     @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 
@@ -55,6 +57,10 @@ export class UserInterface extends Interface {
 
     @state()
     me?: SessionUser;
+
+    get oauthSettings(): UserManagerSettings {
+        return userSettings;
+    }
 
     static get styles(): CSSResult[] {
         return [
@@ -141,12 +147,13 @@ export class UserInterface extends Interface {
             });
         });
         window.addEventListener(EVENT_WS_MESSAGE, () => {
-            this.firstUpdated();
+            this.firstUpdated(new Map());
         });
         configureSentry(true);
     }
 
-    async firstUpdated(): Promise<void> {
+    async firstUpdated(_changedProperties: Map<PropertyKey, unknown>): Promise<void> {
+        super.firstUpdated(_changedProperties);
         this.me = await me();
         const notifications = await new EventsApi(DEFAULT_CONFIG).eventsNotificationsList({
             seen: false,
@@ -275,10 +282,7 @@ export class UserInterface extends Interface {
                                   </div>`
                                 : html``}
                             <div class="pf-c-page__header-tools-item">
-                                <a
-                                    href="/flows/-/default/invalidation/"
-                                    class="pf-c-button pf-m-plain"
-                                >
+                                <a href="#/oauth-signou" class="pf-c-button pf-m-plain">
                                     <pf-tooltip position="top" content=${msg("Sign out")}>
                                         <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
                                     </pf-tooltip>

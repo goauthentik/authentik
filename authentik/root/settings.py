@@ -166,10 +166,7 @@ REST_FRAMEWORK = {
         "rest_framework.parsers.JSONParser",
     ],
     "DEFAULT_PERMISSION_CLASSES": ("authentik.rbac.permissions.ObjectPermissions",),
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "authentik.api.authentication.TokenAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
-    ),
+    "DEFAULT_AUTHENTICATION_CLASSES": ("authentik.api.authentication.TokenAuthentication",),
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
     ],
