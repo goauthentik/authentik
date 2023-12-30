@@ -19,7 +19,18 @@ export abstract class TableModal<T> extends Table<T> {
     size: PFSize = PFSize.Large;
 
     @property({ type: Boolean })
-    open = false;
+    set open(value: boolean) {
+        this._open = value;
+        if (value) {
+            this.fetch();
+        }
+    }
+
+    get open(): boolean {
+        return this._open;
+    }
+
+    _open = false;
 
     static get styles(): CSSResult[] {
         return super.styles.concat(
@@ -41,6 +52,13 @@ export abstract class TableModal<T> extends Table<T> {
                 this.open = false;
             }
         });
+    }
+
+    public async fetch(): Promise<void> {
+        if (!this.open) {
+            return;
+        }
+        return super.fetch();
     }
 
     resetForms(): void {

@@ -1,6 +1,7 @@
 """Outpost Websocket URLS"""
 from django.urls import path
 
+from authentik.core.channels import TokenOutpostMiddleware
 from authentik.outposts.api.outposts import OutpostViewSet
 from authentik.outposts.api.service_connections import (
     DockerServiceConnectionViewSet,
@@ -11,7 +12,10 @@ from authentik.outposts.consumer import OutpostConsumer
 from authentik.root.middleware import ChannelsLoggingMiddleware
 
 websocket_urlpatterns = [
-    path("ws/outpost/<uuid:pk>/", ChannelsLoggingMiddleware(OutpostConsumer.as_asgi())),
+    path(
+        "ws/outpost/<uuid:pk>/",
+        ChannelsLoggingMiddleware(TokenOutpostMiddleware(OutpostConsumer.as_asgi())),
+    ),
 ]
 
 api_urlpatterns = [

@@ -17,6 +17,7 @@ from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Provider
+from authentik.enterprise.providers.rac.models import RACProvider
 from authentik.outposts.api.service_connections import ServiceConnectionSerializer
 from authentik.outposts.apps import MANAGED_OUTPOST, MANAGED_OUTPOST_NAME
 from authentik.outposts.models import (
@@ -63,6 +64,7 @@ class OutpostSerializer(ModelSerializer):
             OutpostType.LDAP: LDAPProvider,
             OutpostType.PROXY: ProxyProvider,
             OutpostType.RADIUS: RadiusProvider,
+            OutpostType.RAC: RACProvider,
             None: Provider,
         }
         for provider in providers:
