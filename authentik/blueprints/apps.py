@@ -40,7 +40,7 @@ class ManagedAppConfig(AppConfig):
                 meth()
                 self._logger.debug("Successfully reconciled", name=name)
             except (DatabaseError, ProgrammingError, InternalError) as exc:
-                self._logger.debug("Failed to run reconcile", name=name, exc=exc)
+                self._logger.warning("Failed to run reconcile", name=name, exc=exc)
 
 
 class AuthentikBlueprintsConfig(ManagedAppConfig):
