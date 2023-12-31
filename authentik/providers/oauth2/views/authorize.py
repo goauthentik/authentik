@@ -199,8 +199,8 @@ class OAuthAuthorizationParams:
             if not any(fullmatch(x, self.redirect_uri) for x in allowed_redirect_urls):
                 LOGGER.warning(
                     "Invalid redirect uri (regex comparison)",
-                    redirect_uri=self.redirect_uri,
-                    expected=allowed_redirect_urls,
+                    redirect_uri_given=self.redirect_uri,
+                    redirect_uri_expected=allowed_redirect_urls,
                 )
                 raise RedirectUriError(self.redirect_uri, allowed_redirect_urls)
         except RegexError as exc:
@@ -208,8 +208,8 @@ class OAuthAuthorizationParams:
             if not any(x == self.redirect_uri for x in allowed_redirect_urls):
                 LOGGER.warning(
                     "Invalid redirect uri (strict comparison)",
-                    redirect_uri=self.redirect_uri,
-                    expected=allowed_redirect_urls,
+                    redirect_uri_given=self.redirect_uri,
+                    redirect_uri_expected=allowed_redirect_urls,
                 )
                 raise RedirectUriError(self.redirect_uri, allowed_redirect_urls)
         if self.request:
@@ -219,16 +219,23 @@ class OAuthAuthorizationParams:
 
     def check_scope(self):
         """Ensure openid scope is set in Hybrid flows, or when requesting an id_token"""
-        if len(self.scope) == 0:
-            default_scope_names = set(
-                ScopeMapping.objects.filter(provider__in=[self.provider]).values_list(
-                    "scope_name", flat=True
-                )
+        default_scope_names = set(
+            ScopeMapping.objects.filter(provider__in=[self.provider]).values_list(
+                "scope_name", flat=True
             )
+        )
+        if len(self.scope) == 0:
             self.scope = default_scope_names
             LOGGER.info(
                 "No scopes requested, defaulting to all configured scopes", scopes=self.scope
             )
+        if not self.scope.issubset(default_scope_names):
+            LOGGER.info(
+                "Application requested scopes not configured, setting to overlap",
+                scope_allowed=default_scope_names,
+                scope_given=self.scope,
+            )
+            self.scope = self.scope.intersection(default_scope_names)
         if SCOPE_OPENID not in self.scope and (
             self.grant_type == GrantTypes.HYBRID
             or self.response_type in [ResponseTypes.ID_TOKEN, ResponseTypes.ID_TOKEN_TOKEN]
