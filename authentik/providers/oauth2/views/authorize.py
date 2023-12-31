@@ -87,7 +87,7 @@ class OAuthAuthorizationParams:
     redirect_uri: str
     response_type: str
     response_mode: Optional[str]
-    scope: list[str]
+    scope: set[str]
     state: str
     nonce: Optional[str]
     prompt: set[str]
@@ -155,7 +155,7 @@ class OAuthAuthorizationParams:
             response_type=response_type,
             response_mode=response_mode,
             grant_type=grant_type,
-            scope=query_dict.get("scope", "").split(),
+            scope=set(query_dict.get("scope", "").split()),
             state=state,
             nonce=query_dict.get("nonce"),
             prompt=ALLOWED_PROMPT_PARAMS.intersection(set(query_dict.get("prompt", "").split())),
