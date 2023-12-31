@@ -41,6 +41,7 @@ from authentik.providers.oauth2.constants import (
     PROMPT_CONSENT,
     PROMPT_LOGIN,
     PROMPT_NONE,
+    SCOPE_OFFLINE_ACCESS,
     SCOPE_OPENID,
     TOKEN_TYPE,
 )
@@ -242,6 +243,22 @@ class OAuthAuthorizationParams:
         ):
             LOGGER.warning("Missing 'openid' scope.")
             raise AuthorizeError(self.redirect_uri, "invalid_scope", self.grant_type, self.state)
+        if SCOPE_OFFLINE_ACCESS in self.scope:
+            # https://openid.net/specs/openid-connect-core-1_0.html#OfflineAccess
+            if PROMPT_CONSENT not in self.prompt:
+                raise AuthorizeError(
+                    self.redirect_uri, "consent_required", self.grant_type, self.state
+                )
+            if self.response_type not in [
+                ResponseTypes.CODE,
+                ResponseTypes.CODE_TOKEN,
+                ResponseTypes.CODE_ID_TOKEN,
+                ResponseTypes.CODE_ID_TOKEN_TOKEN,
+            ]:
+                # offline_access requires a response type that has some sort of token
+                raise AuthorizeError(
+                    self.redirect_uri, "unsupported_response_type", self.grant_type, self.state
+                )
 
     def check_nonce(self):
         """Nonce parameter validation."""

@@ -127,7 +127,7 @@ class AuthorizeError(OAuth2Error):
         "account_selection_required": (
             "The End-User is required to select a session at the Authorization Server"
         ),
-        "consent_required": "The Authorization Server requires End-Userconsent",
+        "consent_required": "The Authorization Server requires End-User consent",
         "invalid_request_uri": (
             "The request_uri in the Authorization Request returns an error or contains invalid data"
         ),

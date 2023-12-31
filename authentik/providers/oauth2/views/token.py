@@ -41,6 +41,7 @@ from authentik.providers.oauth2.constants import (
     GRANT_TYPE_PASSWORD,
     GRANT_TYPE_REFRESH_TOKEN,
     PKCE_METHOD_S256,
+    SCOPE_OFFLINE_ACCESS,
     TOKEN_TYPE,
 )
 from authentik.providers.oauth2.errors import DeviceCodeError, TokenError, UserAuthError
@@ -496,41 +497,46 @@ class TokenView(View):
         )
         access_token.save()
 
-        refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
-        refresh_token = RefreshToken(
-            user=self.params.authorization_code.user,
-            scope=self.params.authorization_code.scope,
-            expires=refresh_token_expiry,
-            provider=self.provider,
-            auth_time=self.params.authorization_code.auth_time,
-            session_id=self.params.authorization_code.session_id,
-        )
-        id_token = IDToken.new(
-            self.provider,
-            refresh_token,
-            self.request,
-        )
-        id_token.nonce = self.params.authorization_code.nonce
-        id_token.at_hash = access_token.at_hash
-        refresh_token.id_token = id_token
-        refresh_token.save()
-
-        # Delete old code
-        self.params.authorization_code.delete()
-        return {
+        response = {
             "access_token": access_token.token,
-            "refresh_token": refresh_token.token,
             "token_type": TOKEN_TYPE,
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
-            "id_token": id_token.to_jwt(self.provider),
+            "id_token": access_token.id_token.to_jwt(self.provider),
         }
+
+        if SCOPE_OFFLINE_ACCESS in self.params.scope:
+            refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
+            refresh_token = RefreshToken(
+                user=self.params.authorization_code.user,
+                scope=self.params.authorization_code.scope,
+                expires=refresh_token_expiry,
+                provider=self.provider,
+                auth_time=self.params.authorization_code.auth_time,
+                session_id=self.params.authorization_code.session_id,
+            )
+            id_token = IDToken.new(
+                self.provider,
+                refresh_token,
+                self.request,
+            )
+            id_token.nonce = self.params.authorization_code.nonce
+            id_token.at_hash = access_token.at_hash
+            refresh_token.id_token = id_token
+            refresh_token.save()
+            response["refresh_token"] = refresh_token.token
+
+        # Delete old code
+        self.params.authorization_code.delete()
+        return response
 
     def create_refresh_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc6749#section-6"""
         unauthorized_scopes = set(self.params.scope) - set(self.params.refresh_token.scope)
         if unauthorized_scopes:
+            raise TokenError("invalid_scope")
+        if SCOPE_OFFLINE_ACCESS not in self.params.scope:
             raise TokenError("invalid_scope")
         now = timezone.now()
         access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
@@ -630,31 +636,34 @@ class TokenView(View):
         )
         access_token.save()
 
-        refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
-        refresh_token = RefreshToken(
-            user=self.params.device_code.user,
-            scope=self.params.device_code.scope,
-            expires=refresh_token_expiry,
-            provider=self.provider,
-            auth_time=auth_event.created if auth_event else now,
-        )
-        id_token = IDToken.new(
-            self.provider,
-            refresh_token,
-            self.request,
-        )
-        id_token.at_hash = access_token.at_hash
-        refresh_token.id_token = id_token
-        refresh_token.save()
-
-        # Delete device code
-        self.params.device_code.delete()
-        return {
+        response = {
             "access_token": access_token.token,
-            "refresh_token": refresh_token.token,
             "token_type": TOKEN_TYPE,
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
-            "id_token": id_token.to_jwt(self.provider),
+            "id_token": access_token.id_token.to_jwt(self.provider),
         }
+
+        if SCOPE_OFFLINE_ACCESS in self.params.scope:
+            refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
+            refresh_token = RefreshToken(
+                user=self.params.device_code.user,
+                scope=self.params.device_code.scope,
+                expires=refresh_token_expiry,
+                provider=self.provider,
+                auth_time=auth_event.created if auth_event else now,
+            )
+            id_token = IDToken.new(
+                self.provider,
+                refresh_token,
+                self.request,
+            )
+            id_token.at_hash = access_token.at_hash
+            refresh_token.id_token = id_token
+            refresh_token.save()
+            response["refresh_token"] = refresh_token.token
+
+        # Delete device code
+        self.params.device_code.delete()
+        return response

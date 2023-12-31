@@ -18,6 +18,7 @@ PROMPT_LOGIN = "login"
 SCOPE_OPENID = "openid"
 SCOPE_OPENID_PROFILE = "profile"
 SCOPE_OPENID_EMAIL = "email"
+SCOPE_OFFLINE_ACCESS = "offline_access"
 
 # https://www.iana.org/assignments/oauth-parameters/\
 #   oauth-parameters.xhtml#pkce-code-challenge-method
