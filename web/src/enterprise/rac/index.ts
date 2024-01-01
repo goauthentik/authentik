@@ -238,13 +238,15 @@ export class RacInterface extends Interface {
 
             this.client.sendMouseState(mouseState);
         };
-        mouse.onmouseup = mouse.onmousedown = (mouseState) => {
+        // @ts-ignore
+        mouse.onEach(["mouseup", "mousedown"], (ev: Guacamole.Mouse.Event) => {
             this.container?.focus();
-            handler(mouseState);
-        };
-        mouse.onmousemove = (mouseState) => {
-            handler(mouseState, true);
-        };
+            handler(ev.state);
+        });
+        // @ts-ignore
+        mouse.on("mousemove", (ev: Guacamole.Mouse.Event) => {
+            handler(ev.state, true);
+        });
     }
 
     initAudioInput(): void {
@@ -298,7 +300,7 @@ export class RacInterface extends Interface {
         if (!this.client) {
             return;
         }
-        const stream = this.client.createClipboardStream("text/plain", "clipboard");
+        const stream = this.client.createClipboardStream("text/plain");
         const writer = new Guacamole.StringWriter(stream);
         writer.sendText(value);
         writer.sendEnd();
