@@ -49,6 +49,7 @@ class OAUth1Type(SourceType):
     profile_url = "http://localhost:5001/api/me"
     urls_customizable = False
 
+
 class TestSourceOAuth1(SeleniumTestCase):
     """Test OAuth1 Source"""
 

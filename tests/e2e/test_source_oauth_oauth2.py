@@ -192,4 +192,3 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.driver.get(self.if_user_url("/settings"))
 
         self.assert_user(User(username="foo", name="admin", email="admin@example.com"))
-
