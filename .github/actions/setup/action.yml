@@ -14,7 +14,7 @@ runs:
       run: |
         pipx install poetry || true
         sudo apt-get update
-        sudo apt-get install --no-install-recommends -y libpq-dev openssl libxmlsec1-dev pkg-config gettext libxml2-dev
+        sudo apt-get install --no-install-recommends -y libpq-dev openssl libxmlsec1-dev pkg-config gettext
     - name: Setup python and restore poetry
       uses: actions/setup-python@v4
       with:
