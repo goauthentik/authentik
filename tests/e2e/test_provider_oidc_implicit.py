@@ -1,8 +1,6 @@
 """test OAuth2 OpenID Provider flow"""
 from json import loads
-from sys import platform
 from time import sleep
-from unittest.case import skipUnless
 
 from docker import DockerClient, from_env
 from docker.models.containers import Container
@@ -25,7 +23,6 @@ from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, Scope
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
-@skipUnless(platform.startswith("linux"), "requires local docker")
 class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
     """test OAuth with OpenID Provider flow"""
 
@@ -36,13 +33,15 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         super().setUp()
 
     def setup_client(self) -> Container:
-        """Setup client saml-sp container which we test SAML against"""
+        """Setup client oidc-test-client container which we test OIDC against"""
         sleep(1)
         client: DockerClient = from_env()
         container = client.containers.run(
             image="ghcr.io/beryju/oidc-test-client:1.3",
             detach=True,
-            network_mode="host",
+            ports={
+                "9009": "9009",
+            },
             environment={
                 "OIDC_CLIENT_ID": self.client_id,
                 "OIDC_CLIENT_SECRET": self.client_secret,
