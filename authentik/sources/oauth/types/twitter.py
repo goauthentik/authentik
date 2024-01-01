@@ -66,8 +66,8 @@ class TwitterType(SourceType):
 
     callback_view = TwitterOAuthCallback
     redirect_view = TwitterOAuthRedirect
-    name = "Twitter"
-    slug = "twitter"
+    verbose_name = "Twitter"
+    name = "twitter"
 
     authorization_url = "https://twitter.com/i/oauth2/authorize"
     access_token_url = "https://api.twitter.com/2/oauth2/token"  # nosec
