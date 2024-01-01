@@ -40,8 +40,8 @@ class OAUth1Type(SourceType):
     """OAuth1 Type definition"""
 
     callback_view = OAuth1Callback
-    name = "OAuth1"
-    slug = "oauth1"
+    verbose_name = "OAuth1"
+    name = "oauth1"
 
     request_token_url = "http://localhost:5001/oauth/request_token"  # nosec
     access_token_url = "http://localhost:5001/oauth/access_token"  # nosec

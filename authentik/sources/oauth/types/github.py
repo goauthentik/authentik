@@ -68,8 +68,8 @@ class GitHubType(SourceType):
 
     callback_view = GitHubOAuth2Callback
     redirect_view = GitHubOAuthRedirect
-    name = "GitHub"
-    slug = "github"
+    verbose_name = "GitHub"
+    name = "github"
 
     urls_customizable = True
 
