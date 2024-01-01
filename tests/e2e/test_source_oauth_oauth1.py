@@ -56,7 +56,7 @@ class TestSourceOAuth1(SeleniumTestCase):
     def setUp(self) -> None:
         self.client_id = generate_id()
         self.client_secret = generate_key()
-        self.source_slug = "oauth1-test"
+        self.source_slug = generate_id()
         super().setUp()
 
     def get_container_specs(self) -> Optional[dict[str, Any]]:
@@ -82,7 +82,7 @@ class TestSourceOAuth1(SeleniumTestCase):
         enrollment_flow = Flow.objects.get(slug="default-source-enrollment")
 
         source = OAuthSource.objects.create(  # nosec
-            name="oauth1",
+            name=generate_id(),
             slug=self.source_slug,
             authentication_flow=authentication_flow,
             enrollment_flow=enrollment_flow,

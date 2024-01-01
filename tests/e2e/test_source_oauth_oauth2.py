@@ -14,7 +14,7 @@ from yaml import safe_dump
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import User
 from authentik.flows.models import Flow
-from authentik.lib.generators import generate_key
+from authentik.lib.generators import generate_id, generate_key
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.identification.models import IdentificationStage
 from tests.e2e.utils import SeleniumTestCase, retry
@@ -29,6 +29,7 @@ class TestSourceOAuth2(SeleniumTestCase):
 
     def setUp(self):
         self.client_secret = generate_key()
+        self.slug = generate_id()
         self.prepare_dex_config()
         super().setUp()
 
@@ -46,7 +47,7 @@ class TestSourceOAuth2(SeleniumTestCase):
                     "redirectURIs": [
                         self.url(
                             "authentik_sources_oauth:oauth-client-callback",
-                            source_slug="dex",
+                            source_slug=self.slug,
                         )
                     ],
                     "secret": self.client_secret,
@@ -89,8 +90,8 @@ class TestSourceOAuth2(SeleniumTestCase):
         enrollment_flow = Flow.objects.get(slug="default-source-enrollment")
 
         source = OAuthSource.objects.create(  # nosec
-            name="dex",
-            slug="dex",
+            name=generate_id(),
+            slug=self.slug,
             authentication_flow=authentication_flow,
             enrollment_flow=enrollment_flow,
             provider_type="openidconnect",
