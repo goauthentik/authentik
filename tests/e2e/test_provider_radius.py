@@ -1,8 +1,6 @@
 """Radius e2e tests"""
 from dataclasses import asdict
-from sys import platform
 from time import sleep
-from unittest.case import skipUnless
 
 from docker.client import DockerClient, from_env
 from docker.models.containers import Container
@@ -19,7 +17,6 @@ from authentik.providers.radius.models import RadiusProvider
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
-@skipUnless(platform.startswith("linux"), "requires local docker")
 class TestProviderRadius(SeleniumTestCase):
     """Radius Outpost e2e tests"""
 
@@ -40,7 +37,7 @@ class TestProviderRadius(SeleniumTestCase):
         container = client.containers.run(
             image=self.get_container_image("ghcr.io/goauthentik/dev-radius"),
             detach=True,
-            network_mode="host",
+            ports={"1812/udp": "1812/udp"},
             environment={
                 "AUTHENTIK_HOST": self.live_server_url,
                 "AUTHENTIK_TOKEN": outpost.token.key,
