@@ -7,8 +7,8 @@ GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials"
 GRANT_TYPE_PASSWORD = "password"  # nosec
 GRANT_TYPE_DEVICE_CODE = "urn:ietf:params:oauth:grant-type:device_code"
 
-CLIENT_ASSERTION_TYPE = "client_assertion_type"
 CLIENT_ASSERTION = "client_assertion"
+CLIENT_ASSERTION_TYPE = "client_assertion_type"
 CLIENT_ASSERTION_TYPE_JWT = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
 
 PROMPT_NONE = "none"
@@ -20,8 +20,7 @@ SCOPE_OPENID_PROFILE = "profile"
 SCOPE_OPENID_EMAIL = "email"
 SCOPE_OFFLINE_ACCESS = "offline_access"
 
-# https://www.iana.org/assignments/oauth-parameters/\
-#   oauth-parameters.xhtml#pkce-code-challenge-method
+# https://www.iana.org/assignments/oauth-parameters/auth-parameters.xhtml#pkce-code-challenge-method
 PKCE_METHOD_PLAIN = "plain"
 PKCE_METHOD_S256 = "S256"
 
@@ -37,6 +36,7 @@ SCOPE_GITHUB_USER_READ = "read:user"
 SCOPE_GITHUB_USER_EMAIL = "user:email"
 # Read info about teams
 SCOPE_GITHUB_ORG_READ = "read:org"
+SCOPE_GITHUB = {SCOPE_GITHUB_USER, SCOPE_GITHUB_USER_READ, SCOPE_GITHUB_USER_EMAIL, SCOPE_GITHUB_ORG_READ}
 
 ACR_AUTHENTIK_DEFAULT = "goauthentik.io/providers/oauth2/default"
 

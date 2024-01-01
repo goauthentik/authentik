@@ -1,5 +1,5 @@
 """authentik OAuth2 Authorization views"""
-from dataclasses import dataclass, field
+from dataclasses import InitVar, dataclass, field
 from datetime import timedelta
 from hashlib import sha256
 from json import dumps
@@ -41,6 +41,7 @@ from authentik.providers.oauth2.constants import (
     PROMPT_CONSENT,
     PROMPT_LOGIN,
     PROMPT_NONE,
+    SCOPE_GITHUB,
     SCOPE_OFFLINE_ACCESS,
     SCOPE_OPENID,
     TOKEN_TYPE,
@@ -102,8 +103,10 @@ class OAuthAuthorizationParams:
     code_challenge: Optional[str] = None
     code_challenge_method: Optional[str] = None
 
+    github_compat: InitVar[bool] = False
+
     @staticmethod
-    def from_request(request: HttpRequest) -> "OAuthAuthorizationParams":
+    def from_request(request: HttpRequest, github_compat=False) -> "OAuthAuthorizationParams":
         """
         Get all the params used by the Authorization Code Flow
         (and also for the Implicit and Hybrid).
@@ -163,9 +166,10 @@ class OAuthAuthorizationParams:
             max_age=int(max_age) if max_age else None,
             code_challenge=query_dict.get("code_challenge"),
             code_challenge_method=query_dict.get("code_challenge_method", "plain"),
+            github_compat=github_compat,
         )
 
-    def __post_init__(self):
+    def __post_init__(self, github_compat=False):
         self.provider: OAuth2Provider = OAuth2Provider.objects.filter(
             client_id=self.client_id
         ).first()
@@ -173,7 +177,7 @@ class OAuthAuthorizationParams:
             LOGGER.warning("Invalid client identifier", client_id=self.client_id)
             raise ClientIdError(client_id=self.client_id)
         self.check_redirect_uri()
-        self.check_scope()
+        self.check_scope(github_compat)
         self.check_nonce()
         self.check_code_challenge()
 
@@ -218,7 +222,7 @@ class OAuthAuthorizationParams:
                 self.redirect_uri, "request_not_supported", self.grant_type, self.state
             )
 
-    def check_scope(self):
+    def check_scope(self, github_compat=False):
         """Ensure openid scope is set in Hybrid flows, or when requesting an id_token"""
         default_scope_names = set(
             ScopeMapping.objects.filter(provider__in=[self.provider]).values_list(
@@ -230,7 +234,10 @@ class OAuthAuthorizationParams:
             LOGGER.info(
                 "No scopes requested, defaulting to all configured scopes", scopes=self.scope
             )
-        if not self.scope.issubset(default_scope_names):
+        scopes_to_check = self.scope
+        if github_compat:
+            scopes_to_check = self.scope - SCOPE_GITHUB
+        if not scopes_to_check.issubset(default_scope_names):
             LOGGER.info(
                 "Application requested scopes not configured, setting to overlap",
                 scope_allowed=default_scope_names,
@@ -321,6 +328,9 @@ class AuthorizationFlowInitView(PolicyAccessView):
     """OAuth2 Flow initializer, checks access to application and starts flow"""
 
     params: OAuthAuthorizationParams
+    # Enable GitHub compatibility (only allow for scopes which are handled
+    # differently for github compat)
+    github_compat = False
 
     def pre_permission_check(self):
         """Check prompt parameter before checking permission/authentication,
@@ -329,7 +339,9 @@ class AuthorizationFlowInitView(PolicyAccessView):
         if len(self.request.GET) < 1:
             raise Http404
         try:
-            self.params = OAuthAuthorizationParams.from_request(self.request)
+            self.params = OAuthAuthorizationParams.from_request(
+                self.request, github_compat=self.github_compat
+            )
         except AuthorizeError as error:
             LOGGER.warning(error.description, redirect_uri=error.redirect_uri)
             raise RequestValidationError(error.get_response(self.request))
