@@ -263,9 +263,9 @@ class OAuthAuthorizationParams:
                 ResponseTypes.CODE_ID_TOKEN_TOKEN,
             ]:
                 # offline_access requires a response type that has some sort of token
-                raise AuthorizeError(
-                    self.redirect_uri, "unsupported_response_type", self.grant_type, self.state
-                )
+                # Spec says to ignore the scope when the response_type wouldn't result
+                # in an authorization code being generated
+                self.scope.remove(SCOPE_OFFLINE_ACCESS)
 
     def check_nonce(self):
         """Nonce parameter validation."""
