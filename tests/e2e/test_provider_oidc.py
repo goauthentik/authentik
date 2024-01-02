@@ -15,6 +15,7 @@ from authentik.lib.generators import generate_id, generate_key
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.constants import (
+    SCOPE_OFFLINE_ACCESS,
     SCOPE_OPENID,
     SCOPE_OPENID_EMAIL,
     SCOPE_OPENID_PROFILE,
@@ -37,7 +38,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         sleep(1)
         client: DockerClient = from_env()
         container = client.containers.run(
-            image="ghcr.io/beryju/oidc-test-client:1.3",
+            image="ghcr.io/beryju/oidc-test-client:2.1",
             detach=True,
             ports={
                 "9009": "9009",
@@ -56,9 +57,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         "default/flow-default-authentication-flow.yaml",
         "default/flow-default-invalidation-flow.yaml",
     )
-    @apply_blueprint(
-        "default/flow-default-provider-authorization-implicit-consent.yaml",
-    )
+    @apply_blueprint("default/flow-default-provider-authorization-implicit-consent.yaml")
     @reconcile_app("authentik_crypto")
     def test_redirect_uri_error(self):
         """test OpenID Provider flow (invalid redirect URI, check error message)"""
@@ -78,7 +77,12 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
-                scope_name__in=[SCOPE_OPENID, SCOPE_OPENID_EMAIL, SCOPE_OPENID_PROFILE]
+                scope_name__in=[
+                    SCOPE_OPENID,
+                    SCOPE_OPENID_EMAIL,
+                    SCOPE_OPENID_PROFILE,
+                    SCOPE_OFFLINE_ACCESS,
+                ]
             )
         )
         provider.save()
@@ -101,13 +105,12 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         "default/flow-default-authentication-flow.yaml",
         "default/flow-default-invalidation-flow.yaml",
     )
-    @apply_blueprint(
-        "default/flow-default-provider-authorization-implicit-consent.yaml",
-    )
-    @reconcile_app("authentik_crypto")
+    @apply_blueprint("default/flow-default-provider-authorization-implicit-consent.yaml")
     @apply_blueprint("system/providers-oauth2.yaml")
+    @reconcile_app("authentik_crypto")
     def test_authorization_consent_implied(self):
-        """test OpenID Provider flow (default authorization flow with implied consent)"""
+        """test OpenID Provider flow (default authorization flow with implied consent)
+        (due to offline_access a consent will still be triggered)"""
         sleep(1)
         # Bootstrap all needed objects
         authorization_flow = Flow.objects.get(
@@ -124,11 +127,16 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
-                scope_name__in=[SCOPE_OPENID, SCOPE_OPENID_EMAIL, SCOPE_OPENID_PROFILE]
+                scope_name__in=[
+                    SCOPE_OPENID,
+                    SCOPE_OPENID_EMAIL,
+                    SCOPE_OPENID_PROFILE,
+                    SCOPE_OFFLINE_ACCESS,
+                ]
             )
         )
         provider.save()
-        Application.objects.create(
+        app = Application.objects.create(
             name=self.application_slug,
             slug=self.application_slug,
             provider=provider,
@@ -137,6 +145,20 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
 
         self.driver.get("http://localhost:9009")
         self.login()
+        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor")))
+
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        consent_stage = self.get_shadow_root("ak-stage-consent", flow_executor)
+
+        self.assertIn(
+            app.name,
+            consent_stage.find_element(By.CSS_SELECTOR, "#header-text").text,
+        )
+        consent_stage.find_element(
+            By.CSS_SELECTOR,
+            "[type=submit]",
+        ).click()
+
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "pre")))
         self.wait.until(ec.text_to_be_present_in_element((By.CSS_SELECTOR, "pre"), "{"))
         body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
@@ -155,11 +177,9 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         "default/flow-default-authentication-flow.yaml",
         "default/flow-default-invalidation-flow.yaml",
     )
-    @apply_blueprint(
-        "default/flow-default-provider-authorization-explicit-consent.yaml",
-    )
-    @reconcile_app("authentik_crypto")
+    @apply_blueprint("default/flow-default-provider-authorization-explicit-consent.yaml")
     @apply_blueprint("system/providers-oauth2.yaml")
+    @reconcile_app("authentik_crypto")
     def test_authorization_consent_explicit(self):
         """test OpenID Provider flow (default authorization flow with explicit consent)"""
         sleep(1)
@@ -178,7 +198,12 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
-                scope_name__in=[SCOPE_OPENID, SCOPE_OPENID_EMAIL, SCOPE_OPENID_PROFILE]
+                scope_name__in=[
+                    SCOPE_OPENID,
+                    SCOPE_OPENID_EMAIL,
+                    SCOPE_OPENID_PROFILE,
+                    SCOPE_OFFLINE_ACCESS,
+                ]
             )
         )
         provider.save()
@@ -224,9 +249,8 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         "default/flow-default-authentication-flow.yaml",
         "default/flow-default-invalidation-flow.yaml",
     )
-    @apply_blueprint(
-        "default/flow-default-provider-authorization-explicit-consent.yaml",
-    )
+    @apply_blueprint("default/flow-default-provider-authorization-explicit-consent.yaml")
+    @apply_blueprint("system/providers-oauth2.yaml")
     @reconcile_app("authentik_crypto")
     def test_authorization_denied(self):
         """test OpenID Provider flow (default authorization with access deny)"""
@@ -246,7 +270,12 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
-                scope_name__in=[SCOPE_OPENID, SCOPE_OPENID_EMAIL, SCOPE_OPENID_PROFILE]
+                scope_name__in=[
+                    SCOPE_OPENID,
+                    SCOPE_OPENID_EMAIL,
+                    SCOPE_OPENID_PROFILE,
+                    SCOPE_OFFLINE_ACCESS,
+                ]
             )
         )
         provider.save()
