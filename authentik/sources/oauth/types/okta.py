@@ -42,7 +42,7 @@ class OktaType(SourceType):
 
     callback_view = OktaOAuth2Callback
     redirect_view = OktaOAuthRedirect
-    name = "Okta"
-    slug = "okta"
+    verbose_name = "Okta"
+    name = "okta"
 
     urls_customizable = True

@@ -8044,6 +8044,166 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Require Outpost (flow can only be executed from an outpost).</source>
   <target>需要前哨（流程只能从前哨执行）。</target>
 </trans-unit>
+<trans-unit id="s3271da6c18c25b18">
+  <source>Connection settings.</source>
+  <target>连接设置。</target>
+</trans-unit>
+<trans-unit id="s2f4ca2148183d692">
+  <source>Successfully updated endpoint.</source>
+  <target>已成功更新端点。</target>
+</trans-unit>
+<trans-unit id="s5adee855dbe191d9">
+  <source>Successfully created endpoint.</source>
+  <target>已成功创建端点。</target>
+</trans-unit>
+<trans-unit id="s61e136c0658e27d5">
+  <source>Protocol</source>
+  <target>协议</target>
+</trans-unit>
+<trans-unit id="sa062b019ff0c8809">
+  <source>RDP</source>
+  <target>RDP</target>
+</trans-unit>
+<trans-unit id="s97f9bf19fa5b57d1">
+  <source>SSH</source>
+  <target>SSH</target>
+</trans-unit>
+<trans-unit id="s7c100119e9ffcc32">
+  <source>VNC</source>
+  <target>VNC</target>
+</trans-unit>
+<trans-unit id="s6b05f9d8801fc14f">
+  <source>Host</source>
+  <target>主机</target>
+</trans-unit>
+<trans-unit id="sb474f652a2c2fc76">
+  <source>Hostname/IP to connect to.</source>
+  <target>要连接的主机名/IP。</target>
+</trans-unit>
+<trans-unit id="s8276649077e8715c">
+  <source>Endpoint(s)</source>
+  <target>端点</target>
+</trans-unit>
+<trans-unit id="sf1dabfe0fe8a75ad">
+  <source>Update Endpoint</source>
+  <target>更新端点</target>
+</trans-unit>
+<trans-unit id="s008496c7716b9812">
+  <source>These bindings control which users will have access to this endpoint. Users must also have access to the application.</source>
+  <target>这些绑定控制哪些用户能够访问此端点。用户必须也能访问此应用程序。</target>
+</trans-unit>
+<trans-unit id="s38e7cd1a24e70faa">
+  <source>Create Endpoint</source>
+  <target>创建端点</target>
+</trans-unit>
+<trans-unit id="s4770c10e5b1c028c">
+  <source>RAC is in preview.</source>
+  <target>RAC 目前处于预览状态。</target>
+</trans-unit>
+<trans-unit id="s168565f5ac74a89f">
+  <source>Update RAC Provider</source>
+  <target>更新 RAC 提供程序</target>
+</trans-unit>
+<trans-unit id="s8465a2caa2d9ea5d">
+  <source>Endpoints</source>
+  <target>端点</target>
+</trans-unit>
+<trans-unit id="s9857d883d8eb98fc">
+  <source>General settings</source>
+  <target>常规设置</target>
+</trans-unit>
+<trans-unit id="sd2066881798a1b96">
+  <source>RDP settings</source>
+  <target>RDP 设置</target>
+</trans-unit>
+<trans-unit id="sb864dc36a463a155">
+  <source>Ignore server certificate</source>
+  <target>忽略服务器证书</target>
+</trans-unit>
+<trans-unit id="s20366a8d1eaaca54">
+  <source>Enable wallpaper</source>
+  <target>启用壁纸</target>
+</trans-unit>
+<trans-unit id="s1e44c5350ef7598c">
+  <source>Enable font-smoothing</source>
+  <target>启用字体平滑</target>
+</trans-unit>
+<trans-unit id="s04ff5d6ae711e6d6">
+  <source>Enable full window dragging</source>
+  <target>启用完整窗口拖拽</target>
+</trans-unit>
+<trans-unit id="s663ccbfdf27e8dd0">
+  <source>Network binding</source>
+  <target>网络绑定</target>
+</trans-unit>
+<trans-unit id="sb108a06693c67753">
+  <source>No binding</source>
+  <target>无绑定</target>
+</trans-unit>
+<trans-unit id="s5aab90c74f1233b8">
+  <source>Bind ASN</source>
+  <target>绑定 ASN</target>
+</trans-unit>
+<trans-unit id="s488303b048afe83b">
+  <source>Bind ASN and Network</source>
+  <target>绑定 ASN 和网络</target>
+</trans-unit>
+<trans-unit id="s3268dcfe0c8234dc">
+  <source>Bind ASN, Network and IP</source>
+  <target>绑定 ASN、网络和 IP</target>
+</trans-unit>
+<trans-unit id="s226381aca231644f">
+  <source>Configure if sessions created by this stage should be bound to the Networks they were created in.</source>
+  <target>配置由此阶段创建的会话是否应该绑定到创建它们的网络。</target>
+</trans-unit>
+<trans-unit id="s2555a1f20f3fd93e">
+  <source>GeoIP binding</source>
+  <target>GeoIP 绑定</target>
+</trans-unit>
+<trans-unit id="s3d63c78f93c9a92e">
+  <source>Bind Continent</source>
+  <target>绑定大陆</target>
+</trans-unit>
+<trans-unit id="s395d5863b3a259b5">
+  <source>Bind Continent and Country</source>
+  <target>绑定大陆和国家</target>
+</trans-unit>
+<trans-unit id="s625ea0c32b4b136c">
+  <source>Bind Continent, Country and City</source>
+  <target>绑定大陆、国家和城市</target>
+</trans-unit>
+<trans-unit id="s4bc7a1a88961be90">
+  <source>Configure if sessions created by this stage should be bound to their GeoIP-based location</source>
+  <target>配置由此阶段创建的会话是否应该绑定到基于 GeoIP 的位置。</target>
+</trans-unit>
+<trans-unit id="sa06cd519ff151b6d">
+  <source>RAC</source>
+  <target>RAC</target>
+</trans-unit>
+<trans-unit id="s28b99b59541f54ca">
+  <source>Connection failed after <x id="0" equiv-text="${this.connectionAttempt}"/> attempts.</source>
+  <target>连接在 <x id="0" equiv-text="${this.connectionAttempt}"/> 次尝试后失败。</target>
+</trans-unit>
+<trans-unit id="s7c7d956418e1c8c8">
+  <source>Re-connecting in <x id="0" equiv-text="${Math.max(1, delay / 1000)}"/> second(s).</source>
+  <target>将在 <x id="0" equiv-text="${Math.max(1, delay / 1000)}"/> 秒后重新连接。</target>
+</trans-unit>
+<trans-unit id="sfc003381f593d943">
+  <source>Connecting...</source>
+  <target>正在连接…</target>
+</trans-unit>
+<trans-unit id="s31aa94a0b3c7edb2">
+  <source>Select endpoint to connect to</source>
+  <target>选择要连接到的端点</target>
+</trans-unit>
+<trans-unit id="sa2ea0fcd3ffa80e0">
+  <source>Connection expiry</source>
+  <target>连接过期</target>
+</trans-unit>
+<trans-unit id="s6dd297c217729828">
+  <source>Determines how long a session lasts before being disconnected and requiring re-authorization.</source>
+  <target>设置会话在被断开连接并需要重新授权之前持续的时间。</target>
+</trans-unit>
     </body>
   </file>
 </xliff>

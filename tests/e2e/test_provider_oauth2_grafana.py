@@ -1,8 +1,6 @@
 """test OAuth2 OpenID Provider flow"""
-from sys import platform
 from time import sleep
 from typing import Any, Optional
-from unittest.case import skipUnless
 
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
@@ -24,7 +22,6 @@ from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, Scope
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
-@skipUnless(platform.startswith("linux"), "requires local docker")
 class TestProviderOAuth2OAuth(SeleniumTestCase):
     """test OAuth with OAuth Provider flow"""
 
@@ -38,13 +35,15 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         return {
             "image": "grafana/grafana:7.1.0",
             "detach": True,
-            "network_mode": "host",
             "auto_remove": True,
             "healthcheck": Healthcheck(
                 test=["CMD", "wget", "--spider", "http://localhost:3000"],
                 interval=5 * 1_000 * 1_000_000,
                 start_period=1 * 1_000 * 1_000_000,
             ),
+            "ports": {
+                "3000": "3000",
+            },
             "environment": {
                 "GF_AUTH_GENERIC_OAUTH_ENABLED": "true",
                 "GF_AUTH_GENERIC_OAUTH_CLIENT_ID": self.client_id,

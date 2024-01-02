@@ -28,7 +28,7 @@ class SourceType:
     callback_view = OAuthCallback
     redirect_view = OAuthRedirect
     name: str = "default"
-    slug: str = "default"
+    verbose_name: str = "Default source type"
 
     urls_customizable = False
 
@@ -41,7 +41,7 @@ class SourceType:
 
     def icon_url(self) -> str:
         """Get Icon URL for login"""
-        return static(f"authentik/sources/{self.slug}.svg")
+        return static(f"authentik/sources/{self.name}.svg")
 
     def login_challenge(self, source: OAuthSource, request: HttpRequest) -> Challenge:
         """Allow types to return custom challenges"""
@@ -77,20 +77,20 @@ class SourceTypeRegistry:
 
     def get_name_tuple(self):
         """Get list of tuples of all registered names"""
-        return [(x.slug, x.name) for x in self.__sources]
+        return [(x.name, x.verbose_name) for x in self.__sources]
 
     def find_type(self, type_name: str) -> Type[SourceType]:
         """Find type based on source"""
         found_type = None
         for src_type in self.__sources:
-            if src_type.slug == type_name:
+            if src_type.name == type_name:
                 return src_type
         if not found_type:
             found_type = SourceType
             LOGGER.warning(
                 "no matching type found, using default",
                 wanted=type_name,
-                have=[x.slug for x in self.__sources],
+                have=[x.name for x in self.__sources],
             )
         return found_type
 

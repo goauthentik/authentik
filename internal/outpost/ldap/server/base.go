@@ -3,6 +3,7 @@ package server
 import (
 	"beryju.io/ldap"
 	"github.com/go-openapi/strfmt"
+
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ldap/flags"
 )
@@ -28,8 +29,9 @@ type LDAPServerInstance interface {
 	GetGroupDN(string) string
 	GetVirtualGroupDN(string) string
 
-	GetUidNumber(api.User) string
-	GetGidNumber(api.Group) string
+	GetUserUidNumber(api.User) string
+	GetUserGidNumber(api.User) string
+	GetGroupGidNumber(api.Group) string
 
 	UsersForGroup(api.Group) []string
 

@@ -48,8 +48,8 @@ class FacebookType(SourceType):
 
     callback_view = FacebookOAuth2Callback
     redirect_view = FacebookOAuthRedirect
-    name = "Facebook"
-    slug = "facebook"
+    verbose_name = "Facebook"
+    name = "facebook"
 
     authorization_url = "https://www.facebook.com/v7.0/dialog/oauth"
     access_token_url = "https://graph.facebook.com/v7.0/oauth/access_token"  # nosec

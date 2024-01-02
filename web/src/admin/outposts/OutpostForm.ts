@@ -39,7 +39,7 @@ interface ProviderData {
 }
 
 const api = () => new ProvidersApi(DEFAULT_CONFIG);
-const args = (page: number) => ({
+const providerListArgs = (page: number) => ({
     ordering: "name",
     applicationIsnull: false,
     pageSize: 20,
@@ -62,13 +62,16 @@ const provisionMaker = (results: ProviderData) => ({
 });
 
 const proxyListFetch = async (page: number) =>
-    provisionMaker(await api().providersProxyList(args(page)));
+    provisionMaker(await api().providersProxyList(providerListArgs(page)));
 
 const ldapListFetch = async (page: number) =>
-    provisionMaker(await api().providersLdapList(args(page)));
+    provisionMaker(await api().providersLdapList(providerListArgs(page)));
 
 const radiusListFetch = async (page: number) =>
-    provisionMaker(await api().providersRadiusList(args(page)));
+    provisionMaker(await api().providersRadiusList(providerListArgs(page)));
+
+const racListProvider = async (page: number) =>
+    provisionMaker(await api().providersRacList(providerListArgs(page)));
 
 function providerProvider(type: OutpostTypeEnum): DataProvider {
     switch (type) {
@@ -78,6 +81,8 @@ function providerProvider(type: OutpostTypeEnum): DataProvider {
             return ldapListFetch;
         case OutpostTypeEnum.Radius:
             return radiusListFetch;
+        case OutpostTypeEnum.Rac:
+            return racListProvider;
         default:
             throw new Error(`Unrecognized OutputType: ${type}`);
     }
@@ -93,7 +98,6 @@ export class OutpostForm extends ModelForm<Outpost, string> {
 
     @state()
     providers?: DataProvider;
-
     defaultConfig?: OutpostDefaultConfig;
 
     async loadInstance(pk: string): Promise<Outpost> {
@@ -165,6 +169,12 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                         ?selected=${this.instance?.type === OutpostTypeEnum.Radius}
                     >
                         ${msg("Radius")}
+                    </option>
+                    <option
+                        value=${OutpostTypeEnum.Rac}
+                        ?selected=${this.instance?.type === OutpostTypeEnum.Rac}
+                    >
+                        ${msg("RAC")}
                     </option>
                 </select>
             </ak-form-element-horizontal>

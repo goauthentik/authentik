@@ -99,7 +99,9 @@ class OAuthSourceSerializer(SourceSerializer):
         ]:
             if getattr(provider_type, url, None) is None:
                 if url not in attrs:
-                    raise ValidationError(f"{url} is required for provider {provider_type.name}")
+                    raise ValidationError(
+                        f"{url} is required for provider {provider_type.verbose_name}"
+                    )
         return attrs
 
     class Meta:
