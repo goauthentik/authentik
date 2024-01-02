@@ -41,8 +41,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 		// New default RedisStore
 		rs, err := redisstore.NewRedisStore(context.Background(), client)
 		if err != nil {
-			a.log.Error("cannot connect to redis")
-			panic(err)
+			a.log.WithError(err).Panic("failed to connect to redis")
 		}
 
 		rs.KeyPrefix(RedisKeyPrefix)
