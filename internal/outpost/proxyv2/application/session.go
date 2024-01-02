@@ -13,6 +13,7 @@ import (
 	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
 	"github.com/redis/go-redis/v9"
+
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/proxyv2/codecs"
@@ -40,7 +41,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 		// New default RedisStore
 		rs, err := redisstore.NewRedisStore(context.Background(), client)
 		if err != nil {
-			panic(err)
+			a.log.WithError(err).Panic("failed to connect to redis")
 		}
 
 		rs.KeyPrefix(RedisKeyPrefix)
