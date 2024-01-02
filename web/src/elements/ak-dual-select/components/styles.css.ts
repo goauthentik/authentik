@@ -1,5 +1,10 @@
 import { css } from "lit";
 
+// The `host` information for the Patternfly dual list selector came with some default settings that
+// we do not want in a web component. By isolating what we *really* use into this collection here,
+// we get all the benefits of Patternfly without having to wrestle without also having to counteract
+// those default settings.
+
 export const globalVariables = css`
     :host {
         --pf-c-dual-list-selector--GridTemplateColumns--pane--MinMax--min: 12.5rem;
@@ -85,6 +90,14 @@ export const globalVariables = css`
 `;
 
 export const mainStyles = css`
+    :host {
+        --pf-c-dual-list-selector--GridTemplateColumns--pane--MinMax--min: 12.5rem;
+        --pf-c-dual-list-selector--GridTemplateColumns--pane--MinMax--max: 28.125rem;
+    }
+    :host {
+        display: block grid;
+    }
+
     .pf-c-dual-list-selector__title-text {
         font-weight: var(--pf-c-dual-list-selector__title-text--FontWeight);
     }
@@ -96,27 +109,64 @@ export const mainStyles = css`
 
     .ak-dual-list-selector {
         display: grid;
-        grid-template-columns:
-            minmax(
-                var(--pf-c-dual-list-selector--GridTemplateColumns--pane--MinMax--min),
-                var(--pf-c-dual-list-selector--GridTemplateColumns--pane--MinMax--max)
-            )
-            min-content
-            minmax(
-                var(--pf-c-dual-list-selector--GridTemplateColumns--pane--MinMax--min),
-                var(--pf-c-dual-list-selector--GridTemplateColumns--pane--MinMax--max)
-            );
+        grid-template-columns: minmax(0, 1fr) min-content minmax(0, 1fr);
+    }
+
+    .ak-available-pane,
+    .ak-selected-pane {
+        display: grid;
+        grid-template-rows: auto auto 1fr auto;
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+    ak-dual-select-controls {
+        height: 100%;
     }
 `;
 
+export const listStyles = css`
+        :host {
+            display: block;
+            overflow: hidden;
+            max-width: 100%;
+        }
+
+        .pf-c-dual-list-selector__menu {
+            max-width: 100%;
+            height: 100%;
+        }
+
+        .pf-c-dual-list-selector__list {
+            max-width: 100%;
+            display: block;
+        }
+
+        .pf-c-dual-list-selector__item {
+            padding: 0.25rem;
+            width: auto;
+        }
+
+        .pf-c-dual-list-selector__item-text {
+            user-select: none;
+            flex-grow: 0;
+        }
+
+`;
+
+
 export const selectedPaneStyles = css`
-.pf-c-dual-list-selector__menu {
-height: 100%;
-}
-.pf-c-dual-list-selector__item {
-padding: 0.25rem;
-}
-input[type="checkbox"][readonly] {
-pointer-events: none;
-}
+    input[type="checkbox"][readonly] {
+        pointer-events: none;
+    }
+`;
+
+export const availablePaneStyles = css`
+    .pf-c-dual-list-selector__item-text i {
+        display: inline-block;
+        margin-left: 0.5rem;
+        font-weight: 200;
+        color: var(--pf-global--palette--black-500);
+        font-size: var(--pf-global--FontSize--xs);
+    }
 `;

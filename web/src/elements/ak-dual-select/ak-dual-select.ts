@@ -5,14 +5,14 @@ import {
 } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg, str } from "@lit/localize";
-import { css, html, nothing } from "lit";
+import { PropertyValues, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 import type { Ref } from "lit/directives/ref.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
+import { globalVariables, mainStyles } from "./components/styles.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFDualListSelector from "@patternfly/patternfly/components/DualListSelector/dual-list-selector.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import "./components/ak-dual-select-available-pane";
@@ -21,7 +21,6 @@ import "./components/ak-dual-select-controls";
 import "./components/ak-dual-select-selected-pane";
 import { AkDualSelectSelectedPane } from "./components/ak-dual-select-selected-pane";
 import "./components/ak-pagination";
-import { globalVariables, mainStyles } from "./components/styles.css";
 import {
     EVENT_ADD_ALL,
     EVENT_ADD_ONE,
@@ -33,36 +32,26 @@ import {
 } from "./constants";
 import type { BasePagination, DualSelectPair } from "./types";
 
+type PairValue = string | TemplateResult;
+type Pair = [string, PairValue];
+const alphaSort = ([_k1, v1]: Pair, [_k2, v2]: Pair) => (v1 < v2 ? -1 : v1 > v2 ? 1 : 0);
+
 const styles = [
     PFBase,
     PFButton,
     globalVariables,
     mainStyles,
-    css`
-        :host {
-            --pf-c-dual-list-selector--GridTemplateColumns--pane--MinMax--min: 12.5rem;
-            --pf-c-dual-list-selector--GridTemplateColumns--pane--MinMax--max: 28.125rem;
-        }
-        .ak-dual-list-selector {
-            display: grid;
-            grid-template-columns:
-                minmax(
-                    var(--pf-c-dual-list-selector--GridTemplateColumns--pane--MinMax--min),
-                    var(--pf-c-dual-list-selector--GridTemplateColumns--pane--MinMax--max)
-                )
-                min-content
-                minmax(
-                    var(--pf-c-dual-list-selector--GridTemplateColumns--pane--MinMax--min),
-                    var(--pf-c-dual-list-selector--GridTemplateColumns--pane--MinMax--max)
-                );
-        }
-        .ak-available-pane,
-        ak-dual-select-controls,
-        .ak-selected-pane {
-            height: 100%;
-        }
-    `,
 ];
+
+/**
+ * @element ak-dual-select
+ *
+ * A master (but independent) component that shows two lists-- one of "available options" and one of
+ * "selected options".  The Available Options panel supports pagination if it receives a valid and
+ * active pagination object (based on Django's pagination object) from the invoking component.  
+ *
+ * @fires ak-dual-select-change - A custom change event with the current `selected` list.
+ */
 
 @customElement("ak-dual-select")
 export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKElement)) {
@@ -70,9 +59,12 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         return styles;
     }
 
+    /* The list of options to *currently* show. Note that this is not *all* the options, only the
+     * currently shown list of options from a pagination collection. */
     @property({ type: Array })
     options: DualSelectPair[] = [];
 
+    /* The list of options selected. This is the *entire* list and will not be paginated. */
     @property({ type: Array })
     selected: DualSelectPair[] = [];
 
@@ -88,6 +80,8 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
     availablePane: Ref<AkDualSelectAvailablePane> = createRef();
 
     selectedPane: Ref<AkDualSelectSelectedPane> = createRef();
+
+    selectedKeys: Set<string> = new Set();
 
     constructor() {
         super();
@@ -112,7 +106,21 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         return this.selected;
     }
 
+    willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("selected")) {
+            this.selectedKeys = new Set(this.selected.map(([key, _]) => key));
+        }
+        // Pagination invalidates available moveables.
+        if (changedProperties.has("options") && this.availablePane.value) {
+            this.availablePane.value.clearMove();
+        }
+    }
+
     handleMove(eventName: string, event: Event) {
+        if (!(event instanceof CustomEvent)) {
+            throw new Error(`Expected move event here, got ${eventName}`);
+        }
+
         switch (eventName) {
             case EVENT_ADD_SELECTED: {
                 this.addSelected();
@@ -148,7 +156,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
                     `AkDualSelect.handleMove received unknown event type: ${eventName}`
                 );
         }
-        this.dispatchCustomEvent("change", { value: this.selected });
+        this.dispatchCustomEvent("ak-dual-select-change", { value: this.value });
         event.stopPropagation();
     }
 
@@ -175,13 +183,10 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         }
     }
 
-    removeOne(key: string) {
-        this.selected = this.selected.filter(([k, _]) => k !== key);
-    }
-
-    // You must remember, these are the *currently visible* options; the parent node is responsible
-    // for paginating and updating the list of currently visible options;
+    // These are the *currently visible* options; the parent node is responsible for paginating and
+    // updating the list of currently visible options;
     addAllVisible() {
+        // Create a new array of all current options and selected, and de-dupe.
         const selected = new Map([...this.options, ...this.selected]);
         this.selected = Array.from(selected.entries()).sort();
         this.availablePane.value!.clearMove();
@@ -196,8 +201,12 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         this.selectedPane.value!.clearMove();
     }
 
-    // Remove all the items from selected that are in the *currently visible* options list
+    removeOne(key: string) {
+        this.selected = this.selected.filter(([k, _]) => k !== key);
+    }
+
     removeAllVisible() {
+        // Remove all the items from selected that are in the *currently visible* options list
         const options = new Set(this.options.map(([k, _]) => k));
         this.selected = this.selected.filter(([k, _]) => !options.has(k));
         this.selectedPane.value!.clearMove();
@@ -208,21 +217,21 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         this.selectedPane.value!.clearMove();
     }
 
-    selectedKeys() {
-        return new Set(this.selected.map(([k, _]) => k));
-    }
-
     get canAddAll() {
         // False unless any visible option cannot be found in the selected list, so can still be
         // added.
-        const selected = this.selectedKeys();
-        return this.options.length > 0 && !!this.options.find(([key, _]) => !selected.has(key));
+        const allMoved =
+            this.options.length ===
+            this.options.filter(([key, _]) => this.selectedKeys.has(key)).length;
+
+        return this.options.length > 0 && !allMoved;
     }
 
     get canRemoveAll() {
         // False if no visible option can be found in the selected list
-        const selected = this.selectedKeys();
-        return this.options.length > 0 && !!this.options.find(([key, _]) => selected.has(key));
+        return (
+            this.options.length > 0 && !!this.options.find(([key, _]) => this.selectedKeys.has(key))
+        );
     }
 
     get needPagination() {
@@ -230,7 +239,6 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
     }
 
     render() {
-        const selected = this.selectedKeys();
         const availableCount = this.availablePane.value?.toMove.size ?? 0;
         const selectedCount = this.selectedPane.value?.toMove.size ?? 0;
         const selectedTotal = this.selected.length;
@@ -262,7 +270,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
                     <ak-dual-select-available-pane
                         ${ref(this.availablePane)}
                         .options=${this.options}
-                        .selected=${selected}
+                        .selected=${this.selectedKeys}
                     ></ak-dual-select-available-pane>
                     ${this.needPagination
                         ? html`<ak-pagination .pages=${this.pages}></ak-pagination>`
@@ -296,7 +304,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
 
                     <ak-dual-select-selected-pane
                         ${ref(this.selectedPane)}
-                        .selected=${this.selected}
+                        .selected=${this.selected.toSorted(alphaSort)}
                     ></ak-dual-select-selected-pane>
                 </div>
             </div>

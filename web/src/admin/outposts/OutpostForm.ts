@@ -1,8 +1,10 @@
+import { DataProvider, DualSelectPair } from "@goauthentik/app/elements/ak-dual-select/types";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { docLink } from "@goauthentik/common/global";
 import { groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -19,12 +21,67 @@ import {
     OutpostTypeEnum,
     OutpostsApi,
     OutpostsServiceConnectionsAllListRequest,
-    PaginatedLDAPProviderList,
-    PaginatedProxyProviderList,
-    PaginatedRadiusProviderList,
+    Pagination,
     ProvidersApi,
     ServiceConnection,
 } from "@goauthentik/api";
+
+interface ProviderBase {
+    pk: number;
+    name: string;
+    assignedBackchannelApplicationName?: string;
+    assignedApplicationName?: string;
+}
+
+interface ProviderData {
+    pagination: Pagination;
+    results: ProviderBase[];
+}
+
+const api = () => new ProvidersApi(DEFAULT_CONFIG);
+const args = (page: number) => ({
+    ordering: "name",
+    applicationIsnull: false,
+    pageSize: 20,
+    search: "",
+    page,
+});
+
+const dualSelectPairMaker = (item: ProviderBase): DualSelectPair => [
+    `${item.pk}`,
+    `${
+        item.assignedBackchannelApplicationName
+            ? item.assignedBackchannelApplicationName
+            : item.assignedApplicationName
+    } (${item.name})`,
+];
+
+const provisionMaker = (results: ProviderData) => ({
+    pagination: results.pagination,
+    options: results.results.map(dualSelectPairMaker),
+});
+
+const proxyListFetch = async (page: number) =>
+    provisionMaker(await api().providersProxyList(args(page)));
+
+const ldapListFetch = async (page: number) =>
+    provisionMaker(await api().providersLdapList(args(page)));
+
+const radiusListFetch = async (page: number) =>
+    provisionMaker(await api().providersRadiusList(args(page)));
+
+function providerProvider(type: OutpostTypeEnum): DataProvider {
+    switch (type) {
+        case OutpostTypeEnum.Proxy:
+            return proxyListFetch;
+        case OutpostTypeEnum.Ldap:
+            return ldapListFetch;
+        case OutpostTypeEnum.Radius:
+            return radiusListFetch;
+        default:
+            throw new Error(`Unrecognized OutputType: ${type}`);
+    }
+}
 
 @customElement("ak-outpost-form")
 export class OutpostForm extends ModelForm<Outpost, string> {
@@ -35,10 +92,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
     embedded = false;
 
     @state()
-    providers?:
-        | PaginatedProxyProviderList
-        | PaginatedLDAPProviderList
-        | PaginatedRadiusProviderList;
+    providers?: DataProvider;
 
     defaultConfig?: OutpostDefaultConfig;
 
@@ -52,30 +106,9 @@ export class OutpostForm extends ModelForm<Outpost, string> {
 
     async load(): Promise<void> {
         this.defaultConfig = await new OutpostsApi(
-            DEFAULT_CONFIG,
+            DEFAULT_CONFIG
         ).outpostsInstancesDefaultSettingsRetrieve();
-        switch (this.type) {
-            case OutpostTypeEnum.Proxy:
-                this.providers = await new ProvidersApi(DEFAULT_CONFIG).providersProxyList({
-                    ordering: "name",
-                    applicationIsnull: false,
-                });
-                break;
-            case OutpostTypeEnum.Ldap:
-                this.providers = await new ProvidersApi(DEFAULT_CONFIG).providersLdapList({
-                    ordering: "name",
-                    applicationIsnull: false,
-                });
-                break;
-            case OutpostTypeEnum.Radius:
-                this.providers = await new ProvidersApi(DEFAULT_CONFIG).providersRadiusList({
-                    ordering: "name",
-                    applicationIsnull: false,
-                });
-                break;
-            case OutpostTypeEnum.UnknownDefaultOpenApi:
-                this.providers = undefined;
-        }
+        this.providers = providerProvider(this.type);
     }
 
     getSuccessMessage(): string {
@@ -145,7 +178,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                             args.search = query;
                         }
                         const items = await new OutpostsApi(
-                            DEFAULT_CONFIG,
+                            DEFAULT_CONFIG
                         ).outpostsServiceConnectionsAllList(args);
                         return items.results;
                     }}
@@ -170,7 +203,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 </ak-search-select>
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "Selecting an integration enables the management of the outpost by authentik.",
+                        "Selecting an integration enables the management of the outpost by authentik."
                     )}
                 </p>
                 <p class="pf-c-form__helper-text">
@@ -185,32 +218,18 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 ?required=${!this.embedded}
                 name="providers"
             >
-                <select class="pf-c-form-control" multiple>
-                    ${this.providers?.results.map((provider) => {
-                        const selected = Array.from(this.instance?.providers || []).some((sp) => {
-                            return sp == provider.pk;
-                        });
-                        let appName = provider.assignedApplicationName;
-                        if (provider.assignedBackchannelApplicationName) {
-                            appName = provider.assignedBackchannelApplicationName;
-                        }
-                        return html`<option value=${ifDefined(provider.pk)} ?selected=${selected}>
-                            ${appName} (${provider.name})
-                        </option>`;
-                    })}
-                </select>
-                <p class="pf-c-form__helper-text">
-                    ${msg("You can only select providers that match the type of the outpost.")}
-                </p>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Hold control/command to select multiple items.")}
-                </p>
+                <ak-dual-select-provider
+                    .provider=${this.providers}
+                    .selected=${(this.instance?.providersObj ?? []).map(dualSelectPairMaker)}
+                    available-label="Available Applications"
+                    selected-label="Selected Applications"
+                ></ak-dual-select-provider>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Configuration")} name="config">
                 <ak-codemirror
                     mode=${CodeMirrorMode.YAML}
                     value="${YAML.stringify(
-                        this.instance ? this.instance.config : this.defaultConfig?.config,
+                        this.instance ? this.instance.config : this.defaultConfig?.config
                     )}"
                 ></ak-codemirror>
                 <p class="pf-c-form__helper-text">

@@ -1,4 +1,5 @@
 import { AKElement } from "@goauthentik/elements/Base";
+import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg, str } from "@lit/localize";
 import { css, html, nothing } from "lit";
@@ -8,7 +9,6 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 import type { BasePagination } from "../types";
 
 const styles = [
@@ -54,7 +54,7 @@ export class AkPagination extends CustomEmitterElement(AKElement) {
                           <div class="pf-c-options-menu__toggle pf-m-text pf-m-plain">
                               <span class="pf-c-options-menu__toggle-text">
                                   ${msg(
-                                      str`${this.pages?.startIndex} - ${this.pages?.endIndex} of ${this.pages?.count}`,
+                                      str`${this.pages?.startIndex} - ${this.pages?.endIndex} of ${this.pages?.count}`
                                   )}
                               </span>
                           </div>

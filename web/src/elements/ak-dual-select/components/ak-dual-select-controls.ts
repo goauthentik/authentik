@@ -27,13 +27,13 @@ const styles = [
         }
         .pf-c-dual-list-selector {
             max-width: 4rem;
-}
-.ak-dual-list-selector__controls {
-display: grid;
-justify-content: center;
-align-content: center;
-height: 100%;
-}
+        }
+        .ak-dual-list-selector__controls {
+            display: grid;
+            justify-content: center;
+            align-content: center;
+            height: 100%;
+        }
     `,
 ];
 
@@ -104,8 +104,8 @@ export class AkDualSelectControls extends CustomEmitterElement(AKElement) {
         return html`
             <div class="pf-c-dual-list-selector__controls-item">
                 <button
-                    ?aria-disabled=${this.disabled || !active}
-                    ?disabled=${this.disabled || !active}
+                    ?aria-disabled=${!active}
+                    ?disabled=${!active}
                     aria-label=${label}
                     class="pf-c-button pf-m-plain"
                     type="button"

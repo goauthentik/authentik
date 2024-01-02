@@ -10,17 +10,11 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDualListSelector from "@patternfly/patternfly/components/DualListSelector/dual-list-selector.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import type { DualSelectPair } from "../types";
 import { EVENT_REMOVE_ONE } from "../constants";
-import { selectedPaneStyles } from "./styles.css";
+import type { DualSelectPair } from "../types";
+import { listStyles, selectedPaneStyles } from "./styles.css";
 
-const styles = [
-    PFBase,
-    PFButton,
-    PFDualListSelector,
-    selectedPaneStyles
-];
-
+const styles = [PFBase, PFButton, PFDualListSelector, listStyles, selectedPaneStyles];
 
 const hostAttributes = [
     ["aria-labelledby", "dual-list-selector-selected-pane-status"],
@@ -34,7 +28,9 @@ const hostAttributes = [
  * The "selected options" or "right" pane in a dual-list multi-select.  It receives from its parent
  * a list of the selected options, and maintains an internal list of objects selected to move.
  *
- * @fires ak-dual-select-selected-move-changed - When the list of "to move" entries changed.  Includes the current * `toMove` content.
+ * @fires ak-dual-select-selected-move-changed - When the list of "to move" entries changed.
+ * Includes the current * `toMove` content.
+ *
  * @fires ak-dual-select-remove-one - Doubleclick with the element clicked on.
  *
  * It is not expected that the `ak-dual-select-selected-move-changed` will be used; instead, the
@@ -87,13 +83,13 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement(AKElement) {
         );
         this.dispatchCustomEvent("ak-dual-select-move");
         // Necessary because updating a map won't trigger a state change
-        this.requestUpdate(); 
+        this.requestUpdate();
     }
 
     onMove(key: string) {
         this.toMove.delete(key);
         this.dispatchCustomEvent(EVENT_REMOVE_ONE, key);
-        this.requestUpdate(); 
+        this.requestUpdate();
     }
 
     connectedCallback() {
@@ -107,34 +103,35 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement(AKElement) {
 
     render() {
         return html`
-                <div class="pf-c-dual-list-selector__menu">
-                    <ul class="pf-c-dual-list-selector__list">
-                        ${map(this.selected, ([key, label]) => {
-                            const selected = classMap({
-                                "pf-m-selected": this.toMove.has(key),
-                            });
-                            return html` <li
-                                class="pf-c-dual-list-selector__list-item"
-                                aria-selected="false"
-                                id="dual-list-selector-basic-selected-pane-list-option-0"
-                                @click=${() => this.onClick(key)}
-                                @dblclick=${() => this.onMove(key)}
-                                role="option"
-                                tabindex="-1"
-                            >
-                                <div class="pf-c-dual-list-selector__list-item-row ${selected}">
-                                    <span class="pf-c-dual-list-selector__item">
-                                        <span class="pf-c-dual-list-selector__item-main">
-                                            <span class="pf-c-dual-list-selector__item-text"
-                                                >${label}</span
-                                            ></span
+            <div class="pf-c-dual-list-selector__menu">
+                <ul class="pf-c-dual-list-selector__list">
+                    ${map(this.selected, ([key, label]) => {
+                        const selected = classMap({
+                            "pf-m-selected": this.toMove.has(key),
+                        });
+                        return html` <li
+                            class="pf-c-dual-list-selector__list-item"
+                            aria-selected="false"
+                            id="dual-list-selector-basic-selected-pane-list-option-0"
+                            @click=${() => this.onClick(key)}
+                            @dblclick=${() => this.onMove(key)}
+                            role="option"
+                            data-ak-key=${key}
+                            tabindex="-1"
+                        >
+                            <div class="pf-c-dual-list-selector__list-item-row ${selected}">
+                                <span class="pf-c-dual-list-selector__item">
+                                    <span class="pf-c-dual-list-selector__item-main">
+                                        <span class="pf-c-dual-list-selector__item-text"
+                                            >${label}</span
                                         ></span
-                                    >
-                                </div>
-                            </li>`;
-                        })}
-                    </ul>
-                </div>
+                                    ></span
+                                >
+                            </div>
+                        </li>`;
+                    })}
+                </ul>
+            </div>
         `;
     }
 }
