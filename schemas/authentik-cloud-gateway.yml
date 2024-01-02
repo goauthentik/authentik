@@ -511,6 +511,9 @@ components:
       type: object
       description: Enrollment request, send the device's unique identifier
       properties:
+        firebase_key:
+          type: string
+          minLength: 1
         device_uid:
           type: string
           minLength: 1
@@ -518,6 +521,7 @@ components:
           $ref: '#/components/schemas/MobileDeviceInfoRequest'
       required:
       - device_uid
+      - firebase_key
       - info
     MobileDeviceEnrollmentStatus:
       type: object

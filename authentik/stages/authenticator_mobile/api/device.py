@@ -53,17 +53,17 @@ class MobileDeviceCheckInSerializer(PassiveSerializer):
     info = MobileDeviceInfoSerializer()
 
 
-class MobileDeviceEnrollmentSerializer(PassiveSerializer):
-    """Enrollment request, send the device's unique identifier"""
-
-    device_uid = CharField(required=True)
-    info = MobileDeviceInfoSerializer()
-
-
 class MobileDeviceSetPushKeySerializer(PassiveSerializer):
     """Set notification key"""
 
     firebase_key = CharField(required=True)
+
+
+class MobileDeviceEnrollmentSerializer(MobileDeviceSetPushKeySerializer):
+    """Enrollment request, send the device's unique identifier"""
+
+    device_uid = CharField(required=True)
+    info = MobileDeviceInfoSerializer()
 
 
 class MobileDeviceResponseSerializer(PassiveSerializer):
@@ -120,6 +120,7 @@ class MobileDeviceViewSet(
         device.name = data.validated_data["info"]["hostname"]
         device.confirmed = True
         device.device_id = data.validated_data["device_uid"]
+        device.firebase_token = data.validated_data["firebase_key"]
         device.save()
         MobileDeviceToken.objects.filter(
             device=device,
