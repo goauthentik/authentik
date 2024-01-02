@@ -487,16 +487,16 @@ components:
         confirmed:
           type: boolean
           readOnly: true
-        last_checkin:
+        state:
           allOf:
           - $ref: '#/components/schemas/MobileDeviceInfo'
           readOnly: true
       required:
       - confirmed
-      - last_checkin
       - meta_model_name
       - name
       - pk
+      - state
       - type
       - verbose_name
       - verbose_name_plural

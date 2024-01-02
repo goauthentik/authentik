@@ -177,6 +177,14 @@ class MobileTransaction(ExpiringModel):
         user: User = self.device.user
         client_ip = ClientIPMiddleware.get_client_ip(request)
 
+        geo = None
+        if GEOIP_CONTEXT_PROCESSOR.configured():
+            city = GEOIP_CONTEXT_PROCESSOR.city(client_ip)
+            if city:
+                geo = AuthenticationRequest.Attributes.Geo(
+                    lat=city.location.latitude,
+                    long=city.location.longitude,
+                )
         auth_request = AuthenticationRequest(
             device_token=self.device.firebase_token,
             tx_id=str(self.tx_id),
@@ -192,17 +200,10 @@ class MobileTransaction(ExpiringModel):
                     }
                 ),
                 client_ip=client_ip,
-                geo=AuthenticationRequest.Attributes.Geo(),
+                geo=geo,
                 extra=context,
             ),
         )
-        if GEOIP_CONTEXT_PROCESSOR.configured():
-            geo = GEOIP_CONTEXT_PROCESSOR.city(client_ip)
-            if geo:
-                auth_request.attributes.geo = AuthenticationRequest.Attributes.Geo(
-                    lat=geo.location.latitude,
-                    long=geo.location.longitude,
-                )
         client = get_client(self.device.stage.cgw_endpoint)
         try:
             response = client.SendRequest(auth_request)
