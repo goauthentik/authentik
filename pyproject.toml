@@ -148,7 +148,7 @@ webauthn = "*"
 wsproto = "*"
 xmlsec = "*"
 zxcvbn = "*"
-authentik_cloud_gateway_client = {version = "*", allow-prereleases = true}
+authentik_cloud_gateway_client = {version = "0.2.0", allow-prereleases = true}
 
 [tool.poetry.dev-dependencies]
 bandit = "*"

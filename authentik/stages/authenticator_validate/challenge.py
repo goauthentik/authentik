@@ -31,7 +31,11 @@ from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.authenticator import match_token
 from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
-from authentik.stages.authenticator_mobile.models import MobileDevice, TransactionStates
+from authentik.stages.authenticator_mobile.models import (
+    MobileDevice,
+    MobileTransaction,
+    TransactionStates,
+)
 from authentik.stages.authenticator_mobile.stage import SESSION_KEY_MOBILE_TRANSACTION
 from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
@@ -144,7 +148,7 @@ def select_challenge_mobile(request: HttpRequest, stage_view: StageView, device:
         raise ValidationError()
 
     try:
-        transaction = request.session.get(SESSION_KEY_MOBILE_TRANSACTION)
+        transaction: MobileTransaction = request.session.get(SESSION_KEY_MOBILE_TRANSACTION)
         transaction.send_message(stage_view.request, **push_context)
     except RuntimeError as exc:
         Event.new(

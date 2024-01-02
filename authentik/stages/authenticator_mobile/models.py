@@ -17,12 +17,13 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import ExpiringModel, User
 from authentik.core.types import UserSettingSerializer
+from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.generators import generate_code_fixed_length, generate_id
 from authentik.lib.models import SerializerModel
+from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_mobile.cloud_gateway import get_client
-from authentik.brands.utils import DEFAULT_BRAND
 
 LOGGER = get_logger()
 
@@ -169,33 +170,42 @@ class MobileTransaction(ExpiringModel):
             return TransactionStates.DENY
         return TransactionStates.ACCEPT
 
-    def send_message(self, request: Optional[HttpRequest], **context):
+    def send_message(self, request: HttpRequest, **context):
         """Send mobile message"""
-        branding = DEFAULT_BRAND.branding_title
-        domain = ""
-        if request:
-            branding = request.tenant.branding_title
-            domain = request.get_host()
+        branding = request.tenant.branding_title
+        domain = request.get_host()
         user: User = self.device.user
+        client_ip = ClientIPMiddleware.get_client_ip(request)
 
+        auth_request = AuthenticationRequest(
+            device_token=self.device.firebase_token,
+            tx_id=str(self.tx_id),
+            items=self.decision_items,
+            mode=self.device.stage.item_matching_mode,
+            attributes=AuthenticationRequest.Attributes(
+                title=__("%(brand)s authentication request" % {"brand": branding}),
+                body=__(
+                    "%(user)s is attempting to log in to %(domain)s"
+                    % {
+                        "user": user.username,  # pylint: disable=no-member
+                        "domain": domain,
+                    }
+                ),
+                client_ip=client_ip,
+                geo=AuthenticationRequest.Attributes.Geo(),
+                extra=context,
+            ),
+        )
+        if GEOIP_CONTEXT_PROCESSOR.configured():
+            geo = GEOIP_CONTEXT_PROCESSOR.city(client_ip)
+            if geo:
+                auth_request.attributes.geo = AuthenticationRequest.Attributes.Geo(
+                    lat=geo.location.latitude,
+                    long=geo.location.longitude,
+                )
         client = get_client(self.device.stage.cgw_endpoint)
         try:
-            response = client.SendRequest(
-                AuthenticationRequest(
-                    device_token=self.device.firebase_token,
-                    title=__("%(brand)s authentication request" % {"brand": branding}),
-                    body=__(
-                        "%(user)s is attempting to log in to %(domain)s"
-                        % {
-                            "user": user.username,  # pylint: disable=no-member
-                            "domain": domain,
-                        }
-                    ),
-                    tx_id=str(self.tx_id),
-                    items=self.decision_items,
-                    mode=self.device.stage.item_matching_mode,
-                )
-            )
+            response = client.SendRequest(auth_request)
             LOGGER.debug("Sent notification", id=response, tx_id=self.tx_id)
         except (ValueError, RpcError) as exc:
             LOGGER.warning("failed to push", exc=exc, tx_id=self.tx_id)
