@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
                         to="authentik_flows.stage",
                     ),
                 ),
-                ("friendly_name", models.TextField(null=True)),
+                ("friendly_name", models.TextField(null=True, blank=True)),
                 (
                     "item_matching_mode",
                     models.TextField(

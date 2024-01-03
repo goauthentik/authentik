@@ -5,7 +5,7 @@ from django_filters.rest_framework.backends import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from rest_framework import mixins
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, ChoiceField, JSONField, UUIDField, DateTimeField
+from rest_framework.fields import CharField, ChoiceField, DateTimeField, JSONField, UUIDField
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
