@@ -4578,10 +4578,6 @@ Bindings to groups/users are checked against the user of the event.</source>
         <source>Selecting an integration enables the management of the outpost by authentik.</source>
         <target>La selección de una integración permite la gestión del puesto avanzado por authentik.</target>
       </trans-unit>
-      <trans-unit id="s554ce268e9727e79">
-        <source>You can only select providers that match the type of the outpost.</source>
-        <target>Solo puede seleccionar proveedores que coincidan con el tipo de puesto avanzado.</target>
-      </trans-unit>
       <trans-unit id="sf9b1c0661a02d9f9">
         <source>Configuration</source>
         <target>Configuración</target>
@@ -6153,6 +6149,36 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s6dd297c217729828">
   <source>Determines how long a session lasts before being disconnected and requiring re-authorization.</source>
+</trans-unit>
+<trans-unit id="s0db494ff61b48438">
+  <source>Add All Available</source>
+</trans-unit>
+<trans-unit id="s2f68faa5b84ee9fd">
+  <source>Remove All Available</source>
+</trans-unit>
+<trans-unit id="s0ba85594344a5c02">
+  <source>Remove All</source>
+</trans-unit>
+<trans-unit id="s1efa17e3407e0f56">
+  <source>Available options</source>
+</trans-unit>
+<trans-unit id="s886db4d476f66522">
+  <source>Selected options</source>
+</trans-unit>
+<trans-unit id="s8b68948382758d57">
+  <source><x id="0" equiv-text="${availableCount}"/> items marked to add.</source>
+</trans-unit>
+<trans-unit id="s726a7342e18dc660">
+  <source><x id="0" equiv-text="${selectedTotal}"/> items selected.</source>
+</trans-unit>
+<trans-unit id="s2e92b61847f32e72">
+  <source><x id="0" equiv-text="${selectedCount}"/> items marked to remove.</source>
+</trans-unit>
+<trans-unit id="scb76a63c68b0d81f">
+  <source>Available Applications</source>
+</trans-unit>
+<trans-unit id="sd176021da2ea0fe3">
+  <source>Selected Applications</source>
 </trans-unit>
     </body>
   </file>

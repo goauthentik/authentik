@@ -6069,11 +6069,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Śēĺēćţĩńĝ àń ĩńţēĝŕàţĩōń ēńàƀĺēś ţĥē màńàĝēmēńţ ōƒ ţĥē ōũţƥōśţ ƀŷ àũţĥēńţĩķ.</target>
         
       </trans-unit>
-      <trans-unit id="s554ce268e9727e79">
-        <source>You can only select providers that match the type of the outpost.</source>
-  <target>Ŷōũ ćàń ōńĺŷ śēĺēćţ ƥŕōvĩďēŕś ţĥàţ màţćĥ ţĥē ţŷƥē ōƒ ţĥē ōũţƥōśţ.</target>
-        
-      </trans-unit>
       <trans-unit id="sf9b1c0661a02d9f9">
         <source>Configuration</source>
   <target>Ćōńƒĩĝũŕàţĩōń</target>
@@ -7975,128 +7970,210 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s7513372fe60f6387">
   <source>Event volume</source>
+  <target>Ēvēńţ vōĺũmē</target>
 </trans-unit>
 <trans-unit id="s047a5f0211fedc72">
   <source>Require Outpost (flow can only be executed from an outpost).</source>
+  <target>Ŕēǫũĩŕē Ōũţƥōśţ (ƒĺōŵ ćàń ōńĺŷ ƀē ēxēćũţēď ƒŕōm àń ōũţƥōśţ).</target>
 </trans-unit>
 <trans-unit id="s3271da6c18c25b18">
   <source>Connection settings.</source>
+  <target>Ćōńńēćţĩōń śēţţĩńĝś.</target>
 </trans-unit>
 <trans-unit id="s2f4ca2148183d692">
   <source>Successfully updated endpoint.</source>
+  <target>Śũććēśśƒũĺĺŷ ũƥďàţēď ēńďƥōĩńţ.</target>
 </trans-unit>
 <trans-unit id="s5adee855dbe191d9">
   <source>Successfully created endpoint.</source>
+  <target>Śũććēśśƒũĺĺŷ ćŕēàţēď ēńďƥōĩńţ.</target>
 </trans-unit>
 <trans-unit id="s61e136c0658e27d5">
   <source>Protocol</source>
+  <target>Ƥŕōţōćōĺ</target>
 </trans-unit>
 <trans-unit id="sa062b019ff0c8809">
   <source>RDP</source>
+  <target>ŔĎƤ</target>
 </trans-unit>
 <trans-unit id="s97f9bf19fa5b57d1">
   <source>SSH</source>
+  <target>ŚŚĤ</target>
 </trans-unit>
 <trans-unit id="s7c100119e9ffcc32">
   <source>VNC</source>
+  <target>VŃĆ</target>
 </trans-unit>
 <trans-unit id="s6b05f9d8801fc14f">
   <source>Host</source>
+  <target>Ĥōśţ</target>
 </trans-unit>
 <trans-unit id="sb474f652a2c2fc76">
   <source>Hostname/IP to connect to.</source>
+  <target>Ĥōśţńàmē/ĨƤ ţō ćōńńēćţ ţō.</target>
 </trans-unit>
 <trans-unit id="s8276649077e8715c">
   <source>Endpoint(s)</source>
+  <target>Ēńďƥōĩńţ(ś)</target>
 </trans-unit>
 <trans-unit id="sf1dabfe0fe8a75ad">
   <source>Update Endpoint</source>
+  <target>Ũƥďàţē Ēńďƥōĩńţ</target>
 </trans-unit>
 <trans-unit id="s008496c7716b9812">
   <source>These bindings control which users will have access to this endpoint. Users must also have access to the application.</source>
+  <target>Ţĥēśē ƀĩńďĩńĝś ćōńţŕōĺ ŵĥĩćĥ ũśēŕś ŵĩĺĺ ĥàvē àććēśś ţō ţĥĩś ēńďƥōĩńţ. Ũśēŕś mũśţ àĺśō ĥàvē àććēśś ţō ţĥē àƥƥĺĩćàţĩōń.</target>
 </trans-unit>
 <trans-unit id="s38e7cd1a24e70faa">
   <source>Create Endpoint</source>
+  <target>Ćŕēàţē Ēńďƥōĩńţ</target>
 </trans-unit>
 <trans-unit id="s4770c10e5b1c028c">
   <source>RAC is in preview.</source>
+  <target>ŔÀĆ ĩś ĩń ƥŕēvĩēŵ.</target>
 </trans-unit>
 <trans-unit id="s168565f5ac74a89f">
   <source>Update RAC Provider</source>
+  <target>Ũƥďàţē ŔÀĆ Ƥŕōvĩďēŕ</target>
 </trans-unit>
 <trans-unit id="s8465a2caa2d9ea5d">
   <source>Endpoints</source>
+  <target>Ēńďƥōĩńţś</target>
 </trans-unit>
 <trans-unit id="s9857d883d8eb98fc">
   <source>General settings</source>
+  <target>Ĝēńēŕàĺ śēţţĩńĝś</target>
 </trans-unit>
 <trans-unit id="sd2066881798a1b96">
   <source>RDP settings</source>
+  <target>ŔĎƤ śēţţĩńĝś</target>
 </trans-unit>
 <trans-unit id="sb864dc36a463a155">
   <source>Ignore server certificate</source>
+  <target>Ĩĝńōŕē śēŕvēŕ ćēŕţĩƒĩćàţē</target>
 </trans-unit>
 <trans-unit id="s20366a8d1eaaca54">
   <source>Enable wallpaper</source>
+  <target>Ēńàƀĺē ŵàĺĺƥàƥēŕ</target>
 </trans-unit>
 <trans-unit id="s1e44c5350ef7598c">
   <source>Enable font-smoothing</source>
+  <target>Ēńàƀĺē ƒōńţ-śmōōţĥĩńĝ</target>
 </trans-unit>
 <trans-unit id="s04ff5d6ae711e6d6">
   <source>Enable full window dragging</source>
+  <target>Ēńàƀĺē ƒũĺĺ ŵĩńďōŵ ďŕàĝĝĩńĝ</target>
 </trans-unit>
 <trans-unit id="s663ccbfdf27e8dd0">
   <source>Network binding</source>
+  <target>Ńēţŵōŕķ ƀĩńďĩńĝ</target>
 </trans-unit>
 <trans-unit id="sb108a06693c67753">
   <source>No binding</source>
+  <target>Ńō ƀĩńďĩńĝ</target>
 </trans-unit>
 <trans-unit id="s5aab90c74f1233b8">
   <source>Bind ASN</source>
+  <target>ßĩńď ÀŚŃ</target>
 </trans-unit>
 <trans-unit id="s488303b048afe83b">
   <source>Bind ASN and Network</source>
+  <target>ßĩńď ÀŚŃ àńď Ńēţŵōŕķ</target>
 </trans-unit>
 <trans-unit id="s3268dcfe0c8234dc">
   <source>Bind ASN, Network and IP</source>
+  <target>ßĩńď ÀŚŃ, Ńēţŵōŕķ àńď ĨƤ</target>
 </trans-unit>
 <trans-unit id="s226381aca231644f">
   <source>Configure if sessions created by this stage should be bound to the Networks they were created in.</source>
+  <target>Ćōńƒĩĝũŕē ĩƒ śēśśĩōńś ćŕēàţēď ƀŷ ţĥĩś śţàĝē śĥōũĺď ƀē ƀōũńď ţō ţĥē Ńēţŵōŕķś ţĥēŷ ŵēŕē ćŕēàţēď ĩń.</target>
 </trans-unit>
 <trans-unit id="s2555a1f20f3fd93e">
   <source>GeoIP binding</source>
+  <target>ĜēōĨƤ ƀĩńďĩńĝ</target>
 </trans-unit>
 <trans-unit id="s3d63c78f93c9a92e">
   <source>Bind Continent</source>
+  <target>ßĩńď Ćōńţĩńēńţ</target>
 </trans-unit>
 <trans-unit id="s395d5863b3a259b5">
   <source>Bind Continent and Country</source>
+  <target>ßĩńď Ćōńţĩńēńţ àńď Ćōũńţŕŷ</target>
 </trans-unit>
 <trans-unit id="s625ea0c32b4b136c">
   <source>Bind Continent, Country and City</source>
+  <target>ßĩńď Ćōńţĩńēńţ, Ćōũńţŕŷ àńď Ćĩţŷ</target>
 </trans-unit>
 <trans-unit id="s4bc7a1a88961be90">
   <source>Configure if sessions created by this stage should be bound to their GeoIP-based location</source>
+  <target>Ćōńƒĩĝũŕē ĩƒ śēśśĩōńś ćŕēàţēď ƀŷ ţĥĩś śţàĝē śĥōũĺď ƀē ƀōũńď ţō ţĥēĩŕ ĜēōĨƤ-ƀàśēď ĺōćàţĩōń</target>
 </trans-unit>
 <trans-unit id="sa06cd519ff151b6d">
   <source>RAC</source>
+  <target>ŔÀĆ</target>
 </trans-unit>
 <trans-unit id="s28b99b59541f54ca">
   <source>Connection failed after <x id="0" equiv-text="${this.connectionAttempt}"/> attempts.</source>
+  <target>Ćōńńēćţĩōń ƒàĩĺēď àƒţēŕ <x id="0" equiv-text="${this.connectionAttempt}"/> àţţēmƥţś.</target>
 </trans-unit>
 <trans-unit id="s7c7d956418e1c8c8">
   <source>Re-connecting in <x id="0" equiv-text="${Math.max(1, delay / 1000)}"/> second(s).</source>
+  <target>Ŕē-ćōńńēćţĩńĝ ĩń <x id="0" equiv-text="${Math.max(1, delay / 1000)}"/> śēćōńď(ś).</target>
 </trans-unit>
 <trans-unit id="sfc003381f593d943">
   <source>Connecting...</source>
+  <target>Ćōńńēćţĩńĝ...</target>
 </trans-unit>
 <trans-unit id="s31aa94a0b3c7edb2">
   <source>Select endpoint to connect to</source>
+  <target>Śēĺēćţ ēńďƥōĩńţ ţō ćōńńēćţ ţō</target>
 </trans-unit>
 <trans-unit id="sa2ea0fcd3ffa80e0">
   <source>Connection expiry</source>
+  <target>Ćōńńēćţĩōń ēxƥĩŕŷ</target>
 </trans-unit>
 <trans-unit id="s6dd297c217729828">
   <source>Determines how long a session lasts before being disconnected and requiring re-authorization.</source>
+  <target>Ďēţēŕmĩńēś ĥōŵ ĺōńĝ à śēśśĩōń ĺàśţś ƀēƒōŕē ƀēĩńĝ ďĩśćōńńēćţēď àńď ŕēǫũĩŕĩńĝ ŕē-àũţĥōŕĩźàţĩōń.</target>
+</trans-unit>
+<trans-unit id="s0db494ff61b48438">
+  <source>Add All Available</source>
+  <target>Àďď Àĺĺ Àvàĩĺàƀĺē</target>
+</trans-unit>
+<trans-unit id="s2f68faa5b84ee9fd">
+  <source>Remove All Available</source>
+  <target>Ŕēmōvē Àĺĺ Àvàĩĺàƀĺē</target>
+</trans-unit>
+<trans-unit id="s0ba85594344a5c02">
+  <source>Remove All</source>
+  <target>Ŕēmōvē Àĺĺ</target>
+</trans-unit>
+<trans-unit id="s1efa17e3407e0f56">
+  <source>Available options</source>
+  <target>Àvàĩĺàƀĺē ōƥţĩōńś</target>
+</trans-unit>
+<trans-unit id="s886db4d476f66522">
+  <source>Selected options</source>
+  <target>Śēĺēćţēď ōƥţĩōńś</target>
+</trans-unit>
+<trans-unit id="s8b68948382758d57">
+  <source><x id="0" equiv-text="${availableCount}"/> items marked to add.</source>
+  <target><x id="0" equiv-text="${availableCount}"/> ĩţēmś màŕķēď ţō àďď.</target>
+</trans-unit>
+<trans-unit id="s726a7342e18dc660">
+  <source><x id="0" equiv-text="${selectedTotal}"/> items selected.</source>
+  <target><x id="0" equiv-text="${selectedTotal}"/> ĩţēmś śēĺēćţēď.</target>
+</trans-unit>
+<trans-unit id="s2e92b61847f32e72">
+  <source><x id="0" equiv-text="${selectedCount}"/> items marked to remove.</source>
+  <target><x id="0" equiv-text="${selectedCount}"/> ĩţēmś màŕķēď ţō ŕēmōvē.</target>
+</trans-unit>
+<trans-unit id="scb76a63c68b0d81f">
+  <source>Available Applications</source>
+  <target>Àvàĩĺàƀĺē Àƥƥĺĩćàţĩōńś</target>
+</trans-unit>
+<trans-unit id="sd176021da2ea0fe3">
+  <source>Selected Applications</source>
+  <target>Śēĺēćţēď Àƥƥĺĩćàţĩōńś</target>
 </trans-unit>
 </body></file></xliff>

@@ -1,6 +1,7 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 
+import { msg } from "@lit/localize";
 import { PropertyValues, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
@@ -34,10 +35,10 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
     selected: DualSelectPair[] = [];
 
     @property({ attribute: "available-label" })
-    availableLabel = "Available options";
+    availableLabel = msg("Available options");
 
     @property({ attribute: "selected-label" })
-    selectedLabel = "Selected options";
+    selectedLabel = msg("Selected options");
 
     @state()
     private options: DualSelectPair[] = [];

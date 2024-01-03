@@ -231,8 +231,8 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 <ak-dual-select-provider
                     .provider=${this.providers}
                     .selected=${(this.instance?.providersObj ?? []).map(dualSelectPairMaker)}
-                    available-label="Available Applications"
-                    selected-label="Selected Applications"
+                    available-label="${msg("Available Applications")}"
+                    selected-label="${msg("Selected Applications")}"
                 ></ak-dual-select-provider>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Configuration")} name="config">

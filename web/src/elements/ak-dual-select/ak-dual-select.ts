@@ -67,10 +67,10 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
     pages?: BasePagination;
 
     @property({ attribute: "available-label" })
-    availableLabel = "Available options";
+    availableLabel = msg("Available options");
 
     @property({ attribute: "selected-label" })
-    selectedLabel = "Selected options";
+    selectedLabel = msg("Selected options");
 
     availablePane: Ref<AkDualSelectAvailablePane> = createRef();
 
@@ -242,7 +242,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         const selectedTotalStatus = msg(str`${selectedTotal} items selected.`);
         const selectedCountStatus =
             selectedCount > 0 ? "  " + msg(str`${selectedCount} items marked to remove.`) : "";
-        const selectedStatus = `${selectedTotalStatus}${selectedCountStatus}`;
+        const selectedStatus = `${selectedTotalStatus} ${selectedCountStatus}`;
 
         return html`
             <div class="ak-dual-list-selector">
