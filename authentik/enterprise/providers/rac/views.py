@@ -10,6 +10,7 @@ from authentik.core.models import Application, AuthenticatedSession
 from authentik.core.views.interface import InterfaceView
 from authentik.enterprise.policy import EnterprisePolicyAccessView
 from authentik.enterprise.providers.rac.models import ConnectionToken, Endpoint, RACProvider
+from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import RedirectChallenge
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
@@ -43,6 +44,7 @@ class RACStartView(EnterprisePolicyAccessView):
         plan.insert_stage(
             in_memory_stage(
                 RACFinalStage,
+                application=self.application,
                 endpoint=self.endpoint,
                 provider=self.provider,
             )
@@ -90,6 +92,7 @@ class RACFinalStage(RedirectStage):
     def get_challenge(self, *args, **kwargs) -> RedirectChallenge:
         endpoint: Endpoint = self.executor.current_stage.endpoint
         provider: RACProvider = self.executor.current_stage.provider
+        application: Application = self.executor.current_stage.application
         token = ConnectionToken.objects.create(
             provider=provider,
             endpoint=endpoint,
@@ -100,6 +103,12 @@ class RACFinalStage(RedirectStage):
             expires=now() + timedelta_from_string(provider.connection_expiry),
             expiring=True,
         )
+        Event.new(
+            EventAction.AUTHORIZE_APPLICATION,
+            authorized_application=application,
+            flow=self.executor.plan.flow_pk,
+            endpoint=endpoint.name,
+        ).from_http(self.request)
         setattr(
             self.executor.current_stage,
             "destination",
