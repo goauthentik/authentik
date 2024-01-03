@@ -453,8 +453,13 @@ components:
           allOf:
           - $ref: '#/components/schemas/MobileDeviceInfo'
           readOnly: true
+        last_checkin:
+          type: string
+          format: date-time
+          readOnly: true
       required:
       - confirmed
+      - last_checkin
       - meta_model_name
       - name
       - pk

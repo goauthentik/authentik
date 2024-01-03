@@ -6,8 +6,11 @@ import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { until } from "lit/directives/until.js";
+
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { AuthenticatorsApi, Device } from "@goauthentik/api";
 
@@ -18,6 +21,11 @@ export class UserDeviceTable extends Table<Device> {
 
     checkbox = true;
     clearOnRefresh = true;
+    expandable = true;
+
+    static get styles(): CSSResult[] {
+        return super.styles.concat(PFDescriptionList);
+    }
 
     async apiEndpoint(): Promise<PaginatedResponse<Device>> {
         return new AuthenticatorsApi(DEFAULT_CONFIG)
@@ -98,6 +106,91 @@ export class UserDeviceTable extends Table<Device> {
         >
             ${msg("Refresh")}</ak-spinner-button
         >`;
+    }
+
+    renderExpanded(item: Device): TemplateResult {
+        return html`
+            <td role="cell" colspan="5">
+                <div class="pf-c-table__expandable-row-content">
+                    <dl class="pf-c-description-list pf-m-horizontal">
+                        ${until(
+                            new AuthenticatorsApi(DEFAULT_CONFIG)
+                                .authenticatorsMobileRetrieve({
+                                    uuid: item.pk,
+                                })
+                                .then((device) => {
+                                    return html`
+                                        <div class="pf-c-description-list__group">
+                                            <dt class="pf-c-description-list__term">
+                                                <span class="pf-c-description-list__text"
+                                                    >${msg("Last check-in")}</span
+                                                >
+                                            </dt>
+                                            <dd class="pf-c-description-list__description">
+                                                <div class="pf-c-description-list__text">
+                                                    ${device.lastCheckin.toLocaleString()}
+                                                </div>
+                                            </dd>
+                                        </div>
+                                        <div class="pf-c-description-list__group">
+                                            <dt class="pf-c-description-list__term">
+                                                <span class="pf-c-description-list__text"
+                                                    >${msg("App version")}</span
+                                                >
+                                            </dt>
+                                            <dd class="pf-c-description-list__description">
+                                                <div class="pf-c-description-list__text">
+                                                    ${device.state.appVersion}
+                                                </div>
+                                            </dd>
+                                        </div>
+                                        <div class="pf-c-description-list__group">
+                                            <dt class="pf-c-description-list__term">
+                                                <span class="pf-c-description-list__text"
+                                                    >${msg("Device model")}</span
+                                                >
+                                            </dt>
+                                            <dd class="pf-c-description-list__description">
+                                                <div class="pf-c-description-list__text">
+                                                    ${device.state.model}
+                                                </div>
+                                            </dd>
+                                        </div>
+                                        <div class="pf-c-description-list__group">
+                                            <dt class="pf-c-description-list__term">
+                                                <span class="pf-c-description-list__text"
+                                                    >${msg("OS Version")}</span
+                                                >
+                                            </dt>
+                                            <dd class="pf-c-description-list__description">
+                                                <div class="pf-c-description-list__text">
+                                                    ${device.state.osVersion}
+                                                </div>
+                                            </dd>
+                                        </div>
+                                        <div class="pf-c-description-list__group">
+                                            <dt class="pf-c-description-list__term">
+                                                <span class="pf-c-description-list__text"
+                                                    >${msg("Platform")}</span
+                                                >
+                                            </dt>
+                                            <dd class="pf-c-description-list__description">
+                                                <div class="pf-c-description-list__text">
+                                                    ${device.state.platform}
+                                                </div>
+                                            </dd>
+                                        </div>
+                                    `;
+                                }),
+                        )}
+                    </dl>
+                </div>
+            </td>
+        `;
+    }
+
+    rowExpandable(item: Device): boolean {
+        return item.type.toLowerCase() === "authentik_stages_authenticator_mobile.mobiledevice";
     }
 
     row(item: Device): TemplateResult[] {
