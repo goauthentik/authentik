@@ -26,7 +26,8 @@ Thyme, Tomatillo, Tomato, Turnip, Waterchestnut, Watercress, Watermelon, Yams
 
 const keyToPair = (key: string): DualSelectPair => [slug(key), key];
 const goodForYou: DualSelectPair[] = goodForYouRaw
-    .replace("\n", " ")
+    .split("\n")
+    .join(" ")
     .split(",")
     .map((a: string) => a.trim())
     .map(keyToPair);
