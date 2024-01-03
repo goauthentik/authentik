@@ -18,6 +18,7 @@ GAUGE_OUTPOSTS_LAST_UPDATE = Gauge(
     ["tenant", "outpost", "uid", "version"],
 )
 MANAGED_OUTPOST = "goauthentik.io/outposts/embedded"
+MANAGED_OUTPOST_NAME = "authentik Embedded Outpost"
 
 
 class AuthentikOutpostConfig(ManagedAppConfig):
@@ -38,15 +39,18 @@ class AuthentikOutpostConfig(ManagedAppConfig):
             DockerServiceConnection,
             KubernetesServiceConnection,
             Outpost,
-            OutpostConfig,
             OutpostType,
         )
 
         if not CONFIG.get_bool("outposts.disable_embedded_outpost", False):
+            if outpost := Outpost.objects.filter(name=MANAGED_OUTPOST_NAME, managed="").first():
+                outpost.managed = MANAGED_OUTPOST
+                outpost.save()
+                return
             outpost, updated = Outpost.objects.update_or_create(
                 defaults={
-                    "name": "authentik Embedded Outpost",
                     "type": OutpostType.PROXY,
+                    "name": MANAGED_OUTPOST_NAME,
                 },
                 managed=MANAGED_OUTPOST,
             )
@@ -55,12 +59,6 @@ class AuthentikOutpostConfig(ManagedAppConfig):
                     outpost.service_connection = KubernetesServiceConnection.objects.first()
                 elif DockerServiceConnection.objects.exists():
                     outpost.service_connection = DockerServiceConnection.objects.first()
-                outpost.config = OutpostConfig(
-                    kubernetes_disabled_components=[
-                        "deployment",
-                        "secret",
-                    ]
-                )
                 outpost.save()
         else:
             Outpost.objects.filter(managed=MANAGED_OUTPOST).delete()

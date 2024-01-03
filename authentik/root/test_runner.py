@@ -38,13 +38,12 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
             "outposts.container_image_base",
             f"ghcr.io/goauthentik/dev-%(type)s:{get_docker_tag()}",
         )
-        CONFIG.set("error_reporting.sample_rate", 0)
         CONFIG.set("tenants.enabled", False)
         CONFIG.set("outposts.disable_embedded_outpost", False)
-        sentry_init(
-            environment="testing",
-            send_default_pii=True,
-        )
+        CONFIG.set("error_reporting.sample_rate", 0)
+        CONFIG.set("error_reporting.environment", "testing")
+        CONFIG.set("error_reporting.send_pii", True)
+        sentry_init()
 
     @classmethod
     def add_arguments(cls, parser: ArgumentParser):

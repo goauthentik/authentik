@@ -13,6 +13,7 @@ import (
 	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
 	"github.com/redis/go-redis/v9"
+
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/proxyv2/codecs"
@@ -40,7 +41,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 		// New default RedisStore
 		rs, err := redisstore.NewRedisStore(context.Background(), client)
 		if err != nil {
-			panic(err)
+			a.log.WithError(err).Panic("failed to connect to redis")
 		}
 
 		rs.KeyPrefix(RedisKeyPrefix)
@@ -62,7 +63,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 	// https://github.com/markbates/goth/commit/7276be0fdf719ddff753f3574ef0f967e4a5a5f7
 	// set the maxLength of the cookies stored on the disk to a larger number to prevent issues with:
 	// securecookie: the value is too long
-	// when using OpenID Connect , since this can contain a large amount of extra information in the id_token
+	// when using OpenID Connect, since this can contain a large amount of extra information in the id_token
 
 	// Note, when using the FilesystemStore only the session.ID is written to a browser cookie, so this is explicit for the storage on disk
 	cs.MaxLength(math.MaxInt)

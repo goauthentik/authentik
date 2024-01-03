@@ -1,6 +1,7 @@
 """authentik e2e testing utilities"""
 import json
 import os
+import socket
 from functools import lru_cache, wraps
 from os import environ
 from sys import stderr
@@ -44,6 +45,13 @@ def get_docker_tag() -> str:
     return f"gh-{branch_name}"
 
 
+def get_local_ip() -> str:
+    """Get the local machine's IP"""
+    hostname = socket.gethostname()
+    ip_addr = socket.gethostbyname(hostname)
+    return ip_addr
+
+
 class DockerTestCase:
     """Mixin for dealing with containers"""
 
@@ -64,6 +72,7 @@ class DockerTestCase:
 class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
     """StaticLiveServerTestCase which automatically creates a Webdriver instance"""
 
+    host = get_local_ip()
     container: Optional[Container] = None
     wait_timeout: int
     user: User

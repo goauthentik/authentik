@@ -1,8 +1,6 @@
 """test OAuth Provider flow"""
-from sys import platform
 from time import sleep
 from typing import Any, Optional
-from unittest.case import skipUnless
 
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
@@ -18,7 +16,6 @@ from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
-@skipUnless(platform.startswith("linux"), "requires local docker")
 class TestProviderOAuth2Github(SeleniumTestCase):
     """test OAuth Provider flow"""
 
@@ -32,7 +29,9 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         return {
             "image": "grafana/grafana:7.1.0",
             "detach": True,
-            "network_mode": "host",
+            "ports": {
+                "3000": "3000",
+            },
             "auto_remove": True,
             "healthcheck": Healthcheck(
                 test=["CMD", "wget", "--spider", "http://localhost:3000"],

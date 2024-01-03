@@ -31,16 +31,11 @@ func (a *Application) redeemCallback(savedState string, u *url.URL, c context.Co
 		return nil, err
 	}
 
-	// Extract the ID Token from OAuth2 token.
-	rawIDToken, ok := oauth2Token.Extra("id_token").(string)
-	if !ok {
-		return nil, fmt.Errorf("missing id_token")
-	}
-
-	a.log.WithField("id_token", rawIDToken).Trace("id_token")
+	jwt := oauth2Token.AccessToken
+	a.log.WithField("jwt", jwt).Trace("access_token")
 
 	// Parse and verify ID Token payload.
-	idToken, err := a.tokenVerifier.Verify(ctx, rawIDToken)
+	idToken, err := a.tokenVerifier.Verify(ctx, jwt)
 	if err != nil {
 		return nil, err
 	}
@@ -53,6 +48,6 @@ func (a *Application) redeemCallback(savedState string, u *url.URL, c context.Co
 	if claims.Proxy == nil {
 		claims.Proxy = &ProxyClaims{}
 	}
-	claims.RawToken = rawIDToken
+	claims.RawToken = jwt
 	return claims, nil
 }

@@ -22,6 +22,7 @@ class InterfaceView(TemplateView):
         kwargs["version_family"] = f"{LOCAL_VERSION.major}.{LOCAL_VERSION.minor}"
         kwargs["version_subdomain"] = f"version-{LOCAL_VERSION.major}-{LOCAL_VERSION.minor}"
         kwargs["build"] = get_build_hash()
+        kwargs["url_kwargs"] = self.kwargs
         return super().get_context_data(**kwargs)
 
 

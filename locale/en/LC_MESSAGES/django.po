@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-27 10:56+0000\n"
+"POT-Creation-Date: 2024-01-03 11:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -388,6 +388,45 @@ msgstr ""
 msgid "License Usage Records"
 msgstr ""
 
+#: authentik/enterprise/policy.py:18
+msgid "Enterprise required to access this feature."
+msgstr ""
+
+#: authentik/enterprise/policy.py:20
+msgid "Feature only accessible for internal users."
+msgstr ""
+
+#: authentik/enterprise/providers/rac/models.py:48
+#: authentik/stages/user_login/models.py:39
+msgid ""
+"Determines how long a session lasts. Default of 0 means that the sessions "
+"lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)"
+msgstr ""
+
+#: authentik/enterprise/providers/rac/models.py:71
+msgid "RAC Provider"
+msgstr ""
+
+#: authentik/enterprise/providers/rac/models.py:72
+msgid "RAC Providers"
+msgstr ""
+
+#: authentik/enterprise/providers/rac/models.py:99
+msgid "RAC Endpoint"
+msgstr ""
+
+#: authentik/enterprise/providers/rac/models.py:100
+msgid "RAC Endpoints"
+msgstr ""
+
+#: authentik/enterprise/providers/rac/models.py:121
+msgid "RAC Property Mapping"
+msgstr ""
+
+#: authentik/enterprise/providers/rac/models.py:122
+msgid "RAC Property Mappings"
+msgstr ""
+
 #: authentik/events/models.py:289
 msgid "Event"
 msgstr ""
@@ -490,7 +529,7 @@ msgstr ""
 msgid "Webhook Mappings"
 msgstr ""
 
-#: authentik/events/monitored_tasks.py:205
+#: authentik/events/monitored_tasks.py:207
 msgid "Task has not been run yet."
 msgstr ""
 
@@ -669,75 +708,75 @@ msgstr ""
 msgid "Invalid kubeconfig"
 msgstr ""
 
-#: authentik/outposts/models.py:122
+#: authentik/outposts/models.py:123
 msgid ""
 "If enabled, use the local connection. Required Docker socket/Kubernetes "
 "Integration"
 msgstr ""
 
-#: authentik/outposts/models.py:152
+#: authentik/outposts/models.py:153
 msgid "Outpost Service-Connection"
 msgstr ""
 
-#: authentik/outposts/models.py:153
+#: authentik/outposts/models.py:154
 msgid "Outpost Service-Connections"
 msgstr ""
 
-#: authentik/outposts/models.py:161
+#: authentik/outposts/models.py:162
 msgid ""
 "Can be in the format of 'unix://<path>' when connecting to a local docker "
 "daemon, or 'https://<hostname>:2376' when connecting to a remote system."
 msgstr ""
 
-#: authentik/outposts/models.py:173
+#: authentik/outposts/models.py:174
 msgid ""
 "CA which the endpoint's Certificate is verified against. Can be left empty "
 "for no validation."
 msgstr ""
 
-#: authentik/outposts/models.py:185
+#: authentik/outposts/models.py:186
 msgid ""
 "Certificate/Key used for authentication. Can be left empty for no "
 "authentication."
 msgstr ""
 
-#: authentik/outposts/models.py:203
+#: authentik/outposts/models.py:204
 msgid "Docker Service-Connection"
 msgstr ""
 
-#: authentik/outposts/models.py:204
+#: authentik/outposts/models.py:205
 msgid "Docker Service-Connections"
 msgstr ""
 
-#: authentik/outposts/models.py:212
+#: authentik/outposts/models.py:213
 msgid ""
 "Paste your kubeconfig here. authentik will automatically use the currently "
 "selected context."
 msgstr ""
 
-#: authentik/outposts/models.py:218
+#: authentik/outposts/models.py:219
 msgid "Verify SSL Certificates of the Kubernetes API endpoint"
 msgstr ""
 
-#: authentik/outposts/models.py:235
+#: authentik/outposts/models.py:236
 msgid "Kubernetes Service-Connection"
 msgstr ""
 
-#: authentik/outposts/models.py:236
+#: authentik/outposts/models.py:237
 msgid "Kubernetes Service-Connections"
 msgstr ""
 
-#: authentik/outposts/models.py:252
+#: authentik/outposts/models.py:253
 msgid ""
 "Select Service-Connection authentik should use to manage this outpost. Leave "
 "empty if authentik should not handle the deployment."
 msgstr ""
 
-#: authentik/outposts/models.py:419
+#: authentik/outposts/models.py:420
 msgid "Outpost"
 msgstr ""
 
-#: authentik/outposts/models.py:420
+#: authentik/outposts/models.py:421
 msgid "Outposts"
 msgstr ""
 
@@ -1591,11 +1630,11 @@ msgstr ""
 msgid "Can edit system settings"
 msgstr ""
 
-#: authentik/recovery/management/commands/create_admin_group.py:11
+#: authentik/recovery/management/commands/create_admin_group.py:12
 msgid "Create admin group if the default group gets deleted."
 msgstr ""
 
-#: authentik/recovery/management/commands/create_recovery_key.py:17
+#: authentik/recovery/management/commands/create_recovery_key.py:16
 msgid "Create a Key which can be used to restore access to authentik."
 msgstr ""
 
@@ -2616,12 +2655,6 @@ msgstr ""
 
 #: authentik/stages/user_delete/stage.py:18
 msgid "No Pending User."
-msgstr ""
-
-#: authentik/stages/user_login/models.py:39
-msgid ""
-"Determines how long a session lasts. Default of 0 means that the sessions "
-"lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)"
 msgstr ""
 
 #: authentik/stages/user_login/models.py:47

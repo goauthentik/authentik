@@ -90,11 +90,12 @@ class OutpostModel(Model):
 
 
 class OutpostType(models.TextChoices):
-    """Outpost types, currently only the reverse proxy is available"""
+    """Outpost types"""
 
     PROXY = "proxy"
     LDAP = "ldap"
     RADIUS = "radius"
+    RAC = "rac"
 
 
 def default_outpost_config(host: Optional[str] = None):
@@ -459,7 +460,7 @@ class OutpostState:
     def for_instance_uid(outpost: Outpost, uid: str) -> "OutpostState":
         """Get state for a single instance"""
         key = f"{outpost.state_cache_prefix}/{uid}"
-        default_data = {"uid": uid, "channel_ids": []}
+        default_data = {"uid": uid}
         data = cache.get(key, default_data)
         if isinstance(data, str):
             cache.delete(key)

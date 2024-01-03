@@ -111,6 +111,7 @@ const docsSidebar = {
                     items: ["providers/ldap/generic_setup"],
                 },
                 "providers/scim/index",
+                "providers/rac/index",
             ],
         },
         {

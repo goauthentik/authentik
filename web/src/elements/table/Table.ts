@@ -27,6 +27,11 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { Pagination, ResponseError } from "@goauthentik/api";
 
+export interface TableLike {
+    order?: string;
+    fetch: () => void;
+}
+
 export class TableColumn {
     title: string;
     orderBy?: string;
@@ -38,7 +43,7 @@ export class TableColumn {
         this.orderBy = orderBy;
     }
 
-    headerClickHandler(table: Table<unknown>): void {
+    headerClickHandler(table: TableLike): void {
         if (!this.orderBy) {
             return;
         }
@@ -46,7 +51,7 @@ export class TableColumn {
         table.fetch();
     }
 
-    private getSortIndicator(table: Table<unknown>): string {
+    private getSortIndicator(table: TableLike): string {
         switch (table.order) {
             case this.orderBy:
                 return "fa-long-arrow-alt-down";
@@ -57,7 +62,7 @@ export class TableColumn {
         }
     }
 
-    renderSortable(table: Table<unknown>): TemplateResult {
+    renderSortable(table: TableLike): TemplateResult {
         return html` <button
             class="pf-c-table__button"
             @click=${() => this.headerClickHandler(table)}
@@ -71,7 +76,7 @@ export class TableColumn {
         </button>`;
     }
 
-    render(table: Table<unknown>): TemplateResult {
+    render(table: TableLike): TemplateResult {
         const classes = {
             "pf-c-table__sort": !!this.orderBy,
             "pf-m-selected": table.order === this.orderBy || table.order === `-${this.orderBy}`,
@@ -89,7 +94,7 @@ export interface PaginatedResponse<T> {
     results: Array<T>;
 }
 
-export abstract class Table<T> extends AKElement {
+export abstract class Table<T> extends AKElement implements TableLike {
     abstract apiEndpoint(page: number): Promise<PaginatedResponse<T>>;
     abstract columns(): TableColumn[];
     abstract row(item: T): TemplateResult[];
@@ -122,6 +127,12 @@ export abstract class Table<T> extends AKElement {
 
     @property({ type: Boolean })
     checkbox = false;
+
+    @property({ type: Boolean })
+    clickable = false;
+
+    @property({ attribute: false })
+    clickHandler: (item: T) => void = () => {};
 
     @property({ type: Boolean })
     radioSelect = false;
@@ -356,8 +367,12 @@ export abstract class Table<T> extends AKElement {
             return html`<tbody role="rowgroup" class="${classMap(expandedClass)}">
                 <tr
                     role="row"
-                    class="${this.checkbox ? "pf-m-hoverable" : ""}"
-                    @click=${itemSelectHandler}
+                    class="${this.checkbox || this.clickable ? "pf-m-hoverable" : ""}"
+                    @click=${this.clickable
+                        ? () => {
+                              this.clickHandler(item);
+                          }
+                        : itemSelectHandler}
                 >
                     ${this.checkbox ? renderCheckbox() : html``}
                     ${this.expandable ? renderExpansion() : html``}

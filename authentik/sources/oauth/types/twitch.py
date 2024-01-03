@@ -49,8 +49,8 @@ class TwitchType(SourceType):
 
     callback_view = TwitchOAuth2Callback
     redirect_view = TwitchOAuthRedirect
-    name = "Twitch"
-    slug = "twitch"
+    verbose_name = "Twitch"
+    name = "twitch"
 
     authorization_url = "https://id.twitch.tv/oauth2/authorize"
     access_token_url = "https://id.twitch.tv/oauth2/token"  # nosec

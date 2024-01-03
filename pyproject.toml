@@ -149,7 +149,12 @@ geoip2 = "*"
 gunicorn = "*"
 kubernetes = "*"
 ldap3 = "*"
-lxml = "*"
+lxml = [
+    # 5.0.0 works with libxml2 2.11.x, which is standard on brew
+    { version = "5.0.0", platform = "darwin" },
+    # 4.9.x works with previous libxml2 versions, which is what we get on linux
+    { version = "4.9.4", platform = "linux" },
+]
 opencontainers = { extras = ["reggie"], version = "*" }
 packaging = "*"
 paramiko = "*"

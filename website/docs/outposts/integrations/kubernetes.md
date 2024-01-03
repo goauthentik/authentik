@@ -2,7 +2,7 @@
 title: Kubernetes
 ---
 
-The kubernetes integration with automatically deploy outposts on any Kubernetes Cluster.
+The kubernetes integration will automatically deploy outposts on any Kubernetes Cluster.
 
 This integration has the advantage over manual deployments of automatic updates (whenever authentik is updated, it updates the outposts), and authentik can (in a future version) automatically rotate the token that the outpost uses to communicate with the core authentik server.
 

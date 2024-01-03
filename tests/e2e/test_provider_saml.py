@@ -1,8 +1,6 @@
 """test SAML Provider flow"""
 from json import loads
-from sys import platform
 from time import sleep
-from unittest.case import skipUnless
 
 from docker import DockerClient, from_env
 from docker.models.containers import Container
@@ -20,7 +18,6 @@ from authentik.sources.saml.processors.constants import SAML_BINDING_POST
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
-@skipUnless(platform.startswith("linux"), "requires local docker")
 class TestProviderSAML(SeleniumTestCase):
     """test SAML Provider flow"""
 
@@ -41,7 +38,9 @@ class TestProviderSAML(SeleniumTestCase):
         container = client.containers.run(
             image="ghcr.io/beryju/saml-test-sp:1.1",
             detach=True,
-            network_mode="host",
+            ports={
+                "9009": "9009",
+            },
             environment={
                 "SP_ENTITY_ID": provider.issuer,
                 "SP_SSO_BINDING": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
