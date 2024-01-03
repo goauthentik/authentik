@@ -47,16 +47,16 @@ class MobileDeviceSerializer(DeviceSerializer):
         depth = 2
 
 
-class MobileDeviceCheckInSerializer(PassiveSerializer):
-    """Check info into authentik"""
-
-    info = MobileDeviceInfoSerializer()
-
-
 class MobileDeviceSetPushKeySerializer(PassiveSerializer):
     """Set notification key"""
 
-    firebase_key = CharField(required=True)
+    firebase_key = CharField(required=False)
+
+
+class MobileDeviceCheckInSerializer(MobileDeviceSetPushKeySerializer):
+    """Check info into authentik"""
+
+    info = MobileDeviceInfoSerializer()
 
 
 class MobileDeviceEnrollmentSerializer(MobileDeviceSetPushKeySerializer):
@@ -128,6 +128,7 @@ class MobileDeviceViewSet(
         new_token = MobileDeviceToken.objects.create(
             device=device,
             user=device.user,
+            expiring=False,
         )
         return Response(
             data={
@@ -166,28 +167,6 @@ class MobileDeviceViewSet(
     @extend_schema(
         responses={
             204: OpenApiResponse(description="Key successfully set"),
-        },
-        request=MobileDeviceSetPushKeySerializer,
-    )
-    @action(
-        methods=["POST"],
-        detail=True,
-        permission_classes=[],
-        filter_backends=[],
-        authentication_classes=[MobileDeviceTokenAuthentication],
-    )
-    def set_notification_key(self, request: Request, pk: str) -> Response:
-        """Called by the phone whenever the firebase key changes and we need to update it"""
-        device: MobileDevice = self.get_object()
-        data = MobileDeviceSetPushKeySerializer(data=request.data)
-        data.is_valid(raise_exception=True)
-        device.firebase_token = data.validated_data["firebase_key"]
-        device.save()
-        return Response(status=204)
-
-    @extend_schema(
-        responses={
-            204: OpenApiResponse(description="Key successfully set"),
             404: OpenApiResponse(description="Transaction not found"),
         },
         request=MobileDeviceResponseSerializer,
@@ -214,7 +193,7 @@ class MobileDeviceViewSet(
         responses={
             204: OpenApiResponse(description="Checked in"),
         },
-        request=MobileDeviceInfoSerializer,
+        request=MobileDeviceCheckInSerializer,
     )
     @action(
         methods=["POST"],
@@ -225,11 +204,12 @@ class MobileDeviceViewSet(
     )
     def check_in(self, request: Request, pk: str) -> Response:
         """Check in data about a device"""
-        data = MobileDeviceInfoSerializer(data=request.data)
+        data = MobileDeviceCheckInSerializer(data=request.data)
         data.is_valid(raise_exception=True)
         device: MobileDevice = self.get_object()
         device.last_checkin = now()
-        device.state = data.validated_data
+        device.state = data.validated_data["info"]
+        device.firebase_token = data.validated_data["firebase_key"]
         device.save()
         return Response(status=204)
 
