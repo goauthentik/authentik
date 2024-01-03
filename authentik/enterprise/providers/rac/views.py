@@ -5,6 +5,7 @@ from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.timezone import now
+from django.utils.translation import gettext as _
 
 from authentik.core.models import Application, AuthenticatedSession
 from authentik.core.views.interface import InterfaceView
@@ -79,35 +80,50 @@ class RACInterface(InterfaceView):
 class RACFinalStage(RedirectStage):
     """RAC Connection final stage, set the connection token in the stage"""
 
+    endpoint: Endpoint
+    provider: RACProvider
+    application: Application
+
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        endpoint: Endpoint = self.executor.current_stage.endpoint
-        engine = PolicyEngine(endpoint, self.request.user, self.request)
+        self.endpoint = self.executor.current_stage.endpoint
+        self.provider = self.executor.current_stage.provider
+        self.application = self.executor.current_stage.application
+        # Check policies bound to endpoint directly
+        engine = PolicyEngine(self.endpoint, self.request.user, self.request)
         engine.use_cache = False
         engine.build()
         passing = engine.result
         if not passing.passing:
             return self.executor.stage_invalid(", ".join(passing.messages))
+        # Check if we're already at the maximum connection limit
+        all_tokens = ConnectionToken.filter_not_expired(
+            endpoint=self.endpoint,
+        ).exclude(maximum_connections__lte=-1)
+        if all_tokens.count() >= self.endpoint.maximum_connections:
+            msg = [_("Maximum connection limit reached.")]
+            # Check if any other tokens exist for the current user, and inform them
+            # they are already connected
+            if all_tokens.filter(session__user=self.request.user).exists():
+                msg.append(_("(You are already connected in another tab/window)"))
+            return self.executor.stage_invalid(" ".join(msg))
         return super().dispatch(request, *args, **kwargs)
 
     def get_challenge(self, *args, **kwargs) -> RedirectChallenge:
-        endpoint: Endpoint = self.executor.current_stage.endpoint
-        provider: RACProvider = self.executor.current_stage.provider
-        application: Application = self.executor.current_stage.application
         token = ConnectionToken.objects.create(
-            provider=provider,
-            endpoint=endpoint,
+            provider=self.provider,
+            endpoint=self.endpoint,
             settings=self.executor.plan.context.get("connection_settings", {}),
             session=AuthenticatedSession.objects.filter(
                 session_key=self.request.session.session_key
             ).first(),
-            expires=now() + timedelta_from_string(provider.connection_expiry),
+            expires=now() + timedelta_from_string(self.provider.connection_expiry),
             expiring=True,
         )
         Event.new(
             EventAction.AUTHORIZE_APPLICATION,
-            authorized_application=application,
+            authorized_application=self.application,
             flow=self.executor.plan.flow_pk,
-            endpoint=endpoint.name,
+            endpoint=self.endpoint.name,
         ).from_http(self.request)
         setattr(
             self.executor.current_stage,

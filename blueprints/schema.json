@@ -8958,6 +8958,12 @@
                         "prompt"
                     ],
                     "title": "Auth mode"
+                },
+                "maximum_connections": {
+                    "type": "integer",
+                    "minimum": -2147483648,
+                    "maximum": 2147483647,
+                    "title": "Maximum connections"
                 }
             },
             "required": []
