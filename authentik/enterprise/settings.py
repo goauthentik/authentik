@@ -11,6 +11,6 @@ CELERY_BEAT_SCHEDULE = {
     }
 }
 
-INSTALLED_APPS = [
+TENANT_APPS = [
     "authentik.enterprise.providers.rac",
 ]
