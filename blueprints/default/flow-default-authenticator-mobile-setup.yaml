@@ -1,0 +1,25 @@
+version: 1
+metadata:
+  name: Default - Mobile MFA setup flow
+entries:
+- attrs:
+    designation: stage_configuration
+    name: default-authenticator-mobile-setup
+    title: Setup Mobile authentication
+    authentication: require_authenticated
+  identifiers:
+    slug: default-authenticator-mobile-setup
+  model: authentik_flows.flow
+  id: flow
+- attrs:
+    configure_flow: !KeyOf flow
+    cgw_endpoint: prod-eu-central-1.cgw.a7k.io
+  identifiers:
+    name: default-authenticator-mobile-setup
+  id: default-authenticator-mobile-setup
+  model: authentik_stages_authenticator_mobile.authenticatormobilestage
+- identifiers:
+    order: 0
+    stage: !KeyOf default-authenticator-mobile-setup
+    target: !KeyOf flow
+  model: authentik_flows.flowstagebinding
