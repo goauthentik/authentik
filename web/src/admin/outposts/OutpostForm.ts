@@ -110,7 +110,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
 
     async load(): Promise<void> {
         this.defaultConfig = await new OutpostsApi(
-            DEFAULT_CONFIG
+            DEFAULT_CONFIG,
         ).outpostsInstancesDefaultSettingsRetrieve();
         this.providers = providerProvider(this.type);
     }
@@ -188,7 +188,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                             args.search = query;
                         }
                         const items = await new OutpostsApi(
-                            DEFAULT_CONFIG
+                            DEFAULT_CONFIG,
                         ).outpostsServiceConnectionsAllList(args);
                         return items.results;
                     }}
@@ -213,7 +213,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 </ak-search-select>
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "Selecting an integration enables the management of the outpost by authentik."
+                        "Selecting an integration enables the management of the outpost by authentik.",
                     )}
                 </p>
                 <p class="pf-c-form__helper-text">
@@ -239,7 +239,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 <ak-codemirror
                     mode=${CodeMirrorMode.YAML}
                     value="${YAML.stringify(
-                        this.instance ? this.instance.config : this.defaultConfig?.config
+                        this.instance ? this.instance.config : this.defaultConfig?.config,
                     )}"
                 ></ak-codemirror>
                 <p class="pf-c-form__helper-text">

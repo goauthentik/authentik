@@ -64,7 +64,7 @@ export class AkDualSelectControls extends CustomEmitterElement(AKElement) {
     removeActive = false;
 
     /* Set to true if *all* the currently visible elements can be moved
-     * into the selected list (essentially, if any visible elemnets are
+     * into the selected list (essentially, if any visible elements are
      * not currently selected
      */
     @property({ attribute: "add-all-active", type: Boolean })
@@ -125,7 +125,7 @@ export class AkDualSelectControls extends CustomEmitterElement(AKElement) {
                     msg("Add"),
                     EVENT_ADD_SELECTED,
                     this.addActive,
-                    "fa-angle-right"
+                    "fa-angle-right",
                 )}
                 ${this.selectAll
                     ? html`
@@ -133,13 +133,13 @@ export class AkDualSelectControls extends CustomEmitterElement(AKElement) {
                               msg("Add All Available"),
                               EVENT_ADD_ALL,
                               this.addAllActive,
-                              "fa-angle-double-right"
+                              "fa-angle-double-right",
                           )}
                           ${this.renderButton(
                               msg("Remove All Available"),
                               EVENT_REMOVE_ALL,
                               this.removeAllActive,
-                              "fa-angle-double-left"
+                              "fa-angle-double-left",
                           )}
                       `
                     : nothing}
@@ -147,14 +147,14 @@ export class AkDualSelectControls extends CustomEmitterElement(AKElement) {
                     msg("Remove"),
                     EVENT_REMOVE_SELECTED,
                     this.removeActive,
-                    "fa-angle-left"
+                    "fa-angle-left",
                 )}
                 ${this.deleteAll
                     ? html`${this.renderButton(
                           msg("Remove All"),
                           EVENT_DELETE_ALL,
                           this.enableDeleteAll,
-                          "fa-times"
+                          "fa-times",
                       )}`
                     : nothing}
             </div>

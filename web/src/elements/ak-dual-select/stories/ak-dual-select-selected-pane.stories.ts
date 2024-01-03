@@ -5,8 +5,8 @@ import { slug } from "github-slugger";
 import { TemplateResult, html } from "lit";
 
 import "../components/ak-dual-select-selected-pane";
-import "./sb-host-provider";
 import { AkDualSelectSelectedPane } from "../components/ak-dual-select-selected-pane";
+import "./sb-host-provider";
 
 const metadata: Meta<AkDualSelectSelectedPane> = {
     title: "Elements / Dual Select / Selected Items Pane",
@@ -19,6 +19,7 @@ const metadata: Meta<AkDualSelectSelectedPane> = {
         },
     },
     argTypes: {
+        // @ts-ignore
         options: {
             type: "string",
             description: "An array of [key, label] pairs of what to show",
@@ -42,10 +43,8 @@ const container = (testItem: TemplateResult) =>
                 margin-top: 1em;
             }
         </style>
-<ak-message-container></ak-message-container>
-<sb-dual-select-host-provider>
-        ${testItem}
-</sb-dual-select-host-provider>
+        <ak-message-container></ak-message-container>
+        <sb-dual-select-host-provider> ${testItem} </sb-dual-select-host-provider>
         <p>Messages received from the button:</p>
         <ul id="action-button-message-pad" style="margin-top: 1em"></ul>
     </div>`;

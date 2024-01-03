@@ -5,7 +5,7 @@ import {
 } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg, str } from "@lit/localize";
-import { PropertyValues, TemplateResult, css, html, nothing } from "lit";
+import { PropertyValues, TemplateResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 import type { Ref } from "lit/directives/ref.js";
@@ -36,19 +36,14 @@ type PairValue = string | TemplateResult;
 type Pair = [string, PairValue];
 const alphaSort = ([_k1, v1]: Pair, [_k2, v2]: Pair) => (v1 < v2 ? -1 : v1 > v2 ? 1 : 0);
 
-const styles = [
-    PFBase,
-    PFButton,
-    globalVariables,
-    mainStyles,
-];
+const styles = [PFBase, PFButton, globalVariables, mainStyles];
 
 /**
  * @element ak-dual-select
  *
  * A master (but independent) component that shows two lists-- one of "available options" and one of
  * "selected options".  The Available Options panel supports pagination if it receives a valid and
- * active pagination object (based on Django's pagination object) from the invoking component.  
+ * active pagination object (based on Django's pagination object) from the invoking component.
  *
  * @fires ak-dual-select-change - A custom change event with the current `selected` list.
  */
@@ -153,7 +148,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
 
             default:
                 throw new Error(
-                    `AkDualSelect.handleMove received unknown event type: ${eventName}`
+                    `AkDualSelect.handleMove received unknown event type: ${eventName}`,
                 );
         }
         this.dispatchCustomEvent("ak-dual-select-change", { value: this.value });

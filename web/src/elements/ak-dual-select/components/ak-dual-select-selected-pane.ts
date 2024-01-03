@@ -1,18 +1,18 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
-import { css, html } from "lit";
+import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { map } from "lit/directives/map.js";
 
+import { listStyles, selectedPaneStyles } from "./styles.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDualListSelector from "@patternfly/patternfly/components/DualListSelector/dual-list-selector.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { EVENT_REMOVE_ONE } from "../constants";
 import type { DualSelectPair } from "../types";
-import { listStyles, selectedPaneStyles } from "./styles.css";
 
 const styles = [PFBase, PFButton, PFDualListSelector, listStyles, selectedPaneStyles];
 
@@ -31,7 +31,7 @@ const hostAttributes = [
  * @fires ak-dual-select-selected-move-changed - When the list of "to move" entries changed.
  * Includes the current * `toMove` content.
  *
- * @fires ak-dual-select-remove-one - Doubleclick with the element clicked on.
+ * @fires ak-dual-select-remove-one - Double-click with the element clicked on.
  *
  * It is not expected that the `ak-dual-select-selected-move-changed` will be used; instead, the
  * attribute will be read by the parent when a control is clicked.
@@ -79,7 +79,7 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement(AKElement) {
         }
         this.dispatchCustomEvent(
             "ak-dual-select-selected-move-changed",
-            Array.from(this.toMove.values()).sort()
+            Array.from(this.toMove.values()).sort(),
         );
         this.dispatchCustomEvent("ak-dual-select-move");
         // Necessary because updating a map won't trigger a state change

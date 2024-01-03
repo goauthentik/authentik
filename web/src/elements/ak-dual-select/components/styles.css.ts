@@ -126,34 +126,32 @@ export const mainStyles = css`
 `;
 
 export const listStyles = css`
-        :host {
-            display: block;
-            overflow: hidden;
-            max-width: 100%;
-        }
+    :host {
+        display: block;
+        overflow: hidden;
+        max-width: 100%;
+    }
 
-        .pf-c-dual-list-selector__menu {
-            max-width: 100%;
-            height: 100%;
-        }
+    .pf-c-dual-list-selector__menu {
+        max-width: 100%;
+        height: 100%;
+    }
 
-        .pf-c-dual-list-selector__list {
-            max-width: 100%;
-            display: block;
-        }
+    .pf-c-dual-list-selector__list {
+        max-width: 100%;
+        display: block;
+    }
 
-        .pf-c-dual-list-selector__item {
-            padding: 0.25rem;
-            width: auto;
-        }
+    .pf-c-dual-list-selector__item {
+        padding: 0.25rem;
+        width: auto;
+    }
 
-        .pf-c-dual-list-selector__item-text {
-            user-select: none;
-            flex-grow: 0;
-        }
-
+    .pf-c-dual-list-selector__item-text {
+        user-select: none;
+        flex-grow: 0;
+    }
 `;
-
 
 export const selectedPaneStyles = css`
     input[type="checkbox"][readonly] {

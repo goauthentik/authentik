@@ -1,16 +1,15 @@
 import "@goauthentik/elements/messages/MessageContainer";
-import { LitElement, TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-
 import { Meta, StoryObj } from "@storybook/web-components";
 import { slug } from "github-slugger";
 
+import { LitElement, TemplateResult, html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
-import type { DualSelectPair } from "../types";
 import { Pagination } from "@goauthentik/api";
 
 import "../ak-dual-select";
 import { AkDualSelect } from "../ak-dual-select";
+import type { DualSelectPair } from "../types";
 
 const goodForYouRaw = `
 Apple, Arrowroot, Artichoke, Arugula, Asparagus, Avocado, Bamboo, Banana, Basil, Beet Root,
@@ -25,8 +24,8 @@ Rosemary, Rutabaga, Shallot, Soybeans, Spinach, Squash, Strawberries, Sweet pota
 Thyme, Tomatillo, Tomato, Turnip, Waterchestnut, Watercress, Watermelon, Yams
 `;
 
-const keyToPair = (key: string): DualSelectPair => ([slug(key), key]);
-const goodForYou: DualSelectPair[]  = goodForYouRaw
+const keyToPair = (key: string): DualSelectPair => [slug(key), key];
+const goodForYou: DualSelectPair[] = goodForYouRaw
     .replace("\n", " ")
     .split(",")
     .map((a: string) => a.trim())
@@ -61,11 +60,11 @@ const metadata: Meta<AkDualSelect> = {
 export default metadata;
 
 @customElement("ak-sb-fruity")
+// @ts-ignore
 class AkSbFruity extends LitElement {
-
     @property({ type: Array })
     options: DualSelectPair[] = goodForYou;
-    
+
     @property({ attribute: "page-length", type: Number })
     pageLength = 20;
 
@@ -81,44 +80,49 @@ class AkSbFruity extends LitElement {
             endIndex: this.options.length > this.pageLength ? this.pageLength : this.options.length,
             next: this.options.length > this.pageLength ? 2 : 0,
             previous: 0,
-            totalPages: Math.ceil(this.options.length / this.pageLength)
+            totalPages: Math.ceil(this.options.length / this.pageLength),
         };
         this.onNavigation = this.onNavigation.bind(this);
-        this.addEventListener('ak-pagination-nav-to',
-                              this.onNavigation);
+        this.addEventListener("ak-pagination-nav-to", this.onNavigation);
     }
 
     onNavigation(evt: Event) {
         const current: number = (evt as CustomEvent).detail;
         const index = current - 1;
-        if ((index * this.pageLength) > this.options.length) {
-            console.warn(`Attempted to index from ${index} for options length ${this.options.length}`);
+        if (index * this.pageLength > this.options.length) {
+            console.warn(
+                `Attempted to index from ${index} for options length ${this.options.length}`,
+            );
             return;
         }
         const endCount = this.pageLength * (index + 1);
         const endIndex = Math.min(endCount, this.options.length);
-        
+
         this.page = {
             ...this.page,
             current,
             startIndex: this.pageLength * index + 1,
             endIndex,
-            next: ((index + 1) * this.pageLength > this.options.length) ? 0 : current + 1,
-            previous: index
+            next: (index + 1) * this.pageLength > this.options.length ? 0 : current + 1,
+            previous: index,
         };
     }
 
     get pageoptions() {
-        return this.options.slice(this.pageLength * (this.page.current - 1),
-                                  this.pageLength * (this.page.current));
+        return this.options.slice(
+            this.pageLength * (this.page.current - 1),
+            this.pageLength * this.page.current,
+        );
     }
 
     render() {
-        return html`<ak-dual-select .options=${this.pageoptions} .pages=${this.page}></ak-dual-select>`;
+        return html`<ak-dual-select
+            .options=${this.pageoptions}
+            .pages=${this.page}
+        ></ak-dual-select>`;
     }
 }
 
-    
 const container = (testItem: TemplateResult) =>
     html` <div style="background: #fff; padding: 2em">
         <style>
@@ -139,6 +143,7 @@ const container = (testItem: TemplateResult) =>
 const handleMoveChanged = (result: any) => {
     const target = document.querySelector("#action-button-message-pad");
     target!.innerHTML = "";
+    // @ts-ignore
     target!.append(result.detail.value.map(([k, _]) => k).join(", "));
 };
 

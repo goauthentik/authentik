@@ -26,7 +26,7 @@ import type { DataProvider, DualSelectPair } from "./types";
 @customElement("ak-dual-select-provider")
 export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
     // A function that takes a page and returns the DualSelectPair[] collection with which to update
-        // the "Available" pane.
+    // the "Available" pane.
     @property({ type: Object })
     provider!: DataProvider;
 

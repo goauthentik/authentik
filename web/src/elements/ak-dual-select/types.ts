@@ -12,6 +12,6 @@ export type BasePagination = Pick<
 export type DataProvision = {
     pagination: Pagination;
     options: DualSelectPair[];
-}
+};
 
 export type DataProvider = (page: number) => Promise<DataProvision>;

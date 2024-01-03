@@ -5,8 +5,8 @@ import { slug } from "github-slugger";
 import { TemplateResult, html } from "lit";
 
 import "../components/ak-dual-select-available-pane";
-import "./sb-host-provider";
 import { AkDualSelectAvailablePane } from "../components/ak-dual-select-available-pane";
+import "./sb-host-provider";
 
 const metadata: Meta<AkDualSelectAvailablePane> = {
     title: "Elements / Dual Select / Available Items Pane",
@@ -47,9 +47,7 @@ const container = (testItem: TemplateResult) =>
             }
         </style>
         <ak-message-container></ak-message-container>
-<sb-dual-select-host-provider>
-        ${testItem}
-</sb-dual-select-host-provider>
+        <sb-dual-select-host-provider> ${testItem} </sb-dual-select-host-provider>
         <p>Messages received from the button:</p>
         <ul id="action-button-message-pad" style="margin-top: 1em"></ul>
     </div>`;
@@ -112,6 +110,6 @@ export const SomeSelected: Story = {
             html` <ak-dual-select-available-pane
                 .options=${goodForYouPairs}
                 .selected=${someSelected}
-></ak-dual-select-available-pane>`,
+            ></ak-dual-select-available-pane>`,
         ),
 };

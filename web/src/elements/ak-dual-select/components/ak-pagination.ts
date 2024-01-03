@@ -54,7 +54,7 @@ export class AkPagination extends CustomEmitterElement(AKElement) {
                           <div class="pf-c-options-menu__toggle pf-m-text pf-m-plain">
                               <span class="pf-c-options-menu__toggle-text">
                                   ${msg(
-                                      str`${this.pages?.startIndex} - ${this.pages?.endIndex} of ${this.pages?.count}`
+                                      str`${this.pages?.startIndex} - ${this.pages?.endIndex} of ${this.pages?.count}`,
                                   )}
                               </span>
                           </div>
