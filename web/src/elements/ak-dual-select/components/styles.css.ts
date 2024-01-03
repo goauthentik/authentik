@@ -86,6 +86,8 @@ export const globalVariables = css`
         --pf-c-dual-list-selector__list-item--m-disabled__item-toggle-icon--Color: var(
             --pf-global--disabled-color--200
         );
+        --pf-c-dual-list-selector--selection-desc--FontSize: var(--pf-global--FontSize--xs);
+        --pf-c-dual-list-selector--selection-desc--Color: var(--pf-global--Color--dark-200);
     }
 `;
 
@@ -151,6 +153,11 @@ export const listStyles = css`
         user-select: none;
         flex-grow: 0;
     }
+
+    .pf-c-dual-list-selector__item-text .selection-desc {
+        font-size: var(--pf-c-dual-list-selector--selection-desc--FontSize);
+        color: var(--pf-c-dual-list-selector--selection-desc--Color);
+    }
 `;
 
 export const selectedPaneStyles = css`
@@ -160,11 +167,22 @@ export const selectedPaneStyles = css`
 `;
 
 export const availablePaneStyles = css`
+    .pf-c-dual-list-selector__item-text {
+        display: grid;
+        grid-template-columns: 1fr auto;
+    }
+
+    .pf-c-dual-list-selector__item-text .pf-c-dual-list-selector__item-text-selected-indicator {
+        display: grid;
+        justify-content: center;
+        align-content: center;
+    }
+
     .pf-c-dual-list-selector__item-text i {
         display: inline-block;
-        margin-left: 0.5rem;
+        padding-left: 1rem;
         font-weight: 200;
-        color: var(--pf-global--palette--black-500);
+        color: var(--pf-c-dual-list-selector--selection-desc--Color);
         font-size: var(--pf-global--FontSize--xs);
     }
 `;

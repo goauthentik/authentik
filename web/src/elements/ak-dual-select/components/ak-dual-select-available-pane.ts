@@ -138,8 +138,11 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement(AKElement) {
                                 <span class="pf-c-dual-list-selector__item">
                                     <span class="pf-c-dual-list-selector__item-main">
                                         <span class="pf-c-dual-list-selector__item-text"
-                                            >${label}${this.selected.has(key)
-                                                ? html`<i class="fa fa-check"></i>`
+                                            ><span>${label}</span>${this.selected.has(key)
+                                                ? html`<span
+                                                      class="pf-c-dual-list-selector__item-text-selected-indicator"
+                                                      ><i class="fa fa-check"></i
+                                                  ></span>`
                                                 : nothing}</span
                                         ></span
                                     ></span

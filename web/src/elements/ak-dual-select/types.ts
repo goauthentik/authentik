@@ -2,7 +2,9 @@ import { TemplateResult } from "lit";
 
 import { Pagination } from "@goauthentik/api";
 
-export type DualSelectPair = [string, string | TemplateResult];
+// Key, Label (string or TemplateResult), (optional) string to sort by. If the sort string is
+// missing, it will use the label, which doesn't always work for TemplateResults).
+export type DualSelectPair = [string, string | TemplateResult, string?];
 
 export type BasePagination = Pick<
     Pagination,

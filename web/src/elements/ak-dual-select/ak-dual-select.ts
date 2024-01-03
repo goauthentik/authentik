@@ -5,7 +5,7 @@ import {
 } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg, str } from "@lit/localize";
-import { PropertyValues, TemplateResult, html, nothing } from "lit";
+import { PropertyValues, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 import type { Ref } from "lit/directives/ref.js";
@@ -32,9 +32,14 @@ import {
 } from "./constants";
 import type { BasePagination, DualSelectPair } from "./types";
 
-type PairValue = string | TemplateResult;
-type Pair = [string, PairValue];
-const alphaSort = ([_k1, v1]: Pair, [_k2, v2]: Pair) => (v1 < v2 ? -1 : v1 > v2 ? 1 : 0);
+function alphaSort([_k1, v1, s1]: DualSelectPair, [_k2, v2, s2]: DualSelectPair) {
+    const [l, r] = [s1 !== undefined ? s1 : v1, s2 !== undefined ? s2 : v2];
+    return l < r ? -1 : l > r ? 1 : 0;
+}
+
+function mapDualPairs(pairs: DualSelectPair[]) {
+    return new Map(pairs.map(([k, v, _]) => [k, v]));
+}
 
 const styles = [PFBase, PFButton, globalVariables, mainStyles];
 
@@ -47,6 +52,11 @@ const styles = [PFBase, PFButton, globalVariables, mainStyles];
  *
  * @fires ak-dual-select-change - A custom change event with the current `selected` list.
  */
+
+const keyfinder =
+    (key: string) =>
+    ([k]: DualSelectPair) =>
+        k === key;
 
 @customElement("ak-dual-select")
 export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKElement)) {
@@ -159,22 +169,21 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         if (this.availablePane.value!.moveable.length === 0) {
             return;
         }
-        const options = new Map(this.options);
-        const selected = new Map(this.selected);
-        this.availablePane.value!.moveable.forEach((key) => {
-            const value = options.get(key);
-            if (value) {
-                selected.set(key, value);
-            }
-        });
-        this.selected = Array.from(selected.entries()).sort();
+        this.selected = this.availablePane.value!.moveable.reduce(
+            (acc, key) => {
+                const value = this.options.find(keyfinder(key));
+                return value && !acc.find(keyfinder(value[0])) ? [...acc, value] : acc;
+            },
+            [...this.selected],
+        );
+        // This is where the information gets... lossy.  Dammit.
         this.availablePane.value!.clearMove();
     }
 
     addOne(key: string) {
-        const requested = this.options.find(([k, _]) => k === key);
-        if (requested) {
-            this.selected = Array.from(new Map([...this.selected, requested]).entries()).sort();
+        const requested = this.options.find(keyfinder(key));
+        if (requested && !this.selected.find(keyfinder(requested[0]))) {
+            this.selected = [...this.selected, requested];
         }
     }
 
@@ -182,8 +191,8 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
     // updating the list of currently visible options;
     addAllVisible() {
         // Create a new array of all current options and selected, and de-dupe.
-        const selected = new Map([...this.options, ...this.selected]);
-        this.selected = Array.from(selected.entries()).sort();
+        const selected = mapDualPairs([...this.options, ...this.selected]);
+        this.selected = Array.from(selected.entries());
         this.availablePane.value!.clearMove();
     }
 
@@ -192,18 +201,18 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
             return;
         }
         const deselected = new Set(this.selectedPane.value!.moveable);
-        this.selected = this.selected.filter(([key, _]) => !deselected.has(key));
+        this.selected = this.selected.filter(([key]) => !deselected.has(key));
         this.selectedPane.value!.clearMove();
     }
 
     removeOne(key: string) {
-        this.selected = this.selected.filter(([k, _]) => k !== key);
+        this.selected = this.selected.filter(([k]) => k !== key);
     }
 
     removeAllVisible() {
         // Remove all the items from selected that are in the *currently visible* options list
         const options = new Set(this.options.map(([k, _]) => k));
-        this.selected = this.selected.filter(([k, _]) => !options.has(k));
+        this.selected = this.selected.filter(([k]) => !options.has(k));
         this.selectedPane.value!.clearMove();
     }
 

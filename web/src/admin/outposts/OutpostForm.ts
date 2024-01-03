@@ -47,14 +47,17 @@ const providerListArgs = (page: number) => ({
     page,
 });
 
-const dualSelectPairMaker = (item: ProviderBase): DualSelectPair => [
-    `${item.pk}`,
-    `${
-        item.assignedBackchannelApplicationName
-            ? item.assignedBackchannelApplicationName
-            : item.assignedApplicationName
-    } (${item.name})`,
-];
+const dualSelectPairMaker = (item: ProviderBase): DualSelectPair => {
+    const label = item.assignedBackchannelApplicationName
+        ? item.assignedBackchannelApplicationName
+        : item.assignedApplicationName;
+    return [
+        `${item.pk}`,
+        html`<div class="selection-main">${label}</div>
+            <div class="selection-desc">${item.name}</div>`,
+        label,
+    ];
+};
 
 const provisionMaker = (results: ProviderData) => ({
     pagination: results.pagination,
