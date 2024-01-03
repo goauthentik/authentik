@@ -172,10 +172,12 @@ class MobileTransaction(ExpiringModel):
 
     def send_message(self, request: HttpRequest, **context):
         """Send mobile message"""
-        branding = request.tenant.branding_title
         domain = request.get_host()
         user: User = self.device.user
         client_ip = ClientIPMiddleware.get_client_ip(request)
+
+        context["_brand"] = request.tenant.branding_title
+        context["_user"] = user.username
 
         geo = None
         if GEOIP_CONTEXT_PROCESSOR.configured():
@@ -191,7 +193,7 @@ class MobileTransaction(ExpiringModel):
             items=self.decision_items,
             mode=self.device.stage.item_matching_mode,
             attributes=AuthenticationRequest.Attributes(
-                title=__("%(brand)s authentication request" % {"brand": branding}),
+                title=__("Authentication request"),
                 body=__(
                     "%(user)s is attempting to log in to %(domain)s"
                     % {
