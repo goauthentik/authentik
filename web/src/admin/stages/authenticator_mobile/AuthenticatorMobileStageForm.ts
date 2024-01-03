@@ -176,6 +176,7 @@ export class AuthenticatorMobileStageForm extends ModelForm<AuthenticatorMobileS
                             ? html`
                                   <ak-alert ?inline=${true}>
                                       ${msg("Hosted cloud gateways require authentik Enterprise.")}
+                                      <a href="#/enterprise/licenses">${msg("Learn more")}</a>
                                   </ak-alert>
                               `
                             : html``}
