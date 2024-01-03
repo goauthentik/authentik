@@ -156,10 +156,11 @@ export class AuthenticatorMobileStageForm extends ModelForm<AuthenticatorMobileS
                                 this.showCustomCGWInput = !hostedCGWs.has(ev.detail.value);
                             }}
                             .options=${[
-                                ...Array.from(hostedCGWs, ([endpoint, label]) => {
+                                ...Array.from(hostedCGWs, ([endpoint, label], idx) => {
                                     return {
                                         label: label,
                                         value: endpoint,
+                                        default: idx === 0,
                                     };
                                 }),
                                 {
