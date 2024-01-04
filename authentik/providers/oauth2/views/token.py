@@ -460,7 +460,7 @@ class TokenView(View):
                 op="authentik.providers.oauth2.post.response",
             ):
                 if self.params.grant_type == GRANT_TYPE_AUTHORIZATION_CODE:
-                    LOGGER.debug("Converting authorization code to refresh token")
+                    LOGGER.debug("Converting authorization code to access token")
                     return TokenResponse(self.create_code_response())
                 if self.params.grant_type == GRANT_TYPE_REFRESH_TOKEN:
                     LOGGER.debug("Refreshing refresh token")
@@ -506,7 +506,7 @@ class TokenView(View):
             "id_token": access_token.id_token.to_jwt(self.provider),
         }
 
-        if SCOPE_OFFLINE_ACCESS in self.params.scope:
+        if SCOPE_OFFLINE_ACCESS in self.params.authorization_code.scope:
             refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
             refresh_token = RefreshToken(
                 user=self.params.authorization_code.user,
