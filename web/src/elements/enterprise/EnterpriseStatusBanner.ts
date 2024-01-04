@@ -21,10 +21,8 @@ export class EnterpriseStatusBanner extends AKElement {
         return [PFBanner];
     }
 
-    firstUpdated(): void {
-        new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseSummaryRetrieve().then((b) => {
-            this.summary = b;
-        });
+    async firstUpdated(): Promise<void> {
+        this.summary = await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseSummaryRetrieve();
     }
 
     renderBanner(): TemplateResult {

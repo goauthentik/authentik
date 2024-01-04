@@ -19158,6 +19158,7 @@ paths:
           - tr
           - tt
           - udm
+          - ug
           - uk
           - ur
           - uz
@@ -42957,6 +42958,9 @@ components:
           type: string
         model_name:
           type: string
+        requires_enterprise:
+          type: boolean
+          default: false
       required:
       - component
       - description
