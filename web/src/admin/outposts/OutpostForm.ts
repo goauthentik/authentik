@@ -39,11 +39,11 @@ interface ProviderData {
 }
 
 const api = () => new ProvidersApi(DEFAULT_CONFIG);
-const providerListArgs = (page: number) => ({
+const providerListArgs = (page: number, search = "") => ({
     ordering: "name",
     applicationIsnull: false,
     pageSize: 20,
-    search: "",
+    search: search,
     page,
 });
 
@@ -64,17 +64,17 @@ const provisionMaker = (results: ProviderData) => ({
     options: results.results.map(dualSelectPairMaker),
 });
 
-const proxyListFetch = async (page: number) =>
-    provisionMaker(await api().providersProxyList(providerListArgs(page)));
+const proxyListFetch = async (page: number, search = "") =>
+    provisionMaker(await api().providersProxyList(providerListArgs(page, search)));
 
-const ldapListFetch = async (page: number) =>
-    provisionMaker(await api().providersLdapList(providerListArgs(page)));
+const ldapListFetch = async (page: number, search = "") =>
+    provisionMaker(await api().providersLdapList(providerListArgs(page, search)));
 
-const radiusListFetch = async (page: number) =>
-    provisionMaker(await api().providersRadiusList(providerListArgs(page)));
+const radiusListFetch = async (page: number, search = "") =>
+    provisionMaker(await api().providersRadiusList(providerListArgs(page, search)));
 
-const racListProvider = async (page: number) =>
-    provisionMaker(await api().providersRacList(providerListArgs(page)));
+const racListProvider = async (page: number, search = "") =>
+    provisionMaker(await api().providersRacList(providerListArgs(page, search)));
 
 function providerProvider(type: OutpostTypeEnum): DataProvider {
     switch (type) {

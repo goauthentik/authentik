@@ -234,11 +234,11 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
             case "ak-dual-list-selected-search":
                 return this.handleSelectedSearch(event.detail.value);
         }
-                
+        event.stopPropagation();
     }
 
-    handleAvailbleSearch(value: string) {
-        console.log(value);
+    handleAvailableSearch(value: string) {
+        this.dispatchCustomEvent("ak-dual-select-search", value);
     }
 
     handleSelectedSearch(value: string) {

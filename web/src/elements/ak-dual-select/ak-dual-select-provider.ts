@@ -6,6 +6,7 @@ import { PropertyValues, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 import type { Ref } from "lit/directives/ref.js";
+import { debounce } from "@goauthentik/elements/utils/debounce";
 
 import type { Pagination } from "@goauthentik/api";
 
@@ -26,8 +27,9 @@ import type { DataProvider, DualSelectPair } from "./types";
 
 @customElement("ak-dual-select-provider")
 export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
-    // A function that takes a page and returns the DualSelectPair[] collection with which to update
-    // the "Available" pane.
+    /** A function that takes a page and returns the DualSelectPair[] collection with which to update
+     * the "Available" pane.
+     */
     @property({ type: Object })
     provider!: DataProvider;
 
@@ -40,6 +42,10 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
     @property({ attribute: "selected-label" })
     selectedLabel = msg("Selected options");
 
+    /** The remote lists are debounced by definition. This is the interval for the debounce. */
+    @property({ attribute: "search-delay", type: Number })
+    searchDelay = 250;
+    
     @state()
     private options: DualSelectPair[] = [];
 
@@ -58,12 +64,14 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
     constructor() {
         super();
         setTimeout(() => this.fetch(1), 0);
-        this.onNav = this.onNav.bind(this);
-        this.onChange = this.onChange.bind(this);
         // Notify AkForElementHorizontal how to handle this thing.
         this.dataset.akControl = "true";
+        this.onNav = this.onNav.bind(this);
+        this.onChange = this.onChange.bind(this);
+        this.onSearch = this.onSearch.bind(this);
         this.addCustomListener("ak-pagination-nav-to", this.onNav);
         this.addCustomListener("ak-dual-select-change", this.onChange);
+        this.addCustomListener("ak-dual-select-search", this.onSearch);
     }
 
     onNav(event: Event) {
@@ -80,7 +88,23 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
         this.selected = event.detail.value;
     }
 
+    doSearch(search: string) {
+        this.pagination = undefined;
+        this.fetch(undefined, search);
+    }
+    
+    onSearch(event: Event) {
+        if (!(event instanceof CustomEvent)) {
+            throw new Error(`Expecting a CustomEvent for change, received ${event} instead`);
+        }
+        this.doSearch(event.detail);
+    }
+
     willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("searchDelay")) {
+            this.doSearch = debounce(this.doSearch.bind(this), this.searchDelay);
+        }
+
         if (changedProperties.has("provider")) {
             this.pagination = undefined;
             if (changedProperties.get("provider")) {
@@ -91,13 +115,13 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
         }
     }
 
-    async fetch(page?: number) {
+    async fetch(page?: number, search = "") {
         if (this.isLoading) {
             return;
         }
         this.isLoading = true;
         const goto = page ?? this.pagination?.current ?? 1;
-        const data = await this.provider(goto);
+        const data = await this.provider(goto, search);
         this.pagination = data.pagination;
         this.options = data.options;
         this.isLoading = false;

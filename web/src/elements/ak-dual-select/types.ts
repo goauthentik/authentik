@@ -16,7 +16,7 @@ export type DataProvision = {
     options: DualSelectPair[];
 };
 
-export type DataProvider = (page: number) => Promise<DataProvision>;
+export type DataProvider = (page: number, search?: string) => Promise<DataProvision>;
 
 export interface SearchbarEvent extends CustomEvent {
     detail: {
