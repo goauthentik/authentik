@@ -43,7 +43,7 @@ const providerListArgs = (page: number, search = "") => ({
     ordering: "name",
     applicationIsnull: false,
     pageSize: 20,
-    search: search,
+    search: search.trim(),
     page,
 });
 
