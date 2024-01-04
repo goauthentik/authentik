@@ -98,7 +98,7 @@ class RACFinalStage(RedirectStage):
         # Check if we're already at the maximum connection limit
         all_tokens = ConnectionToken.filter_not_expired(
             endpoint=self.endpoint,
-        ).exclude(maximum_connections__lte=-1)
+        ).exclude(endpoint__maximum_connections__lte=-1)
         if all_tokens.count() >= self.endpoint.maximum_connections:
             msg = [_("Maximum connection limit reached.")]
             # Check if any other tokens exist for the current user, and inform them
