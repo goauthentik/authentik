@@ -68,7 +68,6 @@ from authentik.stages.consent.models import ConsentMode, ConsentStage
 from authentik.stages.consent.stage import (
     PLAN_CONTEXT_CONSENT_HEADER,
     PLAN_CONTEXT_CONSENT_PERMISSIONS,
-    ConsentStageView,
 )
 
 LOGGER = get_logger()
@@ -438,7 +437,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
         # OpenID clients can specify a `prompt` parameter, and if its set to consent we
         # need to inject a consent stage
         if PROMPT_CONSENT in self.params.prompt:
-            if not any(isinstance(x.stage, ConsentStageView) for x in plan.bindings):
+            if not any(isinstance(x.stage, ConsentStage) for x in plan.bindings):
                 # Plan does not have any consent stage, so we add an in-memory one
                 stage = ConsentStage(
                     name="OAuth2 Provider In-memory consent stage",
