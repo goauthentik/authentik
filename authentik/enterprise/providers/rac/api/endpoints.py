@@ -15,6 +15,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.models import Provider
+from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.providers.rac.api.providers import RACProviderSerializer
 from authentik.enterprise.providers.rac.models import Endpoint
 from authentik.policies.engine import PolicyEngine
@@ -28,7 +29,7 @@ def user_endpoint_cache_key(user_pk: str) -> str:
     return f"goauthentik.io/providers/rac/endpoint_access/{user_pk}"
 
 
-class EndpointSerializer(ModelSerializer):
+class EndpointSerializer(EnterpriseRequiredMixin, ModelSerializer):
     """Endpoint Serializer"""
 
     provider_obj = RACProviderSerializer(source="provider", read_only=True)
@@ -59,6 +60,7 @@ class EndpointSerializer(ModelSerializer):
             "property_mappings",
             "auth_mode",
             "launch_url",
+            "maximum_connections",
         ]
 
 

@@ -20,6 +20,7 @@ from authentik.core.models import (
     User,
     UserSourceConnection,
 )
+from authentik.enterprise.providers.rac.models import ConnectionToken
 from authentik.events.models import Event, EventAction, Notification
 from authentik.events.utils import model_to_dict
 from authentik.flows.models import FlowToken, Stage
@@ -54,6 +55,7 @@ IGNORED_MODELS = (
     SCIMUser,
     SCIMGroup,
     Reputation,
+    ConnectionToken,
 )
 
 

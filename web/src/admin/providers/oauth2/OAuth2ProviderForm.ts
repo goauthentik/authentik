@@ -290,9 +290,13 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                                 let selected = false;
                                 if (!provider?.propertyMappings) {
                                     selected =
-                                        scope.managed?.startsWith(
+                                        // By default select all managed scope mappings, except offline_access
+                                        (scope.managed?.startsWith(
                                             "goauthentik.io/providers/oauth2/scope-",
-                                        ) || false;
+                                        ) &&
+                                            scope.managed !==
+                                                "goauthentik.io/providers/oauth2/scope-offline_access") ||
+                                        false;
                                 } else {
                                     selected = Array.from(provider?.propertyMappings).some((su) => {
                                         return su == scope.pk;

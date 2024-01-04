@@ -8173,4 +8173,10 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s56b3d54118c34b2f">
   <source><x id="0" equiv-text="${selectedCount}"/> item(s) marked to remove.</source>
 </trans-unit>
+<trans-unit id="scc7f34824150bfb8">
+  <source>Provider require enterprise.</source>
+</trans-unit>
+<trans-unit id="s31f1afc1bfe1cb3a">
+  <source>Learn more</source>
+</trans-unit>
 </body></file></xliff>

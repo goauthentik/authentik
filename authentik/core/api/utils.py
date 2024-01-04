@@ -5,7 +5,7 @@ from django.db.models import Model
 from drf_spectacular.extensions import OpenApiSerializerFieldExtension
 from drf_spectacular.plumbing import build_basic_type
 from drf_spectacular.types import OpenApiTypes
-from rest_framework.fields import CharField, IntegerField, JSONField
+from rest_framework.fields import BooleanField, CharField, IntegerField, JSONField
 from rest_framework.serializers import Serializer, SerializerMethodField, ValidationError
 
 
@@ -74,6 +74,7 @@ class TypeCreateSerializer(PassiveSerializer):
     description = CharField(required=True)
     component = CharField(required=True)
     model_name = CharField(required=True)
+    requires_enterprise = BooleanField(default=False)
 
 
 class CacheSerializer(PassiveSerializer):

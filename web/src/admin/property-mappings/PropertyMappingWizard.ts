@@ -13,20 +13,23 @@ import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
 import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
-import { CSSResult, TemplateResult, html } from "lit";
-import { property } from "lit/decorators.js";
+import { CSSResult, TemplateResult, html, nothing } from "lit";
+import { property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { PropertymappingsApi, TypeCreate } from "@goauthentik/api";
+import { EnterpriseApi, LicenseSummary, PropertymappingsApi, TypeCreate } from "@goauthentik/api";
 
 @customElement("ak-property-mapping-wizard-initial")
 export class InitialPropertyMappingWizardPage extends WizardPage {
     @property({ attribute: false })
     mappingTypes: TypeCreate[] = [];
+
+    @property({ attribute: false })
+    enterprise?: LicenseSummary;
 
     static get styles(): CSSResult[] {
         return [PFBase, PFForm, PFButton, PFRadio];
@@ -60,11 +63,20 @@ export class InitialPropertyMappingWizardPage extends WizardPage {
                             ];
                             this.host.isValid = true;
                         }}
+                        ?disabled=${type.requiresEnterprise ? !this.enterprise?.hasLicense : false}
                     />
                     <label class="pf-c-radio__label" for=${`${type.component}-${type.modelName}`}
                         >${type.name}</label
                     >
                     <span class="pf-c-radio__description">${type.description}</span>
+                    ${type.requiresEnterprise && !this.enterprise?.hasLicense
+                        ? html`
+                              <ak-alert class="pf-c-radio__description" ?inline=${true}>
+                                  ${msg("Provider require enterprise.")}
+                                  <a href="#/enterprise/licenses">${msg("Learn more")}</a>
+                              </ak-alert>
+                          `
+                        : nothing}
                 </div>`;
             })}
         </form>`;
@@ -80,10 +92,16 @@ export class PropertyMappingWizard extends AKElement {
     @property({ attribute: false })
     mappingTypes: TypeCreate[] = [];
 
-    firstUpdated(): void {
-        new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllTypesList().then((types) => {
-            this.mappingTypes = types;
-        });
+    @state()
+    enterprise?: LicenseSummary;
+
+    async firstUpdated(): Promise<void> {
+        this.mappingTypes = await new PropertymappingsApi(
+            DEFAULT_CONFIG,
+        ).propertymappingsAllTypesList();
+        this.enterprise = await new EnterpriseApi(
+            DEFAULT_CONFIG,
+        ).enterpriseLicenseSummaryRetrieve();
     }
 
     render(): TemplateResult {

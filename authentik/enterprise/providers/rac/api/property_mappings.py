@@ -5,10 +5,11 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.propertymappings import PropertyMappingSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField
+from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.providers.rac.models import RACPropertyMapping
 
 
-class RACPropertyMappingSerializer(PropertyMappingSerializer):
+class RACPropertyMappingSerializer(EnterpriseRequiredMixin, PropertyMappingSerializer):
     """RACPropertyMapping Serializer"""
 
     static_settings = JSONDictField()

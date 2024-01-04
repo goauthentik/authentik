@@ -1,8 +1,8 @@
 """RAC app config"""
-from authentik.blueprints.apps import ManagedAppConfig
+from authentik.enterprise.apps import EnterpriseConfig
 
 
-class AuthentikEnterpriseProviderRAC(ManagedAppConfig):
+class AuthentikEnterpriseProviderRAC(EnterpriseConfig):
     """authentik enterprise rac app config"""
 
     name = "authentik.enterprise.providers.rac"
