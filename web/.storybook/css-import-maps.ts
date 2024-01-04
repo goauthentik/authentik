@@ -62,6 +62,7 @@ const cssImportMapSources = [
     'import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";',
     'import PFTable from "@patternfly/patternfly/components/Table/table.css";',
     'import PFTabs from "@patternfly/patternfly/components/Tabs/tabs.css";',
+    'import PFTextInputGroup from "@patternfly/patternfly/components/TextInputGroup/text-input-group.css";',
     'import PFTitle from "@patternfly/patternfly/components/Title/title.css";',
     'import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";',
     'import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";',

@@ -86,8 +86,12 @@ export const globalVariables = css`
         --pf-c-dual-list-selector__list-item--m-disabled__item-toggle-icon--Color: var(
             --pf-global--disabled-color--200
         );
+
+        /* Unique to authentik */
         --pf-c-dual-list-selector--selection-desc--FontSize: var(--pf-global--FontSize--xs);
         --pf-c-dual-list-selector--selection-desc--Color: var(--pf-global--Color--dark-200);
+        --pf-c-dual-list-selector__status--top-padding: var(--pf-global--spacer--xs);
+        --pf-c-dual-list-panels__gap: var(--pf-global--spacer--xs);
     }
 `;
 
@@ -104,6 +108,10 @@ export const mainStyles = css`
         font-weight: var(--pf-c-dual-list-selector__title-text--FontWeight);
     }
 
+    .pf-c-dual-list-selector__status {
+        padding-top: var(--pf-c-dual-list-selector__status--top-padding);
+    }
+
     .pf-c-dual-list-selector__status-text {
         font-size: var(--pf-c-dual-list-selector__status-text--FontSize);
         color: var(--pf-c-dual-list-selector__status-text--Color);
@@ -117,7 +125,8 @@ export const mainStyles = css`
     .ak-available-pane,
     .ak-selected-pane {
         display: grid;
-        grid-template-rows: auto auto 1fr auto;
+        grid-template-rows: auto auto auto 1fr auto;
+        gap: var(--pf-c-dual-list-panels__gap);
         max-width: 100%;
         overflow: hidden;
     }

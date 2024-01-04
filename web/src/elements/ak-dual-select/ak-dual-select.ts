@@ -6,7 +6,7 @@ import {
 
 import { msg, str } from "@lit/localize";
 import { PropertyValues, html, nothing } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 import type { Ref } from "lit/directives/ref.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
@@ -21,6 +21,7 @@ import "./components/ak-dual-select-controls";
 import "./components/ak-dual-select-selected-pane";
 import { AkDualSelectSelectedPane } from "./components/ak-dual-select-selected-pane";
 import "./components/ak-pagination";
+import "./components/ak-search-bar";
 import {
     EVENT_ADD_ALL,
     EVENT_ADD_ONE,
@@ -30,7 +31,7 @@ import {
     EVENT_REMOVE_ONE,
     EVENT_REMOVE_SELECTED,
 } from "./constants";
-import type { BasePagination, DualSelectPair } from "./types";
+import type { BasePagination, DualSelectPair, SearchbarEvent } from "./types";
 
 function alphaSort([_k1, v1, s1]: DualSelectPair, [_k2, v2, s2]: DualSelectPair) {
     const [l, r] = [s1 !== undefined ? s1 : v1, s2 !== undefined ? s2 : v2];
@@ -82,6 +83,9 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
     @property({ attribute: "selected-label" })
     selectedLabel = msg("Selected options");
 
+    @state()
+    selectedFilter: string = "";
+
     availablePane: Ref<AkDualSelectAvailablePane> = createRef();
 
     selectedPane: Ref<AkDualSelectSelectedPane> = createRef();
@@ -91,6 +95,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
     constructor() {
         super();
         this.handleMove = this.handleMove.bind(this);
+        this.handleSearch = this.handleSearch.bind(this);
         [
             EVENT_ADD_ALL,
             EVENT_ADD_SELECTED,
@@ -105,6 +110,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         this.addCustomListener("ak-dual-select-move", () => {
             this.requestUpdate();
         });
+        this.addCustomListener("ak-search", this.handleSearch);
     }
 
     get value() {
@@ -221,6 +227,25 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         this.selectedPane.value!.clearMove();
     }
 
+    handleSearch(event: SearchbarEvent) {
+        switch (event.detail.source) {
+            case "ak-dual-list-available-search":
+                return this.handleAvailableSearch(event.detail.value);
+            case "ak-dual-list-selected-search":
+                return this.handleSelectedSearch(event.detail.value);
+        }
+                
+    }
+
+    handleAvailbleSearch(value: string) {
+        console.log(value);
+    }
+
+    handleSelectedSearch(value: string) {
+        this.selectedFilter = value;
+        this.selectedPane.value!.clearMove();
+    }
+
     get canAddAll() {
         // False unless any visible option cannot be found in the selected list, so can still be
         // added.
@@ -243,9 +268,18 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
     }
 
     render() {
+        const selected = this.selectedFilter === "" ? this.selected :
+            this.selected.filter(([_k, v, s]) => {
+                const value = s !== undefined ? s : v;
+                if (typeof value !== "string") {
+                    throw new Error("Filter only works when there's a string comparator");
+                }
+                return value.toLowerCase().includes(this.selectedFilter.toLowerCase())
+            });
+        
         const availableCount = this.availablePane.value?.toMove.size ?? 0;
         const selectedCount = this.selectedPane.value?.toMove.size ?? 0;
-        const selectedTotal = this.selected.length;
+        const selectedTotal = selected.length;
         const availableStatus =
             availableCount > 0 ? msg(str`${availableCount} items marked to add.`) : "&nbsp;";
         const selectedTotalStatus = msg(str`${selectedTotal} items selected.`);
@@ -263,7 +297,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
                             </div>
                         </div>
                     </div>
-
+                    <ak-search-bar name="ak-dual-list-available-search"></ak-search-bar>
                     <div class="pf-c-dual-list-selector__status">
                         <span
                             class="pf-c-dual-list-selector__status-text"
@@ -297,7 +331,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
                             </div>
                         </div>
                     </div>
-
+                    <ak-search-bar name="ak-dual-list-selected-search"></ak-search-bar>
                     <div class="pf-c-dual-list-selector__status">
                         <span
                             class="pf-c-dual-list-selector__status-text"
@@ -308,7 +342,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
 
                     <ak-dual-select-selected-pane
                         ${ref(this.selectedPane)}
-                        .selected=${this.selected.toSorted(alphaSort)}
+                        .selected=${selected.toSorted(alphaSort)}
                     ></ak-dual-select-selected-pane>
                 </div>
             </div>
