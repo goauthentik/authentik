@@ -93,6 +93,16 @@ export const globalVariables = css`
         --pf-c-dual-list-selector__status--top-padding: var(--pf-global--spacer--xs);
         --pf-c-dual-list-panels__gap: var(--pf-global--spacer--xs);
     }
+    :host([theme="dark"]) {
+        --pf-c-dual-list-selector__menu--BorderColor: var(--ak-dark-background-lighter);
+        --pf-c-dual-list-selector__item-text--Color: var(--ak-dark-foreground);
+        --pf-c-dual-list-selector__list-item-row--BackgroundColor: var(
+            --ak-dark-background-light-ish
+        );
+        --pf-c-dual-list-selector__list-item-row--hover--BackgroundColor: var(
+            --ak-dark-background-lighter;
+        );
+    }
 `;
 
 export const mainStyles = css`

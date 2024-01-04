@@ -61,8 +61,7 @@ const metadata: Meta<AkDualSelect> = {
 export default metadata;
 
 @customElement("ak-sb-fruity")
-// @ts-ignore
-class AkSbFruity extends LitElement {
+export class AkSbFruity extends LitElement {
     @property({ type: Array })
     options: DualSelectPair[] = goodForYou;
 

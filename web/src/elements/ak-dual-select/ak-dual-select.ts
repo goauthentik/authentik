@@ -281,10 +281,10 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         const selectedCount = this.selectedPane.value?.toMove.size ?? 0;
         const selectedTotal = selected.length;
         const availableStatus =
-            availableCount > 0 ? msg(str`${availableCount} items marked to add.`) : "&nbsp;";
-        const selectedTotalStatus = msg(str`${selectedTotal} items selected.`);
+            availableCount > 0 ? msg(str`${availableCount} item(s) marked to add.`) : "&nbsp;";
+        const selectedTotalStatus = msg(str`${selectedTotal} item(s) selected.`);
         const selectedCountStatus =
-            selectedCount > 0 ? "  " + msg(str`${selectedCount} items marked to remove.`) : "";
+            selectedCount > 0 ? "  " + msg(str`${selectedCount} item(s) marked to remove.`) : "";
         const selectedStatus = `${selectedTotalStatus} ${selectedCountStatus}`;
 
         return html`

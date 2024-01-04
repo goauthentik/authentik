@@ -8214,20 +8214,20 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s886db4d476f66522">
   <source>Selected options</source>
 </trans-unit>
-<trans-unit id="s8b68948382758d57">
-  <source><x id="0" equiv-text="${availableCount}"/> items marked to add.</source>
-</trans-unit>
-<trans-unit id="s726a7342e18dc660">
-  <source><x id="0" equiv-text="${selectedTotal}"/> items selected.</source>
-</trans-unit>
-<trans-unit id="s2e92b61847f32e72">
-  <source><x id="0" equiv-text="${selectedCount}"/> items marked to remove.</source>
-</trans-unit>
 <trans-unit id="scb76a63c68b0d81f">
   <source>Available Applications</source>
 </trans-unit>
 <trans-unit id="sd176021da2ea0fe3">
   <source>Selected Applications</source>
+</trans-unit>
+<trans-unit id="sd429eba21dd59f44">
+  <source><x id="0" equiv-text="${availableCount}"/> item(s) marked to add.</source>
+</trans-unit>
+<trans-unit id="s4abfe4e0d0665fd1">
+  <source><x id="0" equiv-text="${selectedTotal}"/> item(s) selected.</source>
+</trans-unit>
+<trans-unit id="s56b3d54118c34b2f">
+  <source><x id="0" equiv-text="${selectedCount}"/> item(s) marked to remove.</source>
 </trans-unit>
     </body>
   </file>
