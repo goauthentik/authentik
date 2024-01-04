@@ -35,7 +35,7 @@ class AuthenticationMode(models.TextChoices):
 
 
 class RACProvider(Provider):
-    """Remotely access computers/servers"""
+    """Remotely access computers/servers via RDP/SSH/VNC."""
 
     settings = models.JSONField(default=dict)
     auth_mode = models.TextField(
