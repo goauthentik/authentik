@@ -107,6 +107,23 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
                 <p class="pf-c-form__helper-text">${msg("Hostname/IP to connect to.")}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
+                label=${msg("Maximum concurrent connections")}
+                name="maximumConnections"
+                ?required=${true}
+            >
+                <input
+                    type="number"
+                    value="${first(this.instance?.maximumConnections, 1)}"
+                    class="pf-c-form-control"
+                    required
+                />
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "Maximum concurrent allowed connections to this endpoint. Can be set to -1 to disable the limit.",
+                    )}
+                </p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
                 label=${msg("Property mappings")}
                 ?required=${true}
                 name="propertyMappings"

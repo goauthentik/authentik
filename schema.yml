@@ -31381,6 +31381,10 @@ components:
             Build actual launch URL (the provider itself does not have one, just
             individual endpoints)
           readOnly: true
+        maximum_connections:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
       required:
       - auth_mode
       - host
@@ -31412,6 +31416,10 @@ components:
             format: uuid
         auth_mode:
           $ref: '#/components/schemas/AuthModeEnum'
+        maximum_connections:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
       required:
       - auth_mode
       - host
@@ -37298,6 +37306,10 @@ components:
             format: uuid
         auth_mode:
           $ref: '#/components/schemas/AuthModeEnum'
+        maximum_connections:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
     PatchedEventMatcherPolicyRequest:
       type: object
       description: Event Matcher Policy Serializer

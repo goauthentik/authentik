@@ -60,6 +60,7 @@ class EndpointSerializer(EnterpriseRequiredMixin, ModelSerializer):
             "property_mappings",
             "auth_mode",
             "launch_url",
+            "maximum_connections",
         ]
 
 

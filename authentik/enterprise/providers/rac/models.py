@@ -81,6 +81,7 @@ class Endpoint(SerializerModel, PolicyBindingModel):
     settings = models.JSONField(default=dict)
     auth_mode = models.TextField(choices=AuthenticationMode.choices)
     provider = models.ForeignKey("RACProvider", on_delete=models.CASCADE)
+    maximum_connections = models.IntegerField(default=1)
 
     property_mappings = models.ManyToManyField(
         "authentik_core.PropertyMapping", default=None, blank=True
