@@ -63,8 +63,13 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement(AKElement) {
         this.onMove = this.onMove.bind(this);
     }
 
-    get moveable() {
-        return Array.from(this.toMove.values());
+    connectedCallback() {
+        super.connectedCallback();
+        hostAttributes.forEach(([attr, value]) => {
+            if (!this.hasAttribute(attr)) {
+                this.setAttribute(attr, value);
+            }
+        });
     }
 
     clearMove() {
@@ -92,13 +97,8 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement(AKElement) {
         this.requestUpdate();
     }
 
-    connectedCallback() {
-        super.connectedCallback();
-        hostAttributes.forEach(([attr, value]) => {
-            if (!this.hasAttribute(attr)) {
-                this.setAttribute(attr, value);
-            }
-        });
+    get moveable() {
+        return Array.from(this.toMove.values());
     }
 
     render() {

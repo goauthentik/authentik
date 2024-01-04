@@ -19,13 +19,17 @@ export class AkSearchbar extends CustomEmitterElement(AKElement) {
         return styles;
     }
 
-    input: Ref<HTMLInputElement> = createRef();
-
     @property({ type: String, reflect: true })
     value = "";
 
+    /**
+     * If you're using more than one search, this token can help listeners distinguishing between
+     * those searches. Lit's own helpers sometimes erase the source and current targets.
+     */
     @property({ type: String })
     name = "";
+
+    input: Ref<HTMLInputElement> = createRef();
 
     constructor() {
         super();
@@ -38,7 +42,7 @@ export class AkSearchbar extends CustomEmitterElement(AKElement) {
         }
         this.dispatchCustomEvent<SearchbarEvent>("ak-search", {
             source: this.name,
-            value: this.value
+            value: this.value,
         });
     }
 

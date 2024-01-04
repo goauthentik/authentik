@@ -113,10 +113,6 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         this.addCustomListener("ak-search", this.handleSearch);
     }
 
-    get value() {
-        return this.selected;
-    }
-
     willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("selected")) {
             this.selectedKeys = new Set(this.selected.map(([key, _]) => key));
@@ -246,6 +242,10 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         this.selectedPane.value!.clearMove();
     }
 
+    get value() {
+        return this.selected;
+    }
+
     get canAddAll() {
         // False unless any visible option cannot be found in the selected list, so can still be
         // added.
@@ -268,15 +268,17 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
     }
 
     render() {
-        const selected = this.selectedFilter === "" ? this.selected :
-            this.selected.filter(([_k, v, s]) => {
-                const value = s !== undefined ? s : v;
-                if (typeof value !== "string") {
-                    throw new Error("Filter only works when there's a string comparator");
-                }
-                return value.toLowerCase().includes(this.selectedFilter.toLowerCase())
-            });
-        
+        const selected =
+            this.selectedFilter === ""
+                ? this.selected
+                : this.selected.filter(([_k, v, s]) => {
+                      const value = s !== undefined ? s : v;
+                      if (typeof value !== "string") {
+                          throw new Error("Filter only works when there's a string comparator");
+                      }
+                      return value.toLowerCase().includes(this.selectedFilter.toLowerCase());
+                  });
+
         const availableCount = this.availablePane.value?.toMove.size ?? 0;
         const selectedCount = this.selectedPane.value?.toMove.size ?? 0;
         const selectedTotal = selected.length;

@@ -80,10 +80,6 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement(AKElement) {
         });
     }
 
-    get moveable() {
-        return Array.from(this.toMove.values());
-    }
-
     clearMove() {
         this.toMove = new Set();
     }
@@ -110,6 +106,10 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement(AKElement) {
         this.toMove.delete(key);
         this.dispatchCustomEvent(EVENT_ADD_ONE, key);
         this.requestUpdate();
+    }
+
+    get moveable() {
+        return Array.from(this.toMove.values());
     }
 
     // DO NOT use `Array.map()` instead of Lit's `map()` function. Lit's `map()` is object-aware and

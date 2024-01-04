@@ -22,5 +22,5 @@ export interface SearchbarEvent extends CustomEvent {
     detail: {
         source: string;
         value: string;
-    }
+    };
 }

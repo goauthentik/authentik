@@ -1,4 +1,5 @@
 import { AKElement } from "@goauthentik/elements/Base";
+import { debounce } from "@goauthentik/elements/utils/debounce";
 import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
@@ -6,7 +7,6 @@ import { PropertyValues, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 import type { Ref } from "lit/directives/ref.js";
-import { debounce } from "@goauthentik/elements/utils/debounce";
 
 import type { Pagination } from "@goauthentik/api";
 
@@ -45,7 +45,7 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
     /** The remote lists are debounced by definition. This is the interval for the debounce. */
     @property({ attribute: "search-delay", type: Number })
     searchDelay = 250;
-    
+
     @state()
     private options: DualSelectPair[] = [];
 
@@ -54,10 +54,6 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
     private isLoading = false;
 
     private pagination?: Pagination;
-
-    get value() {
-        return this.dualSelector.value!.selected.map(([k, _]) => k);
-    }
 
     selectedMap: WeakMap<DataProvider, DualSelectPair[]> = new WeakMap();
 
@@ -72,32 +68,6 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
         this.addCustomListener("ak-pagination-nav-to", this.onNav);
         this.addCustomListener("ak-dual-select-change", this.onChange);
         this.addCustomListener("ak-dual-select-search", this.onSearch);
-    }
-
-    onNav(event: Event) {
-        if (!(event instanceof CustomEvent)) {
-            throw new Error(`Expecting a CustomEvent for navigation, received ${event} instead`);
-        }
-        this.fetch(event.detail);
-    }
-
-    onChange(event: Event) {
-        if (!(event instanceof CustomEvent)) {
-            throw new Error(`Expecting a CustomEvent for change, received ${event} instead`);
-        }
-        this.selected = event.detail.value;
-    }
-
-    doSearch(search: string) {
-        this.pagination = undefined;
-        this.fetch(undefined, search);
-    }
-    
-    onSearch(event: Event) {
-        if (!(event instanceof CustomEvent)) {
-            throw new Error(`Expecting a CustomEvent for change, received ${event} instead`);
-        }
-        this.doSearch(event.detail);
     }
 
     willUpdate(changedProperties: PropertyValues<this>) {
@@ -125,6 +95,36 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
         this.pagination = data.pagination;
         this.options = data.options;
         this.isLoading = false;
+    }
+
+    onNav(event: Event) {
+        if (!(event instanceof CustomEvent)) {
+            throw new Error(`Expecting a CustomEvent for navigation, received ${event} instead`);
+        }
+        this.fetch(event.detail);
+    }
+
+    onChange(event: Event) {
+        if (!(event instanceof CustomEvent)) {
+            throw new Error(`Expecting a CustomEvent for change, received ${event} instead`);
+        }
+        this.selected = event.detail.value;
+    }
+
+    onSearch(event: Event) {
+        if (!(event instanceof CustomEvent)) {
+            throw new Error(`Expecting a CustomEvent for change, received ${event} instead`);
+        }
+        this.doSearch(event.detail);
+    }
+
+    doSearch(search: string) {
+        this.pagination = undefined;
+        this.fetch(undefined, search);
+    }
+
+    get value() {
+        return this.dualSelector.value!.selected.map(([k, _]) => k);
     }
 
     render() {
