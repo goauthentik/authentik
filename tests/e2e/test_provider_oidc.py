@@ -30,7 +30,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
     def setUp(self):
         self.client_id = generate_id()
         self.client_secret = generate_key()
-        self.application_slug = "test"
+        self.application_slug = generate_id()
         super().setUp()
 
     def setup_client(self) -> Container:
@@ -85,7 +85,6 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
                 ]
             )
         )
-        provider.save()
         Application.objects.create(
             name=self.application_slug,
             slug=self.application_slug,
@@ -135,7 +134,6 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
                 ]
             )
         )
-        provider.save()
         app = Application.objects.create(
             name=self.application_slug,
             slug=self.application_slug,
@@ -206,7 +204,6 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
                 ]
             )
         )
-        provider.save()
         app = Application.objects.create(
             name=self.application_slug,
             slug=self.application_slug,
@@ -278,7 +275,6 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
                 ]
             )
         )
-        provider.save()
         app = Application.objects.create(
             name=self.application_slug,
             slug=self.application_slug,
