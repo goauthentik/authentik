@@ -74,7 +74,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             slug="default-provider-authorization-implicit-consent"
         )
         provider = OAuth2Provider.objects.create(
-            name="grafana",
+            name=generate_id(),
             client_id=self.client_id,
             client_secret=self.client_secret,
             client_type=ClientTypes.CONFIDENTIAL,
@@ -82,8 +82,8 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             authorization_flow=authorization_flow,
         )
         Application.objects.create(
-            name="Grafana",
-            slug="grafana",
+            name=generate_id(),
+            slug=generate_id(),
             provider=provider,
         )
 
@@ -129,7 +129,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             slug="default-provider-authorization-explicit-consent"
         )
         provider = OAuth2Provider.objects.create(
-            name="grafana",
+            name=generate_id(),
             client_id=self.client_id,
             client_secret=self.client_secret,
             client_type=ClientTypes.CONFIDENTIAL,
@@ -137,8 +137,8 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             authorization_flow=authorization_flow,
         )
         app = Application.objects.create(
-            name="Grafana",
-            slug="grafana",
+            name=generate_id(),
+            slug=generate_id(),
             provider=provider,
         )
 
@@ -200,7 +200,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             slug="default-provider-authorization-explicit-consent"
         )
         provider = OAuth2Provider.objects.create(
-            name="grafana",
+            name=generate_id(),
             client_id=self.client_id,
             client_secret=self.client_secret,
             client_type=ClientTypes.CONFIDENTIAL,
@@ -208,8 +208,8 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             authorization_flow=authorization_flow,
         )
         app = Application.objects.create(
-            name="Grafana",
-            slug="grafana",
+            name=generate_id(),
+            slug=generate_id(),
             provider=provider,
         )
 
