@@ -7,9 +7,12 @@
         "build": "lage build",
         "lint": "lage lint",
         "localize": "lage localize",
+        "lit-analyse": "lage lit-analyse",
         "web-fix": "lage web-fix",
         "prettier": "lage prettier",
-        "precommit": "lage precommit-all"
+        "precommit": "lage precommit-all",
+        "storybook": "lage storybook",
+        "watch": "lage watch-main"
     },
     "optionalDependencies": {
         "@esbuild/darwin-arm64": "^0.19.10",
