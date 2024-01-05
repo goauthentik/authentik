@@ -109,7 +109,10 @@ class BoundSessionMiddleware(SessionMiddleware):
             self.recheck_session_geo(configured_binding_geo, last_ip, new_ip)
         # If we got to this point without any error being raised, we need to
         # update the last saved IP to the current one
-        request.session[SESSION_KEY_LAST_IP] = new_ip
+        if SESSION_KEY_BINDING_NET in request.session or SESSION_KEY_BINDING_GEO in request.session:
+            # Only set the last IP in the session if there's a binding specified
+            # (== basically requires the user to be logged in)
+            request.session[SESSION_KEY_LAST_IP] = new_ip
         AuthenticatedSession.objects.filter(session_key=request.session.session_key).update(
             last_ip=new_ip, last_user_agent=request.META.get("HTTP_USER_AGENT", "")
         )
