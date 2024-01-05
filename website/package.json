@@ -25,7 +25,7 @@
         "@mdx-js/react": "^3.0.0",
         "clsx": "^2.1.0",
         "disqus-react": "^1.1.5",
-        "postcss": "^8.4.32",
+        "postcss": "^8.4.33",
         "prism-react-renderer": "^2.3.1",
         "rapidoc": "^9.3.4",
         "react-before-after-slider-component": "^1.1.8",
