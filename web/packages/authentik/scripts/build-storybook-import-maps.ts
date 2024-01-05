@@ -30,7 +30,7 @@ function extractImportLinesFromFile(path: string) {
     return lines.filter((l) => import_re.test(l));
 }
 
-function createOneImportLine(line: string) {
+function extractOneImportLine(line: string) {
     const importMatch = import_re.exec(line);
     if (!importMatch) {
         throw new Error("How did an unmatchable line get here?");
@@ -39,7 +39,7 @@ function createOneImportLine(line: string) {
     if (!importContent) {
         throw new Error("How did an unmatchable line get here!?");
     }
-    return `'${importContent}";': '${importContent}?inline";',`;
+    return `    '${importContent}";',`;
 }
 
 const isSourceFile = /\.ts$/;
@@ -73,9 +73,19 @@ const outputFile = `
 // Sometime around 2030 or so, the Javascript community may finally get its collective act together
 // and we'll have one unified way of doing this.  I can only hope.
 
-export const cssImportMaps = {
-${importLines.map(createOneImportLine).join("\n")}
-};
+const cssImportMapsBase = [
+${importLines.map(extractOneImportLine).join("\n")}
+];
+
+type ImportMapType = Record<string, string>;
+
+export const cssImportMaps = cssImportMapsBase.reduce(
+    (acc: ImportMapType, importLine: string) => ({
+        ...acc,
+        [importLine]: importLine.replace(/.css/, ".css?inline"),
+    }),
+    {}
+);
 `;
 
 fs.writeFileSync(path.join(__dirname, "..", ".storybook", "css-import-maps.ts"), outputFile, {
