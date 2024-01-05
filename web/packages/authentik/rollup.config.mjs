@@ -4,9 +4,15 @@ import commonjs from "@rollup/plugin-commonjs";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import replace from "@rollup/plugin-replace";
 import terser from "@rollup/plugin-terser";
+import path from "path";
 import { cwd } from "process";
 import copy from "rollup-plugin-copy";
 import cssimport from "rollup-plugin-cssimport";
+import { fileURLToPath } from "url";
+
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
+const ROOT = path.join(__dirname, "../../");
+const DIST = path.join(ROOT, "dist");
 
 // https://github.com/d3/d3-interpolate/issues/58
 const IGNORED_WARNINGS = /Circular dependency(.*d3-[interpolate|selection])|(.*@lit\/localize.*)/;
@@ -15,18 +21,18 @@ const extensions = [".js", ".jsx", ".ts", ".tsx"];
 
 export const resources = [
     {
-        src: "node_modules/@patternfly/patternfly/patternfly.min.css",
-        dest: "dist/",
+        src: path.join(ROOT, "node_modules/@patternfly/patternfly/patternfly.min.css"),
+        dest: DIST,
     },
-    { src: "src/common/styles/*", dest: "dist/" },
-    { src: "src/custom.css", dest: "dist/" },
+    { src: "src/common/styles/*", dest: DIST },
+    { src: "src/custom.css", dest: DIST },
 
     {
-        src: "node_modules/@patternfly/patternfly/assets/*",
-        dest: "dist/assets/",
+        src: path.join(ROOT, "node_modules/@patternfly/patternfly/assets/*"),
+        dest: path.join(DIST, "assets/"),
     },
-    { src: "src/assets/*", dest: "dist/assets" },
-    { src: "./icons/*", dest: "dist/assets/icons" },
+    { src: "src/assets/*", dest: path.join(DIST, "assets") },
+    { src: "./icons/*", dest: path.join(DIST, "assets/icons") },
 ];
 
 // eslint-disable-next-line no-undef
@@ -97,7 +103,7 @@ export const POLY = {
     output: [
         {
             format: "iife",
-            file: "dist/poly.js",
+            file: path.join(DIST, "poly.js"),
             sourcemap: true,
         },
     ],
@@ -116,11 +122,11 @@ export const POLY = {
 
 export const standalone = ["api-browser", "loading"].map((input) => {
     return {
-        input: `./src/standalone/${input}`,
+        input: path.join("./src/standalone", input),
         output: [
             {
                 format: "es",
-                dir: `dist/standalone/${input}`,
+                dir: path.join(DIST, "standalone", input),
                 sourcemap: true,
                 manualChunks: manualChunks,
             },
@@ -131,11 +137,11 @@ export const standalone = ["api-browser", "loading"].map((input) => {
 
 export const enterprise = ["rac"].map((input) => {
     return {
-        input: `./src/enterprise/${input}`,
+        input: path.join("./src/enterprise", input),
         output: [
             {
                 format: "es",
-                dir: `dist/enterprise/${input}`,
+                dir: path.join(DIST, "enterprise", input),
                 sourcemap: true,
                 manualChunks: manualChunks,
             },
@@ -154,7 +160,7 @@ export default [
         output: [
             {
                 format: "es",
-                dir: "dist/flow",
+                dir: path.join(DIST, "flow"),
                 sourcemap: true,
                 manualChunks: manualChunks,
             },
@@ -167,7 +173,7 @@ export default [
         output: [
             {
                 format: "es",
-                dir: "dist/admin",
+                dir: path.join(DIST, "admin"),
                 sourcemap: true,
                 manualChunks: manualChunks,
             },
@@ -180,7 +186,7 @@ export default [
         output: [
             {
                 format: "es",
-                dir: "dist/user",
+                dir: path.join(DIST, "user"),
                 sourcemap: true,
                 manualChunks: manualChunks,
             },

@@ -1,0 +1,29 @@
+{
+    "name": "@goauthentik/web",
+    "version": "0.0.0",
+    "private": true,
+    "license": "MIT",
+    "scripts": {
+        "build": "lage build",
+        "lint": "lage lint",
+        "localize": "lage localize",
+        "web-fix": "lage web-fix",
+        "prettier": "lage prettier",
+        "precommit": "lage precommit-all"
+    },
+    "optionalDependencies": {
+        "@esbuild/darwin-arm64": "^0.19.10",
+        "@esbuild/linux-amd64": "^0.18.11",
+        "@esbuild/linux-arm64": "^0.19.10"
+    },
+    "dependencies": {
+        "@manypkg/cli": "^0.21.1",
+        "lage": "^2.7.9"
+    },
+    "workspaces": [
+        "packages/authentik"
+    ],
+    "engines": {
+        "node": ">=20"
+    }
+}
