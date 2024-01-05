@@ -24,7 +24,10 @@ class ExtraRoleObjectPermissionSerializer(RoleObjectPermissionSerializer):
 
     def get_app_label_verbose(self, instance: GroupObjectPermission) -> str:
         """Get app label from permission's model"""
-        return apps.get_app_config(instance.content_type.app_label).verbose_name
+        try:
+            return apps.get_app_config(instance.content_type.app_label).verbose_name
+        except LookupError:
+            return instance.content_type.app_label
 
     def get_model_verbose(self, instance: GroupObjectPermission) -> str:
         """Get model label from permission's model"""
