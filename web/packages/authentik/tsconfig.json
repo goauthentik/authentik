@@ -1,64 +1,19 @@
 {
+    "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "strict": true,
         "paths": {
-            "@goauthentik/app/*": ["src/*"],
-            "@goauthentik/admin/*": ["src/admin/*"],
-            "@goauthentik/common/*": ["src/common/*"],
-            "@goauthentik/components/*": ["src/components/*"],
-            "@goauthentik/docs/*": ["../website/docs/*"],
-            "@goauthentik/elements/*": ["src/elements/*"],
-            "@goauthentik/flow/*": ["src/flow/*"],
-            "@goauthentik/locales/*": ["src/locales/*"],
-            "@goauthentik/polyfill/*": ["src/polyfill/*"],
-            "@goauthentik/standalone/*": ["src/standalone/*"],
-            "@goauthentik/user/*": ["src/user/*"]
+            "@goauthentik/app/*": ["./src/*"],
+            "@goauthentik/admin/*": ["./src/admin/*"],
+            "@goauthentik/common/*": ["./src/common/*"],
+            "@goauthentik/components/*": ["./src/components/*"],
+            "@goauthentik/docs/*": ["../../../website/docs/*"],
+            "@goauthentik/elements/*": ["./src/elements/*"],
+            "@goauthentik/locales/*": ["./src/locales/*"],
+            "@goauthentik/flow/*": ["./src/flow/*"],
+            "@goauthentik/polyfill/*": ["./src/polyfill/*"],
+            "@goauthentik/standalone/*": ["./src/standalone/*"],
+            "@goauthentik/user/*": ["./src/user/*"]
         },
-        "baseUrl": ".",
-        "esModuleInterop": true,
-        "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true,
-        "experimentalDecorators": true,
-        "sourceMap": true,
-        "target": "esnext",
-        "module": "esnext",
-        "moduleResolution": "node",
-        "lib": [
-            "ES5",
-            "ES2015",
-            "ES2016",
-            "ES2017",
-            "ES2018",
-            "ES2019",
-            "ES2020",
-            "ESNext",
-            "DOM",
-            "DOM.Iterable",
-            "WebWorker"
-        ],
-        "noUnusedLocals": true,
-        "noImplicitReturns": true,
-        "noFallthroughCasesInSwitch": true,
-        "strictBindCallApply": true,
-        "strictFunctionTypes": true,
-        "strictNullChecks": true,
-        "allowUnreachableCode": false,
-        "allowUnusedLabels": false,
-        "useDefineForClassFields": false,
-        "alwaysStrict": true,
-        "noImplicitAny": true,
-        "plugins": [
-            {
-                "name": "ts-lit-plugin",
-                "strict": true,
-                "rules": {
-                    "no-unknown-tag-name": "off",
-                    "no-missing-import": "off",
-                    "no-incompatible-type-binding": "off",
-                    "no-unknown-property": "off",
-                    "no-unknown-attribute": "off"
-                }
-            }
-        ]
+        "baseUrl": "."
     }
 }
