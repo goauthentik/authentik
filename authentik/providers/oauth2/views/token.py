@@ -495,6 +495,7 @@ class TokenView(View):
             access_token,
             self.request,
         )
+        access_token.id_token.nonce = self.params.authorization_code.nonce
         access_token.save()
 
         response = {
