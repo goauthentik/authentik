@@ -82,7 +82,7 @@ type ImportMapType = Record<string, string>;
 export const cssImportMaps = cssImportMapsBase.reduce(
     (acc: ImportMapType, importLine: string) => ({
         ...acc,
-        [importLine]: importLine.replace(/\.css/, ".css?inline"),
+        [importLine]: importLine.replace(/\\.css/, ".css?inline"),
     }),
     {}
 );
