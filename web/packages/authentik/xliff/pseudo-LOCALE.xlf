@@ -8157,4 +8157,10 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Maximum concurrent allowed connections to this endpoint. Can be set to -1 to disable the limit.</source>
   <target>Màxĩmũm ćōńćũŕŕēńţ àĺĺōŵēď ćōńńēćţĩōńś ţō ţĥĩś ēńďƥōĩńţ. Ćàń ƀē śēţ ţō -1 ţō ďĩśàƀĺē ţĥē ĺĩmĩţ.</target>
 </trans-unit>
+<trans-unit id="sc39f6abf0daedb0f">
+  <source>Maximum concurrent connections</source>
+</trans-unit>
+<trans-unit id="s62418cbcd2a25498">
+  <source>Maximum concurrent allowed connections to this endpoint. Can be set to -1 to disable the limit.</source>
+</trans-unit>
 </body></file></xliff>
