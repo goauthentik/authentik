@@ -4,9 +4,12 @@ import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
 import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
-import { rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+import {
+    CapabilitiesEnum,
+    WithCapabilitiesConfig,
+} from "@goauthentik/elements/Interface/capabilitiesProvider";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -17,7 +20,6 @@ import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
-    CapabilitiesEnum,
     FlowsInstancesListDesignationEnum,
     OAuthSource,
     OAuthSourceRequest,
@@ -28,7 +30,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-source-oauth-form")
-export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
+export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuthSource>) {
     async loadInstance(pk: string): Promise<OAuthSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthRetrieve({
             slug: pk,
@@ -318,7 +320,7 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                 />
                 <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
             </ak-form-element-horizontal>
-            ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanSaveMedia)
+            ${this.can(CapabilitiesEnum.CanSaveMedia)
                 ? html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
                           <input type="file" value="" class="pf-c-form-control" />
                           ${this.instance?.icon
