@@ -18,8 +18,16 @@ export class Tabs extends AKElement {
     @property()
     currentPage?: string;
 
-    @property({ type: Boolean })
+    @property({ type: Boolean, reflect: true })
     vertical = false;
+
+    @property({ type: Boolean })
+    autoVertical = false;
+
+    @property({ attribute: false })
+    verticalEnabled = (): boolean => {
+        return this.vertical;
+    };
 
     static get styles(): CSSResult[] {
         return [
@@ -46,11 +54,15 @@ export class Tabs extends AKElement {
     }
 
     observer: MutationObserver;
+    resizer: ResizeObserver;
 
     constructor() {
         super();
         this.observer = new MutationObserver(() => {
             this.requestUpdate();
+        });
+        this.resizer = new ResizeObserver(() => {
+            this.vertical = this.verticalEnabled();
         });
     }
 
@@ -61,10 +73,12 @@ export class Tabs extends AKElement {
             childList: true,
             subtree: true,
         });
+        this.resizer.observe(document.body);
     }
 
     disconnectedCallback(): void {
         this.observer.disconnect();
+        this.resizer.disconnect();
         super.disconnectedCallback();
     }
 
@@ -108,7 +122,7 @@ export class Tabs extends AKElement {
             const wantedPage = pages[0].attributes.getNamedItem("slot")?.value;
             this.onClick(wantedPage);
         }
-        return html`<div class="pf-c-tabs ${this.vertical ? "pf-m-vertical pf-m-box" : ""}">
+        return html`<div class="pf-c-tabs ${this.vertical ? "pf-m-vertical" : ""}">
                 <ul class="pf-c-tabs__list">
                     ${pages.map((page) => this.renderTab(page))}
                 </ul>
