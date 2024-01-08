@@ -62,10 +62,10 @@ export const config: Options.Testrunner = {
         {
             "browserName": "chrome",
             "wdio:chromedriverOptions": {
-                "binary": "./node_modules/.bin/chromedriver",
+                binary: "./node_modules/.bin/chromedriver",
             },
             "goog:chromeOptions": {
-                "args": ["--disable-infobars", "--window-size=1280,800"].concat(
+                args: ["--disable-infobars", "--window-size=1280,800"].concat(
                     (function () {
                         return process.env.HEADLESS_CHROME === "1"
                             ? [
