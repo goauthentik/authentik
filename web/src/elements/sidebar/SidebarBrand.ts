@@ -65,6 +65,7 @@ export class SidebarBrand extends WithBrandConfig(AKElement) {
     }
 
     render(): TemplateResult {
+        console.log(this.brand);
         return html` ${window.innerWidth <= MIN_WIDTH
                 ? html`
                       <button
