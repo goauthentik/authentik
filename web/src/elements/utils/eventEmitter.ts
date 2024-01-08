@@ -9,9 +9,9 @@ export const isCustomEvent = (v: any): v is CustomEvent =>
 
 export function CustomEmitterElement<T extends Constructor<LitElement>>(superclass: T) {
     return class EmmiterElementHandler extends superclass {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         dispatchCustomEvent<F extends CustomEvent>(
             eventName: string,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             detail: any = {},
             options = {},
         ) {
