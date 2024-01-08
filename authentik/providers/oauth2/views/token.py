@@ -490,11 +490,13 @@ class TokenView(View):
             auth_time=self.params.authorization_code.auth_time,
             session_id=self.params.authorization_code.session_id,
         )
-        access_token.id_token = IDToken.new(
+        access_id_token = IDToken.new(
             self.provider,
             access_token,
             self.request,
         )
+        access_id_token.nonce = self.params.authorization_code.nonce
+        access_token.id_token = access_id_token
         access_token.save()
 
         response = {

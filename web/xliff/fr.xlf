@@ -8232,6 +8232,12 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="s31f1afc1bfe1cb3a">
   <source>Learn more</source>
 </trans-unit>
+<trans-unit id="sc39f6abf0daedb0f">
+  <source>Maximum concurrent connections</source>
+</trans-unit>
+<trans-unit id="s62418cbcd2a25498">
+  <source>Maximum concurrent allowed connections to this endpoint. Can be set to -1 to disable the limit.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>

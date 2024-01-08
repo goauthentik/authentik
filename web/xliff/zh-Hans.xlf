@@ -8230,9 +8230,17 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source><x id="0" equiv-text="${selectedCount}"/> item(s) marked to remove.</source>
 <trans-unit id="scc7f34824150bfb8">
   <source>Provider require enterprise.</source>
+  <target>提供程序需要企业版。</target>
 </trans-unit>
 <trans-unit id="s31f1afc1bfe1cb3a">
   <source>Learn more</source>
+  <target>了解更多</target>
+</trans-unit>
+<trans-unit id="sc39f6abf0daedb0f">
+  <source>Maximum concurrent connections</source>
+</trans-unit>
+<trans-unit id="s62418cbcd2a25498">
+  <source>Maximum concurrent allowed connections to this endpoint. Can be set to -1 to disable the limit.</source>
 </trans-unit>
     </body>
   </file>

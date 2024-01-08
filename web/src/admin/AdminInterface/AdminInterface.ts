@@ -7,7 +7,7 @@ import {
 import { configureSentry } from "@goauthentik/common/sentry";
 import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
-import { Interface } from "@goauthentik/elements/Base";
+import { Interface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/elements/enterprise/EnterpriseStatusBanner";
 import "@goauthentik/elements/messages/MessageContainer";
