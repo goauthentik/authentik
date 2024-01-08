@@ -124,3 +124,27 @@ html > form > input {
     margin-right: 6px;
     margin-bottom: 6px;
 }
+
+/* Flow-card adjustments for static pages */
+.pf-c-brand {
+    padding-top: calc(
+        var(--pf-c-login__main-footer-links--PaddingTop) +
+            var(--pf-c-login__main-footer-links--PaddingBottom) +
+            var(--pf-c-login__main-body--PaddingBottom)
+    );
+    max-height: 9rem;
+}
+.ak-brand {
+    display: flex;
+    justify-content: center;
+}
+.ak-brand img {
+    padding: 0 2rem;
+    max-height: inherit;
+}
+
+@media (min-height: 60rem) {
+    .pf-c-login.stacked .pf-c-login__main {
+        margin-top: 13rem;
+    }
+}

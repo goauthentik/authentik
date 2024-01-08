@@ -1,8 +1,8 @@
 import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
+import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 
@@ -23,19 +23,11 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-webauthn-form")
-export class AuthenticateWebAuthnStageForm extends ModelForm<AuthenticateWebAuthnStage, string> {
+export class AuthenticateWebAuthnStageForm extends BaseStageForm<AuthenticateWebAuthnStage> {
     loadInstance(pk: string): Promise<AuthenticateWebAuthnStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnRetrieve({
             stageUuid: pk,
         });
-    }
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated stage.");
-        } else {
-            return msg("Successfully created stage.");
-        }
     }
 
     async send(data: AuthenticateWebAuthnStage): Promise<AuthenticateWebAuthnStage> {

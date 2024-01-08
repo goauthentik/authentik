@@ -3,8 +3,8 @@ from django.test import RequestFactory, TestCase
 
 from authentik.core.models import Token, TokenIntents, UserTypes
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.lib.utils.http import OUTPOST_REMOTE_IP_HEADER, OUTPOST_TOKEN_HEADER, get_client_ip
 from authentik.lib.views import bad_request_message
+from authentik.root.middleware import ClientIPMiddleware
 
 
 class TestHTTP(TestCase):
@@ -22,12 +22,12 @@ class TestHTTP(TestCase):
     def test_normal(self):
         """Test normal request"""
         request = self.factory.get("/")
-        self.assertEqual(get_client_ip(request), "127.0.0.1")
+        self.assertEqual(ClientIPMiddleware.get_client_ip(request), "127.0.0.1")
 
     def test_forward_for(self):
         """Test x-forwarded-for request"""
         request = self.factory.get("/", HTTP_X_FORWARDED_FOR="127.0.0.2")
-        self.assertEqual(get_client_ip(request), "127.0.0.2")
+        self.assertEqual(ClientIPMiddleware.get_client_ip(request), "127.0.0.2")
 
     def test_fake_outpost(self):
         """Test faked IP which is overridden by an outpost"""
@@ -38,28 +38,28 @@ class TestHTTP(TestCase):
         request = self.factory.get(
             "/",
             **{
-                OUTPOST_REMOTE_IP_HEADER: "1.2.3.4",
-                OUTPOST_TOKEN_HEADER: "abc",
+                ClientIPMiddleware.outpost_remote_ip_header: "1.2.3.4",
+                ClientIPMiddleware.outpost_token_header: "abc",
             },
         )
-        self.assertEqual(get_client_ip(request), "127.0.0.1")
+        self.assertEqual(ClientIPMiddleware.get_client_ip(request), "127.0.0.1")
         # Invalid, user doesn't have permissions
         request = self.factory.get(
             "/",
             **{
-                OUTPOST_REMOTE_IP_HEADER: "1.2.3.4",
-                OUTPOST_TOKEN_HEADER: token.key,
+                ClientIPMiddleware.outpost_remote_ip_header: "1.2.3.4",
+                ClientIPMiddleware.outpost_token_header: token.key,
             },
         )
-        self.assertEqual(get_client_ip(request), "127.0.0.1")
+        self.assertEqual(ClientIPMiddleware.get_client_ip(request), "127.0.0.1")
         # Valid
         self.user.type = UserTypes.INTERNAL_SERVICE_ACCOUNT
         self.user.save()
         request = self.factory.get(
             "/",
             **{
-                OUTPOST_REMOTE_IP_HEADER: "1.2.3.4",
-                OUTPOST_TOKEN_HEADER: token.key,
+                ClientIPMiddleware.outpost_remote_ip_header: "1.2.3.4",
+                ClientIPMiddleware.outpost_token_header: token.key,
             },
         )
-        self.assertEqual(get_client_ip(request), "1.2.3.4")
+        self.assertEqual(ClientIPMiddleware.get_client_ip(request), "1.2.3.4")

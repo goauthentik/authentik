@@ -17,7 +17,7 @@ The following placeholders will be used:
 -   `dokuwiki.company` is the FQDN of the DokiWiki install.
 -   `authentik.company` is the FQDN of the authentik install.
 
-## Service Configuration
+## DokuWiki configuration
 
 In DokuWiki, navigate to the _Extension Manager_ section in the _Administration_ interface and install
 

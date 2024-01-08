@@ -76,7 +76,6 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	// Because we don't know the outpost UUID, we simply do a list and pick the first
 	// The service account this token belongs to should only have access to a single outpost
 	outposts, _, err := apiClient.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
-
 	if err != nil {
 		log.WithError(err).Error("Failed to fetch outpost configuration, retrying in 3 seconds")
 		time.Sleep(time.Second * 3)
@@ -160,15 +159,14 @@ func (a *APIController) AddRefreshHandler(handler func()) {
 	a.refreshHandlers = append(a.refreshHandlers, handler)
 }
 
-func (a *APIController) AddWSHandler(handler WSHandler) {
-	a.wsHandlers = append(a.wsHandlers, handler)
+func (a *APIController) Token() string {
+	return a.token
 }
 
 func (a *APIController) OnRefresh() error {
 	// Because we don't know the outpost UUID, we simply do a list and pick the first
 	// The service account this token belongs to should only have access to a single outpost
 	outposts, _, err := a.Client.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
-
 	if err != nil {
 		log.WithError(err).Error("Failed to fetch outpost configuration")
 		return err
@@ -184,7 +182,7 @@ func (a *APIController) OnRefresh() error {
 	return err
 }
 
-func (a *APIController) getWebsocketArgs() map[string]interface{} {
+func (a *APIController) getWebsocketPingArgs() map[string]interface{} {
 	args := map[string]interface{}{
 		"version":   constants.VERSION,
 		"buildHash": constants.BUILD("tagged"),

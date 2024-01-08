@@ -285,10 +285,12 @@ export class EventInfo extends AKElement {
     }
 
     renderEmailSent() {
+        let body = this.event.context.body as string;
+        body = body.replace("cid:logo.png", "/static/dist/assets/icons/icon_left_brand.png");
         return html`<div class="pf-c-card__title">${msg("Email info:")}</div>
             <div class="pf-c-card__body">${this.getEmailInfo(this.event.context)}</div>
             <ak-expand>
-                <iframe srcdoc=${this.event.context.body}></iframe>
+                <iframe srcdoc=${body}></iframe>
             </ak-expand>`;
     }
 

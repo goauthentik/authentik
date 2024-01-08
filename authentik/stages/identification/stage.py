@@ -26,8 +26,8 @@ from authentik.flows.models import FlowDesignation
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE, SESSION_KEY_GET
-from authentik.lib.utils.http import get_client_ip
 from authentik.lib.utils.urls import reverse_with_qs
+from authentik.root.middleware import ClientIPMiddleware
 from authentik.sources.oauth.types.apple import AppleLoginChallenge
 from authentik.sources.plex.models import PlexAuthenticationChallenge
 from authentik.stages.identification.models import IdentificationStage
@@ -103,7 +103,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
             self.stage.logger.info(
                 "invalid_login",
                 identifier=uid_field,
-                client_ip=get_client_ip(self.stage.request),
+                client_ip=ClientIPMiddleware.get_client_ip(self.stage.request),
                 action="invalid_identifier",
                 context={
                     "stage": sanitize_item(self.stage),

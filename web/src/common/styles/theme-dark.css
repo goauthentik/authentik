@@ -310,6 +310,12 @@ select[multiple] option:checked {
     --pf-c-wizard__nav-link--before--BackgroundColor: transparent;
 }
 /* tree view */
+.pf-c-tree-view__node {
+    --pf-c-tree-view__node--Color: var(--ak-dark-foreground);
+}
+.pf-c-tree-view__node-toggle {
+    --pf-c-tree-view__node-toggle--Color: var(--ak-dark-foreground);
+}
 .pf-c-tree-view__node:focus {
     --pf-c-tree-view__node--focus--BackgroundColor: var(--ak-dark-background-light-ish);
 }

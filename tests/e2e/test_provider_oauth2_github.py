@@ -1,8 +1,6 @@
 """test OAuth Provider flow"""
-from sys import platform
 from time import sleep
 from typing import Any, Optional
-from unittest.case import skipUnless
 
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
@@ -18,7 +16,6 @@ from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
-@skipUnless(platform.startswith("linux"), "requires local docker")
 class TestProviderOAuth2Github(SeleniumTestCase):
     """test OAuth Provider flow"""
 
@@ -32,7 +29,9 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         return {
             "image": "grafana/grafana:7.1.0",
             "detach": True,
-            "network_mode": "host",
+            "ports": {
+                "3000": "3000",
+            },
             "auto_remove": True,
             "healthcheck": Healthcheck(
                 test=["CMD", "wget", "--spider", "http://localhost:3000"],
@@ -75,7 +74,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             slug="default-provider-authorization-implicit-consent"
         )
         provider = OAuth2Provider.objects.create(
-            name="grafana",
+            name=generate_id(),
             client_id=self.client_id,
             client_secret=self.client_secret,
             client_type=ClientTypes.CONFIDENTIAL,
@@ -83,8 +82,8 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             authorization_flow=authorization_flow,
         )
         Application.objects.create(
-            name="Grafana",
-            slug="grafana",
+            name=generate_id(),
+            slug=generate_id(),
             provider=provider,
         )
 
@@ -130,7 +129,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             slug="default-provider-authorization-explicit-consent"
         )
         provider = OAuth2Provider.objects.create(
-            name="grafana",
+            name=generate_id(),
             client_id=self.client_id,
             client_secret=self.client_secret,
             client_type=ClientTypes.CONFIDENTIAL,
@@ -138,8 +137,8 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             authorization_flow=authorization_flow,
         )
         app = Application.objects.create(
-            name="Grafana",
-            slug="grafana",
+            name=generate_id(),
+            slug=generate_id(),
             provider=provider,
         )
 
@@ -201,7 +200,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             slug="default-provider-authorization-explicit-consent"
         )
         provider = OAuth2Provider.objects.create(
-            name="grafana",
+            name=generate_id(),
             client_id=self.client_id,
             client_secret=self.client_secret,
             client_type=ClientTypes.CONFIDENTIAL,
@@ -209,8 +208,8 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             authorization_flow=authorization_flow,
         )
         app = Application.objects.create(
-            name="Grafana",
-            slug="grafana",
+            name=generate_id(),
+            slug=generate_id(),
             provider=provider,
         )
 

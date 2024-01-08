@@ -8,6 +8,7 @@ from django.test import RequestFactory, TestCase
 from django.urls import reverse
 from guardian.shortcuts import get_anonymous_user
 
+from authentik.blueprints.tests import reconcile_app
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
@@ -15,9 +16,12 @@ from authentik.flows.markers import ReevaluateMarker, StageMarker
 from authentik.flows.models import FlowAuthenticationRequirement, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner, cache_key
 from authentik.lib.tests.utils import dummy_get_response
+from authentik.outposts.apps import MANAGED_OUTPOST
+from authentik.outposts.models import Outpost
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.policies.types import PolicyResult
+from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.dummy.models import DummyStage
 
 POLICY_RETURN_FALSE = PropertyMock(return_value=PolicyResult(False))
@@ -64,6 +68,34 @@ class TestFlowPlanner(TestCase):
             FlowPlanner(flow).plan(request)
 
         request.user = create_test_admin_user()
+        planner = FlowPlanner(flow)
+        planner.allow_empty_flows = True
+        planner.plan(request)
+
+    @reconcile_app("authentik_outposts")
+    def test_authentication_outpost(self):
+        """Test flow authentication (outpost)"""
+        flow = create_test_flow()
+        flow.authentication = FlowAuthenticationRequirement.REQUIRE_OUTPOST
+        request = self.request_factory.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        request.user = AnonymousUser()
+        with self.assertRaises(FlowNonApplicableException):
+            planner = FlowPlanner(flow)
+            planner.allow_empty_flows = True
+            planner.plan(request)
+
+        outpost = Outpost.objects.filter(managed=MANAGED_OUTPOST).first()
+        request = self.request_factory.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            HTTP_X_AUTHENTIK_OUTPOST_TOKEN=outpost.token.key,
+            HTTP_X_AUTHENTIK_REMOTE_IP="1.2.3.4",
+        )
+        request.user = AnonymousUser()
+        middleware = ClientIPMiddleware(dummy_get_response)
+        middleware(request)
+
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
         planner.plan(request)

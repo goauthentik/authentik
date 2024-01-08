@@ -9,16 +9,17 @@ from rest_framework.fields import BooleanField, CharField, DateTimeField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import JSONField, ModelSerializer, ValidationError
+from rest_framework.serializers import ModelSerializer, ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik import get_build_hash
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import PassiveSerializer, is_dict
+from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Provider
+from authentik.enterprise.providers.rac.models import RACProvider
 from authentik.outposts.api.service_connections import ServiceConnectionSerializer
-from authentik.outposts.apps import MANAGED_OUTPOST
+from authentik.outposts.apps import MANAGED_OUTPOST, MANAGED_OUTPOST_NAME
 from authentik.outposts.models import (
     Outpost,
     OutpostConfig,
@@ -34,7 +35,7 @@ from authentik.providers.radius.models import RadiusProvider
 class OutpostSerializer(ModelSerializer):
     """Outpost Serializer"""
 
-    config = JSONField(validators=[is_dict], source="_config")
+    config = JSONDictField(source="_config")
     # Need to set allow_empty=True for the embedded outpost with no providers
     # is checked for other providers in the API Viewset
     providers = PrimaryKeyRelatedField(
@@ -47,12 +48,23 @@ class OutpostSerializer(ModelSerializer):
         source="service_connection", read_only=True
     )
 
+    def validate_name(self, name: str) -> str:
+        """Validate name (especially for embedded outpost)"""
+        if not self.instance:
+            return name
+        if self.instance.managed == MANAGED_OUTPOST and name != MANAGED_OUTPOST_NAME:
+            raise ValidationError("Embedded outpost's name cannot be changed")
+        if self.instance.name == MANAGED_OUTPOST_NAME:
+            self.instance.managed = MANAGED_OUTPOST
+        return name
+
     def validate_providers(self, providers: list[Provider]) -> list[Provider]:
         """Check that all providers match the type of the outpost"""
         type_map = {
             OutpostType.LDAP: LDAPProvider,
             OutpostType.PROXY: ProxyProvider,
             OutpostType.RADIUS: RadiusProvider,
+            OutpostType.RAC: RACProvider,
             None: Provider,
         }
         for provider in providers:
@@ -95,7 +107,7 @@ class OutpostSerializer(ModelSerializer):
 class OutpostDefaultConfigSerializer(PassiveSerializer):
     """Global default outpost config"""
 
-    config = JSONField(read_only=True)
+    config = JSONDictField(read_only=True)
 
 
 class OutpostHealthSerializer(PassiveSerializer):

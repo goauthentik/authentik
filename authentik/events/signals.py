@@ -45,9 +45,14 @@ def get_login_event(request: HttpRequest) -> Optional[Event]:
 
 
 @receiver(user_logged_out)
-def on_user_logged_out(sender, request: HttpRequest, user: User, **_):
+def on_user_logged_out(sender, request: HttpRequest, user: User, **kwargs):
     """Log successfully logout"""
-    Event.new(EventAction.LOGOUT).from_http(request, user=user)
+    # Check if this even comes from the user_login stage's middleware, which will set an extra
+    # argument
+    event = Event.new(EventAction.LOGOUT)
+    if "event_extra" in kwargs:
+        event.context.update(kwargs["event_extra"])
+    event.from_http(request, user=user)
 
 
 @receiver(user_write)

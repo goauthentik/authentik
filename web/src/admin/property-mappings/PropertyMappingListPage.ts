@@ -1,5 +1,6 @@
 import "@goauthentik/admin/property-mappings/PropertyMappingLDAPForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingNotification";
+import "@goauthentik/admin/property-mappings/PropertyMappingRACForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingSAMLForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingSCIMForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingScopeForm";

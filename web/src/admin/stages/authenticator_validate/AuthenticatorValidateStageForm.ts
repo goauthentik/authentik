@@ -1,7 +1,7 @@
+import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
 
@@ -20,7 +20,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-validate-form")
-export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValidateStage, string> {
+export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorValidateStage> {
     async loadInstance(pk: string): Promise<AuthenticatorValidateStage> {
         const stage = await new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateRetrieve({
             stageUuid: pk,
@@ -40,14 +40,6 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
 
     @property({ type: Boolean })
     showConfigurationStages = true;
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated stage.");
-        } else {
-            return msg("Successfully created stage.");
-        }
-    }
 
     async send(data: AuthenticatorValidateStage): Promise<AuthenticatorValidateStage> {
         if (this.instance) {

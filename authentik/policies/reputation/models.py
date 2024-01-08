@@ -13,9 +13,9 @@ from structlog import get_logger
 from authentik.core.models import ExpiringModel
 from authentik.lib.config import CONFIG
 from authentik.lib.models import SerializerModel
-from authentik.lib.utils.http import get_client_ip
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult
+from authentik.root.middleware import ClientIPMiddleware
 
 LOGGER = get_logger()
 CACHE_KEY_PREFIX = "goauthentik.io/policies/reputation/scores/"
@@ -44,7 +44,7 @@ class ReputationPolicy(Policy):
         return "ak-policy-reputation-form"
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
-        remote_ip = get_client_ip(request.http_request)
+        remote_ip = ClientIPMiddleware.get_client_ip(request.http_request)
         query = Q()
         if self.check_ip:
             query |= Q(ip=remote_ip)
@@ -76,6 +76,7 @@ class Reputation(ExpiringModel, SerializerModel):
     identifier = models.TextField()
     ip = models.GenericIPAddressField()
     ip_geo_data = models.JSONField(default=dict)
+    ip_asn_data = models.JSONField(default=dict)
     score = models.BigIntegerField(default=0)
 
     expires = models.DateTimeField(default=reputation_expiry)

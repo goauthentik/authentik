@@ -3,8 +3,8 @@ from typing import Any
 
 from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
 from authentik.sources.oauth.models import OAuthSource
+from authentik.sources.oauth.types.oidc import OpenIDConnectOAuth2Callback
 from authentik.sources.oauth.types.registry import SourceType, registry
-from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 
@@ -17,16 +17,13 @@ class OktaOAuthRedirect(OAuthRedirect):
         }
 
 
-class OktaOAuth2Callback(OAuthCallback):
+class OktaOAuth2Callback(OpenIDConnectOAuth2Callback):
     """Okta OAuth2 Callback"""
 
     # Okta has the same quirk as azure and throws an error if the access token
     # is set via query parameter, so we reuse the azure client
     # see https://github.com/goauthentik/authentik/issues/1910
     client_class = UserprofileHeaderAuthClient
-
-    def get_user_id(self, info: dict[str, str]) -> str:
-        return info.get("sub", "")
 
     def get_user_enroll_context(
         self,
@@ -45,7 +42,7 @@ class OktaType(SourceType):
 
     callback_view = OktaOAuth2Callback
     redirect_view = OktaOAuthRedirect
-    name = "Okta"
-    slug = "okta"
+    verbose_name = "Okta"
+    name = "okta"
 
     urls_customizable = True

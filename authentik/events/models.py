@@ -26,7 +26,7 @@ from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_USER,
 )
 from authentik.core.models import ExpiringModel, Group, PropertyMapping, User
-from authentik.events.geo import GEOIP_READER
+from authentik.events.context_processors.base import get_context_processors
 from authentik.events.utils import (
     cleanse_dict,
     get_user,
@@ -36,9 +36,10 @@ from authentik.events.utils import (
 )
 from authentik.lib.models import DomainlessURLValidator, SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
-from authentik.lib.utils.http import get_client_ip, get_http_session
+from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
+from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.tenants.models import Tenant
 from authentik.tenants.utils import DEFAULT_TENANT
@@ -244,21 +245,15 @@ class Event(SerializerModel, ExpiringModel):
                 self.user = get_user(request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER])
                 self.user["on_behalf_of"] = get_user(request.session[SESSION_KEY_IMPERSONATE_USER])
         # User 255.255.255.255 as fallback if IP cannot be determined
-        self.client_ip = get_client_ip(request)
-        # Apply GeoIP Data, when enabled
-        self.with_geoip()
+        self.client_ip = ClientIPMiddleware.get_client_ip(request)
+        # Enrich event data
+        for processor in get_context_processors():
+            processor.enrich_event(self)
         # If there's no app set, we get it from the requests too
         if not self.app:
             self.app = Event._get_app_from_request(request)
         self.save()
         return self
-
-    def with_geoip(self):  # pragma: no cover
-        """Apply GeoIP Data, when enabled"""
-        city = GEOIP_READER.city_dict(self.client_ip)
-        if not city:
-            return
-        self.context["geo"] = city
 
     def save(self, *args, **kwargs):
         if self._state.adding:
@@ -466,7 +461,7 @@ class NotificationTransport(SerializerModel):
             }
         mail = TemplateEmailMessage(
             subject=subject_prefix + context["title"],
-            to=[notification.user.email],
+            to=[f"{notification.user.name} <{notification.user.email}>"],
             language=notification.user.locale(),
             template_name="email/event_notification.html",
             template_context=context,

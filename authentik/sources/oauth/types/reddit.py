@@ -51,8 +51,8 @@ class RedditType(SourceType):
 
     callback_view = RedditOAuth2Callback
     redirect_view = RedditOAuthRedirect
-    name = "Reddit"
-    slug = "reddit"
+    verbose_name = "Reddit"
+    name = "reddit"
 
     authorization_url = "https://www.reddit.com/api/v1/authorize"
     access_token_url = "https://www.reddit.com/api/v1/access_token"  # nosec

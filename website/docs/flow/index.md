@@ -65,4 +65,6 @@ This designates a flow for general setup. This designation doesn't have any cons
 
 Flows can be imported and exported to share with other people, the community and for troubleshooting. Flows can be imported to apply new functionality and apply existing workflows.
 
+Download our [Example flows](./examples/flows.md) and then import them into your authentik instance.
+
 Starting with authentik 2022.8, flows will be exported as YAML, but JSON-based flows can still be imported.

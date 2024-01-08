@@ -24,6 +24,10 @@ class SecretReconciler(KubernetesObjectReconciler[V1Secret]):
         super().__init__(controller)
         self.api = CoreV1Api(controller.client)
 
+    @property
+    def noop(self) -> bool:
+        return self.is_embedded
+
     @staticmethod
     def reconciler_name() -> str:
         return "secret"

@@ -1,9 +1,9 @@
+import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
 import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { msg } from "@lit/localize";
@@ -14,19 +14,11 @@ import { customElement } from "lit/decorators.js";
 import { FlowsInstancesListDesignationEnum, ProvidersApi, RadiusProvider } from "@goauthentik/api";
 
 @customElement("ak-provider-radius-form")
-export class RadiusProviderFormPage extends WithTenantConfig(ModelForm<RadiusProvider, number>) {
+export class RadiusProviderFormPage extends WithTenantConfig(BaseProviderForm<RadiusProvider>) {
     loadInstance(pk: number): Promise<RadiusProvider> {
         return new ProvidersApi(DEFAULT_CONFIG).providersRadiusRetrieve({
             id: pk,
         });
-    }
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated provider.");
-        } else {
-            return msg("Successfully created provider.");
-        }
     }
 
     async send(data: RadiusProvider): Promise<RadiusProvider> {
