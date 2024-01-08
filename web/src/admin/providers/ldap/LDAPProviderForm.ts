@@ -3,7 +3,7 @@ import "@goauthentik/admin/common/ak-flow-search/ak-tenanted-flow-search";
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
-import { rootInterface } from "@goauthentik/elements/Base";
+import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
@@ -25,7 +25,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-provider-ldap-form")
-export class LDAPProviderFormPage extends BaseProviderForm<LDAPProvider> {
+export class LDAPProviderFormPage extends WithTenantConfig(BaseProviderForm<LDAPProvider>) {
     async loadInstance(pk: number): Promise<LDAPProvider> {
         return new ProvidersApi(DEFAULT_CONFIG).providersLdapRetrieve({
             id: pk,
@@ -68,7 +68,7 @@ export class LDAPProviderFormPage extends BaseProviderForm<LDAPProvider> {
                 <ak-tenanted-flow-search
                     flowType=${FlowsInstancesListDesignationEnum.Authentication}
                     .currentFlow=${this.instance?.authorizationFlow}
-                    .tenantFlow=${rootInterface()?.tenant?.flowAuthentication}
+                    .tenantFlow=${this.tenant?.flowAuthentication}
                     required
                 ></ak-tenanted-flow-search>
                 <p class="pf-c-form__helper-text">${msg("Flow used for users to authenticate.")}</p>
