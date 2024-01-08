@@ -1,0 +1,8 @@
+{% load i18n %}{% translate "Welcome!" %}
+
+{% translate "We're excited to have you get started. First, you need to confirm your account. Just open the link below." %}
+
+{{ url }}
+
+-- 
+Powered by goauthentik.io.

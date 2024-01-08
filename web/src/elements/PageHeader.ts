@@ -79,6 +79,7 @@ export class PageHeader extends WithBrandConfig(AKElement) {
                 }
                 .pf-c-page__main-section {
                     flex-grow: 1;
+                    flex-shrink: 1;
                     display: flex;
                     flex-direction: column;
                     justify-content: center;

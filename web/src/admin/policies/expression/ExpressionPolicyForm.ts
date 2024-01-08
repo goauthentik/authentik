@@ -1,3 +1,4 @@
+import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { docLink } from "@goauthentik/common/global";
 import { first } from "@goauthentik/common/utils";
@@ -5,7 +6,6 @@ import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -15,19 +15,11 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { ExpressionPolicy, PoliciesApi } from "@goauthentik/api";
 
 @customElement("ak-policy-expression-form")
-export class ExpressionPolicyForm extends ModelForm<ExpressionPolicy, string> {
+export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
     loadInstance(pk: string): Promise<ExpressionPolicy> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesExpressionRetrieve({
             policyUuid: pk,
         });
-    }
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated policy.");
-        } else {
-            return msg("Successfully created policy.");
-        }
     }
 
     async send(data: ExpressionPolicy): Promise<ExpressionPolicy> {

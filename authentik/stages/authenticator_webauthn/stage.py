@@ -1,7 +1,7 @@
 """WebAuthn stage"""
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
-from rest_framework.fields import CharField, JSONField
+from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
 from webauthn.helpers.exceptions import InvalidRegistrationResponse
@@ -16,6 +16,7 @@ from webauthn.registration.verify_registration_response import (
     verify_registration_response,
 )
 
+from authentik.core.api.utils import JSONDictField
 from authentik.core.models import User
 from authentik.flows.challenge import (
     Challenge,
@@ -33,14 +34,14 @@ SESSION_KEY_WEBAUTHN_CHALLENGE = "authentik/stages/authenticator_webauthn/challe
 class AuthenticatorWebAuthnChallenge(WithUserInfoChallenge):
     """WebAuthn Challenge"""
 
-    registration = JSONField()
+    registration = JSONDictField()
     component = CharField(default="ak-stage-authenticator-webauthn")
 
 
 class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
     """WebAuthn Challenge response"""
 
-    response = JSONField()
+    response = JSONDictField()
     component = CharField(default="ak-stage-authenticator-webauthn")
 
     request: HttpRequest

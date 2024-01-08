@@ -7,9 +7,9 @@ from structlog.stdlib import get_logger
 
 from authentik.core.signals import login_failed
 from authentik.lib.config import CONFIG
-from authentik.lib.utils.http import get_client_ip
 from authentik.policies.reputation.models import CACHE_KEY_PREFIX
 from authentik.policies.reputation.tasks import save_reputation
+from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.identification.signals import identification_failed
 
 LOGGER = get_logger()
@@ -18,7 +18,7 @@ CACHE_TIMEOUT = CONFIG.get_int("cache.timeout_reputation")
 
 def update_score(request: HttpRequest, identifier: str, amount: int):
     """Update score for IP and User"""
-    remote_ip = get_client_ip(request)
+    remote_ip = ClientIPMiddleware.get_client_ip(request)
 
     try:
         # We only update the cache here, as its faster than writing to the DB

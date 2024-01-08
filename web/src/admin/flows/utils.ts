@@ -1,6 +1,6 @@
 import { msg } from "@lit/localize";
 
-import { Flow, FlowDesignationEnum, LayoutEnum } from "@goauthentik/api";
+import { Flow, FlowDesignationEnum, FlowLayoutEnum } from "@goauthentik/api";
 
 export function RenderFlowOption(flow: Flow): string {
     return `${flow.slug} (${flow.name})`;
@@ -27,19 +27,19 @@ export function DesignationToLabel(designation: FlowDesignationEnum): string {
     }
 }
 
-export function LayoutToLabel(layout: LayoutEnum): string {
+export function LayoutToLabel(layout: FlowLayoutEnum): string {
     switch (layout) {
-        case LayoutEnum.Stacked:
+        case FlowLayoutEnum.Stacked:
             return msg("Stacked");
-        case LayoutEnum.ContentLeft:
+        case FlowLayoutEnum.ContentLeft:
             return msg("Content left");
-        case LayoutEnum.ContentRight:
+        case FlowLayoutEnum.ContentRight:
             return msg("Content right");
-        case LayoutEnum.SidebarLeft:
+        case FlowLayoutEnum.SidebarLeft:
             return msg("Sidebar left");
-        case LayoutEnum.SidebarRight:
+        case FlowLayoutEnum.SidebarRight:
             return msg("Sidebar right");
-        case LayoutEnum.UnknownDefaultOpenApi:
+        case FlowLayoutEnum.UnknownDefaultOpenApi:
             return msg("Unknown layout");
     }
 }

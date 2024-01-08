@@ -1,4 +1,6 @@
 """proxy provider tasks"""
+from hashlib import sha256
+
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.db import DatabaseError, InternalError, ProgrammingError
@@ -23,6 +25,7 @@ def proxy_set_defaults():
 def proxy_on_logout(session_id: str):
     """Update outpost instances connected to a single outpost"""
     layer = get_channel_layer()
+    hashed_session_id = sha256(session_id.encode("ascii")).hexdigest()
     for outpost in Outpost.objects.filter(type=OutpostType.PROXY):
         group = OUTPOST_GROUP % {"outpost_pk": str(outpost.pk)}
         async_to_sync(layer.group_send)(
@@ -30,6 +33,6 @@ def proxy_on_logout(session_id: str):
             {
                 "type": "event.provider.specific",
                 "sub_type": "logout",
-                "session_id": session_id,
+                "session_id": hashed_session_id,
             },
         )

@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2023.10.4
+  version: 2023.10.5
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -13953,6 +13953,279 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /propertymappings/rac/:
+    get:
+      operationId: propertymappings_rac_list
+      description: RACPropertyMapping Viewset
+      parameters:
+      - in: query
+        name: managed
+        schema:
+          type: string
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRACPropertyMappingList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: propertymappings_rac_create
+      description: RACPropertyMapping Viewset
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RACPropertyMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RACPropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/rac/{pm_uuid}/:
+    get:
+      operationId: propertymappings_rac_retrieve
+      description: RACPropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this RAC Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RACPropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: propertymappings_rac_update
+      description: RACPropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this RAC Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RACPropertyMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RACPropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: propertymappings_rac_partial_update
+      description: RACPropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this RAC Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRACPropertyMappingRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RACPropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: propertymappings_rac_destroy
+      description: RACPropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this RAC Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/rac/{pm_uuid}/used_by/:
+    get:
+      operationId: propertymappings_rac_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this RAC Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /propertymappings/saml/:
     get:
       operationId: propertymappings_saml_list
@@ -16060,6 +16333,274 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /providers/rac/:
+    get:
+      operationId: providers_rac_list
+      description: RACProvider Viewset
+      parameters:
+      - in: query
+        name: application__isnull
+        schema:
+          type: boolean
+      - in: query
+        name: name__iexact
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRACProviderList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: providers_rac_create
+      description: RACProvider Viewset
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RACProviderRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RACProvider'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/rac/{id}/:
+    get:
+      operationId: providers_rac_retrieve
+      description: RACProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this RAC Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RACProvider'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: providers_rac_update
+      description: RACProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this RAC Provider.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RACProviderRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RACProvider'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: providers_rac_partial_update
+      description: RACProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this RAC Provider.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRACProviderRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RACProvider'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: providers_rac_destroy
+      description: RACProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this RAC Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/rac/{id}/used_by/:
+    get:
+      operationId: providers_rac_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this RAC Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /providers/radius/:
     get:
       operationId: providers_radius_list
@@ -17079,7 +17620,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Task'
+                $ref: '#/components/schemas/SCIMSyncStatus'
           description: ''
         '404':
           description: Task not found
@@ -17108,6 +17649,277 @@ paths:
         required: true
       tags:
       - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /rac/endpoints/:
+    get:
+      operationId: rac_endpoints_list
+      description: List accessible endpoints
+      parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: provider
+        schema:
+          type: integer
+      - in: query
+        name: search
+        schema:
+          type: string
+      - in: query
+        name: superuser_full_list
+        schema:
+          type: boolean
+      tags:
+      - rac
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEndpointList'
+          description: ''
+        '400':
+          description: Bad request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: rac_endpoints_create
+      description: Endpoint Viewset
+      tags:
+      - rac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Endpoint'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /rac/endpoints/{pbm_uuid}/:
+    get:
+      operationId: rac_endpoints_retrieve
+      description: Endpoint Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this RAC Endpoint.
+        required: true
+      tags:
+      - rac
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Endpoint'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: rac_endpoints_update
+      description: Endpoint Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this RAC Endpoint.
+        required: true
+      tags:
+      - rac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Endpoint'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: rac_endpoints_partial_update
+      description: Endpoint Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this RAC Endpoint.
+        required: true
+      tags:
+      - rac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEndpointRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Endpoint'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: rac_endpoints_destroy
+      description: Endpoint Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this RAC Endpoint.
+        required: true
+      tags:
+      - rac
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /rac/endpoints/{pbm_uuid}/used_by/:
+    get:
+      operationId: rac_endpoints_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this RAC Endpoint.
+        required: true
+      tags:
+      - rac
       security:
       - authentik: []
       responses:
@@ -17279,6 +18091,9 @@ paths:
           - authentik_providers_oauth2.refreshtoken
           - authentik_providers_oauth2.scopemapping
           - authentik_providers_proxy.proxyprovider
+          - authentik_providers_rac.endpoint
+          - authentik_providers_rac.racpropertymapping
+          - authentik_providers_rac.racprovider
           - authentik_providers_radius.radiusprovider
           - authentik_providers_saml.samlpropertymapping
           - authentik_providers_saml.samlprovider
@@ -17396,6 +18211,9 @@ paths:
           * `authentik_core.application` - Application
           * `authentik_core.token` - Token
           * `authentik_enterprise.license` - License
+          * `authentik_providers_rac.racprovider` - RAC Provider
+          * `authentik_providers_rac.endpoint` - RAC Endpoint
+          * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
         required: true
       - in: query
         name: object_pk
@@ -17567,6 +18385,9 @@ paths:
           - authentik_providers_oauth2.refreshtoken
           - authentik_providers_oauth2.scopemapping
           - authentik_providers_proxy.proxyprovider
+          - authentik_providers_rac.endpoint
+          - authentik_providers_rac.racpropertymapping
+          - authentik_providers_rac.racprovider
           - authentik_providers_radius.radiusprovider
           - authentik_providers_saml.samlpropertymapping
           - authentik_providers_saml.samlprovider
@@ -17684,6 +18505,9 @@ paths:
           * `authentik_core.application` - Application
           * `authentik_core.token` - Token
           * `authentik_enterprise.license` - License
+          * `authentik_providers_rac.racprovider` - RAC Provider
+          * `authentik_providers_rac.endpoint` - RAC Endpoint
+          * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
         required: true
       - in: query
         name: object_pk
@@ -18334,6 +19158,7 @@ paths:
           - tr
           - tt
           - udm
+          - ug
           - uk
           - ur
           - uz
@@ -26955,9 +27780,41 @@ paths:
       description: UserLoginStage Viewset
       parameters:
       - in: query
+        name: geoip_binding
+        schema:
+          type: string
+          enum:
+          - bind_continent
+          - bind_continent_country
+          - bind_continent_country_city
+          - no_binding
+        description: |-
+          Bind sessions created by this stage to the configured GeoIP location
+
+          * `no_binding` - No Binding
+          * `bind_continent` - Bind Continent
+          * `bind_continent_country` - Bind Continent Country
+          * `bind_continent_country_city` - Bind Continent Country City
+      - in: query
         name: name
         schema:
           type: string
+      - in: query
+        name: network_binding
+        schema:
+          type: string
+          enum:
+          - bind_asn
+          - bind_asn_network
+          - bind_asn_network_ip
+          - no_binding
+        description: |-
+          Bind sessions created by this stage to the configured network
+
+          * `no_binding` - No Binding
+          * `bind_asn` - Bind Asn
+          * `bind_asn_network` - Bind Asn Network
+          * `bind_asn_network_ip` - Bind Asn Network Ip
       - name: ordering
         required: false
         in: query
@@ -27913,6 +28770,7 @@ components:
       - authentik.blueprints
       - authentik.core
       - authentik.enterprise
+      - authentik.enterprise.providers.rac
       type: string
       description: |-
         * `authentik.admin` - authentik Admin
@@ -27964,6 +28822,7 @@ components:
         * `authentik.blueprints` - authentik Blueprints
         * `authentik.core` - authentik Core
         * `authentik.enterprise` - authentik Enterprise
+        * `authentik.enterprise.providers.rac` - authentik Enterprise.Providers.RAC
     AppleChallengeResponseRequest:
       type: object
       description: Pseudo class for plex response
@@ -28109,6 +28968,14 @@ components:
       required:
       - name
       - slug
+    AuthModeEnum:
+      enum:
+      - static
+      - prompt
+      type: string
+      description: |-
+        * `static` - Static
+        * `prompt` - Prompt
     AuthTypeEnum:
       enum:
       - basic
@@ -28279,7 +29146,7 @@ components:
           readOnly: true
         geo_ip:
           type: object
-          description: Get parsed user agent
+          description: Get GeoIP Data
           properties:
             continent:
               type: string
@@ -28301,6 +29168,24 @@ components:
           - long
           nullable: true
           readOnly: true
+        asn:
+          type: object
+          description: Get ASN Data
+          properties:
+            asn:
+              type: integer
+            as_org:
+              type: string
+              nullable: true
+            network:
+              type: string
+              nullable: true
+          required:
+          - as_org
+          - asn
+          - network
+          nullable: true
+          readOnly: true
         user:
           type: integer
         last_ip:
@@ -28315,6 +29200,7 @@ components:
           type: string
           format: date-time
       required:
+      - asn
       - current
       - geo_ip
       - last_ip
@@ -28327,12 +29213,14 @@ components:
       - require_authenticated
       - require_unauthenticated
       - require_superuser
+      - require_outpost
       type: string
       description: |-
         * `none` - None
         * `require_authenticated` - Require Authenticated
         * `require_unauthenticated` - Require Unauthenticated
         * `require_superuser` - Require Superuser
+        * `require_outpost` - Require Outpost
     AuthenticatorAttachmentEnum:
       enum:
       - platform
@@ -29205,9 +30093,7 @@ components:
         path:
           type: string
           default: ''
-        context:
-          type: object
-          additionalProperties: {}
+        context: {}
         last_applied:
           type: string
           format: date-time
@@ -29227,8 +30113,6 @@ components:
             type: string
           readOnly: true
         metadata:
-          type: object
-          additionalProperties: {}
           readOnly: true
         content:
           type: string
@@ -29250,9 +30134,7 @@ components:
         path:
           type: string
           default: ''
-        context:
-          type: object
-          additionalProperties: {}
+        context: {}
         enabled:
           type: boolean
         content:
@@ -29286,6 +30168,7 @@ components:
       enum:
       - can_save_media
       - can_geo_ip
+      - can_asn
       - can_impersonate
       - can_debug
       - is_enterprise
@@ -29293,6 +30176,7 @@ components:
       description: |-
         * `can_save_media` - Can Save Media
         * `can_geo_ip` - Can Geo Ip
+        * `can_asn` - Can Asn
         * `can_impersonate` - Can Impersonate
         * `can_debug` - Can Debug
         * `is_enterprise` - Is Enterprise
@@ -29772,10 +30656,24 @@ components:
         cancel_url:
           type: string
         layout:
-          $ref: '#/components/schemas/LayoutEnum'
+          $ref: '#/components/schemas/ContextualFlowInfoLayoutEnum'
       required:
       - cancel_url
       - layout
+    ContextualFlowInfoLayoutEnum:
+      enum:
+      - stacked
+      - content_left
+      - content_right
+      - sidebar_left
+      - sidebar_right
+      type: string
+      description: |-
+        * `stacked` - STACKED
+        * `content_left` - CONTENT_LEFT
+        * `content_right` - CONTENT_RIGHT
+        * `sidebar_left` - SIDEBAR_LEFT
+        * `sidebar_right` - SIDEBAR_RIGHT
     Coordinate:
       type: object
       description: Coordinates for diagrams
@@ -30447,6 +31345,87 @@ components:
           description: Activate users upon completion of stage.
       required:
       - name
+    Endpoint:
+      type: object
+      description: Endpoint Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pbm uuid
+        name:
+          type: string
+        provider:
+          type: integer
+        provider_obj:
+          allOf:
+          - $ref: '#/components/schemas/RACProvider'
+          readOnly: true
+        protocol:
+          $ref: '#/components/schemas/ProtocolEnum'
+        host:
+          type: string
+        settings: {}
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        auth_mode:
+          $ref: '#/components/schemas/AuthModeEnum'
+        launch_url:
+          type: string
+          nullable: true
+          description: |-
+            Build actual launch URL (the provider itself does not have one, just
+            individual endpoints)
+          readOnly: true
+        maximum_connections:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+      required:
+      - auth_mode
+      - host
+      - launch_url
+      - name
+      - pk
+      - protocol
+      - provider
+      - provider_obj
+    EndpointRequest:
+      type: object
+      description: Endpoint Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        provider:
+          type: integer
+        protocol:
+          $ref: '#/components/schemas/ProtocolEnum'
+        host:
+          type: string
+          minLength: 1
+        settings: {}
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        auth_mode:
+          $ref: '#/components/schemas/AuthModeEnum'
+        maximum_connections:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+      required:
+      - auth_mode
+      - host
+      - name
+      - protocol
+      - provider
     ErrorDetail:
       type: object
       description: Serializer for rest_framework's error messages
@@ -30493,16 +31472,12 @@ components:
           format: uuid
           readOnly: true
           title: Event uuid
-        user:
-          type: object
-          additionalProperties: {}
+        user: {}
         action:
           $ref: '#/components/schemas/EventActions'
         app:
           type: string
-        context:
-          type: object
-          additionalProperties: {}
+        context: {}
         client_ip:
           type: string
           nullable: true
@@ -30513,9 +31488,7 @@ components:
         expires:
           type: string
           format: date-time
-        tenant:
-          type: object
-          additionalProperties: {}
+        tenant: {}
       required:
       - action
       - app
@@ -30709,6 +31682,7 @@ components:
             * `authentik.blueprints` - authentik Blueprints
             * `authentik.core` - authentik Core
             * `authentik.enterprise` - authentik Enterprise
+            * `authentik.enterprise.providers.rac` - authentik Enterprise.Providers.RAC
         model:
           allOf:
           - $ref: '#/components/schemas/ModelEnum'
@@ -30790,6 +31764,9 @@ components:
             * `authentik_core.application` - Application
             * `authentik_core.token` - Token
             * `authentik_enterprise.license` - License
+            * `authentik_providers_rac.racprovider` - RAC Provider
+            * `authentik_providers_rac.endpoint` - RAC Endpoint
+            * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
       required:
       - bound_to
       - component
@@ -30905,6 +31882,7 @@ components:
             * `authentik.blueprints` - authentik Blueprints
             * `authentik.core` - authentik Core
             * `authentik.enterprise` - authentik Enterprise
+            * `authentik.enterprise.providers.rac` - authentik Enterprise.Providers.RAC
         model:
           allOf:
           - $ref: '#/components/schemas/ModelEnum'
@@ -30986,23 +31964,22 @@ components:
             * `authentik_core.application` - Application
             * `authentik_core.token` - Token
             * `authentik_enterprise.license` - License
+            * `authentik_providers_rac.racprovider` - RAC Provider
+            * `authentik_providers_rac.endpoint` - RAC Endpoint
+            * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
       required:
       - name
     EventRequest:
       type: object
       description: Event Serializer
       properties:
-        user:
-          type: object
-          additionalProperties: {}
+        user: {}
         action:
           $ref: '#/components/schemas/EventActions'
         app:
           type: string
           minLength: 1
-        context:
-          type: object
-          additionalProperties: {}
+        context: {}
         client_ip:
           type: string
           nullable: true
@@ -31010,9 +31987,7 @@ components:
         expires:
           type: string
           format: date-time
-        tenant:
-          type: object
-          additionalProperties: {}
+        tenant: {}
       required:
       - action
       - app
@@ -31311,7 +32286,7 @@ components:
           description: Get export URL for flow
           readOnly: true
         layout:
-          $ref: '#/components/schemas/LayoutEnum'
+          $ref: '#/components/schemas/FlowLayoutEnum'
         denied_action:
           allOf:
           - $ref: '#/components/schemas/DeniedActionEnum'
@@ -31331,6 +32306,7 @@ components:
             * `require_authenticated` - Require Authenticated
             * `require_unauthenticated` - Require Unauthenticated
             * `require_superuser` - Require Superuser
+            * `require_outpost` - Require Outpost
       required:
       - background
       - cache_count
@@ -31498,6 +32474,20 @@ components:
       - next_planned_stage
       - plan_context
       - session_id
+    FlowLayoutEnum:
+      enum:
+      - stacked
+      - content_left
+      - content_right
+      - sidebar_left
+      - sidebar_right
+      type: string
+      description: |-
+        * `stacked` - Stacked
+        * `content_left` - Content Left
+        * `content_right` - Content Right
+        * `sidebar_left` - Sidebar Left
+        * `sidebar_right` - Sidebar Right
     FlowRequest:
       type: object
       description: Flow Serializer
@@ -31535,7 +32525,7 @@ components:
           description: Enable compatibility mode, increases compatibility with password
             managers on mobile devices.
         layout:
-          $ref: '#/components/schemas/LayoutEnum'
+          $ref: '#/components/schemas/FlowLayoutEnum'
         denied_action:
           allOf:
           - $ref: '#/components/schemas/DeniedActionEnum'
@@ -31555,6 +32545,7 @@ components:
             * `require_authenticated` - Require Authenticated
             * `require_unauthenticated` - Require Unauthenticated
             * `require_superuser` - Require Superuser
+            * `require_outpost` - Require Outpost
       required:
       - designation
       - name
@@ -31613,7 +32604,7 @@ components:
           description: Get export URL for flow
           readOnly: true
         layout:
-          $ref: '#/components/schemas/LayoutEnum'
+          $ref: '#/components/schemas/FlowLayoutEnum'
         denied_action:
           allOf:
           - $ref: '#/components/schemas/DeniedActionEnum'
@@ -31669,7 +32660,7 @@ components:
           description: Enable compatibility mode, increases compatibility with password
             managers on mobile devices.
         layout:
-          $ref: '#/components/schemas/LayoutEnum'
+          $ref: '#/components/schemas/FlowLayoutEnum'
         denied_action:
           allOf:
           - $ref: '#/components/schemas/DeniedActionEnum'
@@ -31793,6 +32784,18 @@ components:
           type: string
       required:
       - detail
+    GeoipBindingEnum:
+      enum:
+      - no_binding
+      - bind_continent
+      - bind_continent_country
+      - bind_continent_country_city
+      type: string
+      description: |-
+        * `no_binding` - No Binding
+        * `bind_continent` - Bind Continent
+        * `bind_continent_country` - Bind Continent Country
+        * `bind_continent_country_city` - Bind Continent Country City
     Group:
       type: object
       description: Group Serializer
@@ -32361,8 +33364,6 @@ components:
           description: Return internal model name
           readOnly: true
         kubeconfig:
-          type: object
-          additionalProperties: {}
           description: Paste your kubeconfig here. authentik will automatically use
             the currently selected context.
         verify_ssl:
@@ -32387,8 +33388,6 @@ components:
           description: If enabled, use the local connection. Required Docker socket/Kubernetes
             Integration
         kubeconfig:
-          type: object
-          additionalProperties: {}
           description: Paste your kubeconfig here. authentik will automatically use
             the currently selected context.
         verify_ssl:
@@ -33053,20 +34052,6 @@ components:
       required:
       - is_running
       - tasks
-    LayoutEnum:
-      enum:
-      - stacked
-      - content_left
-      - content_right
-      - sidebar_left
-      - sidebar_right
-      type: string
-      description: |-
-        * `stacked` - STACKED
-        * `content_left` - CONTENT_LEFT
-        * `content_right` - CONTENT_RIGHT
-        * `sidebar_left` - SIDEBAR_LEFT
-        * `sidebar_right` - SIDEBAR_RIGHT
     License:
       type: object
       description: License Serializer
@@ -33297,6 +34282,9 @@ components:
       - authentik_core.application
       - authentik_core.token
       - authentik_enterprise.license
+      - authentik_providers_rac.racprovider
+      - authentik_providers_rac.endpoint
+      - authentik_providers_rac.racpropertymapping
       type: string
       description: |-
         * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
@@ -33373,6 +34361,9 @@ components:
         * `authentik_core.application` - Application
         * `authentik_core.token` - Token
         * `authentik_enterprise.license` - License
+        * `authentik_providers_rac.racprovider` - RAC Provider
+        * `authentik_providers_rac.endpoint` - RAC Endpoint
+        * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
     NameIdPolicyEnum:
       enum:
       - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
@@ -33387,6 +34378,18 @@ components:
         * `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName` - X509
         * `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName` - Windows
         * `urn:oasis:names:tc:SAML:2.0:nameid-format:transient` - Transient
+    NetworkBindingEnum:
+      enum:
+      - no_binding
+      - bind_asn
+      - bind_asn_network
+      - bind_asn_network_ip
+      type: string
+      description: |-
+        * `no_binding` - No Binding
+        * `bind_asn` - Bind Asn
+        * `bind_asn_network` - Bind Asn Network
+        * `bind_asn_network_ip` - Bind Asn Network Ip
     NotConfiguredActionEnum:
       enum:
       - skip
@@ -34052,9 +35055,7 @@ components:
           type: string
         oidc_jwks_url:
           type: string
-        oidc_jwks:
-          type: object
-          additionalProperties: {}
+        oidc_jwks: {}
       required:
       - callback_url
       - component
@@ -34151,9 +35152,7 @@ components:
           type: string
         oidc_jwks_url:
           type: string
-        oidc_jwks:
-          type: object
-          additionalProperties: {}
+        oidc_jwks: {}
       required:
       - consumer_key
       - consumer_secret
@@ -34351,11 +35350,13 @@ components:
       - proxy
       - ldap
       - radius
+      - rac
       type: string
       description: |-
         * `proxy` - Proxy
         * `ldap` - Ldap
         * `radius` - Radius
+        * `rac` - Rac
     PaginatedApplicationList:
       type: object
       properties:
@@ -34569,6 +35570,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EmailStage'
+      required:
+      - pagination
+      - results
+    PaginatedEndpointList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Endpoint'
       required:
       - pagination
       - results
@@ -35037,6 +36050,30 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProxyProvider'
+      required:
+      - pagination
+      - results
+    PaginatedRACPropertyMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RACPropertyMapping'
+      required:
+      - pagination
+      - results
+    PaginatedRACProviderList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RACProvider'
       required:
       - pagination
       - results
@@ -36042,9 +37079,7 @@ components:
         path:
           type: string
           default: ''
-        context:
-          type: object
-          additionalProperties: {}
+        context: {}
         enabled:
           type: boolean
         content:
@@ -36249,6 +37284,32 @@ components:
         activate_user_on_success:
           type: boolean
           description: Activate users upon completion of stage.
+    PatchedEndpointRequest:
+      type: object
+      description: Endpoint Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        provider:
+          type: integer
+        protocol:
+          $ref: '#/components/schemas/ProtocolEnum'
+        host:
+          type: string
+          minLength: 1
+        settings: {}
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        auth_mode:
+          $ref: '#/components/schemas/AuthModeEnum'
+        maximum_connections:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
     PatchedEventMatcherPolicyRequest:
       type: object
       description: Event Matcher Policy Serializer
@@ -36356,6 +37417,7 @@ components:
             * `authentik.blueprints` - authentik Blueprints
             * `authentik.core` - authentik Core
             * `authentik.enterprise` - authentik Enterprise
+            * `authentik.enterprise.providers.rac` - authentik Enterprise.Providers.RAC
         model:
           allOf:
           - $ref: '#/components/schemas/ModelEnum'
@@ -36437,21 +37499,20 @@ components:
             * `authentik_core.application` - Application
             * `authentik_core.token` - Token
             * `authentik_enterprise.license` - License
+            * `authentik_providers_rac.racprovider` - RAC Provider
+            * `authentik_providers_rac.endpoint` - RAC Endpoint
+            * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
     PatchedEventRequest:
       type: object
       description: Event Serializer
       properties:
-        user:
-          type: object
-          additionalProperties: {}
+        user: {}
         action:
           $ref: '#/components/schemas/EventActions'
         app:
           type: string
           minLength: 1
-        context:
-          type: object
-          additionalProperties: {}
+        context: {}
         client_ip:
           type: string
           nullable: true
@@ -36459,9 +37520,7 @@ components:
         expires:
           type: string
           format: date-time
-        tenant:
-          type: object
-          additionalProperties: {}
+        tenant: {}
     PatchedExpressionPolicyRequest:
       type: object
       description: Group Membership Policy Serializer
@@ -36513,7 +37572,7 @@ components:
           description: Enable compatibility mode, increases compatibility with password
             managers on mobile devices.
         layout:
-          $ref: '#/components/schemas/LayoutEnum'
+          $ref: '#/components/schemas/FlowLayoutEnum'
         denied_action:
           allOf:
           - $ref: '#/components/schemas/DeniedActionEnum'
@@ -36533,6 +37592,7 @@ components:
             * `require_authenticated` - Require Authenticated
             * `require_unauthenticated` - Require Unauthenticated
             * `require_superuser` - Require Superuser
+            * `require_outpost` - Require Outpost
     PatchedFlowStageBindingRequest:
       type: object
       description: FlowStageBinding Serializer
@@ -36703,8 +37763,6 @@ components:
           description: If enabled, use the local connection. Required Docker socket/Kubernetes
             Integration
         kubeconfig:
-          type: object
-          additionalProperties: {}
           description: Paste your kubeconfig here. authentik will automatically use
             the currently selected context.
         verify_ssl:
@@ -37165,9 +38223,7 @@ components:
           type: string
         oidc_jwks_url:
           type: string
-        oidc_jwks:
-          type: object
-          additionalProperties: {}
+        oidc_jwks: {}
     PatchedOutpostRequest:
       type: object
       description: Outpost Serializer
@@ -37572,6 +38628,55 @@ components:
           minLength: 1
           description: 'Tokens not valid on or after current time + this value (Format:
             hours=1;minutes=2;seconds=3).'
+    PatchedRACPropertyMappingRequest:
+      type: object
+      description: RACPropertyMapping Serializer
+      properties:
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+        static_settings:
+          type: object
+          additionalProperties: {}
+    PatchedRACProviderRequest:
+      type: object
+      description: RACProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
+        authorization_flow:
+          type: string
+          format: uuid
+          description: Flow used when authorizing this provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        settings: {}
+        connection_expiry:
+          type: string
+          minLength: 1
+          description: 'Determines how long a session lasts. Default of 0 means that
+            the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
     PatchedRadiusProviderRequest:
       type: object
       description: RadiusProvider Serializer
@@ -38011,9 +39116,7 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
-        attributes:
-          type: object
-          additionalProperties: {}
+        attributes: {}
     PatchedTokenRequest:
       type: object
       description: Token Serializer
@@ -38079,6 +39182,26 @@ components:
           description: 'Offset the session will be extended by when the user picks
             the remember me option. Default of 0 means that the remember me option
             will not be shown. (Format: hours=-1;minutes=-2;seconds=-3)'
+        network_binding:
+          allOf:
+          - $ref: '#/components/schemas/NetworkBindingEnum'
+          description: |-
+            Bind sessions created by this stage to the configured network
+
+            * `no_binding` - No Binding
+            * `bind_asn` - Bind Asn
+            * `bind_asn_network` - Bind Asn Network
+            * `bind_asn_network_ip` - Bind Asn Network Ip
+        geoip_binding:
+          allOf:
+          - $ref: '#/components/schemas/GeoipBindingEnum'
+          description: |-
+            Bind sessions created by this stage to the configured GeoIP location
+
+            * `no_binding` - No Binding
+            * `bind_continent` - Bind Continent
+            * `bind_continent_country` - Bind Continent Country
+            * `bind_continent_country_city` - Bind Continent Country City
     PatchedUserLogoutStageRequest:
       type: object
       description: UserLogoutStage Serializer
@@ -38989,6 +40112,16 @@ components:
       required:
       - result
       - successful
+    ProtocolEnum:
+      enum:
+      - rdp
+      - vnc
+      - ssh
+      type: string
+      description: |-
+        * `rdp` - Rdp
+        * `vnc` - Vnc
+        * `ssh` - Ssh
     Provider:
       type: object
       description: Provider Serializer
@@ -39071,6 +40204,7 @@ components:
       - authentik_providers_ldap.ldapprovider
       - authentik_providers_oauth2.oauth2provider
       - authentik_providers_proxy.proxyprovider
+      - authentik_providers_rac.racprovider
       - authentik_providers_radius.radiusprovider
       - authentik_providers_saml.samlprovider
       - authentik_providers_scim.scimprovider
@@ -39079,6 +40213,7 @@ components:
         * `authentik_providers_ldap.ldapprovider` - authentik_providers_ldap.ldapprovider
         * `authentik_providers_oauth2.oauth2provider` - authentik_providers_oauth2.oauth2provider
         * `authentik_providers_proxy.proxyprovider` - authentik_providers_proxy.proxyprovider
+        * `authentik_providers_rac.racprovider` - authentik_providers_rac.racprovider
         * `authentik_providers_radius.radiusprovider` - authentik_providers_radius.radiusprovider
         * `authentik_providers_saml.samlprovider` - authentik_providers_saml.samlprovider
         * `authentik_providers_scim.scimprovider` - authentik_providers_scim.scimprovider
@@ -39110,13 +40245,13 @@ components:
     ProviderTypeEnum:
       enum:
       - apple
+      - openidconnect
       - azuread
       - discord
       - facebook
       - github
       - google
       - mailcow
-      - openidconnect
       - okta
       - patreon
       - reddit
@@ -39125,13 +40260,13 @@ components:
       type: string
       description: |-
         * `apple` - Apple
+        * `openidconnect` - OpenID Connect
         * `azuread` - Azure AD
         * `discord` - Discord
         * `facebook` - Facebook
         * `github` - GitHub
         * `google` - Google
         * `mailcow` - Mailcow
-        * `openidconnect` - OpenID Connect
         * `okta` - Okta
         * `patreon` - Patreon
         * `reddit` - Reddit
@@ -39486,6 +40621,189 @@ components:
       - authorization_flow
       - external_host
       - name
+    RACPropertyMapping:
+      type: object
+      description: RACPropertyMapping Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pm uuid
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+        expression:
+          type: string
+        component:
+          type: string
+          description: Get object's component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        static_settings:
+          type: object
+          additionalProperties: {}
+      required:
+      - component
+      - meta_model_name
+      - name
+      - pk
+      - static_settings
+      - verbose_name
+      - verbose_name_plural
+    RACPropertyMappingRequest:
+      type: object
+      description: RACPropertyMapping Serializer
+      properties:
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+        static_settings:
+          type: object
+          additionalProperties: {}
+      required:
+      - name
+      - static_settings
+    RACProvider:
+      type: object
+      description: RACProvider Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
+        authorization_flow:
+          type: string
+          format: uuid
+          description: Flow used when authorizing this provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        assigned_application_slug:
+          type: string
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_application_name:
+          type: string
+          description: Application's display Name.
+          readOnly: true
+        assigned_backchannel_application_slug:
+          type: string
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_backchannel_application_name:
+          type: string
+          description: Application's display Name.
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        settings: {}
+        outpost_set:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        connection_expiry:
+          type: string
+          description: 'Determines how long a session lasts. Default of 0 means that
+            the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
+      required:
+      - assigned_application_name
+      - assigned_application_slug
+      - assigned_backchannel_application_name
+      - assigned_backchannel_application_slug
+      - authorization_flow
+      - component
+      - meta_model_name
+      - name
+      - outpost_set
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    RACProviderRequest:
+      type: object
+      description: RACProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
+        authorization_flow:
+          type: string
+          format: uuid
+          description: Flow used when authorizing this provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        settings: {}
+        connection_expiry:
+          type: string
+          minLength: 1
+          description: 'Determines how long a session lasts. Default of 0 means that
+            the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
+      required:
+      - authorization_flow
+      - name
     RadiusOutpostConfig:
       type: object
       description: RadiusProvider Serializer
@@ -39686,9 +41004,8 @@ components:
           type: string
         ip:
           type: string
-        ip_geo_data:
-          type: object
-          additionalProperties: {}
+        ip_geo_data: {}
+        ip_asn_data: {}
         score:
           type: integer
           maximum: 9223372036854775807
@@ -40645,6 +41962,21 @@ components:
       - name
       - token
       - url
+    SCIMSyncStatus:
+      type: object
+      description: SCIM Provider sync status
+      properties:
+        is_running:
+          type: boolean
+          readOnly: true
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+          readOnly: true
+      required:
+      - is_running
+      - tasks
     SMSDevice:
       type: object
       description: Serializer for sms authenticator devices
@@ -41415,9 +42747,7 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
-        attributes:
-          type: object
-          additionalProperties: {}
+        attributes: {}
       required:
       - domain
       - tenant_uuid
@@ -41474,9 +42804,7 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
-        attributes:
-          type: object
-          additionalProperties: {}
+        attributes: {}
       required:
       - domain
     Token:
@@ -41642,6 +42970,9 @@ components:
           type: string
         model_name:
           type: string
+        requires_enterprise:
+          type: boolean
+          default: false
       required:
       - component
       - description
@@ -42041,6 +43372,26 @@ components:
           description: 'Offset the session will be extended by when the user picks
             the remember me option. Default of 0 means that the remember me option
             will not be shown. (Format: hours=-1;minutes=-2;seconds=-3)'
+        network_binding:
+          allOf:
+          - $ref: '#/components/schemas/NetworkBindingEnum'
+          description: |-
+            Bind sessions created by this stage to the configured network
+
+            * `no_binding` - No Binding
+            * `bind_asn` - Bind Asn
+            * `bind_asn_network` - Bind Asn Network
+            * `bind_asn_network_ip` - Bind Asn Network Ip
+        geoip_binding:
+          allOf:
+          - $ref: '#/components/schemas/GeoipBindingEnum'
+          description: |-
+            Bind sessions created by this stage to the configured GeoIP location
+
+            * `no_binding` - No Binding
+            * `bind_continent` - Bind Continent
+            * `bind_continent_country` - Bind Continent Country
+            * `bind_continent_country_city` - Bind Continent Country City
       required:
       - component
       - meta_model_name
@@ -42073,6 +43424,26 @@ components:
           description: 'Offset the session will be extended by when the user picks
             the remember me option. Default of 0 means that the remember me option
             will not be shown. (Format: hours=-1;minutes=-2;seconds=-3)'
+        network_binding:
+          allOf:
+          - $ref: '#/components/schemas/NetworkBindingEnum'
+          description: |-
+            Bind sessions created by this stage to the configured network
+
+            * `no_binding` - No Binding
+            * `bind_asn` - Bind Asn
+            * `bind_asn_network` - Bind Asn Network
+            * `bind_asn_network_ip` - Bind Asn Network Ip
+        geoip_binding:
+          allOf:
+          - $ref: '#/components/schemas/GeoipBindingEnum'
+          description: |-
+            Bind sessions created by this stage to the configured GeoIP location
+
+            * `no_binding` - No Binding
+            * `bind_continent` - Bind Continent
+            * `bind_continent_country` - Bind Continent Country
+            * `bind_continent_country_city` - Bind Continent Country City
       required:
       - name
     UserLogoutStage:
@@ -42659,6 +44030,7 @@ components:
       - $ref: '#/components/schemas/LDAPProviderRequest'
       - $ref: '#/components/schemas/OAuth2ProviderRequest'
       - $ref: '#/components/schemas/ProxyProviderRequest'
+      - $ref: '#/components/schemas/RACProviderRequest'
       - $ref: '#/components/schemas/RadiusProviderRequest'
       - $ref: '#/components/schemas/SAMLProviderRequest'
       - $ref: '#/components/schemas/SCIMProviderRequest'
@@ -42668,6 +44040,7 @@ components:
           authentik_providers_ldap.ldapprovider: '#/components/schemas/LDAPProviderRequest'
           authentik_providers_oauth2.oauth2provider: '#/components/schemas/OAuth2ProviderRequest'
           authentik_providers_proxy.proxyprovider: '#/components/schemas/ProxyProviderRequest'
+          authentik_providers_rac.racprovider: '#/components/schemas/RACProviderRequest'
           authentik_providers_radius.radiusprovider: '#/components/schemas/RadiusProviderRequest'
           authentik_providers_saml.samlprovider: '#/components/schemas/SAMLProviderRequest'
           authentik_providers_scim.scimprovider: '#/components/schemas/SCIMProviderRequest'

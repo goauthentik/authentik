@@ -63,7 +63,7 @@ class MailcowType(SourceType):
 
     callback_view = MailcowOAuth2Callback
     redirect_view = MailcowOAuthRedirect
-    name = "Mailcow"
-    slug = "mailcow"
+    verbose_name = "Mailcow"
+    name = "mailcow"
 
     urls_customizable = True

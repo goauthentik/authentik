@@ -1,13 +1,12 @@
 """Invitation Stage API Views"""
 from django_filters.filters import BooleanFilter
 from django_filters.filterset import FilterSet
-from rest_framework.fields import JSONField
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.groups import GroupMemberSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import is_dict
+from authentik.core.api.utils import JSONDictField
 from authentik.flows.api.flows import FlowSerializer
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.invitation.models import Invitation, InvitationStage
@@ -47,7 +46,7 @@ class InvitationSerializer(ModelSerializer):
     """Invitation Serializer"""
 
     created_by = GroupMemberSerializer(read_only=True)
-    fixed_data = JSONField(validators=[is_dict], required=False)
+    fixed_data = JSONDictField(required=False)
     flow_obj = FlowSerializer(read_only=True, required=False, source="flow")
 
     class Meta:

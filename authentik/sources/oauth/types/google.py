@@ -34,8 +34,8 @@ class GoogleType(SourceType):
 
     callback_view = GoogleOAuth2Callback
     redirect_view = GoogleOAuthRedirect
-    name = "Google"
-    slug = "google"
+    verbose_name = "Google"
+    name = "google"
 
     authorization_url = "https://accounts.google.com/o/oauth2/auth"
     access_token_url = "https://oauth2.googleapis.com/token"  # nosec

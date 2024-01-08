@@ -1,7 +1,7 @@
+import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -11,19 +11,11 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { CaptchaStage, CaptchaStageRequest, StagesApi } from "@goauthentik/api";
 
 @customElement("ak-stage-captcha-form")
-export class CaptchaStageForm extends ModelForm<CaptchaStage, string> {
+export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
     loadInstance(pk: string): Promise<CaptchaStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesCaptchaRetrieve({
             stageUuid: pk,
         });
-    }
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated stage.");
-        } else {
-            return msg("Successfully created stage.");
-        }
     }
 
     async send(data: CaptchaStage): Promise<CaptchaStage> {

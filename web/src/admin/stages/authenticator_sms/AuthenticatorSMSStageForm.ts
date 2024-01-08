@@ -1,9 +1,9 @@
 import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
+import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 
@@ -26,7 +26,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-sms-form")
-export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, string> {
+export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSStage> {
     loadInstance(pk: string): Promise<AuthenticatorSMSStage> {
         return new StagesApi(DEFAULT_CONFIG)
             .stagesAuthenticatorSmsRetrieve({
@@ -44,14 +44,6 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
 
     @property({ attribute: false })
     authType?: AuthTypeEnum;
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated stage.");
-        } else {
-            return msg("Successfully created stage.");
-        }
-    }
 
     async send(data: AuthenticatorSMSStage): Promise<AuthenticatorSMSStage> {
         if (this.instance) {

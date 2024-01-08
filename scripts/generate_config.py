@@ -17,7 +17,12 @@ with open("local.env.yml", "w", encoding="utf-8") as _config:
             },
             "blueprints_dir": "./blueprints",
             "cert_discovery_dir": "./certs",
-            "geoip": "tests/GeoLite2-City-Test.mmdb",
+            "events": {
+                "processors": {
+                    "geoip": "tests/GeoLite2-City-Test.mmdb",
+                    "asn": "tests/GeoLite2-ASN-Test.mmdb",
+                }
+            },
         },
         _config,
         default_flow_style=False,

@@ -2,11 +2,13 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
+from authentik.blueprints.tests import reconcile_app
 from authentik.core.models import PropertyMapping
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.lib.generators import generate_id
 from authentik.outposts.api.outposts import OutpostSerializer
-from authentik.outposts.models import OutpostType, default_outpost_config
+from authentik.outposts.apps import MANAGED_OUTPOST
+from authentik.outposts.models import Outpost, OutpostType, default_outpost_config
 from authentik.providers.ldap.models import LDAPProvider
 from authentik.providers.proxy.models import ProxyProvider
 
@@ -22,7 +24,36 @@ class TestOutpostServiceConnectionsAPI(APITestCase):
         self.user = create_test_admin_user()
         self.client.force_login(self.user)
 
-    def test_outpost_validaton(self):
+    @reconcile_app("authentik_outposts")
+    def test_managed_name_change(self):
+        """Test name change for embedded outpost"""
+        embedded_outpost = Outpost.objects.filter(managed=MANAGED_OUTPOST).first()
+        self.assertIsNotNone(embedded_outpost)
+        response = self.client.patch(
+            reverse("authentik_api:outpost-detail", kwargs={"pk": embedded_outpost.pk}),
+            {"name": "foo"},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content, {"name": ["Embedded outpost's name cannot be changed"]}
+        )
+
+    @reconcile_app("authentik_outposts")
+    def test_managed_without_managed(self):
+        """Test name change for embedded outpost"""
+        embedded_outpost = Outpost.objects.filter(managed=MANAGED_OUTPOST).first()
+        self.assertIsNotNone(embedded_outpost)
+        embedded_outpost.managed = ""
+        embedded_outpost.save()
+        response = self.client.patch(
+            reverse("authentik_api:outpost-detail", kwargs={"pk": embedded_outpost.pk}),
+            {"name": "foo"},
+        )
+        self.assertEqual(response.status_code, 200)
+        embedded_outpost.refresh_from_db()
+        self.assertEqual(embedded_outpost.managed, MANAGED_OUTPOST)
+
+    def test_outpost_validation(self):
         """Test Outpost validation"""
         valid = OutpostSerializer(
             data={

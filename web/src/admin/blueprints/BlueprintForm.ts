@@ -44,11 +44,9 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
     }
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated instance.");
-        } else {
-            return msg("Successfully created instance.");
-        }
+        return this.instance
+            ? msg("Successfully updated instance.")
+            : msg("Successfully created instance.");
     }
 
     static get styles(): CSSResult[] {

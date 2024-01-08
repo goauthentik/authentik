@@ -38,8 +38,8 @@ import {
     ContextualFlowInfo,
     FlowChallengeResponseRequest,
     FlowErrorChallenge,
+    FlowLayoutEnum,
     FlowsApi,
-    LayoutEnum,
     ResponseError,
     ShellChallenge,
     UiThemeEnum,
@@ -116,8 +116,10 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 background-color: transparent;
             }
             /* layouts */
-            .pf-c-login.stacked .pf-c-login__main {
-                margin-top: 13rem;
+            @media (min-height: 60rem) {
+                .pf-c-login.stacked .pf-c-login__main {
+                    margin-top: 13rem;
+                }
             }
             .pf-c-login__container.content-right {
                 grid-template-areas:
@@ -450,7 +452,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     }
 
     getLayout(): string {
-        const prefilledFlow = globalAK()?.flow?.layout || LayoutEnum.Stacked;
+        const prefilledFlow = globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
         if (this.challenge) {
             return this.challenge?.flowInfo?.layout || prefilledFlow;
         }
@@ -460,11 +462,11 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     getLayoutClass(): string {
         const layout = this.getLayout();
         switch (layout) {
-            case LayoutEnum.ContentLeft:
+            case FlowLayoutEnum.ContentLeft:
                 return "pf-c-login__container";
-            case LayoutEnum.ContentRight:
+            case FlowLayoutEnum.ContentRight:
                 return "pf-c-login__container content-right";
-            case LayoutEnum.Stacked:
+            case FlowLayoutEnum.Stacked:
             default:
                 return "ak-login-container";
         }

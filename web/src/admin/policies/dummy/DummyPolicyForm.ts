@@ -1,8 +1,8 @@
+import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -12,19 +12,11 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { DummyPolicy, PoliciesApi } from "@goauthentik/api";
 
 @customElement("ak-policy-dummy-form")
-export class DummyPolicyForm extends ModelForm<DummyPolicy, string> {
+export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
     loadInstance(pk: string): Promise<DummyPolicy> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesDummyRetrieve({
             policyUuid: pk,
         });
-    }
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated policy.");
-        } else {
-            return msg("Successfully created policy.");
-        }
     }
 
     async send(data: DummyPolicy): Promise<DummyPolicy> {

@@ -1,6 +1,6 @@
 ---
-title: “Happy Birthday to Us!”
-description: “We are celebrating our one-year anniversary since the founding of Authentik Security..”
+title: "Happy Birthday to Us!"
+description: "We are celebrating our one-year anniversary since the founding of Authentik Security.."
 slug: 2023-11-1-happy-birthday-to-us
 authors:
     - name: Jens Langhammer and the authentik team
@@ -56,7 +56,7 @@ Once you get to know Jens, you won’t be surprised to his answer about what he 
 
 That task alone will scare most of us. In software, team work is most definitely what makes the dream work, so finding the right talents and skills sets and experiences to compliment Jens’ deep technical skills and full-stack experience was of paramount importance. We now have developers with expertise in frontend and backend development, infrastructure, and security, a well as a content editor.
 
-Of course, it is not just the technical skills that a potential new hire needs; as important are less-measurable skills like collaboration, communication, and perhaps most importantly, what we call “technical curiosity”.
+Of course, it is not just the technical skills that a potential new hire needs; as important are less-measurable skills like collaboration, communication, and perhaps most importantly, what we call "technical curiosity".
 
 > How does this thing work, from whom can I learn more, and with whom can I share my knowledge?
 
@@ -90,10 +90,10 @@ An interesting offset to our shared love of building is the shared sense of humi
 
 The tone and espirit of the company is one reason it’s so meaningful to celebrate our 1-year birthday; we can happily celebrate a hard year of doing things with full, enthusiastic engagement. At authentik, nerdiness is embraced, technical curiosity flourishes, and transparency is a big part of our nature. Speaking of how we communicate with our community, our Discord forum is (in addition to GitHub) an important place where transparency matters. For example, we recently asked our community what they preferred for a release cycle. Based on the answers, we lengthened the release time from from monthly to every two or three months.
 
-Moving from a role of solo creator of an open source project, to being primary maintainer of a popular, growing project, to suddenly being CTO of a company based on that project is a quite a transition. A natural question we wanted to ask Jens is “What’s been the hardest thing about building a company?” His answers:
+Moving from a role of solo creator of an open source project, to being primary maintainer of a popular, growing project, to suddenly being CTO of a company based on that project is a quite a transition. A natural question we wanted to ask Jens is "What’s been the hardest thing about building a company?" His answers:
 
--   “Recognizing and accepting that you don’t get to work on only what you want to, 100% of time… “
--   “Learning to delegate, learning to let go a bit, trusting others to do it in their way, in the right spirit. Especially letting others get into the code… I’ve learned that instead of saying ‘I would not have done it this way’, I instead measure the success of the change itself.”
+-   "Recognizing and accepting that you don’t get to work on only what you want to, 100% of time… "
+-   "Learning to delegate, learning to let go a bit, trusting others to do it in their way, in the right spirit. Especially letting others get into the code… I’ve learned that instead of saying ‘I would not have done it this way’, I instead measure the success of the change itself."
 
 ### What’s up next?
 

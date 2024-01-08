@@ -2,9 +2,11 @@
 from datetime import datetime, timedelta
 
 from django.utils.timezone import now
+from django.utils.translation import gettext as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, CharField, DateTimeField, IntegerField
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -18,6 +20,18 @@ from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User, UserTypes
 from authentik.enterprise.models import License, LicenseKey
 from authentik.root.install_id import get_install_id
+
+
+class EnterpriseRequiredMixin:
+    """Mixin to validate that a valid enterprise license
+    exists before allowing to safe the object"""
+
+    def validate(self, attrs: dict) -> dict:
+        """Check that a valid license exists"""
+        total = LicenseKey.get_total()
+        if not total.is_valid():
+            raise ValidationError(_("Enterprise is required to create/update this object."))
+        return super().validate(attrs)
 
 
 class LicenseSerializer(ModelSerializer):
