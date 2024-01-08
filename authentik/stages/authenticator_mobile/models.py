@@ -188,6 +188,7 @@ class MobileTransaction(ExpiringModel):
                     long=city.location.longitude,
                 )
         auth_request = AuthenticationRequest(
+            device_uuid=str(self.device.pk),
             device_token=self.device.firebase_token,
             tx_id=str(self.tx_id),
             items=self.decision_items,
