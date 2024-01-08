@@ -165,7 +165,6 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
     renderActionButtons(user: User) {
         const canImpersonate =
             this.can(CapabilitiesEnum.CanImpersonate) && user.pk !== this.me?.user.pk;
-            user.pk !== this.me?.user.pk;
 
         return html`<div class="ak-button-collection">
             <ak-forms-modal>
