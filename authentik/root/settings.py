@@ -13,11 +13,7 @@ from authentik.lib.config import CONFIG
 from authentik.lib.logging import get_logger_config, structlog_configure
 from authentik.lib.sentry import sentry_init
 from authentik.lib.utils.reflection import get_env
-from authentik.stages.password import (
-    BACKEND_APP_PASSWORD,
-    BACKEND_INBUILT,
-    BACKEND_LDAP,
-)
+from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BACKEND_LDAP
 
 BASE_DIR = Path(__file__).absolute().parent.parent.parent
 STATICFILES_DIRS = [BASE_DIR / Path("web")]
@@ -133,9 +129,7 @@ SPECTACULAR_SETTINGS = {
     "CONTACT": {
         "email": "hello@goauthentik.io",
     },
-    "AUTHENTICATION_WHITELIST": [
-        "authentik.api.authentication.TokenAuthentication"
-    ],
+    "AUTHENTICATION_WHITELIST": ["authentik.api.authentication.TokenAuthentication"],
     "LICENSE": {
         "name": "MIT",
         "url": "https://github.com/goauthentik/authentik/blob/main/LICENSE",
@@ -171,9 +165,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PARSER_CLASSES": [
         "rest_framework.parsers.JSONParser",
     ],
-    "DEFAULT_PERMISSION_CLASSES": (
-        "authentik.rbac.permissions.ObjectPermissions",
-    ),
+    "DEFAULT_PERMISSION_CLASSES": ("authentik.rbac.permissions.ObjectPermissions",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "authentik.api.authentication.TokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
@@ -193,9 +185,7 @@ _redis_protocol_prefix = "redis://"
 _redis_celery_tls_requirements = ""
 if CONFIG.get_bool("redis.tls", False):
     _redis_protocol_prefix = "rediss://"
-    _redis_celery_tls_requirements = (
-        f"?ssl_cert_reqs={CONFIG.get('redis.tls_reqs')}"
-    )
+    _redis_celery_tls_requirements = f"?ssl_cert_reqs={CONFIG.get('redis.tls_reqs')}"
 _redis_url = (
     f"{_redis_protocol_prefix}:"
     f"{quote_plus(CONFIG.get('redis.password'))}@{quote_plus(CONFIG.get('redis.host'))}:"
@@ -205,8 +195,7 @@ _redis_url = (
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": CONFIG.get("cache.url")
-        or f"{_redis_url}/{CONFIG.get('redis.db')}",
+        "LOCATION": CONFIG.get("cache.url") or f"{_redis_url}/{CONFIG.get('redis.db')}",
         "TIMEOUT": CONFIG.get_int("cache.timeout", 300),
         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
         "KEY_PREFIX": "authentik_cache",
@@ -268,11 +257,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.pubsub.RedisPubSubChannelLayer",
         "CONFIG": {
-            "hosts": [
-                CONFIG.get(
-                    "channel.url", f"{_redis_url}/{CONFIG.get('redis.db')}"
-                )
-            ],
+            "hosts": [CONFIG.get("channel.url", f"{_redis_url}/{CONFIG.get('redis.db')}")],
             "prefix": "authentik_channels_",
         },
     },
@@ -333,9 +318,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"
-    },
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
 
@@ -372,9 +355,7 @@ CELERY = {
     "task_default_queue": "authentik",
     "broker_url": CONFIG.get("broker.url")
     or f"{_redis_url}/{CONFIG.get('redis.db')}{_redis_celery_tls_requirements}",
-    "broker_transport_options": CONFIG.get_dict_from_b64_json(
-        "broker.transport_options"
-    ),
+    "broker_transport_options": CONFIG.get_dict_from_b64_json("broker.transport_options"),
     "result_backend": CONFIG.get("result_backend.url")
     or f"{_redis_url}/{CONFIG.get('redis.db')}{_redis_celery_tls_requirements}",
 }
@@ -385,10 +366,7 @@ _ERROR_REPORTING = CONFIG.get_bool("error_reporting.enabled", False)
 if _ERROR_REPORTING:
     sentry_env = CONFIG.get("error_reporting.environment", "customer")
     sentry_init()
-    set_tag(
-        "authentik.uuid",
-        sha512(str(SECRET_KEY).encode("ascii")).hexdigest()[:16],
-    )
+    set_tag("authentik.uuid", sha512(str(SECRET_KEY).encode("ascii")).hexdigest()[:16])
 
 
 # Static files (CSS, JavaScript, Images)
@@ -418,12 +396,8 @@ def _update_settings(app_path: str):
         CONFIG.log("debug", "Loaded app settings", path=app_path)
         INSTALLED_APPS.extend(getattr(settings_module, "INSTALLED_APPS", []))
         MIDDLEWARE.extend(getattr(settings_module, "MIDDLEWARE", []))
-        AUTHENTICATION_BACKENDS.extend(
-            getattr(settings_module, "AUTHENTICATION_BACKENDS", [])
-        )
-        CELERY["beat_schedule"].update(
-            getattr(settings_module, "CELERY_BEAT_SCHEDULE", {})
-        )
+        AUTHENTICATION_BACKENDS.extend(getattr(settings_module, "AUTHENTICATION_BACKENDS", []))
+        CELERY["beat_schedule"].update(getattr(settings_module, "CELERY_BEAT_SCHEDULE", {}))
         for _attr in dir(settings_module):
             if not _attr.startswith("__") and _attr not in _DISALLOWED_ITEMS:
                 globals()[_attr] = getattr(settings_module, _attr)
