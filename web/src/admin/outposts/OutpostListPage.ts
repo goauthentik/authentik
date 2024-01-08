@@ -41,6 +41,8 @@ export function TypeToLabel(type?: OutpostTypeEnum): string {
             return msg("LDAP");
         case OutpostTypeEnum.Radius:
             return msg("Radius");
+        case OutpostTypeEnum.Rac:
+            return msg("RAC");
         case OutpostTypeEnum.UnknownDefaultOpenApi:
             return msg("Unknown type");
     }

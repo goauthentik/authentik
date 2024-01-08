@@ -1,13 +1,16 @@
 import "@goauthentik/admin/applications/ProviderSelectModal";
 import { iconHelperText } from "@goauthentik/admin/helperText";
-import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-file-input";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
-import { rootInterface } from "@goauthentik/elements/Base";
+import {
+    CapabilitiesEnum,
+    WithCapabilitiesConfig,
+} from "@goauthentik/elements/Interface/capabilitiesProvider";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/ModalForm";
@@ -22,13 +25,7 @@ import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import {
-    Application,
-    CapabilitiesEnum,
-    CoreApi,
-    PolicyEngineMode,
-    Provider,
-} from "@goauthentik/api";
+import { Application, CoreApi, PolicyEngineMode, Provider } from "@goauthentik/api";
 
 import "./components/ak-backchannel-input";
 import "./components/ak-provider-search-input";
@@ -48,7 +45,7 @@ export const policyOptions = [
 ];
 
 @customElement("ak-application-form")
-export class ApplicationForm extends ModelForm<Application, string> {
+export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Application, string>) {
     constructor() {
         super();
         this.handleConfirmBackchannelProviders = this.handleConfirmBackchannelProviders.bind(this);
@@ -93,8 +90,7 @@ export class ApplicationForm extends ModelForm<Application, string> {
                 applicationRequest: data,
             });
         }
-        const c = await config();
-        if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
+        if (this.can(CapabilitiesEnum.CanSaveMedia)) {
             const icon = this.getFormFiles()["metaIcon"];
             if (icon || this.clearIcon) {
                 await new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconCreate({
@@ -140,21 +136,21 @@ export class ApplicationForm extends ModelForm<Application, string> {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-text-input
                 name="name"
-                .value=${this.instance?.name}
+                value=${ifDefined(this.instance?.name)}
                 label=${msg("Name")}
                 required
                 help=${msg("Application's display Name.")}
             ></ak-text-input>
             <ak-text-input
                 name="slug"
-                .value=${this.instance?.slug}
+                value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
                 required
                 help=${msg("Internal application name used in URLs.")}
             ></ak-text-input>
             <ak-text-input
                 name="group"
-                .value=${this.instance?.group}
+                value=${ifDefined(this.instance?.group)}
                 label=${msg("Group")}
                 help=${msg(
                     "Optionally enter a group name. Applications with identical groups are shown grouped together.",
@@ -163,7 +159,7 @@ export class ApplicationForm extends ModelForm<Application, string> {
             <ak-provider-search-input
                 name="provider"
                 label=${msg("Provider")}
-                .value=${this.instance?.provider}
+                value=${ifDefined(this.instance?.provider ?? undefined)}
                 help=${msg("Select a provider that this application should use.")}
                 blankable
             ></ak-provider-search-input>
@@ -209,11 +205,11 @@ export class ApplicationForm extends ModelForm<Application, string> {
                         )}
                     >
                     </ak-switch-input>
-                    ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanSaveMedia)
+                    ${this.can(CapabilitiesEnum.CanSaveMedia)
                         ? html`<ak-file-input
                                   label="${msg("Icon")}"
                                   name="metaIcon"
-                                  .value=${this.instance?.metaIcon}
+                                  value=${ifDefined(this.instance?.metaIcon ?? undefined)}
                                   current=${msg("Currently set to:")}
                               ></ak-file-input>
                               ${this.instance?.metaIcon

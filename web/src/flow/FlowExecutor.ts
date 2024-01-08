@@ -8,7 +8,7 @@ import { globalAK } from "@goauthentik/common/global";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
-import { Interface } from "@goauthentik/elements/Base";
+import { Interface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/LoadingOverlay";
 import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/flow/sources/apple/AppleLoginInit";
@@ -37,8 +37,8 @@ import {
     ContextualFlowInfo,
     FlowChallengeResponseRequest,
     FlowErrorChallenge,
+    FlowLayoutEnum,
     FlowsApi,
-    LayoutEnum,
     ResponseError,
     ShellChallenge,
     UiThemeEnum,
@@ -115,8 +115,10 @@ export class FlowExecutor extends Interface implements StageHost {
                 background-color: transparent;
             }
             /* layouts */
-            .pf-c-login.stacked .pf-c-login__main {
-                margin-top: 13rem;
+            @media (min-height: 60rem) {
+                .pf-c-login.stacked .pf-c-login__main {
+                    margin-top: 13rem;
+                }
             }
             .pf-c-login__container.content-right {
                 grid-template-areas:
@@ -451,7 +453,7 @@ export class FlowExecutor extends Interface implements StageHost {
     }
 
     getLayout(): string {
-        const prefilledFlow = globalAK()?.flow?.layout || LayoutEnum.Stacked;
+        const prefilledFlow = globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
         if (this.challenge) {
             return this.challenge?.flowInfo?.layout || prefilledFlow;
         }
@@ -461,11 +463,11 @@ export class FlowExecutor extends Interface implements StageHost {
     getLayoutClass(): string {
         const layout = this.getLayout();
         switch (layout) {
-            case LayoutEnum.ContentLeft:
+            case FlowLayoutEnum.ContentLeft:
                 return "pf-c-login__container";
-            case LayoutEnum.ContentRight:
+            case FlowLayoutEnum.ContentRight:
                 return "pf-c-login__container content-right";
-            case LayoutEnum.Stacked:
+            case FlowLayoutEnum.Stacked:
             default:
                 return "ak-login-container";
         }

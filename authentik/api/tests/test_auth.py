@@ -12,6 +12,8 @@ from authentik.blueprints.tests import reconcile_app
 from authentik.core.models import Token, TokenIntents, User, UserTypes
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.lib.generators import generate_id
+from authentik.outposts.apps import MANAGED_OUTPOST
+from authentik.outposts.models import Outpost
 from authentik.providers.oauth2.constants import SCOPE_AUTHENTIK_API
 from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
 
@@ -49,8 +51,12 @@ class TestAPIAuth(TestCase):
         with self.assertRaises(AuthenticationFailed):
             bearer_auth(f"Bearer {token.key}".encode())
 
-    def test_managed_outpost(self):
+    @reconcile_app("authentik_outposts")
+    def test_managed_outpost_fail(self):
         """Test managed outpost"""
+        outpost = Outpost.objects.filter(managed=MANAGED_OUTPOST).first()
+        outpost.user.delete()
+        outpost.delete()
         with self.assertRaises(AuthenticationFailed):
             bearer_auth(f"Bearer {settings.SECRET_KEY}".encode())
 

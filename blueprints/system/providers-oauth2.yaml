@@ -45,3 +45,14 @@ entries:
             # groups is not part of the official userinfo schema, but is a quasi-standard
             "groups": [group.name for group in request.user.ak_groups.all()],
         }
+  - identifiers:
+      managed: goauthentik.io/providers/oauth2/scope-offline_access
+    model: authentik_providers_oauth2.scopemapping
+    attrs:
+      name: "authentik default OAuth Mapping: OpenID 'offline_access'"
+      scope_name: offline_access
+      description: "Access to request new tokens without interaction"
+      expression: |
+        # This scope grants the application a refresh token that can be used to refresh user data
+        # and let the application access authentik without the users interaction
+        return {}

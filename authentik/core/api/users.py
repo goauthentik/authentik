@@ -32,13 +32,7 @@ from drf_spectacular.utils import (
 )
 from guardian.shortcuts import get_anonymous_user, get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.fields import (
-    CharField,
-    IntegerField,
-    JSONField,
-    ListField,
-    SerializerMethodField,
-)
+from rest_framework.fields import CharField, IntegerField, ListField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import (
@@ -57,7 +51,7 @@ from authentik.admin.api.metrics import CoordinateSerializer
 from authentik.api.decorators import permission_required
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import LinkSerializer, PassiveSerializer, is_dict
+from authentik.core.api.utils import JSONDictField, LinkSerializer, PassiveSerializer
 from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_ORIGINAL_USER,
     SESSION_KEY_IMPERSONATE_USER,
@@ -89,7 +83,7 @@ LOGGER = get_logger()
 class UserGroupSerializer(ModelSerializer):
     """Simplified Group Serializer for user's groups"""
 
-    attributes = JSONField(required=False)
+    attributes = JSONDictField(required=False)
     parent_name = CharField(source="parent.name", read_only=True)
 
     class Meta:
@@ -110,7 +104,7 @@ class UserSerializer(ModelSerializer):
 
     is_superuser = BooleanField(read_only=True)
     avatar = CharField(read_only=True)
-    attributes = JSONField(validators=[is_dict], required=False)
+    attributes = JSONDictField(required=False)
     groups = PrimaryKeyRelatedField(
         allow_empty=True, many=True, source="ak_groups", queryset=Group.objects.all(), default=list
     )

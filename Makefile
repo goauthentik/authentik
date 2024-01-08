@@ -58,7 +58,7 @@ test: ## Run the server tests and produce a coverage report (locally)
 lint-fix:  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
 	isort $(PY_SOURCES)
 	black $(PY_SOURCES)
-	ruff $(PY_SOURCES)
+	ruff --fix $(PY_SOURCES)
 	codespell -w $(CODESPELL_ARGS)
 
 lint: ## Lint the python and golang sources
@@ -115,8 +115,9 @@ gen-diff:  ## (Release) generate the changelog diff between the current schema a
 	npx prettier --write diff.md
 
 gen-clean:
-	rm -rf web/api/src/
-	rm -rf api/
+	rm -rf gen-go-api/
+	rm -rf gen-ts-api/
+	rm -rf web/node_modules/@goauthentik/api/
 
 gen-client-ts:  ## Build and install the authentik API for Typescript into the authentik UI Application
 	docker run \

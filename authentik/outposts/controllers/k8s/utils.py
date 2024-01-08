@@ -1,5 +1,6 @@
 """k8s utils"""
 from pathlib import Path
+from typing import Optional
 
 from kubernetes.client.models.v1_container_port import V1ContainerPort
 from kubernetes.client.models.v1_service_port import V1ServicePort
@@ -37,9 +38,12 @@ def compare_port(
 
 
 def compare_ports(
-    current: list[V1ServicePort | V1ContainerPort], reference: list[V1ServicePort | V1ContainerPort]
+    current: Optional[list[V1ServicePort | V1ContainerPort]],
+    reference: Optional[list[V1ServicePort | V1ContainerPort]],
 ):
     """Compare ports of a list"""
+    if not current or not reference:
+        raise NeedsRecreate()
     if len(current) != len(reference):
         raise NeedsRecreate()
     for port in reference:

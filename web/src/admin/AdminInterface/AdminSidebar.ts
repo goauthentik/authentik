@@ -2,8 +2,11 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_SIDEBAR_TOGGLE, VERSION } from "@goauthentik/common/constants";
 import { eventActionLabels } from "@goauthentik/common/labels";
 import { me } from "@goauthentik/common/users";
-import { authentikConfigContext } from "@goauthentik/elements/AuthentikContexts";
 import { AKElement } from "@goauthentik/elements/Base";
+import {
+    CapabilitiesEnum,
+    WithCapabilitiesConfig,
+} from "@goauthentik/elements/Interface/capabilitiesProvider";
 import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "@goauthentik/elements/router/Route";
 import "@goauthentik/elements/sidebar/Sidebar";
 import {
@@ -13,13 +16,13 @@ import {
 } from "@goauthentik/elements/sidebar/types";
 import { getRootStyle } from "@goauthentik/elements/utils/getRootStyle";
 
-import { consume } from "@lit-labs/context";
 import { msg, str } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import { AdminApi, CapabilitiesEnum, CoreApi, Version } from "@goauthentik/api";
-import type { Config, SessionUser, UserSelf } from "@goauthentik/api";
+import { AdminApi } from "@goauthentik/api";
+import { CoreApi, Version } from "@goauthentik/api";
+import type { SessionUser, UserSelf } from "@goauthentik/api";
 
 import { flowDesignationTable } from "../flows/utils";
 import ConnectionTypesController from "./SidebarEntries/ConnectionTypesController";
@@ -63,10 +66,7 @@ const localToSidebarEntry = (l: LocalSidebarEntry): SidebarEntry => ({
 });
 
 @customElement("ak-admin-sidebar")
-export class AkAdminSidebar extends AKElement {
-    @consume({ context: authentikConfigContext })
-    public config!: Config;
-
+export class AkAdminSidebar extends WithCapabilitiesConfig(AKElement) {
     @property({ type: Boolean, reflect: true })
     open = true;
 
@@ -157,7 +157,7 @@ export class AkAdminSidebar extends AKElement {
             : [];
 
         // prettier-ignore
-        const enterpriseMenu: LocalSidebarEntry[] = this.config?.capabilities.includes(CapabilitiesEnum.IsEnterprise)
+        const enterpriseMenu: LocalSidebarEntry[] = this.can(CapabilitiesEnum.IsEnterprise)
             ? [[null, msg("Enterprise"), null, [["/enterprise/licenses", msg("Licenses")]]]]
             : [];
 

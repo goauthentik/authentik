@@ -129,6 +129,21 @@ export const standalone = ["api-browser", "loading"].map((input) => {
     };
 });
 
+export const enterprise = ["rac"].map((input) => {
+    return {
+        input: `./src/enterprise/${input}`,
+        output: [
+            {
+                format: "es",
+                dir: `dist/enterprise/${input}`,
+                sourcemap: true,
+                manualChunks: manualChunks,
+            },
+        ],
+        ...defaultOptions,
+    };
+});
+
 export default [
     POLY,
     // Standalone
@@ -172,4 +187,6 @@ export default [
         ],
         ...defaultOptions,
     },
+    // Enterprise
+    ...enterprise,
 ];

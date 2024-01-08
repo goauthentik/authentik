@@ -26,26 +26,13 @@
     </head>
     <body>
         <div class="pf-c-background-image">
-            <svg xmlns="http://www.w3.org/2000/svg" class="pf-c-background-image__filter" width="0" height="0">
-                <filter id="image_overlay">
-                    <feColorMatrix in="SourceGraphic" type="matrix" values="1.3 0 0 0 0 0 1.3 0 0 0 0 0 1.3 0 0 0 0 0 1 0" />
-                    <feComponentTransfer color-interpolation-filters="sRGB" result="duotone">
-                        <feFuncR type="table" tableValues="0.086274509803922 0.43921568627451"></feFuncR>
-                        <feFuncG type="table" tableValues="0.086274509803922 0.43921568627451"></feFuncG>
-                        <feFuncB type="table" tableValues="0.086274509803922 0.43921568627451"></feFuncB>
-                        <feFuncA type="table" tableValues="0 1"></feFuncA>
-                    </feComponentTransfer>
-                </filter>
-            </svg>
         </div>
-        <div class="pf-c-login">
+        <div class="pf-c-login stacked">
             <div class="ak-login-container">
-                <header class="pf-c-login__header">
-                    <div class="pf-c-brand ak-brand">
+                <main class="pf-c-login__main">
+                    <div class="pf-c-login__main-header pf-c-brand ak-brand">
                         <img src="/outpost.goauthentik.io/static/dist/assets/icons/icon_left_brand.svg" alt="authentik Logo" />
                     </div>
-                </header>
-                <main class="pf-c-login__main">
                     <header class="pf-c-login__main-header">
                         <h1 class="pf-c-title pf-m-3xl">
                             {{ .Title }}

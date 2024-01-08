@@ -38,10 +38,9 @@ Use the following settings:
 -   Consumer key: `*Application (client) ID* value from above`
 -   Consumer secret: `*Value* of the secret from above`
 
-If you kept the default _Supported account types_ selection of _Single tenant_, then you must change the URLs below as well:
+If you kept the default _Supported account types_ selection of _Single tenant_, then you must change the URL below as well:
 
--   Authorization URL: `https://login.microsoftonline.com/*Directory (tenant) ID* from above/oauth2/v2.0/authorize`
--   Access token URL: `https://login.microsoftonline.com/*Directory (tenant) ID* from above/oauth2/v2.0/token`
+-   OIDC Well-known URL: `https://login.microsoftonline.com/*Directory (tenant) ID* from above/v2.0/.well-known/openid-configuration`
 
 ![](./authentik_01.png)
 

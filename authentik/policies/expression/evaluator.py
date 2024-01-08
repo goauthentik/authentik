@@ -7,9 +7,9 @@ from structlog.stdlib import get_logger
 
 from authentik.flows.planner import PLAN_CONTEXT_SSO
 from authentik.lib.expression.evaluator import BaseEvaluator
-from authentik.lib.utils.http import get_client_ip
 from authentik.policies.exceptions import PolicyException
 from authentik.policies.types import PolicyRequest, PolicyResult
+from authentik.root.middleware import ClientIPMiddleware
 
 LOGGER = get_logger()
 if TYPE_CHECKING:
@@ -49,7 +49,7 @@ class PolicyEvaluator(BaseEvaluator):
         """Update context based on http request"""
         # update website/docs/expressions/_objects.md
         # update website/docs/expressions/_functions.md
-        self._context["ak_client_ip"] = ip_address(get_client_ip(request))
+        self._context["ak_client_ip"] = ip_address(ClientIPMiddleware.get_client_ip(request))
         self._context["http_request"] = request
 
     def handle_error(self, exc: Exception, expression_source: str):

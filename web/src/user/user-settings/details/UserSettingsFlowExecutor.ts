@@ -2,14 +2,15 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { refreshMe } from "@goauthentik/common/users";
-import { AKElement, rootInterface } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base";
+import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { StageHost } from "@goauthentik/flow/stages/base";
 import "@goauthentik/user/user-settings/details/stages/prompt/PromptStage";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -21,7 +22,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import {
     ChallengeChoices,
     ChallengeTypes,
-    CurrentTenant,
     FlowChallengeResponseRequest,
     FlowErrorChallenge,
     FlowsApi,
@@ -31,12 +31,12 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-user-settings-flow-executor")
-export class UserSettingsFlowExecutor extends AKElement implements StageHost {
+export class UserSettingsFlowExecutor
+    extends WithTenantConfig(AKElement, true)
+    implements StageHost
+{
     @property()
     flowSlug?: string;
-
-    @state()
-    tenant?: CurrentTenant;
 
     private _challenge?: ChallengeTypes;
 
@@ -87,7 +87,6 @@ export class UserSettingsFlowExecutor extends AKElement implements StageHost {
     }
 
     firstUpdated(): void {
-        this.tenant = rootInterface()?.tenant;
         this.flowSlug = this.tenant?.flowUserSettings;
         if (!this.flowSlug) {
             return;

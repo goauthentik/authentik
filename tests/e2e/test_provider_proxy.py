@@ -21,7 +21,6 @@ from authentik.providers.proxy.models import ProxyProvider
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
-@skipUnless(platform.startswith("linux"), "requires local docker")
 class TestProviderProxy(SeleniumTestCase):
     """Proxy and Outpost e2e tests"""
 
@@ -36,7 +35,9 @@ class TestProviderProxy(SeleniumTestCase):
         return {
             "image": "traefik/whoami:latest",
             "detach": True,
-            "network_mode": "host",
+            "ports": {
+                "80": "80",
+            },
             "auto_remove": True,
         }
 
@@ -46,7 +47,9 @@ class TestProviderProxy(SeleniumTestCase):
         container = client.containers.run(
             image=self.get_container_image("ghcr.io/goauthentik/dev-proxy"),
             detach=True,
-            network_mode="host",
+            ports={
+                "9000": "9000",
+            },
             environment={
                 "AUTHENTIK_HOST": self.live_server_url,
                 "AUTHENTIK_TOKEN": outpost.token.key,
@@ -78,7 +81,7 @@ class TestProviderProxy(SeleniumTestCase):
             authorization_flow=Flow.objects.get(
                 slug="default-provider-authorization-implicit-consent"
             ),
-            internal_host="http://localhost",
+            internal_host=f"http://{self.host}",
             external_host="http://localhost:9000",
         )
         # Ensure OAuth2 Params are set
@@ -145,7 +148,7 @@ class TestProviderProxy(SeleniumTestCase):
             authorization_flow=Flow.objects.get(
                 slug="default-provider-authorization-implicit-consent"
             ),
-            internal_host="http://localhost",
+            internal_host=f"http://{self.host}",
             external_host="http://localhost:9000",
             basic_auth_enabled=True,
             basic_auth_user_attribute="basic-username",

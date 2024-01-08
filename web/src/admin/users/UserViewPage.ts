@@ -22,8 +22,9 @@ import {
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/components/events/ObjectChangelog";
 import "@goauthentik/components/events/UserEvents";
-import { AKElement, rootInterface } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
+import { WithCapabilitiesConfig } from "@goauthentik/elements/Interface/capabilitiesProvider";
 import "@goauthentik/elements/PageHeader";
 import { PFSize } from "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/Tabs";
@@ -60,7 +61,7 @@ import {
 import "./UserDevicesTable";
 
 @customElement("ak-user-view")
-export class UserViewPage extends AKElement {
+export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
     @property({ type: Number })
     set userId(id: number) {
         me().then((me) => {
@@ -163,8 +164,7 @@ export class UserViewPage extends AKElement {
 
     renderActionButtons(user: User) {
         const canImpersonate =
-            rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanImpersonate) &&
-            user.pk !== this.me?.user.pk;
+            this.can(CapabilitiesEnum.CanImpersonate) && user.pk !== this.me?.user.pk;
 
         return html`<div class="ak-button-collection">
             <ak-forms-modal>

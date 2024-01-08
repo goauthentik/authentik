@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, DateTimeField, JSONField
+from rest_framework.fields import CharField, DateTimeField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer, ModelSerializer
@@ -15,7 +15,7 @@ from authentik.blueprints.v1.importer import Importer
 from authentik.blueprints.v1.oci import OCI_PREFIX
 from authentik.blueprints.v1.tasks import apply_blueprint, blueprints_find_dict
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import JSONDictField, PassiveSerializer
 
 
 class ManagedSerializer:
@@ -28,7 +28,7 @@ class MetadataSerializer(PassiveSerializer):
     """Serializer for blueprint metadata"""
 
     name = CharField()
-    labels = JSONField()
+    labels = JSONDictField()
 
 
 class BlueprintInstanceSerializer(ModelSerializer):

@@ -3,6 +3,7 @@ import { docLink } from "@goauthentik/common/global";
 import { groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -21,6 +22,7 @@ import {
     OutpostsServiceConnectionsAllListRequest,
     PaginatedLDAPProviderList,
     PaginatedProxyProviderList,
+    PaginatedRACProviderList,
     PaginatedRadiusProviderList,
     ProvidersApi,
     ServiceConnection,
@@ -38,7 +40,8 @@ export class OutpostForm extends ModelForm<Outpost, string> {
     providers?:
         | PaginatedProxyProviderList
         | PaginatedLDAPProviderList
-        | PaginatedRadiusProviderList;
+        | PaginatedRadiusProviderList
+        | PaginatedRACProviderList;
 
     defaultConfig?: OutpostDefaultConfig;
 
@@ -69,6 +72,12 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 break;
             case OutpostTypeEnum.Radius:
                 this.providers = await new ProvidersApi(DEFAULT_CONFIG).providersRadiusList({
+                    ordering: "name",
+                    applicationIsnull: false,
+                });
+                break;
+            case OutpostTypeEnum.Rac:
+                this.providers = await new ProvidersApi(DEFAULT_CONFIG).providersRacList({
                     ordering: "name",
                     applicationIsnull: false,
                 });
@@ -132,6 +141,12 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                         ?selected=${this.instance?.type === OutpostTypeEnum.Radius}
                     >
                         ${msg("Radius")}
+                    </option>
+                    <option
+                        value=${OutpostTypeEnum.Rac}
+                        ?selected=${this.instance?.type === OutpostTypeEnum.Rac}
+                    >
+                        ${msg("RAC")}
                     </option>
                 </select>
             </ak-form-element-horizontal>
@@ -206,24 +221,27 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     ${msg("Hold control/command to select multiple items.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Configuration")} name="config">
-                <ak-codemirror
-                    mode=${CodeMirrorMode.YAML}
-                    value="${YAML.stringify(
-                        this.instance ? this.instance.config : this.defaultConfig?.config,
-                    )}"
-                ></ak-codemirror>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Set custom attributes using YAML or JSON.")}
-                </p>
-                <p class="pf-c-form__helper-text">
-                    ${msg("See more here:")}&nbsp;
-                    <a
-                        target="_blank"
-                        href="${docLink("/docs/outposts?utm_source=authentik#configuration")}"
-                        >${msg("Documentation")}</a
-                    >
-                </p>
-            </ak-form-element-horizontal>`;
+            <ak-form-group aria-label="Advanced settings">
+                <span slot="header"> ${msg("Advanced settings")} </span>
+                <ak-form-element-horizontal label=${msg("Configuration")} name="config">
+                    <ak-codemirror
+                        mode=${CodeMirrorMode.YAML}
+                        value="${YAML.stringify(
+                            this.instance ? this.instance.config : this.defaultConfig?.config,
+                        )}"
+                    ></ak-codemirror>
+                    <p class="pf-c-form__helper-text">
+                        ${msg("Set custom attributes using YAML or JSON.")}
+                    </p>
+                    <p class="pf-c-form__helper-text">
+                        ${msg("See more here:")}&nbsp;
+                        <a
+                            target="_blank"
+                            href="${docLink("/docs/outposts?utm_source=authentik#configuration")}"
+                            >${msg("Documentation")}</a
+                        >
+                    </p>
+                </ak-form-element-horizontal>
+            </ak-form-group>`;
     }
 }
