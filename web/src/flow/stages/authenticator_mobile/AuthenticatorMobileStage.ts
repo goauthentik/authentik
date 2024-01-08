@@ -102,6 +102,7 @@ export class AuthenticatorMobileStage extends BaseStage<
                     <div class="qr-container">
                         <qr-code data="${JSON.stringify(this.challenge.payload)}"></qr-code>
                     </div>
+                    <input value="${JSON.stringify(this.challenge.payload)}" readonly>
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">

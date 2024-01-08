@@ -4,6 +4,7 @@ from typing import Any
 
 from django.db import models
 from drf_spectacular.utils import extend_schema
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ChoiceField, ListField
@@ -14,11 +15,13 @@ from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.api.authentication import TokenAuthentication
 from authentik.api.authorization import SecretKeyFilter
 from authentik.brands.models import Brand
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.tenants.utils import get_current_tenant
+from authentik.stages.authenticator_mobile.api.auth import MobileDeviceTokenAuthentication
 
 
 class FooterLinkSerializer(PassiveSerializer):
@@ -140,7 +143,16 @@ class BrandViewSet(UsedByMixin, ModelViewSet):
     @extend_schema(
         responses=CurrentBrandSerializer(many=False),
     )
-    @action(methods=["GET"], detail=False, permission_classes=[AllowAny])
+    @action(
+        methods=["GET"],
+        detail=False,
+        permission_classes=[AllowAny],
+        authentication_classes=[
+            MobileDeviceTokenAuthentication,
+            TokenAuthentication,
+            SessionAuthentication,
+        ],
+    )
     def current(self, request: Request) -> Response:
         """Get current brand"""
         brand: Brand = request._request.brand
