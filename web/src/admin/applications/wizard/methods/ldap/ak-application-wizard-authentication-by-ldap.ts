@@ -7,7 +7,7 @@ import "@goauthentik/components/ak-number-input";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
-import { rootInterface } from "@goauthentik/elements/Base";
+import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -32,7 +32,7 @@ import {
 } from "./LDAPOptionsAndHelp";
 
 @customElement("ak-application-wizard-authentication-by-ldap")
-export class ApplicationWizardApplicationDetails extends BaseProviderPanel {
+export class ApplicationWizardApplicationDetails extends WithBrandConfig(BaseProviderPanel) {
     render() {
         const provider = this.wizard.provider as LDAPProvider | undefined;
         const errors = this.wizard.errors.provider;
@@ -57,7 +57,7 @@ export class ApplicationWizardApplicationDetails extends BaseProviderPanel {
                     <ak-branded-flow-search
                         flowType=${FlowsInstancesListDesignationEnum.Authentication}
                         .currentFlow=${provider?.authorizationFlow}
-                        .brandFlow=${rootInterface()?.brand?.flowAuthentication}
+                        .brandFlow=${this.brand.flowAuthentication}
                         required
                     ></ak-branded-flow-search>
                     <p class="pf-c-form__helper-text">

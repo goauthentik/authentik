@@ -10,7 +10,7 @@ from authentik.providers.oauth2.views.token import TokenView
 github_urlpatterns = [
     path(
         "login/oauth/authorize",
-        AuthorizationFlowInitView.as_view(),
+        AuthorizationFlowInitView.as_view(github_compat=True),
         name="github-authorize",
     ),
     path(

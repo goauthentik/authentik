@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-03 11:22+0000\n"
+"POT-Creation-Date: 2024-01-09 15:37+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -92,11 +92,11 @@ msgstr ""
 msgid "Brands"
 msgstr ""
 
-#: authentik/core/api/providers.py:120
+#: authentik/core/api/providers.py:122
 msgid "SAML Provider from Metadata"
 msgstr ""
 
-#: authentik/core/api/providers.py:121
+#: authentik/core/api/providers.py:123
 msgid "Create a SAML Provider by importing its Metadata."
 msgstr ""
 
@@ -343,7 +343,7 @@ msgid "Powered by authentik"
 msgstr ""
 
 #: authentik/core/views/apps.py:53
-#: authentik/providers/oauth2/views/authorize.py:395
+#: authentik/providers/oauth2/views/authorize.py:430
 #: authentik/providers/oauth2/views/device_init.py:70
 #: authentik/providers/saml/views/sso.py:70
 #, python-format
@@ -370,6 +370,10 @@ msgstr ""
 
 #: authentik/crypto/models.py:102
 msgid "Certificate-Key Pairs"
+msgstr ""
+
+#: authentik/enterprise/api.py:33
+msgid "Enterprise is required to create/update this object."
 msgstr ""
 
 #: authentik/enterprise/models.py:183
@@ -411,20 +415,28 @@ msgstr ""
 msgid "RAC Providers"
 msgstr ""
 
-#: authentik/enterprise/providers/rac/models.py:99
+#: authentik/enterprise/providers/rac/models.py:100
 msgid "RAC Endpoint"
 msgstr ""
 
-#: authentik/enterprise/providers/rac/models.py:100
+#: authentik/enterprise/providers/rac/models.py:101
 msgid "RAC Endpoints"
 msgstr ""
 
-#: authentik/enterprise/providers/rac/models.py:121
+#: authentik/enterprise/providers/rac/models.py:122
 msgid "RAC Property Mapping"
 msgstr ""
 
-#: authentik/enterprise/providers/rac/models.py:122
+#: authentik/enterprise/providers/rac/models.py:123
 msgid "RAC Property Mappings"
+msgstr ""
+
+#: authentik/enterprise/providers/rac/views.py:103
+msgid "Maximum connection limit reached."
+msgstr ""
+
+#: authentik/enterprise/providers/rac/views.py:107
+msgid "(You are already connected in another tab/window)"
 msgstr ""
 
 #: authentik/events/models.py:289
@@ -1282,7 +1294,7 @@ msgstr ""
 msgid "Device Tokens"
 msgstr ""
 
-#: authentik/providers/oauth2/views/authorize.py:450
+#: authentik/providers/oauth2/views/authorize.py:485
 #: authentik/providers/saml/views/flows.py:87
 #, python-format
 msgid "Redirecting to %(app)s..."

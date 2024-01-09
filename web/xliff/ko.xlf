@@ -1,4 +1,4 @@
-<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file target-language="ko" source-language="en" original="lit-localize-inputs" datatype="plaintext">
     <body>
       <trans-unit id="s4caed5b7a7e5d89b">
@@ -444,11 +444,6 @@
         <target>클라이언트 IP</target>
         
       </trans-unit>
-      <trans-unit id="s45f9e7ce0897f9e5">
-        <source>Tenant</source>
-        <target>테넌트</target>
-        
-      </trans-unit>
       <trans-unit id="s2152f3482784705f">
         <source>Recent events</source>
         <target>최근 이력</target>
@@ -612,8 +607,8 @@
         
       </trans-unit>
       <trans-unit id="saa0e2675da69651b">
-        <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
-        <target>URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; 을 찾을 수 없습니다.</target>
+        <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
+        <target>URL "<x id="0" equiv-text="${this.url}"/>" 을 찾을 수 없습니다.</target>
         
       </trans-unit>
       <trans-unit id="s58cd9c2fe836d9c6">
@@ -1054,8 +1049,8 @@
         
       </trans-unit>
       <trans-unit id="sa8384c9c26731f83">
-        <source>To allow any redirect URI, set this value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
-        <target>리디렉션 URI를 허용하려면 이 값을 &quot;.*&quot;로 설정합니다. 이로 인해 발생할 수 있는 보안상의 영향에 유의하세요.</target>
+        <source>To allow any redirect URI, set this value to ".*". Be aware of the possible security implications this can have.</source>
+        <target>리디렉션 URI를 허용하려면 이 값을 ".*"로 설정합니다. 이로 인해 발생할 수 있는 보안상의 영향에 유의하세요.</target>
         
       </trans-unit>
       <trans-unit id="s55787f4dfcdce52b">
@@ -1792,8 +1787,8 @@
         
       </trans-unit>
       <trans-unit id="sa90b7809586c35ce">
-        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
-        <target>전체 URL, 상대 경로를 입력하거나, 또는 'fa://fa-test'를 사용하여 Font Awesome 아이콘 &quot;fa-test&quot;를 사용합니다.</target>
+        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
+        <target>전체 URL, 상대 경로를 입력하거나, 또는 'fa://fa-test'를 사용하여 Font Awesome 아이콘 "fa-test"를 사용합니다.</target>
         
       </trans-unit>
       <trans-unit id="s0410779cb47de312">
@@ -2972,7 +2967,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s76768bebabb7d543">
-        <source>Field which contains members of a group. Note that if using the &quot;memberUid&quot; field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
+        <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
         <target>그룹 구성원이 포함된 필드입니다. 'memberUid' 필드를 사용하는 경우 값에 상대적인 고유 이름이 포함된 것으로 가정합니다 (예:'memberUid=some-user' 대신 'memberUid=cn=some-user,ou=groups,...').</target>
         
       </trans-unit>
@@ -3618,16 +3613,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>토큰 업데이트</target>
         
       </trans-unit>
-      <trans-unit id="s0af6301e76e2a2a5">
-        <source>Successfully updated tenant.</source>
-        <target>테넌트를 성공적으로 업데이트했습니다.</target>
-        
-      </trans-unit>
-      <trans-unit id="sf55c7c06dbc2c8c6">
-        <source>Successfully created tenant.</source>
-        <target>테넌트를 성공적으로 만들었습니다.</target>
-        
-      </trans-unit>
       <trans-unit id="s41706a202b6c40f1">
         <source>Domain</source>
         <target>도메인</target>
@@ -3641,11 +3626,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s11326fd2590f4e5e">
         <source>Default</source>
         <target>기본</target>
-        
-      </trans-unit>
-      <trans-unit id="se1c85959463f53df">
-        <source>Use this tenant for each domain that doesn't have a dedicated tenant.</source>
-        <target>전용 테넌트가 없는 각 도메인에 이 테넌트를 사용하세요.</target>
         
       </trans-unit>
       <trans-unit id="sc19838ca8c135c1b">
@@ -3764,28 +3744,13 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s7b1fba26d245cb1c">
-        <source>When using an external logging solution for archiving, this can be set to &quot;minutes=5&quot;.</source>
-        <target>아카이브에 외부 로깅 솔루션을 사용하는 경우, 이 값을 &quot;minutes=5&quot;로 설정할 수 있습니다.</target>
+        <source>When using an external logging solution for archiving, this can be set to "minutes=5".</source>
+        <target>아카이브에 외부 로깅 솔루션을 사용하는 경우, 이 값을 "minutes=5"로 설정할 수 있습니다.</target>
         
       </trans-unit>
       <trans-unit id="s44536d20bb5c8257">
         <source>This setting only affects new Events, as the expiration is saved per-event.</source>
         <target>T만료는 이벤트별로 저장되므로 설정은 새 이벤트에만 영향을 줍니다.</target>
-        
-      </trans-unit>
-      <trans-unit id="s3bb51cabb02b997e">
-        <source>Format: &quot;weeks=3;days=2;hours=3,seconds=2&quot;.</source>
-        <target>서식: &quot;weeks=3;days=2;hours=3,seconds=2&quot;.</target>
-        
-      </trans-unit>
-      <trans-unit id="s04bfd02201db5ab8">
-        <source>Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this tenant.</source>
-        <target>YAML 또는 JSON을 사용하여 사용자 지정 속성을 설정합니다. 이 테넌트가 요청을 처리하는 경우 여기에서 설정한 모든 속성은 사용자가 상속받게 됩니다.</target>
-        
-      </trans-unit>
-      <trans-unit id="s7f9e79189a3d19e2">
-        <source>Tenants</source>
-        <target>테넌트</target>
         
       </trans-unit>
       <trans-unit id="s164be9a7537b99f6">
@@ -3796,21 +3761,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s4802636d55022ed3">
         <source>Default?</source>
         <target>기본값?</target>
-        
-      </trans-unit>
-      <trans-unit id="s69a56a3022c4be7f">
-        <source>Tenant(s)</source>
-        <target>테넌트</target>
-        
-      </trans-unit>
-      <trans-unit id="s1b606acd76ba2c4c">
-        <source>Update Tenant</source>
-        <target>테넌트 업데이트</target>
-        
-      </trans-unit>
-      <trans-unit id="s773aa6621d7e37b7">
-        <source>Create Tenant</source>
-        <target>테넌트 생성</target>
         
       </trans-unit>
       <trans-unit id="s8cb7bb82e96d5d77">
@@ -3967,8 +3917,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
-        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot;?</source>
-        <target>정말 <x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot; 을(를) 업데이트 하시겠습니까?</target>
+        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>"?</source>
+        <target>정말 <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>" 을(를) 업데이트 하시겠습니까?</target>
         
       </trans-unit>
       <trans-unit id="sc92d7cfb6ee1fec6">
@@ -4080,11 +4030,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="sd7fa99e4d82b374a">
         <source>Recovery link cannot be emailed, user has no email address saved.</source>
         <target>복구 링크를 이메일로 보낼 수 없습니다. 사용자가 저장한 이메일 주소가 없습니다.</target>
-        
-      </trans-unit>
-      <trans-unit id="s63d89a6ae0969c30">
-        <source>To let a user directly reset a their password, configure a recovery flow on the currently active tenant.</source>
-        <target>사용자가 직접 비밀번호를 재설정할 수 있도록 하려면 현재 활성 상태인 테넌트에서 복구 플로우를 구성하세요.</target>
         
       </trans-unit>
       <trans-unit id="s720594461542943f">
@@ -5052,8 +4997,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sdf1d8edef27236f0">
-        <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
-        <target>YubiKey 같은 &quot;로밍&quot; 인증기</target>
+        <source>A "roaming" authenticator, like a YubiKey</source>
+        <target>YubiKey 같은 "로밍" 인증기</target>
         
       </trans-unit>
       <trans-unit id="sfffba7b23d8fb40c">
@@ -5387,8 +5332,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s2d5f69929bb7221d">
-        <source><x id="0" equiv-text="${prompt.name}"/> (&quot;<x id="1" equiv-text="${prompt.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${prompt.type}"/>)</source>
-        <target><x id="0" equiv-text="${prompt.name}"/> (&quot;<x id="1" equiv-text="${prompt.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${prompt.type}"/>)</target>
+        <source><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", of type <x id="2" equiv-text="${prompt.type}"/>)</source>
+        <target><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", of type <x id="2" equiv-text="${prompt.type}"/>)</target>
         
       </trans-unit>
       <trans-unit id="s3b7b519444181264">
@@ -5436,7 +5381,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s1608b2f94fa0dbd4">
-        <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
+        <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
         <target>기간을 0 이상으로 설정하면, 사용자에게 '로그인 상태 유지'를 선택할 수 있는 옵션이 제공되며, 이 경우 세션이 여기에 지정된 시간만큼 연장됩니다.</target>
         
       </trans-unit>
@@ -7813,10 +7758,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>A copy of this recovery link has been placed in your clipboard</source>
   <target>이 복구 링크의 사본이 클립보드에 저장되었습니다.</target>
 </trans-unit>
-<trans-unit id="s5b8ee296ed258568">
-  <source>The current tenant must have a recovery flow configured to use a recovery link</source>
-  <target>현재 테넌트에 복구 링크를 사용하도록 구성된 복구 플로우가 있어야 합니다.</target>
-</trans-unit>
 <trans-unit id="s895514dda9cb9c94">
   <source>Create recovery link</source>
   <target>복구 링크 생성</target>
@@ -7926,8 +7867,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>사용자 생성과 <x id="0" equiv-text="${this.group.name}"/> 그룹 추가에 성공했습니다.</target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
-  <target>이 사용자는 &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot; 그룹에 추가됩니다.</target>
+  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
+  <target>이 사용자는 "<x id="0" equiv-text="${this.targetGroup.name}"/>" 그룹에 추가됩니다.</target>
 </trans-unit>
 <trans-unit id="s62e7f6ed7d9cb3ca">
   <source>Pretend user exists</source>
@@ -8004,6 +7945,260 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s047a5f0211fedc72">
   <source>Require Outpost (flow can only be executed from an outpost).</source>
   <target>Outpost필요 (플로우는 Outpost에서만 실행할 수 있음).</target>
+</trans-unit>
+<trans-unit id="s744401846fea6e76">
+  <source>Brand</source>
+</trans-unit>
+<trans-unit id="scc7f34824150bfb8">
+  <source>Provider require enterprise.</source>
+</trans-unit>
+<trans-unit id="s31f1afc1bfe1cb3a">
+  <source>Learn more</source>
+</trans-unit>
+<trans-unit id="sa2ea0fcd3ffa80e0">
+  <source>Connection expiry</source>
+</trans-unit>
+<trans-unit id="s6dd297c217729828">
+  <source>Determines how long a session lasts before being disconnected and requiring re-authorization.</source>
+</trans-unit>
+<trans-unit id="s3271da6c18c25b18">
+  <source>Connection settings.</source>
+</trans-unit>
+<trans-unit id="s2f4ca2148183d692">
+  <source>Successfully updated endpoint.</source>
+</trans-unit>
+<trans-unit id="s5adee855dbe191d9">
+  <source>Successfully created endpoint.</source>
+</trans-unit>
+<trans-unit id="s61e136c0658e27d5">
+  <source>Protocol</source>
+</trans-unit>
+<trans-unit id="sa062b019ff0c8809">
+  <source>RDP</source>
+</trans-unit>
+<trans-unit id="s97f9bf19fa5b57d1">
+  <source>SSH</source>
+</trans-unit>
+<trans-unit id="s7c100119e9ffcc32">
+  <source>VNC</source>
+</trans-unit>
+<trans-unit id="s6b05f9d8801fc14f">
+  <source>Host</source>
+</trans-unit>
+<trans-unit id="sb474f652a2c2fc76">
+  <source>Hostname/IP to connect to.</source>
+</trans-unit>
+<trans-unit id="sc39f6abf0daedb0f">
+  <source>Maximum concurrent connections</source>
+</trans-unit>
+<trans-unit id="s62418cbcd2a25498">
+  <source>Maximum concurrent allowed connections to this endpoint. Can be set to -1 to disable the limit.</source>
+</trans-unit>
+<trans-unit id="s8276649077e8715c">
+  <source>Endpoint(s)</source>
+</trans-unit>
+<trans-unit id="sf1dabfe0fe8a75ad">
+  <source>Update Endpoint</source>
+</trans-unit>
+<trans-unit id="s008496c7716b9812">
+  <source>These bindings control which users will have access to this endpoint. Users must also have access to the application.</source>
+</trans-unit>
+<trans-unit id="s38e7cd1a24e70faa">
+  <source>Create Endpoint</source>
+</trans-unit>
+<trans-unit id="s4770c10e5b1c028c">
+  <source>RAC is in preview.</source>
+</trans-unit>
+<trans-unit id="s168565f5ac74a89f">
+  <source>Update RAC Provider</source>
+</trans-unit>
+<trans-unit id="s8465a2caa2d9ea5d">
+  <source>Endpoints</source>
+</trans-unit>
+<trans-unit id="s9857d883d8eb98fc">
+  <source>General settings</source>
+</trans-unit>
+<trans-unit id="sd2066881798a1b96">
+  <source>RDP settings</source>
+</trans-unit>
+<trans-unit id="sb864dc36a463a155">
+  <source>Ignore server certificate</source>
+</trans-unit>
+<trans-unit id="s20366a8d1eaaca54">
+  <source>Enable wallpaper</source>
+</trans-unit>
+<trans-unit id="s1e44c5350ef7598c">
+  <source>Enable font-smoothing</source>
+</trans-unit>
+<trans-unit id="s04ff5d6ae711e6d6">
+  <source>Enable full window dragging</source>
+</trans-unit>
+<trans-unit id="sab21e1f62676b56c">
+  <source>Successfully updated brand.</source>
+</trans-unit>
+<trans-unit id="sa43e43fd3a23e22d">
+  <source>Successfully created brand.</source>
+</trans-unit>
+<trans-unit id="s41b3f9b4c98aabd9">
+  <source>Use this brand for each domain that doesn't have a dedicated brand.</source>
+</trans-unit>
+<trans-unit id="s17260b71484b307f">
+  <source>Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this brand.</source>
+</trans-unit>
+<trans-unit id="s79fc990a2b58f27f">
+  <source>Brands</source>
+</trans-unit>
+<trans-unit id="s02774bc46a167346">
+  <source>Brand(s)</source>
+</trans-unit>
+<trans-unit id="s801bf3d03f4a3ff1">
+  <source>Update Brand</source>
+</trans-unit>
+<trans-unit id="s5c3efec5330e0000">
+  <source>Create Brand</source>
+</trans-unit>
+<trans-unit id="sa9d13ce9e83aac17">
+  <source>To let a user directly reset a their password, configure a recovery flow on the currently active brand.</source>
+</trans-unit>
+<trans-unit id="s94d61907ee22a8c1">
+  <source>Korean</source>
+</trans-unit>
+<trans-unit id="s95d56e58f816d211">
+  <source>Dutch</source>
+</trans-unit>
+<trans-unit id="s6709b81e1ed4e39f">
+  <source>The current brand must have a recovery flow configured to use a recovery link</source>
+</trans-unit>
+<trans-unit id="s663ccbfdf27e8dd0">
+  <source>Network binding</source>
+</trans-unit>
+<trans-unit id="sb108a06693c67753">
+  <source>No binding</source>
+</trans-unit>
+<trans-unit id="s5aab90c74f1233b8">
+  <source>Bind ASN</source>
+</trans-unit>
+<trans-unit id="s488303b048afe83b">
+  <source>Bind ASN and Network</source>
+</trans-unit>
+<trans-unit id="s3268dcfe0c8234dc">
+  <source>Bind ASN, Network and IP</source>
+</trans-unit>
+<trans-unit id="s226381aca231644f">
+  <source>Configure if sessions created by this stage should be bound to the Networks they were created in.</source>
+</trans-unit>
+<trans-unit id="s2555a1f20f3fd93e">
+  <source>GeoIP binding</source>
+</trans-unit>
+<trans-unit id="s3d63c78f93c9a92e">
+  <source>Bind Continent</source>
+</trans-unit>
+<trans-unit id="s395d5863b3a259b5">
+  <source>Bind Continent and Country</source>
+</trans-unit>
+<trans-unit id="s625ea0c32b4b136c">
+  <source>Bind Continent, Country and City</source>
+</trans-unit>
+<trans-unit id="s4bc7a1a88961be90">
+  <source>Configure if sessions created by this stage should be bound to their GeoIP-based location</source>
+</trans-unit>
+<trans-unit id="sa06cd519ff151b6d">
+  <source>RAC</source>
+</trans-unit>
+<trans-unit id="s634e2fd82c397576">
+  <source>Successfully updated settings.</source>
+</trans-unit>
+<trans-unit id="sb8e4edaea6f1d935">
+  <source>Avatars</source>
+</trans-unit>
+<trans-unit id="s945856050217c828">
+  <source>Configure how authentik should show avatars for users. The following values can be set:</source>
+</trans-unit>
+<trans-unit id="sf4ef4c8ce713f775">
+  <source>Disables per-user avatars and just shows a 1x1 pixel transparent picture</source>
+</trans-unit>
+<trans-unit id="s5446842a7e4a963b">
+  <source>Uses gravatar with the user's email address</source>
+</trans-unit>
+<trans-unit id="s35363b9e1cc2abd3">
+  <source>Generated avatars based on the user's name</source>
+</trans-unit>
+<trans-unit id="s48110ca292cad513">
+  <source>Any URL: If you want to use images hosted on another server, you can set any URL. Additionally, these placeholders can be used:</source>
+</trans-unit>
+<trans-unit id="sbe1dfda044bdc93b">
+  <source>The user's username</source>
+</trans-unit>
+<trans-unit id="s653f257c9c2d4dc5">
+  <source>The email address, md5 hashed</source>
+</trans-unit>
+<trans-unit id="s9c9183cd80916b4f">
+  <source>The user's UPN, if set (otherwise an empty string)</source>
+</trans-unit>
+<trans-unit id="h4963ed14d7e239a9">
+  <source>An attribute path like
+                                    <x id="0" equiv-text="&lt;code&gt;"/>attributes.something.avatar<x id="1" equiv-text="&lt;/code&gt;"/>, which can be used in
+                                    combination with the file field to allow users to upload custom
+                                    avatars for themselves.</source>
+</trans-unit>
+<trans-unit id="s4c80c34a67a6f1c9">
+  <source>Multiple values can be set, comma-separated, and authentik will fallback to the next mode when no avatar could be found.</source>
+</trans-unit>
+<trans-unit id="h2fafcc3ebafea2f8">
+  <source>For example, setting this to <x id="0" equiv-text="&lt;code&gt;"/>gravatar,initials<x id="1" equiv-text="&lt;/code&gt;"/> will
+                                attempt to get an avatar from Gravatar, and if the user has not
+                                configured on there, it will fallback to a generated avatar.</source>
+</trans-unit>
+<trans-unit id="sea247dfb18f696d2">
+  <source>Default user change name</source>
+</trans-unit>
+<trans-unit id="s078ffec0257621c0">
+  <source>Enable the ability for users to change their name.</source>
+</trans-unit>
+<trans-unit id="s26ad11b21253152b">
+  <source>Default user change email</source>
+</trans-unit>
+<trans-unit id="s5fc6c14d106f40d3">
+  <source>Enable the ability for users to change their email.</source>
+</trans-unit>
+<trans-unit id="s23564aa839755965">
+  <source>Default user change username</source>
+</trans-unit>
+<trans-unit id="s6d816a95ca43a99d">
+  <source>Enable the ability for users to change their username.</source>
+</trans-unit>
+<trans-unit id="s57b52b60ed5e2bc7">
+  <source>Footer links</source>
+</trans-unit>
+<trans-unit id="s7349802b2f7f99c2">
+  <source>This option configures the footer links on the flow executor pages. It must be a valid JSON list and can be used as follows:</source>
+</trans-unit>
+<trans-unit id="s166b59f3cc5d8ec3">
+  <source>GDPR compliance</source>
+</trans-unit>
+<trans-unit id="sb8b23770f899e5bb">
+  <source>When enabled, all the events caused by a user will be deleted upon the user's deletion.</source>
+</trans-unit>
+<trans-unit id="s29501761df0fe837">
+  <source>Impersonation</source>
+</trans-unit>
+<trans-unit id="s8f503553d8432487">
+  <source>Globally enable/disable impersonation.</source>
+</trans-unit>
+<trans-unit id="see1eb81c1f734079">
+  <source>System settings</source>
+</trans-unit>
+<trans-unit id="s28b99b59541f54ca">
+  <source>Connection failed after <x id="0" equiv-text="${this.connectionAttempt}"/> attempts.</source>
+</trans-unit>
+<trans-unit id="s7c7d956418e1c8c8">
+  <source>Re-connecting in <x id="0" equiv-text="${Math.max(1, delay / 1000)}"/> second(s).</source>
+</trans-unit>
+<trans-unit id="sfc003381f593d943">
+  <source>Connecting...</source>
+</trans-unit>
+<trans-unit id="s31aa94a0b3c7edb2">
+  <source>Select endpoint to connect to</source>
 </trans-unit>
     </body>
   </file>

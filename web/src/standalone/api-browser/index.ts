@@ -2,7 +2,7 @@ import { CSRFHeaderName } from "@goauthentik/common/api/middleware";
 import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
 import { first, getCookie } from "@goauthentik/common/utils";
-import { Interface } from "@goauthentik/elements/Base";
+import { Interface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/ak-locale-context";
 import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 import "rapidoc";

@@ -8,7 +8,8 @@ import {
 } from "@goauthentik/common/constants";
 import { currentInterface } from "@goauthentik/common/sentry";
 import { me } from "@goauthentik/common/users";
-import { AKElement, rootInterface } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base";
+import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
@@ -23,7 +24,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { EventsApi } from "@goauthentik/api";
 
 @customElement("ak-page-header")
-export class PageHeader extends AKElement {
+export class PageHeader extends WithBrandConfig(AKElement) {
     @property()
     icon?: string;
 
@@ -35,9 +36,8 @@ export class PageHeader extends AKElement {
 
     @property()
     set header(value: string) {
-        const brand = rootInterface()?.brand;
         const currentIf = currentInterface();
-        let title = brand?.brandingTitle || TITLE_DEFAULT;
+        let title = this.brand?.brandingTitle || TITLE_DEFAULT;
         if (currentIf === "admin") {
             title = `${msg("Admin")} - ${title}`;
         }

@@ -8204,6 +8204,22 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Determines how long a session lasts before being disconnected and requiring re-authorization.</source>
   <target>设置会话在被断开连接并需要重新授权之前持续的时间。</target>
 </trans-unit>
+<trans-unit id="scc7f34824150bfb8">
+  <source>Provider require enterprise.</source>
+  <target>提供程序需要企业版。</target>
+</trans-unit>
+<trans-unit id="s31f1afc1bfe1cb3a">
+  <source>Learn more</source>
+  <target>了解更多</target>
+</trans-unit>
+<trans-unit id="sc39f6abf0daedb0f">
+  <source>Maximum concurrent connections</source>
+  <target>最大并发连接数</target>
+</trans-unit>
+<trans-unit id="s62418cbcd2a25498">
+  <source>Maximum concurrent allowed connections to this endpoint. Can be set to -1 to disable the limit.</source>
+  <target>允许到此端点的最大并发连接数。可以设置为 -1 以禁用限制。</target>
+</trans-unit>
     </body>
   </file>
 </xliff>

@@ -3,7 +3,7 @@ import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-text-input";
-import { rootInterface } from "@goauthentik/elements/Base";
+import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -17,7 +17,7 @@ import { FlowsInstancesListDesignationEnum, RadiusProvider } from "@goauthentik/
 import BaseProviderPanel from "../BaseProviderPanel";
 
 @customElement("ak-application-wizard-authentication-by-radius")
-export class ApplicationWizardAuthenticationByRadius extends BaseProviderPanel {
+export class ApplicationWizardAuthenticationByRadius extends WithBrandConfig(BaseProviderPanel) {
     render() {
         const provider = this.wizard.provider as RadiusProvider | undefined;
         const errors = this.wizard.errors.provider;
@@ -42,7 +42,7 @@ export class ApplicationWizardAuthenticationByRadius extends BaseProviderPanel {
                     <ak-branded-flow-search
                         flowType=${FlowsInstancesListDesignationEnum.Authentication}
                         .currentFlow=${provider?.authorizationFlow}
-                        .brandFlow=${rootInterface()?.brand?.flowAuthentication}
+                        .brandFlow=${this.brand.flowAuthentication}
                         required
                     ></ak-branded-flow-search>
                     <p class="pf-c-form__helper-text">

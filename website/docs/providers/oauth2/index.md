@@ -35,11 +35,19 @@ To access the user's email address, a scope of `user:email` is required. To acce
 
 ### `authorization_code`:
 
-This grant is used to convert an authorization code to a refresh token. The authorization code is retrieved through the Authorization flow, and can only be used once, and expires quickly.
+This grant is used to convert an authorization code to an access token (and optionally refresh token). The authorization code is retrieved through the Authorization flow, and can only be used once, and expires quickly.
+
+:::info
+Starting with authentik 2024.1, applications only receive an access token. To receive a refresh token, applications must be allowed to request the `offline_access` scope in authentik and also be configured to request the scope.
+:::
 
 ### `refresh_token`:
 
 Refresh tokens can be used as long-lived tokens to access user data, and further renew the refresh token down the road.
+
+:::info
+Starting with authentik 2024.1, this grant requires the `offline_access` scope.
+:::
 
 ### `client_credentials`:
 

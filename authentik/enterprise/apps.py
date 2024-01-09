@@ -2,7 +2,11 @@
 from authentik.blueprints.apps import ManagedAppConfig
 
 
-class AuthentikEnterpriseConfig(ManagedAppConfig):
+class EnterpriseConfig(ManagedAppConfig):
+    """Base app config for all enterprise apps"""
+
+
+class AuthentikEnterpriseConfig(EnterpriseConfig):
     """Enterprise app config"""
 
     name = "authentik.enterprise"

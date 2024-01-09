@@ -1,7 +1,7 @@
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
-import { rootInterface } from "@goauthentik/elements/Base";
+import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -14,7 +14,7 @@ import { customElement } from "lit/decorators.js";
 import { FlowsInstancesListDesignationEnum, ProvidersApi, RadiusProvider } from "@goauthentik/api";
 
 @customElement("ak-provider-radius-form")
-export class RadiusProviderFormPage extends BaseProviderForm<RadiusProvider> {
+export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<RadiusProvider>) {
     loadInstance(pk: number): Promise<RadiusProvider> {
         return new ProvidersApi(DEFAULT_CONFIG).providersRadiusRetrieve({
             id: pk,
@@ -57,7 +57,7 @@ export class RadiusProviderFormPage extends BaseProviderForm<RadiusProvider> {
                 <ak-branded-flow-search
                     flowType=${FlowsInstancesListDesignationEnum.Authentication}
                     .currentFlow=${this.instance?.authorizationFlow}
-                    .brandFlow=${rootInterface()?.brand?.flowAuthentication}
+                    .brandFlow=${this.brand?.flowAuthentication}
                     required
                 ></ak-branded-flow-search>
                 <p class="pf-c-form__helper-text">${msg("Flow used for users to authenticate.")}</p>
