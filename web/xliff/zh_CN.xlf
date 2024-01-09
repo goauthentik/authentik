@@ -8212,6 +8212,14 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Learn more</source>
   <target>了解更多</target>
 </trans-unit>
+<trans-unit id="sc39f6abf0daedb0f">
+  <source>Maximum concurrent connections</source>
+  <target>最大并发连接数</target>
+</trans-unit>
+<trans-unit id="s62418cbcd2a25498">
+  <source>Maximum concurrent allowed connections to this endpoint. Can be set to -1 to disable the limit.</source>
+  <target>允许到此端点的最大并发连接数。可以设置为 -1 以禁用限制。</target>
+</trans-unit>
     </body>
   </file>
 </xliff>
