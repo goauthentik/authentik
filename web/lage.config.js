@@ -2,6 +2,7 @@ module.exports = {
     pipeline: {
         "extract-locales": [],
         "build-locales": [],
+        "clean": [],
         "build-locales:build": [],
         "build-locales:repair": [],
         "rollup:build": [],

@@ -8,6 +8,7 @@
         "build-locales": "lage build-locales",
         "build-locales:build": "lage build-locales:build",
         "build-locales:repair": "lage build-locales:repair",
+        "clean": "lage clean",
         "rollup:build": "lage rollup:build",
         "rollup:build-proxy": "lage rollup:build-proxy",
         "rollup:watch": "lage rollup:watch",

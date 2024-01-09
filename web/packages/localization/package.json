@@ -12,7 +12,7 @@
         "clean:dist": "rimraf dist scripts/*.mjs",
         "clean:build": "rimraf src",
         "clean": "npm-run-all --parallel clean:dist clean:build",
-        "extract-locales": "run-p localization:extract localization:pseudolocalize",
+        "extract-locales": "npm-run-all --sequential localization:extract localization:pseudolocalize",
         "lint:lint": "eslint . --max-warnings 0",
         "fix:lint": "eslint . --max-warnings 0 --fix dist/locale-codes.js",
         "fix:prettier": "prettier --write ./src/**/* ./package.json ./lit-localize.json",
