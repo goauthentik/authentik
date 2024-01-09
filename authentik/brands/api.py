@@ -21,7 +21,9 @@ from authentik.brands.models import Brand
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.tenants.utils import get_current_tenant
+from authentik.core.api.utils import PassiveSerializer
 from authentik.stages.authenticator_mobile.api.auth import MobileDeviceTokenAuthentication
+from authentik.tenants.utils import get_current_tenant
 
 
 class FooterLinkSerializer(PassiveSerializer):
