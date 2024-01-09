@@ -74,6 +74,7 @@ PLAN_CONTEXT_PARAMS = "goauthentik.io/providers/oauth2/params"
 SESSION_KEY_LAST_LOGIN_UID = "authentik/providers/oauth2/last_login_uid"
 
 ALLOWED_PROMPT_PARAMS = {PROMPT_NONE, PROMPT_CONSENT, PROMPT_LOGIN}
+FORBIDDEN_URI_SCHEMES = {"javascript", "data", "vbscript"}
 
 
 @dataclass(slots=True)
@@ -174,6 +175,10 @@ class OAuthAuthorizationParams:
         self.check_scope()
         self.check_nonce()
         self.check_code_challenge()
+        if self.request:
+            raise AuthorizeError(
+                self.redirect_uri, "request_not_supported", self.grant_type, self.state
+            )
 
     def check_redirect_uri(self):
         """Redirect URI validation."""
@@ -211,10 +216,9 @@ class OAuthAuthorizationParams:
                     expected=allowed_redirect_urls,
                 )
                 raise RedirectUriError(self.redirect_uri, allowed_redirect_urls)
-        if self.request:
-            raise AuthorizeError(
-                self.redirect_uri, "request_not_supported", self.grant_type, self.state
-            )
+        # Check against forbidden schemes
+        if urlparse(self.redirect_uri).scheme in FORBIDDEN_URI_SCHEMES:
+            raise RedirectUriError(self.redirect_uri, allowed_redirect_urls)
 
     def check_scope(self):
         """Ensure openid scope is set in Hybrid flows, or when requesting an id_token"""
