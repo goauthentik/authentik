@@ -47,8 +47,8 @@ const isLocaleCandidate = (v: unknown): v is string =>
 
 export function autoDetectLanguage(requestedCode?: string): string {
     const localeCandidates: string[] = [
-        globalAK()?.locale ?? TOMBSTONE,
         localeCodeFromUrl("locale"),
+        globalAK()?.locale ?? TOMBSTONE,
         requestedCode ?? TOMBSTONE,
         window.navigator?.language ?? TOMBSTONE,
         DEFAULT_LOCALE,
