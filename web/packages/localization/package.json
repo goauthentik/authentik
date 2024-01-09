@@ -9,7 +9,9 @@
         "build": "run-s build-locales compile fix:lint fix:prettier",
         "build-locales": "lit-localize build",
         "compile": "node ./build.mjs",
-        "clean": "rimraf src dist scripts/*.mjs",
+        "clean:dist": "rimraf dist scripts/*.mjs",
+        "clean:build": "rimraf src",
+        "clean": "npm-run-all --parallel clean:dist clean:build",
         "extract-locales": "run-p localization:extract localization:pseudolocalize",
         "lint:lint": "eslint . --max-warnings 0",
         "fix:lint": "eslint . --max-warnings 0 --fix dist/locale-codes.js",
@@ -29,16 +31,17 @@
         "./dist/**/*"
     ],
     "devDependencies": {
+        "@lit/localize-tools": "^0.7.1",
         "@typescript-eslint/eslint-plugin": "^6.17.0",
         "@typescript-eslint/parser": "^6.17.0",
-        "@lit/localize-tools": "^0.7.1",
+        "esbuild": "^0.19.10",
         "eslint": "^8.56.0",
         "eslint-config-google": "^0.14.0",
         "eslint-plugin-custom-elements": "0.0.8",
         "npm-run-all": "^4.1.5",
         "prettier": "^3.1.1",
         "pseudolocale": "^2.0.0",
-        "typescript": "^5.3.3",
-        "esbuild": "^0.19.10"
+        "rimraf": "^5.0.5",
+        "typescript": "^5.3.3"
     }
 }
