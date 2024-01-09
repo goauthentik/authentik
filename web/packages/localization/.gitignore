@@ -112,3 +112,4 @@ storybook-static/
 scripts/*.mjs
 scripts/*.js
 src/locale-codes.js
+src
