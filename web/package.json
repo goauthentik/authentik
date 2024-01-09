@@ -124,7 +124,7 @@
         "rollup-plugin-postcss-lit": "^2.1.0",
         "storybook": "^7.6.7",
         "storybook-addon-mock": "^4.3.0",
-        "ts-lit-plugin": "^2.0.1",
+        "ts-lit-plugin": "^2.0.2",
         "tslib": "^2.6.2",
         "turnstile-types": "^1.2.0",
         "typescript": "^5.3.3",
