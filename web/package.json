@@ -43,7 +43,8 @@
         "lage": "^2.7.9"
     },
     "workspaces": [
-        "packages/authentik"
+        "packages/authentik",
+        "packages/localization"
     ],
     "engines": {
         "node": ">=20"

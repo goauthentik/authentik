@@ -7,7 +7,7 @@ module.exports = {
         "rollup:build": [],
         "rollup:build-proxy": [],
         "rollup:watch": [],
-        "build": [],
+        "build": ["^build"],
         "build-proxy": [],
         "watch": [],
         "lint": [],

@@ -16,6 +16,7 @@
         "zh_TW",
         "pseudo-LOCALE"
     ],
+    "inputFiles": ["../authentik/src/**/*.ts"],
     "tsConfig": "./tsconfig.json",
     "output": {
         "mode": "runtime",

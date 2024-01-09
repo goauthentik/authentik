@@ -1336,9 +1336,9 @@
         <target>Güncelleme</target>
       </trans-unit>
       <trans-unit id="sc9175cb129fdc306">
-        <source>Update <x id="0" equiv-text="${item.verboseName}"/></source>
+        <source>Update <x id="0" equiv-text="${item.stageObj?.verboseName}"/></source>
         <target>Güncelleme 
-        <x id="0" equiv-text="${item.verboseName}"/></target>
+        <x id="0" equiv-text="${item.stageObj?.verboseName}"/></target>
       </trans-unit>
       <trans-unit id="s398f6ba74ba8943a">
         <source>Select providers to add to application</source>
@@ -2038,9 +2038,9 @@ doesn't pass when either or both of the selected options are equal or above the 
         <x id="0" equiv-text="${item.policyObj?.name}"/></target>
       </trans-unit>
       <trans-unit id="s2a64d2dca3da9b0e">
-        <source>Group <x id="0" equiv-text="${item.groupObj?.name}"/></source>
+        <source>Group <x id="0" equiv-text="${this.group?.name || &quot;&quot;}"/></source>
         <target>Grup 
-        <x id="0" equiv-text="${item.groupObj?.name}"/></target>
+        <x id="0" equiv-text="${this.group?.name || &quot;&quot;}"/></target>
       </trans-unit>
       <trans-unit id="se5dc026819a32ff8">
         <source>User <x id="0" equiv-text="${item.userObj?.name}"/></source>
@@ -6158,6 +6158,12 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s62418cbcd2a25498">
   <source>Maximum concurrent allowed connections to this endpoint. Can be set to -1 to disable the limit.</source>
+</trans-unit>
+<trans-unit id="s94d61907ee22a8c1">
+  <source>Korean</source>
+</trans-unit>
+<trans-unit id="s95d56e58f816d211">
+  <source>Dutch</source>
 </trans-unit>
     </body>
   </file>
