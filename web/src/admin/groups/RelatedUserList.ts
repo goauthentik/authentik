@@ -113,6 +113,7 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
 export class RelatedUserList extends WithTenantConfig(WithCapabilitiesConfig(Table<User>)) {
     expandable = true;
     checkbox = true;
+    clearOnRefresh = true;
 
     searchEnabled(): boolean {
         return true;

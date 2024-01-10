@@ -51,6 +51,7 @@ export class InvitationListPage extends TablePage<Invitation> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "expires";

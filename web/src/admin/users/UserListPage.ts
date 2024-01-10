@@ -94,6 +94,7 @@ const recoveryButtonStyles = css`
 export class UserListPage extends WithTenantConfig(WithCapabilitiesConfig(TablePage<User>)) {
     expandable = true;
     checkbox = true;
+    clearOnRefresh = true;
 
     searchEnabled(): boolean {
         return true;

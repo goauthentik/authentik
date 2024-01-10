@@ -35,6 +35,7 @@ import {
 @customElement("ak-enterprise-license-list")
 export class EnterpriseLicenseListPage extends TablePage<License> {
     checkbox = true;
+    clearOnRefresh = true;
 
     searchEnabled(): boolean {
         return true;

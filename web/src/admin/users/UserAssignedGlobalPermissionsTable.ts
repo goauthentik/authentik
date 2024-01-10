@@ -19,6 +19,7 @@ export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
     userId?: number;
 
     checkbox = true;
+    clearOnRefresh = true;
 
     apiEndpoint(page: number): Promise<PaginatedResponse<Permission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({

@@ -42,6 +42,7 @@ export class TokenListPage extends TablePage<Token> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "expires";

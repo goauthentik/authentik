@@ -25,6 +25,7 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
     order = "-expires";
 
     columns(): TableColumn[] {

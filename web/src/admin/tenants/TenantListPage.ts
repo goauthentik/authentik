@@ -34,6 +34,7 @@ export class TenantListPage extends TablePage<Tenant> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "domain";
