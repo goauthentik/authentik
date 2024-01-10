@@ -14,66 +14,6 @@ Authentik Security Inc. (**"authentik," "we", "us"** or **"our"**) provides secu
 
 Our products and services are intended for business customers. This Privacy Policy does not apply to information that we process on behalf of our business customers while providing the Service, which is governed by our agreements with those business customers. If you have concerns regarding personal information that we process on behalf of a business, please direct your concerns to them.
 
-## Index
-
-### Personal information we collect
-
-    Information you provide to us. Personal information you may provide to us through the Service or otherwise includes:
-
-    Automatic data collection. We, our service providers, and our business partners may automatically log information about you, your computer or mobile device, and your interaction over time with the Service, our communications and other online services, such as:
-
-    For more information concerning our automatic collection of data, please see the Tracking technologies section below.
-
-### Tracking Technologies
-
-Cookies and other technologies. Some of the automatic collection described above is facilitated by the following technologies:
-
-### How we use your personal information
-
-Service delivery and operations. We may use your personal information to:
-
-Marketing. We, our service providers and our third-party partners may collect and use your personal information for marketing purposes, such as to send you direct marketing communications and may personalize these messages based on your needs and interests. You may opt-out of our marketing communications as described in the Opt-out of marketing section below.
-
-Compliance and protection. We may use your personal information to:
-
-Cookies and other technologies. In addition to the other uses included in this section, we may use the Cookies and other technologies described above for the following purposes:
-
-To create aggregated, de-identified and/or anonymized data. We may create aggregated, de-identified and/or anonymized data from your personal information and other individuals whose personal information we collect. We make personal information into de-identified and/or anonymized data by removing information that makes the data identifiable to you and we will not attempt to reidentify any such data. We may use this aggregated, de-identified and/or anonymized data and share it with third parties for our lawful business purposes, to the extent that such uses and sharing are in compliance with applicable laws, including to analyze and improve the Service and promote our business.
-
-### How we share your personal information
-
-**Your choices**
-
-Opt-out of communications. You may opt-out of marketing-related emails by following the opt-out or unsubscribe instructions at the bottom of the email, or by contacting us. Please note that if you choose to opt-out of marketing-related emails, you may continue to receive service-related and other non-marketing emails.
-
-Blocking images/clear gifs: Most browsers and devices allow you to configure your device to prevent images from loading. To do this, follow the instructions in your particular browser or device settings.
-
-Do Not Track. Some Internet browsers may be configured to send "Do Not Track" signals to the online services that you visit. We currently do not respond to "Do Not Track" signals. To find out more about "Do Not Track," please visit http://www.allaboutdnt.com.
-
-Declining to provide information. We need to collect personal information to provide certain services. If you do not provide the information we identify as required or mandatory, we may not be able to provide those services.
-
-### Other sites and services
-
-The Service may contain links to websites, mobile applications, and other online services operated by third parties. In addition, our content may be integrated into web pages or other online services that are not associated with us. These links and integrations are not an endorsement of, or representation that we are affiliated with, any third party. We do not control websites, mobile applications or online services operated by third parties, and we are not responsible for their actions. We encourage you to read the privacy policies of the other websites, mobile applications and online services you use.
-
-Security
-
-We employ technical, organizational and physical safeguards designed to protect the personal information we collect. However, security risk is inherent in all internet and information technologies and we cannot guarantee the security of your personal information.
-
-International data transfer
-
-We are headquartered in the United States and may use service providers that operate in other countries. Your personal information may be transferred to the United States or other locations where privacy laws may not be as protective as those in your state, province, or country.
-
-Children
-
-The Service is not intended for use by anyone under 16 years of age. If you are a parent or guardian of a child from whom you believe we have collected personal information in a manner prohibited by law, please contact us. If we learn that we have collected personal information through the Service from a child without the consent of the child’s parent or guardian as required by law, we will comply with applicable legal requirements to delete the information.
-
-Changes to this Privacy Policy
-
-We reserve the right to modify this Privacy Policy at any time. If we make material changes to this Privacy Policy, we will notify you by updating the date of this Privacy Policy and posting it on the Service or other appropriate means. Any modifications to this Privacy Policy will be effective upon our posting the modified version (or as otherwise indicated at the time of posting). In all cases, your use of the Service after the effective date of any modified Privacy Policy indicates your acknowledging that the modified Privacy Policy applies to your interactions with the Service and our business.
-
-How to contact us
-
 ## Personal information we collect
 
 **Information you provide to us**. Personal information you may provide to us through the Service or otherwise includes:
