@@ -1,5 +1,5 @@
 ---
-title: Authentik Subscription Terms
+title: Authentik Security Inc. Subscription Terms
 ---
 
 # Authentik Subscription Terms

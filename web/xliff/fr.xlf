@@ -8145,15 +8145,19 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="scc7f34824150bfb8">
   <source>Provider require enterprise.</source>
+  <target>Ce fournisseur requiert la version entreprise.</target>
 </trans-unit>
 <trans-unit id="s31f1afc1bfe1cb3a">
   <source>Learn more</source>
+  <target>En apprendre plus</target>
 </trans-unit>
 <trans-unit id="sc39f6abf0daedb0f">
   <source>Maximum concurrent connections</source>
+  <target>Connections concurrentes maximum</target>
 </trans-unit>
 <trans-unit id="s62418cbcd2a25498">
   <source>Maximum concurrent allowed connections to this endpoint. Can be set to -1 to disable the limit.</source>
+  <target>Nombre maximum de connections concurrentes à ce point de terminaison. Peut être défini à -1 pour désactiver la limite.</target>
 </trans-unit>
 <trans-unit id="s744401846fea6e76">
   <source>Brand</source>
