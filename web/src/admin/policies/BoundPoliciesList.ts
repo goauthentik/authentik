@@ -194,7 +194,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                         </button>
                     </ak-forms-modal>
                 </div>
-            </ak-empty-state>`
+            </ak-empty-state>`,
         );
     }
 
