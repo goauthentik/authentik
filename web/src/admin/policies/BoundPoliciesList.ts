@@ -3,6 +3,7 @@ import "@goauthentik/admin/policies/PolicyBindingForm";
 import "@goauthentik/admin/policies/PolicyWizard";
 import "@goauthentik/admin/users/UserForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/components/ak-status-label";
 import { PFSize } from "@goauthentik/elements/Spinner";
@@ -29,6 +30,13 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     policyOnly = false;
 
     checkbox = true;
+
+    constructor() {
+        super();
+        this.addEventListener(EVENT_REFRESH, () => {
+            this.selectedElements = [];
+        });
+    }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<PolicyBinding>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsList({
@@ -186,7 +194,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                         </button>
                     </ak-forms-modal>
                 </div>
-            </ak-empty-state>`,
+            </ak-empty-state>`
         );
     }
 
