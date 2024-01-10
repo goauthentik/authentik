@@ -69,7 +69,7 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     GOARM="${TARGETVARIANT#v}" go build -o /go/authentik ./cmd/server
 
 # Stage 4: MaxMind GeoIP
-FROM --platform=${BUILDPLATFORM} ghcr.io/maxmind/geoipupdate:v6.0 as geoip
+FROM --platform=${BUILDPLATFORM} ghcr.io/maxmind/geoipupdate:v6.1 as geoip
 
 ENV GEOIPUPDATE_EDITION_IDS="GeoLite2-City GeoLite2-ASN"
 ENV GEOIPUPDATE_VERBOSE="true"
