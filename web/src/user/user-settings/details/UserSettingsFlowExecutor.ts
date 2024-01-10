@@ -38,12 +38,6 @@ export class UserSettingsFlowExecutor
     @property()
     flowSlug?: string;
 
-<<<<<<< HEAD
-    @state()
-    brand?: CurrentBrand;
-
-=======
->>>>>>> main
     private _challenge?: ChallengeTypes;
 
     @property({ attribute: false })

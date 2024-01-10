@@ -134,7 +134,6 @@ django-model-utils = "*"
 django-prometheus = "*"
 django-redis = "*"
 django-storages = { extras = ["s3"], version = "*" }
-# See https://github.com/django-tenants/django-tenants/pull/959
 # See https://github.com/django-tenants/django-tenants/pull/997
 django-tenants = { git = "https://github.com/rissson/django-tenants.git", branch="authentik-fixes" }
 djangorestframework = "*"
