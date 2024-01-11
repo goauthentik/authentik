@@ -6,7 +6,7 @@ from django_tenants.utils import get_public_schema_name
 from authentik.blueprints.apps import ManagedAppConfig
 
 
-def reconcile_default_tenant(*args, using=DEFAULT_DB_ALIAS, **kwargs):
+def ensure_default_tenant(*args, using=DEFAULT_DB_ALIAS, **kwargs):
     """Make sure default tenant exists"""
     from django_tenants.utils import schema_context
 
@@ -27,7 +27,11 @@ class AuthentikTenantsConfig(ManagedAppConfig):
     verbose_name = "authentik Tenants"
     default = True
 
+    def reconcile_global_load_checks(self):
+        """Load tenant checks"""
+        self.import_module("authentik.tenants.checks")
+
     def reconcile_global_default_tenant(self):
         """Make sure default tenant exists, especially after a migration"""
-        post_migrate.connect(reconcile_default_tenant)
-        reconcile_default_tenant()
+        post_migrate.connect(ensure_default_tenant)
+        ensure_default_tenant()
