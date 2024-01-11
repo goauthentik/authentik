@@ -42,7 +42,6 @@ class Tenant(TenantMixin, SerializerModel):
     name = models.TextField()
 
     auto_create_schema = True
-    clone_mode = "NODATA"
     auto_drop_schema = True
     ready = models.BooleanField(default=False)
 
