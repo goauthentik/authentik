@@ -5,7 +5,7 @@ go 1.21
 require (
 	beryju.io/ldap v0.1.0
 	github.com/coreos/go-oidc v2.2.1+incompatible
-	github.com/getsentry/sentry-go v0.25.0
+	github.com/getsentry/sentry-go v0.26.0
 	github.com/go-http-utils/etag v0.0.0-20161124023236-513ea8f21eb1
 	github.com/go-ldap/ldap/v3 v3.4.6
 	github.com/go-openapi/runtime v0.26.2
