@@ -19,11 +19,11 @@ class AuthentikEventsConfig(ManagedAppConfig):
     verbose_name = "authentik Events"
     default = True
 
-    def reconcile_load_events_signals(self):
+    def reconcile_global_load_events_signals(self):
         """Load events signals"""
         self.import_module("authentik.events.signals")
 
-    def reconcile_check_deprecations(self):
+    def reconcile_global_check_deprecations(self):
         """Check for config deprecations"""
         from authentik.events.models import Event, EventAction
 

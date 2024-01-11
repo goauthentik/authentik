@@ -29,7 +29,7 @@ class AuthentikOutpostConfig(ManagedAppConfig):
     verbose_name = "authentik Outpost"
     default = True
 
-    def reconcile_load_outposts_signals(self):
+    def reconcile_global_load_outposts_signals(self):
         """Load outposts signals"""
         self.import_module("authentik.outposts.signals")
 

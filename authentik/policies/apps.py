@@ -35,6 +35,6 @@ class AuthentikPoliciesConfig(ManagedAppConfig):
     verbose_name = "authentik Policies"
     default = True
 
-    def reconcile_load_policies_signals(self):
+    def reconcile_global_load_policies_signals(self):
         """Load policies signals"""
         self.import_module("authentik.policies.signals")

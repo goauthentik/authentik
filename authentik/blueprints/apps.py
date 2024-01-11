@@ -13,7 +13,7 @@ class ManagedAppConfig(AppConfig):
 
     _logger: BoundLogger
 
-    RECONCILE_PREFIX: str = "reconcile_"
+    RECONCILE_GLOBAL_PREFIX: str = "reconcile_global_"
     RECONCILE_TENANT_PREFIX: str = "reconcile_tenant_"
 
     def __init__(self, app_name: str, *args, **kwargs) -> None:
@@ -57,26 +57,12 @@ class ManagedAppConfig(AppConfig):
             with tenant:
                 self._reconcile(self.RECONCILE_TENANT_PREFIX)
 
-    def reconcile(self) -> None:
-        """reconcile ourselves"""
+    def reconcile_global(self) -> None:
+        """reconcile ourselves for global methods. Used for signals, tasks, etc. Database queries should not be made in here."""
         from django_tenants.utils import get_public_schema_name, schema_context
 
-        # Special case for the authentik_tenants app, as we need to create the default tenant
-        # before being able to use it
-        if self.label == "authentik_tenants":
-            with schema_context(get_public_schema_name()):
-                self._reconcile(self.RECONCILE_PREFIX)
-            return
-
-        from authentik.tenants.models import Tenant
-
-        try:
-            default_tenant = Tenant.objects.get(schema_name=get_public_schema_name())
-        except (DatabaseError, ProgrammingError, InternalError) as exc:
-            self._logger.debug("Failed to get default tenant to run reconcile", exc=exc)
-            return
-        with default_tenant:
-            self._reconcile(self.RECONCILE_PREFIX)
+        with schema_context(get_public_schema_name()):
+            self._reconcile(self.RECONCILE_GLOBAL_PREFIX)
 
 
 class AuthentikBlueprintsConfig(ManagedAppConfig):
@@ -87,7 +73,7 @@ class AuthentikBlueprintsConfig(ManagedAppConfig):
     verbose_name = "authentik Blueprints"
     default = True
 
-    def reconcile_load_blueprints_v1_tasks(self):
+    def reconcile_global_load_blueprints_v1_tasks(self):
         """Load v1 tasks"""
         self.import_module("authentik.blueprints.v1.tasks")
 

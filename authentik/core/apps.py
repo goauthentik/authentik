@@ -13,11 +13,11 @@ class AuthentikCoreConfig(ManagedAppConfig):
     mountpoint = ""
     default = True
 
-    def reconcile_load_core_signals(self):
+    def reconcile_global_load_core_signals(self):
         """Load core signals"""
         self.import_module("authentik.core.signals")
 
-    def reconcile_debug_worker_hook(self):
+    def reconcile_global_debug_worker_hook(self):
         """Dispatch startup tasks inline when debugging"""
         if settings.DEBUG:
             from authentik.root.celery import worker_ready_hook

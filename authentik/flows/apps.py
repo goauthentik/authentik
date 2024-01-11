@@ -30,11 +30,11 @@ class AuthentikFlowsConfig(ManagedAppConfig):
     verbose_name = "authentik Flows"
     default = True
 
-    def reconcile_load_flows_signals(self):
+    def reconcile_global_load_flows_signals(self):
         """Load flows signals"""
         self.import_module("authentik.flows.signals")
 
-    def reconcile_load_stages(self):
+    def reconcile_global_load_stages(self):
         """Ensure all stages are loaded"""
         from authentik.flows.models import Stage
 

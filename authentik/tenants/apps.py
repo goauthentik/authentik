@@ -27,10 +27,7 @@ class AuthentikTenantsConfig(ManagedAppConfig):
     verbose_name = "authentik Tenants"
     default = True
 
-    def ready(self):
-        post_migrate.connect(reconcile_default_tenant)
-        super().ready()
-
-    def reconcile_default_tenant(self):
+    def reconcile_global_default_tenant(self):
         """Make sure default tenant exists, especially after a migration"""
+        post_migrate.connect(reconcile_default_tenant)
         reconcile_default_tenant()
