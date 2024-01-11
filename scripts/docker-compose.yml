@@ -3,7 +3,7 @@ version: "3.7"
 services:
   postgresql:
     container_name: postgres
-    image: docker.io/library/postgres:12
+    image: docker.io/library/postgres:16
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:
