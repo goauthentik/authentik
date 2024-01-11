@@ -81,7 +81,7 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
         if IS_CI:
             print("::group::authentik Logs", file=stderr)
         super().setUp()
-        apps.get_app_config("authentik_tenants").reconcile()
+        apps.get_app_config("authentik_tenants").ready()
         self.wait_timeout = 60
         self.driver = self._get_driver()
         self.driver.implicitly_wait(30)
