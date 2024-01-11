@@ -21,7 +21,7 @@ class ManagedAppConfig(AppConfig):
         self._logger = get_logger().bind(app_name=app_name)
 
     def ready(self) -> None:
-        self.reconcile()
+        self.reconcile_global()
         self.reconcile_tenant()
         return super().ready()
 
