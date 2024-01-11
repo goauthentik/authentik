@@ -1,5 +1,4 @@
 """Test Settings API"""
-from json import loads
 
 from django.urls import reverse
 from django_tenants.utils import get_public_schema_name
