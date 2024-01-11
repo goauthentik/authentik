@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from django.apps import apps
 from django.core.exceptions import ValidationError
-from django.db import models
+from django.db import models, transaction
 from django.db.utils import IntegrityError
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
@@ -84,7 +84,8 @@ class Tenant(TenantMixin, SerializerModel):
     def save(self, *args, **kwargs):
         if self.schema_name == "template":
             raise IntegrityError("Cannot create schema named template")
-        super().save(*args, **kwargs)
+        with transaction.atomic():
+            super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         if self.schema_name in ("public", "template"):
