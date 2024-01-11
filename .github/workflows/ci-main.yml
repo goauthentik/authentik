@@ -125,9 +125,6 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           flags: unit
-      - if: ${{ always() }}
-        run: |
-          docker logs setup_postgresql_1
   test-integration:
     runs-on: ubuntu-latest
     timeout-minutes: 30
