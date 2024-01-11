@@ -480,8 +480,6 @@ _update_settings("data.user_settings")
 if DEBUG:
     CELERY["task_always_eager"] = True
     os.environ[ENV_GIT_HASH_KEY] = "dev"
-    SHARED_APPS.append("silk")
-    MIDDLEWARE = ["silk.middleware.SilkyMiddleware"] + MIDDLEWARE
     REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append(
         "rest_framework.renderers.BrowsableAPIRenderer"
     )

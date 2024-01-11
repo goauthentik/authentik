@@ -1,6 +1,7 @@
 package config
 
 import (
+	"context"
 	_ "embed"
 	"errors"
 	"fmt"
@@ -10,10 +11,11 @@ import (
 	"reflect"
 	"strings"
 
-	env "github.com/Netflix/go-env"
+	env "github.com/sethvargo/go-envconfig"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/authentik/lib"
 	"gopkg.in/yaml.v2"
+
+	"goauthentik.io/authentik/lib"
 )
 
 var cfg *Config
@@ -113,7 +115,8 @@ func (c *Config) LoadConfigFromFile(path string) error {
 }
 
 func (c *Config) fromEnv() error {
-	_, err := env.UnmarshalFromEnviron(c)
+	ctx := context.Background()
+	err := env.Process(ctx, c)
 	if err != nil {
 		return fmt.Errorf("failed to load environment variables: %w", err)
 	}

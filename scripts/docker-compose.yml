@@ -31,6 +31,11 @@ services:
       - s3-data:/usr/src/app/localData
       - s3-metadata:/usr/scr/app/localMetadata
     restart: always
+  spotlight:
+    image: ghcr.io/getsentry/spotlight
+    ports:
+      - 127.0.0.1:8969:8969
+    restart: always
 
 volumes:
   db-data:
