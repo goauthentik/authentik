@@ -18,6 +18,11 @@ services:
     ports:
       - 127.0.0.1:6379:6379
     restart: always
+  spotlight:
+    image: ghcr.io/getsentry/spotlight
+    ports:
+      - 127.0.0.1:8969:8969
+    restart: always
 
 volumes:
   db-data:

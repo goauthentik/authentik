@@ -60,6 +60,8 @@ def sentry_init(**sentry_init_kwargs):
         },
     }
     kwargs.update(**sentry_init_kwargs)
+    if settings.DEBUG:
+        kwargs["spotlight"] = True
     # pylint: disable=abstract-class-instantiated
     sentry_sdk_init(
         dsn=CONFIG.get("error_reporting.sentry_dsn"),
