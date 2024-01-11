@@ -20,7 +20,6 @@ services:
     restart: always
   spotlight:
     image: ghcr.io/getsentry/spotlight
-    platform: linux/amd64
     ports:
       - 127.0.0.1:8969:8969
     restart: always
