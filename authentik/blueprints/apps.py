@@ -58,7 +58,10 @@ class ManagedAppConfig(AppConfig):
                 self._reconcile(self.RECONCILE_TENANT_PREFIX)
 
     def reconcile_global(self) -> None:
-        """reconcile ourselves for global methods. Used for signals, tasks, etc. Database queries should not be made in here."""
+        """
+        reconcile ourselves for global methods.
+        Used for signals, tasks, etc. Database queries should not be made in here.
+        """
         from django_tenants.utils import get_public_schema_name, schema_context
 
         with schema_context(get_public_schema_name()):
