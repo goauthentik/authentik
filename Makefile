@@ -51,7 +51,7 @@ test-docker:  ## Run all tests in a docker-compose
 	rm -f .env
 
 test: ## Run the server tests and produce a coverage report (locally)
-	coverage run manage.py test --keepdb --failfast authentik
+	coverage run manage.py test --keepdb authentik
 	coverage html
 	coverage report
 
