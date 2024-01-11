@@ -61,7 +61,7 @@ class ManagedAppConfig(AppConfig):
         """reconcile ourselves"""
         from django_tenants.utils import get_public_schema_name, schema_context
 
-        # Special case for the authentik_tenants app, as we need to create the default tenant
+        # Special case for the authentik_tenants app, as we need to create the default tenant
         # before being able to use it
         if self.label == "authentik_tenants":
             with schema_context(get_public_schema_name()):
