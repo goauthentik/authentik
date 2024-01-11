@@ -127,7 +127,7 @@ jobs:
           flags: unit
       - if: ${{ always() }}
         run: |
-          docker logs setup-postgresql-1
+          docker logs setup_postgresql_1
   test-integration:
     runs-on: ubuntu-latest
     timeout-minutes: 30
