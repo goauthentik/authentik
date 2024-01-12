@@ -21,7 +21,6 @@ tags:
     - authentication
     - Authentik Security
 hide_table_of_contents: false
-image:
 ---
 
 > **_authentik is an open source Identity Provider that unifies your identity needs into a single platform, replacing Okta, Active Directory, and auth0. Authentik Security is a [public benefit company](https://github.com/OpenCoreVentures/ocv-public-benefit-company/blob/main/ocv-public-benefit-company-charter.md) building on top of the open source project._**
@@ -30,12 +29,11 @@ image:
 
 A hearty Happy New Year to you all, from all of of us at Authentik Security, with sincere wishes that your 2024 may be filled with a maximum of joys (new features and elegant code) and a minimum of pains (bugs and the dreadful reality of not-enough-time).
 
-> The start of a new year makes me want to say, first of all, thank you for the past year.
->
+> The start of a new year makes me want to first say **thank you** for the past year.
 
 ## Thank you!
 
-**Thank you to our community**, from the newly joined members to our long-time friends and moderators and holders-of-knowledge. Without you all, well… we literally wouldn’t be here. No matter how deep your knowledge of authentik is, it’s really your willingness to explore and test and give feedback on new and old features, all while supporting each other and staying in touch with good humor and vibes that make us such a vibrant community.
+**Thank you to our community**, from the newly joined members to our long-time friends and moderators and holders-of-knowledge. Without you all, well… we literally wouldn’t be here. No matter how deep your knowledge of authentik is, it’s really your willingness to explore and test and give feedback on new and old features, all while supporting each other and staying in touch with good humor and vibes, that make us such a vibrant community.
 
 **Thank you to our users**, from those who run authentik in their homelabs to those who run authentik in production, and everyone in between. We appreciate your trust and guidance, and your input into how we can provide the most-needed features and grow our product in the ways that solve your business needs and challenges.
 
@@ -47,7 +45,7 @@ Looking back to the work we did in 2023, the new features are just a part of the
 
 ### RBAC
 
-RBAC (role-based access control) is the gold standard of access control. RBAC provides the ability to finely configure permissions within authentik. These permissions can be used to delegate different tasks, such as user management, application creation and more to users without granting them full superuser permissions. authentik has had internal RBAC for a long time (and of course the policy engine for restricting access to applications), however access to different objects within authentik (like Users, Groups, etc) was not possible previously.
+[RBAC](https://goauthentik.io/docs/user-group-role/access-control/) (role-based access control) is the gold standard of access control. RBAC provides the ability to finely configure permissions within authentik. These permissions can be used to delegate different tasks, such as user management, application creation and more to users without granting them full superuser permissions. authentik has had internal RBAC for a long time (and of course the policy engine for restricting access to applications), however access to different objects within authentik (like Users, Groups, etc) was not possible previously.
 
 ### Enterprise Support
 
@@ -55,7 +53,7 @@ Providing dedicated support with a proper ticketing system was a big accomplishm
 
 ### SCIM support
 
-Our [2023.3 release](https://goauthentik.io/docs/releases/2023.3) added support for SCIM (System for Cross-domain Identity Management) protocol, allowing for the provision of users into other IT systems, where provider synchronizes Users, Groups and the user membership.
+Our [2023.3 release](https://goauthentik.io/docs/releases/2023.3) added support for SCIM (System for Cross-domain Identity Management) protocol, allowing for the provision of users into other IT systems, where the provider synchronizes Users, Groups and the user membership.
 
 ### RADIUS Support
 
@@ -69,7 +67,7 @@ Looking forward to new functionality for the new year, let me share some of the 
 
 The task of adding the applications that you want authentik to authenticate is about to get a lot easier; we have a new wizard that combines the process of defining a new provider and a new application into one single task. This new wizard saves many steps and streamlines the process. Look for in as a preview in our current 2023.10 release (navigate to the Applications page in the Admin UI), and let us know your thoughts. We will continue tweaking it, specifically the multi-select functionality, but feedback is always welcome!
 
-![new-app-wizard.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/ee15d154-a653-49b7-9db8-87248311a570/932c2142-5f44-4fee-9ece-5552da6312dd/new-app-wizard.png)
+![](./new-app-wizard.png)
 
 ### Remote Access Control (RAC)
 
@@ -87,12 +85,12 @@ One of our most exciting, and definitely our biggest, projects for 2024 will be 
 
 As we mentioned in our blog about our one-year anniversary, we also plan to spend some time focused on user experience.
 
-- Increase our focus on UX and ease-of-use, templatizing as much as possible of the frontend components, and developing a UI Style Guide
-- A redesigned website, with more information about our solutions, use cases, and offerings
-- New structure for our technical documentation; leveraging information architecture and user research to make it easier to find what you are looking for in our docs
-- Defining even more robust tests and checks for our CI/CD pipeline and build process
-- Stronger integration and migration testing, both automated and manual
-- Spending more time on outreach and user research to learn what you all want
+-   Increase our focus on UX and ease-of-use, templatizing as much as possible of the frontend components, and developing a UI Style Guide
+-   A redesigned website, with more information about our solutions, use cases, and offerings
+-   New structure for our technical documentation; leveraging information architecture and user research to make it easier to find what you are looking for in our docs
+-   Defining even more robust tests and checks for our CI/CD pipeline and build process
+-   Stronger integration and migration testing, both automated and manual
+-   Spending more time on outreach and user research to learn what you all want
 
 ### Yes, a big year ahead
 
