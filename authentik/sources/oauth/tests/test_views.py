@@ -1,9 +1,9 @@
 """OAuth Source tests"""
-from rest_framework.test import APITestCase
 from django.urls import reverse
 from requests_mock import Mocker
-from authentik.core.tests.utils import create_test_admin_user
+from rest_framework.test import APITestCase
 
+from authentik.core.tests.utils import create_test_admin_user
 from authentik.sources.oauth.api.source import OAuthSourceSerializer
 from authentik.sources.oauth.models import OAuthSource
 
@@ -24,9 +24,14 @@ class TestOAuthSource(APITestCase):
     def test_api_read(self):
         """Test reading a source"""
         self.client.force_login(create_test_admin_user())
-        response = self.client.get(reverse("authentik_api:oauthsource-detail", kwargs={
-            "slug": self.source.slug,
-        }))
+        response = self.client.get(
+            reverse(
+                "authentik_api:oauthsource-detail",
+                kwargs={
+                    "slug": self.source.slug,
+                },
+            )
+        )
         self.assertEqual(response.status_code, 200)
 
     def test_api_validate(self):
