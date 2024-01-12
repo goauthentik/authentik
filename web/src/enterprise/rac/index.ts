@@ -83,8 +83,12 @@ export class RacInterface extends Interface {
     // Keep track of current connection attempt
     connectionAttempt = 0;
 
-    static domSize(): DOMRect {
-        return document.body.getBoundingClientRect();
+    static domSize(): { width: number, height: number } {
+        const size = document.body.getBoundingClientRect();
+        return {
+            width: size.width * window.devicePixelRatio,
+            height: size.height * window.devicePixelRatio,
+        };
     }
 
     constructor() {
