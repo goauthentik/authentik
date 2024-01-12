@@ -13,6 +13,7 @@ HEADERS = {"Authorization": f"Bearer {TENANTS_API_KEY}"}
 
 class TestSettingsAPI(TenantAPITestCase):
     """Test settings API"""
+
     def setUp(self):
         super().setUp()
         self.tenant_1 = Tenant.objects.create(

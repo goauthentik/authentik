@@ -10,9 +10,7 @@ class TenantAPITestCase(APITransactionTestCase):
         for db_name in self._databases_names(include_mirrors=False):
             connections[db_name].set_schema_to_public()
             with connections[db_name].cursor() as cursor:
-                cursor.execute(
-                    "SELECT nspname FROM pg_catalog.pg_namespace WHERE nspname ~ 't_.*'"
-                )
+                cursor.execute("SELECT nspname FROM pg_catalog.pg_namespace WHERE nspname ~ 't_.*'")
                 schemas = cursor.fetchall()
                 for row in schemas:
                     schema = row[0]
