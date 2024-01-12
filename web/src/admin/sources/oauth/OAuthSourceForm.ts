@@ -64,7 +64,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
     clearIcon = false;
 
     async send(data: OAuthSource): Promise<OAuthSource> {
-        data.providerType = (this.providerType?.slug || "") as ProviderTypeEnum;
+        data.providerType = (this.providerType?.name || "") as ProviderTypeEnum;
         let source: OAuthSource;
         if (this.instance) {
             source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
@@ -178,7 +178,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                           </p>
                       </ak-form-element-horizontal> `
                     : html``}
-                ${this.providerType.slug === ProviderTypeEnum.Openidconnect ||
+                ${this.providerType.name === ProviderTypeEnum.Openidconnect ||
                 this.providerType.oidcWellKnownUrl !== ""
                     ? html`<ak-form-element-horizontal
                           label=${msg("OIDC Well-known URL")}
@@ -200,7 +200,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                           </p>
                       </ak-form-element-horizontal>`
                     : html``}
-                ${this.providerType.slug === ProviderTypeEnum.Openidconnect ||
+                ${this.providerType.name === ProviderTypeEnum.Openidconnect ||
                 this.providerType.oidcJwksUrl !== ""
                     ? html`<ak-form-element-horizontal
                               label=${msg("OIDC JWKS URL")}

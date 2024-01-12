@@ -42368,7 +42368,7 @@ components:
       properties:
         name:
           type: string
-        slug:
+        verbose_name:
           type: string
         urls_customizable:
           type: boolean
@@ -42404,8 +42404,8 @@ components:
       - oidc_well_known_url
       - profile_url
       - request_token_url
-      - slug
       - urls_customizable
+      - verbose_name
     SpBindingEnum:
       enum:
       - redirect
