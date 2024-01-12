@@ -10,14 +10,14 @@ type Constructor<T = object> = abstract new (...args: any[]) => T;
 
 export function WithLicenseSummary<T extends Constructor<LitElement>>(
     superclass: T,
-    subscribe = true
+    subscribe = true,
 ) {
     abstract class WithEnterpriseProvider extends superclass {
         @consume({ context: authentikEnterpriseContext, subscribe })
         public licenseSummary!: LicenseSummary;
 
         get hasEnterpriseLicense() {
-            return false;
+            return this.licenseSummary?.hasLicense;
         }
     }
 
