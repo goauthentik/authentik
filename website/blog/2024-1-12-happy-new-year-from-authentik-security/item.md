@@ -65,7 +65,7 @@ Looking forward to new functionality for the new year, let me share some of the 
 
 ### Wizardry
 
-The task of adding the applications that you want authentik to authenticate is about to get a lot easier; we have a new wizard that combines the process of defining a new provider and a new application into one single task. This new wizard saves many steps and streamlines the process. Look for in as a preview in our current 2023.10 release (navigate to the Applications page in the Admin UI), and let us know your thoughts. We will continue tweaking it, specifically the multi-select functionality, but feedback is always welcome!
+The task of adding the applications that you want authentik to authenticate is about to get a lot easier; we have a new wizard that combines the process of defining a new provider and a new application into one single task. This new wizard saves many steps and streamlines the process. Look for it in preview mode in our current 2023.10 release (navigate to the Applications page in the Admin UI), and let us know your thoughts. We will continue tweaking it, specifically the multi-select functionality, but feedback is always welcome!
 
 ![](./new-app-wizard.png)
 
