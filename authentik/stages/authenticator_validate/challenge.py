@@ -1,4 +1,5 @@
 """Validation stage challenge checking"""
+from dataclasses import asdict
 from typing import Optional
 from urllib.parse import urlencode
 
@@ -14,7 +15,6 @@ from webauthn.authentication.generate_authentication_options import generate_aut
 from webauthn.authentication.verify_authentication_response import verify_authentication_response
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.exceptions import InvalidAuthenticationResponse
-from webauthn.helpers.structs import AuthenticationCredential
 
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Application, User
@@ -66,12 +66,7 @@ def get_webauthn_challenge_without_user(
     )
     request.session[SESSION_KEY_WEBAUTHN_CHALLENGE] = authentication_options.challenge
 
-    return authentication_options.model_dump(
-        mode="json",
-        by_alias=True,
-        exclude_unset=False,
-        exclude_none=True,
-    )
+    return asdict(authentication_options)
 
 
 def get_webauthn_challenge(
@@ -96,12 +91,7 @@ def get_webauthn_challenge(
 
     request.session[SESSION_KEY_WEBAUTHN_CHALLENGE] = authentication_options.challenge
 
-    return authentication_options.model_dump(
-        mode="json",
-        by_alias=True,
-        exclude_unset=False,
-        exclude_none=True,
-    )
+    return asdict(authentication_options)
 
 
 def select_challenge(request: HttpRequest, device: Device):
@@ -152,7 +142,7 @@ def validate_challenge_webauthn(data: dict, stage_view: StageView, user: User) -
 
     try:
         authentication_verification = verify_authentication_response(
-            credential=AuthenticationCredential.model_validate(data),
+            credential=data,
             expected_challenge=challenge,
             expected_rp_id=get_rp_id(request),
             expected_origin=get_origin(request),
