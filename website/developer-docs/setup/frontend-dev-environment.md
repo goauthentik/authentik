@@ -45,7 +45,7 @@ Depending on platform, some native dependencies might be required. On macOS, run
 
     This makes the local web files and the config file available to the authentik server.
 
-5. Run `docker-compose up -d` to apply those changes to your containers.
+5. Run `docker compose up -d` to apply those changes to your containers.
 6. `cd web`
 7. Run `npm i` and then `npm run watch` to start the build process.
 

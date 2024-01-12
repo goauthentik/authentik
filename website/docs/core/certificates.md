@@ -98,7 +98,7 @@ services:
             - --dns-route53
 ```
 
-Afterwards, run `docker-compose up -d`, which will start certbot and generate your certificate. Within a few minutes, you'll see the certificate in your authentik interface. (If the certificate does not appear, restart the worker container. This is caused by incompatible permissions set by certbot).
+Afterwards, run `docker compose up -d`, which will start certbot and generate your certificate. Within a few minutes, you'll see the certificate in your authentik interface. (If the certificate does not appear, restart the worker container. This is caused by incompatible permissions set by certbot).
 
 Navigate to _System -> Tenants_, edit any tenant and select the certificate of your choice.
 

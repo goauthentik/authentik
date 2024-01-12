@@ -25,7 +25,7 @@ import TabItem from "@theme/TabItem";
     If you are using Docker Compose, edit your <code>.env</code> file to append any keys that you want to add, and then run the following command to apply them:
 
     ```
-    docker-compose up -d
+    docker compose up -d
     ```
 
   </TabItem>
@@ -49,7 +49,7 @@ To check if your config has been applied correctly, you can run the following co
   <TabItem value="docker-compose" label="Docker Compose" default>
 
     ```
-    docker-compose run --rm worker dump_config
+    docker compose run --rm worker dump_config
     ```
 
   </TabItem>

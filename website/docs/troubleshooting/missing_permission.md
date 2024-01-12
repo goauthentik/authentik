@@ -9,7 +9,7 @@ The error should be temporary and not occur after initial installation.
 If it does, you can run the following command to ensure all permissions exist:
 
 ```
-docker-compose run --rm worker repair_permissions
+docker compose run --rm worker repair_permissions
 ```
 
 or, for Kubernetes, run
