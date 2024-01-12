@@ -1,31 +1,22 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/Alert";
 import { AKElement } from "@goauthentik/elements/Base";
+import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
-import { customElement, state } from "lit/decorators.js";
-
-import { EnterpriseApi } from "@goauthentik/api";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-license-notice")
-export class AkLicenceNotice extends AKElement {
-    @state()
-    hasLicense = false;
-
-    constructor() {
-        super();
-        new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseSummaryRetrieve().then((enterprise) => {
-            this.hasLicense = enterprise.hasLicense;
-        });
-    }
+export class AkLicenceNotice extends WithLicenseSummary(AKElement) {
+    @property()
+    message = msg("This feature requires an enterprise license.");
 
     render() {
-        return this.hasLicense
+        return this.hasEnterpriseLicense
             ? nothing
             : html`
                   <ak-alert class="pf-c-radio__description" inline>
-                      ${msg("Provider requires enterprise.")}
+                      ${this.message}
                       <a href="#/enterprise/licenses">${msg("Learn more")}</a>
                   </ak-alert>
               `;
