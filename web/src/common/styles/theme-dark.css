@@ -257,7 +257,8 @@ select[multiple] option:checked {
 .pf-c-login__main-header-desc {
     color: var(--ak-dark-foreground);
 }
-.pf-c-login__main-footer-links-item img {
+.pf-c-login__main-footer-links-item img,
+.pf-c-login__main-footer-links-item .fas {
     filter: invert(1);
 }
 .pf-c-login__main-footer-band {
