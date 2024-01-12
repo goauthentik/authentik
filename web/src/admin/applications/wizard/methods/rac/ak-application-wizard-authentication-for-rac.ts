@@ -23,7 +23,7 @@ import {
 
 import BaseProviderPanel from "../BaseProviderPanel";
 
-@customElement("ak-application-wizard-authentication-by-rac")
+@customElement("ak-application-wizard-authentication-for-rac")
 export class ApplicationWizardAuthenticationByRAC extends BaseProviderPanel {
     @state()
     endpoints?: PaginatedEndpointList;
@@ -83,7 +83,7 @@ export class ApplicationWizardAuthenticationByRAC extends BaseProviderPanel {
                     required
                     value="${provider?.connectionExpiry ?? "hours=8"}"
                     help=${msg(
-                        "Determines how long a session lasts before being disconnected and requiring re-authorization.",
+                        "Determines how long a session lasts before being disconnected and requiring re-authorization."
                     )}
                     required
                 ></ak-text-input>
@@ -104,7 +104,7 @@ export class ApplicationWizardAuthenticationByRAC extends BaseProviderPanel {
                                             ?selected=${selected.has(mapping.pk)}
                                         >
                                             ${mapping.name}
-                                        </option>`,
+                                        </option>`
                                 )}
                             </select>
                             <p class="pf-c-form__helper-text">
