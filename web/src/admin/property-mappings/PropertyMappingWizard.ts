@@ -5,6 +5,7 @@ import "@goauthentik/admin/property-mappings/PropertyMappingSAMLForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingScopeForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingTestForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/elements/Alert";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/ProxyForm";
 import "@goauthentik/elements/wizard/FormWizardPage";
@@ -63,19 +64,21 @@ export class InitialPropertyMappingWizardPage extends WizardPage {
                             ];
                             this.host.isValid = true;
                         }}
-                        ?disabled=${type.requiresEnterprise ? !this.enterprise?.hasLicense : false}
+                        ?disabled=${type.requiresEnterprise ? this.enterprise?.hasLicense : false}
                     />
                     <label class="pf-c-radio__label" for=${`${type.component}-${type.modelName}`}
                         >${type.name}</label
                     >
                     <span class="pf-c-radio__description">${type.description}</span>
-                    ${type.requiresEnterprise && !this.enterprise?.hasLicense
-                        ? html`
-                              <ak-alert class="pf-c-radio__description" ?inline=${true}>
-                                  ${msg("Provider require enterprise.")}
-                                  <a href="#/enterprise/licenses">${msg("Learn more")}</a>
-                              </ak-alert>
-                          `
+                    ${type.requiresEnterprise
+                        ? !this.enterprise?.hasLicense
+                            ? html`
+                                  <ak-alert class="pf-c-radio__description" ?inline=${true}>
+                                      ${msg("Provider require enterprise.")}
+                                      <a href="#/enterprise/licenses">${msg("Learn more")}</a>
+                                  </ak-alert>
+                              `
+                            : nothing
                         : nothing}
                 </div>`;
             })}
@@ -114,6 +117,7 @@ export class PropertyMappingWizard extends AKElement {
                 <ak-property-mapping-wizard-initial
                     slot="initial"
                     .mappingTypes=${this.mappingTypes}
+                    .enterprise=${this.enterprise}
                 >
                 </ak-property-mapping-wizard-initial>
                 ${this.mappingTypes.map((type) => {
