@@ -7,6 +7,8 @@ entries:
   - identifiers:
       managed: goauthentik.io/providers/rac/rdp-default
     model: authentik_providers_rac.racpropertymapping
+    conditions:
+      - !Context goauthentik.io/enterprise/licensed
     attrs:
       name: "authentik default RAC Mapping: RDP Default settings"
       static_settings:
@@ -16,6 +18,8 @@ entries:
   - identifiers:
       managed: goauthentik.io/providers/rac/rdp-high-fidelity
     model: authentik_providers_rac.racpropertymapping
+    conditions:
+      - !Context goauthentik.io/enterprise/licensed
     attrs:
       name: "authentik default RAC Mapping: RDP High Fidelity"
       static_settings:
@@ -26,6 +30,8 @@ entries:
   - identifiers:
       managed: goauthentik.io/providers/rac/ssh-default
     model: authentik_providers_rac.racpropertymapping
+    conditions:
+      - !Context goauthentik.io/enterprise/licensed
     attrs:
       name: "authentik default RAC Mapping: SSH Default settings"
       static_settings:
