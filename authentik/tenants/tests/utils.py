@@ -1,6 +1,5 @@
 from django.core.management import call_command
 from django.db import connection, connections
-from django_tenants.utils import get_public_schema_name
 from rest_framework.test import APITransactionTestCase
 
 
