@@ -14,8 +14,8 @@ TENANTS_API_KEY = generate_id()
 HEADERS = {"Authorization": f"Bearer {TENANTS_API_KEY}"}
 
 
-class TestAPI(TenantAPITestCase):
-    """Test api view"""
+class TestRecovery(TenantAPITestCase):
+    """Test recovery endpoints"""
 
     def setUp(self):
         super().setUp()

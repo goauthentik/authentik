@@ -1,7 +1,6 @@
 """Test Settings API"""
 
 from django.urls import reverse
-from django_tenants.utils import get_public_schema_name
 
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.generators import generate_id
@@ -13,9 +12,13 @@ HEADERS = {"Authorization": f"Bearer {TENANTS_API_KEY}"}
 
 
 class TestSettingsAPI(TenantAPITestCase):
+    """Test settings API"""
     def setUp(self):
         super().setUp()
-        self.tenant_1 = Tenant.objects.get(schema_name=get_public_schema_name())
+        self.tenant_1 = Tenant.objects.create(
+            name=generate_id(), schema_name="t_" + generate_id().lower()
+        )
+        Domain.objects.create(tenant=self.tenant_1, domain="tenant1.testserver")
         with self.tenant_1:
             self.admin_1 = create_test_admin_user()
         self.tenant_2 = Tenant.objects.create(
@@ -37,6 +40,7 @@ class TestSettingsAPI(TenantAPITestCase):
             data={
                 "avatars": "tenant_1_mode",
             },
+            HTTP_HOST="tenant1.testserver",
         )
         self.assertEqual(response.status_code, 200)
         with self.tenant_1:

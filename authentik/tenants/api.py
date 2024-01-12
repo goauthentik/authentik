@@ -5,6 +5,7 @@ from hmac import compare_digest
 from django.http import HttpResponseNotFound
 from django.http.request import urljoin
 from django.utils.timezone import now
+from django_tenants.utils import get_public_schema_name
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import permissions
 from rest_framework.authentication import get_authorization_header
@@ -217,3 +218,8 @@ class SettingsView(RetrieveUpdateAPIView):
         obj = self.request.tenant
         self.check_object_permissions(self.request, obj)
         return obj
+
+    def perform_update(self, serializer):
+        # We need to be in the public schema to actually modify a tenant
+        with Tenant.objects.get(schema_name=get_public_schema_name()):
+            super().perform_update(serializer)
