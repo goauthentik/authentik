@@ -1,3 +1,4 @@
+import "@goauthentik/admin/common/ak-license-notice";
 import "@goauthentik/admin/providers/ldap/LDAPProviderForm";
 import "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
 import "@goauthentik/admin/providers/proxy/ProxyProviderForm";
@@ -86,15 +87,12 @@ export class InitialProviderWizardPage extends WizardPage {
                         ?disabled=${type.requiresEnterprise ? !this.enterprise?.hasLicense : false}
                     />
                     <label class="pf-c-radio__label" for=${type.component}>${type.name}</label>
-                    <span class="pf-c-radio__description">${type.description}</span>
-                    ${type.requiresEnterprise && !this.enterprise?.hasLicense
-                        ? html`
-                              <ak-alert class="pf-c-radio__description" ?inline=${true}>
-                                  ${msg("Provider require enterprise.")}
-                                  <a href="#/enterprise/licenses">${msg("Learn more")}</a>
-                              </ak-alert>
-                          `
-                        : nothing}
+                    <span class="pf-c-radio__description"
+                        >${type.description}
+                        ${type.requiresEnterprise
+                            ? html`<ak-license-notice></ak-license-notice>`
+                            : nothing}
+                    </span>
                 </div>`;
             })}
         </form>`;
