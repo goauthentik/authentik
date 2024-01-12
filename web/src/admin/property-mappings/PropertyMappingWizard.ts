@@ -70,15 +70,13 @@ export class InitialPropertyMappingWizardPage extends WizardPage {
                         >${type.name}</label
                     >
                     <span class="pf-c-radio__description">${type.description}</span>
-                    ${type.requiresEnterprise
-                        ? !this.enterprise?.hasLicense
-                            ? html`
-                                  <ak-alert class="pf-c-radio__description" ?inline=${true}>
-                                      ${msg("Provider require enterprise.")}
-                                      <a href="#/enterprise/licenses">${msg("Learn more")}</a>
-                                  </ak-alert>
-                              `
-                            : nothing
+                    ${type.requiresEnterprise && !this.enterprise?.hasLicense
+                        ? html`
+                              <ak-alert class="pf-c-radio__description" ?inline=${true}>
+                                  ${msg("Provider require enterprise.")}
+                                  <a href="#/enterprise/licenses">${msg("Learn more")}</a>
+                              </ak-alert>
+                          `
                         : nothing}
                 </div>`;
             })}
