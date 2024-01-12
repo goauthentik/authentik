@@ -53,7 +53,7 @@ export class InitialProviderWizardPage extends WithLicenseSummary(WizardPage) {
                 <div class="pf-c-hint__title">${msg("Try the new application wizard")}</div>
                 <div class="pf-c-hint__body">
                     ${msg(
-                        "The new application wizard greatly simplifies the steps required to create applications and providers.",
+                        "The new application wizard greatly simplifies the steps required to create applications and providers."
                     )}
                 </div>
                 <div class="pf-c-hint__footer">

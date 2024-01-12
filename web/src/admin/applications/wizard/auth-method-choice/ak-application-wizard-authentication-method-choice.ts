@@ -7,7 +7,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 
 import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
-import { html } from "lit";
+import { html, nothing } from "lit";
 import { map } from "lit/directives/map.js";
 
 import BasePanel from "../BasePanel";
@@ -48,7 +48,9 @@ export class ApplicationWizardAuthenticationMethodChoice extends BasePanel {
                 @change=${this.handleChoice}
             />
             <label class="pf-c-radio__label" for="provider-${type.formName}">${type.name}</label>
-            <span class="pf-c-radio__description">${type.description}</span>
+            <span class="pf-c-radio__description"
+                >${type.description}${type.note ? type.note() : nothing}</span
+            >
         </div>`;
     }
 
