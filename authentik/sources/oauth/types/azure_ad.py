@@ -25,6 +25,11 @@ class AzureADOAuthCallback(OpenIDConnectOAuth2Callback):
 
     client_class = UserprofileHeaderAuthClient
 
+    def get_user_id(self, info: dict[str, str]) -> str:
+        # Default try to get `id` for the Graph API endpoint
+        # fallback to OpenID logic in case the profile URL was changed
+        return info.get("id", super().get_user_id(info))
+
     def get_user_enroll_context(
         self,
         info: dict[str, Any],
