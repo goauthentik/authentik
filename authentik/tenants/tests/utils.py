@@ -10,7 +10,7 @@ class TenantAPITestCase(APITransactionTestCase):
         for db_name in self._databases_names(include_mirrors=False):
             with connections[db_name].cursor() as cursor:
                 cursor.execute(
-                    "SELECT nspname FROM pg_catalog.pg_namespace WHERE nspname !~ 'pg_*' AND nspname != 'information_schema' AND nspname != 'public' AND nspname != 'template'"
+                    "SELECT nspname FROM pg_catalog.pg_namespace WHERE nspname ~ 't_.*'"
                 )
                 schemas = cursor.fetchall()
                 for row in schemas:

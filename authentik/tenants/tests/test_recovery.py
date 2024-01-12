@@ -2,6 +2,7 @@
 from json import loads
 
 from django.urls import reverse
+from django_tenants.utils import get_public_schema_name
 
 from authentik.core.models import Token, TokenIntents, User
 from authentik.lib.config import CONFIG
@@ -18,10 +19,7 @@ class TestAPI(TenantAPITestCase):
 
     def setUp(self):
         super().setUp()
-        self.tenant = Tenant.objects.create(
-            name=generate_id(),
-            schema_name="t_" + generate_id(length=63 - 2)
-        )
+        self.tenant = Tenant.objects.get(schema_name=get_public_schema_name())
         self.user: User = User.objects.create_user(username="recovery-test-user")
 
     @CONFIG.patch("outposts.disable_embedded_outpost", True)
