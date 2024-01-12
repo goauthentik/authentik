@@ -1,4 +1,8 @@
 """RAC Provider API Views"""
+from django_filters.filters import AllValuesMultipleFilter
+from django_filters.filterset import FilterSet
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema_field
 from rest_framework.fields import CharField
 from rest_framework.viewsets import ModelViewSet
 
@@ -26,6 +30,16 @@ class RACPropertyMappingSerializer(EnterpriseRequiredMixin, PropertyMappingSeria
         fields = PropertyMappingSerializer.Meta.fields + ["static_settings"]
 
 
+class RACPropertyMappingFilter(FilterSet):
+    """Filter for RACPropertyMapping"""
+
+    managed = extend_schema_field(OpenApiTypes.STR)(AllValuesMultipleFilter(field_name="managed"))
+
+    class Meta:
+        model = RACPropertyMapping
+        fields = ["name", "managed"]
+
+
 class RACPropertyMappingViewSet(UsedByMixin, ModelViewSet):
     """RACPropertyMapping Viewset"""
 
@@ -33,4 +47,4 @@ class RACPropertyMappingViewSet(UsedByMixin, ModelViewSet):
     serializer_class = RACPropertyMappingSerializer
     search_fields = ["name"]
     ordering = ["name"]
-    filterset_fields = ["name", "managed"]
+    filterset_class = RACPropertyMappingFilter
