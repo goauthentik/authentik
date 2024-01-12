@@ -1,14 +1,18 @@
 """WebAuthn stage"""
+from json import loads
+
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
+from webauthn import options_to_json
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
 from webauthn.helpers.exceptions import InvalidRegistrationResponse
 from webauthn.helpers.structs import (
     AuthenticatorSelectionCriteria,
     PublicKeyCredentialCreationOptions,
-    RegistrationCredential,
+    ResidentKeyRequirement,
+    UserVerificationRequirement,
 )
 from webauthn.registration.generate_registration_options import generate_registration_options
 from webauthn.registration.verify_registration_response import (
@@ -53,7 +57,7 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
 
         try:
             registration: VerifiedRegistration = verify_registration_response(
-                credential=RegistrationCredential.model_validate(response),
+                credential=response,
                 expected_challenge=challenge,
                 expected_rp_id=get_rp_id(self.request),
                 expected_origin=get_origin(self.request),
@@ -91,12 +95,12 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
         registration_options: PublicKeyCredentialCreationOptions = generate_registration_options(
             rp_id=get_rp_id(self.request),
             rp_name=self.request.brand.branding_title,
-            user_id=user.uid,
+            user_id=user.uid.encode("utf-8"),
             user_name=user.username,
             user_display_name=user.name,
             authenticator_selection=AuthenticatorSelectionCriteria(
-                resident_key=str(stage.resident_key_requirement),
-                user_verification=str(stage.user_verification),
+                resident_key=ResidentKeyRequirement(str(stage.resident_key_requirement)),
+                user_verification=UserVerificationRequirement(str(stage.user_verification)),
                 authenticator_attachment=authenticator_attachment,
             ),
         )
@@ -106,12 +110,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
         return AuthenticatorWebAuthnChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "registration": registration_options.model_dump(
-                    mode="json",
-                    by_alias=True,
-                    exclude_unset=False,
-                    exclude_none=True,
-                ),
+                "registration": loads(options_to_json(registration_options)),
             }
         )
 
