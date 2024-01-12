@@ -14,7 +14,6 @@ export class AkLicenceNotice extends AKElement {
     hasLicense = false;
 
     constructor() {
-        console.log("Notice constructed");
         super();
         new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseSummaryRetrieve().then((enterprise) => {
             this.hasLicense = enterprise.hasLicense;
@@ -22,7 +21,6 @@ export class AkLicenceNotice extends AKElement {
     }
 
     render() {
-        console.log(this.hasLicense);
         return this.hasLicense
             ? nothing
             : html`
