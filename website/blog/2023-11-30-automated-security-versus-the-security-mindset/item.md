@@ -1,6 +1,6 @@
 ---
 title: Automated security versus the security mindset
-description: “Automated security plays a key part in many cybersecurity tasks. But what are its failings and will a security mindset always require the human factor?”
+description: "Automated security plays a key part in many cybersecurity tasks. But what are its failings and will a security mindset always require the human factor?"
 slug: 2023-11-30-automated-security-versus-the-security-mindset
 authors:
     - name: Jens Langhammer
@@ -142,7 +142,7 @@ Once new and significant threats are detected by the automated security, it is h
 
 ### Human-centered cybersecurity
 
-Despite the growing technology around automated security, and the temptation to relax when it is deployed, there are human factors that are irreplaceable in the practice of cybersecurity. We recently wrote about the importance of the “Blue Team” and how [organizational and product hardening](https://goauthentik.io/blog/2023-11-22-how-we-saved-over-100k#hardening) are an integral part of our human-centered security mindset.
+Despite the growing technology around automated security, and the temptation to relax when it is deployed, there are human factors that are irreplaceable in the practice of cybersecurity. We recently wrote about the importance of the "Blue Team" and how [organizational and product hardening](https://goauthentik.io/blog/2023-11-22-how-we-saved-over-100k#hardening) are an integral part of our human-centered security mindset.
 
 -   The human ability to think creatively and rapidly adapt to changing situations is invaluable to good security processes.
 -   The higher the security risk, the more you need skilled security professionals to supervise the security process.

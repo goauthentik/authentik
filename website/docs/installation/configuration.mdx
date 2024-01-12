@@ -129,7 +129,7 @@ To check if your config has been applied correctly, you can run the following co
     `AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION` only applies to the cache expiry, see [`AUTHENTIK_REPUTATION__EXPIRY`](#authentik_reputation__expiry) to control how long reputation is persisted for.
     :::
 
-## Listen Setting
+## Listen Settings
 
 -   `AUTHENTIK_LISTEN__HTTP`: Listening address:port (e.g. `0.0.0.0:9000`) for HTTP (Applies to Server and Proxy outpost)
 -   `AUTHENTIK_LISTEN__HTTPS`: Listening address:port (e.g. `0.0.0.0:9443`) for HTTPS (Applies to Server and Proxy outpost)
@@ -137,7 +137,7 @@ To check if your config has been applied correctly, you can run the following co
 -   `AUTHENTIK_LISTEN__LDAPS`: Listening address:port (e.g. `0.0.0.0:6636`) for LDAPS (Applies to LDAP outpost)
 -   `AUTHENTIK_LISTEN__METRICS`: Listening address:port (e.g. `0.0.0.0:9300`) for Prometheus metrics (Applies to All)
 -   `AUTHENTIK_LISTEN__DEBUG`: Listening address:port (e.g. `0.0.0.0:9900`) for Go Debugging metrics (Applies to All)
--   `AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS`: List of CIDRs that proxy headers should be accepted from (Applies to Server)
+-   `AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS`: List of comma-separated CIDRs that proxy headers should be accepted from (Applies to Server)
 
     Defaults to `127.0.0.0/8`, `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `fe80::/10`, `::1/128`.
 
@@ -167,9 +167,13 @@ Defaults to `info`.
 
 Which domain the session cookie should be set to. By default, the cookie is set to the domain authentik is accessed under.
 
-### `AUTHENTIK_GEOIP`
+### `AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__GEOIP`
 
-Path to the GeoIP database. Defaults to `/geoip/GeoLite2-City.mmdb`. If the file is not found, authentik will skip GeoIP support.
+Path to the GeoIP City database. Defaults to `/geoip/GeoLite2-City.mmdb`. If the file is not found, authentik will skip GeoIP support.
+
+### `AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__ASN`
+
+Path to the GeoIP ASN database. Defaults to `/geoip/GeoLite2-ASN.mmdb`. If the file is not found, authentik will skip GeoIP support.
 
 ### `AUTHENTIK_DISABLE_UPDATE_CHECK`
 

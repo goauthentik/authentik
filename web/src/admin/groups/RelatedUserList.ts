@@ -9,7 +9,11 @@ import { MessageLevel } from "@goauthentik/common/messages";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
-import { rootInterface } from "@goauthentik/elements/Base";
+import {
+    CapabilitiesEnum,
+    WithCapabilitiesConfig,
+} from "@goauthentik/elements/Interface/capabilitiesProvider";
+import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -33,7 +37,6 @@ import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import {
-    CapabilitiesEnum,
     CoreApi,
     CoreUsersListTypeEnum,
     Group,
@@ -107,7 +110,7 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
 }
 
 @customElement("ak-user-related-list")
-export class RelatedUserList extends Table<User> {
+export class RelatedUserList extends WithTenantConfig(WithCapabilitiesConfig(Table<User>)) {
     expandable = true;
     checkbox = true;
 
@@ -188,8 +191,7 @@ export class RelatedUserList extends Table<User> {
 
     row(item: User): TemplateResult[] {
         const canImpersonate =
-            rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanImpersonate) &&
-            item.pk !== this.me?.user.pk;
+            this.can(CapabilitiesEnum.CanImpersonate) && item.pk !== this.me?.user.pk;
         return [
             html`<a href="#/identity/users/${item.pk}">
                 <div>${item.username}</div>
@@ -293,7 +295,7 @@ export class RelatedUserList extends Table<User> {
                                             ${msg("Set password")}
                                         </button>
                                     </ak-forms-modal>
-                                    ${rootInterface()?.tenant?.flowRecovery
+                                    ${this.tenant?.flowRecovery
                                         ? html`
                                               <ak-action-button
                                                   class="pf-m-secondary"

@@ -43,6 +43,10 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         self.api = AppsV1Api(controller.client)
         self.outpost = self.controller.outpost
 
+    @property
+    def noop(self) -> bool:
+        return self.is_embedded
+
     @staticmethod
     def reconciler_name() -> str:
         return "deployment"

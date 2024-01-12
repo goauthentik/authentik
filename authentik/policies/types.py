@@ -8,8 +8,7 @@ from django.db.models import Model
 from django.http import HttpRequest
 from structlog.stdlib import get_logger
 
-from authentik.events.geo import GEOIP_READER
-from authentik.lib.utils.http import get_client_ip
+from authentik.events.context_processors.base import get_context_processors
 
 if TYPE_CHECKING:
     from authentik.core.models import User
@@ -39,12 +38,8 @@ class PolicyRequest:
     def set_http_request(self, request: HttpRequest):  # pragma: no cover
         """Load data from HTTP request, including geoip when enabled"""
         self.http_request = request
-        if not GEOIP_READER.enabled:
-            return
-        client_ip = get_client_ip(request)
-        if not client_ip:
-            return
-        self.context["geoip"] = GEOIP_READER.city(client_ip)
+        for processor in get_context_processors():
+            self.context.update(processor.enrich_context(request))
 
     @property
     def should_cache(self) -> bool:

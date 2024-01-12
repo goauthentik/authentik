@@ -6,6 +6,7 @@ from django.test import RequestFactory
 from django.urls import reverse
 from django.utils import timezone
 
+from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.events.models import Event, EventAction
@@ -21,6 +22,7 @@ from authentik.providers.oauth2.models import (
     AuthorizationCode,
     OAuth2Provider,
     RefreshToken,
+    ScopeMapping,
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 from authentik.providers.oauth2.views.token import TokenParams
@@ -136,21 +138,20 @@ class TestToken(OAuthTestCase):
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
         access: AccessToken = AccessToken.objects.filter(user=user, provider=provider).first()
-        refresh: RefreshToken = RefreshToken.objects.filter(user=user, provider=provider).first()
         self.assertJSONEqual(
             response.content.decode(),
             {
                 "access_token": access.token,
-                "refresh_token": refresh.token,
                 "token_type": TOKEN_TYPE,
                 "expires_in": 3600,
                 "id_token": provider.encode(
-                    refresh.id_token.to_dict(),
+                    access.id_token.to_dict(),
                 ),
             },
         )
         self.validate_jwt(access, provider)
 
+    @apply_blueprint("system/providers-oauth2.yaml")
     def test_refresh_token_view(self):
         """test request param"""
         provider = OAuth2Provider.objects.create(
@@ -158,6 +159,16 @@ class TestToken(OAuthTestCase):
             authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
             signing_key=self.keypair,
+        )
+        provider.property_mappings.set(
+            ScopeMapping.objects.filter(
+                managed__in=[
+                    "goauthentik.io/providers/oauth2/scope-openid",
+                    "goauthentik.io/providers/oauth2/scope-email",
+                    "goauthentik.io/providers/oauth2/scope-profile",
+                    "goauthentik.io/providers/oauth2/scope-offline_access",
+                ]
+            )
         )
         # Needs to be assigned to an application for iss to be set
         self.app.provider = provider
@@ -170,6 +181,7 @@ class TestToken(OAuthTestCase):
             token=generate_id(),
             _id_token=dumps({}),
             auth_time=timezone.now(),
+            _scope="offline_access",
         )
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
@@ -201,6 +213,7 @@ class TestToken(OAuthTestCase):
         )
         self.validate_jwt(access, provider)
 
+    @apply_blueprint("system/providers-oauth2.yaml")
     def test_refresh_token_view_invalid_origin(self):
         """test request param"""
         provider = OAuth2Provider.objects.create(
@@ -208,6 +221,16 @@ class TestToken(OAuthTestCase):
             authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
             signing_key=self.keypair,
+        )
+        provider.property_mappings.set(
+            ScopeMapping.objects.filter(
+                managed__in=[
+                    "goauthentik.io/providers/oauth2/scope-openid",
+                    "goauthentik.io/providers/oauth2/scope-email",
+                    "goauthentik.io/providers/oauth2/scope-profile",
+                    "goauthentik.io/providers/oauth2/scope-offline_access",
+                ]
+            )
         )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         user = create_test_admin_user()
@@ -217,6 +240,7 @@ class TestToken(OAuthTestCase):
             token=generate_id(),
             _id_token=dumps({}),
             auth_time=timezone.now(),
+            _scope="offline_access",
         )
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
@@ -247,6 +271,7 @@ class TestToken(OAuthTestCase):
             },
         )
 
+    @apply_blueprint("system/providers-oauth2.yaml")
     def test_refresh_token_revoke(self):
         """test request param"""
         provider = OAuth2Provider.objects.create(
@@ -254,6 +279,16 @@ class TestToken(OAuthTestCase):
             authorization_flow=create_test_flow(),
             redirect_uris="http://testserver",
             signing_key=self.keypair,
+        )
+        provider.property_mappings.set(
+            ScopeMapping.objects.filter(
+                managed__in=[
+                    "goauthentik.io/providers/oauth2/scope-openid",
+                    "goauthentik.io/providers/oauth2/scope-email",
+                    "goauthentik.io/providers/oauth2/scope-profile",
+                    "goauthentik.io/providers/oauth2/scope-offline_access",
+                ]
+            )
         )
         # Needs to be assigned to an application for iss to be set
         self.app.provider = provider
@@ -266,6 +301,7 @@ class TestToken(OAuthTestCase):
             token=generate_id(),
             _id_token=dumps({}),
             auth_time=timezone.now(),
+            _scope="offline_access",
         )
         # Create initial refresh token
         response = self.client.post(

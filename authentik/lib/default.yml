@@ -8,6 +8,8 @@ postgresql:
   password: "env://POSTGRES_PASSWORD"
   use_pgbouncer: false
   use_pgpool: false
+  test:
+    name: test_authentik
 
 listen:
   listen_http: 0.0.0.0:9000
@@ -107,7 +109,10 @@ cookie_domain: null
 disable_update_check: false
 disable_startup_analytics: false
 avatars: env://AUTHENTIK_AUTHENTIK__AVATARS?gravatar,initials
-geoip: "/geoip/GeoLite2-City.mmdb"
+events:
+  context_processors:
+    geoip: "/geoip/GeoLite2-City.mmdb"
+    asn: "/geoip/GeoLite2-ASN.mmdb"
 
 footer_links: []
 

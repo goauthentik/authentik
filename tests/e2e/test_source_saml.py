@@ -1,8 +1,6 @@
 """test SAML Source"""
-from sys import platform
 from time import sleep
 from typing import Any, Optional
-from unittest.case import skipUnless
 
 from docker.types import Healthcheck
 from guardian.utils import get_anonymous_user
@@ -15,6 +13,7 @@ from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import User
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
+from authentik.lib.generators import generate_id
 from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.stages.identification.models import IdentificationStage
 from tests.e2e.utils import SeleniumTestCase, retry
@@ -71,15 +70,18 @@ Sm75WXsflOxuTn08LbgGc4s=
 -----END PRIVATE KEY-----"""
 
 
-@skipUnless(platform.startswith("linux"), "requires local docker")
 class TestSourceSAML(SeleniumTestCase):
     """test SAML Source flow"""
+
+    def setUp(self):
+        self.slug = generate_id()
+        super().setUp()
 
     def get_container_specs(self) -> Optional[dict[str, Any]]:
         return {
             "image": "kristophjunge/test-saml-idp:1.15",
             "detach": True,
-            "network_mode": "host",
+            "ports": {"8080": "8080"},
             "auto_remove": True,
             "healthcheck": Healthcheck(
                 test=["CMD", "curl", "http://localhost:8080"],
@@ -89,7 +91,7 @@ class TestSourceSAML(SeleniumTestCase):
             "environment": {
                 "SIMPLESAMLPHP_SP_ENTITY_ID": "entity-id",
                 "SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE": (
-                    f"{self.live_server_url}/source/saml/saml-idp-test/acs/"
+                    self.url("authentik_sources_saml:acs", source_slug=self.slug)
                 ),
             },
         }
@@ -111,19 +113,19 @@ class TestSourceSAML(SeleniumTestCase):
         enrollment_flow = Flow.objects.get(slug="default-source-enrollment")
         pre_authentication_flow = Flow.objects.get(slug="default-source-pre-authentication")
         keypair = CertificateKeyPair.objects.create(
-            name="test-idp-cert",
+            name=generate_id(),
             certificate_data=IDP_CERT,
             key_data=IDP_KEY,
         )
 
         source = SAMLSource.objects.create(
-            name="saml-idp-test",
-            slug="saml-idp-test",
+            name=generate_id(),
+            slug=self.slug,
             authentication_flow=authentication_flow,
             enrollment_flow=enrollment_flow,
             pre_authentication_flow=pre_authentication_flow,
             issuer="entity-id",
-            sso_url="http://localhost:8080/simplesaml/saml2/idp/SSOService.php",
+            sso_url=f"http://{self.host}:8080/simplesaml/saml2/idp/SSOService.php",
             binding_type=SAMLBindingTypes.REDIRECT,
             signing_kp=keypair,
         )
@@ -181,19 +183,19 @@ class TestSourceSAML(SeleniumTestCase):
         enrollment_flow = Flow.objects.get(slug="default-source-enrollment")
         pre_authentication_flow = Flow.objects.get(slug="default-source-pre-authentication")
         keypair = CertificateKeyPair.objects.create(
-            name="test-idp-cert",
+            name=generate_id(),
             certificate_data=IDP_CERT,
             key_data=IDP_KEY,
         )
 
         source = SAMLSource.objects.create(
-            name="saml-idp-test",
-            slug="saml-idp-test",
+            name=generate_id(),
+            slug=self.slug,
             authentication_flow=authentication_flow,
             enrollment_flow=enrollment_flow,
             pre_authentication_flow=pre_authentication_flow,
             issuer="entity-id",
-            sso_url="http://localhost:8080/simplesaml/saml2/idp/SSOService.php",
+            sso_url=f"http://{self.host}:8080/simplesaml/saml2/idp/SSOService.php",
             binding_type=SAMLBindingTypes.POST,
             signing_kp=keypair,
         )
@@ -264,19 +266,19 @@ class TestSourceSAML(SeleniumTestCase):
         enrollment_flow = Flow.objects.get(slug="default-source-enrollment")
         pre_authentication_flow = Flow.objects.get(slug="default-source-pre-authentication")
         keypair = CertificateKeyPair.objects.create(
-            name="test-idp-cert",
+            name=generate_id(),
             certificate_data=IDP_CERT,
             key_data=IDP_KEY,
         )
 
         source = SAMLSource.objects.create(
-            name="saml-idp-test",
-            slug="saml-idp-test",
+            name=generate_id(),
+            slug=self.slug,
             authentication_flow=authentication_flow,
             enrollment_flow=enrollment_flow,
             pre_authentication_flow=pre_authentication_flow,
             issuer="entity-id",
-            sso_url="http://localhost:8080/simplesaml/saml2/idp/SSOService.php",
+            sso_url=f"http://{self.host}:8080/simplesaml/saml2/idp/SSOService.php",
             binding_type=SAMLBindingTypes.POST_AUTO,
             signing_kp=keypair,
         )

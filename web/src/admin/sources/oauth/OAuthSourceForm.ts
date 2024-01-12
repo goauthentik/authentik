@@ -1,14 +1,17 @@
 import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
 import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
+import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
 import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
-import { rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+import {
+    CapabilitiesEnum,
+    WithCapabilitiesConfig,
+} from "@goauthentik/elements/Interface/capabilitiesProvider";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { msg } from "@lit/localize";
@@ -17,7 +20,6 @@ import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
-    CapabilitiesEnum,
     FlowsInstancesListDesignationEnum,
     OAuthSource,
     OAuthSourceRequest,
@@ -28,7 +30,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-source-oauth-form")
-export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
+export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuthSource>) {
     async loadInstance(pk: string): Promise<OAuthSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthRetrieve({
             slug: pk,
@@ -61,16 +63,8 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
     @state()
     clearIcon = false;
 
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated source.");
-        } else {
-            return msg("Successfully created source.");
-        }
-    }
-
     async send(data: OAuthSource): Promise<OAuthSource> {
-        data.providerType = (this.providerType?.slug || "") as ProviderTypeEnum;
+        data.providerType = (this.providerType?.name || "") as ProviderTypeEnum;
         let source: OAuthSource;
         if (this.instance) {
             source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
@@ -184,7 +178,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                           </p>
                       </ak-form-element-horizontal> `
                     : html``}
-                ${this.providerType.slug === ProviderTypeEnum.Openidconnect ||
+                ${this.providerType.name === ProviderTypeEnum.Openidconnect ||
                 this.providerType.oidcWellKnownUrl !== ""
                     ? html`<ak-form-element-horizontal
                           label=${msg("OIDC Well-known URL")}
@@ -206,7 +200,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                           </p>
                       </ak-form-element-horizontal>`
                     : html``}
-                ${this.providerType.slug === ProviderTypeEnum.Openidconnect ||
+                ${this.providerType.name === ProviderTypeEnum.Openidconnect ||
                 this.providerType.oidcJwksUrl !== ""
                     ? html`<ak-form-element-horizontal
                               label=${msg("OIDC JWKS URL")}
@@ -326,7 +320,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                 />
                 <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
             </ak-form-element-horizontal>
-            ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanSaveMedia)
+            ${this.can(CapabilitiesEnum.CanSaveMedia)
                 ? html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
                           <input type="file" value="" class="pf-c-form-control" />
                           ${this.instance?.icon

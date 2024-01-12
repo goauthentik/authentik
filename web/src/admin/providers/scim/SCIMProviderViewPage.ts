@@ -10,7 +10,7 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/ModalButton";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
@@ -31,7 +31,8 @@ import {
     ProvidersApi,
     RbacPermissionsAssignedByUsersListModelEnum,
     SCIMProvider,
-    Task,
+    SCIMSyncStatus,
+    TaskStatusEnum,
 } from "@goauthentik/api";
 
 @customElement("ak-provider-scim-view")
@@ -54,7 +55,7 @@ export class SCIMProviderViewPage extends AKElement {
     provider?: SCIMProvider;
 
     @state()
-    syncState?: Task;
+    syncState?: SCIMSyncStatus;
 
     static get styles(): CSSResult[] {
         return [
@@ -128,6 +129,41 @@ export class SCIMProviderViewPage extends AKElement {
         </ak-tabs>`;
     }
 
+    renderSyncStatus(): TemplateResult {
+        if (!this.syncState) {
+            return html`${msg("No sync status.")}`;
+        }
+        if (this.syncState.isRunning) {
+            return html`${msg("Sync currently running.")}`;
+        }
+        if (this.syncState.tasks.length < 1) {
+            return html`${msg("Not synced yet.")}`;
+        }
+        return html`
+            <ul class="pf-c-list">
+                ${this.syncState.tasks.map((task) => {
+                    let header = "";
+                    if (task.status === TaskStatusEnum.Warning) {
+                        header = msg("Task finished with warnings");
+                    } else if (task.status === TaskStatusEnum.Error) {
+                        header = msg("Task finished with errors");
+                    } else {
+                        header = msg(str`Last sync: ${task.taskFinishTimestamp.toLocaleString()}`);
+                    }
+                    return html`<li>
+                        <p>${task.taskName}</p>
+                        <ul class="pf-c-list">
+                            <li>${header}</li>
+                            ${task.messages.map((m) => {
+                                return html`<li>${m}</li>`;
+                            })}
+                        </ul>
+                    </li> `;
+                })}
+            </ul>
+        `;
+    }
+
     renderTabOverview(): TemplateResult {
         if (!this.provider) {
             return html``;
@@ -186,16 +222,7 @@ export class SCIMProviderViewPage extends AKElement {
                         <div class="pf-c-card__title">
                             <p>${msg("Sync status")}</p>
                         </div>
-                        <div class="pf-c-card__body">
-                            ${this.syncState
-                                ? html` <ul class="pf-c-list">
-                                      ${this.syncState.messages.map((m) => {
-                                          return html`<li>${m}</li>`;
-                                      })}
-                                  </ul>`
-                                : html` ${msg("Sync not run yet.")} `}
-                        </div>
-
+                        <div class="pf-c-card__body">${this.renderSyncStatus()}</div>
                         <div class="pf-c-card__footer">
                             <ak-action-button
                                 class="pf-m-secondary"

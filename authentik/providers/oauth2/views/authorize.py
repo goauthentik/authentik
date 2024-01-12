@@ -1,6 +1,7 @@
 """authentik OAuth2 Authorization views"""
-from dataclasses import dataclass, field
+from dataclasses import InitVar, dataclass, field
 from datetime import timedelta
+from hashlib import sha256
 from json import dumps
 from re import error as RegexError
 from re import fullmatch
@@ -40,6 +41,8 @@ from authentik.providers.oauth2.constants import (
     PROMPT_CONSENT,
     PROMPT_LOGIN,
     PROMPT_NONE,
+    SCOPE_GITHUB,
+    SCOPE_OFFLINE_ACCESS,
     SCOPE_OPENID,
     TOKEN_TYPE,
 )
@@ -65,7 +68,6 @@ from authentik.stages.consent.models import ConsentMode, ConsentStage
 from authentik.stages.consent.stage import (
     PLAN_CONTEXT_CONSENT_HEADER,
     PLAN_CONTEXT_CONSENT_PERMISSIONS,
-    ConsentStageView,
 )
 
 LOGGER = get_logger()
@@ -74,6 +76,7 @@ PLAN_CONTEXT_PARAMS = "goauthentik.io/providers/oauth2/params"
 SESSION_KEY_LAST_LOGIN_UID = "authentik/providers/oauth2/last_login_uid"
 
 ALLOWED_PROMPT_PARAMS = {PROMPT_NONE, PROMPT_CONSENT, PROMPT_LOGIN}
+FORBIDDEN_URI_SCHEMES = {"javascript", "data", "vbscript"}
 
 
 @dataclass(slots=True)
@@ -85,7 +88,7 @@ class OAuthAuthorizationParams:
     redirect_uri: str
     response_type: str
     response_mode: Optional[str]
-    scope: list[str]
+    scope: set[str]
     state: str
     nonce: Optional[str]
     prompt: set[str]
@@ -100,8 +103,10 @@ class OAuthAuthorizationParams:
     code_challenge: Optional[str] = None
     code_challenge_method: Optional[str] = None
 
+    github_compat: InitVar[bool] = False
+
     @staticmethod
-    def from_request(request: HttpRequest) -> "OAuthAuthorizationParams":
+    def from_request(request: HttpRequest, github_compat=False) -> "OAuthAuthorizationParams":
         """
         Get all the params used by the Authorization Code Flow
         (and also for the Implicit and Hybrid).
@@ -153,7 +158,7 @@ class OAuthAuthorizationParams:
             response_type=response_type,
             response_mode=response_mode,
             grant_type=grant_type,
-            scope=query_dict.get("scope", "").split(),
+            scope=set(query_dict.get("scope", "").split()),
             state=state,
             nonce=query_dict.get("nonce"),
             prompt=ALLOWED_PROMPT_PARAMS.intersection(set(query_dict.get("prompt", "").split())),
@@ -161,9 +166,10 @@ class OAuthAuthorizationParams:
             max_age=int(max_age) if max_age else None,
             code_challenge=query_dict.get("code_challenge"),
             code_challenge_method=query_dict.get("code_challenge_method", "plain"),
+            github_compat=github_compat,
         )
 
-    def __post_init__(self):
+    def __post_init__(self, github_compat=False):
         self.provider: OAuth2Provider = OAuth2Provider.objects.filter(
             client_id=self.client_id
         ).first()
@@ -171,9 +177,13 @@ class OAuthAuthorizationParams:
             LOGGER.warning("Invalid client identifier", client_id=self.client_id)
             raise ClientIdError(client_id=self.client_id)
         self.check_redirect_uri()
-        self.check_scope()
+        self.check_scope(github_compat)
         self.check_nonce()
         self.check_code_challenge()
+        if self.request:
+            raise AuthorizeError(
+                self.redirect_uri, "request_not_supported", self.grant_type, self.state
+            )
 
     def check_redirect_uri(self):
         """Redirect URI validation."""
@@ -198,8 +208,8 @@ class OAuthAuthorizationParams:
             if not any(fullmatch(x, self.redirect_uri) for x in allowed_redirect_urls):
                 LOGGER.warning(
                     "Invalid redirect uri (regex comparison)",
-                    redirect_uri=self.redirect_uri,
-                    expected=allowed_redirect_urls,
+                    redirect_uri_given=self.redirect_uri,
+                    redirect_uri_expected=allowed_redirect_urls,
                 )
                 raise RedirectUriError(self.redirect_uri, allowed_redirect_urls)
         except RegexError as exc:
@@ -207,33 +217,58 @@ class OAuthAuthorizationParams:
             if not any(x == self.redirect_uri for x in allowed_redirect_urls):
                 LOGGER.warning(
                     "Invalid redirect uri (strict comparison)",
-                    redirect_uri=self.redirect_uri,
-                    expected=allowed_redirect_urls,
+                    redirect_uri_given=self.redirect_uri,
+                    redirect_uri_expected=allowed_redirect_urls,
                 )
                 raise RedirectUriError(self.redirect_uri, allowed_redirect_urls)
-        if self.request:
-            raise AuthorizeError(
-                self.redirect_uri, "request_not_supported", self.grant_type, self.state
-            )
+        # Check against forbidden schemes
+        if urlparse(self.redirect_uri).scheme in FORBIDDEN_URI_SCHEMES:
+            raise RedirectUriError(self.redirect_uri, allowed_redirect_urls)
 
-    def check_scope(self):
+    def check_scope(self, github_compat=False):
         """Ensure openid scope is set in Hybrid flows, or when requesting an id_token"""
-        if len(self.scope) == 0:
-            default_scope_names = set(
-                ScopeMapping.objects.filter(provider__in=[self.provider]).values_list(
-                    "scope_name", flat=True
-                )
+        default_scope_names = set(
+            ScopeMapping.objects.filter(provider__in=[self.provider]).values_list(
+                "scope_name", flat=True
             )
+        )
+        if len(self.scope) == 0:
             self.scope = default_scope_names
             LOGGER.info(
                 "No scopes requested, defaulting to all configured scopes", scopes=self.scope
             )
+        scopes_to_check = self.scope
+        if github_compat:
+            scopes_to_check = self.scope - SCOPE_GITHUB
+        if not scopes_to_check.issubset(default_scope_names):
+            LOGGER.info(
+                "Application requested scopes not configured, setting to overlap",
+                scope_allowed=default_scope_names,
+                scope_given=self.scope,
+            )
+            self.scope = self.scope.intersection(default_scope_names)
         if SCOPE_OPENID not in self.scope and (
             self.grant_type == GrantTypes.HYBRID
             or self.response_type in [ResponseTypes.ID_TOKEN, ResponseTypes.ID_TOKEN_TOKEN]
         ):
             LOGGER.warning("Missing 'openid' scope.")
             raise AuthorizeError(self.redirect_uri, "invalid_scope", self.grant_type, self.state)
+        if SCOPE_OFFLINE_ACCESS in self.scope:
+            # https://openid.net/specs/openid-connect-core-1_0.html#OfflineAccess
+            if PROMPT_CONSENT not in self.prompt:
+                raise AuthorizeError(
+                    self.redirect_uri, "consent_required", self.grant_type, self.state
+                )
+            if self.response_type not in [
+                ResponseTypes.CODE,
+                ResponseTypes.CODE_TOKEN,
+                ResponseTypes.CODE_ID_TOKEN,
+                ResponseTypes.CODE_ID_TOKEN_TOKEN,
+            ]:
+                # offline_access requires a response type that has some sort of token
+                # Spec says to ignore the scope when the response_type wouldn't result
+                # in an authorization code being generated
+                self.scope.remove(SCOPE_OFFLINE_ACCESS)
 
     def check_nonce(self):
         """Nonce parameter validation."""
@@ -282,6 +317,7 @@ class OAuthAuthorizationParams:
             expires=now + timedelta_from_string(self.provider.access_code_validity),
             scope=self.scope,
             nonce=self.nonce,
+            session_id=sha256(request.session.session_key.encode("ascii")).hexdigest(),
         )
 
         if self.code_challenge and self.code_challenge_method:
@@ -295,6 +331,9 @@ class AuthorizationFlowInitView(PolicyAccessView):
     """OAuth2 Flow initializer, checks access to application and starts flow"""
 
     params: OAuthAuthorizationParams
+    # Enable GitHub compatibility (only allow for scopes which are handled
+    # differently for github compat)
+    github_compat = False
 
     def pre_permission_check(self):
         """Check prompt parameter before checking permission/authentication,
@@ -303,7 +342,9 @@ class AuthorizationFlowInitView(PolicyAccessView):
         if len(self.request.GET) < 1:
             raise Http404
         try:
-            self.params = OAuthAuthorizationParams.from_request(self.request)
+            self.params = OAuthAuthorizationParams.from_request(
+                self.request, github_compat=self.github_compat
+            )
         except AuthorizeError as error:
             LOGGER.warning(error.description, redirect_uri=error.redirect_uri)
             raise RequestValidationError(error.get_response(self.request))
@@ -400,7 +441,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
         # OpenID clients can specify a `prompt` parameter, and if its set to consent we
         # need to inject a consent stage
         if PROMPT_CONSENT in self.params.prompt:
-            if not any(isinstance(x.stage, ConsentStageView) for x in plan.bindings):
+            if not any(isinstance(x.stage, ConsentStage) for x in plan.bindings):
                 # Plan does not have any consent stage, so we add an in-memory one
                 stage = ConsentStage(
                     name="OAuth2 Provider In-memory consent stage",
@@ -569,6 +610,7 @@ class OAuthFulfillmentStage(StageView):
             expires=access_token_expiry,
             provider=self.provider,
             auth_time=auth_event.created if auth_event else now,
+            session_id=sha256(self.request.session.session_key.encode("ascii")).hexdigest(),
         )
 
         id_token = IDToken.new(self.provider, token, self.request)

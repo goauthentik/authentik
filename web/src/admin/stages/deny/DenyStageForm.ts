@@ -1,6 +1,6 @@
+import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -10,19 +10,11 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { DenyStage, StagesApi } from "@goauthentik/api";
 
 @customElement("ak-stage-deny-form")
-export class DenyStageForm extends ModelForm<DenyStage, string> {
+export class DenyStageForm extends BaseStageForm<DenyStage> {
     loadInstance(pk: string): Promise<DenyStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesDenyRetrieve({
             stageUuid: pk,
         });
-    }
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated stage.");
-        } else {
-            return msg("Successfully created stage.");
-        }
     }
 
     async send(data: DenyStage): Promise<DenyStage> {

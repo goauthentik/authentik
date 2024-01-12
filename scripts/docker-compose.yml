@@ -1,22 +1,27 @@
-version: '3.7'
+version: "3.7"
 
 services:
   postgresql:
     container_name: postgres
-    image: library/postgres:12
+    image: docker.io/library/postgres:16
     volumes:
-    - db-data:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
       POSTGRES_DB: authentik
     ports:
-    - 5432:5432
+      - 127.0.0.1:5432:5432
     restart: always
   redis:
     container_name: redis
-    image: library/redis
+    image: docker.io/library/redis
     ports:
-    - 6379:6379
+      - 127.0.0.1:6379:6379
+    restart: always
+  spotlight:
+    image: ghcr.io/getsentry/spotlight
+    ports:
+      - 127.0.0.1:8969:8969
     restart: always
 
 volumes:

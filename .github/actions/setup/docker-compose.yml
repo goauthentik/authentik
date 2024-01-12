@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   postgresql:
-    image: docker.io/library/postgres:${PSQL_TAG:-12}
+    image: docker.io/library/postgres:${PSQL_TAG:-16}
     environment:
       POSTGRES_USER: authentik
       POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"

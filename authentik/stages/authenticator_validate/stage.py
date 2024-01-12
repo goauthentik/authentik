@@ -6,10 +6,10 @@ from typing import Optional
 from django.conf import settings
 from django.http import HttpRequest, HttpResponse
 from jwt import PyJWTError, decode, encode
-from rest_framework.fields import CharField, IntegerField, JSONField, ListField, UUIDField
+from rest_framework.fields import CharField, IntegerField, ListField, UUIDField
 from rest_framework.serializers import ValidationError
 
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, WithUserInfoChallenge
@@ -68,7 +68,7 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     selected_stage = CharField(required=False)
 
     code = CharField(required=False)
-    webauthn = JSONField(required=False)
+    webauthn = JSONDictField(required=False)
     duo = IntegerField(required=False)
     component = CharField(default="ak-stage-authenticator-validate")
 

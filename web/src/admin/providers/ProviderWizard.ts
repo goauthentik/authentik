@@ -4,6 +4,7 @@ import "@goauthentik/admin/providers/proxy/ProxyProviderForm";
 import "@goauthentik/admin/providers/saml/SAMLProviderForm";
 import "@goauthentik/admin/providers/saml/SAMLProviderImportForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/elements/Alert";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/ProxyForm";
 import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
@@ -13,8 +14,8 @@ import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
 import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
-import { CSSResult, TemplateResult, html } from "lit";
-import { property } from "lit/decorators.js";
+import { CSSResult, TemplateResult, html, nothing } from "lit";
+import { property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -22,12 +23,15 @@ import PFHint from "@patternfly/patternfly/components/Hint/hint.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { ProvidersApi, TypeCreate } from "@goauthentik/api";
+import { EnterpriseApi, LicenseSummary, ProvidersApi, TypeCreate } from "@goauthentik/api";
 
 @customElement("ak-provider-wizard-initial")
 export class InitialProviderWizardPage extends WizardPage {
     @property({ attribute: false })
     providerTypes: TypeCreate[] = [];
+
+    @property({ attribute: false })
+    enterprise?: LicenseSummary;
 
     static get styles(): CSSResult[] {
         return [PFBase, PFForm, PFHint, PFButton, PFRadio];
@@ -79,9 +83,18 @@ export class InitialProviderWizardPage extends WizardPage {
                             this.host.steps = ["initial", `type-${type.component}`];
                             this.host.isValid = true;
                         }}
+                        ?disabled=${type.requiresEnterprise ? !this.enterprise?.hasLicense : false}
                     />
                     <label class="pf-c-radio__label" for=${type.component}>${type.name}</label>
                     <span class="pf-c-radio__description">${type.description}</span>
+                    ${type.requiresEnterprise && !this.enterprise?.hasLicense
+                        ? html`
+                              <ak-alert class="pf-c-radio__description" ?inline=${true}>
+                                  ${msg("Provider require enterprise.")}
+                                  <a href="#/enterprise/licenses">${msg("Learn more")}</a>
+                              </ak-alert>
+                          `
+                        : nothing}
                 </div>`;
             })}
         </form>`;
@@ -100,15 +113,19 @@ export class ProviderWizard extends AKElement {
     @property({ attribute: false })
     providerTypes: TypeCreate[] = [];
 
+    @state()
+    enterprise?: LicenseSummary;
+
     @property({ attribute: false })
     finalHandler: () => Promise<void> = () => {
         return Promise.resolve();
     };
 
-    firstUpdated(): void {
-        new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList().then((types) => {
-            this.providerTypes = types;
-        });
+    async firstUpdated(): Promise<void> {
+        this.providerTypes = await new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList();
+        this.enterprise = await new EnterpriseApi(
+            DEFAULT_CONFIG,
+        ).enterpriseLicenseSummaryRetrieve();
     }
 
     render(): TemplateResult {
@@ -121,7 +138,11 @@ export class ProviderWizard extends AKElement {
                     return this.finalHandler();
                 }}
             >
-                <ak-provider-wizard-initial slot="initial" .providerTypes=${this.providerTypes}>
+                <ak-provider-wizard-initial
+                    slot="initial"
+                    .providerTypes=${this.providerTypes}
+                    .enterprise=${this.enterprise}
+                >
                 </ak-provider-wizard-initial>
                 ${this.providerTypes.map((type) => {
                     return html`

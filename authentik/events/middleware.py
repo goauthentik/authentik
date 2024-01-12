@@ -20,6 +20,7 @@ from authentik.core.models import (
     User,
     UserSourceConnection,
 )
+from authentik.enterprise.providers.rac.models import ConnectionToken
 from authentik.events.models import Event, EventAction, Notification
 from authentik.events.utils import model_to_dict
 from authentik.flows.models import FlowToken, Stage
@@ -54,14 +55,12 @@ IGNORED_MODELS = (
     SCIMUser,
     SCIMGroup,
     Reputation,
+    ConnectionToken,
 )
 
 
 def should_log_model(model: Model) -> bool:
     """Return true if operation on `model` should be logged"""
-    # Check for silk by string so this comparison doesn't fail when silk isn't installed
-    if model.__module__.startswith("silk"):
-        return False
     return model.__class__ not in IGNORED_MODELS
 
 

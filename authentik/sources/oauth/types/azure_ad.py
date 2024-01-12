@@ -4,8 +4,8 @@ from typing import Any
 from structlog.stdlib import get_logger
 
 from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
+from authentik.sources.oauth.types.oidc import OpenIDConnectOAuth2Callback
 from authentik.sources.oauth.types.registry import SourceType, registry
-from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 LOGGER = get_logger()
@@ -20,7 +20,7 @@ class AzureADOAuthRedirect(OAuthRedirect):
         }
 
 
-class AzureADOAuthCallback(OAuthCallback):
+class AzureADOAuthCallback(OpenIDConnectOAuth2Callback):
     """AzureAD OAuth2 Callback"""
 
     client_class = UserprofileHeaderAuthClient
@@ -43,8 +43,8 @@ class AzureADType(SourceType):
 
     callback_view = AzureADOAuthCallback
     redirect_view = AzureADOAuthRedirect
-    name = "Azure AD"
-    slug = "azuread"
+    verbose_name = "Azure AD"
+    name = "azuread"
 
     urls_customizable = True
 

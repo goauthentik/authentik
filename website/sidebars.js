@@ -110,6 +110,7 @@ const docsSidebar = {
                     items: ["providers/ldap/generic_setup"],
                 },
                 "providers/scim/index",
+                "providers/rac/index",
             ],
         },
         {
@@ -407,6 +408,7 @@ const docsSidebar = {
             },
             items: [
                 "security/policy",
+                "security/CVE-2024-21637",
                 "security/CVE-2023-48228",
                 "security/GHSA-rjvp-29xq-f62w",
                 "security/CVE-2023-39522",

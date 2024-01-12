@@ -94,7 +94,6 @@ def get_logger_config():
         "kubernetes": "INFO",
         "asyncio": "WARNING",
         "redis": "WARNING",
-        "silk": "INFO",
         "fsevents": "WARNING",
         "uvicorn": "WARNING",
         "gunicorn": "INFO",

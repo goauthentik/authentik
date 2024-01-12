@@ -17,19 +17,20 @@ The following placeholders will be used:
 -   `grafana.company` is the FQDN of the Grafana install.
 -   `authentik.company` is the FQDN of the authentik install.
 
-Create an application in authentik. Create an OAuth2/OpenID provider with the following parameters:
+Create an OAuth2/OpenID provider with the following parameters:
 
 -   Client Type: `Confidential`
 -   Scopes: OpenID, Email and Profile
 -   Signing Key: Select any available key
 -   Redirect URIs: `https://grafana.company/login/generic_oauth`
 
-Note the Client ID and Client Secret values. Create an application, using the provider you've created above. Note the slug of the application you've created.
+Note the Client ID and Client Secret values.
+
+Create an application, using the provider you've created above. Note the slug of the application you've created.
 
 ## Terraform provider
 
 ```hcl
-
 data "authentik_flow" "default-provider-authorization-implicit-consent" {
   slug = "default-provider-authorization-implicit-consent"
 }
@@ -86,7 +87,7 @@ resource "authentik_group" "grafana_viewers" {
 
 ```
 
-## Grafana
+## Grafana configuration
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
@@ -115,7 +116,7 @@ environment:
     # Optionally enable auto-login (bypasses Grafana login screen)
     GF_AUTH_OAUTH_AUTO_LOGIN: "true"
     # Optionally map user groups to Grafana roles
-    GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(groups[*], 'Grafana Admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor' || 'Viewer'"
+    GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'"
 ```
 
   </TabItem>
@@ -138,7 +139,7 @@ auth_url = https://authentik.company/application/o/authorize/
 token_url = https://authentik.company/application/o/token/
 api_url = https://authentik.company/application/o/userinfo/
 # Optionally map user groups to Grafana roles
-role_attribute_path = contains(groups[*], 'Grafana Admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor' || 'Viewer'
+role_attribute_path = contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'
 ```
 
   </TabItem>
@@ -160,7 +161,7 @@ grafana.ini:
         token_url: "https://authentik.company/application/o/token/"
         api_url: "https://authentik.company/application/o/userinfo/"
         # Optionally map user groups to Grafana roles
-        role_attribute_path: contains(groups[*], 'Grafana Admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor' || 'Viewer'
+        role_attribute_path: contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'
 ```
 
 :::note
@@ -176,11 +177,6 @@ In the configuration above you can see an example of a role mapping. Upon login,
 
 In the example shown above, one of the specified group names is "Grafana Admins". If the user is a member of this group, they will be granted the "Admin" role in Grafana.
 If the user is not a member of the "Grafana Admins" group, it moves on to see if the user is a member of the "Grafana Editors" group. If they are, they are granted the "Editor" role. Finally, if the user is not found to be a member of either of these groups, it fails back to granting the "Viewer" role.
-
-```text
-contains(groups[*], 'Grafana Admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor' || 'Viewer'
-^ attribute to search  ^ group to search for  ^ role to grant                                           ^ or grant "Viewer" role.
-```
 
 For more information on group/role mappings, see [Grafana's docs](https://grafana.com/docs/grafana/latest/auth/generic-oauth/#role-mapping).
 

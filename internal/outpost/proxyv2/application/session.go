@@ -62,7 +62,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 	// https://github.com/markbates/goth/commit/7276be0fdf719ddff753f3574ef0f967e4a5a5f7
 	// set the maxLength of the cookies stored on the disk to a larger number to prevent issues with:
 	// securecookie: the value is too long
-	// when using OpenID Connect , since this can contain a large amount of extra information in the id_token
+	// when using OpenID Connect, since this can contain a large amount of extra information in the id_token
 
 	// Note, when using the FilesystemStore only the session.ID is written to a browser cookie, so this is explicit for the storage on disk
 	cs.MaxLength(math.MaxInt)

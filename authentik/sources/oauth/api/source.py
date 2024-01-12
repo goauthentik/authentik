@@ -24,7 +24,7 @@ class SourceTypeSerializer(PassiveSerializer):
     """Serializer for SourceType"""
 
     name = CharField(required=True)
-    slug = CharField(required=True)
+    verbose_name = CharField(required=True)
     urls_customizable = BooleanField()
     request_token_url = CharField(read_only=True, allow_null=True)
     authorization_url = CharField(read_only=True, allow_null=True)
@@ -99,7 +99,9 @@ class OAuthSourceSerializer(SourceSerializer):
         ]:
             if getattr(provider_type, url, None) is None:
                 if url not in attrs:
-                    raise ValidationError(f"{url} is required for provider {provider_type.name}")
+                    raise ValidationError(
+                        f"{url} is required for provider {provider_type.verbose_name}"
+                    )
         return attrs
 
     class Meta:
