@@ -43495,8 +43495,12 @@ components:
           type: string
           description: Get the FQDN configured on the embedded outpost
           readOnly: true
+        embedded_outpost_disabled:
+          type: boolean
+          readOnly: true
       required:
       - brand
+      - embedded_outpost_disabled
       - embedded_outpost_host
       - http_headers
       - http_host
