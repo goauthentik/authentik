@@ -747,7 +747,7 @@
         
       </trans-unit>
       <trans-unit id="se7e1ababbc4868b8">
-        <source><x id="0" equiv-text="${item.taskDuration.toFixed(2)}"/> seconds</source>
+        <source><x id="0" equiv-text="${item.duration.toFixed(2)}"/> seconds</source>
         <target><x id="0" equiv-text="${item.taskDuration.toFixed(2)}"/> seconden</target>
         
       </trans-unit>
@@ -3315,7 +3315,7 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
         
       </trans-unit>
       <trans-unit id="sbedb77365a066648">
-        <source>Last sync: <x id="0" equiv-text="${task.taskFinishTimestamp.toLocaleString()}"/></source>
+        <source>Last sync: <x id="0" equiv-text="${task.finishTimestamp.toLocaleString()}"/></source>
         <target>Laatste synchronisatie: <x id="0" equiv-text="${task.taskFinishTimestamp.toLocaleString()}"/></target>
         
       </trans-unit>
@@ -8042,6 +8042,21 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 </trans-unit>
 <trans-unit id="see1eb81c1f734079">
   <source>System settings</source>
+</trans-unit>
+<trans-unit id="s47fb5504f693775b">
+  <source>Changes made:</source>
+</trans-unit>
+<trans-unit id="s506b6a19d12f414c">
+  <source>Key</source>
+</trans-unit>
+<trans-unit id="s4fc9dc73245eab09">
+  <source>Previous value</source>
+</trans-unit>
+<trans-unit id="scb3b0671d7b7f640">
+  <source>New value</source>
+</trans-unit>
+<trans-unit id="s4a642406b0745917">
+  <source>Raw event info</source>
 </trans-unit>
     </body>
   </file>

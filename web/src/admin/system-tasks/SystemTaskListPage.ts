@@ -1,3 +1,4 @@
+import { uiConfig } from "@goauthentik/app/common/ui/config";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { PFColor } from "@goauthentik/elements/Label";
@@ -14,13 +15,10 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { AdminApi, Task, TaskStatusEnum } from "@goauthentik/api";
+import { EventsApi, SystemTask, SystemTaskStatusEnum } from "@goauthentik/api";
 
 @customElement("ak-system-task-list")
-export class SystemTaskListPage extends TablePage<Task> {
-    searchEnabled(): boolean {
-        return false;
-    }
+export class SystemTaskListPage extends TablePage<SystemTask> {
     pageTitle(): string {
         return msg("System Tasks");
     }
@@ -34,53 +32,45 @@ export class SystemTaskListPage extends TablePage<Task> {
     expandable = true;
 
     @property()
-    order = "slug";
+    order = "name";
 
     static get styles(): CSSResult[] {
         return super.styles.concat(PFDescriptionList);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Task>> {
-        return new AdminApi(DEFAULT_CONFIG).adminSystemTasksList().then((tasks) => {
-            return {
-                pagination: {
-                    count: tasks.length,
-                    totalPages: 1,
-                    startIndex: 1,
-                    endIndex: tasks.length,
-                    current: page,
-                    next: 0,
-                    previous: 0,
-                },
-                results: tasks,
-            };
+    async apiEndpoint(page: number): Promise<PaginatedResponse<SystemTask>> {
+        return new EventsApi(DEFAULT_CONFIG).eventsSystemTasksList({
+            ordering: this.order,
+            page: page,
+            pageSize: (await uiConfig()).pagination.perPage,
+            search: this.search || "",
         });
     }
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(msg("Identifier")),
+            new TableColumn(msg("Identifier"), "name"),
             new TableColumn(msg("Description")),
             new TableColumn(msg("Last run")),
-            new TableColumn(msg("Status")),
+            new TableColumn(msg("Status"), "status"),
             new TableColumn(msg("Actions")),
         ];
     }
 
-    taskStatus(task: Task): TemplateResult {
+    taskStatus(task: SystemTask): TemplateResult {
         switch (task.status) {
-            case TaskStatusEnum.Successful:
+            case SystemTaskStatusEnum.Successful:
                 return html`<ak-label color=${PFColor.Green}>${msg("Successful")}</ak-label>`;
-            case TaskStatusEnum.Warning:
+            case SystemTaskStatusEnum.Warning:
                 return html`<ak-label color=${PFColor.Orange}>${msg("Warning")}</ak-label>`;
-            case TaskStatusEnum.Error:
+            case SystemTaskStatusEnum.Error:
                 return html`<ak-label color=${PFColor.Red}>${msg("Error")}</ak-label>`;
             default:
                 return html`<ak-label color=${PFColor.Grey}>${msg("Unknown")}</ak-label>`;
         }
     }
 
-    renderExpanded(item: Task): TemplateResult {
+    renderExpanded(item: SystemTask): TemplateResult {
         return html` <td role="cell" colspan="3">
                 <div class="pf-c-table__expandable-row-content">
                     <dl class="pf-c-description-list pf-m-horizontal">
@@ -90,7 +80,7 @@ export class SystemTaskListPage extends TablePage<Task> {
                             </dt>
                             <dd class="pf-c-description-list__description">
                                 <div class="pf-c-description-list__text">
-                                    ${msg(str`${item.taskDuration.toFixed(2)} seconds`)}
+                                    ${msg(str`${item.duration.toFixed(2)} seconds`)}
                                 </div>
                             </dd>
                         </div>
@@ -113,18 +103,18 @@ export class SystemTaskListPage extends TablePage<Task> {
             <td></td>`;
     }
 
-    row(item: Task): TemplateResult[] {
+    row(item: SystemTask): TemplateResult[] {
         return [
-            html`${item.taskName}`,
-            html`${item.taskDescription}`,
-            html`${item.taskFinishTimestamp.toLocaleString()}`,
+            html`${item.name}${item.uid ? `:${item.uid}` : ""}`,
+            html`${item.description}`,
+            html`${item.finishTimestamp.toLocaleString()}`,
             this.taskStatus(item),
             html`<ak-action-button
                 class="pf-m-plain"
                 .apiRequest=${() => {
-                    return new AdminApi(DEFAULT_CONFIG)
-                        .adminSystemTasksRetryCreate({
-                            id: item.taskName,
+                    return new EventsApi(DEFAULT_CONFIG)
+                        .eventsSystemTasksRetryCreate({
+                            uuid: item.uuid,
                         })
                         .then(() => {
                             this.dispatchEvent(
