@@ -56,6 +56,7 @@ class OAuthSourceSerializer(SourceSerializer):
         """Get source's type configuration"""
         return SourceTypeSerializer(instance.source_type).data
 
+    # pylint: disable=too-many-locals
     def validate(self, attrs: dict) -> dict:
         session = get_http_session()
         source_type = registry.find_type(attrs["provider_type"])
@@ -73,9 +74,17 @@ class OAuthSourceSerializer(SourceSerializer):
             config = well_known_config.json()
             if "issuer" not in config:
                 raise ValidationError({"oidc_well_known_url": "Invalid well-known configuration"})
-            attrs["authorization_url"] = config.get("authorization_endpoint", "")
-            attrs["access_token_url"] = config.get("token_endpoint", "")
-            attrs["profile_url"] = config.get("userinfo_endpoint", "")
+            field_map = {
+                # authentik field to oidc field
+                "authorization_url": "authorization_endpoint",
+                "access_token_url": "token_endpoint",
+                "profile_url": "userinfo_endpoint",
+            }
+            for ak_key, oidc_key in field_map.items():
+                # Don't overwrite user-set values
+                if ak_key in attrs and attrs[ak_key]:
+                    continue
+                attrs[ak_key] = config.get(oidc_key, "")
             inferred_oidc_jwks_url = config.get("jwks_uri", "")
 
         # Prefer user-entered URL to inferred URL to default URL
