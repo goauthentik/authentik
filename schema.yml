@@ -6956,17 +6956,17 @@ paths:
       - in: query
         name: status
         schema:
-          type: integer
+          type: string
           enum:
-          - 1
-          - 2
-          - 4
-          - 8
+          - error
+          - successful
+          - unknown
+          - warning
         description: |-
-          * `1` - Successful
-          * `2` - Warning
-          * `4` - Error
-          * `8` - Unknown
+          * `unknown` - Unknown
+          * `successful` - Successful
+          * `warning` - Warning
+          * `error` - Error
       - in: query
         name: uid
         schema:
@@ -43631,16 +43631,16 @@ components:
       - uuid
     SystemTaskStatusEnum:
       enum:
+      - UNKNOWN
       - SUCCESSFUL
       - WARNING
       - ERROR
-      - UNKNOWN
       type: string
       description: |-
+        * `UNKNOWN` - UNKNOWN
         * `SUCCESSFUL` - SUCCESSFUL
         * `WARNING` - WARNING
         * `ERROR` - ERROR
-        * `UNKNOWN` - UNKNOWN
     TOTPDevice:
       type: object
       description: Serializer for totp authenticator devices

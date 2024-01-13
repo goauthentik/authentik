@@ -588,13 +588,13 @@ class NotificationWebhookMapping(PropertyMapping):
         verbose_name_plural = _("Webhook Mappings")
 
 
-class TaskStatus(models.IntegerChoices):
+class TaskStatus(models.TextChoices):
     """Possible states of tasks"""
 
-    SUCCESSFUL = 1
-    WARNING = 2
-    ERROR = 4
-    UNKNOWN = 8
+    UNKNOWN = "unknown"
+    SUCCESSFUL = "successful"
+    WARNING = "warning"
+    ERROR = "error"
 
 
 class SystemTask(SerializerModel, ExpiringModel):
@@ -607,7 +607,7 @@ class SystemTask(SerializerModel, ExpiringModel):
     start_timestamp = models.DateTimeField(auto_now_add=True)
     finish_timestamp = models.DateTimeField(auto_now=True)
 
-    status = models.PositiveIntegerField(choices=TaskStatus.choices)
+    status = models.TextField(choices=TaskStatus.choices)
 
     description = models.TextField(null=True)
     messages = models.JSONField()

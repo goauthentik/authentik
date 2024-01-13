@@ -3322,10 +3322,10 @@
                 "status": {
                     "type": "string",
                     "enum": [
+                        "UNKNOWN",
                         "SUCCESSFUL",
                         "WARNING",
-                        "ERROR",
-                        "UNKNOWN"
+                        "ERROR"
                     ],
                     "title": "Status"
                 },
