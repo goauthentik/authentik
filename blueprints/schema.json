@@ -308,6 +308,43 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_events.systemtask"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_events.systemtask"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_events.systemtask"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_flows.flow"
                             },
                             "id": {
@@ -3254,6 +3291,50 @@
             },
             "required": []
         },
+        "model_authentik_events.systemtask": {
+            "type": "object",
+            "properties": {
+                "task_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Task name"
+                },
+                "task_description": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Task description"
+                },
+                "task_start_timestamp": {
+                    "type": "string",
+                    "format": "date-time",
+                    "title": "Task start timestamp"
+                },
+                "task_finish_timestamp": {
+                    "type": "string",
+                    "format": "date-time",
+                    "title": "Task finish timestamp"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "SUCCESSFUL",
+                        "WARNING",
+                        "ERROR",
+                        "UNKNOWN"
+                    ],
+                    "title": "Status"
+                },
+                "messages": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "title": "Messages"
+                }
+            },
+            "required": []
+        },
         "model_authentik_flows.flow": {
             "type": "object",
             "properties": {
@@ -3667,6 +3748,7 @@
                         "authentik_events.notification",
                         "authentik_events.notificationrule",
                         "authentik_events.notificationwebhookmapping",
+                        "authentik_events.systemtask",
                         "authentik_flows.flow",
                         "authentik_flows.flowstagebinding",
                         "authentik_outposts.dockerserviceconnection",

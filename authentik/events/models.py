@@ -4,7 +4,7 @@ from collections import Counter
 from datetime import timedelta
 from inspect import currentframe
 from smtplib import SMTPException
-from typing import TYPE_CHECKING, Optional
+from typing import Optional
 from uuid import uuid4
 
 from django.db import models
@@ -18,6 +18,7 @@ from django.http.request import QueryDict
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from requests import RequestException
+from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik import get_full_version
@@ -28,6 +29,7 @@ from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_USER,
 )
 from authentik.core.models import ExpiringModel, Group, PropertyMapping, User
+from authentik.events.apps import GAUGE_TASKS
 from authentik.events.context_processors.base import get_context_processors
 from authentik.events.utils import (
     cleanse_dict,
@@ -46,8 +48,6 @@ from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()
-if TYPE_CHECKING:
-    from rest_framework.serializers import Serializer
 
 
 def default_event_duration():
@@ -270,7 +270,7 @@ class Event(SerializerModel, ExpiringModel):
         super().save(*args, **kwargs)
 
     @property
-    def serializer(self) -> "Serializer":
+    def serializer(self) -> type[Serializer]:
         from authentik.events.api.events import EventSerializer
 
         return EventSerializer
@@ -478,7 +478,7 @@ class NotificationTransport(SerializerModel):
             raise NotificationTransportError(exc) from exc
 
     @property
-    def serializer(self) -> "Serializer":
+    def serializer(self) -> type[Serializer]:
         from authentik.events.api.notification_transports import NotificationTransportSerializer
 
         return NotificationTransportSerializer
@@ -511,7 +511,7 @@ class Notification(SerializerModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     @property
-    def serializer(self) -> "Serializer":
+    def serializer(self) -> type[Serializer]:
         from authentik.events.api.notifications import NotificationSerializer
 
         return NotificationSerializer
@@ -554,7 +554,7 @@ class NotificationRule(SerializerModel, PolicyBindingModel):
     )
 
     @property
-    def serializer(self) -> "Serializer":
+    def serializer(self) -> type[Serializer]:
         from authentik.events.api.notification_rules import NotificationRuleSerializer
 
         return NotificationRuleSerializer
@@ -575,7 +575,7 @@ class NotificationWebhookMapping(PropertyMapping):
         return "ak-property-mapping-notification-form"
 
     @property
-    def serializer(self) -> type["Serializer"]:
+    def serializer(self) -> type[type[Serializer]]:
         from authentik.events.api.notification_mappings import NotificationWebhookMappingSerializer
 
         return NotificationWebhookMappingSerializer
@@ -586,3 +586,59 @@ class NotificationWebhookMapping(PropertyMapping):
     class Meta:
         verbose_name = _("Webhook Mapping")
         verbose_name_plural = _("Webhook Mappings")
+
+
+class TaskStatus(models.IntegerChoices):
+    """Possible states of tasks"""
+
+    SUCCESSFUL = 1
+    WARNING = 2
+    ERROR = 4
+    UNKNOWN = 8
+
+
+class SystemTask(SerializerModel, ExpiringModel):
+    """Info about a system task running in the background along with details to restart the task"""
+
+    uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+    name = models.TextField()
+    uid = models.TextField(null=True)
+
+    start_timestamp = models.DateTimeField(auto_now_add=True)
+    finish_timestamp = models.DateTimeField(auto_now=True)
+
+    status = models.PositiveIntegerField(choices=TaskStatus.choices)
+
+    description = models.TextField(null=True)
+    messages = models.JSONField()
+
+    task_call_module = models.TextField()
+    task_call_func = models.TextField()
+    task_call_args = models.JSONField(default=list)
+    task_call_kwargs = models.JSONField(default=dict)
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.events.api.tasks import SystemTaskSerializer
+
+        return SystemTaskSerializer
+
+    def update_metrics(self):
+        """Update prometheus metrics"""
+        duration = max(self.finish_timestamp.timestamp() - self.start_timestamp.timestamp(), 0)
+        GAUGE_TASKS.labels(
+            task_name=self.name.split(":")[0],
+            task_uid=self.uid or "",
+            status=self.status.name.lower(),
+        ).set(duration)
+
+    def __str__(self) -> str:
+        return f"System Task {self.name}"
+
+    class Meta:
+        unique_together = (("name", "uid"),)
+        # Remove "add", "change" and "delete" permissions as those are not used
+        default_permissions = ["view"]
+        permissions = [("rerun_task", _("Rerun task"))]
+        verbose_name = _("System Task")
+        verbose_name_plural = _("System Tasks")

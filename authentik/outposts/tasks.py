@@ -19,12 +19,8 @@ from yaml import safe_load
 
 from authentik.enterprise.providers.rac.controllers.docker import RACDockerController
 from authentik.enterprise.providers.rac.controllers.kubernetes import RACKubernetesController
-from authentik.events.monitored_tasks import (
-    MonitoredTask,
-    TaskResult,
-    TaskResultStatus,
-    prefill_task,
-)
+from authentik.events.models import TaskStatus
+from authentik.events.monitored_tasks import MonitoredTask, prefill_task
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.reflection import path_to_class
 from authentik.outposts.consumer import OUTPOST_GROUP
@@ -118,10 +114,8 @@ def outpost_service_connection_monitor(self: MonitoredTask):
     for connection in connections.iterator():
         outpost_service_connection_state.delay(connection.pk)
     self.set_status(
-        TaskResult(
-            TaskResultStatus.SUCCESSFUL,
-            [f"Successfully updated {len(connections)} connections."],
-        )
+        TaskStatus.SUCCESSFUL,
+        f"Successfully updated {len(connections)} connections.",
     )
 
 
@@ -161,11 +155,11 @@ def outpost_controller(
                 LOGGER.debug(log)
             LOGGER.debug("-----------------Outpost Controller logs end-------------------")
     except (ControllerException, ServiceConnectionInvalid) as exc:
-        self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
+        self.set_error(exc)
     else:
         if from_cache:
             cache.delete(CACHE_KEY_OUTPOST_DOWN % outpost_pk)
-        self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, logs))
+        self.set_status(TaskStatus.SUCCESSFUL, *logs)
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
@@ -178,10 +172,8 @@ def outpost_token_ensurer(self: MonitoredTask):
         _ = outpost.token
         outpost.build_user_permissions(outpost.user)
     self.set_status(
-        TaskResult(
-            TaskResultStatus.SUCCESSFUL,
-            [f"Successfully checked {len(all_outposts)} Outposts."],
-        )
+        TaskStatus.SUCCESSFUL,
+        f"Successfully checked {len(all_outposts)} Outposts.",
     )
 
 
@@ -261,27 +253,27 @@ def _outpost_single_update(outpost: Outpost, layer=None):
 )
 def outpost_connection_discovery(self: MonitoredTask):
     """Checks the local environment and create Service connections."""
-    status = TaskResult(TaskResultStatus.SUCCESSFUL)
+    messages = []
     if not CONFIG.get_bool("outposts.discover"):
-        status.messages.append("Outpost integration discovery is disabled")
-        self.set_status(status)
+        messages.append("Outpost integration discovery is disabled")
+        self.set_status(TaskStatus.SUCCESSFUL, *messages)
         return
     # Explicitly check against token filename, as that's
     # only present when the integration is enabled
     if Path(SERVICE_TOKEN_FILENAME).exists():
-        status.messages.append("Detected in-cluster Kubernetes Config")
+        messages.append("Detected in-cluster Kubernetes Config")
         if not KubernetesServiceConnection.objects.filter(local=True).exists():
-            status.messages.append("Created Service Connection for in-cluster")
+            messages.append("Created Service Connection for in-cluster")
             KubernetesServiceConnection.objects.create(
                 name="Local Kubernetes Cluster", local=True, kubeconfig={}
             )
     # For development, check for the existence of a kubeconfig file
     kubeconfig_path = Path(KUBE_CONFIG_DEFAULT_LOCATION).expanduser()
     if kubeconfig_path.exists():
-        status.messages.append("Detected kubeconfig")
+        messages.append("Detected kubeconfig")
         kubeconfig_local_name = f"k8s-{gethostname()}"
         if not KubernetesServiceConnection.objects.filter(name=kubeconfig_local_name).exists():
-            status.messages.append("Creating kubeconfig Service Connection")
+            messages.append("Creating kubeconfig Service Connection")
             with kubeconfig_path.open("r", encoding="utf8") as _kubeconfig:
                 KubernetesServiceConnection.objects.create(
                     name=kubeconfig_local_name,
@@ -290,12 +282,12 @@ def outpost_connection_discovery(self: MonitoredTask):
     unix_socket_path = urlparse(DEFAULT_UNIX_SOCKET).path
     socket = Path(unix_socket_path)
     if socket.exists() and access(socket, R_OK):
-        status.messages.append("Detected local docker socket")
+        messages.append("Detected local docker socket")
         if len(DockerServiceConnection.objects.filter(local=True)) == 0:
-            status.messages.append("Created Service Connection for docker")
+            messages.append("Created Service Connection for docker")
             DockerServiceConnection.objects.create(
                 name="Local Docker connection",
                 local=True,
                 url=unix_socket_path,
             )
-    self.set_status(status)
+    self.set_status(TaskStatus.SUCCESSFUL, *messages)

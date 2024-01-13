@@ -236,103 +236,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /admin/system_tasks/:
-    get:
-      operationId: admin_system_tasks_list
-      description: List system tasks
-      tags:
-      - admin
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Task'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /admin/system_tasks/{id}/:
-    get:
-      operationId: admin_system_tasks_retrieve
-      description: Get a single system task
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-        required: true
-      tags:
-      - admin
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Task'
-          description: ''
-        '404':
-          description: Task not found
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /admin/system_tasks/{id}/retry/:
-    post:
-      operationId: admin_system_tasks_retry_create
-      description: Retry task
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-        required: true
-      tags:
-      - admin
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: Task retried successfully
-        '404':
-          description: Task not found
-        '500':
-          description: Failed to retry task
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /admin/version/:
     get:
       operationId: admin_version_retrieve
@@ -7005,6 +6908,133 @@ paths:
                 items:
                   $ref: '#/components/schemas/UsedBy'
           description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /events/system_tasks/:
+    get:
+      operationId: events_system_tasks_list
+      description: Read-only view set that returns all background tasks
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSystemTaskList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /events/system_tasks/{uuid}/:
+    get:
+      operationId: events_system_tasks_retrieve
+      description: Read-only view set that returns all background tasks
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this System Task.
+        required: true
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemTask'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /events/system_tasks/{uuid}/retry/:
+    post:
+      operationId: events_system_tasks_retry_create
+      description: Retry task
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this System Task.
+        required: true
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Task retried successfully
+        '404':
+          description: Task not found
+        '500':
+          description: Failed to retry task
         '400':
           content:
             application/json:
@@ -18161,6 +18191,7 @@ paths:
           - authentik_events.notificationrule
           - authentik_events.notificationtransport
           - authentik_events.notificationwebhookmapping
+          - authentik_events.systemtask
           - authentik_flows.flow
           - authentik_flows.flowstagebinding
           - authentik_outposts.dockerserviceconnection
@@ -18234,6 +18265,7 @@ paths:
           * `authentik_events.notification` - Notification
           * `authentik_events.notificationrule` - Notification Rule
           * `authentik_events.notificationwebhookmapping` - Webhook Mapping
+          * `authentik_events.systemtask` - System Task
           * `authentik_flows.flow` - Flow
           * `authentik_flows.flowstagebinding` - Flow Stage Binding
           * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
@@ -18272,7 +18304,7 @@ paths:
           * `authentik_stages_authenticator_duo.duodevice` - Duo Device
           * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
           * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
-          * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
+          * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Setup Stage
           * `authentik_stages_authenticator_static.staticdevice` - Static Device
           * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
           * `authentik_stages_authenticator_totp.totpdevice` - TOTP Device
@@ -18457,6 +18489,7 @@ paths:
           - authentik_events.notificationrule
           - authentik_events.notificationtransport
           - authentik_events.notificationwebhookmapping
+          - authentik_events.systemtask
           - authentik_flows.flow
           - authentik_flows.flowstagebinding
           - authentik_outposts.dockerserviceconnection
@@ -18530,6 +18563,7 @@ paths:
           * `authentik_events.notification` - Notification
           * `authentik_events.notificationrule` - Notification Rule
           * `authentik_events.notificationwebhookmapping` - Webhook Mapping
+          * `authentik_events.systemtask` - System Task
           * `authentik_flows.flow` - Flow
           * `authentik_flows.flowstagebinding` - Flow Stage Binding
           * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
@@ -18568,7 +18602,7 @@ paths:
           * `authentik_stages_authenticator_duo.duodevice` - Duo Device
           * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
           * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
-          * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
+          * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Setup Stage
           * `authentik_stages_authenticator_static.staticdevice` - Static Device
           * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
           * `authentik_stages_authenticator_totp.totpdevice` - TOTP Device
@@ -23265,7 +23299,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Static Authenticator Stage.
+        description: A UUID string identifying this Static Authenticator Setup Stage.
         required: true
       tags:
       - stages
@@ -23299,7 +23333,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Static Authenticator Stage.
+        description: A UUID string identifying this Static Authenticator Setup Stage.
         required: true
       tags:
       - stages
@@ -23339,7 +23373,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Static Authenticator Stage.
+        description: A UUID string identifying this Static Authenticator Setup Stage.
         required: true
       tags:
       - stages
@@ -23378,7 +23412,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Static Authenticator Stage.
+        description: A UUID string identifying this Static Authenticator Setup Stage.
         required: true
       tags:
       - stages
@@ -23409,7 +23443,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Static Authenticator Stage.
+        description: A UUID string identifying this Static Authenticator Setup Stage.
         required: true
       tags:
       - stages
@@ -32433,6 +32467,7 @@ components:
             * `authentik_events.notification` - Notification
             * `authentik_events.notificationrule` - Notification Rule
             * `authentik_events.notificationwebhookmapping` - Webhook Mapping
+            * `authentik_events.systemtask` - System Task
             * `authentik_flows.flow` - Flow
             * `authentik_flows.flowstagebinding` - Flow Stage Binding
             * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
@@ -32471,7 +32506,7 @@ components:
             * `authentik_stages_authenticator_duo.duodevice` - Duo Device
             * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
             * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
-            * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
+            * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Setup Stage
             * `authentik_stages_authenticator_static.staticdevice` - Static Device
             * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
             * `authentik_stages_authenticator_totp.totpdevice` - TOTP Device
@@ -32636,6 +32671,7 @@ components:
             * `authentik_events.notification` - Notification
             * `authentik_events.notificationrule` - Notification Rule
             * `authentik_events.notificationwebhookmapping` - Webhook Mapping
+            * `authentik_events.systemtask` - System Task
             * `authentik_flows.flow` - Flow
             * `authentik_flows.flowstagebinding` - Flow Stage Binding
             * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
@@ -32674,7 +32710,7 @@ components:
             * `authentik_stages_authenticator_duo.duodevice` - Duo Device
             * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
             * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
-            * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
+            * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Setup Stage
             * `authentik_stages_authenticator_static.staticdevice` - Static Device
             * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
             * `authentik_stages_authenticator_totp.totpdevice` - TOTP Device
@@ -34787,7 +34823,7 @@ components:
         tasks:
           type: array
           items:
-            $ref: '#/components/schemas/Task'
+            $ref: '#/components/schemas/SystemTask'
           readOnly: true
       required:
       - is_running
@@ -34955,6 +34991,7 @@ components:
       - authentik_events.notification
       - authentik_events.notificationrule
       - authentik_events.notificationwebhookmapping
+      - authentik_events.systemtask
       - authentik_flows.flow
       - authentik_flows.flowstagebinding
       - authentik_outposts.dockerserviceconnection
@@ -35035,6 +35072,7 @@ components:
         * `authentik_events.notification` - Notification
         * `authentik_events.notificationrule` - Notification Rule
         * `authentik_events.notificationwebhookmapping` - Webhook Mapping
+        * `authentik_events.systemtask` - System Task
         * `authentik_flows.flow` - Flow
         * `authentik_flows.flowstagebinding` - Flow Stage Binding
         * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
@@ -35073,7 +35111,7 @@ components:
         * `authentik_stages_authenticator_duo.duodevice` - Duo Device
         * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
         * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
-        * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
+        * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Setup Stage
         * `authentik_stages_authenticator_static.staticdevice` - Static Device
         * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
         * `authentik_stages_authenticator_totp.totpdevice` - TOTP Device
@@ -37047,6 +37085,18 @@ components:
       required:
       - pagination
       - results
+    PaginatedSystemTaskList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SystemTask'
+      required:
+      - pagination
+      - results
     PaginatedTOTPDeviceList:
       type: object
       properties:
@@ -38263,6 +38313,7 @@ components:
             * `authentik_events.notification` - Notification
             * `authentik_events.notificationrule` - Notification Rule
             * `authentik_events.notificationwebhookmapping` - Webhook Mapping
+            * `authentik_events.systemtask` - System Task
             * `authentik_flows.flow` - Flow
             * `authentik_flows.flowstagebinding` - Flow Stage Binding
             * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
@@ -38301,7 +38352,7 @@ components:
             * `authentik_stages_authenticator_duo.duodevice` - Duo Device
             * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
             * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
-            * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
+            * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Setup Stage
             * `authentik_stages_authenticator_static.staticdevice` - Static Device
             * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
             * `authentik_stages_authenticator_totp.totpdevice` - TOTP Device
@@ -42794,7 +42845,7 @@ components:
         tasks:
           type: array
           items:
-            $ref: '#/components/schemas/Task'
+            $ref: '#/components/schemas/SystemTask'
           readOnly: true
       required:
       - is_running
@@ -43517,6 +43568,50 @@ components:
       - http_is_secure
       - runtime
       - server_time
+    SystemTask:
+      type: object
+      description: Serialize TaskInfo and TaskResult
+      properties:
+        task_name:
+          type: string
+        task_description:
+          type: string
+        task_start_timestamp:
+          type: string
+          format: date-time
+        task_finish_timestamp:
+          type: string
+          format: date-time
+        task_duration:
+          type: integer
+          description: Get the duration a task took to run
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/SystemTaskStatusEnum'
+        messages:
+          type: array
+          items:
+            type: string
+      required:
+      - messages
+      - status
+      - task_description
+      - task_duration
+      - task_finish_timestamp
+      - task_name
+      - task_start_timestamp
+    SystemTaskStatusEnum:
+      enum:
+      - SUCCESSFUL
+      - WARNING
+      - ERROR
+      - UNKNOWN
+      type: string
+      description: |-
+        * `SUCCESSFUL` - SUCCESSFUL
+        * `WARNING` - WARNING
+        * `ERROR` - ERROR
+        * `UNKNOWN` - UNKNOWN
     TOTPDevice:
       type: object
       description: Serializer for totp authenticator devices
@@ -43543,45 +43638,6 @@ components:
           maxLength: 64
       required:
       - name
-    Task:
-      type: object
-      description: Serialize TaskInfo and TaskResult
-      properties:
-        task_name:
-          type: string
-        task_description:
-          type: string
-        task_finish_timestamp:
-          type: string
-          format: date-time
-        task_duration:
-          type: integer
-          description: Get the duration a task took to run
-          readOnly: true
-        status:
-          $ref: '#/components/schemas/TaskStatusEnum'
-        messages:
-          type: array
-          items: {}
-      required:
-      - messages
-      - status
-      - task_description
-      - task_duration
-      - task_finish_timestamp
-      - task_name
-    TaskStatusEnum:
-      enum:
-      - SUCCESSFUL
-      - WARNING
-      - ERROR
-      - UNKNOWN
-      type: string
-      description: |-
-        * `SUCCESSFUL` - SUCCESSFUL
-        * `WARNING` - WARNING
-        * `ERROR` - ERROR
-        * `UNKNOWN` - UNKNOWN
     Tenant:
       type: object
       description: Tenant Serializer

@@ -13,13 +13,9 @@ from authentik.events.models import (
     NotificationRule,
     NotificationTransport,
     NotificationTransportError,
+    TaskStatus,
 )
-from authentik.events.monitored_tasks import (
-    MonitoredTask,
-    TaskResult,
-    TaskResultStatus,
-    prefill_task,
-)
+from authentik.events.monitored_tasks import MonitoredTask, prefill_task
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyEngineMode
 from authentik.root.celery import CELERY_APP
@@ -123,9 +119,9 @@ def notification_transport(
         if not transport:
             return
         transport.send(notification)
-        self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL))
+        self.set_status(TaskStatus.SUCCESSFUL)
     except (NotificationTransportError, PropertyMappingExpressionException) as exc:
-        self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
+        self.set_error(exc)
         raise exc
 
 
@@ -146,4 +142,4 @@ def notification_cleanup(self: MonitoredTask):
     for notification in notifications:
         notification.delete()
     LOGGER.debug("Expired notifications", amount=amount)
-    self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, [f"Expired {amount} Notifications"]))
+    self.set_status(TaskStatus.SUCCESSFUL, f"Expired {amount} Notifications")

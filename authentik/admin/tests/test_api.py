@@ -8,7 +8,7 @@ from authentik import __version__
 from authentik.blueprints.tests import reconcile_app
 from authentik.core.models import Group, User
 from authentik.core.tasks import clean_expired_models
-from authentik.events.monitored_tasks import TaskResultStatus
+from authentik.events.monitored_tasks import TaskStatus
 from authentik.lib.generators import generate_id
 
 
@@ -42,7 +42,7 @@ class TestAdminAPI(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         body = loads(response.content)
-        self.assertEqual(body["status"], TaskResultStatus.SUCCESSFUL.name)
+        self.assertEqual(body["status"], TaskStatus.SUCCESSFUL.name)
         self.assertEqual(body["task_name"], "clean_expired_models")
         response = self.client.get(
             reverse("authentik_api:admin_system_tasks-detail", kwargs={"pk": "qwerqwer"})

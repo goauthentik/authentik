@@ -29,12 +29,8 @@ from authentik.blueprints.v1.common import BlueprintLoader, BlueprintMetadata, E
 from authentik.blueprints.v1.importer import Importer
 from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_INSTANTIATE
 from authentik.blueprints.v1.oci import OCI_PREFIX
-from authentik.events.monitored_tasks import (
-    MonitoredTask,
-    TaskResult,
-    TaskResultStatus,
-    prefill_task,
-)
+from authentik.events.models import TaskStatus
+from authentik.events.monitored_tasks import MonitoredTask, prefill_task
 from authentik.events.utils import sanitize_dict
 from authentik.lib.config import CONFIG
 from authentik.root.celery import CELERY_APP
@@ -146,10 +142,7 @@ def blueprints_discovery(self: MonitoredTask, path: Optional[str] = None):
         check_blueprint_v1_file(blueprint)
         count += 1
     self.set_status(
-        TaskResult(
-            TaskResultStatus.SUCCESSFUL,
-            messages=[_("Successfully imported %(count)d files." % {"count": count})],
-        )
+        TaskStatus.SUCCESSFUL, _("Successfully imported %(count)d files." % {"count": count})
     )
 
 
@@ -202,18 +195,18 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
         if not valid:
             instance.status = BlueprintInstanceStatus.ERROR
             instance.save()
-            self.set_status(TaskResult(TaskResultStatus.ERROR, [x["event"] for x in logs]))
+            self.set_status(TaskStatus.ERROR, *[x["event"] for x in logs])
             return
         applied = importer.apply()
         if not applied:
             instance.status = BlueprintInstanceStatus.ERROR
             instance.save()
-            self.set_status(TaskResult(TaskResultStatus.ERROR, "Failed to apply"))
+            self.set_status(TaskStatus.ERROR, "Failed to apply")
             return
         instance.status = BlueprintInstanceStatus.SUCCESSFUL
         instance.last_applied_hash = file_hash
         instance.last_applied = now()
-        self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL))
+        self.set_status(TaskStatus.SUCCESSFUL)
     except (
         DatabaseError,
         ProgrammingError,
@@ -224,7 +217,7 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
     ) as exc:
         if instance:
             instance.status = BlueprintInstanceStatus.ERROR
-        self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
+        self.set_error(exc)
     finally:
         if instance:
             instance.save()

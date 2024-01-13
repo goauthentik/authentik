@@ -13,12 +13,7 @@ from authentik.core.models import (
     ExpiringModel,
     User,
 )
-from authentik.events.monitored_tasks import (
-    MonitoredTask,
-    TaskResult,
-    TaskResultStatus,
-    prefill_task,
-)
+from authentik.events.monitored_tasks import MonitoredTask, TaskStatus, prefill_task
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()
@@ -54,7 +49,7 @@ def clean_expired_models(self: MonitoredTask):
             amount += 1
     LOGGER.debug("Expired sessions", model=AuthenticatedSession, amount=amount)
     messages.append(f"Expired {amount} {AuthenticatedSession._meta.verbose_name_plural}")
-    self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, messages))
+    self.set_status(TaskStatus.SUCCESSFUL, *messages)
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
@@ -75,4 +70,4 @@ def clean_temporary_users(self: MonitoredTask):
             user.delete()
             deleted_users += 1
     messages.append(f"Successfully deleted {deleted_users} users.")
-    self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, messages))
+    self.set_status(TaskStatus.SUCCESSFUL, *messages)

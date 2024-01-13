@@ -1,8 +1,8 @@
 """Plex tasks"""
 from requests import RequestException
 
-from authentik.events.models import Event, EventAction
-from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
+from authentik.events.models import Event, EventAction, TaskStatus
+from authentik.events.monitored_tasks import MonitoredTask
 from authentik.lib.utils.errors import exception_to_string
 from authentik.root.celery import CELERY_APP
 from authentik.sources.plex.models import PlexSource
@@ -27,16 +27,15 @@ def check_plex_token(self: MonitoredTask, source_slug: int):
     auth = PlexAuth(source, source.plex_token)
     try:
         auth.get_user_info()
-        self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, ["Plex token is valid."]))
+        self.set_status(TaskStatus.SUCCESSFUL, "Plex token is valid.")
     except RequestException as exc:
         error = exception_to_string(exc)
         if len(source.plex_token) > 0:
             error = error.replace(source.plex_token, "$PLEX_TOKEN")
         self.set_status(
-            TaskResult(
-                TaskResultStatus.ERROR,
-                ["Plex token is invalid/an error occurred:", error],
-            )
+            TaskStatus.ERROR,
+            "Plex token is invalid/an error occurred:",
+            error,
         )
         Event.new(
             EventAction.CONFIGURATION_ERROR,
