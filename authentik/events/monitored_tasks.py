@@ -3,13 +3,13 @@ from datetime import datetime, timedelta, timezone
 from timeit import default_timer
 from typing import Any, Optional
 
-from django.db import DatabaseError, InternalError, ProgrammingError
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from structlog.stdlib import get_logger
 from tenant_schemas_celery.task import TenantTask
 
 from authentik.events.models import Event, EventAction, SystemTask, TaskStatus
+from authentik.events.utils import sanitize_item
 from authentik.lib.utils.errors import exception_to_string
 
 LOGGER = get_logger()
@@ -78,7 +78,7 @@ class MonitoredTask(TenantTask):
                 "task_call_args": args,
                 "task_call_kwargs": kwargs,
                 "status": self._status,
-                "messages": self._messages,
+                "messages": sanitize_item(self._messages),
                 "expires": now() + timedelta(hours=self.result_timeout_hours),
                 "expiring": True,
             },
@@ -104,7 +104,7 @@ class MonitoredTask(TenantTask):
                 "task_call_args": args,
                 "task_call_kwargs": kwargs,
                 "status": self._status,
-                "messages": self._messages,
+                "messages": sanitize_item(self._messages),
                 "expires": now() + timedelta(hours=self.result_timeout_hours),
                 "expiring": True,
             },
@@ -120,20 +120,18 @@ class MonitoredTask(TenantTask):
 
 def prefill_task(func):
     """Ensure a task's details are always in cache, so it can always be triggered via API"""
-    try:
-        status = SystemTask.objects.filter(name=func.__name__).first()
-    except (DatabaseError, InternalError, ProgrammingError):
-        return func
-    if status:
-        return func
-    SystemTask.objects.create(
-        name=func.__name__,
-        description=func.__doc__,
-        status=TaskStatus.UNKNOWN,
-        messages=[_("Task has not been run yet.")],
-        task_call_module=func.__module__,
-        task_call_func=func.__name__,
-        expiring=False,
+    _prefill_tasks.append(
+        SystemTask(
+            name=func.__name__,
+            description=func.__doc__,
+            status=TaskStatus.UNKNOWN,
+            messages=sanitize_item([_("Task has not been run yet.")]),
+            task_call_module=func.__module__,
+            task_call_func=func.__name__,
+            expiring=False,
+        )
     )
-    LOGGER.debug("prefilled task", task_name=func.__name__)
     return func
+
+
+_prefill_tasks = []

@@ -43,3 +43,14 @@ class AuthentikEventsConfig(ManagedAppConfig):
                 replacement_env=replace_env,
                 message=msg,
             ).save()
+
+    def reconcile_prefill_tasks(self):
+        """Prefill tasks"""
+        from authentik.events.models import SystemTask
+        from authentik.events.monitored_tasks import _prefill_tasks
+
+        for task in _prefill_tasks:
+            if SystemTask.objects.filter(name=task.name).exists():
+                continue
+            task.save()
+            self.logger.debug("prefilled task", task_name=task.name)
