@@ -3294,25 +3294,30 @@
         "model_authentik_events.systemtask": {
             "type": "object",
             "properties": {
-                "task_name": {
+                "name": {
                     "type": "string",
                     "minLength": 1,
-                    "title": "Task name"
+                    "title": "Name"
                 },
-                "task_description": {
+                "uid": {
                     "type": "string",
                     "minLength": 1,
-                    "title": "Task description"
+                    "title": "Uid"
                 },
-                "task_start_timestamp": {
+                "description": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Description"
+                },
+                "start_timestamp": {
                     "type": "string",
                     "format": "date-time",
-                    "title": "Task start timestamp"
+                    "title": "Start timestamp"
                 },
-                "task_finish_timestamp": {
+                "finish_timestamp": {
                     "type": "string",
                     "format": "date-time",
-                    "title": "Task finish timestamp"
+                    "title": "Finish timestamp"
                 },
                 "status": {
                     "type": "string",

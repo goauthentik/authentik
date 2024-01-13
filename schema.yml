@@ -6925,6 +6925,10 @@ paths:
       operationId: events_system_tasks_list
       description: Read-only view set that returns all background tasks
       parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -6947,6 +6951,24 @@ paths:
         required: false
         in: query
         description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: integer
+          enum:
+          - 1
+          - 2
+          - 4
+          - 8
+        description: |-
+          * `1` - Successful
+          * `2` - Warning
+          * `4` - Error
+          * `8` - Unknown
+      - in: query
+        name: uid
         schema:
           type: string
       tags:
@@ -7012,11 +7034,6 @@ paths:
       operationId: events_system_tasks_retry_create
       description: Retry task
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-        required: true
       - in: path
         name: uuid
         schema:
@@ -43572,17 +43589,27 @@ components:
       type: object
       description: Serialize TaskInfo and TaskResult
       properties:
-        task_name:
+        uuid:
           type: string
-        task_description:
+          format: uuid
+          readOnly: true
+        name:
           type: string
-        task_start_timestamp:
+        full_name:
+          type: string
+          description: Get full name with UID
+          readOnly: true
+        uid:
+          type: string
+        description:
+          type: string
+        start_timestamp:
           type: string
           format: date-time
-        task_finish_timestamp:
+        finish_timestamp:
           type: string
           format: date-time
-        task_duration:
+        duration:
           type: integer
           description: Get the duration a task took to run
           readOnly: true
@@ -43593,13 +43620,15 @@ components:
           items:
             type: string
       required:
+      - description
+      - duration
+      - finish_timestamp
+      - full_name
       - messages
+      - name
+      - start_timestamp
       - status
-      - task_description
-      - task_duration
-      - task_finish_timestamp
-      - task_name
-      - task_start_timestamp
+      - uuid
     SystemTaskStatusEnum:
       enum:
       - SUCCESSFUL
