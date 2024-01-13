@@ -8165,4 +8165,13 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Dutch</source>
   <target>Ďũţćĥ</target>
 </trans-unit>
+<trans-unit id="sb7e68dcad68a638c">
+  <source>Remote Access Provider</source>
+</trans-unit>
+<trans-unit id="sfb1980a471b7dfb6">
+  <source>Remotely access computers/servers via RDP/SSH/VNC</source>
+</trans-unit>
+<trans-unit id="s9ffdea131dddb3c5">
+  <source>Configure Remote Access Provider Provider</source>
+</trans-unit>
 </body></file></xliff>

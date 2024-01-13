@@ -7982,6 +7982,15 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="s31aa94a0b3c7edb2">
   <source>Select endpoint to connect to</source>
 </trans-unit>
+<trans-unit id="sb7e68dcad68a638c">
+  <source>Remote Access Provider</source>
+</trans-unit>
+<trans-unit id="sfb1980a471b7dfb6">
+  <source>Remotely access computers/servers via RDP/SSH/VNC</source>
+</trans-unit>
+<trans-unit id="s9ffdea131dddb3c5">
+  <source>Configure Remote Access Provider Provider</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
