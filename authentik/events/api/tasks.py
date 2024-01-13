@@ -36,9 +36,7 @@ class SystemTaskSerializer(ModelSerializer):
     finish_timestamp = DateTimeField()
     duration = SerializerMethodField()
 
-    status = ChoiceField(
-        choices=[(x.name, x.name) for x in TaskStatus],
-    )
+    status = ChoiceField(choices=[(x.value, x.name) for x in TaskStatus])
     messages = ListField(child=CharField())
 
     def get_full_name(self, instance: SystemTask) -> str:

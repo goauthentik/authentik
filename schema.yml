@@ -43631,16 +43631,16 @@ components:
       - uuid
     SystemTaskStatusEnum:
       enum:
-      - UNKNOWN
-      - SUCCESSFUL
-      - WARNING
-      - ERROR
+      - unknown
+      - successful
+      - warning
+      - error
       type: string
       description: |-
-        * `UNKNOWN` - UNKNOWN
-        * `SUCCESSFUL` - SUCCESSFUL
-        * `WARNING` - WARNING
-        * `ERROR` - ERROR
+        * `unknown` - UNKNOWN
+        * `successful` - SUCCESSFUL
+        * `warning` - WARNING
+        * `error` - ERROR
     TOTPDevice:
       type: object
       description: Serializer for totp authenticator devices
@@ -43938,16 +43938,16 @@ components:
       - pk
     UsedByActionEnum:
       enum:
-      - CASCADE
-      - CASCADE_MANY
-      - SET_NULL
-      - SET_DEFAULT
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
       type: string
       description: |-
-        * `CASCADE` - CASCADE
-        * `CASCADE_MANY` - CASCADE_MANY
-        * `SET_NULL` - SET_NULL
-        * `SET_DEFAULT` - SET_DEFAULT
+        * `cascade` - CASCADE
+        * `cascade_many` - CASCADE_MANY
+        * `set_null` - SET_NULL
+        * `set_default` - SET_DEFAULT
     User:
       type: object
       description: User Serializer
