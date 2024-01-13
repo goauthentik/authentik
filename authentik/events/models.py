@@ -29,7 +29,7 @@ from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_USER,
 )
 from authentik.core.models import ExpiringModel, Group, PropertyMapping, User
-from authentik.events.apps import GAUGE_TASKS
+from authentik.events.apps import GAUGE_TASKS, SYSTEM_TASK_STATUS, SYSTEM_TASK_TIME
 from authentik.events.context_processors.base import get_context_processors
 from authentik.events.utils import (
     cleanse_dict,
@@ -625,12 +625,19 @@ class SystemTask(SerializerModel, ExpiringModel):
 
     def update_metrics(self):
         """Update prometheus metrics"""
-        duration = max(self.finish_timestamp.timestamp() - self.start_timestamp.timestamp(), 0)
+        duration = max(self.finish_timestamp - self.start_timestamp, 0)
+        # TODO: Deprecated metric - remove in 2024.2 or later
         GAUGE_TASKS.labels(
             task_name=self.name.split(":")[0],
             task_uid=self.uid or "",
-            status=self.status.name.lower(),
+            status=self.status.lower(),
         ).set(duration)
+        SYSTEM_TASK_TIME.observe(duration)
+        SYSTEM_TASK_STATUS.labels(
+            task_name=self.name.split(":")[0],
+            task_uid=self.uid or "",
+            status=self.status.lower(),
+        ).inc()
 
     def __str__(self) -> str:
         return f"System Task {self.name}"

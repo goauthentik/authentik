@@ -1,13 +1,24 @@
 """authentik events app"""
-from prometheus_client import Gauge
+from prometheus_client import Gauge, Histogram
 
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.config import CONFIG, ENV_PREFIX
 
+# TODO: Deprecated metric - remove in 2024.2 or later
 GAUGE_TASKS = Gauge(
     "authentik_system_tasks",
     "System tasks and their status",
     ["tenant", "task_name", "task_uid", "status"],
+)
+
+SYSTEM_TASK_TIME = Histogram(
+    "authentik_system_tasks_time_seconds",
+    "Runtime of system tasks",
+)
+SYSTEM_TASK_STATUS = Gauge(
+    "authentik_system_tasks_status",
+    "System task status",
+    ["task_name", "task_uid", "status"],
 )
 
 

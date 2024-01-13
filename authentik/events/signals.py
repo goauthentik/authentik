@@ -8,6 +8,7 @@ from django.http import HttpRequest
 
 from authentik.core.models import User
 from authentik.core.signals import login_failed, password_changed
+from authentik.events.apps import SYSTEM_TASK_STATUS
 from authentik.events.models import Event, EventAction, SystemTask
 from authentik.events.tasks import event_notification_handler, gdpr_cleanup
 from authentik.flows.models import Stage
@@ -106,5 +107,6 @@ def event_user_pre_delete_cleanup(sender, instance: User, **_):
 @receiver(monitoring_set)
 def monitoring_system_task(sender, **_):
     """Update metrics when task is saved"""
+    SYSTEM_TASK_STATUS.clear()
     for task in SystemTask.objects.all():
         task.update_metrics()
