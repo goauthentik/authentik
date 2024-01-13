@@ -41,9 +41,11 @@ class SystemTaskSerializer(ModelSerializer):
         return instance.name
 
     def get_start_timestamp(self, instance: SystemTask) -> datetime:
+        """Timestamp when the task started"""
         return datetime.fromtimestamp(instance.start_timestamp, tz=timezone.utc)
 
     def get_finish_timestamp(self, instance: SystemTask) -> datetime:
+        """Timestamp when the task finished"""
         return datetime.fromtimestamp(instance.finish_timestamp, tz=timezone.utc)
 
     def get_duration(self, instance: SystemTask) -> float:

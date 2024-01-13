@@ -628,13 +628,13 @@ class SystemTask(SerializerModel, ExpiringModel):
         duration = max(self.finish_timestamp - self.start_timestamp, 0)
         # TODO: Deprecated metric - remove in 2024.2 or later
         GAUGE_TASKS.labels(
-            task_name=self.name.split(":")[0],
+            task_name=self.name,
             task_uid=self.uid or "",
             status=self.status.lower(),
         ).set(duration)
         SYSTEM_TASK_TIME.observe(duration)
         SYSTEM_TASK_STATUS.labels(
-            task_name=self.name.split(":")[0],
+            task_name=self.name,
             task_uid=self.uid or "",
             status=self.status.lower(),
         ).inc()

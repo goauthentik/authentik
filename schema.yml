@@ -43606,10 +43606,12 @@ components:
         start_timestamp:
           type: string
           format: date-time
+          description: Timestamp when the task started
           readOnly: true
         finish_timestamp:
           type: string
           format: date-time
+          description: Timestamp when the task finished
           readOnly: true
         duration:
           type: number
