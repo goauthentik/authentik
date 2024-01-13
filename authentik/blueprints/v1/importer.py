@@ -38,14 +38,19 @@ from authentik.core.models import (
     UserSourceConnection,
 )
 from authentik.enterprise.models import LicenseKey, LicenseUsage
+from authentik.enterprise.providers.rac.models import ConnectionToken
+from authentik.events.models import SystemTask
 from authentik.events.utils import cleanse_dict
 from authentik.flows.models import FlowToken, Stage
 from authentik.lib.models import SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
+from authentik.policies.reputation.models import Reputation
+from authentik.providers.oauth2.models import AccessToken, AuthorizationCode, RefreshToken
 from authentik.providers.scim.models import SCIMGroup, SCIMUser
 from authentik.tenants.models import Tenant
+from guardian.models import UserObjectPermission
 
 # Context set when the serializer is created in a blueprint context
 # Update website/developer-docs/blueprints/v1/models.md when used
@@ -65,6 +70,7 @@ def excluded_models() -> list[type[Model]]:
         DjangoGroup,
         ContentType,
         Permission,
+        UserObjectPermission,
         # Base classes
         Provider,
         Source,
@@ -82,6 +88,12 @@ def excluded_models() -> list[type[Model]]:
         SCIMGroup,
         SCIMUser,
         Tenant,
+        SystemTask,
+        ConnectionToken,
+        AuthorizationCode,
+        AccessToken,
+        RefreshToken,
+        Reputation,
     )
 
 

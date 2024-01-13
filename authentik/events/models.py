@@ -604,8 +604,8 @@ class SystemTask(SerializerModel, ExpiringModel):
     name = models.TextField()
     uid = models.TextField(null=True)
 
-    start_timestamp = models.DateTimeField(auto_now_add=True)
-    finish_timestamp = models.DateTimeField(auto_now=True)
+    start_timestamp = models.FloatField()
+    finish_timestamp = models.FloatField()
 
     status = models.TextField(choices=TaskStatus.choices)
 
@@ -639,6 +639,6 @@ class SystemTask(SerializerModel, ExpiringModel):
         unique_together = (("name", "uid"),)
         # Remove "add", "change" and "delete" permissions as those are not used
         default_permissions = ["view"]
-        permissions = [("rerun_task", _("Rerun task"))]
+        permissions = [("run_task", _("Run task"))]
         verbose_name = _("System Task")
         verbose_name_plural = _("System Tasks")

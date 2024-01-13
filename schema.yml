@@ -7029,10 +7029,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /events/system_tasks/{uuid}/retry/:
+  /events/system_tasks/{uuid}/run/:
     post:
-      operationId: events_system_tasks_retry_create
-      description: Retry task
+      operationId: events_system_tasks_run_create
+      description: Run task
       parameters:
       - in: path
         name: uuid
@@ -43606,11 +43606,14 @@ components:
         start_timestamp:
           type: string
           format: date-time
+          readOnly: true
         finish_timestamp:
           type: string
           format: date-time
+          readOnly: true
         duration:
-          type: integer
+          type: number
+          format: double
           description: Get the duration a task took to run
           readOnly: true
         status:

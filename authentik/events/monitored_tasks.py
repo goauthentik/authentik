@@ -1,5 +1,5 @@
 """Monitored tasks"""
-from datetime import datetime, timedelta, timezone
+from datetime import timedelta
 from timeit import default_timer
 from typing import Any, Optional
 
@@ -69,10 +69,8 @@ class MonitoredTask(TenantTask):
             uid=self._uid,
             defaults={
                 "description": self.__doc__,
-                "start_timestamp": datetime.fromtimestamp(
-                    self._start or default_timer(), tz=timezone.utc
-                ),
-                "finish_timestamp": datetime.fromtimestamp(default_timer(), tz=timezone.utc),
+                "start_timestamp": self._start or default_timer(),
+                "finish_timestamp": default_timer(),
                 "task_call_module": self.__module__,
                 "task_call_func": self.__name__,
                 "task_call_args": args,
@@ -95,10 +93,8 @@ class MonitoredTask(TenantTask):
             uid=self._uid,
             defaults={
                 "description": self.__doc__,
-                "start_timestamp": datetime.fromtimestamp(
-                    self._start or default_timer(), tz=timezone.utc
-                ),
-                "finish_timestamp": datetime.fromtimestamp(default_timer(), tz=timezone.utc),
+                "start_timestamp": self._start or default_timer(),
+                "finish_timestamp": default_timer(),
                 "task_call_module": self.__module__,
                 "task_call_func": self.__name__,
                 "task_call_args": args,

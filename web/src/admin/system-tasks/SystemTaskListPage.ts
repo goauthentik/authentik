@@ -113,7 +113,7 @@ export class SystemTaskListPage extends TablePage<SystemTask> {
                 class="pf-m-plain"
                 .apiRequest=${() => {
                     return new EventsApi(DEFAULT_CONFIG)
-                        .eventsSystemTasksRetryCreate({
+                        .eventsSystemTasksRunCreate({
                             uuid: item.uuid,
                         })
                         .then(() => {

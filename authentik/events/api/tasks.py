@@ -1,4 +1,5 @@
 """Tasks API"""
+from datetime import datetime, timezone
 from importlib import import_module
 
 from django.contrib import messages
@@ -6,13 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import (
-    CharField,
-    ChoiceField,
-    DateTimeField,
-    ListField,
-    SerializerMethodField,
-)
+from rest_framework.fields import CharField, ChoiceField, ListField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
@@ -32,8 +27,8 @@ class SystemTaskSerializer(ModelSerializer):
     full_name = SerializerMethodField()
     uid = CharField(required=False)
     description = CharField()
-    start_timestamp = DateTimeField()
-    finish_timestamp = DateTimeField()
+    start_timestamp = SerializerMethodField()
+    finish_timestamp = SerializerMethodField()
     duration = SerializerMethodField()
 
     status = ChoiceField(choices=[(x.value, x.name) for x in TaskStatus])
@@ -45,9 +40,15 @@ class SystemTaskSerializer(ModelSerializer):
             return f"{instance.name}:{instance.uid}"
         return instance.name
 
-    def get_duration(self, instance: SystemTask) -> int:
+    def get_start_timestamp(self, instance: SystemTask) -> datetime:
+        return datetime.fromtimestamp(instance.start_timestamp, tz=timezone.utc)
+
+    def get_finish_timestamp(self, instance: SystemTask) -> datetime:
+        return datetime.fromtimestamp(instance.finish_timestamp, tz=timezone.utc)
+
+    def get_duration(self, instance: SystemTask) -> float:
         """Get the duration a task took to run"""
-        return max(instance.finish_timestamp.timestamp() - instance.start_timestamp.timestamp(), 0)
+        return max(instance.finish_timestamp - instance.start_timestamp, 0)
 
     class Meta:
         model = SystemTask
@@ -74,7 +75,7 @@ class SystemTaskViewSet(ReadOnlyModelViewSet):
     ordering = ["name", "uid", "status"]
     search_fields = ["name", "description", "uid", "status"]
 
-    @permission_required(None, ["authentik_events.rerun_task"])
+    @permission_required(None, ["authentik_events.run_task"])
     @extend_schema(
         request=OpenApiTypes.NONE,
         responses={
@@ -84,21 +85,21 @@ class SystemTaskViewSet(ReadOnlyModelViewSet):
         },
     )
     @action(detail=True, methods=["post"])
-    def retry(self, request: Request, pk=None) -> Response:
-        """Retry task"""
-        task = self.get_object()
+    def run(self, request: Request, pk=None) -> Response:
+        """Run task"""
+        task: SystemTask = self.get_object()
         try:
             task_module = import_module(task.task_call_module)
             task_func = getattr(task_module, task.task_call_func)
-            LOGGER.debug("Running task", task=task_func)
+            LOGGER.info("Running task", task=task_func)
             task_func.delay(*task.task_call_args, **task.task_call_kwargs)
             messages.success(
                 self.request,
-                _("Successfully re-scheduled Task %(name)s!" % {"name": task.task_name}),
+                _("Successfully started task %(name)s." % {"name": task.name}),
             )
             return Response(status=204)
-        except (ImportError, AttributeError):  # pragma: no cover
-            LOGGER.warning("Failed to run task, remove state", task=task)
+        except (ImportError, AttributeError) as exc:  # pragma: no cover
+            LOGGER.warning("Failed to run task, remove state", task=task.name, exc=exc)
             # if we get an import error, the module path has probably changed
             task.delete()
             return Response(status=500)

@@ -3309,16 +3309,6 @@
                     "minLength": 1,
                     "title": "Description"
                 },
-                "start_timestamp": {
-                    "type": "string",
-                    "format": "date-time",
-                    "title": "Start timestamp"
-                },
-                "finish_timestamp": {
-                    "type": "string",
-                    "format": "date-time",
-                    "title": "Finish timestamp"
-                },
                 "status": {
                     "type": "string",
                     "enum": [
