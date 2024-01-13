@@ -14,11 +14,9 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     FlowsInstancesListDesignationEnum,
-    PaginatedEndpointList,
     PaginatedRACPropertyMappingList,
     PropertymappingsApi,
     RACProvider,
-    RacApi,
 } from "@goauthentik/api";
 
 import BaseProviderPanel from "../BaseProviderPanel";
@@ -26,16 +24,10 @@ import BaseProviderPanel from "../BaseProviderPanel";
 @customElement("ak-application-wizard-authentication-for-rac")
 export class ApplicationWizardAuthenticationByRAC extends BaseProviderPanel {
     @state()
-    endpoints?: PaginatedEndpointList;
-
-    @state()
     propertyMappings?: PaginatedRACPropertyMappingList;
 
     constructor() {
         super();
-        new RacApi(DEFAULT_CONFIG).racEndpointsList({}).then((endpoints) => {
-            this.endpoints = endpoints;
-        });
         new PropertymappingsApi(DEFAULT_CONFIG)
             .propertymappingsRacList({
                 ordering: "name",
@@ -85,7 +77,6 @@ export class ApplicationWizardAuthenticationByRAC extends BaseProviderPanel {
                     help=${msg(
                         "Determines how long a session lasts before being disconnected and requiring re-authorization.",
                     )}
-                    required
                 ></ak-text-input>
 
                 <ak-form-group .expanded=${true}>
