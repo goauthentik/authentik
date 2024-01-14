@@ -15,7 +15,7 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import RedirectChallenge
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
-from authentik.flows.planner import FlowPlanner
+from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlanner
 from authentik.flows.stage import RedirectStage
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.utils.time import timedelta_from_string
@@ -39,7 +39,12 @@ class RACStartView(EnterprisePolicyAccessView):
         planner = FlowPlanner(self.provider.authorization_flow)
         planner.allow_empty_flows = True
         try:
-            plan = planner.plan(self.request)
+            plan = planner.plan(
+                self.request,
+                {
+                    PLAN_CONTEXT_APPLICATION: self.application,
+                },
+            )
         except FlowNonApplicableException:
             raise Http404
         plan.insert_stage(
