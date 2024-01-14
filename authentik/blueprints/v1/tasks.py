@@ -30,7 +30,7 @@ from authentik.blueprints.v1.importer import Importer
 from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_INSTANTIATE
 from authentik.blueprints.v1.oci import OCI_PREFIX
 from authentik.events.models import TaskStatus
-from authentik.events.monitored_tasks import MonitoredTask, prefill_task
+from authentik.events.system_tasks import SystemTask, prefill_task
 from authentik.events.utils import sanitize_dict
 from authentik.lib.config import CONFIG
 from authentik.root.celery import CELERY_APP
@@ -130,10 +130,10 @@ def blueprints_find() -> list[BlueprintFile]:
 
 
 @CELERY_APP.task(
-    throws=(DatabaseError, ProgrammingError, InternalError), base=MonitoredTask, bind=True
+    throws=(DatabaseError, ProgrammingError, InternalError), base=SystemTask, bind=True
 )
 @prefill_task
-def blueprints_discovery(self: MonitoredTask, path: Optional[str] = None):
+def blueprints_discovery(self: SystemTask, path: Optional[str] = None):
     """Find blueprints and check if they need to be created in the database"""
     count = 0
     for blueprint in blueprints_find():
@@ -175,9 +175,9 @@ def check_blueprint_v1_file(blueprint: BlueprintFile):
 
 @CELERY_APP.task(
     bind=True,
-    base=MonitoredTask,
+    base=SystemTask,
 )
-def apply_blueprint(self: MonitoredTask, instance_pk: str):
+def apply_blueprint(self: SystemTask, instance_pk: str):
     """Apply single blueprint"""
     self.save_on_success = False
     instance: Optional[BlueprintInstance] = None

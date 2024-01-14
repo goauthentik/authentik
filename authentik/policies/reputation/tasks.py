@@ -5,7 +5,7 @@ from structlog.stdlib import get_logger
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR
 from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR
 from authentik.events.models import TaskStatus
-from authentik.events.monitored_tasks import MonitoredTask, prefill_task
+from authentik.events.system_tasks import SystemTask, prefill_task
 from authentik.policies.reputation.models import Reputation
 from authentik.policies.reputation.signals import CACHE_KEY_PREFIX
 from authentik.root.celery import CELERY_APP
@@ -13,9 +13,9 @@ from authentik.root.celery import CELERY_APP
 LOGGER = get_logger()
 
 
-@CELERY_APP.task(bind=True, base=MonitoredTask)
+@CELERY_APP.task(bind=True, base=SystemTask)
 @prefill_task
-def save_reputation(self: MonitoredTask):
+def save_reputation(self: SystemTask):
     """Save currently cached reputation to database"""
     objects_to_update = []
     for _, score in cache.get_many(cache.keys(CACHE_KEY_PREFIX + "*")).items():

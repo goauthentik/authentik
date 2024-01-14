@@ -2,7 +2,7 @@
 from requests import RequestException
 
 from authentik.events.models import Event, EventAction, TaskStatus
-from authentik.events.monitored_tasks import MonitoredTask
+from authentik.events.system_tasks import SystemTask
 from authentik.lib.utils.errors import exception_to_string
 from authentik.root.celery import CELERY_APP
 from authentik.sources.plex.models import PlexSource
@@ -16,8 +16,8 @@ def check_plex_token_all():
         check_plex_token.delay(source.slug)
 
 
-@CELERY_APP.task(bind=True, base=MonitoredTask)
-def check_plex_token(self: MonitoredTask, source_slug: int):
+@CELERY_APP.task(bind=True, base=SystemTask)
+def check_plex_token(self: SystemTask, source_slug: int):
     """Check the validity of a Plex source."""
     sources = PlexSource.objects.filter(slug=source_slug)
     if not sources.exists():

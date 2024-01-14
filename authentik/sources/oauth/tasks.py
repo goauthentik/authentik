@@ -5,7 +5,7 @@ from requests import RequestException
 from structlog.stdlib import get_logger
 
 from authentik.events.models import TaskStatus
-from authentik.events.monitored_tasks import MonitoredTask
+from authentik.events.system_tasks import SystemTask
 from authentik.lib.utils.http import get_http_session
 from authentik.root.celery import CELERY_APP
 from authentik.sources.oauth.models import OAuthSource
@@ -13,8 +13,8 @@ from authentik.sources.oauth.models import OAuthSource
 LOGGER = get_logger()
 
 
-@CELERY_APP.task(bind=True, base=MonitoredTask)
-def update_well_known_jwks(self: MonitoredTask):
+@CELERY_APP.task(bind=True, base=SystemTask)
+def update_well_known_jwks(self: SystemTask):
     """Update OAuth sources' config from well_known, and JWKS info from the configured URL"""
     session = get_http_session()
     messages = []

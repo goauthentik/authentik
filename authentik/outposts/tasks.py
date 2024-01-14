@@ -20,7 +20,7 @@ from yaml import safe_load
 from authentik.enterprise.providers.rac.controllers.docker import RACDockerController
 from authentik.enterprise.providers.rac.controllers.kubernetes import RACKubernetesController
 from authentik.events.models import TaskStatus
-from authentik.events.monitored_tasks import MonitoredTask, prefill_task
+from authentik.events.system_tasks import SystemTask, prefill_task
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.reflection import path_to_class
 from authentik.outposts.consumer import OUTPOST_GROUP
@@ -104,11 +104,11 @@ def outpost_service_connection_state(connection_pk: Any):
 
 @CELERY_APP.task(
     bind=True,
-    base=MonitoredTask,
+    base=SystemTask,
     throws=(DatabaseError, ProgrammingError, InternalError),
 )
 @prefill_task
-def outpost_service_connection_monitor(self: MonitoredTask):
+def outpost_service_connection_monitor(self: SystemTask):
     """Regularly check the state of Outpost Service Connections"""
     connections = OutpostServiceConnection.objects.all()
     for connection in connections.iterator():
@@ -128,9 +128,9 @@ def outpost_controller_all():
         outpost_controller.delay(outpost.pk.hex, "up", from_cache=False)
 
 
-@CELERY_APP.task(bind=True, base=MonitoredTask)
+@CELERY_APP.task(bind=True, base=SystemTask)
 def outpost_controller(
-    self: MonitoredTask, outpost_pk: str, action: str = "up", from_cache: bool = False
+    self: SystemTask, outpost_pk: str, action: str = "up", from_cache: bool = False
 ):
     """Create/update/monitor/delete the deployment of an Outpost"""
     logs = []
@@ -162,9 +162,9 @@ def outpost_controller(
         self.set_status(TaskStatus.SUCCESSFUL, *logs)
 
 
-@CELERY_APP.task(bind=True, base=MonitoredTask)
+@CELERY_APP.task(bind=True, base=SystemTask)
 @prefill_task
-def outpost_token_ensurer(self: MonitoredTask):
+def outpost_token_ensurer(self: SystemTask):
     """Periodically ensure that all Outposts have valid Service Accounts
     and Tokens"""
     all_outposts = Outpost.objects.all()
@@ -248,10 +248,10 @@ def _outpost_single_update(outpost: Outpost, layer=None):
 
 
 @CELERY_APP.task(
-    base=MonitoredTask,
+    base=SystemTask,
     bind=True,
 )
-def outpost_connection_discovery(self: MonitoredTask):
+def outpost_connection_discovery(self: SystemTask):
     """Checks the local environment and create Service connections."""
     messages = []
     if not CONFIG.get_bool("outposts.discover"):

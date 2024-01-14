@@ -10,7 +10,7 @@ from django.utils.text import slugify
 from structlog.stdlib import get_logger
 
 from authentik.events.models import Event, EventAction, TaskStatus
-from authentik.events.monitored_tasks import MonitoredTask
+from authentik.events.system_tasks import SystemTask
 from authentik.root.celery import CELERY_APP
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.utils import logo_data
@@ -44,9 +44,9 @@ def get_email_body(email: EmailMultiAlternatives) -> str:
         OSError,
     ),
     retry_backoff=True,
-    base=MonitoredTask,
+    base=SystemTask,
 )
-def send_mail(self: MonitoredTask, message: dict[Any, Any], email_stage_pk: Optional[str] = None):
+def send_mail(self: SystemTask, message: dict[Any, Any], email_stage_pk: Optional[str] = None):
     """Send Email for Email Stage. Retries are scheduled automatically."""
     self.save_on_success = False
     message_id = make_msgid(domain=DNS_NAME)

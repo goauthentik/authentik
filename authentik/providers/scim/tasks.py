@@ -11,7 +11,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import Group, User
 from authentik.events.models import TaskStatus
-from authentik.events.monitored_tasks import MonitoredTask
+from authentik.events.system_tasks import SystemTask
 from authentik.lib.utils.reflection import path_to_class
 from authentik.providers.scim.clients import PAGE_SIZE, PAGE_TIMEOUT
 from authentik.providers.scim.clients.base import SCIMClient
@@ -40,8 +40,8 @@ def scim_sync_all():
         scim_sync.delay(provider.pk)
 
 
-@CELERY_APP.task(bind=True, base=MonitoredTask)
-def scim_sync(self: MonitoredTask, provider_pk: int) -> None:
+@CELERY_APP.task(bind=True, base=SystemTask)
+def scim_sync(self: SystemTask, provider_pk: int) -> None:
     """Run SCIM full sync for provider"""
     provider: SCIMProvider = SCIMProvider.objects.filter(
         pk=provider_pk, backchannel_application__isnull=False

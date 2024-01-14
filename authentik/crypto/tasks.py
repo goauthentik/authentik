@@ -10,7 +10,7 @@ from structlog.stdlib import get_logger
 
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import TaskStatus
-from authentik.events.monitored_tasks import MonitoredTask, prefill_task
+from authentik.events.system_tasks import SystemTask, prefill_task
 from authentik.lib.config import CONFIG
 from authentik.root.celery import CELERY_APP
 
@@ -35,9 +35,9 @@ def ensure_certificate_valid(body: str):
     return body
 
 
-@CELERY_APP.task(bind=True, base=MonitoredTask)
+@CELERY_APP.task(bind=True, base=SystemTask)
 @prefill_task
-def certificate_discovery(self: MonitoredTask):
+def certificate_discovery(self: SystemTask):
     """Discover, import and update certificates from the filesystem"""
     certs = {}
     private_keys = {}

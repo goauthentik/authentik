@@ -11,7 +11,7 @@ from structlog.stdlib import get_logger
 from authentik import __version__, get_build_hash
 from authentik.admin.apps import PROM_INFO
 from authentik.events.models import Event, EventAction, Notification
-from authentik.events.monitored_tasks import MonitoredTask, TaskStatus, prefill_task
+from authentik.events.system_tasks import SystemTask, TaskStatus, prefill_task
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import get_http_session
 from authentik.root.celery import CELERY_APP
@@ -49,9 +49,9 @@ def clear_update_notifications():
             notification.delete()
 
 
-@CELERY_APP.task(bind=True, base=MonitoredTask)
+@CELERY_APP.task(bind=True, base=SystemTask)
 @prefill_task
-def update_latest_version(self: MonitoredTask):
+def update_latest_version(self: SystemTask):
     """Update latest version info"""
     if CONFIG.get_bool("disable_update_check"):
         cache.set(VERSION_CACHE_KEY, "0.0.0", VERSION_CACHE_TIMEOUT)

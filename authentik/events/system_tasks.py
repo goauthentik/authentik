@@ -8,14 +8,16 @@ from django.utils.translation import gettext_lazy as _
 from structlog.stdlib import get_logger
 from tenant_schemas_celery.task import TenantTask
 
-from authentik.events.models import Event, EventAction, SystemTask, TaskStatus
+from authentik.events.models import Event, EventAction
+from authentik.events.models import SystemTask as DBSystemTask
+from authentik.events.models import TaskStatus
 from authentik.events.utils import sanitize_item
 from authentik.lib.utils.errors import exception_to_string
 
 LOGGER = get_logger()
 
 
-class MonitoredTask(TenantTask):
+class SystemTask(TenantTask):
     """Task which can save its state to the cache"""
 
     # For tasks that should only be listed if they failed, set this to False
@@ -59,12 +61,12 @@ class MonitoredTask(TenantTask):
         if not self._status:
             return
         if self._status == TaskStatus.SUCCESSFUL and not self.save_on_success:
-            SystemTask.objects.filter(
+            DBSystemTask.objects.filter(
                 name=self.__name__,
                 uid=self._uid,
             ).delete()
             return
-        SystemTask.objects.update_or_create(
+        DBSystemTask.objects.update_or_create(
             name=self.__name__,
             uid=self._uid,
             defaults={
@@ -88,7 +90,7 @@ class MonitoredTask(TenantTask):
         if not self._status:
             self._status = TaskStatus.ERROR
             self._messages = exception_to_string(exc)
-        SystemTask.objects.update_or_create(
+        DBSystemTask.objects.update_or_create(
             name=self.__name__,
             uid=self._uid,
             defaults={
@@ -117,7 +119,7 @@ class MonitoredTask(TenantTask):
 def prefill_task(func):
     """Ensure a task's details are always in cache, so it can always be triggered via API"""
     _prefill_tasks.append(
-        SystemTask(
+        DBSystemTask(
             name=func.__name__,
             description=func.__doc__,
             status=TaskStatus.UNKNOWN,

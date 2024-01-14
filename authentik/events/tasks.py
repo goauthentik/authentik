@@ -15,7 +15,7 @@ from authentik.events.models import (
     NotificationTransportError,
     TaskStatus,
 )
-from authentik.events.monitored_tasks import MonitoredTask, prefill_task
+from authentik.events.system_tasks import SystemTask, prefill_task
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyEngineMode
 from authentik.root.celery import CELERY_APP
@@ -95,10 +95,10 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
     bind=True,
     autoretry_for=(NotificationTransportError,),
     retry_backoff=True,
-    base=MonitoredTask,
+    base=SystemTask,
 )
 def notification_transport(
-    self: MonitoredTask, transport_pk: int, event_pk: str, user_pk: int, trigger_pk: str
+    self: SystemTask, transport_pk: int, event_pk: str, user_pk: int, trigger_pk: str
 ):
     """Send notification over specified transport"""
     self.save_on_success = False
@@ -133,9 +133,9 @@ def gdpr_cleanup(user_pk: int):
     events.delete()
 
 
-@CELERY_APP.task(bind=True, base=MonitoredTask)
+@CELERY_APP.task(bind=True, base=SystemTask)
 @prefill_task
-def notification_cleanup(self: MonitoredTask):
+def notification_cleanup(self: SystemTask):
     """Cleanup seen notifications and notifications whose event expired."""
     notifications = Notification.objects.filter(Q(event=None) | Q(seen=True))
     amount = notifications.count()

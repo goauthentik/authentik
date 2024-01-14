@@ -8,8 +8,9 @@ from ldap3.core.exceptions import LDAPException
 from redis.exceptions import LockError
 from structlog.stdlib import get_logger
 
-from authentik.events.models import SystemTask, TaskStatus
-from authentik.events.monitored_tasks import MonitoredTask
+from authentik.events.models import SystemTask as DBSystemTask
+from authentik.events.models import TaskStatus
+from authentik.events.system_tasks import SystemTask
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.reflection import class_to_path, path_to_class
@@ -69,7 +70,7 @@ def ldap_sync_single(source_pk: str):
     try:
         with lock:
             # Delete all sync tasks from the cache
-            SystemTask.objects.filter(name="ldap_sync", uid__startswith=source.slug).delete()
+            DBSystemTask.objects.filter(name="ldap_sync", uid__startswith=source.slug).delete()
             task = chain(
                 # User and group sync can happen at once, they have no dependencies on each other
                 group(
@@ -102,11 +103,11 @@ def ldap_sync_paginator(source: LDAPSource, sync: type[BaseLDAPSynchronizer]) ->
 
 @CELERY_APP.task(
     bind=True,
-    base=MonitoredTask,
+    base=SystemTask,
     soft_time_limit=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours"),
     task_time_limit=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours"),
 )
-def ldap_sync(self: MonitoredTask, source_pk: str, sync_class: str, page_cache_key: str):
+def ldap_sync(self: SystemTask, source_pk: str, sync_class: str, page_cache_key: str):
     """Synchronization of an LDAP Source"""
     self.result_timeout_hours = CONFIG.get_int("ldap.task_timeout_hours")
     source: LDAPSource = LDAPSource.objects.filter(pk=source_pk).first()
