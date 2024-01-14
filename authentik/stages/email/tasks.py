@@ -22,7 +22,7 @@ def send_mails(stage: EmailStage, *messages: list[EmailMultiAlternatives]):
     """Wrapper to convert EmailMessage to dict and send it from worker"""
     tasks = []
     for message in messages:
-        tasks.append(send_mail.s(message.__dict__, stage.pk))
+        tasks.append(send_mail.s(message.__dict__, str(stage.pk)))
     lazy_group = group(*tasks)
     promise = lazy_group()
     return promise
@@ -46,7 +46,7 @@ def get_email_body(email: EmailMultiAlternatives) -> str:
     retry_backoff=True,
     base=MonitoredTask,
 )
-def send_mail(self: MonitoredTask, message: dict[Any, Any], email_stage_pk: Optional[int] = None):
+def send_mail(self: MonitoredTask, message: dict[Any, Any], email_stage_pk: Optional[str] = None):
     """Send Email for Email Stage. Retries are scheduled automatically."""
     self.save_on_success = False
     message_id = make_msgid(domain=DNS_NAME)

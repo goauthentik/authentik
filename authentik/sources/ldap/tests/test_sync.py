@@ -40,7 +40,7 @@ class LDAPSyncTests(TestCase):
         """Test sync with missing page"""
         connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            ldap_sync.delay(self.source.pk, class_to_path(UserLDAPSynchronizer), "foo").get()
+            ldap_sync.delay(str(self.source.pk), class_to_path(UserLDAPSynchronizer), "foo").get()
         task = SystemTask.objects.filter(name="ldap_sync", uid="ldap:users:foo").first()
         self.assertEqual(task.status, TaskStatus.ERROR)
 

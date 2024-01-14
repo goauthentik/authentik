@@ -34,7 +34,7 @@ CACHE_KEY_STATUS = "goauthentik.io/sources/ldap/status/"
 def ldap_sync_all():
     """Sync all sources"""
     for source in LDAPSource.objects.filter(enabled=True):
-        ldap_sync_single.apply_async(args=[source.pk])
+        ldap_sync_single.apply_async(args=[str(source.pk)])
 
 
 @CELERY_APP.task()
@@ -95,7 +95,7 @@ def ldap_sync_paginator(source: LDAPSource, sync: type[BaseLDAPSynchronizer]) ->
     for page in sync_inst.get_objects():
         page_cache_key = CACHE_KEY_PREFIX + str(uuid4())
         cache.set(page_cache_key, page, 60 * 60 * CONFIG.get_int("ldap.task_timeout_hours"))
-        page_sync = ldap_sync.si(source.pk, class_to_path(sync), page_cache_key)
+        page_sync = ldap_sync.si(str(source.pk), class_to_path(sync), page_cache_key)
         signatures.append(page_sync)
     return signatures
 
