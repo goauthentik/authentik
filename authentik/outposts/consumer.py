@@ -77,7 +77,7 @@ class OutpostConsumer(JsonWebsocketConsumer):
             OUTPOST_GROUP % {"outpost_pk": str(self.outpost.pk)}, self.channel_name
         )
         async_to_sync(self.channel_layer.group_add)(
-            OUTPOST_GROUP_INSTANCE % {"instance": self.instance_uid},
+            OUTPOST_GROUP_INSTANCE % {"instance": self.instance_uid.replace("!", ".")},
             self.channel_name,
         )
         GAUGE_OUTPOSTS_CONNECTED.labels(
@@ -93,7 +93,7 @@ class OutpostConsumer(JsonWebsocketConsumer):
             )
             if self.instance_uid:
                 async_to_sync(self.channel_layer.group_discard)(
-                    OUTPOST_GROUP_INSTANCE % {"instance": self.instance_uid},
+                    OUTPOST_GROUP_INSTANCE % {"instance": self.instance_uid.replace("!", ".")},
                     self.channel_name,
                 )
         if self.outpost and self.instance_uid:

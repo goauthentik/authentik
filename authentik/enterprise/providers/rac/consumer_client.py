@@ -103,7 +103,7 @@ class RACClientConsumer(AsyncWebsocketConsumer):
                 continue
             self.logger.debug("Sending out connection broadcast")
             async_to_sync(self.channel_layer.group_send)(
-                OUTPOST_GROUP_INSTANCE % {"instance": states[0].uid},
+                OUTPOST_GROUP_INSTANCE % {"instance": states[0].uid.replace("!", ".")},
                 msg,
             )
 
