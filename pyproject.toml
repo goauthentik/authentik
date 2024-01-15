@@ -125,6 +125,7 @@ channels-redis = "*"
 codespell = "*"
 colorama = "*"
 dacite = "*"
+deepdiff = "*"
 deepmerge = "*"
 defusedxml = "*"
 django = "*"
@@ -154,6 +155,7 @@ lxml = [
     # 4.9.x works with previous libxml2 versions, which is what we get on linux
     { version = "4.9.4", platform = "linux" },
 ]
+jsonpatch = "*"
 opencontainers = { extras = ["reggie"], version = "*" }
 packaging = "*"
 paramiko = "*"
@@ -181,7 +183,6 @@ webauthn = "*"
 wsproto = "*"
 xmlsec = "*"
 zxcvbn = "*"
-jsonpatch = "*"
 
 [tool.poetry.dev-dependencies]
 bandit = "*"

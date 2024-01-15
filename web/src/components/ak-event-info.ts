@@ -248,6 +248,7 @@ export class EventInfo extends AKElement {
             <div class="pf-c-card__body">
                 ${this.getModelInfo(this.event.context?.model as EventModel)}
             </div>
+            <ak-expand>${this.renderDefaultResponse()}</ak-expand>
         `;
     }
 

@@ -32,3 +32,9 @@ class AuthentikEnterpriseConfig(EnterpriseConfig):
         from authentik.enterprise.models import LicenseKey
 
         return LicenseKey.get_total().is_valid()
+
+    def reconcile_install_middleware(self):
+        """Install enterprise audit middleware"""
+        orig_import = "authentik.events.middleware.AuditMiddleware"
+        new_import = "authentik.enterprise.middleware.EnterpriseAuditMiddleware"
+        settings.MIDDLEWARE = [new_import if x == orig_import else x for x in settings.MIDDLEWARE]
