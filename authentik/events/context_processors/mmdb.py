@@ -50,4 +50,5 @@ class MMDBContextProcessor(EventContextProcessor):
 
     def configured(self) -> bool:
         """Return true if this context processor is configured"""
-        return bool(self.reader)
+        path = self.path()
+        return path != "" and path
