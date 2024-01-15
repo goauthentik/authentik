@@ -1,7 +1,9 @@
+import { first } from "@goauthentik/app/common/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
-import "@goauthentik/components/ak-textarea-input";
+import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -111,21 +113,21 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             </ak-text-input>
             <ak-switch-input
                 name="defaultUserChangeName"
-                label=${msg("Default user change name")}
+                label=${msg("Allow users' to change name")}
                 ?checked="${this._settings?.defaultUserChangeName}"
                 help=${msg("Enable the ability for users to change their name.")}
             >
             </ak-switch-input>
             <ak-switch-input
                 name="defaultUserChangeEmail"
-                label=${msg("Default user change email")}
+                label=${msg("Allow users' to change email")}
                 ?checked="${this._settings?.defaultUserChangeEmail}"
                 help=${msg("Enable the ability for users to change their email.")}
             >
             </ak-switch-input>
             <ak-switch-input
                 name="defaultUserChangeUsername"
-                label=${msg("Default user change username")}
+                label=${msg("Allow users' to change username")}
                 ?checked="${this._settings?.defaultUserChangeUsername}"
                 help=${msg("Enable the ability for users to change their username.")}
             >
@@ -151,20 +153,19 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                     <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
             >
             </ak-text-input>
-            <ak-textarea-input
-                name="footerLinks"
-                label=${msg("Footer links")}
-                .value="${this._settings?.footerLinks}"
-                .bighelp=${html`
-                    <p class="pf-c-form__helper-text">
-                        ${msg(
-                            "This option configures the footer links on the flow executor pages. It must be a valid JSON list and can be used as follows:",
-                        )}
-                        <code>[{"name": "Link Name","href":"https://goauthentik.io"}]</code>
-                    </p>
-                `}
-            >
-            </ak-textarea-input>
+            <ak-form-element-horizontal label=${msg("Footer links")} name="footerLinks">
+                <ak-codemirror
+                    mode=${CodeMirrorMode.YAML}
+                    .parseValue=${false}
+                    value="${first(this._settings?.footerLinks, [])}"
+                ></ak-codemirror>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "This option configures the footer links on the flow executor pages. It must be a valid JSON list and can be used as follows:",
+                    )}
+                    <code>[{"name": "Link Name","href":"https://goauthentik.io"}]</code>
+                </p>
+            </ak-form-element-horizontal>
             <ak-switch-input
                 name="gdprCompliance"
                 label=${msg("GDPR compliance")}

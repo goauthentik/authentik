@@ -8244,20 +8244,11 @@ Bindings to groups/users are checked against the user of the event.</source>
                                 attempt to get an avatar from Gravatar, and if the user has not
                                 configured on there, it will fallback to a generated avatar.</source>
 </trans-unit>
-<trans-unit id="sea247dfb18f696d2">
-  <source>Default user change name</source>
-</trans-unit>
 <trans-unit id="s078ffec0257621c0">
   <source>Enable the ability for users to change their name.</source>
 </trans-unit>
-<trans-unit id="s26ad11b21253152b">
-  <source>Default user change email</source>
-</trans-unit>
 <trans-unit id="s5fc6c14d106f40d3">
   <source>Enable the ability for users to change their email.</source>
-</trans-unit>
-<trans-unit id="s23564aa839755965">
-  <source>Default user change username</source>
 </trans-unit>
 <trans-unit id="s6d816a95ca43a99d">
   <source>Enable the ability for users to change their username.</source>
@@ -8282,6 +8273,15 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="see1eb81c1f734079">
   <source>System settings</source>
+</trans-unit>
+<trans-unit id="s240ec6a18ae3199b">
+  <source>Allow users' to change name</source>
+</trans-unit>
+<trans-unit id="s9ec441cc5049a080">
+  <source>Allow users' to change email</source>
+</trans-unit>
+<trans-unit id="s9887891e7e8d2500">
+  <source>Allow users' to change username</source>
 </trans-unit>
     </body>
   </file>

@@ -43491,12 +43491,13 @@ components:
           format: date-time
           description: Current server time
           readOnly: true
+        embedded_outpost_disabled:
+          type: boolean
+          description: Whether the embedded outpost is disabled
+          readOnly: true
         embedded_outpost_host:
           type: string
           description: Get the FQDN configured on the embedded outpost
-          readOnly: true
-        embedded_outpost_disabled:
-          type: boolean
           readOnly: true
       required:
       - brand

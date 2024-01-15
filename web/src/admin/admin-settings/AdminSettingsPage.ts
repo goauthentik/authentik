@@ -87,22 +87,28 @@ export class AdminSettingsPage extends AKElement {
                 <span slot="header"> ${msg("System settings")} </span>
             </ak-page-header>
             <section class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
-                <ak-admin-settings-form id="form" .settings=${this.settings}>
-                </ak-admin-settings-form>
-                <ak-spinner-button
-                    .callAction=${async () => {
-                        await this.save();
-                    }}
-                    class="pf-m-primary"
-                    >${msg("Save")}</ak-spinner-button
-                >
-                <ak-spinner-button
-                    .callAction=${() => {
-                        this.resetForm();
-                    }}
-                    class="pf-m-secondary"
-                    >${msg("Cancel")}</ak-spinner-button
-                >
+                <div class="pf-c-card">
+                    <div class="pf-c-card__body">
+                        <ak-admin-settings-form id="form" .settings=${this.settings}>
+                        </ak-admin-settings-form>
+                    </div>
+                    <div class="pf-c-card__footer">
+                        <ak-spinner-button
+                            .callAction=${async () => {
+                                await this.save();
+                            }}
+                            class="pf-m-primary"
+                            >${msg("Save")}</ak-spinner-button
+                        >
+                        <ak-spinner-button
+                            .callAction=${() => {
+                                this.resetForm();
+                            }}
+                            class="pf-m-secondary"
+                            >${msg("Cancel")}</ak-spinner-button
+                        >
+                    </div>
+                </div>
             </section>
         `;
     }
