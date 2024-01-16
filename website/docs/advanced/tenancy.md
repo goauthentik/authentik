@@ -1,7 +1,6 @@
 ---
 title: Tenancy
 ---
-
 ::::warning
 This feature is in alpha. Use at your own risk.
 ::::
@@ -26,7 +25,7 @@ When creating a tenant, you must specify a `name`, used for display purposes, an
 
 There is always at least one tenant, `public`. This is the default tenant and cannot be deleted. Despite its name, it is not freely available to the world. Instead, it is stored in the `public` schema of the PostgreSQL database.
 
-By default, all requests that do not explicitely belong to a tenant are redirected to the default tenant. Thus, after creating a tenant, you must associate a domain for which incoming requests will be redirected to said tenant. You can do so with API endpoints. After creating a domain `example.org` that is associated to the tenant `t_example`, all requests made to `example.org` will use the `t_example` tenant. However, requests made to `authentik.tld`, `subdomain.example.org` and all other domains will use the default tenant.
+By default, all requests that do not explicitly belong to a tenant are redirected to the default tenant. Thus, after creating a tenant, you must associate a domain for which incoming requests will be redirected to said tenant. You can do so with API endpoints. After creating a domain `example.org` that is associated to the tenant `t_example`, all requests made to `example.org` will use the `t_example` tenant. However, requests made to `authentik.tld`, `subdomain.example.org` and all other domains will use the default tenant.
 
 ::::warning
 Expression policies currently have access to all tenants.
