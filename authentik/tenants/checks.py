@@ -14,7 +14,7 @@ def check_embedded_outpost_disabled(app_configs, **kwargs):
             Error(
                 "Embedded outpost must be disabled when tenants API is enabled.",
                 hint="Disable embedded outpost by setting outposts.disable_embedded_outpost to "
-                "False, or disable the tenants API by setting tenants.enabled to False",
+                "True, or disable the tenants API by setting tenants.enabled to False",
             )
         ]
     return []

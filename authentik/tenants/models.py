@@ -93,7 +93,7 @@ class Tenant(TenantMixin, SerializerModel):
 
     @property
     def serializer(self) -> Serializer:
-        from authentik.tenants.api import TenantSerializer
+        from authentik.tenants.api.tenants import TenantSerializer
 
         return TenantSerializer
 
@@ -117,7 +117,7 @@ class Domain(DomainMixin, SerializerModel):
 
     @property
     def serializer(self) -> Serializer:
-        from authentik.tenants.api import DomainSerializer
+        from authentik.tenants.api.domains import DomainSerializer
 
         return DomainSerializer
 
