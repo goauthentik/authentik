@@ -14,6 +14,7 @@ from django.http import HttpRequest, HttpResponse
 
 from authentik.core.models import User
 from authentik.events.middleware import AuditMiddleware, should_log_model
+from authentik.events.utils import cleanse_dict, sanitize_item
 
 
 class EnterpriseAuditMiddleware(AuditMiddleware):
@@ -68,7 +69,11 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
                 continue
             field_value = field.to_python(field_value)
             data[field.name] = deepcopy(field_value)
-        return data
+        return cleanse_dict(data)
+
+    def diff(self, before: dict, after: dict) -> dict:
+        """Generate diff between dicts"""
+        return DeepDiff(sanitize_item(before), sanitize_item(after))
 
     def post_init_handler(self, user: User, request: HttpRequest, sender, instance: Model, **_):
         if not should_log_model(instance):
@@ -84,13 +89,14 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
     def post_save_handler(
         self, user: User, request: HttpRequest, sender, instance: Model, created: bool, **_
     ):
+        if not should_log_model(instance):
+            return
         thread_kwargs = {}
         if hasattr(instance, "_previous_state") or created:
-            # Get current state
             prev_state = getattr(instance, "_previous_state", {})
+            # Get current state
             new_state = self.serialize_simple(instance)
-            diff = DeepDiff(prev_state, new_state)
-            thread_kwargs["diff"] = diff
+            thread_kwargs["diff"] = self.diff(prev_state, new_state)
         return super().post_save_handler(
             user, request, sender, instance, created, thread_kwargs, **_
         )
