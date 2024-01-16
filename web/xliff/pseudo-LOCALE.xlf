@@ -8165,13 +8165,13 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="see1eb81c1f734079">
   <source>System settings</source>
 </trans-unit>
-<trans-unit id="s240ec6a18ae3199b">
-  <source>Allow users' to change name</source>
+<trans-unit id="s5faec5eb5faf62ac">
+  <source>Allow users to change name</source>
 </trans-unit>
-<trans-unit id="s9ec441cc5049a080">
-  <source>Allow users' to change email</source>
+<trans-unit id="s456d88f3679190fd">
+  <source>Allow users to change email</source>
 </trans-unit>
-<trans-unit id="s9887891e7e8d2500">
-  <source>Allow users' to change username</source>
+<trans-unit id="s628e414bb2367057">
+  <source>Allow users to change username</source>
 </trans-unit>
 </body></file></xliff>

@@ -113,21 +113,21 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             </ak-text-input>
             <ak-switch-input
                 name="defaultUserChangeName"
-                label=${msg("Allow users' to change name")}
+                label=${msg("Allow users to change name")}
                 ?checked="${this._settings?.defaultUserChangeName}"
                 help=${msg("Enable the ability for users to change their name.")}
             >
             </ak-switch-input>
             <ak-switch-input
                 name="defaultUserChangeEmail"
-                label=${msg("Allow users' to change email")}
+                label=${msg("Allow users to change email")}
                 ?checked="${this._settings?.defaultUserChangeEmail}"
                 help=${msg("Enable the ability for users to change their email.")}
             >
             </ak-switch-input>
             <ak-switch-input
                 name="defaultUserChangeUsername"
-                label=${msg("Allow users' to change username")}
+                label=${msg("Allow users to change username")}
                 ?checked="${this._settings?.defaultUserChangeUsername}"
                 help=${msg("Enable the ability for users to change their username.")}
             >

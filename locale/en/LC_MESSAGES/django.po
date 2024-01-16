@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-10 16:57+0000\n"
+"POT-Creation-Date: 2024-01-16 04:49+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -431,11 +431,11 @@ msgstr ""
 msgid "RAC Property Mappings"
 msgstr ""
 
-#: authentik/enterprise/providers/rac/views.py:103
+#: authentik/enterprise/providers/rac/views.py:108
 msgid "Maximum connection limit reached."
 msgstr ""
 
-#: authentik/enterprise/providers/rac/views.py:107
+#: authentik/enterprise/providers/rac/views.py:112
 msgid "(You are already connected in another tab/window)"
 msgstr ""
 
@@ -2131,7 +2131,7 @@ msgstr ""
 msgid "TOTP Devices"
 msgstr ""
 
-#: authentik/stages/authenticator_validate/challenge.py:131
+#: authentik/stages/authenticator_validate/challenge.py:123
 msgid "Invalid Token"
 msgstr ""
 
