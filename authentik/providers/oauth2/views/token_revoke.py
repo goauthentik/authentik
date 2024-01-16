@@ -1,5 +1,6 @@
 """Token revocation endpoint"""
 from dataclasses import dataclass
+from typing import Any
 
 from django.http import Http404, HttpRequest, HttpResponse
 from django.utils.decorators import method_decorator
@@ -49,7 +50,7 @@ class TokenRevokeView(View):
     params: TokenRevocationParams
     provider: OAuth2Provider
 
-    def post(self, request: HttpRequest) -> HttpResponse:
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         """Revocation handler"""
         try:
             self.params = TokenRevocationParams.from_request(request)

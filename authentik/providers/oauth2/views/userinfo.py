@@ -113,10 +113,10 @@ class UserInfoView(View):
         cors_allow(self.request, response, *allowed_origins)
         return response
 
-    def options(self, request: HttpRequest) -> HttpResponse:
+    def options(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         return TokenResponse({})
 
-    def get(self, request: HttpRequest, **kwargs) -> HttpResponse:
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         """Handle GET Requests for UserInfo"""
         if not self.token:
             return HttpResponseBadRequest()
@@ -127,6 +127,6 @@ class UserInfoView(View):
         response = TokenResponse(claims)
         return response
 
-    def post(self, request: HttpRequest, **kwargs) -> HttpResponse:
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         """POST Requests behave the same as GET Requests, so the get handler is called here"""
-        return self.get(request, **kwargs)
+        return self.get(request, *args, **kwargs)

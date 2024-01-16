@@ -95,16 +95,19 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
             "authorize": request.build_absolute_uri(
                 reverse(
                     "authentik_providers_oauth2:authorize",
+                    kwargs={"application_slug": provider.application.slug},
                 )
             ),
             "token": request.build_absolute_uri(
                 reverse(
                     "authentik_providers_oauth2:token",
+                    kwargs={"application_slug": provider.application.slug},
                 )
             ),
             "user_info": request.build_absolute_uri(
                 reverse(
                     "authentik_providers_oauth2:userinfo",
+                    kwargs={"application_slug": provider.application.slug},
                 )
             ),
             "provider_info": None,

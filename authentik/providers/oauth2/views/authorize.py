@@ -5,7 +5,7 @@ from hashlib import sha256
 from json import dumps
 from re import error as RegexError
 from re import fullmatch
-from typing import Optional
+from typing import Any, Optional
 from urllib.parse import parse_qs, urlencode, urlparse, urlsplit, urlunsplit
 from uuid import uuid4
 
@@ -380,7 +380,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
         request.context["oauth_response_type"] = self.params.response_type
         return request
 
-    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         """Start FlowPLanner, return to flow executor shell"""
         # Require a login event to be set, otherwise make the user re-login
         login_event = get_login_event(request)

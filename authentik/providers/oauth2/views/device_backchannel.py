@@ -1,5 +1,5 @@
 """Device flow views"""
-from typing import Optional
+from typing import Any, Optional
 from urllib.parse import urlencode
 
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, JsonResponse
@@ -44,7 +44,7 @@ class DeviceView(View):
         self.scopes = self.request.POST.get("scope", "").split(" ")
         return None
 
-    def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         throttle = AnonRateThrottle()
         throttle.rate = CONFIG.get("throttle.providers.oauth2.device", "20/hour")
         throttle.num_requests, throttle.duration = throttle.parse_rate(throttle.rate)
@@ -52,7 +52,7 @@ class DeviceView(View):
             return HttpResponse(status=429)
         return super().dispatch(request, *args, **kwargs)
 
-    def post(self, request: HttpRequest) -> HttpResponse:
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         """Generate device token"""
         resp = self.parse_request()
         if resp:

@@ -445,10 +445,10 @@ class TokenView(View):
         cors_allow(self.request, response, *allowed_origins)
         return response
 
-    def options(self, request: HttpRequest) -> HttpResponse:
+    def options(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         return TokenResponse({})
 
-    def post(self, request: HttpRequest) -> HttpResponse:
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         """Generate tokens for clients"""
         try:
             with Hub.current.start_span(

@@ -1,5 +1,6 @@
 """authentik OAuth2 Token Introspection Views"""
 from dataclasses import dataclass, field
+from typing import Any
 
 from django.http import HttpRequest, HttpResponse
 from django.utils.decorators import method_decorator
@@ -64,7 +65,7 @@ class TokenIntrospectionView(View):
     params: TokenIntrospectionParams
     provider: OAuth2Provider
 
-    def post(self, request: HttpRequest) -> HttpResponse:
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         """Introspection handler"""
         try:
             self.params = TokenIntrospectionParams.from_request(request)

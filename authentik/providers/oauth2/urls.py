@@ -20,40 +20,40 @@ from authentik.providers.oauth2.views.userinfo import UserInfoView
 
 urlpatterns = [
     path(
-        "authorize/",
+        "<slug:application_slug>/authorize/",
         AuthorizationFlowInitView.as_view(),
         name="authorize",
     ),
-    path("token/", TokenView.as_view(), name="token"),
-    path("device/", DeviceView.as_view(), name="device"),
+    path("<slug:application_slug>/token/", TokenView.as_view(), name="token"),
+    path("<slug:application_slug>/device/", DeviceView.as_view(), name="device"),
     path(
-        "userinfo/",
+        "<slug:application_slug>/userinfo/",
         UserInfoView.as_view(),
         name="userinfo",
     ),
     path(
-        "introspect/",
+        "<slug:application_slug>/introspect/",
         TokenIntrospectionView.as_view(),
         name="token-introspection",
     ),
     path(
-        "revoke/",
+        "<slug:application_slug>/revoke/",
         TokenRevokeView.as_view(),
         name="token-revoke",
     ),
     path(
-        "end-session/<slug:application_slug>/",
+        "<slug:application_slug>/end-session/",
         RedirectView.as_view(pattern_name="authentik_core:if-session-end", query_string=True),
         name="end-session",
     ),
-    path("jwks/<slug:application_slug>/", JWKSView.as_view(), name="jwks"),
+    path("<slug:application_slug>/jwks/", JWKSView.as_view(), name="jwks"),
     path(
-        "issuer/<slug:application_slug>/",
+        "<slug:application_slug>/",
         RedirectView.as_view(pattern_name="authentik_providers_oauth2:provider-info"),
         name="provider-root",
     ),
     path(
-        "discovery/<slug:application_slug>/.well-known/openid-configuration",
+        "<slug:application_slug>/.well-known/openid-configuration",
         ProviderInfoView.as_view(),
         name="provider-info",
     ),
