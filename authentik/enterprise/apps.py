@@ -1,6 +1,8 @@
 """Enterprise app config"""
 from functools import lru_cache
+
 from django.conf import settings
+
 from authentik.blueprints.apps import ManagedAppConfig
 
 
