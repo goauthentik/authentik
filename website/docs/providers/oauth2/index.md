@@ -8,13 +8,14 @@ Scopes can be configured using Scope Mappings, a type of [Property Mappings](../
 
 | Endpoint             | URL                                                                  |
 | -------------------- | -------------------------------------------------------------------- |
-| Authorization        | `/application/o/authorize/`                                          |
-| Token                | `/application/o/token/`                                              |
-| User Info            | `/application/o/userinfo/`                                           |
-| Token Revoke         | `/application/o/revoke/`                                             |
-| End Session          | `/application/o/end-session/<application slug>/`                     |
-| JWKS                 | `/application/o/jwks/<application slug>/`                            |
-| OpenID Configuration | `/application/o/discovery/<application slug>/.well-known/openid-configuration` |
+| Issuer               | `/application/o/<application slug>/`                                 |
+| Authorization        | `/application/o/<application slug>/authorize/`                       |
+| Token                | `/application/o/<application slug>/token/`                           |
+| User Info            | `/application/o/<application slug>/userinfo/`                        |
+| Token Revoke         | `/application/o/<application slug>/revoke/`                          |
+| End Session          | `/application/o/<application slug>/end-session/`                     |
+| JWKS                 | `/application/o/<application slug>/jwks/`                            |
+| OpenID Configuration | `/application/o/<application slug>/.well-known/openid-configuration` |
 
 ## GitHub Compatibility
 
