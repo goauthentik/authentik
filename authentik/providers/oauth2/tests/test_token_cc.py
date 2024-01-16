@@ -50,7 +50,9 @@ class TestTokenClientCredentials(OAuthTestCase):
     def test_wrong_user(self):
         """test invalid username"""
         response = self.client.post(
-            reverse("authentik_providers_oauth2:token"),
+            reverse(
+                "authentik_providers_oauth2:token",
+                kwargs={"application_slug": self.app.slug}),
             {
                 "grant_type": GRANT_TYPE_CLIENT_CREDENTIALS,
                 "scope": SCOPE_OPENID,
@@ -68,7 +70,9 @@ class TestTokenClientCredentials(OAuthTestCase):
     def test_wrong_token(self):
         """test invalid token"""
         response = self.client.post(
-            reverse("authentik_providers_oauth2:token"),
+            reverse(
+                "authentik_providers_oauth2:token",
+                kwargs={"application_slug": self.app.slug}),
             {
                 "grant_type": GRANT_TYPE_CLIENT_CREDENTIALS,
                 "scope": SCOPE_OPENID,
@@ -88,7 +92,9 @@ class TestTokenClientCredentials(OAuthTestCase):
         self.app.provider = None
         self.app.save()
         response = self.client.post(
-            reverse("authentik_providers_oauth2:token"),
+            reverse(
+                "authentik_providers_oauth2:token",
+                kwargs={"application_slug": self.app.slug}),
             {
                 "grant_type": GRANT_TYPE_CLIENT_CREDENTIALS,
                 "scope": SCOPE_OPENID,
@@ -112,7 +118,9 @@ class TestTokenClientCredentials(OAuthTestCase):
             order=0,
         )
         response = self.client.post(
-            reverse("authentik_providers_oauth2:token"),
+            reverse(
+                "authentik_providers_oauth2:token",
+                kwargs={"application_slug": self.app.slug}),
             {
                 "grant_type": GRANT_TYPE_CLIENT_CREDENTIALS,
                 "scope": SCOPE_OPENID,
@@ -130,7 +138,9 @@ class TestTokenClientCredentials(OAuthTestCase):
     def test_successful(self):
         """test successful"""
         response = self.client.post(
-            reverse("authentik_providers_oauth2:token"),
+            reverse(
+                "authentik_providers_oauth2:token",
+                kwargs={"application_slug": self.app.slug}),
             {
                 "grant_type": GRANT_TYPE_CLIENT_CREDENTIALS,
                 "scope": f"{SCOPE_OPENID} {SCOPE_OPENID_EMAIL} {SCOPE_OPENID_PROFILE}",
@@ -163,7 +173,9 @@ class TestTokenClientCredentials(OAuthTestCase):
     def test_successful_password(self):
         """test successful (password grant)"""
         response = self.client.post(
-            reverse("authentik_providers_oauth2:token"),
+            reverse(
+                "authentik_providers_oauth2:token",
+                kwargs={"application_slug": self.app.slug}),
             {
                 "grant_type": GRANT_TYPE_PASSWORD,
                 "scope": f"{SCOPE_OPENID} {SCOPE_OPENID_EMAIL} {SCOPE_OPENID_PROFILE}",

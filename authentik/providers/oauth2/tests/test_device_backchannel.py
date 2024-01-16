@@ -28,21 +28,27 @@ class TesOAuth2DeviceBackchannel(OAuthTestCase):
     def test_backchannel_invalid(self):
         """Test backchannel"""
         res = self.client.post(
-            reverse("authentik_providers_oauth2:device"),
+            reverse(
+                "authentik_providers_oauth2:device",
+                kwargs={"application_slug": self.application.slug}),
             data={
                 "client_id": "foo",
             },
         )
         self.assertEqual(res.status_code, 400)
         res = self.client.post(
-            reverse("authentik_providers_oauth2:device"),
+            reverse(
+                "authentik_providers_oauth2:device",
+                kwargs={"application_slug": self.application.slug}),
         )
         self.assertEqual(res.status_code, 400)
         # test without application
         self.application.provider = None
         self.application.save()
         res = self.client.post(
-            reverse("authentik_providers_oauth2:device"),
+            reverse(
+                "authentik_providers_oauth2:device",
+                kwargs={"application_slug": self.application.slug}),
             data={
                 "client_id": "test",
             },
@@ -52,7 +58,9 @@ class TesOAuth2DeviceBackchannel(OAuthTestCase):
     def test_backchannel(self):
         """Test backchannel"""
         res = self.client.post(
-            reverse("authentik_providers_oauth2:device"),
+            reverse(
+                "authentik_providers_oauth2:device",
+                kwargs={"application_slug": self.application.slug}),
             data={
                 "client_id": self.provider.client_id,
             },

@@ -48,7 +48,9 @@ class TesOAuth2Revoke(OAuthTestCase):
             ),
         )
         res = self.client.post(
-            reverse("authentik_providers_oauth2:token-revoke"),
+            reverse(
+                "authentik_providers_oauth2:token-revoke",
+                kwargs={"application_slug": self.app.slug}),
             HTTP_AUTHORIZATION=f"Basic {self.auth}",
             data={
                 "token": token.token,
@@ -71,7 +73,9 @@ class TesOAuth2Revoke(OAuthTestCase):
             ),
         )
         res = self.client.post(
-            reverse("authentik_providers_oauth2:token-revoke"),
+            reverse(
+                "authentik_providers_oauth2:token-revoke",
+                kwargs={"application_slug": self.app.slug}),
             HTTP_AUTHORIZATION=f"Basic {self.auth}",
             data={
                 "token": token.token,
@@ -82,7 +86,9 @@ class TesOAuth2Revoke(OAuthTestCase):
     def test_revoke_invalid(self):
         """Test revoke (invalid token)"""
         res = self.client.post(
-            reverse("authentik_providers_oauth2:token-revoke"),
+            reverse(
+                "authentik_providers_oauth2:token-revoke",
+                kwargs={"application_slug": self.app.slug}),
             HTTP_AUTHORIZATION=f"Basic {self.auth}",
             data={
                 "token": generate_id(),
@@ -93,7 +99,9 @@ class TesOAuth2Revoke(OAuthTestCase):
     def test_revoke_invalid_auth(self):
         """Test revoke (invalid auth)"""
         res = self.client.post(
-            reverse("authentik_providers_oauth2:token-revoke"),
+            reverse(
+                "authentik_providers_oauth2:token-revoke",
+                kwargs={"application_slug": self.app.slug}),
             HTTP_AUTHORIZATION="Basic fqewr",
             data={
                 "token": generate_id(),
