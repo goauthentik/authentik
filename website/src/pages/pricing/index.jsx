@@ -53,9 +53,11 @@ export default function pricingPage() {
                                     <h3>Open Source</h3>
                                 </div>
                                 <div className="card__body">
-                                    <li>Open source</li>
-                                    <li>Self-hosted</li>
-                                    {commonFeatures}
+                                    <ul>
+                                        <li>Open source</li>
+                                        <li>Self-hosted</li>
+                                        {commonFeatures}
+                                    </ul>
                                 </div>
                                 <div className="card__footer">
                                     <h1>Free, forever</h1>
@@ -74,10 +76,12 @@ export default function pricingPage() {
                                     <h3>Enterprise Self-Hosted</h3>
                                 </div>
                                 <div className="card__body">
-                                    <li>Source-available</li>
-                                    <li>Self-hosted</li>
-                                    {commonFeatures}
-                                    {enterpriseFeatures}
+                                    <ul>
+                                        <li>Source-available</li>
+                                        <li>Self-hosted</li>
+                                        {commonFeatures}
+                                        {enterpriseFeatures}
+                                    </ul>
                                 </div>
                                 <div className="card__footer">
                                     <h1>
@@ -103,13 +107,16 @@ export default function pricingPage() {
                                     <h3>Enterprise Cloud</h3>
                                 </div>
                                 <div className="card__body">
-                                    <li>Hosted and Managed by authentik</li>
-                                    <li>Source-available</li>
-                                    {commonFeatures}
-                                    {enterpriseFeatures}
-                                    <li>
-                                        Easily shift to self-hosted if needed
-                                    </li>
+                                    <ul>
+                                        <li>Hosted and Managed by authentik</li>
+                                        <li>Source-available</li>
+                                        {commonFeatures}
+                                        {enterpriseFeatures}
+                                        <li>
+                                            Easily shift to self-hosted if
+                                            needed
+                                        </li>
+                                    </ul>
                                 </div>
                                 <div className="card__footer">
                                     <h1>
