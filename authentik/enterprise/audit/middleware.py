@@ -4,6 +4,7 @@ from functools import partial
 from typing import Callable
 
 from deepdiff import DeepDiff
+from deepdiff.helper import basic_types
 from django.apps.registry import apps
 from django.core.files import File
 from django.db import connection
@@ -56,9 +57,6 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
         deferred_fields = model.get_deferred_fields()
         for field in model._meta.concrete_fields:
             value = None
-            if field.remote_field:
-                continue
-
             if field.get_attname() in deferred_fields:
                 continue
 
@@ -73,9 +71,11 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
             data[field.name] = deepcopy(field_value)
         return cleanse_dict(data)
 
-    def diff(self, before: dict, after: dict) -> dict:
+    def diff(self, before: dict, after: dict) -> DeepDiff:
         """Generate diff between dicts"""
-        return DeepDiff(sanitize_item(before), sanitize_item(after))
+        return DeepDiff(
+            sanitize_item(before), sanitize_item(after), ignore_type_in_groups=basic_types
+        )
 
     def post_init_handler(self, user: User, request: HttpRequest, sender, instance: Model, **_):
         """post_init django model handler"""
@@ -107,7 +107,13 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
             prev_state = getattr(instance, "_previous_state", {})
             # Get current state
             new_state = self.serialize_simple(instance)
-            thread_kwargs["diff"] = self.diff(prev_state, new_state)
+            diff = self.diff(prev_state, new_state)
+            thread_kwargs["diff"] = diff
+            if not created:
+                ignored_field_sets = getattr(instance._meta, "authentik_signals_ignored_fields", [])
+                for field_set in ignored_field_sets:
+                    if set(diff.affected_root_keys) == set(field_set):
+                        return
         return super().post_save_handler(
             user, request, sender, instance, created, thread_kwargs, **_
         )

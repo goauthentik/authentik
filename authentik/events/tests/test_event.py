@@ -72,7 +72,7 @@ class TestEvents(TestCase):
         event = Event.new("unittest").from_http(request)
         cleaned = (
             f"{SafeExceptionReporterFilter.cleansed_substitute} "
-            f"({sha256(token.encode()).hexdigest()})"
+            f"({sha256(token.encode()).hexdigest()[:16]})"
         )
         self.assertEqual(
             event.context,
@@ -94,7 +94,7 @@ class TestEvents(TestCase):
         event = Event.new("unittest").from_http(request)
         cleaned = (
             f"{SafeExceptionReporterFilter.cleansed_substitute} "
-            f"({sha256(token.encode()).hexdigest()})"
+            f"({sha256(token.encode()).hexdigest()[:16]})"
         )
         self.assertEqual(
             event.context,

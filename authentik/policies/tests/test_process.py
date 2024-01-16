@@ -181,7 +181,7 @@ class TestPolicyProcess(TestCase):
                     "tuple": ["foo", "bar"],
                     "password": (
                         f"{SafeExceptionReporterFilter.cleansed_substitute} "
-                        f"({sha256(password.encode()).hexdigest()})"
+                        f"({sha256(password.encode()).hexdigest()[:16]})"
                     ),
                 }
             },

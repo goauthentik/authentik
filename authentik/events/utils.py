@@ -45,7 +45,7 @@ def cleanse_item(key: str, value: Any) -> Any:
             key
         ) and not ALLOWED_SPECIAL_KEYS.search(key):
             value_hash = sha256(str(value).encode("utf-8")).hexdigest()
-            return f"{SafeExceptionReporterFilter.cleansed_substitute} ({value_hash})"
+            return f"{SafeExceptionReporterFilter.cleansed_substitute} ({value_hash[:16]})"
     except TypeError:  # pragma: no cover
         return value
     return value
