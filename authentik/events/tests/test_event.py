@@ -1,4 +1,5 @@
 """event tests"""
+from hashlib import sha256
 from urllib.parse import urlencode
 
 from django.contrib.contenttypes.models import ContentType
@@ -66,13 +67,18 @@ class TestEvents(TestCase):
 
     def test_from_http_clean_querystring(self):
         """Test cleansing query string"""
-        request = self.factory.get(f"/?token={generate_id()}")
+        token = generate_id()
+        request = self.factory.get(f"/?token={token}")
         event = Event.new("unittest").from_http(request)
+        cleaned = (
+            f"{SafeExceptionReporterFilter.cleansed_substitute} "
+            f"({sha256(token.encode()).hexdigest()})"
+        )
         self.assertEqual(
             event.context,
             {
                 "http_request": {
-                    "args": {"token": SafeExceptionReporterFilter.cleansed_substitute},
+                    "args": {"token": cleaned},
                     "method": "GET",
                     "path": "/",
                     "user_agent": "",
@@ -82,14 +88,19 @@ class TestEvents(TestCase):
 
     def test_from_http_clean_querystring_flow(self):
         """Test cleansing query string (nested query string like flow executor)"""
-        nested_qs = {"token": generate_id()}
+        token = generate_id()
+        nested_qs = {"token": token}
         request = self.factory.get(f"/?{QS_QUERY}={urlencode(nested_qs)}")
         event = Event.new("unittest").from_http(request)
+        cleaned = (
+            f"{SafeExceptionReporterFilter.cleansed_substitute} "
+            f"({sha256(token.encode()).hexdigest()})"
+        )
         self.assertEqual(
             event.context,
             {
                 "http_request": {
-                    "args": {"token": SafeExceptionReporterFilter.cleansed_substitute},
+                    "args": {"token": cleaned},
                     "method": "GET",
                     "path": "/",
                     "user_agent": "",

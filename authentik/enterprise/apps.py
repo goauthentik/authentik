@@ -20,6 +20,10 @@ class AuthentikEnterpriseConfig(EnterpriseConfig):
         """Load enterprise signals"""
         self.import_module("authentik.enterprise.signals")
 
+    def ready(self) -> None:
+        self.check_enabled()
+        return super().ready()
+
     def enabled(self):
         """Return true if enterprise is enabled and valid"""
         return self.check_enabled() or settings.TEST
