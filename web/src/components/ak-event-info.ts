@@ -264,8 +264,14 @@ export class EventInfo extends AKElement {
                             ${Object.keys(diff).map((key) => {
                                 return html` <tr role="row">
                                     <td role="cell"><pre>${key}</pre></td>
-                                    <td role="cell"><pre>${diff[key].previous_value}</pre></td>
-                                    <td role="cell"><pre>${diff[key].new_value}</pre></td>
+                                    <td role="cell">
+                                        <pre>
+${JSON.stringify(diff[key].previous_value, null, 4)}</pre
+                                        >
+                                    </td>
+                                    <td role="cell">
+                                        <pre>${JSON.stringify(diff[key].new_value, null, 4)}</pre>
+                                    </td>
                                 </tr>`;
                             })}
                         </tbody>
