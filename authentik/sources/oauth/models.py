@@ -118,6 +118,15 @@ class GitHubOAuthSource(OAuthSource):
         verbose_name_plural = _("GitHub OAuth Sources")
 
 
+class GitLabOAuthSource(OAuthSource):
+    """Social Login using GitLab.com or a GitLab Instance."""
+
+    class Meta:
+        abstract = True
+        verbose_name = _("GitLab OAuth Source")
+        verbose_name_plural = _("GitLab OAuth Sources")
+
+
 class TwitchOAuthSource(OAuthSource):
     """Social Login using Twitch."""
 

@@ -48,6 +48,7 @@ omit = [
     "*/migrations/*",
     "*/management/commands/*",
     "*/apps.py",
+    "**/test_*.py",
     "website/",
 ]
 
