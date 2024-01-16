@@ -1,7 +1,6 @@
 """Enterprise audit middleware"""
 from copy import deepcopy
 from functools import partial
-from typing import Callable
 
 from django.apps.registry import apps
 from django.core.files import File
@@ -9,7 +8,7 @@ from django.db import connection
 from django.db.models import Model
 from django.db.models.expressions import BaseExpression, Combinable
 from django.db.models.signals import post_init
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest
 
 from authentik.core.models import User
 from authentik.events.middleware import AuditMiddleware, should_log_model
@@ -21,11 +20,9 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
 
     _enabled = None
 
-    def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]):
-        super().__init__(get_response)
-
     @property
     def enabled(self):
+        """Lazy check if audit logging is enabled"""
         if self._enabled is None:
             self._enabled = apps.get_app_config("authentik_enterprise").enabled()
         return self._enabled
@@ -118,7 +115,7 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
                 ignored_field_sets = getattr(instance._meta, "authentik_signals_ignored_fields", [])
                 for field_set in ignored_field_sets:
                     if set(diff.keys()) == set(field_set):
-                        return
+                        return None
         return super().post_save_handler(
             user, request, sender, instance, created, thread_kwargs, **_
         )
