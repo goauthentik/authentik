@@ -421,6 +421,17 @@ const docsSidebar = {
                 "security/CVE-2022-46172",
             ],
         },
+        {
+            type: "category",
+            label: "Advanced topics",
+            link: {
+                type: "generated-index",
+                title: "Advanced topics",
+                slug: "advanced",
+                description: "Documentation for advanced features",
+            },
+            items: ["advanced/tenancy"],
+        },
     ],
 };
 
