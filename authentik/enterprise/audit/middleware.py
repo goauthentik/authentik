@@ -3,8 +3,6 @@ from copy import deepcopy
 from functools import partial
 from typing import Callable
 
-from deepdiff import DeepDiff
-from deepdiff.helper import basic_types
 from django.apps.registry import apps
 from django.core.files import File
 from django.db import connection
@@ -71,11 +69,13 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
             data[field.name] = deepcopy(field_value)
         return cleanse_dict(data)
 
-    def diff(self, before: dict, after: dict) -> DeepDiff:
+    def diff(self, before: dict, after: dict) -> dict:
         """Generate diff between dicts"""
-        return DeepDiff(
-            sanitize_item(before), sanitize_item(after), ignore_type_in_groups=basic_types
-        )
+        diff = {}
+        for key, value in before.items():
+            if after.get(key) != value:
+                diff[key] = {"previous_value": value, "new_value": after.get(key)}
+        return sanitize_item(diff)
 
     def post_init_handler(self, user: User, request: HttpRequest, sender, instance: Model, **_):
         """post_init django model handler"""
@@ -112,7 +112,7 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
             if not created:
                 ignored_field_sets = getattr(instance._meta, "authentik_signals_ignored_fields", [])
                 for field_set in ignored_field_sets:
-                    if set(diff.affected_root_keys) == set(field_set):
+                    if set(diff.keys()) == set(field_set):
                         return
         return super().post_save_handler(
             user, request, sender, instance, created, thread_kwargs, **_
