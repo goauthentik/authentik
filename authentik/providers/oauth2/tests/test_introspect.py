@@ -51,7 +51,8 @@ class TesOAuth2Introspection(OAuthTestCase):
         res = self.client.post(
             reverse(
                 "authentik_providers_oauth2:token-introspection",
-                kwargs={"application_slug": self.app.slug}),
+                kwargs={"application_slug": self.app.slug},
+            ),
             HTTP_AUTHORIZATION=f"Basic {self.auth}",
             data={"token": token.token},
         )
@@ -85,7 +86,8 @@ class TesOAuth2Introspection(OAuthTestCase):
         res = self.client.post(
             reverse(
                 "authentik_providers_oauth2:token-introspection",
-                kwargs={"application_slug": self.app.slug}),
+                kwargs={"application_slug": self.app.slug},
+            ),
             HTTP_AUTHORIZATION=f"Basic {self.auth}",
             data={"token": token.token},
         )
@@ -107,7 +109,8 @@ class TesOAuth2Introspection(OAuthTestCase):
         res = self.client.post(
             reverse(
                 "authentik_providers_oauth2:token-introspection",
-                kwargs={"application_slug": self.app.slug}),
+                kwargs={"application_slug": self.app.slug},
+            ),
             HTTP_AUTHORIZATION=f"Basic {self.auth}",
             data={"token": generate_id(), "token_type_hint": "refresh_token"},
         )
@@ -124,7 +127,8 @@ class TesOAuth2Introspection(OAuthTestCase):
         res = self.client.post(
             reverse(
                 "authentik_providers_oauth2:token-introspection",
-                kwargs={"application_slug": self.app.slug}),
+                kwargs={"application_slug": self.app.slug},
+            ),
             HTTP_AUTHORIZATION="Basic qwerqrwe",
             data={"token": generate_id(), "token_type_hint": "refresh_token"},
         )

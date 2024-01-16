@@ -49,8 +49,8 @@ class TestUserinfo(OAuthTestCase):
         """test user info with all normal scopes"""
         res = self.client.get(
             reverse(
-                "authentik_providers_oauth2:userinfo",
-                kwargs={"application_slug": self.app.slug}),
+                "authentik_providers_oauth2:userinfo", kwargs={"application_slug": self.app.slug}
+            ),
             HTTP_AUTHORIZATION=f"Bearer {self.token.token}",
         )
         self.assertJSONEqual(
@@ -73,8 +73,8 @@ class TestUserinfo(OAuthTestCase):
 
         res = self.client.get(
             reverse(
-                "authentik_providers_oauth2:userinfo",
-                kwargs={"application_slug": self.app.slug}),
+                "authentik_providers_oauth2:userinfo", kwargs={"application_slug": self.app.slug}
+            ),
             HTTP_AUTHORIZATION=f"Bearer {self.token.token}",
         )
         self.assertJSONEqual(

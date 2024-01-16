@@ -129,9 +129,7 @@ class TestToken(OAuthTestCase):
             code="foobar", provider=provider, user=user, auth_time=timezone.now()
         )
         response = self.client.post(
-            reverse(
-                "authentik_providers_oauth2:token",
-                kwargs={"application_slug": self.app.slug}),
+            reverse("authentik_providers_oauth2:token", kwargs={"application_slug": self.app.slug}),
             data={
                 "grant_type": GRANT_TYPE_AUTHORIZATION_CODE,
                 "code": code.code,
@@ -186,9 +184,7 @@ class TestToken(OAuthTestCase):
             _scope="offline_access",
         )
         response = self.client.post(
-            reverse(
-                "authentik_providers_oauth2:token",
-                kwargs={"application_slug": self.app.slug}),
+            reverse("authentik_providers_oauth2:token", kwargs={"application_slug": self.app.slug}),
             data={
                 "grant_type": GRANT_TYPE_REFRESH_TOKEN,
                 "refresh_token": token.token,
@@ -247,9 +243,7 @@ class TestToken(OAuthTestCase):
             _scope="offline_access",
         )
         response = self.client.post(
-            reverse(
-                "authentik_providers_oauth2:token",
-                kwargs={"application_slug": self.app.slug}),
+            reverse("authentik_providers_oauth2:token", kwargs={"application_slug": self.app.slug}),
             data={
                 "grant_type": GRANT_TYPE_REFRESH_TOKEN,
                 "refresh_token": token.token,
@@ -311,9 +305,7 @@ class TestToken(OAuthTestCase):
         )
         # Create initial refresh token
         response = self.client.post(
-            reverse(
-                "authentik_providers_oauth2:token",
-                kwargs={"application_slug": self.app.slug}),
+            reverse("authentik_providers_oauth2:token", kwargs={"application_slug": self.app.slug}),
             data={
                 "grant_type": GRANT_TYPE_REFRESH_TOKEN,
                 "refresh_token": token.token,
@@ -327,9 +319,7 @@ class TestToken(OAuthTestCase):
         # Post again with initial token -> get new refresh token
         # and revoke old one
         response = self.client.post(
-            reverse(
-                "authentik_providers_oauth2:token",
-                kwargs={"application_slug": self.app.slug}),
+            reverse("authentik_providers_oauth2:token", kwargs={"application_slug": self.app.slug}),
             data={
                 "grant_type": GRANT_TYPE_REFRESH_TOKEN,
                 "refresh_token": new_token.token,
@@ -340,9 +330,7 @@ class TestToken(OAuthTestCase):
         self.assertEqual(response.status_code, 200)
         # Post again with old token, is now revoked and should error
         response = self.client.post(
-            reverse(
-                "authentik_providers_oauth2:token",
-                kwargs={"application_slug": self.app.slug}),
+            reverse("authentik_providers_oauth2:token", kwargs={"application_slug": self.app.slug}),
             data={
                 "grant_type": GRANT_TYPE_REFRESH_TOKEN,
                 "refresh_token": new_token.token,

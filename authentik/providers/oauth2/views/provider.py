@@ -50,17 +50,20 @@ class ProviderInfoView(View):
             "authorization_endpoint": self.request.build_absolute_uri(
                 reverse(
                     "authentik_providers_oauth2:authorize",
-                    kwargs={"application_slug": provider.application.slug})
+                    kwargs={"application_slug": provider.application.slug},
+                )
             ),
             "token_endpoint": self.request.build_absolute_uri(
                 reverse(
                     "authentik_providers_oauth2:token",
-                    kwargs={"application_slug": provider.application.slug})
+                    kwargs={"application_slug": provider.application.slug},
+                )
             ),
             "userinfo_endpoint": self.request.build_absolute_uri(
                 reverse(
                     "authentik_providers_oauth2:userinfo",
-                    kwargs={"application_slug": provider.application.slug})
+                    kwargs={"application_slug": provider.application.slug},
+                )
             ),
             "end_session_endpoint": self.request.build_absolute_uri(
                 reverse(
@@ -71,17 +74,20 @@ class ProviderInfoView(View):
             "introspection_endpoint": self.request.build_absolute_uri(
                 reverse(
                     "authentik_providers_oauth2:token-introspection",
-                    kwargs={"application_slug": provider.application.slug})
+                    kwargs={"application_slug": provider.application.slug},
+                )
             ),
             "revocation_endpoint": self.request.build_absolute_uri(
                 reverse(
                     "authentik_providers_oauth2:token-revoke",
-                    kwargs={"application_slug": provider.application.slug})
+                    kwargs={"application_slug": provider.application.slug},
+                )
             ),
             "device_authorization_endpoint": self.request.build_absolute_uri(
                 reverse(
                     "authentik_providers_oauth2:device",
-                    kwargs={"application_slug": provider.application.slug})
+                    kwargs={"application_slug": provider.application.slug},
+                )
             ),
             "response_types_supported": [
                 ResponseTypes.CODE,
