@@ -13,7 +13,7 @@ class Command(BaseCommand):
     @no_translations
     def handle(self, *args, **options):
         """Check permissions for all apps"""
-        for tenant in Tenant.objects.all():
+        for tenant in Tenant.objects.filter(ready=True):
             with tenant:
                 for app in apps.get_app_configs():
                     self.stdout.write(f"Checking app {app.name} ({app.label})\n")

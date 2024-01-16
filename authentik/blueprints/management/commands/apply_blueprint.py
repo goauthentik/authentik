@@ -3,10 +3,10 @@ from sys import exit as sys_exit
 
 from django.core.management.base import BaseCommand, no_translations
 from structlog.stdlib import get_logger
-from tenant_schemas_celery.scheduler import Tenant
 
 from authentik.blueprints.models import BlueprintInstance
 from authentik.blueprints.v1.importer import Importer
+from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()
 
@@ -17,7 +17,7 @@ class Command(BaseCommand):
     @no_translations
     def handle(self, *args, **options):
         """Apply all blueprints in order, abort when one fails to import"""
-        for tenant in Tenant.objects.all():
+        for tenant in Tenant.objects.filter(ready=True):
             with tenant:
                 for blueprint_path in options.get("blueprints", []):
                     content = BlueprintInstance(path=blueprint_path).retrieve()

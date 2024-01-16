@@ -203,7 +203,7 @@ class LDAPSource(Source):
         """Redis lock for syncing LDAP to prevent multiple parallel syncs happening"""
         return Lock(
             cache.client.get_client(),
-            name=f"goauthentik.io/sources/ldap/sync{connection.schema_name}-{self.slug}",
+            name=f"goauthentik.io/sources/ldap/sync/{connection.schema_name}-{self.slug}",
             # Convert task timeout hours to seconds, and multiply times 3
             # (see authentik/sources/ldap/tasks.py:54)
             # multiply by 3 to add even more leeway
