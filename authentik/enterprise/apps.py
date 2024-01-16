@@ -1,8 +1,6 @@
 """Enterprise app config"""
 from functools import lru_cache
-
 from django.conf import settings
-
 from authentik.blueprints.apps import ManagedAppConfig
 
 
@@ -38,12 +36,3 @@ class AuthentikEnterpriseConfig(EnterpriseConfig):
         orig_import = "authentik.events.middleware.AuditMiddleware"
         new_import = "authentik.enterprise.middleware.EnterpriseAuditMiddleware"
         settings.MIDDLEWARE = [new_import if x == orig_import else x for x in settings.MIDDLEWARE]
-
-    def enabled(self):
-        return self.check_enabled()
-
-    @lru_cache()
-    def check_enabled(self):
-        from authentik.enterprise.models import LicenseKey
-
-        return LicenseKey.get_total().is_valid()
