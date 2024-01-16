@@ -19,15 +19,20 @@ from authentik.events.utils import cleanse_dict, sanitize_item
 class EnterpriseAuditMiddleware(AuditMiddleware):
     """Enterprise audit middleware"""
 
-    _enabled = False
+    _enabled = None
 
     def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]):
         super().__init__(get_response)
-        self._enabled = apps.get_app_config("authentik_enterprise").enabled()
+
+    @property
+    def enabled(self):
+        if self._enabled is None:
+            self._enabled = apps.get_app_config("authentik_enterprise").enabled()
+        return self._enabled
 
     def connect(self, request: HttpRequest):
         super().connect(request)
-        if not self._enabled:
+        if not self.enabled:
             return
         user = getattr(request, "user", self.anonymous_user)
         if not user.is_authenticated:
@@ -42,7 +47,7 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
 
     def disconnect(self, request: HttpRequest):
         super().disconnect(request)
-        if not self._enabled:
+        if not self.enabled:
             return
         if not hasattr(request, "request_id"):
             return
