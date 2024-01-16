@@ -4,6 +4,7 @@ from functools import partial
 from typing import Callable
 
 from deepdiff import DeepDiff
+from django.apps.registry import apps
 from django.core.files import File
 from django.db import connection
 from django.db.models import Model
@@ -12,7 +13,6 @@ from django.db.models.signals import post_init
 from django.http import HttpRequest, HttpResponse
 
 from authentik.core.models import User
-from authentik.enterprise.models import LicenseKey
 from authentik.events.middleware import AuditMiddleware, should_log_model
 
 
@@ -23,7 +23,7 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
 
     def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]):
         super().__init__(get_response)
-        self._enabled = LicenseKey.get_total().is_valid()
+        self._enabled = apps.get_app_config("authentik_enterprise").enabled()
 
     def connect(self, request: HttpRequest):
         super().connect(request)

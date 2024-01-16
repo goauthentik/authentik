@@ -1,6 +1,7 @@
 """Enterprise signals"""
 from datetime import datetime
 
+from django.apps.registry import apps
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.utils.timezone import get_current_timezone
@@ -16,3 +17,4 @@ def pre_save_license(sender: type[License], instance: License, **_):
     instance.internal_users = status.internal_users
     instance.external_users = status.external_users
     instance.expiry = datetime.fromtimestamp(status.exp, tz=get_current_timezone())
+    apps.get_app_config("authentik_enterprise").check_enabled.cache_clear()
