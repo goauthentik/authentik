@@ -12,6 +12,8 @@ on:
     branches:
       - main
       - version-*
+    paths-ignore:
+      - website
 
 env:
   POSTGRES_DB: authentik
