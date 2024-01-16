@@ -35,7 +35,7 @@ from authentik.core.models import (
     Source,
     UserSourceConnection,
 )
-from authentik.enterprise.models import LicenseUsage
+from authentik.enterprise.models import LicenseKey, LicenseUsage
 from authentik.events.utils import cleanse_dict
 from authentik.flows.models import FlowToken, Stage
 from authentik.lib.models import SerializerModel
@@ -110,11 +110,15 @@ class Importer:
         self.__pk_map: dict[Any, Model] = {}
         self._import = blueprint
         self.logger = get_logger()
-        ctx = {}
+        ctx = self.default_context()
         always_merger.merge(ctx, self._import.context)
         if context:
             always_merger.merge(ctx, context)
         self._import.context = ctx
+
+    def default_context(self):
+        """Default context"""
+        return {"goauthentik.io/enterprise/licensed": LicenseKey.get_total().is_valid()}
 
     @staticmethod
     def from_string(yaml_input: str, context: dict | None = None) -> "Importer":

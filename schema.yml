@@ -14046,7 +14046,11 @@ paths:
       - in: query
         name: managed
         schema:
-          type: string
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
       - in: query
         name: name
         schema:
