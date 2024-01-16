@@ -4,6 +4,7 @@ from copy import copy
 from dataclasses import asdict, is_dataclass
 from datetime import date, datetime, time, timedelta
 from enum import Enum
+from hashlib import sha256
 from pathlib import Path
 from types import GeneratorType, NoneType
 from typing import Any, Optional
@@ -28,7 +29,7 @@ from authentik.policies.types import PolicyRequest
 
 # Special keys which are *not* cleaned, even when the default filter
 # is matched
-ALLOWED_SPECIAL_KEYS = re.compile("passing", flags=re.I)
+ALLOWED_SPECIAL_KEYS = re.compile("passing|password_change_date", flags=re.I)
 
 
 def cleanse_item(key: str, value: Any) -> Any:
@@ -43,7 +44,8 @@ def cleanse_item(key: str, value: Any) -> Any:
         if SafeExceptionReporterFilter.hidden_settings.search(
             key
         ) and not ALLOWED_SPECIAL_KEYS.search(key):
-            return SafeExceptionReporterFilter.cleansed_substitute
+            value_hash = sha256(str(value).encode("utf-8")).hexdigest()
+            return f"{SafeExceptionReporterFilter.cleansed_substitute} ({value_hash})"
     except TypeError:  # pragma: no cover
         return value
     return value
