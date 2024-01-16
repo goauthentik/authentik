@@ -35,3 +35,7 @@ Expression policies currently have access to all tenants.
 ## Notes
 
 Upon creating another tenant, a new schema will be created by cloning the `template` schema. This special schema is like a tenant with no data created in it. Cloning an existing schema instead of creating a new one and running migrations on it is done for efficiency purposes.
+
+Data stored in Redis (cache, tasks, locks) will usually get its keys prefixed by the `schema_name`.
+
+Files are stored by-tenant, under a `schema_name` directory. For example, `/media/t_example`. The same is true regardless of the storage backend.
