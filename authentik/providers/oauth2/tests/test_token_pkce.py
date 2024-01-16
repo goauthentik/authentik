@@ -32,7 +32,7 @@ class TestTokenPKCE(OAuthTestCase):
             redirect_uris="foo://localhost",
             access_code_validity="seconds=100",
         )
-        Application.objects.create(name="app", slug="app", provider=provider)
+        app = Application.objects.create(name="app", slug="app", provider=provider)
         state = generate_id()
         user = create_test_admin_user()
         self.client.force_login(user)
@@ -40,7 +40,7 @@ class TestTokenPKCE(OAuthTestCase):
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         # Step 1, initiate params and get redirect to flow
         self.client.get(
-            reverse("authentik_providers_oauth2:authorize"),
+            reverse("authentik_providers_oauth2:authorize", kwargs={"application_slug": app}),
             data={
                 "response_type": "code",
                 "client_id": "test",
@@ -63,7 +63,7 @@ class TestTokenPKCE(OAuthTestCase):
             },
         )
         response = self.client.post(
-            reverse("authentik_providers_oauth2:token"),
+            reverse("authentik_providers_oauth2:token", kwargs={"application_slug": app}),
             data={
                 "grant_type": GRANT_TYPE_AUTHORIZATION_CODE,
                 "code": code.code,
@@ -88,7 +88,7 @@ class TestTokenPKCE(OAuthTestCase):
             redirect_uris="foo://localhost",
             access_code_validity="seconds=100",
         )
-        Application.objects.create(name="app", slug="app", provider=provider)
+        app = Application.objects.create(name="app", slug="app", provider=provider)
         state = generate_id()
         user = create_test_admin_user()
         self.client.force_login(user)
@@ -101,7 +101,7 @@ class TestTokenPKCE(OAuthTestCase):
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         # Step 1, initiate params and get redirect to flow
         self.client.get(
-            reverse("authentik_providers_oauth2:authorize"),
+            reverse("authentik_providers_oauth2:authorize", kwargs={"application_slug": app}),
             data={
                 "response_type": "code",
                 "client_id": "test",
@@ -124,7 +124,7 @@ class TestTokenPKCE(OAuthTestCase):
             },
         )
         response = self.client.post(
-            reverse("authentik_providers_oauth2:token"),
+            reverse("authentik_providers_oauth2:token", kwargs={"application_slug": app}),
             data={
                 "grant_type": GRANT_TYPE_AUTHORIZATION_CODE,
                 "code": code.code,
@@ -145,7 +145,7 @@ class TestTokenPKCE(OAuthTestCase):
             redirect_uris="foo://localhost",
             access_code_validity="seconds=100",
         )
-        Application.objects.create(name="app", slug="app", provider=provider)
+        app = Application.objects.create(name="app", slug="app", provider=provider)
         state = generate_id()
         user = create_test_admin_user()
         self.client.force_login(user)
@@ -153,7 +153,7 @@ class TestTokenPKCE(OAuthTestCase):
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         # Step 1, initiate params and get redirect to flow
         self.client.get(
-            reverse("authentik_providers_oauth2:authorize"),
+            reverse("authentik_providers_oauth2:authorize", kwargs={"application_slug": app}),
             data={
                 "response_type": "code",
                 "client_id": "test",
@@ -175,7 +175,7 @@ class TestTokenPKCE(OAuthTestCase):
             },
         )
         response = self.client.post(
-            reverse("authentik_providers_oauth2:token"),
+            reverse("authentik_providers_oauth2:token", kwargs={"application_slug": app}),
             data={
                 "grant_type": GRANT_TYPE_AUTHORIZATION_CODE,
                 "code": code.code,
