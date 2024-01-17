@@ -6526,6 +6526,12 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s62418cbcd2a25498">
   <source>Maximum concurrent allowed connections to this endpoint. Can be set to -1 to disable the limit.</source>
 </trans-unit>
+<trans-unit id="s94d61907ee22a8c1">
+  <source>Korean</source>
+</trans-unit>
+<trans-unit id="s95d56e58f816d211">
+  <source>Dutch</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
