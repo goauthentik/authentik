@@ -53,7 +53,7 @@ When the Orancle Cloud tenancy does not have an _Identity & Security_ menu and d
 
 In contrast to the OpenID Method, no OCI user is used or created for the SAML logins, but a Group Mapping is used instead.
 
-Also Policies have to be created which allow the Federated users access. By default, tehy can log in, but cannot see or do anything.
+Also Policies have to be created which allow the Federated users access. By default, they can log in, but cannot see or do anything.
 
 Creating Policies has not been tested and is not described here.
 
