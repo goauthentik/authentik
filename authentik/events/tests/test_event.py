@@ -1,5 +1,4 @@
 """event tests"""
-from hashlib import sha256
 from urllib.parse import urlencode
 
 from django.contrib.contenttypes.models import ContentType
@@ -70,10 +69,7 @@ class TestEvents(TestCase):
         token = generate_id()
         request = self.factory.get(f"/?token={token}")
         event = Event.new("unittest").from_http(request)
-        cleaned = (
-            f"{SafeExceptionReporterFilter.cleansed_substitute} "
-            f"({sha256(token.encode()).hexdigest()[:16]})"
-        )
+        cleaned = f"{token[:4]}{SafeExceptionReporterFilter.cleansed_substitute}"
         self.assertEqual(
             event.context,
             {
@@ -92,10 +88,7 @@ class TestEvents(TestCase):
         nested_qs = {"token": token}
         request = self.factory.get(f"/?{QS_QUERY}={urlencode(nested_qs)}")
         event = Event.new("unittest").from_http(request)
-        cleaned = (
-            f"{SafeExceptionReporterFilter.cleansed_substitute} "
-            f"({sha256(token.encode()).hexdigest()[:16]})"
-        )
+        cleaned = f"{token[:4]}{SafeExceptionReporterFilter.cleansed_substitute}"
         self.assertEqual(
             event.context,
             {

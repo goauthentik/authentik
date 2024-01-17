@@ -4,7 +4,6 @@ from copy import copy
 from dataclasses import asdict, is_dataclass
 from datetime import date, datetime, time, timedelta
 from enum import Enum
-from hashlib import sha256
 from pathlib import Path
 from types import GeneratorType, NoneType
 from typing import Any, Optional
@@ -41,14 +40,15 @@ def cleanse_item(key: str, value: Any) -> Any:
             value[idx] = cleanse_item(key, item)
         return value
     try:
-        if SafeExceptionReporterFilter.hidden_settings.search(
-            key
-        ) and not ALLOWED_SPECIAL_KEYS.search(key):
-            value_hash = sha256(str(value).encode("utf-8")).hexdigest()
-            return f"{SafeExceptionReporterFilter.cleansed_substitute} ({value_hash[:16]})"
+        if not SafeExceptionReporterFilter.hidden_settings.search(key):
+            return value
+        if ALLOWED_SPECIAL_KEYS.search(key):
+            return value
+        str_value = str(value)
+        # reveal first 4 characters to identify value
+        return str_value[:4] + SafeExceptionReporterFilter.cleansed_substitute
     except TypeError:  # pragma: no cover
         return value
-    return value
 
 
 def cleanse_dict(source: dict[Any, Any]) -> dict[Any, Any]:

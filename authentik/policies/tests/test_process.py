@@ -1,6 +1,4 @@
 """policy process tests"""
-from hashlib import sha256
-
 from django.contrib.auth.models import AnonymousUser
 from django.core.cache import cache
 from django.test import RequestFactory, TestCase
@@ -179,10 +177,7 @@ class TestPolicyProcess(TestCase):
                     "dict": {"foo": "bar"},
                     "list": ["foo", "bar"],
                     "tuple": ["foo", "bar"],
-                    "password": (
-                        f"{SafeExceptionReporterFilter.cleansed_substitute} "
-                        f"({sha256(password.encode()).hexdigest()[:16]})"
-                    ),
+                    "password": f"{password[:4]}{SafeExceptionReporterFilter.cleansed_substitute}",
                 }
             },
         )
