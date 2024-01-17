@@ -93,6 +93,7 @@ export const globalVariables = css`
         --pf-c-dual-list-selector__status--top-padding: var(--pf-global--spacer--xs);
         --pf-c-dual-list-panels__gap: var(--pf-global--spacer--xs);
     }
+
     :host([theme="dark"]) {
         --pf-c-dual-list-selector__menu--BorderColor: var(--ak-dark-background-lighter);
         --pf-c-dual-list-selector__item-text--Color: var(--ak-dark-foreground);
@@ -101,6 +102,9 @@ export const globalVariables = css`
         );
         --pf-c-dual-list-selector__list-item-row--hover--BackgroundColor: var(
             --ak-dark-background-lighter;
+        );
+        --pf-c-dual-list-selector__list-item-row--hover--BackgroundColor: var(
+            --pf-global--BackgroundColor--400
         );
     }
 `;
@@ -171,6 +175,14 @@ export const listStyles = css`
     .pf-c-dual-list-selector__item-text {
         user-select: none;
         flex-grow: 0;
+    }
+
+    .pf-c-dual-list-selector__item-text .selection-main {
+        color: var(--pf-c-dual-list-selector__item-text--Color);
+    }
+
+    .pf-c-dual-list-selector__item-text .selection-main:hover {
+        color: var(--pf-c-dual-list-selector__item-text--Color);
     }
 
     .pf-c-dual-list-selector__item-text .selection-desc {

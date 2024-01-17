@@ -7,11 +7,15 @@ import { css } from "lit";
 
 export const globalVariables = css`
     :host {
-        --pf-c-text-input-group--BackgroundColor: var(--pf-global--BackgroundColor--100);
+        --pf-c-text-input-group--BackgroundColor: var(--pf-global--BackgroundColorg--100);
+        --pf-c-text-input-group--Color: var(--pf-global--Color--dark-100);
+
         --pf-c-text-input-group__text--before--BorderWidth: var(--pf-global--BorderWidth--sm);
         --pf-c-text-input-group__text--before--BorderColor: var(--pf-global--BorderColor--300);
+
         --pf-c-text-input-group__text--after--BorderBottomWidth: var(--pf-global--BorderWidth--sm);
         --pf-c-text-input-group__text--after--BorderBottomColor: var(--pf-global--BorderColor--200);
+
         --pf-c-text-input-group--hover__text--after--BorderBottomColor: var(
             --pf-global--primary-color--100
         );
@@ -50,6 +54,21 @@ export const globalVariables = css`
         --pf-c-text-input-group__utilities--c-button--PaddingLeft: var(--pf-global--spacer--xs);
         --pf-c-text-input-group--m-disabled--Color: var(--pf-global--disabled-color--100);
         --pf-c-text-input-group--m-disabled--BackgroundColor: var(--pf-global--disabled-color--300);
+    }
+
+    :host([theme="dark"]) {
+        --pf-c-text-input-group--BackgroundColor: var(--ak-dark-background-light);
+        --pf-c-text-input-group--Color: var(--ak-dark-foreground);
+
+        --pf-c-text-input-group__text--before--BorderColor: var(--ak-dark-background-lighter);
+        --pf-c-text-input-group__text--before--BorderWidth: 0;
+
+        --pf-c-text-input-group--m-disabled--Color: var(--pf-global--disabled-color--300);
+        --pf-c-text-input-group--m-disabled--BackgroundColor: var(--pf-global--disabled-color--200);
+
+        --pf-c-text-input-group__text--before--BorderBottomColor: var(
+            --pf-global--BorderColor--200
+        );
     }
 `;
 
@@ -115,8 +134,11 @@ export const searchStyles = css`
     }
 
     .pf-c-text-input-group__text::before {
-        border: var(--pf-c-text-input-group__text--before--BorderWidth) solid
-            var(--pf-c-text-input-group__text--before--BorderColor);
+        border-width: var(--pf-c-text-input-group__text--before--BorderWidth);
+        border-color: var(--pf-c-text-input-group__text--before--BorderColor);
+        border-bottom-color: var(--pf-c-text-input-group__text--after--BorderBottomColor);
+        border-bottom-width: var(--pf-c-text-input-group__text--after--BorderBottomWidth);
+        border-style: solid;
     }
 
     .pf-c-text-input-group__text::after {
@@ -156,6 +178,8 @@ export const searchStyles = css`
         white-space: nowrap;
         position: relative;
         width: 100%;
+        color: var(--pf-c-text-input-group--Color);
+        background-color: var(--pf-c-text-input-group--BackgroundColor);
         min-width: var(--pf-c-text-input-group__text-input--MinWidth);
         padding: var(--pf-c-text-input-group__text-input--PaddingTop)
             var(--pf-c-text-input-group__text-input--PaddingRight)
