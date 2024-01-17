@@ -80,7 +80,7 @@ In authentik, under _Providers_, create an _SAML Provider from Metadata_ with th
 Click Finish. Edit the Provider, below Protocol settings:
 
 -   ACS URL: Copy this URL
--   Audicence: If empty, paste the ACS URL
+-   Audience: If empty, paste the ACS URL
 
 Click Update. Click on the name of the new provider in the list to see the overview. Use the link _Create Application_ on this page to create the application for the provider.
 
