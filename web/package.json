@@ -113,7 +113,7 @@
         "eslint-plugin-storybook": "^0.6.15",
         "lit-analyzer": "^2.0.3",
         "npm-run-all": "^4.1.5",
-        "prettier": "^3.2.3",
+        "prettier": "^3.2.4",
         "pseudolocale": "^2.0.0",
         "pyright": "=1.1.338",
         "react": "^18.2.0",
