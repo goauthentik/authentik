@@ -4,3 +4,4 @@ node_modules
 coverage
 # Prettier breaks the tsconfig file
 tsconfig.json
+.eslintrc.json
