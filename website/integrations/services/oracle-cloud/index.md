@@ -86,8 +86,8 @@ Click Update. Click on the name of the new provider in the list to see the overv
 
 Create an application which uses this provider. Optionally apply access restrictions to the application using policy bindings.
 
--   Name: Oracle Cloud SAML <your tenancy> (or whatever you like as name for this application)
--   Slug: oracle-cloud-saml-<your tenancy> (or whatever yoou like)
+-   Name: Oracle Cloud SAML <your tenancy>
+-   Slug: oracle-cloud-saml-<your tenancy>
 -   Group: You may want to enter a group name like Cloud-Admins (and create it) or use the Administriators group, note it for later.
 -   Provider: Select the provider you created from the list.
 
