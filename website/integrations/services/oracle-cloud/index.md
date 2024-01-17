@@ -75,7 +75,7 @@ In authentik, under _Providers_, create an _SAML Provider from Metadata_ with th
 
 -   Name: Oracle Cloud SAML <your tenancy> (or whatever you like as name for this provider)
 -   Authorization flow: default-provider-authorization-explicit-consent (Authorize Application), implicit-consent may work too.
--   Metadata: Browse to the downloaded XML Document and 
+-   Metadata: select to the downloaded XML Document
 
 Click Finish. Edit the Provider, below Protocol settings:
 
