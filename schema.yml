@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2023.10.5
+  version: 2023.10.6
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -13961,7 +13961,11 @@ paths:
       - in: query
         name: managed
         schema:
-          type: string
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
       - in: query
         name: name
         schema:
@@ -42368,7 +42372,7 @@ components:
       properties:
         name:
           type: string
-        slug:
+        verbose_name:
           type: string
         urls_customizable:
           type: boolean
@@ -42404,8 +42408,8 @@ components:
       - oidc_well_known_url
       - profile_url
       - request_token_url
-      - slug
       - urls_customizable
+      - verbose_name
     SpBindingEnum:
       enum:
       - redirect

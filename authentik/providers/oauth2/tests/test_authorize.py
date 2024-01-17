@@ -87,6 +87,25 @@ class TestAuthorize(OAuthTestCase):
             )
             OAuthAuthorizationParams.from_request(request)
 
+    def test_blocked_redirect_uri(self):
+        """test missing/invalid redirect URI"""
+        OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            authorization_flow=create_test_flow(),
+            redirect_uris="data:local.invalid",
+        )
+        with self.assertRaises(RedirectUriError):
+            request = self.factory.get(
+                "/",
+                data={
+                    "response_type": "code",
+                    "client_id": "test",
+                    "redirect_uri": "data:localhost",
+                },
+            )
+            OAuthAuthorizationParams.from_request(request)
+
     def test_invalid_redirect_uri_empty(self):
         """test missing/invalid redirect URI"""
         provider = OAuth2Provider.objects.create(

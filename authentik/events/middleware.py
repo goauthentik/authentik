@@ -61,9 +61,6 @@ IGNORED_MODELS = (
 
 def should_log_model(model: Model) -> bool:
     """Return true if operation on `model` should be logged"""
-    # Check for silk by string so this comparison doesn't fail when silk isn't installed
-    if model.__module__.startswith("silk"):
-        return False
     return model.__class__ not in IGNORED_MODELS
 
 

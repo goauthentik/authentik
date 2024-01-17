@@ -25,6 +25,11 @@ class AzureADOAuthCallback(OpenIDConnectOAuth2Callback):
 
     client_class = UserprofileHeaderAuthClient
 
+    def get_user_id(self, info: dict[str, str]) -> str:
+        # Default try to get `id` for the Graph API endpoint
+        # fallback to OpenID logic in case the profile URL was changed
+        return info.get("id", super().get_user_id(info))
+
     def get_user_enroll_context(
         self,
         info: dict[str, Any],
@@ -50,7 +55,7 @@ class AzureADType(SourceType):
 
     authorization_url = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize"
     access_token_url = "https://login.microsoftonline.com/common/oauth2/v2.0/token"  # nosec
-    profile_url = "https://login.microsoftonline.com/common/openid/userinfo"
+    profile_url = "https://graph.microsoft.com/v1.0/me"
     oidc_well_known_url = (
         "https://login.microsoftonline.com/common/.well-known/openid-configuration"
     )

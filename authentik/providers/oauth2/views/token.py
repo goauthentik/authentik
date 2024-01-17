@@ -6,6 +6,7 @@ from hashlib import sha256
 from re import error as RegexError
 from re import fullmatch
 from typing import Any, Optional
+from urllib.parse import urlparse
 
 from django.http import HttpRequest, HttpResponse
 from django.utils import timezone
@@ -55,6 +56,7 @@ from authentik.providers.oauth2.models import (
     RefreshToken,
 )
 from authentik.providers.oauth2.utils import TokenResponse, cors_allow, extract_client_auth
+from authentik.providers.oauth2.views.authorize import FORBIDDEN_URI_SCHEMES
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
@@ -205,6 +207,10 @@ class TokenParams:
                     provider=self.provider,
                 ).from_http(request)
                 raise TokenError("invalid_client")
+
+        # Check against forbidden schemes
+        if urlparse(self.redirect_uri).scheme in FORBIDDEN_URI_SCHEMES:
+            raise TokenError("invalid_request")
 
         self.authorization_code = AuthorizationCode.objects.filter(code=raw_code).first()
         if not self.authorization_code:

@@ -109,6 +109,19 @@ module.exports = async function (): Promise<Config> {
                             },
                         ],
                     },
+                    {
+                        title: "Legal",
+                        items: [
+                            {
+                                to: "legal/terms",
+                                label: "Terms & Conditions",
+                            },
+                            {
+                                to: "legal/privacy-policy",
+                                label: "Privacy policy",
+                            },
+                        ],
+                    },
                 ],
                 copyright: `Copyright © ${new Date().getFullYear()} Authentik Security Inc. Built with Docusaurus.`,
             },
