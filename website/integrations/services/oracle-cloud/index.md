@@ -49,7 +49,7 @@ Navigate to _IdP Policies_ in the sidebar and open the default policy by clickin
 
 ## Alternative method: Federation using a SAML Provider from Metadata
 
-When the Orancle Cloud tenancy does not have _Identity & Security_ menu does not have the _Domains_ entry but _Federation_, then this method will have to be used instead.
+When the Orancle Cloud tenancy does not have an _Identity & Security_ menu and does not have the _Domains_ entry but _Federation_, then this method will have to be used instead.
 
 In contrast to the OpenID Method, you no OCI user is used or created for our the SAML logins, but the a Group Mapping is used instead.
 
