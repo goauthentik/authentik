@@ -51,7 +51,7 @@ Navigate to _IdP Policies_ in the sidebar and open the default policy by clickin
 
 When the Orancle Cloud tenancy does not have an _Identity & Security_ menu and does not have the _Domains_ entry but _Federation_, then this method will have to be used instead.
 
-In contrast to the OpenID Method, you no OCI user is used or created for our the SAML logins, but the a Group Mapping is used instead.
+In contrast to the OpenID Method, no OCI user is used or created for the SAML logins, but a Group Mapping is used instead.
 
 Also Policies have to be created which allow the Federated users access. By default, tehy can log in, but cannot see or do anything.
 
