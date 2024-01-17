@@ -88,7 +88,6 @@ Create an application which uses this provider. Optionally apply access restrict
 
 -   Name: Oracle Cloud SAML <your tenancy>
 -   Slug: oracle-cloud-saml-<your tenancy>
--   Group: You may want to enter a group name like Cloud-Admins (and create it) or use the Administriators group, note it for later.
 -   Provider: Select the provider you created from the list.
 
 Click Create. Back on the overview page page of the SAML provider, you show now see new information blocks.
