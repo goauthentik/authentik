@@ -22,7 +22,6 @@ func (ws *WebServer) configureStatic() {
 	distFs := http.FileServer(http.Dir("./web/dist"))
 	distHandler := http.StripPrefix("/static/dist/", distFs)
 	authentikHandler := http.StripPrefix("/static/authentik/", http.FileServer(http.Dir("./web/authentik")))
-	helpHandler := http.FileServer(http.Dir("./website/help/"))
 	indexLessRouter.PathPrefix("/static/dist/").Handler(distHandler)
 	indexLessRouter.PathPrefix("/static/authentik/").Handler(authentikHandler)
 
@@ -41,9 +40,6 @@ func (ws *WebServer) configureStatic() {
 	})
 
 	indexLessRouter.PathPrefix("/media/").Handler(http.StripPrefix("/media", fs))
-
-	statRouter.PathPrefix("/if/help/").Handler(http.StripPrefix("/if/help/", helpHandler))
-	statRouter.PathPrefix("/help").Handler(http.RedirectHandler("/if/help/", http.StatusMovedPermanently))
 
 	ws.lh.Path("/robots.txt").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		rw.Header()["Content-Type"] = []string{"text/plain"}

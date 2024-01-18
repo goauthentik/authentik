@@ -1,24 +1,6 @@
 # syntax=docker/dockerfile:1
 
-# Stage 1: Build website
-FROM --platform=${BUILDPLATFORM} docker.io/node:21 as website-builder
-
-ENV NODE_ENV=production
-
-WORKDIR /work/website
-
-RUN --mount=type=bind,target=/work/website/package.json,src=./website/package.json \
-    --mount=type=bind,target=/work/website/package-lock.json,src=./website/package-lock.json \
-    --mount=type=cache,id=npm-website,sharing=shared,target=/root/.npm \
-    npm ci --include=dev
-
-COPY ./website /work/website/
-COPY ./blueprints /work/blueprints/
-COPY ./SECURITY.md /work/
-
-RUN npm run build-docs-only
-
-# Stage 2: Build webui
+# Stage 1: Build webui
 FROM --platform=${BUILDPLATFORM} docker.io/node:21 as web-builder
 
 ENV NODE_ENV=production
@@ -36,7 +18,7 @@ COPY ./gen-ts-api /work/web/node_modules/@goauthentik/api
 
 RUN npm run build
 
-# Stage 3: Build go proxy
+# Stage 2: Build go proxy
 FROM --platform=${BUILDPLATFORM} docker.io/golang:1.21.6-bookworm AS go-builder
 
 ARG TARGETOS
@@ -68,7 +50,7 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
     GOARM="${TARGETVARIANT#v}" go build -o /go/authentik ./cmd/server
 
-# Stage 4: MaxMind GeoIP
+# Stage 3: MaxMind GeoIP
 FROM --platform=${BUILDPLATFORM} ghcr.io/maxmind/geoipupdate:v6.1 as geoip
 
 ENV GEOIPUPDATE_EDITION_IDS="GeoLite2-City GeoLite2-ASN"
@@ -82,7 +64,7 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     mkdir -p /usr/share/GeoIP && \
     /bin/sh -c "/usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
-# Stage 5: Python dependencies
+# Stage 4: Python dependencies
 FROM docker.io/python:3.12.1-slim-bookworm AS python-deps
 
 WORKDIR /ak-root/poetry
@@ -107,7 +89,7 @@ RUN --mount=type=bind,target=./pyproject.toml,src=./pyproject.toml \
     pip3 install poetry && \
     poetry install --only=main --no-ansi --no-interaction
 
-# Stage 6: Run
+# Stage 5: Run
 FROM docker.io/python:3.12.1-slim-bookworm AS final-image
 
 ARG GIT_BUILD_HASH
@@ -149,7 +131,6 @@ COPY --from=go-builder /go/authentik /bin/authentik
 COPY --from=python-deps /ak-root/venv /ak-root/venv
 COPY --from=web-builder /work/web/dist/ /web/dist/
 COPY --from=web-builder /work/web/authentik/ /web/authentik/
-COPY --from=website-builder /work/website/help/ /website/help/
 COPY --from=geoip /usr/share/GeoIP /geoip
 
 USER 1000
