@@ -1,10 +1,9 @@
+import "@goauthentik/elements/ak-toggle-group";
+import AkToggleGroup from "@goauthentik/elements/ak-toggle-group";
 import "@goauthentik/elements/messages/MessageContainer.js";
 import { Meta } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
-
-import "../ak-toggle-group";
-import AkToggleGroup from "../ak-toggle-group";
 
 const metadata: Meta<AkToggleGroup> = {
     title: "Components / Toggle Group",
@@ -54,13 +53,14 @@ const testOptions = [
 export const ToggleGroup = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const displayChange = (ev: any) => {
-        document.getElementById("toggle-message-pad")!.innerText =
-            `Value selected: ${ev.detail.value}`;
+        document.getElementById(
+            "toggle-message-pad"
+        )!.innerText = `Value selected: ${ev.detail.value}`;
     };
 
     return container(
         html`<ak-toggle-group @ak-toggle=${displayChange}>
             ${testOptions.map(([key, label]) => html`<option value="${key}">${label}</option>`)}
-        </ak-toggle-group>`,
+        </ak-toggle-group>`
     );
 };

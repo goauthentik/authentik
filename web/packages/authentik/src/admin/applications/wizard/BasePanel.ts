@@ -1,4 +1,4 @@
-import { WizardPanel } from "@goauthentik/components/ak-wizard-main/types";
+import type { WizardPanel } from "@goauthentik/components/ak-wizard-main/types.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
 import { KeyUnknown, serializeForm } from "@goauthentik/elements/forms/Form.js";
 import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement.js";
@@ -42,7 +42,7 @@ export class ApplicationWizardPageBase
     get formValues(): KeyUnknown | undefined {
         const elements = [
             ...Array.from(
-                this.form.querySelectorAll<HorizontalFormElement>("ak-form-element-horizontal"),
+                this.form.querySelectorAll<HorizontalFormElement>("ak-form-element-horizontal")
             ),
             ...Array.from(this.form.querySelectorAll<HTMLElement>("[data-ak-control=true]")),
         ];

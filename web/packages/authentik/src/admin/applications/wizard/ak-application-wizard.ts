@@ -1,4 +1,4 @@
-import { AkWizard } from "@goauthentik/components/ak-wizard-main/AkWizard";
+import { AkWizard } from "@goauthentik/components/ak-wizard-main/AkWizard.js";
 import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter.js";
 
 import { ContextProvider } from "@lit-labs/context";
@@ -23,7 +23,7 @@ const freshWizardState = (): ApplicationWizardState => ({
 
 @customElement("ak-application-wizard")
 export class ApplicationWizard extends CustomListenerElement(
-    AkWizard<ApplicationWizardStateUpdate, ApplicationStep>,
+    AkWizard<ApplicationWizardStateUpdate, ApplicationStep>
 ) {
     constructor() {
         super(msg("Create With Wizard"), msg("New application"), msg("Create a new application"));

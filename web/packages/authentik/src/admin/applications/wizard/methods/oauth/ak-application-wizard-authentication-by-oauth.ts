@@ -9,11 +9,11 @@ import {
 } from "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils.js";
-import "@goauthentik/components/ak-number-input";
-import "@goauthentik/components/ak-radio-input";
-import "@goauthentik/components/ak-switch-input";
-import "@goauthentik/components/ak-text-input";
-import "@goauthentik/components/ak-textarea-input";
+import "@goauthentik/components/ak-number-input.js";
+import "@goauthentik/components/ak-radio-input.js";
+import "@goauthentik/components/ak-switch-input.js";
+import "@goauthentik/components/ak-text-input.js";
+import "@goauthentik/components/ak-textarea-input.js";
 import "@goauthentik/elements/forms/FormGroup.js";
 import "@goauthentik/elements/forms/HorizontalFormElement.js";
 

@@ -1,6 +1,6 @@
-import "@goauthentik/components/ak-radio-input";
-import "@goauthentik/components/ak-switch-input";
-import "@goauthentik/components/ak-text-input";
+import "@goauthentik/components/ak-radio-input.js";
+import "@goauthentik/components/ak-switch-input.js";
+import "@goauthentik/components/ak-text-input.js";
 import "@goauthentik/elements/forms/FormGroup.js";
 import "@goauthentik/elements/forms/FormGroup.js";
 import "@goauthentik/elements/forms/HorizontalFormElement.js";

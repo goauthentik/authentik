@@ -4,7 +4,7 @@ import "@goauthentik/admin/sources/oauth/OAuthSourceForm";
 import "@goauthentik/elements/rbac/ObjectPermissionsPage.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
-import "@goauthentik/components/events/ObjectChangelog";
+import "@goauthentik/components/events/ObjectChangelog.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/CodeMirror.js";
 import "@goauthentik/elements/Tabs.js";

@@ -1,4 +1,4 @@
-import "@goauthentik/components/ak-text-input";
+import "@goauthentik/components/ak-text-input.js";
 
 import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators.js";

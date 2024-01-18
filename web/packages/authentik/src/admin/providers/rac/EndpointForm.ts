@@ -1,6 +1,6 @@
 import { first } from "@goauthentik/common/utils.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
-import "@goauthentik/components/ak-radio-input";
+import "@goauthentik/components/ak-radio-input.js";
 import "@goauthentik/elements/CodeMirror.js";
 import "@goauthentik/elements/forms/FormGroup.js";
 import "@goauthentik/elements/forms/HorizontalFormElement.js";

@@ -4,9 +4,9 @@ import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-tenanted-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { first } from "@goauthentik/common/utils.js";
-import "@goauthentik/components/ak-multi-select";
-import "@goauthentik/components/ak-switch-input";
-import "@goauthentik/components/ak-text-input";
+import "@goauthentik/components/ak-multi-select.js";
+import "@goauthentik/components/ak-switch-input.js";
+import "@goauthentik/components/ak-text-input.js";
 import "@goauthentik/elements/forms/FormGroup.js";
 import "@goauthentik/elements/forms/HorizontalFormElement.js";
 

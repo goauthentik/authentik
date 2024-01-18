@@ -1,15 +1,15 @@
-import { EventGeo } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EventWithContext } from "@goauthentik/common/events.js";
 import { actionToLabel } from "@goauthentik/common/labels.js";
 import { truncate } from "@goauthentik/common/utils.js";
-import "@goauthentik/components/ak-event-info";
+import "@goauthentik/components/ak-event-info.js";
 import "@goauthentik/elements/Tabs.js";
 import "@goauthentik/elements/buttons/Dropdown.js";
 import "@goauthentik/elements/buttons/ModalButton.js";
 import "@goauthentik/elements/buttons/SpinnerButton/ak-spinner-button.js";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table.js";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table.js";
+import { EventGeo } from "@goauthentik/elements/utils/eventGeo.js";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -47,7 +47,7 @@ export class RecentEventsCard extends Table<Event> {
                     --pf-c-card__title--FontSize: var(--pf-global--FontSize--md);
                     --pf-c-card__title--FontWeight: var(--pf-global--FontWeight--bold);
                 }
-            `,
+            `
         );
     }
 
@@ -96,7 +96,7 @@ export class RecentEventsCard extends Table<Event> {
         return super.renderEmpty(
             html`<ak-empty-state header=${msg("No Events found.")}>
                 <div slot="body">${msg("No matching events could be found.")}</div>
-            </ak-empty-state>`,
+            </ak-empty-state>`
         );
     }
 }

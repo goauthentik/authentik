@@ -5,7 +5,7 @@ import {
     DisabledNextStep,
     NextStep,
     SubmitStep,
-} from "@goauthentik/components/ak-wizard-main/commonWizardButtons";
+} from "@goauthentik/components/ak-wizard-main/commonWizardButtons.js";
 
 import { html } from "lit";
 

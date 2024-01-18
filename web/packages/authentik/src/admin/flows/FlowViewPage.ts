@@ -5,7 +5,7 @@ import "@goauthentik/admin/policies/BoundPoliciesList";
 import { DesignationToLabel } from "@goauthentik/app/admin/flows/utils";
 import "@goauthentik/elements/rbac/ObjectPermissionsPage.js";
 import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
-import "@goauthentik/components/events/ObjectChangelog";
+import "@goauthentik/components/events/ObjectChangelog.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/PageHeader.js";
 import "@goauthentik/elements/Tabs.js";

@@ -49,6 +49,7 @@
     "workspaces": [
         "packages/authentik",
         "packages/common",
+        "packages/components",
         "packages/elements",
         "packages/pseudolocalize"
     ],

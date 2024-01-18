@@ -1,10 +1,9 @@
+import "@goauthentik/elements/ak-status-label";
+import AkStatusLabel from "@goauthentik/elements/ak-status-label";
 import "@goauthentik/elements/messages/MessageContainer.js";
 import { Meta } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
-
-import "../ak-status-label";
-import AkStatusLabel from "../ak-status-label";
 
 const metadata: Meta<AkStatusLabel> = {
     title: "Components / App Status Label",

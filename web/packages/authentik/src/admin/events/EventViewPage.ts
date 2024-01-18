@@ -1,10 +1,10 @@
-import { EventGeo } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EventWithContext } from "@goauthentik/common/events.js";
 import { actionToLabel } from "@goauthentik/common/labels.js";
-import "@goauthentik/components/ak-event-info";
+import "@goauthentik/components/ak-event-info.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/PageHeader.js";
+import { EventGeo } from "@goauthentik/elements/utils/eventGeo.js";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -102,7 +102,7 @@ export class EventViewPage extends AKElement {
                                                                         .event.user.on_behalf_of
                                                                         .pk}"
                                                                     >${msg(
-                                                                        str`On behalf of ${this.event.user.on_behalf_of.username}`,
+                                                                        str`On behalf of ${this.event.user.on_behalf_of.username}`
                                                                     )}</a
                                                                 >
                                                             </small>`

@@ -1,4 +1,4 @@
-import { type WizardStep } from "@goauthentik/components/ak-wizard-main/types";
+import type { WizardStep } from "@goauthentik/components/ak-wizard-main/types.js";
 
 import {
     type ApplicationRequest,

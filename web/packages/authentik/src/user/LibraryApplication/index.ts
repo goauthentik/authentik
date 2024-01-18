@@ -1,6 +1,6 @@
 import { PFSize } from "@goauthentik/elements/Spinner.js";
 import { truncateWords } from "@goauthentik/common/utils.js";
-import "@goauthentik/components/ak-app-icon";
+import "@goauthentik/components/ak-app-icon.js";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/Expand.js";
 import "@goauthentik/user/LibraryApplication/RACLaunchEndpointModal";

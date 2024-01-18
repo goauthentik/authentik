@@ -2,11 +2,11 @@ import "@goauthentik/admin/applications/ProviderSelectModal";
 import { iconHelperText } from "@goauthentik/admin/helperText";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { first } from "@goauthentik/common/utils.js";
-import "@goauthentik/components/ak-file-input";
-import "@goauthentik/components/ak-radio-input";
-import "@goauthentik/components/ak-switch-input";
-import "@goauthentik/components/ak-text-input";
-import "@goauthentik/components/ak-textarea-input";
+import "@goauthentik/components/ak-file-input.js";
+import "@goauthentik/components/ak-radio-input.js";
+import "@goauthentik/components/ak-switch-input.js";
+import "@goauthentik/components/ak-text-input.js";
+import "@goauthentik/components/ak-textarea-input.js";
 import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,

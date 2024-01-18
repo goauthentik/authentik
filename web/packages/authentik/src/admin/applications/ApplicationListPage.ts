@@ -2,7 +2,7 @@ import "@goauthentik/admin/applications/ApplicationForm";
 import { PFSize } from "@goauthentik/elements/Spinner.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";
-import "@goauthentik/components/ak-app-icon";
+import "@goauthentik/components/ak-app-icon.js";
 import MDApplication from "@goauthentik/docs/core/applications.md";
 import "@goauthentik/elements/Markdown.js";
 import "@goauthentik/elements/buttons/SpinnerButton/ak-spinner-button.js";

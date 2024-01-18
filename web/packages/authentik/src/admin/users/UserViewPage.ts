@@ -9,29 +9,29 @@ import {
     renderRecoveryEmailRequest,
     requestRecoveryLink,
 } from "@goauthentik/app/admin/users/UserListPage";
-import { me } from "@goauthentik/common/users.js";
-import "@goauthentik/elements/rbac/ObjectPermissionsPage.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import { userTypeToLabel } from "@goauthentik/common/labels.js";
-import "@goauthentik/components/DescriptionList";
+import { me } from "@goauthentik/common/users.js";
+import "@goauthentik/components/DescriptionList.js";
 import {
     type DescriptionPair,
     renderDescriptionList,
-} from "@goauthentik/components/DescriptionList";
-import "@goauthentik/elements/ak-status-label.js";
-import "@goauthentik/components/events/ObjectChangelog";
-import "@goauthentik/components/events/UserEvents";
+} from "@goauthentik/components/DescriptionList.js";
+import "@goauthentik/components/events/ObjectChangelog.js";
+import "@goauthentik/components/events/UserEvents.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/CodeMirror.js";
 import { WithCapabilitiesConfig } from "@goauthentik/elements/Interface/capabilitiesProvider.js";
 import "@goauthentik/elements/PageHeader.js";
 import { PFSize } from "@goauthentik/elements/Spinner.js";
 import "@goauthentik/elements/Tabs.js";
+import "@goauthentik/elements/ak-status-label.js";
 import "@goauthentik/elements/buttons/ActionButton/ak-action-button.js";
 import "@goauthentik/elements/buttons/SpinnerButton/ak-spinner-button.js";
 import "@goauthentik/elements/forms/ModalForm.js";
 import "@goauthentik/elements/oauth/UserRefreshList.js";
+import "@goauthentik/elements/rbac/ObjectPermissionsPage.js";
 import "@goauthentik/elements/user/SessionList.js";
 import "@goauthentik/elements/user/UserConsentList.js";
 
@@ -254,7 +254,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                                     <pf-tooltip
                                         position="top"
                                         content=${msg(
-                                            "Create a link for this user to reset their password",
+                                            "Create a link for this user to reset their password"
                                         )}
                                     >
                                         ${msg("Create Recovery Link")}
@@ -305,7 +305,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                                 : html`
                                       <p>
                                           ${msg(
-                                              "Edit the notes attribute of this user to add notes here.",
+                                              "Edit the notes attribute of this user to add notes here."
                                           )}
                                       </p>
                                   `}

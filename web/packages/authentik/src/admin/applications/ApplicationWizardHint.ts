@@ -2,9 +2,9 @@ import "@goauthentik/admin/applications/wizard/ak-application-wizard";
 import {
     ShowHintController,
     ShowHintControllerHost,
-} from "@goauthentik/components/ak-hint/ShowHintController";
-import "@goauthentik/components/ak-hint/ak-hint";
-import "@goauthentik/components/ak-hint/ak-hint-body";
+} from "@goauthentik/components/ak-hint/ShowHintController.js";
+import "@goauthentik/components/ak-hint/ak-hint-body.js";
+import "@goauthentik/components/ak-hint/ak-hint.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/Label.js";
 import "@goauthentik/elements/buttons/ActionButton/ak-action-button.js";
@@ -61,7 +61,7 @@ export class AkApplicationWizardHint extends AKElement implements ShowHintContro
         super();
         this.showHintController = new ShowHintController(
             this,
-            "202310-application-wizard-announcement",
+            "202310-application-wizard-announcement"
         );
     }
 
