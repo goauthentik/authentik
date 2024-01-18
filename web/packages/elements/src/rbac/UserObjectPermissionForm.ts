@@ -1,5 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
-import "@goauthentik/components/ak-toggle-group";
+import "@goauthentik/elements/ak-toggle-group.js";
 import "@goauthentik/elements/forms/HorizontalFormElement.js";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm.js";
 import "@goauthentik/elements/forms/Radio.js";

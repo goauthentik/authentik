@@ -1,6 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";
-import "@goauthentik/components/ak-status-label";
+import "@goauthentik/elements/ak-status-label.js";
 import "@goauthentik/elements/buttons/SpinnerButton/ak-spinner-button.js";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table.js";
 import { TableColumn } from "@goauthentik/elements/table/Table.js";

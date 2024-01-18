@@ -1,6 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { first } from "@goauthentik/common/utils.js";
-import "@goauthentik/components/ak-status-label";
+import "@goauthentik/elements/ak-status-label.js";
 import "@goauthentik/elements/CodeMirror.js";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror.js";
 import { Form } from "@goauthentik/elements/forms/Form.js";

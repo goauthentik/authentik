@@ -4,7 +4,7 @@ import "@goauthentik/admin/policies/PolicyWizard";
 import "@goauthentik/admin/users/UserForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";
-import "@goauthentik/components/ak-status-label";
+import "@goauthentik/elements/ak-status-label.js";
 import { PFSize } from "@goauthentik/elements/Spinner.js";
 import "@goauthentik/elements/Tabs.js";
 import "@goauthentik/elements/forms/DeleteBulkForm.js";

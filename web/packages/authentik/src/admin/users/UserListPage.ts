@@ -10,7 +10,7 @@ import { userTypeToLabel } from "@goauthentik/common/labels.js";
 import { MessageLevel } from "@goauthentik/common/messages.js";
 import { DefaultUIConfig, uiConfig } from "@goauthentik/common/ui/config.js";
 import { first } from "@goauthentik/common/utils.js";
-import "@goauthentik/components/ak-status-label";
+import "@goauthentik/elements/ak-status-label.js";
 import { rootInterface } from "@goauthentik/elements/Base.js";
 import {
     CapabilitiesEnum,

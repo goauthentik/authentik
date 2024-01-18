@@ -17,6 +17,8 @@
 's9ba989e69344ff29': `Open Notification drawer`,
 'sf45a0d2f00bcc6ff': `no tabs defined`,
 'sca7cfe2bef51b2a5': `Root`,
+'scb489a1a173ac3f0': `Yes`,
+'s09205907b5b56cda': `No`,
 's2da4aa7a9abeb653': `Pseudolocale (for testing)`,
 's4caed5b7a7e5d89b': `English`,
 'sf1868dc19e3917bb': `Spanish`,

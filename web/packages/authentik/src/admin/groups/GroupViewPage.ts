@@ -3,7 +3,7 @@ import "@goauthentik/app/admin/groups/RelatedUserList";
 import "@goauthentik/elements/rbac/ObjectPermissionsPage.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
-import "@goauthentik/components/ak-status-label";
+import "@goauthentik/elements/ak-status-label.js";
 import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/CodeMirror.js";

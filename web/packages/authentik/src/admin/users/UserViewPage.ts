@@ -19,7 +19,7 @@ import {
     type DescriptionPair,
     renderDescriptionList,
 } from "@goauthentik/components/DescriptionList";
-import "@goauthentik/components/ak-status-label";
+import "@goauthentik/elements/ak-status-label.js";
 import "@goauthentik/components/events/ObjectChangelog";
 import "@goauthentik/components/events/UserEvents";
 import { AKElement } from "@goauthentik/elements/Base.js";

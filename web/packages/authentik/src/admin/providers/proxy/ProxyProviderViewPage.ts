@@ -4,7 +4,7 @@ import "@goauthentik/elements/rbac/ObjectPermissionsPage.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import { convertToSlug } from "@goauthentik/common/utils.js";
-import "@goauthentik/components/ak-status-label";
+import "@goauthentik/elements/ak-status-label.js";
 import "@goauthentik/components/events/ObjectChangelog";
 import MDCaddyStandalone from "@goauthentik/docs/providers/proxy/_caddy_standalone.md";
 import MDNginxIngress from "@goauthentik/docs/providers/proxy/_nginx_ingress.md";

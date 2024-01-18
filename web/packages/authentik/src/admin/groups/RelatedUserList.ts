@@ -8,7 +8,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { MessageLevel } from "@goauthentik/common/messages.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";
 import { first } from "@goauthentik/common/utils.js";
-import "@goauthentik/components/ak-status-label";
+import "@goauthentik/elements/ak-status-label.js";
 import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,

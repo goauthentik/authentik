@@ -4,7 +4,7 @@ import "@goauthentik/admin/outposts/ServiceConnectionKubernetesForm";
 import "@goauthentik/admin/outposts/ServiceConnectionWizard";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";
-import "@goauthentik/components/ak-status-label";
+import "@goauthentik/elements/ak-status-label.js";
 import { PFColor } from "@goauthentik/elements/Label.js";
 import "@goauthentik/elements/buttons/SpinnerButton/ak-spinner-button.js";
 import "@goauthentik/elements/forms/DeleteBulkForm.js";

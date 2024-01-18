@@ -4,7 +4,7 @@ import { first } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
-import "@goauthentik/components/ak-toggle-group";
+import "@goauthentik/elements/ak-toggle-group.js";
 import "@goauthentik/elements/forms/HorizontalFormElement.js";
 
 import { msg } from "@lit/localize";

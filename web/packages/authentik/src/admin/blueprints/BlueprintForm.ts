@@ -1,7 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { docLink } from "@goauthentik/common/global.js";
 import { first } from "@goauthentik/common/utils.js";
-import "@goauthentik/components/ak-toggle-group";
+import "@goauthentik/elements/ak-toggle-group.js";
 import "@goauthentik/elements/CodeMirror.js";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror.js";
 import "@goauthentik/elements/forms/FormGroup.js";
