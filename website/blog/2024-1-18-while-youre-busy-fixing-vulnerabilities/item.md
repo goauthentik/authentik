@@ -30,11 +30,11 @@ image: security-hygiene4.png
 
 Last year we shared [our (mostly free and open source) security stack](https://goauthentik.io/blog/2023-11-22-how-we-saved-over-100k), including tooling we use for basic security coverage like visibility, dependency management, penetration testing, and more. Even with these tools set up, there are still activities and practices you need to do routinely and proactively to ensure you’re not at risk.
 
+There are frameworks you can look to (e.g. [NIST](https://www.nist.gov/cyberframework), [OWASP SAMM](https://owasp.org/www-project-samm/)) but these can be overwhelming if you’re a one-person team or new to security. If you’re coming into 2024 with a fresh resolve to improve your security posture, here’s our advice on what to prioritize (and where you can automate).
+
 ![](security-hygiene4.png)
 
 <!--truncate-->
-
-There are frameworks you can look to (e.g. [NIST](https://www.nist.gov/cyberframework), [OWASP SAMM](https://owasp.org/www-project-samm/)) but these can be overwhelming if you’re a one-person team or new to security. If you’re coming into 2024 with a fresh resolve to improve your security posture, here’s our advice on what to prioritize (and where you can automate).
 
 ## The biggest security risk is poor access management, not vulnerabilities
 
