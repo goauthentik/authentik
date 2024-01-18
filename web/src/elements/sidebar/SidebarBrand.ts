@@ -43,7 +43,6 @@ export class SidebarBrand extends WithTenantConfig(AKElement) {
                     min-height: 114px;
                 }
                 .pf-c-brand img {
-                    width: 100%;
                     padding: 0 0.5rem;
                     height: 42px;
                 }

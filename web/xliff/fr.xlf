@@ -6093,7 +6093,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
       </trans-unit>
       <trans-unit id="s8afc8c5aafb392d3">
         <source>Radius</source>
-        <target>Rayon</target>
+        <target>Radius</target>
         
       </trans-unit>
       <trans-unit id="s03970aa76a09982d">
@@ -8217,6 +8217,14 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="s62418cbcd2a25498">
   <source>Maximum concurrent allowed connections to this endpoint. Can be set to -1 to disable the limit.</source>
   <target>Nombre maximum de connections concurrentes à ce point de terminaison. Peut être défini à -1 pour désactiver la limite.</target>
+</trans-unit>
+<trans-unit id="s94d61907ee22a8c1">
+  <source>Korean</source>
+  <target>Coréen</target>
+</trans-unit>
+<trans-unit id="s95d56e58f816d211">
+  <source>Dutch</source>
+  <target>Néerlandais</target>
 </trans-unit>
     </body>
   </file>
