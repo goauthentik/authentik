@@ -1,0 +1,221 @@
+<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file target-language="ko" source-language="en" original="lit-localize-inputs" datatype="plaintext">
+    <body>
+      <trans-unit id="sfe629863ba1338c2">
+        <source>Connection error, reconnecting...</source>
+        <target>연결 오류, 다시 연결 중...</target>
+        
+      </trans-unit>
+      <trans-unit id="sc8da3cc71de63832">
+        <source>Login</source>
+        <target>로그인</target>
+        
+      </trans-unit>
+      <trans-unit id="sb4564c127ab8b921">
+        <source>Failed login</source>
+        <target>로그인 실패</target>
+        
+      </trans-unit>
+      <trans-unit id="s67749057edb2586b">
+        <source>Logout</source>
+        <target>로그아웃</target>
+        
+      </trans-unit>
+      <trans-unit id="s7e537ad68d7c16e1">
+        <source>User was written to</source>
+        <target>사용자가 다음에 기록됨</target>
+        
+      </trans-unit>
+      <trans-unit id="sa0e0bdd7e244416b">
+        <source>Suspicious request</source>
+        <target>의심스러운 요청</target>
+        
+      </trans-unit>
+      <trans-unit id="s7bda44013984fc48">
+        <source>Password set</source>
+        <target>비밀번호 설정</target>
+        
+      </trans-unit>
+      <trans-unit id="sa1b41e334ad89d94">
+        <source>Secret was viewed</source>
+        <target>비밀이 표시됨</target>
+        
+      </trans-unit>
+      <trans-unit id="s92ca679592a36b35">
+        <source>Secret was rotated</source>
+        <target>비밀이 회전됨</target>
+        
+      </trans-unit>
+      <trans-unit id="s8a1d9403ca90989b">
+        <source>Invitation used</source>
+        <target>사용된 초대</target>
+        
+      </trans-unit>
+      <trans-unit id="s5f496533610103f2">
+        <source>Application authorized</source>
+        <target>승인된 애플리케이션</target>
+        
+      </trans-unit>
+      <trans-unit id="sdc9e222be9612939">
+        <source>Source linked</source>
+        <target>링크된 소스</target>
+        
+      </trans-unit>
+      <trans-unit id="sb1c91762ae3a9bee">
+        <source>Impersonation started</source>
+        <target>사용자 위장 시작</target>
+        
+      </trans-unit>
+      <trans-unit id="s9c73bd29b279d26b">
+        <source>Impersonation ended</source>
+        <target>사용자 위장 종료</target>
+        
+      </trans-unit>
+      <trans-unit id="s1cd264012278c047">
+        <source>Flow execution</source>
+        <target>플로우 실행</target>
+        
+      </trans-unit>
+      <trans-unit id="s32f04d33924ce8ad">
+        <source>Policy execution</source>
+        <target>정책 실행</target>
+        
+      </trans-unit>
+      <trans-unit id="sb6d7128df5978cee">
+        <source>Policy exception</source>
+        <target>정책 예외</target>
+        
+      </trans-unit>
+      <trans-unit id="s77f572257f69a8db">
+        <source>Property Mapping exception</source>
+        <target>속성 매핑 예외</target>
+        
+      </trans-unit>
+      <trans-unit id="s2543cffd6ebb6803">
+        <source>System task execution</source>
+        <target>시스템 작업 실행</target>
+        
+      </trans-unit>
+      <trans-unit id="se2f258b996f7279c">
+        <source>System task exception</source>
+        <target>시스템 작업 예외</target>
+        
+      </trans-unit>
+      <trans-unit id="s81eff3409d572a21">
+        <source>General system exception</source>
+        <target>일반 시스템 예외</target>
+        
+      </trans-unit>
+      <trans-unit id="sf8f49cdbf0036343">
+        <source>Configuration error</source>
+        <target>구성 오류</target>
+        
+      </trans-unit>
+      <trans-unit id="s9c6f61dc47bc4f0a">
+        <source>Model created</source>
+        <target>모델 생성함</target>
+        
+      </trans-unit>
+      <trans-unit id="s47a4983a2c6bb749">
+        <source>Model updated</source>
+        <target>모델 업데이트함</target>
+        
+      </trans-unit>
+      <trans-unit id="sc9f69360b58706c7">
+        <source>Model deleted</source>
+        <target>모델 삭제함</target>
+        
+      </trans-unit>
+      <trans-unit id="sa266303caf1bd27f">
+        <source>Email sent</source>
+        <target>이메일 보냄</target>
+        
+      </trans-unit>
+      <trans-unit id="s6c410fedda2a575f">
+        <source>Update available</source>
+        <target>업데이트 가능</target>
+        
+      </trans-unit>
+      <trans-unit id="s02240309358f557c">
+        <source>Unknown severity</source>
+        <target>심각도 불명</target>
+        
+      </trans-unit>
+      <trans-unit id="sf1ec4acb8d744ed9">
+        <source>Alert</source>
+        <target>경고</target>
+        
+      </trans-unit>
+      <trans-unit id="s9117fb5195e75151">
+        <source>Notice</source>
+        <target>공지</target>
+        
+      </trans-unit>
+      <trans-unit id="s34be76c6b1eadbef">
+        <source>Warning</source>
+        <target>주의</target>
+        
+      </trans-unit>
+      <trans-unit id="s6ac670086eb137c6">
+        <source>Recovery</source>
+        <target>Recovery</target>
+        
+      </trans-unit>
+      <trans-unit id="s1cd198d689c66e4b">
+        <source>API Access</source>
+        <target>API 액세스</target>
+        
+      </trans-unit>
+      <trans-unit id="sf29883ac9ec43085">
+        <source>App password</source>
+        <target>앱 비밀번호</target>
+        
+      </trans-unit>
+      <trans-unit id="sfe211545fd02f73e">
+        <source>Verification</source>
+        <target>Verification</target>
+        
+      </trans-unit>
+      <trans-unit id="sd73b202ec04eefd9">
+        <source>Unknown intent</source>
+        <target>intent를 알 수 없음 (Unknown intent)</target>
+        
+      </trans-unit>
+      <trans-unit id="s858e7ac4b3cf955f">
+        <source>Static tokens</source>
+        <target>정적 토큰</target>
+        
+      </trans-unit>
+      <trans-unit id="sfcfcf85a57eea78a">
+        <source>TOTP Device</source>
+        <target>TOTP 디바이스</target>
+        
+      </trans-unit>
+      <trans-unit id="se2d65e13768468e0">
+        <source>Internal</source>
+        <target>내부</target>
+        
+      </trans-unit>
+<trans-unit id="s67ac11d47f1ce794">
+  <source>WebAuthn requires this page to be accessed via HTTPS.</source>
+  <target>WebAuthn을 사용하려면 이 페이지에 HTTPS를 통해 액세스해야 합니다.</target>
+</trans-unit>
+<trans-unit id="se9e9e1d6799b86a5">
+  <source>WebAuthn not supported by browser.</source>
+  <target>브라우저에서 WebAuthn을 지원하지 않습니다.</target>
+</trans-unit>
+<trans-unit id="s84fcddede27b8e2a">
+  <source>External</source>
+  <target>외부</target>
+</trans-unit>
+<trans-unit id="s1a635369edaf4dc3">
+  <source>Service account</source>
+  <target>서비스 계정</target>
+</trans-unit>
+<trans-unit id="sff930bf2834e2201">
+  <source>Service account (internal)</source>
+  <target>서비스 계정 (내부)</target>
+</trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -107,3 +107,7 @@ tmp/
 temp/
 
 # End of https://www.gitignore.io/api/node
+api/**
+storybook-static/
+scripts/*.mjs
+scripts/*.js

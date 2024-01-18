@@ -1,0 +1,18 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "paths": {
+            "@goauthentik/app/*": ["src/*"],
+            "@goauthentik/admin/*": ["src/admin/*"],
+            "@goauthentik/components/*": ["src/components/*"],
+            "@goauthentik/docs/*": ["../../../website/docs/*"],
+            "@goauthentik/elements/*": ["src/elements/*"],
+            "@goauthentik/flow/*": ["src/flow/*"],
+            "@goauthentik/locales/*": ["src/locales/*"],
+            "@goauthentik/polyfill/*": ["src/polyfill/*"],
+            "@goauthentik/standalone/*": ["src/standalone/*"],
+            "@goauthentik/user/*": ["src/user/*"]
+        },
+        "baseUrl": "."
+    }
+}

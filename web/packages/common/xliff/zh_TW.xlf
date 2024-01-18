@@ -1,0 +1,221 @@
+<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file target-language="zh-TW" source-language="en" original="lit-localize-inputs" datatype="plaintext">
+    <body>
+      <trans-unit id="sfe629863ba1338c2">
+        <source>Connection error, reconnecting...</source>
+        <target>連線錯誤，正在重新連線……</target>
+        
+      </trans-unit>
+      <trans-unit id="sc8da3cc71de63832">
+        <source>Login</source>
+        <target>登入</target>
+        
+      </trans-unit>
+      <trans-unit id="sb4564c127ab8b921">
+        <source>Failed login</source>
+        <target>登入失敗</target>
+        
+      </trans-unit>
+      <trans-unit id="s67749057edb2586b">
+        <source>Logout</source>
+        <target>登出</target>
+        
+      </trans-unit>
+      <trans-unit id="s7e537ad68d7c16e1">
+        <source>User was written to</source>
+        <target>使用者已經被寫入到</target>
+        
+      </trans-unit>
+      <trans-unit id="sa0e0bdd7e244416b">
+        <source>Suspicious request</source>
+        <target>可疑的要求</target>
+        
+      </trans-unit>
+      <trans-unit id="s7bda44013984fc48">
+        <source>Password set</source>
+        <target>密碼設定完成</target>
+        
+      </trans-unit>
+      <trans-unit id="sa1b41e334ad89d94">
+        <source>Secret was viewed</source>
+        <target>機密密碼已被查看</target>
+        
+      </trans-unit>
+      <trans-unit id="s92ca679592a36b35">
+        <source>Secret was rotated</source>
+        <target>機密密碼已被輪替</target>
+        
+      </trans-unit>
+      <trans-unit id="s8a1d9403ca90989b">
+        <source>Invitation used</source>
+        <target>已使用邀請函</target>
+        
+      </trans-unit>
+      <trans-unit id="s5f496533610103f2">
+        <source>Application authorized</source>
+        <target>已成功授權應用程式</target>
+        
+      </trans-unit>
+      <trans-unit id="sdc9e222be9612939">
+        <source>Source linked</source>
+        <target>已連接來源</target>
+        
+      </trans-unit>
+      <trans-unit id="sb1c91762ae3a9bee">
+        <source>Impersonation started</source>
+        <target>已開始模擬</target>
+        
+      </trans-unit>
+      <trans-unit id="s9c73bd29b279d26b">
+        <source>Impersonation ended</source>
+        <target>已結束模擬</target>
+        
+      </trans-unit>
+      <trans-unit id="s1cd264012278c047">
+        <source>Flow execution</source>
+        <target>流程的執行事件</target>
+        
+      </trans-unit>
+      <trans-unit id="s32f04d33924ce8ad">
+        <source>Policy execution</source>
+        <target>政策的執行事件</target>
+        
+      </trans-unit>
+      <trans-unit id="sb6d7128df5978cee">
+        <source>Policy exception</source>
+        <target>政策的例外事件</target>
+        
+      </trans-unit>
+      <trans-unit id="s77f572257f69a8db">
+        <source>Property Mapping exception</source>
+        <target>屬性對應例外事件</target>
+        
+      </trans-unit>
+      <trans-unit id="s2543cffd6ebb6803">
+        <source>System task execution</source>
+        <target>系統工作執行事件</target>
+        
+      </trans-unit>
+      <trans-unit id="se2f258b996f7279c">
+        <source>System task exception</source>
+        <target>系統工作例外事件</target>
+        
+      </trans-unit>
+      <trans-unit id="s81eff3409d572a21">
+        <source>General system exception</source>
+        <target>一般系統例外事件</target>
+        
+      </trans-unit>
+      <trans-unit id="sf8f49cdbf0036343">
+        <source>Configuration error</source>
+        <target>設定錯誤</target>
+        
+      </trans-unit>
+      <trans-unit id="s9c6f61dc47bc4f0a">
+        <source>Model created</source>
+        <target>已建立模型</target>
+        
+      </trans-unit>
+      <trans-unit id="s47a4983a2c6bb749">
+        <source>Model updated</source>
+        <target>已更新模型</target>
+        
+      </trans-unit>
+      <trans-unit id="sc9f69360b58706c7">
+        <source>Model deleted</source>
+        <target>已刪除模型</target>
+        
+      </trans-unit>
+      <trans-unit id="sa266303caf1bd27f">
+        <source>Email sent</source>
+        <target>已發送電子郵件</target>
+        
+      </trans-unit>
+      <trans-unit id="s6c410fedda2a575f">
+        <source>Update available</source>
+        <target>有可用更新</target>
+        
+      </trans-unit>
+      <trans-unit id="s02240309358f557c">
+        <source>Unknown severity</source>
+        <target>嚴重程度未知</target>
+        
+      </trans-unit>
+      <trans-unit id="sf1ec4acb8d744ed9">
+        <source>Alert</source>
+        <target>警報</target>
+        
+      </trans-unit>
+      <trans-unit id="s9117fb5195e75151">
+        <source>Notice</source>
+        <target>注意</target>
+        
+      </trans-unit>
+      <trans-unit id="s34be76c6b1eadbef">
+        <source>Warning</source>
+        <target>警告</target>
+        
+      </trans-unit>
+      <trans-unit id="s6ac670086eb137c6">
+        <source>Recovery</source>
+        <target>救援</target>
+        
+      </trans-unit>
+      <trans-unit id="s1cd198d689c66e4b">
+        <source>API Access</source>
+        <target>API 存取權限</target>
+        
+      </trans-unit>
+      <trans-unit id="sf29883ac9ec43085">
+        <source>App password</source>
+        <target>應用程式密碼</target>
+        
+      </trans-unit>
+      <trans-unit id="sfe211545fd02f73e">
+        <source>Verification</source>
+        <target>驗證</target>
+        
+      </trans-unit>
+      <trans-unit id="sd73b202ec04eefd9">
+        <source>Unknown intent</source>
+        <target>未知使用目的</target>
+        
+      </trans-unit>
+      <trans-unit id="s858e7ac4b3cf955f">
+        <source>Static tokens</source>
+        <target>靜態權杖</target>
+        
+      </trans-unit>
+      <trans-unit id="sfcfcf85a57eea78a">
+        <source>TOTP Device</source>
+        <target>TOTP 裝置</target>
+        
+      </trans-unit>
+      <trans-unit id="se2d65e13768468e0">
+        <source>Internal</source>
+        <target>內部位置</target>
+        
+      </trans-unit>
+<trans-unit id="s67ac11d47f1ce794">
+  <source>WebAuthn requires this page to be accessed via HTTPS.</source>
+  <target>WebAuthn 需要使用 HTTPS 存取這個頁面。</target>
+</trans-unit>
+<trans-unit id="se9e9e1d6799b86a5">
+  <source>WebAuthn not supported by browser.</source>
+  <target>不支援 WebAuthn 的瀏覽器。</target>
+</trans-unit>
+<trans-unit id="s84fcddede27b8e2a">
+  <source>External</source>
+  <target>外部</target>
+</trans-unit>
+<trans-unit id="s1a635369edaf4dc3">
+  <source>Service account</source>
+  <target>服務帳號</target>
+</trans-unit>
+<trans-unit id="sff930bf2834e2201">
+  <source>Service account (internal)</source>
+  <target>服務帳號（內部）</target>
+</trans-unit>
+    </body>
+  </file>
+</xliff>
