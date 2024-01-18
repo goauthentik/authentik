@@ -233,9 +233,9 @@ class UserSelfSerializer(ModelSerializer):
     def get_system_permissions(self, user: User) -> list[str]:
         """Get all system permissions assigned to the user"""
         return list(
-            user.user_permissions.filter(
-                content_type__app_label="authentik_rbac", content_type__model="systempermission"
-            ).values_list("codename", flat=True)
+            x.split(".", maxsplit=1)[1]
+            for x in user.get_all_permissions()
+            if x.startswith("authentik_rbac")
         )
 
     class Meta:
