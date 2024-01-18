@@ -96,7 +96,7 @@ If you’re a small company and don’t have dedicated security professionals to
 
 ## PS: Plugging vulnerabilities—should you bother?
 
-“*Oh no, this SCA tool says I have 453 vulnerabilities!*”
+“_Oh no, this SCA tool says I have 453 vulnerabilities!_”
 
 If your company is just building up your security posture, it’s easy to get distracted by seemingly alarming reports from SCA (Software Composition Analysis) tools. If you don’t have dedicated security engineers and security is being shared among your development team, coding is probably much more familiar and attractive than taking on organizational security challenges. But, as mentioned above, breaches are far more likely to result from phishing than a vulnerability exploitation.
 
