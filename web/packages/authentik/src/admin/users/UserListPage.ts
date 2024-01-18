@@ -4,12 +4,12 @@ import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserPasswordForm";
 import "@goauthentik/admin/users/UserResetEmailForm";
-import { me } from "@goauthentik/app/common/users";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { userTypeToLabel } from "@goauthentik/common/labels";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { DefaultUIConfig, uiConfig } from "@goauthentik/common/ui/config";
-import { first } from "@goauthentik/common/utils";
+import { me } from "@goauthentik/common/users.js";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { userTypeToLabel } from "@goauthentik/common/labels.js";
+import { MessageLevel } from "@goauthentik/common/messages.js";
+import { DefaultUIConfig, uiConfig } from "@goauthentik/common/ui/config.js";
+import { first } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-status-label";
 import { rootInterface } from "@goauthentik/elements/Base";
 import {

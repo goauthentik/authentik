@@ -3,8 +3,8 @@ import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
 import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
 import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
 import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
-import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
+import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config.js";
+import { first } from "@goauthentik/common/utils.js";
 import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,

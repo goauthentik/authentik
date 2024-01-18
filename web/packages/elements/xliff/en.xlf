@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file target-language="en" source-language="en" original="lit-localize-inputs" datatype="plaintext">
+    <body>
+      <trans-unit id="sfe629863ba1338c2">
+        <source>Connection error, reconnecting...</source>
+        <target>Connection error, reconnecting...</target>
+      </trans-unit>
+      <trans-unit id="sc8da3cc71de63832">
+        <source>Login</source>
+        <target>Login</target>
+      </trans-unit>
+      <trans-unit id="sb4564c127ab8b921">
+        <source>Failed login</source>
+        <target>Failed login</target>
+      </trans-unit>
+      <trans-unit id="s67749057edb2586b">
+        <source>Logout</source>
+        <target>Logout</target>
+      </trans-unit>
+      <trans-unit id="s7e537ad68d7c16e1">
+        <source>User was written to</source>
+        <target>User was written to</target>
+      </trans-unit>
+      <trans-unit id="sa0e0bdd7e244416b">
+        <source>Suspicious request</source>
+        <target>Suspicious request</target>
+      </trans-unit>
+      <trans-unit id="s7bda44013984fc48">
+        <source>Password set</source>
+        <target>Password set</target>
+      </trans-unit>
+      <trans-unit id="sa1b41e334ad89d94">
+        <source>Secret was viewed</source>
+        <target>Secret was viewed</target>
+      </trans-unit>
+      <trans-unit id="s92ca679592a36b35">
+        <source>Secret was rotated</source>
+        <target>Secret was rotated</target>
+      </trans-unit>
+      <trans-unit id="s8a1d9403ca90989b">
+        <source>Invitation used</source>
+        <target>Invitation used</target>
+      </trans-unit>
+      <trans-unit id="s5f496533610103f2">
+        <source>Application authorized</source>
+        <target>Application authorized</target>
+      </trans-unit>
+      <trans-unit id="sdc9e222be9612939">
+        <source>Source linked</source>
+        <target>Source linked</target>
+      </trans-unit>
+      <trans-unit id="sb1c91762ae3a9bee">
+        <source>Impersonation started</source>
+        <target>Impersonation started</target>
+      </trans-unit>
+      <trans-unit id="s9c73bd29b279d26b">
+        <source>Impersonation ended</source>
+        <target>Impersonation ended</target>
+      </trans-unit>
+      <trans-unit id="s1cd264012278c047">
+        <source>Flow execution</source>
+        <target>Flow execution</target>
+      </trans-unit>
+      <trans-unit id="s32f04d33924ce8ad">
+        <source>Policy execution</source>
+        <target>Policy execution</target>
+      </trans-unit>
+      <trans-unit id="sb6d7128df5978cee">
+        <source>Policy exception</source>
+        <target>Policy exception</target>
+      </trans-unit>
+      <trans-unit id="s77f572257f69a8db">
+        <source>Property Mapping exception</source>
+        <target>Property Mapping exception</target>
+      </trans-unit>
+      <trans-unit id="s2543cffd6ebb6803">
+        <source>System task execution</source>
+        <target>System task execution</target>
+      </trans-unit>
+      <trans-unit id="se2f258b996f7279c">
+        <source>System task exception</source>
+        <target>System task exception</target>
+      </trans-unit>
+      <trans-unit id="s81eff3409d572a21">
+        <source>General system exception</source>
+        <target>General system exception</target>
+      </trans-unit>
+      <trans-unit id="sf8f49cdbf0036343">
+        <source>Configuration error</source>
+        <target>Configuration error</target>
+      </trans-unit>
+      <trans-unit id="s9c6f61dc47bc4f0a">
+        <source>Model created</source>
+        <target>Model created</target>
+      </trans-unit>
+      <trans-unit id="s47a4983a2c6bb749">
+        <source>Model updated</source>
+        <target>Model updated</target>
+      </trans-unit>
+      <trans-unit id="sc9f69360b58706c7">
+        <source>Model deleted</source>
+        <target>Model deleted</target>
+      </trans-unit>
+      <trans-unit id="sa266303caf1bd27f">
+        <source>Email sent</source>
+        <target>Email sent</target>
+      </trans-unit>
+      <trans-unit id="s6c410fedda2a575f">
+        <source>Update available</source>
+        <target>Update available</target>
+      </trans-unit>
+      <trans-unit id="s02240309358f557c">
+        <source>Unknown severity</source>
+        <target>Unknown severity</target>
+      </trans-unit>
+      <trans-unit id="sf1ec4acb8d744ed9">
+        <source>Alert</source>
+        <target>Alert</target>
+      </trans-unit>
+      <trans-unit id="s9117fb5195e75151">
+        <source>Notice</source>
+        <target>Notice</target>
+      </trans-unit>
+      <trans-unit id="s34be76c6b1eadbef">
+        <source>Warning</source>
+        <target>Warning</target>
+      </trans-unit>
+      <trans-unit id="s6ac670086eb137c6">
+        <source>Recovery</source>
+        <target>Recovery</target>
+      </trans-unit>
+      <trans-unit id="s1cd198d689c66e4b">
+        <source>API Access</source>
+        <target>API Access</target>
+      </trans-unit>
+      <trans-unit id="sf29883ac9ec43085">
+        <source>App password</source>
+        <target>App password</target>
+      </trans-unit>
+      <trans-unit id="sfe211545fd02f73e">
+        <source>Verification</source>
+        <target>Verification</target>
+      </trans-unit>
+      <trans-unit id="sd73b202ec04eefd9">
+        <source>Unknown intent</source>
+        <target>Unknown intent</target>
+      </trans-unit>
+      <trans-unit id="s858e7ac4b3cf955f">
+        <source>Static tokens</source>
+        <target>Static tokens</target>
+      </trans-unit>
+      <trans-unit id="sfcfcf85a57eea78a">
+        <source>TOTP Device</source>
+        <target>TOTP Device</target>
+      </trans-unit>
+      <trans-unit id="se2d65e13768468e0">
+        <source>Internal</source>
+        <target>Internal</target>
+      </trans-unit>
+<trans-unit id="s67ac11d47f1ce794">
+  <source>WebAuthn requires this page to be accessed via HTTPS.</source>
+</trans-unit>
+<trans-unit id="se9e9e1d6799b86a5">
+  <source>WebAuthn not supported by browser.</source>
+</trans-unit>
+<trans-unit id="s84fcddede27b8e2a">
+  <source>External</source>
+</trans-unit>
+<trans-unit id="s1a635369edaf4dc3">
+  <source>Service account</source>
+</trans-unit>
+<trans-unit id="sff930bf2834e2201">
+  <source>Service account (internal)</source>
+</trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -1,5 +1,5 @@
-import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { deviceTypeName } from "@goauthentik/common/labels";
+import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { deviceTypeName } from "@goauthentik/common/labels.js";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/TokenCopyButton";

@@ -1,4 +1,4 @@
-import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
+import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "@goauthentik/common/constants.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import {

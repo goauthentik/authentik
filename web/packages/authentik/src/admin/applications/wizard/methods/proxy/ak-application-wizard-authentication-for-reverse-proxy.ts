@@ -1,4 +1,4 @@
-import { first } from "@goauthentik/common/utils";
+import { first } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 

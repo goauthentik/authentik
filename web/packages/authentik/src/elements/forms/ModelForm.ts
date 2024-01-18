@@ -1,4 +1,4 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import "@goauthentik/elements/EmptyState";
 import { Form } from "@goauthentik/elements/forms/Form";
 

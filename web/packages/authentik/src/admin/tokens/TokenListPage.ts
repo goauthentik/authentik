@@ -1,7 +1,7 @@
 import "@goauthentik/admin/tokens/TokenForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { intentToLabel } from "@goauthentik/common/labels";
-import { uiConfig } from "@goauthentik/common/ui/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { intentToLabel } from "@goauthentik/common/labels.js";
+import { uiConfig } from "@goauthentik/common/ui/config.js";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/TokenCopyButton";

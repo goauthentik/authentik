@@ -3,11 +3,11 @@ import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserPasswordForm";
 import "@goauthentik/admin/users/UserResetEmailForm";
-import { me } from "@goauthentik/app/common/users";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { uiConfig } from "@goauthentik/common/ui/config";
-import { first } from "@goauthentik/common/utils";
+import { me } from "@goauthentik/common/users.js";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { MessageLevel } from "@goauthentik/common/messages.js";
+import { uiConfig } from "@goauthentik/common/ui/config.js";
+import { first } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-status-label";
 import {
     CapabilitiesEnum,

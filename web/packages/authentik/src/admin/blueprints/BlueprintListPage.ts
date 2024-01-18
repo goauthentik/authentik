@@ -1,7 +1,7 @@
 import "@goauthentik/admin/blueprints/BlueprintForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { uiConfig } from "@goauthentik/common/ui/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
+import { uiConfig } from "@goauthentik/common/ui/config.js";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";

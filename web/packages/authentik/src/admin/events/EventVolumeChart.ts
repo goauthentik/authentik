@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "@goauthentik/app/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { AKChart } from "@goauthentik/app/elements/charts/Chart";
 import { ChartData } from "chart.js";
 

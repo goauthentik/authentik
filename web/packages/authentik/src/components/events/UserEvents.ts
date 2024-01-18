@@ -1,7 +1,7 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EventWithContext } from "@goauthentik/common/events";
-import { actionToLabel } from "@goauthentik/common/labels";
-import { uiConfig } from "@goauthentik/common/ui/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { EventWithContext } from "@goauthentik/common/events.js";
+import { actionToLabel } from "@goauthentik/common/labels.js";
+import { uiConfig } from "@goauthentik/common/ui/config.js";
 import "@goauthentik/components/ak-event-info";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/Dropdown";

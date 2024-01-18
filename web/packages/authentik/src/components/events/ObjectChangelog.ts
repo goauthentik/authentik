@@ -1,8 +1,8 @@
 import { EventGeo } from "@goauthentik/app/admin/events/utils";
-import { actionToLabel } from "@goauthentik/app/common/labels";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EventWithContext } from "@goauthentik/common/events";
-import { uiConfig } from "@goauthentik/common/ui/config";
+import { actionToLabel } from "@goauthentik/common/labels.js";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { EventWithContext } from "@goauthentik/common/events.js";
+import { uiConfig } from "@goauthentik/common/ui/config.js";
 import "@goauthentik/components/ak-event-info";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/Dropdown";

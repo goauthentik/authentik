@@ -1,6 +1,6 @@
 import { PreventFormSubmit } from "@goauthentik/app/elements/forms/helpers";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { ascii_letters, digits, groupBy, randomString } from "@goauthentik/common/utils";
+import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
+import { ascii_letters, digits, groupBy, randomString } from "@goauthentik/common/utils.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 

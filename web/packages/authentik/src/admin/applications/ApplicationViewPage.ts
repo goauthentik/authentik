@@ -4,7 +4,7 @@ import "@goauthentik/admin/applications/ApplicationForm";
 import "@goauthentik/admin/policies/BoundPoliciesList";
 import { PFSize } from "@goauthentik/app/elements/Spinner";
 import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import "@goauthentik/components/ak-app-icon";
 import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";

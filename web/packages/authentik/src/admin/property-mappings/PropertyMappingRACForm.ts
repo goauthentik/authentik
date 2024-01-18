@@ -1,6 +1,6 @@
-import { first } from "@goauthentik/app/common/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { docLink } from "@goauthentik/common/global";
+import { first } from "@goauthentik/common/utils.js";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { docLink } from "@goauthentik/common/global.js";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/FormGroup";

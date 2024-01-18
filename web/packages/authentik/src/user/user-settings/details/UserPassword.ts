@@ -1,4 +1,4 @@
-import { AndNext } from "@goauthentik/common/api/config";
+import { AndNext } from "@goauthentik/common/api/config.js";
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { msg } from "@lit/localize";

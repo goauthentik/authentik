@@ -1,7 +1,7 @@
 import "@goauthentik/admin/providers/scim/SCIMProviderForm";
 import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import "@goauthentik/components/events/ObjectChangelog";
 import MDSCIMProvider from "@goauthentik/docs/providers/scim/index.md";
 import { AKElement } from "@goauthentik/elements/Base";

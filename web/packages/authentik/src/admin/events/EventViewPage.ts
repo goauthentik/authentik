@@ -1,7 +1,7 @@
 import { EventGeo } from "@goauthentik/admin/events/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EventWithContext } from "@goauthentik/common/events";
-import { actionToLabel } from "@goauthentik/common/labels";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { EventWithContext } from "@goauthentik/common/events.js";
+import { actionToLabel } from "@goauthentik/common/labels.js";
 import "@goauthentik/components/ak-event-info";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/PageHeader";

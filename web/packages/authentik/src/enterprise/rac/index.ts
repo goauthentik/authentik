@@ -1,4 +1,4 @@
-import { TITLE_DEFAULT } from "@goauthentik/app/common/constants";
+import { TITLE_DEFAULT } from "@goauthentik/common/constants.js";
 import { Interface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/LoadingOverlay";
 import Guacamole from "guacamole-common-js";
@@ -97,7 +97,7 @@ export class RacInterface extends Interface {
         this.checkClipboard();
         this.clipboardWatcherTimer = setInterval(
             this.checkClipboard.bind(this),
-            500,
+            500
         ) as unknown as number;
     }
 
@@ -110,12 +110,12 @@ export class RacInterface extends Interface {
             },
             {
                 capture: false,
-            },
+            }
         );
         window.addEventListener("resize", () => {
             this.client?.sendSize(
                 Math.floor(RacInterface.domSize().width),
-                Math.floor(RacInterface.domSize().height),
+                Math.floor(RacInterface.domSize().height)
             );
         });
     }
@@ -187,21 +187,21 @@ export class RacInterface extends Interface {
             if (this.connectionAttempt >= RECONNECT_ATTEMPTS_INITIAL) {
                 this.hasConnected = true;
                 this.reconnectingMessage = msg(
-                    str`Connection failed after ${this.connectionAttempt} attempts.`,
+                    str`Connection failed after ${this.connectionAttempt} attempts.`
                 );
                 return;
             }
         } else {
             if (this.connectionAttempt >= RECONNECT_ATTEMPTS) {
                 this.reconnectingMessage = msg(
-                    str`Connection failed after ${this.connectionAttempt} attempts.`,
+                    str`Connection failed after ${this.connectionAttempt} attempts.`
                 );
                 return;
             }
         }
         const delay = 500 * this.connectionAttempt;
         this.reconnectingMessage = msg(
-            str`Re-connecting in ${Math.max(1, delay / 1000)} second(s).`,
+            str`Re-connecting in ${Math.max(1, delay / 1000)} second(s).`
         );
         setTimeout(() => {
             this.firstUpdated();
@@ -226,7 +226,7 @@ export class RacInterface extends Interface {
         this.initMouse(this.container);
         this.client?.sendSize(
             Math.floor(RacInterface.domSize().width),
-            Math.floor(RacInterface.domSize().height),
+            Math.floor(RacInterface.domSize().height)
         );
     }
 

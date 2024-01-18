@@ -1,4 +1,4 @@
-import { MessageLevel } from "@goauthentik/common/messages";
+import { MessageLevel } from "@goauthentik/common/messages.js";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
 import { msg } from "@lit/localize";

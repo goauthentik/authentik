@@ -1,4 +1,4 @@
-import { globalAK } from "@goauthentik/common/global";
+import { globalAK } from "@goauthentik/common/global.js";
 
 import { LOCALES as RAW_LOCALES, enLocale } from "./definitions";
 import { AkLocale } from "./types";

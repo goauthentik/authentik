@@ -1,7 +1,7 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { intentToLabel } from "@goauthentik/common/labels";
-import { uiConfig } from "@goauthentik/common/ui/config";
-import { me } from "@goauthentik/common/users";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { intentToLabel } from "@goauthentik/common/labels.js";
+import { uiConfig } from "@goauthentik/common/ui/config.js";
+import { me } from "@goauthentik/common/users.js";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/ModalButton";

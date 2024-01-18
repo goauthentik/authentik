@@ -1,5 +1,5 @@
 import { policyOptions } from "@goauthentik/admin/applications/ApplicationForm";
-import { first } from "@goauthentik/common/utils";
+import { first } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-slug-input";
 import "@goauthentik/components/ak-switch-input";

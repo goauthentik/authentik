@@ -1,5 +1,5 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { MessageLevel } from "@goauthentik/common/messages";
+import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
+import { MessageLevel } from "@goauthentik/common/messages.js";
 import { PFSize } from "@goauthentik/elements/Spinner";
 import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";

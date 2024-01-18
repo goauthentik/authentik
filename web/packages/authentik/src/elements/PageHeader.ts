@@ -1,13 +1,13 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
     EVENT_SIDEBAR_TOGGLE,
     EVENT_WS_MESSAGE,
     TITLE_DEFAULT,
-} from "@goauthentik/common/constants";
-import { currentInterface } from "@goauthentik/common/sentry";
-import { me } from "@goauthentik/common/users";
+} from "@goauthentik/common/constants.js";
+import { currentInterface } from "@goauthentik/common/sentry.js";
+import { me } from "@goauthentik/common/users.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";

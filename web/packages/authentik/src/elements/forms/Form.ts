@@ -1,7 +1,7 @@
 import { PreventFormSubmit } from "@goauthentik/app/elements/forms/helpers";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { camelToSnake, convertToSlug } from "@goauthentik/common/utils";
+import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
+import { MessageLevel } from "@goauthentik/common/messages.js";
+import { camelToSnake, convertToSlug } from "@goauthentik/common/utils.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
 import { SearchSelect } from "@goauthentik/elements/forms/SearchSelect";

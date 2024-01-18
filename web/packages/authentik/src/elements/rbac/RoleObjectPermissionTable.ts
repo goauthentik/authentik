@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "@goauthentik/app/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/app/elements/table/Table";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";

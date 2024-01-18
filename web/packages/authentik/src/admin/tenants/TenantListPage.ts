@@ -1,6 +1,6 @@
 import "@goauthentik/admin/tenants/TenantForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { uiConfig } from "@goauthentik/common/ui/config.js";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/SpinnerButton";

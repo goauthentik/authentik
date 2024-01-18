@@ -1,7 +1,7 @@
 import "@goauthentik/admin/applications/ApplicationForm";
 import { PFSize } from "@goauthentik/app/elements/Spinner";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { uiConfig } from "@goauthentik/common/ui/config.js";
 import "@goauthentik/components/ak-app-icon";
 import MDApplication from "@goauthentik/docs/core/applications.md";
 import "@goauthentik/elements/Markdown";

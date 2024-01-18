@@ -1,5 +1,5 @@
 import { PFSize } from "@goauthentik/app/elements/Spinner";
-import { truncateWords } from "@goauthentik/common/utils";
+import { truncateWords } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-app-icon";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Expand";

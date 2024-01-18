@@ -1,7 +1,7 @@
 import "@goauthentik/admin/applications/wizard/ak-wizard-title";
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-tenanted-flow-search";
-import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
+import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-text-input";
 import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider";
 import "@goauthentik/elements/forms/FormGroup";

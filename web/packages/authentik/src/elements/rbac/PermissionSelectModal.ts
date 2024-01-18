@@ -1,6 +1,6 @@
-import { groupBy } from "@goauthentik/app/common/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
+import { groupBy } from "@goauthentik/common/utils.js";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { uiConfig } from "@goauthentik/common/ui/config.js";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";

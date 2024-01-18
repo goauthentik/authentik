@@ -1,4 +1,4 @@
-import { EventWithContext } from "@goauthentik/common/events";
+import { EventWithContext } from "@goauthentik/common/events.js";
 import { KeyUnknown } from "@goauthentik/elements/forms/Form";
 
 import { TemplateResult, html } from "lit";

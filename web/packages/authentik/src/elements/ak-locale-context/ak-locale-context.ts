@@ -1,5 +1,5 @@
-import { EVENT_LOCALE_CHANGE } from "@goauthentik/common/constants";
-import { EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants";
+import { EVENT_LOCALE_CHANGE } from "@goauthentik/common/constants.js";
+import { EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants.js";
 import { customEvent, isCustomEvent } from "@goauthentik/elements/utils/customEvents";
 
 import { LitElement, html } from "lit";

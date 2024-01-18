@@ -2,7 +2,7 @@ import {
     checkWebAuthnSupport,
     transformAssertionForServer,
     transformCredentialRequestOptions,
-} from "@goauthentik/common/helpers/webauthn";
+} from "@goauthentik/common/helpers/webauthn.js";
 import { AuthenticatorValidateStage } from "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 

@@ -9,11 +9,11 @@ import {
     renderRecoveryEmailRequest,
     requestRecoveryLink,
 } from "@goauthentik/app/admin/users/UserListPage";
-import { me } from "@goauthentik/app/common/users";
+import { me } from "@goauthentik/common/users.js";
 import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { userTypeToLabel } from "@goauthentik/common/labels";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
+import { userTypeToLabel } from "@goauthentik/common/labels.js";
 import "@goauthentik/components/DescriptionList";
 import {
     type DescriptionPair,

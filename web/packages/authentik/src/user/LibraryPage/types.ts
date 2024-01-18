@@ -1,4 +1,4 @@
-import type { LayoutType } from "@goauthentik/common/ui/config";
+import type { LayoutType } from "@goauthentik/common/ui/config.js";
 
 import type { Application } from "@goauthentik/api";
 

@@ -1,4 +1,4 @@
-import { groupBy } from "@goauthentik/common/utils";
+import { groupBy } from "@goauthentik/common/utils.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";

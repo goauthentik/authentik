@@ -1,6 +1,6 @@
-import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
-import { UIConfig } from "@goauthentik/common/ui/config";
-import { adaptCSS } from "@goauthentik/common/utils";
+import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants.js";
+import { UIConfig } from "@goauthentik/common/ui/config.js";
+import { adaptCSS } from "@goauthentik/common/utils.js";
 import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
 
 import { localized } from "@lit/localize";
@@ -36,8 +36,8 @@ function fetchCustomCSS(): Promise<string[]> {
                         .finally(() => {
                             return "";
                         });
-                },
-            ),
+                }
+            )
         );
     }
     return css;
@@ -85,7 +85,7 @@ export class AKElement extends LitElement {
             root,
             window.matchMedia(QUERY_MEDIA_COLOR_LIGHT).matches
                 ? UiThemeEnum.Light
-                : UiThemeEnum.Dark,
+                : UiThemeEnum.Dark
         );
         this._applyTheme(root, await this.getTheme());
     }
@@ -147,7 +147,7 @@ export class AKElement extends LitElement {
                 bubbles: true,
                 composed: true,
                 detail: theme,
-            }),
+            })
         );
         this.setAttribute("theme", theme);
         const stylesheet = AKElement.themeToStylesheet(theme);

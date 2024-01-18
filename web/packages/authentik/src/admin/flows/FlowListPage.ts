@@ -1,9 +1,9 @@
 import "@goauthentik/admin/flows/FlowForm";
 import "@goauthentik/admin/flows/FlowImportForm";
 import { DesignationToLabel } from "@goauthentik/admin/flows/utils";
-import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
-import { groupBy } from "@goauthentik/common/utils";
+import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { uiConfig } from "@goauthentik/common/ui/config.js";
+import { groupBy } from "@goauthentik/common/utils.js";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ConfirmationForm";
 import "@goauthentik/elements/forms/DeleteBulkForm";

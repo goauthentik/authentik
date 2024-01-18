@@ -1,6 +1,6 @@
 import "@goauthentik/admin/enterprise/EnterpriseLicenseForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { uiConfig } from "@goauthentik/common/ui/config.js";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/buttons/SpinnerButton";

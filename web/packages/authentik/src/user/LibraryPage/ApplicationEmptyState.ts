@@ -1,5 +1,5 @@
-import { docLink } from "@goauthentik/common/global";
-import { adaptCSS } from "@goauthentik/common/utils";
+import { docLink } from "@goauthentik/common/global.js";
+import { adaptCSS } from "@goauthentik/common/utils.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
 

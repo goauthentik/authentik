@@ -1,6 +1,6 @@
-import { APIErrorTypes, parseAPIError } from "@goauthentik/app/common/errors";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { groupBy } from "@goauthentik/common/utils";
+import { APIErrorTypes, parseAPIError } from "@goauthentik/common/errors.js";
+import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
+import { groupBy } from "@goauthentik/common/utils.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/buttons/SpinnerButton";

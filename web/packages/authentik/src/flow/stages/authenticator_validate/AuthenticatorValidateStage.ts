@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageCode";
 import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageDuo";
 import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn";

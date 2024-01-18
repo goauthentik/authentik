@@ -1,8 +1,8 @@
 import "@goauthentik/admin/groups/GroupForm";
 import "@goauthentik/app/admin/groups/RelatedUserList";
 import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";

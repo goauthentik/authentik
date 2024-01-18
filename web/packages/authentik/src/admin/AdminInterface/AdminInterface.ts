@@ -1,12 +1,12 @@
 import { ROUTES } from "@goauthentik/admin/Routes";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
-} from "@goauthentik/common/constants";
-import { configureSentry } from "@goauthentik/common/sentry";
-import { me } from "@goauthentik/common/users";
-import { WebsocketClient } from "@goauthentik/common/ws";
+} from "@goauthentik/common/constants.js";
+import { configureSentry } from "@goauthentik/common/sentry.js";
+import { me } from "@goauthentik/common/users.js";
+import { WebsocketClient } from "@goauthentik/common/ws.js";
 import { Interface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/elements/enterprise/EnterpriseStatusBanner";

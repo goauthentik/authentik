@@ -1,5 +1,5 @@
-import { config, tenant } from "@goauthentik/common/api/config";
-import { UIConfig, uiConfig } from "@goauthentik/common/ui/config";
+import { config, tenant } from "@goauthentik/common/api/config.js";
+import { UIConfig, uiConfig } from "@goauthentik/common/ui/config.js";
 import {
     authentikConfigContext,
     authentikTenantContext,

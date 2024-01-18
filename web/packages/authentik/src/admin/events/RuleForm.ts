@@ -1,5 +1,5 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { severityToLabel } from "@goauthentik/common/labels";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { severityToLabel } from "@goauthentik/common/labels.js";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";

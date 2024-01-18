@@ -1,5 +1,5 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { MessageLevel } from "@goauthentik/common/messages";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { MessageLevel } from "@goauthentik/common/messages.js";
 import "@goauthentik/elements/Divider";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/forms/HorizontalFormElement";

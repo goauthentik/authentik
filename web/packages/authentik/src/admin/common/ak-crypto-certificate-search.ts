@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import { SearchSelect } from "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/forms/SearchSelect";
