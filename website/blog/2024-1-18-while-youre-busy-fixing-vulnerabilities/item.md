@@ -40,11 +40,11 @@ When was the last time you heard of a major breach where they actually exploited
 
 It takes a lot of effort for hackers to study your app and infrastructure to find a way in. These types of attacks also don’t necessarily mean hackers gain access to all your data, which is what they’re usually after. Attacks that simply take you down are just not valuable for them.
 
->Most of the major security breaches in recent years have been [a result of compromised access](https://goauthentik.io/blog/2023-10-23-another-okta-breach).
+> Most of the major security breaches in recent years have been [a result of compromised access](https://goauthentik.io/blog/2023-10-23-another-okta-breach).
 
 The UK government’s [Cyber security breaches survey 2023](https://www.gov.uk/government/statistics/cyber-security-breaches-survey-2023/cyber-security-breaches-survey-2023) found that the percentage of businesses and charities with some basic cyber security hygiene practices actually _declined_ between 2021 and 2023:
 
-|          Security practice             | 2021 | 2023 |
+| Security practice        | 2021 | 2023 |
 | ------------------------ | ---- | ---- |
 | Use of password policies | 79%  | 70%  |
 | Restricting admin rights | 75%  | 67%  |
