@@ -4,10 +4,10 @@ import { EventWithContext } from "@goauthentik/common/events.js";
 import { actionToLabel } from "@goauthentik/common/labels.js";
 import { truncate } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-event-info";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/Dropdown";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/Tabs.js";
+import "@goauthentik/elements/buttons/Dropdown.js";
+import "@goauthentik/elements/buttons/ModalButton.js";
+import "@goauthentik/elements/buttons/SpinnerButton/ak-spinner-button.js";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table.js";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table.js";
 

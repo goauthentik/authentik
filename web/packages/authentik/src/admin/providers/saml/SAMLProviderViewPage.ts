@@ -1,18 +1,18 @@
 import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/saml/SAMLProviderForm";
-import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
+import "@goauthentik/elements/rbac/ObjectPermissionsPage.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import { MessageLevel } from "@goauthentik/common/messages.js";
 import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base.js";
-import "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/CodeMirror.js";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror.js";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/EmptyState.js";
+import "@goauthentik/elements/Tabs.js";
+import "@goauthentik/elements/buttons/ActionButton/ak-action-button.js";
+import "@goauthentik/elements/buttons/ModalButton.js";
+import "@goauthentik/elements/buttons/SpinnerButton/ak-spinner-button.js";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer.js";
 
 import { msg } from "@lit/localize";

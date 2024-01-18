@@ -1,11 +1,11 @@
 import "@goauthentik/admin/stages/prompt/PromptForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/rbac/ObjectPermissionModal";
+import "@goauthentik/elements/buttons/ModalButton.js";
+import "@goauthentik/elements/buttons/SpinnerButton/ak-spinner-button.js";
+import "@goauthentik/elements/forms/DeleteBulkForm.js";
+import "@goauthentik/elements/forms/ModalForm.js";
+import "@goauthentik/elements/rbac/ObjectPermissionModal.js";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table.js";
 import { TableColumn } from "@goauthentik/elements/table/Table.js";
 import { TablePage } from "@goauthentik/elements/table/TablePage.js";

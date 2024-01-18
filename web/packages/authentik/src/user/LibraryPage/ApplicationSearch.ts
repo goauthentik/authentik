@@ -1,5 +1,5 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
+import { AKElement } from "@goauthentik/elements/Base.js";
+import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch.js";
 import Fuse from "fuse.js";
 import { FuseResult } from "fuse.js";
 

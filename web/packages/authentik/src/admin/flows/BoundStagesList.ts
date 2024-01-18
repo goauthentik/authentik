@@ -3,10 +3,10 @@ import "@goauthentik/admin/policies/BoundPoliciesList";
 import "@goauthentik/admin/stages/StageWizard";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/forms/ProxyForm";
+import "@goauthentik/elements/Tabs.js";
+import "@goauthentik/elements/forms/DeleteBulkForm.js";
+import "@goauthentik/elements/forms/ModalForm.js";
+import "@goauthentik/elements/forms/ProxyForm.js";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table.js";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table.js";
 

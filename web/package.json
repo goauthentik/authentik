@@ -43,10 +43,14 @@
         "@manypkg/cli": "^0.21.1",
         "lage": "^2.7.9"
     },
+    "devDependencies": {
+        "@goauthentik/pseudolocalize": "*"
+    },
     "workspaces": [
         "packages/authentik",
         "packages/common",
-        "packages/elements"
+        "packages/elements",
+        "packages/pseudolocalize"
     ],
     "engines": {
         "node": ">=20"

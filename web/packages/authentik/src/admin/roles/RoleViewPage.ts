@@ -1,15 +1,15 @@
 import "@goauthentik/admin/groups/RelatedGroupList";
 import "@goauthentik/app/admin/roles/RolePermissionGlobalTable";
 import "@goauthentik/app/admin/roles/RolePermissionObjectTable";
-import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
+import "@goauthentik/elements/rbac/ObjectPermissionsPage.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import "@goauthentik/components/events/ObjectChangelog";
 import "@goauthentik/components/events/UserEvents";
 import { AKElement } from "@goauthentik/elements/Base.js";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/PageHeader";
-import "@goauthentik/elements/Tabs";
+import "@goauthentik/elements/CodeMirror.js";
+import "@goauthentik/elements/PageHeader.js";
+import "@goauthentik/elements/Tabs.js";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";

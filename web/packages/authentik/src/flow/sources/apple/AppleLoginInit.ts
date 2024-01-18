@@ -1,4 +1,4 @@
-import "@goauthentik/elements/EmptyState";
+import "@goauthentik/elements/EmptyState.js";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";

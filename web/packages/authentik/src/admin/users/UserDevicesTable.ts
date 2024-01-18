@@ -1,6 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { deviceTypeName } from "@goauthentik/common/labels.js";
-import "@goauthentik/elements/forms/DeleteBulkForm";
+import "@goauthentik/elements/forms/DeleteBulkForm.js";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table.js";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table.js";
 

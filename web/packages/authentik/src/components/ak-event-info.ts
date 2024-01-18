@@ -2,8 +2,8 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { VERSION } from "@goauthentik/common/constants.js";
 import { EventContext, EventModel, EventWithContext } from "@goauthentik/common/events.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
-import "@goauthentik/elements/Expand";
-import "@goauthentik/elements/Spinner";
+import "@goauthentik/elements/Expand.js";
+import "@goauthentik/elements/Spinner.js";
 import { PFSize } from "@goauthentik/elements/Spinner.js";
 
 import { msg, str } from "@lit/localize";

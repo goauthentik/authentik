@@ -2,7 +2,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { SentryIgnoredError } from "@goauthentik/common/errors.js";
 import "@goauthentik/components/ak-status-label";
 import { Form } from "@goauthentik/elements/forms/Form.js";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "@goauthentik/elements/forms/HorizontalFormElement.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";

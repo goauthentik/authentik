@@ -4,7 +4,7 @@ import { EventWithContext } from "@goauthentik/common/events.js";
 import { actionToLabel } from "@goauthentik/common/labels.js";
 import "@goauthentik/components/ak-event-info";
 import { AKElement } from "@goauthentik/elements/Base.js";
-import "@goauthentik/elements/PageHeader";
+import "@goauthentik/elements/PageHeader.js";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";

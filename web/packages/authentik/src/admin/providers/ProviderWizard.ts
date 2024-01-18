@@ -4,12 +4,12 @@ import "@goauthentik/admin/providers/proxy/ProxyProviderForm";
 import "@goauthentik/admin/providers/saml/SAMLProviderForm";
 import "@goauthentik/admin/providers/saml/SAMLProviderImportForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
-import "@goauthentik/elements/Alert";
+import "@goauthentik/elements/Alert.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
-import "@goauthentik/elements/forms/ProxyForm";
+import "@goauthentik/elements/forms/ProxyForm.js";
 import { paramURL } from "@goauthentik/elements/router/RouterOutlet.js";
-import "@goauthentik/elements/wizard/FormWizardPage";
-import "@goauthentik/elements/wizard/Wizard";
+import "@goauthentik/elements/wizard/FormWizardPage.js";
+import "@goauthentik/elements/wizard/Wizard.js";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage.js";
 
 import { msg, str } from "@lit/localize";

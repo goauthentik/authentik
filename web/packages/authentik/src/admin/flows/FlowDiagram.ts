@@ -1,6 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { Diagram } from "@goauthentik/elements/Diagram.js";
-import "@goauthentik/elements/EmptyState";
+import "@goauthentik/elements/EmptyState.js";
 
 import { customElement, property } from "lit/decorators.js";
 

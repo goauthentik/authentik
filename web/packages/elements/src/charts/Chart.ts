@@ -1,6 +1,6 @@
 import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "@goauthentik/common/constants.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
-import "@goauthentik/elements/EmptyState";
+import "@goauthentik/elements/EmptyState.js";
 import {
     Chart,
     ChartConfiguration,

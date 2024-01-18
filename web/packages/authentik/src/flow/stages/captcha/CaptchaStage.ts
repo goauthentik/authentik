@@ -1,7 +1,7 @@
 ///<reference types="@hcaptcha/types"/>
-import "@goauthentik/elements/EmptyState";
-import { PFSize } from "@goauthentik/elements/Spinner";
-import "@goauthentik/elements/forms/FormElement";
+import "@goauthentik/elements/EmptyState.js";
+import { PFSize } from "@goauthentik/elements/Spinner.js";
+import "@goauthentik/elements/forms/FormElement.js";
 import "@goauthentik/flow/FormStatic";
 import "@goauthentik/flow/stages/access_denied/AccessDeniedStage";
 import { BaseStage } from "@goauthentik/flow/stages/base";

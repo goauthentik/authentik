@@ -1,10 +1,10 @@
 import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { deviceTypeName } from "@goauthentik/common/labels.js";
-import "@goauthentik/elements/buttons/Dropdown";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/TokenCopyButton";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/buttons/Dropdown.js";
+import "@goauthentik/elements/buttons/ModalButton.js";
+import "@goauthentik/elements/buttons/TokenCopyButton/ak-token-copy-button.js";
+import "@goauthentik/elements/forms/DeleteBulkForm.js";
+import "@goauthentik/elements/forms/ModalForm.js";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table.js";
 import "@goauthentik/user/user-settings/mfa/MFADeviceForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";

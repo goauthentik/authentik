@@ -11,13 +11,13 @@ import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
 } from "@goauthentik/elements/Interface/capabilitiesProvider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/forms/FormGroup.js";
+import "@goauthentik/elements/forms/HorizontalFormElement.js";
+import "@goauthentik/elements/forms/ModalForm.js";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm.js";
-import "@goauthentik/elements/forms/ProxyForm";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
+import "@goauthentik/elements/forms/ProxyForm.js";
+import "@goauthentik/elements/forms/Radio.js";
+import "@goauthentik/elements/forms/SearchSelect/ak-search-select.js";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";

@@ -1,6 +1,6 @@
 import { TITLE_DEFAULT } from "@goauthentik/common/constants.js";
 import { Interface } from "@goauthentik/elements/Interface/index.js";
-import "@goauthentik/elements/LoadingOverlay";
+import "@goauthentik/elements/LoadingOverlay.js";
 import Guacamole from "guacamole-common-js";
 
 import { msg, str } from "@lit/localize";

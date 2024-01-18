@@ -1,0 +1,27 @@
+{
+    "name": "@goauthentik/pseudolocalize",
+    "version": "1.0.0",
+    "description": "Automatically generate a pseudo-locale from your localization source file",
+    "main": "dist/index.mjs",
+    "bin": {
+        "pseudolocalize": "./dist/index.mjs"
+    },
+    "scripts": {
+        "build": "node ./build.mjs && mv dist/index.js dist/index.mjs && chmod +x dist/index.mjs"
+    },
+    "author": "Authentik, Inc <ken@goauthentik.io>",
+    "license": "MIT",
+    "postinstall": "npm run build",
+    "dependencies": {
+        "@lit/localize-tools": "^0.7.1",
+        "commander": "^11.1.0",
+        "pseudolocale": "^2.0.0",
+        "glob": "^10.3.10"
+    },
+    "devDependencies": {
+        "eslint": "^8.56.0",
+        "eslint-config-google": "^0.14.0",
+        "prettier": "^3.2.4",
+        "typescript": "^5.3.3"
+    }
+}

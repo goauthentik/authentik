@@ -1,5 +1,5 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
+import { AKElement } from "@goauthentik/elements/Base.js";
+import "@goauthentik/elements/EmptyState.js";
 import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 

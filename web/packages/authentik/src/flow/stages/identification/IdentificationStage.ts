@@ -1,7 +1,7 @@
 import { renderSourceIcon } from "@goauthentik/app/admin/sources/utils";
-import "@goauthentik/elements/Divider";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/forms/FormElement";
+import "@goauthentik/elements/Divider.js";
+import "@goauthentik/elements/EmptyState.js";
+import "@goauthentik/elements/forms/FormElement.js";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg, str } from "@lit/localize";

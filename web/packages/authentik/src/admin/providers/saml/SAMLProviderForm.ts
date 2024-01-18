@@ -2,11 +2,11 @@ import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
+import "@goauthentik/elements/forms/FormGroup.js";
+import "@goauthentik/elements/forms/HorizontalFormElement.js";
+import "@goauthentik/elements/forms/Radio.js";
+import "@goauthentik/elements/forms/SearchSelect/ak-search-select.js";
+import "@goauthentik/elements/utils/TimeDeltaHelp.js";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";

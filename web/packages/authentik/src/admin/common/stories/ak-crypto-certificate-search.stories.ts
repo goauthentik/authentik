@@ -1,5 +1,5 @@
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/messages/MessageContainer";
+import "@goauthentik/elements/forms/HorizontalFormElement.js";
+import "@goauthentik/elements/messages/MessageContainer.js";
 import { Meta } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";

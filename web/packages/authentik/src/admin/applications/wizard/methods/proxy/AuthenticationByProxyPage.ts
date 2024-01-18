@@ -5,7 +5,7 @@ import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
 import "@goauthentik/components/ak-toggle-group";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "@goauthentik/elements/forms/HorizontalFormElement.js";
 
 import { msg } from "@lit/localize";
 import { state } from "@lit/reactive-element/decorators.js";

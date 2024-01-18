@@ -1,7 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { groupBy } from "@goauthentik/common/utils.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
-import "@goauthentik/elements/forms/SearchSelect";
+import "@goauthentik/elements/forms/SearchSelect/ak-search-select.js";
 
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";

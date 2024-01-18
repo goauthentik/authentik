@@ -1,11 +1,11 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { MessageLevel } from "@goauthentik/common/messages.js";
-import "@goauthentik/elements/Divider";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "@goauthentik/elements/Divider.js";
+import "@goauthentik/elements/buttons/ActionButton/ak-action-button.js";
+import "@goauthentik/elements/forms/HorizontalFormElement.js";
 import { ModalForm } from "@goauthentik/elements/forms/ModalForm.js";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm.js";
-import "@goauthentik/elements/forms/SearchSelect";
+import "@goauthentik/elements/forms/SearchSelect/ak-search-select.js";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer.js";
 
 import { msg, str } from "@lit/localize";

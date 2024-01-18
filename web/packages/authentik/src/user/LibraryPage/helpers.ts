@@ -1,4 +1,4 @@
-import "@goauthentik/elements/EmptyState";
+import "@goauthentik/elements/EmptyState.js";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";

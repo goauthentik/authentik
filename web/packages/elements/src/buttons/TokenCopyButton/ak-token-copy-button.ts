@@ -8,8 +8,8 @@ import { customElement, property } from "lit/decorators.js";
 
 import { CoreApi, ResponseError, TokenView } from "@goauthentik/api";
 
-import { APIMessage } from "../../messages/Message";
-import BaseTaskButton from "../SpinnerButton/BaseTaskButton";
+import { APIMessage } from "../../messages/Message.js";
+import BaseTaskButton from "../SpinnerButton/BaseTaskButton.js";
 
 /**
  * A derivative of ak-action-button that is used only to request tokens from the back-end server.
@@ -66,7 +66,7 @@ export class TokenCopyButton extends BaseTaskButton {
             : {
                   message: token.key,
                   description: msg(
-                      "The token was displayed because authentik does not have permission to write to the clipboard",
+                      "The token was displayed because authentik does not have permission to write to the clipboard"
                   ),
               };
         showMessage({

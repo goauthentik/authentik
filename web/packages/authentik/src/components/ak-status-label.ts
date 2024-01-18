@@ -1,4 +1,4 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base.js";
 
 import { msg } from "@lit/localize";
 import { css, html } from "lit";

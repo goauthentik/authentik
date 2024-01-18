@@ -7,10 +7,10 @@ import "@goauthentik/admin/policies/password/PasswordPolicyForm";
 import "@goauthentik/admin/policies/reputation/ReputationPolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
-import "@goauthentik/elements/forms/ProxyForm";
-import "@goauthentik/elements/wizard/FormWizardPage";
+import "@goauthentik/elements/forms/ProxyForm.js";
+import "@goauthentik/elements/wizard/FormWizardPage.js";
 import { FormWizardPage } from "@goauthentik/elements/wizard/FormWizardPage.js";
-import "@goauthentik/elements/wizard/Wizard";
+import "@goauthentik/elements/wizard/Wizard.js";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage.js";
 
 import { msg, str } from "@lit/localize";

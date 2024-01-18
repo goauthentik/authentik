@@ -1,5 +1,5 @@
 import { PFSize } from "@goauthentik/elements/Spinner.js";
-import "@goauthentik/elements/Spinner";
+import "@goauthentik/elements/Spinner.js";
 import { AggregateCard } from "@goauthentik/elements/cards/AggregateCard.js";
 
 import { TemplateResult, html } from "lit";

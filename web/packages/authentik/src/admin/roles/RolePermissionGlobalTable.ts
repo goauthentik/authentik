@@ -2,7 +2,7 @@ import "@goauthentik/admin/roles/RolePermissionForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { groupBy } from "@goauthentik/common/utils.js";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table.js";
-import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/forms/ModalForm.js";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";

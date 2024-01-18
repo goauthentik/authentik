@@ -1,4 +1,4 @@
-import "@goauthentik/elements/forms/SearchSelect";
+import "@goauthentik/elements/forms/SearchSelect/ak-search-select.js";
 
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";

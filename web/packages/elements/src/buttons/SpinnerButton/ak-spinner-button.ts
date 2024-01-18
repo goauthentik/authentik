@@ -1,7 +1,7 @@
 import { customElement } from "lit/decorators.js";
 import { property } from "lit/decorators.js";
 
-import { BaseTaskButton } from "./BaseTaskButton";
+import { BaseTaskButton } from "./BaseTaskButton.js";
 
 /**
  * A button associated with an event handler for loading data. Takes an asynchronous function as its

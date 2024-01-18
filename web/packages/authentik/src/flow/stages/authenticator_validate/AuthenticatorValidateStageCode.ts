@@ -1,5 +1,5 @@
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/forms/FormElement";
+import "@goauthentik/elements/EmptyState.js";
+import "@goauthentik/elements/forms/FormElement.js";
 import "@goauthentik/flow/FormStatic";
 import { AuthenticatorValidateStage } from "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage";
 import { BaseStage } from "@goauthentik/flow/stages/base";

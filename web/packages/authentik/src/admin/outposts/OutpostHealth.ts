@@ -1,6 +1,6 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { PFColor } from "@goauthentik/elements/Label";
-import "@goauthentik/elements/Spinner";
+import { AKElement } from "@goauthentik/elements/Base.js";
+import { PFColor } from "@goauthentik/elements/Label.js";
+import "@goauthentik/elements/Spinner.js";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";

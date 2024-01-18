@@ -4,15 +4,15 @@ import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
 import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config.js";
 import { first } from "@goauthentik/common/utils.js";
-import "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/CodeMirror.js";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror.js";
 import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
 } from "@goauthentik/elements/Interface/capabilitiesProvider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
+import "@goauthentik/elements/forms/FormGroup.js";
+import "@goauthentik/elements/forms/HorizontalFormElement.js";
+import "@goauthentik/elements/forms/SearchSelect/ak-search-select.js";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";

@@ -6,10 +6,10 @@ import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
 } from "@goauthentik/elements/Interface/capabilitiesProvider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "@goauthentik/elements/forms/FormGroup.js";
+import "@goauthentik/elements/forms/HorizontalFormElement.js";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm.js";
-import "@goauthentik/elements/forms/Radio";
+import "@goauthentik/elements/forms/Radio.js";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";

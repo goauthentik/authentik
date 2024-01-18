@@ -1,5 +1,5 @@
-import { RadioOption } from "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/Radio";
+import { RadioOption } from "@goauthentik/elements/forms/Radio.js";
+import "@goauthentik/elements/forms/Radio.js";
 
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";

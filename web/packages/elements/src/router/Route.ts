@@ -1,4 +1,4 @@
-import "@goauthentik/elements/EmptyState";
+import "@goauthentik/elements/EmptyState.js";
 
 import { TemplateResult, html } from "lit";
 import { until } from "lit/directives/until.js";
@@ -51,7 +51,7 @@ export class Route {
         if (this.callback) {
             return html`${until(
                 this.callback(args),
-                html`<ak-empty-state ?loading=${true}></ak-empty-state>`,
+                html`<ak-empty-state ?loading=${true}></ak-empty-state>`
             )}`;
         }
         if (this.element) {

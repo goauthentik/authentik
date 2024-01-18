@@ -1,5 +1,5 @@
 import { AKElement } from "@goauthentik/elements/Base.js";
-import "@goauthentik/elements/EmptyState";
+import "@goauthentik/elements/EmptyState.js";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";

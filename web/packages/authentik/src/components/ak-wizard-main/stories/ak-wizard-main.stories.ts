@@ -1,5 +1,5 @@
 import type { WizardStep } from "@goauthentik/components/ak-wizard-main/types";
-import "@goauthentik/elements/messages/MessageContainer";
+import "@goauthentik/elements/messages/MessageContainer.js";
 import { Meta } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";

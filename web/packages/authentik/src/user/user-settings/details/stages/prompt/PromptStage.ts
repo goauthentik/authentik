@@ -1,4 +1,4 @@
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "@goauthentik/elements/forms/HorizontalFormElement.js";
 import { PromptStage } from "@goauthentik/flow/stages/prompt/PromptStage";
 
 import { msg, str } from "@lit/localize";

@@ -7,9 +7,9 @@ import "@goauthentik/admin/providers/saml/SAMLProviderViewPage";
 import "@goauthentik/admin/providers/scim/SCIMProviderViewPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/PageHeader";
-import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/EmptyState.js";
+import "@goauthentik/elements/PageHeader.js";
+import "@goauthentik/elements/buttons/SpinnerButton/ak-spinner-button.js";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";

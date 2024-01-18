@@ -1,6 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/forms/FormElement";
+import "@goauthentik/elements/EmptyState.js";
+import "@goauthentik/elements/forms/FormElement.js";
 import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 

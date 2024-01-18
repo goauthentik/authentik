@@ -4,9 +4,9 @@ import "@goauthentik/admin/sources/plex/PlexSourceViewPage";
 import "@goauthentik/admin/sources/saml/SAMLSourceViewPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/PageHeader";
-import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/EmptyState.js";
+import "@goauthentik/elements/PageHeader.js";
+import "@goauthentik/elements/buttons/SpinnerButton/ak-spinner-button.js";
 
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";

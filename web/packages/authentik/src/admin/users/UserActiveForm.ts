@@ -1,5 +1,5 @@
 import { MessageLevel } from "@goauthentik/common/messages.js";
-import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/buttons/SpinnerButton/ak-spinner-button.js";
 import { DeleteForm } from "@goauthentik/elements/forms/DeleteForm.js";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer.js";
 

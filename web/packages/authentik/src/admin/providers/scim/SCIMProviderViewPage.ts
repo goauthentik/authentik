@@ -1,14 +1,14 @@
 import "@goauthentik/admin/providers/scim/SCIMProviderForm";
-import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
+import "@goauthentik/elements/rbac/ObjectPermissionsPage.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import "@goauthentik/components/events/ObjectChangelog";
 import MDSCIMProvider from "@goauthentik/docs/providers/scim/index.md";
 import { AKElement } from "@goauthentik/elements/Base.js";
-import "@goauthentik/elements/Markdown";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/buttons/ModalButton";
+import "@goauthentik/elements/Markdown.js";
+import "@goauthentik/elements/Tabs.js";
+import "@goauthentik/elements/buttons/ActionButton/ak-action-button.js";
+import "@goauthentik/elements/buttons/ModalButton.js";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";

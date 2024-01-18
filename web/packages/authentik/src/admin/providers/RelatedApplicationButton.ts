@@ -1,7 +1,7 @@
 import "@goauthentik/admin/applications/ApplicationForm";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/Spinner";
-import "@goauthentik/elements/forms/ModalForm";
+import { AKElement } from "@goauthentik/elements/Base.js";
+import "@goauthentik/elements/Spinner.js";
+import "@goauthentik/elements/forms/ModalForm.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";

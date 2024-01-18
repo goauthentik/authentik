@@ -1,5 +1,5 @@
 import { docLink } from "@goauthentik/common/global.js";
-import "@goauthentik/elements/Alert";
+import "@goauthentik/elements/Alert.js";
 import { Level } from "@goauthentik/elements/Alert.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
 

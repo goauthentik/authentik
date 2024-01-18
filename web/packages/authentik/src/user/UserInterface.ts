@@ -10,17 +10,17 @@ import { me } from "@goauthentik/common/users.js";
 import { first } from "@goauthentik/common/utils.js";
 import { WebsocketClient } from "@goauthentik/common/ws.js";
 import { Interface } from "@goauthentik/elements/Interface/index.js";
-import "@goauthentik/elements/ak-locale-context";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/enterprise/EnterpriseStatusBanner";
-import "@goauthentik/elements/messages/MessageContainer";
-import "@goauthentik/elements/notifications/APIDrawer";
-import "@goauthentik/elements/notifications/NotificationDrawer";
+import "@goauthentik/elements/ak-locale-context/ak-locale-context.js";
+import "@goauthentik/elements/buttons/ActionButton/ak-action-button.js";
+import "@goauthentik/elements/enterprise/EnterpriseStatusBanner.js";
+import "@goauthentik/elements/messages/MessageContainer.js";
+import "@goauthentik/elements/notifications/APIDrawer.js";
+import "@goauthentik/elements/notifications/NotificationDrawer.js";
 import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch.js";
-import "@goauthentik/elements/router/RouterOutlet";
-import "@goauthentik/elements/sidebar/Sidebar";
+import "@goauthentik/elements/router/RouterOutlet.js";
+import "@goauthentik/elements/sidebar/Sidebar.js";
 import { DefaultTenant } from "@goauthentik/elements/sidebar/SidebarBrand.js";
-import "@goauthentik/elements/sidebar/SidebarItem";
+import "@goauthentik/elements/sidebar/SidebarItem.js";
 import { ROUTES } from "@goauthentik/user/Routes";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
@@ -194,7 +194,7 @@ export class UserInterface extends Interface {
                                 class="pf-c-brand"
                                 src="${first(
                                     this.tenant?.brandingLogo,
-                                    DefaultTenant.brandingLogo,
+                                    DefaultTenant.brandingLogo
                                 )}"
                                 alt="${(this.tenant?.brandingTitle, DefaultTenant.brandingTitle)}"
                             />

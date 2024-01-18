@@ -4,342 +4,455 @@
 <body>
 <trans-unit id="s49730f3d5751a433">
   <source>Loading...</source>
+  <target>Ĺōàďĩńĝ...</target>
 </trans-unit>
 <trans-unit id="sa50a6326530d8a0d">
   <source>Show less</source>
+  <target>Śĥōŵ ĺēśś</target>
 </trans-unit>
 <trans-unit id="sb2c57b2d347203dd">
   <source>Show more</source>
+  <target>Śĥōŵ mōŕē</target>
 </trans-unit>
 <trans-unit id="saae1c70e168b45b4">
   <source>Admin</source>
+  <target>Àďmĩń</target>
 </trans-unit>
 <trans-unit id="s364c4f177a2f8322">
   <source>Open API drawer</source>
+  <target>Ōƥēń ÀƤĨ ďŕàŵēŕ</target>
 </trans-unit>
 <trans-unit id="s9ba989e69344ff29">
   <source>Open Notification drawer</source>
+  <target>Ōƥēń Ńōţĩƒĩćàţĩōń ďŕàŵēŕ</target>
 </trans-unit>
 <trans-unit id="sf45a0d2f00bcc6ff">
   <source>no tabs defined</source>
+  <target>ńō ţàƀś ďēƒĩńēď</target>
 </trans-unit>
 <trans-unit id="sca7cfe2bef51b2a5">
   <source>Root</source>
+  <target>Ŕōōţ</target>
 </trans-unit>
 <trans-unit id="s2da4aa7a9abeb653">
   <source>Pseudolocale (for testing)</source>
+  <target>Ƥśēũďōĺōćàĺē (ƒōŕ ţēśţĩńĝ)</target>
 </trans-unit>
 <trans-unit id="s4caed5b7a7e5d89b">
   <source>English</source>
+  <target>Ēńĝĺĩśĥ</target>
 </trans-unit>
 <trans-unit id="sf1868dc19e3917bb">
   <source>Spanish</source>
+  <target>Śƥàńĩśĥ</target>
 </trans-unit>
 <trans-unit id="s63e71d20d1eaca93">
   <source>German</source>
+  <target>Ĝēŕmàń</target>
 </trans-unit>
 <trans-unit id="s75a27f43413e02c5">
   <source>French</source>
+  <target>Ƒŕēńćĥ</target>
 </trans-unit>
 <trans-unit id="s94d61907ee22a8c1">
   <source>Korean</source>
+  <target>Ķōŕēàń</target>
 </trans-unit>
 <trans-unit id="s95d56e58f816d211">
   <source>Dutch</source>
+  <target>Ďũţćĥ</target>
 </trans-unit>
 <trans-unit id="s03f49e598ffb11cc">
   <source>Polish</source>
+  <target>Ƥōĺĩśĥ</target>
 </trans-unit>
 <trans-unit id="s9d2d00982edafabb">
   <source>Turkish</source>
+  <target>Ţũŕķĩśĥ</target>
 </trans-unit>
 <trans-unit id="se3e6af2ce24d80e8">
   <source>Chinese (traditional)</source>
+  <target>Ćĥĩńēśē (ţŕàďĩţĩōńàĺ)</target>
 </trans-unit>
 <trans-unit id="s4660da32fb311ac0">
   <source>Taiwanese Mandarin</source>
+  <target>Ţàĩŵàńēśē Màńďàŕĩń</target>
 </trans-unit>
 <trans-unit id="s354e0a9f146d2869">
   <source>Chinese (simplified)</source>
+  <target>Ćĥĩńēśē (śĩmƥĺĩƒĩēď)</target>
 </trans-unit>
 <trans-unit id="sae486938be80729c">
   <source>Everything is ok.</source>
+  <target>Ēvēŕŷţĥĩńĝ ĩś ōķ.</target>
 </trans-unit>
 <trans-unit id="sdc5690be4a342985">
   <source>The token has been copied to your clipboard</source>
+  <target>Ţĥē ţōķēń ĥàś ƀēēń ćōƥĩēď ţō ŷōũŕ ćĺĩƥƀōàŕď</target>
 </trans-unit>
 <trans-unit id="s7f3edfee24690c9f">
   <source>The token was displayed because authentik does not have permission to write to the clipboard</source>
+  <target>Ţĥē ţōķēń ŵàś ďĩśƥĺàŷēď ƀēćàũśē àũţĥēńţĩķ ďōēś ńōţ ĥàvē ƥēŕmĩśśĩōń ţō ŵŕĩţē ţō ţĥē ćĺĩƥƀōàŕď</target>
 </trans-unit>
 <trans-unit id="s2ed8eb02525a920a">
   <source><x id="0" equiv-text="${ago}"/> hour(s) ago</source>
+  <target><x id="0" equiv-text="${ago}"/> ĥōũŕ(ś) àĝō</target>
 </trans-unit>
 <trans-unit id="s98327528f00365a7">
   <source>Failed to fetch data.</source>
+  <target>Ƒàĩĺēď ţō ƒēţćĥ ďàţà.</target>
 </trans-unit>
 <trans-unit id="s08df8d0a773a3ea0">
   <source>Remove item</source>
+  <target>Ŕēmōvē ĩţēm</target>
 </trans-unit>
 <trans-unit id="s7df5b92a3f93544f">
   <source>Warning: The current user count has exceeded the configured licenses.</source>
+  <target>Ŵàŕńĩńĝ: Ţĥē ćũŕŕēńţ ũśēŕ ćōũńţ ĥàś ēxćēēďēď ţĥē ćōńƒĩĝũŕēď ĺĩćēńśēś.</target>
 </trans-unit>
 <trans-unit id="s0141f42936495787">
   <source>Click here for more info.</source>
+  <target>Ćĺĩćķ ĥēŕē ƒōŕ mōŕē ĩńƒō.</target>
 </trans-unit>
 <trans-unit id="s0382d73823585617">
   <source><x id="0" equiv-text="${this.errorMessage}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
+  <target><x id="0" equiv-text="${this.errorMessage}"/>: <x id="1" equiv-text="${e.toString()}"/></target>
 </trans-unit>
 <trans-unit id="s2ceb11be2290bb1b">
   <source>Cancel</source>
+  <target>Ćàńćēĺ</target>
 </trans-unit>
 <trans-unit id="s04c5a637328c9b67">
   <source><x id="0" equiv-text="${this.pages?.startIndex}"/> - <x id="1" equiv-text="${this.pages?.endIndex}"/> of <x id="2" equiv-text="${this.pages?.count}"/></source>
+  <target><x id="0" equiv-text="${this.pages?.startIndex}"/> - <x id="1" equiv-text="${this.pages?.endIndex}"/> ōƒ <x id="2" equiv-text="${this.pages?.count}"/></target>
 </trans-unit>
 <trans-unit id="s6a89bb10338369b4">
   <source>Go to previous page</source>
+  <target>Ĝō ţō ƥŕēvĩōũś ƥàĝē</target>
 </trans-unit>
 <trans-unit id="s7edad99c6b7bfe88">
   <source>Go to next page</source>
+  <target>Ĝō ţō ńēxţ ƥàĝē</target>
 </trans-unit>
 <trans-unit id="sffa721bb6aa3128d">
   <source>Search...</source>
+  <target>Śēàŕćĥ...</target>
 </trans-unit>
 <trans-unit id="sb59d68ed12d46377">
   <source>Loading</source>
+  <target>Ĺōàďĩńĝ</target>
 </trans-unit>
 <trans-unit id="s7bc8c327f1f7c82c">
   <source>No objects found.</source>
+  <target>Ńō ōƀĴēćţś ƒōũńď.</target>
 </trans-unit>
 <trans-unit id="sfd44ce578f643145">
   <source>Failed to fetch objects.</source>
+  <target>Ƒàĩĺēď ţō ƒēţćĥ ōƀĴēćţś.</target>
 </trans-unit>
 <trans-unit id="s7b7163270e57e8b4">
   <source>Refresh</source>
+  <target>Ŕēƒŕēśĥ</target>
 </trans-unit>
 <trans-unit id="s909e876731a8febb">
   <source>Select all rows</source>
+  <target>Śēĺēćţ àĺĺ ŕōŵś</target>
 </trans-unit>
 <trans-unit id="se09ab93d69f7f45b">
   <source>Not used by any other object.</source>
+  <target>Ńōţ ũśēď ƀŷ àńŷ ōţĥēŕ ōƀĴēćţ.</target>
 </trans-unit>
 <trans-unit id="s10922bd0ac765562">
   <source>object will be DELETED</source>
+  <target>ōƀĴēćţ ŵĩĺĺ ƀē ĎĒĹĒŢĒĎ</target>
 </trans-unit>
 <trans-unit id="sf3981f36525b0dbd">
   <source>connection will be deleted</source>
+  <target>ćōńńēćţĩōń ŵĩĺĺ ƀē ďēĺēţēď</target>
 </trans-unit>
 <trans-unit id="s93cf77a59db53395">
   <source>reference will be reset to default value</source>
+  <target>ŕēƒēŕēńćē ŵĩĺĺ ƀē ŕēśēţ ţō ďēƒàũĺţ vàĺũē</target>
 </trans-unit>
 <trans-unit id="s3e211d29fa10f843">
   <source>reference will be set to an empty value</source>
+  <target>ŕēƒēŕēńćē ŵĩĺĺ ƀē śēţ ţō àń ēmƥţŷ vàĺũē</target>
 </trans-unit>
 <trans-unit id="s55fa598b754cc3cc">
   <source><x id="0" equiv-text="${ub.name}"/> (<x id="1" equiv-text="${consequence}"/>)</source>
+  <target><x id="0" equiv-text="${ub.name}"/> (<x id="1" equiv-text="${consequence}"/>)</target>
 </trans-unit>
 <trans-unit id="sef49aec68fd1dc66">
   <source>Name</source>
+  <target>Ńàmē</target>
 </trans-unit>
 <trans-unit id="s09240e07b5b8d640">
   <source>ID</source>
+  <target>ĨĎ</target>
 </trans-unit>
 <trans-unit id="se33b158a1ec02a09">
   <source>Successfully deleted <x id="0" equiv-text="${this.objects.length} ${this.objectLabel}"/></source>
+  <target>Śũććēśśƒũĺĺŷ ďēĺēţēď <x id="0" equiv-text="${this.objects.length} ${this.objectLabel}"/></target>
 </trans-unit>
 <trans-unit id="sf6eb148db23d19de">
   <source>Failed to delete <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
+  <target>Ƒàĩĺēď ţō ďēĺēţē <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${e.toString()}"/></target>
 </trans-unit>
 <trans-unit id="s039b6434e8a75560">
   <source>Delete <x id="0" equiv-text="${this.objectLabel}"/></source>
+  <target>Ďēĺēţē <x id="0" equiv-text="${this.objectLabel}"/></target>
 </trans-unit>
 <trans-unit id="s5819a49638f6d7cb">
   <source>Are you sure you want to delete <x id="0" equiv-text="${this.objects.length} ${this.objectLabel}"/>?</source>
+  <target>Àŕē ŷōũ śũŕē ŷōũ ŵàńţ ţō ďēĺēţē <x id="0" equiv-text="${this.objects.length} ${this.objectLabel}"/>?</target>
 </trans-unit>
 <trans-unit id="sdc673e73b5c13aea">
   <source>Delete</source>
+  <target>Ďēĺēţē</target>
 </trans-unit>
 <trans-unit id="s4414164d120de61a">
   <source>The following objects use <x id="0" equiv-text="${objName}"/></source>
+  <target>Ţĥē ƒōĺĺōŵĩńĝ ōƀĴēćţś ũśē <x id="0" equiv-text="${objName}"/></target>
 </trans-unit>
 <trans-unit id="s92e241c9f3c101a2">
   <source>connecting object will be deleted</source>
+  <target>ćōńńēćţĩńĝ ōƀĴēćţ ŵĩĺĺ ƀē ďēĺēţēď</target>
 </trans-unit>
 <trans-unit id="s09810653c832e935">
   <source>Click to change value</source>
+  <target>Ćĺĩćķ ţō ćĥàńĝē vàĺũē</target>
 </trans-unit>
 <trans-unit id="sfefce784ec55868f">
   <source>Select an object.</source>
+  <target>Śēĺēćţ àń ōƀĴēćţ.</target>
 </trans-unit>
 <trans-unit id="s04ceadb276bbe149">
   <source>Loading options...</source>
+  <target>Ĺōàďĩńĝ ōƥţĩōńś...</target>
 </trans-unit>
 <trans-unit id="sd5903cc8de68b3fc">
   <source>No form found</source>
+  <target>Ńō ƒōŕm ƒōũńď</target>
 </trans-unit>
 <trans-unit id="s45935843b1b5b496">
   <source>Form didn't return a promise for submitting</source>
+  <target>Ƒōŕm ďĩďń'ţ ŕēţũŕń à ƥŕōmĩśē ƒōŕ śũƀmĩţţĩńĝ</target>
 </trans-unit>
 <trans-unit id="sab85321d3b0840b7">
   <source>API request failed</source>
+  <target>ÀƤĨ ŕēǫũēśţ ƒàĩĺēď</target>
 </trans-unit>
 <trans-unit id="s32a3efa23718e713">
   <source>API Requests</source>
+  <target>ÀƤĨ Ŕēǫũēśţś</target>
 </trans-unit>
 <trans-unit id="sddb3b0176f437721">
   <source>Open API Browser</source>
+  <target>Ōƥēń ÀƤĨ ßŕōŵśēŕ</target>
 </trans-unit>
 <trans-unit id="s3b3c333481944862">
   <source>Show details</source>
+  <target>Śĥōŵ ďēţàĩĺś</target>
 </trans-unit>
 <trans-unit id="s5be3c6d61cd9182f">
   <source>Notifications</source>
+  <target>Ńōţĩƒĩćàţĩōńś</target>
 </trans-unit>
 <trans-unit id="sa3438c7bb4e9cce8">
   <source><x id="0" equiv-text="${this.unread}"/> unread</source>
+  <target><x id="0" equiv-text="${this.unread}"/> ũńŕēàď</target>
 </trans-unit>
 <trans-unit id="s5e8250fb85d64c23">
   <source>Close</source>
+  <target>Ćĺōśē</target>
 </trans-unit>
 <trans-unit id="s6e6e737601f44b2c">
   <source>Successfully cleared notifications</source>
+  <target>Śũććēśśƒũĺĺŷ ćĺēàŕēď ńōţĩƒĩćàţĩōńś</target>
 </trans-unit>
 <trans-unit id="s8cda828dac449ea5">
   <source>Clear all</source>
+  <target>Ćĺēàŕ àĺĺ</target>
 </trans-unit>
 <trans-unit id="s7f5869b3d14d7cbc">
   <source>Provider</source>
+  <target>Ƥŕōvĩďēŕ</target>
 </trans-unit>
 <trans-unit id="s7301a7069b7bc83e">
   <source>Revoked?</source>
+  <target>Ŕēvōķēď?</target>
 </trans-unit>
 <trans-unit id="sd924045605feea63">
   <source>Expires</source>
+  <target>Ēxƥĩŕēś</target>
 </trans-unit>
 <trans-unit id="s2e3ef41a0edd8608">
   <source>Scopes</source>
+  <target>Śćōƥēś</target>
 </trans-unit>
 <trans-unit id="s1c8916418c334935">
   <source>ID Token</source>
+  <target>ĨĎ Ţōķēń</target>
 </trans-unit>
 <trans-unit id="s90760e5e02e95dfe">
   <source>Refresh Tokens(s)</source>
+  <target>Ŕēƒŕēśĥ Ţōķēńś(ś)</target>
 </trans-unit>
 <trans-unit id="sc615309d10a9228c">
   <source>RBAC is in preview.</source>
+  <target>ŔßÀĆ ĩś ĩń ƥŕēvĩēŵ.</target>
 </trans-unit>
 <trans-unit id="sa1db89262360550b">
   <source>Send us feedback!</source>
+  <target>Śēńď ũś ƒēēďƀàćķ!</target>
 </trans-unit>
 <trans-unit id="saabeb4cab074b0b9">
   <source>User Object Permissions</source>
+  <target>Ũśēŕ ŌƀĴēćţ Ƥēŕmĩśśĩōńś</target>
 </trans-unit>
 <trans-unit id="s8489d5559dda260c">
   <source>Role Object Permissions</source>
+  <target>Ŕōĺē ŌƀĴēćţ Ƥēŕmĩśśĩōńś</target>
 </trans-unit>
 <trans-unit id="sb37880a2a7288ef0">
   <source>Update Permissions</source>
+  <target>Ũƥďàţē Ƥēŕmĩśśĩōńś</target>
 </trans-unit>
 <trans-unit id="se8dca0132c66ae03">
   <source>Permissions</source>
+  <target>Ƥēŕmĩśśĩōńś</target>
 </trans-unit>
 <trans-unit id="s5da52af9b083c29a">
   <source>Model</source>
+  <target>Mōďēĺ</target>
 </trans-unit>
 <trans-unit id="s78ab26da7f067de8">
   <source>Select permissions to grant</source>
+  <target>Śēĺēćţ ƥēŕmĩśśĩōńś ţō ĝŕàńţ</target>
 </trans-unit>
 <trans-unit id="sf9aee319a006c9b4">
   <source>Add</source>
+  <target>Àďď</target>
 </trans-unit>
 <trans-unit id="sf485014051ad0cf7">
   <source>Successfully assigned permission.</source>
+  <target>Śũććēśśƒũĺĺŷ àśśĩĝńēď ƥēŕmĩśśĩōń.</target>
 </trans-unit>
 <trans-unit id="sca7fed2bef53cb99">
   <source>Role</source>
+  <target>Ŕōĺē</target>
 </trans-unit>
 <trans-unit id="sc92c1a54034e21cc">
   <source>Assign</source>
+  <target>Àśśĩĝń</target>
 </trans-unit>
 <trans-unit id="scd84d10ee9137070">
   <source>Assign permission to role</source>
+  <target>Àśśĩĝń ƥēŕmĩśśĩōń ţō ŕōĺē</target>
 </trans-unit>
 <trans-unit id="s5ee6f1b84e9ebc69">
   <source>Assign to new role</source>
+  <target>Àśśĩĝń ţō ńēŵ ŕōĺē</target>
 </trans-unit>
 <trans-unit id="sb923723d27df40ba">
   <source>Permission(s)</source>
+  <target>Ƥēŕmĩśśĩōń(ś)</target>
 </trans-unit>
 <trans-unit id="sc5fb00b25c7f5a02">
   <source>Permission</source>
+  <target>Ƥēŕmĩśśĩōń</target>
 </trans-unit>
 <trans-unit id="s4afb26a8fae257e9">
   <source>Directly assigned</source>
+  <target>Ďĩŕēćţĺŷ àśśĩĝńēď</target>
 </trans-unit>
 <trans-unit id="sa48f81f001b893d2">
   <source>User</source>
+  <target>Ũśēŕ</target>
 </trans-unit>
 <trans-unit id="sd8051c26e155f043">
   <source>Assign permission to user</source>
+  <target>Àśśĩĝń ƥēŕmĩśśĩōń ţō ũśēŕ</target>
 </trans-unit>
 <trans-unit id="sf79f8681e5ffaee2">
   <source>Assign to new user</source>
+  <target>Àśśĩĝń ţō ńēŵ ũśēŕ</target>
 </trans-unit>
 <trans-unit id="s9fb28be12e2c6317">
   <source>Superuser</source>
+  <target>Śũƥēŕũśēŕ</target>
 </trans-unit>
 <trans-unit id="s0a11c2ffb8309d1a">
   <source>Not found</source>
+  <target>Ńōţ ƒōũńď</target>
 </trans-unit>
 <trans-unit id="saa0e2675da69651b">
   <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
+  <target>Ţĥē ŨŔĹ "<x id="0" equiv-text="${this.url}"/>" ŵàś ńōţ ƒōũńď.</target>
 </trans-unit>
 <trans-unit id="s58cd9c2fe836d9c6">
   <source>Return home</source>
+  <target>Ŕēţũŕń ĥōmē</target>
 </trans-unit>
 <trans-unit id="s5f4586bc1e2740e6">
   <source>Clear search</source>
+  <target>Ćĺēàŕ śēàŕćĥ</target>
 </trans-unit>
 <trans-unit id="s1b88fa3df4423292">
   <source>Last IP</source>
+  <target>Ĺàśţ ĨƤ</target>
 </trans-unit>
 <trans-unit id="se63f9d833700af49">
   <source>Session(s)</source>
+  <target>Śēśśĩōń(ś)</target>
 </trans-unit>
 <trans-unit id="sf679b7a62808287e">
   <source>Expiry</source>
+  <target>Ēxƥĩŕŷ</target>
 </trans-unit>
 <trans-unit id="saf63a04c86018698">
   <source>-</source>
+  <target>-</target>
 </trans-unit>
 <trans-unit id="sde1907073fd96017">
   <source>(Current session)</source>
+  <target>(Ćũŕŕēńţ śēśśĩōń)</target>
 </trans-unit>
 <trans-unit id="sf1e9d421f35b51e5">
   <source>Application</source>
+  <target>Àƥƥĺĩćàţĩōń</target>
 </trans-unit>
 <trans-unit id="s76881c01b6a3a8c7">
   <source>Consent(s)</source>
+  <target>Ćōńśēńţ(ś)</target>
 </trans-unit>
 <trans-unit id="s2236dc563c2dbf76">
   <source>(Format: hours=-1;minutes=-2;seconds=-3).</source>
+  <target>(Ƒōŕmàţ: ĥōũŕś=-1;mĩńũţēś=-2;śēćōńďś=-3).</target>
 </trans-unit>
 <trans-unit id="sbec40ef4e6f139b7">
   <source>(Format: hours=1;minutes=2;seconds=3).</source>
+  <target>(Ƒōŕmàţ: ĥōũŕś=1;mĩńũţēś=2;śēćōńďś=3).</target>
 </trans-unit>
 <trans-unit id="sbb8ad22c83d375b1">
   <source>The following keywords are supported:</source>
+  <target>Ţĥē ƒōĺĺōŵĩńĝ ķēŷŵōŕďś àŕē śũƥƥōŕţēď:</target>
 </trans-unit>
 <trans-unit id="sad59707375956ad2">
   <source>Finish</source>
+  <target>Ƒĩńĩśĥ</target>
 </trans-unit>
 <trans-unit id="s0fbf6dc6a1966408">
   <source>Next</source>
+  <target>Ńēxţ</target>
 </trans-unit>
 <trans-unit id="sc16e00a7a8b2fde2">
   <source>Back</source>
+  <target>ßàćķ</target>
 </trans-unit>
 <trans-unit id="s7181a5504472e856">
   <source>Apply changes</source>
+  <target>Àƥƥĺŷ ćĥàńĝēś</target>
 </trans-unit>
 </body>
 </file>

@@ -1,7 +1,7 @@
 import "@goauthentik/admin/admin-overview/charts/AdminModelPerDay";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/PageHeader";
-import "@goauthentik/elements/cards/AggregatePromiseCard";
+import { AKElement } from "@goauthentik/elements/Base.js";
+import "@goauthentik/elements/PageHeader.js";
+import "@goauthentik/elements/cards/AggregatePromiseCard.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";

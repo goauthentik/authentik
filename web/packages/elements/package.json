@@ -5,6 +5,7 @@
     "license": "MIT",
     "type": "module",
     "scripts": {
+        "locales:extract-pseudo": "pseudolocalize extract -c ./lit-localize.json",
         "locales:extract": "lit-localize extract",
         "locales:build": "lit-localize build",
         "build": "npm-run-all --sequential locales:build --parallel build:compile build:types",

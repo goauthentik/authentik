@@ -3,9 +3,9 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "@goauthentik/elements/forms/FormGroup.js";
+import "@goauthentik/elements/forms/FormGroup.js";
+import "@goauthentik/elements/forms/HorizontalFormElement.js";
 
 import { msg } from "@lit/localize";
 import { customElement, state } from "@lit/reactive-element/decorators.js";

@@ -1,4 +1,4 @@
-import { Route } from "@goauthentik/elements/router/Route";
+import { Route } from "@goauthentik/elements/router/Route.js";
 import "@goauthentik/user/LibraryPage/LibraryPage";
 
 import { html } from "lit";

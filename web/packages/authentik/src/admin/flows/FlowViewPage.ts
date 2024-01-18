@@ -3,13 +3,13 @@ import "@goauthentik/admin/flows/FlowDiagram";
 import "@goauthentik/admin/flows/FlowForm";
 import "@goauthentik/admin/policies/BoundPoliciesList";
 import { DesignationToLabel } from "@goauthentik/app/admin/flows/utils";
-import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
+import "@goauthentik/elements/rbac/ObjectPermissionsPage.js";
 import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base.js";
-import "@goauthentik/elements/PageHeader";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/PageHeader.js";
+import "@goauthentik/elements/Tabs.js";
+import "@goauthentik/elements/buttons/SpinnerButton/ak-spinner-button.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";

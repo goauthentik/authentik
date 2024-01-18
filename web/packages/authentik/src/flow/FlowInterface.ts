@@ -1,4 +1,4 @@
-import "@goauthentik/elements/messages/MessageContainer";
+import "@goauthentik/elements/messages/MessageContainer.js";
 import "@goauthentik/flow/FlowExecutor";
 // Statically import some stages to speed up load speed
 import "@goauthentik/flow/stages/access_denied/AccessDeniedStage";

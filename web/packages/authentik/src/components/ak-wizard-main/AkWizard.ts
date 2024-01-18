@@ -1,5 +1,5 @@
 import "@goauthentik/app/components/ak-wizard-main/ak-wizard-frame";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base.js";
 
 import { msg } from "@lit/localize";
 import { ReactiveControllerHost, html } from "lit";

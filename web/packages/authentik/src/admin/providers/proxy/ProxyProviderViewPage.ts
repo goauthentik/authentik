@@ -1,6 +1,6 @@
 import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/proxy/ProxyProviderForm";
-import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
+import "@goauthentik/elements/rbac/ObjectPermissionsPage.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import { convertToSlug } from "@goauthentik/common/utils.js";
@@ -15,13 +15,13 @@ import MDTraefikIngress from "@goauthentik/docs/providers/proxy/_traefik_ingress
 import MDTraefikStandalone from "@goauthentik/docs/providers/proxy/_traefik_standalone.md";
 import MDHeaderAuthentication from "@goauthentik/docs/providers/proxy/header_authentication.md";
 import { AKElement } from "@goauthentik/elements/Base.js";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/Markdown";
-import "@goauthentik/elements/Markdown";
+import "@goauthentik/elements/CodeMirror.js";
+import "@goauthentik/elements/Markdown.js";
+import "@goauthentik/elements/Markdown.js";
 import { Replacer } from "@goauthentik/elements/Markdown.js";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/Tabs.js";
+import "@goauthentik/elements/buttons/ModalButton.js";
+import "@goauthentik/elements/buttons/SpinnerButton/ak-spinner-button.js";
 import { getURLParam } from "@goauthentik/elements/router/RouteMatch.js";
 
 import { msg } from "@lit/localize";

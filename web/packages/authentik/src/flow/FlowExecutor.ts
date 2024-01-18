@@ -9,8 +9,8 @@ import { configureSentry } from "@goauthentik/common/sentry.js";
 import { first } from "@goauthentik/common/utils.js";
 import { WebsocketClient } from "@goauthentik/common/ws.js";
 import { Interface } from "@goauthentik/elements/Interface/index.js";
-import "@goauthentik/elements/LoadingOverlay";
-import "@goauthentik/elements/ak-locale-context";
+import "@goauthentik/elements/LoadingOverlay.js";
+import "@goauthentik/elements/ak-locale-context/ak-locale-context.js";
 import "@goauthentik/flow/sources/apple/AppleLoginInit";
 import "@goauthentik/flow/sources/plex/PlexLoginInit";
 import "@goauthentik/flow/stages/FlowErrorStage";
@@ -206,7 +206,7 @@ export class FlowExecutor extends Interface implements StageHost {
                     new CustomEvent(EVENT_FLOW_ADVANCE, {
                         bubbles: true,
                         composed: true,
-                    }),
+                    })
                 );
             }
             this.challenge = challenge;
@@ -238,7 +238,7 @@ export class FlowExecutor extends Interface implements StageHost {
                     new CustomEvent(EVENT_FLOW_ADVANCE, {
                         bubbles: true,
                         composed: true,
-                    }),
+                    })
                 );
             }
             this.challenge = challenge;

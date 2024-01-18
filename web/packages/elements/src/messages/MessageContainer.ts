@@ -6,7 +6,7 @@ import {
 import { SentryIgnoredError } from "@goauthentik/common/errors.js";
 import { WSMessage } from "@goauthentik/common/ws.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
-import "@goauthentik/elements/messages/Message";
+import "@goauthentik/elements/messages/Message.js";
 import { APIMessage } from "@goauthentik/elements/messages/Message.js";
 
 import { CSSResult, TemplateResult, css, html } from "lit";

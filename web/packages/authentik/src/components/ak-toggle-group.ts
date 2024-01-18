@@ -1,5 +1,5 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
+import { AKElement } from "@goauthentik/elements/Base.js";
+import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter.js";
 
 import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";

@@ -1,4 +1,4 @@
-import "@goauthentik/elements/EmptyState";
+import "@goauthentik/elements/EmptyState.js";
 import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 

@@ -3,7 +3,7 @@ import { Meta } from "@storybook/web-components";
 import { html } from "lit";
 
 import "./ak-spinner-button";
-import AKSpinnerButton from "./ak-spinner-button";
+import AKSpinnerButton from "./ak-spinner-button.js";
 
 const metadata: Meta<AKSpinnerButton> = {
     title: "Elements / Spinner Button",

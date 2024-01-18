@@ -1,9 +1,9 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base.js";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/user/SessionList";
-import "@goauthentik/elements/user/UserConsentList";
+import "@goauthentik/elements/Tabs.js";
+import "@goauthentik/elements/user/SessionList.js";
+import "@goauthentik/elements/user/UserConsentList.js";
 import { UserInterface } from "@goauthentik/user/UserInterface";
 import "@goauthentik/user/user-settings/details/UserPassword";
 import "@goauthentik/user/user-settings/details/UserSettingsFlowExecutor";

@@ -2,7 +2,7 @@ import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import { MessageLevel } from "@goauthentik/common/messages.js";
 import { PFSize } from "@goauthentik/elements/Spinner.js";
 import { ModalButton } from "@goauthentik/elements/buttons/ModalButton.js";
-import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/buttons/SpinnerButton/ak-spinner-button.js";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer.js";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table.js";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table.js";

@@ -6,12 +6,12 @@ import { convertToTitle } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/events/ObjectChangelog";
 import MDProviderOAuth2 from "@goauthentik/docs/providers/oauth2/index.md";
 import { AKElement } from "@goauthentik/elements/Base.js";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/Markdown";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/CodeMirror.js";
+import "@goauthentik/elements/EmptyState.js";
+import "@goauthentik/elements/Markdown.js";
+import "@goauthentik/elements/Tabs.js";
+import "@goauthentik/elements/buttons/ModalButton.js";
+import "@goauthentik/elements/buttons/SpinnerButton/ak-spinner-button.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";

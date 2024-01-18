@@ -1,6 +1,6 @@
 import { AKElement } from "@goauthentik/elements/Base.js";
-import "@goauthentik/elements/sidebar/SidebarBrand";
-import "@goauthentik/elements/sidebar/SidebarUser";
+import "@goauthentik/elements/sidebar/SidebarBrand.js";
+import "@goauthentik/elements/sidebar/SidebarUser.js";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";

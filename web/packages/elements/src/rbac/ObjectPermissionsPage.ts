@@ -1,7 +1,7 @@
 import { AKElement } from "@goauthentik/elements/Base.js";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/rbac/RoleObjectPermissionTable";
-import "@goauthentik/elements/rbac/UserObjectPermissionTable";
+import "@goauthentik/elements/Tabs.js";
+import "@goauthentik/elements/rbac/RoleObjectPermissionTable.js";
+import "@goauthentik/elements/rbac/UserObjectPermissionTable.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";

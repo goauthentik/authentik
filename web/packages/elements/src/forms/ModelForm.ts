@@ -1,5 +1,5 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
-import "@goauthentik/elements/EmptyState";
+import "@goauthentik/elements/EmptyState.js";
 import { Form } from "@goauthentik/elements/forms/Form.js";
 
 import { TemplateResult, html } from "lit";

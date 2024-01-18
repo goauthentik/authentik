@@ -1,7 +1,7 @@
 import { AKElement } from "@goauthentik/elements/Base.js";
-import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/forms/ModalForm.js";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm.js";
-import "@goauthentik/elements/rbac/ObjectPermissionsPage";
+import "@goauthentik/elements/rbac/ObjectPermissionsPage.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";

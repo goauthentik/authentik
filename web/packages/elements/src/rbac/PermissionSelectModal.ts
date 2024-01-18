@@ -1,7 +1,7 @@
 import { groupBy } from "@goauthentik/common/utils.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";
-import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/buttons/SpinnerButton/ak-spinner-button.js";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table.js";
 import { TableColumn } from "@goauthentik/elements/table/Table.js";
 import { TableModal } from "@goauthentik/elements/table/TableModal.js";

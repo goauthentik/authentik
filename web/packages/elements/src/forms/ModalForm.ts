@@ -1,7 +1,7 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
-import "@goauthentik/elements/LoadingOverlay";
+import "@goauthentik/elements/LoadingOverlay.js";
 import { ModalButton } from "@goauthentik/elements/buttons/ModalButton.js";
-import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/buttons/SpinnerButton/ak-spinner-button.js";
 import { Form } from "@goauthentik/elements/forms/Form.js";
 
 import { msg } from "@lit/localize";

@@ -1,12 +1,12 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import "@goauthentik/components/ak-toggle-group";
-import "@goauthentik/elements/chips/Chip";
-import "@goauthentik/elements/chips/ChipGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "@goauthentik/elements/chips/Chip.js";
+import "@goauthentik/elements/chips/ChipGroup.js";
+import "@goauthentik/elements/forms/HorizontalFormElement.js";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm.js";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
-import "@goauthentik/elements/rbac/PermissionSelectModal";
+import "@goauthentik/elements/forms/Radio.js";
+import "@goauthentik/elements/forms/SearchSelect/ak-search-select.js";
+import "@goauthentik/elements/rbac/PermissionSelectModal.js";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";

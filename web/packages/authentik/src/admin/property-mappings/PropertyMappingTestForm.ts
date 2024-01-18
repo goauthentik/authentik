@@ -1,10 +1,10 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { first } from "@goauthentik/common/utils.js";
-import "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/CodeMirror.js";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror.js";
 import { Form } from "@goauthentik/elements/forms/Form.js";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
+import "@goauthentik/elements/forms/HorizontalFormElement.js";
+import "@goauthentik/elements/forms/SearchSelect/ak-search-select.js";
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";

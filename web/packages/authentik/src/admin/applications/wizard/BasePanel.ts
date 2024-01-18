@@ -1,8 +1,8 @@
 import { WizardPanel } from "@goauthentik/components/ak-wizard-main/types";
-import { AKElement } from "@goauthentik/elements/Base";
-import { KeyUnknown, serializeForm } from "@goauthentik/elements/forms/Form";
-import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
+import { AKElement } from "@goauthentik/elements/Base.js";
+import { KeyUnknown, serializeForm } from "@goauthentik/elements/forms/Form.js";
+import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement.js";
+import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter.js";
 
 import { consume } from "@lit-labs/context";
 import { query } from "@lit/reactive-element/decorators.js";

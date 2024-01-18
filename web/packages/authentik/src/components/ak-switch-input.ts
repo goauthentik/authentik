@@ -1,4 +1,4 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base.js";
 
 import { html, nothing } from "lit";
 import { customElement, property, query } from "lit/decorators.js";

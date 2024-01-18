@@ -6,11 +6,11 @@ import { ascii_letters, digits, first, randomString } from "@goauthentik/common/
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
+import "@goauthentik/elements/forms/FormGroup.js";
+import "@goauthentik/elements/forms/HorizontalFormElement.js";
+import "@goauthentik/elements/forms/Radio.js";
+import "@goauthentik/elements/forms/SearchSelect/ak-search-select.js";
+import "@goauthentik/elements/utils/TimeDeltaHelp.js";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";

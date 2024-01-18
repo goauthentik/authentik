@@ -1,7 +1,7 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import { MessageLevel } from "@goauthentik/common/messages.js";
 import { ModalButton } from "@goauthentik/elements/buttons/ModalButton.js";
-import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/buttons/SpinnerButton/ak-spinner-button.js";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer.js";
 
 import { msg, str } from "@lit/localize";

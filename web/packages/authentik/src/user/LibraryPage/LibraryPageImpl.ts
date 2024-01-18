@@ -1,6 +1,6 @@
 import { groupBy } from "@goauthentik/common/utils.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
-import "@goauthentik/elements/EmptyState";
+import "@goauthentik/elements/EmptyState.js";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table.js";
 import "@goauthentik/user/LibraryApplication";
 

@@ -1,8 +1,8 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import { PFColor } from "@goauthentik/elements/Label.js";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/buttons/ActionButton/ak-action-button.js";
+import "@goauthentik/elements/buttons/SpinnerButton/ak-spinner-button.js";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table.js";
 import { TableColumn } from "@goauthentik/elements/table/Table.js";
 import { TablePage } from "@goauthentik/elements/table/TablePage.js";

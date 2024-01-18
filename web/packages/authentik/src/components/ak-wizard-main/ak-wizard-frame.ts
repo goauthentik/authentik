@@ -1,5 +1,5 @@
-import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
+import { ModalButton } from "@goauthentik/elements/buttons/ModalButton.js";
+import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter.js";
 
 import { msg } from "@lit/localize";
 import { customElement, property, query } from "@lit/reactive-element/decorators.js";

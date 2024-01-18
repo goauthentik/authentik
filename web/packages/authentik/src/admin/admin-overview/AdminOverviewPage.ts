@@ -10,8 +10,8 @@ import "@goauthentik/admin/admin-overview/charts/SyncStatusChart";
 import { VERSION } from "@goauthentik/common/constants.js";
 import { me } from "@goauthentik/common/users.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
-import "@goauthentik/elements/PageHeader";
-import "@goauthentik/elements/cards/AggregatePromiseCard";
+import "@goauthentik/elements/PageHeader.js";
+import "@goauthentik/elements/cards/AggregatePromiseCard.js";
 import { paramURL } from "@goauthentik/elements/router/RouterOutlet.js";
 
 import { msg, str } from "@lit/localize";

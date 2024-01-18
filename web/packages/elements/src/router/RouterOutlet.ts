@@ -2,7 +2,7 @@ import { ROUTE_SEPARATOR } from "@goauthentik/common/constants.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
 import { Route } from "@goauthentik/elements/router/Route.js";
 import { RouteMatch } from "@goauthentik/elements/router/RouteMatch.js";
-import "@goauthentik/elements/router/Router404";
+import "@goauthentik/elements/router/Router404.js";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";

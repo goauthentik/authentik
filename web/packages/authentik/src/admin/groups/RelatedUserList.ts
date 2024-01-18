@@ -14,12 +14,12 @@ import {
     WithCapabilitiesConfig,
 } from "@goauthentik/elements/Interface/capabilitiesProvider.js";
 import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider.js";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/buttons/Dropdown";
-import "@goauthentik/elements/forms/DeleteBulkForm";
+import "@goauthentik/elements/buttons/ActionButton/ak-action-button.js";
+import "@goauthentik/elements/buttons/Dropdown.js";
+import "@goauthentik/elements/forms/DeleteBulkForm.js";
 import { Form } from "@goauthentik/elements/forms/Form.js";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/forms/HorizontalFormElement.js";
+import "@goauthentik/elements/forms/ModalForm.js";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer.js";
 import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch.js";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table.js";

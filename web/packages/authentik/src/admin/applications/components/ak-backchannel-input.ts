@@ -1,5 +1,5 @@
 import "@goauthentik/admin/applications/ProviderSelectModal";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base.js";
 
 import { TemplateResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";

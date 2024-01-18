@@ -1,6 +1,6 @@
 import { docLink } from "@goauthentik/common/global.js";
 import { ModalButton } from "@goauthentik/elements/buttons/ModalButton.js";
-import "@goauthentik/elements/buttons/TokenCopyButton";
+import "@goauthentik/elements/buttons/TokenCopyButton/ak-token-copy-button.js";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";

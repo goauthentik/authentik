@@ -1,5 +1,5 @@
 import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
-import { Diagram } from "@goauthentik/elements/Diagram";
+import { Diagram } from "@goauthentik/elements/Diagram.js";
 
 import { msg, str } from "@lit/localize";
 import { customElement, property } from "lit/decorators.js";

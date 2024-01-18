@@ -1,7 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { me } from "@goauthentik/common/users.js";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base.js";
-import "@goauthentik/elements/EmptyState";
+import "@goauthentik/elements/EmptyState.js";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table.js";
 
 import { localized, msg } from "@lit/localize";
