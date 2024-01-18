@@ -45,7 +45,8 @@
     },
     "workspaces": [
         "packages/authentik",
-        "packages/common"
+        "packages/common",
+        "packages/elements"
     ],
     "engines": {
         "node": ">=20"
