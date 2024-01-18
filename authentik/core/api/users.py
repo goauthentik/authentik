@@ -33,6 +33,7 @@ from drf_spectacular.utils import (
 from guardian.shortcuts import get_anonymous_user, get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, IntegerField, ListField, SerializerMethodField
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import (
@@ -489,7 +490,14 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 return Response(data={"non_field_errors": [str(exc)]}, status=400)
 
     @extend_schema(responses={200: SessionUserSerializer(many=False)})
-    @action(url_path="me", url_name="me", detail=False, pagination_class=None, filter_backends=[])
+    @action(
+        url_path="me",
+        url_name="me",
+        detail=False,
+        pagination_class=None,
+        filter_backends=[],
+        permission_classes=[IsAuthenticated],
+    )
     def user_me(self, request: Request) -> Response:
         """Get information about current user"""
         context = {"request": request}
