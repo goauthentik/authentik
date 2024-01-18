@@ -9,10 +9,10 @@ import "@goauthentik/admin/admin-overview/charts/OutpostStatusChart";
 import "@goauthentik/admin/admin-overview/charts/SyncStatusChart";
 import { VERSION } from "@goauthentik/common/constants.js";
 import { me } from "@goauthentik/common/users.js";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/cards/AggregatePromiseCard";
-import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
+import { paramURL } from "@goauthentik/elements/router/RouterOutlet.js";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";

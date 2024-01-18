@@ -7,7 +7,7 @@ import "@goauthentik/components/ak-number-input";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
-import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider";
+import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 

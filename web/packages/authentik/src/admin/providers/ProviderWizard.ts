@@ -5,12 +5,12 @@ import "@goauthentik/admin/providers/saml/SAMLProviderForm";
 import "@goauthentik/admin/providers/saml/SAMLProviderImportForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import "@goauthentik/elements/Alert";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/forms/ProxyForm";
-import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
+import { paramURL } from "@goauthentik/elements/router/RouterOutlet.js";
 import "@goauthentik/elements/wizard/FormWizardPage";
 import "@goauthentik/elements/wizard/Wizard";
-import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
+import { WizardPage } from "@goauthentik/elements/wizard/WizardPage.js";
 
 import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";

@@ -4,7 +4,8 @@
         "baseUrl": ".",
         "outDir": "./dist/",
         "paths": {
-            "@goauthentik/elements/*": ["./src/*"]
+            "@goauthentik/elements/*": ["./src/*"],
+            "@goauthentik/locales/*": ["src/locales/*"]
         }
     }
 }

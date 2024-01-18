@@ -1,6 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { groupBy } from "@goauthentik/common/utils.js";
-import { Form } from "@goauthentik/elements/forms/Form";
+import { Form } from "@goauthentik/elements/forms/Form.js";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
 

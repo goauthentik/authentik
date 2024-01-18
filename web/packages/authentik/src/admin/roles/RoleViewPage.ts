@@ -6,7 +6,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import "@goauthentik/components/events/ObjectChangelog";
 import "@goauthentik/components/events/UserEvents";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/Tabs";

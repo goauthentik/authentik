@@ -1,7 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
-import { AKElement } from "@goauthentik/elements/Base";
-import { PFColor } from "@goauthentik/elements/Label";
+import { AKElement } from "@goauthentik/elements/Base.js";
+import { PFColor } from "@goauthentik/elements/Label.js";
 import "@goauthentik/elements/Spinner";
 
 import { msg, str } from "@lit/localize";

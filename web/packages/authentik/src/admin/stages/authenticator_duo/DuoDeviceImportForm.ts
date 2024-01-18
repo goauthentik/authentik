@@ -3,10 +3,10 @@ import { MessageLevel } from "@goauthentik/common/messages.js";
 import "@goauthentik/elements/Divider";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModalForm } from "@goauthentik/elements/forms/ModalForm";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import { ModalForm } from "@goauthentik/elements/forms/ModalForm.js";
+import { ModelForm } from "@goauthentik/elements/forms/ModelForm.js";
 import "@goauthentik/elements/forms/SearchSelect";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { showMessage } from "@goauthentik/elements/messages/MessageContainer.js";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";

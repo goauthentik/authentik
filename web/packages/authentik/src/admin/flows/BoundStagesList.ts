@@ -7,8 +7,8 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/forms/ProxyForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table.js";
+import { Table, TableColumn } from "@goauthentik/elements/table/Table.js";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";

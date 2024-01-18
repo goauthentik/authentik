@@ -12,10 +12,10 @@ import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/forms/ProxyForm";
 import "@goauthentik/elements/rbac/ObjectPermissionModal";
-import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
+import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch.js";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table.js";
+import { TableColumn } from "@goauthentik/elements/table/Table.js";
+import { TablePage } from "@goauthentik/elements/table/TablePage.js";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";

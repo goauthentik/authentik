@@ -2,10 +2,10 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { docLink } from "@goauthentik/common/global.js";
 import { groupBy } from "@goauthentik/common/utils.js";
 import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import { ModelForm } from "@goauthentik/elements/forms/ModelForm.js";
 import "@goauthentik/elements/forms/SearchSelect";
 import YAML from "yaml";
 

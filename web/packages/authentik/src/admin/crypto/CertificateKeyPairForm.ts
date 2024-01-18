@@ -1,7 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import { ModelForm } from "@goauthentik/elements/forms/ModelForm.js";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";

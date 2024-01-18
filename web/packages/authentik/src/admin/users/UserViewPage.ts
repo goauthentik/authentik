@@ -22,11 +22,11 @@ import {
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/components/events/ObjectChangelog";
 import "@goauthentik/components/events/UserEvents";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/CodeMirror";
-import { WithCapabilitiesConfig } from "@goauthentik/elements/Interface/capabilitiesProvider";
+import { WithCapabilitiesConfig } from "@goauthentik/elements/Interface/capabilitiesProvider.js";
 import "@goauthentik/elements/PageHeader";
-import { PFSize } from "@goauthentik/elements/Spinner";
+import { PFSize } from "@goauthentik/elements/Spinner.js";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";

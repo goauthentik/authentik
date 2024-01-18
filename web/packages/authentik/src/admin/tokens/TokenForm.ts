@@ -2,7 +2,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { dateTimeLocal, first } from "@goauthentik/common/utils.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import { ModelForm } from "@goauthentik/elements/forms/ModelForm.js";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 

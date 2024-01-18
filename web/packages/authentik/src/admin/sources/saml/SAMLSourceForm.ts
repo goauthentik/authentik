@@ -8,7 +8,7 @@ import { first } from "@goauthentik/common/utils.js";
 import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
+} from "@goauthentik/elements/Interface/capabilitiesProvider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";

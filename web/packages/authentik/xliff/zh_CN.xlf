@@ -1707,8 +1707,8 @@
       <trans-unit id="s55fa598b754cc3cc">
         <source><x id="0" equiv-text="${ub.name}"/> (<x id="1" equiv-text="${consequence}"/>)</source>
         <target>
-        <x id="0" equiv-text="${ub.name}"/>（ 
-        <x id="1" equiv-text="${consequence}"/>）</target>
+        <x id="0" equiv-text="${policy.name}"/>（ 
+        <x id="1" equiv-text="${policy.verboseName}"/>）</target>
         
       </trans-unit>
       <trans-unit id="s09240e07b5b8d640">

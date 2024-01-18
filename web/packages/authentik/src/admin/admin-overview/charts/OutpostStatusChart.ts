@@ -1,6 +1,6 @@
 import { SyncStatus } from "@goauthentik/admin/admin-overview/charts/SyncStatusChart";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
-import { AKChart } from "@goauthentik/elements/charts/Chart";
+import { AKChart } from "@goauthentik/elements/charts/Chart.js";
 import "@goauthentik/elements/forms/ConfirmationForm";
 import { ChartData, ChartOptions } from "chart.js";
 

@@ -1,13 +1,13 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EVENT_SIDEBAR_TOGGLE, VERSION } from "@goauthentik/common/constants.js";
 import { me } from "@goauthentik/common/users.js";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base.js";
 import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
-import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "@goauthentik/elements/router/Route";
-import { getRootStyle } from "@goauthentik/elements/utils/getRootStyle";
+} from "@goauthentik/elements/Interface/capabilitiesProvider.js";
+import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "@goauthentik/elements/router/Route.js";
+import { getRootStyle } from "@goauthentik/elements/utils/getRootStyle.js";
 import { spread } from "@open-wc/lit-helpers";
 
 import { msg, str } from "@lit/localize";

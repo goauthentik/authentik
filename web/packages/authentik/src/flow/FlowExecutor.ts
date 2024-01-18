@@ -8,7 +8,7 @@ import { globalAK } from "@goauthentik/common/global.js";
 import { configureSentry } from "@goauthentik/common/sentry.js";
 import { first } from "@goauthentik/common/utils.js";
 import { WebsocketClient } from "@goauthentik/common/ws.js";
-import { Interface } from "@goauthentik/elements/Interface";
+import { Interface } from "@goauthentik/elements/Interface/index.js";
 import "@goauthentik/elements/LoadingOverlay";
 import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/flow/sources/apple/AppleLoginInit";

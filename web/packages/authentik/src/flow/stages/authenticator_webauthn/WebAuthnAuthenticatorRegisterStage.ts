@@ -4,7 +4,7 @@ import {
     transformCredentialCreateOptions,
     transformNewAssertionForServer,
 } from "@goauthentik/common/helpers/webauthn.js";
-import { PFSize } from "@goauthentik/elements/Spinner";
+import { PFSize } from "@goauthentik/elements/Spinner.js";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg, str } from "@lit/localize";

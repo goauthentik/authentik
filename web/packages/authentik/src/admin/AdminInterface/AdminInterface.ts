@@ -7,14 +7,14 @@ import {
 import { configureSentry } from "@goauthentik/common/sentry.js";
 import { me } from "@goauthentik/common/users.js";
 import { WebsocketClient } from "@goauthentik/common/ws.js";
-import { Interface } from "@goauthentik/elements/Interface";
+import { Interface } from "@goauthentik/elements/Interface/index.js";
 import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/elements/enterprise/EnterpriseStatusBanner";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/notifications/APIDrawer";
 import "@goauthentik/elements/notifications/NotificationDrawer";
-import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
+import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch.js";
 import "@goauthentik/elements/router/RouterOutlet";
 import "@goauthentik/elements/sidebar/Sidebar";
 import "@goauthentik/elements/sidebar/SidebarItem";

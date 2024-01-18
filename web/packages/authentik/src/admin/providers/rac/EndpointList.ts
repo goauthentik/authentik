@@ -6,8 +6,8 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/rbac/ObjectPermissionModal";
-import { PaginatedResponse, Table } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
+import { PaginatedResponse, Table } from "@goauthentik/elements/table/Table.js";
+import { TableColumn } from "@goauthentik/elements/table/Table.js";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";

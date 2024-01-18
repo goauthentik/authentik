@@ -3,7 +3,7 @@ import "@goauthentik/admin/common/ak-flow-search/ak-tenanted-flow-search";
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { first } from "@goauthentik/common/utils.js";
-import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider";
+import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";

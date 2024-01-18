@@ -3,7 +3,7 @@ import "@goauthentik/components/ak-toggle-group";
 import "@goauthentik/elements/chips/Chip";
 import "@goauthentik/elements/chips/ChipGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import { ModelForm } from "@goauthentik/elements/forms/ModelForm.js";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/rbac/PermissionSelectModal";

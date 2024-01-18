@@ -1,8 +1,8 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { MessageLevel } from "@goauthentik/common/messages.js";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/PageHeader";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { showMessage } from "@goauthentik/elements/messages/MessageContainer.js";
 import * as Sentry from "@sentry/browser";
 
 import { CSSResult, TemplateResult, html } from "lit";

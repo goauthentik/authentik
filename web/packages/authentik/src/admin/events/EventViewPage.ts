@@ -3,7 +3,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EventWithContext } from "@goauthentik/common/events.js";
 import { actionToLabel } from "@goauthentik/common/labels.js";
 import "@goauthentik/components/ak-event-info";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/PageHeader";
 
 import { msg, str } from "@lit/localize";

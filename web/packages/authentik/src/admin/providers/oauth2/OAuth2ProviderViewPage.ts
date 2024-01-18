@@ -5,7 +5,7 @@ import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import { convertToTitle } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/events/ObjectChangelog";
 import MDProviderOAuth2 from "@goauthentik/docs/providers/oauth2/index.md";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/Markdown";

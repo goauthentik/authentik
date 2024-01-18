@@ -1,7 +1,7 @@
 import { docLink } from "@goauthentik/common/global.js";
 import { adaptCSS } from "@goauthentik/common/utils.js";
-import { AKElement } from "@goauthentik/elements/Base";
-import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
+import { AKElement } from "@goauthentik/elements/Base.js";
+import { paramURL } from "@goauthentik/elements/router/RouterOutlet.js";
 
 import { msg } from "@lit/localize";
 import { css, html } from "lit";

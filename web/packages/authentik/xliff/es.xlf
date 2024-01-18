@@ -2,36 +2,6 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file target-language="es" source-language="en" original="lit-localize-inputs" datatype="plaintext">
     <body>
-      <trans-unit id="s4caed5b7a7e5d89b">
-        <source>English</source>
-        <target>Inglés</target>
-      </trans-unit>
-      <trans-unit id="s75a27f43413e02c5">
-        <source>French</source>
-        <target>francés</target>
-      </trans-unit>
-      <trans-unit id="s9d2d00982edafabb">
-        <source>Turkish</source>
-        <target>turco</target>
-      </trans-unit>
-      <trans-unit id="sf1868dc19e3917bb">
-        <source>Spanish</source>
-      </trans-unit>
-      <trans-unit id="s03f49e598ffb11cc">
-        <source>Polish</source>
-      </trans-unit>
-      <trans-unit id="s4660da32fb311ac0">
-        <source>Taiwanese Mandarin</source>
-      </trans-unit>
-      <trans-unit id="s354e0a9f146d2869">
-        <source>Chinese (simplified)</source>
-      </trans-unit>
-      <trans-unit id="se3e6af2ce24d80e8">
-        <source>Chinese (traditional)</source>
-      </trans-unit>
-      <trans-unit id="s63e71d20d1eaca93">
-        <source>German</source>
-      </trans-unit>
       <trans-unit id="s49730f3d5751a433">
         <source>Loading...</source>
         <target>Cargando...</target>
@@ -43,14 +13,6 @@
       <trans-unit id="s310d8757ce319673">
         <source>Logins</source>
         <target>Inicios de sesión</target>
-      </trans-unit>
-      <trans-unit id="sa50a6326530d8a0d">
-        <source>Show less</source>
-        <target>Mostrar menos</target>
-      </trans-unit>
-      <trans-unit id="sb2c57b2d347203dd">
-        <source>Show more</source>
-        <target>Mostrar más</target>
       </trans-unit>
       <trans-unit id="s6238f519db67980d">
         <source>UID</source>
@@ -161,157 +123,9 @@
         <source>No additional data available.</source>
         <target>No hay datos adicionales disponibles.</target>
       </trans-unit>
-      <trans-unit id="s09810653c832e935">
-        <source>Click to change value</source>
-        <target>Haga clic para cambiar el valor</target>
-      </trans-unit>
-      <trans-unit id="sfefce784ec55868f">
-        <source>Select an object.</source>
-      </trans-unit>
-      <trans-unit id="s04ceadb276bbe149">
-        <source>Loading options...</source>
-      </trans-unit>
-      <trans-unit id="sfe629863ba1338c2">
-        <source>Connection error, reconnecting...</source>
-        <target>Error de conexión, reconexión...</target>
-      </trans-unit>
-      <trans-unit id="sc8da3cc71de63832">
-        <source>Login</source>
-        <target>Iniciar sesión</target>
-      </trans-unit>
-      <trans-unit id="sb4564c127ab8b921">
-        <source>Failed login</source>
-        <target>Inicio de sesión incorrecto</target>
-      </trans-unit>
-      <trans-unit id="s67749057edb2586b">
-        <source>Logout</source>
-        <target>Cerrar sesión</target>
-      </trans-unit>
-      <trans-unit id="s7e537ad68d7c16e1">
-        <source>User was written to</source>
-        <target>Se escribió al usuario a</target>
-      </trans-unit>
-      <trans-unit id="sa0e0bdd7e244416b">
-        <source>Suspicious request</source>
-        <target>Solicitud sospechosa</target>
-      </trans-unit>
-      <trans-unit id="s7bda44013984fc48">
-        <source>Password set</source>
-        <target>Conjunto de contraseñas</target>
-      </trans-unit>
-      <trans-unit id="sa1b41e334ad89d94">
-        <source>Secret was viewed</source>
-        <target>Se ha visto el secreto</target>
-      </trans-unit>
-      <trans-unit id="s92ca679592a36b35">
-        <source>Secret was rotated</source>
-        <target>Se ha rotado el</target>
-      </trans-unit>
-      <trans-unit id="s8a1d9403ca90989b">
-        <source>Invitation used</source>
-        <target>Invitación utilizada</target>
-      </trans-unit>
-      <trans-unit id="s5f496533610103f2">
-        <source>Application authorized</source>
-        <target>Solicitud autorizada</target>
-      </trans-unit>
-      <trans-unit id="sdc9e222be9612939">
-        <source>Source linked</source>
-        <target>Fuente enlazada</target>
-      </trans-unit>
-      <trans-unit id="sb1c91762ae3a9bee">
-        <source>Impersonation started</source>
-        <target>Se ha iniciado la suplantación</target>
-      </trans-unit>
-      <trans-unit id="s9c73bd29b279d26b">
-        <source>Impersonation ended</source>
-        <target>Finalizó la suplantación</target>
-      </trans-unit>
-      <trans-unit id="s1cd264012278c047">
-        <source>Flow execution</source>
-        <target>Ejecución de flujo</target>
-      </trans-unit>
-      <trans-unit id="s32f04d33924ce8ad">
-        <source>Policy execution</source>
-        <target>Ejecución de políticas</target>
-      </trans-unit>
-      <trans-unit id="sb6d7128df5978cee">
-        <source>Policy exception</source>
-        <target>Excepción de política</target>
-      </trans-unit>
-      <trans-unit id="s77f572257f69a8db">
-        <source>Property Mapping exception</source>
-        <target>excepción de asignación de propiedades</target>
-      </trans-unit>
-      <trans-unit id="s2543cffd6ebb6803">
-        <source>System task execution</source>
-        <target>Ejecución de tareas del sistema</target>
-      </trans-unit>
-      <trans-unit id="se2f258b996f7279c">
-        <source>System task exception</source>
-        <target>Excepción tarea del sistema</target>
-      </trans-unit>
-      <trans-unit id="s81eff3409d572a21">
-        <source>General system exception</source>
-        <target>Excepción general del sistema</target>
-      </trans-unit>
-      <trans-unit id="sf8f49cdbf0036343">
-        <source>Configuration error</source>
-        <target>Error de configuración</target>
-      </trans-unit>
-      <trans-unit id="s9c6f61dc47bc4f0a">
-        <source>Model created</source>
-        <target>Modelo creado</target>
-      </trans-unit>
-      <trans-unit id="s47a4983a2c6bb749">
-        <source>Model updated</source>
-        <target>Modelo actualizado</target>
-      </trans-unit>
-      <trans-unit id="sc9f69360b58706c7">
-        <source>Model deleted</source>
-        <target>Modelo eliminado</target>
-      </trans-unit>
-      <trans-unit id="sa266303caf1bd27f">
-        <source>Email sent</source>
-        <target>Correo electrónico enviado</target>
-      </trans-unit>
-      <trans-unit id="s6c410fedda2a575f">
-        <source>Update available</source>
-        <target>Actualización disponible</target>
-      </trans-unit>
-      <trans-unit id="s02240309358f557c">
-        <source>Unknown severity</source>
-      </trans-unit>
-      <trans-unit id="sf1ec4acb8d744ed9">
-        <source>Alert</source>
-        <target>Alerta</target>
-      </trans-unit>
-      <trans-unit id="s9117fb5195e75151">
-        <source>Notice</source>
-        <target>Notificación</target>
-      </trans-unit>
       <trans-unit id="s34be76c6b1eadbef">
         <source>Warning</source>
         <target>Aviso</target>
-      </trans-unit>
-      <trans-unit id="sf45a0d2f00bcc6ff">
-        <source>no tabs defined</source>
-        <target>no se han definido pestañas</target>
-      </trans-unit>
-      <trans-unit id="s04c5a637328c9b67">
-        <source><x id="0" equiv-text="${this.pages?.startIndex}"/> - <x id="1" equiv-text="${this.pages?.endIndex}"/> of <x id="2" equiv-text="${this.pages?.count}"/></source>
-        <target>
-        <x id="0" equiv-text="${this.pages?.startIndex}"/>- 
-        <x id="1" equiv-text="${this.pages?.endIndex}"/>de 
-        <x id="2" equiv-text="${this.pages?.count}"/></target>
-      </trans-unit>
-      <trans-unit id="s6a89bb10338369b4">
-        <source>Go to previous page</source>
-        <target>Ir a la página anterior</target>
-      </trans-unit>
-      <trans-unit id="s7edad99c6b7bfe88">
-        <source>Go to next page</source>
-        <target>Ir a la página siguiente</target>
       </trans-unit>
       <trans-unit id="sffa721bb6aa3128d">
         <source>Search...</source>
@@ -321,20 +135,9 @@
         <source>Loading</source>
         <target>Cargando</target>
       </trans-unit>
-      <trans-unit id="s7bc8c327f1f7c82c">
-        <source>No objects found.</source>
-        <target>No se han encontrado objetos.</target>
-      </trans-unit>
-      <trans-unit id="sfd44ce578f643145">
-        <source>Failed to fetch objects.</source>
-      </trans-unit>
       <trans-unit id="s7b7163270e57e8b4">
         <source>Refresh</source>
         <target>Actualizar</target>
-      </trans-unit>
-      <trans-unit id="s909e876731a8febb">
-        <source>Select all rows</source>
-        <target>Seleccionar todas las filas</target>
       </trans-unit>
       <trans-unit id="sa442044b586ec8bf">
         <source>Action</source>
@@ -424,9 +227,6 @@
         <source>No workers connected. Background tasks will not run.</source>
         <target>No hay trabajadores conectados. No se ejecutarán tareas en segundo plano.</target>
       </trans-unit>
-      <trans-unit id="s2ed8eb02525a920a">
-        <source><x id="0" equiv-text="${ago}"/> hour(s) ago</source>
-      </trans-unit>
       <trans-unit id="s1f1c857c0c4250e4">
         <source><x id="0" equiv-text="${ago}"/> day(s) ago</source>
       </trans-unit>
@@ -441,12 +241,6 @@
       <trans-unit id="sc2f1e5dd74c1b7df">
         <source>Successful Logins</source>
         <target>Inicios de sesión exitosos</target>
-      </trans-unit>
-      <trans-unit id="s0382d73823585617">
-        <source><x id="0" equiv-text="${this.errorMessage}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
-        <target>
-        <x id="0" equiv-text="${this.errorMessage}"/>: 
-        <x id="1" equiv-text="${e.toString()}"/></target>
       </trans-unit>
       <trans-unit id="s2ceb11be2290bb1b">
         <source>Cancel</source>
@@ -465,23 +259,6 @@
       <trans-unit id="sfeb82261bcf99edd">
         <source>Healthy outposts</source>
         <target>Puestos avanzados saludables</target>
-      </trans-unit>
-      <trans-unit id="saae1c70e168b45b4">
-        <source>Admin</source>
-        <target>Admin</target>
-      </trans-unit>
-      <trans-unit id="s0a11c2ffb8309d1a">
-        <source>Not found</source>
-        <target>No se ha encontrado</target>
-      </trans-unit>
-      <trans-unit id="saa0e2675da69651b">
-        <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
-        <target>No se encontró la URL « 
-        <x id="0" equiv-text="${this.url}"/>».</target>
-      </trans-unit>
-      <trans-unit id="s58cd9c2fe836d9c6">
-        <source>Return home</source>
-        <target>Regresar a casa</target>
       </trans-unit>
       <trans-unit id="s41e035c4bb8d15f2">
         <source>General system status</source>
@@ -546,9 +323,6 @@
       <trans-unit id="s835da49b4dc83a51">
         <source>Failed Logins per day in the last month</source>
         <target>Inicios de sesión fallidos por día en el último mes</target>
-      </trans-unit>
-      <trans-unit id="s5f4586bc1e2740e6">
-        <source>Clear search</source>
       </trans-unit>
       <trans-unit id="s3b34d9930e33bd46">
         <source>System Tasks</source>
@@ -737,17 +511,6 @@
       <trans-unit id="s1c8e9816dcae6d9c">
         <source>The start for gidNumbers, this number is added to a number generated from the group.Pk to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to ensure that we don't collide with local groups or users primary groups gidNumber</source>
         <target>El comienzo de GIDNumbers, este número se agrega a un número generado por el grupo.pk para asegurarse de que los números no sean demasiado bajos para los grupos POSIX. El valor predeterminado es 4000 para garantizar que no choquemos con los grupos locales o los grupos principales de los usuarios (GIDNumber).</target>
-      </trans-unit>
-      <trans-unit id="s2236dc563c2dbf76">
-        <source>(Format: hours=-1;minutes=-2;seconds=-3).</source>
-        <target>(Formato: horas = -1; minutos = -2; segundos = -3).</target>
-      </trans-unit>
-      <trans-unit id="sbec40ef4e6f139b7">
-        <source>(Format: hours=1;minutes=2;seconds=3).</source>
-        <target>(Formato: horas = 1; minutos = 2; segundos = 3).</target>
-      </trans-unit>
-      <trans-unit id="sbb8ad22c83d375b1">
-        <source>The following keywords are supported:</source>
       </trans-unit>
       <trans-unit id="sbb3243352661428f">
         <source>Authentication flow</source>
@@ -1151,26 +914,12 @@
         <source>Metadata</source>
         <target>Metadatos</target>
       </trans-unit>
-      <trans-unit id="s7181a5504472e856">
-        <source>Apply changes</source>
-      </trans-unit>
       <trans-unit id="s5e8250fb85d64c23">
         <source>Close</source>
         <target>Cerrar</target>
       </trans-unit>
-      <trans-unit id="sad59707375956ad2">
-        <source>Finish</source>
-      </trans-unit>
       <trans-unit id="sc16e00a7a8b2fde2">
         <source>Back</source>
-      </trans-unit>
-      <trans-unit id="sd5903cc8de68b3fc">
-        <source>No form found</source>
-        <target>No se encontró ningún formulario</target>
-      </trans-unit>
-      <trans-unit id="s45935843b1b5b496">
-        <source>Form didn't return a promise for submitting</source>
-        <target>El formulario no devolvió una promesa para enviarla</target>
       </trans-unit>
       <trans-unit id="s74475586afc1fb0f">
         <source>Select type</source>
@@ -1254,52 +1003,15 @@
         <source>Property mappings used to group creation.</source>
         <target>Asignaciones de propiedades utilizadas para la creación de grupos.</target>
       </trans-unit>
-      <trans-unit id="se09ab93d69f7f45b">
-        <source>Not used by any other object.</source>
-        <target>No lo usa ningún otro objeto.</target>
-      </trans-unit>
-      <trans-unit id="s10922bd0ac765562">
-        <source>object will be DELETED</source>
-        <target>objeto se ELIMINARÁ</target>
-      </trans-unit>
-      <trans-unit id="sf3981f36525b0dbd">
-        <source>connection will be deleted</source>
-        <target>se eliminará la conexión</target>
-      </trans-unit>
-      <trans-unit id="s93cf77a59db53395">
-        <source>reference will be reset to default value</source>
-        <target>la referencia se restablecerá al valor predeterminado</target>
-      </trans-unit>
-      <trans-unit id="s3e211d29fa10f843">
-        <source>reference will be set to an empty value</source>
-        <target>la referencia se establecerá en un valor vacío</target>
-      </trans-unit>
       <trans-unit id="s55fa598b754cc3cc">
-        <source><x id="0" equiv-text="${ub.name}"/> (<x id="1" equiv-text="${consequence}"/>)</source>
+        <source><x id="0" equiv-text="${policy.name}"/> (<x id="1" equiv-text="${policy.verboseName}"/>)</source>
         <target>
-        <x id="0" equiv-text="${ub.name}"/>( 
-        <x id="1" equiv-text="${consequence}"/>)</target>
+        <x id="0" equiv-text="${policy.name}"/>( 
+        <x id="1" equiv-text="${policy.verboseName}"/>)</target>
       </trans-unit>
       <trans-unit id="s09240e07b5b8d640">
         <source>ID</source>
         <target>ID</target>
-      </trans-unit>
-      <trans-unit id="se33b158a1ec02a09">
-        <source>Successfully deleted <x id="0" equiv-text="${this.objects.length} ${this.objectLabel}"/></source>
-      </trans-unit>
-      <trans-unit id="sf6eb148db23d19de">
-        <source>Failed to delete <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
-        <target>No se pudo eliminar 
-        <x id="0" equiv-text="${this.objectLabel}"/>: 
-        <x id="1" equiv-text="${e.toString()}"/></target>
-      </trans-unit>
-      <trans-unit id="s039b6434e8a75560">
-        <source>Delete <x id="0" equiv-text="${this.objectLabel}"/></source>
-        <target>Eliminar 
-        <x id="0" equiv-text="${this.objectLabel}"/></target>
-      </trans-unit>
-      <trans-unit id="s5819a49638f6d7cb">
-        <source>Are you sure you want to delete <x id="0" equiv-text="${this.objects.length} ${this.objectLabel}"/>?</source>
       </trans-unit>
       <trans-unit id="sdc673e73b5c13aea">
         <source>Delete</source>
@@ -2685,21 +2397,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>Expires on</source>
         <target>Caduca el</target>
       </trans-unit>
-      <trans-unit id="s1cd198d689c66e4b">
-        <source>API Access</source>
-        <target>Acceso a la API</target>
-      </trans-unit>
-      <trans-unit id="sf29883ac9ec43085">
-        <source>App password</source>
-        <target>contraseña de la aplicación</target>
-      </trans-unit>
-      <trans-unit id="sfe211545fd02f73e">
-        <source>Verification</source>
-        <target>Verificación</target>
-      </trans-unit>
-      <trans-unit id="sd73b202ec04eefd9">
-        <source>Unknown intent</source>
-      </trans-unit>
       <trans-unit id="s78fd8c03f8c967f3">
         <source>Tokens</source>
         <target>Fichas</target>
@@ -2991,15 +2688,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>Valid for 360 days, after which the password will automatically rotate. You can copy the password from the Token List.</source>
         <target>Válido durante 360 días, después de lo cual la contraseña cambiará automáticamente. Puede copiar la contraseña de la lista de tokens.</target>
       </trans-unit>
-      <trans-unit id="s4414164d120de61a">
-        <source>The following objects use <x id="0" equiv-text="${objName}"/></source>
-        <target>Los siguientes objetos usan 
-        <x id="0" equiv-text="${objName}"/></target>
-      </trans-unit>
-      <trans-unit id="s92e241c9f3c101a2">
-        <source>connecting object will be deleted</source>
-        <target>se eliminará el objeto de conexión</target>
-      </trans-unit>
       <trans-unit id="se6a13beff646557b">
         <source>Successfully updated <x id="0" equiv-text="${this.objectLabel} ${this.obj?.name}"/></source>
       </trans-unit>
@@ -3139,9 +2827,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>Users</source>
         <target>Usuarios</target>
       </trans-unit>
-      <trans-unit id="sca7cfe2bef51b2a5">
-        <source>Root</source>
-      </trans-unit>
       <trans-unit id="s3616cc78631f5893">
         <source>Warning: You're about to delete the user you're logged in as (<x id="0" equiv-text="${shouldShowWarning.username}"/>). Proceed at your own risk.</source>
         <target>Advertencia: Vas a eliminar el usuario con el que iniciaste sesión ( 
@@ -3178,54 +2863,20 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>Application authorizations</source>
         <target>Autorizaciones de solicitudes</target>
       </trans-unit>
-      <trans-unit id="s7301a7069b7bc83e">
-        <source>Revoked?</source>
-        <target>¿Revocado?</target>
-      </trans-unit>
       <trans-unit id="sd924045605feea63">
         <source>Expires</source>
         <target>Caduca</target>
-      </trans-unit>
-      <trans-unit id="s1c8916418c334935">
-        <source>ID Token</source>
-        <target>Token de identificación</target>
-      </trans-unit>
-      <trans-unit id="s90760e5e02e95dfe">
-        <source>Refresh Tokens(s)</source>
-      </trans-unit>
-      <trans-unit id="s1b88fa3df4423292">
-        <source>Last IP</source>
-        <target>Última IP</target>
-      </trans-unit>
-      <trans-unit id="se63f9d833700af49">
-        <source>Session(s)</source>
-        <target>Sesión (s)</target>
       </trans-unit>
       <trans-unit id="sf679b7a62808287e">
         <source>Expiry</source>
         <target>Caducidad</target>
       </trans-unit>
-      <trans-unit id="sde1907073fd96017">
-        <source>(Current session)</source>
-      </trans-unit>
       <trans-unit id="se8dca0132c66ae03">
         <source>Permissions</source>
-      </trans-unit>
-      <trans-unit id="s76881c01b6a3a8c7">
-        <source>Consent(s)</source>
-        <target>Consentimiento (s)</target>
       </trans-unit>
       <trans-unit id="sea2f00b34b385a43">
         <source>Successfully updated device.</source>
         <target>El dispositivo se actualizó correctamente.</target>
-      </trans-unit>
-      <trans-unit id="s858e7ac4b3cf955f">
-        <source>Static tokens</source>
-        <target>Fichas estáticas</target>
-      </trans-unit>
-      <trans-unit id="sfcfcf85a57eea78a">
-        <source>TOTP Device</source>
-        <target>Dispositivo TOTP</target>
       </trans-unit>
       <trans-unit id="s6a406aecb2c0e5c5">
         <source>Enroll</source>
@@ -4881,31 +4532,6 @@ Bindings to groups/users are checked against the user of the event.</source>
       <trans-unit id="sef3d102324bf8561">
         <source>Create Blueprint Instance</source>
       </trans-unit>
-      <trans-unit id="s32a3efa23718e713">
-        <source>API Requests</source>
-        <target>Solicitudes de API</target>
-      </trans-unit>
-      <trans-unit id="sddb3b0176f437721">
-        <source>Open API Browser</source>
-        <target>Abrir navegador de API</target>
-      </trans-unit>
-      <trans-unit id="s5be3c6d61cd9182f">
-        <source>Notifications</source>
-        <target>Notificaciones</target>
-      </trans-unit>
-      <trans-unit id="sa3438c7bb4e9cce8">
-        <source><x id="0" equiv-text="${this.unread}"/> unread</source>
-        <target>
-        <x id="0" equiv-text="${this.unread}"/>sin leer</target>
-      </trans-unit>
-      <trans-unit id="s6e6e737601f44b2c">
-        <source>Successfully cleared notifications</source>
-        <target>Notificaciones eliminadas correctamente</target>
-      </trans-unit>
-      <trans-unit id="s8cda828dac449ea5">
-        <source>Clear all</source>
-        <target>Borrar todo</target>
-      </trans-unit>
       <trans-unit id="s4207178ba0b99418">
         <source>A newer version of the frontend is available.</source>
         <target>Está disponible una versión más reciente de la interfaz.</target>
@@ -4950,10 +4576,6 @@ Bindings to groups/users are checked against the user of the event.</source>
       <trans-unit id="s6b79e73ca77148a0">
         <source>Outpost Integrations</source>
         <target>Integraciones de Outpost</target>
-      </trans-unit>
-      <trans-unit id="sab85321d3b0840b7">
-        <source>API request failed</source>
-        <target>Solicitud de API fallida</target>
       </trans-unit>
       <trans-unit id="sa3599457b9418bc5">
         <source>User's avatar</source>
@@ -5478,12 +5100,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sdeb6cee42435dd07">
   <source>Update License</source>
 </trans-unit>
-<trans-unit id="s7df5b92a3f93544f">
-  <source>Warning: The current user count has exceeded the configured licenses.</source>
-</trans-unit>
-<trans-unit id="s0141f42936495787">
-  <source>Click here for more info.</source>
-</trans-unit>
 <trans-unit id="s7be2df39f727faa2">
   <source>Enterprise</source>
 </trans-unit>
@@ -5534,9 +5150,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s8fa26f65aed77c96">
   <source>More details</source>
-</trans-unit>
-<trans-unit id="s08df8d0a773a3ea0">
-  <source>Remove item</source>
 </trans-unit>
 <trans-unit id="s364c4f177a2f8322">
   <source>Open API drawer</source>
@@ -5658,12 +5271,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s6f5bb31e2733ecd5">
   <source>Create a link for this user to reset their password</source>
 </trans-unit>
-<trans-unit id="s67ac11d47f1ce794">
-  <source>WebAuthn requires this page to be accessed via HTTPS.</source>
-</trans-unit>
-<trans-unit id="se9e9e1d6799b86a5">
-  <source>WebAuthn not supported by browser.</source>
-</trans-unit>
 <trans-unit id="sff0ac1ace2d90709">
   <source>Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /outpost.goauthentik.io must be routed to the outpost (when using a managed outpost, this is done for you).</source>
 </trans-unit>
@@ -5731,14 +5338,8 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s3e99ea082ca5ade9">
   <source>Failed to fetch</source>
 </trans-unit>
-<trans-unit id="s98327528f00365a7">
-  <source>Failed to fetch data.</source>
-</trans-unit>
 <trans-unit id="sf485014051ad0cf7">
   <source>Successfully assigned permission.</source>
-</trans-unit>
-<trans-unit id="sca7fed2bef53cb99">
-  <source>Role</source>
 </trans-unit>
 <trans-unit id="sc92c1a54034e21cc">
   <source>Assign</source>
@@ -5746,23 +5347,8 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="scd84d10ee9137070">
   <source>Assign permission to role</source>
 </trans-unit>
-<trans-unit id="s5ee6f1b84e9ebc69">
-  <source>Assign to new role</source>
-</trans-unit>
-<trans-unit id="s4afb26a8fae257e9">
-  <source>Directly assigned</source>
-</trans-unit>
 <trans-unit id="sd8051c26e155f043">
   <source>Assign permission to user</source>
-</trans-unit>
-<trans-unit id="sf79f8681e5ffaee2">
-  <source>Assign to new user</source>
-</trans-unit>
-<trans-unit id="saabeb4cab074b0b9">
-  <source>User Object Permissions</source>
-</trans-unit>
-<trans-unit id="s8489d5559dda260c">
-  <source>Role Object Permissions</source>
 </trans-unit>
 <trans-unit id="s6b2beba7ab637e9e">
   <source>Roles</source>
@@ -5770,14 +5356,8 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s96d2bb4be3f5e8aa">
   <source>Select roles to grant this groups' users' permissions from the selected roles.</source>
 </trans-unit>
-<trans-unit id="sb37880a2a7288ef0">
-  <source>Update Permissions</source>
-</trans-unit>
 <trans-unit id="se9c07cf256774d81">
   <source>Editing is disabled for managed tokens</source>
-</trans-unit>
-<trans-unit id="s78ab26da7f067de8">
-  <source>Select permissions to grant</source>
 </trans-unit>
 <trans-unit id="sdeb90bfd8a80b86b">
   <source>Permissions to add</source>
@@ -5833,9 +5413,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s526e2c66bd51ff5f">
   <source>Role Info</source>
 </trans-unit>
-<trans-unit id="s2da4aa7a9abeb653">
-  <source>Pseudolocale (for testing)</source>
-</trans-unit>
 <trans-unit id="s4bd386db7302bb22">
   <source>Create With Wizard</source>
 </trans-unit>
@@ -5881,12 +5458,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s3e902999ddf7b50e">
   <source>SCIM (System for Cross-domain Identity Management)</source>
 </trans-unit>
-<trans-unit id="sdc5690be4a342985">
-  <source>The token has been copied to your clipboard</source>
-</trans-unit>
-<trans-unit id="s7f3edfee24690c9f">
-  <source>The token was displayed because authentik does not have permission to write to the clipboard</source>
-</trans-unit>
 <trans-unit id="saf6097bfa25205b8">
   <source>A copy of this recovery link has been placed in your clipboard</source>
 </trans-unit>
@@ -5898,15 +5469,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="se5c795faf2c07514">
   <source>Create Recovery Link</source>
-</trans-unit>
-<trans-unit id="s84fcddede27b8e2a">
-  <source>External</source>
-</trans-unit>
-<trans-unit id="s1a635369edaf4dc3">
-  <source>Service account</source>
-</trans-unit>
-<trans-unit id="sff930bf2834e2201">
-  <source>Service account (internal)</source>
 </trans-unit>
 <trans-unit id="s66313b45b69cfc88">
   <source>Check the release notes</source>
@@ -6165,12 +5727,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s62418cbcd2a25498">
   <source>Maximum concurrent allowed connections to this endpoint. Can be set to -1 to disable the limit.</source>
-</trans-unit>
-<trans-unit id="s94d61907ee22a8c1">
-  <source>Korean</source>
-</trans-unit>
-<trans-unit id="s95d56e58f816d211">
-  <source>Dutch</source>
 </trans-unit>
     </body>
   </file>

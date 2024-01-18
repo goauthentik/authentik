@@ -1,5 +1,5 @@
 import { globalAK } from "@goauthentik/common/global.js";
-import { Interface } from "@goauthentik/elements/Interface";
+import { Interface } from "@goauthentik/elements/Interface/index.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";

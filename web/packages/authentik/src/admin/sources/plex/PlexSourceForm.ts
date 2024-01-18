@@ -8,7 +8,7 @@ import { ascii_letters, digits, first, randomString } from "@goauthentik/common/
 import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
+} from "@goauthentik/elements/Interface/capabilitiesProvider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";

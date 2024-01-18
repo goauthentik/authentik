@@ -6,12 +6,12 @@ import "@goauthentik/admin/policies/expression/ExpressionPolicyForm";
 import "@goauthentik/admin/policies/password/PasswordPolicyForm";
 import "@goauthentik/admin/policies/reputation/ReputationPolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/forms/ProxyForm";
 import "@goauthentik/elements/wizard/FormWizardPage";
-import { FormWizardPage } from "@goauthentik/elements/wizard/FormWizardPage";
+import { FormWizardPage } from "@goauthentik/elements/wizard/FormWizardPage.js";
 import "@goauthentik/elements/wizard/Wizard";
-import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
+import { WizardPage } from "@goauthentik/elements/wizard/WizardPage.js";
 
 import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";

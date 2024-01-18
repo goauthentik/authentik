@@ -2,7 +2,7 @@ import { BasePropertyMappingForm } from "@goauthentik/admin/property-mappings/Ba
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { docLink } from "@goauthentik/common/global.js";
 import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror.js";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
 import { msg } from "@lit/localize";

@@ -2,9 +2,9 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import { MessageLevel } from "@goauthentik/common/messages.js";
 import { refreshMe } from "@goauthentik/common/users.js";
-import { AKElement } from "@goauthentik/elements/Base";
-import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { AKElement } from "@goauthentik/elements/Base.js";
+import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider.js";
+import { showMessage } from "@goauthentik/elements/messages/MessageContainer.js";
 import { StageHost } from "@goauthentik/flow/stages/base";
 import "@goauthentik/user/user-settings/details/stages/prompt/PromptStage";
 

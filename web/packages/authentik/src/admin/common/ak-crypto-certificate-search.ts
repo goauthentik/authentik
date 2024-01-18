@@ -1,8 +1,8 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
-import { AKElement } from "@goauthentik/elements/Base";
-import { SearchSelect } from "@goauthentik/elements/forms/SearchSelect";
+import { AKElement } from "@goauthentik/elements/Base.js";
+import { SearchSelect } from "@goauthentik/elements/forms/SearchSelect.js";
 import "@goauthentik/elements/forms/SearchSelect";
-import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
+import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter.js";
 
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";

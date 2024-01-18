@@ -1,5 +1,5 @@
 import "@goauthentik/admin/applications/ApplicationForm";
-import { PFSize } from "@goauthentik/app/elements/Spinner";
+import { PFSize } from "@goauthentik/elements/Spinner.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";
 import "@goauthentik/components/ak-app-icon";
@@ -8,11 +8,11 @@ import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
-import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
-// import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
+import { getURLParam } from "@goauthentik/elements/router/RouteMatch.js";
+// import { getURLParam } from "@goauthentik/elements/router/RouteMatch.js";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table.js";
+import { TableColumn } from "@goauthentik/elements/table/Table.js";
+import { TablePage } from "@goauthentik/elements/table/TablePage.js";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";

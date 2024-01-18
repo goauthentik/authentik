@@ -6,11 +6,11 @@ import { uiConfig } from "@goauthentik/common/ui/config.js";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
-import { Form } from "@goauthentik/elements/forms/Form";
+import { Form } from "@goauthentik/elements/forms/Form.js";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/ModalForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table.js";
+import { Table, TableColumn } from "@goauthentik/elements/table/Table.js";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";

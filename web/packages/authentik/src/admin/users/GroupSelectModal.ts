@@ -2,9 +2,9 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/SpinnerButton";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TableModal } from "@goauthentik/elements/table/TableModal";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table.js";
+import { TableColumn } from "@goauthentik/elements/table/Table.js";
+import { TableModal } from "@goauthentik/elements/table/TableModal.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";

@@ -1,5 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
-import { Form } from "@goauthentik/elements/forms/Form";
+import { Form } from "@goauthentik/elements/forms/Form.js";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
 import { msg } from "@lit/localize";

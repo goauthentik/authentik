@@ -1,6 +1,6 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
-import { PFSize } from "@goauthentik/elements/Spinner";
-import { AggregateCard } from "@goauthentik/elements/cards/AggregateCard";
+import { PFSize } from "@goauthentik/elements/Spinner.js";
+import { AggregateCard } from "@goauthentik/elements/cards/AggregateCard.js";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";

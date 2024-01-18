@@ -2,7 +2,7 @@ import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import { MessageLevel } from "@goauthentik/common/messages.js";
 import "@goauthentik/elements/Spinner";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { showMessage } from "@goauthentik/elements/messages/MessageContainer.js";
 import { BaseUserSettings } from "@goauthentik/user/user-settings/BaseUserSettings";
 
 import { msg, str } from "@lit/localize";

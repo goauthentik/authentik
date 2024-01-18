@@ -5,9 +5,9 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/rbac/ObjectPermissionModal";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table.js";
+import { TableColumn } from "@goauthentik/elements/table/Table.js";
+import { TablePage } from "@goauthentik/elements/table/TablePage.js";
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
 import { msg } from "@lit/localize";

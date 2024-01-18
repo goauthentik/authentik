@@ -11,23 +11,23 @@ import { MessageLevel } from "@goauthentik/common/messages.js";
 import { DefaultUIConfig, uiConfig } from "@goauthentik/common/ui/config.js";
 import { first } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-status-label";
-import { rootInterface } from "@goauthentik/elements/Base";
+import { rootInterface } from "@goauthentik/elements/Base.js";
 import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
-import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider";
-import { PFSize } from "@goauthentik/elements/Spinner";
+} from "@goauthentik/elements/Interface/capabilitiesProvider.js";
+import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider.js";
+import { PFSize } from "@goauthentik/elements/Spinner.js";
 import "@goauthentik/elements/TreeView";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
-import { writeToClipboard } from "@goauthentik/elements/utils/writeToClipboard";
+import { showMessage } from "@goauthentik/elements/messages/MessageContainer.js";
+import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch.js";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table.js";
+import { TableColumn } from "@goauthentik/elements/table/Table.js";
+import { TablePage } from "@goauthentik/elements/table/TablePage.js";
+import { writeToClipboard } from "@goauthentik/elements/utils/writeToClipboard.js";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";

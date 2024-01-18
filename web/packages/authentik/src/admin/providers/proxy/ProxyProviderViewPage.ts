@@ -14,15 +14,15 @@ import MDTraefikCompose from "@goauthentik/docs/providers/proxy/_traefik_compose
 import MDTraefikIngress from "@goauthentik/docs/providers/proxy/_traefik_ingress.md";
 import MDTraefikStandalone from "@goauthentik/docs/providers/proxy/_traefik_standalone.md";
 import MDHeaderAuthentication from "@goauthentik/docs/providers/proxy/header_authentication.md";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/Markdown";
-import { Replacer } from "@goauthentik/elements/Markdown";
+import { Replacer } from "@goauthentik/elements/Markdown.js";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
-import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
+import { getURLParam } from "@goauthentik/elements/router/RouteMatch.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";

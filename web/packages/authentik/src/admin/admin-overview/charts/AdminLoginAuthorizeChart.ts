@@ -1,5 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
-import { AKChart, RGBAColor } from "@goauthentik/elements/charts/Chart";
+import { AKChart, RGBAColor } from "@goauthentik/elements/charts/Chart.js";
 import { ChartData, Tick } from "chart.js";
 
 import { msg, str } from "@lit/localize";

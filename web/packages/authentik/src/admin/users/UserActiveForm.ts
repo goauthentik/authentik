@@ -1,7 +1,7 @@
 import { MessageLevel } from "@goauthentik/common/messages.js";
 import "@goauthentik/elements/buttons/SpinnerButton";
-import { DeleteForm } from "@goauthentik/elements/forms/DeleteForm";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { DeleteForm } from "@goauthentik/elements/forms/DeleteForm.js";
+import { showMessage } from "@goauthentik/elements/messages/MessageContainer.js";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";

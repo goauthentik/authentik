@@ -1,7 +1,7 @@
 import { groupBy } from "@goauthentik/common/utils.js";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/EmptyState";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table.js";
 import "@goauthentik/user/LibraryApplication";
 
 import { msg } from "@lit/localize";

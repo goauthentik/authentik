@@ -3,7 +3,7 @@ import "@goauthentik/admin/sources/oauth/OAuthSourceViewPage";
 import "@goauthentik/admin/sources/plex/PlexSourceViewPage";
 import "@goauthentik/admin/sources/saml/SAMLSourceViewPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/buttons/SpinnerButton";

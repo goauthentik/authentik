@@ -1,5 +1,5 @@
 import { TITLE_DEFAULT } from "@goauthentik/common/constants.js";
-import { Interface } from "@goauthentik/elements/Interface";
+import { Interface } from "@goauthentik/elements/Interface/index.js";
 import "@goauthentik/elements/LoadingOverlay";
 import Guacamole from "guacamole-common-js";
 

@@ -1,8 +1,8 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { dateTimeLocal } from "@goauthentik/common/utils.js";
-import { Form } from "@goauthentik/elements/forms/Form";
+import { Form } from "@goauthentik/elements/forms/Form.js";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModalForm } from "@goauthentik/elements/forms/ModalForm";
+import { ModalForm } from "@goauthentik/elements/forms/ModalForm.js";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";

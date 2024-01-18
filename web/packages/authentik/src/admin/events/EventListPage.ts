@@ -5,9 +5,9 @@ import { EventWithContext } from "@goauthentik/common/events.js";
 import { actionToLabel } from "@goauthentik/common/labels.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";
 import "@goauthentik/components/ak-event-info";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table.js";
+import { TableColumn } from "@goauthentik/elements/table/Table.js";
+import { TablePage } from "@goauthentik/elements/table/TablePage.js";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";

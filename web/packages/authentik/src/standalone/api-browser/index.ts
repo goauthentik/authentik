@@ -2,9 +2,9 @@ import { CSRFHeaderName } from "@goauthentik/common/api/middleware.js";
 import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants.js";
 import { globalAK } from "@goauthentik/common/global.js";
 import { first, getCookie } from "@goauthentik/common/utils.js";
-import { Interface } from "@goauthentik/elements/Interface";
-import "@goauthentik/elements/ak-locale-context";
-import { DefaultTenant } from "@goauthentik/elements/sidebar/SidebarBrand";
+import { Interface } from "@goauthentik/elements/Interface/index.js";
+import "@goauthentik/elements/ak-locale-context/index.js";
+import { DefaultTenant } from "@goauthentik/elements/sidebar/SidebarBrand.js";
 import "rapidoc";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -54,7 +54,7 @@ export class APIBrowser extends Interface {
                 bubbles: true,
                 composed: true,
                 detail: UiThemeEnum.Automatic,
-            }),
+            })
         );
     }
 
@@ -91,11 +91,11 @@ export class APIBrowser extends Interface {
                             request: {
                                 headers: Headers;
                             };
-                        }>,
+                        }>
                     ) => {
                         e.detail.request.headers.append(
                             CSRFHeaderName,
-                            getCookie("authentik_csrf"),
+                            getCookie("authentik_csrf")
                         );
                     }}
                 >

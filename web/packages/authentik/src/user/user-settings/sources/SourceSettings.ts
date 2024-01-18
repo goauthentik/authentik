@@ -2,7 +2,7 @@ import { renderSourceIcon } from "@goauthentik/app/admin/sources/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import { me } from "@goauthentik/common/users.js";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/user/user-settings/sources/SourceSettingsOAuth";
 import "@goauthentik/user/user-settings/sources/SourceSettingsPlex";

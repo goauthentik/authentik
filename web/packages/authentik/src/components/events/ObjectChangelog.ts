@@ -8,8 +8,8 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table.js";
+import { Table, TableColumn } from "@goauthentik/elements/table/Table.js";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";

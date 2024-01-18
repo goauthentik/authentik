@@ -1,6 +1,6 @@
 import { MessageLevel } from "@goauthentik/common/messages.js";
 import "@goauthentik/elements/buttons/ActionButton/ak-action-button";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { showMessage } from "@goauthentik/elements/messages/MessageContainer.js";
 import { Meta } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";

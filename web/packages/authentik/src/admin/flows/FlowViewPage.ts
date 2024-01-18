@@ -6,7 +6,7 @@ import { DesignationToLabel } from "@goauthentik/app/admin/flows/utils";
 import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import "@goauthentik/components/events/ObjectChangelog";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/SpinnerButton";

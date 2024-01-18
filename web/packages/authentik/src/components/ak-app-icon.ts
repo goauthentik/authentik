@@ -1,5 +1,5 @@
-import { AKElement } from "@goauthentik/app/elements/Base";
-import { PFSize } from "@goauthentik/app/elements/Spinner";
+import { AKElement } from "@goauthentik/elements/Base.js";
+import { PFSize } from "@goauthentik/elements/Spinner.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";

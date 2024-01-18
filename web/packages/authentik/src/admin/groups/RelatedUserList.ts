@@ -12,19 +12,19 @@ import "@goauthentik/components/ak-status-label";
 import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
-import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider";
+} from "@goauthentik/elements/Interface/capabilitiesProvider.js";
+import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider.js";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/forms/DeleteBulkForm";
-import { Form } from "@goauthentik/elements/forms/Form";
+import { Form } from "@goauthentik/elements/forms/Form.js";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/ModalForm";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
-import { UserOption } from "@goauthentik/elements/user/utils";
+import { showMessage } from "@goauthentik/elements/messages/MessageContainer.js";
+import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch.js";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table.js";
+import { Table, TableColumn } from "@goauthentik/elements/table/Table.js";
+import { UserOption } from "@goauthentik/elements/user/utils.js";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";

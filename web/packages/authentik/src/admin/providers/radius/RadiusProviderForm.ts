@@ -1,7 +1,7 @@
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils.js";
-import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider";
+import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";

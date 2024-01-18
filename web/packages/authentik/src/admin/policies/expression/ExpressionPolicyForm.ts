@@ -3,7 +3,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { docLink } from "@goauthentik/common/global.js";
 import { first } from "@goauthentik/common/utils.js";
 import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
