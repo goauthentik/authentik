@@ -32,7 +32,7 @@ Last year we shared [our (mostly free and open source) security stack](https://g
 
 There are frameworks you can look to (e.g. [NIST](https://www.nist.gov/cyberframework), [OWASP SAMM](https://owasp.org/www-project-samm/)) but these can be overwhelming if you’re a one-person team or new to security. If you’re coming into 2024 with a fresh resolve to improve your security posture, here’s our advice on what to prioritize (and where you can automate).
 
-![](security-hygiene4.png)
+![](./security-hygiene4.png)
 
 <!--truncate-->
 
