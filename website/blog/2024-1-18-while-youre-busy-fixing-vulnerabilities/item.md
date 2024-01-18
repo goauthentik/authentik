@@ -21,7 +21,7 @@ tags:
     - SOC II
     - Authentik Security
 hide_table_of_contents: false
-image:
+image: security-hygiene4.png
 ---
 
 > **_authentik is an open source Identity Provider that unifies your identity needs into a single platform, replacing Okta, Active Directory, and auth0. Authentik Security is a [public benefit company](https://github.com/OpenCoreVentures/ocv-public-benefit-company/blob/main/ocv-public-benefit-company-charter.md) building on top of the open source project._**
@@ -40,12 +40,12 @@ When was the last time you heard of a major breach where they actually exploited
 
 It takes a lot of effort for hackers to study your app and infrastructure to find a way in. These types of attacks also don’t necessarily mean hackers gain access to all your data, which is what they’re usually after. Attacks that simply take you down are just not valuable for them.
 
-Most of the major security breaches in recent years have been [a result of compromised access](https://goauthentik.io/blog/2023-10-23-another-okta-breach). The UK government’s [Cyber security breaches survey 2023](https://www.gov.uk/government/statistics/cyber-security-breaches-survey-2023/cyber-security-breaches-survey-2023) found that the percentage of businesses and charities with some basic cyber security hygiene practices actually *declined* between 2021 and 2023:
+Most of the major security breaches in recent years have been [a result of compromised access](https://goauthentik.io/blog/2023-10-23-another-okta-breach). The UK government’s [Cyber security breaches survey 2023](https://www.gov.uk/government/statistics/cyber-security-breaches-survey-2023/cyber-security-breaches-survey-2023) found that the percentage of businesses and charities with some basic cyber security hygiene practices actually _declined_ between 2021 and 2023:
 
-|  | 2021 | 2023 |
-| --- | --- | --- |
-| Use of password policies | 79% | 70% |
-| Restricting admin rights | 75% | 67% |
+|                          | 2021 | 2023 |
+| ------------------------ | ---- | ---- |
+| Use of password policies | 79%  | 70%  |
+| Restricting admin rights | 75%  | 67%  |
 
 ### At a minimum, resolve to review access this year
 
@@ -53,8 +53,8 @@ Access management is number one—both in terms of things that get neglected, an
 
 There are two nightmare access scenarios for a security engineer:
 
-- Everybody has admin status ([Sysdig reports](https://sysdig.com/2023-cloud-native-security-and-usage-report/) that 90% of accounts have excessive permissions!)
-- Passwords are stored in plain text somewhere (probably to enable shared logins)
+-   Everybody has admin status ([Sysdig reports](https://sysdig.com/2023-cloud-native-security-and-usage-report/) that 90% of accounts have excessive permissions!)
+-   Passwords are stored in plain text somewhere (probably to enable shared logins)
 
 These practices are risky for multiple reasons. If everyone has admin permissions, suddenly a hacker only needs one compromised account to gain access to everything and do a lot of damage. And we all agree that storing passwords in a spreadsheet is not secure, and makes it hard to isolate who has access to what, and why.
 
@@ -82,15 +82,15 @@ While we’re on the topic of security hygiene, there are other practices that a
 
 If you’re on a path to a certification like SOC II or ISO/IEC 27001, you will already be implementing these on a quarterly basis. But as we’ve discussed on this blog before, [even if you’re not seeking certification, they’re still worth doing](https://goauthentik.io/blog/2023-11-22-how-we-saved-over-100k#do-you-really-need-certifications) to ingrain good practices that become more important as you scale. As the Redditor suggested above, [security then goes from reactionary to policy making](https://www.reddit.com/r/cybersecurity/comments/12ygfnw/comment/jhnqgnt/).
 
-- **Review and rotate long-lived credentials:** What was the last time AWS access keys were rotated? Rotating credentials every 30/60/90 days contributes to [“defense in depth”, which we touched on before here](https://goauthentik.io/blog/2023-11-22-how-we-saved-over-100k#organizational-security)). That way, if an access key is compromised, it’s no longer valid. Ideally, you would automate rotation so you can set and forget about this one.
-- **Identify gaps in coverage:** A lot of these routine activities have a second-order effect of exposing failures in process. You’re kicking over stones and seeing what’s lurking underneath. Anything you find is signal that there’s a gap in coverage. How do you make sure you catch those long-lived tokens without having to go looking for them? Apart from automating rotation of credentials as suggested above, with AWS, for example, you could write a simple Python script to query IAM and send out an email when access tokens exceed a certain threshold.
+-   **Review and rotate long-lived credentials:** What was the last time AWS access keys were rotated? Rotating credentials every 30/60/90 days contributes to [“defense in depth”, which we touched on before here](https://goauthentik.io/blog/2023-11-22-how-we-saved-over-100k#organizational-security)). That way, if an access key is compromised, it’s no longer valid. Ideally, you would automate rotation so you can set and forget about this one.
+-   **Identify gaps in coverage:** A lot of these routine activities have a second-order effect of exposing failures in process. You’re kicking over stones and seeing what’s lurking underneath. Anything you find is signal that there’s a gap in coverage. How do you make sure you catch those long-lived tokens without having to go looking for them? Apart from automating rotation of credentials as suggested above, with AWS, for example, you could write a simple Python script to query IAM and send out an email when access tokens exceed a certain threshold.
 
 ### Designate ownership
 
 If you’re a small company and don’t have dedicated security professionals to “own” your apps’ and services’ security, share the responsibilities. For example, one team member owns one application hosted on these five servers, and is responsible for them:
 
-- They perform the routine hygiene checks (like access reviews)
-- They also have the context necessary in the event of a critical vulnerability or even an outage (beyond security, you don’t want people having to run around trying to figure out who does what or how to fix things in an emergency)
+-   They perform the routine hygiene checks (like access reviews)
+-   They also have the context necessary in the event of a critical vulnerability or even an outage (beyond security, you don’t want people having to run around trying to figure out who does what or how to fix things in an emergency)
 
 ## PS: Plugging vulnerabilities—should you bother?
 
@@ -100,7 +100,7 @@ If your company is just building up your security posture, it’s easy to get di
 
 SCA tools also notoriously produce a lot of [false positives](https://goauthentik.io/blog/2023-11-30-automated-security-versus-the-security-mindset#some-of-the-drawbacks-of-vulnerability-scanning-tools). This is not to say you should ignore vulnerabilities, but if you’re strapped for time or resources, getting on top of access is far more likely to have an impact than painstakingly fixing every vulnerable piece of code.
 
-### Patching is a high-impact measure that you *can* implement routinely
+### Patching is a high-impact measure that you _can_ implement routinely
 
 Policies to apply software security updates within 14 days was another measure that suffered a decline in the past few years, according to the UK government’s [Cyber security breaches survey 2023](https://www.gov.uk/government/statistics/cyber-security-breaches-survey-2023/cyber-security-breaches-survey-2023). Businesses and charities with this policy in place dropped from 43% in 2021 to just 31% in 2023.
 
