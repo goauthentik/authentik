@@ -87,7 +87,7 @@
         "@rollup/plugin-replace": "^5.0.5",
         "@rollup/plugin-terser": "^0.4.4",
         "@rollup/plugin-typescript": "^11.1.6",
-        "@spotlightjs/spotlight": "^1.2.6",
+        "@spotlightjs/spotlight": "^1.2.7",
         "@storybook/addon-essentials": "^7.6.9",
         "@storybook/addon-links": "^7.6.9",
         "@storybook/api": "^7.6.9",
