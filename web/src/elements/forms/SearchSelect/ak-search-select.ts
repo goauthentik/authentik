@@ -220,6 +220,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
     onMenuItemClick(obj: T | undefined) {
         return () => {
             this.selectedObject = obj;
+            this.dispatchCustomEvent("ak-change", { value: this.selectedObject });
             this.open = false;
         };
     }
