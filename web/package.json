@@ -54,7 +54,8 @@
         "packages/elements",
         "packages/flow",
         "packages/loading",
-        "packages/pseudolocalize"
+        "packages/pseudolocalize",
+        "packages/user"
     ],
     "engines": {
         "node": ">=20"

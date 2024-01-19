@@ -1,9 +1,9 @@
 import { EVENT_SIDEBAR_TOGGLE } from "@goauthentik/common/constants.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
 import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider.js";
+import { registerCustomElement } from "@goauthentik/elements/utils/customElement.js";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -26,7 +26,6 @@ export const DefaultTenant: CurrentTenant = {
     defaultLocale: "",
 };
 
-@customElement("ak-sidebar-brand")
 export class SidebarBrand extends WithTenantConfig(AKElement) {
     static get styles(): CSSResult[] {
         return [
@@ -92,3 +91,5 @@ export class SidebarBrand extends WithTenantConfig(AKElement) {
             </a>`;
     }
 }
+
+registerCustomElement("ak-sidebar-brand", SidebarBrand);

@@ -8,9 +8,10 @@ import { WSMessage } from "@goauthentik/common/ws.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/messages/Message.js";
 import { APIMessage } from "@goauthentik/elements/messages/Message.js";
+import { registerCustomElement } from "@goauthentik/elements/utils/customElement.js";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -24,7 +25,6 @@ export function showMessage(message: APIMessage, unique = false): void {
     container.requestUpdate();
 }
 
-@customElement("ak-message-container")
 export class MessageContainer extends AKElement {
     @property({ attribute: false })
     messages: APIMessage[] = [];
@@ -79,3 +79,5 @@ export class MessageContainer extends AKElement {
         </ul>`;
     }
 }
+
+registerCustomElement("ak-message-container", MessageContainer);

@@ -1,8 +1,9 @@
 import { AKElement } from "@goauthentik/elements/Base.js";
 import { PFSize } from "@goauthentik/elements/Spinner.js";
+import { registerCustomElement } from "@goauthentik/elements/utils/customElement.js";
 
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 
 import PFBackdrop from "@patternfly/patternfly/components/Backdrop/backdrop.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -30,7 +31,6 @@ export const MODAL_BUTTON_STYLES = css`
     }
 `;
 
-@customElement("ak-modal-button")
 export class ModalButton extends AKElement {
     @property()
     size: PFSize = PFSize.Large;
@@ -139,3 +139,5 @@ export class ModalButton extends AKElement {
             ${this.open ? this.renderModal() : nothing}`;
     }
 }
+
+registerCustomElement("ak-modal-button", ModalButton);

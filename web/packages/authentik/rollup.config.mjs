@@ -60,19 +60,6 @@ export default [
         ],
         ...defaultOptions,
     },
-    // User interface
-    {
-        input: "./src/user/UserInterface.ts",
-        output: [
-            {
-                format: "es",
-                dir: path.join(DIST, "user"),
-                sourcemap: true,
-                manualChunks: manualChunks,
-            },
-        ],
-        ...defaultOptions,
-    },
     // Enterprise
     ...enterprise,
 ];

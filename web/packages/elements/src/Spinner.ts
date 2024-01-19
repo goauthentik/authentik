@@ -1,4 +1,5 @@
 import { AKElement } from "@goauthentik/elements/Base.js";
+import { registerCustomElement } from "@goauthentik/elements/utils/customElement.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -34,11 +35,4 @@ export class Spinner extends AKElement {
     }
 }
 
-export type Constructor<T> = {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    new (...args: any[]): T;
-};
-
-if (!window.customElements.get("ak-spinner")) {
-    window.customElements.define("ak-spinner", Spinner as Constructor<HTMLElement>);
-}
+registerCustomElement("ak-spinner", Spinner);

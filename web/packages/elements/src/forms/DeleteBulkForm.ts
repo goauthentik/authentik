@@ -9,16 +9,17 @@ import { Table, TableColumn } from "@goauthentik/elements/table/Table.js";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
 import PFList from "@patternfly/patternfly/components/List/list.css";
 
 import { UsedBy, UsedByActionEnum } from "@goauthentik/api";
 
+import { registerCustomElement } from "../utils/customElement";
+
 type BulkDeleteMetadata = { key: string; value: string }[];
 
-@customElement("ak-delete-objects-table")
 export class DeleteObjectsTable<T> extends Table<T> {
     paginated = false;
 
@@ -117,7 +118,6 @@ export class DeleteObjectsTable<T> extends Table<T> {
     }
 }
 
-@customElement("ak-forms-delete-bulk")
 export class DeleteBulkForm<T> extends ModalButton {
     @property({ attribute: false })
     objects: T[] = [];
@@ -155,7 +155,7 @@ export class DeleteBulkForm<T> extends ModalButton {
             await Promise.all(
                 this.objects.map((item) => {
                     return this.delete(item);
-                }),
+                })
             );
             this.onSuccess();
             this.open = false;
@@ -163,7 +163,7 @@ export class DeleteBulkForm<T> extends ModalButton {
                 new CustomEvent(EVENT_REFRESH, {
                     bubbles: true,
                     composed: true,
-                }),
+                })
             );
         } catch (e) {
             this.onError(e as Error);
@@ -201,7 +201,7 @@ export class DeleteBulkForm<T> extends ModalButton {
                         ${this.actionSubtext
                             ? this.actionSubtext
                             : msg(
-                                  str`Are you sure you want to delete ${this.objects.length} ${this.objectLabel}?`,
+                                  str`Are you sure you want to delete ${this.objects.length} ${this.objectLabel}?`
                               )}
                     </p>
                     <slot name="notice"></slot>
@@ -235,3 +235,6 @@ export class DeleteBulkForm<T> extends ModalButton {
             </footer>`;
     }
 }
+
+registerCustomElement("ak-delete-objects-table", DeleteObjectsTable);
+registerCustomElement("ak-forms-delete-bulk", DeleteBulkForm);
