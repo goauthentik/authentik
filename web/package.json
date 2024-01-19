@@ -47,10 +47,12 @@
         "@goauthentik/pseudolocalize": "*"
     },
     "workspaces": [
+        "packages/api-browser",
         "packages/authentik",
         "packages/common",
         "packages/components",
         "packages/elements",
+        "packages/loading",
         "packages/pseudolocalize"
     ],
     "engines": {
