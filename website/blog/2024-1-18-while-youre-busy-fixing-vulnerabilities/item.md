@@ -70,9 +70,9 @@ Big, mature corporations tend to have more strict permissions. One of the blessi
 
 ### Integrate access reviews into planning cycles
 
-If your company is making quarterly or even annual plans at the moment, it’s a great time to join in that process. The worst time to sync up with engineering/product management teams to understand their access needs is in the middle of a sprint.
+If your company is making quarterly or annual plans at this moment, now is a great time to introduce access reviews into that process. The second worst time to introduce new access policies and software is in the middle of a sprint when doing so disrupts a development team's cadence. (The worst time, of course, is after you've been breached.)
 
-If you’re partnering with engineering up front though, it’s much easier to work together to understand their plans, so as the security function you can keep an eye out for unusual requests. Slotting access management reviews into an existing process helps to prevent the “security as blocker” problem (which often leads to friction between security and dev teams).
+If you're partnering with engineering up front it's much easier to work with them to understand their needs. This will help you keep an eye open for unusual requests or network activity. Slotting access management reviews into an existing process helps to prevent the “security as blocker” problem (which often leads to friction between security and dev teams).
 
 ### Set up an Identity and Access Management solution
 
@@ -93,10 +93,11 @@ If you’re on a path to a certification like SOC II or ISO/IEC 27001, you will 
 
 ### Designate ownership
 
-If you’re a small company and don’t have dedicated security professionals to “own” your apps’ and services’ security, share the responsibilities. For example, one team member owns one application hosted on these five servers, and is responsible for them:
+If you’re a small company and don’t have dedicated security professionals to “own” the security of your apps and services, share the responsibilities. For example, one team member owns one application hosted on these five servers, and is responsible for them:
 
 -   They perform the routine hygiene checks (like access reviews)
 -   They also have the context necessary in the event of a critical vulnerability or even an outage (beyond security, you don’t want people having to run around trying to figure out who does what or how to fix things in an emergency)
+-   They're responsible for writing the runbook and updating its procedures after an outage or vulnerability has been identified and managed
 
 ## PS: Plugging vulnerabilities—should you bother?
 
@@ -104,7 +105,7 @@ If you’re a small company and don’t have dedicated security professionals to
 
 If your company is just building up your security posture, it’s easy to get distracted by seemingly alarming reports from SCA (Software Composition Analysis) tools. If you don’t have dedicated security engineers and security is being shared among your development team, coding is probably much more familiar and attractive than taking on organizational security challenges. But, as mentioned above, breaches are far more likely to result from phishing than a vulnerability exploitation.
 
-SCA tools also notoriously produce a lot of [false positives](https://goauthentik.io/blog/2023-11-30-automated-security-versus-the-security-mindset#some-of-the-drawbacks-of-vulnerability-scanning-tools). This is not to say you should ignore vulnerabilities, but if you’re strapped for time or resources, getting on top of access is far more likely to have an impact than painstakingly fixing every vulnerable piece of code.
+SCA tools notoriously produce a lot of [false positives](https://goauthentik.io/blog/2023-11-30-automated-security-versus-the-security-mindset#some-of-the-drawbacks-of-vulnerability-scanning-tools). This is not to say you should ignore vulnerabilities, but if you’re strapped for time or resources, getting on top of access is far more likely to have an impact than painstakingly fixing every vulnerable piece of code.
 
 ### Patching is a high-impact measure that you _can_ implement routinely
 
