@@ -22,6 +22,7 @@ esbuild
         bundle: true,
         write: true,
         external: ["*.woff", "*.woff2"],
+        loader: { ".css": "text" },
         define: definitions,
     })
     .catch(() => process.exit(1));

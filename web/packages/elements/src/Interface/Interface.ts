@@ -65,6 +65,11 @@ export class Interface extends AKElement implements AkInterface {
 
     constructor() {
         super();
+        console.log(
+            "SB:",
+            JSON.stringify(PFBase, null, 2),
+            JSON.stringify(ensureCSSStyleSheet(PFBase), null, 2)
+        );
         document.adoptedStyleSheets = [...document.adoptedStyleSheets, ensureCSSStyleSheet(PFBase)];
         tenant().then((tenant) => (this.tenant = tenant));
         config().then((config) => (this.config = config));

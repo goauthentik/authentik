@@ -7,5 +7,6 @@ esbuild
     .build({
         entryPoints: tsfiles,
         outdir: "dist/",
+        loader: { '.css': 'text' },
     })
     .catch(() => process.exit(1));
