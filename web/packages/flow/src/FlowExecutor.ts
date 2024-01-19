@@ -11,11 +11,11 @@ import { WebsocketClient } from "@goauthentik/common/ws.js";
 import { Interface } from "@goauthentik/elements/Interface/index.js";
 import "@goauthentik/elements/LoadingOverlay.js";
 import "@goauthentik/elements/ak-locale-context/ak-locale-context.js";
-import "@goauthentik/flow/sources/apple/AppleLoginInit";
-import "@goauthentik/flow/sources/plex/PlexLoginInit";
-import "@goauthentik/flow/stages/FlowErrorStage";
-import "@goauthentik/flow/stages/RedirectStage";
-import { StageHost } from "@goauthentik/flow/stages/base";
+import "@goauthentik/flow/sources/apple/AppleLoginInit.js";
+import "@goauthentik/flow/sources/plex/PlexLoginInit.js";
+import "@goauthentik/flow/stages/FlowErrorStage.js";
+import "@goauthentik/flow/stages/RedirectStage.js";
+import { StageHost } from "@goauthentik/flow/stages/base.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
@@ -269,77 +269,81 @@ export class FlowExecutor extends Interface implements StageHost {
         this.challenge = challenge as ChallengeTypes;
     }
 
+    // foo
+
     async renderChallengeNativeElement(): Promise<TemplateResult> {
         switch (this.challenge?.component) {
             case "ak-stage-access-denied":
-                await import("@goauthentik/flow/stages/access_denied/AccessDeniedStage");
+                await import("@goauthentik/flow/stages/access_denied/AccessDeniedStage.js");
                 return html`<ak-stage-access-denied
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-access-denied>`;
             case "ak-stage-identification":
-                await import("@goauthentik/flow/stages/identification/IdentificationStage");
+                await import("@goauthentik/flow/stages/identification/IdentificationStage.js");
                 return html`<ak-stage-identification
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-identification>`;
             case "ak-stage-password":
-                await import("@goauthentik/flow/stages/password/PasswordStage");
+                await import("@goauthentik/flow/stages/password/PasswordStage.js");
                 return html`<ak-stage-password
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-password>`;
             case "ak-stage-captcha":
-                await import("@goauthentik/flow/stages/captcha/CaptchaStage");
+                await import("@goauthentik/flow/stages/captcha/CaptchaStage.js");
                 return html`<ak-stage-captcha
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-captcha>`;
             case "ak-stage-consent":
-                await import("@goauthentik/flow/stages/consent/ConsentStage");
+                await import("@goauthentik/flow/stages/consent/ConsentStage.js");
                 return html`<ak-stage-consent
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-consent>`;
             case "ak-stage-dummy":
-                await import("@goauthentik/flow/stages/dummy/DummyStage");
+                await import("@goauthentik/flow/stages/dummy/DummyStage.js");
                 return html`<ak-stage-dummy
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-dummy>`;
             case "ak-stage-email":
-                await import("@goauthentik/flow/stages/email/EmailStage");
+                await import("@goauthentik/flow/stages/email/EmailStage.js");
                 return html`<ak-stage-email
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-email>`;
             case "ak-stage-autosubmit":
-                await import("@goauthentik/flow/stages/autosubmit/AutosubmitStage");
+                await import("@goauthentik/flow/stages/autosubmit/AutosubmitStage.js");
                 return html`<ak-stage-autosubmit
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-autosubmit>`;
             case "ak-stage-prompt":
-                await import("@goauthentik/flow/stages/prompt/PromptStage");
+                await import("@goauthentik/flow/stages/prompt/PromptStage.js");
                 return html`<ak-stage-prompt
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-prompt>`;
             case "ak-stage-authenticator-totp":
-                await import("@goauthentik/flow/stages/authenticator_totp/AuthenticatorTOTPStage");
+                await import(
+                    "@goauthentik/flow/stages/authenticator_totp/AuthenticatorTOTPStage.js"
+                );
                 return html`<ak-stage-authenticator-totp
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-totp>`;
             case "ak-stage-authenticator-duo":
-                await import("@goauthentik/flow/stages/authenticator_duo/AuthenticatorDuoStage");
+                await import("@goauthentik/flow/stages/authenticator_duo/AuthenticatorDuoStage.js");
                 return html`<ak-stage-authenticator-duo
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-duo>`;
             case "ak-stage-authenticator-static":
                 await import(
-                    "@goauthentik/flow/stages/authenticator_static/AuthenticatorStaticStage"
+                    "@goauthentik/flow/stages/authenticator_static/AuthenticatorStaticStage.js"
                 );
                 return html`<ak-stage-authenticator-static
                     .host=${this as StageHost}
@@ -351,21 +355,21 @@ export class FlowExecutor extends Interface implements StageHost {
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-webauthn>`;
             case "ak-stage-authenticator-sms":
-                await import("@goauthentik/flow/stages/authenticator_sms/AuthenticatorSMSStage");
+                await import("@goauthentik/flow/stages/authenticator_sms/AuthenticatorSMSStage.js");
                 return html`<ak-stage-authenticator-sms
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-sms>`;
             case "ak-stage-authenticator-validate":
                 await import(
-                    "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage"
+                    "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage.js"
                 );
                 return html`<ak-stage-authenticator-validate
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-validate>`;
             case "ak-stage-user-login":
-                await import("@goauthentik/flow/stages/user_login/UserLoginStage");
+                await import("@goauthentik/flow/stages/user_login/UserLoginStage.js");
                 return html`<ak-stage-user-login
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
@@ -383,13 +387,13 @@ export class FlowExecutor extends Interface implements StageHost {
                 ></ak-flow-source-oauth-apple>`;
             // Providers
             case "ak-provider-oauth2-device-code":
-                await import("@goauthentik/flow/providers/oauth2/DeviceCode");
+                await import("@goauthentik/flow/providers/oauth2/DeviceCode.js");
                 return html`<ak-flow-provider-oauth2-code
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-flow-provider-oauth2-code>`;
             case "ak-provider-oauth2-device-code-finish":
-                await import("@goauthentik/flow/providers/oauth2/DeviceCodeFinish");
+                await import("@goauthentik/flow/providers/oauth2/DeviceCodeFinish.js");
                 return html`<ak-flow-provider-oauth2-code-finish
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
@@ -446,7 +450,7 @@ export class FlowExecutor extends Interface implements StageHost {
         if (!this.inspectorOpen) {
             return html``;
         }
-        await import("@goauthentik/flow/FlowInspector");
+        await import("@goauthentik/flow/FlowInspector.js");
         return html`<ak-flow-inspector
             class="pf-c-drawer__panel pf-m-width-33"
         ></ak-flow-inspector>`;

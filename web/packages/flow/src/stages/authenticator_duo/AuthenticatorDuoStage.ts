@@ -1,8 +1,8 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import "@goauthentik/elements/EmptyState.js";
 import "@goauthentik/elements/forms/FormElement.js";
-import "@goauthentik/flow/FormStatic";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "@goauthentik/flow/FormStatic.js";
+import { BaseStage } from "@goauthentik/flow/stages/base.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -16,18 +16,10 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import {
-    AuthenticatorDuoChallenge,
-    AuthenticatorDuoChallengeResponseRequest,
-    DuoResponseEnum,
-    StagesApi,
-} from "@goauthentik/api";
+import { AuthenticatorDuoChallenge, AuthenticatorDuoChallengeResponseRequest, DuoResponseEnum, StagesApi } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-duo")
-export class AuthenticatorDuoStage extends BaseStage<
-    AuthenticatorDuoChallenge,
-    AuthenticatorDuoChallengeResponseRequest
-> {
+export class AuthenticatorDuoStage extends BaseStage<AuthenticatorDuoChallenge, AuthenticatorDuoChallengeResponseRequest> {
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
     }
@@ -43,14 +35,10 @@ export class AuthenticatorDuoStage extends BaseStage<
     }
 
     async checkEnrollStatus(): Promise<boolean> {
-        const status = await new StagesApi(
-            DEFAULT_CONFIG,
-        ).stagesAuthenticatorDuoEnrollmentStatusCreate({
+        const status = await new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoEnrollmentStatusCreate({
             stageUuid: this.challenge?.stageUuid || "",
         });
-        console.debug(
-            `authentik/stages/authenticator_duo: Enrollment status: ${status.duoResponse}`,
-        );
+        console.debug(`authentik/stages/authenticator_duo: Enrollment status: ${status.duoResponse}`);
         switch (status.duoResponse) {
             case DuoResponseEnum.Success:
                 this.host?.submit({});
@@ -63,8 +51,7 @@ export class AuthenticatorDuoStage extends BaseStage<
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}> </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
@@ -76,26 +63,13 @@ export class AuthenticatorDuoStage extends BaseStage<
                         this.submitForm(e);
                     }}
                 >
-                    <ak-form-static
-                        class="pf-c-form__group"
-                        userAvatar="${this.challenge.pendingUserAvatar}"
-                        user=${this.challenge.pendingUser}
-                    >
+                    <ak-form-static class="pf-c-form__group" userAvatar="${this.challenge.pendingUserAvatar}" user=${this.challenge.pendingUser}>
                         <div slot="link">
-                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${msg("Not you?")}</a
-                            >
+                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}">${msg("Not you?")}</a>
                         </div>
                     </ak-form-static>
-                    <img
-                        src=${this.challenge.activationBarcode}
-                        alt=${msg("Duo activation QR code")}
-                    />
-                    <p>
-                        ${msg(
-                            "Alternatively, if your current device has Duo installed, click on this link:",
-                        )}
-                    </p>
+                    <img src=${this.challenge.activationBarcode} alt=${msg("Duo activation QR code")} />
+                    <p>${msg("Alternatively, if your current device has Duo installed, click on this link:")}</p>
                     <a href=${this.challenge.activationCode}>${msg("Duo activation")}</a>
 
                     <div class="pf-c-form__group pf-m-action">

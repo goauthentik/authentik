@@ -1,6 +1,6 @@
 import "@goauthentik/elements/EmptyState.js";
-import "@goauthentik/flow/FormStatic";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "@goauthentik/flow/FormStatic.js";
+import { BaseStage } from "@goauthentik/flow/stages/base.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -16,11 +16,7 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
-import {
-    ConsentChallenge,
-    ConsentChallengeResponseRequest,
-    ConsentPermission,
-} from "@goauthentik/api";
+import { ConsentChallenge, ConsentChallengeResponseRequest, ConsentPermission } from "@goauthentik/api";
 
 @customElement("ak-stage-consent")
 export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeResponseRequest> {
@@ -44,14 +40,10 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
     renderNoPrevious(): TemplateResult {
         return html`
             <div class="pf-c-form__group">
-                <h3 id="header-text" class="pf-c-title pf-m-xl pf-u-mb-xl">
-                    ${this.challenge.headerText}
-                </h3>
+                <h3 id="header-text" class="pf-c-title pf-m-xl pf-u-mb-xl">${this.challenge.headerText}</h3>
                 ${this.challenge.permissions.length > 0
                     ? html`
-                          <p class="pf-u-mb-sm">
-                              ${msg("Application requires following permissions:")}
-                          </p>
+                          <p class="pf-u-mb-sm">${msg("Application requires following permissions:")}</p>
                           <ul class="pf-c-list" id="permissions">
                               ${this.renderPermissions(this.challenge.permissions)}
                           </ul>
@@ -64,14 +56,10 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
     renderAdditional(): TemplateResult {
         return html`
             <div class="pf-c-form__group">
-                <h3 id="header-text" class="pf-c-title pf-m-xl pf-u-mb-xl">
-                    ${this.challenge.headerText}
-                </h3>
+                <h3 id="header-text" class="pf-c-title pf-m-xl pf-u-mb-xl">${this.challenge.headerText}</h3>
                 ${this.challenge.permissions.length > 0
                     ? html`
-                          <p class="pf-u-mb-sm">
-                              ${msg("Application already has access to the following permissions:")}
-                          </p>
+                          <p class="pf-u-mb-sm">${msg("Application already has access to the following permissions:")}</p>
                           <ul class="pf-c-list" id="permissions">
                               ${this.renderPermissions(this.challenge.permissions)}
                           </ul>
@@ -81,9 +69,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
             <div class="pf-c-form__group pf-u-mt-md">
                 ${this.challenge.additionalPermissions.length > 0
                     ? html`
-                          <strong class="pf-u-mb-sm">
-                              ${msg("Application requires following new permissions:")}
-                          </strong>
+                          <strong class="pf-u-mb-sm"> ${msg("Application requires following new permissions:")} </strong>
                           <ul class="pf-c-list" id="permissions">
                               ${this.renderPermissions(this.challenge.additionalPermissions)}
                           </ul>
@@ -95,8 +81,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}> </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
@@ -110,25 +95,15 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                         });
                     }}
                 >
-                    <ak-form-static
-                        class="pf-c-form__group"
-                        userAvatar="${this.challenge.pendingUserAvatar}"
-                        user=${this.challenge.pendingUser}
-                    >
+                    <ak-form-static class="pf-c-form__group" userAvatar="${this.challenge.pendingUserAvatar}" user=${this.challenge.pendingUser}>
                         <div slot="link">
-                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${msg("Not you?")}</a
-                            >
+                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}">${msg("Not you?")}</a>
                         </div>
                     </ak-form-static>
-                    ${this.challenge.additionalPermissions.length > 0
-                        ? this.renderAdditional()
-                        : this.renderNoPrevious()}
+                    ${this.challenge.additionalPermissions.length > 0 ? this.renderAdditional() : this.renderNoPrevious()}
 
                     <div class="pf-c-form__group pf-m-action">
-                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${msg("Continue")}
-                        </button>
+                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">${msg("Continue")}</button>
                     </div>
                 </form>
             </div>

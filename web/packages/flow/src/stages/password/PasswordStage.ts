@@ -1,8 +1,8 @@
 import "@goauthentik/elements/EmptyState.js";
 import "@goauthentik/elements/forms/FormElement.js";
-import "@goauthentik/flow/FormStatic";
-import { BaseStage } from "@goauthentik/flow/stages/base";
-import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
+import "@goauthentik/flow/FormStatic.js";
+import { BaseStage } from "@goauthentik/flow/stages/base.js";
+import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -79,8 +79,7 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}> </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
@@ -92,42 +91,18 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                         this.submitForm(e);
                     }}
                 >
-                    <ak-form-static
-                        class="pf-c-form__group"
-                        userAvatar="${this.challenge.pendingUserAvatar}"
-                        user=${this.challenge.pendingUser}
-                    >
+                    <ak-form-static class="pf-c-form__group" userAvatar="${this.challenge.pendingUserAvatar}" user=${this.challenge.pendingUser}>
                         <div slot="link">
-                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${msg("Not you?")}</a
-                            >
+                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}">${msg("Not you?")}</a>
                         </div>
                     </ak-form-static>
-                    <input
-                        name="username"
-                        autocomplete="username"
-                        type="hidden"
-                        value="${this.challenge.pendingUser}"
-                    />
-                    <ak-form-element
-                        label="${msg("Password")}"
-                        ?required="${true}"
-                        class="pf-c-form__group"
-                        .errors=${(this.challenge?.responseErrors || {})["password"]}
-                    >
-                        ${this.renderInput()}
-                    </ak-form-element>
+                    <input name="username" autocomplete="username" type="hidden" value="${this.challenge.pendingUser}" />
+                    <ak-form-element label="${msg("Password")}" ?required="${true}" class="pf-c-form__group" .errors=${(this.challenge?.responseErrors || {})["password"]}> ${this.renderInput()} </ak-form-element>
 
-                    ${this.challenge.recoveryUrl
-                        ? html`<a href="${this.challenge.recoveryUrl}">
-                              ${msg("Forgot password?")}</a
-                          >`
-                        : ""}
+                    ${this.challenge.recoveryUrl ? html`<a href="${this.challenge.recoveryUrl}"> ${msg("Forgot password?")}</a>` : ""}
 
                     <div class="pf-c-form__group pf-m-action">
-                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${msg("Continue")}
-                        </button>
+                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">${msg("Continue")}</button>
                     </div>
                 </form>
             </div>

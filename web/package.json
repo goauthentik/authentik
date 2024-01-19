@@ -52,6 +52,7 @@
         "packages/common",
         "packages/components",
         "packages/elements",
+        "packages/flow",
         "packages/loading",
         "packages/pseudolocalize"
     ],

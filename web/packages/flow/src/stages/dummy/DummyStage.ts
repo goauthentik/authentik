@@ -1,6 +1,6 @@
 import "@goauthentik/elements/EmptyState.js";
-import "@goauthentik/flow/FormStatic";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "@goauthentik/flow/FormStatic.js";
+import { BaseStage } from "@goauthentik/flow/stages/base.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -23,8 +23,7 @@ export class DummyStage extends BaseStage<DummyChallenge, DummyChallengeResponse
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}> </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
@@ -37,9 +36,7 @@ export class DummyStage extends BaseStage<DummyChallenge, DummyChallengeResponse
                     }}
                 >
                     <div class="pf-c-form__group pf-m-action">
-                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${msg("Continue")}
-                        </button>
+                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">${msg("Continue")}</button>
                     </div>
                 </form>
             </div>

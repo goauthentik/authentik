@@ -1,5 +1,5 @@
 import "@goauthentik/elements/forms/HorizontalFormElement.js";
-import { PromptStage } from "@goauthentik/flow/stages/prompt/PromptStage";
+import { PromptStage } from "@goauthentik/flow/stages/prompt/PromptStage.js";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -81,7 +81,7 @@ export class UserSettingsPromptStage extends PromptStage {
                     })}
                     ${"non_field_errors" in (this.challenge?.responseErrors || {})
                         ? this.renderNonFieldErrors(
-                              this.challenge?.responseErrors?.non_field_errors || [],
+                              this.challenge?.responseErrors?.non_field_errors || []
                           )
                         : html``}
                     ${this.renderContinue()}

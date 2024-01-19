@@ -2,9 +2,9 @@
 import "@goauthentik/elements/EmptyState.js";
 import { PFSize } from "@goauthentik/elements/Spinner.js";
 import "@goauthentik/elements/forms/FormElement.js";
-import "@goauthentik/flow/FormStatic";
-import "@goauthentik/flow/stages/access_denied/AccessDeniedStage";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "@goauthentik/flow/FormStatic.js";
+import "@goauthentik/flow/stages/access_denied/AccessDeniedStage.js";
+import { BaseStage } from "@goauthentik/flow/stages/base.js";
 import type { TurnstileObject } from "turnstile-types";
 
 import { msg } from "@lit/localize";
@@ -53,15 +53,11 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
                     console.debug(`authentik/stages/captcha[${handler.name}]: trying handler`);
                     handlerFound = handler.apply(this, [captchaContainer]);
                     if (handlerFound) {
-                        console.debug(
-                            `authentik/stages/captcha[${handler.name}]: handler succeeded`,
-                        );
+                        console.debug(`authentik/stages/captcha[${handler.name}]: handler succeeded`);
                         found = true;
                     }
                 } catch (exc) {
-                    console.debug(
-                        `authentik/stages/captcha[${handler.name}]: handler failed: ${exc}`,
-                    );
+                    console.debug(`authentik/stages/captcha[${handler.name}]: handler failed: ${exc}`);
                     if (handlerFound) {
                         lastError = exc;
                     }
@@ -127,28 +123,20 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}> </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
             </header>
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form">
-                    <ak-form-static
-                        class="pf-c-form__group"
-                        userAvatar="${this.challenge.pendingUserAvatar}"
-                        user=${this.challenge.pendingUser}
-                    >
+                    <ak-form-static class="pf-c-form__group" userAvatar="${this.challenge.pendingUserAvatar}" user=${this.challenge.pendingUser}>
                         <div slot="link">
-                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${msg("Not you?")}</a
-                            >
+                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}">${msg("Not you?")}</a>
                         </div>
                     </ak-form-static>
                     ${this.error
-                        ? html`<ak-stage-access-denied-icon errorMessage=${ifDefined(this.error)}>
-                          </ak-stage-access-denied-icon>`
+                        ? html`<ak-stage-access-denied-icon errorMessage=${ifDefined(this.error)}> </ak-stage-access-denied-icon>`
                         : html`<div>
                               <ak-spinner size=${PFSize.XLarge}></ak-spinner>
                           </div>`}

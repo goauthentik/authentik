@@ -1,6 +1,6 @@
 import "@goauthentik/elements/EmptyState.js";
-import "@goauthentik/flow/FormStatic";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "@goauthentik/flow/FormStatic.js";
+import { BaseStage } from "@goauthentik/flow/stages/base.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -26,11 +26,7 @@ export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeR
             css`
                 pre {
                     overflow-x: scroll;
-                    max-width: calc(
-                        35rem - var(--pf-c-login__main-body--PaddingRight) - var(
-                                --pf-c-login__main-body--PaddingRight
-                            )
-                    );
+                    max-width: calc(35rem - var(--pf-c-login__main-body--PaddingRight) - var(--pf-c-login__main-body--PaddingRight));
                 }
             `,
         ];
@@ -38,19 +34,14 @@ export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeR
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}> </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
             </header>
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form">
-                    <h3 class="pf-c-title pf-m-3xl">
-                        ${this.challenge?.error
-                            ? this.challenge.error
-                            : msg("Something went wrong! Please try again later.")}
-                    </h3>
+                    <h3 class="pf-c-title pf-m-3xl">${this.challenge?.error ? this.challenge.error : msg("Something went wrong! Please try again later.")}</h3>
                     ${this.challenge?.traceback
                         ? html`<div class="pf-c-form__group">
                               <pre class="ak-exception">${this.challenge.traceback}</pre>

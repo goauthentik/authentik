@@ -4,8 +4,8 @@ import "@goauthentik/elements/CodeMirror.js";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror.js";
 import "@goauthentik/elements/forms/HorizontalFormElement.js";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm.js";
-import { StageHost } from "@goauthentik/flow/stages/base";
-import "@goauthentik/flow/stages/prompt/PromptStage";
+import { StageHost } from "@goauthentik/flow/stages/base.js";
+import "@goauthentik/flow/stages/prompt/PromptStage.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -83,7 +83,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
             this.previewError = undefined;
         } catch (exc) {
             const errorMessage = ValidationErrorFromJSON(
-                await (exc as ResponseError).response.json(),
+                await (exc as ResponseError).response.json()
             );
             this.previewError = errorMessage.nonFieldErrors;
         }
@@ -151,7 +151,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 ?selected=${this.instance?.type === PromptTypeEnum.Username}
             >
                 ${msg(
-                    "Username: Same as Text input, but checks for and prevents duplicate usernames.",
+                    "Username: Same as Text input, but checks for and prevents duplicate usernames."
                 )}
             </option>
             <option
@@ -165,7 +165,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 ?selected=${this.instance?.type === PromptTypeEnum.Password}
             >
                 ${msg(
-                    "Password: Masked input, multiple inputs of this type on the same prompt need to be identical.",
+                    "Password: Masked input, multiple inputs of this type on the same prompt need to be identical."
                 )}
             </option>
             <option
@@ -313,7 +313,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 </p>
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "When used in conjunction with a User Write stage, use attributes.foo to write attributes.",
+                        "When used in conjunction with a User Write stage, use attributes.foo to write attributes."
                     )}
                 </p>
             </ak-form-element-horizontal>
@@ -381,7 +381,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         `When checked, the placeholder will be evaluated in the same way a property mapping is.
-            If the evaluation fails, the placeholder itself is returned.`,
+            If the evaluation fails, the placeholder itself is returned.`
                     )}
                 </p>
             </ak-form-element-horizontal>
@@ -398,7 +398,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     ${msg(
                         `Optionally provide a short hint that describes the expected input value.
             When creating a fixed choice field, enable interpreting as expression and return a
-        list to return multiple choices.`,
+        list to return multiple choices.`
                     )}
                 </p>
             </ak-form-element-horizontal>
@@ -421,7 +421,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         `When checked, the initial value will be evaluated in the same way a property mapping is.
-            If the evaluation fails, the initial value itself is returned.`,
+            If the evaluation fails, the initial value itself is returned.`
                     )}
                 </p>
             </ak-form-element-horizontal>
@@ -435,7 +435,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     ${msg(
                         `Optionally pre-fill the input with an initial value.
             When creating a fixed choice field, enable interpreting as expression and
-        return a list to return multiple default choices.`,
+        return a list to return multiple default choices.`
                     )}
                 </p>
             </ak-form-element-horizontal>

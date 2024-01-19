@@ -5,7 +5,7 @@ import { refreshMe } from "@goauthentik/common/users.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
 import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider.js";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer.js";
-import { StageHost } from "@goauthentik/flow/stages/base";
+import { StageHost } from "@goauthentik/flow/stages/base.js";
 import "@goauthentik/user/user-settings/details/stages/prompt/PromptStage";
 
 import { msg } from "@lit/localize";
@@ -130,7 +130,7 @@ export class UserSettingsFlowExecutor
                 new CustomEvent(EVENT_REFRESH, {
                     bubbles: true,
                     composed: true,
-                }),
+                })
             );
             try {
                 document.querySelectorAll("ak-interface-user").forEach((int) => {
@@ -177,7 +177,7 @@ export class UserSettingsFlowExecutor
                         ></ak-user-stage-prompt>`;
                     default:
                         console.debug(
-                            `authentik/user/flows: unsupported stage type ${this.challenge.component}`,
+                            `authentik/user/flows: unsupported stage type ${this.challenge.component}`
                         );
                         return html`
                             <a href="/if/flow/${this.flowSlug}" class="pf-c-button pf-m-primary">

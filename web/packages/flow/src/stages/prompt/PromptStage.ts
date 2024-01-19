@@ -6,7 +6,7 @@ import {
 } from "@goauthentik/elements/Interface/capabilitiesProvider.js";
 import { LOCALES } from "@goauthentik/elements/ak-locale-context/definitions.js";
 import "@goauthentik/elements/forms/FormElement.js";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import { BaseStage } from "@goauthentik/flow/stages/base.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -31,7 +31,7 @@ import {
 
 @customElement("ak-stage-prompt")
 export class PromptStage extends WithCapabilitiesConfig(
-    BaseStage<PromptChallenge, PromptChallengeResponseRequest>,
+    BaseStage<PromptChallenge, PromptChallengeResponseRequest>
 ) {
     static get styles(): CSSResult[] {
         return [
@@ -207,7 +207,7 @@ ${prompt.initialValue}</textarea
                             ?selected=${locale.code === prompt.initialValue}
                         >
                             ${locale.code.toUpperCase()} - ${locale.label()}
-                        </option> `,
+                        </option> `
                 );
 
                 return html`<select class="pf-c-form-control" name="${prompt.fieldKey}">
@@ -301,7 +301,7 @@ ${prompt.initialValue}</textarea
                     })}
                     ${"non_field_errors" in (this.challenge?.responseErrors || {})
                         ? this.renderNonFieldErrors(
-                              this.challenge?.responseErrors?.non_field_errors || [],
+                              this.challenge?.responseErrors?.non_field_errors || []
                           )
                         : html``}
                     ${this.renderContinue()}

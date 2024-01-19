@@ -47,19 +47,6 @@ export const enterprise = ["rac"].map((input) => {
 
 export default [
     POLY,
-    // Flow interface
-    {
-        input: "./src/flow/FlowInterface.ts",
-        output: [
-            {
-                format: "es",
-                dir: path.join(DIST, "flow"),
-                sourcemap: true,
-                manualChunks: manualChunks,
-            },
-        ],
-        ...defaultOptions,
-    },
     // Admin interface
     {
         input: "./src/admin/AdminInterface/AdminInterface.ts",

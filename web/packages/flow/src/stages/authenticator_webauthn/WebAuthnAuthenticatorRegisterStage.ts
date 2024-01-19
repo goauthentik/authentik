@@ -5,7 +5,7 @@ import {
     transformNewAssertionForServer,
 } from "@goauthentik/common/helpers/webauthn.js";
 import { PFSize } from "@goauthentik/elements/Spinner.js";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import { BaseStage } from "@goauthentik/flow/stages/base.js";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -97,7 +97,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
         // byte arrays as expected by the spec.
         this.publicKeyCredentialCreateOptions = transformCredentialCreateOptions(
             this.challenge?.registration as PublicKeyCredentialCreationOptions,
-            this.challenge?.registration.user.id,
+            this.challenge?.registration.user.id
         );
         this.registerWrapper();
     }

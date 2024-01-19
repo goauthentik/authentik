@@ -1,7 +1,7 @@
 import "@goauthentik/elements/EmptyState.js";
 import "@goauthentik/elements/forms/FormElement.js";
-import "@goauthentik/flow/FormStatic";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "@goauthentik/flow/FormStatic.js";
+import { BaseStage } from "@goauthentik/flow/stages/base.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -14,24 +14,17 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import {
-    OAuthDeviceCodeChallenge,
-    OAuthDeviceCodeChallengeResponseRequest,
-} from "@goauthentik/api";
+import { OAuthDeviceCodeChallenge, OAuthDeviceCodeChallengeResponseRequest } from "@goauthentik/api";
 
 @customElement("ak-flow-provider-oauth2-code")
-export class OAuth2DeviceCode extends BaseStage<
-    OAuthDeviceCodeChallenge,
-    OAuthDeviceCodeChallengeResponseRequest
-> {
+export class OAuth2DeviceCode extends BaseStage<OAuthDeviceCodeChallenge, OAuthDeviceCodeChallengeResponseRequest> {
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
     }
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}> </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
@@ -44,30 +37,12 @@ export class OAuth2DeviceCode extends BaseStage<
                     }}
                 >
                     <p>${msg("Enter the code shown on your device.")}</p>
-                    <ak-form-element
-                        label="${msg("Code")}"
-                        ?required="${true}"
-                        class="pf-c-form__group"
-                        .errors=${(this.challenge?.responseErrors || {})["code"]}
-                    >
-                        <input
-                            type="text"
-                            name="code"
-                            inputmode="numeric"
-                            pattern="[0-9]*"
-                            placeholder="${msg("Please enter your Code")}"
-                            autofocus=""
-                            autocomplete="off"
-                            class="pf-c-form-control"
-                            value=""
-                            required
-                        />
+                    <ak-form-element label="${msg("Code")}" ?required="${true}" class="pf-c-form__group" .errors=${(this.challenge?.responseErrors || {})["code"]}>
+                        <input type="text" name="code" inputmode="numeric" pattern="[0-9]*" placeholder="${msg("Please enter your Code")}" autofocus="" autocomplete="off" class="pf-c-form-control" value="" required />
                     </ak-form-element>
 
                     <div class="pf-c-form__group pf-m-action">
-                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${msg("Continue")}
-                        </button>
+                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">${msg("Continue")}</button>
                     </div>
                 </form>
             </div>

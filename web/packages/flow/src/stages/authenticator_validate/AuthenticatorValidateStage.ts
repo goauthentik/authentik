@@ -1,9 +1,9 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
-import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageCode";
-import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageDuo";
-import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn";
-import { BaseStage, StageHost } from "@goauthentik/flow/stages/base";
-import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
+import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageCode.js";
+import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageDuo.js";
+import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn.js";
+import { BaseStage, StageHost } from "@goauthentik/flow/stages/base.js";
+import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -17,23 +17,10 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import {
-    AuthenticatorValidationChallenge,
-    AuthenticatorValidationChallengeResponseRequest,
-    CurrentTenant,
-    DeviceChallenge,
-    DeviceClassesEnum,
-    FlowsApi,
-} from "@goauthentik/api";
+import { AuthenticatorValidationChallenge, AuthenticatorValidationChallengeResponseRequest, CurrentTenant, DeviceChallenge, DeviceClassesEnum, FlowsApi } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-validate")
-export class AuthenticatorValidateStage
-    extends BaseStage<
-        AuthenticatorValidationChallenge,
-        AuthenticatorValidationChallengeResponseRequest
-    >
-    implements StageHost
-{
+export class AuthenticatorValidateStage extends BaseStage<AuthenticatorValidationChallenge, AuthenticatorValidationChallengeResponseRequest> implements StageHost {
     flowSlug = "";
 
     set loading(value: boolean) {
@@ -198,37 +185,18 @@ export class AuthenticatorValidateStage
             case DeviceClassesEnum.Static:
             case DeviceClassesEnum.Totp:
             case DeviceClassesEnum.Sms:
-                return html` <ak-stage-authenticator-validate-code
-                    .host=${this}
-                    .challenge=${this.challenge}
-                    .deviceChallenge=${this.selectedDeviceChallenge}
-                    .showBackButton=${(this.challenge?.deviceChallenges || []).length > 1}
-                >
-                </ak-stage-authenticator-validate-code>`;
+                return html` <ak-stage-authenticator-validate-code .host=${this} .challenge=${this.challenge} .deviceChallenge=${this.selectedDeviceChallenge} .showBackButton=${(this.challenge?.deviceChallenges || []).length > 1}> </ak-stage-authenticator-validate-code>`;
             case DeviceClassesEnum.Webauthn:
-                return html` <ak-stage-authenticator-validate-webauthn
-                    .host=${this}
-                    .challenge=${this.challenge}
-                    .deviceChallenge=${this.selectedDeviceChallenge}
-                    .showBackButton=${(this.challenge?.deviceChallenges || []).length > 1}
-                >
-                </ak-stage-authenticator-validate-webauthn>`;
+                return html` <ak-stage-authenticator-validate-webauthn .host=${this} .challenge=${this.challenge} .deviceChallenge=${this.selectedDeviceChallenge} .showBackButton=${(this.challenge?.deviceChallenges || []).length > 1}> </ak-stage-authenticator-validate-webauthn>`;
             case DeviceClassesEnum.Duo:
-                return html` <ak-stage-authenticator-validate-duo
-                    .host=${this}
-                    .challenge=${this.challenge}
-                    .deviceChallenge=${this.selectedDeviceChallenge}
-                    .showBackButton=${(this.challenge?.deviceChallenges || []).length > 1}
-                >
-                </ak-stage-authenticator-validate-duo>`;
+                return html` <ak-stage-authenticator-validate-duo .host=${this} .challenge=${this.challenge} .deviceChallenge=${this.selectedDeviceChallenge} .showBackButton=${(this.challenge?.deviceChallenges || []).length > 1}> </ak-stage-authenticator-validate-duo>`;
         }
         return html``;
     }
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}> </ak-empty-state>`;
         }
         // User only has a single device class, so we don't show a picker
         if (this.challenge?.deviceChallenges.length === 1) {
@@ -237,13 +205,9 @@ export class AuthenticatorValidateStage
         // TOTP is a bit special, assuming that TOTP is allowed from the backend,
         // and we have a pre-filled value from the password manager,
         // directly set the the TOTP device Challenge as active.
-        const totpChallenge = this.challenge.deviceChallenges.find(
-            (challenge) => challenge.deviceClass === DeviceClassesEnum.Totp,
-        );
+        const totpChallenge = this.challenge.deviceChallenges.find((challenge) => challenge.deviceClass === DeviceClassesEnum.Totp);
         if (PasswordManagerPrefill.totp && totpChallenge) {
-            console.debug(
-                "authentik/stages/authenticator_validate: found prefill totp code, selecting totp challenge",
-            );
+            console.debug("authentik/stages/authenticator_validate: found prefill totp code, selecting totp challenge");
             this.selectedDeviceChallenge = totpChallenge;
         }
         return html`<header class="pf-c-login__main-header">
@@ -253,29 +217,13 @@ export class AuthenticatorValidateStage
                 ? this.renderDeviceChallenge()
                 : html`<div class="pf-c-login__main-body">
                           <form class="pf-c-form">
-                              <ak-form-static
-                                  class="pf-c-form__group"
-                                  userAvatar="${this.challenge.pendingUserAvatar}"
-                                  user=${this.challenge.pendingUser}
-                              >
+                              <ak-form-static class="pf-c-form__group" userAvatar="${this.challenge.pendingUserAvatar}" user=${this.challenge.pendingUser}>
                                   <div slot="link">
-                                      <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                          >${msg("Not you?")}</a
-                                      >
+                                      <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}">${msg("Not you?")}</a>
                                   </div>
                               </ak-form-static>
-                              <input
-                                  name="username"
-                                  autocomplete="username"
-                                  type="hidden"
-                                  value="${this.challenge.pendingUser}"
-                              />
-                              ${this.selectedDeviceChallenge
-                                  ? ""
-                                  : html`<p>${msg("Select an authentication method.")}</p>`}
-                              ${this.challenge.configurationStages.length > 0
-                                  ? this.renderStagePicker()
-                                  : html``}
+                              <input name="username" autocomplete="username" type="hidden" value="${this.challenge.pendingUser}" />
+                              ${this.selectedDeviceChallenge ? "" : html`<p>${msg("Select an authentication method.")}</p>`} ${this.challenge.configurationStages.length > 0 ? this.renderStagePicker() : html``}
                           </form>
                           ${this.renderDevicePicker()}
                       </div>

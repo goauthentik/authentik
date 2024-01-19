@@ -1,7 +1,7 @@
 import "@goauthentik/elements/EmptyState.js";
 import "@goauthentik/elements/forms/FormElement.js";
-import "@goauthentik/flow/FormStatic";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "@goauthentik/flow/FormStatic.js";
+import { BaseStage } from "@goauthentik/flow/stages/base.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -16,16 +16,10 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import {
-    AuthenticatorSMSChallenge,
-    AuthenticatorSMSChallengeResponseRequest,
-} from "@goauthentik/api";
+import { AuthenticatorSMSChallenge, AuthenticatorSMSChallengeResponseRequest } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-sms")
-export class AuthenticatorSMSStage extends BaseStage<
-    AuthenticatorSMSChallenge,
-    AuthenticatorSMSChallengeResponseRequest
-> {
+export class AuthenticatorSMSStage extends BaseStage<AuthenticatorSMSChallenge, AuthenticatorSMSChallengeResponseRequest> {
     static get styles(): CSSResult[] {
         return [PFBase, PFAlert, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
     }
@@ -41,42 +35,17 @@ export class AuthenticatorSMSStage extends BaseStage<
                         this.submitForm(e);
                     }}
                 >
-                    <ak-form-static
-                        class="pf-c-form__group"
-                        userAvatar="${this.challenge.pendingUserAvatar}"
-                        user=${this.challenge.pendingUser}
-                    >
+                    <ak-form-static class="pf-c-form__group" userAvatar="${this.challenge.pendingUserAvatar}" user=${this.challenge.pendingUser}>
                         <div slot="link">
-                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${msg("Not you?")}</a
-                            >
+                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}">${msg("Not you?")}</a>
                         </div>
                     </ak-form-static>
-                    <ak-form-element
-                        label="${msg("Phone number")}"
-                        ?required="${true}"
-                        class="pf-c-form__group"
-                        .errors=${(this.challenge?.responseErrors || {})["phone_number"]}
-                    >
-                        <input
-                            type="tel"
-                            name="phoneNumber"
-                            placeholder="${msg("Please enter your Phone number.")}"
-                            autofocus=""
-                            autocomplete="tel"
-                            class="pf-c-form-control"
-                            required
-                        />
+                    <ak-form-element label="${msg("Phone number")}" ?required="${true}" class="pf-c-form__group" .errors=${(this.challenge?.responseErrors || {})["phone_number"]}>
+                        <input type="tel" name="phoneNumber" placeholder="${msg("Please enter your Phone number.")}" autofocus="" autocomplete="tel" class="pf-c-form-control" required />
                     </ak-form-element>
-                    ${"non_field_errors" in (this.challenge?.responseErrors || {})
-                        ? this.renderNonFieldErrors(
-                              this.challenge?.responseErrors?.non_field_errors || [],
-                          )
-                        : html``}
+                    ${"non_field_errors" in (this.challenge?.responseErrors || {}) ? this.renderNonFieldErrors(this.challenge?.responseErrors?.non_field_errors || []) : html``}
                     <div class="pf-c-form__group pf-m-action">
-                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${msg("Continue")}
-                        </button>
+                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">${msg("Continue")}</button>
                     </div>
                 </form>
             </div>
@@ -96,45 +65,18 @@ export class AuthenticatorSMSStage extends BaseStage<
                         this.submitForm(e);
                     }}
                 >
-                    <ak-form-static
-                        class="pf-c-form__group"
-                        userAvatar="${this.challenge.pendingUserAvatar}"
-                        user=${this.challenge.pendingUser}
-                    >
+                    <ak-form-static class="pf-c-form__group" userAvatar="${this.challenge.pendingUserAvatar}" user=${this.challenge.pendingUser}>
                         <div slot="link">
-                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${msg("Not you?")}</a
-                            >
+                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}">${msg("Not you?")}</a>
                         </div>
                     </ak-form-static>
-                    <ak-form-element
-                        label="${msg("Code")}"
-                        ?required="${true}"
-                        class="pf-c-form__group"
-                        .errors=${(this.challenge?.responseErrors || {})["code"]}
-                    >
+                    <ak-form-element label="${msg("Code")}" ?required="${true}" class="pf-c-form__group" .errors=${(this.challenge?.responseErrors || {})["code"]}>
                         <!-- @ts-ignore -->
-                        <input
-                            type="text"
-                            name="code"
-                            inputmode="numeric"
-                            pattern="[0-9]*"
-                            placeholder="${msg("Please enter the code you received via SMS")}"
-                            autofocus=""
-                            autocomplete="one-time-code"
-                            class="pf-c-form-control"
-                            required
-                        />
+                        <input type="text" name="code" inputmode="numeric" pattern="[0-9]*" placeholder="${msg("Please enter the code you received via SMS")}" autofocus="" autocomplete="one-time-code" class="pf-c-form-control" required />
                     </ak-form-element>
-                    ${"non_field_errors" in (this.challenge?.responseErrors || {})
-                        ? this.renderNonFieldErrors(
-                              this.challenge?.responseErrors?.non_field_errors || [],
-                          )
-                        : html``}
+                    ${"non_field_errors" in (this.challenge?.responseErrors || {}) ? this.renderNonFieldErrors(this.challenge?.responseErrors?.non_field_errors || []) : html``}
                     <div class="pf-c-form__group pf-m-action">
-                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${msg("Continue")}
-                        </button>
+                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">${msg("Continue")}</button>
                     </div>
                 </form>
             </div>
@@ -145,8 +87,7 @@ export class AuthenticatorSMSStage extends BaseStage<
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}> </ak-empty-state>`;
         }
         if (this.challenge.phoneNumberRequired) {
             return this.renderPhoneNumber();

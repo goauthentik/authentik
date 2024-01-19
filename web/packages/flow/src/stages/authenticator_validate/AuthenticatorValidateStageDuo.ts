@@ -1,8 +1,8 @@
 import "@goauthentik/elements/EmptyState.js";
 import "@goauthentik/elements/forms/FormElement.js";
-import "@goauthentik/flow/FormStatic";
-import { AuthenticatorValidateStage } from "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "@goauthentik/flow/FormStatic.js";
+import { AuthenticatorValidateStage } from "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage.js";
+import { BaseStage } from "@goauthentik/flow/stages/base.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -16,17 +16,10 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import {
-    AuthenticatorValidationChallenge,
-    AuthenticatorValidationChallengeResponseRequest,
-    DeviceChallenge,
-} from "@goauthentik/api";
+import { AuthenticatorValidationChallenge, AuthenticatorValidationChallengeResponseRequest, DeviceChallenge } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-validate-duo")
-export class AuthenticatorValidateStageWebDuo extends BaseStage<
-    AuthenticatorValidationChallenge,
-    AuthenticatorValidationChallengeResponseRequest
-> {
+export class AuthenticatorValidateStageWebDuo extends BaseStage<AuthenticatorValidationChallenge, AuthenticatorValidationChallengeResponseRequest> {
     @property({ attribute: false })
     deviceChallenge?: DeviceChallenge;
 
@@ -45,8 +38,7 @@ export class AuthenticatorValidateStageWebDuo extends BaseStage<
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}> </ak-empty-state>`;
         }
         const errors = this.challenge.responseErrors?.duo || [];
         return html`<div class="pf-c-login__main-body">
@@ -56,25 +48,16 @@ export class AuthenticatorValidateStageWebDuo extends BaseStage<
                         this.submitForm(e);
                     }}
                 >
-                    <ak-form-static
-                        class="pf-c-form__group"
-                        userAvatar="${this.challenge.pendingUserAvatar}"
-                        user=${this.challenge.pendingUser}
-                    >
+                    <ak-form-static class="pf-c-form__group" userAvatar="${this.challenge.pendingUserAvatar}" user=${this.challenge.pendingUser}>
                         <div slot="link">
-                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${msg("Not you?")}</a
-                            >
+                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}">${msg("Not you?")}</a>
                         </div>
                     </ak-form-static>
 
                     ${errors.length > 0
                         ? errors.map((err) => {
                               if (err.code === "denied") {
-                                  return html` <ak-stage-access-denied-icon
-                                      errorMessage=${err.string}
-                                  >
-                                  </ak-stage-access-denied-icon>`;
+                                  return html` <ak-stage-access-denied-icon errorMessage=${err.string}> </ak-stage-access-denied-icon>`;
                               }
                               return html`<p>${err.string}</p>`;
                           })
@@ -89,9 +72,7 @@ export class AuthenticatorValidateStageWebDuo extends BaseStage<
                                   class="pf-c-button pf-m-secondary pf-m-block"
                                   @click=${() => {
                                       if (!this.host) return;
-                                      (
-                                          this.host as AuthenticatorValidateStage
-                                      ).selectedDeviceChallenge = undefined;
+                                      (this.host as AuthenticatorValidateStage).selectedDeviceChallenge = undefined;
                                   }}
                               >
                                   ${msg("Return to device picker")}

@@ -1,4 +1,4 @@
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import { BaseStage } from "@goauthentik/flow/stages/base.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -47,7 +47,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         }
         console.debug(
             "authentik/stages/redirect: redirecting to url from server",
-            this.challenge.to,
+            this.challenge.to
         );
         window.location.assign(this.challenge.to);
         this.startedRedirect = true;

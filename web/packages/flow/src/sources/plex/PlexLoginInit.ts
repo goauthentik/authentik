@@ -2,7 +2,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { PlexAPIClient, popupCenterScreen } from "@goauthentik/common/helpers/plex.js";
 import { MessageLevel } from "@goauthentik/common/messages.js";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer.js";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import { BaseStage } from "@goauthentik/flow/stages/base.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult } from "lit";

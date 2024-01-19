@@ -1,9 +1,9 @@
-import { renderSourceIcon } from "@goauthentik/app/admin/sources/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import { me } from "@goauthentik/common/users.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/EmptyState.js";
+import { renderSourceIcon } from "@goauthentik/elements/utils/renderSourceIcon.js";
 import "@goauthentik/user/user-settings/sources/SourceSettingsOAuth";
 import "@goauthentik/user/user-settings/sources/SourceSettingsPlex";
 import "@goauthentik/user/user-settings/sources/SourceSettingsSAML";
@@ -68,7 +68,7 @@ export class UserSourceSettingsPage extends AKElement {
         let connectionPk = -1;
         if (this.connections) {
             const connections = this.connections.results.filter(
-                (con) => con.source.slug === source.objectUid,
+                (con) => con.source.slug === source.objectUid
             );
             if (connections.length > 0) {
                 connectionPk = connections[0].pk;
@@ -115,7 +115,7 @@ export class UserSourceSettingsPage extends AKElement {
         return html` <div class="pf-c-content">
                 <p>
                     ${msg(
-                        "Connect your user account to the services listed below, to allow you to login using the service instead of traditional credentials.",
+                        "Connect your user account to the services listed below, to allow you to login using the service instead of traditional credentials."
                     )}
                 </p>
             </div>
@@ -133,7 +133,7 @@ export class UserSourceSettingsPage extends AKElement {
                                                 <div class="pf-c-data-list__cell">
                                                     ${renderSourceIcon(
                                                         source.title,
-                                                        source.iconUrl,
+                                                        source.iconUrl
                                                     )}
                                                     ${source.title}
                                                 </div>

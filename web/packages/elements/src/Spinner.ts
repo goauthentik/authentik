@@ -2,7 +2,7 @@ import { AKElement } from "@goauthentik/elements/Base.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 
 import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
 
@@ -13,7 +13,6 @@ export enum PFSize {
     XLarge = "pf-m-xl",
 }
 
-@customElement("ak-spinner")
 export class Spinner extends AKElement {
     @property()
     size: PFSize = PFSize.Medium;
@@ -33,4 +32,13 @@ export class Spinner extends AKElement {
             <span class="pf-c-spinner__tail-ball"></span>
         </span>`;
     }
+}
+
+export type Constructor<T> = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    new (...args: any[]): T;
+};
+
+if (!window.customElements.get("ak-spinner")) {
+    window.customElements.define("ak-spinner", Spinner as Constructor<HTMLElement>);
 }

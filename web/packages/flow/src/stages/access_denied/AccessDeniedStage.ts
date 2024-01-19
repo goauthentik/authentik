@@ -1,7 +1,7 @@
 import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/EmptyState.js";
-import "@goauthentik/flow/FormStatic";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "@goauthentik/flow/FormStatic.js";
+import { BaseStage } from "@goauthentik/flow/stages/base.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -59,39 +59,26 @@ export class AccessDeniedIcon extends AKElement {
 }
 
 @customElement("ak-stage-access-denied")
-export class AccessDeniedStage extends BaseStage<
-    AccessDeniedChallenge,
-    FlowChallengeResponseRequest
-> {
+export class AccessDeniedStage extends BaseStage<AccessDeniedChallenge, FlowChallengeResponseRequest> {
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFForm, PFList, PFFormControl, PFTitle];
     }
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}> </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
             </header>
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form">
-                    <ak-form-static
-                        class="pf-c-form__group"
-                        userAvatar="${this.challenge.pendingUserAvatar}"
-                        user=${this.challenge.pendingUser}
-                    >
+                    <ak-form-static class="pf-c-form__group" userAvatar="${this.challenge.pendingUserAvatar}" user=${this.challenge.pendingUser}>
                         <div slot="link">
-                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${msg("Not you?")}</a
-                            >
+                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}">${msg("Not you?")}</a>
                         </div>
                     </ak-form-static>
-                    <ak-stage-access-denied-icon
-                        errorMessage=${ifDefined(this.challenge.errorMessage)}
-                    >
-                    </ak-stage-access-denied-icon>
+                    <ak-stage-access-denied-icon errorMessage=${ifDefined(this.challenge.errorMessage)}> </ak-stage-access-denied-icon>
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">

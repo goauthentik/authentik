@@ -4,7 +4,7 @@ import { adaptCSS } from "@goauthentik/common/utils.js";
 import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet.js";
 
 import { localized } from "@lit/localize";
-import { LitElement } from "lit";
+import { LitElement, ReactiveElement } from "lit";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import ThemeDark from "@goauthentik/common/styles/theme-dark.css";
@@ -60,6 +60,7 @@ export class AKElement extends LitElement {
     }
 
     protected createRenderRoot(): ShadowRoot | Element {
+        this.fixElementStyles();
         const root = super.createRenderRoot() as ShadowRoot;
         let styleRoot: AdoptedStyleSheetsElement = root;
         if ("ShadyDOM" in window) {
@@ -72,6 +73,13 @@ export class AKElement extends LitElement {
         this._initTheme(styleRoot);
         this._initCustomCSS(styleRoot);
         return root;
+    }
+
+    fixElementStyles() {
+        // Ensure all style sheets being passed are really style sheets.
+        (this.constructor as typeof ReactiveElement).elementStyles = (
+            this.constructor as typeof ReactiveElement
+        ).elementStyles.map(ensureCSSStyleSheet);
     }
 
     async getTheme(): Promise<UiThemeEnum> {

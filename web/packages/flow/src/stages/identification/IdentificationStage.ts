@@ -1,8 +1,8 @@
-import { renderSourceIcon } from "@goauthentik/app/admin/sources/utils";
 import "@goauthentik/elements/Divider.js";
 import "@goauthentik/elements/EmptyState.js";
 import "@goauthentik/elements/forms/FormElement.js";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import { renderSourceIcon } from "@goauthentik/elements/utils/renderSourceIcon.js";
+import { BaseStage } from "@goauthentik/flow/stages/base.js";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";

@@ -2,8 +2,8 @@ import { MessageLevel } from "@goauthentik/common/messages.js";
 import "@goauthentik/elements/EmptyState.js";
 import "@goauthentik/elements/forms/FormElement.js";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer.js";
-import "@goauthentik/flow/FormStatic";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "@goauthentik/flow/FormStatic.js";
+import { BaseStage } from "@goauthentik/flow/stages/base.js";
 import "webcomponent-qr-code";
 
 import { msg } from "@lit/localize";
@@ -18,16 +18,10 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import {
-    AuthenticatorTOTPChallenge,
-    AuthenticatorTOTPChallengeResponseRequest,
-} from "@goauthentik/api";
+import { AuthenticatorTOTPChallenge, AuthenticatorTOTPChallengeResponseRequest } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-totp")
-export class AuthenticatorTOTPStage extends BaseStage<
-    AuthenticatorTOTPChallenge,
-    AuthenticatorTOTPChallengeResponseRequest
-> {
+export class AuthenticatorTOTPStage extends BaseStage<AuthenticatorTOTPChallenge, AuthenticatorTOTPChallengeResponseRequest> {
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -48,8 +42,7 @@ export class AuthenticatorTOTPStage extends BaseStage<
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}> </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
@@ -61,15 +54,9 @@ export class AuthenticatorTOTPStage extends BaseStage<
                         this.submitForm(e);
                     }}
                 >
-                    <ak-form-static
-                        class="pf-c-form__group"
-                        userAvatar="${this.challenge.pendingUserAvatar}"
-                        user=${this.challenge.pendingUser}
-                    >
+                    <ak-form-static class="pf-c-form__group" userAvatar="${this.challenge.pendingUserAvatar}" user=${this.challenge.pendingUser}>
                         <div slot="link">
-                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${msg("Not you?")}</a
-                            >
+                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}">${msg("Not you?")}</a>
                         </div>
                     </ak-form-static>
                     <input type="hidden" name="otp_uri" value=${this.challenge.configUrl} />
@@ -89,47 +76,26 @@ export class AuthenticatorTOTPStage extends BaseStage<
                                         });
                                         return;
                                     }
-                                    navigator.clipboard
-                                        .writeText(this.challenge?.configUrl)
-                                        .then(() => {
-                                            showMessage({
-                                                level: MessageLevel.success,
-                                                message: msg("Successfully copied TOTP Config."),
-                                            });
+                                    navigator.clipboard.writeText(this.challenge?.configUrl).then(() => {
+                                        showMessage({
+                                            level: MessageLevel.success,
+                                            message: msg("Successfully copied TOTP Config."),
                                         });
+                                    });
                                 }}
                             >
-                                <span class="pf-c-button__progress"
-                                    ><i class="fas fa-copy"></i
-                                ></span>
+                                <span class="pf-c-button__progress"><i class="fas fa-copy"></i></span>
                                 ${msg("Copy")}
                             </button>
                         </div>
                     </ak-form-element>
-                    <ak-form-element
-                        label="${msg("Code")}"
-                        ?required="${true}"
-                        class="pf-c-form__group"
-                        .errors=${(this.challenge?.responseErrors || {})["code"]}
-                    >
+                    <ak-form-element label="${msg("Code")}" ?required="${true}" class="pf-c-form__group" .errors=${(this.challenge?.responseErrors || {})["code"]}>
                         <!-- @ts-ignore -->
-                        <input
-                            type="text"
-                            name="code"
-                            inputmode="numeric"
-                            pattern="[0-9]*"
-                            placeholder="${msg("Please enter your TOTP Code")}"
-                            autofocus=""
-                            autocomplete="one-time-code"
-                            class="pf-c-form-control"
-                            required
-                        />
+                        <input type="text" name="code" inputmode="numeric" pattern="[0-9]*" placeholder="${msg("Please enter your TOTP Code")}" autofocus="" autocomplete="one-time-code" class="pf-c-form-control" required />
                     </ak-form-element>
 
                     <div class="pf-c-form__group pf-m-action">
-                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${msg("Continue")}
-                        </button>
+                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">${msg("Continue")}</button>
                     </div>
                 </form>
             </div>

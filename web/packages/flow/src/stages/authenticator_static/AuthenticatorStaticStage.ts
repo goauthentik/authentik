@@ -1,7 +1,7 @@
 import "@goauthentik/elements/EmptyState.js";
 import "@goauthentik/elements/forms/FormElement.js";
-import "@goauthentik/flow/FormStatic";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "@goauthentik/flow/FormStatic.js";
+import { BaseStage } from "@goauthentik/flow/stages/base.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -15,16 +15,10 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import {
-    AuthenticatorStaticChallenge,
-    AuthenticatorStaticChallengeResponseRequest,
-} from "@goauthentik/api";
+import { AuthenticatorStaticChallenge, AuthenticatorStaticChallengeResponseRequest } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-static")
-export class AuthenticatorStaticStage extends BaseStage<
-    AuthenticatorStaticChallenge,
-    AuthenticatorStaticChallengeResponseRequest
-> {
+export class AuthenticatorStaticStage extends BaseStage<AuthenticatorStaticChallenge, AuthenticatorStaticChallengeResponseRequest> {
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -53,8 +47,7 @@ export class AuthenticatorStaticStage extends BaseStage<
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}> </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
@@ -66,15 +59,9 @@ export class AuthenticatorStaticStage extends BaseStage<
                         this.submitForm(e);
                     }}
                 >
-                    <ak-form-static
-                        class="pf-c-form__group"
-                        userAvatar="${this.challenge.pendingUserAvatar}"
-                        user=${this.challenge.pendingUser}
-                    >
+                    <ak-form-static class="pf-c-form__group" userAvatar="${this.challenge.pendingUserAvatar}" user=${this.challenge.pendingUser}>
                         <div slot="link">
-                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${msg("Not you?")}</a
-                            >
+                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}">${msg("Not you?")}</a>
                         </div>
                     </ak-form-static>
                     <ak-form-element label="" class="pf-c-form__group">
@@ -87,9 +74,7 @@ export class AuthenticatorStaticStage extends BaseStage<
                     <p>${msg("Make sure to keep these tokens in a safe place.")}</p>
 
                     <div class="pf-c-form__group pf-m-action">
-                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${msg("Continue")}
-                        </button>
+                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">${msg("Continue")}</button>
                     </div>
                 </form>
             </div>

@@ -2,13 +2,12 @@ import { AKElement } from "@goauthentik/elements/Base.js";
 import { PFSize } from "@goauthentik/elements/Spinner.js";
 
 import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-@customElement("ak-empty-state")
 export class EmptyState extends AKElement {
     @property({ type: String })
     icon = "";
@@ -48,4 +47,13 @@ export class EmptyState extends AKElement {
             </div>
         </div>`;
     }
+}
+
+export type Constructor<T> = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    new (...args: any[]): T;
+};
+
+if (!window.customElements.get("ak-empty-state")) {
+    window.customElements.define("ak-empty-state", EmptyState as Constructor<HTMLElement>);
 }

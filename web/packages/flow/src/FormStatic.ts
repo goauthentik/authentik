@@ -49,11 +49,7 @@ export class FormStatic extends AKElement {
         return html`
             <div class="form-control-static">
                 <div class="avatar">
-                    <img
-                        class="pf-c-avatar"
-                        src="${ifDefined(this.userAvatar)}"
-                        alt="${msg("User's avatar")}"
-                    />
+                    <img class="pf-c-avatar" src="${ifDefined(this.userAvatar)}" alt="${msg("User's avatar")}" />
                     ${this.user}
                 </div>
                 <slot name="link"></slot>

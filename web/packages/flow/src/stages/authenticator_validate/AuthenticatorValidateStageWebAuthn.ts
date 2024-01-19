@@ -4,7 +4,7 @@ import {
     transformCredentialRequestOptions,
 } from "@goauthentik/common/helpers/webauthn.js";
 import { AuthenticatorValidateStage } from "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import { BaseStage } from "@goauthentik/flow/stages/base.js";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -73,7 +73,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage<
         // we now have an authentication assertion! encode the byte arrays contained
         // in the assertion data as strings for posting to the server
         const transformedAssertionForServer = transformAssertionForServer(
-            assertion as PublicKeyCredential,
+            assertion as PublicKeyCredential
         );
 
         // post the assertion to the server for verification.

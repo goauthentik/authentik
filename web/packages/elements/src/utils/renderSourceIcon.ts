@@ -11,3 +11,5 @@ export function renderSourceIcon(name: string, iconUrl: string | undefined | nul
     }
     return icon;
 }
+
+export default renderSourceIcon;
