@@ -1,0 +1,16 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "outDir": "./dist/",
+        "paths": {
+            "@goauthentik/admin/*": ["../admin/dist/*"],
+            "@goauthentik/elements/*": ["../elements/dist/*"],
+            "@goauthentik/components/*": ["../components/dist/*"],
+            "@goauthentik/common/*": ["../common/dist/*"],
+            "@goauthentik/locales/*": ["src/locales/*"],
+            "@goauthentik/flow/*": ["../flow/dist/*"]
+        }
+    },
+    "exclude": ["node_modules", "dist"]
+}
