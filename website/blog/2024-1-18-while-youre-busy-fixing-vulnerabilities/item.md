@@ -38,7 +38,7 @@ There are frameworks you can look to (e.g. [NIST](https://www.nist.gov/cyberfram
 
 ## The biggest security risk is poor access management, not vulnerabilities
 
-![](./phish1.png)
+[![](./phish1.png)](https://www.reddit.com/r/cybersecurity/comments/12ygfnw/comment/jhok5tz/)
 
 When was the last time you heard of a major breach where they actually exploited the company’s application to gain access? You are far more likely to be an unlucky victim of phishing, social engineering, stolen credentials, or insider threats than you are a targeted attack on your application.
 
@@ -66,7 +66,7 @@ These practices are risky for multiple reasons. If everyone has admin permission
 
 Big, mature corporations tend to have more strict permissions. One of the blessings/curses about working in startups is that they are usually more flexible—employees have fewer limitations on the scope of their role, which can be great for collaboration and people taking initiative. But that fluidity can make it harder to keep tabs on who should have access to what. Being overly permissive with admin status also opens the door to [shadow IT](https://en.wikipedia.org/wiki/Shadow_IT).
 
-![](./phish2.png)
+[![](./phish2.png)](https://www.reddit.com/r/cybersecurity/comments/12ygfnw/comment/jhnqgnt/)
 
 ### Integrate access reviews into planning cycles
 
@@ -114,3 +114,7 @@ Policies to apply software security updates within 14 days was another measure t
 The risk of falling behind on security patches is far greater than leaving a potential vulnerability unmitigated. If an attacker gains access to your server and your machines are out of date, they might be able to move from server to server. Now you have to go to your infrastructure team and figure out how to patch the server without taking it down. Instead, it’s wise to automate security patches, and you can use tools like [Chef](https://www.chef.io/products/chef-infra) or [Puppet](https://www.puppet.com/) to do so.
 
 We’d be interested to hear what are the worst security hygiene practices that you have ever witnessed? What are some of your favorite good practices that you use, that we might not have mentioned above? Leave us a comment below, or connect with us via email at [hello@goauthentik.io](mailto:hello@goauthentik.io) or on [Discord](https://discord.com/channels/809154715984199690/809154716507963434)!
+
+_[Rebecca Dodd](https://thebasementoffice.co.uk/) contributed to this post._
+
+---
