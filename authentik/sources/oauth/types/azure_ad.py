@@ -34,11 +34,11 @@ class AzureADOAuthCallback(OpenIDConnectOAuth2Callback):
         self,
         info: dict[str, Any],
     ) -> dict[str, Any]:
-        mail = info.get("mail", None) or info.get("otherMails", [None])[0]
+        mail = info.get("upn", None) or info.get("otherMails", [None])[0]
         return {
-            "username": info.get("userPrincipalName"),
+            "username": info.get("unique_name"),
             "email": mail,
-            "name": info.get("displayName"),
+            "name": info.get("name"),
         }
 
 
