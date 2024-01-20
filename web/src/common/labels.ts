@@ -2,6 +2,8 @@ import { msg } from "@lit/localize";
 
 import { Device, EventActions, IntentEnum, SeverityEnum, UserTypeEnum } from "@goauthentik/api";
 
+type Pair<T> = [T, string];
+
 /* Various tables in the API for which we need to supply labels */
 
 export const intentEnumToLabel = new Map<IntentEnum, string>([
@@ -14,7 +16,7 @@ export const intentEnumToLabel = new Map<IntentEnum, string>([
 
 export const intentToLabel = (intent: IntentEnum) => intentEnumToLabel.get(intent);
 
-export const eventActionToLabel = new Map<EventActions | undefined, string>([
+export const eventActionLabels: Pair<EventActions>[] = [
     [EventActions.Login, msg("Login")],
     [EventActions.LoginFailed, msg("Failed login")],
     [EventActions.Logout, msg("Logout")],
@@ -43,7 +45,9 @@ export const eventActionToLabel = new Map<EventActions | undefined, string>([
     [EventActions.ModelDeleted, msg("Model deleted")],
     [EventActions.EmailSent, msg("Email sent")],
     [EventActions.UpdateAvailable, msg("Update available")],
-]);
+];
+
+export const eventActionToLabel = new Map<EventActions | undefined, string>(eventActionLabels);
 
 export const actionToLabel = (action?: EventActions): string =>
     eventActionToLabel.get(action) ?? action ?? "";

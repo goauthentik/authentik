@@ -6,40 +6,33 @@ export function RenderFlowOption(flow: Flow): string {
     return `${flow.slug} (${flow.name})`;
 }
 
+type FlowDesignationPair = [FlowDesignationEnum, string];
+
+export const flowDesignationTable: FlowDesignationPair[] = [
+    [FlowDesignationEnum.Authentication, msg("Authentication")],
+    [FlowDesignationEnum.Authorization, msg("Authorization")],
+    [FlowDesignationEnum.Enrollment, msg("Enrollment")],
+    [FlowDesignationEnum.Invalidation, msg("Invalidation")],
+    [FlowDesignationEnum.Recovery, msg("Recovery")],
+    [FlowDesignationEnum.StageConfiguration, msg("Stage Configuration")],
+    [FlowDesignationEnum.Unenrollment, msg("Unenrollment")],
+];
+
+// prettier-ignore
+const flowDesignations = new Map(flowDesignationTable);
+
 export function DesignationToLabel(designation: FlowDesignationEnum): string {
-    switch (designation) {
-        case FlowDesignationEnum.Authentication:
-            return msg("Authentication");
-        case FlowDesignationEnum.Authorization:
-            return msg("Authorization");
-        case FlowDesignationEnum.Enrollment:
-            return msg("Enrollment");
-        case FlowDesignationEnum.Invalidation:
-            return msg("Invalidation");
-        case FlowDesignationEnum.Recovery:
-            return msg("Recovery");
-        case FlowDesignationEnum.StageConfiguration:
-            return msg("Stage Configuration");
-        case FlowDesignationEnum.Unenrollment:
-            return msg("Unenrollment");
-        case FlowDesignationEnum.UnknownDefaultOpenApi:
-            return msg("Unknown designation");
-    }
+    return flowDesignations.get(designation) ?? msg("Unknown designation");
 }
 
+const layoutToLabel = new Map<FlowLayoutEnum, string>([
+    [FlowLayoutEnum.Stacked, msg("Stacked")],
+    [FlowLayoutEnum.ContentLeft, msg("Content left")],
+    [FlowLayoutEnum.ContentRight, msg("Content right")],
+    [FlowLayoutEnum.SidebarLeft, msg("Sidebar left")],
+    [FlowLayoutEnum.SidebarRight, msg("Sidebar right")],
+]);
+
 export function LayoutToLabel(layout: FlowLayoutEnum): string {
-    switch (layout) {
-        case FlowLayoutEnum.Stacked:
-            return msg("Stacked");
-        case FlowLayoutEnum.ContentLeft:
-            return msg("Content left");
-        case FlowLayoutEnum.ContentRight:
-            return msg("Content right");
-        case FlowLayoutEnum.SidebarLeft:
-            return msg("Sidebar left");
-        case FlowLayoutEnum.SidebarRight:
-            return msg("Sidebar right");
-        case FlowLayoutEnum.UnknownDefaultOpenApi:
-            return msg("Unknown layout");
-    }
+    return layoutToLabel.get(layout) ?? msg("Unknown layout");
 }
