@@ -1,4 +1,4 @@
-import "@goauthentik/admin/users/GroupSelectModal";
+import "@goauthentik/admin/users/GroupSelectModal.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { first } from "@goauthentik/common/utils.js";
 import "@goauthentik/elements/CodeMirror.js";

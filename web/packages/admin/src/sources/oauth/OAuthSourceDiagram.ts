@@ -1,4 +1,4 @@
-import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
+import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils.js";
 import { Diagram } from "@goauthentik/elements/Diagram.js";
 
 import { msg, str } from "@lit/localize";

@@ -1,5 +1,5 @@
-import "@goauthentik/admin/outposts/ServiceConnectionDockerForm";
-import "@goauthentik/admin/outposts/ServiceConnectionKubernetesForm";
+import "@goauthentik/admin/outposts/ServiceConnectionDockerForm.js";
+import "@goauthentik/admin/outposts/ServiceConnectionKubernetesForm.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/forms/ProxyForm.js";

@@ -2,14 +2,15 @@ import { AKElement } from "@goauthentik/elements/Base.js";
 import { Chip } from "@goauthentik/elements/chips/Chip.js";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFChip from "@patternfly/patternfly/components/Chip/chip.css";
 import PFChipGroup from "@patternfly/patternfly/components/ChipGroup/chip-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-@customElement("ak-chip-group")
+import { registerCustomElement } from "../utils/customElement";
+
 export class ChipGroup extends AKElement {
     static get styles(): CSSResult[] {
         return [
@@ -53,3 +54,5 @@ export class ChipGroup extends AKElement {
         </div>`;
     }
 }
+
+registerCustomElement("ak-chip-group", ChipGroup);

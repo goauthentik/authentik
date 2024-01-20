@@ -1,4 +1,4 @@
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
+import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { first } from "@goauthentik/common/utils.js";
 import "@goauthentik/elements/forms/HorizontalFormElement.js";

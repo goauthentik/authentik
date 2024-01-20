@@ -1,7 +1,7 @@
-import "@goauthentik/admin/groups/GroupForm";
-import "@goauthentik/admin/policies/PolicyBindingForm";
-import "@goauthentik/admin/policies/PolicyWizard";
-import "@goauthentik/admin/users/UserForm";
+import "@goauthentik/admin/groups/GroupForm.js";
+import "@goauthentik/admin/policies/PolicyBindingForm.js";
+import "@goauthentik/admin/policies/PolicyWizard.js";
+import "@goauthentik/admin/users/UserForm.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";
 import "@goauthentik/elements/ak-status-label.js";

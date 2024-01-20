@@ -5,11 +5,13 @@ import { FormGroup } from "@goauthentik/elements/forms/FormGroup.js";
 import { msg } from "@lit/localize";
 import { CSSResult, css } from "lit";
 import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+import { registerCustomElement } from "../utils/customElement";
 
 /**
  *
@@ -36,7 +38,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  * 
  */
 
-@customElement("ak-form-element-horizontal")
 export class HorizontalFormElement extends AKElement {
     static get styles(): CSSResult[] {
         return [
@@ -177,3 +178,5 @@ export class HorizontalFormElement extends AKElement {
         </div>`;
     }
 }
+
+registerCustomElement("ak-form-element-horizontal", HorizontalFormElement);

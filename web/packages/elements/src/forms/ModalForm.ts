@@ -6,9 +6,10 @@ import { Form } from "@goauthentik/elements/forms/Form.js";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 
-@customElement("ak-forms-modal")
+import { registerCustomElement } from "../utils/customElement";
+
 export class ModalForm extends ModalButton {
     @property({ type: Boolean })
     closeAfterSuccessfulSubmit = true;
@@ -43,7 +44,7 @@ export class ModalForm extends ModalButton {
                     new CustomEvent(EVENT_REFRESH, {
                         bubbles: true,
                         composed: true,
-                    }),
+                    })
                 );
             })
             .catch((exc) => {
@@ -71,7 +72,7 @@ export class ModalForm extends ModalButton {
                     window.dispatchEvent(
                         new CustomEvent("scroll", {
                             bubbles: true,
-                        }),
+                        })
                     );
                 }}
             >
@@ -102,3 +103,5 @@ export class ModalForm extends ModalButton {
             </footer>`;
     }
 }
+
+registerCustomElement("ak-forms-modal", ModalForm);

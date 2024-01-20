@@ -1,4 +1,4 @@
-import "@goauthentik/admin/events/TransportForm";
+import "@goauthentik/admin/events/TransportForm.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";
 import "@goauthentik/elements/buttons/ActionButton/ak-action-button.js";

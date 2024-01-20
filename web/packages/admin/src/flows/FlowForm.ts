@@ -1,4 +1,4 @@
-import { DesignationToLabel, LayoutToLabel } from "@goauthentik/admin/flows/utils";
+import { DesignationToLabel, LayoutToLabel } from "@goauthentik/admin/flows/utils.js";
 import { AuthenticationEnum } from "@goauthentik/api/dist/models/AuthenticationEnum";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { first } from "@goauthentik/common/utils.js";

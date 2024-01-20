@@ -1,4 +1,4 @@
-import "@goauthentik/admin/tenants/TenantForm";
+import "@goauthentik/admin/tenants/TenantForm.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";
 import "@goauthentik/elements/ak-status-label.js";

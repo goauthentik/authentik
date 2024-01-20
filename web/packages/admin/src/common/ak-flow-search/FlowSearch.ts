@@ -1,4 +1,4 @@
-import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
+import { RenderFlowOption } from "@goauthentik/admin/flows/utils.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
 import { SearchSelect } from "@goauthentik/elements/forms/SearchSelect/ak-search-select.js";

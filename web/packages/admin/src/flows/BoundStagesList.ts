@@ -1,6 +1,6 @@
-import "@goauthentik/admin/flows/StageBindingForm";
-import "@goauthentik/admin/policies/BoundPoliciesList";
-import "@goauthentik/admin/stages/StageWizard";
+import "@goauthentik/admin/flows/StageBindingForm.js";
+import "@goauthentik/admin/policies/BoundPoliciesList.js";
+import "@goauthentik/admin/stages/StageWizard.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";
 import "@goauthentik/elements/Tabs.js";

@@ -1,4 +1,4 @@
-import "@goauthentik/admin/stages/prompt/PromptForm";
+import "@goauthentik/admin/stages/prompt/PromptForm.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";
 import "@goauthentik/elements/buttons/ModalButton.js";

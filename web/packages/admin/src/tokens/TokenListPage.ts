@@ -1,4 +1,4 @@
-import "@goauthentik/admin/tokens/TokenForm";
+import "@goauthentik/admin/tokens/TokenForm.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { intentToLabel } from "@goauthentik/common/labels.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";

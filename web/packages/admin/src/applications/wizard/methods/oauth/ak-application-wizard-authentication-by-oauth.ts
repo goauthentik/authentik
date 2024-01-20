@@ -1,12 +1,12 @@
-import "@goauthentik/admin/applications/wizard/ak-wizard-title";
-import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-tenanted-flow-search";
+import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
+import "@goauthentik/admin/common/ak-crypto-certificate-search.js";
+import "@goauthentik/admin/common/ak-flow-search/ak-tenanted-flow-search.js";
 import {
     clientTypeOptions,
     issuerModeOptions,
     redirectUriHelp,
     subjectModeOptions,
-} from "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
+} from "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-number-input.js";

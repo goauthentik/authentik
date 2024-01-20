@@ -1,4 +1,5 @@
-import { customElement } from "lit/decorators.js";
+import { registerCustomElement } from "@goauthentik/elements/utils/customElement.js";
+
 import { property } from "lit/decorators.js";
 
 import { BaseTaskButton } from "./BaseTaskButton.js";
@@ -17,7 +18,6 @@ import { BaseTaskButton } from "./BaseTaskButton.js";
  * @fires ak-button-reset - When the button is reset after the async process completes
  */
 
-@customElement("ak-spinner-button")
 export class SpinnerButton extends BaseTaskButton {
     /**
      * The command to run when the button is pressed. Must return a promise. We don't do anything
@@ -28,5 +28,7 @@ export class SpinnerButton extends BaseTaskButton {
     @property({ type: Object, attribute: false })
     callAction!: () => Promise<unknown>;
 }
+
+registerCustomElement("ak-spinner-button", SpinnerButton);
 
 export default SpinnerButton;

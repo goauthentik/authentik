@@ -1,7 +1,7 @@
 import {
     AdminStatus,
     AdminStatusCard,
-} from "@goauthentik/admin/admin-overview/cards/AdminStatusCard";
+} from "@goauthentik/admin/admin-overview/cards/AdminStatusCard.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 
 import { msg } from "@lit/localize";

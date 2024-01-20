@@ -1,4 +1,4 @@
-import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
+import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils.js";
 import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider.js";

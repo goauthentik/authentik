@@ -1,5 +1,5 @@
-import "@goauthentik/admin/crypto/CertificateGenerateForm";
-import "@goauthentik/admin/crypto/CertificateKeyPairForm";
+import "@goauthentik/admin/crypto/CertificateGenerateForm.js";
+import "@goauthentik/admin/crypto/CertificateKeyPairForm.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";
 import "@goauthentik/elements/ak-status-label.js";

@@ -1,4 +1,4 @@
-import { BasePropertyMappingForm } from "@goauthentik/admin/property-mappings/BasePropertyMappingForm";
+import { BasePropertyMappingForm } from "@goauthentik/admin/property-mappings/BasePropertyMappingForm.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { docLink } from "@goauthentik/common/global.js";
 import "@goauthentik/elements/CodeMirror.js";

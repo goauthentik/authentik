@@ -1,8 +1,8 @@
-import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
-import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
-import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
-import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
+import "@goauthentik/admin/common/ak-crypto-certificate-search.js";
+import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search.js";
+import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText.js";
+import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm.js";
+import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils.js";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config.js";
 import { first } from "@goauthentik/common/utils.js";
 import {

@@ -1,8 +1,8 @@
-import "@goauthentik/admin/outposts/OutpostDeploymentModal";
-import "@goauthentik/admin/outposts/OutpostDeploymentModal";
-import "@goauthentik/admin/outposts/OutpostForm";
-import "@goauthentik/admin/outposts/OutpostHealth";
-import "@goauthentik/admin/outposts/OutpostHealthSimple";
+import "@goauthentik/admin/outposts/OutpostDeploymentModal.js";
+import "@goauthentik/admin/outposts/OutpostDeploymentModal.js";
+import "@goauthentik/admin/outposts/OutpostForm.js";
+import "@goauthentik/admin/outposts/OutpostHealth.js";
+import "@goauthentik/admin/outposts/OutpostHealthSimple.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";
 import { PFColor } from "@goauthentik/elements/Label.js";

@@ -1,4 +1,4 @@
-import "@goauthentik/admin/enterprise/EnterpriseLicenseForm";
+import "@goauthentik/admin/enterprise/EnterpriseLicenseForm.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";
 import { PFColor } from "@goauthentik/elements/Label.js";

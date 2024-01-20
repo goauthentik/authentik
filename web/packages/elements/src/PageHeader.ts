@@ -14,7 +14,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -23,7 +23,8 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { EventsApi } from "@goauthentik/api";
 
-@customElement("ak-page-header")
+import { registerCustomElement } from "./utils/customElement";
+
 export class PageHeader extends WithTenantConfig(AKElement) {
     @property()
     icon?: string;
@@ -146,7 +147,7 @@ export class PageHeader extends WithTenantConfig(AKElement) {
                             new CustomEvent(EVENT_SIDEBAR_TOGGLE, {
                                 bubbles: true,
                                 composed: true,
-                            }),
+                            })
                         );
                     }}
                 >
@@ -168,7 +169,7 @@ export class PageHeader extends WithTenantConfig(AKElement) {
                             new CustomEvent(EVENT_API_DRAWER_TOGGLE, {
                                 bubbles: true,
                                 composed: true,
-                            }),
+                            })
                         );
                     }}
                 >
@@ -185,7 +186,7 @@ export class PageHeader extends WithTenantConfig(AKElement) {
                             new CustomEvent(EVENT_NOTIFICATION_DRAWER_TOGGLE, {
                                 bubbles: true,
                                 composed: true,
-                            }),
+                            })
                         );
                     }}
                 >
@@ -196,3 +197,5 @@ export class PageHeader extends WithTenantConfig(AKElement) {
             </div>`;
     }
 }
+
+registerCustomElement("ak-page-header", PageHeader);

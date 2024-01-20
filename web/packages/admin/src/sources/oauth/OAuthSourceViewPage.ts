@@ -1,6 +1,6 @@
-import "@goauthentik/admin/policies/BoundPoliciesList";
-import "@goauthentik/admin/sources/oauth/OAuthSourceDiagram";
-import "@goauthentik/admin/sources/oauth/OAuthSourceForm";
+import "@goauthentik/admin/policies/BoundPoliciesList.js";
+import "@goauthentik/admin/sources/oauth/OAuthSourceDiagram.js";
+import "@goauthentik/admin/sources/oauth/OAuthSourceForm.js";
 import "@goauthentik/elements/rbac/ObjectPermissionsPage.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";

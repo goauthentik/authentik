@@ -8,7 +8,7 @@ import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers.js";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer.js";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -164,7 +164,6 @@ export function serializeForm<T extends KeyUnknown>(
  *
  */
 
-@customElement("ak-form")
 export abstract class Form<T> extends AKElement {
     abstract send(data: T): Promise<unknown>;
 

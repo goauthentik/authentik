@@ -1,8 +1,8 @@
-import "@goauthentik/admin/providers/ldap/LDAPProviderForm";
-import "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
-import "@goauthentik/admin/providers/proxy/ProxyProviderForm";
-import "@goauthentik/admin/providers/saml/SAMLProviderForm";
-import "@goauthentik/admin/providers/saml/SAMLProviderImportForm";
+import "@goauthentik/admin/providers/ldap/LDAPProviderForm.js";
+import "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm.js";
+import "@goauthentik/admin/providers/proxy/ProxyProviderForm.js";
+import "@goauthentik/admin/providers/saml/SAMLProviderForm.js";
+import "@goauthentik/admin/providers/saml/SAMLProviderImportForm.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import "@goauthentik/elements/Alert.js";
 import { AKElement } from "@goauthentik/elements/Base.js";

@@ -5,7 +5,7 @@ import "@goauthentik/elements/rbac/UserObjectPermissionTable.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -15,7 +15,8 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
-@customElement("ak-rbac-object-permission-page")
+import { registerCustomElement } from "../utils/customElement";
+
 export class ObjectPermissionPage extends AKElement {
     @property()
     model?: RbacPermissionsAssignedByUsersListModelEnum;
@@ -77,3 +78,5 @@ export class ObjectPermissionPage extends AKElement {
             </ak-tabs>`;
     }
 }
+
+registerCustomElement("ak-rbac-object-permission-page", ObjectPermissionPage);

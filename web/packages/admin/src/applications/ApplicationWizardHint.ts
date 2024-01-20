@@ -1,4 +1,4 @@
-import "@goauthentik/admin/applications/wizard/ak-application-wizard";
+import "@goauthentik/admin/applications/wizard/ak-application-wizard.js";
 import {
     ShowHintController,
     ShowHintControllerHost,

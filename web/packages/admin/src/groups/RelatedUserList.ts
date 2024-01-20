@@ -1,8 +1,8 @@
-import "@goauthentik/admin/users/ServiceAccountForm";
-import "@goauthentik/admin/users/UserActiveForm";
-import "@goauthentik/admin/users/UserForm";
-import "@goauthentik/admin/users/UserPasswordForm";
-import "@goauthentik/admin/users/UserResetEmailForm";
+import "@goauthentik/admin/users/ServiceAccountForm.js";
+import "@goauthentik/admin/users/UserActiveForm.js";
+import "@goauthentik/admin/users/UserForm.js";
+import "@goauthentik/admin/users/UserPasswordForm.js";
+import "@goauthentik/admin/users/UserResetEmailForm.js";
 import { me } from "@goauthentik/common/users.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { MessageLevel } from "@goauthentik/common/messages.js";

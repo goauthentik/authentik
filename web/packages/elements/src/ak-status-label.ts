@@ -2,11 +2,13 @@ import { AKElement } from "@goauthentik/elements/Base.js";
 
 import { msg } from "@lit/localize";
 import { css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFLabel from "@patternfly/patternfly/components/Label/label.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+import { registerCustomElement } from "./utils/customElement";
 
 const statusNames = ["error", "warning", "info"] as const;
 type StatusName = (typeof statusNames)[number];
@@ -66,7 +68,6 @@ const styles = css`
  * customized with the attributes `good-label` and `bad-label`.
  */
 
-@customElement("ak-status-label")
 export class AkStatusLabel extends AKElement {
     static get styles() {
         return [PFBase, PFLabel, styles];
@@ -112,5 +113,7 @@ export class AkStatusLabel extends AKElement {
         </span>`;
     }
 }
+
+registerCustomElement("ak-status-label", AkStatusLabel);
 
 export default AkStatusLabel;

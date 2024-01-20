@@ -1,8 +1,8 @@
-import "@goauthentik/admin/sources/SourceWizard";
-import "@goauthentik/admin/sources/ldap/LDAPSourceForm";
-import "@goauthentik/admin/sources/oauth/OAuthSourceForm";
-import "@goauthentik/admin/sources/plex/PlexSourceForm";
-import "@goauthentik/admin/sources/saml/SAMLSourceForm";
+import "@goauthentik/admin/sources/SourceWizard.js";
+import "@goauthentik/admin/sources/ldap/LDAPSourceForm.js";
+import "@goauthentik/admin/sources/oauth/OAuthSourceForm.js";
+import "@goauthentik/admin/sources/plex/PlexSourceForm.js";
+import "@goauthentik/admin/sources/saml/SAMLSourceForm.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";
 import { PFColor } from "@goauthentik/elements/Label.js";

@@ -1,10 +1,12 @@
 import { AKElement } from "@goauthentik/elements/Base.js";
 
 import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+import { registerCustomElement } from "./utils/customElement";
 
 export enum Level {
     Warning = "pf-m-warning",
@@ -13,7 +15,6 @@ export enum Level {
     Danger = "pf-m-danger",
 }
 
-@customElement("ak-alert")
 export class Alert extends AKElement {
     @property({ type: Boolean })
     inline = false;
@@ -36,3 +37,5 @@ export class Alert extends AKElement {
         </div>`;
     }
 }
+
+registerCustomElement("ak-alert", Alert);

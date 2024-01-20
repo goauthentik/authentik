@@ -1,4 +1,4 @@
-import { ROUTES } from "@goauthentik/admin/Routes";
+import { ROUTES } from "@goauthentik/admin/Routes.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import {
     EVENT_API_DRAWER_TOGGLE,
@@ -30,7 +30,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { AdminApi, SessionUser, UiThemeEnum, Version } from "@goauthentik/api";
 
-import "./AdminSidebar";
+import "./admin-interface/AdminSidebar";
 
 @customElement("ak-interface-admin")
 export class AdminInterface extends Interface {

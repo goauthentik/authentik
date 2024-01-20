@@ -1,4 +1,4 @@
-import { policyOptions } from "@goauthentik/admin/applications/ApplicationForm";
+import { policyOptions } from "@goauthentik/admin/applications/ApplicationForm.js";
 import { first } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-radio-input.js";
 import "@goauthentik/components/ak-slug-input.js";

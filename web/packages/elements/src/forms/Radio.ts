@@ -2,13 +2,14 @@ import { AKElement } from "@goauthentik/elements/Base.js";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter.js";
 
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+import { registerCustomElement } from "../utils/customElement";
 import { randomId } from "../utils/randomId";
 
 export interface RadioOption<T> {
@@ -18,7 +19,6 @@ export interface RadioOption<T> {
     value: T;
 }
 
-@customElement("ak-radio")
 export class Radio<T> extends CustomEmitterElement(AKElement) {
     @property({ attribute: false })
     options: RadioOption<T>[] = [];
@@ -107,5 +107,7 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
         </div>`;
     }
 }
+
+registerCustomElement("ak-radio", Radio);
 
 export default Radio;

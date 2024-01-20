@@ -1,10 +1,10 @@
-import "@goauthentik/admin/providers/ldap/LDAPProviderViewPage";
-import "@goauthentik/admin/providers/oauth2/OAuth2ProviderViewPage";
-import "@goauthentik/admin/providers/proxy/ProxyProviderViewPage";
-import "@goauthentik/admin/providers/rac/RACProviderViewPage";
-import "@goauthentik/admin/providers/radius/RadiusProviderViewPage";
-import "@goauthentik/admin/providers/saml/SAMLProviderViewPage";
-import "@goauthentik/admin/providers/scim/SCIMProviderViewPage";
+import "@goauthentik/admin/providers/ldap/LDAPProviderViewPage.js";
+import "@goauthentik/admin/providers/oauth2/OAuth2ProviderViewPage.js";
+import "@goauthentik/admin/providers/proxy/ProxyProviderViewPage.js";
+import "@goauthentik/admin/providers/rac/RACProviderViewPage.js";
+import "@goauthentik/admin/providers/radius/RadiusProviderViewPage.js";
+import "@goauthentik/admin/providers/saml/SAMLProviderViewPage.js";
+import "@goauthentik/admin/providers/scim/SCIMProviderViewPage.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/EmptyState.js";

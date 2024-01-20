@@ -1,7 +1,7 @@
-import "@goauthentik/admin/applications/ApplicationAuthorizeChart";
-import "@goauthentik/admin/applications/ApplicationCheckAccessForm";
-import "@goauthentik/admin/applications/ApplicationForm";
-import "@goauthentik/admin/policies/BoundPoliciesList";
+import "@goauthentik/admin/applications/ApplicationAuthorizeChart.js";
+import "@goauthentik/admin/applications/ApplicationCheckAccessForm.js";
+import "@goauthentik/admin/applications/ApplicationForm.js";
+import "@goauthentik/admin/policies/BoundPoliciesList.js";
 import { PFSize } from "@goauthentik/elements/Spinner.js";
 import "@goauthentik/elements/rbac/ObjectPermissionsPage.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";

@@ -47,6 +47,7 @@
         "@goauthentik/pseudolocalize": "*"
     },
     "workspaces": [
+        "packages/admin",
         "packages/api-browser",
         "packages/authentik",
         "packages/common",

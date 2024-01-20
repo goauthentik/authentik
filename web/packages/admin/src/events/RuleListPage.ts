@@ -1,5 +1,5 @@
-import "@goauthentik/admin/events/RuleForm";
-import "@goauthentik/admin/policies/BoundPoliciesList";
+import "@goauthentik/admin/events/RuleForm.js";
+import "@goauthentik/admin/policies/BoundPoliciesList.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { severityToLabel } from "@goauthentik/common/labels.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";

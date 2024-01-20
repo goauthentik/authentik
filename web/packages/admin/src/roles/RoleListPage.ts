@@ -1,4 +1,4 @@
-import "@goauthentik/admin/roles/RoleForm";
+import "@goauthentik/admin/roles/RoleForm.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";
 import "@goauthentik/elements/buttons/SpinnerButton/ak-spinner-button.js";

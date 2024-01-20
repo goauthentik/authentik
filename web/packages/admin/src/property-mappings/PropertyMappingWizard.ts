@@ -1,9 +1,9 @@
-import "@goauthentik/admin/property-mappings/PropertyMappingLDAPForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingNotification";
-import "@goauthentik/admin/property-mappings/PropertyMappingRACForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingSAMLForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingScopeForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingTestForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingLDAPForm.js";
+import "@goauthentik/admin/property-mappings/PropertyMappingNotification.js";
+import "@goauthentik/admin/property-mappings/PropertyMappingRACForm.js";
+import "@goauthentik/admin/property-mappings/PropertyMappingSAMLForm.js";
+import "@goauthentik/admin/property-mappings/PropertyMappingScopeForm.js";
+import "@goauthentik/admin/property-mappings/PropertyMappingTestForm.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import "@goauthentik/elements/Alert.js";
 import { AKElement } from "@goauthentik/elements/Base.js";

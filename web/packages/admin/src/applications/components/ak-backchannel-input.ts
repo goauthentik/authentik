@@ -1,4 +1,4 @@
-import "@goauthentik/admin/applications/ProviderSelectModal";
+import "@goauthentik/admin/applications/ProviderSelectModal.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
 
 import { TemplateResult, html, nothing } from "lit";

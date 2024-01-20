@@ -1,5 +1,5 @@
-import "@goauthentik/admin/sources/ldap/LDAPSourceConnectivity";
-import "@goauthentik/admin/sources/ldap/LDAPSourceForm";
+import "@goauthentik/admin/sources/ldap/LDAPSourceConnectivity.js";
+import "@goauthentik/admin/sources/ldap/LDAPSourceForm.js";
 import "@goauthentik/elements/rbac/ObjectPermissionsPage.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";

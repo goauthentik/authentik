@@ -1,5 +1,5 @@
-import "@goauthentik/admin/policies/BoundPoliciesList";
-import "@goauthentik/app/admin/providers/rac/EndpointForm";
+import "@goauthentik/admin/policies/BoundPoliciesList.js";
+import "@goauthentik/admin/providers/rac/EndpointForm.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";
 import "@goauthentik/elements/buttons/SpinnerButton/ak-spinner-button.js";

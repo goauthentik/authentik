@@ -1,5 +1,5 @@
-import "@goauthentik/admin/providers/RelatedApplicationButton";
-import "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
+import "@goauthentik/admin/providers/RelatedApplicationButton.js";
+import "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import { convertToTitle } from "@goauthentik/common/utils.js";

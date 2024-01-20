@@ -16,25 +16,22 @@ const definitions = {
     "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
 };
 
-const tsfiles = globSync('src/**/*.ts');
+const tsfiles = globSync("src/**/*.ts");
 
-esbuild
-    .buildSync({
-        entryPoints: tsfiles,
-        outdir: "dist/",
-        loader: { '.css' : 'text' },
-    });
+esbuild.buildSync({
+    entryPoints: tsfiles,
+    outdir: "dist/",
+    loader: { ".css": "text", ".md": "text" },
+});
 
-
-esbuild
-    .buildSync({
-        entryPoints: ["./dist/AdminInterface.js"],
-        outdir: DIST,
-        bundle: true,
-        write: true,
-        splitting: true,
-        external: ["*.woff", "*.woff2"],
-        loader: { ".css": "text", ".md": "text" },
-        define: definitions,
-        format: "esm",
-    });
+esbuild.buildSync({
+    entryPoints: ["./dist/AdminInterface.js"],
+    outdir: DIST,
+    bundle: true,
+    write: true,
+    splitting: true,
+    external: ["*.woff", "*.woff2"],
+    loader: { ".css": "text", ".md": "text" },
+    define: definitions,
+    format: "esm",
+});

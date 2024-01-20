@@ -3,13 +3,14 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFChip from "@patternfly/patternfly/components/Chip/chip.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-@customElement("ak-chip")
+import { registerCustomElement } from "../utils/customElement";
+
 export class Chip extends AKElement {
     @property()
     value?: number | string;
@@ -36,7 +37,7 @@ export class Chip extends AKElement {
                                   new CustomEvent("remove", {
                                       bubbles: true,
                                       composed: true,
-                                  }),
+                                  })
                               );
                           }}
                       >
@@ -49,3 +50,5 @@ export class Chip extends AKElement {
         </li>`;
     }
 }
+
+registerCustomElement("ak-chip", Chip);

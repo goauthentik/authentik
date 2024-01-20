@@ -1,4 +1,4 @@
-import "@goauthentik/admin/applications/wizard/ak-wizard-title";
+import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { first } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-switch-input.js";

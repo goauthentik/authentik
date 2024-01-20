@@ -1,7 +1,7 @@
-import "@goauthentik/admin/providers/RelatedApplicationButton";
-import "@goauthentik/admin/providers/rac/EndpointForm";
-import "@goauthentik/admin/providers/rac/EndpointList";
-import "@goauthentik/admin/providers/rac/RACProviderForm";
+import "@goauthentik/admin/providers/RelatedApplicationButton.js";
+import "@goauthentik/admin/providers/rac/EndpointForm.js";
+import "@goauthentik/admin/providers/rac/EndpointList.js";
+import "@goauthentik/admin/providers/rac/RACProviderForm.js";
 import "@goauthentik/elements/rbac/ObjectPermissionsPage.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";

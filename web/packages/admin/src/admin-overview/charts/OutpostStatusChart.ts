@@ -1,4 +1,4 @@
-import { SyncStatus } from "@goauthentik/admin/admin-overview/charts/SyncStatusChart";
+import { SyncStatus } from "@goauthentik/admin/admin-overview/charts/SyncStatusChart.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { AKChart } from "@goauthentik/elements/charts/Chart.js";
 import "@goauthentik/elements/forms/ConfirmationForm.js";

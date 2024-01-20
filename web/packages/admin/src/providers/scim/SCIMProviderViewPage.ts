@@ -1,4 +1,4 @@
-import "@goauthentik/admin/providers/scim/SCIMProviderForm";
+import "@goauthentik/admin/providers/scim/SCIMProviderForm.js";
 import "@goauthentik/elements/rbac/ObjectPermissionsPage.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";

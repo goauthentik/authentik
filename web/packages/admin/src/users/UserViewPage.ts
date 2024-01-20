@@ -1,14 +1,14 @@
-import "@goauthentik/admin/groups/RelatedGroupList";
-import "@goauthentik/admin/users/UserActiveForm";
-import "@goauthentik/admin/users/UserChart";
-import "@goauthentik/admin/users/UserForm";
-import "@goauthentik/admin/users/UserPasswordForm";
-import "@goauthentik/app/admin/users/UserAssignedGlobalPermissionsTable";
-import "@goauthentik/app/admin/users/UserAssignedObjectPermissionsTable";
+import "@goauthentik/admin/groups/RelatedGroupList.js";
+import "@goauthentik/admin/users/UserActiveForm.js";
+import "@goauthentik/admin/users/UserChart.js";
+import "@goauthentik/admin/users/UserForm.js";
+import "@goauthentik/admin/users/UserPasswordForm.js";
+import "@goauthentik/admin/users/UserAssignedGlobalPermissionsTable.js";
+import "@goauthentik/admin/users/UserAssignedObjectPermissionsTable.js";
 import {
     renderRecoveryEmailRequest,
     requestRecoveryLink,
-} from "@goauthentik/app/admin/users/UserListPage";
+} from "@goauthentik/admin/users/UserListPage.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import { userTypeToLabel } from "@goauthentik/common/labels.js";

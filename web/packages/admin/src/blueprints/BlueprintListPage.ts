@@ -1,4 +1,4 @@
-import "@goauthentik/admin/blueprints/BlueprintForm";
+import "@goauthentik/admin/blueprints/BlueprintForm.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";

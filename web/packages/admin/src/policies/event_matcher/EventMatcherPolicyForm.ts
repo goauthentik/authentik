@@ -1,4 +1,4 @@
-import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
+import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { first } from "@goauthentik/common/utils.js";
 import "@goauthentik/elements/forms/FormGroup.js";

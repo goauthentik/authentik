@@ -1,5 +1,5 @@
-import "@goauthentik/admin/groups/GroupForm";
-import "@goauthentik/app/admin/groups/RelatedUserList";
+import "@goauthentik/admin/groups/GroupForm.js";
+import "@goauthentik/admin/groups/RelatedUserList.js";
 import "@goauthentik/elements/rbac/ObjectPermissionsPage.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";

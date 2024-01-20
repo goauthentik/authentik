@@ -1,7 +1,7 @@
-import "@goauthentik/admin/outposts/OutpostHealth";
-import "@goauthentik/admin/outposts/ServiceConnectionDockerForm";
-import "@goauthentik/admin/outposts/ServiceConnectionKubernetesForm";
-import "@goauthentik/admin/outposts/ServiceConnectionWizard";
+import "@goauthentik/admin/outposts/OutpostHealth.js";
+import "@goauthentik/admin/outposts/ServiceConnectionDockerForm.js";
+import "@goauthentik/admin/outposts/ServiceConnectionKubernetesForm.js";
+import "@goauthentik/admin/outposts/ServiceConnectionWizard.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";
 import "@goauthentik/elements/ak-status-label.js";

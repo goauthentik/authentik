@@ -1,7 +1,7 @@
-import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
-import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
-import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
-import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
+import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search.js";
+import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText.js";
+import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm.js";
+import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { PlexAPIClient, PlexResource, popupCenterScreen } from "@goauthentik/common/helpers/plex.js";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils.js";

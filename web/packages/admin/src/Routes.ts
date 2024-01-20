@@ -1,4 +1,4 @@
-import "@goauthentik/admin/admin-overview/AdminOverviewPage";
+import "@goauthentik/admin/admin-overview/AdminOverviewPage.js";
 import { ID_REGEX, Route, SLUG_REGEX, UUID_REGEX } from "@goauthentik/elements/router/Route.js";
 
 import { html } from "lit";

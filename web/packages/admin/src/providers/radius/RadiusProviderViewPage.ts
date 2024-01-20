@@ -1,5 +1,5 @@
-import "@goauthentik/admin/providers/RelatedApplicationButton";
-import "@goauthentik/admin/providers/radius/RadiusProviderForm";
+import "@goauthentik/admin/providers/RelatedApplicationButton.js";
+import "@goauthentik/admin/providers/radius/RadiusProviderForm.js";
 import "@goauthentik/elements/rbac/ObjectPermissionsPage.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";

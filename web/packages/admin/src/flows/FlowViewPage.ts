@@ -1,8 +1,8 @@
-import "@goauthentik/admin/flows/BoundStagesList";
-import "@goauthentik/admin/flows/FlowDiagram";
-import "@goauthentik/admin/flows/FlowForm";
-import "@goauthentik/admin/policies/BoundPoliciesList";
-import { DesignationToLabel } from "@goauthentik/app/admin/flows/utils";
+import "@goauthentik/admin/flows/BoundStagesList.js";
+import "@goauthentik/admin/flows/FlowDiagram.js";
+import "@goauthentik/admin/flows/FlowForm.js";
+import "@goauthentik/admin/policies/BoundPoliciesList.js";
+import { DesignationToLabel } from "@goauthentik/admin/flows/utils.js";
 import "@goauthentik/elements/rbac/ObjectPermissionsPage.js";
 import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import "@goauthentik/components/events/ObjectChangelog.js";

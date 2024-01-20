@@ -1,14 +1,15 @@
 import { AKElement } from "@goauthentik/elements/Base.js";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-@customElement("ak-aggregate-card")
+import { registerCustomElement } from "../utils/customElement";
+
 export class AggregateCard extends AKElement {
     @property()
     icon?: string;
@@ -87,3 +88,5 @@ export class AggregateCard extends AKElement {
         </div>`;
     }
 }
+
+registerCustomElement("ak-aggregate-card", AggregateCard);

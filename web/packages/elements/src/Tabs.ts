@@ -4,13 +4,14 @@ import { getURLParams, updateURLParams } from "@goauthentik/elements/router/Rout
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFTabs from "@patternfly/patternfly/components/Tabs/tabs.css";
 import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
 
-@customElement("ak-tabs")
+import { registerCustomElement } from "./utils/customElement";
+
 export class Tabs extends AKElement {
     @property()
     pageIdentifier = "page";
@@ -115,3 +116,5 @@ export class Tabs extends AKElement {
             <slot name="${ifDefined(this.currentPage)}"></slot>`;
     }
 }
+
+registerCustomElement("ak-tabs", Tabs);

@@ -2,11 +2,12 @@ import { AKElement } from "@goauthentik/elements/Base.js";
 import { Wizard } from "@goauthentik/elements/wizard/Wizard.js";
 
 import { CSSResult, PropertyDeclaration, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-@customElement("ak-wizard-page")
+import { registerCustomElement } from "../utils/customElement";
+
 export class WizardPage extends AKElement {
     static get styles(): CSSResult[] {
         return [PFBase];
@@ -40,7 +41,7 @@ export class WizardPage extends AKElement {
     requestUpdate(
         name?: PropertyKey,
         oldValue?: unknown,
-        options?: PropertyDeclaration<unknown, unknown>,
+        options?: PropertyDeclaration<unknown, unknown>
     ): void {
         this.querySelectorAll("*").forEach((el) => {
             if ("requestUpdate" in el) {
@@ -54,3 +55,5 @@ export class WizardPage extends AKElement {
         return html`<slot></slot>`;
     }
 }
+
+registerCustomElement("ak-wizard-page", WizardPage);

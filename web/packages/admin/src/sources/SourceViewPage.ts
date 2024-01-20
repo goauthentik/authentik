@@ -1,7 +1,7 @@
-import "@goauthentik/admin/sources/ldap/LDAPSourceViewPage";
-import "@goauthentik/admin/sources/oauth/OAuthSourceViewPage";
-import "@goauthentik/admin/sources/plex/PlexSourceViewPage";
-import "@goauthentik/admin/sources/saml/SAMLSourceViewPage";
+import "@goauthentik/admin/sources/ldap/LDAPSourceViewPage.js";
+import "@goauthentik/admin/sources/oauth/OAuthSourceViewPage.js";
+import "@goauthentik/admin/sources/plex/PlexSourceViewPage.js";
+import "@goauthentik/admin/sources/saml/SAMLSourceViewPage.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/EmptyState.js";

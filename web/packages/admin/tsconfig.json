@@ -4,6 +4,7 @@
         "baseUrl": ".",
         "outDir": "./dist/",
         "paths": {
+            "@goauthentik/docs/*": ["../../../website/docs/*"],
             "@goauthentik/admin/*": ["src/*"],
             "@goauthentik/locales/*": ["src/locales/*"]
         }

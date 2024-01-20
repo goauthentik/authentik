@@ -1,6 +1,6 @@
-import "@goauthentik/admin/groups/RelatedGroupList";
-import "@goauthentik/app/admin/roles/RolePermissionGlobalTable";
-import "@goauthentik/app/admin/roles/RolePermissionObjectTable";
+import "@goauthentik/admin/groups/RelatedGroupList.js";
+import "@goauthentik/admin/roles/RolePermissionGlobalTable.js";
+import "@goauthentik/admin/roles/RolePermissionObjectTable.js";
 import "@goauthentik/elements/rbac/ObjectPermissionsPage.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EVENT_REFRESH } from "@goauthentik/common/constants.js";

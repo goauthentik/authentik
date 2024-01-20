@@ -2,11 +2,12 @@ import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import { ascii_letters, digits, groupBy, randomString } from "@goauthentik/common/utils.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
 import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers.js";
+import { registerCustomElement } from "@goauthentik/elements/utils/customElement";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter.js";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html, render } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
 
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
@@ -17,7 +18,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 type Group<T> = [string, T[]];
 
-@customElement("ak-search-select")
 export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
     // A function which takes the query state object (accepting that it may be empty) and returns a
     // new collection of objects.
@@ -367,5 +367,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
         </div>`;
     }
 }
+
+registerCustomElement("ak-search-select", SearchSelect);
 
 export default SearchSelect;

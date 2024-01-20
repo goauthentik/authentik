@@ -1,10 +1,10 @@
-import { PolicyBindingForm } from "@goauthentik/admin/policies/PolicyBindingForm";
-import "@goauthentik/admin/policies/dummy/DummyPolicyForm";
-import "@goauthentik/admin/policies/event_matcher/EventMatcherPolicyForm";
-import "@goauthentik/admin/policies/expiry/ExpiryPolicyForm";
-import "@goauthentik/admin/policies/expression/ExpressionPolicyForm";
-import "@goauthentik/admin/policies/password/PasswordPolicyForm";
-import "@goauthentik/admin/policies/reputation/ReputationPolicyForm";
+import { PolicyBindingForm } from "@goauthentik/admin/policies/PolicyBindingForm.js";
+import "@goauthentik/admin/policies/dummy/DummyPolicyForm.js";
+import "@goauthentik/admin/policies/event_matcher/EventMatcherPolicyForm.js";
+import "@goauthentik/admin/policies/expiry/ExpiryPolicyForm.js";
+import "@goauthentik/admin/policies/expression/ExpressionPolicyForm.js";
+import "@goauthentik/admin/policies/password/PasswordPolicyForm.js";
+import "@goauthentik/admin/policies/reputation/ReputationPolicyForm.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/forms/ProxyForm.js";

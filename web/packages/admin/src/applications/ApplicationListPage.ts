@@ -1,4 +1,4 @@
-import "@goauthentik/admin/applications/ApplicationForm";
+import "@goauthentik/admin/applications/ApplicationForm.js";
 import { PFSize } from "@goauthentik/elements/Spinner.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";

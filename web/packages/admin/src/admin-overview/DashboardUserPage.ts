@@ -1,4 +1,4 @@
-import "@goauthentik/admin/admin-overview/charts/AdminModelPerDay";
+import "@goauthentik/admin/admin-overview/charts/AdminModelPerDay.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/PageHeader.js";
 import "@goauthentik/elements/cards/AggregatePromiseCard.js";

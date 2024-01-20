@@ -1,4 +1,4 @@
-import "@goauthentik/admin/applications/ApplicationForm";
+import "@goauthentik/admin/applications/ApplicationForm.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/Spinner.js";
 import "@goauthentik/elements/forms/ModalForm.js";

@@ -2,11 +2,13 @@ import { AKElement } from "@goauthentik/elements/Base.js";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter.js";
 
 import { css, html, nothing } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+import { registerCustomElement } from "./utils/customElement";
 
 type Pair = [string, string];
 
@@ -23,7 +25,6 @@ type Pair = [string, string];
 // MYNIS:
 // A 'name' property so that the event carries *which* toggle group emitted the event.
 
-@customElement("ak-toggle-group")
 export class AkToggleGroup extends CustomEmitterElement(AKElement) {
     static get styles() {
         return [
@@ -54,7 +55,7 @@ export class AkToggleGroup extends CustomEmitterElement(AKElement) {
             (option: HTMLOptionElement): Pair => [
                 option.getAttribute("value") ?? "",
                 option.textContent ?? "",
-            ],
+            ]
         );
     }
 
@@ -83,10 +84,12 @@ export class AkToggleGroup extends CustomEmitterElement(AKElement) {
                         </div>
                         ${idx < last
                             ? html`<div class="pf-c-divider pf-m-vertical" role="separator"></div>`
-                            : nothing} `,
+                            : nothing} `
             )}
         </div>`;
     }
 }
+
+registerCustomElement("ak-toggle-group", AkToggleGroup);
 
 export default AkToggleGroup;

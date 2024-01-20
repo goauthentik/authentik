@@ -1,4 +1,4 @@
-import "@goauthentik/admin/events/EventVolumeChart";
+import "@goauthentik/admin/events/EventVolumeChart.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { EventWithContext } from "@goauthentik/common/events.js";
 import { actionToLabel } from "@goauthentik/common/labels.js";
