@@ -14,6 +14,7 @@ from rest_framework.settings import api_settings
 
 from authentik.api.apps import AuthentikAPIConfig
 from authentik.api.pagination import PAGINATION_COMPONENT_NAME, PAGINATION_SCHEMA
+from authentik.api.search import AUTOCOMPLETE_COMPONENT_NAME, AUTOCOMPLETE_SCHEMA
 
 
 def build_standard_type(obj, **kwargs):
@@ -63,6 +64,7 @@ def postprocess_schema_responses(result, generator: SchemaGenerator, **kwargs): 
     """
 
     create_component(generator, PAGINATION_COMPONENT_NAME, PAGINATION_SCHEMA)
+    create_component(generator, AUTOCOMPLETE_COMPONENT_NAME, AUTOCOMPLETE_SCHEMA)
 
     generic_error = create_component(generator, "GenericError", GENERIC_ERROR)
     validation_error = create_component(generator, "ValidationError", VALIDATION_ERROR)

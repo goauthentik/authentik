@@ -12,6 +12,11 @@ from rest_framework.serializers import ModelSerializer
 from structlog.stdlib import get_logger
 
 LOGGER = get_logger()
+AUTOCOMPLETE_COMPONENT_NAME = "Autocomplete"
+AUTOCOMPLETE_SCHEMA = {
+    "type": "object",
+    "additionalProperties": {}
+}
 
 
 class JSONSearchField(StrField):
@@ -55,14 +60,15 @@ class QLSearch(SearchFilter):
         params = params.replace("\x00", "")  # strip null characters
         return params
 
-    def filter_queryset(self, request: Request, queryset: QuerySet, view) -> QuerySet:
+    def get_schema(self, request: Request, view) -> BaseSchema:
         search_fields = self.get_search_fields(view, request)
-        search_query = self.get_search_terms(request)
         serializer: ModelSerializer = view.get_serializer()
 
         class InlineSchema(BaseSchema):
             def get_fields(self, model):
                 fields = []
+                if not search_fields:
+                    return fields
                 for field in search_fields:
                     field_name = field.split("__")[0]
                     serializer_field = serializer.fields.get(field_name)
@@ -77,8 +83,15 @@ class QLSearch(SearchFilter):
                         fields.append(field)
                 return fields
 
+        return InlineSchema
+
+    def filter_queryset(self, request: Request, queryset: QuerySet, view) -> QuerySet:
+        search_query = self.get_search_terms(request)
+        schema = self.get_schema(request, view)
+        if len(search_query) == 0:
+            return SearchFilter().filter_queryset(request, queryset, view)
         try:
-            return apply_search(queryset, search_query, schema=InlineSchema)
+            return apply_search(queryset, search_query, schema=schema)
         except DjangoQLError as exc:
             LOGGER.warning(exc)
             return SearchFilter().filter_queryset(request, queryset, view)
