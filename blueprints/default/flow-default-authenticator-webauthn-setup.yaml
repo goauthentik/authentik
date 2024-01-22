@@ -13,6 +13,7 @@ entries:
   id: flow
 - attrs:
     configure_flow: !KeyOf flow
+    friendly_name: WebAuthn device
   identifiers:
     name: default-authenticator-webauthn-setup
   id: default-authenticator-webauthn-setup
