@@ -8,7 +8,6 @@ metadata:
 spec:
   rules:
     - host: app.company
-      ingressClassName: nginx
       http:
         paths: 
           - path: /outpost.goauthentik.io
