@@ -36,6 +36,10 @@ const groupedSamples: RawSample[] = [
         "Sweet Potatoes", "Swiss Chard", "Turnips", "Winter Squash"]]
 ];
 
+// WAAAAY too many lines to turn the arrays above into a Sample of
+// { name: "Apricots", pk: "apple", season: ["Spring", "Summer"] }
+// but it does the job.
+
 const samples = Array.from(
     groupedSamples
         .reduce((acc, sample) => {
@@ -46,21 +50,24 @@ const samples = Array.from(
                 });
                 acc.set(
                     item,
-                    update(acc.get(item) || { name: item, pk: slugify(item), season: [] })
+                    update(acc.get(item) || { name: item, pk: slugify(item), season: [] }),
                 );
                 return acc;
             }, acc);
             return acc;
         }, new Map<string, Sample>())
-        .values()
+        .values(),
 );
 samples.sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+
+// All we need is a promise to return our dataset. It doesn't have to be a class-based method a'la
+// the authentik API.
 
 const getSamples = (query = "") =>
     Promise.resolve(
         samples.filter((s) =>
-            query !== "" ? s.name.toLowerCase().includes(query.toLowerCase()) : true
-        )
+            query !== "" ? s.name.toLowerCase().includes(query.toLowerCase()) : true,
+        ),
     );
 
 const metadata: Meta<SearchSelect<Sample>> = {
@@ -98,7 +105,7 @@ const displayChange = (ev: any) => {
     document.getElementById("message-pad")!.innerText = `Value selected: ${JSON.stringify(
         ev.detail.value,
         null,
-        2
+        2,
     )}`;
 };
 
@@ -109,7 +116,7 @@ export const Default = () => {
             .renderElement=${(sample: Sample) => sample.name}
             .value=${(sample: Sample) => sample.pk}
             @ak-change=${displayChange}
-        ></ak-search-select>`
+        ></ak-search-select>`,
     );
 };
 
@@ -122,7 +129,7 @@ export const Grouped = () => {
             .groupBy=${(samples: Sample[]) =>
                 groupBy(samples, (sample: Sample) => sample.season[0] ?? "")}
             @ak-change=${displayChange}
-        ></ak-search-select>`
+        ></ak-search-select>`,
     );
 };
 
@@ -134,6 +141,6 @@ export const Selected = () => {
             .value=${(sample: Sample) => sample.pk}
             .selected=${(sample: Sample) => sample.pk === "herbs"}
             @ak-change=${displayChange}
-        ></ak-search-select>`
+        ></ak-search-select>`,
     );
 };

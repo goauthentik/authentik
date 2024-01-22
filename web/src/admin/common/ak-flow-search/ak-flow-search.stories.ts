@@ -60,7 +60,7 @@ const mockData = {
     ],
 };
 
-const metadata: Meta<AkFlowSearch> = {
+const metadata: Meta<AkFlowSearch<any>> = {
     title: "Elements / Select Search / Flow",
     component: "ak-flow-search",
     parameters: {
@@ -102,7 +102,7 @@ const displayChange = (ev: any) => {
     document.getElementById("message-pad")!.innerText = `Value selected: ${JSON.stringify(
         ev.target.value,
         null,
-        2
+        2,
     )}`;
 };
 
@@ -117,7 +117,7 @@ export const Default = () =>
                 flowType=${FlowsInstancesListDesignationEnum.Authorization}
                 @input=${displayChange}
             ></ak-flow-search
-        ></ak-form-element-horizontal>`
+        ></ak-form-element-horizontal>`,
     );
 
 export const WithInitialValue = () =>
@@ -132,5 +132,5 @@ export const WithInitialValue = () =>
                 currentFlow="89f57fd8-fd1e-42be-a5fd-abc13b19529b"
                 @input=${displayChange}
             ></ak-flow-search
-        ></ak-form-element-horizontal>`
+        ></ak-form-element-horizontal>`,
     );

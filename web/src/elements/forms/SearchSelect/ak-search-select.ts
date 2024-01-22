@@ -7,7 +7,7 @@ import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleS
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html, render } from "lit";
+import { TemplateResult, html, render } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
 
@@ -123,7 +123,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
             this.open = false;
             this.shadowRoot
                 ?.querySelectorAll<HTMLInputElement>(
-                    ".pf-c-form-control.pf-c-select__toggle-typeahead"
+                    ".pf-c-form-control.pf-c-select__toggle-typeahead",
                 )
                 .forEach((input) => {
                     input.blur();
@@ -323,7 +323,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
                 </ul>
             </div>`,
             this.dropdownContainer,
-            { host: this }
+            { host: this },
         );
     }
 
