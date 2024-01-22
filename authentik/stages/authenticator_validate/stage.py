@@ -301,7 +301,9 @@ class AuthenticatorValidateStageView(ChallengeStageView):
                 data={
                     "pk": stage.pk,
                     "name": stage.friendly_name or stage.name,
-                    "verbose_name": str(stage._meta.verbose_name).replace("Setup Stage", "").strip(),
+                    "verbose_name": str(stage._meta.verbose_name)
+                    .replace("Setup Stage", "")
+                    .strip(),
                     "meta_model_name": f"{stage._meta.app_label}.{stage._meta.model_name}",
                 }
             )
