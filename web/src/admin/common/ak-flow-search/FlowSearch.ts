@@ -46,8 +46,8 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
      *
      * @attr
      */
-    @property({ attribute: false })
-    currentFlow: string | undefined;
+    @property({ type: String })
+    currentFlow?: string | undefined;
 
     /**
      * If true, it is not valid to leave the flow blank.

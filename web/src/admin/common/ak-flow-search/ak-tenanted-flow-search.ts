@@ -18,7 +18,7 @@ export class AkTenantedFlowSearch<T extends Flow> extends FlowSearch<T> {
      *
      * @attr
      */
-    @property({ attribute: false, type: String })
+    @property({ type: String })
     tenantFlow?: string;
 
     constructor() {

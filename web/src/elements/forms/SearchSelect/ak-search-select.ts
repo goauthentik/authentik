@@ -156,6 +156,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
                 objects.forEach((obj) => {
                     if (this.selected && this.selected(obj, objects || [])) {
                         this.selectedObject = obj;
+                        this.dispatchCustomEvent("ak-change", { value: this.selectedObject });
                     }
                 });
                 this.objects = objects;
