@@ -38,4 +38,11 @@ class Migration(migrations.Migration):
             name="statictoken",
             options={"verbose_name": "Static Token", "verbose_name_plural": "Static Tokens"},
         ),
+        migrations.AlterModelOptions(
+            name="authenticatorstaticstage",
+            options={
+                "verbose_name": "Static Authenticator Setup Stage",
+                "verbose_name_plural": "Static Authenticator Setup Stages",
+            },
+        ),
     ]

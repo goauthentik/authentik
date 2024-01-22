@@ -300,8 +300,10 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             serializer = SelectableStageSerializer(
                 data={
                     "pk": stage.pk,
-                    "name": stage.name,
-                    "verbose_name": str(stage._meta.verbose_name),
+                    "name": stage.friendly_name or stage.name,
+                    "verbose_name": str(stage._meta.verbose_name)
+                    .replace("Setup Stage", "")
+                    .strip(),
                     "meta_model_name": f"{stage._meta.app_label}.{stage._meta.model_name}",
                 }
             )

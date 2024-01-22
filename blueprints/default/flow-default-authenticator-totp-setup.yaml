@@ -14,6 +14,7 @@ entries:
 - attrs:
     configure_flow: !KeyOf flow
     digits: 6
+    friendly_name: TOTP Device
   identifiers:
     name: default-authenticator-totp-setup
   id: default-authenticator-totp-setup
