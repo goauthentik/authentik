@@ -3,10 +3,11 @@ import { PreventFormSubmit } from "@goauthentik/app/elements/forms/helpers";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { ascii_letters, digits, groupBy, randomString } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
+import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg, str } from "@lit/localize";
-import { TemplateResult, html, render } from "lit";
+import { CSSResult, TemplateResult, css, html, render } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
 
@@ -14,7 +15,7 @@ import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css"
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFSelect from "@patternfly/patternfly/components/Select/select.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
 
 import { ResponseError } from "@goauthentik/api";
 
@@ -105,19 +106,24 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
     @state()
     error?: APIErrorTypes;
 
-    static styles = [PFBase, PFForm, PFFormControl, PFSelect];
+    static get styles() {
+        return [PFGlobal, PFForm, PFFormControl, PFSelect];
+    }
 
     constructor() {
         super();
         if (!document.adoptedStyleSheets.includes(PFDropdown)) {
-            document.adoptedStyleSheets = [...document.adoptedStyleSheets, PFDropdown];
+            document.adoptedStyleSheets = [
+                ...document.adoptedStyleSheets,
+                ensureCSSStyleSheet(PFDropdown),
+            ];
         }
         this.dropdownContainer = document.createElement("div");
         this.observer = new IntersectionObserver(() => {
             this.open = false;
             this.shadowRoot
                 ?.querySelectorAll<HTMLInputElement>(
-                    ".pf-c-form-control.pf-c-select__toggle-typeahead",
+                    ".pf-c-form-control.pf-c-select__toggle-typeahead"
                 )
                 .forEach((input) => {
                     input.blur();
@@ -316,7 +322,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
                 </ul>
             </div>`,
             this.dropdownContainer,
-            { host: this },
+            { host: this }
         );
     }
 
