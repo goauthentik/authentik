@@ -4,21 +4,21 @@ Create a new ingress for the outpost
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: authentik-outpost
+    name: authentik-outpost
 spec:
-  rules:
-    - host: app.company
-      http:
-        paths: 
-          - path: /outpost.goauthentik.io
-            pathType: Prefix
-            backend:
-              # Or, to use an external Outpost, create an ExternalName service and reference that here.
-              # See https://kubernetes.io/docs/concepts/services-networking/service/#externalname
-              service:
-                name: ak-outpost-example-outpost
-                port:
-                  number: 9000
+    rules:
+        - host: app.company
+          http:
+              paths:
+                  - path: /outpost.goauthentik.io
+                    pathType: Prefix
+                    backend:
+                        # Or, to use an external Outpost, create an ExternalName service and reference that here.
+                        # See https://kubernetes.io/docs/concepts/services-networking/service/#externalname
+                        service:
+                            name: ak-outpost-example-outpost
+                            port:
+                                number: 9000
 ```
 
 This ingress handles authentication requests, and the sign-in flow.
