@@ -15,7 +15,7 @@ import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css"
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFSelect from "@patternfly/patternfly/components/Select/select.css";
-import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { ResponseError } from "@goauthentik/api";
 
@@ -107,7 +107,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
     error?: APIErrorTypes;
 
     static get styles() {
-        return [PFGlobal, PFForm, PFFormControl, PFSelect];
+        return [PFBase, PFForm, PFFormControl, PFSelect];
     }
 
     constructor() {
