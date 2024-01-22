@@ -44,9 +44,7 @@ def cleanse_item(key: str, value: Any) -> Any:
             return value
         if ALLOWED_SPECIAL_KEYS.search(key):
             return value
-        str_value = str(value)
-        # reveal first 4 characters to identify value
-        return str_value[:4] + SafeExceptionReporterFilter.cleansed_substitute
+        return SafeExceptionReporterFilter.cleansed_substitute
     except TypeError:  # pragma: no cover
         return value
 
