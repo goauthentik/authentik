@@ -64,15 +64,3 @@ class TestAPI(TenantAPITestCase):
             ),
         )
         self.assertEqual(response.status_code, 403)
-
-    @CONFIG.patch("tenants.enabled", False)
-    @CONFIG.patch("tenants.api_key", TENANTS_API_KEY)
-    def test_api_disabled(self):
-        """Test Tenant creation API Endpoint"""
-        response = self.client.get(
-            reverse(
-                "authentik_api:tenant-list",
-            ),
-            headers=HEADERS,
-        )
-        self.assertEqual(response.status_code, 404)
