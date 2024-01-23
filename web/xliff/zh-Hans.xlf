@@ -1,4 +1,4 @@
-<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file target-language="zh-Hans" source-language="en" original="lit-localize-inputs" datatype="plaintext">
     <body>
       <trans-unit id="s4caed5b7a7e5d89b">
@@ -608,9 +608,9 @@
         
       </trans-unit>
       <trans-unit id="saa0e2675da69651b">
-        <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
-        <target>未找到 URL " 
-        <x id="0" equiv-text="${this.url}"/>"。</target>
+        <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
+        <target>未找到 URL &quot; 
+        <x id="0" equiv-text="${this.url}"/>&quot;。</target>
         
       </trans-unit>
       <trans-unit id="s58cd9c2fe836d9c6">
@@ -1052,8 +1052,8 @@
         
       </trans-unit>
       <trans-unit id="sa8384c9c26731f83">
-        <source>To allow any redirect URI, set this value to ".*". Be aware of the possible security implications this can have.</source>
-        <target>要允许任何重定向 URI，请将此值设置为 ".*"。请注意这可能带来的安全影响。</target>
+        <source>To allow any redirect URI, set this value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
+        <target>要允许任何重定向 URI，请将此值设置为 &quot;.*&quot;。请注意这可能带来的安全影响。</target>
         
       </trans-unit>
       <trans-unit id="s55787f4dfcdce52b">
@@ -1794,8 +1794,8 @@
         
       </trans-unit>
       <trans-unit id="sa90b7809586c35ce">
-        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
-        <target>输入完整 URL、相对路径，或者使用 'fa://fa-test' 来使用 Font Awesome 图标 "fa-test"。</target>
+        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
+        <target>输入完整 URL、相对路径，或者使用 'fa://fa-test' 来使用 Font Awesome 图标 &quot;fa-test&quot;。</target>
         
       </trans-unit>
       <trans-unit id="s0410779cb47de312">
@@ -2978,8 +2978,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s76768bebabb7d543">
-        <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
-        <target>包含组成员的字段。请注意，如果使用 "memberUid" 字段，则假定该值包含相对可分辨名称。例如，'memberUid=some-user' 而不是 'memberUid=cn=some-user,ou=groups,...'</target>
+        <source>Field which contains members of a group. Note that if using the &quot;memberUid&quot; field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
+        <target>包含组成员的字段。请注意，如果使用 &quot;memberUid&quot; 字段，则假定该值包含相对可分辨名称。例如，'memberUid=some-user' 而不是 'memberUid=cn=some-user,ou=groups,...'</target>
         
       </trans-unit>
       <trans-unit id="s026555347e589f0e">
@@ -3756,8 +3756,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s7b1fba26d245cb1c">
-        <source>When using an external logging solution for archiving, this can be set to "minutes=5".</source>
-        <target>使用外部日志记录解决方案进行存档时，可以将其设置为 "minutes=5"。</target>
+        <source>When using an external logging solution for archiving, this can be set to &quot;minutes=5&quot;.</source>
+        <target>使用外部日志记录解决方案进行存档时，可以将其设置为 &quot;minutes=5&quot;。</target>
         
       </trans-unit>
       <trans-unit id="s44536d20bb5c8257">
@@ -3933,10 +3933,10 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
-        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>"?</source>
+        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot;?</source>
         <target>您确定要更新 
-        <x id="0" equiv-text="${this.objectLabel}"/>" 
-        <x id="1" equiv-text="${this.obj?.name}"/>" 吗？</target>
+        <x id="0" equiv-text="${this.objectLabel}"/>&quot; 
+        <x id="1" equiv-text="${this.obj?.name}"/>&quot; 吗？</target>
         
       </trans-unit>
       <trans-unit id="sc92d7cfb6ee1fec6">
@@ -5017,7 +5017,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sdf1d8edef27236f0">
-        <source>A "roaming" authenticator, like a YubiKey</source>
+        <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
         <target>像 YubiKey 这样的“漫游”身份验证器</target>
         
       </trans-unit>
@@ -5352,10 +5352,10 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s2d5f69929bb7221d">
-        <source><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", of type <x id="2" equiv-text="${prompt.type}"/>)</source>
+        <source><x id="0" equiv-text="${prompt.name}"/> (&quot;<x id="1" equiv-text="${prompt.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${prompt.type}"/>)</source>
         <target>
-        <x id="0" equiv-text="${prompt.name}"/>（" 
-        <x id="1" equiv-text="${prompt.fieldKey}"/>"，类型为 
+        <x id="0" equiv-text="${prompt.name}"/>（&quot; 
+        <x id="1" equiv-text="${prompt.fieldKey}"/>&quot;，类型为 
         <x id="2" equiv-text="${prompt.type}"/>）</target>
         
       </trans-unit>
@@ -5404,7 +5404,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s1608b2f94fa0dbd4">
-        <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
+        <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
         <target>如果设置时长大于 0，用户可以选择“保持登录”选项，这将使用户的会话延长此处设置的时间。</target>
         
       </trans-unit>
@@ -7906,7 +7906,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>成功创建用户并添加到组 <x id="0" equiv-text="${this.group.name}"/></target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
+  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
   <target>此用户将会被添加到组 &amp;quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&amp;quot;。</target>
 </trans-unit>
 <trans-unit id="s62e7f6ed7d9cb3ca">
@@ -8175,119 +8175,161 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s744401846fea6e76">
   <source>Brand</source>
+  <target>品牌</target>
 </trans-unit>
 <trans-unit id="sab21e1f62676b56c">
   <source>Successfully updated brand.</source>
+  <target>已成功更新品牌。</target>
 </trans-unit>
 <trans-unit id="sa43e43fd3a23e22d">
   <source>Successfully created brand.</source>
+  <target>已成功创建品牌。</target>
 </trans-unit>
 <trans-unit id="s41b3f9b4c98aabd9">
   <source>Use this brand for each domain that doesn't have a dedicated brand.</source>
+  <target>所有未设置专用品牌的域名都将使用此品牌。</target>
 </trans-unit>
 <trans-unit id="s17260b71484b307f">
   <source>Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this brand.</source>
+  <target>使用 YAML 或 JSON 格式设置自定义属性。如果请求由此品牌处理，则用户会继承此处设置的任何自定义属性。</target>
 </trans-unit>
 <trans-unit id="s79fc990a2b58f27f">
   <source>Brands</source>
+  <target>品牌</target>
 </trans-unit>
 <trans-unit id="s02774bc46a167346">
   <source>Brand(s)</source>
+  <target>品牌</target>
 </trans-unit>
 <trans-unit id="s801bf3d03f4a3ff1">
   <source>Update Brand</source>
+  <target>更新品牌</target>
 </trans-unit>
 <trans-unit id="s5c3efec5330e0000">
   <source>Create Brand</source>
+  <target>创建品牌</target>
 </trans-unit>
 <trans-unit id="sa9d13ce9e83aac17">
   <source>To let a user directly reset a their password, configure a recovery flow on the currently active brand.</source>
+  <target>要让用户直接重置密码，请在当前活动的品牌上配置恢复流程。</target>
 </trans-unit>
 <trans-unit id="s6709b81e1ed4e39f">
   <source>The current brand must have a recovery flow configured to use a recovery link</source>
+  <target>当前品牌必须配置恢复流程才能使用恢复链接</target>
 </trans-unit>
 <trans-unit id="s634e2fd82c397576">
   <source>Successfully updated settings.</source>
+  <target>已成功更新设置。</target>
 </trans-unit>
 <trans-unit id="sb8e4edaea6f1d935">
   <source>Avatars</source>
+  <target>头像</target>
 </trans-unit>
 <trans-unit id="s945856050217c828">
   <source>Configure how authentik should show avatars for users. The following values can be set:</source>
+  <target>配置 authentik 应该如何显示用户头像。可以配置为以下值：</target>
 </trans-unit>
 <trans-unit id="sf4ef4c8ce713f775">
   <source>Disables per-user avatars and just shows a 1x1 pixel transparent picture</source>
+  <target>禁用单用户头像，仅显示 1x1 像素的透明图片</target>
 </trans-unit>
 <trans-unit id="s5446842a7e4a963b">
   <source>Uses gravatar with the user's email address</source>
+  <target>根据用户的电子邮件地址使用 Gravatar</target>
 </trans-unit>
 <trans-unit id="s35363b9e1cc2abd3">
   <source>Generated avatars based on the user's name</source>
+  <target>根据用户的名称生成头像</target>
 </trans-unit>
 <trans-unit id="s48110ca292cad513">
   <source>Any URL: If you want to use images hosted on another server, you can set any URL. Additionally, these placeholders can be used:</source>
+  <target>任意 URL：如果您想使用托管在其他服务器上的图像，可以设置为任意 URL。此外，还可以使用以下占位符：</target>
 </trans-unit>
 <trans-unit id="sbe1dfda044bdc93b">
   <source>The user's username</source>
+  <target>用户名</target>
 </trans-unit>
 <trans-unit id="s653f257c9c2d4dc5">
   <source>The email address, md5 hashed</source>
+  <target>电子邮件地址，经过 MD5 哈希</target>
 </trans-unit>
 <trans-unit id="s9c9183cd80916b4f">
   <source>The user's UPN, if set (otherwise an empty string)</source>
+  <target>用户的 UPN，如果存在（否则为空字符串）</target>
 </trans-unit>
 <trans-unit id="h4963ed14d7e239a9">
   <source>An attribute path like
                                     <x id="0" equiv-text="&lt;code&gt;"/>attributes.something.avatar<x id="1" equiv-text="&lt;/code&gt;"/>, which can be used in
                                     combination with the file field to allow users to upload custom
                                     avatars for themselves.</source>
+  <target>任意形如
+                                    <x id="0" equiv-text="&lt;code&gt;"/>attributes.something.avatar<x id="1" equiv-text="&lt;/code&gt;"/> 的属性
+                                    路径，可以与文件字段相组合，以允许用户
+                                    自行上传自定义头像。</target>
 </trans-unit>
 <trans-unit id="s4c80c34a67a6f1c9">
   <source>Multiple values can be set, comma-separated, and authentik will fallback to the next mode when no avatar could be found.</source>
+  <target>可以设置多个以逗号分隔的值，如果 authentik 无法找到头像，就会回退到下一个模式。</target>
 </trans-unit>
 <trans-unit id="h2fafcc3ebafea2f8">
   <source>For example, setting this to <x id="0" equiv-text="&lt;code&gt;"/>gravatar,initials<x id="1" equiv-text="&lt;/code&gt;"/> will
                                 attempt to get an avatar from Gravatar, and if the user has not
                                 configured on there, it will fallback to a generated avatar.</source>
+  <target>例如，将该选项设置为 <x id="0" equiv-text="&lt;code&gt;"/>gravatar,initials<x id="1" equiv-text="&lt;/code&gt;"/>，
+                                就会创建从 Gravatar 获取头像，如果用户没有在那里
+                                设置过，就回退到生成头像。</target>
 </trans-unit>
 <trans-unit id="s5faec5eb5faf62ac">
   <source>Allow users to change name</source>
+  <target>允许用户修改名称</target>
 </trans-unit>
 <trans-unit id="s078ffec0257621c0">
   <source>Enable the ability for users to change their name.</source>
+  <target>启用用户修改自己名称的能力。</target>
 </trans-unit>
 <trans-unit id="s456d88f3679190fd">
   <source>Allow users to change email</source>
+  <target>允许用户修改电子邮件地址</target>
 </trans-unit>
 <trans-unit id="s5fc6c14d106f40d3">
   <source>Enable the ability for users to change their email.</source>
+  <target>启用用户修改自己电子邮件地址的能力。</target>
 </trans-unit>
 <trans-unit id="s628e414bb2367057">
   <source>Allow users to change username</source>
+  <target>允许用户修改用户名</target>
 </trans-unit>
 <trans-unit id="s6d816a95ca43a99d">
   <source>Enable the ability for users to change their username.</source>
+  <target>启用用户修改自己用户名的能力。</target>
 </trans-unit>
 <trans-unit id="s57b52b60ed5e2bc7">
   <source>Footer links</source>
+  <target>页脚链接</target>
 </trans-unit>
 <trans-unit id="s7349802b2f7f99c2">
   <source>This option configures the footer links on the flow executor pages. It must be a valid JSON list and can be used as follows:</source>
+  <target>此选项配置流程执行器页面上的页脚链接。必须为有效的 JSON 列表，可以使用以下值：</target>
 </trans-unit>
 <trans-unit id="s166b59f3cc5d8ec3">
   <source>GDPR compliance</source>
+  <target>GDPR 合规性</target>
 </trans-unit>
 <trans-unit id="sb8b23770f899e5bb">
   <source>When enabled, all the events caused by a user will be deleted upon the user's deletion.</source>
+  <target>启用时，所有由用户造成的事件会在相应用户被删除时一并删除。</target>
 </trans-unit>
 <trans-unit id="s29501761df0fe837">
   <source>Impersonation</source>
+  <target>模拟身份</target>
 </trans-unit>
 <trans-unit id="s8f503553d8432487">
   <source>Globally enable/disable impersonation.</source>
+  <target>全局启用/禁用模拟身份。</target>
 </trans-unit>
 <trans-unit id="see1eb81c1f734079">
   <source>System settings</source>
+  <target>系统设置</target>
 </trans-unit>
     </body>
   </file>
