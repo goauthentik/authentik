@@ -6,7 +6,7 @@
 # Translators:
 # Chen Zhikai, 2022
 # 刘松, 2022
-# Jens L. <jens@beryju.org>, 2023
+# Jens L. <jens@beryju.org>, 2024
 # deluxghost, 2024
 # 
 #, fuzzy
@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-18 22:07+0000\n"
+"POT-Creation-Date: 2024-01-23 08:02+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/authentik/teams/119923/zh_CN/)\n"
@@ -77,10 +77,28 @@ msgstr "蓝图实例"
 msgid "authentik Export - %(date)s"
 msgstr "authentik 导出 - %(date)s"
 
-#: authentik/blueprints/v1/tasks.py:145 authentik/crypto/tasks.py:93
+#: authentik/blueprints/v1/tasks.py:151 authentik/crypto/tasks.py:93
 #, python-format
 msgid "Successfully imported %(count)d files."
 msgstr "已成功导入 %(count)d 个文件。"
+
+#: authentik/brands/models.py:22
+msgid ""
+"Domain that activates this brand. Can be a superset, i.e. `a.b` for `aa.b` "
+"and `ba.b`"
+msgstr "激活此品牌的域。可以是超集，即 `a.b` 可以同时表示 `aa.b` 和 `ba.b`"
+
+#: authentik/brands/models.py:58
+msgid "Web Certificate used by the authentik Core webserver."
+msgstr "authentik 核心 Web 服务器使用的 Web 证书。"
+
+#: authentik/brands/models.py:84
+msgid "Brand"
+msgstr "品牌"
+
+#: authentik/brands/models.py:85
+msgid "Brands"
+msgstr "品牌"
 
 #: authentik/core/api/providers.py:122
 msgid "SAML Provider from Metadata"
@@ -90,11 +108,11 @@ msgstr "来自元数据的 SAML 提供程序"
 msgid "Create a SAML Provider by importing its Metadata."
 msgstr "通过导入元数据来创建 SAML 提供程序。"
 
-#: authentik/core/api/users.py:150
+#: authentik/core/api/users.py:149
 msgid "No leading or trailing slashes allowed."
 msgstr "不允许前缀或后缀斜线。"
 
-#: authentik/core/api/users.py:153
+#: authentik/core/api/users.py:152
 msgid "No empty segments in user path allowed."
 msgstr "不允许用户路径包含空段。"
 
@@ -437,109 +455,109 @@ msgstr "已达到最大连接数。"
 msgid "(You are already connected in another tab/window)"
 msgstr "（您已经在另一个标签页/窗口连接了）"
 
-#: authentik/events/models.py:286
+#: authentik/events/models.py:289
 msgid "Event"
 msgstr "事件"
 
-#: authentik/events/models.py:287
+#: authentik/events/models.py:290
 msgid "Events"
 msgstr "事件"
 
-#: authentik/events/models.py:293
+#: authentik/events/models.py:296
 msgid "authentik inbuilt notifications"
 msgstr "authentik 内置通知"
 
-#: authentik/events/models.py:294
+#: authentik/events/models.py:297
 msgid "Generic Webhook"
 msgstr "通用 Webhook"
 
-#: authentik/events/models.py:295
+#: authentik/events/models.py:298
 msgid "Slack Webhook (Slack/Discord)"
 msgstr "Slack Webhook（Slack/Discord）"
 
-#: authentik/events/models.py:296
+#: authentik/events/models.py:299
 msgid "Email"
 msgstr "电子邮箱"
 
-#: authentik/events/models.py:314
+#: authentik/events/models.py:317
 msgid ""
 "Only send notification once, for example when sending a webhook into a chat "
 "channel."
 msgstr "仅发送一次通知，例如在向聊天频道发送 Webhook 时。"
 
-#: authentik/events/models.py:379
+#: authentik/events/models.py:382
 msgid "Severity"
 msgstr "严重程度"
 
-#: authentik/events/models.py:384
+#: authentik/events/models.py:387
 msgid "Dispatched for user"
 msgstr "为用户分派"
 
-#: authentik/events/models.py:393
+#: authentik/events/models.py:396
 msgid "Event user"
 msgstr "事件用户"
 
-#: authentik/events/models.py:487
+#: authentik/events/models.py:490
 msgid "Notification Transport"
 msgstr "通知传输"
 
-#: authentik/events/models.py:488
+#: authentik/events/models.py:491
 msgid "Notification Transports"
 msgstr "通知传输"
 
-#: authentik/events/models.py:494
+#: authentik/events/models.py:497
 msgid "Notice"
 msgstr "通知"
 
-#: authentik/events/models.py:495
+#: authentik/events/models.py:498
 msgid "Warning"
 msgstr "警告"
 
-#: authentik/events/models.py:496
+#: authentik/events/models.py:499
 msgid "Alert"
 msgstr "注意"
 
-#: authentik/events/models.py:521
+#: authentik/events/models.py:524
 msgid "Notification"
 msgstr "通知"
 
-#: authentik/events/models.py:522
+#: authentik/events/models.py:525
 msgid "Notifications"
 msgstr "通知"
 
-#: authentik/events/models.py:532
+#: authentik/events/models.py:535
 msgid ""
 "Select which transports should be used to notify the user. If none are "
 "selected, the notification will only be shown in the authentik UI."
 msgstr "选择应使用哪些传输方式来通知用户。如果未选择任何内容，则通知将仅显示在 authentik UI 中。"
 
-#: authentik/events/models.py:540
+#: authentik/events/models.py:543
 msgid "Controls which severity level the created notifications will have."
 msgstr "控制被创建的通知的严重性级别。"
 
-#: authentik/events/models.py:545
+#: authentik/events/models.py:548
 msgid ""
 "Define which group of users this notification should be sent and shown to. "
 "If left empty, Notification won't ben sent."
 msgstr "定义此通知应该发送到哪些用户组。如果留空，则不会发送通知。"
 
-#: authentik/events/models.py:563
+#: authentik/events/models.py:566
 msgid "Notification Rule"
 msgstr "通知规则"
 
-#: authentik/events/models.py:564
+#: authentik/events/models.py:567
 msgid "Notification Rules"
 msgstr "通知规则"
 
-#: authentik/events/models.py:584
+#: authentik/events/models.py:587
 msgid "Webhook Mapping"
 msgstr "Webhook 映射"
 
-#: authentik/events/models.py:585
+#: authentik/events/models.py:588
 msgid "Webhook Mappings"
 msgstr "Webhook 映射"
 
-#: authentik/events/monitored_tasks.py:205
+#: authentik/events/monitored_tasks.py:207
 msgid "Task has not been run yet."
 msgstr "任务尚未运行。"
 
@@ -1647,11 +1665,19 @@ msgstr "可以运行系统任务"
 msgid "Can access admin interface"
 msgstr "可以访问管理员界面"
 
-#: authentik/recovery/management/commands/create_admin_group.py:11
+#: authentik/rbac/models.py:73
+msgid "Can view system settings"
+msgstr "可以查看系统设置"
+
+#: authentik/rbac/models.py:74
+msgid "Can edit system settings"
+msgstr "可以编辑系统设置"
+
+#: authentik/recovery/management/commands/create_admin_group.py:12
 msgid "Create admin group if the default group gets deleted."
 msgstr "如果默认组被删除，则创建管理员组。"
 
-#: authentik/recovery/management/commands/create_recovery_key.py:17
+#: authentik/recovery/management/commands/create_recovery_key.py:16
 msgid "Create a Key which can be used to restore access to authentik."
 msgstr "创建一个密钥，可用于恢复对 authentik 的访问权限。"
 
@@ -2094,12 +2120,12 @@ msgid "Invalid phone number"
 msgstr "无效电话号码"
 
 #: authentik/stages/authenticator_static/models.py:52
-msgid "Static Authenticator Stage"
-msgstr "静态身份验证器阶段"
+msgid "Static Authenticator Setup Stage"
+msgstr "静态身份验证器设置阶段"
 
 #: authentik/stages/authenticator_static/models.py:53
-msgid "Static Authenticator Stages"
-msgstr "静态身份验证器阶段"
+msgid "Static Authenticator Setup Stages"
+msgstr "静态身份验证器设置阶段"
 
 #: authentik/stages/authenticator_static/models.py:98
 msgid "Static Device"
@@ -2771,26 +2797,60 @@ msgstr "未找到用户并且无法创建新用户。"
 msgid "Failed to update user. Please try again later."
 msgstr "更新用户失败。请稍后重试。"
 
-#: authentik/tenants/models.py:23
+#: authentik/tenants/models.py:29
 msgid ""
-"Domain that activates this tenant. Can be a superset, i.e. `a.b` for `aa.b` "
-"and `ba.b`"
-msgstr "激活此租户的域。可以是超集，即 `a.b` 可以同时表示 `aa.b` 和 `ba.b`"
+"Schema name must start with t_, only contain lowercase letters and numbers "
+"and be less than 63 characters."
+msgstr "模式名称必须以 t_ 开始，只能包含小写字母和数字，并且少于 63 个字符。"
 
-#: authentik/tenants/models.py:58
+#: authentik/tenants/models.py:49
+msgid "Configure how authentik should show avatars for users."
+msgstr "配置 authentik 应该如何显示用户头像。"
+
+#: authentik/tenants/models.py:53
+msgid "Enable the ability for users to change their name."
+msgstr "启用用户修改自己名称的能力。"
+
+#: authentik/tenants/models.py:56
+msgid "Enable the ability for users to change their email address."
+msgstr "启用用户修改自己电子邮件地址的能力。"
+
+#: authentik/tenants/models.py:59
+msgid "Enable the ability for users to change their username."
+msgstr "启用用户修改自己用户名的能力。"
+
+#: authentik/tenants/models.py:65
 msgid ""
 "Events will be deleted after this duration.(Format: "
 "weeks=3;days=2;hours=3,seconds=2)."
 msgstr "事件会在多久后被删除。（格式：weeks=3;days=2;hours=3,seconds=2）。"
 
-#: authentik/tenants/models.py:67
-msgid "Web Certificate used by the authentik Core webserver."
-msgstr "authentik 核心 Web 服务器使用的 Web 证书。"
+#: authentik/tenants/models.py:69
+msgid "The option configures the footer links on the flow executor pages."
+msgstr "此选项配置流程执行器页面上的页脚链接。"
 
-#: authentik/tenants/models.py:93
+#: authentik/tenants/models.py:75
+msgid ""
+"When enabled, all the events caused by a user will be deleted upon the "
+"user's deletion."
+msgstr "启用时，所有由用户造成的事件会在相应用户被删除时一并删除。"
+
+#: authentik/tenants/models.py:81
+msgid "Globally enable/disable impersonation."
+msgstr "全局启用/禁用模拟身份。"
+
+#: authentik/tenants/models.py:104
 msgid "Tenant"
 msgstr "租户"
 
-#: authentik/tenants/models.py:94
+#: authentik/tenants/models.py:105
 msgid "Tenants"
 msgstr "租户"
+
+#: authentik/tenants/models.py:125
+msgid "Domain"
+msgstr "域名"
+
+#: authentik/tenants/models.py:126
+msgid "Domains"
+msgstr "域名"
