@@ -1,6 +1,4 @@
 """Enterprise app config"""
-from functools import lru_cache
-
 from django.conf import settings
 
 from authentik.blueprints.apps import ManagedAppConfig
@@ -26,15 +24,8 @@ class AuthentikEnterpriseConfig(EnterpriseConfig):
         """Return true if enterprise is enabled and valid"""
         return self.check_enabled() or settings.TEST
 
-    @lru_cache()
     def check_enabled(self):
         """Actual enterprise check, cached"""
         from authentik.enterprise.models import LicenseKey
 
         return LicenseKey.get_total().is_valid()
-
-    def reconcile_install_middleware(self):
-        """Install enterprise audit middleware"""
-        orig_import = "authentik.events.middleware.AuditMiddleware"
-        new_import = "authentik.enterprise.middleware.EnterpriseAuditMiddleware"
-        settings.MIDDLEWARE = [new_import if x == orig_import else x for x in settings.MIDDLEWARE]
