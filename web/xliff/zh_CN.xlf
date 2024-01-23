@@ -8220,6 +8220,18 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Maximum concurrent allowed connections to this endpoint. Can be set to -1 to disable the limit.</source>
   <target>允许到此端点的最大并发连接数。可以设置为 -1 以禁用限制。</target>
 </trans-unit>
+<trans-unit id="s94d61907ee22a8c1">
+  <source>Korean</source>
+  <target>韩语</target>
+</trans-unit>
+<trans-unit id="s95d56e58f816d211">
+  <source>Dutch</source>
+  <target>荷兰语</target>
+</trans-unit>
+<trans-unit id="s16a15af46bc9aeef">
+  <source>Failed to fetch objects: <x id="0" equiv-text="${this.error.detail}"/></source>
+  <target>获取对象失败：<x id="0" equiv-text="${this.error.detail}"/></target>
+</trans-unit>
     </body>
   </file>
 </xliff>

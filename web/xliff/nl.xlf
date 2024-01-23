@@ -7381,9 +7381,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="s4ba4473f3d4ec896">
   <source>New version available</source>
 </trans-unit>
-<trans-unit id="s744401846fea6e76">
-  <source>Brand</source>
-</trans-unit>
 <trans-unit id="s98327528f00365a7">
   <source>Failed to fetch data.</source>
 </trans-unit>
@@ -7726,33 +7723,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="se9c07cf256774d81">
   <source>Editing is disabled for managed tokens</source>
 </trans-unit>
-<trans-unit id="sab21e1f62676b56c">
-  <source>Successfully updated brand.</source>
-</trans-unit>
-<trans-unit id="sa43e43fd3a23e22d">
-  <source>Successfully created brand.</source>
-</trans-unit>
-<trans-unit id="s41b3f9b4c98aabd9">
-  <source>Use this brand for each domain that doesn't have a dedicated brand.</source>
-</trans-unit>
-<trans-unit id="s17260b71484b307f">
-  <source>Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this brand.</source>
-</trans-unit>
-<trans-unit id="s79fc990a2b58f27f">
-  <source>Brands</source>
-</trans-unit>
-<trans-unit id="s02774bc46a167346">
-  <source>Brand(s)</source>
-</trans-unit>
-<trans-unit id="s801bf3d03f4a3ff1">
-  <source>Update Brand</source>
-</trans-unit>
-<trans-unit id="s5c3efec5330e0000">
-  <source>Create Brand</source>
-</trans-unit>
-<trans-unit id="sa9d13ce9e83aac17">
-  <source>To let a user directly reset a their password, configure a recovery flow on the currently active brand.</source>
-</trans-unit>
 <trans-unit id="s824e0943a7104668">
   <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
 </trans-unit>
@@ -7767,9 +7737,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 </trans-unit>
 <trans-unit id="saf6097bfa25205b8">
   <source>A copy of this recovery link has been placed in your clipboard</source>
-</trans-unit>
-<trans-unit id="s6709b81e1ed4e39f">
-  <source>The current brand must have a recovery flow configured to use a recovery link</source>
 </trans-unit>
 <trans-unit id="s0924f51b028233a3">
   <source>&lt;No name set&gt;</source>
@@ -7930,6 +7897,69 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="sa06cd519ff151b6d">
   <source>RAC</source>
 </trans-unit>
+<trans-unit id="s67ac11d47f1ce794">
+  <source>WebAuthn requires this page to be accessed via HTTPS.</source>
+</trans-unit>
+<trans-unit id="se9e9e1d6799b86a5">
+  <source>WebAuthn not supported by browser.</source>
+</trans-unit>
+<trans-unit id="s09f0c100d0ad2fec">
+  <source>Open Wizard</source>
+</trans-unit>
+<trans-unit id="sf2ef885f7d0a101d">
+  <source>Demo Wizard</source>
+</trans-unit>
+<trans-unit id="s77505ee5d2e45e53">
+  <source>Run the demo wizard</source>
+</trans-unit>
+<trans-unit id="s28b99b59541f54ca">
+  <source>Connection failed after <x id="0" equiv-text="${this.connectionAttempt}"/> attempts.</source>
+</trans-unit>
+<trans-unit id="s7c7d956418e1c8c8">
+  <source>Re-connecting in <x id="0" equiv-text="${Math.max(1, delay / 1000)}"/> second(s).</source>
+</trans-unit>
+<trans-unit id="sfc003381f593d943">
+  <source>Connecting...</source>
+</trans-unit>
+<trans-unit id="s31aa94a0b3c7edb2">
+  <source>Select endpoint to connect to</source>
+</trans-unit>
+<trans-unit id="s16a15af46bc9aeef">
+  <source>Failed to fetch objects: <x id="0" equiv-text="${this.error.detail}"/></source>
+</trans-unit>
+<trans-unit id="s744401846fea6e76">
+  <source>Brand</source>
+</trans-unit>
+<trans-unit id="sab21e1f62676b56c">
+  <source>Successfully updated brand.</source>
+</trans-unit>
+<trans-unit id="sa43e43fd3a23e22d">
+  <source>Successfully created brand.</source>
+</trans-unit>
+<trans-unit id="s41b3f9b4c98aabd9">
+  <source>Use this brand for each domain that doesn't have a dedicated brand.</source>
+</trans-unit>
+<trans-unit id="s17260b71484b307f">
+  <source>Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this brand.</source>
+</trans-unit>
+<trans-unit id="s79fc990a2b58f27f">
+  <source>Brands</source>
+</trans-unit>
+<trans-unit id="s02774bc46a167346">
+  <source>Brand(s)</source>
+</trans-unit>
+<trans-unit id="s801bf3d03f4a3ff1">
+  <source>Update Brand</source>
+</trans-unit>
+<trans-unit id="s5c3efec5330e0000">
+  <source>Create Brand</source>
+</trans-unit>
+<trans-unit id="sa9d13ce9e83aac17">
+  <source>To let a user directly reset a their password, configure a recovery flow on the currently active brand.</source>
+</trans-unit>
+<trans-unit id="s6709b81e1ed4e39f">
+  <source>The current brand must have a recovery flow configured to use a recovery link</source>
+</trans-unit>
 <trans-unit id="s634e2fd82c397576">
   <source>Successfully updated settings.</source>
 </trans-unit>
@@ -7974,11 +8004,20 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
                                 attempt to get an avatar from Gravatar, and if the user has not
                                 configured on there, it will fallback to a generated avatar.</source>
 </trans-unit>
+<trans-unit id="s5faec5eb5faf62ac">
+  <source>Allow users to change name</source>
+</trans-unit>
 <trans-unit id="s078ffec0257621c0">
   <source>Enable the ability for users to change their name.</source>
 </trans-unit>
+<trans-unit id="s456d88f3679190fd">
+  <source>Allow users to change email</source>
+</trans-unit>
 <trans-unit id="s5fc6c14d106f40d3">
   <source>Enable the ability for users to change their email.</source>
+</trans-unit>
+<trans-unit id="s628e414bb2367057">
+  <source>Allow users to change username</source>
 </trans-unit>
 <trans-unit id="s6d816a95ca43a99d">
   <source>Enable the ability for users to change their username.</source>
@@ -8003,42 +8042,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 </trans-unit>
 <trans-unit id="see1eb81c1f734079">
   <source>System settings</source>
-</trans-unit>
-<trans-unit id="s67ac11d47f1ce794">
-  <source>WebAuthn requires this page to be accessed via HTTPS.</source>
-</trans-unit>
-<trans-unit id="se9e9e1d6799b86a5">
-  <source>WebAuthn not supported by browser.</source>
-</trans-unit>
-<trans-unit id="s09f0c100d0ad2fec">
-  <source>Open Wizard</source>
-</trans-unit>
-<trans-unit id="sf2ef885f7d0a101d">
-  <source>Demo Wizard</source>
-</trans-unit>
-<trans-unit id="s77505ee5d2e45e53">
-  <source>Run the demo wizard</source>
-</trans-unit>
-<trans-unit id="s28b99b59541f54ca">
-  <source>Connection failed after <x id="0" equiv-text="${this.connectionAttempt}"/> attempts.</source>
-</trans-unit>
-<trans-unit id="s7c7d956418e1c8c8">
-  <source>Re-connecting in <x id="0" equiv-text="${Math.max(1, delay / 1000)}"/> second(s).</source>
-</trans-unit>
-<trans-unit id="sfc003381f593d943">
-  <source>Connecting...</source>
-</trans-unit>
-<trans-unit id="s31aa94a0b3c7edb2">
-  <source>Select endpoint to connect to</source>
-</trans-unit>
-<trans-unit id="s5faec5eb5faf62ac">
-  <source>Allow users to change name</source>
-</trans-unit>
-<trans-unit id="s456d88f3679190fd">
-  <source>Allow users to change email</source>
-</trans-unit>
-<trans-unit id="s628e414bb2367057">
-  <source>Allow users to change username</source>
 </trans-unit>
     </body>
   </file>

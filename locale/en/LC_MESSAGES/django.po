@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-16 04:49+0000\n"
+"POT-Creation-Date: 2024-01-23 08:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2084,11 +2084,11 @@ msgid "Invalid phone number"
 msgstr ""
 
 #: authentik/stages/authenticator_static/models.py:52
-msgid "Static Authenticator Stage"
+msgid "Static Authenticator Setup Stage"
 msgstr ""
 
 #: authentik/stages/authenticator_static/models.py:53
-msgid "Static Authenticator Stages"
+msgid "Static Authenticator Setup Stages"
 msgstr ""
 
 #: authentik/stages/authenticator_static/models.py:98

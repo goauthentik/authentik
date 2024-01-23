@@ -67,16 +67,18 @@ lint: ## Lint the python and golang sources
 	pylint $(PY_SOURCES)
 	golangci-lint run -v
 
+core-install:
+	poetry install
+
 migrate: ## Run the Authentik Django server's migrations
 	python -m lifecycle.migrate
 
-i18n-extract: i18n-extract-core web-i18n-extract  ## Extract strings that require translation into files to send to a translation service
+i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that require translation into files to send to a translation service
 
-i18n-extract-core:
+core-i18n-extract:
 	ak makemessages --ignore web --ignore internal --ignore web --ignore web-api --ignore website -l en
 
-install: web-install website-install  ## Install all requires dependencies for `web`, `website` and `core`
-	poetry install
+install: web-install website-install core-install  ## Install all requires dependencies for `web`, `website` and `core`
 
 dev-drop-db:
 	dropdb -U ${pg_user} -h ${pg_host} ${pg_name}
