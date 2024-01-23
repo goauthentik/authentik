@@ -1,4 +1,5 @@
 """API URLs"""
+from django.conf import settings
 from django.urls import path
 
 from authentik.lib.config import CONFIG
@@ -10,7 +11,7 @@ api_urlpatterns = [
     path("admin/settings/", SettingsView.as_view(), name="tenant_settings"),
 ]
 
-if CONFIG.get_bool("tenants.enabled", True):
+if CONFIG.get_bool("tenants.enabled", True) or settings.TEST:
     api_urlpatterns += [
         ("tenants/tenants", TenantViewSet),
         ("tenants/domains", DomainViewSet),
