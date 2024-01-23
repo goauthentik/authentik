@@ -4,7 +4,7 @@ from pathlib import Path
 from lifecycle.migrate import BaseMigration
 
 MEDIA_ROOT = Path(__file__).parent.parent.parent / "media"
-TENANT_MEDIA_ROOT = MEDIA_ROOT / "tenants"
+TENANT_MEDIA_ROOT = MEDIA_ROOT / "public"
 
 
 class Migration(BaseMigration):
