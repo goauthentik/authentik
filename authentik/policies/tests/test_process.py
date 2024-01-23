@@ -177,7 +177,7 @@ class TestPolicyProcess(TestCase):
                     "dict": {"foo": "bar"},
                     "list": ["foo", "bar"],
                     "tuple": ["foo", "bar"],
-                    "password": f"{password[:4]}{SafeExceptionReporterFilter.cleansed_substitute}",
+                    "password": SafeExceptionReporterFilter.cleansed_substitute,
                 }
             },
         )

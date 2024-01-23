@@ -69,12 +69,11 @@ class TestEvents(TestCase):
         token = generate_id()
         request = self.factory.get(f"/?token={token}")
         event = Event.new("unittest").from_http(request)
-        cleaned = f"{token[:4]}{SafeExceptionReporterFilter.cleansed_substitute}"
         self.assertEqual(
             event.context,
             {
                 "http_request": {
-                    "args": {"token": cleaned},
+                    "args": {"token": SafeExceptionReporterFilter.cleansed_substitute},
                     "method": "GET",
                     "path": "/",
                     "user_agent": "",
@@ -88,12 +87,11 @@ class TestEvents(TestCase):
         nested_qs = {"token": token}
         request = self.factory.get(f"/?{QS_QUERY}={urlencode(nested_qs)}")
         event = Event.new("unittest").from_http(request)
-        cleaned = f"{token[:4]}{SafeExceptionReporterFilter.cleansed_substitute}"
         self.assertEqual(
             event.context,
             {
                 "http_request": {
-                    "args": {"token": cleaned},
+                    "args": {"token": SafeExceptionReporterFilter.cleansed_substitute},
                     "method": "GET",
                     "path": "/",
                     "user_agent": "",
