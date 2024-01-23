@@ -16,7 +16,23 @@ RUN --mount=type=bind,target=/static/package.json,src=./web/package.json \
 COPY web .
 RUN npm run build-proxy
 
-# Stage 2: Build
+# Stage 2: Generate static Go files
+FROM --platform=${BUILDPLATFORM} docker.io/openapitools/openapi-generator-cli:v6.5.0 as go-generator
+
+WORKDIR /local
+
+RUN mkdir -p templates && \
+    wget https://raw.githubusercontent.com/goauthentik/client-go/main/config.yaml -O ./config.yaml && \
+	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/README.mustache -O ./templates/README.mustache && \
+	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/go.mod.mustache -O ./templates/go.mod.mustache
+
+COPY ./schema.yml .
+
+RUN /usr/local/bin/docker-entrypoint.sh generate \
+    -i /local/schema.yml -g go -o /local/ -c /local/config.yaml && \
+    rm -rf /local/config.yaml /local/templates
+
+# Stage 3: Build
 FROM --platform=${BUILDPLATFORM} docker.io/golang:1.21.6-bookworm AS builder
 
 ARG TARGETOS
@@ -28,10 +44,13 @@ ARG GOARCH=$TARGETARCH
 
 WORKDIR /go/src/goauthentik.io
 
-RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
-    --mount=type=bind,target=/go/src/goauthentik.io/go.sum,src=./go.sum \
-    --mount=type=bind,target=/go/src/goauthentik.io/gen-go-api,src=./gen-go-api \
-    --mount=type=cache,target=/go/pkg/mod \
+COPY --from=go-generator /local /go/src/goauthentik.io/gen-go-api
+
+COPY ./go.mod /go/src/goauthentik.io/go.mod
+COPY ./go.sum /go/src/goauthentik.io/go.sum
+
+RUN --mount=type=cache,target=/go/pkg/mod \
+    go mod edit -replace goauthentik.io/api/v3=./gen-go-api && \
     go mod download
 
 ENV CGO_ENABLED=0
@@ -40,7 +59,7 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
     GOARM="${TARGETVARIANT#v}" go build -o /go/proxy ./cmd/proxy
 
-# Stage 3: Run
+# Stage 4: Run
 FROM gcr.io/distroless/static-debian11:debug
 
 ARG GIT_BUILD_HASH
