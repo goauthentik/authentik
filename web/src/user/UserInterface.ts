@@ -23,6 +23,7 @@ import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 import "@goauthentik/elements/sidebar/SidebarItem";
 import { ROUTES } from "@goauthentik/user/Routes";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import { P, match } from "ts-pattern";
 
 import { msg } from "@lit/localize";
 import { css, html, nothing } from "lit";
@@ -147,16 +148,11 @@ class UserInterfacePresentation extends AKElement {
     brand!: CurrentBrand;
 
     get userDisplayName() {
-        switch (this.uiConfig.navbar.userDisplay) {
-            case UserDisplay.username:
-                return this.me.user.username;
-            case UserDisplay.name:
-                return this.me.user.name;
-            case UserDisplay.email:
-                return this.me.user.email || "";
-            default:
-                return this.me.user.username;
-        }
+        return match<UserDisplay, string>(this.uiConfig.navbar.userDisplay)
+            .with(UserDisplay.username, () => this.me.user.username)
+            .with(UserDisplay.name, () => this.me.user.name)
+            .with(UserDisplay.email, () => this.me.user.email || "")
+            .otherwise(() => this.me.user.username);
     }
 
     get canAccessAdmin() {
@@ -282,7 +278,7 @@ class UserInterfacePresentation extends AKElement {
         const onClick = (ev: Event) => {
             ev.stopPropagation();
             this.dispatchEvent(
-                new Event(EVENT_API_DRAWER_TOGGLE, { bubbles: true, composed: true }),
+                new Event(EVENT_API_DRAWER_TOGGLE, { bubbles: true, composed: true })
             );
         };
 
@@ -303,7 +299,7 @@ class UserInterfacePresentation extends AKElement {
         const onClick = (ev: Event) => {
             ev.stopPropagation();
             this.dispatchEvent(
-                new Event(EVENT_NOTIFICATION_DRAWER_TOGGLE, { bubbles: true, composed: true }),
+                new Event(EVENT_NOTIFICATION_DRAWER_TOGGLE, { bubbles: true, composed: true })
             );
         };
 
