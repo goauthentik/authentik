@@ -30,3 +30,9 @@ class DomainViewSet(ModelViewSet):
     permission_classes = [TenantApiKeyPermission]
     filter_backends = [OrderingFilter, SearchFilter]
     filterset_fields = []
+
+    def dispatch(self, request, *args, **kwargs):
+        # This only checks the license in the default tenant, which is what we want
+        if not apps.get_app_config("authentik_enterprise").enabled():
+            return HttpResponseNotFound()
+        return super().dispatch(request, *args, **kwargs)

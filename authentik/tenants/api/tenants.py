@@ -2,6 +2,7 @@
 from datetime import timedelta
 from hmac import compare_digest
 
+from django.apps import apps
 from django.http import HttpResponseNotFound
 from django.http.request import urljoin
 from django.utils.timezone import now
@@ -87,6 +88,12 @@ class TenantViewSet(ModelViewSet):
     filter_backends = [OrderingFilter, SearchFilter]
     filterset_fields = []
 
+    def dispatch(self, request, *args, **kwargs):
+        # This only checks the license in the default tenant, which is what we want
+        if not apps.get_app_config("authentik_enterprise").enabled():
+            return HttpResponseNotFound()
+        return super().dispatch(request, *args, **kwargs)
+
     @extend_schema(
         request=TenantAdminGroupRequestSerializer(),
         responses={
@@ -140,4 +147,3 @@ class TenantViewSet(ModelViewSet):
 
             serializer = TenantRecoveryKeyResponseSerializer({"expiry": token.expires, "url": url})
             return Response(serializer.data)
-

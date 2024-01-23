@@ -1,10 +1,10 @@
 """API URLs"""
 from django.urls import path
-from authentik.lib.config import CONFIG
 
-from authentik.tenants.api.tenants import TenantViewSet
+from authentik.lib.config import CONFIG
 from authentik.tenants.api.domains import DomainViewSet
 from authentik.tenants.api.settings import SettingsView
+from authentik.tenants.api.tenants import TenantViewSet
 
 api_urlpatterns = [
     path("admin/settings/", SettingsView.as_view(), name="tenant_settings"),
