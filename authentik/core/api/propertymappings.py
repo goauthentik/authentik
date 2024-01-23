@@ -19,7 +19,6 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer, PassiveSerializer, TypeCreateSerializer
 from authentik.core.expression.evaluator import PropertyMappingEvaluator
 from authentik.core.models import PropertyMapping
-from authentik.enterprise.apps import EnterpriseConfig
 from authentik.events.utils import sanitize_item
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.policies.api.exec import PolicyTestSerializer
@@ -96,7 +95,6 @@ class PropertyMappingViewSet(
                     "description": subclass.__doc__,
                     "component": subclass().component,
                     "model_name": subclass._meta.model_name,
-                    "requires_enterprise": isinstance(subclass._meta.app_config, EnterpriseConfig),
                 }
             )
         return Response(TypeCreateSerializer(data, many=True).data)
