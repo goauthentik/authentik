@@ -1,5 +1,5 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-tenanted-flow-search";
+import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import { first } from "@goauthentik/app/common/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/CodeMirror";

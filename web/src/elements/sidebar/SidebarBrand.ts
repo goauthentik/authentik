@@ -1,6 +1,6 @@
 import { EVENT_SIDEBAR_TOGGLE } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
-import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider";
+import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
@@ -10,13 +10,13 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { CurrentTenant, UiThemeEnum } from "@goauthentik/api";
+import { CurrentBrand, UiThemeEnum } from "@goauthentik/api";
 
 // If the viewport is wider than MIN_WIDTH, the sidebar
 // is shown besides the content, and not overlaid.
 export const MIN_WIDTH = 1200;
 
-export const DefaultTenant: CurrentTenant = {
+export const DefaultBrand: CurrentBrand = {
     brandingLogo: "/static/dist/assets/icons/icon_left_brand.svg",
     brandingFavicon: "/static/dist/assets/icons/icon.png",
     brandingTitle: "authentik",
@@ -27,7 +27,7 @@ export const DefaultTenant: CurrentTenant = {
 };
 
 @customElement("ak-sidebar-brand")
-export class SidebarBrand extends WithTenantConfig(AKElement) {
+export class SidebarBrand extends WithBrandConfig(AKElement) {
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -84,7 +84,7 @@ export class SidebarBrand extends WithTenantConfig(AKElement) {
             <a href="#/" class="pf-c-page__header-brand-link">
                 <div class="pf-c-brand ak-brand">
                     <img
-                        src=${this.tenant?.brandingLogo ?? DefaultTenant.brandingLogo}
+                        src=${this.brand?.brandingLogo ?? DefaultBrand.brandingLogo}
                         alt="authentik Logo"
                         loading="lazy"
                     />

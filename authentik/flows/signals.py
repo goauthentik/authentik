@@ -1,5 +1,6 @@
 """authentik flow signals"""
 from django.core.cache import cache
+from django.db import connection
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from structlog.stdlib import get_logger
@@ -21,7 +22,9 @@ def delete_cache_prefix(prefix: str) -> int:
 @receiver(monitoring_set)
 def monitoring_set_flows(sender, **kwargs):
     """set flow gauges"""
-    GAUGE_FLOWS_CACHED.set(len(cache.keys(f"{CACHE_PREFIX}*") or []))
+    GAUGE_FLOWS_CACHED.labels(tenant=connection.schema_name).set(
+        len(cache.keys(f"{CACHE_PREFIX}*") or [])
+    )
 
 
 @receiver(post_save)

@@ -6,7 +6,7 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.lib.config import CONFIG
+from authentik.tenants.utils import get_current_tenant
 
 
 class TestImpersonation(APITestCase):
@@ -56,9 +56,11 @@ class TestImpersonation(APITestCase):
         response_body = loads(response.content.decode())
         self.assertEqual(response_body["user"]["username"], self.other_user.username)
 
-    @CONFIG.patch("impersonation", False)
     def test_impersonate_disabled(self):
         """test impersonation that is disabled"""
+        tenant = get_current_tenant()
+        tenant.impersonation = False
+        tenant.save()
         self.client.force_login(self.user)
 
         response = self.client.post(

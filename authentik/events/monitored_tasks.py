@@ -5,10 +5,11 @@ from enum import Enum
 from timeit import default_timer
 from typing import Any, Optional
 
-from celery import Task
 from django.core.cache import cache
+from django.db import connection
 from django.utils.translation import gettext_lazy as _
 from structlog.stdlib import get_logger
+from tenant_schemas_celery.task import TenantTask
 
 from authentik.events.apps import GAUGE_TASKS
 from authentik.events.models import Event, EventAction
@@ -101,6 +102,7 @@ class TaskInfo:
         except TypeError:
             duration = 0
         GAUGE_TASKS.labels(
+            tenant=connection.schema_name,
             task_name=self.task_name.split(":")[0],
             task_uid=self.result.uid or "",
             status=self.result.status.name.lower(),
@@ -112,7 +114,7 @@ class TaskInfo:
         cache.set(self.full_name, self, timeout=timeout_hours * 60 * 60)
 
 
-class MonitoredTask(Task):
+class MonitoredTask(TenantTask):
     """Task which can save its state to the cache"""
 
     # For tasks that should only be listed if they failed, set this to False

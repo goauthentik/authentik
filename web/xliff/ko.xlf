@@ -444,11 +444,6 @@
         <target>클라이언트 IP</target>
         
       </trans-unit>
-      <trans-unit id="s45f9e7ce0897f9e5">
-        <source>Tenant</source>
-        <target>테넌트</target>
-        
-      </trans-unit>
       <trans-unit id="s2152f3482784705f">
         <source>Recent events</source>
         <target>최근 이력</target>
@@ -3618,16 +3613,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>토큰 업데이트</target>
         
       </trans-unit>
-      <trans-unit id="s0af6301e76e2a2a5">
-        <source>Successfully updated tenant.</source>
-        <target>테넌트를 성공적으로 업데이트했습니다.</target>
-        
-      </trans-unit>
-      <trans-unit id="sf55c7c06dbc2c8c6">
-        <source>Successfully created tenant.</source>
-        <target>테넌트를 성공적으로 만들었습니다.</target>
-        
-      </trans-unit>
       <trans-unit id="s41706a202b6c40f1">
         <source>Domain</source>
         <target>도메인</target>
@@ -3641,11 +3626,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s11326fd2590f4e5e">
         <source>Default</source>
         <target>기본</target>
-        
-      </trans-unit>
-      <trans-unit id="se1c85959463f53df">
-        <source>Use this tenant for each domain that doesn't have a dedicated tenant.</source>
-        <target>전용 테넌트가 없는 각 도메인에 이 테넌트를 사용하세요.</target>
         
       </trans-unit>
       <trans-unit id="sc19838ca8c135c1b">
@@ -3773,21 +3753,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>T만료는 이벤트별로 저장되므로 설정은 새 이벤트에만 영향을 줍니다.</target>
         
       </trans-unit>
-      <trans-unit id="s3bb51cabb02b997e">
-        <source>Format: "weeks=3;days=2;hours=3,seconds=2".</source>
-        <target>서식: "weeks=3;days=2;hours=3,seconds=2".</target>
-        
-      </trans-unit>
-      <trans-unit id="s04bfd02201db5ab8">
-        <source>Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this tenant.</source>
-        <target>YAML 또는 JSON을 사용하여 사용자 지정 속성을 설정합니다. 이 테넌트가 요청을 처리하는 경우 여기에서 설정한 모든 속성은 사용자가 상속받게 됩니다.</target>
-        
-      </trans-unit>
-      <trans-unit id="s7f9e79189a3d19e2">
-        <source>Tenants</source>
-        <target>테넌트</target>
-        
-      </trans-unit>
       <trans-unit id="s164be9a7537b99f6">
         <source>Configure visual settings and defaults for different domains.</source>
         <target>다양한 도메인에 대한 시각적 설정 및 기본값을 구성합니다.</target>
@@ -3796,21 +3761,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s4802636d55022ed3">
         <source>Default?</source>
         <target>기본값?</target>
-        
-      </trans-unit>
-      <trans-unit id="s69a56a3022c4be7f">
-        <source>Tenant(s)</source>
-        <target>테넌트</target>
-        
-      </trans-unit>
-      <trans-unit id="s1b606acd76ba2c4c">
-        <source>Update Tenant</source>
-        <target>테넌트 업데이트</target>
-        
-      </trans-unit>
-      <trans-unit id="s773aa6621d7e37b7">
-        <source>Create Tenant</source>
-        <target>테넌트 생성</target>
         
       </trans-unit>
       <trans-unit id="s8cb7bb82e96d5d77">
@@ -4080,11 +4030,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="sd7fa99e4d82b374a">
         <source>Recovery link cannot be emailed, user has no email address saved.</source>
         <target>복구 링크를 이메일로 보낼 수 없습니다. 사용자가 저장한 이메일 주소가 없습니다.</target>
-        
-      </trans-unit>
-      <trans-unit id="s63d89a6ae0969c30">
-        <source>To let a user directly reset a their password, configure a recovery flow on the currently active tenant.</source>
-        <target>사용자가 직접 비밀번호를 재설정할 수 있도록 하려면 현재 활성 상태인 테넌트에서 복구 플로우를 구성하세요.</target>
         
       </trans-unit>
       <trans-unit id="s720594461542943f">
@@ -7813,10 +7758,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>A copy of this recovery link has been placed in your clipboard</source>
   <target>이 복구 링크의 사본이 클립보드에 저장되었습니다.</target>
 </trans-unit>
-<trans-unit id="s5b8ee296ed258568">
-  <source>The current tenant must have a recovery flow configured to use a recovery link</source>
-  <target>현재 테넌트에 복구 링크를 사용하도록 구성된 복구 플로우가 있어야 합니다.</target>
-</trans-unit>
 <trans-unit id="s895514dda9cb9c94">
   <source>Create recovery link</source>
   <target>복구 링크 생성</target>
@@ -8145,6 +8086,122 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s16a15af46bc9aeef">
   <source>Failed to fetch objects: <x id="0" equiv-text="${this.error.detail}"/></source>
+</trans-unit>
+<trans-unit id="s744401846fea6e76">
+  <source>Brand</source>
+</trans-unit>
+<trans-unit id="sab21e1f62676b56c">
+  <source>Successfully updated brand.</source>
+</trans-unit>
+<trans-unit id="sa43e43fd3a23e22d">
+  <source>Successfully created brand.</source>
+</trans-unit>
+<trans-unit id="s41b3f9b4c98aabd9">
+  <source>Use this brand for each domain that doesn't have a dedicated brand.</source>
+</trans-unit>
+<trans-unit id="s17260b71484b307f">
+  <source>Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this brand.</source>
+</trans-unit>
+<trans-unit id="s79fc990a2b58f27f">
+  <source>Brands</source>
+</trans-unit>
+<trans-unit id="s02774bc46a167346">
+  <source>Brand(s)</source>
+</trans-unit>
+<trans-unit id="s801bf3d03f4a3ff1">
+  <source>Update Brand</source>
+</trans-unit>
+<trans-unit id="s5c3efec5330e0000">
+  <source>Create Brand</source>
+</trans-unit>
+<trans-unit id="sa9d13ce9e83aac17">
+  <source>To let a user directly reset a their password, configure a recovery flow on the currently active brand.</source>
+</trans-unit>
+<trans-unit id="s6709b81e1ed4e39f">
+  <source>The current brand must have a recovery flow configured to use a recovery link</source>
+</trans-unit>
+<trans-unit id="s634e2fd82c397576">
+  <source>Successfully updated settings.</source>
+</trans-unit>
+<trans-unit id="sb8e4edaea6f1d935">
+  <source>Avatars</source>
+</trans-unit>
+<trans-unit id="s945856050217c828">
+  <source>Configure how authentik should show avatars for users. The following values can be set:</source>
+</trans-unit>
+<trans-unit id="sf4ef4c8ce713f775">
+  <source>Disables per-user avatars and just shows a 1x1 pixel transparent picture</source>
+</trans-unit>
+<trans-unit id="s5446842a7e4a963b">
+  <source>Uses gravatar with the user's email address</source>
+</trans-unit>
+<trans-unit id="s35363b9e1cc2abd3">
+  <source>Generated avatars based on the user's name</source>
+</trans-unit>
+<trans-unit id="s48110ca292cad513">
+  <source>Any URL: If you want to use images hosted on another server, you can set any URL. Additionally, these placeholders can be used:</source>
+</trans-unit>
+<trans-unit id="sbe1dfda044bdc93b">
+  <source>The user's username</source>
+</trans-unit>
+<trans-unit id="s653f257c9c2d4dc5">
+  <source>The email address, md5 hashed</source>
+</trans-unit>
+<trans-unit id="s9c9183cd80916b4f">
+  <source>The user's UPN, if set (otherwise an empty string)</source>
+</trans-unit>
+<trans-unit id="h4963ed14d7e239a9">
+  <source>An attribute path like
+                                    <x id="0" equiv-text="&lt;code&gt;"/>attributes.something.avatar<x id="1" equiv-text="&lt;/code&gt;"/>, which can be used in
+                                    combination with the file field to allow users to upload custom
+                                    avatars for themselves.</source>
+</trans-unit>
+<trans-unit id="s4c80c34a67a6f1c9">
+  <source>Multiple values can be set, comma-separated, and authentik will fallback to the next mode when no avatar could be found.</source>
+</trans-unit>
+<trans-unit id="h2fafcc3ebafea2f8">
+  <source>For example, setting this to <x id="0" equiv-text="&lt;code&gt;"/>gravatar,initials<x id="1" equiv-text="&lt;/code&gt;"/> will
+                                attempt to get an avatar from Gravatar, and if the user has not
+                                configured on there, it will fallback to a generated avatar.</source>
+</trans-unit>
+<trans-unit id="s5faec5eb5faf62ac">
+  <source>Allow users to change name</source>
+</trans-unit>
+<trans-unit id="s078ffec0257621c0">
+  <source>Enable the ability for users to change their name.</source>
+</trans-unit>
+<trans-unit id="s456d88f3679190fd">
+  <source>Allow users to change email</source>
+</trans-unit>
+<trans-unit id="s5fc6c14d106f40d3">
+  <source>Enable the ability for users to change their email.</source>
+</trans-unit>
+<trans-unit id="s628e414bb2367057">
+  <source>Allow users to change username</source>
+</trans-unit>
+<trans-unit id="s6d816a95ca43a99d">
+  <source>Enable the ability for users to change their username.</source>
+</trans-unit>
+<trans-unit id="s57b52b60ed5e2bc7">
+  <source>Footer links</source>
+</trans-unit>
+<trans-unit id="s7349802b2f7f99c2">
+  <source>This option configures the footer links on the flow executor pages. It must be a valid JSON list and can be used as follows:</source>
+</trans-unit>
+<trans-unit id="s166b59f3cc5d8ec3">
+  <source>GDPR compliance</source>
+</trans-unit>
+<trans-unit id="sb8b23770f899e5bb">
+  <source>When enabled, all the events caused by a user will be deleted upon the user's deletion.</source>
+</trans-unit>
+<trans-unit id="s29501761df0fe837">
+  <source>Impersonation</source>
+</trans-unit>
+<trans-unit id="s8f503553d8432487">
+  <source>Globally enable/disable impersonation.</source>
+</trans-unit>
+<trans-unit id="see1eb81c1f734079">
+  <source>System settings</source>
 </trans-unit>
     </body>
   </file>

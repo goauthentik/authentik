@@ -5,12 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("authentik_tenants", "0002_tenant_flow_user_settings"),
+        ("authentik_brands", "0002_tenant_flow_user_settings"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name="tenant",
+            model_name="brand",
             name="attributes",
             field=models.JSONField(blank=True, default=dict),
         ),

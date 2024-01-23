@@ -9,6 +9,7 @@ from authentik.lib.generators import generate_id
 from authentik.providers.scim.clients.schema import ServiceProviderConfiguration
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
 from authentik.providers.scim.tasks import scim_sync
+from authentik.tenants.models import Tenant
 
 
 class SCIMMembershipTests(TestCase):
@@ -22,6 +23,7 @@ class SCIMMembershipTests(TestCase):
         # which will cause errors with multiple users
         User.objects.all().exclude(pk=get_anonymous_user().pk).delete()
         Group.objects.all().delete()
+        Tenant.objects.update(avatars="none")
 
     @apply_blueprint("system/providers-scim.yaml")
     def configure(self) -> None:

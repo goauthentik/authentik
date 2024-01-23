@@ -209,7 +209,7 @@ export class RacInterface extends Interface {
     }
 
     updateTitle(): void {
-        let title = this.tenant?.brandingTitle || TITLE_DEFAULT;
+        let title = this.brand?.brandingTitle || TITLE_DEFAULT;
         if (this.endpointName) {
             title = `${this.endpointName} - ${title}`;
         }

@@ -94,7 +94,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
 
         registration_options: PublicKeyCredentialCreationOptions = generate_registration_options(
             rp_id=get_rp_id(self.request),
-            rp_name=self.request.tenant.branding_title,
+            rp_name=self.request.brand.branding_title,
             user_id=user.uid.encode("utf-8"),
             user_name=user.username,
             user_display_name=user.name,

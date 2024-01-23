@@ -11,6 +11,6 @@ class AuthentikStageAuthenticatorDuoConfig(ManagedAppConfig):
     verbose_name = "authentik Stages.Authenticator.Duo"
     default = True
 
-    def reconcile_load_tasks(self):
+    def reconcile_global_load_tasks(self):
         """Load tasks"""
         self.import_module("authentik.stages.authenticator_duo.tasks")

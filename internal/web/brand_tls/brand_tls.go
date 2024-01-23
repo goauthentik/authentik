@@ -1,4 +1,4 @@
-package tenant_tls
+package brand_tls
 
 import (
 	"crypto/tls"
@@ -6,6 +6,7 @@ import (
 	"time"
 
 	log "github.com/sirupsen/logrus"
+
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/crypto"
 	"goauthentik.io/internal/outpost/ak"
@@ -16,12 +17,12 @@ type Watcher struct {
 	log      *log.Entry
 	cs       *ak.CryptoStore
 	fallback *tls.Certificate
-	tenants  []api.Tenant
+	brands   []api.Brand
 }
 
 func NewWatcher(client *api.APIClient) *Watcher {
 	cs := ak.NewCryptoStore(client.CryptoApi)
-	l := log.WithField("logger", "authentik.router.tenant_tls")
+	l := log.WithField("logger", "authentik.router.brand_tls")
 	cert, err := crypto.GenerateSelfSignedCert()
 	if err != nil {
 		l.WithError(err).Error("failed to generate default cert")
@@ -37,20 +38,20 @@ func NewWatcher(client *api.APIClient) *Watcher {
 
 func (w *Watcher) Start() {
 	ticker := time.NewTicker(time.Minute * 3)
-	w.log.Info("Starting Tenant TLS Checker")
+	w.log.Info("Starting Brand TLS Checker")
 	for ; true; <-ticker.C {
 		w.Check()
 	}
 }
 
 func (w *Watcher) Check() {
-	w.log.Info("updating tenant certificates")
-	tenants, _, err := w.client.CoreApi.CoreTenantsListExecute(api.ApiCoreTenantsListRequest{})
+	w.log.Info("updating brand certificates")
+	brands, _, err := w.client.CoreApi.CoreBrandsListExecute(api.ApiCoreBrandsListRequest{})
 	if err != nil {
-		w.log.WithError(err).Warning("failed to get tenants")
+		w.log.WithError(err).Warning("failed to get brands")
 		return
 	}
-	for _, t := range tenants.Results {
+	for _, t := range brands.Results {
 		if kp := t.WebCertificate.Get(); kp != nil {
 			err := w.cs.AddKeypair(*kp)
 			if err != nil {
@@ -58,12 +59,12 @@ func (w *Watcher) Check() {
 			}
 		}
 	}
-	w.tenants = tenants.Results
+	w.brands = brands.Results
 }
 
 func (w *Watcher) GetCertificate(ch *tls.ClientHelloInfo) (*tls.Certificate, error) {
-	var bestSelection *api.Tenant
-	for _, t := range w.tenants {
+	var bestSelection *api.Brand
+	for _, t := range w.brands {
 		if t.WebCertificate.Get() == nil {
 			continue
 		}
