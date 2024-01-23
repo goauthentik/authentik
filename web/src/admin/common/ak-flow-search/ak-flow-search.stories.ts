@@ -6,7 +6,7 @@ import { Meta } from "@storybook/web-components";
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 
-import { FlowsInstancesListDesignationEnum } from "@goauthentik/api";
+import { Flow, FlowsInstancesListDesignationEnum } from "@goauthentik/api";
 
 const mockData = {
     pagination: {
@@ -60,7 +60,7 @@ const mockData = {
     ],
 };
 
-const metadata: Meta<AkFlowSearch<any>> = {
+const metadata: Meta<AkFlowSearch<Flow>> = {
     title: "Elements / Select Search / Flow",
     component: "ak-flow-search",
     parameters: {

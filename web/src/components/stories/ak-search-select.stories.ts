@@ -11,7 +11,6 @@ type Sample = { name: string; pk: string; season: string[] };
 
 // prettier-ignore
 const groupedSamples: RawSample[] = [
-    // eslint-disable-next-line sonarjs/no-duplicate-string
     ["Spring", [
         "Apples", "Apricots", "Asparagus", "Avocados", "Bananas", "Broccoli",
         "Cabbage", "Carrots", "Celery", "Collard Greens", "Garlic", "Herbs", "Kale", "Kiwifruit", "Lemons",
