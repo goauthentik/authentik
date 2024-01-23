@@ -1,4 +1,6 @@
 """Serializer for tenants models"""
+from django.apps import apps
+from django.http import HttpResponseNotFound
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet

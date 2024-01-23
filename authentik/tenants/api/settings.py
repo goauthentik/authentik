@@ -7,6 +7,7 @@ from rest_framework.serializers import ModelSerializer
 from authentik.rbac.permissions import HasPermission
 from authentik.tenants.models import Tenant
 
+
 class SettingsSerializer(ModelSerializer):
     """Settings Serializer"""
 
