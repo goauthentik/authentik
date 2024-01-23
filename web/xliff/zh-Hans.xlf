@@ -8228,6 +8228,10 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Dutch</source>
   <target>荷兰语</target>
 </trans-unit>
+<trans-unit id="s16a15af46bc9aeef">
+  <source>Failed to fetch objects: <x id="0" equiv-text="${this.error.detail}"/></source>
+  <target>获取对象失败：<x id="0" equiv-text="${this.error.detail}"/></target>
+</trans-unit>
     </body>
   </file>
 </xliff>

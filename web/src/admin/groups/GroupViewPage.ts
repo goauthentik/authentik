@@ -117,8 +117,8 @@ export class GroupViewPage extends AKElement {
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
                                             <ak-status-label
-                                                type="warning"
-                                                ?good${this.group.isSuperuser}
+                                                type="info"
+                                                ?good=${this.group.isSuperuser}
                                             ></ak-status-label>
                                         </div>
                                     </dd>

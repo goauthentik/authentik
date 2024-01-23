@@ -27,7 +27,7 @@ The following aspects can be configured:
 
     Starting with authentik 2022.2, you can use placeholders in the launch url to build them dynamically based on logged in user. For example, you can set the Launch URL to `https://goauthentik.io/%(username)s`, which will be replaced with the currently logged in user's username.
 
-    Only applications whose launch URL starts with `http://` or `https://` or are relative URLs are shown on the users's **My applications** page. This can also be used to hide applications that shouldn't be visible on the **My applications** page but are still accessible by users, by setting the _Launch URL_ to `hidden://`.
+    Only applications whose launch URL starts with `http://` or `https://` or are relative URLs are shown on the users's **My applications** page. This can also be used to hide applications that shouldn't be visible on the **My applications** page but are still accessible by users, by setting the _Launch URL_ to `blank://blank`.
 
 -   _Icon (URL)_: Optionally configure an Icon for the application
 

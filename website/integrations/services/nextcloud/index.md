@@ -133,7 +133,7 @@ Add a new provider using the `+` button and set the following values:
     -   Display name mapping: name
     -   Email mapping: email
     -   Quota mapping: quota (leave empty if you have skipped the [custom profile scope](#custom-profile-scope) section)
-    -   Groups mapping: group (leave empty if you have skipped the [custom profile scope](#custom-profile-scope) section)
+    -   Groups mapping: groups (leave empty if you have skipped the [custom profile scope](#custom-profile-scope) section)
         :::tip
         You need to enable the "Use group provisioning" checkmark to be able to write to this field
         :::

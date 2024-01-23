@@ -74,7 +74,6 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
         this.fetchObjects = this.fetchObjects.bind(this);
         this.selected = this.selected.bind(this);
         this.handleSearchUpdate = this.handleSearchUpdate.bind(this);
-        this.addCustomListener("ak-change", this.handleSearchUpdate);
     }
 
     handleSearchUpdate(ev: CustomEvent) {
@@ -124,6 +123,7 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
                 .renderDescription=${renderDescription}
                 .value=${getFlowValue}
                 .name=${this.name}
+                @ak-change=${this.handleSearchUpdate}
                 ?blankable=${!this.required}
             >
             </ak-search-select>
