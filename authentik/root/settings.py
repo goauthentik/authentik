@@ -453,6 +453,17 @@ _DISALLOWED_ITEMS = [
     "CELERY",
 ]
 
+SILENCED_SYSTEM_CHECKS = [
+    # We use our own subclass of django.middleware.csrf.CsrfViewMiddleware
+    "security.W003",
+    # We don't set SESSION_COOKIE_SECURE since we use a custom SessionMiddleware subclass
+    "security.W010",
+    # HSTS: This is configured in reverse proxies/the go proxy, not in django
+    "security.W004",
+    # https redirect: This is configured in reverse proxies/the go proxy, not in django
+    "security.W008",
+]
+
 
 def _update_settings(app_path: str):
     try:

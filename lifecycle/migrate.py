@@ -111,5 +111,8 @@ if __name__ == "__main__":
             ) from exc
         execute_from_command_line(["", "migrate_schemas"])
         execute_from_command_line(["", "migrate_schemas", "--schema", "template", "--tenant"])
+        execute_from_command_line(
+            ["", "check"] + ([] if CONFIG.get_bool("debug") else ["--deploy"])
+        )
     finally:
         release_lock(curr)
