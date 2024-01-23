@@ -10,6 +10,6 @@ class AuthentikProviderProxyConfig(ManagedAppConfig):
     verbose_name = "authentik Providers.Proxy"
     default = True
 
-    def reconcile_load_providers_proxy_signals(self):
+    def reconcile_global_load_providers_proxy_signals(self):
         """Load proxy signals"""
         self.import_module("authentik.providers.proxy.signals")

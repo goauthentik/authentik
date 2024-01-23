@@ -8,38 +8,38 @@ import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
-import { DefaultTenant } from "@goauthentik/elements/sidebar/SidebarBrand";
+import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import { CoreApi, FlowsInstancesListDesignationEnum, Tenant } from "@goauthentik/api";
+import { Brand, CoreApi, FlowsInstancesListDesignationEnum } from "@goauthentik/api";
 
-@customElement("ak-tenant-form")
-export class TenantForm extends ModelForm<Tenant, string> {
-    loadInstance(pk: string): Promise<Tenant> {
-        return new CoreApi(DEFAULT_CONFIG).coreTenantsRetrieve({
-            tenantUuid: pk,
+@customElement("ak-brand-form")
+export class BrandForm extends ModelForm<Brand, string> {
+    loadInstance(pk: string): Promise<Brand> {
+        return new CoreApi(DEFAULT_CONFIG).coreBrandsRetrieve({
+            brandUuid: pk,
         });
     }
 
     getSuccessMessage(): string {
         return this.instance
-            ? msg("Successfully updated tenant.")
-            : msg("Successfully created tenant.");
+            ? msg("Successfully updated brand.")
+            : msg("Successfully created brand.");
     }
 
-    async send(data: Tenant): Promise<Tenant> {
-        if (this.instance?.tenantUuid) {
-            return new CoreApi(DEFAULT_CONFIG).coreTenantsUpdate({
-                tenantUuid: this.instance.tenantUuid,
-                tenantRequest: data,
+    async send(data: Brand): Promise<Brand> {
+        if (this.instance?.brandUuid) {
+            return new CoreApi(DEFAULT_CONFIG).coreBrandsUpdate({
+                brandUuid: this.instance.brandUuid,
+                brandRequest: data,
             });
         } else {
-            return new CoreApi(DEFAULT_CONFIG).coreTenantsCreate({
-                tenantRequest: data,
+            return new CoreApi(DEFAULT_CONFIG).coreBrandsCreate({
+                brandRequest: data,
             });
         }
     }
@@ -77,7 +77,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
                     <span class="pf-c-switch__label">${msg("Default")}</span>
                 </label>
                 <p class="pf-c-form__helper-text">
-                    ${msg("Use this tenant for each domain that doesn't have a dedicated tenant.")}
+                    ${msg("Use this brand for each domain that doesn't have a dedicated brand.")}
                 </p>
             </ak-form-element-horizontal>
 
@@ -93,7 +93,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
                             type="text"
                             value="${first(
                                 this.instance?.brandingTitle,
-                                DefaultTenant.brandingTitle,
+                                DefaultBrand.brandingTitle,
                             )}"
                             class="pf-c-form-control"
                             required
@@ -109,10 +109,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
                     >
                         <input
                             type="text"
-                            value="${first(
-                                this.instance?.brandingLogo,
-                                DefaultTenant.brandingLogo,
-                            )}"
+                            value="${first(this.instance?.brandingLogo, DefaultBrand.brandingLogo)}"
                             class="pf-c-form-control"
                             required
                         />
@@ -129,7 +126,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
                             type="text"
                             value="${first(
                                 this.instance?.brandingFavicon,
-                                DefaultTenant.brandingFavicon,
+                                DefaultBrand.brandingFavicon,
                             )}"
                             class="pf-c-form-control"
                             required
@@ -236,34 +233,6 @@ export class TenantForm extends ModelForm<Tenant, string> {
                             .certificate=${this.instance?.webCertificate}
                         ></ak-crypto-certificate-search>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Event retention")}
-                        ?required=${true}
-                        name="eventRetention"
-                    >
-                        <input
-                            type="text"
-                            value="${first(this.instance?.eventRetention, "days=365")}"
-                            class="pf-c-form-control"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Duration after which events will be deleted from the database.")}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                'When using an external logging solution for archiving, this can be set to "minutes=5".',
-                            )}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "This setting only affects new Events, as the expiration is saved per-event.",
-                            )}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg('Format: "weeks=3;days=2;hours=3,seconds=2".')}
-                        </p>
-                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
                         <ak-codemirror
                             mode=${CodeMirrorMode.YAML}
@@ -272,7 +241,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         </ak-codemirror>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this tenant.",
+                                "Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this brand.",
                             )}
                         </p>
                     </ak-form-element-horizontal>

@@ -22,7 +22,10 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
     async getPrimaryValue(): Promise<SystemInfo> {
         this.now = new Date();
         let status = await new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
-        if (status.embeddedOutpostHost === "" || !status.embeddedOutpostHost.includes("http")) {
+        if (
+            !status.embeddedOutpostDisabled &&
+            (status.embeddedOutpostHost === "" || !status.embeddedOutpostHost.includes("http"))
+        ) {
             // First install, ensure the embedded outpost host is set
             // also run when outpost host does not contain http
             // (yes it's called host and requires a URL, i know)
@@ -51,7 +54,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
     }
 
     getStatus(value: SystemInfo): Promise<AdminStatus> {
-        if (value.embeddedOutpostHost === "") {
+        if (!value.embeddedOutpostDisabled && value.embeddedOutpostHost === "") {
             this.statusSummary = msg("Warning");
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",

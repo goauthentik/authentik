@@ -72,10 +72,13 @@ def model_to_dict(model: Model) -> dict[str, Any]:
     }
 
 
-def get_user(user: User, original_user: Optional[User] = None) -> dict[str, Any]:
+def get_user(user: User | AnonymousUser, original_user: Optional[User] = None) -> dict[str, Any]:
     """Convert user object to dictionary, optionally including the original user"""
     if isinstance(user, AnonymousUser):
-        user = get_anonymous_user()
+        try:
+            user = get_anonymous_user()
+        except User.DoesNotExist:
+            return {}
     user_data = {
         "username": user.username,
         "pk": user.pk,

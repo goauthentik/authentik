@@ -21,6 +21,8 @@ from requests import RequestException
 from structlog.stdlib import get_logger
 
 from authentik import get_full_version
+from authentik.brands.models import Brand
+from authentik.brands.utils import DEFAULT_BRAND
 from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_ORIGINAL_USER,
     SESSION_KEY_IMPERSONATE_USER,
@@ -42,7 +44,6 @@ from authentik.policies.models import PolicyBindingModel
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.tenants.models import Tenant
-from authentik.tenants.utils import DEFAULT_TENANT
 
 LOGGER = get_logger()
 if TYPE_CHECKING:
@@ -51,13 +52,13 @@ if TYPE_CHECKING:
 
 def default_event_duration():
     """Default duration an Event is saved.
-    This is used as a fallback when no tenant is available"""
+    This is used as a fallback when no brand is available"""
     return now() + timedelta(days=365)
 
 
-def default_tenant():
-    """Get a default value for tenant"""
-    return sanitize_dict(model_to_dict(DEFAULT_TENANT))
+def default_brand():
+    """Get a default value for brand"""
+    return sanitize_dict(model_to_dict(DEFAULT_BRAND))
 
 
 class NotificationTransportError(SentryIgnoredException):
@@ -171,7 +172,7 @@ class Event(SerializerModel, ExpiringModel):
     context = models.JSONField(default=dict, blank=True)
     client_ip = models.GenericIPAddressField(null=True)
     created = models.DateTimeField(auto_now_add=True)
-    tenant = models.JSONField(default=default_tenant, blank=True)
+    brand = models.JSONField(default=default_brand, blank=True)
 
     # Shadow the expires attribute from ExpiringModel to override the default duration
     expires = models.DateTimeField(default=default_event_duration)
@@ -231,7 +232,9 @@ class Event(SerializerModel, ExpiringModel):
             # hence we set self.created to now and then use it
             self.created = now()
             self.expires = self.created + timedelta_from_string(tenant.event_retention)
-            self.tenant = sanitize_dict(model_to_dict(tenant))
+        if hasattr(request, "brand"):
+            brand: Brand = request.brand
+            self.brand = sanitize_dict(model_to_dict(brand))
         if hasattr(request, "user"):
             original_user = None
             if hasattr(request, "session"):

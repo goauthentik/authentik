@@ -12,11 +12,11 @@ import { DefaultUIConfig, uiConfig } from "@goauthentik/common/ui/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import { rootInterface } from "@goauthentik/elements/Base";
+import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
 } from "@goauthentik/elements/Interface/capabilitiesProvider";
-import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider";
 import { PFSize } from "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/TreeView";
 import "@goauthentik/elements/buttons/ActionButton";
@@ -61,7 +61,7 @@ export const requestRecoveryLink = (user: User) =>
                 showMessage({
                     level: MessageLevel.error,
                     message: msg(
-                        "The current tenant must have a recovery flow configured to use a recovery link",
+                        "The current brand must have a recovery flow configured to use a recovery link",
                     ),
                 }),
             ),
@@ -91,7 +91,7 @@ const recoveryButtonStyles = css`
 `;
 
 @customElement("ak-user-list")
-export class UserListPage extends WithTenantConfig(WithCapabilitiesConfig(TablePage<User>)) {
+export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePage<User>)) {
     expandable = true;
     checkbox = true;
 
@@ -352,7 +352,7 @@ export class UserListPage extends WithTenantConfig(WithCapabilitiesConfig(TableP
                                             ${msg("Set password")}
                                         </button>
                                     </ak-forms-modal>
-                                    ${this.tenant.flowRecovery
+                                    ${this.brand.flowRecovery
                                         ? html`
                                               <ak-action-button
                                                   class="pf-m-secondary"
@@ -370,7 +370,7 @@ export class UserListPage extends WithTenantConfig(WithCapabilitiesConfig(TableP
                                           `
                                         : html` <p>
                                               ${msg(
-                                                  "To let a user directly reset a their password, configure a recovery flow on the currently active tenant.",
+                                                  "To let a user directly reset a their password, configure a recovery flow on the currently active brand.",
                                               )}
                                           </p>`}
                                 </div>

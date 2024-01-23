@@ -50,6 +50,10 @@ function set_mode {
     trap cleanup EXIT
 }
 
+function run_django_checks {
+    python -m manage check --deploy
+}
+
 function cleanup {
     rm -f ${MODE_FILE}
 }
@@ -67,6 +71,7 @@ fi
 if [[ "$1" == "server" ]]; then
     wait_for_db
     set_mode "server"
+    run_django_checks
     # If we have bootstrap credentials set, run bootstrap tasks outside of main server
     # sync, so that we can sure the first start actually has working bootstrap
     # credentials
@@ -77,6 +82,7 @@ if [[ "$1" == "server" ]]; then
 elif [[ "$1" == "worker" ]]; then
     wait_for_db
     set_mode "worker"
+    run_django_checks
     check_if_root "python -m manage worker"
 elif [[ "$1" == "worker-status" ]]; then
     wait_for_db

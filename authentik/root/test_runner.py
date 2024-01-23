@@ -31,7 +31,6 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
 
         settings.TEST = True
         settings.CELERY["task_always_eager"] = True
-        CONFIG.set("avatars", "none")
         CONFIG.set("events.context_processors.geoip", "tests/GeoLite2-City-Test.mmdb")
         CONFIG.set("events.context_processors.asn", "tests/GeoLite2-ASN-Test.mmdb")
         CONFIG.set("blueprints_dir", "./blueprints")
@@ -39,6 +38,8 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
             "outposts.container_image_base",
             f"ghcr.io/goauthentik/dev-%(type)s:{get_docker_tag()}",
         )
+        CONFIG.set("tenants.enabled", False)
+        CONFIG.set("outposts.disable_embedded_outpost", False)
         CONFIG.set("error_reporting.sample_rate", 0)
         CONFIG.set("error_reporting.environment", "testing")
         CONFIG.set("error_reporting.send_pii", True)

@@ -10,10 +10,10 @@ class AuthentikPolicyReputationConfig(ManagedAppConfig):
     verbose_name = "authentik Policies.Reputation"
     default = True
 
-    def reconcile_load_policies_reputation_signals(self):
+    def reconcile_global_load_policies_reputation_signals(self):
         """Load policies.reputation signals"""
         self.import_module("authentik.policies.reputation.signals")
 
-    def reconcile_load_policies_reputation_tasks(self):
+    def reconcile_global_load_policies_reputation_tasks(self):
         """Load policies.reputation tasks"""
         self.import_module("authentik.policies.reputation.tasks")

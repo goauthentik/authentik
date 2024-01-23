@@ -49,6 +49,43 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_tenants.domain"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_tenants.domain"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_tenants.domain"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_crypto.certificatekeypair"
                             },
                             "id": {
@@ -2528,7 +2565,7 @@
                         ],
                         "properties": {
                             "model": {
-                                "const": "authentik_tenants.tenant"
+                                "const": "authentik_brands.brand"
                             },
                             "id": {
                                 "type": "string"
@@ -2550,10 +2587,10 @@
                                 }
                             },
                             "attrs": {
-                                "$ref": "#/$defs/model_authentik_tenants.tenant"
+                                "$ref": "#/$defs/model_authentik_brands.brand"
                             },
                             "identifiers": {
-                                "$ref": "#/$defs/model_authentik_tenants.tenant"
+                                "$ref": "#/$defs/model_authentik_brands.brand"
                             }
                         }
                     },
@@ -2932,6 +2969,26 @@
         }
     },
     "$defs": {
+        "model_authentik_tenants.domain": {
+            "type": "object",
+            "properties": {
+                "domain": {
+                    "type": "string",
+                    "maxLength": 253,
+                    "minLength": 1,
+                    "title": "Domain"
+                },
+                "is_primary": {
+                    "type": "boolean",
+                    "title": "Is primary"
+                },
+                "tenant": {
+                    "type": "integer",
+                    "title": "Tenant"
+                }
+            },
+            "required": []
+        },
         "model_authentik_crypto.certificatekeypair": {
             "type": "object",
             "properties": {
@@ -3018,10 +3075,10 @@
                     "format": "date-time",
                     "title": "Expires"
                 },
-                "tenant": {
+                "brand": {
                     "type": "object",
                     "additionalProperties": true,
-                    "title": "Tenant"
+                    "title": "Brand"
                 }
             },
             "required": []
@@ -3127,10 +3184,10 @@
                             "format": "date-time",
                             "title": "Expires"
                         },
-                        "tenant": {
+                        "brand": {
                             "type": "object",
                             "additionalProperties": true,
-                            "title": "Tenant"
+                            "title": "Brand"
                         }
                     },
                     "required": [
@@ -3540,6 +3597,7 @@
                     ],
                     "enum": [
                         null,
+                        "authentik.tenants",
                         "authentik.admin",
                         "authentik.api",
                         "authentik.crypto",
@@ -3585,7 +3643,7 @@
                         "authentik.stages.user_login",
                         "authentik.stages.user_logout",
                         "authentik.stages.user_write",
-                        "authentik.tenants",
+                        "authentik.brands",
                         "authentik.blueprints",
                         "authentik.core",
                         "authentik.enterprise",
@@ -3601,6 +3659,7 @@
                     ],
                     "enum": [
                         null,
+                        "authentik_tenants.domain",
                         "authentik_crypto.certificatekeypair",
                         "authentik_events.event",
                         "authentik_events.notificationtransport",
@@ -3668,7 +3727,7 @@
                         "authentik_stages_user_login.userloginstage",
                         "authentik_stages_user_logout.userlogoutstage",
                         "authentik_stages_user_write.userwritestage",
-                        "authentik_tenants.tenant",
+                        "authentik_brands.brand",
                         "authentik_blueprints.blueprintinstance",
                         "authentik_core.group",
                         "authentik_core.user",
@@ -8534,14 +8593,14 @@
             },
             "required": []
         },
-        "model_authentik_tenants.tenant": {
+        "model_authentik_brands.brand": {
             "type": "object",
             "properties": {
                 "domain": {
                     "type": "string",
                     "minLength": 1,
                     "title": "Domain",
-                    "description": "Domain that activates this tenant. Can be a superset, i.e. `a.b` for `aa.b` and `ba.b`"
+                    "description": "Domain that activates this brand. Can be a superset, i.e. `a.b` for `aa.b` and `ba.b`"
                 },
                 "default": {
                     "type": "boolean",
@@ -8585,12 +8644,6 @@
                 "flow_device_code": {
                     "type": "integer",
                     "title": "Flow device code"
-                },
-                "event_retention": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Event retention",
-                    "description": "Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2)."
                 },
                 "web_certificate": {
                     "type": "integer",

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-18 22:07+0000\n"
+"POT-Creation-Date: 2024-01-23 08:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -69,9 +69,27 @@ msgstr ""
 msgid "authentik Export - %(date)s"
 msgstr ""
 
-#: authentik/blueprints/v1/tasks.py:145 authentik/crypto/tasks.py:93
+#: authentik/blueprints/v1/tasks.py:151 authentik/crypto/tasks.py:93
 #, python-format
 msgid "Successfully imported %(count)d files."
+msgstr ""
+
+#: authentik/brands/models.py:22
+msgid ""
+"Domain that activates this brand. Can be a superset, i.e. `a.b` for `aa.b` "
+"and `ba.b`"
+msgstr ""
+
+#: authentik/brands/models.py:58
+msgid "Web Certificate used by the authentik Core webserver."
+msgstr ""
+
+#: authentik/brands/models.py:84
+msgid "Brand"
+msgstr ""
+
+#: authentik/brands/models.py:85
+msgid "Brands"
 msgstr ""
 
 #: authentik/core/api/providers.py:122
@@ -82,11 +100,11 @@ msgstr ""
 msgid "Create a SAML Provider by importing its Metadata."
 msgstr ""
 
-#: authentik/core/api/users.py:150
+#: authentik/core/api/users.py:149
 msgid "No leading or trailing slashes allowed."
 msgstr ""
 
-#: authentik/core/api/users.py:153
+#: authentik/core/api/users.py:152
 msgid "No empty segments in user path allowed."
 msgstr ""
 
@@ -421,109 +439,109 @@ msgstr ""
 msgid "(You are already connected in another tab/window)"
 msgstr ""
 
-#: authentik/events/models.py:286
+#: authentik/events/models.py:289
 msgid "Event"
 msgstr ""
 
-#: authentik/events/models.py:287
+#: authentik/events/models.py:290
 msgid "Events"
 msgstr ""
 
-#: authentik/events/models.py:293
+#: authentik/events/models.py:296
 msgid "authentik inbuilt notifications"
 msgstr ""
 
-#: authentik/events/models.py:294
+#: authentik/events/models.py:297
 msgid "Generic Webhook"
 msgstr ""
 
-#: authentik/events/models.py:295
+#: authentik/events/models.py:298
 msgid "Slack Webhook (Slack/Discord)"
 msgstr ""
 
-#: authentik/events/models.py:296
+#: authentik/events/models.py:299
 msgid "Email"
 msgstr ""
 
-#: authentik/events/models.py:314
+#: authentik/events/models.py:317
 msgid ""
 "Only send notification once, for example when sending a webhook into a chat "
 "channel."
 msgstr ""
 
-#: authentik/events/models.py:379
+#: authentik/events/models.py:382
 msgid "Severity"
 msgstr ""
 
-#: authentik/events/models.py:384
+#: authentik/events/models.py:387
 msgid "Dispatched for user"
 msgstr ""
 
-#: authentik/events/models.py:393
+#: authentik/events/models.py:396
 msgid "Event user"
 msgstr ""
 
-#: authentik/events/models.py:487
+#: authentik/events/models.py:490
 msgid "Notification Transport"
 msgstr ""
 
-#: authentik/events/models.py:488
+#: authentik/events/models.py:491
 msgid "Notification Transports"
 msgstr ""
 
-#: authentik/events/models.py:494
+#: authentik/events/models.py:497
 msgid "Notice"
 msgstr ""
 
-#: authentik/events/models.py:495
+#: authentik/events/models.py:498
 msgid "Warning"
 msgstr ""
 
-#: authentik/events/models.py:496
+#: authentik/events/models.py:499
 msgid "Alert"
 msgstr ""
 
-#: authentik/events/models.py:521
+#: authentik/events/models.py:524
 msgid "Notification"
 msgstr ""
 
-#: authentik/events/models.py:522
+#: authentik/events/models.py:525
 msgid "Notifications"
 msgstr ""
 
-#: authentik/events/models.py:532
+#: authentik/events/models.py:535
 msgid ""
 "Select which transports should be used to notify the user. If none are "
 "selected, the notification will only be shown in the authentik UI."
 msgstr ""
 
-#: authentik/events/models.py:540
+#: authentik/events/models.py:543
 msgid "Controls which severity level the created notifications will have."
 msgstr ""
 
-#: authentik/events/models.py:545
+#: authentik/events/models.py:548
 msgid ""
 "Define which group of users this notification should be sent and shown to. "
 "If left empty, Notification won't ben sent."
 msgstr ""
 
-#: authentik/events/models.py:563
+#: authentik/events/models.py:566
 msgid "Notification Rule"
 msgstr ""
 
-#: authentik/events/models.py:564
+#: authentik/events/models.py:567
 msgid "Notification Rules"
 msgstr ""
 
-#: authentik/events/models.py:584
+#: authentik/events/models.py:587
 msgid "Webhook Mapping"
 msgstr ""
 
-#: authentik/events/models.py:585
+#: authentik/events/models.py:588
 msgid "Webhook Mappings"
 msgstr ""
 
-#: authentik/events/monitored_tasks.py:205
+#: authentik/events/monitored_tasks.py:207
 msgid "Task has not been run yet."
 msgstr ""
 
@@ -1616,11 +1634,19 @@ msgstr ""
 msgid "Can access admin interface"
 msgstr ""
 
-#: authentik/recovery/management/commands/create_admin_group.py:11
+#: authentik/rbac/models.py:73
+msgid "Can view system settings"
+msgstr ""
+
+#: authentik/rbac/models.py:74
+msgid "Can edit system settings"
+msgstr ""
+
+#: authentik/recovery/management/commands/create_admin_group.py:12
 msgid "Create admin group if the default group gets deleted."
 msgstr ""
 
-#: authentik/recovery/management/commands/create_recovery_key.py:17
+#: authentik/recovery/management/commands/create_recovery_key.py:16
 msgid "Create a Key which can be used to restore access to authentik."
 msgstr ""
 
@@ -2058,11 +2084,11 @@ msgid "Invalid phone number"
 msgstr ""
 
 #: authentik/stages/authenticator_static/models.py:52
-msgid "Static Authenticator Stage"
+msgid "Static Authenticator Setup Stage"
 msgstr ""
 
 #: authentik/stages/authenticator_static/models.py:53
-msgid "Static Authenticator Stages"
+msgid "Static Authenticator Setup Stages"
 msgstr ""
 
 #: authentik/stages/authenticator_static/models.py:98
@@ -2715,26 +2741,60 @@ msgstr ""
 msgid "Failed to update user. Please try again later."
 msgstr ""
 
-#: authentik/tenants/models.py:23
+#: authentik/tenants/models.py:29
 msgid ""
-"Domain that activates this tenant. Can be a superset, i.e. `a.b` for `aa.b` "
-"and `ba.b`"
+"Schema name must start with t_, only contain lowercase letters and numbers "
+"and be less than 63 characters."
 msgstr ""
 
-#: authentik/tenants/models.py:58
+#: authentik/tenants/models.py:49
+msgid "Configure how authentik should show avatars for users."
+msgstr ""
+
+#: authentik/tenants/models.py:53
+msgid "Enable the ability for users to change their name."
+msgstr ""
+
+#: authentik/tenants/models.py:56
+msgid "Enable the ability for users to change their email address."
+msgstr ""
+
+#: authentik/tenants/models.py:59
+msgid "Enable the ability for users to change their username."
+msgstr ""
+
+#: authentik/tenants/models.py:65
 msgid ""
 "Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,"
 "seconds=2)."
 msgstr ""
 
-#: authentik/tenants/models.py:67
-msgid "Web Certificate used by the authentik Core webserver."
+#: authentik/tenants/models.py:69
+msgid "The option configures the footer links on the flow executor pages."
 msgstr ""
 
-#: authentik/tenants/models.py:93
+#: authentik/tenants/models.py:75
+msgid ""
+"When enabled, all the events caused by a user will be deleted upon the "
+"user's deletion."
+msgstr ""
+
+#: authentik/tenants/models.py:81
+msgid "Globally enable/disable impersonation."
+msgstr ""
+
+#: authentik/tenants/models.py:104
 msgid "Tenant"
 msgstr ""
 
-#: authentik/tenants/models.py:94
+#: authentik/tenants/models.py:105
 msgid "Tenants"
+msgstr ""
+
+#: authentik/tenants/models.py:125
+msgid "Domain"
+msgstr ""
+
+#: authentik/tenants/models.py:126
+msgid "Domains"
 msgstr ""

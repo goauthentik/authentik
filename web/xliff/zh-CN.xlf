@@ -290,9 +290,6 @@
 <trans-unit id="s4d00f1de1c82281b">
   <source>Client IP</source>
 </trans-unit>
-<trans-unit id="s45f9e7ce0897f9e5">
-  <source>Tenant</source>
-</trans-unit>
 <trans-unit id="s2152f3482784705f">
   <source>Recent events</source>
 </trans-unit>
@@ -2608,12 +2605,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="scc3487e74c5a3e89">
   <source>Copy token</source>
 </trans-unit>
-<trans-unit id="s0af6301e76e2a2a5">
-  <source>Successfully updated tenant.</source>
-</trans-unit>
-<trans-unit id="sf55c7c06dbc2c8c6">
-  <source>Successfully created tenant.</source>
-</trans-unit>
 <trans-unit id="s41706a202b6c40f1">
   <source>Domain</source>
 </trans-unit>
@@ -2622,9 +2613,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s11326fd2590f4e5e">
   <source>Default</source>
-</trans-unit>
-<trans-unit id="se1c85959463f53df">
-  <source>Use this tenant for each domain that doesn't have a dedicated tenant.</source>
 </trans-unit>
 <trans-unit id="sc19838ca8c135c1b">
   <source>Branding settings</source>
@@ -2701,29 +2689,11 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s44536d20bb5c8257">
   <source>This setting only affects new Events, as the expiration is saved per-event.</source>
 </trans-unit>
-<trans-unit id="s3bb51cabb02b997e">
-  <source>Format: "weeks=3;days=2;hours=3,seconds=2".</source>
-</trans-unit>
-<trans-unit id="s04bfd02201db5ab8">
-  <source>Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this tenant.</source>
-</trans-unit>
-<trans-unit id="s7f9e79189a3d19e2">
-  <source>Tenants</source>
-</trans-unit>
 <trans-unit id="s164be9a7537b99f6">
   <source>Configure visual settings and defaults for different domains.</source>
 </trans-unit>
 <trans-unit id="s4802636d55022ed3">
   <source>Default?</source>
-</trans-unit>
-<trans-unit id="s69a56a3022c4be7f">
-  <source>Tenant(s)</source>
-</trans-unit>
-<trans-unit id="s1b606acd76ba2c4c">
-  <source>Update Tenant</source>
-</trans-unit>
-<trans-unit id="s773aa6621d7e37b7">
-  <source>Create Tenant</source>
 </trans-unit>
 <trans-unit id="s8cb7bb82e96d5d77">
   <source>Policies</source>
@@ -2895,9 +2865,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="sd7fa99e4d82b374a">
   <source>Recovery link cannot be emailed, user has no email address saved.</source>
-</trans-unit>
-<trans-unit id="s63d89a6ae0969c30">
-  <source>To let a user directly reset a their password, configure a recovery flow on the currently active tenant.</source>
 </trans-unit>
 <trans-unit id="s720594461542943f">
   <source>Add User</source>
@@ -3072,9 +3039,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="saf6097bfa25205b8">
   <source>A copy of this recovery link has been placed in your clipboard</source>
-</trans-unit>
-<trans-unit id="s5b8ee296ed258568">
-  <source>The current tenant must have a recovery flow configured to use a recovery link</source>
 </trans-unit>
 <trans-unit id="s3616cc78631f5893">
   <source>Warning: You're about to delete the user you're logged in as (<x id="0" equiv-text="${shouldShowWarning.username}"/>). Proceed at your own risk.</source>
@@ -5065,6 +5029,122 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s16a15af46bc9aeef">
   <source>Failed to fetch objects: <x id="0" equiv-text="${this.error.detail}"/></source>
+</trans-unit>
+<trans-unit id="s744401846fea6e76">
+  <source>Brand</source>
+</trans-unit>
+<trans-unit id="sab21e1f62676b56c">
+  <source>Successfully updated brand.</source>
+</trans-unit>
+<trans-unit id="sa43e43fd3a23e22d">
+  <source>Successfully created brand.</source>
+</trans-unit>
+<trans-unit id="s41b3f9b4c98aabd9">
+  <source>Use this brand for each domain that doesn't have a dedicated brand.</source>
+</trans-unit>
+<trans-unit id="s17260b71484b307f">
+  <source>Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this brand.</source>
+</trans-unit>
+<trans-unit id="s79fc990a2b58f27f">
+  <source>Brands</source>
+</trans-unit>
+<trans-unit id="s02774bc46a167346">
+  <source>Brand(s)</source>
+</trans-unit>
+<trans-unit id="s801bf3d03f4a3ff1">
+  <source>Update Brand</source>
+</trans-unit>
+<trans-unit id="s5c3efec5330e0000">
+  <source>Create Brand</source>
+</trans-unit>
+<trans-unit id="sa9d13ce9e83aac17">
+  <source>To let a user directly reset a their password, configure a recovery flow on the currently active brand.</source>
+</trans-unit>
+<trans-unit id="s6709b81e1ed4e39f">
+  <source>The current brand must have a recovery flow configured to use a recovery link</source>
+</trans-unit>
+<trans-unit id="s634e2fd82c397576">
+  <source>Successfully updated settings.</source>
+</trans-unit>
+<trans-unit id="sb8e4edaea6f1d935">
+  <source>Avatars</source>
+</trans-unit>
+<trans-unit id="s945856050217c828">
+  <source>Configure how authentik should show avatars for users. The following values can be set:</source>
+</trans-unit>
+<trans-unit id="sf4ef4c8ce713f775">
+  <source>Disables per-user avatars and just shows a 1x1 pixel transparent picture</source>
+</trans-unit>
+<trans-unit id="s5446842a7e4a963b">
+  <source>Uses gravatar with the user's email address</source>
+</trans-unit>
+<trans-unit id="s35363b9e1cc2abd3">
+  <source>Generated avatars based on the user's name</source>
+</trans-unit>
+<trans-unit id="s48110ca292cad513">
+  <source>Any URL: If you want to use images hosted on another server, you can set any URL. Additionally, these placeholders can be used:</source>
+</trans-unit>
+<trans-unit id="sbe1dfda044bdc93b">
+  <source>The user's username</source>
+</trans-unit>
+<trans-unit id="s653f257c9c2d4dc5">
+  <source>The email address, md5 hashed</source>
+</trans-unit>
+<trans-unit id="s9c9183cd80916b4f">
+  <source>The user's UPN, if set (otherwise an empty string)</source>
+</trans-unit>
+<trans-unit id="h4963ed14d7e239a9">
+  <source>An attribute path like
+                                    <x id="0" equiv-text="&lt;code&gt;"/>attributes.something.avatar<x id="1" equiv-text="&lt;/code&gt;"/>, which can be used in
+                                    combination with the file field to allow users to upload custom
+                                    avatars for themselves.</source>
+</trans-unit>
+<trans-unit id="s4c80c34a67a6f1c9">
+  <source>Multiple values can be set, comma-separated, and authentik will fallback to the next mode when no avatar could be found.</source>
+</trans-unit>
+<trans-unit id="h2fafcc3ebafea2f8">
+  <source>For example, setting this to <x id="0" equiv-text="&lt;code&gt;"/>gravatar,initials<x id="1" equiv-text="&lt;/code&gt;"/> will
+                                attempt to get an avatar from Gravatar, and if the user has not
+                                configured on there, it will fallback to a generated avatar.</source>
+</trans-unit>
+<trans-unit id="s5faec5eb5faf62ac">
+  <source>Allow users to change name</source>
+</trans-unit>
+<trans-unit id="s078ffec0257621c0">
+  <source>Enable the ability for users to change their name.</source>
+</trans-unit>
+<trans-unit id="s456d88f3679190fd">
+  <source>Allow users to change email</source>
+</trans-unit>
+<trans-unit id="s5fc6c14d106f40d3">
+  <source>Enable the ability for users to change their email.</source>
+</trans-unit>
+<trans-unit id="s628e414bb2367057">
+  <source>Allow users to change username</source>
+</trans-unit>
+<trans-unit id="s6d816a95ca43a99d">
+  <source>Enable the ability for users to change their username.</source>
+</trans-unit>
+<trans-unit id="s57b52b60ed5e2bc7">
+  <source>Footer links</source>
+</trans-unit>
+<trans-unit id="s7349802b2f7f99c2">
+  <source>This option configures the footer links on the flow executor pages. It must be a valid JSON list and can be used as follows:</source>
+</trans-unit>
+<trans-unit id="s166b59f3cc5d8ec3">
+  <source>GDPR compliance</source>
+</trans-unit>
+<trans-unit id="sb8b23770f899e5bb">
+  <source>When enabled, all the events caused by a user will be deleted upon the user's deletion.</source>
+</trans-unit>
+<trans-unit id="s29501761df0fe837">
+  <source>Impersonation</source>
+</trans-unit>
+<trans-unit id="s8f503553d8432487">
+  <source>Globally enable/disable impersonation.</source>
+</trans-unit>
+<trans-unit id="see1eb81c1f734079">
+  <source>System settings</source>
 </trans-unit>
 </body>
 </file>

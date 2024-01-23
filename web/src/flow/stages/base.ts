@@ -4,7 +4,7 @@ import { KeyUnknown } from "@goauthentik/elements/forms/Form";
 import { TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
-import { CurrentTenant, ErrorDetail } from "@goauthentik/api";
+import { CurrentBrand, ErrorDetail } from "@goauthentik/api";
 
 export interface StageHost {
     challenge?: unknown;
@@ -12,7 +12,7 @@ export interface StageHost {
     loading: boolean;
     submit(payload: unknown): Promise<boolean>;
 
-    readonly tenant?: CurrentTenant;
+    readonly brand?: CurrentBrand;
 }
 
 export function readFileAsync(file: Blob) {

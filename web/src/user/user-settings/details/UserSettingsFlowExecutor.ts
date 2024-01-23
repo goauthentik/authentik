@@ -3,7 +3,7 @@ import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { refreshMe } from "@goauthentik/common/users";
 import { AKElement } from "@goauthentik/elements/Base";
-import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider";
+import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { StageHost } from "@goauthentik/flow/stages/base";
 import "@goauthentik/user/user-settings/details/stages/prompt/PromptStage";
@@ -32,7 +32,7 @@ import {
 
 @customElement("ak-user-settings-flow-executor")
 export class UserSettingsFlowExecutor
-    extends WithTenantConfig(AKElement, true)
+    extends WithBrandConfig(AKElement, true)
     implements StageHost
 {
     @property()
@@ -87,7 +87,7 @@ export class UserSettingsFlowExecutor
     }
 
     firstUpdated(): void {
-        this.flowSlug = this.tenant?.flowUserSettings;
+        this.flowSlug = this.brand?.flowUserSettings;
         if (!this.flowSlug) {
             return;
         }

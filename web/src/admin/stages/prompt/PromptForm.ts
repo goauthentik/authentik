@@ -28,7 +28,7 @@ class PreviewStageHost implements StageHost {
     challenge = undefined;
     flowSlug = undefined;
     loading = false;
-    tenant = undefined;
+    brand = undefined;
     async submit(payload: unknown): Promise<boolean> {
         this.promptForm.previewResult = payload;
         return false;

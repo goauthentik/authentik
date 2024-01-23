@@ -139,9 +139,10 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(AKElement) {
                 ["/core/tokens", msg("Tokens and App passwords")],
                 ["/flow/stages/invitations", msg("Invitations")]]],
             [null, msg("System"), null, [
-                ["/core/tenants", msg("Tenants")],
+                ["/core/brands", msg("Brands")],
                 ["/crypto/certificates", msg("Certificates")],
-                ["/outpost/integrations", msg("Outpost Integrations")]]]
+                ["/outpost/integrations", msg("Outpost Integrations")],
+                ["/admin/settings", msg("Settings")]]],
         ];
 
         // Typescript requires the type here to correctly type the recursive path

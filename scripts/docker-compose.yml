@@ -18,6 +18,19 @@ services:
     ports:
       - 127.0.0.1:6379:6379
     restart: always
+  s3:
+    container_name: s3
+    image: docker.io/zenko/cloudserver
+    environment:
+      REMOTE_MANAGEMENT_DISABLE: "1"
+      SCALITY_ACCESS_KEY_ID: accessKey1
+      SCALITY_SECRET_ACCESS_KEY: secretKey1
+    ports:
+      - 8020:8000
+    volumes:
+      - s3-data:/usr/src/app/localData
+      - s3-metadata:/usr/scr/app/localMetadata
+    restart: always
   spotlight:
     image: ghcr.io/getsentry/spotlight
     ports:
@@ -26,4 +39,8 @@ services:
 
 volumes:
   db-data:
+    driver: local
+  s3-data:
+    driver: local
+  s3-metadata:
     driver: local

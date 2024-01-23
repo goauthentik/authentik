@@ -13,21 +13,23 @@ class ManagedAppConfig(AppConfig):
 
     _logger: BoundLogger
 
+    RECONCILE_GLOBAL_PREFIX: str = "reconcile_global_"
+    RECONCILE_TENANT_PREFIX: str = "reconcile_tenant_"
+
     def __init__(self, app_name: str, *args, **kwargs) -> None:
         super().__init__(app_name, *args, **kwargs)
         self._logger = get_logger().bind(app_name=app_name)
 
     def ready(self) -> None:
-        self.reconcile()
+        self.reconcile_global()
+        self.reconcile_tenant()
         return super().ready()
 
     def import_module(self, path: str):
         """Load module"""
         import_module(path)
 
-    def reconcile(self) -> None:
-        """reconcile ourselves"""
-        prefix = "reconcile_"
+    def _reconcile(self, prefix: str) -> None:
         for meth_name in dir(self):
             meth = getattr(self, meth_name)
             if not ismethod(meth):
@@ -42,6 +44,29 @@ class ManagedAppConfig(AppConfig):
             except (DatabaseError, ProgrammingError, InternalError) as exc:
                 self._logger.warning("Failed to run reconcile", name=name, exc=exc)
 
+    def reconcile_tenant(self) -> None:
+        """reconcile ourselves for tenanted methods"""
+        from authentik.tenants.models import Tenant
+
+        try:
+            tenants = list(Tenant.objects.filter(ready=True))
+        except (DatabaseError, ProgrammingError, InternalError) as exc:
+            self._logger.debug("Failed to get tenants to run reconcile", exc=exc)
+            return
+        for tenant in tenants:
+            with tenant:
+                self._reconcile(self.RECONCILE_TENANT_PREFIX)
+
+    def reconcile_global(self) -> None:
+        """
+        reconcile ourselves for global methods.
+        Used for signals, tasks, etc. Database queries should not be made in here.
+        """
+        from django_tenants.utils import get_public_schema_name, schema_context
+
+        with schema_context(get_public_schema_name()):
+            self._reconcile(self.RECONCILE_GLOBAL_PREFIX)
+
 
 class AuthentikBlueprintsConfig(ManagedAppConfig):
     """authentik Blueprints app"""
@@ -51,11 +76,11 @@ class AuthentikBlueprintsConfig(ManagedAppConfig):
     verbose_name = "authentik Blueprints"
     default = True
 
-    def reconcile_load_blueprints_v1_tasks(self):
+    def reconcile_global_load_blueprints_v1_tasks(self):
         """Load v1 tasks"""
         self.import_module("authentik.blueprints.v1.tasks")
 
-    def reconcile_blueprints_discovery(self):
+    def reconcile_tenant_blueprints_discovery(self):
         """Run blueprint discovery"""
         from authentik.blueprints.v1.tasks import blueprints_discovery, clear_failed_blueprints
 

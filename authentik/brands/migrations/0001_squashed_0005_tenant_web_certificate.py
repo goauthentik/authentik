@@ -10,11 +10,11 @@ import authentik.lib.utils.time
 
 class Migration(migrations.Migration):
     replaces = [
-        ("authentik_tenants", "0001_initial"),
-        ("authentik_tenants", "0002_default"),
-        ("authentik_tenants", "0003_tenant_branding_favicon"),
-        ("authentik_tenants", "0004_tenant_event_retention"),
-        ("authentik_tenants", "0005_tenant_web_certificate"),
+        ("authentik_brands", "0001_initial"),
+        ("authentik_brands", "0002_default"),
+        ("authentik_brands", "0003_tenant_branding_favicon"),
+        ("authentik_brands", "0004_tenant_event_retention"),
+        ("authentik_brands", "0005_tenant_web_certificate"),
     ]
 
     initial = True
@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name="Tenant",
+            name="Brand",
             fields=[
                 (
                     "tenant_uuid",
@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
                     "domain",
                     models.TextField(
                         help_text=(
-                            "Domain that activates this tenant. Can be a superset, i.e. `a.b` for"
+                            "Domain that activates this brand. Can be a superset, i.e. `a.b` for"
                             " `aa.b` and `ba.b`"
                         )
                     ),
@@ -53,7 +53,7 @@ class Migration(migrations.Migration):
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
-                        related_name="tenant_authentication",
+                        related_name="brand_authentication",
                         to="authentik_flows.flow",
                     ),
                 ),
@@ -62,7 +62,7 @@ class Migration(migrations.Migration):
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
-                        related_name="tenant_invalidation",
+                        related_name="brand_invalidation",
                         to="authentik_flows.flow",
                     ),
                 ),
@@ -71,7 +71,7 @@ class Migration(migrations.Migration):
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
-                        related_name="tenant_recovery",
+                        related_name="brand_recovery",
                         to="authentik_flows.flow",
                     ),
                 ),
@@ -80,23 +80,23 @@ class Migration(migrations.Migration):
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
-                        related_name="tenant_unenrollment",
+                        related_name="brand_unenrollment",
                         to="authentik_flows.flow",
                     ),
                 ),
             ],
             options={
-                "verbose_name": "Tenant",
-                "verbose_name_plural": "Tenants",
+                "verbose_name": "Brand",
+                "verbose_name_plural": "Brands",
             },
         ),
         migrations.AddField(
-            model_name="tenant",
+            model_name="brand",
             name="branding_favicon",
             field=models.TextField(default="/static/dist/assets/icons/icon.png"),
         ),
         migrations.AddField(
-            model_name="tenant",
+            model_name="brand",
             name="event_retention",
             field=models.TextField(
                 default="days=365",
@@ -108,7 +108,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddField(
-            model_name="tenant",
+            model_name="brand",
             name="web_certificate",
             field=models.ForeignKey(
                 default=None,
