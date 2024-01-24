@@ -123,7 +123,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
             this.open = false;
             this.shadowRoot
                 ?.querySelectorAll<HTMLInputElement>(
-                    ".pf-c-form-control.pf-c-select__toggle-typeahead"
+                    ".pf-c-form-control.pf-c-select__toggle-typeahead",
                 )
                 .forEach((input) => {
                     input.blur();
@@ -326,7 +326,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
                 </ul>
             </div>`,
             this.dropdownContainer,
-            { host: this }
+            { host: this },
         );
     }
 
