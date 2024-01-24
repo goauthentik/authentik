@@ -156,12 +156,11 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             <ak-form-element-horizontal label=${msg("Footer links")} name="footerLinks">
                 <ak-codemirror
                     mode=${CodeMirrorMode.YAML}
-                    .parseValue=${false}
-                    value="${first(this._settings?.footerLinks, [])}"
+                    .value="${first(this._settings?.footerLinks, [])}"
                 ></ak-codemirror>
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "This option configures the footer links on the flow executor pages. It must be a valid JSON list and can be used as follows:",
+                        "This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:",
                     )}
                     <code>[{"name": "Link Name","href":"https://goauthentik.io"}]</code>
                 </p>
