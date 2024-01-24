@@ -51,7 +51,7 @@ class ManagedAppConfig(AppConfig):
         try:
             tenants = list(Tenant.objects.filter(ready=True))
         except (DatabaseError, ProgrammingError, InternalError) as exc:
-            self._logger.debug("Failed to get tenants to run reconcile", exc=exc)
+            self.logger.debug("Failed to get tenants to run reconcile", exc=exc)
             return
         for tenant in tenants:
             with tenant:
