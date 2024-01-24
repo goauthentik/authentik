@@ -48,9 +48,6 @@ USER_ATTRIBUTE_CHANGE_EMAIL = "goauthentik.io/user/can-change-email"
 USER_PATH_SYSTEM_PREFIX = "goauthentik.io"
 USER_PATH_SERVICE_ACCOUNT = USER_PATH_SYSTEM_PREFIX + "/service-accounts"
 
-DEFAULT_TOKEN_DURATION = "minutes=30"  # nosec
-DEFAULT_TOKEN_DURATION_DETLA = timedelta_from_string(DEFAULT_TOKEN_DURATION)
-
 options.DEFAULT_NAMES = options.DEFAULT_NAMES + (
     # used_by API that allows models to specify if they shadow an object
     # for example the proxy provider which is built on top of an oauth provider
@@ -63,7 +60,7 @@ options.DEFAULT_NAMES = options.DEFAULT_NAMES + (
 
 def default_token_duration():
     """Default duration a Token is valid"""
-    return now() + DEFAULT_TOKEN_DURATION_DETLA
+    return now() + timedelta_from_string(CONFIG.get("default_token_duration"))
 
 
 def token_expires_from_timedelta(dt: timedelta) -> datetime:
