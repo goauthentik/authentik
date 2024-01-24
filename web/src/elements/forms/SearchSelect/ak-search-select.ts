@@ -123,7 +123,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
             this.open = false;
             this.shadowRoot
                 ?.querySelectorAll<HTMLInputElement>(
-                    ".pf-c-form-control.pf-c-select__toggle-typeahead",
+                    ".pf-c-form-control.pf-c-select__toggle-typeahead"
                 )
                 .forEach((input) => {
                     input.blur();
@@ -175,6 +175,9 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
         super.connectedCallback();
         this.dropdownContainer = document.createElement("div");
         this.dropdownContainer.dataset["managedBy"] = "ak-search-select";
+        if (this.name) {
+            this.dropdownContainer.dataset["managedFor"] = this.name;
+        }
         document.body.append(this.dropdownContainer);
         this.updateData();
         this.addEventListener(EVENT_REFRESH, this.updateData);
@@ -323,7 +326,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
                 </ul>
             </div>`,
             this.dropdownContainer,
-            { host: this },
+            { host: this }
         );
     }
 
