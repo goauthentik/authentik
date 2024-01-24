@@ -359,9 +359,9 @@
         <source>Recent events</source>
       </trans-unit>
       <trans-unit id="sc35581d9c1cd67ff">
-        <source>On behalf of <x id="0" equiv-text="${item.user.on_behalf_of.username}"/></source>
+        <source>On behalf of <x id="0" equiv-text="${event.user.on_behalf_of.username}"/></source>
         <target>Im Namen von
-        <x id="0" equiv-text="${item.user.on_behalf_of.username}"/></target>
+        <x id="0" equiv-text="${event.user.on_behalf_of.username}"/></target>
       </trans-unit>
       <trans-unit id="saf63a04c86018698">
         <source>-</source>
@@ -6343,6 +6343,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s4a642406b0745917">
   <source>Raw event info</source>
+</trans-unit>
+<trans-unit id="sa65e7bc7ddd3484d">
+  <source>Anonymous user</source>
 </trans-unit>
     </body>
   </file>

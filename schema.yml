@@ -18208,7 +18208,6 @@ paths:
           - authentik_events.notificationrule
           - authentik_events.notificationtransport
           - authentik_events.notificationwebhookmapping
-          - authentik_events.systemtask
           - authentik_flows.flow
           - authentik_flows.flowstagebinding
           - authentik_outposts.dockerserviceconnection
@@ -18220,13 +18219,9 @@ paths:
           - authentik_policies_expiry.passwordexpirypolicy
           - authentik_policies_expression.expressionpolicy
           - authentik_policies_password.passwordpolicy
-          - authentik_policies_reputation.reputation
           - authentik_policies_reputation.reputationpolicy
           - authentik_providers_ldap.ldapprovider
-          - authentik_providers_oauth2.accesstoken
-          - authentik_providers_oauth2.authorizationcode
           - authentik_providers_oauth2.oauth2provider
-          - authentik_providers_oauth2.refreshtoken
           - authentik_providers_oauth2.scopemapping
           - authentik_providers_proxy.proxyprovider
           - authentik_providers_rac.endpoint
@@ -18282,7 +18277,6 @@ paths:
           * `authentik_events.notification` - Notification
           * `authentik_events.notificationrule` - Notification Rule
           * `authentik_events.notificationwebhookmapping` - Webhook Mapping
-          * `authentik_events.systemtask` - System Task
           * `authentik_flows.flow` - Flow
           * `authentik_flows.flowstagebinding` - Flow Stage Binding
           * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
@@ -18294,14 +18288,10 @@ paths:
           * `authentik_policies_expression.expressionpolicy` - Expression Policy
           * `authentik_policies_password.passwordpolicy` - Password Policy
           * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
-          * `authentik_policies_reputation.reputation` - Reputation Score
           * `authentik_policies.policybinding` - Policy Binding
           * `authentik_providers_ldap.ldapprovider` - LDAP Provider
           * `authentik_providers_oauth2.scopemapping` - Scope Mapping
           * `authentik_providers_oauth2.oauth2provider` - OAuth2/OpenID Provider
-          * `authentik_providers_oauth2.authorizationcode` - Authorization Code
-          * `authentik_providers_oauth2.accesstoken` - OAuth2 Access Token
-          * `authentik_providers_oauth2.refreshtoken` - OAuth2 Refresh Token
           * `authentik_providers_proxy.proxyprovider` - Proxy Provider
           * `authentik_providers_radius.radiusprovider` - Radius Provider
           * `authentik_providers_saml.samlprovider` - SAML Provider
@@ -18506,7 +18496,6 @@ paths:
           - authentik_events.notificationrule
           - authentik_events.notificationtransport
           - authentik_events.notificationwebhookmapping
-          - authentik_events.systemtask
           - authentik_flows.flow
           - authentik_flows.flowstagebinding
           - authentik_outposts.dockerserviceconnection
@@ -18518,13 +18507,9 @@ paths:
           - authentik_policies_expiry.passwordexpirypolicy
           - authentik_policies_expression.expressionpolicy
           - authentik_policies_password.passwordpolicy
-          - authentik_policies_reputation.reputation
           - authentik_policies_reputation.reputationpolicy
           - authentik_providers_ldap.ldapprovider
-          - authentik_providers_oauth2.accesstoken
-          - authentik_providers_oauth2.authorizationcode
           - authentik_providers_oauth2.oauth2provider
-          - authentik_providers_oauth2.refreshtoken
           - authentik_providers_oauth2.scopemapping
           - authentik_providers_proxy.proxyprovider
           - authentik_providers_rac.endpoint
@@ -18580,7 +18565,6 @@ paths:
           * `authentik_events.notification` - Notification
           * `authentik_events.notificationrule` - Notification Rule
           * `authentik_events.notificationwebhookmapping` - Webhook Mapping
-          * `authentik_events.systemtask` - System Task
           * `authentik_flows.flow` - Flow
           * `authentik_flows.flowstagebinding` - Flow Stage Binding
           * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
@@ -18592,14 +18576,10 @@ paths:
           * `authentik_policies_expression.expressionpolicy` - Expression Policy
           * `authentik_policies_password.passwordpolicy` - Password Policy
           * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
-          * `authentik_policies_reputation.reputation` - Reputation Score
           * `authentik_policies.policybinding` - Policy Binding
           * `authentik_providers_ldap.ldapprovider` - LDAP Provider
           * `authentik_providers_oauth2.scopemapping` - Scope Mapping
           * `authentik_providers_oauth2.oauth2provider` - OAuth2/OpenID Provider
-          * `authentik_providers_oauth2.authorizationcode` - Authorization Code
-          * `authentik_providers_oauth2.accesstoken` - OAuth2 Access Token
-          * `authentik_providers_oauth2.refreshtoken` - OAuth2 Refresh Token
           * `authentik_providers_proxy.proxyprovider` - Proxy Provider
           * `authentik_providers_radius.radiusprovider` - Radius Provider
           * `authentik_providers_saml.samlprovider` - SAML Provider
@@ -32484,7 +32464,6 @@ components:
             * `authentik_events.notification` - Notification
             * `authentik_events.notificationrule` - Notification Rule
             * `authentik_events.notificationwebhookmapping` - Webhook Mapping
-            * `authentik_events.systemtask` - System Task
             * `authentik_flows.flow` - Flow
             * `authentik_flows.flowstagebinding` - Flow Stage Binding
             * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
@@ -32496,14 +32475,10 @@ components:
             * `authentik_policies_expression.expressionpolicy` - Expression Policy
             * `authentik_policies_password.passwordpolicy` - Password Policy
             * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
-            * `authentik_policies_reputation.reputation` - Reputation Score
             * `authentik_policies.policybinding` - Policy Binding
             * `authentik_providers_ldap.ldapprovider` - LDAP Provider
             * `authentik_providers_oauth2.scopemapping` - Scope Mapping
             * `authentik_providers_oauth2.oauth2provider` - OAuth2/OpenID Provider
-            * `authentik_providers_oauth2.authorizationcode` - Authorization Code
-            * `authentik_providers_oauth2.accesstoken` - OAuth2 Access Token
-            * `authentik_providers_oauth2.refreshtoken` - OAuth2 Refresh Token
             * `authentik_providers_proxy.proxyprovider` - Proxy Provider
             * `authentik_providers_radius.radiusprovider` - Radius Provider
             * `authentik_providers_saml.samlprovider` - SAML Provider
@@ -32688,7 +32663,6 @@ components:
             * `authentik_events.notification` - Notification
             * `authentik_events.notificationrule` - Notification Rule
             * `authentik_events.notificationwebhookmapping` - Webhook Mapping
-            * `authentik_events.systemtask` - System Task
             * `authentik_flows.flow` - Flow
             * `authentik_flows.flowstagebinding` - Flow Stage Binding
             * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
@@ -32700,14 +32674,10 @@ components:
             * `authentik_policies_expression.expressionpolicy` - Expression Policy
             * `authentik_policies_password.passwordpolicy` - Password Policy
             * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
-            * `authentik_policies_reputation.reputation` - Reputation Score
             * `authentik_policies.policybinding` - Policy Binding
             * `authentik_providers_ldap.ldapprovider` - LDAP Provider
             * `authentik_providers_oauth2.scopemapping` - Scope Mapping
             * `authentik_providers_oauth2.oauth2provider` - OAuth2/OpenID Provider
-            * `authentik_providers_oauth2.authorizationcode` - Authorization Code
-            * `authentik_providers_oauth2.accesstoken` - OAuth2 Access Token
-            * `authentik_providers_oauth2.refreshtoken` - OAuth2 Refresh Token
             * `authentik_providers_proxy.proxyprovider` - Proxy Provider
             * `authentik_providers_radius.radiusprovider` - Radius Provider
             * `authentik_providers_saml.samlprovider` - SAML Provider
@@ -35008,7 +34978,6 @@ components:
       - authentik_events.notification
       - authentik_events.notificationrule
       - authentik_events.notificationwebhookmapping
-      - authentik_events.systemtask
       - authentik_flows.flow
       - authentik_flows.flowstagebinding
       - authentik_outposts.dockerserviceconnection
@@ -35020,14 +34989,10 @@ components:
       - authentik_policies_expression.expressionpolicy
       - authentik_policies_password.passwordpolicy
       - authentik_policies_reputation.reputationpolicy
-      - authentik_policies_reputation.reputation
       - authentik_policies.policybinding
       - authentik_providers_ldap.ldapprovider
       - authentik_providers_oauth2.scopemapping
       - authentik_providers_oauth2.oauth2provider
-      - authentik_providers_oauth2.authorizationcode
-      - authentik_providers_oauth2.accesstoken
-      - authentik_providers_oauth2.refreshtoken
       - authentik_providers_proxy.proxyprovider
       - authentik_providers_radius.radiusprovider
       - authentik_providers_saml.samlprovider
@@ -35089,7 +35054,6 @@ components:
         * `authentik_events.notification` - Notification
         * `authentik_events.notificationrule` - Notification Rule
         * `authentik_events.notificationwebhookmapping` - Webhook Mapping
-        * `authentik_events.systemtask` - System Task
         * `authentik_flows.flow` - Flow
         * `authentik_flows.flowstagebinding` - Flow Stage Binding
         * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
@@ -35101,14 +35065,10 @@ components:
         * `authentik_policies_expression.expressionpolicy` - Expression Policy
         * `authentik_policies_password.passwordpolicy` - Password Policy
         * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
-        * `authentik_policies_reputation.reputation` - Reputation Score
         * `authentik_policies.policybinding` - Policy Binding
         * `authentik_providers_ldap.ldapprovider` - LDAP Provider
         * `authentik_providers_oauth2.scopemapping` - Scope Mapping
         * `authentik_providers_oauth2.oauth2provider` - OAuth2/OpenID Provider
-        * `authentik_providers_oauth2.authorizationcode` - Authorization Code
-        * `authentik_providers_oauth2.accesstoken` - OAuth2 Access Token
-        * `authentik_providers_oauth2.refreshtoken` - OAuth2 Refresh Token
         * `authentik_providers_proxy.proxyprovider` - Proxy Provider
         * `authentik_providers_radius.radiusprovider` - Radius Provider
         * `authentik_providers_saml.samlprovider` - SAML Provider
@@ -38330,7 +38290,6 @@ components:
             * `authentik_events.notification` - Notification
             * `authentik_events.notificationrule` - Notification Rule
             * `authentik_events.notificationwebhookmapping` - Webhook Mapping
-            * `authentik_events.systemtask` - System Task
             * `authentik_flows.flow` - Flow
             * `authentik_flows.flowstagebinding` - Flow Stage Binding
             * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
@@ -38342,14 +38301,10 @@ components:
             * `authentik_policies_expression.expressionpolicy` - Expression Policy
             * `authentik_policies_password.passwordpolicy` - Password Policy
             * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
-            * `authentik_policies_reputation.reputation` - Reputation Score
             * `authentik_policies.policybinding` - Policy Binding
             * `authentik_providers_ldap.ldapprovider` - LDAP Provider
             * `authentik_providers_oauth2.scopemapping` - Scope Mapping
             * `authentik_providers_oauth2.oauth2provider` - OAuth2/OpenID Provider
-            * `authentik_providers_oauth2.authorizationcode` - Authorization Code
-            * `authentik_providers_oauth2.accesstoken` - OAuth2 Access Token
-            * `authentik_providers_oauth2.refreshtoken` - OAuth2 Refresh Token
             * `authentik_providers_proxy.proxyprovider` - Proxy Provider
             * `authentik_providers_radius.radiusprovider` - Radius Provider
             * `authentik_providers_saml.samlprovider` - SAML Provider
