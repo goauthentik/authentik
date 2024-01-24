@@ -294,7 +294,7 @@
   <source>Recent events</source>
 </trans-unit>
 <trans-unit id="sc35581d9c1cd67ff">
-  <source>On behalf of <x id="0" equiv-text="${item.user.on_behalf_of.username}"/></source>
+  <source>On behalf of <x id="0" equiv-text="${event.user.on_behalf_of.username}"/></source>
 </trans-unit>
 <trans-unit id="saf63a04c86018698">
   <source>-</source>
@@ -498,7 +498,7 @@
   <source>Duration</source>
 </trans-unit>
 <trans-unit id="se7e1ababbc4868b8">
-  <source><x id="0" equiv-text="${item.taskDuration.toFixed(2)}"/> seconds</source>
+  <source><x id="0" equiv-text="${item.duration.toFixed(2)}"/> seconds</source>
 </trans-unit>
 <trans-unit id="s14bf17e2a1a2c381">
   <source>Restart task</source>
@@ -2029,7 +2029,7 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Task finished with errors</source>
 </trans-unit>
 <trans-unit id="sbedb77365a066648">
-  <source>Last sync: <x id="0" equiv-text="${task.taskFinishTimestamp.toLocaleString()}"/></source>
+  <source>Last sync: <x id="0" equiv-text="${task.finishTimestamp.toLocaleString()}"/></source>
 </trans-unit>
 <trans-unit id="s2f0f6691de0b0388">
   <source>Warning: Provider is not assigned to an application as backchannel provider.</source>
@@ -5145,6 +5145,24 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="see1eb81c1f734079">
   <source>System settings</source>
+</trans-unit>
+<trans-unit id="s47fb5504f693775b">
+  <source>Changes made:</source>
+</trans-unit>
+<trans-unit id="s506b6a19d12f414c">
+  <source>Key</source>
+</trans-unit>
+<trans-unit id="s4fc9dc73245eab09">
+  <source>Previous value</source>
+</trans-unit>
+<trans-unit id="scb3b0671d7b7f640">
+  <source>New value</source>
+</trans-unit>
+<trans-unit id="s4a642406b0745917">
+  <source>Raw event info</source>
+</trans-unit>
+<trans-unit id="sa65e7bc7ddd3484d">
+  <source>Anonymous user</source>
 </trans-unit>
 </body>
 </file>

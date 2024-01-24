@@ -18,6 +18,7 @@ from django.http.request import HttpRequest
 from django.utils import timezone
 from django.views.debug import SafeExceptionReporterFilter
 from geoip2.models import ASN, City
+from guardian.conf import settings
 from guardian.utils import get_anonymous_user
 
 from authentik.blueprints.v1.common import YAMLTag
@@ -84,6 +85,8 @@ def get_user(user: User | AnonymousUser, original_user: Optional[User] = None) -
         "pk": user.pk,
         "email": user.email,
     }
+    if user.username == settings.ANONYMOUS_USER_NAME:
+        user_data["is_anonymous"] = True
     if original_user:
         original_data = get_user(original_user)
         original_data["on_behalf_of"] = user_data

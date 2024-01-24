@@ -1,5 +1,5 @@
 import "@goauthentik/admin/events/EventVolumeChart";
-import { EventGeo } from "@goauthentik/admin/events/utils";
+import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { actionToLabel } from "@goauthentik/common/labels";
@@ -10,7 +10,7 @@ import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { msg, str } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -81,18 +81,7 @@ export class EventListPage extends TablePage<Event> {
         return [
             html`<div>${actionToLabel(item.action)}</div>
                 <small>${item.app}</small>`,
-            item.user?.username
-                ? html`<div>
-                          <a href="#/identity/users/${item.user.pk}">${item.user?.username}</a>
-                      </div>
-                      ${item.user.on_behalf_of
-                          ? html`<small>
-                                <a href="#/identity/users/${item.user.on_behalf_of.pk}"
-                                    >${msg(str`On behalf of ${item.user.on_behalf_of.username}`)}</a
-                                >
-                            </small>`
-                          : html``}`
-                : html`-`,
+            EventUser(item),
             html`<span>${item.created?.toLocaleString()}</span>`,
             html`<div>${item.clientIp || msg("-")}</div>
 

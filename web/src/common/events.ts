@@ -5,6 +5,7 @@ export interface EventUser {
     email?: string;
     username: string;
     on_behalf_of?: EventUser;
+    is_anonymous?: boolean;
 }
 
 export interface EventContext {
