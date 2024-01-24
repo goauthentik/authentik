@@ -29362,6 +29362,7 @@ components:
       - authentik.blueprints
       - authentik.core
       - authentik.enterprise
+      - authentik.enterprise.audit
       - authentik.enterprise.providers.rac
       type: string
       description: |-
@@ -29415,6 +29416,7 @@ components:
         * `authentik.blueprints` - authentik Blueprints
         * `authentik.core` - authentik Core
         * `authentik.enterprise` - authentik Enterprise
+        * `authentik.enterprise.audit` - authentik Enterprise.Audit
         * `authentik.enterprise.providers.rac` - authentik Enterprise.Providers.RAC
     AppleChallengeResponseRequest:
       type: object
@@ -32415,6 +32417,7 @@ components:
             * `authentik.blueprints` - authentik Blueprints
             * `authentik.core` - authentik Core
             * `authentik.enterprise` - authentik Enterprise
+            * `authentik.enterprise.audit` - authentik Enterprise.Audit
             * `authentik.enterprise.providers.rac` - authentik Enterprise.Providers.RAC
         model:
           allOf:
@@ -32617,6 +32620,7 @@ components:
             * `authentik.blueprints` - authentik Blueprints
             * `authentik.core` - authentik Core
             * `authentik.enterprise` - authentik Enterprise
+            * `authentik.enterprise.audit` - authentik Enterprise.Audit
             * `authentik.enterprise.providers.rac` - authentik Enterprise.Providers.RAC
         model:
           allOf:
@@ -38243,6 +38247,7 @@ components:
             * `authentik.blueprints` - authentik Blueprints
             * `authentik.core` - authentik Core
             * `authentik.enterprise` - authentik Enterprise
+            * `authentik.enterprise.audit` - authentik Enterprise.Audit
             * `authentik.enterprise.providers.rac` - authentik Enterprise.Providers.RAC
         model:
           allOf:

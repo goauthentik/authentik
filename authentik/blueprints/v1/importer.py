@@ -7,6 +7,8 @@ from dacite.config import Config
 from dacite.core import from_dict
 from dacite.exceptions import DaciteError
 from deepmerge import always_merger
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import FieldError
 from django.db.models import Model
 from django.db.models.query_utils import Q
@@ -58,9 +60,11 @@ def excluded_models() -> list[type[Model]]:
     from django.contrib.auth.models import User as DjangoUser
 
     return (
-        Tenant,
+        # Django only classes
         DjangoUser,
         DjangoGroup,
+        ContentType,
+        Permission,
         # Base classes
         Provider,
         Source,
@@ -77,6 +81,7 @@ def excluded_models() -> list[type[Model]]:
         LicenseUsage,
         SCIMGroup,
         SCIMUser,
+        Tenant,
     )
 
 

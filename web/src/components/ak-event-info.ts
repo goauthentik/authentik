@@ -16,6 +16,7 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
+import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
@@ -78,6 +79,7 @@ export class EventInfo extends AKElement {
             PFButton,
             PFFlex,
             PFCard,
+            PFTable,
             PFList,
             PFDescriptionList,
             css`
@@ -243,11 +245,52 @@ export class EventInfo extends AKElement {
     }
 
     renderModelChanged() {
+        const diff = this.event.context.diff as unknown as {
+            [key: string]: { new_value: unknown; previous_value: unknown };
+        };
+        let diffBody = html``;
+        if (diff) {
+            diffBody = html`<div class="pf-l-flex__item">
+                    <div class="pf-c-card__title">${msg("Changes made:")}</div>
+                    <table class="pf-c-table pf-m-compact pf-m-grid-md" role="grid">
+                        <thead>
+                            <tr role="row">
+                                <th role="columnheader" scope="col">${msg("Key")}</th>
+                                <th role="columnheader" scope="col">${msg("Previous value")}</th>
+                                <th role="columnheader" scope="col">${msg("New value")}</th>
+                            </tr>
+                        </thead>
+                        <tbody role="rowgroup">
+                            ${Object.keys(diff).map((key) => {
+                                return html` <tr role="row">
+                                    <td role="cell"><pre>${key}</pre></td>
+                                    <td role="cell">
+                                        <pre>
+${JSON.stringify(diff[key].previous_value, null, 4)}</pre
+                                        >
+                                    </td>
+                                    <td role="cell">
+                                        <pre>${JSON.stringify(diff[key].new_value, null, 4)}</pre>
+                                    </td>
+                                </tr>`;
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+                </div>`;
+        }
         return html`
-            <div class="pf-c-card__title">${msg("Affected model:")}</div>
-            <div class="pf-c-card__body">
-                ${this.getModelInfo(this.event.context?.model as EventModel)}
+            <div class="pf-l-flex">
+                <div class="pf-l-flex__item">
+                    <div class="pf-c-card__title">${msg("Affected model:")}</div>
+                    <div class="pf-c-card__body">
+                        ${this.getModelInfo(this.event.context?.model as EventModel)}
+                    </div>
+                </div>
+                ${diffBody}
             </div>
+            <br />
+            <ak-expand>${this.renderDefaultResponse()}</ak-expand>
         `;
     }
 

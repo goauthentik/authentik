@@ -3647,6 +3647,7 @@
                         "authentik.blueprints",
                         "authentik.core",
                         "authentik.enterprise",
+                        "authentik.enterprise.audit",
                         "authentik.enterprise.providers.rac"
                     ],
                     "title": "App",

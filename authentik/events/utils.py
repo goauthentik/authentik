@@ -28,7 +28,7 @@ from authentik.policies.types import PolicyRequest
 
 # Special keys which are *not* cleaned, even when the default filter
 # is matched
-ALLOWED_SPECIAL_KEYS = re.compile("passing", flags=re.I)
+ALLOWED_SPECIAL_KEYS = re.compile("passing|password_change_date", flags=re.I)
 
 
 def cleanse_item(key: str, value: Any) -> Any:
@@ -40,13 +40,13 @@ def cleanse_item(key: str, value: Any) -> Any:
             value[idx] = cleanse_item(key, item)
         return value
     try:
-        if SafeExceptionReporterFilter.hidden_settings.search(
-            key
-        ) and not ALLOWED_SPECIAL_KEYS.search(key):
-            return SafeExceptionReporterFilter.cleansed_substitute
+        if not SafeExceptionReporterFilter.hidden_settings.search(key):
+            return value
+        if ALLOWED_SPECIAL_KEYS.search(key):
+            return value
+        return SafeExceptionReporterFilter.cleansed_substitute
     except TypeError:  # pragma: no cover
         return value
-    return value
 
 
 def cleanse_dict(source: dict[Any, Any]) -> dict[Any, Any]:

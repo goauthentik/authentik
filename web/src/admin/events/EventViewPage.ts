@@ -154,6 +154,12 @@ export class EventViewPage extends AKElement {
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl">
                         <ak-event-info .event=${this.event}></ak-event-info>
                     </div>
+                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                        <div class="pf-c-card__title">${msg("Raw event info")}</div>
+                        <div class="pf-c-card__body">
+                            <pre>${JSON.stringify(this.event, null, 4)}</pre>
+                        </div>
+                    </div>
                 </div>
             </section>`;
     }

@@ -381,7 +381,7 @@ env = get_env()
 _ERROR_REPORTING = CONFIG.get_bool("error_reporting.enabled", False)
 if _ERROR_REPORTING:
     sentry_env = CONFIG.get("error_reporting.environment", "customer")
-    sentry_init()
+    sentry_init(spotlight=DEBUG)
     set_tag("authentik.uuid", sha512(str(SECRET_KEY).encode("ascii")).hexdigest()[:16])
 
 
