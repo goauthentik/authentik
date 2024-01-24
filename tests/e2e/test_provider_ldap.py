@@ -183,7 +183,12 @@ class TestProviderLDAP(SeleniumTestCase):
         self.assertTrue(
             Event.objects.filter(
                 action=EventAction.LOGIN_FAILED,
-                user={"pk": anon.pk, "email": anon.email, "username": anon.username},
+                user={
+                    "pk": anon.pk,
+                    "email": anon.email,
+                    "username": anon.username,
+                    "is_anonymous": True,
+                },
             ).exists(),
         )
 
