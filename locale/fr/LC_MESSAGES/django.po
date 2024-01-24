@@ -10,8 +10,8 @@
 # Kyllian Delaye-Maillot, 2023
 # Manuel Viens, 2023
 # Mordecai, 2023
-# nerdinator <florian.dupret@gmail.com>, 2023
 # Charles Leclerc, 2024
+# nerdinator <florian.dupret@gmail.com>, 2024
 # Marc Schmitt, 2024
 # 
 #, fuzzy
@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-23 08:02+0000\n"
+"POT-Creation-Date: 2024-01-24 12:44+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2024\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -28,11 +28,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
-
-#: authentik/admin/api/tasks.py:127
-#, python-format
-msgid "Successfully re-scheduled Task %(name)s!"
-msgstr "La Tâche %(name)s a bien été reprogrammée !"
 
 #: authentik/api/schema.py:25
 msgid "Generic API Error"
@@ -85,7 +80,7 @@ msgstr "Instances du plan"
 msgid "authentik Export - %(date)s"
 msgstr "Export authentik - %(date)s"
 
-#: authentik/blueprints/v1/tasks.py:151 authentik/crypto/tasks.py:93
+#: authentik/blueprints/v1/tasks.py:145 authentik/crypto/tasks.py:87
 #, python-format
 msgid "Successfully imported %(count)d files."
 msgstr " %(count)d fichiers importés avec succès."
@@ -127,52 +122,52 @@ msgstr ""
 msgid "No empty segments in user path allowed."
 msgstr "Les segments vides dans le chemin utilisateur ne sont pas autorisés."
 
-#: authentik/core/models.py:85
+#: authentik/core/models.py:92
 msgid "name"
 msgstr "nom"
 
-#: authentik/core/models.py:87
+#: authentik/core/models.py:94
 msgid "Users added to this group will be superusers."
 msgstr "Les utilisateurs ajoutés à ce groupe seront des super-utilisateurs."
 
-#: authentik/core/models.py:161
+#: authentik/core/models.py:168
 msgid "Group"
 msgstr "Group"
 
-#: authentik/core/models.py:162
+#: authentik/core/models.py:169
 msgid "Groups"
 msgstr "Groupes"
 
-#: authentik/core/models.py:177
+#: authentik/core/models.py:184
 msgid "User's display name."
 msgstr "Nom d'affichage de l'utilisateur"
 
-#: authentik/core/models.py:273 authentik/providers/oauth2/models.py:295
+#: authentik/core/models.py:280 authentik/providers/oauth2/models.py:295
 msgid "User"
 msgstr "Utilisateur"
 
-#: authentik/core/models.py:274
+#: authentik/core/models.py:281
 msgid "Users"
 msgstr "Utilisateurs"
 
-#: authentik/core/models.py:276
+#: authentik/core/models.py:283
 #: authentik/stages/email/templates/email/password_reset.html:28
 msgid "Reset Password"
 msgstr "Réinitialiser le mot de passe"
 
-#: authentik/core/models.py:277
+#: authentik/core/models.py:284
 msgid "Can impersonate other users"
 msgstr "Peut se faire passer pour d'autres utilisateurs"
 
-#: authentik/core/models.py:278 authentik/rbac/models.py:54
+#: authentik/core/models.py:285 authentik/rbac/models.py:54
 msgid "Can assign permissions to users"
 msgstr "Peut assigner des permissions aux utilisateurs"
 
-#: authentik/core/models.py:279 authentik/rbac/models.py:55
+#: authentik/core/models.py:286 authentik/rbac/models.py:55
 msgid "Can unassign permissions from users"
 msgstr "Peut enlever des permissions aux utilisateurs"
 
-#: authentik/core/models.py:293
+#: authentik/core/models.py:308
 msgid ""
 "Flow used for authentication when the associated application is accessed by "
 "an un-authenticated user."
@@ -180,11 +175,11 @@ msgstr ""
 "Flux utilisé lors d'authentification quand l'application associée est "
 "accédée par un utilisateur non-authentifié."
 
-#: authentik/core/models.py:303
+#: authentik/core/models.py:318
 msgid "Flow used when authorizing this provider."
 msgstr "Flux utilisé lors de l'autorisation de ce fournisseur."
 
-#: authentik/core/models.py:315
+#: authentik/core/models.py:330
 msgid ""
 "Accessed from applications; optional backchannel providers for protocols "
 "like LDAP and SCIM."
@@ -192,32 +187,32 @@ msgstr ""
 "Accès à partir d'applications ; fournisseurs optionnels de canaux de retour "
 "pour des protocoles tels que LDAP et SCIM."
 
-#: authentik/core/models.py:370
+#: authentik/core/models.py:385
 msgid "Application's display Name."
 msgstr "Nom d'affichage de l'application"
 
-#: authentik/core/models.py:371
+#: authentik/core/models.py:386
 msgid "Internal application name, used in URLs."
 msgstr "Nom de l'application interne, utilisé dans les URLs."
 
-#: authentik/core/models.py:383
+#: authentik/core/models.py:398
 msgid "Open launch URL in a new browser tab or window."
 msgstr ""
 "Ouvrir l'URL de lancement dans une nouvelle fenêtre ou un nouvel onglet."
 
-#: authentik/core/models.py:447
+#: authentik/core/models.py:462
 msgid "Application"
 msgstr "Application"
 
-#: authentik/core/models.py:448
+#: authentik/core/models.py:463
 msgid "Applications"
 msgstr "Applications"
 
-#: authentik/core/models.py:454
+#: authentik/core/models.py:469
 msgid "Use the source-specific identifier"
 msgstr "Utiliser l'identifiant spécifique à la source"
 
-#: authentik/core/models.py:456
+#: authentik/core/models.py:471
 msgid ""
 "Link to a user with identical email address. Can have security implications "
 "when a source doesn't validate email addresses."
@@ -225,7 +220,7 @@ msgstr ""
 "Lier à un utilisateur avec une adresse email identique. Peut avoir des "
 "implications de sécurité lorsqu'une source ne valide pas les adresses email."
 
-#: authentik/core/models.py:460
+#: authentik/core/models.py:475
 msgid ""
 "Use the user's email address, but deny enrollment when the email address "
 "already exists."
@@ -233,7 +228,7 @@ msgstr ""
 "Utiliser l'adresse courriel de l'utilisateur, mais refuser l'inscription "
 "lorsque celle-ci existe déjà."
 
-#: authentik/core/models.py:463
+#: authentik/core/models.py:478
 msgid ""
 "Link to a user with identical username. Can have security implications when "
 "a username is used with another source."
@@ -242,7 +237,7 @@ msgstr ""
 "problèmes de sécurité si ce nom d'utilisateur est partagé avec une autre "
 "source."
 
-#: authentik/core/models.py:467
+#: authentik/core/models.py:482
 msgid ""
 "Use the user's username, but deny enrollment when the username already "
 "exists."
@@ -250,23 +245,23 @@ msgstr ""
 "Utiliser le nom d'utilisateur, mais refuser l'inscription si celui-ci existe"
 " déjà."
 
-#: authentik/core/models.py:474
+#: authentik/core/models.py:489
 msgid "Source's display Name."
 msgstr "Nom d'affichage de la source."
 
-#: authentik/core/models.py:475
+#: authentik/core/models.py:490
 msgid "Internal source name, used in URLs."
 msgstr "Nom interne de la source, utilisé dans les URLs."
 
-#: authentik/core/models.py:494
+#: authentik/core/models.py:509
 msgid "Flow to use when authenticating existing users."
 msgstr "Flux à utiliser pour authentifier les utilisateurs existants."
 
-#: authentik/core/models.py:503
+#: authentik/core/models.py:518
 msgid "Flow to use when enrolling new users."
 msgstr "Flux à utiliser pour inscrire les nouveaux utilisateurs."
 
-#: authentik/core/models.py:511
+#: authentik/core/models.py:526
 msgid ""
 "How the source determines if an existing user should be authenticated or a "
 "new user enrolled."
@@ -274,31 +269,31 @@ msgstr ""
 "Comment la source détermine si un utilisateur existant doit être authentifié"
 " ou un nouvelle utilisateur doit être inscrit."
 
-#: authentik/core/models.py:683
+#: authentik/core/models.py:698
 msgid "Token"
 msgstr "Jeton"
 
-#: authentik/core/models.py:684
+#: authentik/core/models.py:699
 msgid "Tokens"
 msgstr "Jetons"
 
-#: authentik/core/models.py:689
+#: authentik/core/models.py:704
 msgid "View token's key"
 msgstr "Voir la clé du jeton"
 
-#: authentik/core/models.py:725
+#: authentik/core/models.py:740
 msgid "Property Mapping"
 msgstr "Mappage de propriété"
 
-#: authentik/core/models.py:726
+#: authentik/core/models.py:741
 msgid "Property Mappings"
 msgstr "Mappages de propriété"
 
-#: authentik/core/models.py:763
+#: authentik/core/models.py:778
 msgid "Authenticated Session"
 msgstr "Session Authentifiée"
 
-#: authentik/core/models.py:764
+#: authentik/core/models.py:779
 msgid "Authenticated Sessions"
 msgstr "Sessions Authentifiées"
 
@@ -490,6 +485,11 @@ msgstr "Limite maximum de connection atteinte."
 msgid "(You are already connected in another tab/window)"
 msgstr "(Vous êtes déjà connecté dans un autre onglet/une autre fenêtre)"
 
+#: authentik/events/api/tasks.py:99
+#, python-format
+msgid "Successfully re-scheduled Task %(name)s!"
+msgstr "La Tâche %(name)s a bien été reprogrammée !"
+
 #: authentik/events/models.py:289
 msgid "Event"
 msgstr "Évènement"
@@ -599,7 +599,19 @@ msgstr "Mappage de Webhook"
 msgid "Webhook Mappings"
 msgstr "Mappages de Webhook"
 
-#: authentik/events/monitored_tasks.py:207
+#: authentik/events/models.py:642
+msgid "Rerun task"
+msgstr "Réessayer la tâche"
+
+#: authentik/events/models.py:643
+msgid "System Task"
+msgstr "Tâches du système"
+
+#: authentik/events/models.py:644
+msgid "System Tasks"
+msgstr "Tâches du système"
+
+#: authentik/events/monitored_tasks.py:128
 msgid "Task has not been run yet."
 msgstr "Tâche pas encore exécutée."
 
@@ -1767,33 +1779,33 @@ msgstr "Mappage SCIM"
 msgid "SCIM Mappings"
 msgstr "Mappages SCIM"
 
-#: authentik/providers/scim/tasks.py:56
+#: authentik/providers/scim/tasks.py:57
 msgid "Starting full SCIM sync"
 msgstr "Démarrage d'une synchronisation SCIM complète"
 
-#: authentik/providers/scim/tasks.py:66
+#: authentik/providers/scim/tasks.py:67
 #, python-format
 msgid "Syncing page %(page)d of users"
 msgstr "Synchronisation de la page %(page)d d'utilisateurs"
 
-#: authentik/providers/scim/tasks.py:70
+#: authentik/providers/scim/tasks.py:71
 #, python-format
 msgid "Syncing page %(page)d of groups"
 msgstr "Synchronisation de la page %(page)d de groupes"
 
-#: authentik/providers/scim/tasks.py:102
+#: authentik/providers/scim/tasks.py:103
 #, python-format
 msgid "Failed to sync user %(user_name)s due to remote error: %(error)s"
 msgstr ""
 "Échec de synchronisation de l'utilisateur %(user_name)s dû à une erreur "
 "distante : %(error)s"
 
-#: authentik/providers/scim/tasks.py:113 authentik/providers/scim/tasks.py:154
+#: authentik/providers/scim/tasks.py:114 authentik/providers/scim/tasks.py:155
 #, python-format
 msgid "Stopping sync due to error: %(error)s"
 msgstr "Arrêt de la synchronisation due à l'erreur : %(error)s"
 
-#: authentik/providers/scim/tasks.py:143
+#: authentik/providers/scim/tasks.py:144
 #, python-format
 msgid "Failed to sync group %(group_name)s due to remote error: %(error)s"
 msgstr ""
