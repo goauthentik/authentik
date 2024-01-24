@@ -5,12 +5,12 @@ from typing import Optional
 from django.core.cache import cache
 from django.db.models import QuerySet
 from django.db.models.functions import ExtractHour
-from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
@@ -25,7 +25,7 @@ from authentik.api.decorators import permission_required
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.models import Application, User
+from authentik.core.models import Application
 from authentik.events.models import EventAction
 from authentik.events.utils import sanitize_dict
 from authentik.lib.utils.file import (
@@ -147,7 +147,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         ],
         responses={
             200: PolicyTestResultSerializer(),
-            404: OpenApiResponse(description="for_user user not found"),
+            400: OpenApiResponse(description="Bad request"),
         },
     )
     @action(detail=True, methods=["GET"])
@@ -156,13 +156,19 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         # Don't use self.get_object as that checks for view_application permission
         # which the user might not have, even if they have access
         application = get_object_or_404(Application, slug=slug)
-        # If the current user is superuser, they can set `for_user`
+        # If the current user has permissions, they can set `for_user`
         for_user = request.user
-        if request.user.is_superuser and "for_user" in request.query_params:
+        if "for_user" in request.query_params:
             try:
-                for_user = get_object_or_404(User, pk=request.query_params.get("for_user"))
+                for_user = (
+                    get_objects_for_user(request.user, "authentik_core.view_user")
+                    .filter(pk=request.query_params.get("for_user"))
+                    .first()
+                )
+                if not for_user:
+                    raise ValidationError({"for_user": "User not found"})
             except ValueError:
-                return HttpResponseBadRequest("for_user must be numerical")
+                raise ValidationError({"for_user": "input must be numerical"})
         engine = PolicyEngine(application, for_user, request)
         engine.use_cache = False
         with capture_logs() as logs:
