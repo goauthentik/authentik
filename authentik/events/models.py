@@ -2,11 +2,14 @@
 import time
 from collections import Counter
 from datetime import timedelta
+from difflib import get_close_matches
+from functools import lru_cache
 from inspect import currentframe
 from smtplib import SMTPException
 from typing import Optional
 from uuid import uuid4
 
+from django.apps import apps
 from django.db import models
 from django.db.models import Count, ExpressionWrapper, F
 from django.db.models.fields import DurationField
@@ -59,6 +62,12 @@ def default_event_duration():
 def default_brand():
     """Get a default value for brand"""
     return sanitize_dict(model_to_dict(DEFAULT_BRAND))
+
+
+@lru_cache()
+def django_app_names() -> list[str]:
+    """Get a cached list of all django apps' names (not labels)"""
+    return [x.name for x in apps.app_configs.values()]
 
 
 class NotificationTransportError(SentryIgnoredException):
@@ -198,6 +207,11 @@ class Event(SerializerModel, ExpiringModel):
             current = currentframe()
             parent = current.f_back
             app = parent.f_globals["__name__"]
+            # Attempt to match the calling module to the django app it belongs to
+            # if we can't find a match, keep the module name
+            django_apps = get_close_matches(app, django_app_names(), n=1)
+            if len(django_apps) > 0:
+                app = django_apps[0]
         cleaned_kwargs = cleanse_dict(sanitize_dict(kwargs))
         event = Event(action=action, app=app, context=cleaned_kwargs)
         return event
