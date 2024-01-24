@@ -2016,11 +2016,6 @@
         <target>JWKS URL</target>
 
       </trans-unit>
-      <trans-unit id="s453b0c150a7ca58e">
-        <source>Example JWT payload (for currently authenticated user)</source>
-        <target>示例 JWT 载荷（当前经过身份验证的用户）</target>
-
-      </trans-unit>
       <trans-unit id="sc6e8a34361c7c272">
         <source>Forward auth (domain-level)</source>
         <target>Forward Auth（域名级）</target>
@@ -8408,6 +8403,21 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s17032e57ba222d2f">
   <source>Permissions assigned to this role which affect all object instances of a given type.</source>
+</trans-unit>
+<trans-unit id="sbf4915a6a6446538">
+  <source>Preview settings</source>
+</trans-unit>
+<trans-unit id="sae937edb9dc4559e">
+  <source>Example JWT payload</source>
+</trans-unit>
+<trans-unit id="sa484291623d163ea">
+  <source>For <x id="0" equiv-text="${this.previewUser.username}"/></source>
+</trans-unit>
+<trans-unit id="s0a38672c57ac0b90">
+  <source>For currently authenticated user</source>
+</trans-unit>
+<trans-unit id="s862505f29064fc72">
+  <source>This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:</source>
 </trans-unit>
     </body>
   </file>

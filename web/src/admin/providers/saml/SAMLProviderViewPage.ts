@@ -1,5 +1,6 @@
 import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/saml/SAMLProviderForm";
+import renderDescriptionList from "@goauthentik/app/components/DescriptionList";
 import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
@@ -15,7 +16,7 @@ import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -34,11 +35,14 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
     CertificateKeyPair,
+    CoreApi,
+    CoreUsersListRequest,
     CryptoApi,
     ProvidersApi,
     RbacPermissionsAssignedByUsersListModelEnum,
     SAMLMetadata,
     SAMLProvider,
+    User,
 } from "@goauthentik/api";
 
 interface SAMLPreviewAttribute {
@@ -96,6 +100,9 @@ export class SAMLProviderViewPage extends AKElement {
     @state()
     verifier?: CertificateKeyPair;
 
+    @state()
+    previewUser?: User;
+
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -118,6 +125,17 @@ export class SAMLProviderViewPage extends AKElement {
             if (!this.provider?.pk) return;
             this.providerID = this.provider?.pk;
         });
+    }
+
+    fetchPreview(): void {
+        new ProvidersApi(DEFAULT_CONFIG)
+            .providersSamlPreviewUserRetrieve({
+                id: this.provider?.pk || 0,
+                forUser: this.previewUser?.pk,
+            })
+            .then((preview) => {
+                this.preview = preview.preview as SAMLPreviewAttribute;
+            });
     }
 
     renderRelatedObjects(): TemplateResult {
@@ -203,13 +221,7 @@ export class SAMLProviderViewPage extends AKElement {
                 slot="page-preview"
                 data-tab-title="${msg("Preview")}"
                 @activate=${() => {
-                    new ProvidersApi(DEFAULT_CONFIG)
-                        .providersSamlPreviewUserRetrieve({
-                            id: this.provider?.pk || 0,
-                        })
-                        .then((preview) => {
-                            this.preview = preview.preview as SAMLPreviewAttribute;
-                        });
+                    this.fetchPreview();
                 }}
             >
                 ${this.renderTabPreview()}
@@ -492,43 +504,102 @@ export class SAMLProviderViewPage extends AKElement {
         return html` <div
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
         >
-            <div class="pf-c-card">
-                <div class="pf-c-card__title">${msg("Example SAML attributes")}</div>
-                <div class="pf-c-card__body">
-                    <dl class="pf-c-description-list pf-m-2-col-on-lg">
-                        <div class="pf-c-description-list__group">
-                            <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text"
-                                    >${msg("NameID attribute")}</span
-                                >
-                            </dt>
-                            <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">
-                                    ${this.preview?.nameID}
-                                </div>
-                            </dd>
-                        </div>
-                    </dl>
+            <div class="pf-l-grid pf-m-gutter">
+                <div
+                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
+                >
+                    <div class="pf-c-card__title">${msg("Preview settings")}</div>
+                    <div class="pf-c-card__body">
+                        ${renderDescriptionList([
+                            [
+                                "User",
+                                html`
+                                    <ak-search-select
+                                        .fetchObjects=${async (query?: string): Promise<User[]> => {
+                                            const args: CoreUsersListRequest = {
+                                                ordering: "username",
+                                            };
+                                            if (query !== undefined) {
+                                                args.search = query;
+                                            }
+                                            const users = await new CoreApi(
+                                                DEFAULT_CONFIG,
+                                            ).coreUsersList(args);
+                                            return users.results;
+                                        }}
+                                        .renderElement=${(user: User): string => {
+                                            return user.username;
+                                        }}
+                                        .renderDescription=${(user: User): TemplateResult => {
+                                            return html`${user.name}`;
+                                        }}
+                                        .value=${(user: User | undefined): number | undefined => {
+                                            return user?.pk;
+                                        }}
+                                        .selected=${(user: User): boolean => {
+                                            return user.pk === this.previewUser?.pk;
+                                        }}
+                                        ?blankable=${true}
+                                        @ak-change=${(ev: CustomEvent) => {
+                                            this.previewUser = ev.detail.value;
+                                            this.fetchPreview();
+                                        }}
+                                    >
+                                    </ak-search-select>
+                                `,
+                            ],
+                        ])}
+                    </div>
                 </div>
-                <div class="pf-c-card__body">
-                    <dl class="pf-c-description-list pf-m-2-col-on-lg">
-                        ${this.preview?.attributes.map((attr) => {
-                            return html` <div class="pf-c-description-list__group">
+                <div
+                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
+                >
+                    <div class="pf-c-card__title">
+                        ${msg("Example SAML attributes")}
+                        <small>
+                            ${this.previewUser
+                                ? html`${msg(str`For ${this.previewUser.username}`)}`
+                                : html`${msg("For currently authenticated user")}`}
+                        </small>
+                    </div>
+                    <div class="pf-c-card__body">
+                        <dl class="pf-c-description-list pf-m-2-col-on-lg">
+                            <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${attr.Name}</span>
+                                    <span class="pf-c-description-list__text"
+                                        >${msg("NameID attribute")}</span
+                                    >
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
-                                        <ul class="pf-c-list">
-                                            ${attr.Value.map((value) => {
-                                                return html` <li><pre>${value}</pre></li> `;
-                                            })}
-                                        </ul>
+                                        ${this.preview?.nameID}
                                     </div>
                                 </dd>
-                            </div>`;
-                        })}
-                    </dl>
+                            </div>
+                        </dl>
+                    </div>
+                    <div class="pf-c-card__body">
+                        <dl class="pf-c-description-list pf-m-2-col-on-lg">
+                            ${this.preview?.attributes.map((attr) => {
+                                return html` <div class="pf-c-description-list__group">
+                                    <dt class="pf-c-description-list__term">
+                                        <span class="pf-c-description-list__text"
+                                            >${attr.Name}</span
+                                        >
+                                    </dt>
+                                    <dd class="pf-c-description-list__description">
+                                        <div class="pf-c-description-list__text">
+                                            <ul class="pf-c-list">
+                                                ${attr.Value.map((value) => {
+                                                    return html` <li><pre>${value}</pre></li> `;
+                                                })}
+                                            </ul>
+                                        </div>
+                                    </dd>
+                                </div>`;
+                            })}
+                        </dl>
+                    </div>
                 </div>
             </div>
         </div>`;

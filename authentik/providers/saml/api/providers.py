@@ -1,4 +1,5 @@
 """SAMLProvider API Views"""
+from copy import copy
 from xml.etree.ElementTree import ParseError  # nosec
 
 from defusedxml.ElementTree import fromstring
@@ -9,6 +10,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
+from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, FileField, SerializerMethodField
 from rest_framework.parsers import MultiPartParser
@@ -277,12 +279,35 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
             200: PropertyMappingPreviewSerializer(),
             400: OpenApiResponse(description="Bad request"),
         },
+        parameters=[
+            OpenApiParameter(
+                name="for_user",
+                location=OpenApiParameter.QUERY,
+                type=OpenApiTypes.INT,
+            )
+        ],
     )
     @action(detail=True, methods=["GET"])
     def preview_user(self, request: Request, pk: int) -> Response:
         """Preview user data for provider"""
         provider: SAMLProvider = self.get_object()
-        processor = AssertionProcessor(provider, request._request, AuthNRequest())
+        for_user = request.user
+        if "for_user" in request.query_params:
+            try:
+                for_user = (
+                    get_objects_for_user(request.user, "authentik_core.view_user")
+                    .filter(pk=request.query_params.get("for_user"))
+                    .first()
+                )
+                if not for_user:
+                    raise ValidationError({"for_user": "User not found"})
+            except ValueError:
+                raise ValidationError({"for_user": "input must be numerical"})
+
+        new_request = copy(request._request)
+        new_request.user = for_user
+
+        processor = AssertionProcessor(provider, new_request, AuthNRequest())
         attributes = processor.get_attributes()
         name_id = processor.get_name_id()
         data = []

@@ -1,5 +1,6 @@
 import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
+import renderDescriptionList from "@goauthentik/app/components/DescriptionList";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { convertToTitle } from "@goauthentik/common/utils";
@@ -13,7 +14,7 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
@@ -30,11 +31,14 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
+    CoreApi,
+    CoreUsersListRequest,
     OAuth2Provider,
     OAuth2ProviderSetupURLs,
     PropertyMappingPreview,
     ProvidersApi,
     RbacPermissionsAssignedByUsersListModelEnum,
+    User,
 } from "@goauthentik/api";
 
 @customElement("ak-provider-oauth2-view")
@@ -59,6 +63,9 @@ export class OAuth2ProviderViewPage extends AKElement {
     @state()
     preview?: PropertyMappingPreview;
 
+    @state()
+    previewUser?: User;
+
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -81,6 +88,15 @@ export class OAuth2ProviderViewPage extends AKElement {
             if (!this.provider?.pk) return;
             this.providerID = this.provider?.pk;
         });
+    }
+
+    fetchPreview(): void {
+        new ProvidersApi(DEFAULT_CONFIG)
+            .providersOauth2PreviewUserRetrieve({
+                id: this.provider?.pk || 0,
+                forUser: this.previewUser?.pk,
+            })
+            .then((preview) => (this.preview = preview));
     }
 
     render(): TemplateResult {
@@ -107,11 +123,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                 slot="page-preview"
                 data-tab-title="${msg("Preview")}"
                 @activate=${() => {
-                    new ProvidersApi(DEFAULT_CONFIG)
-                        .providersOauth2PreviewUserRetrieve({
-                            id: this.provider?.pk || 0,
-                        })
-                        .then((preview) => (this.preview = preview));
+                    this.fetchPreview();
                 }}
             >
                 ${this.renderTabPreview()}
@@ -353,14 +365,69 @@ export class OAuth2ProviderViewPage extends AKElement {
         return html` <div
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
         >
-            <div class="pf-c-card">
-                <div class="pf-c-card__title">
-                    ${msg("Example JWT payload (for currently authenticated user)")}
+            <div class="pf-l-grid pf-m-gutter">
+                <div
+                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
+                >
+                    <div class="pf-c-card__title">${msg("Preview settings")}</div>
+                    <div class="pf-c-card__body">
+                        ${renderDescriptionList([
+                            [
+                                "User",
+                                html`
+                                    <ak-search-select
+                                        .fetchObjects=${async (query?: string): Promise<User[]> => {
+                                            const args: CoreUsersListRequest = {
+                                                ordering: "username",
+                                            };
+                                            if (query !== undefined) {
+                                                args.search = query;
+                                            }
+                                            const users = await new CoreApi(
+                                                DEFAULT_CONFIG,
+                                            ).coreUsersList(args);
+                                            return users.results;
+                                        }}
+                                        .renderElement=${(user: User): string => {
+                                            return user.username;
+                                        }}
+                                        .renderDescription=${(user: User): TemplateResult => {
+                                            return html`${user.name}`;
+                                        }}
+                                        .value=${(user: User | undefined): number | undefined => {
+                                            return user?.pk;
+                                        }}
+                                        .selected=${(user: User): boolean => {
+                                            return user.pk === this.previewUser?.pk;
+                                        }}
+                                        ?blankable=${true}
+                                        @ak-change=${(ev: CustomEvent) => {
+                                            this.previewUser = ev.detail.value;
+                                            this.fetchPreview();
+                                        }}
+                                    >
+                                    </ak-search-select>
+                                `,
+                            ],
+                        ])}
+                    </div>
                 </div>
-                <div class="pf-c-card__body">
-                    ${this.preview
-                        ? html`<pre>${JSON.stringify(this.preview?.preview, null, 4)}</pre>`
-                        : html` <ak-empty-state ?loading=${true}></ak-empty-state> `}
+                <div
+                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
+                >
+                    <div class="pf-c-card__title">
+                        ${msg("Example JWT payload")}
+                        <small>
+                            ${this.previewUser
+                                ? html`${msg(str`For ${this.previewUser.username}`)}`
+                                : html`${msg("For currently authenticated user")}`}
+                        </small>
+                    </div>
+                    <div class="pf-c-card__body">
+                        ${this.preview
+                            ? html`<pre>${JSON.stringify(this.preview?.preview, null, 4)}</pre>`
+                            : html` <ak-empty-state ?loading=${true}></ak-empty-state> `}
+                    </div>
                 </div>
             </div>
         </div>`;
