@@ -16,6 +16,7 @@ from authentik.core.api.providers import ProviderViewSet
 from authentik.core.api.sources import SourceViewSet, UserSourceConnectionViewSet
 from authentik.core.api.tokens import TokenViewSet
 from authentik.core.api.transactional_applications import TransactionalApplicationView
+from authentik.core.api.user_directory import UserDirectoryViewSet
 from authentik.core.api.users import UserViewSet
 from authentik.core.views import apps
 from authentik.core.views.debug import AccessDeniedView
@@ -78,6 +79,7 @@ api_urlpatterns = [
     ),
     ("core/groups", GroupViewSet),
     ("core/users", UserViewSet),
+    ("core/user_directory", UserDirectoryViewSet),
     ("core/tokens", TokenViewSet),
     ("sources/all", SourceViewSet),
     ("sources/user_connections/all", UserSourceConnectionViewSet),

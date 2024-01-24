@@ -4530,6 +4530,119 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /core/user_directory/:
+    get:
+      operationId: core_user_directory_list
+      description: User Directory Viewset
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserDirectoryList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /core/user_directory/{id}/:
+    get:
+      operationId: core_user_directory_retrieve
+      description: User Directory Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDirectory'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /core/user_directory/fields/:
+    get:
+      operationId: core_user_directory_fields_retrieve
+      description: Get user directory fields
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDirectoryFields'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /core/users/:
     get:
       operationId: core_users_list
@@ -37158,6 +37271,18 @@ components:
       required:
       - pagination
       - results
+    PaginatedUserDirectoryList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserDirectory'
+      required:
+      - pagination
+      - results
     PaginatedUserList:
       type: object
       properties:
@@ -39931,6 +40056,10 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        user_directory_fields:
+          description: Fields to show in the user directory.
+        user_directory_attributes:
+          description: Attributes to show in the user directory.
     PatchedStaticDeviceRequest:
       type: object
       description: Serializer for static authenticator devices
@@ -43059,6 +43188,10 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        user_directory_fields:
+          description: Fields to show in the user directory.
+        user_directory_attributes:
+          description: Attributes to show in the user directory.
     SettingsRequest:
       type: object
       description: Settings Serializer
@@ -43090,6 +43223,10 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        user_directory_fields:
+          description: Fields to show in the user directory.
+        user_directory_attributes:
+          description: Attributes to show in the user directory.
     SeverityEnum:
       enum:
       - notice
@@ -44116,6 +44253,44 @@ components:
             $ref: '#/components/schemas/FlowSetRequest'
       required:
       - name
+    UserDirectory:
+      type: object
+      description: User Directory Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        user_fields:
+          type: object
+          additionalProperties: {}
+          description: Get directory fields
+          readOnly: true
+        attributes:
+          type: object
+          additionalProperties: {}
+          description: Get directory attributes
+          readOnly: true
+      required:
+      - attributes
+      - pk
+      - user_fields
+    UserDirectoryFields:
+      type: object
+      properties:
+        fields:
+          type: array
+          items:
+            type: string
+        attributes:
+          type: array
+          items:
+            type: object
+            additionalProperties:
+              type: string
+      required:
+      - attributes
+      - fields
     UserFieldsEnum:
       enum:
       - email

@@ -8305,10 +8305,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Footer links</source>
   <target>Liens de pied de page</target>
 </trans-unit>
-<trans-unit id="s7349802b2f7f99c2">
-  <source>This option configures the footer links on the flow executor pages. It must be a valid JSON list and can be used as follows:</source>
-  <target>Cette option configure les liens de pied de page sur les pages de l'exécuteur de flux. Doit être une liste JSON valide et peut être utilisée comme suit :</target>
-</trans-unit>
 <trans-unit id="s166b59f3cc5d8ec3">
   <source>GDPR compliance</source>
   <target>Conformité RGPD</target>
@@ -8346,6 +8342,24 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="sa65e7bc7ddd3484d">
   <source>Anonymous user</source>
+</trans-unit>
+<trans-unit id="s862505f29064fc72">
+  <source>This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:</source>
+</trans-unit>
+<trans-unit id="s1c1a6a865befe4de">
+  <source>User directory fields</source>
+</trans-unit>
+<trans-unit id="s3aa6e148d5849579">
+  <source>This option configures what user fields are shown in the user directory. It must be a valid JSON list and can be used as follows, with all possible values included:</source>
+</trans-unit>
+<trans-unit id="s60a6bca4ce22bb6a">
+  <source>User directory attributes</source>
+</trans-unit>
+<trans-unit id="s6f6fef5f45e0af13">
+  <source>This option configures what user attributes are shown in the user directory. It must be a valid JSON list and can be used as follows:</source>
+</trans-unit>
+<trans-unit id="s107b6ca39a2f017d">
+  <source>User directory</source>
 </trans-unit>
     </body>
   </file>

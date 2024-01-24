@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-24 12:44+0000\n"
+"POT-Creation-Date: 2024-01-24 18:40+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -434,126 +434,126 @@ msgstr ""
 msgid "(You are already connected in another tab/window)"
 msgstr ""
 
-#: authentik/events/api/tasks.py:99
+#: authentik/events/api/tasks.py:100
 #, python-format
-msgid "Successfully re-scheduled Task %(name)s!"
+msgid "Successfully started task %(name)s."
 msgstr ""
 
-#: authentik/events/models.py:289
+#: authentik/events/models.py:303
 msgid "Event"
 msgstr ""
 
-#: authentik/events/models.py:290
+#: authentik/events/models.py:304
 msgid "Events"
 msgstr ""
 
-#: authentik/events/models.py:296
+#: authentik/events/models.py:310
 msgid "authentik inbuilt notifications"
 msgstr ""
 
-#: authentik/events/models.py:297
+#: authentik/events/models.py:311
 msgid "Generic Webhook"
 msgstr ""
 
-#: authentik/events/models.py:298
+#: authentik/events/models.py:312
 msgid "Slack Webhook (Slack/Discord)"
 msgstr ""
 
-#: authentik/events/models.py:299
+#: authentik/events/models.py:313
 msgid "Email"
 msgstr ""
 
-#: authentik/events/models.py:317
+#: authentik/events/models.py:331
 msgid ""
 "Only send notification once, for example when sending a webhook into a chat "
 "channel."
 msgstr ""
 
-#: authentik/events/models.py:382
+#: authentik/events/models.py:396
 msgid "Severity"
 msgstr ""
 
-#: authentik/events/models.py:387
+#: authentik/events/models.py:401
 msgid "Dispatched for user"
 msgstr ""
 
-#: authentik/events/models.py:396
+#: authentik/events/models.py:410
 msgid "Event user"
 msgstr ""
 
-#: authentik/events/models.py:490
+#: authentik/events/models.py:504
 msgid "Notification Transport"
 msgstr ""
 
-#: authentik/events/models.py:491
+#: authentik/events/models.py:505
 msgid "Notification Transports"
 msgstr ""
 
-#: authentik/events/models.py:497
+#: authentik/events/models.py:511
 msgid "Notice"
 msgstr ""
 
-#: authentik/events/models.py:498
+#: authentik/events/models.py:512
 msgid "Warning"
 msgstr ""
 
-#: authentik/events/models.py:499
+#: authentik/events/models.py:513
 msgid "Alert"
 msgstr ""
 
-#: authentik/events/models.py:524
+#: authentik/events/models.py:538
 msgid "Notification"
 msgstr ""
 
-#: authentik/events/models.py:525
+#: authentik/events/models.py:539
 msgid "Notifications"
 msgstr ""
 
-#: authentik/events/models.py:535
+#: authentik/events/models.py:549
 msgid ""
 "Select which transports should be used to notify the user. If none are "
 "selected, the notification will only be shown in the authentik UI."
 msgstr ""
 
-#: authentik/events/models.py:543
+#: authentik/events/models.py:557
 msgid "Controls which severity level the created notifications will have."
 msgstr ""
 
-#: authentik/events/models.py:548
+#: authentik/events/models.py:562
 msgid ""
 "Define which group of users this notification should be sent and shown to. "
 "If left empty, Notification won't ben sent."
 msgstr ""
 
-#: authentik/events/models.py:566
+#: authentik/events/models.py:580
 msgid "Notification Rule"
 msgstr ""
 
-#: authentik/events/models.py:567
+#: authentik/events/models.py:581
 msgid "Notification Rules"
 msgstr ""
 
-#: authentik/events/models.py:587
+#: authentik/events/models.py:601
 msgid "Webhook Mapping"
 msgstr ""
 
-#: authentik/events/models.py:588
+#: authentik/events/models.py:602
 msgid "Webhook Mappings"
 msgstr ""
 
-#: authentik/events/models.py:642
-msgid "Rerun task"
+#: authentik/events/models.py:663
+msgid "Run task"
 msgstr ""
 
-#: authentik/events/models.py:643
+#: authentik/events/models.py:664
 msgid "System Task"
 msgstr ""
 
-#: authentik/events/models.py:644
+#: authentik/events/models.py:665
 msgid "System Tasks"
 msgstr ""
 
-#: authentik/events/monitored_tasks.py:128
+#: authentik/events/system_tasks.py:126
 msgid "Task has not been run yet."
 msgstr ""
 
@@ -1639,18 +1639,22 @@ msgid "Can view system tasks"
 msgstr ""
 
 #: authentik/rbac/models.py:71
-msgid "Can run system tasks"
+msgid "Can view users in the user directory"
 msgstr ""
 
 #: authentik/rbac/models.py:72
-msgid "Can access admin interface"
+msgid "Can run system tasks"
 msgstr ""
 
 #: authentik/rbac/models.py:73
-msgid "Can view system settings"
+msgid "Can access admin interface"
 msgstr ""
 
 #: authentik/rbac/models.py:74
+msgid "Can view system settings"
+msgstr ""
+
+#: authentik/rbac/models.py:75
 msgid "Can edit system settings"
 msgstr ""
 
@@ -2759,54 +2763,62 @@ msgid ""
 "and be less than 63 characters."
 msgstr ""
 
-#: authentik/tenants/models.py:49
+#: authentik/tenants/models.py:53
 msgid "Configure how authentik should show avatars for users."
 msgstr ""
 
-#: authentik/tenants/models.py:53
+#: authentik/tenants/models.py:57
 msgid "Enable the ability for users to change their name."
 msgstr ""
 
-#: authentik/tenants/models.py:56
+#: authentik/tenants/models.py:60
 msgid "Enable the ability for users to change their email address."
 msgstr ""
 
-#: authentik/tenants/models.py:59
+#: authentik/tenants/models.py:63
 msgid "Enable the ability for users to change their username."
 msgstr ""
 
-#: authentik/tenants/models.py:65
+#: authentik/tenants/models.py:69
 msgid ""
 "Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,"
 "seconds=2)."
 msgstr ""
 
-#: authentik/tenants/models.py:69
+#: authentik/tenants/models.py:73
 msgid "The option configures the footer links on the flow executor pages."
 msgstr ""
 
-#: authentik/tenants/models.py:75
+#: authentik/tenants/models.py:79
 msgid ""
 "When enabled, all the events caused by a user will be deleted upon the "
 "user's deletion."
 msgstr ""
 
-#: authentik/tenants/models.py:81
+#: authentik/tenants/models.py:85
 msgid "Globally enable/disable impersonation."
 msgstr ""
 
-#: authentik/tenants/models.py:104
+#: authentik/tenants/models.py:88
+msgid "Fields to show in the user directory."
+msgstr ""
+
+#: authentik/tenants/models.py:93
+msgid "Attributes to show in the user directory."
+msgstr ""
+
+#: authentik/tenants/models.py:116
 msgid "Tenant"
 msgstr ""
 
-#: authentik/tenants/models.py:105
+#: authentik/tenants/models.py:117
 msgid "Tenants"
 msgstr ""
 
-#: authentik/tenants/models.py:125
+#: authentik/tenants/models.py:137
 msgid "Domain"
 msgstr ""
 
-#: authentik/tenants/models.py:126
+#: authentik/tenants/models.py:138
 msgid "Domains"
 msgstr ""

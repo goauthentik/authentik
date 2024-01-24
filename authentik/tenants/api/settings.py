@@ -22,6 +22,8 @@ class SettingsSerializer(ModelSerializer):
             "footer_links",
             "gdpr_compliance",
             "impersonation",
+            "user_directory_fields",
+            "user_directory_attributes",
         ]
 
 

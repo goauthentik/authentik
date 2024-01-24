@@ -175,6 +175,9 @@ export class UserInterface extends Interface {
             default:
                 userDisplay = this.me.user.username;
         }
+        const canAccessUserDirectory =
+            this.me.user.isSuperuser ||
+            this.me.user.systemPermissions.includes("can_view_user_directory");
         const canAccessAdmin =
             this.me.user.isSuperuser ||
             // TODO: somehow add `access_admin_interface` to the API schema
@@ -257,6 +260,25 @@ export class UserInterface extends Interface {
                                           </span>
                                       </button>
                                   </div> `
+                                : html``}
+                            ${canAccessUserDirectory
+                                ? html` <div class="pf-c-page__header-tools-item">
+                                      <a
+                                          class="pf-c-button pf-m-plain"
+                                          type="button"
+                                          href="#/directory"
+                                      >
+                                          <pf-tooltip
+                                              position="top"
+                                              content=${msg("User directory")}
+                                          >
+                                              <i
+                                                  class="pf-icon pf-icon-project"
+                                                  aria-hidden="true"
+                                              ></i>
+                                          </pf-tooltip>
+                                      </a>
+                                  </div>`
                                 : html``}
                             ${this.uiConfig.enabledFeatures.settings
                                 ? html` <div class="pf-c-page__header-tools-item">
