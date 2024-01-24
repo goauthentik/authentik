@@ -1,13 +1,30 @@
 """AuthenticatorMobileStage API Views"""
+from authentik_cloud_gateway_client.meta_pb2_grpc import MetaStub
+from grpc import RpcError
+from rest_framework.exceptions import ValidationError
 from rest_framework.viewsets import ModelViewSet
+from structlog.stdlib import get_logger
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
+from authentik.stages.authenticator_mobile.cloud_gateway import get_client
 from authentik.stages.authenticator_mobile.models import AuthenticatorMobileStage
+
+LOGGER = get_logger()
 
 
 class AuthenticatorMobileStageSerializer(StageSerializer):
     """AuthenticatorMobileStage Serializer"""
+
+    def validate_cgw_endpoint(self, endpoint: str) -> str:
+        """Validate connectivity and authentication to cgw"""
+        client: MetaStub = get_client(endpoint, MetaStub)
+        try:
+            client.Check()
+        except RpcError as exc:
+            LOGGER.warning("failed to connect to cgw", error=exc)
+            raise ValidationError("Failed to connect to cloud gateway")
+        return endpoint
 
     class Meta:
         model = AuthenticatorMobileStage

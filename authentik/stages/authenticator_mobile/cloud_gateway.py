@@ -67,11 +67,11 @@ def get_enterprise_token() -> str:
 
 
 @lru_cache()
-def get_client(addr: str):
+def get_client(addr: str, client_type=AuthenticationPushStub):
     """get a cached client to a cloud-gateway"""
     channel = secure_channel(addr, ssl_channel_credentials())
     if settings.DEBUG:
         channel = insecure_channel(addr)
     channel = intercept_channel(channel, AuthInterceptor(get_enterprise_token()))
-    client = AuthenticationPushStub(channel)
+    client = client_type(channel)
     return client
