@@ -8,6 +8,10 @@ export const ROUTES: Route[] = [
     new Route(new RegExp("^/$")).redirect("/library"),
     new Route(new RegExp("^#.*")).redirect("/library"),
     new Route(new RegExp("^/library$"), async () => html`<ak-library></ak-library>`),
+    new Route(new RegExp("^/directory"), async () => {
+        await import("@goauthentik/user/user-directory/UserDirectoryPage");
+        return html`<ak-user-directory></ak-user-directory>`;
+    }),
     new Route(new RegExp("^/settings$"), async () => {
         await import("@goauthentik/user/user-settings/UserSettingsPage");
         return html`<ak-user-settings></ak-user-settings>`;

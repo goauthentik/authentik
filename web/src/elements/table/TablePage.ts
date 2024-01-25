@@ -70,14 +70,17 @@ export abstract class TablePage<T> extends Table<T> {
         </button>`;
     }
 
-    render(): TemplateResult {
+    renderPageHeader(): TemplateResult {
         return html`<ak-page-header
-                icon=${this.pageIcon()}
-                header=${this.pageTitle()}
-                description=${ifDefined(this.pageDescription())}
-            >
-            </ak-page-header>
-            ${this.renderSectionBefore()}
+            icon=${this.pageIcon()}
+            header=${this.pageTitle()}
+            description=${ifDefined(this.pageDescription())}
+        >
+        </ak-page-header>`;
+    }
+
+    render(): TemplateResult {
+        return html`${this.renderPageHeader()} ${this.renderSectionBefore()}
             <section class="pf-c-page__main-section pf-m-no-padding-mobile">
                 <div class="pf-c-sidebar pf-m-gutter">
                     <div class="pf-c-sidebar__main">

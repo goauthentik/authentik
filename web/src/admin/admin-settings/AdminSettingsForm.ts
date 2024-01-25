@@ -181,6 +181,42 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 help=${msg("Globally enable/disable impersonation.")}
             >
             </ak-switch-input>
+            <ak-form-element-horizontal
+                label=${msg("User directory fields")}
+                name="userDirectoryFields"
+            >
+                <ak-codemirror
+                    mode=${CodeMirrorMode.YAML}
+                    .value="${first(this._settings?.userDirectoryFields, [
+                        "name",
+                        "username",
+                        "email",
+                        "avatars",
+                        "groups",
+                    ])}"
+                ></ak-codemirror>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "This option configures what user fields are shown in the user directory. It must be a valid JSON list and can be used as follows, with all possible values included:",
+                    )}
+                    <code>["name", "username", "email", "avatars", "groups"]</code>
+                </p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${msg("User directory attributes")}
+                name="userDirectoryAttributes"
+            >
+                <ak-codemirror
+                    mode=${CodeMirrorMode.YAML}
+                    .value="${first(this._settings?.userDirectoryAttributes, [])}"
+                ></ak-codemirror>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "This option configures what user attributes are shown in the user directory. It must be a valid JSON list and can be used as follows:",
+                    )}
+                    <code>[{"attribute": "phone_number", "display_name": "Phone"}]</code>
+                </p>
+            </ak-form-element-horizontal>
         `;
     }
 }
