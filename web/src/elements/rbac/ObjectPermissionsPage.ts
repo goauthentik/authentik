@@ -1,5 +1,5 @@
-import "@goauthentik/app/admin/roles/RolePermissionGlobalTable";
-import "@goauthentik/app/admin/roles/RolePermissionObjectTable";
+import "@goauthentik/app/admin/roles/RoleAssignedGlobalPermissionsTable";
+import "@goauthentik/app/admin/roles/RoleAssignedObjectPermissionTable";
 import "@goauthentik/app/admin/users/UserAssignedGlobalPermissionsTable";
 import "@goauthentik/app/admin/users/UserAssignedObjectPermissionsTable";
 import { AKElement } from "@goauthentik/app/elements/Base";
@@ -94,10 +94,10 @@ export class ObjectPermissionPage extends AKElement {
                                           ${msg("Assigned global permissions")}
                                       </div>
                                       <div class="pf-c-card__body">
-                                          <ak-role-permissions-global-table
-                                              userId=${this.objectPk as string}
+                                          <ak-role-assigned-global-permissions-table
+                                              roleUuid=${this.objectPk as string}
                                           >
-                                          </ak-role-permissions-global-table>
+                                          </ak-role-assigned-global-permissions-table>
                                       </div>
                                   </div>
                               </section>
@@ -112,10 +112,10 @@ export class ObjectPermissionPage extends AKElement {
                                           ${msg("Assigned object permissions")}
                                       </div>
                                       <div class="pf-c-card__body">
-                                          <ak-role-permissions-object-table
-                                              userId=${this.objectPk as string}
+                                          <ak-role-assigned-object-permissions-table
+                                              roleUuid=${this.objectPk as string}
                                           >
-                                          </ak-role-permissions-object-table>
+                                          </ak-role-assigned-object-permissions-table>
                                       </div>
                                   </div>
                               </section>

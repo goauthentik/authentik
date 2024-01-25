@@ -7769,9 +7769,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="se5c795faf2c07514">
   <source>Create Recovery Link</source>
 </trans-unit>
-<trans-unit id="sa3a3e09b88ed9791">
-  <source>Assigned permissions</source>
-</trans-unit>
 <trans-unit id="s9cc631505c17b028">
   <source>Assigned global permissions</source>
 </trans-unit>

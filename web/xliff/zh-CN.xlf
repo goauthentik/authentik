@@ -3169,9 +3169,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s28b3de1561da72b3">
   <source>MFA Authenticators</source>
 </trans-unit>
-<trans-unit id="sa3a3e09b88ed9791">
-  <source>Assigned permissions</source>
-</trans-unit>
 <trans-unit id="s9cc631505c17b028">
   <source>Assigned global permissions</source>
 </trans-unit>

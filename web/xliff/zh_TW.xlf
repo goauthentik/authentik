@@ -7602,10 +7602,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>User doesn't have view permission so description cannot be retrieved.</source>
   <target>使用者沒有讀取權限，所以無法取得描述。</target>
 </trans-unit>
-<trans-unit id="sa3a3e09b88ed9791">
-  <source>Assigned permissions</source>
-  <target>已分配的權限</target>
-</trans-unit>
 <trans-unit id="s9cc631505c17b028">
   <source>Assigned global permissions</source>
   <target>已分配的全域權限</target>

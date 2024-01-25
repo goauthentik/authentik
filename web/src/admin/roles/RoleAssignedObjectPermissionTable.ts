@@ -10,8 +10,8 @@ import { customElement, property } from "lit/decorators.js";
 
 import { ExtraRoleObjectPermission, ModelEnum, RbacApi } from "@goauthentik/api";
 
-@customElement("ak-role-permissions-object-table")
-export class RolePermissionObjectTable extends Table<ExtraRoleObjectPermission> {
+@customElement("ak-role-assigned-object-permissions-table")
+export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPermission> {
     @property()
     roleUuid?: string;
 

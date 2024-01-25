@@ -7666,10 +7666,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>User doesn't have view permission so description cannot be retrieved.</source>
   <target>L'utilisateur n'a pas les permissions de lecture, la description ne peut donc pas être récupérée.</target>
 </trans-unit>
-<trans-unit id="sa3a3e09b88ed9791">
-  <source>Assigned permissions</source>
-  <target>Permissions assignées</target>
-</trans-unit>
 <trans-unit id="s9cc631505c17b028">
   <source>Assigned global permissions</source>
   <target>Permissions globales assignées</target>

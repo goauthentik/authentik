@@ -7629,10 +7629,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>User doesn't have view permission so description cannot be retrieved.</source>
   <target>사용자에게 보기 권한이 없으므로 설명을 검색할 수 없습니다.</target>
 </trans-unit>
-<trans-unit id="sa3a3e09b88ed9791">
-  <source>Assigned permissions</source>
-  <target>할당된 권한</target>
-</trans-unit>
 <trans-unit id="s9cc631505c17b028">
   <source>Assigned global permissions</source>
   <target>전역 권한 할당</target>

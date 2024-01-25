@@ -6109,9 +6109,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s1455753daa00f1bc">
   <source>User doesn't have view permission so description cannot be retrieved.</source>
 </trans-unit>
-<trans-unit id="sa3a3e09b88ed9791">
-  <source>Assigned permissions</source>
-</trans-unit>
 <trans-unit id="s9cc631505c17b028">
   <source>Assigned global permissions</source>
 </trans-unit>
