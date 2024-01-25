@@ -148,7 +148,7 @@ export class RoleViewPage extends AKElement {
                     data-tab-title="${msg("Permissions")}"
                     model=${RbacPermissionsAssignedByUsersListModelEnum.RbacRole}
                     objectPk=${this._role.pk}
-                    .showBanner=${false}
+                    .embedded=${true}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>`;
     }

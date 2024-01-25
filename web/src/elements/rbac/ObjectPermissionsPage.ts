@@ -24,14 +24,14 @@ export class ObjectPermissionPage extends AKElement {
     objectPk?: string | number;
 
     @property({ type: Boolean })
-    showBanner = true;
+    embedded = false;
 
     static get styles(): CSSResult[] {
         return [PFBase, PFGrid, PFPage, PFCard, PFBanner];
     }
 
     render(): TemplateResult {
-        return html`${this.showBanner
+        return html`${!this.embedded
                 ? html`<div class="pf-c-banner pf-m-info">
                       ${msg("RBAC is in preview.")}
                       <a href="mailto:hello@goauthentik.io">${msg("Send us feedback!")}</a>
