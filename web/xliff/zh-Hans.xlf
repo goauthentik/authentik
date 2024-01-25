@@ -3928,7 +3928,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s14401ff4a0cba208">
         <source>Failed to update <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
         <target>更新
-        <x id="0" equiv-text="${this.objectLabel}"/>失败：
+        <x id="0" equiv-text="${this.objectLabel}"/> 失败：
         <x id="1" equiv-text="${e.toString()}"/></target>
         
       </trans-unit>
