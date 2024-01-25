@@ -8360,6 +8360,15 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="sb2275335377069aa">
   <source>This feature requires an enterprise license.</source>
 </trans-unit>
+<trans-unit id="s6d3f81dc4bcacbda">
+  <source>Last used</source>
+</trans-unit>
+<trans-unit id="s96b2703420bfbd0c">
+  <source>OAuth Access Tokens</source>
+</trans-unit>
+<trans-unit id="sd99e668c54f78f6e">
+  <source>Credentials / Tokens</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
