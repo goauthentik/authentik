@@ -9,13 +9,20 @@ import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
+
+
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
+
+
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
+
+
 import { EventsApi, SystemTask, SystemTaskStatusEnum } from "@goauthentik/api";
+
 
 @customElement("ak-system-task-list")
 export class SystemTaskListPage extends TablePage<SystemTask> {
@@ -30,6 +37,10 @@ export class SystemTaskListPage extends TablePage<SystemTask> {
     }
 
     expandable = true;
+
+    searchEnabled(): boolean {
+        return false;
+    }
 
     @property()
     order = "name";
