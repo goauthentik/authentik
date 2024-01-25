@@ -44,14 +44,10 @@ export class AdminOverviewPage extends AKElement {
             PFList,
             PFDivider,
             css`
-                .row-divider {
-                    margin-top: -4px;
-                    margin-bottom: -4px;
+                .pf-l-grid__item {
+                    height: 100%;
                 }
-                .graph-container {
-                    height: 20em;
-                }
-                .big-graph-container {
+                .pf-l-grid__item.big-graph-container {
                     height: 35em;
                 }
                 .card-container {
@@ -84,9 +80,7 @@ export class AdminOverviewPage extends AKElement {
                 <div class="pf-l-grid pf-m-gutter">
                     <!-- row 1 -->
                     <div class="pf-l-grid__item pf-m-6-col pf-l-grid pf-m-gutter">
-                        <div
-                            class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl graph-container"
-                        >
+                        <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl">
                             <ak-aggregate-card
                                 icon="fa fa-share"
                                 header=${msg("Quick actions")}
@@ -138,9 +132,7 @@ export class AdminOverviewPage extends AKElement {
                                 </ul>
                             </ak-aggregate-card>
                         </div>
-                        <div
-                            class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl graph-container"
-                        >
+                        <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl">
                             <ak-aggregate-card
                                 icon="pf-icon pf-icon-zone"
                                 header=${msg("Outpost status")}
@@ -150,13 +142,13 @@ export class AdminOverviewPage extends AKElement {
                             </ak-aggregate-card>
                         </div>
                         <div
-                            class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-4-col-on-2xl graph-container"
+                            class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-4-col-on-2xl"
                         >
                             <ak-aggregate-card icon="fa fa-sync-alt" header=${msg("Sync status")}>
                                 <ak-admin-status-chart-sync></ak-admin-status-chart-sync>
                             </ak-aggregate-card>
                         </div>
-                        <div class="pf-l-grid__item pf-m-12-col row-divider">
+                        <div class="pf-l-grid__item pf-m-12-col">
                             <hr class="pf-c-divider" />
                         </div>
                         <div
@@ -178,7 +170,7 @@ export class AdminOverviewPage extends AKElement {
                     <div class="pf-l-grid__item pf-m-6-col">
                         <ak-recent-events pageSize="6"></ak-recent-events>
                     </div>
-                    <div class="pf-l-grid__item pf-m-12-col row-divider">
+                    <div class="pf-l-grid__item pf-m-12-col">
                         <hr class="pf-c-divider" />
                     </div>
                     <!-- row 3 -->

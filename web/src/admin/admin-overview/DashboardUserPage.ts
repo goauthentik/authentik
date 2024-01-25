@@ -25,13 +25,6 @@ export class DashboardUserPage extends AKElement {
             PFList,
             PFDivider,
             css`
-                .row-divider {
-                    margin-top: -4px;
-                    margin-bottom: -4px;
-                }
-                .graph-container {
-                    height: 20em;
-                }
                 .big-graph-container {
                     height: 35em;
                 }
@@ -61,7 +54,7 @@ export class DashboardUserPage extends AKElement {
                             </ak-charts-admin-model-per-day>
                         </ak-aggregate-card>
                     </div>
-                    <div class="pf-l-grid__item pf-m-12-col row-divider">
+                    <div class="pf-l-grid__item pf-m-12-col">
                         <hr class="pf-c-divider" />
                     </div>
                     <!-- row 2 -->
