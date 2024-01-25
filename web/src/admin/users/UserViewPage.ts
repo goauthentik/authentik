@@ -8,6 +8,8 @@ import {
     requestRecoveryLink,
 } from "@goauthentik/app/admin/users/UserListPage";
 import { me } from "@goauthentik/app/common/users";
+import "@goauthentik/app/elements/oauth/UserAccessTokenList";
+import "@goauthentik/app/elements/oauth/UserRefreshTokenList";
 import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
@@ -29,8 +31,6 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/app/elements/oauth/UserRefreshTokenList";
-import "@goauthentik/app/elements/oauth/UserAccessTokenList";
 import "@goauthentik/elements/user/SessionList";
 import "@goauthentik/elements/user/UserConsentList";
 
@@ -396,10 +396,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                     </div>
                 </div>
             </section>
-            <section
-                slot="page-credentials"
-                data-tab-title="${msg("Credentials / Tokens")}"
-            >
+            <section slot="page-credentials" data-tab-title="${msg("Credentials / Tokens")}">
                 ${this.renderTabCredentialsToken(this.user)}
             </section>
             <ak-rbac-object-permission-page

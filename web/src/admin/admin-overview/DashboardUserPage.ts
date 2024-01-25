@@ -8,6 +8,7 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
@@ -22,6 +23,7 @@ export class DashboardUserPage extends AKElement {
             PFPage,
             PFContent,
             PFList,
+            PFDivider,
             css`
                 .row-divider {
                     margin-top: -4px;
@@ -60,7 +62,7 @@ export class DashboardUserPage extends AKElement {
                         </ak-aggregate-card>
                     </div>
                     <div class="pf-l-grid__item pf-m-12-col row-divider">
-                        <hr />
+                        <hr class="pf-c-divider" />
                     </div>
                     <!-- row 2 -->
                     <div

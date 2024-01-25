@@ -1,3 +1,4 @@
+import { getRelativeTime } from "@goauthentik/app/common/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -10,7 +11,6 @@ import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { AuthenticatedSession, CoreApi } from "@goauthentik/api";
-import { getRelativeTime } from "@goauthentik/app/common/utils";
 
 @customElement("ak-user-session-list")
 export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
@@ -72,12 +72,14 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
                     ${item.current ? html`${msg("(Current session)")}&nbsp;` : html``}
                     ${item.lastIp}
                     ${item.geoIp?.country
-                ? html`&nbsp;${getUnicodeFlagIcon(item.geoIp.country)} `
-                : html``}
+                        ? html`&nbsp;${getUnicodeFlagIcon(item.geoIp.country)} `
+                        : html``}
                 </div>
                 <small>${item.userAgent.userAgent?.family}, ${item.userAgent.os?.family}</small>`,
-            html`<div>${getRelativeTime(item.lastUsed)}</div><small>${item.lastUsed?.toLocaleString()}</small>`,
-            html`<div>${getRelativeTime(item.expires || new Date())}</div><small>${item.expires?.toLocaleString()}</small>`,
+            html`<div>${getRelativeTime(item.lastUsed)}</div>
+                <small>${item.lastUsed?.toLocaleString()}</small>`,
+            html`<div>${getRelativeTime(item.expires || new Date())}</div>
+                <small>${item.expires?.toLocaleString()}</small>`,
         ];
     }
 }
