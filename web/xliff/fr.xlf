@@ -538,12 +538,6 @@
         <target>Aucun worker connecté. Les tâches de fond ne tourneront pas.</target>
         
       </trans-unit>
-      <trans-unit id="s2ed8eb02525a920a">
-        <source><x id="0" equiv-text="${ago}"/> hour(s) ago</source>
-        <target>
-Il y a <x id="0" equiv-text="${ago}"/> heure(s)</target>
-        
-      </trans-unit>
       <trans-unit id="s1f1c857c0c4250e4">
         <source><x id="0" equiv-text="${ago}"/> day(s) ago</source>
         <target>

@@ -433,11 +433,6 @@
         <source>No workers connected. Background tasks will not run.</source>
         <target>No workers connected. Background tasks will not run.</target>
       </trans-unit>
-      <trans-unit id="s2ed8eb02525a920a">
-        <source><x id="0" equiv-text="${ago}"/> hour(s) ago</source>
-        <target>
-        <x id="0" equiv-text="${ago}"/>hour(s) ago</target>
-      </trans-unit>
       <trans-unit id="s1f1c857c0c4250e4">
         <source><x id="0" equiv-text="${ago}"/> day(s) ago</source>
         <target>

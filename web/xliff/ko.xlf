@@ -537,12 +537,6 @@
         <target>연결된 워커가 없습니다. 백그라운드 작업이 실행되지 않습니다.</target>
 
       </trans-unit>
-      <trans-unit id="s2ed8eb02525a920a">
-        <source><x id="0" equiv-text="${ago}"/> hour(s) ago</source>
-        <target>
-        <x id="0" equiv-text="${ago}"/>시간 전</target>
-
-      </trans-unit>
       <trans-unit id="s1f1c857c0c4250e4">
         <source><x id="0" equiv-text="${ago}"/> day(s) ago</source>
         <target>

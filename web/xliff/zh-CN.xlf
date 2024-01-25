@@ -344,9 +344,6 @@
 <trans-unit id="s341ab68d4130de20">
   <source>No workers connected. Background tasks will not run.</source>
 </trans-unit>
-<trans-unit id="s2ed8eb02525a920a">
-  <source><x id="0" equiv-text="${ago}"/> hour(s) ago</source>
-</trans-unit>
 <trans-unit id="s98327528f00365a7">
   <source>Failed to fetch data.</source>
 </trans-unit>
