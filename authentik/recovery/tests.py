@@ -18,7 +18,7 @@ class TestRecovery(TestCase):
     def test_create_key(self):
         """Test creation of a new key"""
         out = StringIO()
-        self.assertEqual(len(Token.objects.all()), 0)
+        self.assertEqual(len(Token.objects.filter(intent=TokenIntents.INTENT_RECOVERY)), 0)
         call_command(
             "create_recovery_key",
             "1",
@@ -28,12 +28,12 @@ class TestRecovery(TestCase):
         )
         token = Token.objects.get(intent=TokenIntents.INTENT_RECOVERY, user=self.user)
         self.assertIn(token.key, out.getvalue())
-        self.assertEqual(len(Token.objects.all()), 1)
+        self.assertEqual(len(Token.objects.filter(intent=TokenIntents.INTENT_RECOVERY)), 1)
 
     def test_create_key_invalid(self):
         """Test creation of a new key (invalid)"""
         out = StringIO()
-        self.assertEqual(len(Token.objects.all()), 0)
+        self.assertEqual(len(Token.objects.filter(intent=TokenIntents.INTENT_RECOVERY)), 0)
         call_command("create_recovery_key", "1", "foo", schema=get_public_schema_name(), stderr=out)
         self.assertIn("not found", out.getvalue())
 
