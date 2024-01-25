@@ -10,7 +10,7 @@ from typing import Optional
 from uuid import uuid4
 
 from django.apps import apps
-from django.db import models
+from django.db import connection, models
 from django.db.models import Count, ExpressionWrapper, F
 from django.db.models.fields import DurationField
 from django.db.models.functions import Extract
@@ -642,12 +642,16 @@ class SystemTask(SerializerModel, ExpiringModel):
         duration = max(self.finish_timestamp - self.start_timestamp, 0)
         # TODO: Deprecated metric - remove in 2024.2 or later
         GAUGE_TASKS.labels(
+            tenant=connection.schema_name,
             task_name=self.name,
             task_uid=self.uid or "",
             status=self.status.lower(),
         ).set(duration)
-        SYSTEM_TASK_TIME.observe(duration)
+        SYSTEM_TASK_TIME.labels(
+            tenant=connection.schema_name,
+        ).observe(duration)
         SYSTEM_TASK_STATUS.labels(
+            tenant=connection.schema_name,
             task_name=self.name,
             task_uid=self.uid or "",
             status=self.status.lower(),
