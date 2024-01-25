@@ -10,6 +10,7 @@ import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { AuthenticatedSession, CoreApi } from "@goauthentik/api";
+import { getRelativeTime } from "@goauthentik/app/common/utils";
 
 @customElement("ak-user-session-list")
 export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
@@ -32,6 +33,7 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
     columns(): TableColumn[] {
         return [
             new TableColumn(msg("Last IP"), "last_ip"),
+            new TableColumn(msg("Last used"), "last_used"),
             new TableColumn(msg("Expires"), "expires"),
         ];
     }
@@ -74,7 +76,8 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
                 : html``}
                 </div>
                 <small>${item.userAgent.userAgent?.family}, ${item.userAgent.os?.family}</small>`,
-            html`${item.expires?.toLocaleString()}`,
+            html`<div>${getRelativeTime(item.lastUsed)}</div><small>${item.lastUsed?.toLocaleString()}</small>`,
+            html`<div>${getRelativeTime(item.expires || new Date())}</div><small>${item.expires?.toLocaleString()}</small>`,
         ];
     }
 }
