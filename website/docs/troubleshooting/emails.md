@@ -17,7 +17,7 @@ If you omit the `-S` parameter, the email will be sent using the global settings
 To run this command with docker-compose, use
 
 ```
-docker-compose exec worker ak test_email [...]
+docker compose exec worker ak test_email [...]
 ```
 
 To run this command with Kubernetes, use
