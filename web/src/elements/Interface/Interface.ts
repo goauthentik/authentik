@@ -1,8 +1,10 @@
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { brand, config } from "@goauthentik/common/api/config";
 import { UIConfig, uiConfig } from "@goauthentik/common/ui/config";
 import {
     authentikBrandContext,
     authentikConfigContext,
+    authentikEnterpriseContext,
 } from "@goauthentik/elements/AuthentikContexts";
 import type { AdoptedStyleSheetsElement } from "@goauthentik/elements/types";
 import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
@@ -12,7 +14,8 @@ import { state } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { Config, CurrentBrand, UiThemeEnum } from "@goauthentik/api";
+import type { Config, CurrentBrand, LicenseSummary } from "@goauthentik/api";
+import { EnterpriseApi, UiThemeEnum } from "@goauthentik/api";
 
 import { AKElement } from "../Base";
 
@@ -63,11 +66,33 @@ export class Interface extends AKElement implements AkInterface {
         return this._brand;
     }
 
+    _licenseSummaryContext = new ContextProvider(this, {
+        context: authentikEnterpriseContext,
+        initialValue: undefined,
+    });
+
+    _licenseSummary?: LicenseSummary;
+
+    @state()
+    set licenseSummary(c: LicenseSummary) {
+        this._licenseSummary = c;
+        this._licenseSummaryContext.setValue(c);
+        this.requestUpdate();
+    }
+
+    get licenseSummary(): LicenseSummary | undefined {
+        return this._licenseSummary;
+    }
+
     constructor() {
         super();
         document.adoptedStyleSheets = [...document.adoptedStyleSheets, ensureCSSStyleSheet(PFBase)];
         brand().then((brand) => (this.brand = brand));
         config().then((config) => (this.config = config));
+        new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseSummaryRetrieve().then((enterprise) => {
+            this.licenseSummary = enterprise;
+        });
+
         this.dataset.akInterfaceRoot = "true";
     }
 
