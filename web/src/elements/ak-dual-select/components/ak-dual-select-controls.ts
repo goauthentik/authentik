@@ -41,9 +41,9 @@ const styles = [
  * @element ak-dual-select-controls
  *
  * The "control box" for a dual-list multi-select. It's controlled by the parent orchestrator as to
- * whether or not any of its controls are enabled. It sends a variet of messages to the parent
+ * whether or not any of its controls are enabled. It sends a variety of messages to the parent
  * orchestrator which will then reconcile the "available" and "selected" panes at need.
-
+ *
  */
 
 @customElement("ak-dual-select-controls")
@@ -58,14 +58,14 @@ export class AkDualSelectControls extends CustomEmitterElement(AKElement) {
     addActive = false;
 
     /* Set to true if any elements can be removed from the selected list (essentially,
-     * If the selected list is not empty
+     * if the selected list is not empty)
      */
     @property({ attribute: "remove-active", type: Boolean })
     removeActive = false;
 
     /* Set to true if *all* the currently visible elements can be moved
      * into the selected list (essentially, if any visible elements are
-     * not currently selected
+     * not currently selected)
      */
     @property({ attribute: "add-all-active", type: Boolean })
     addAllActive = false;

@@ -29,7 +29,7 @@ const hostAttributes = [
  * a list of the selected options, and maintains an internal list of objects selected to move.
  *
  * @fires ak-dual-select-selected-move-changed - When the list of "to move" entries changed.
- * Includes the current * `toMove` content.
+ * Includes the current `toMove` content.
  *
  * @fires ak-dual-select-remove-one - Double-click with the element clicked on.
  *
