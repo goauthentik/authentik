@@ -15,6 +15,7 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+import { map } from "lit/directives/map.js";
 
 import {
     Outpost,
@@ -22,7 +23,7 @@ import {
     OutpostTypeEnum,
     OutpostsApi,
     OutpostsServiceConnectionsAllListRequest,
-    Pagination,
+    PaginatedResponse,
     ProvidersApi,
     ServiceConnection,
 } from "@goauthentik/api";
@@ -32,11 +33,6 @@ interface ProviderBase {
     name: string;
     assignedBackchannelApplicationName?: string;
     assignedApplicationName?: string;
-}
-
-interface ProviderData {
-    pagination: Pagination;
-    results: ProviderBase[];
 }
 
 const api = () => new ProvidersApi(DEFAULT_CONFIG);
@@ -60,7 +56,7 @@ const dualSelectPairMaker = (item: ProviderBase): DualSelectPair => {
     ];
 };
 
-const provisionMaker = (results: ProviderData) => ({
+const provisionMaker = (results: PaginatedResponse<ProviderBase>) => ({
     pagination: results.pagination,
     options: results.results.map(dualSelectPairMaker),
 });
@@ -139,6 +135,13 @@ export class OutpostForm extends ModelForm<Outpost, string> {
     }
 
     renderForm(): TemplateResult {
+        const typeOptions = [
+            [OutpostTypeEnum.Proxy, msg("Proxy")],
+            [OutpostTypeEnum.Ldap, msg("LDAP")],
+            [OutpostTypeEnum.Radius, msg("Radius")],
+            [OutpostTypeEnum.Rac, msg("RAC")],
+        ];
+
         return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
@@ -156,30 +159,16 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                         this.load();
                     }}
                 >
-                    <option
-                        value=${OutpostTypeEnum.Proxy}
-                        ?selected=${this.instance?.type === OutpostTypeEnum.Proxy}
-                    >
-                        ${msg("Proxy")}
-                    </option>
-                    <option
-                        value=${OutpostTypeEnum.Ldap}
-                        ?selected=${this.instance?.type === OutpostTypeEnum.Ldap}
-                    >
-                        ${msg("LDAP")}
-                    </option>
-                    <option
-                        value=${OutpostTypeEnum.Radius}
-                        ?selected=${this.instance?.type === OutpostTypeEnum.Radius}
-                    >
-                        ${msg("Radius")}
-                    </option>
-                    <option
-                        value=${OutpostTypeEnum.Rac}
-                        ?selected=${this.instance?.type === OutpostTypeEnum.Rac}
-                    >
-                        ${msg("RAC")}
-                    </option>
+                    ${map(
+                        typeOptions,
+                        ([instanceType, label]) =>
+                            html` <option
+                                value=${instanceType}
+                                ?selected=${this.instance?.type === instanceType}
+                            >
+                                ${label}
+                            </option>`,
+                    )}
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Integration")} name="serviceConnection">
