@@ -9,6 +9,7 @@ import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
@@ -23,7 +24,6 @@ import {
     OutpostTypeEnum,
     OutpostsApi,
     OutpostsServiceConnectionsAllListRequest,
-    PaginatedResponse,
     ProvidersApi,
     ServiceConnection,
 } from "@goauthentik/api";
