@@ -36,7 +36,7 @@ import "@goauthentik/elements/user/SessionList";
 import "@goauthentik/elements/user/UserConsentList";
 
 import { msg, str } from "@lit/localize";
-import { css, html, nothing } from "lit";
+import { TemplateResult, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -253,6 +253,59 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
         </div> `;
     }
 
+    renderTabCredentials(user: User): TemplateResult {
+        return html`
+            <ak-tabs pageIdentifier="userCredentials" ?vertical=${true}>
+                <section
+                    slot="page-sessions"
+                    data-tab-title="${msg("Sessions")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-user-session-list targetUser=${user.username}>
+                            </ak-user-session-list>
+                        </div>
+                    </div>
+                </section>
+                <section
+                    slot="page-consent"
+                    data-tab-title="${msg("Explicit Consent")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-user-consent-list userId=${user.pk}> </ak-user-consent-list>
+                        </div>
+                    </div>
+                </section>
+                <section
+                    slot="page-oauth-refresh"
+                    data-tab-title="${msg("OAuth Refresh Tokens")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-user-oauth-refresh-list userId=${user.pk}>
+                            </ak-user-oauth-refresh-list>
+                        </div>
+                    </div>
+                </section>
+                <section
+                    slot="page-mfa-authenticators"
+                    data-tab-title="${msg("MFA Authenticators")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-user-device-table userId=${user.pk}> </ak-user-device-table>
+                        </div>
+                    </div>
+                </section>
+            </ak-tabs>
+        `;
+    }
+
     renderBody() {
         if (!this.user) {
             return nothing;
@@ -311,18 +364,6 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                 </div>
             </section>
             <section
-                slot="page-sessions"
-                data-tab-title="${msg("Sessions")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-user-session-list targetUser=${this.user.username}>
-                        </ak-user-session-list>
-                    </div>
-                </div>
-            </section>
-            <section
                 slot="page-groups"
                 data-tab-title="${msg("Groups")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
@@ -345,38 +386,11 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                 </div>
             </section>
             <section
-                slot="page-consent"
-                data-tab-title="${msg("Explicit Consent")}"
+                slot="page-credentials"
+                data-tab-title="${msg("Credentials")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-user-consent-list userId=${this.user.pk}> </ak-user-consent-list>
-                    </div>
-                </div>
-            </section>
-            <section
-                slot="page-oauth-refresh"
-                data-tab-title="${msg("OAuth Refresh Tokens")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-user-oauth-refresh-list userId=${this.user.pk}>
-                        </ak-user-oauth-refresh-list>
-                    </div>
-                </div>
-            </section>
-            <section
-                slot="page-mfa-authenticators"
-                data-tab-title="${msg("MFA Authenticators")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-user-device-table userId=${this.user.pk}> </ak-user-device-table>
-                    </div>
-                </div>
+                ${this.renderTabCredentials(this.user)}
             </section>
             <ak-rbac-object-permission-page
                 slot="page-permissions"
