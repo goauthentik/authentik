@@ -25,6 +25,7 @@ from authentik.core.models import (
     USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME,
     Token,
     TokenIntents,
+    User,
     default_token_duration,
     token_expires_from_timedelta,
 )
@@ -59,20 +60,18 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
 
         if attrs.get("intent") == TokenIntents.INTENT_APP_PASSWORD:
             # user IS in attrs
-            max_token_lifetime = attrs.get("user").attributes.get(  # type: ignore
-                USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME, None
+            user: User = attrs.get("user")
+            max_token_lifetime = user.group_attributes(request).get(
+                USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME,
             )
+            max_token_lifetime_dt = default_token_duration()
             if max_token_lifetime is not None:
                 try:
                     max_token_lifetime_dt = timedelta_from_string(max_token_lifetime)
                 except ValueError:
                     max_token_lifetime_dt = default_token_duration()
-            else:
-                max_token_lifetime_dt = default_token_duration()
 
-            if "expires" in attrs and attrs.get(  # type: ignore
-                "expires"
-            ) > token_expires_from_timedelta(  # type: ignore
+            if "expires" in attrs and attrs.get("expires") > token_expires_from_timedelta(
                 max_token_lifetime_dt
             ):
                 raise ValidationError(

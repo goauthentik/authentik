@@ -43,7 +43,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
 
     renderForm(): TemplateResult {
         const now = new Date();
-        const expiring_date = this.instance?.expires
+        const expiringDate = this.instance?.expires
             ? new Date(
                   this.instance.expires.getTime() -
                       this.instance.expires.getTimezoneOffset() * 60000,
@@ -73,7 +73,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
                 ? html`<ak-form-element-horizontal label=${msg("Expiring")} name="expires">
                       <input
                           type="datetime-local"
-                          value="${expiring_date.toISOString().slice(0, -8)}"
+                          value="${expiringDate.toISOString().slice(0, -8)}"
                           min="${now.toISOString().slice(0, -8)}"
                           class="pf-c-form-control"
                       />
