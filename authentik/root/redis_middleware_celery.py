@@ -1,10 +1,10 @@
 """Make Celery use custom Redis backend and message queue"""
 from urllib.parse import urlparse
 
-from celery import Celery
 from celery.app.backends import by_url as backends_by_url
 from celery.backends.redis import RedisBackend, ResultConsumer
 from structlog.stdlib import get_logger
+from tenant_schemas_celery.app import CeleryApp as TenantAwareCeleryApp
 
 from authentik.lib.utils.parser import (
     get_client,
@@ -132,7 +132,7 @@ class CustomBackend(RedisBackend):
             super()._set(key, value)
 
 
-class CustomCelery(Celery):
+class CustomCelery(TenantAwareCeleryApp):
     """Inject custom Redis URL parser into Celery
 
     While by default redis will be used as the backend,

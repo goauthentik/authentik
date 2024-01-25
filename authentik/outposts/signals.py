@@ -5,12 +5,12 @@ from django.db.models.signals import m2m_changed, post_save, pre_delete, pre_sav
 from django.dispatch import receiver
 from structlog.stdlib import get_logger
 
+from authentik.brands.models import Brand
 from authentik.core.models import Provider
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.utils.reflection import class_to_path
 from authentik.outposts.models import Outpost, OutpostServiceConnection
 from authentik.outposts.tasks import CACHE_KEY_OUTPOST_DOWN, outpost_controller, outpost_post_save
-from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()
 UPDATE_TRIGGERING_MODELS = (
@@ -18,7 +18,7 @@ UPDATE_TRIGGERING_MODELS = (
     OutpostServiceConnection,
     Provider,
     CertificateKeyPair,
-    Tenant,
+    Brand,
 )
 
 

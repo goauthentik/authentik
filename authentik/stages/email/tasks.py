@@ -9,8 +9,8 @@ from django.core.mail.utils import DNS_NAME
 from django.utils.text import slugify
 from structlog.stdlib import get_logger
 
-from authentik.events.models import Event, EventAction
-from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
+from authentik.events.models import Event, EventAction, TaskStatus
+from authentik.events.system_tasks import SystemTask
 from authentik.root.celery import CELERY_APP
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.utils import logo_data
@@ -22,7 +22,7 @@ def send_mails(stage: EmailStage, *messages: list[EmailMultiAlternatives]):
     """Wrapper to convert EmailMessage to dict and send it from worker"""
     tasks = []
     for message in messages:
-        tasks.append(send_mail.s(message.__dict__, stage.pk))
+        tasks.append(send_mail.s(message.__dict__, str(stage.pk)))
     lazy_group = group(*tasks)
     promise = lazy_group()
     return promise
@@ -44,9 +44,9 @@ def get_email_body(email: EmailMultiAlternatives) -> str:
         OSError,
     ),
     retry_backoff=True,
-    base=MonitoredTask,
+    base=SystemTask,
 )
-def send_mail(self: MonitoredTask, message: dict[Any, Any], email_stage_pk: Optional[int] = None):
+def send_mail(self: SystemTask, message: dict[Any, Any], email_stage_pk: Optional[str] = None):
     """Send Email for Email Stage. Retries are scheduled automatically."""
     self.save_on_success = False
     message_id = make_msgid(domain=DNS_NAME)
@@ -58,10 +58,8 @@ def send_mail(self: MonitoredTask, message: dict[Any, Any], email_stage_pk: Opti
             stages = EmailStage.objects.filter(pk=email_stage_pk)
             if not stages.exists():
                 self.set_status(
-                    TaskResult(
-                        TaskResultStatus.WARNING,
-                        messages=["Email stage does not exist anymore. Discarding message."],
-                    )
+                    TaskStatus.WARNING,
+                    "Email stage does not exist anymore. Discarding message.",
                 )
                 return
             stage: EmailStage = stages.first()
@@ -69,7 +67,7 @@ def send_mail(self: MonitoredTask, message: dict[Any, Any], email_stage_pk: Opti
             backend = stage.backend
         except ValueError as exc:
             LOGGER.warning("failed to get email backend", exc=exc)
-            self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
+            self.set_error(exc)
             return
         backend.open()
         # Since django's EmailMessage objects are not JSON serialisable,
@@ -97,12 +95,10 @@ def send_mail(self: MonitoredTask, message: dict[Any, Any], email_stage_pk: Opti
             to_email=message_object.to,
         ).save()
         self.set_status(
-            TaskResult(
-                TaskResultStatus.SUCCESSFUL,
-                messages=["Successfully sent Mail."],
-            )
+            TaskStatus.SUCCESSFUL,
+            "Successfully sent Mail.",
         )
     except (SMTPException, ConnectionError, OSError) as exc:
         LOGGER.debug("Error sending email, retrying...", exc=exc)
-        self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
+        self.set_error(exc)
         raise exc

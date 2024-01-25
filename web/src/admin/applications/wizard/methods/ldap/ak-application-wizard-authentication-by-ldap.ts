@@ -1,13 +1,13 @@
 import "@goauthentik/admin/applications/wizard/ak-wizard-title";
 import "@goauthentik/admin/common/ak-core-group-search";
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-tenanted-flow-search";
+import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-number-input";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
-import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider";
+import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -32,7 +32,7 @@ import {
 } from "./LDAPOptionsAndHelp";
 
 @customElement("ak-application-wizard-authentication-by-ldap")
-export class ApplicationWizardApplicationDetails extends WithTenantConfig(BaseProviderPanel) {
+export class ApplicationWizardApplicationDetails extends WithBrandConfig(BaseProviderPanel) {
     render() {
         const provider = this.wizard.provider as LDAPProvider | undefined;
         const errors = this.wizard.errors.provider;
@@ -54,12 +54,12 @@ export class ApplicationWizardApplicationDetails extends WithTenantConfig(BasePr
                     name="authorizationFlow"
                     .errorMessages=${errors?.authorizationFlow ?? []}
                 >
-                    <ak-tenanted-flow-search
+                    <ak-branded-flow-search
                         flowType=${FlowsInstancesListDesignationEnum.Authentication}
                         .currentFlow=${provider?.authorizationFlow}
-                        .tenantFlow=${this.tenant.flowAuthentication}
+                        .brandFlow=${this.brand.flowAuthentication}
                         required
-                    ></ak-tenanted-flow-search>
+                    ></ak-branded-flow-search>
                     <p class="pf-c-form__helper-text">
                         ${msg("Flow used for users to authenticate.")}
                     </p>

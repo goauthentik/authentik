@@ -14,6 +14,6 @@ class AuthentikStageEmailConfig(ManagedAppConfig):
     verbose_name = "authentik Stages.Email"
     default = True
 
-    def reconcile_load_stages_emails_tasks(self):
+    def reconcile_global_load_stages_emails_tasks(self):
         """Load stages.emails tasks"""
         self.import_module("authentik.stages.email.tasks")

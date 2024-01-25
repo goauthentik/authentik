@@ -11,8 +11,9 @@ from lxml import etree  # nosec
 from lxml.etree import Element, SubElement  # nosec
 from requests.exceptions import RequestException
 
-from authentik.lib.config import CONFIG, get_path_from_dict
+from authentik.lib.config import get_path_from_dict
 from authentik.lib.utils.http import get_http_session
+from authentik.tenants.utils import get_current_tenant
 
 GRAVATAR_URL = "https://secure.gravatar.com"
 DEFAULT_AVATAR = static("dist/assets/images/user_default.png")
@@ -183,7 +184,7 @@ def get_avatar(user: "User") -> str:
         "initials": avatar_mode_generated,
         "gravatar": avatar_mode_gravatar,
     }
-    modes: str = CONFIG.get("avatars", "none")
+    modes: str = get_current_tenant().avatars
     for mode in modes.split(","):
         avatar = None
         if mode in mode_map:

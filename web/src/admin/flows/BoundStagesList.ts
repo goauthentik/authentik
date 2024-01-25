@@ -21,6 +21,7 @@ import { FlowStageBinding, FlowsApi } from "@goauthentik/api";
 export class BoundStagesList extends Table<FlowStageBinding> {
     expandable = true;
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     target?: string;

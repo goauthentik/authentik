@@ -11,6 +11,7 @@ from authentik.core.models import Application, Group, User
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
 from authentik.providers.scim.tasks import scim_sync
+from authentik.tenants.models import Tenant
 
 
 class SCIMUserTests(TestCase):
@@ -20,6 +21,7 @@ class SCIMUserTests(TestCase):
     def setUp(self) -> None:
         # Delete all users and groups as the mocked HTTP responses only return one ID
         # which will cause errors with multiple users
+        Tenant.objects.update(avatars="none")
         User.objects.all().exclude(pk=get_anonymous_user().pk).delete()
         Group.objects.all().delete()
         self.provider: SCIMProvider = SCIMProvider.objects.create(

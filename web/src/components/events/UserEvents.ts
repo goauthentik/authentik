@@ -1,3 +1,4 @@
+import { EventUser } from "@goauthentik/app/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { actionToLabel } from "@goauthentik/common/labels";
@@ -9,7 +10,7 @@ import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 
-import { msg, str } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -46,12 +47,7 @@ export class UserEvents extends Table<Event> {
     row(item: EventWithContext): TemplateResult[] {
         return [
             html`${actionToLabel(item.action)}`,
-            html`<div>${item.user?.username}</div>
-                ${item.user.on_behalf_of
-                    ? html`<small>
-                          ${msg(str`On behalf of ${item.user.on_behalf_of.username}`)}
-                      </small>`
-                    : html``}`,
+            EventUser(item),
             html`<span>${item.created?.toLocaleString()}</span>`,
             html`<span>${item.clientIp || msg("-")}</span>`,
         ];

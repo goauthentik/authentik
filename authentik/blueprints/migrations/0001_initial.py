@@ -14,7 +14,7 @@ from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_SYSTEM
 from authentik.lib.config import CONFIG
 
 
-def check_blueprint_v1_file(BlueprintInstance: type, path: Path):
+def check_blueprint_v1_file(BlueprintInstance: type, db_alias, path: Path):
     """Check if blueprint should be imported"""
     from authentik.blueprints.models import BlueprintInstanceStatus
     from authentik.blueprints.v1.common import BlueprintLoader, BlueprintMetadata
@@ -29,7 +29,9 @@ def check_blueprint_v1_file(BlueprintInstance: type, path: Path):
         if version != 1:
             return
         blueprint_file.seek(0)
-    instance: BlueprintInstance = BlueprintInstance.objects.filter(path=path).first()
+    instance: BlueprintInstance = (
+        BlueprintInstance.objects.using(db_alias).filter(path=path).first()
+    )
     rel_path = path.relative_to(Path(CONFIG.get("blueprints_dir")))
     meta = None
     if metadata:
@@ -37,7 +39,7 @@ def check_blueprint_v1_file(BlueprintInstance: type, path: Path):
         if meta.labels.get(LABEL_AUTHENTIK_INSTANTIATE, "").lower() == "false":
             return
     if not instance:
-        instance = BlueprintInstance(
+        BlueprintInstance.objects.using(db_alias).create(
             name=meta.name if meta else str(rel_path),
             path=str(rel_path),
             context={},
@@ -47,7 +49,6 @@ def check_blueprint_v1_file(BlueprintInstance: type, path: Path):
             last_applied_hash="",
             metadata=metadata or {},
         )
-        instance.save()
 
 
 def migration_blueprint_import(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
@@ -56,7 +57,7 @@ def migration_blueprint_import(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
 
     db_alias = schema_editor.connection.alias
     for file in glob(f"{CONFIG.get('blueprints_dir')}/**/*.yaml", recursive=True):
-        check_blueprint_v1_file(BlueprintInstance, Path(file))
+        check_blueprint_v1_file(BlueprintInstance, db_alias, Path(file))
 
     for blueprint in BlueprintInstance.objects.using(db_alias).all():
         # If we already have flows (and we should always run before flow migrations)

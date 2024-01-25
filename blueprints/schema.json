@@ -49,6 +49,43 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_tenants.domain"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_tenants.domain"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_tenants.domain"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_crypto.certificatekeypair"
                             },
                             "id": {
@@ -678,43 +715,6 @@
                         ],
                         "properties": {
                             "model": {
-                                "const": "authentik_policies_reputation.reputation"
-                            },
-                            "id": {
-                                "type": "string"
-                            },
-                            "state": {
-                                "type": "string",
-                                "enum": [
-                                    "absent",
-                                    "present",
-                                    "created",
-                                    "must_created"
-                                ],
-                                "default": "present"
-                            },
-                            "conditions": {
-                                "type": "array",
-                                "items": {
-                                    "type": "boolean"
-                                }
-                            },
-                            "attrs": {
-                                "$ref": "#/$defs/model_authentik_policies_reputation.reputation"
-                            },
-                            "identifiers": {
-                                "$ref": "#/$defs/model_authentik_policies_reputation.reputation"
-                            }
-                        }
-                    },
-                    {
-                        "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
-                        "properties": {
-                            "model": {
                                 "const": "authentik_policies.policybinding"
                             },
                             "id": {
@@ -852,117 +852,6 @@
                             },
                             "identifiers": {
                                 "$ref": "#/$defs/model_authentik_providers_oauth2.oauth2provider"
-                            }
-                        }
-                    },
-                    {
-                        "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
-                        "properties": {
-                            "model": {
-                                "const": "authentik_providers_oauth2.authorizationcode"
-                            },
-                            "id": {
-                                "type": "string"
-                            },
-                            "state": {
-                                "type": "string",
-                                "enum": [
-                                    "absent",
-                                    "present",
-                                    "created",
-                                    "must_created"
-                                ],
-                                "default": "present"
-                            },
-                            "conditions": {
-                                "type": "array",
-                                "items": {
-                                    "type": "boolean"
-                                }
-                            },
-                            "attrs": {
-                                "$ref": "#/$defs/model_authentik_providers_oauth2.authorizationcode"
-                            },
-                            "identifiers": {
-                                "$ref": "#/$defs/model_authentik_providers_oauth2.authorizationcode"
-                            }
-                        }
-                    },
-                    {
-                        "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
-                        "properties": {
-                            "model": {
-                                "const": "authentik_providers_oauth2.accesstoken"
-                            },
-                            "id": {
-                                "type": "string"
-                            },
-                            "state": {
-                                "type": "string",
-                                "enum": [
-                                    "absent",
-                                    "present",
-                                    "created",
-                                    "must_created"
-                                ],
-                                "default": "present"
-                            },
-                            "conditions": {
-                                "type": "array",
-                                "items": {
-                                    "type": "boolean"
-                                }
-                            },
-                            "attrs": {
-                                "$ref": "#/$defs/model_authentik_providers_oauth2.accesstoken"
-                            },
-                            "identifiers": {
-                                "$ref": "#/$defs/model_authentik_providers_oauth2.accesstoken"
-                            }
-                        }
-                    },
-                    {
-                        "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
-                        "properties": {
-                            "model": {
-                                "const": "authentik_providers_oauth2.refreshtoken"
-                            },
-                            "id": {
-                                "type": "string"
-                            },
-                            "state": {
-                                "type": "string",
-                                "enum": [
-                                    "absent",
-                                    "present",
-                                    "created",
-                                    "must_created"
-                                ],
-                                "default": "present"
-                            },
-                            "conditions": {
-                                "type": "array",
-                                "items": {
-                                    "type": "boolean"
-                                }
-                            },
-                            "attrs": {
-                                "$ref": "#/$defs/model_authentik_providers_oauth2.refreshtoken"
-                            },
-                            "identifiers": {
-                                "$ref": "#/$defs/model_authentik_providers_oauth2.refreshtoken"
                             }
                         }
                     },
@@ -2528,7 +2417,7 @@
                         ],
                         "properties": {
                             "model": {
-                                "const": "authentik_tenants.tenant"
+                                "const": "authentik_brands.brand"
                             },
                             "id": {
                                 "type": "string"
@@ -2550,10 +2439,10 @@
                                 }
                             },
                             "attrs": {
-                                "$ref": "#/$defs/model_authentik_tenants.tenant"
+                                "$ref": "#/$defs/model_authentik_brands.brand"
                             },
                             "identifiers": {
-                                "$ref": "#/$defs/model_authentik_tenants.tenant"
+                                "$ref": "#/$defs/model_authentik_brands.brand"
                             }
                         }
                     },
@@ -2932,6 +2821,26 @@
         }
     },
     "$defs": {
+        "model_authentik_tenants.domain": {
+            "type": "object",
+            "properties": {
+                "domain": {
+                    "type": "string",
+                    "maxLength": 253,
+                    "minLength": 1,
+                    "title": "Domain"
+                },
+                "is_primary": {
+                    "type": "boolean",
+                    "title": "Is primary"
+                },
+                "tenant": {
+                    "type": "integer",
+                    "title": "Tenant"
+                }
+            },
+            "required": []
+        },
         "model_authentik_crypto.certificatekeypair": {
             "type": "object",
             "properties": {
@@ -3018,10 +2927,10 @@
                     "format": "date-time",
                     "title": "Expires"
                 },
-                "tenant": {
+                "brand": {
                     "type": "object",
                     "additionalProperties": true,
-                    "title": "Tenant"
+                    "title": "Brand"
                 }
             },
             "required": []
@@ -3127,10 +3036,10 @@
                             "format": "date-time",
                             "title": "Expires"
                         },
-                        "tenant": {
+                        "brand": {
                             "type": "object",
                             "additionalProperties": true,
-                            "title": "Tenant"
+                            "title": "Brand"
                         }
                     },
                     "required": [
@@ -3540,6 +3449,7 @@
                     ],
                     "enum": [
                         null,
+                        "authentik.tenants",
                         "authentik.admin",
                         "authentik.api",
                         "authentik.crypto",
@@ -3585,10 +3495,11 @@
                         "authentik.stages.user_login",
                         "authentik.stages.user_logout",
                         "authentik.stages.user_write",
-                        "authentik.tenants",
+                        "authentik.brands",
                         "authentik.blueprints",
                         "authentik.core",
                         "authentik.enterprise",
+                        "authentik.enterprise.audit",
                         "authentik.enterprise.providers.rac"
                     ],
                     "title": "App",
@@ -3601,6 +3512,7 @@
                     ],
                     "enum": [
                         null,
+                        "authentik_tenants.domain",
                         "authentik_crypto.certificatekeypair",
                         "authentik_events.event",
                         "authentik_events.notificationtransport",
@@ -3618,14 +3530,10 @@
                         "authentik_policies_expression.expressionpolicy",
                         "authentik_policies_password.passwordpolicy",
                         "authentik_policies_reputation.reputationpolicy",
-                        "authentik_policies_reputation.reputation",
                         "authentik_policies.policybinding",
                         "authentik_providers_ldap.ldapprovider",
                         "authentik_providers_oauth2.scopemapping",
                         "authentik_providers_oauth2.oauth2provider",
-                        "authentik_providers_oauth2.authorizationcode",
-                        "authentik_providers_oauth2.accesstoken",
-                        "authentik_providers_oauth2.refreshtoken",
                         "authentik_providers_proxy.proxyprovider",
                         "authentik_providers_radius.radiusprovider",
                         "authentik_providers_saml.samlprovider",
@@ -3668,7 +3576,7 @@
                         "authentik_stages_user_login.userloginstage",
                         "authentik_stages_user_logout.userlogoutstage",
                         "authentik_stages_user_write.userwritestage",
-                        "authentik_tenants.tenant",
+                        "authentik_brands.brand",
                         "authentik_blueprints.blueprintinstance",
                         "authentik_core.group",
                         "authentik_core.user",
@@ -3845,43 +3753,6 @@
                     "minimum": -2147483648,
                     "maximum": 2147483647,
                     "title": "Threshold"
-                }
-            },
-            "required": []
-        },
-        "model_authentik_policies_reputation.reputation": {
-            "type": "object",
-            "properties": {
-                "pk": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Reputation uuid"
-                },
-                "identifier": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Identifier"
-                },
-                "ip": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Ip"
-                },
-                "ip_geo_data": {
-                    "type": "object",
-                    "additionalProperties": true,
-                    "title": "Ip geo data"
-                },
-                "ip_asn_data": {
-                    "type": "object",
-                    "additionalProperties": true,
-                    "title": "Ip asn data"
-                },
-                "score": {
-                    "type": "integer",
-                    "minimum": -9223372036854775808,
-                    "maximum": 9223372036854775807,
-                    "title": "Score"
                 }
             },
             "required": []
@@ -4160,617 +4031,6 @@
                         "title": "Any JWT signed by the JWK of the selected source can be used to authenticate."
                     },
                     "title": "Any JWT signed by the JWK of the selected source can be used to authenticate."
-                }
-            },
-            "required": []
-        },
-        "model_authentik_providers_oauth2.authorizationcode": {
-            "type": "object",
-            "properties": {
-                "provider": {
-                    "type": "object",
-                    "properties": {
-                        "name": {
-                            "type": "string",
-                            "minLength": 1,
-                            "title": "Name"
-                        },
-                        "authentication_flow": {
-                            "type": "integer",
-                            "title": "Authentication flow",
-                            "description": "Flow used for authentication when the associated application is accessed by an un-authenticated user."
-                        },
-                        "authorization_flow": {
-                            "type": "integer",
-                            "title": "Authorization flow",
-                            "description": "Flow used when authorizing this provider."
-                        },
-                        "property_mappings": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer"
-                            },
-                            "title": "Property mappings"
-                        },
-                        "client_type": {
-                            "type": "string",
-                            "enum": [
-                                "confidential",
-                                "public"
-                            ],
-                            "title": "Client Type",
-                            "description": "Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable"
-                        },
-                        "client_id": {
-                            "type": "string",
-                            "maxLength": 255,
-                            "minLength": 1,
-                            "title": "Client ID"
-                        },
-                        "client_secret": {
-                            "type": "string",
-                            "maxLength": 255,
-                            "title": "Client Secret"
-                        },
-                        "access_code_validity": {
-                            "type": "string",
-                            "minLength": 1,
-                            "title": "Access code validity",
-                            "description": "Access codes not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
-                        },
-                        "access_token_validity": {
-                            "type": "string",
-                            "minLength": 1,
-                            "title": "Access token validity",
-                            "description": "Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
-                        },
-                        "refresh_token_validity": {
-                            "type": "string",
-                            "minLength": 1,
-                            "title": "Refresh token validity",
-                            "description": "Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
-                        },
-                        "include_claims_in_id_token": {
-                            "type": "boolean",
-                            "title": "Include claims in id_token",
-                            "description": "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint."
-                        },
-                        "signing_key": {
-                            "type": "integer",
-                            "title": "Signing Key",
-                            "description": "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
-                        },
-                        "redirect_uris": {
-                            "type": "string",
-                            "title": "Redirect URIs",
-                            "description": "Enter each URI on a new line."
-                        },
-                        "sub_mode": {
-                            "type": "string",
-                            "enum": [
-                                "hashed_user_id",
-                                "user_id",
-                                "user_uuid",
-                                "user_username",
-                                "user_email",
-                                "user_upn"
-                            ],
-                            "title": "Sub mode",
-                            "description": "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
-                        },
-                        "issuer_mode": {
-                            "type": "string",
-                            "enum": [
-                                "global",
-                                "per_provider"
-                            ],
-                            "title": "Issuer mode",
-                            "description": "Configure how the issuer field of the ID Token should be filled."
-                        },
-                        "jwks_sources": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer",
-                                "title": "Any JWT signed by the JWK of the selected source can be used to authenticate."
-                            },
-                            "title": "Any JWT signed by the JWK of the selected source can be used to authenticate."
-                        }
-                    },
-                    "required": [
-                        "name",
-                        "authorization_flow"
-                    ],
-                    "title": "Provider"
-                },
-                "user": {
-                    "type": "object",
-                    "properties": {
-                        "username": {
-                            "type": "string",
-                            "maxLength": 150,
-                            "minLength": 1,
-                            "title": "Username"
-                        },
-                        "name": {
-                            "type": "string",
-                            "title": "Name",
-                            "description": "User's display name."
-                        },
-                        "is_active": {
-                            "type": "boolean",
-                            "title": "Active",
-                            "description": "Designates whether this user should be treated as active. Unselect this instead of deleting accounts."
-                        },
-                        "last_login": {
-                            "type": [
-                                "string",
-                                "null"
-                            ],
-                            "format": "date-time",
-                            "title": "Last login"
-                        },
-                        "groups": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer"
-                            },
-                            "title": "Groups"
-                        },
-                        "email": {
-                            "type": "string",
-                            "format": "email",
-                            "maxLength": 254,
-                            "title": "Email address"
-                        },
-                        "attributes": {
-                            "type": "object",
-                            "additionalProperties": true,
-                            "title": "Attributes"
-                        },
-                        "path": {
-                            "type": "string",
-                            "minLength": 1,
-                            "title": "Path"
-                        },
-                        "type": {
-                            "type": "string",
-                            "enum": [
-                                "internal",
-                                "external",
-                                "service_account",
-                                "internal_service_account"
-                            ],
-                            "title": "Type"
-                        }
-                    },
-                    "required": [
-                        "username",
-                        "name"
-                    ],
-                    "title": "User"
-                },
-                "expires": {
-                    "type": "string",
-                    "format": "date-time",
-                    "title": "Expires"
-                },
-                "scope": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "minLength": 1
-                    },
-                    "title": "Scope"
-                }
-            },
-            "required": []
-        },
-        "model_authentik_providers_oauth2.accesstoken": {
-            "type": "object",
-            "properties": {
-                "provider": {
-                    "type": "object",
-                    "properties": {
-                        "name": {
-                            "type": "string",
-                            "minLength": 1,
-                            "title": "Name"
-                        },
-                        "authentication_flow": {
-                            "type": "integer",
-                            "title": "Authentication flow",
-                            "description": "Flow used for authentication when the associated application is accessed by an un-authenticated user."
-                        },
-                        "authorization_flow": {
-                            "type": "integer",
-                            "title": "Authorization flow",
-                            "description": "Flow used when authorizing this provider."
-                        },
-                        "property_mappings": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer"
-                            },
-                            "title": "Property mappings"
-                        },
-                        "client_type": {
-                            "type": "string",
-                            "enum": [
-                                "confidential",
-                                "public"
-                            ],
-                            "title": "Client Type",
-                            "description": "Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable"
-                        },
-                        "client_id": {
-                            "type": "string",
-                            "maxLength": 255,
-                            "minLength": 1,
-                            "title": "Client ID"
-                        },
-                        "client_secret": {
-                            "type": "string",
-                            "maxLength": 255,
-                            "title": "Client Secret"
-                        },
-                        "access_code_validity": {
-                            "type": "string",
-                            "minLength": 1,
-                            "title": "Access code validity",
-                            "description": "Access codes not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
-                        },
-                        "access_token_validity": {
-                            "type": "string",
-                            "minLength": 1,
-                            "title": "Access token validity",
-                            "description": "Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
-                        },
-                        "refresh_token_validity": {
-                            "type": "string",
-                            "minLength": 1,
-                            "title": "Refresh token validity",
-                            "description": "Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
-                        },
-                        "include_claims_in_id_token": {
-                            "type": "boolean",
-                            "title": "Include claims in id_token",
-                            "description": "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint."
-                        },
-                        "signing_key": {
-                            "type": "integer",
-                            "title": "Signing Key",
-                            "description": "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
-                        },
-                        "redirect_uris": {
-                            "type": "string",
-                            "title": "Redirect URIs",
-                            "description": "Enter each URI on a new line."
-                        },
-                        "sub_mode": {
-                            "type": "string",
-                            "enum": [
-                                "hashed_user_id",
-                                "user_id",
-                                "user_uuid",
-                                "user_username",
-                                "user_email",
-                                "user_upn"
-                            ],
-                            "title": "Sub mode",
-                            "description": "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
-                        },
-                        "issuer_mode": {
-                            "type": "string",
-                            "enum": [
-                                "global",
-                                "per_provider"
-                            ],
-                            "title": "Issuer mode",
-                            "description": "Configure how the issuer field of the ID Token should be filled."
-                        },
-                        "jwks_sources": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer",
-                                "title": "Any JWT signed by the JWK of the selected source can be used to authenticate."
-                            },
-                            "title": "Any JWT signed by the JWK of the selected source can be used to authenticate."
-                        }
-                    },
-                    "required": [
-                        "name",
-                        "authorization_flow"
-                    ],
-                    "title": "Provider"
-                },
-                "user": {
-                    "type": "object",
-                    "properties": {
-                        "username": {
-                            "type": "string",
-                            "maxLength": 150,
-                            "minLength": 1,
-                            "title": "Username"
-                        },
-                        "name": {
-                            "type": "string",
-                            "title": "Name",
-                            "description": "User's display name."
-                        },
-                        "is_active": {
-                            "type": "boolean",
-                            "title": "Active",
-                            "description": "Designates whether this user should be treated as active. Unselect this instead of deleting accounts."
-                        },
-                        "last_login": {
-                            "type": [
-                                "string",
-                                "null"
-                            ],
-                            "format": "date-time",
-                            "title": "Last login"
-                        },
-                        "groups": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer"
-                            },
-                            "title": "Groups"
-                        },
-                        "email": {
-                            "type": "string",
-                            "format": "email",
-                            "maxLength": 254,
-                            "title": "Email address"
-                        },
-                        "attributes": {
-                            "type": "object",
-                            "additionalProperties": true,
-                            "title": "Attributes"
-                        },
-                        "path": {
-                            "type": "string",
-                            "minLength": 1,
-                            "title": "Path"
-                        },
-                        "type": {
-                            "type": "string",
-                            "enum": [
-                                "internal",
-                                "external",
-                                "service_account",
-                                "internal_service_account"
-                            ],
-                            "title": "Type"
-                        }
-                    },
-                    "required": [
-                        "username",
-                        "name"
-                    ],
-                    "title": "User"
-                },
-                "expires": {
-                    "type": "string",
-                    "format": "date-time",
-                    "title": "Expires"
-                },
-                "scope": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "minLength": 1
-                    },
-                    "title": "Scope"
-                },
-                "revoked": {
-                    "type": "boolean",
-                    "title": "Revoked"
-                }
-            },
-            "required": []
-        },
-        "model_authentik_providers_oauth2.refreshtoken": {
-            "type": "object",
-            "properties": {
-                "provider": {
-                    "type": "object",
-                    "properties": {
-                        "name": {
-                            "type": "string",
-                            "minLength": 1,
-                            "title": "Name"
-                        },
-                        "authentication_flow": {
-                            "type": "integer",
-                            "title": "Authentication flow",
-                            "description": "Flow used for authentication when the associated application is accessed by an un-authenticated user."
-                        },
-                        "authorization_flow": {
-                            "type": "integer",
-                            "title": "Authorization flow",
-                            "description": "Flow used when authorizing this provider."
-                        },
-                        "property_mappings": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer"
-                            },
-                            "title": "Property mappings"
-                        },
-                        "client_type": {
-                            "type": "string",
-                            "enum": [
-                                "confidential",
-                                "public"
-                            ],
-                            "title": "Client Type",
-                            "description": "Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable"
-                        },
-                        "client_id": {
-                            "type": "string",
-                            "maxLength": 255,
-                            "minLength": 1,
-                            "title": "Client ID"
-                        },
-                        "client_secret": {
-                            "type": "string",
-                            "maxLength": 255,
-                            "title": "Client Secret"
-                        },
-                        "access_code_validity": {
-                            "type": "string",
-                            "minLength": 1,
-                            "title": "Access code validity",
-                            "description": "Access codes not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
-                        },
-                        "access_token_validity": {
-                            "type": "string",
-                            "minLength": 1,
-                            "title": "Access token validity",
-                            "description": "Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
-                        },
-                        "refresh_token_validity": {
-                            "type": "string",
-                            "minLength": 1,
-                            "title": "Refresh token validity",
-                            "description": "Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
-                        },
-                        "include_claims_in_id_token": {
-                            "type": "boolean",
-                            "title": "Include claims in id_token",
-                            "description": "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint."
-                        },
-                        "signing_key": {
-                            "type": "integer",
-                            "title": "Signing Key",
-                            "description": "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
-                        },
-                        "redirect_uris": {
-                            "type": "string",
-                            "title": "Redirect URIs",
-                            "description": "Enter each URI on a new line."
-                        },
-                        "sub_mode": {
-                            "type": "string",
-                            "enum": [
-                                "hashed_user_id",
-                                "user_id",
-                                "user_uuid",
-                                "user_username",
-                                "user_email",
-                                "user_upn"
-                            ],
-                            "title": "Sub mode",
-                            "description": "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
-                        },
-                        "issuer_mode": {
-                            "type": "string",
-                            "enum": [
-                                "global",
-                                "per_provider"
-                            ],
-                            "title": "Issuer mode",
-                            "description": "Configure how the issuer field of the ID Token should be filled."
-                        },
-                        "jwks_sources": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer",
-                                "title": "Any JWT signed by the JWK of the selected source can be used to authenticate."
-                            },
-                            "title": "Any JWT signed by the JWK of the selected source can be used to authenticate."
-                        }
-                    },
-                    "required": [
-                        "name",
-                        "authorization_flow"
-                    ],
-                    "title": "Provider"
-                },
-                "user": {
-                    "type": "object",
-                    "properties": {
-                        "username": {
-                            "type": "string",
-                            "maxLength": 150,
-                            "minLength": 1,
-                            "title": "Username"
-                        },
-                        "name": {
-                            "type": "string",
-                            "title": "Name",
-                            "description": "User's display name."
-                        },
-                        "is_active": {
-                            "type": "boolean",
-                            "title": "Active",
-                            "description": "Designates whether this user should be treated as active. Unselect this instead of deleting accounts."
-                        },
-                        "last_login": {
-                            "type": [
-                                "string",
-                                "null"
-                            ],
-                            "format": "date-time",
-                            "title": "Last login"
-                        },
-                        "groups": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer"
-                            },
-                            "title": "Groups"
-                        },
-                        "email": {
-                            "type": "string",
-                            "format": "email",
-                            "maxLength": 254,
-                            "title": "Email address"
-                        },
-                        "attributes": {
-                            "type": "object",
-                            "additionalProperties": true,
-                            "title": "Attributes"
-                        },
-                        "path": {
-                            "type": "string",
-                            "minLength": 1,
-                            "title": "Path"
-                        },
-                        "type": {
-                            "type": "string",
-                            "enum": [
-                                "internal",
-                                "external",
-                                "service_account",
-                                "internal_service_account"
-                            ],
-                            "title": "Type"
-                        }
-                    },
-                    "required": [
-                        "username",
-                        "name"
-                    ],
-                    "title": "User"
-                },
-                "expires": {
-                    "type": "string",
-                    "format": "date-time",
-                    "title": "Expires"
-                },
-                "scope": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "minLength": 1
-                    },
-                    "title": "Scope"
-                },
-                "revoked": {
-                    "type": "boolean",
-                    "title": "Revoked"
                 }
             },
             "required": []
@@ -8534,14 +7794,14 @@
             },
             "required": []
         },
-        "model_authentik_tenants.tenant": {
+        "model_authentik_brands.brand": {
             "type": "object",
             "properties": {
                 "domain": {
                     "type": "string",
                     "minLength": 1,
                     "title": "Domain",
-                    "description": "Domain that activates this tenant. Can be a superset, i.e. `a.b` for `aa.b` and `ba.b`"
+                    "description": "Domain that activates this brand. Can be a superset, i.e. `a.b` for `aa.b` and `ba.b`"
                 },
                 "default": {
                     "type": "boolean",
@@ -8585,12 +7845,6 @@
                 "flow_device_code": {
                     "type": "integer",
                     "title": "Flow device code"
-                },
-                "event_retention": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Event retention",
-                    "description": "Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2)."
                 },
                 "web_certificate": {
                     "type": "integer",

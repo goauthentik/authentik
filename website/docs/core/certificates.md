@@ -100,6 +100,6 @@ services:
 
 Afterwards, run `docker-compose up -d`, which will start certbot and generate your certificate. Within a few minutes, you'll see the certificate in your authentik interface. (If the certificate does not appear, restart the worker container. This is caused by incompatible permissions set by certbot).
 
-Navigate to _System -> Tenants_, edit any tenant and select the certificate of your choice.
+Navigate to _System -> Brands_, edit any brand and select the certificate of your choice.
 
 Keep in mind this certbot container will only run once, but there are a variety of ways to schedule regular renewals.

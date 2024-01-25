@@ -3,6 +3,7 @@ import { PreventFormSubmit } from "@goauthentik/app/elements/forms/helpers";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { ascii_letters, digits, groupBy, randomString } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
+import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg, str } from "@lit/localize";
@@ -105,12 +106,17 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
     @state()
     error?: APIErrorTypes;
 
-    static styles = [PFBase, PFForm, PFFormControl, PFSelect];
+    static get styles() {
+        return [PFBase, PFForm, PFFormControl, PFSelect];
+    }
 
     constructor() {
         super();
         if (!document.adoptedStyleSheets.includes(PFDropdown)) {
-            document.adoptedStyleSheets = [...document.adoptedStyleSheets, PFDropdown];
+            document.adoptedStyleSheets = [
+                ...document.adoptedStyleSheets,
+                ensureCSSStyleSheet(PFDropdown),
+            ];
         }
         this.dropdownContainer = document.createElement("div");
         this.observer = new IntersectionObserver(() => {
@@ -150,6 +156,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
                 objects.forEach((obj) => {
                     if (this.selected && this.selected(obj, objects || [])) {
                         this.selectedObject = obj;
+                        this.dispatchCustomEvent("ak-change", { value: this.selectedObject });
                     }
                 });
                 this.objects = objects;
@@ -168,6 +175,9 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
         super.connectedCallback();
         this.dropdownContainer = document.createElement("div");
         this.dropdownContainer.dataset["managedBy"] = "ak-search-select";
+        if (this.name) {
+            this.dropdownContainer.dataset["managedFor"] = this.name;
+        }
         document.body.append(this.dropdownContainer);
         this.updateData();
         this.addEventListener(EVENT_REFRESH, this.updateData);

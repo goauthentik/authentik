@@ -21,6 +21,7 @@ export class RolePermissionGlobalTable extends Table<Permission> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     order = "content_type__app_label,content_type__model";
 

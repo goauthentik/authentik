@@ -29,6 +29,7 @@ export class UserTokenList extends Table<Token> {
 
     expandable = true;
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "expires";

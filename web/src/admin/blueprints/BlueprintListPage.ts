@@ -58,6 +58,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
 
     expandable = true;
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "name";

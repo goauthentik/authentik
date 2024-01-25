@@ -16,6 +16,7 @@ export class UserDeviceTable extends Table<Device> {
     userId?: number;
 
     checkbox = true;
+    clearOnRefresh = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<Device>> {
         return new AuthenticatorsApi(DEFAULT_CONFIG)

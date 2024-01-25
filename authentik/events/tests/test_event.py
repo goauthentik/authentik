@@ -6,12 +6,12 @@ from django.test import RequestFactory, TestCase
 from django.views.debug import SafeExceptionReporterFilter
 from guardian.shortcuts import get_anonymous_user
 
+from authentik.brands.models import Brand
 from authentik.core.models import Group
 from authentik.events.models import Event
 from authentik.flows.views.executor import QS_QUERY
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
-from authentik.tenants.models import Tenant
 
 
 class TestEvents(TestCase):
@@ -66,7 +66,8 @@ class TestEvents(TestCase):
 
     def test_from_http_clean_querystring(self):
         """Test cleansing query string"""
-        request = self.factory.get(f"/?token={generate_id()}")
+        token = generate_id()
+        request = self.factory.get(f"/?token={token}")
         event = Event.new("unittest").from_http(request)
         self.assertEqual(
             event.context,
@@ -82,7 +83,8 @@ class TestEvents(TestCase):
 
     def test_from_http_clean_querystring_flow(self):
         """Test cleansing query string (nested query string like flow executor)"""
-        nested_qs = {"token": generate_id()}
+        token = generate_id()
+        nested_qs = {"token": token}
         request = self.factory.get(f"/?{QS_QUERY}={urlencode(nested_qs)}")
         event = Event.new("unittest").from_http(request)
         self.assertEqual(
@@ -97,19 +99,19 @@ class TestEvents(TestCase):
             },
         )
 
-    def test_from_http_tenant(self):
-        """Test from_http tenant"""
-        # Test tenant
+    def test_from_http_brand(self):
+        """Test from_http brand"""
+        # Test brand
         request = self.factory.get("/")
-        tenant = Tenant(domain="test-tenant")
-        setattr(request, "tenant", tenant)
+        brand = Brand(domain="test-brand")
+        setattr(request, "brand", brand)
         event = Event.new("unittest").from_http(request)
         self.assertEqual(
-            event.tenant,
+            event.brand,
             {
-                "app": "authentik_tenants",
-                "model_name": "tenant",
-                "name": "Tenant test-tenant",
-                "pk": tenant.pk.hex,
+                "app": "authentik_brands",
+                "model_name": "brand",
+                "name": "Brand test-brand",
+                "pk": brand.pk.hex,
             },
         )

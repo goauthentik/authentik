@@ -1,5 +1,6 @@
 """authentik policy signals"""
 from django.core.cache import cache
+from django.db import connection
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from structlog.stdlib import get_logger
@@ -17,7 +18,9 @@ LOGGER = get_logger()
 @receiver(monitoring_set)
 def monitoring_set_policies(sender, **kwargs):
     """set policy gauges"""
-    GAUGE_POLICIES_CACHED.set(len(cache.keys(f"{CACHE_PREFIX}*") or []))
+    GAUGE_POLICIES_CACHED.labels(tenant=connection.schema_name).set(
+        len(cache.keys(f"{CACHE_PREFIX}*") or [])
+    )
 
 
 @receiver(post_save, sender=Policy)

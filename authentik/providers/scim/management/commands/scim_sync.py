@@ -1,20 +1,20 @@
 """SCIM Sync"""
-from django.core.management.base import BaseCommand
 from structlog.stdlib import get_logger
 
 from authentik.providers.scim.models import SCIMProvider
 from authentik.providers.scim.tasks import scim_sync
+from authentik.tenants.management import TenantCommand
 
 LOGGER = get_logger()
 
 
-class Command(BaseCommand):
+class Command(TenantCommand):
     """Run sync for an SCIM Provider"""
 
     def add_arguments(self, parser):
         parser.add_argument("providers", nargs="+", type=str)
 
-    def handle(self, **options):
+    def handle_per_tenant(self, **options):
         for provider_name in options["providers"]:
             provider = SCIMProvider.objects.filter(name=provider_name).first()
             if not provider:

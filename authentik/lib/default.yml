@@ -38,8 +38,8 @@ redis:
   # tls_reqs: "required"
 
 # broker:
-  # url: ""
-  # transport_options: ""
+#   url: ""
+#   transport_options: ""
 
 cache:
   # url: ""
@@ -49,13 +49,10 @@ cache:
   timeout_reputation: 300
 
 # channel:
-  # url: ""
+#   url: ""
 
 # result_backend:
-  # url: ""
-
-paths:
-  media: ./media
+#   url: ""
 
 debug: false
 remote_debug: false
@@ -108,22 +105,17 @@ reputation:
 cookie_domain: null
 disable_update_check: false
 disable_startup_analytics: false
-avatars: env://AUTHENTIK_AUTHENTIK__AVATARS?gravatar,initials
 events:
   context_processors:
     geoip: "/geoip/GeoLite2-City.mmdb"
     asn: "/geoip/GeoLite2-ASN.mmdb"
 
-footer_links: []
-
-default_user_change_name: true
-default_user_change_email: false
-default_user_change_username: false
-
-gdpr_compliance: true
 cert_discovery_dir: /certs
 default_token_length: 60
-impersonation: true
+
+tenants:
+  enabled: false
+  api_key: ""
 
 blueprints_dir: /blueprints
 
@@ -134,3 +126,20 @@ web:
 
 worker:
   concurrency: 2
+
+storage:
+  media:
+    backend: file # or s3
+    file:
+      path: ./media
+    s3:
+      # How to talk to s3
+      # region: "us-east-1"
+      # use_ssl: True
+      # endpoint: "https://s3.us-east-1.amazonaws.com"
+      # access_key: ""
+      # secret_key: ""
+      # bucket_name: "authentik-media"
+      # How to render file URLs
+      # custom_domain: null
+      secure_urls: True

@@ -96,8 +96,14 @@ dev-reset: dev-drop-db dev-create-db migrate  ## Drop and restore the Authentik 
 #########################
 
 gen-build:  ## Extract the schema from the database
-	AUTHENTIK_DEBUG=true ak make_blueprint_schema > blueprints/schema.json
-	AUTHENTIK_DEBUG=true ak spectacular --file schema.yml
+	AUTHENTIK_DEBUG=true \
+		AUTHENTIK_TENANTS__ENABLED=true \
+		AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true \
+		ak make_blueprint_schema > blueprints/schema.json
+	AUTHENTIK_DEBUG=true \
+		AUTHENTIK_TENANTS__ENABLED=true \
+		AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true \
+		ak spectacular --file schema.yml
 
 gen-changelog:  ## (Release) generate the changelog based from the commits since the last tag
 	git log --pretty=format:" - %s" $(shell git describe --tags $(shell git rev-list --tags --max-count=1))...$(shell git branch --show-current) | sort > changelog.md
@@ -116,12 +122,16 @@ gen-diff:  ## (Release) generate the changelog diff between the current schema a
 	sed -i 's/}/&#125;/g' diff.md
 	npx prettier --write diff.md
 
-gen-clean:
-	rm -rf gen-go-api/
+gen-clean-ts:  ## Remove generated API client for Typescript
 	rm -rf gen-ts-api/
 	rm -rf web/node_modules/@goauthentik/api/
 
-gen-client-ts:  ## Build and install the authentik API for Typescript into the authentik UI Application
+gen-clean-go:  ## Remove generated API client for Go
+	rm -rf gen-go-api/
+
+gen-clean: gen-clean-ts gen-clean-go  ## Remove generated API clients
+
+gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescript into the authentik UI Application
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
@@ -137,7 +147,7 @@ gen-client-ts:  ## Build and install the authentik API for Typescript into the a
 	cd gen-ts-api && npm i
 	\cp -rfv gen-ts-api/* web/node_modules/@goauthentik/api
 
-gen-client-go:  ## Build and install the authentik API for Golang
+gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
 	mkdir -p ./gen-go-api ./gen-go-api/templates
 	wget https://raw.githubusercontent.com/goauthentik/client-go/main/config.yaml -O ./gen-go-api/config.yaml
 	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/README.mustache -O ./gen-go-api/templates/README.mustache
@@ -157,7 +167,7 @@ gen-client-go:  ## Build and install the authentik API for Golang
 gen-dev-config:  ## Generate a local development config file
 	python -m scripts.generate_config
 
-gen: gen-build gen-clean gen-client-ts
+gen: gen-build gen-client-ts
 
 #########################
 ## Web

@@ -69,7 +69,6 @@ export function serializeForm<T extends KeyUnknown>(
             return;
         }
 
-        // TODO: Tighten up the typing so that we can handle both.
         if ("akControl" in element.dataset) {
             assignValue(element, (element as unknown as AkControlElement).json(), json);
             return;
@@ -79,6 +78,12 @@ export function serializeForm<T extends KeyUnknown>(
         if (element.hidden || !inputElement) {
             return;
         }
+
+        if ("akControl" in inputElement.dataset) {
+            assignValue(element, inputElement.value, json);
+            return;
+        }
+
         // Skip elements that are writeOnly where the user hasn't clicked on the value
         if (element.writeOnly && !element.writeOnlyActivated) {
             return;

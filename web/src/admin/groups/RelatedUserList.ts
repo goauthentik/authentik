@@ -9,11 +9,11 @@ import { MessageLevel } from "@goauthentik/common/messages";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
+import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
 } from "@goauthentik/elements/Interface/capabilitiesProvider";
-import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -110,9 +110,10 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
 }
 
 @customElement("ak-user-related-list")
-export class RelatedUserList extends WithTenantConfig(WithCapabilitiesConfig(Table<User>)) {
+export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Table<User>)) {
     expandable = true;
     checkbox = true;
+    clearOnRefresh = true;
 
     searchEnabled(): boolean {
         return true;
@@ -295,7 +296,7 @@ export class RelatedUserList extends WithTenantConfig(WithCapabilitiesConfig(Tab
                                             ${msg("Set password")}
                                         </button>
                                     </ak-forms-modal>
-                                    ${this.tenant?.flowRecovery
+                                    ${this.brand?.flowRecovery
                                         ? html`
                                               <ak-action-button
                                                   class="pf-m-secondary"
@@ -357,7 +358,7 @@ export class RelatedUserList extends WithTenantConfig(WithCapabilitiesConfig(Tab
                                           `
                                         : html` <p>
                                               ${msg(
-                                                  "To let a user directly reset a their password, configure a recovery flow on the currently active tenant.",
+                                                  "To let a user directly reset a their password, configure a recovery flow on the currently active brand.",
                                               )}
                                           </p>`}
                                 </div>

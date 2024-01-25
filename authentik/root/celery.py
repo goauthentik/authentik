@@ -19,6 +19,7 @@ from celery.signals import (
 )
 from django.conf import settings
 from django.db import ProgrammingError
+from django_tenants.utils import get_public_schema_name
 from structlog.contextvars import STRUCTLOG_KEY_PREFIX
 from structlog.stdlib import get_logger
 
@@ -81,8 +82,13 @@ def task_error_hook(task_id, exception: Exception, traceback, *args, **kwargs):
         Event.new(EventAction.SYSTEM_EXCEPTION, message=exception_to_string(exception)).save()
 
 
-def _get_startup_tasks() -> list[Callable]:
-    """Get all tasks to be run on startup"""
+def _get_startup_tasks_default_tenant() -> list[Callable]:
+    """Get all tasks to be run on startup for the default tenant"""
+    return []
+
+
+def _get_startup_tasks_all_tenants() -> list[Callable]:
+    """Get all tasks to be run on startup for all tenants"""
     from authentik.admin.tasks import clear_update_notifications
     from authentik.outposts.tasks import outpost_connection_discovery, outpost_controller_all
     from authentik.providers.proxy.tasks import proxy_set_defaults
@@ -98,13 +104,25 @@ def _get_startup_tasks() -> list[Callable]:
 @worker_ready.connect
 def worker_ready_hook(*args, **kwargs):
     """Run certain tasks on worker start"""
+    from authentik.tenants.models import Tenant
 
     LOGGER.info("Dispatching startup tasks...")
-    for task in _get_startup_tasks():
+
+    def _run_task(task: Callable):
         try:
             task.delay()
         except ProgrammingError as exc:
             LOGGER.warning("Startup task failed", task=task, exc=exc)
+
+    for task in _get_startup_tasks_default_tenant():
+        with Tenant.objects.get(schema_name=get_public_schema_name()):
+            _run_task(task)
+
+    for task in _get_startup_tasks_all_tenants():
+        for tenant in Tenant.objects.filter(ready=True):
+            with tenant:
+                _run_task(task)
+
     from authentik.blueprints.v1.tasks import start_blueprint_watcher
 
     start_blueprint_watcher()

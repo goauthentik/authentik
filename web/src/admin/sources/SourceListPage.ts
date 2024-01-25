@@ -39,6 +39,7 @@ export class SourceListPage extends TablePage<Source> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "name";

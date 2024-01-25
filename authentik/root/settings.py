@@ -1,6 +1,7 @@
 """root settings for authentik"""
 import importlib
 import os
+from collections import OrderedDict
 from hashlib import sha512
 from pathlib import Path
 
@@ -15,8 +16,6 @@ from authentik.lib.utils.reflection import get_env
 from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BACKEND_LDAP
 
 BASE_DIR = Path(__file__).absolute().parent.parent.parent
-STATICFILES_DIRS = [BASE_DIR / Path("web")]
-MEDIA_ROOT = BASE_DIR / Path("media")
 
 DEBUG = CONFIG.get_bool("debug")
 SECRET_KEY = CONFIG.get("secret_key")
@@ -48,14 +47,23 @@ AUTHENTICATION_BACKENDS = [
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # Application definition
-INSTALLED_APPS = [
+SHARED_APPS = [
+    "django_tenants",
+    "authentik.tenants",
     "daphne",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
+    "rest_framework",
+    "django_filters",
+    "drf_spectacular",
+    "django_prometheus",
+    "channels",
+]
+TENANT_APPS = [
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
     "authentik.admin",
     "authentik.api",
     "authentik.crypto",
@@ -101,15 +109,16 @@ INSTALLED_APPS = [
     "authentik.stages.user_login",
     "authentik.stages.user_logout",
     "authentik.stages.user_write",
-    "authentik.tenants",
+    "authentik.brands",
     "authentik.blueprints",
-    "rest_framework",
-    "django_filters",
-    "drf_spectacular",
     "guardian",
-    "django_prometheus",
-    "channels",
 ]
+
+TENANT_MODEL = "authentik_tenants.Tenant"
+TENANT_DOMAIN_MODEL = "authentik_tenants.Domain"
+
+TENANT_CREATION_FAKES_MIGRATIONS = True
+TENANT_BASE_SCHEMA = "template"
 
 GUARDIAN_MONKEY_PATCH = False
 
@@ -189,6 +198,8 @@ CACHES = {
             "CLIENT_CLASS": "authentik.root.redis_middleware_django.CustomClient",
         },
         "KEY_PREFIX": "authentik_cache",
+        "KEY_FUNCTION": "django_tenants.cache.make_key",
+        "REVERSE_KEY_FUNCTION": "django_tenants.cache.reverse_key",
     }
 }
 DJANGO_REDIS_CONNECTION_FACTORY = "authentik.root.redis_middleware_django.CustomConnectionFactory"
@@ -206,13 +217,14 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 MESSAGE_STORAGE = "authentik.root.messages.storage.ChannelsStorage"
 
 MIDDLEWARE = [
+    "django_tenants.middleware.default.DefaultTenantMiddleware",
     "authentik.root.middleware.LoggingMiddleware",
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "authentik.root.middleware.ClientIPMiddleware",
     "authentik.stages.user_login.middleware.BoundSessionMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "authentik.core.middleware.RequestIDMiddleware",
-    "authentik.tenants.middleware.TenantMiddleware",
+    "authentik.brands.middleware.BrandMiddleware",
     "authentik.events.middleware.AuditMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -236,7 +248,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "authentik.tenants.utils.context_processor",
+                "authentik.brands.utils.context_processor",
             ],
         },
     },
@@ -258,6 +270,7 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
+ORIGINAL_BACKEND = "django_prometheus.db.backends.postgresql"
 DATABASES = {
     "default": {
         "ENGINE": "authentik.root.db",
@@ -284,6 +297,8 @@ if CONFIG.get_bool("postgresql.use_pgbouncer", False):
     DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
     # https://docs.djangoproject.com/en/4.0/ref/databases/#persistent-connections
     DATABASES["default"]["CONN_MAX_AGE"] = None  # persistent
+
+DATABASE_ROUTERS = ("django_tenants.routers.TenantSyncRouter",)
 
 # Email
 # These values should never actually be used, emails are only sent from email stages, which
@@ -343,6 +358,7 @@ CELERY = {
             "options": {"queue": "authentik_scheduled"},
         },
     },
+    "beat_scheduler": "authentik.tenants.scheduler:TenantAwarePersistentScheduler",
     "task_create_missing_queues": True,
     "task_default_queue": "authentik",
     "broker_url": CONFIG.get("broker.url") or CONFIG.get("redis.url"),
@@ -356,15 +372,61 @@ env = get_env()
 _ERROR_REPORTING = CONFIG.get_bool("error_reporting.enabled", False)
 if _ERROR_REPORTING:
     sentry_env = CONFIG.get("error_reporting.environment", "customer")
-    sentry_init()
+    sentry_init(spotlight=DEBUG)
     set_tag("authentik.uuid", sha512(str(SECRET_KEY).encode("ascii")).hexdigest()[:16])
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
+STATICFILES_DIRS = [BASE_DIR / Path("web")]
 STATIC_URL = "/static/"
-MEDIA_URL = "/media/"
+
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
+
+# Media files
+if CONFIG.get("storage.media.backend", "file") == "s3":
+    STORAGES["default"] = {
+        "BACKEND": "authentik.root.storages.S3Storage",
+        "OPTIONS": {
+            # How to talk to S3
+            "session_profile": CONFIG.get("storage.media.s3.session_profile", None),
+            "access_key": CONFIG.get("storage.media.s3.access_key", None),
+            "secret_key": CONFIG.get("storage.media.s3.secret_key", None),
+            "security_token": CONFIG.get("storage.media.s3.security_token", None),
+            "region_name": CONFIG.get("storage.media.s3.region", None),
+            "use_ssl": CONFIG.get_bool("storage.media.s3.use_ssl", True),
+            "endpoint_url": CONFIG.get("storage.media.s3.endpoint", None),
+            "bucket_name": CONFIG.get("storage.media.s3.bucket_name"),
+            "default_acl": "private",
+            "querystring_auth": True,
+            "signature_version": "s3v4",
+            "file_overwrite": False,
+            "location": "media",
+            "url_protocol": "https:"
+            if CONFIG.get("storage.media.s3.secure_urls", True)
+            else "http:",
+            "custom_domain": CONFIG.get("storage.media.s3.custom_domain", None),
+        },
+    }
+# Fallback on file storage backend
+else:
+    STORAGES["default"] = {
+        "BACKEND": "authentik.root.storages.FileStorage",
+        "OPTIONS": {
+            "location": Path(CONFIG.get("storage.media.file.path")),
+            "base_url": "/media/",
+        },
+    }
+    # Compatibility for apps not supporting top-level STORAGES
+    # such as django-tenants
+    MEDIA_ROOT = STORAGES["default"]["OPTIONS"]["location"]
+    MEDIA_URL = STORAGES["default"]["OPTIONS"]["base_url"]
 
 TEST = False
 TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
@@ -374,10 +436,23 @@ LOGGING = get_logger_config()
 
 
 _DISALLOWED_ITEMS = [
+    "SHARED_APPS",
+    "TENANT_APPS",
     "INSTALLED_APPS",
     "MIDDLEWARE",
     "AUTHENTICATION_BACKENDS",
     "CELERY",
+]
+
+SILENCED_SYSTEM_CHECKS = [
+    # We use our own subclass of django.middleware.csrf.CsrfViewMiddleware
+    "security.W003",
+    # We don't set SESSION_COOKIE_SECURE since we use a custom SessionMiddleware subclass
+    "security.W010",
+    # HSTS: This is configured in reverse proxies/the go proxy, not in django
+    "security.W004",
+    # https redirect: This is configured in reverse proxies/the go proxy, not in django
+    "security.W008",
 ]
 
 
@@ -385,7 +460,8 @@ def _update_settings(app_path: str):
     try:
         settings_module = importlib.import_module(app_path)
         CONFIG.log("debug", "Loaded app settings", path=app_path)
-        INSTALLED_APPS.extend(getattr(settings_module, "INSTALLED_APPS", []))
+        SHARED_APPS.extend(getattr(settings_module, "SHARED_APPS", []))
+        TENANT_APPS.extend(getattr(settings_module, "TENANT_APPS", []))
         MIDDLEWARE.extend(getattr(settings_module, "MIDDLEWARE", []))
         AUTHENTICATION_BACKENDS.extend(getattr(settings_module, "AUTHENTICATION_BACKENDS", []))
         CELERY["beat_schedule"].update(getattr(settings_module, "CELERY_BEAT_SCHEDULE", {}))
@@ -397,7 +473,7 @@ def _update_settings(app_path: str):
 
 
 # Load subapps's settings
-for _app in INSTALLED_APPS:
+for _app in set(SHARED_APPS + TENANT_APPS):
     if not _app.startswith("authentik"):
         continue
     _update_settings(f"{_app}.settings")
@@ -410,7 +486,7 @@ if DEBUG:
         "rest_framework.renderers.BrowsableAPIRenderer"
     )
 
-INSTALLED_APPS.append("authentik.core")
+TENANT_APPS.append("authentik.core")
 
 CONFIG.log("info", "Booting authentik", version=__version__)
 
@@ -418,7 +494,10 @@ CONFIG.log("info", "Booting authentik", version=__version__)
 try:
     importlib.import_module("authentik.enterprise.apps")
     CONFIG.log("info", "Enabled authentik enterprise")
-    INSTALLED_APPS.append("authentik.enterprise")
+    TENANT_APPS.append("authentik.enterprise")
     _update_settings("authentik.enterprise.settings")
 except ImportError:
     pass
+
+SHARED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))
+INSTALLED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))

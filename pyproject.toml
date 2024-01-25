@@ -133,6 +133,9 @@ django-guardian = "*"
 django-model-utils = "*"
 django-prometheus = "*"
 django-redis = "*"
+django-storages = { extras = ["s3"], version = "*" }
+# See https://github.com/django-tenants/django-tenants/pull/997
+django-tenants = { git = "https://github.com/rissson/django-tenants.git", branch="authentik-fixes" }
 djangorestframework = "*"
 djangorestframework-guardian = "*"
 docker = "*"
@@ -151,6 +154,7 @@ lxml = [
     # 4.9.x works with previous libxml2 versions, which is what we get on linux
     { version = "4.9.4", platform = "linux" },
 ]
+jsonpatch = "*"
 opencontainers = { extras = ["reggie"], version = "*" }
 packaging = "*"
 paramiko = "*"
@@ -167,17 +171,18 @@ sentry-sdk = "*"
 service_identity = "*"
 structlog = "*"
 swagger-spec-validator = "*"
+tenant-schemas-celery = "*"
 twilio = "*"
 twisted = "*"
 ua-parser = "*"
-urllib3 = { extras = ["secure"], version = "*" }
+# Pinned because of botocore https://github.com/orgs/python-poetry/discussions/7937
+urllib3 = { extras = ["secure"], version = "<2" }
 uvicorn = { extras = ["standard"], version = "*" }
 watchdog = "*"
 webauthn = "*"
 wsproto = "*"
 xmlsec = "*"
 zxcvbn = "*"
-jsonpatch = "*"
 
 [tool.poetry.dev-dependencies]
 bandit = "*"

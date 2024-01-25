@@ -19,7 +19,7 @@ import (
 	sentryutils "goauthentik.io/internal/utils/sentry"
 	webutils "goauthentik.io/internal/utils/web"
 	"goauthentik.io/internal/web"
-	"goauthentik.io/internal/web/tenant_tls"
+	"goauthentik.io/internal/web/brand_tls"
 )
 
 var rootCmd = &cobra.Command{
@@ -95,11 +95,11 @@ func attemptProxyStart(ws *web.WebServer, u *url.URL) {
 			}
 			continue
 		}
-		// Init tenant_tls here too since it requires an API Client,
+		// Init brand_tls here too since it requires an API Client,
 		// so we just reuse the same one as the outpost uses
-		tw := tenant_tls.NewWatcher(ac.Client)
+		tw := brand_tls.NewWatcher(ac.Client)
 		go tw.Start()
-		ws.TenantTLS = tw
+		ws.BrandTLS = tw
 		ac.AddRefreshHandler(func() {
 			tw.Check()
 		})

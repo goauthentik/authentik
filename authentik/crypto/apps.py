@@ -16,7 +16,7 @@ class AuthentikCryptoConfig(ManagedAppConfig):
     verbose_name = "authentik Crypto"
     default = True
 
-    def reconcile_load_crypto_tasks(self):
+    def reconcile_global_load_crypto_tasks(self):
         """Load crypto tasks"""
         self.import_module("authentik.crypto.tasks")
 
@@ -39,7 +39,7 @@ class AuthentikCryptoConfig(ManagedAppConfig):
             },
         )
 
-    def reconcile_managed_jwt_cert(self):
+    def reconcile_tenant_managed_jwt_cert(self):
         """Ensure managed JWT certificate"""
         from authentik.crypto.models import CertificateKeyPair
 
@@ -52,7 +52,7 @@ class AuthentikCryptoConfig(ManagedAppConfig):
         ):
             self._create_update_cert()
 
-    def reconcile_self_signed(self):
+    def reconcile_tenant_self_signed(self):
         """Create self-signed keypair"""
         from authentik.crypto.builder import CertificateBuilder
         from authentik.crypto.models import CertificateKeyPair

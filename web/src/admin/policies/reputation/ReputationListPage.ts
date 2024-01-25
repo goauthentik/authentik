@@ -41,6 +41,7 @@ export class ReputationListPage extends TablePage<Reputation> {
     order = "identifier";
 
     checkbox = true;
+    clearOnRefresh = true;
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<Reputation>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesReputationScoresList({
@@ -94,7 +95,7 @@ export class ReputationListPage extends TablePage<Reputation> {
             html`${item.updated.toLocaleString()}`,
             html`
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.PoliciesReputationReputation}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.PoliciesReputationReputationpolicy}
                     objectPk=${item.pk || ""}
                 >
                 </ak-rbac-object-permission-modal>
