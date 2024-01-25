@@ -44,3 +44,7 @@ class TestTypeAzureAD(TestCase):
         self.assertEqual(ak_context["username"], AAD_USER["userPrincipalName"])
         self.assertEqual(ak_context["email"], AAD_USER["mail"])
         self.assertEqual(ak_context["name"], AAD_USER["displayName"])
+
+    def test_user_id(self):
+        """Test azure AD user ID"""
+        self.assertEqual(AzureADOAuthCallback().get_user_id(AAD_USER), AAD_USER["id"])

@@ -134,9 +134,11 @@ html > form > input {
     );
     max-height: 9rem;
 }
+
 .ak-brand {
     display: flex;
     justify-content: center;
+    width: 100%;
 }
 .ak-brand img {
     padding: 0 2rem;

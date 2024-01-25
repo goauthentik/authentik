@@ -20,7 +20,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import {
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest,
-    CurrentTenant,
+    CurrentBrand,
     DeviceChallenge,
     DeviceClassesEnum,
     FlowsApi,
@@ -44,8 +44,8 @@ export class AuthenticatorValidateStage
         return this.host.loading;
     }
 
-    get tenant(): CurrentTenant | undefined {
-        return this.host.tenant;
+    get brand(): CurrentBrand | undefined {
+        return this.host.brand;
     }
 
     @state()

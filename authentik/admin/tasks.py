@@ -11,12 +11,7 @@ from structlog.stdlib import get_logger
 from authentik import __version__, get_build_hash
 from authentik.admin.apps import PROM_INFO
 from authentik.events.models import Event, EventAction, Notification
-from authentik.events.monitored_tasks import (
-    MonitoredTask,
-    TaskResult,
-    TaskResultStatus,
-    prefill_task,
-)
+from authentik.events.system_tasks import SystemTask, TaskStatus, prefill_task
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import get_http_session
 from authentik.root.celery import CELERY_APP
@@ -54,13 +49,13 @@ def clear_update_notifications():
             notification.delete()
 
 
-@CELERY_APP.task(bind=True, base=MonitoredTask)
+@CELERY_APP.task(bind=True, base=SystemTask)
 @prefill_task
-def update_latest_version(self: MonitoredTask):
+def update_latest_version(self: SystemTask):
     """Update latest version info"""
     if CONFIG.get_bool("disable_update_check"):
         cache.set(VERSION_CACHE_KEY, "0.0.0", VERSION_CACHE_TIMEOUT)
-        self.set_status(TaskResult(TaskResultStatus.WARNING, messages=["Version check disabled."]))
+        self.set_status(TaskStatus.WARNING, "Version check disabled.")
         return
     try:
         response = get_http_session().get(
@@ -70,9 +65,7 @@ def update_latest_version(self: MonitoredTask):
         data = response.json()
         upstream_version = data.get("stable", {}).get("version")
         cache.set(VERSION_CACHE_KEY, upstream_version, VERSION_CACHE_TIMEOUT)
-        self.set_status(
-            TaskResult(TaskResultStatus.SUCCESSFUL, ["Successfully updated latest Version"])
-        )
+        self.set_status(TaskStatus.SUCCESSFUL, "Successfully updated latest Version")
         _set_prom_info()
         # Check if upstream version is newer than what we're running,
         # and if no event exists yet, create one.
@@ -89,7 +82,7 @@ def update_latest_version(self: MonitoredTask):
             Event.new(EventAction.UPDATE_AVAILABLE, **event_dict).save()
     except (RequestException, IndexError) as exc:
         cache.set(VERSION_CACHE_KEY, "0.0.0", VERSION_CACHE_TIMEOUT)
-        self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
+        self.set_error(exc)
 
 
 _set_prom_info()

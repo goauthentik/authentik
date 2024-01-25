@@ -83,8 +83,12 @@ export class RacInterface extends Interface {
     // Keep track of current connection attempt
     connectionAttempt = 0;
 
-    static domSize(): DOMRect {
-        return document.body.getBoundingClientRect();
+    static domSize(): { width: number; height: number } {
+        const size = document.body.getBoundingClientRect();
+        return {
+            width: size.width * window.devicePixelRatio,
+            height: size.height * window.devicePixelRatio,
+        };
     }
 
     constructor() {
@@ -205,7 +209,7 @@ export class RacInterface extends Interface {
     }
 
     updateTitle(): void {
-        let title = this.tenant?.brandingTitle || TITLE_DEFAULT;
+        let title = this.brand?.brandingTitle || TITLE_DEFAULT;
         if (this.endpointName) {
             title = `${this.endpointName} - ${title}`;
         }

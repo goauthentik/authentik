@@ -3,7 +3,6 @@ import { VERSION } from "@goauthentik/common/constants";
 import { SentryIgnoredError } from "@goauthentik/common/errors";
 import { me } from "@goauthentik/common/users";
 import * as Sentry from "@sentry/browser";
-import { Integrations } from "@sentry/tracing";
 
 import { CapabilitiesEnum, Config, ResponseError } from "@goauthentik/api";
 
@@ -28,8 +27,10 @@ export async function configureSentry(canDoPpi = false): Promise<Config> {
             ],
             release: `authentik@${VERSION}`,
             integrations: [
-                new Integrations.BrowserTracing({
-                    tracingOrigins: [window.location.host, "localhost"],
+                new Sentry.BrowserTracing({
+                    shouldCreateSpanForRequest: (url: string) => {
+                        return url.startsWith(window.location.host);
+                    },
                 }),
             ],
             tracesSampleRate: cfg.errorReporting.tracesSampleRate,

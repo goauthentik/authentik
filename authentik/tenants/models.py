@@ -1,56 +1,63 @@
-"""tenant models"""
+"""Tenant models"""
+import re
 from uuid import uuid4
 
+from django.apps import apps
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.utils import IntegrityError
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
+from django_tenants.models import DomainMixin, TenantMixin, post_schema_sync
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
-from authentik.crypto.models import CertificateKeyPair
-from authentik.flows.models import Flow
+from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 
 LOGGER = get_logger()
 
 
-class Tenant(SerializerModel):
-    """Single tenant"""
+VALID_SCHEMA_NAME = re.compile(r"^t_[a-z0-9]{1,61}$")
+
+
+def _validate_schema_name(name):
+    if not VALID_SCHEMA_NAME.match(name):
+        raise ValidationError(
+            _(
+                "Schema name must start with t_, only contain lowercase letters and numbers and "
+                "be less than 63 characters."
+            )
+        )
+
+
+class Tenant(TenantMixin, SerializerModel):
+    """Tenant"""
 
     tenant_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
-    domain = models.TextField(
-        help_text=_(
-            "Domain that activates this tenant. Can be a superset, i.e. `a.b` for `aa.b` and `ba.b`"
-        )
+    schema_name = models.CharField(
+        max_length=63, unique=True, db_index=True, validators=[_validate_schema_name]
     )
-    default = models.BooleanField(
-        default=False,
-    )
+    name = models.TextField()
 
-    branding_title = models.TextField(default="authentik")
+    auto_create_schema = True
+    auto_drop_schema = True
+    ready = models.BooleanField(default=False)
 
-    branding_logo = models.TextField(default="/static/dist/assets/icons/icon_left_brand.svg")
-    branding_favicon = models.TextField(default="/static/dist/assets/icons/icon.png")
-
-    flow_authentication = models.ForeignKey(
-        Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_authentication"
+    avatars = models.TextField(
+        help_text=_("Configure how authentik should show avatars for users."),
+        default="gravatar,initials",
     )
-    flow_invalidation = models.ForeignKey(
-        Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_invalidation"
+    default_user_change_name = models.BooleanField(
+        help_text=_("Enable the ability for users to change their name."), default=True
     )
-    flow_recovery = models.ForeignKey(
-        Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_recovery"
+    default_user_change_email = models.BooleanField(
+        help_text=_("Enable the ability for users to change their email address."), default=False
     )
-    flow_unenrollment = models.ForeignKey(
-        Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_unenrollment"
+    default_user_change_username = models.BooleanField(
+        help_text=_("Enable the ability for users to change their username."), default=False
     )
-    flow_user_settings = models.ForeignKey(
-        Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_user_settings"
-    )
-    flow_device_code = models.ForeignKey(
-        Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_device_code"
-    )
-
     event_retention = models.TextField(
         default="days=365",
         validators=[timedelta_string_validator],
@@ -58,37 +65,77 @@ class Tenant(SerializerModel):
             "Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2)."
         ),
     )
-
-    web_certificate = models.ForeignKey(
-        CertificateKeyPair,
-        null=True,
-        default=None,
-        on_delete=models.SET_DEFAULT,
-        help_text=_("Web Certificate used by the authentik Core webserver."),
+    footer_links = models.JSONField(
+        help_text=_("The option configures the footer links on the flow executor pages."),
+        default=list,
+        blank=True,
     )
-    attributes = models.JSONField(default=dict, blank=True)
+    gdpr_compliance = models.BooleanField(
+        help_text=_(
+            "When enabled, all the events caused by a user "
+            "will be deleted upon the user's deletion."
+        ),
+        default=True,
+    )
+    impersonation = models.BooleanField(
+        help_text=_("Globally enable/disable impersonation."), default=True
+    )
+
+    def save(self, *args, **kwargs):
+        if self.schema_name == "template":
+            raise IntegrityError("Cannot create schema named template")
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        if self.schema_name in ("public", "template"):
+            raise IntegrityError("Cannot delete schema public or template")
+        super().delete(*args, **kwargs)
 
     @property
     def serializer(self) -> Serializer:
-        from authentik.tenants.api import TenantSerializer
+        from authentik.tenants.api.tenants import TenantSerializer
 
         return TenantSerializer
 
-    @property
-    def default_locale(self) -> str:
-        """Get default locale"""
-        try:
-            return self.attributes.get("settings", {}).get("locale", "")
-        # pylint: disable=broad-except
-        except Exception as exc:
-            LOGGER.warning("Failed to get default locale", exc=exc)
-            return ""
-
     def __str__(self) -> str:
-        if self.default:
-            return "Default tenant"
-        return f"Tenant {self.domain}"
+        return f"Tenant {self.name}"
 
     class Meta:
         verbose_name = _("Tenant")
         verbose_name_plural = _("Tenants")
+
+
+class Domain(DomainMixin, SerializerModel):
+    """Tenant domain"""
+
+    tenant = models.ForeignKey(
+        Tenant, db_index=True, related_name="domains", on_delete=models.CASCADE
+    )
+
+    def __str__(self) -> str:
+        return f"Domain {self.domain}"
+
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.tenants.api.domains import DomainSerializer
+
+        return DomainSerializer
+
+    class Meta:
+        verbose_name = _("Domain")
+        verbose_name_plural = _("Domains")
+
+
+@receiver(post_schema_sync, sender=TenantMixin)
+def tenant_needs_sync(sender, tenant, **kwargs):
+    """Reconcile apps for a specific tenant on creation"""
+    if tenant.ready:
+        return
+
+    with tenant:
+        for app in apps.get_app_configs():
+            if isinstance(app, ManagedAppConfig):
+                app._reconcile(ManagedAppConfig.RECONCILE_TENANT_PREFIX)
+
+    tenant.ready = True
+    tenant.save()

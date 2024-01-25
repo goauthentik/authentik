@@ -1,10 +1,10 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { config, tenant } from "@goauthentik/common/api/config";
+import { brand, config } from "@goauthentik/common/api/config";
 import { UIConfig, uiConfig } from "@goauthentik/common/ui/config";
 import {
+    authentikBrandContext,
     authentikConfigContext,
     authentikEnterpriseContext,
-    authentikTenantContext,
 } from "@goauthentik/elements/AuthentikContexts";
 import type { AdoptedStyleSheetsElement } from "@goauthentik/elements/types";
 import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
@@ -14,14 +14,14 @@ import { state } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import type { Config, CurrentTenant, LicenseSummary } from "@goauthentik/api";
+import type { Config, CurrentBrand, LicenseSummary } from "@goauthentik/api";
 import { EnterpriseApi, UiThemeEnum } from "@goauthentik/api";
 
 import { AKElement } from "../Base";
 
 type AkInterface = HTMLElement & {
     getTheme: () => Promise<UiThemeEnum>;
-    tenant?: CurrentTenant;
+    brand?: CurrentBrand;
     uiConfig?: UIConfig;
     config?: Config;
 };
@@ -48,22 +48,22 @@ export class Interface extends AKElement implements AkInterface {
         return this._config;
     }
 
-    _tenantContext = new ContextProvider(this, {
-        context: authentikTenantContext,
+    _brandContext = new ContextProvider(this, {
+        context: authentikBrandContext,
         initialValue: undefined,
     });
 
-    _tenant?: CurrentTenant;
+    _brand?: CurrentBrand;
 
     @state()
-    set tenant(c: CurrentTenant) {
-        this._tenant = c;
-        this._tenantContext.setValue(c);
+    set brand(c: CurrentBrand) {
+        this._brand = c;
+        this._brandContext.setValue(c);
         this.requestUpdate();
     }
 
-    get tenant(): CurrentTenant | undefined {
-        return this._tenant;
+    get brand(): CurrentBrand | undefined {
+        return this._brand;
     }
 
     _licenseSummaryContext = new ContextProvider(this, {
@@ -87,7 +87,7 @@ export class Interface extends AKElement implements AkInterface {
     constructor() {
         super();
         document.adoptedStyleSheets = [...document.adoptedStyleSheets, ensureCSSStyleSheet(PFBase)];
-        tenant().then((tenant) => (this.tenant = tenant));
+        brand().then((brand) => (this.brand = brand));
         config().then((config) => (this.config = config));
         new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseSummaryRetrieve().then((enterprise) => {
             this.licenseSummary = enterprise;

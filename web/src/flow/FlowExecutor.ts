@@ -55,9 +55,9 @@ export class FlowExecutor extends Interface implements StageHost {
     set challenge(value: ChallengeTypes | undefined) {
         this._challenge = value;
         if (value?.flowInfo?.title) {
-            document.title = `${value.flowInfo?.title} - ${this.tenant?.brandingTitle}`;
+            document.title = `${value.flowInfo?.title} - ${this.brand?.brandingTitle}`;
         } else {
-            document.title = this.tenant?.brandingTitle || TITLE_DEFAULT;
+            document.title = this.brand?.brandingTitle || TITLE_DEFAULT;
         }
         this.requestUpdate();
     }
@@ -186,7 +186,7 @@ export class FlowExecutor extends Interface implements StageHost {
     }
 
     async getTheme(): Promise<UiThemeEnum> {
-        return globalAK()?.tenant.uiTheme || UiThemeEnum.Automatic;
+        return globalAK()?.brand.uiTheme || UiThemeEnum.Automatic;
     }
 
     async submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
@@ -430,7 +430,7 @@ export class FlowExecutor extends Interface implements StageHost {
 
     renderChallengeWrapper(): TemplateResult {
         const logo = html`<div class="pf-c-login__main-header pf-c-brand ak-brand">
-            <img src="${first(this.tenant?.brandingLogo, "")}" alt="authentik Logo" />
+            <img src="${first(this.brand?.brandingLogo, "")}" alt="authentik Logo" />
         </div>`;
         if (!this.challenge) {
             return html`${logo}<ak-empty-state ?loading=${true} header=${msg("Loading")}>
@@ -488,7 +488,7 @@ export class FlowExecutor extends Interface implements StageHost {
                                         </div>
                                         <footer class="pf-c-login__footer">
                                             <ul class="pf-c-list pf-m-inline">
-                                                ${this.tenant?.uiFooterLinks?.map((link) => {
+                                                ${this.brand?.uiFooterLinks?.map((link) => {
                                                     return html`<li>
                                                         <a href="${link.href || ""}"
                                                             >${link.name}</a
@@ -505,7 +505,7 @@ export class FlowExecutor extends Interface implements StageHost {
                                                     ? html`
                                                           <li>
                                                               <a
-                                                                  href="https://unsplash.com/@federize"
+                                                                  href="https://unsplash.com/@theforestbirds"
                                                                   >${msg("Background image")}</a
                                                               >
                                                           </li>
