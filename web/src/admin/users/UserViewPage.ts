@@ -227,46 +227,30 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
 
     renderRecoveryButtons(user: User) {
         return html`<div class="ak-button-collection">
-                                <ak-forms-modal size=${PFSize.Medium} id="update-password-request">
-                                    <span slot="submit">${msg("Update password")}</span>
-                                    <span slot="header">${msg("Update password")}</span>
-                                    <ak-user-password-form
-                                        slot="form"
-                                        .instancePk=${user.pk}
-                                    ></ak-user-password-form>
-                                    <button
-                                        slot="trigger"
-                                        class="pf-c-button pf-m-secondary pf-m-block"
-                                    >
-                                        <pf-tooltip
-                                            position="top"
-                                            content=${msg("Enter a new password for this user")}
-                                        >
-                                            ${msg("Set password")}
-                                        </pf-tooltip>
-                                    </button>
-                                </ak-forms-modal>
-                                <ak-action-button
-                                    id="reset-password-button"
-                                    class="pf-m-secondary pf-m-block"
-                                    .apiRequest=${() => requestRecoveryLink(user)}
-                                >
-                                    <pf-tooltip
-                                        position="top"
-                                        content=${msg(
-                                            "Create a link for this user to reset their password",
-                                        )}
-                                    >
-                                        ${msg("Create Recovery Link")}
-                                    </pf-tooltip>
-                                </ak-action-button>
-                                ${user.email ? renderRecoveryEmailRequest(user) : nothing}
-                            </div>
-                        </dd>
-                    </div>
-                </dl>
-            </div>
-        `;
+            <ak-forms-modal size=${PFSize.Medium} id="update-password-request">
+                <span slot="submit">${msg("Update password")}</span>
+                <span slot="header">${msg("Update password")}</span>
+                <ak-user-password-form slot="form" .instancePk=${user.pk}></ak-user-password-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary pf-m-block">
+                    <pf-tooltip position="top" content=${msg("Enter a new password for this user")}>
+                        ${msg("Set password")}
+                    </pf-tooltip>
+                </button>
+            </ak-forms-modal>
+            <ak-action-button
+                id="reset-password-button"
+                class="pf-m-secondary pf-m-block"
+                .apiRequest=${() => requestRecoveryLink(user)}
+            >
+                <pf-tooltip
+                    position="top"
+                    content=${msg("Create a link for this user to reset their password")}
+                >
+                    ${msg("Create Recovery Link")}
+                </pf-tooltip>
+            </ak-action-button>
+            ${user.email ? renderRecoveryEmailRequest(user) : nothing}
+        </div> `;
     }
 
     renderBody() {
