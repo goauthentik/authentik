@@ -30,5 +30,8 @@
     },
     "engines": {
         "node": ">=20"
+    },
+    "dependencies": {
+        "chromedriver": "^120.0.1"
     }
 }

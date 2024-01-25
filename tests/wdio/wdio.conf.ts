@@ -61,6 +61,9 @@ export const config: Options.Testrunner = {
     capabilities: [
         {
             "browserName": "chrome",
+            "wdio:chromedriverOptions": {
+                binary: "./node_modules/.bin/chromedriver",
+            },
             "goog:chromeOptions": {
                 args: ["--disable-infobars", "--window-size=1280,800"].concat(
                     (function () {

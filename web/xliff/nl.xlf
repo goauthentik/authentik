@@ -6011,11 +6011,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
         <target>Het selecteren van een integratie maakt het beheer van de buitenpost mogelijk door authentik.</target>
 
       </trans-unit>
-      <trans-unit id="s554ce268e9727e79">
-        <source>You can only select providers that match the type of the outpost.</source>
-        <target>U kunt alleen providers selecteren die overeenkomen met het type van de buitenpost.</target>
-
-      </trans-unit>
       <trans-unit id="sf9b1c0661a02d9f9">
         <source>Configuration</source>
         <target>Configuratie</target>
@@ -8025,9 +8020,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="s57b52b60ed5e2bc7">
   <source>Footer links</source>
 </trans-unit>
-<trans-unit id="s7349802b2f7f99c2">
-  <source>This option configures the footer links on the flow executor pages. It must be a valid JSON list and can be used as follows:</source>
-</trans-unit>
 <trans-unit id="s166b59f3cc5d8ec3">
   <source>GDPR compliance</source>
 </trans-unit>
@@ -8060,6 +8052,39 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 </trans-unit>
 <trans-unit id="sa65e7bc7ddd3484d">
   <source>Anonymous user</source>
+</trans-unit>
+<trans-unit id="s0db494ff61b48438">
+  <source>Add All Available</source>
+</trans-unit>
+<trans-unit id="s2f68faa5b84ee9fd">
+  <source>Remove All Available</source>
+</trans-unit>
+<trans-unit id="s0ba85594344a5c02">
+  <source>Remove All</source>
+</trans-unit>
+<trans-unit id="s1efa17e3407e0f56">
+  <source>Available options</source>
+</trans-unit>
+<trans-unit id="s886db4d476f66522">
+  <source>Selected options</source>
+</trans-unit>
+<trans-unit id="sd429eba21dd59f44">
+  <source><x id="0" equiv-text="${availableCount}"/> item(s) marked to add.</source>
+</trans-unit>
+<trans-unit id="s4abfe4e0d0665fd1">
+  <source><x id="0" equiv-text="${selectedTotal}"/> item(s) selected.</source>
+</trans-unit>
+<trans-unit id="s56b3d54118c34b2f">
+  <source><x id="0" equiv-text="${selectedCount}"/> item(s) marked to remove.</source>
+</trans-unit>
+<trans-unit id="scb76a63c68b0d81f">
+  <source>Available Applications</source>
+</trans-unit>
+<trans-unit id="sd176021da2ea0fe3">
+  <source>Selected Applications</source>
+</trans-unit>
+<trans-unit id="s862505f29064fc72">
+  <source>This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:</source>
 </trans-unit>
     </body>
   </file>
