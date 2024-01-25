@@ -251,9 +251,9 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
         </div> `;
     }
 
-    renderTabCredentials(user: User): TemplateResult {
+    renderTabCredentialsToken(user: User): TemplateResult {
         return html`
-            <ak-tabs pageIdentifier="userCredentials" ?vertical=${true}>
+            <ak-tabs pageIdentifier="userCredentialsTokens" ?vertical=${true}>
                 <section
                     slot="page-sessions"
                     data-tab-title="${msg("Sessions")}"
@@ -385,10 +385,10 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
             </section>
             <section
                 slot="page-credentials"
-                data-tab-title="${msg("Credentials")}"
+                data-tab-title="${msg("Credentials / Tokens")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
-                ${this.renderTabCredentials(this.user)}
+                ${this.renderTabCredentialsToken(this.user)}
             </section>
             <ak-rbac-object-permission-page
                 slot="page-permissions"
