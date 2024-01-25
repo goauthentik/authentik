@@ -77,8 +77,10 @@ const rawCssImportMaps = [
 ${importLines.map(createOneImportLine).join("\n")}
 ];
 
-const cssImportMaps = rawCssImportMaps.reduce((acc, line) => (
-{...acc, [line]: line.replace(/\\.css/, ".css?inline")}), {});
+const cssImportMaps = rawCssImportMaps.reduce(
+    (acc, line) => ({ ...acc, [line]: line.replace(/\\.css/, ".css?inline") }),
+    {},
+);
 
 export { cssImportMaps };
 export default cssImportMaps;

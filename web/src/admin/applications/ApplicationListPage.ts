@@ -43,6 +43,7 @@ export class ApplicationListPage extends TablePage<Application> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "name";

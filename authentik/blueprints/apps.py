@@ -11,14 +11,14 @@ from structlog.stdlib import BoundLogger, get_logger
 class ManagedAppConfig(AppConfig):
     """Basic reconciliation logic for apps"""
 
-    _logger: BoundLogger
+    logger: BoundLogger
 
     RECONCILE_GLOBAL_PREFIX: str = "reconcile_global_"
     RECONCILE_TENANT_PREFIX: str = "reconcile_tenant_"
 
     def __init__(self, app_name: str, *args, **kwargs) -> None:
         super().__init__(app_name, *args, **kwargs)
-        self._logger = get_logger().bind(app_name=app_name)
+        self.logger = get_logger().bind(app_name=app_name)
 
     def ready(self) -> None:
         self.reconcile_global()
@@ -38,11 +38,11 @@ class ManagedAppConfig(AppConfig):
                 continue
             name = meth_name.replace(prefix, "")
             try:
-                self._logger.debug("Starting reconciler", name=name)
+                self.logger.debug("Starting reconciler", name=name)
                 meth()
-                self._logger.debug("Successfully reconciled", name=name)
+                self.logger.debug("Successfully reconciled", name=name)
             except (DatabaseError, ProgrammingError, InternalError) as exc:
-                self._logger.warning("Failed to run reconcile", name=name, exc=exc)
+                self.logger.warning("Failed to run reconcile", name=name, exc=exc)
 
     def reconcile_tenant(self) -> None:
         """reconcile ourselves for tenanted methods"""
@@ -51,7 +51,7 @@ class ManagedAppConfig(AppConfig):
         try:
             tenants = list(Tenant.objects.filter(ready=True))
         except (DatabaseError, ProgrammingError, InternalError) as exc:
-            self._logger.debug("Failed to get tenants to run reconcile", exc=exc)
+            self.logger.debug("Failed to get tenants to run reconcile", exc=exc)
             return
         for tenant in tenants:
             with tenant:

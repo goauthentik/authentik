@@ -119,6 +119,14 @@ export abstract class Table<T> extends AKElement implements TableLike {
     @property({ type: Number })
     page = getURLParam("tablePage", 1);
 
+    /** @prop
+     *
+     * Set if your `selectedElements` use of the selection box is to enable bulk-delete, so that
+     * stale data is cleared out when the API returns a new list minus the deleted entries.
+     */
+    @property({ attribute: "clear-on-refresh", type: Boolean, reflect: true })
+    clearOnRefresh = false;
+
     @property({ type: String })
     order?: string;
 
@@ -178,8 +186,11 @@ export abstract class Table<T> extends AKElement implements TableLike {
 
     constructor() {
         super();
-        this.addEventListener(EVENT_REFRESH, () => {
-            this.fetch();
+        this.addEventListener(EVENT_REFRESH, async () => {
+            await this.fetch();
+            if (this.clearOnRefresh) {
+                this.selectedElements = [];
+            }
         });
     }
 

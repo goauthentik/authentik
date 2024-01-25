@@ -1,8 +1,7 @@
-import { EventGeo } from "@goauthentik/admin/events/utils";
+import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { actionToLabel } from "@goauthentik/common/labels";
-import { truncate } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-event-info";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/Dropdown";
@@ -11,7 +10,7 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 
-import { msg, str } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -71,20 +70,7 @@ export class RecentEventsCard extends Table<Event> {
         return [
             html`<div><a href="${`#/events/log/${item.pk}`}">${actionToLabel(item.action)}</a></div>
                 <small>${item.app}</small>`,
-            item.user?.username
-                ? html`<div>
-                          <a href="#/identity/users/${item.user.pk}"
-                              >${truncate(item.user?.username, 15)}</a
-                          >
-                      </div>
-                      ${item.user.on_behalf_of
-                          ? html`<small>
-                                <a href="#/identity/users/${item.user.on_behalf_of.pk}"
-                                    >${msg(str`On behalf of ${item.user.on_behalf_of.username}`)}</a
-                                >
-                            </small>`
-                          : html``}`
-                : html`-`,
+            EventUser(item),
             html`<span>${item.created?.toLocaleString()}</span>`,
             html` <div>${item.clientIp || msg("-")}</div>
                 <small>${EventGeo(item)}</small>`,

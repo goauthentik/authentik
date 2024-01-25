@@ -7,11 +7,14 @@ from dacite.config import Config
 from dacite.core import from_dict
 from dacite.exceptions import DaciteError
 from deepmerge import always_merger
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import FieldError
 from django.db.models import Model
 from django.db.models.query_utils import Q
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
+from guardian.models import UserObjectPermission
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import BaseSerializer, Serializer
 from structlog.stdlib import BoundLogger, get_logger
@@ -36,12 +39,16 @@ from authentik.core.models import (
     UserSourceConnection,
 )
 from authentik.enterprise.models import LicenseKey, LicenseUsage
+from authentik.enterprise.providers.rac.models import ConnectionToken
+from authentik.events.models import SystemTask
 from authentik.events.utils import cleanse_dict
 from authentik.flows.models import FlowToken, Stage
 from authentik.lib.models import SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
+from authentik.policies.reputation.models import Reputation
+from authentik.providers.oauth2.models import AccessToken, AuthorizationCode, RefreshToken
 from authentik.providers.scim.models import SCIMGroup, SCIMUser
 from authentik.tenants.models import Tenant
 
@@ -58,9 +65,12 @@ def excluded_models() -> list[type[Model]]:
     from django.contrib.auth.models import User as DjangoUser
 
     return (
-        Tenant,
+        # Django only classes
         DjangoUser,
         DjangoGroup,
+        ContentType,
+        Permission,
+        UserObjectPermission,
         # Base classes
         Provider,
         Source,
@@ -77,6 +87,13 @@ def excluded_models() -> list[type[Model]]:
         LicenseUsage,
         SCIMGroup,
         SCIMUser,
+        Tenant,
+        SystemTask,
+        ConnectionToken,
+        AuthorizationCode,
+        AccessToken,
+        RefreshToken,
+        Reputation,
     )
 
 

@@ -29,6 +29,7 @@ const rawCssImportMaps = [
     'import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";',
     'import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";',
     'import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";',
+    'import PFDualListSelector from "@patternfly/patternfly/components/DualListSelector/dual-list-selector.css";',
     'import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";',
     'import PFExpandableSection from "@patternfly/patternfly/components/ExpandableSection/expandable-section.css";',
     'import PFFAIcons from "@patternfly/patternfly/base/patternfly-fa-icons.css";',

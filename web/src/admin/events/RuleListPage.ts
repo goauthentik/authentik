@@ -27,6 +27,7 @@ import {
 export class RuleListPage extends TablePage<NotificationRule> {
     expandable = true;
     checkbox = true;
+    clearOnRefresh = true;
 
     searchEnabled(): boolean {
         return true;

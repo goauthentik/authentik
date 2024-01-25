@@ -66,7 +66,8 @@ class TestEvents(TestCase):
 
     def test_from_http_clean_querystring(self):
         """Test cleansing query string"""
-        request = self.factory.get(f"/?token={generate_id()}")
+        token = generate_id()
+        request = self.factory.get(f"/?token={token}")
         event = Event.new("unittest").from_http(request)
         self.assertEqual(
             event.context,
@@ -82,7 +83,8 @@ class TestEvents(TestCase):
 
     def test_from_http_clean_querystring_flow(self):
         """Test cleansing query string (nested query string like flow executor)"""
-        nested_qs = {"token": generate_id()}
+        token = generate_id()
+        nested_qs = {"token": token}
         request = self.factory.get(f"/?{QS_QUERY}={urlencode(nested_qs)}")
         event = Event.new("unittest").from_http(request)
         self.assertEqual(

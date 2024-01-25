@@ -305,6 +305,10 @@ A configuration error occurs, for example during the authorization of an applica
 
 Logged when any model is created/updated/deleted, including the user that sent the request.
 
+:::info
+Starting with authentik Enterprise 2024.1, `model_*` events also include which fields have been changed and their previous and new values.
+:::
+
 ### `email_sent`
 
 An email has been sent. Included is the email that was sent.

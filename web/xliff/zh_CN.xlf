@@ -198,8 +198,8 @@
       </trans-unit>
       <trans-unit id="s14622ee6de586485">
         <source>Attempted to log in as <x id="0" equiv-text="${this.event.context.username}"/></source>
-        <target>已尝试以 
-        <x id="0" equiv-text="${this.event.context.username}"/>身份登录</target>
+        <target>已尝试以
+        <x id="0" equiv-text="${this.event.context.username}"/> 身份登录</target>
         
       </trans-unit>
       <trans-unit id="sb07bf992e3d00664">
@@ -385,8 +385,8 @@
       <trans-unit id="s04c5a637328c9b67">
         <source><x id="0" equiv-text="${this.pages?.startIndex}"/> - <x id="1" equiv-text="${this.pages?.endIndex}"/> of <x id="2" equiv-text="${this.pages?.count}"/></source>
         <target>
-        <x id="0" equiv-text="${this.pages?.startIndex}"/>- 
-        <x id="1" equiv-text="${this.pages?.endIndex}"/>/ 
+        <x id="0" equiv-text="${this.pages?.startIndex}"/>-
+        <x id="1" equiv-text="${this.pages?.endIndex}"/>/
         <x id="2" equiv-text="${this.pages?.count}"/></target>
         
       </trans-unit>
@@ -451,9 +451,9 @@
         
       </trans-unit>
       <trans-unit id="sc35581d9c1cd67ff">
-        <source>On behalf of <x id="0" equiv-text="${item.user.on_behalf_of.username}"/></source>
-        <target>代表 
-        <x id="0" equiv-text="${item.user.on_behalf_of.username}"/></target>
+        <source>On behalf of <x id="0" equiv-text="${event.user.on_behalf_of.username}"/></source>
+        <target>代表
+        <x id="0" equiv-text="${event.user.on_behalf_of.username}"/></target>
         
       </trans-unit>
       <trans-unit id="saf63a04c86018698">
@@ -508,7 +508,7 @@
       </trans-unit>
       <trans-unit id="scefe482c547fb3f3">
         <source>Based on <x id="0" equiv-text="${value.versionCurrent}"/></source>
-        <target>基于 
+        <target>基于
         <x id="0" equiv-text="${value.versionCurrent}"/></target>
         
       </trans-unit>
@@ -568,7 +568,7 @@
       <trans-unit id="s0382d73823585617">
         <source><x id="0" equiv-text="${this.errorMessage}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
         <target>
-        <x id="0" equiv-text="${this.errorMessage}"/>： 
+        <x id="0" equiv-text="${this.errorMessage}"/>：
         <x id="1" equiv-text="${e.toString()}"/></target>
         
       </trans-unit>
@@ -609,7 +609,7 @@
       </trans-unit>
       <trans-unit id="saa0e2675da69651b">
         <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
-        <target>未找到 URL &quot; 
+        <target>未找到 URL &quot;
         <x id="0" equiv-text="${this.url}"/>&quot;。</target>
         
       </trans-unit>
@@ -625,7 +625,7 @@
       </trans-unit>
       <trans-unit id="s6dfd15978586d05f">
         <source>Welcome, <x id="0" equiv-text="${name}"/>.</source>
-        <target>欢迎， 
+        <target>欢迎，
         <x id="0" equiv-text="${name}"/>。</target>
         
       </trans-unit>
@@ -761,9 +761,9 @@
         
       </trans-unit>
       <trans-unit id="se7e1ababbc4868b8">
-        <source><x id="0" equiv-text="${item.taskDuration.toFixed(2)}"/> seconds</source>
+        <source><x id="0" equiv-text="${item.duration.toFixed(2)}"/> seconds</source>
         <target>
-        <x id="0" equiv-text="${item.taskDuration.toFixed(2)}"/>秒</target>
+        <x id="0" equiv-text="${item.duration.toFixed(2)}"/> 秒</target>
         
       </trans-unit>
       <trans-unit id="sc25edca57df81461">
@@ -1588,7 +1588,7 @@
       </trans-unit>
       <trans-unit id="s5d6af4c100ad321b">
         <source>Create <x id="0" equiv-text="${type.name}"/></source>
-        <target>创建 
+        <target>创建
         <x id="0" equiv-text="${type.name}"/></target>
         
       </trans-unit>
@@ -1717,14 +1717,14 @@
       </trans-unit>
       <trans-unit id="sf6eb148db23d19de">
         <source>Failed to delete <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
-        <target>删除 
-        <x id="0" equiv-text="${this.objectLabel}"/>失败： 
+        <target>删除
+        <x id="0" equiv-text="${this.objectLabel}"/> 失败：
         <x id="1" equiv-text="${e.toString()}"/></target>
         
       </trans-unit>
       <trans-unit id="s039b6434e8a75560">
         <source>Delete <x id="0" equiv-text="${this.objectLabel}"/></source>
-        <target>删除 
+        <target>删除
         <x id="0" equiv-text="${this.objectLabel}"/></target>
         
       </trans-unit>
@@ -1779,7 +1779,7 @@
       </trans-unit>
       <trans-unit id="sc9175cb129fdc306">
         <source>Update <x id="0" equiv-text="${item.verboseName}"/></source>
-        <target>更新 
+        <target>更新
         <x id="0" equiv-text="${item.verboseName}"/></target>
         
       </trans-unit>
@@ -2711,19 +2711,19 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s030ac0829bb50a49">
         <source>Policy <x id="0" equiv-text="${item.policyObj?.name}"/></source>
-        <target>策略 
+        <target>策略
         <x id="0" equiv-text="${item.policyObj?.name}"/></target>
         
       </trans-unit>
       <trans-unit id="s2a64d2dca3da9b0e">
         <source>Group <x id="0" equiv-text="${item.groupObj?.name}"/></source>
-        <target>组 
+        <target>组
         <x id="0" equiv-text="${item.groupObj?.name}"/></target>
         
       </trans-unit>
       <trans-unit id="se5dc026819a32ff8">
         <source>User <x id="0" equiv-text="${item.userObj?.name}"/></source>
-        <target>用户 
+        <target>用户
         <x id="0" equiv-text="${item.userObj?.name}"/></target>
         
       </trans-unit>
@@ -3338,14 +3338,14 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sbedb77365a066648">
-        <source>Last sync: <x id="0" equiv-text="${task.taskFinishTimestamp.toLocaleString()}"/></source>
-        <target>上次同步： 
-        <x id="0" equiv-text="${task.taskFinishTimestamp.toLocaleString()}"/></target>
+        <source>Last sync: <x id="0" equiv-text="${task.finishTimestamp.toLocaleString()}"/></source>
+        <target>上次同步：
+        <x id="0" equiv-text="${task.finishTimestamp.toLocaleString()}"/></target>
         
       </trans-unit>
       <trans-unit id="sf3fec8353106ac2f">
         <source>OAuth Source <x id="0" equiv-text="${this.source.name}"/></source>
-        <target>OAuth 源 
+        <target>OAuth 源
         <x id="0" equiv-text="${this.source.name}"/></target>
         
       </trans-unit>
@@ -3787,8 +3787,8 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="se16ac750b81fa93d">
         <source>Assigned to <x id="0" equiv-text="${item.boundTo}"/> object(s).</source>
-        <target>已分配给 
-        <x id="0" equiv-text="${item.boundTo}"/>个对象。</target>
+        <target>已分配给
+        <x id="0" equiv-text="${item.boundTo}"/> 个对象。</target>
         
       </trans-unit>
       <trans-unit id="s5a48d5171e1a1522">
@@ -3912,7 +3912,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s4414164d120de61a">
         <source>The following objects use <x id="0" equiv-text="${objName}"/></source>
-        <target>以下对象使用 
+        <target>以下对象使用
         <x id="0" equiv-text="${objName}"/></target>
         
       </trans-unit>
@@ -3927,15 +3927,15 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s14401ff4a0cba208">
         <source>Failed to update <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
-        <target>更新 
-        <x id="0" equiv-text="${this.objectLabel}"/>失败： 
+        <target>更新
+        <x id="0" equiv-text="${this.objectLabel}"/> 失败：
         <x id="1" equiv-text="${e.toString()}"/></target>
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
         <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot;?</source>
-        <target>您确定要更新 
-        <x id="0" equiv-text="${this.objectLabel}"/>&quot; 
+        <target>您确定要更新
+        <x id="0" equiv-text="${this.objectLabel}"/>&quot;
         <x id="1" equiv-text="${this.obj?.name}"/>&quot; 吗？</target>
         
       </trans-unit>
@@ -3976,8 +3976,8 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s5d7748b1d2363478">
         <source>Are you sure you want to remove the selected users from the group <x id="0" equiv-text="${this.targetGroup?.name}"/>?</source>
-        <target>您确定要从组 
-        <x id="0" equiv-text="${this.targetGroup?.name}"/>中删除选定的用户吗？</target>
+        <target>您确定要从组
+        <x id="0" equiv-text="${this.targetGroup?.name}"/> 中删除选定的用户吗？</target>
         
       </trans-unit>
       <trans-unit id="sea4f08110bb8f15d">
@@ -4112,7 +4112,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s3616cc78631f5893">
         <source>Warning: You're about to delete the user you're logged in as (<x id="0" equiv-text="${shouldShowWarning.username}"/>). Proceed at your own risk.</source>
-        <target>警告：您即将删除当前登录的用户（ 
+        <target>警告：您即将删除当前登录的用户（
         <x id="0" equiv-text="${shouldShowWarning.username}"/>）。如果继续，请自担风险。</target>
         
       </trans-unit>
@@ -4143,8 +4143,8 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="sb4c9ed2a487b238f">
         <source>Are you sure you want to remove user <x id="0" equiv-text="${this.targetUser?.username}"/> from the following groups?</source>
-        <target>您确定要从以下组中删除用户 
-        <x id="0" equiv-text="${this.targetUser?.username}"/>吗？</target>
+        <target>您确定要从以下组中删除用户
+        <x id="0" equiv-text="${this.targetUser?.username}"/> 吗？</target>
         
       </trans-unit>
       <trans-unit id="s964f6725aeb7662f">
@@ -5354,8 +5354,8 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s2d5f69929bb7221d">
         <source><x id="0" equiv-text="${prompt.name}"/> (&quot;<x id="1" equiv-text="${prompt.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${prompt.type}"/>)</source>
         <target>
-        <x id="0" equiv-text="${prompt.name}"/>（&quot; 
-        <x id="1" equiv-text="${prompt.fieldKey}"/>&quot;，类型为 
+        <x id="0" equiv-text="${prompt.name}"/>（&quot;
+        <x id="1" equiv-text="${prompt.fieldKey}"/>&quot;，类型为
         <x id="2" equiv-text="${prompt.type}"/>）</target>
         
       </trans-unit>
@@ -5521,8 +5521,8 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s77299a9d3dd932cd">
         <source>Successfully imported <x id="0" equiv-text="${res.count}"/> devices.</source>
-        <target>已成功导入 
-        <x id="0" equiv-text="${res.count}"/>个设备。</target>
+        <target>已成功导入
+        <x id="0" equiv-text="${res.count}"/> 个设备。</target>
         
       </trans-unit>
       <trans-unit id="s6a615f6165ef01c9">
@@ -5848,7 +5848,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s65d67612999165e9">
         <source>Event <x id="0" equiv-text="${this.event.pk}"/></source>
-        <target>事件 
+        <target>事件
         <x id="0" equiv-text="${this.event.pk}"/></target>
         
       </trans-unit>
@@ -6081,7 +6081,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       <trans-unit id="s1ac2653a6492b435">
         <source><x id="0" equiv-text="${this.outpostHealth.version}"/>, should be <x id="1" equiv-text="${this.outpostHealth.versionShould}"/></source>
         <target>
-        <x id="0" equiv-text="${this.outpostHealth.version}"/>，应该是 
+        <x id="0" equiv-text="${this.outpostHealth.version}"/>，应该是
         <x id="1" equiv-text="${this.outpostHealth.versionShould}"/></target>
         
       </trans-unit>
@@ -6097,7 +6097,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="s02b632a9ac24a824">
         <source>Last seen: <x id="0" equiv-text="${this.outpostHealth.lastSeen?.toLocaleTimeString()}"/></source>
-        <target>上次出现： 
+        <target>上次出现：
         <x id="0" equiv-text="${this.outpostHealth.lastSeen?.toLocaleTimeString()}"/></target>
         
       </trans-unit>
@@ -6128,8 +6128,8 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="sbf5f4c5ba679e847">
         <source>Logging in via <x id="0" equiv-text="${item.config.authentik_host}"/>.</source>
-        <target>通过 
-        <x id="0" equiv-text="${item.config.authentik_host}"/>登录。</target>
+        <target>通过
+        <x id="0" equiv-text="${item.config.authentik_host}"/> 登录。</target>
         
       </trans-unit>
       <trans-unit id="s59b6028f19d15cda">
@@ -6324,7 +6324,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="sef50d248448e0df1">
         <source>Yes (<x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"/>)</source>
-        <target>是（ 
+        <target>是（
         <x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"/>）</target>
         
       </trans-unit>
@@ -6501,8 +6501,8 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="s96b3cddf33e1c853">
         <source>You're currently impersonating <x id="0" equiv-text="${this.impersonation}"/>. Click to stop.</source>
-        <target>您目前正在模拟 
-        <x id="0" equiv-text="${this.impersonation}"/>的身份。点击以停止。</target>
+        <target>您目前正在模拟
+        <x id="0" equiv-text="${this.impersonation}"/> 的身份。点击以停止。</target>
         
       </trans-unit>
       <trans-unit id="s7031e6928c44cedd">
@@ -6627,7 +6627,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="s670ad066cc0e50a3">
         <source>Login to continue to <x id="0" equiv-text="${this.challenge.applicationPre}"/>.</source>
-        <target>登录以继续前往 
+        <target>登录以继续前往
         <x id="0" equiv-text="${this.challenge.applicationPre}"/>。</target>
         
       </trans-unit>
@@ -6768,13 +6768,13 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="sbbb7318812d64e51">
         <source>Error when creating credential: <x id="0" equiv-text="${err}"/></source>
-        <target>创建凭据时出错： 
+        <target>创建凭据时出错：
         <x id="0" equiv-text="${err}"/></target>
         
       </trans-unit>
       <trans-unit id="sfe199b2564b66054">
         <source>Error when validating assertion on server: <x id="0" equiv-text="${err}"/></source>
-        <target>在服务器上验证断言时出错： 
+        <target>在服务器上验证断言时出错：
         <x id="0" equiv-text="${err}"/></target>
         
       </trans-unit>
@@ -6950,13 +6950,13 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="s7fa4e5e409d43573">
         <source>Error creating credential: <x id="0" equiv-text="${err}"/></source>
-        <target>创建凭据时出错： 
+        <target>创建凭据时出错：
         <x id="0" equiv-text="${err}"/></target>
         
       </trans-unit>
       <trans-unit id="s9d95f09deb601f34">
         <source>Server validation of credential failed: <x id="0" equiv-text="${err}"/></source>
-        <target>服务器验证凭据失败： 
+        <target>服务器验证凭据失败：
         <x id="0" equiv-text="${err}"/></target>
         
       </trans-unit>
@@ -7042,7 +7042,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="s67dedada007d4067">
         <source>Failed to disconnected source: <x id="0" equiv-text="${exc}"/></source>
-        <target>解绑失败： 
+        <target>解绑源失败：
         <x id="0" equiv-text="${exc}"/></target>
         
       </trans-unit>
@@ -7058,7 +7058,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="sababff57115130a0">
         <source>Error: unsupported source settings: <x id="0" equiv-text="${source.component}"/></source>
-        <target>错误：不支持的源设置： 
+        <target>错误：不支持的源设置：
         <x id="0" equiv-text="${source.component}"/></target>
         
       </trans-unit>
@@ -8330,6 +8330,30 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="see1eb81c1f734079">
   <source>System settings</source>
   <target>系统设置</target>
+</trans-unit>
+<trans-unit id="s47fb5504f693775b">
+  <source>Changes made:</source>
+  <target>作出的修改：</target>
+</trans-unit>
+<trans-unit id="s506b6a19d12f414c">
+  <source>Key</source>
+  <target>键名</target>
+</trans-unit>
+<trans-unit id="s4fc9dc73245eab09">
+  <source>Previous value</source>
+  <target>之前的值</target>
+</trans-unit>
+<trans-unit id="scb3b0671d7b7f640">
+  <source>New value</source>
+  <target>新值</target>
+</trans-unit>
+<trans-unit id="s4a642406b0745917">
+  <source>Raw event info</source>
+  <target>原始事件信息</target>
+</trans-unit>
+<trans-unit id="sa65e7bc7ddd3484d">
+  <source>Anonymous user</source>
+  <target>匿名用户</target>
 </trans-unit>
     </body>
   </file>

@@ -29,6 +29,7 @@ import {
 export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     expandable = true;
     checkbox = true;
+    clearOnRefresh = true;
 
     searchEnabled(): boolean {
         return true;

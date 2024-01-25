@@ -27,6 +27,7 @@ import {
 export class EndpointListPage extends Table<Endpoint> {
     expandable = true;
     checkbox = true;
+    clearOnRefresh = true;
 
     searchEnabled(): boolean {
         return true;

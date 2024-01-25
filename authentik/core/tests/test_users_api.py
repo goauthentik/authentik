@@ -261,7 +261,14 @@ class TestUsersAPI(APITestCase):
             reverse("authentik_api:user-paths"),
         )
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(response.content.decode(), {"paths": ["users"]})
+        expected = list(
+            User.objects.all()
+            .values("path")
+            .distinct()
+            .order_by("path")
+            .values_list("path", flat=True)
+        )
+        self.assertJSONEqual(response.content.decode(), {"paths": expected})
 
     def test_path_valid(self):
         """Test path"""

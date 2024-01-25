@@ -18,6 +18,7 @@ from django.http.request import HttpRequest
 from django.utils import timezone
 from django.views.debug import SafeExceptionReporterFilter
 from geoip2.models import ASN, City
+from guardian.conf import settings
 from guardian.utils import get_anonymous_user
 
 from authentik.blueprints.v1.common import YAMLTag
@@ -28,7 +29,7 @@ from authentik.policies.types import PolicyRequest
 
 # Special keys which are *not* cleaned, even when the default filter
 # is matched
-ALLOWED_SPECIAL_KEYS = re.compile("passing", flags=re.I)
+ALLOWED_SPECIAL_KEYS = re.compile("passing|password_change_date", flags=re.I)
 
 
 def cleanse_item(key: str, value: Any) -> Any:
@@ -40,13 +41,13 @@ def cleanse_item(key: str, value: Any) -> Any:
             value[idx] = cleanse_item(key, item)
         return value
     try:
-        if SafeExceptionReporterFilter.hidden_settings.search(
-            key
-        ) and not ALLOWED_SPECIAL_KEYS.search(key):
-            return SafeExceptionReporterFilter.cleansed_substitute
+        if not SafeExceptionReporterFilter.hidden_settings.search(key):
+            return value
+        if ALLOWED_SPECIAL_KEYS.search(key):
+            return value
+        return SafeExceptionReporterFilter.cleansed_substitute
     except TypeError:  # pragma: no cover
         return value
-    return value
 
 
 def cleanse_dict(source: dict[Any, Any]) -> dict[Any, Any]:
@@ -84,6 +85,8 @@ def get_user(user: User | AnonymousUser, original_user: Optional[User] = None) -
         "pk": user.pk,
         "email": user.email,
     }
+    if user.username == settings.ANONYMOUS_USER_NAME:
+        user_data["is_anonymous"] = True
     if original_user:
         original_data = get_user(original_user)
         original_data["on_behalf_of"] = user_data

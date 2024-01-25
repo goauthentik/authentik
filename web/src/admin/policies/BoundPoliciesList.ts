@@ -29,6 +29,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     policyOnly = false;
 
     checkbox = true;
+    clearOnRefresh = true;
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<PolicyBinding>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsList({

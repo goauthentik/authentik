@@ -381,7 +381,7 @@ env = get_env()
 _ERROR_REPORTING = CONFIG.get_bool("error_reporting.enabled", False)
 if _ERROR_REPORTING:
     sentry_env = CONFIG.get("error_reporting.environment", "customer")
-    sentry_init()
+    sentry_init(spotlight=DEBUG)
     set_tag("authentik.uuid", sha512(str(SECRET_KEY).encode("ascii")).hexdigest()[:16])
 
 
@@ -451,6 +451,17 @@ _DISALLOWED_ITEMS = [
     "MIDDLEWARE",
     "AUTHENTICATION_BACKENDS",
     "CELERY",
+]
+
+SILENCED_SYSTEM_CHECKS = [
+    # We use our own subclass of django.middleware.csrf.CsrfViewMiddleware
+    "security.W003",
+    # We don't set SESSION_COOKIE_SECURE since we use a custom SessionMiddleware subclass
+    "security.W010",
+    # HSTS: This is configured in reverse proxies/the go proxy, not in django
+    "security.W004",
+    # https redirect: This is configured in reverse proxies/the go proxy, not in django
+    "security.W008",
 ]
 
 

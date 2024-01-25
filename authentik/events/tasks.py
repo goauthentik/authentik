@@ -13,13 +13,9 @@ from authentik.events.models import (
     NotificationRule,
     NotificationTransport,
     NotificationTransportError,
+    TaskStatus,
 )
-from authentik.events.monitored_tasks import (
-    MonitoredTask,
-    TaskResult,
-    TaskResultStatus,
-    prefill_task,
-)
+from authentik.events.system_tasks import SystemTask, prefill_task
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyEngineMode
 from authentik.root.celery import CELERY_APP
@@ -99,10 +95,10 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
     bind=True,
     autoretry_for=(NotificationTransportError,),
     retry_backoff=True,
-    base=MonitoredTask,
+    base=SystemTask,
 )
 def notification_transport(
-    self: MonitoredTask, transport_pk: int, event_pk: str, user_pk: int, trigger_pk: str
+    self: SystemTask, transport_pk: int, event_pk: str, user_pk: int, trigger_pk: str
 ):
     """Send notification over specified transport"""
     self.save_on_success = False
@@ -123,9 +119,9 @@ def notification_transport(
         if not transport:
             return
         transport.send(notification)
-        self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL))
+        self.set_status(TaskStatus.SUCCESSFUL)
     except (NotificationTransportError, PropertyMappingExpressionException) as exc:
-        self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
+        self.set_error(exc)
         raise exc
 
 
@@ -137,13 +133,13 @@ def gdpr_cleanup(user_pk: int):
     events.delete()
 
 
-@CELERY_APP.task(bind=True, base=MonitoredTask)
+@CELERY_APP.task(bind=True, base=SystemTask)
 @prefill_task
-def notification_cleanup(self: MonitoredTask):
+def notification_cleanup(self: SystemTask):
     """Cleanup seen notifications and notifications whose event expired."""
     notifications = Notification.objects.filter(Q(event=None) | Q(seen=True))
     amount = notifications.count()
     for notification in notifications:
         notification.delete()
     LOGGER.debug("Expired notifications", amount=amount)
-    self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, [f"Expired {amount} Notifications"]))
+    self.set_status(TaskStatus.SUCCESSFUL, f"Expired {amount} Notifications")

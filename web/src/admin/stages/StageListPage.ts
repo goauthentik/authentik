@@ -55,6 +55,7 @@ export class StageListPage extends TablePage<Stage> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "name";

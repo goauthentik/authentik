@@ -104,7 +104,7 @@ class LicenseKey:
     @staticmethod
     def base_user_qs() -> QuerySet:
         """Base query set for all users"""
-        return User.objects.all().exclude(pk=get_anonymous_user().pk)
+        return User.objects.all().exclude(is_active=False).exclude(pk=get_anonymous_user().pk)
 
     @staticmethod
     def get_default_user_count():

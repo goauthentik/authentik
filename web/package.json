@@ -34,7 +34,7 @@
         "storybook:run-import-map-script": "node scripts/build-storybook-import-maps.mjs"
     },
     "dependencies": {
-        "@codemirror/lang-html": "^6.4.7",
+        "@codemirror/lang-html": "^6.4.8",
         "@codemirror/lang-javascript": "^6.2.1",
         "@codemirror/lang-python": "^6.1.3",
         "@codemirror/lang-xml": "^6.0.2",
@@ -42,14 +42,14 @@
         "@codemirror/theme-one-dark": "^6.1.2",
         "@formatjs/intl-listformat": "^7.5.5",
         "@fortawesome/fontawesome-free": "^6.5.1",
-        "@goauthentik/api": "^2023.10.6-1706016512",
+        "@goauthentik/api": "^2023.10.6-1706113408",
         "@lit-labs/context": "^0.4.0",
         "@lit-labs/task": "^3.1.0",
         "@lit/localize": "^0.11.4",
         "@open-wc/lit-helpers": "^0.6.0",
         "@patternfly/elements": "^2.4.0",
         "@patternfly/patternfly": "^4.224.2",
-        "@sentry/browser": "^7.94.1",
+        "@sentry/browser": "^7.95.0",
         "@webcomponents/webcomponentsjs": "^2.8.0",
         "base64-js": "^1.5.1",
         "chart.js": "^4.4.1",
@@ -111,6 +111,7 @@
         "eslint-plugin-lit": "^1.11.0",
         "eslint-plugin-sonarjs": "^0.23.0",
         "eslint-plugin-storybook": "^0.6.15",
+        "github-slugger": "^2.0.0",
         "lit-analyzer": "^2.0.3",
         "npm-run-all": "^4.1.5",
         "prettier": "^3.2.4",
@@ -132,9 +133,9 @@
         "vite-tsconfig-paths": "^4.3.1"
     },
     "optionalDependencies": {
-        "@esbuild/darwin-arm64": "^0.19.11",
+        "@esbuild/darwin-arm64": "^0.19.12",
         "@esbuild/linux-amd64": "^0.18.11",
-        "@esbuild/linux-arm64": "^0.19.11"
+        "@esbuild/linux-arm64": "^0.19.12"
     },
     "engines": {
         "node": ">=20"

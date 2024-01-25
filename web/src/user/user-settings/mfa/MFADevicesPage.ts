@@ -25,6 +25,7 @@ export class MFADevicesPage extends Table<Device> {
     userSettings?: UserSetting[];
 
     checkbox = true;
+    clearOnRefresh = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<Device>> {
         const devices = await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAllList();

@@ -32,7 +32,7 @@ import {
     RbacPermissionsAssignedByUsersListModelEnum,
     SCIMProvider,
     SCIMSyncStatus,
-    TaskStatusEnum,
+    SystemTaskStatusEnum,
 } from "@goauthentik/api";
 
 @customElement("ak-provider-scim-view")
@@ -143,15 +143,15 @@ export class SCIMProviderViewPage extends AKElement {
             <ul class="pf-c-list">
                 ${this.syncState.tasks.map((task) => {
                     let header = "";
-                    if (task.status === TaskStatusEnum.Warning) {
+                    if (task.status === SystemTaskStatusEnum.Warning) {
                         header = msg("Task finished with warnings");
-                    } else if (task.status === TaskStatusEnum.Error) {
+                    } else if (task.status === SystemTaskStatusEnum.Error) {
                         header = msg("Task finished with errors");
                     } else {
-                        header = msg(str`Last sync: ${task.taskFinishTimestamp.toLocaleString()}`);
+                        header = msg(str`Last sync: ${task.finishTimestamp.toLocaleString()}`);
                     }
                     return html`<li>
-                        <p>${task.taskName}</p>
+                        <p>${task.name}</p>
                         <ul class="pf-c-list">
                             <li>${header}</li>
                             ${task.messages.map((m) => {
