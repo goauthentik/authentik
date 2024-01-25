@@ -1718,7 +1718,7 @@
       <trans-unit id="sf6eb148db23d19de">
         <source>Failed to delete <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
         <target>删除
-        <x id="0" equiv-text="${this.objectLabel}"/>失败：
+        <x id="0" equiv-text="${this.objectLabel}"/> 失败：
         <x id="1" equiv-text="${e.toString()}"/></target>
         
       </trans-unit>
