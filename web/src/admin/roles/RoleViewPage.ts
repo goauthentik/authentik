@@ -3,6 +3,7 @@ import "@goauthentik/admin/roles/RoleForm";
 import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { renderDescriptionList } from "@goauthentik/components/DescriptionList";
 import "@goauthentik/components/events/ObjectChangelog";
 import "@goauthentik/components/events/UserEvents";
 import { AKElement } from "@goauthentik/elements/Base";
@@ -11,7 +12,7 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/forms/ModalForm";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -41,7 +42,7 @@ export class RoleViewPage extends AKElement {
     @state()
     _role?: Role;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [
             PFBase,
             PFPage,
@@ -71,7 +72,7 @@ export class RoleViewPage extends AKElement {
         });
     }
 
-    render(): TemplateResult {
+    render() {
         return html`<ak-page-header
                 icon="fa fa-lock"
                 header=${msg(str`Role ${this._role?.name || ""}`)}
@@ -80,10 +81,22 @@ export class RoleViewPage extends AKElement {
             ${this.renderBody()}`;
     }
 
-    renderBody(): TemplateResult {
+    renderUpdateControl(role: Role) {
+        return html` <div class="pf-c-description-list__text">
+            <ak-forms-modal>
+                <span slot="submit"> ${msg("Update")} </span>
+                <span slot="header"> ${msg("Update Role")} </span>
+                <ak-role-form slot="form" .instancePk=${role.pk}> </ak-role-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Edit")}</button>
+            </ak-forms-modal>
+        </div>`;
+    }
+
+    renderBody() {
         if (!this._role) {
-            return html``;
+            return nothing;
         }
+
         return html` <ak-tabs>
             <section
                 slot="page-overview"
@@ -96,46 +109,10 @@ export class RoleViewPage extends AKElement {
                     >
                         <div class="pf-c-card__title">${msg("Role Info")}</div>
                         <div class="pf-c-card__body">
-                            <dl class="pf-c-description-list">
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
-                                            >${msg("Name")}</span
-                                        >
-                                    </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
-                                            ${this._role.name}
-                                        </div>
-                                    </dd>
-                                </div>
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
-                                            >${msg("Edit")}</span
-                                        >
-                                    </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
-                                            <ak-forms-modal>
-                                                <span slot="submit"> ${msg("Update")} </span>
-                                                <span slot="header"> ${msg("Update Role")} </span>
-                                                <ak-role-form
-                                                    slot="form"
-                                                    .instancePk=${this._role.pk}
-                                                >
-                                                </ak-role-form>
-                                                <button
-                                                    slot="trigger"
-                                                    class="pf-c-button pf-m-primary"
-                                                >
-                                                    ${msg("Edit")}
-                                                </button>
-                                            </ak-forms-modal>
-                                        </div>
-                                    </dd>
-                                </div>
-                            </dl>
+                            ${renderDescriptionList([
+                                [msg("Name"), this._role.name],
+                                [msg("Edit"), this.renderUpdateControl(this._role)],
+                            ])}
                         </div>
                     </div>
                     <div
