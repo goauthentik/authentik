@@ -32,7 +32,7 @@ export class SystemTaskListPage extends TablePage<SystemTask> {
     expandable = true;
 
     searchEnabled(): boolean {
-        return false;
+        return true;
     }
 
     @property()
