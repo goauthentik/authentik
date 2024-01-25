@@ -1,19 +1,14 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKElement } from "@goauthentik/elements/Base";
+import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
-import { EnterpriseApi, LicenseSummary } from "@goauthentik/api";
-
 @customElement("ak-enterprise-status")
-export class EnterpriseStatusBanner extends AKElement {
-    @state()
-    summary?: LicenseSummary;
-
+export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
     @property()
     interface: "admin" | "user" | "" = "";
 
@@ -21,12 +16,10 @@ export class EnterpriseStatusBanner extends AKElement {
         return [PFBanner];
     }
 
-    async firstUpdated(): Promise<void> {
-        this.summary = await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseSummaryRetrieve();
-    }
-
     renderBanner(): TemplateResult {
-        return html`<div class="pf-c-banner ${this.summary?.readOnly ? "pf-m-red" : "pf-m-gold"}">
+        return html`<div
+            class="pf-c-banner ${this.licenseSummary?.readOnly ? "pf-m-red" : "pf-m-gold"}"
+        >
             ${msg("Warning: The current user count has exceeded the configured licenses.")}
             <a href="/if/admin/#/enterprise/licenses"> ${msg("Click here for more info.")} </a>
         </div>`;
@@ -35,12 +28,12 @@ export class EnterpriseStatusBanner extends AKElement {
     render(): TemplateResult {
         switch (this.interface.toLowerCase()) {
             case "admin":
-                if (this.summary?.showAdminWarning || this.summary?.readOnly) {
+                if (this.licenseSummary?.showAdminWarning || this.licenseSummary?.readOnly) {
                     return this.renderBanner();
                 }
                 break;
             case "user":
-                if (this.summary?.showUserWarning || this.summary?.readOnly) {
+                if (this.licenseSummary?.showUserWarning || this.licenseSummary?.readOnly) {
                     return this.renderBanner();
                 }
                 break;
