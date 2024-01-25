@@ -1,3 +1,5 @@
+import "@goauthentik/app/admin/users/UserAssignedGlobalPermissionsTable";
+import "@goauthentik/app/admin/users/UserAssignedObjectPermissionsTable";
 import { AKElement } from "@goauthentik/app/elements/Base";
 import "@goauthentik/app/elements/rbac/RoleObjectPermissionTable";
 import "@goauthentik/app/elements/rbac/UserObjectPermissionTable";
@@ -38,6 +40,43 @@ export class ObjectPermissionPage extends AKElement {
                   </div>`
                 : html``}
             <ak-tabs pageIdentifier="permissionPage" ?vertical=${!this.embedded}>
+                ${this.model === RbacPermissionsAssignedByUsersListModelEnum.CoreUser
+                    ? html`
+                          <div
+                              slot="page-assigned-permissions"
+                              data-tab-title="${msg("Assigned permissions")}"
+                              class=""
+                          >
+                              <section class="pf-c-page__main-section pf-m-no-padding-mobile">
+                                  <div class="pf-l-grid pf-m-gutter">
+                                      <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                                          <div class="pf-c-card__title">
+                                              ${msg("Assigned global permissions")}
+                                          </div>
+                                          <div class="pf-c-card__body">
+                                              <ak-user-assigned-global-permissions-table
+                                                  userId=${this.objectPk as number}
+                                              >
+                                              </ak-user-assigned-global-permissions-table>
+                                          </div>
+                                      </div>
+                                      <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                                          <div class="pf-c-card__title">
+                                              ${msg("Assigned object permissions")}
+                                          </div>
+                                          <div class="pf-c-card__body">
+                                              <ak-user-assigned-object-permissions-table
+                                                  userId=${this.objectPk as number}
+                                              >
+                                              </ak-user-assigned-object-permissions-table>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </section>
+                          </div>
+                      `
+                    : html``}
+
                 <section
                     slot="page-object-user"
                     data-tab-title="${msg("User Object Permissions")}"

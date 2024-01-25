@@ -3,8 +3,6 @@ import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserChart";
 import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserPasswordForm";
-import "@goauthentik/app/admin/users/UserAssignedGlobalPermissionsTable";
-import "@goauthentik/app/admin/users/UserAssignedObjectPermissionsTable";
 import {
     renderRecoveryEmailRequest,
     requestRecoveryLink,
@@ -397,39 +395,8 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                 data-tab-title="${msg("Permissions")}"
                 model=${RbacPermissionsAssignedByUsersListModelEnum.CoreUser}
                 objectPk=${this.user.pk}
-            ></ak-rbac-object-permission-page>
-            <div
-                slot="page-mfa-assigned-permissions"
-                data-tab-title="${msg("Assigned permissions")}"
-                class=""
             >
-                <div class="pf-c-banner pf-m-info">
-                    ${msg("RBAC is in preview.")}
-                    <a href="mailto:hello@goauthentik.io">${msg("Send us feedback!")}</a>
-                </div>
-                <section class="pf-c-page__main-section pf-m-no-padding-mobile">
-                    <div class="pf-l-grid pf-m-gutter">
-                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                            <div class="pf-c-card__title">
-                                ${msg("Assigned global permissions")}
-                            </div>
-                            <div class="pf-c-card__body">
-                                <ak-user-assigned-global-permissions-table userId=${this.user.pk}>
-                                </ak-user-assigned-global-permissions-table>
-                            </div>
-                        </div>
-                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                            <div class="pf-c-card__title">
-                                ${msg("Assigned object permissions")}
-                            </div>
-                            <div class="pf-c-card__body">
-                                <ak-user-assigned-object-permissions-table userId=${this.user.pk}>
-                                </ak-user-assigned-object-permissions-table>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </div>
+            </ak-rbac-object-permission-page>
         </ak-tabs>`;
     }
 }
