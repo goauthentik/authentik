@@ -57,6 +57,9 @@ export class ObjectPermissionPage extends AKElement {
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                             <div class="pf-c-card__title">${msg("User Object Permissions")}</div>
                             <div class="pf-c-card__body">
+                                ${msg("Permissions set on users which affect this object.")}
+                            </div>
+                            <div class="pf-c-card__body">
                                 <ak-rbac-user-object-permission-table
                                     .model=${this.model}
                                     .objectPk=${this.objectPk}
@@ -74,6 +77,9 @@ export class ObjectPermissionPage extends AKElement {
                     <div class="pf-l-grid pf-m-gutter">
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                             <div class="pf-c-card__title">${msg("Role Object Permissions")}</div>
+                            <div class="pf-c-card__body">
+                                ${msg("Permissions set on roles which affect this object.")}
+                            </div>
                             <div class="pf-c-card__body">
                                 <ak-rbac-role-object-permission-table
                                     .model=${this.model}
@@ -97,6 +103,11 @@ export class ObjectPermissionPage extends AKElement {
                     <div class="pf-c-card">
                         <div class="pf-c-card__title">${msg("Assigned global permissions")}</div>
                         <div class="pf-c-card__body">
+                            ${msg(
+                                "Permissions assigned to this user which affect all object instances of a given type.",
+                            )}
+                        </div>
+                        <div class="pf-c-card__body">
                             <ak-user-assigned-global-permissions-table
                                 userId=${this.objectPk as number}
                             >
@@ -112,6 +123,11 @@ export class ObjectPermissionPage extends AKElement {
                 <section class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__title">${msg("Assigned object permissions")}</div>
+                        <div class="pf-c-card__body">
+                            ${msg(
+                                "Permissions assigned to this user affecting specific object instances.",
+                            )}
+                        </div>
                         <div class="pf-c-card__body">
                             <ak-user-assigned-object-permissions-table
                                 userId=${this.objectPk as number}
@@ -134,6 +150,11 @@ export class ObjectPermissionPage extends AKElement {
                     <div class="pf-c-card">
                         <div class="pf-c-card__title">${msg("Assigned global permissions")}</div>
                         <div class="pf-c-card__body">
+                            ${msg(
+                                "Permissions assigned to this role which affect all object instances of a given type.",
+                            )}
+                        </div>
+                        <div class="pf-c-card__body">
                             <ak-role-assigned-global-permissions-table
                                 roleUuid=${this.objectPk as string}
                             >
@@ -149,6 +170,11 @@ export class ObjectPermissionPage extends AKElement {
                 <section class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__title">${msg("Assigned object permissions")}</div>
+                        <div class="pf-c-card__body">
+                            ${msg(
+                                "Permissions assigned to this user affecting specific object instances.",
+                            )}
+                        </div>
                         <div class="pf-c-card__body">
                             <ak-role-assigned-object-permissions-table
                                 roleUuid=${this.objectPk as string}

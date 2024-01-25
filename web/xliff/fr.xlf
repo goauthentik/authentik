@@ -8369,6 +8369,21 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="sd99e668c54f78f6e">
   <source>Credentials / Tokens</source>
 </trans-unit>
+<trans-unit id="saada50e84c7c646d">
+  <source>Permissions set on users which affect this object.</source>
+</trans-unit>
+<trans-unit id="s37d1b74df205b528">
+  <source>Permissions set on roles which affect this object.</source>
+</trans-unit>
+<trans-unit id="sc443bfff8a5dd106">
+  <source>Permissions assigned to this user which affect all object instances of a given type.</source>
+</trans-unit>
+<trans-unit id="s3eba09a350b7d6c9">
+  <source>Permissions assigned to this user affecting specific object instances.</source>
+</trans-unit>
+<trans-unit id="s17032e57ba222d2f">
+  <source>Permissions assigned to this role which affect all object instances of a given type.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
