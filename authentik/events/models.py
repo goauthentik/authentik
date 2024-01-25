@@ -209,8 +209,9 @@ class Event(SerializerModel, ExpiringModel):
             app = parent.f_globals["__name__"]
             # Attempt to match the calling module to the django app it belongs to
             # if we can't find a match, keep the module name
-            django_apps = get_close_matches(app, django_app_names(), n=1)
-            if len(django_apps) > 0:
+            django_apps: list[str] = get_close_matches(app, django_app_names(), n=1)
+            # Also ensure that closest django app has the correct prefix
+            if len(django_apps) > 0 and django_apps[0].startswith(app):
                 app = django_apps[0]
         cleaned_kwargs = cleanse_dict(sanitize_dict(kwargs))
         event = Event(action=action, app=app, context=cleaned_kwargs)
