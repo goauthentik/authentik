@@ -33,6 +33,7 @@ export class PromptListPage extends TablePage<Prompt> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "name";

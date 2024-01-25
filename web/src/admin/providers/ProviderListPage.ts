@@ -40,6 +40,7 @@ export class ProviderListPage extends TablePage<Provider> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "name";

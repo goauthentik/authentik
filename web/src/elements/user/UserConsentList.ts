@@ -25,6 +25,7 @@ export class UserConsentList extends Table<UserConsent> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
     order = "-expires";
 
     columns(): TableColumn[] {

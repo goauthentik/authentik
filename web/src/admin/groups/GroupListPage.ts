@@ -19,6 +19,7 @@ import { CoreApi, Group } from "@goauthentik/api";
 @customElement("ak-group-list")
 export class GroupListPage extends TablePage<Group> {
     checkbox = true;
+    clearOnRefresh = true;
     searchEnabled(): boolean {
         return true;
     }

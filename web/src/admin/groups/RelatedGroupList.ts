@@ -87,6 +87,7 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
 @customElement("ak-group-related-list")
 export class RelatedGroupList extends Table<Group> {
     checkbox = true;
+    clearOnRefresh = true;
     searchEnabled(): boolean {
         return true;
     }

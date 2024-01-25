@@ -34,6 +34,7 @@ export class BrandListPage extends TablePage<Brand> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "domain";
