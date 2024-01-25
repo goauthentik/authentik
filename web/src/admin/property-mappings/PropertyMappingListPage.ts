@@ -41,6 +41,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "name";

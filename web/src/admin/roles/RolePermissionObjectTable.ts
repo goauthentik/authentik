@@ -20,6 +20,7 @@ export class RolePermissionObjectTable extends Table<ExtraRoleObjectPermission> 
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     apiEndpoint(page: number): Promise<PaginatedResponse<ExtraRoleObjectPermission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsRolesList({

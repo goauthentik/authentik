@@ -34,6 +34,7 @@ export class UserOAuthRefreshList extends Table<TokenModel> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
     order = "-expires";
 
     columns(): TableColumn[] {

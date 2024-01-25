@@ -21,6 +21,7 @@ import { RbacApi, Role } from "@goauthentik/api";
 @customElement("ak-role-list")
 export class RoleListPage extends TablePage<Role> {
     checkbox = true;
+    clearOnRefresh = true;
     searchEnabled(): boolean {
         return true;
     }

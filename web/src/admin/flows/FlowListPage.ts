@@ -37,6 +37,7 @@ export class FlowListPage extends TablePage<Flow> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "slug";

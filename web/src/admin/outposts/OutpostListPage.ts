@@ -107,6 +107,7 @@ export class OutpostListPage extends TablePage<Outpost> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "name";
