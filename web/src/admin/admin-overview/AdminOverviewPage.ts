@@ -19,6 +19,7 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
@@ -41,6 +42,7 @@ export class AdminOverviewPage extends AKElement {
             PFPage,
             PFContent,
             PFList,
+            PFDivider,
             css`
                 .row-divider {
                     margin-top: -4px;
@@ -155,7 +157,7 @@ export class AdminOverviewPage extends AKElement {
                             </ak-aggregate-card>
                         </div>
                         <div class="pf-l-grid__item pf-m-12-col row-divider">
-                            <hr />
+                            <hr class="pf-c-divider" />
                         </div>
                         <div
                             class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-4-col-on-xl card-container"
@@ -177,7 +179,7 @@ export class AdminOverviewPage extends AKElement {
                         <ak-recent-events pageSize="6"></ak-recent-events>
                     </div>
                     <div class="pf-l-grid__item pf-m-12-col row-divider">
-                        <hr />
+                        <hr class="pf-c-divider" />
                     </div>
                     <!-- row 3 -->
                     <div
