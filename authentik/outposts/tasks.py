@@ -192,7 +192,7 @@ def outpost_post_save(model_class: str, model_pk: Any):
 
     if isinstance(instance, Outpost):
         LOGGER.debug("Trigger reconcile for outpost", instance=instance)
-        outpost_controller.delay(instance.pk)
+        outpost_controller.delay(str(instance.pk))
 
     if isinstance(instance, (OutpostModel, Outpost)):
         LOGGER.debug("triggering outpost update from outpostmodel/outpost", instance=instance)
@@ -200,7 +200,7 @@ def outpost_post_save(model_class: str, model_pk: Any):
 
     if isinstance(instance, OutpostServiceConnection):
         LOGGER.debug("triggering ServiceConnection state update", instance=instance)
-        outpost_service_connection_state.delay(instance.pk)
+        outpost_service_connection_state.delay(str(instance.pk))
 
     for field in instance._meta.get_fields():
         # Each field is checked if it has a `related_model` attribute (when ForeginKeys or M2Ms)
