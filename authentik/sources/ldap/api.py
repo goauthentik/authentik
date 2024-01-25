@@ -6,6 +6,7 @@ from django_filters.filters import AllValuesMultipleFilter
 from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, extend_schema_field, inline_serializer
+from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, DictField, ListField, SerializerMethodField
@@ -14,13 +15,12 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.admin.api.tasks import TaskSerializer
 from authentik.core.api.propertymappings import PropertyMappingSerializer
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.crypto.models import CertificateKeyPair
-from authentik.events.monitored_tasks import TaskInfo
+from authentik.events.api.tasks import SystemTaskSerializer
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 from authentik.sources.ldap.tasks import CACHE_KEY_STATUS, SYNC_CLASSES
 
@@ -91,7 +91,7 @@ class LDAPSyncStatusSerializer(PassiveSerializer):
     """LDAP Source sync status"""
 
     is_running = BooleanField(read_only=True)
-    tasks = TaskSerializer(many=True, read_only=True)
+    tasks = SystemTaskSerializer(many=True, read_only=True)
 
 
 class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
@@ -136,7 +136,12 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
     def sync_status(self, request: Request, slug: str) -> Response:
         """Get source's sync status"""
         source: LDAPSource = self.get_object()
-        tasks = TaskInfo.by_name(f"ldap_sync:{source.slug}:*") or []
+        tasks = list(
+            get_objects_for_user(request.user, "authentik_events.view_systemtask").filter(
+                name="ldap_sync",
+                uid__startswith=source.slug,
+            )
+        )
         status = {
             "tasks": tasks,
             "is_running": source.sync_lock.locked(),

@@ -72,7 +72,7 @@ class ConfigView(APIView):
         for processor in get_context_processors():
             if cap := processor.capability():
                 caps.append(cap)
-        if CONFIG.get_bool("impersonation"):
+        if self.request.tenant.impersonation:
             caps.append(Capabilities.CAN_IMPERSONATE)
         if settings.DEBUG:  # pragma: no cover
             caps.append(Capabilities.CAN_DEBUG)

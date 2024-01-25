@@ -7,8 +7,8 @@ from django.test import TestCase
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Group, User
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.events.models import Event, EventAction
-from authentik.events.monitored_tasks import TaskInfo, TaskResultStatus
+from authentik.events.models import Event, EventAction, SystemTask
+from authentik.events.system_tasks import TaskStatus
 from authentik.lib.generators import generate_id, generate_key
 from authentik.lib.utils.reflection import class_to_path
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
@@ -40,9 +40,9 @@ class LDAPSyncTests(TestCase):
         """Test sync with missing page"""
         connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            ldap_sync.delay(self.source.pk, class_to_path(UserLDAPSynchronizer), "foo").get()
-        status = TaskInfo.by_name("ldap_sync:ldap:users:foo")
-        self.assertEqual(status.result.status, TaskResultStatus.ERROR)
+            ldap_sync.delay(str(self.source.pk), class_to_path(UserLDAPSynchronizer), "foo").get()
+        task = SystemTask.objects.filter(name="ldap_sync", uid="ldap:users:foo").first()
+        self.assertEqual(task.status, TaskStatus.ERROR)
 
     def test_sync_error(self):
         """Test user sync"""

@@ -62,20 +62,24 @@ export class InvitationListPage extends TablePage<Invitation> {
     multipleEnrollmentFlows = false;
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<Invitation>> {
-        // Check if any invitation stages exist
-        const stages = await new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesList({
-            noFlows: false,
-        });
-        this.invitationStageExists = stages.pagination.count > 0;
-        this.expandable = this.invitationStageExists;
-        stages.results.forEach((stage) => {
-            const enrollmentFlows = (stage.flowSet || []).filter(
-                (flow) => flow.designation === FlowDesignationEnum.Enrollment,
-            );
-            if (enrollmentFlows.length > 1) {
-                this.multipleEnrollmentFlows = true;
-            }
-        });
+        try {
+            // Check if any invitation stages exist
+            const stages = await new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesList({
+                noFlows: false,
+            });
+            this.invitationStageExists = stages.pagination.count > 0;
+            this.expandable = this.invitationStageExists;
+            stages.results.forEach((stage) => {
+                const enrollmentFlows = (stage.flowSet || []).filter(
+                    (flow) => flow.designation === FlowDesignationEnum.Enrollment,
+                );
+                if (enrollmentFlows.length > 1) {
+                    this.multipleEnrollmentFlows = true;
+                }
+            });
+        } catch {
+            // assuming we can't fetch stages, ignore the error
+        }
         return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsList({
             ordering: this.order,
             page: page,

@@ -15,7 +15,7 @@ import { TextSlide } from "../components/TextSlide";
 function Feature({ imageUrl, title, description }) {
     const imgUrl = useBaseUrl(imageUrl);
     return (
-        <div className={clsx("col col--4", styles.feature)}>
+        <div className={clsx("col col--3", styles.feature)}>
             {imgUrl && (
                 <div className="text--center">
                     <img
@@ -63,8 +63,8 @@ function Home() {
                                 <div>with a unified platform.</div>
                             </h1>
                             <p className="hero__subtitle">
-                                Unify all of your identity needs into a single
-                                platform
+                                Unify your external users and team members in a
+                                single platform
                             </p>
                             <div className={styles.buttons}>
                                 <Link
@@ -105,30 +105,46 @@ function Home() {
                     <div className="container">
                         <div className={clsx("row", styles.row)}>
                             <Feature
-                                title="Easy to use"
+                                title="Unified identity management"
                                 description={
                                     <>
-                                        Identity made easy. authentik makes
-                                        single-sign on (SSO), user enrollment,
-                                        and access control simple.
+                                        A single platform for all your identity
+                                        needs. Engineers have overview and
+                                        control of the identity environment from
+                                        a single interface.
                                     </>
                                 }
                             />
                             <Feature
-                                title="Realize your workflow"
+                                title="Security through transparency"
                                 description={
                                     <>
-                                        authentik lets you build your workflow
-                                        as you need it, no limitations.
+                                        Available source code ensures a
+                                        continuous high level of security
+                                        through independent industry experts
+                                        using and testing the code.
                                     </>
                                 }
                             />
                             <Feature
-                                title="Powered by Python"
+                                title="Streamlined pricing"
                                 description={
                                     <>
-                                        Implement custom verification or access
-                                        control logic using Python code.
+                                        A straightforward pricing model for all
+                                        the features. No more guessing if a
+                                        feature is included in your subscription
+                                        or not. Covers B2B and B2C use cases.
+                                    </>
+                                }
+                            />
+                            <Feature
+                                title="Your workflows, realized"
+                                description={
+                                    <>
+                                        Build your workflows in authentik as you
+                                        need them, without limitations. And if
+                                        that's not enough, everything else can
+                                        be done through the API.
                                     </>
                                 }
                             />

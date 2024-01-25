@@ -15,6 +15,6 @@ class AuthentikAdminConfig(ManagedAppConfig):
     verbose_name = "authentik Admin"
     default = True
 
-    def reconcile_load_admin_signals(self):
+    def reconcile_global_load_admin_signals(self):
         """Load admin signals"""
         self.import_module("authentik.admin.signals")

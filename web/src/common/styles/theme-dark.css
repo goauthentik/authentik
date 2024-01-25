@@ -157,6 +157,10 @@ select[multiple] option:checked {
 .pf-c-switch__input:checked ~ .pf-c-switch__label {
     --pf-c-switch__input--checked__label--Color: var(--ak-dark-foreground);
 }
+input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
 /* select toggle */
 .pf-c-select__toggle::before {
     --pf-c-select__toggle--before--BorderTopColor: var(--ak-dark-background-lighter);
@@ -257,7 +261,8 @@ select[multiple] option:checked {
 .pf-c-login__main-header-desc {
     color: var(--ak-dark-foreground);
 }
-.pf-c-login__main-footer-links-item img {
+.pf-c-login__main-footer-links-item img,
+.pf-c-login__main-footer-links-item .fas {
     filter: invert(1);
 }
 .pf-c-login__main-footer-band {

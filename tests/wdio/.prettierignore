@@ -2,3 +2,6 @@
 node_modules
 # don't lint nyc coverage output
 coverage
+# Prettier breaks the tsconfig file
+tsconfig.json
+.eslintrc.json

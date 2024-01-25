@@ -1,4 +1,4 @@
-import { EventGeo } from "@goauthentik/app/admin/events/utils";
+import { EventGeo, EventUser } from "@goauthentik/app/admin/events/utils";
 import { actionToLabel } from "@goauthentik/app/common/labels";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
@@ -11,7 +11,7 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 
-import { msg, str } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -76,12 +76,7 @@ export class ObjectChangelog extends Table<Event> {
     row(item: EventWithContext): TemplateResult[] {
         return [
             html`${actionToLabel(item.action)}`,
-            html`<div>${item.user?.username}</div>
-                ${item.user.on_behalf_of
-                    ? html`<small>
-                          ${msg(str`On behalf of ${item.user.on_behalf_of.username}`)}
-                      </small>`
-                    : html``}`,
+            EventUser(item),
             html`<span>${item.created?.toLocaleString()}</span>`,
             html`<div>${item.clientIp || msg("-")}</div>
 

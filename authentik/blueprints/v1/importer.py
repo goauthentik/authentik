@@ -7,11 +7,14 @@ from dacite.config import Config
 from dacite.core import from_dict
 from dacite.exceptions import DaciteError
 from deepmerge import always_merger
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import FieldError
 from django.db.models import Model
 from django.db.models.query_utils import Q
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
+from guardian.models import UserObjectPermission
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import BaseSerializer, Serializer
 from structlog.stdlib import BoundLogger, get_logger
@@ -35,14 +38,19 @@ from authentik.core.models import (
     Source,
     UserSourceConnection,
 )
-from authentik.enterprise.models import LicenseUsage
+from authentik.enterprise.models import LicenseKey, LicenseUsage
+from authentik.enterprise.providers.rac.models import ConnectionToken
+from authentik.events.models import SystemTask
 from authentik.events.utils import cleanse_dict
 from authentik.flows.models import FlowToken, Stage
 from authentik.lib.models import SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
+from authentik.policies.reputation.models import Reputation
+from authentik.providers.oauth2.models import AccessToken, AuthorizationCode, RefreshToken
 from authentik.providers.scim.models import SCIMGroup, SCIMUser
+from authentik.tenants.models import Tenant
 
 # Context set when the serializer is created in a blueprint context
 # Update website/developer-docs/blueprints/v1/models.md when used
@@ -57,8 +65,12 @@ def excluded_models() -> list[type[Model]]:
     from django.contrib.auth.models import User as DjangoUser
 
     return (
+        # Django only classes
         DjangoUser,
         DjangoGroup,
+        ContentType,
+        Permission,
+        UserObjectPermission,
         # Base classes
         Provider,
         Source,
@@ -75,6 +87,13 @@ def excluded_models() -> list[type[Model]]:
         LicenseUsage,
         SCIMGroup,
         SCIMUser,
+        Tenant,
+        SystemTask,
+        ConnectionToken,
+        AuthorizationCode,
+        AccessToken,
+        RefreshToken,
+        Reputation,
     )
 
 
@@ -108,11 +127,15 @@ class Importer:
         self.__pk_map: dict[Any, Model] = {}
         self._import = blueprint
         self.logger = get_logger()
-        ctx = {}
+        ctx = self.default_context()
         always_merger.merge(ctx, self._import.context)
         if context:
             always_merger.merge(ctx, context)
         self._import.context = ctx
+
+    def default_context(self):
+        """Default context"""
+        return {"goauthentik.io/enterprise/licensed": LicenseKey.get_total().is_valid()}
 
     @staticmethod
     def from_string(yaml_input: str, context: dict | None = None) -> "Importer":

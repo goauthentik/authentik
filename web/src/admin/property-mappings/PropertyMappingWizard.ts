@@ -7,6 +7,7 @@ import "@goauthentik/admin/property-mappings/PropertyMappingScopeForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingTestForm";
 import { WithLicenseSummary } from "@goauthentik/app/elements/Interface/licenseSummaryProvider";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/elements/Alert";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/ProxyForm";
 import "@goauthentik/elements/wizard/FormWizardPage";
@@ -15,7 +16,7 @@ import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
 import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
-import { CSSResult, TemplateResult, html, nothing } from "lit";
+import { TemplateResult, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -30,7 +31,7 @@ export class InitialPropertyMappingWizardPage extends WithLicenseSummary(WizardP
     @property({ attribute: false })
     mappingTypes: TypeCreate[] = [];
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFForm, PFButton, PFRadio];
     }
     sidebarLabel = () => msg("Select type");
@@ -63,7 +64,7 @@ export class InitialPropertyMappingWizardPage extends WithLicenseSummary(WizardP
                             ];
                             this.host.isValid = true;
                         }}
-                        ?disabled=${requiresEnteprise}
+                        ?disabled=${type.requiresEnterprise ? this.hasEnterpriseLicense : false}
                     />
                     <label class="pf-c-radio__label" for=${`${type.component}-${type.modelName}`}
                         >${type.name}</label
@@ -82,7 +83,7 @@ export class InitialPropertyMappingWizardPage extends WithLicenseSummary(WizardP
 
 @customElement("ak-property-mapping-wizard")
 export class PropertyMappingWizard extends AKElement {
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFButton, PFRadio];
     }
 
