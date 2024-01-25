@@ -420,9 +420,6 @@
         <source>No workers connected. Background tasks will not run.</source>
         <target>İşçi bağlantısı yok. Arka plan görevleri çalışmaz.</target>
       </trans-unit>
-      <trans-unit id="s1f1c857c0c4250e4">
-        <source><x id="0" equiv-text="${ago}"/> day(s) ago</source>
-      </trans-unit>
       <trans-unit id="s11bc220e8fa9d797">
         <source>Authorizations</source>
         <target>Yetkilendirmeler</target>

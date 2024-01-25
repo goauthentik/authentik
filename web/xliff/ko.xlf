@@ -537,12 +537,6 @@
         <target>연결된 워커가 없습니다. 백그라운드 작업이 실행되지 않습니다.</target>
 
       </trans-unit>
-      <trans-unit id="s1f1c857c0c4250e4">
-        <source><x id="0" equiv-text="${ago}"/> day(s) ago</source>
-        <target>
-        <x id="0" equiv-text="${ago}"/> 일 전</target>
-
-      </trans-unit>
       <trans-unit id="s11bc220e8fa9d797">
         <source>Authorizations</source>
         <target>인가됨</target>

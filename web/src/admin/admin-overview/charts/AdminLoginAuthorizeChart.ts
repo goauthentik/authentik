@@ -1,8 +1,8 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKChart, RGBAColor } from "@goauthentik/elements/charts/Chart";
-import { ChartData, Tick } from "chart.js";
+import { ChartData } from "chart.js";
 
-import { msg, str } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { customElement } from "lit/decorators.js";
 
 import { AdminApi, LoginMetrics } from "@goauthentik/api";
@@ -11,13 +11,6 @@ import { AdminApi, LoginMetrics } from "@goauthentik/api";
 export class AdminLoginAuthorizeChart extends AKChart<LoginMetrics> {
     async apiRequest(): Promise<LoginMetrics> {
         return new AdminApi(DEFAULT_CONFIG).adminMetricsRetrieve();
-    }
-
-    timeTickCallback(tickValue: string | number, index: number, ticks: Tick[]): string {
-        const valueStamp = ticks[index];
-        const delta = Date.now() - valueStamp.value;
-        const ago = Math.round(delta / 1000 / 3600 / 24);
-        return msg(str`${ago} day(s) ago`);
     }
 
     getChartData(data: LoginMetrics): ChartData {
