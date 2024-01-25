@@ -29,7 +29,8 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/oauth/UserRefreshList";
+import "@goauthentik/app/elements/oauth/UserRefreshTokenList";
+import "@goauthentik/app/elements/oauth/UserAccessTokenList";
 import "@goauthentik/elements/user/SessionList";
 import "@goauthentik/elements/user/UserConsentList";
 
@@ -278,14 +279,26 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                     </div>
                 </section>
                 <section
+                    slot="page-oauth-access"
+                    data-tab-title="${msg("OAuth Access Tokens")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-user-oauth-access-token-list userId=${user.pk}>
+                            </ak-user-oauth-access-token-list>
+                        </div>
+                    </div>
+                </section>
+                <section
                     slot="page-oauth-refresh"
                     data-tab-title="${msg("OAuth Refresh Tokens")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
                         <div class="pf-c-card__body">
-                            <ak-user-oauth-refresh-list userId=${user.pk}>
-                            </ak-user-oauth-refresh-list>
+                            <ak-user-oauth-refresh-token-list userId=${user.pk}>
+                            </ak-user-oauth-refresh-token-list>
                         </div>
                     </div>
                 </section>
@@ -386,7 +399,6 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
             <section
                 slot="page-credentials"
                 data-tab-title="${msg("Credentials / Tokens")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 ${this.renderTabCredentialsToken(this.user)}
             </section>

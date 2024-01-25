@@ -13,8 +13,8 @@ import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 
 import { ExpiringBaseGrantModel, Oauth2Api, TokenModel } from "@goauthentik/api";
 
-@customElement("ak-user-oauth-refresh-list")
-export class UserOAuthRefreshList extends Table<TokenModel> {
+@customElement("ak-user-oauth-access-token-list")
+export class UserOAuthAccessTokenList extends Table<TokenModel> {
     expandable = true;
 
     @property({ type: Number })
@@ -25,7 +25,7 @@ export class UserOAuthRefreshList extends Table<TokenModel> {
     }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<TokenModel>> {
-        return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensList({
+        return new Oauth2Api(DEFAULT_CONFIG).oauth2AccessTokensList({
             user: this.userId,
             ordering: "expires",
             page: page,
@@ -34,7 +34,6 @@ export class UserOAuthRefreshList extends Table<TokenModel> {
     }
 
     checkbox = true;
-    clearOnRefresh = true;
     order = "-expires";
 
     columns(): TableColumn[] {

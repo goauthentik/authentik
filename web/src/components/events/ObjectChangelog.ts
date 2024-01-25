@@ -46,7 +46,7 @@ export class ObjectChangelog extends Table<Event> {
         let modelName = this._targetModelName;
         let appName = this.targetModelApp;
         if (this._targetModelName.indexOf(".") !== -1) {
-            const parts = this._targetModelName.split(".");
+            const parts = this._targetModelName.split(".", 1);
             appName = parts[0];
             modelName = parts[1];
         }
