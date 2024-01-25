@@ -37,7 +37,7 @@ export class ObjectPermissionPage extends AKElement {
                       <a href="mailto:hello@goauthentik.io">${msg("Send us feedback!")}</a>
                   </div>`
                 : html``}
-            <ak-tabs pageIdentifier="permissionPage">
+            <ak-tabs pageIdentifier="permissionPage" ?vertical=${!this.embedded}>
                 <section
                     slot="page-object-user"
                     data-tab-title="${msg("User Object Permissions")}"
