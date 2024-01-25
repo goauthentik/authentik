@@ -1,3 +1,4 @@
+import { WithLicenseSummary } from "@goauthentik/app/elements/Interface/licenseSummaryProvider";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
@@ -15,7 +16,7 @@ import providerModelsList from "./ak-application-wizard-authentication-method-ch
 import type { LocalTypeCreate } from "./ak-application-wizard-authentication-method-choice.choices";
 
 @customElement("ak-application-wizard-authentication-method-choice")
-export class ApplicationWizardAuthenticationMethodChoice extends BasePanel {
+export class ApplicationWizardAuthenticationMethodChoice extends WithLicenseSummary(BasePanel) {
     constructor() {
         super();
         this.handleChoice = this.handleChoice.bind(this);
@@ -43,6 +44,7 @@ export class ApplicationWizardAuthenticationMethodChoice extends BasePanel {
                 type="radio"
                 name="type"
                 id="provider-${type.formName}"
+                ?disabled=${type.formName === "racprovider" && !this.hasEnterpriseLicense}
                 value=${type.formName}
                 ?checked=${type.formName === method}
                 @change=${this.handleChoice}

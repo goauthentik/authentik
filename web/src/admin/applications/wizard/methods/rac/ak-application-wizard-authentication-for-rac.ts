@@ -5,7 +5,6 @@ import "@goauthentik/components/ak-text-input";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import YAML from "yaml";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -101,14 +100,6 @@ export class ApplicationWizardAuthenticationByRAC extends BaseProviderPanel {
                             <p class="pf-c-form__helper-text">
                                 ${msg("Hold control/command to select multiple items.")}
                             </p>
-                        </ak-form-element-horizontal>
-                        <ak-form-element-horizontal label=${msg("Settings")} name="settings">
-                            <ak-codemirror
-                                mode="yaml"
-                                value="${YAML.stringify(provider?.settings ?? {})}"
-                            >
-                            </ak-codemirror>
-                            <p class="pf-c-form__helper-text">${msg("Connection settings.")}</p>
                         </ak-form-element-horizontal>
                     </div>
                 </ak-form-group>
