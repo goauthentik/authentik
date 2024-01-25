@@ -36,7 +36,7 @@ class EventSerializer(ModelSerializer):
             "client_ip",
             "created",
             "expires",
-            "tenant",
+            "brand",
         ]
 
 
@@ -77,10 +77,10 @@ class EventsFilter(django_filters.FilterSet):
         field_name="action",
         lookup_expr="icontains",
     )
-    tenant_name = django_filters.CharFilter(
-        field_name="tenant",
+    brand_name = django_filters.CharFilter(
+        field_name="brand",
         lookup_expr="name",
-        label="Tenant name",
+        label="Brand name",
     )
 
     def filter_context_model_pk(self, queryset, name, value):

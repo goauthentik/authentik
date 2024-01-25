@@ -1,5 +1,4 @@
 """LDAP Sync"""
-from django.core.management.base import BaseCommand
 from structlog.stdlib import get_logger
 
 from authentik.sources.ldap.models import LDAPSource
@@ -7,17 +6,18 @@ from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
 from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
 from authentik.sources.ldap.tasks import ldap_sync_paginator
+from authentik.tenants.management import TenantCommand
 
 LOGGER = get_logger()
 
 
-class Command(BaseCommand):
+class Command(TenantCommand):
     """Run sync for an LDAP Source"""
 
     def add_arguments(self, parser):
         parser.add_argument("source_slugs", nargs="+", type=str)
 
-    def handle(self, **options):
+    def handle_per_tenant(self, **options):
         for source_slug in options["source_slugs"]:
             source = LDAPSource.objects.filter(slug=source_slug).first()
             if not source:

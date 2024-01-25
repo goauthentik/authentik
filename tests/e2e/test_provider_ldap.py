@@ -183,7 +183,12 @@ class TestProviderLDAP(SeleniumTestCase):
         self.assertTrue(
             Event.objects.filter(
                 action=EventAction.LOGIN_FAILED,
-                user={"pk": anon.pk, "email": anon.email, "username": anon.username},
+                user={
+                    "pk": anon.pk,
+                    "email": anon.email,
+                    "username": anon.username,
+                    "is_anonymous": True,
+                },
             ).exists(),
         )
 
@@ -192,6 +197,7 @@ class TestProviderLDAP(SeleniumTestCase):
         "default/flow-default-authentication-flow.yaml",
         "default/flow-default-invalidation-flow.yaml",
     )
+    @reconcile_app("authentik_tenants")
     @reconcile_app("authentik_outposts")
     def test_ldap_bind_search(self):
         """Test simple bind + search"""
@@ -340,6 +346,7 @@ class TestProviderLDAP(SeleniumTestCase):
         "default/flow-default-authentication-flow.yaml",
         "default/flow-default-invalidation-flow.yaml",
     )
+    @reconcile_app("authentik_tenants")
     @reconcile_app("authentik_outposts")
     def test_ldap_schema(self):
         """Test LDAP Schema"""
@@ -361,6 +368,7 @@ class TestProviderLDAP(SeleniumTestCase):
         "default/flow-default-authentication-flow.yaml",
         "default/flow-default-invalidation-flow.yaml",
     )
+    @reconcile_app("authentik_tenants")
     @reconcile_app("authentik_outposts")
     def test_ldap_search_attrs_filter(self):
         """Test search with attributes filtering"""

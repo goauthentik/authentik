@@ -24,7 +24,7 @@ To edit the group's name, parent group, whether or not the group is for superuse
 
 To [add or remove users](../user/user_basic_operations.md#add-a-user-to-a-group) from the group, or to manage permissions assigned to the group, click on the name of the group to go to the group's detail page.
 
-For more information about permissions, refer to ["Assign or remove permissions for a specific group"](../access-control/manage_permissions.md#assign-or-remove-permissions-for-a-specific-group).
+For more information about permissions, refer to ["Assign or remove permissions for a specific group"](../access-control/manage_permissions.md#assign-or-remove-permissions-on-a-specific-group).
 
 ## Delete a group
 

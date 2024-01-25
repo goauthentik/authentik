@@ -3,9 +3,8 @@ import { VERSION } from "@goauthentik/common/constants";
 import { SentryIgnoredError } from "@goauthentik/common/errors";
 import { me } from "@goauthentik/common/users";
 import * as Sentry from "@sentry/browser";
-import { Integrations } from "@sentry/tracing";
 
-import { Config, ResponseError } from "@goauthentik/api";
+import { CapabilitiesEnum, Config, ResponseError } from "@goauthentik/api";
 
 export const TAG_SENTRY_COMPONENT = "authentik.component";
 export const TAG_SENTRY_CAPABILITIES = "authentik.capabilities";
@@ -28,8 +27,10 @@ export async function configureSentry(canDoPpi = false): Promise<Config> {
             ],
             release: `authentik@${VERSION}`,
             integrations: [
-                new Integrations.BrowserTracing({
-                    tracingOrigins: [window.location.host, "localhost"],
+                new Sentry.BrowserTracing({
+                    shouldCreateSpanForRequest: (url: string) => {
+                        return url.startsWith(window.location.host);
+                    },
                 }),
             ],
             tracesSampleRate: cfg.errorReporting.tracesSampleRate,
@@ -59,6 +60,11 @@ export async function configureSentry(canDoPpi = false): Promise<Config> {
             Sentry.configureScope((scope) =>
                 scope.setTransactionName(`authentik.web.if.${currentInterface()}`),
             );
+        }
+        if (cfg.capabilities.includes(CapabilitiesEnum.CanDebug)) {
+            const Spotlight = await import("@spotlightjs/spotlight");
+
+            Spotlight.init({ injectImmediately: true });
         }
         if (cfg.errorReporting.sendPii && canDoPpi) {
             me().then((user) => {

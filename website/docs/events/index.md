@@ -8,7 +8,7 @@ Certain information is stripped from events, to ensure no passwords or other cre
 
 ## Event retention
 
-The event retention is configured on a per-tenant level, with the default being set to 365 days. For events where a related tenant cannot be found, the retention is also set to 365 days.
+The event retention is configured in the system settings interface, with the default being set to 365 days.
 
 If you want to forward these events to another application, forward the log output of all authentik containers. Every event creation is logged with the log level "info". For this configuration, it is also recommended to set the internal retention pretty low (for example, `days=1`).
 
@@ -45,11 +45,11 @@ A user logs in (including the source, if available)
     "client_ip": "::1",
     "created": "2023-02-15T15:33:42.771091Z",
     "expires": "2024-02-15T15:33:42.770425Z",
-    "tenant": {
+    "brand": {
         "pk": "fcba828076b94dedb2d5a6b4c5556fa1",
-        "app": "authentik_tenants",
-        "name": "Default tenant",
-        "model_name": "tenant"
+        "app": "authentik_brands",
+        "name": "Default brand",
+        "model_name": "brand"
     }
 }
 ```
@@ -93,11 +93,11 @@ A failed login attempt
     "client_ip": "::1",
     "created": "2023-02-15T15:32:55.319608Z",
     "expires": "2024-02-15T15:32:55.314581Z",
-    "tenant": {
+    "brand": {
         "pk": "fcba828076b94dedb2d5a6b4c5556fa1",
-        "app": "authentik_tenants",
-        "name": "Default tenant",
-        "model_name": "tenant"
+        "app": "authentik_brands",
+        "name": "Default brand",
+        "model_name": "brand"
     }
 }
 ```
@@ -133,11 +133,11 @@ A user logs out.
     "client_ip": "::1",
     "created": "2023-02-15T15:39:55.976243Z",
     "expires": "2024-02-15T15:39:55.975535Z",
-    "tenant": {
+    "brand": {
         "pk": "fcba828076b94dedb2d5a6b4c5556fa1",
-        "app": "authentik_tenants",
-        "name": "Default tenant",
-        "model_name": "tenant"
+        "app": "authentik_brands",
+        "name": "Default brand",
+        "model_name": "brand"
     }
 }
 ```
@@ -182,11 +182,11 @@ A user is written to during a flow execution.
     "client_ip": "::1",
     "created": "2023-02-15T15:41:18.411017Z",
     "expires": "2024-02-15T15:41:18.410276Z",
-    "tenant": {
+    "brand": {
         "pk": "fcba828076b94dedb2d5a6b4c5556fa1",
-        "app": "authentik_tenants",
-        "name": "Default tenant",
-        "model_name": "tenant"
+        "app": "authentik_brands",
+        "name": "Default brand",
+        "model_name": "brand"
     }
 }
 ```
@@ -262,11 +262,11 @@ A user authorizes an application.
     "client_ip": "::1",
     "created": "2023-02-15T10:02:48.615499Z",
     "expires": "2023-04-26T10:02:48.612809Z",
-    "tenant": {
+    "brand": {
         "pk": "10800be643d44842ab9d97cb5f898ce9",
-        "app": "authentik_tenants",
-        "name": "Default tenant",
-        "model_name": "tenant"
+        "app": "authentik_brands",
+        "name": "Default brand",
+        "model_name": "brand"
     }
 }
 ```
@@ -304,6 +304,10 @@ A configuration error occurs, for example during the authorization of an applica
 ### `model_created` / `model_updated` / `model_deleted`
 
 Logged when any model is created/updated/deleted, including the user that sent the request.
+
+:::info
+Starting with authentik Enterprise 2024.1, `model_*` events also include which fields have been changed and their previous and new values.
+:::
 
 ### `email_sent`
 

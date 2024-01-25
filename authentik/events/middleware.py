@@ -9,61 +9,29 @@ from django.core.exceptions import SuspiciousOperation
 from django.db.models import Model
 from django.db.models.signals import m2m_changed, post_save, pre_delete
 from django.http import HttpRequest, HttpResponse
-from guardian.models import UserObjectPermission
+from structlog.stdlib import BoundLogger, get_logger
 
-from authentik.core.models import (
-    AuthenticatedSession,
-    Group,
-    PropertyMapping,
-    Provider,
-    Source,
-    User,
-    UserSourceConnection,
-)
-from authentik.enterprise.providers.rac.models import ConnectionToken
+from authentik.blueprints.v1.importer import excluded_models
+from authentik.core.models import Group, User
 from authentik.events.models import Event, EventAction, Notification
 from authentik.events.utils import model_to_dict
-from authentik.flows.models import FlowToken, Stage
 from authentik.lib.sentry import before_send
 from authentik.lib.utils.errors import exception_to_string
-from authentik.outposts.models import OutpostServiceConnection
-from authentik.policies.models import Policy, PolicyBindingModel
-from authentik.policies.reputation.models import Reputation
-from authentik.providers.oauth2.models import AccessToken, AuthorizationCode, RefreshToken
-from authentik.providers.scim.models import SCIMGroup, SCIMUser
 from authentik.stages.authenticator_static.models import StaticToken
 
-IGNORED_MODELS = (
-    Event,
-    Notification,
-    UserObjectPermission,
-    AuthenticatedSession,
-    StaticToken,
-    Session,
-    FlowToken,
-    Provider,
-    Source,
-    PropertyMapping,
-    UserSourceConnection,
-    Stage,
-    OutpostServiceConnection,
-    Policy,
-    PolicyBindingModel,
-    AuthorizationCode,
-    AccessToken,
-    RefreshToken,
-    SCIMUser,
-    SCIMGroup,
-    Reputation,
-    ConnectionToken,
+IGNORED_MODELS = tuple(
+    excluded_models()
+    + (
+        Event,
+        Notification,
+        StaticToken,
+        Session,
+    )
 )
 
 
 def should_log_model(model: Model) -> bool:
     """Return true if operation on `model` should be logged"""
-    # Check for silk by string so this comparison doesn't fail when silk isn't installed
-    if model.__module__.startswith("silk"):
-        return False
     return model.__class__ not in IGNORED_MODELS
 
 
@@ -99,9 +67,11 @@ class AuditMiddleware:
 
     get_response: Callable[[HttpRequest], HttpResponse]
     anonymous_user: User = None
+    logger: BoundLogger
 
     def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]):
         self.get_response = get_response
+        self.logger = get_logger().bind()
 
     def _ensure_fallback_user(self):
         """Defer fetching anonymous user until we have to"""
@@ -119,21 +89,18 @@ class AuditMiddleware:
             user = self.anonymous_user
         if not hasattr(request, "request_id"):
             return
-        post_save_handler = partial(self.post_save_handler, user=user, request=request)
-        pre_delete_handler = partial(self.pre_delete_handler, user=user, request=request)
-        m2m_changed_handler = partial(self.m2m_changed_handler, user=user, request=request)
         post_save.connect(
-            post_save_handler,
+            partial(self.post_save_handler, user=user, request=request),
             dispatch_uid=request.request_id,
             weak=False,
         )
         pre_delete.connect(
-            pre_delete_handler,
+            partial(self.pre_delete_handler, user=user, request=request),
             dispatch_uid=request.request_id,
             weak=False,
         )
         m2m_changed.connect(
-            m2m_changed_handler,
+            partial(self.m2m_changed_handler, user=user, request=request),
             dispatch_uid=request.request_id,
             weak=False,
         )
@@ -176,19 +143,27 @@ class AuditMiddleware:
             )
             thread.run()
 
-    @staticmethod
+    # pylint: disable=too-many-arguments
     def post_save_handler(
-        user: User, request: HttpRequest, sender, instance: Model, created: bool, **_
+        self,
+        user: User,
+        request: HttpRequest,
+        sender,
+        instance: Model,
+        created: bool,
+        thread_kwargs: Optional[dict] = None,
+        **_,
     ):
         """Signal handler for all object's post_save"""
         if not should_log_model(instance):
             return
 
         action = EventAction.MODEL_CREATED if created else EventAction.MODEL_UPDATED
-        EventNewThread(action, request, user=user, model=model_to_dict(instance)).run()
+        thread = EventNewThread(action, request, user=user, model=model_to_dict(instance))
+        thread.kwargs.update(thread_kwargs or {})
+        thread.run()
 
-    @staticmethod
-    def pre_delete_handler(user: User, request: HttpRequest, sender, instance: Model, **_):
+    def pre_delete_handler(self, user: User, request: HttpRequest, sender, instance: Model, **_):
         """Signal handler for all object's pre_delete"""
         if not should_log_model(instance):  # pragma: no cover
             return
@@ -200,9 +175,8 @@ class AuditMiddleware:
             model=model_to_dict(instance),
         ).run()
 
-    @staticmethod
     def m2m_changed_handler(
-        user: User, request: HttpRequest, sender, instance: Model, action: str, **_
+        self, user: User, request: HttpRequest, sender, instance: Model, action: str, **_
     ):
         """Signal handler for all object's m2m_changed"""
         if action not in ["pre_add", "pre_remove", "post_clear"]:

@@ -10,6 +10,6 @@ class AuthentikStageAuthenticatorStaticConfig(ManagedAppConfig):
     verbose_name = "authentik Stages.Authenticator.Static"
     default = True
 
-    def reconcile_load_stages_authenticator_static_signals(self):
+    def reconcile_global_load_stages_authenticator_static_signals(self):
         """Load stages.authenticator_static signals"""
         self.import_module("authentik.stages.authenticator_static.signals")

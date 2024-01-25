@@ -47,7 +47,14 @@ USER_PATH_SYSTEM_PREFIX = "goauthentik.io"
 USER_PATH_SERVICE_ACCOUNT = USER_PATH_SYSTEM_PREFIX + "/service-accounts"
 
 
-options.DEFAULT_NAMES = options.DEFAULT_NAMES + ("authentik_used_by_shadows",)
+options.DEFAULT_NAMES = options.DEFAULT_NAMES + (
+    # used_by API that allows models to specify if they shadow an object
+    # for example the proxy provider which is built on top of an oauth provider
+    "authentik_used_by_shadows",
+    # List fields for which changes are not logged (due to them having dedicated objects)
+    # for example user's password and last_login
+    "authentik_signals_ignored_fields",
+)
 
 
 def default_token_duration():
@@ -201,8 +208,8 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         """Get a dictionary containing the attributes from all groups the user belongs to,
         including the users attributes"""
         final_attributes = {}
-        if request and hasattr(request, "tenant"):
-            always_merger.merge(final_attributes, request.tenant.attributes)
+        if request and hasattr(request, "brand"):
+            always_merger.merge(final_attributes, request.brand.attributes)
         for group in self.all_groups().order_by("name"):
             always_merger.merge(final_attributes, group.attributes)
         always_merger.merge(final_attributes, self.attributes)
@@ -261,7 +268,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         except Exception as exc:
             LOGGER.warning("Failed to get default locale", exc=exc)
         if request:
-            return request.tenant.locale
+            return request.brand.locale
         return ""
 
     @property
@@ -277,6 +284,14 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
             ("impersonate", _("Can impersonate other users")),
             ("assign_user_permissions", _("Can assign permissions to users")),
             ("unassign_user_permissions", _("Can unassign permissions from users")),
+        ]
+        authentik_signals_ignored_fields = [
+            # Logged by the events `password_set`
+            # the `password_set` action/signal doesn't currently convey which user
+            # initiated the password change, so for now we'll log two actions
+            # ("password", "password_change_date"),
+            # Logged by `login`
+            ("last_login",),
         ]
 
 

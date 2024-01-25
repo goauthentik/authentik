@@ -4,7 +4,7 @@ description: "Setup authentik testing environment"
 inputs:
   postgresql_version:
     description: "Optional postgresql image tag"
-    default: "12"
+    default: "16"
 
 runs:
   using: "composite"
@@ -18,7 +18,7 @@ runs:
     - name: Setup python and restore poetry
       uses: actions/setup-python@v4
       with:
-        python-version-file: 'pyproject.toml'
+        python-version-file: "pyproject.toml"
         cache: "poetry"
     - name: Setup node
       uses: actions/setup-node@v3

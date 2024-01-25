@@ -10,7 +10,7 @@ module.exports = async function (): Promise<Config> {
         tagline: "Making authentication simple.",
         url: "https://goauthentik.io",
         baseUrl: "/if/help/",
-        onBrokenLinks: "throw",
+        onBrokenLinks: "ignore",
         favicon: "img/icon.png",
         organizationName: "BeryJu",
         projectName: "authentik",

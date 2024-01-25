@@ -8,16 +8,18 @@ from django.http import HttpRequest
 
 from authentik.core.models import User
 from authentik.core.signals import login_failed, password_changed
-from authentik.events.models import Event, EventAction
+from authentik.events.apps import SYSTEM_TASK_STATUS
+from authentik.events.models import Event, EventAction, SystemTask
 from authentik.events.tasks import event_notification_handler, gdpr_cleanup
 from authentik.flows.models import Stage
 from authentik.flows.planner import PLAN_CONTEXT_SOURCE, FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
-from authentik.lib.config import CONFIG
+from authentik.root.monitoring import monitoring_set
 from authentik.stages.invitation.models import Invitation
 from authentik.stages.invitation.signals import invitation_used
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 from authentik.stages.user_write.signals import user_write
+from authentik.tenants.utils import get_current_tenant
 
 SESSION_LOGIN_EVENT = "login_event"
 
@@ -98,5 +100,13 @@ def event_post_save_notification(sender, instance: Event, **_):
 @receiver(pre_delete, sender=User)
 def event_user_pre_delete_cleanup(sender, instance: User, **_):
     """If gdpr_compliance is enabled, remove all the user's events"""
-    if CONFIG.get_bool("gdpr_compliance", True):
+    if get_current_tenant().gdpr_compliance:
         gdpr_cleanup.delay(instance.pk)
+
+
+@receiver(monitoring_set)
+def monitoring_system_task(sender, **_):
+    """Update metrics when task is saved"""
+    SYSTEM_TASK_STATUS.clear()
+    for task in SystemTask.objects.all():
+        task.update_metrics()

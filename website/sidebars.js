@@ -27,6 +27,7 @@ const docsSidebar = {
                 "installation/automated-install",
                 "installation/air-gapped",
                 "installation/monitoring",
+                "installation/storage-s3",
             ],
         },
         {
@@ -36,7 +37,7 @@ const docsSidebar = {
             items: [
                 "core/terminology",
                 "core/applications",
-                "core/tenants",
+                "core/brands",
                 "core/certificates",
                 "core/geoip",
                 "core/architecture",
@@ -419,6 +420,17 @@ const docsSidebar = {
                 "security/CVE-2022-46145",
                 "security/CVE-2022-46172",
             ],
+        },
+        {
+            type: "category",
+            label: "Advanced topics",
+            link: {
+                type: "generated-index",
+                title: "Advanced topics",
+                slug: "advanced",
+                description: "Documentation for advanced features",
+            },
+            items: ["advanced/tenancy"],
         },
     ],
 };

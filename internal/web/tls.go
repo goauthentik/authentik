@@ -5,6 +5,7 @@ import (
 	"net"
 
 	"github.com/pires/go-proxyproto"
+
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/crypto"
 	"goauthentik.io/internal/utils"
@@ -26,8 +27,8 @@ func (ws *WebServer) GetCertificate() func(ch *tls.ClientHelloInfo) (*tls.Certif
 				return appCert, nil
 			}
 		}
-		if ws.TenantTLS != nil {
-			return ws.TenantTLS.GetCertificate(ch)
+		if ws.BrandTLS != nil {
+			return ws.BrandTLS.GetCertificate(ch)
 		}
 		ws.log.Trace("using default, self-signed certificate")
 		return &cert, nil

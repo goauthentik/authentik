@@ -5,6 +5,38 @@ import Card from "../../components/PricingQuestions/Card";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 
 export default function pricingPage() {
+    const commonFeatures = [
+        <li>
+            Supports{" "}
+            <a href={useBaseUrl("docs/providers/oauth/")}>
+                OAuth2/OpenID Connect
+            </a>
+        </li>,
+        <li>
+            Supports <a href={useBaseUrl("docs/providers/saml/")}>SAML</a>
+        </li>,
+        <li>
+            Supports <a href={useBaseUrl("docs/providers/ldap/")}>LDAP</a>
+        </li>,
+        <li>
+            Supports <a href={useBaseUrl("docs/providers/scim/")}>SCIM</a>
+        </li>,
+        <li>
+            Supports <a href={useBaseUrl("docs/providers/radius/")}>Radius</a>
+        </li>,
+        <li>
+            Supports <a href={useBaseUrl("docs/providers/proxy/")}>Proxy</a>
+        </li>,
+        <li>Advanced policy engine</li>,
+    ];
+    const enterpriseFeatures = [
+        <li>Long-term-support releases</li>,
+        <li>Enterprise support plan</li>,
+        <li>Web-based RDP/SSH access (planned)</li>,
+        <li>Push-notification MFA (planned)</li>,
+        <li>Desktop authentication (planned)</li>,
+        <li>AI-based risk assessment (planned)</li>,
+    ];
     return (
         <Layout title="Pricing">
             <section>
@@ -21,14 +53,11 @@ export default function pricingPage() {
                                     <h3>Open Source</h3>
                                 </div>
                                 <div className="card__body">
-                                    <li>Open source</li>
-                                    <li>Self-hosted</li>
-                                    <li>Supports OAuth2/OpenID Connect</li>
-                                    <li>Supports SAML</li>
-                                    <li>Supports LDAP</li>
-                                    <li>Supports SCIM</li>
-                                    <li>Supports Proxy authentication</li>
-                                    <li>Advanced policy engine</li>
+                                    <ul>
+                                        <li>Open source</li>
+                                        <li>Self-hosted</li>
+                                        {commonFeatures}
+                                    </ul>
                                 </div>
                                 <div className="card__footer">
                                     <h1>Free, forever</h1>
@@ -47,14 +76,12 @@ export default function pricingPage() {
                                     <h3>Enterprise Self-Hosted</h3>
                                 </div>
                                 <div className="card__body">
-                                    <li>Self-hosted</li>
-                                    <li>Source-available</li>
-                                    <li>Long-term-support releases</li>
-                                    <li>Enterprise support plan</li>
-                                    <li>Web-based RDP/SSH access (planned)</li>
-                                    <li>Push-notification MFA (planned)</li>
-                                    <li>Desktop authentication (planned)</li>
-                                    <li>AI-based risk assessment (planned)</li>
+                                    <ul>
+                                        <li>Source-available</li>
+                                        <li>Self-hosted</li>
+                                        {commonFeatures}
+                                        {enterpriseFeatures}
+                                    </ul>
                                 </div>
                                 <div className="card__footer">
                                     <h1>
@@ -80,20 +107,18 @@ export default function pricingPage() {
                                     <h3>Enterprise Cloud</h3>
                                 </div>
                                 <div className="card__body">
-                                    <li>Hosted and Managed by authentik</li>
-                                    <li>
-                                        Easily shift to self-hosted if needed
-                                    </li>
-                                    <li>Source-available</li>
-                                    <li>Long-term-support releases</li>
-                                    <li>Enterprise support plan</li>
-                                    <li>Web-based RDP/SSH access (planned)</li>
-                                    <li>Push-notification MFA (planned)</li>
-                                    <li>Desktop authentication (planned)</li>
-                                    <li>AI-based risk assessment (planned)</li>
+                                    <ul>
+                                        <li>Hosted and Managed by authentik</li>
+                                        <li>Source-available</li>
+                                        {commonFeatures}
+                                        {enterpriseFeatures}
+                                        <li>
+                                            Easily shift to self-hosted if
+                                            needed
+                                        </li>
+                                    </ul>
                                 </div>
                                 <div className="card__footer">
-                                    <h4>Minimum 100 users</h4>
                                     <h1>
                                         $5 <small>/internal user/month</small>
                                     </h1>
