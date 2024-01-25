@@ -39,7 +39,7 @@ function createOneImportLine(line: string) {
     if (!importContent) {
         throw new Error("How did an unmatchable line get here!?");
     }
-    return `'${importContent}";': '${importContent}?inline";',`;
+    return `    '${importContent}";',`;
 }
 
 const isSourceFile = /\.ts$/;
@@ -73,9 +73,15 @@ const outputFile = `
 // Sometime around 2030 or so, the Javascript community may finally get its collective act together
 // and we'll have one unified way of doing this.  I can only hope.
 
-export const cssImportMaps = {
+const rawCssImportMaps = [
 ${importLines.map(createOneImportLine).join("\n")}
-};
+];
+
+const cssImportMaps = rawCssImportMaps.reduce((acc, line) => (
+{...acc, [line]: line.replace(/\\.css/, ".css?inline")}), {});
+
+export { cssImportMaps };
+export default cssImportMaps;
 `;
 
 fs.writeFileSync(path.join(__dirname, "..", ".storybook", "css-import-maps.ts"), outputFile, {

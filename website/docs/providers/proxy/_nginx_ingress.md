@@ -9,15 +9,16 @@ spec:
     rules:
         - host: app.company
           http:
-              paths: /outpost.goauthentik.io
-              pathType: Prefix
-              backend:
-                  # Or, to use an external Outpost, create an ExternalName service and reference that here.
-                  # See https://kubernetes.io/docs/concepts/services-networking/service/#externalname
-                  service:
-                      name: ak-outpost-example-outpost
-                      port:
-                          number: 9000
+              paths:
+                  - path: /outpost.goauthentik.io
+                    pathType: Prefix
+                    backend:
+                        # Or, to use an external Outpost, create an ExternalName service and reference that here.
+                        # See https://kubernetes.io/docs/concepts/services-networking/service/#externalname
+                        service:
+                            name: ak-outpost-example-outpost
+                            port:
+                                number: 9000
 ```
 
 This ingress handles authentication requests, and the sign-in flow.

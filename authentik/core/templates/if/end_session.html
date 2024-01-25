@@ -4,7 +4,7 @@
 {% load i18n %}
 
 {% block title %}
-{% trans 'End session' %} - {{ tenant.branding_title }}
+{% trans 'End session' %} - {{ brand.branding_title }}
 {% endblock %}
 
 {% block card_title %}
@@ -16,7 +16,7 @@ You've logged out of {{ application }}.
 {% block card %}
 <form method="POST" class="pf-c-form">
     <p>
-        {% blocktrans with application=application.name branding_title=tenant.branding_title %}
+        {% blocktrans with application=application.name branding_title=brand.branding_title %}
             You've logged out of {{ application }}. You can go back to the overview to launch another application, or log out of your {{ branding_title }} account.
         {% endblocktrans %}
     </p>
@@ -26,7 +26,7 @@ You've logged out of {{ application }}.
     </a>
 
     <a id="logout" href="{% url 'authentik_flows:default-invalidation' %}" class="pf-c-button pf-m-secondary">
-        {% blocktrans with branding_title=tenant.branding_title %}
+        {% blocktrans with branding_title=brand.branding_title %}
             Log out of {{ branding_title }}
         {% endblocktrans %}
     </a>

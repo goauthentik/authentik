@@ -10,6 +10,6 @@ class AuthentikRBACConfig(ManagedAppConfig):
     verbose_name = "authentik RBAC"
     default = True
 
-    def reconcile_load_rbac_signals(self):
+    def reconcile_global_load_rbac_signals(self):
         """Load rbac signals"""
         self.import_module("authentik.rbac.signals")

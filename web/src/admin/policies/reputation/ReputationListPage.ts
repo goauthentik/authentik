@@ -94,7 +94,7 @@ export class ReputationListPage extends TablePage<Reputation> {
             html`${item.updated.toLocaleString()}`,
             html`
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.PoliciesReputationReputation}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.PoliciesReputationReputationpolicy}
                     objectPk=${item.pk || ""}
                 >
                 </ak-rbac-object-permission-modal>

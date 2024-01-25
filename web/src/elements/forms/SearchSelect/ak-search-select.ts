@@ -1,12 +1,14 @@
+import { APIErrorTypes, parseAPIError } from "@goauthentik/app/common/errors";
 import { PreventFormSubmit } from "@goauthentik/app/elements/forms/helpers";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { ascii_letters, digits, groupBy, randomString } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
+import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { TemplateResult, html, render } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
 
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
@@ -14,6 +16,8 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFSelect from "@patternfly/patternfly/components/Select/select.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+import { ResponseError } from "@goauthentik/api";
 
 type Group<T> = [string, T[]];
 
@@ -99,12 +103,20 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
 
     isFetchingData = false;
 
-    static styles = [PFBase, PFForm, PFFormControl, PFSelect];
+    @state()
+    error?: APIErrorTypes;
+
+    static get styles() {
+        return [PFBase, PFForm, PFFormControl, PFSelect];
+    }
 
     constructor() {
         super();
         if (!document.adoptedStyleSheets.includes(PFDropdown)) {
-            document.adoptedStyleSheets = [...document.adoptedStyleSheets, PFDropdown];
+            document.adoptedStyleSheets = [
+                ...document.adoptedStyleSheets,
+                ensureCSSStyleSheet(PFDropdown),
+            ];
         }
         this.dropdownContainer = document.createElement("div");
         this.observer = new IntersectionObserver(() => {
@@ -139,21 +151,33 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
             return;
         }
         this.isFetchingData = true;
-        this.fetchObjects(this.query).then((objects) => {
-            objects.forEach((obj) => {
-                if (this.selected && this.selected(obj, objects || [])) {
-                    this.selectedObject = obj;
-                }
+        this.fetchObjects(this.query)
+            .then((objects) => {
+                objects.forEach((obj) => {
+                    if (this.selected && this.selected(obj, objects || [])) {
+                        this.selectedObject = obj;
+                        this.dispatchCustomEvent("ak-change", { value: this.selectedObject });
+                    }
+                });
+                this.objects = objects;
+                this.isFetchingData = false;
+            })
+            .catch((exc: ResponseError) => {
+                this.isFetchingData = false;
+                this.objects = undefined;
+                parseAPIError(exc).then((err) => {
+                    this.error = err;
+                });
             });
-            this.objects = objects;
-            this.isFetchingData = false;
-        });
     }
 
     connectedCallback(): void {
         super.connectedCallback();
         this.dropdownContainer = document.createElement("div");
         this.dropdownContainer.dataset["managedBy"] = "ak-search-select";
+        if (this.name) {
+            this.dropdownContainer.dataset["managedFor"] = this.name;
+        }
         document.body.append(this.dropdownContainer);
         this.updateData();
         this.addEventListener(EVENT_REFRESH, this.updateData);
@@ -220,6 +244,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
     onMenuItemClick(obj: T | undefined) {
         return () => {
             this.selectedObject = obj;
+            this.dispatchCustomEvent("ak-change", { value: this.selectedObject });
             this.open = false;
         };
     }
@@ -306,11 +331,19 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
     }
 
     get renderedValue() {
-        // prettier-ignore
-        return (!this.objects) ? msg("Loading...")
-            : (this.selectedObject) ? this.renderElement(this.selectedObject)
-            : (this.blankable) ? this.emptyOption
-            : "";
+        if (this.error) {
+            return msg(str`Failed to fetch objects: ${this.error.detail}`);
+        }
+        if (!this.objects) {
+            return msg("Loading...");
+        }
+        if (this.selectedObject) {
+            return this.renderElement(this.selectedObject);
+        }
+        if (this.blankable) {
+            return this.emptyOption;
+        }
+        return "";
     }
 
     render(): TemplateResult {

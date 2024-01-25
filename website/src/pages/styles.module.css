@@ -15,6 +15,7 @@
 .heroImage {
     flex-direction: column;
     justify-items: center;
+    --ifm-col-width: 45%;
 }
 
 .heroImage > img {

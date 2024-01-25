@@ -160,7 +160,7 @@
       </trans-unit>
       <trans-unit id="s14622ee6de586485">
         <source>Attempted to log in as <x id="0" equiv-text="${this.event.context.username}"/></source>
-        <target>Próbowano zalogować się jako 
+        <target>Próbowano zalogować się jako
         <x id="0" equiv-text="${this.event.context.username}"/></target>
       </trans-unit>
       <trans-unit id="sb07bf992e3d00664">
@@ -309,8 +309,8 @@
       <trans-unit id="s04c5a637328c9b67">
         <source><x id="0" equiv-text="${this.pages?.startIndex}"/> - <x id="1" equiv-text="${this.pages?.endIndex}"/> of <x id="2" equiv-text="${this.pages?.count}"/></source>
         <target>
-        <x id="0" equiv-text="${this.pages?.startIndex}"/>- 
-        <x id="1" equiv-text="${this.pages?.endIndex}"/>z 
+        <x id="0" equiv-text="${this.pages?.startIndex}"/>-
+        <x id="1" equiv-text="${this.pages?.endIndex}"/>z
         <x id="2" equiv-text="${this.pages?.count}"/></target>
       </trans-unit>
       <trans-unit id="s6a89bb10338369b4">
@@ -357,17 +357,13 @@
         <source>Client IP</source>
         <target>IP klienta</target>
       </trans-unit>
-      <trans-unit id="s45f9e7ce0897f9e5">
-        <source>Tenant</source>
-        <target>Najemca</target>
-      </trans-unit>
       <trans-unit id="s2152f3482784705f">
         <source>Recent events</source>
       </trans-unit>
       <trans-unit id="sc35581d9c1cd67ff">
-        <source>On behalf of <x id="0" equiv-text="${item.user.on_behalf_of.username}"/></source>
-        <target>W imieniu 
-        <x id="0" equiv-text="${item.user.on_behalf_of.username}"/></target>
+        <source>On behalf of <x id="0" equiv-text="${event.user.on_behalf_of.username}"/></source>
+        <target>W imieniu
+        <x id="0" equiv-text="${event.user.on_behalf_of.username}"/></target>
       </trans-unit>
       <trans-unit id="saf63a04c86018698">
         <source>-</source>
@@ -454,7 +450,7 @@
       <trans-unit id="s0382d73823585617">
         <source><x id="0" equiv-text="${this.errorMessage}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
         <target>
-        <x id="0" equiv-text="${this.errorMessage}"/>: 
+        <x id="0" equiv-text="${this.errorMessage}"/>:
         <x id="1" equiv-text="${e.toString()}"/></target>
       </trans-unit>
       <trans-unit id="s2ceb11be2290bb1b">
@@ -485,7 +481,7 @@
       </trans-unit>
       <trans-unit id="saa0e2675da69651b">
         <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
-        <target>Nie znaleziono adresu URL „ 
+        <target>Nie znaleziono adresu URL „
         <x id="0" equiv-text="${this.url}"/>”.</target>
       </trans-unit>
       <trans-unit id="s58cd9c2fe836d9c6">
@@ -498,7 +494,7 @@
       </trans-unit>
       <trans-unit id="s6dfd15978586d05f">
         <source>Welcome, <x id="0" equiv-text="${name}"/>.</source>
-        <target>Witaj, 
+        <target>Witaj,
         <x id="0" equiv-text="${name}"/>.</target>
       </trans-unit>
       <trans-unit id="sc381422c585b867f">
@@ -604,7 +600,7 @@
         <source>Duration</source>
       </trans-unit>
       <trans-unit id="se7e1ababbc4868b8">
-        <source><x id="0" equiv-text="${item.taskDuration.toFixed(2)}"/> seconds</source>
+        <source><x id="0" equiv-text="${item.duration.toFixed(2)}"/> seconds</source>
       </trans-unit>
       <trans-unit id="sc25edca57df81461">
         <source>Authentication</source>
@@ -1235,7 +1231,7 @@
       </trans-unit>
       <trans-unit id="s5d6af4c100ad321b">
         <source>Create <x id="0" equiv-text="${type.name}"/></source>
-        <target>Utwórz 
+        <target>Utwórz
         <x id="0" equiv-text="${type.name}"/></target>
       </trans-unit>
       <trans-unit id="sb95baab425322600">
@@ -1317,7 +1313,7 @@
       <trans-unit id="s55fa598b754cc3cc">
         <source><x id="0" equiv-text="${ub.name}"/> (<x id="1" equiv-text="${consequence}"/>)</source>
         <target>
-        <x id="0" equiv-text="${ub.name}"/>( 
+        <x id="0" equiv-text="${ub.name}"/>(
         <x id="1" equiv-text="${consequence}"/>)</target>
       </trans-unit>
       <trans-unit id="s09240e07b5b8d640">
@@ -1329,13 +1325,13 @@
       </trans-unit>
       <trans-unit id="sf6eb148db23d19de">
         <source>Failed to delete <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
-        <target>Nie udało się usunąć 
-        <x id="0" equiv-text="${this.objectLabel}"/>: 
+        <target>Nie udało się usunąć
+        <x id="0" equiv-text="${this.objectLabel}"/>:
         <x id="1" equiv-text="${e.toString()}"/></target>
       </trans-unit>
       <trans-unit id="s039b6434e8a75560">
         <source>Delete <x id="0" equiv-text="${this.objectLabel}"/></source>
-        <target>Usuń 
+        <target>Usuń
         <x id="0" equiv-text="${this.objectLabel}"/></target>
       </trans-unit>
       <trans-unit id="s5819a49638f6d7cb">
@@ -1378,7 +1374,7 @@
       </trans-unit>
       <trans-unit id="sc9175cb129fdc306">
         <source>Update <x id="0" equiv-text="${item.verboseName}"/></source>
-        <target>Zaktualizuj 
+        <target>Zaktualizuj
         <x id="0" equiv-text="${item.verboseName}"/></target>
       </trans-unit>
       <trans-unit id="s398f6ba74ba8943a">
@@ -2107,17 +2103,17 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s030ac0829bb50a49">
         <source>Policy <x id="0" equiv-text="${item.policyObj?.name}"/></source>
-        <target>Zasada 
+        <target>Zasada
         <x id="0" equiv-text="${item.policyObj?.name}"/></target>
       </trans-unit>
       <trans-unit id="s2a64d2dca3da9b0e">
         <source>Group <x id="0" equiv-text="${item.groupObj?.name}"/></source>
-        <target>Grupa 
+        <target>Grupa
         <x id="0" equiv-text="${item.groupObj?.name}"/></target>
       </trans-unit>
       <trans-unit id="se5dc026819a32ff8">
         <source>User <x id="0" equiv-text="${item.userObj?.name}"/></source>
-        <target>Użytkownik 
+        <target>Użytkownik
         <x id="0" equiv-text="${item.userObj?.name}"/></target>
       </trans-unit>
       <trans-unit id="s50c312bea93b6925">
@@ -2601,13 +2597,13 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Zadanie zakończone z błędami</target>
       </trans-unit>
       <trans-unit id="sbedb77365a066648">
-        <source>Last sync: <x id="0" equiv-text="${task.taskFinishTimestamp.toLocaleString()}"/></source>
-        <target>Ostatnia synchronizacja: 
-        <x id="0" equiv-text="${task.taskFinishTimestamp.toLocaleString()}"/></target>
+        <source>Last sync: <x id="0" equiv-text="${task.finishTimestamp.toLocaleString()}"/></source>
+        <target>Ostatnia synchronizacja:
+        <x id="0" equiv-text="${task.finishTimestamp.toLocaleString()}"/></target>
       </trans-unit>
       <trans-unit id="sf3fec8353106ac2f">
         <source>OAuth Source <x id="0" equiv-text="${this.source.name}"/></source>
-        <target>Źródło OAuth 
+        <target>Źródło OAuth
         <x id="0" equiv-text="${this.source.name}"/></target>
       </trans-unit>
       <trans-unit id="se09d055771f3a11d">
@@ -2825,14 +2821,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>Update Token</source>
         <target>Aktualizuj token</target>
       </trans-unit>
-      <trans-unit id="s0af6301e76e2a2a5">
-        <source>Successfully updated tenant.</source>
-        <target>Pomyślnie zaktualizowano najemcę.</target>
-      </trans-unit>
-      <trans-unit id="sf55c7c06dbc2c8c6">
-        <source>Successfully created tenant.</source>
-        <target>Pomyślnie utworzony najemce.</target>
-      </trans-unit>
       <trans-unit id="s41706a202b6c40f1">
         <source>Domain</source>
         <target>Domena</target>
@@ -2844,10 +2832,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s11326fd2590f4e5e">
         <source>Default</source>
         <target>Domyślny</target>
-      </trans-unit>
-      <trans-unit id="se1c85959463f53df">
-        <source>Use this tenant for each domain that doesn't have a dedicated tenant.</source>
-        <target>Użyj tego najemcy dla każdej domeny, która nie ma dedykowanej najmecy.</target>
       </trans-unit>
       <trans-unit id="sc19838ca8c135c1b">
         <source>Branding settings</source>
@@ -2948,18 +2932,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>This setting only affects new Events, as the expiration is saved per-event.</source>
         <target>To ustawienie ma wpływ tylko na nowe zdarzenia, ponieważ data wygaśnięcia jest zapisywana dla każdego zdarzenia.</target>
       </trans-unit>
-      <trans-unit id="s3bb51cabb02b997e">
-        <source>Format: "weeks=3;days=2;hours=3,seconds=2".</source>
-        <target>Format: "weeks=3;days=2;hours=3,seconds=2".</target>
-      </trans-unit>
-      <trans-unit id="s04bfd02201db5ab8">
-        <source>Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this tenant.</source>
-        <target>Ustaw atrybuty niestandardowe za pomocą YAML lub JSON. Wszystkie ustawione tutaj atrybuty będą dziedziczone przez użytkowników, jeśli żądanie jest obsługiwane przez tego najemcę.</target>
-      </trans-unit>
-      <trans-unit id="s7f9e79189a3d19e2">
-        <source>Tenants</source>
-        <target>Najemcy</target>
-      </trans-unit>
       <trans-unit id="s164be9a7537b99f6">
         <source>Configure visual settings and defaults for different domains.</source>
         <target>Skonfiguruj ustawienia wizualne i domyślne dla różnych domen.</target>
@@ -2967,18 +2939,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s4802636d55022ed3">
         <source>Default?</source>
         <target>Domyślny?</target>
-      </trans-unit>
-      <trans-unit id="s69a56a3022c4be7f">
-        <source>Tenant(s)</source>
-        <target>Najemca(y)</target>
-      </trans-unit>
-      <trans-unit id="s1b606acd76ba2c4c">
-        <source>Update Tenant</source>
-        <target>Zaktualizuj najemcę</target>
-      </trans-unit>
-      <trans-unit id="s773aa6621d7e37b7">
-        <source>Create Tenant</source>
-        <target>Utwórz najemcę</target>
       </trans-unit>
       <trans-unit id="s8cb7bb82e96d5d77">
         <source>Policies</source>
@@ -2990,7 +2950,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="se16ac750b81fa93d">
         <source>Assigned to <x id="0" equiv-text="${item.boundTo}"/> object(s).</source>
-        <target>Przypisany do 
+        <target>Przypisany do
         <x id="0" equiv-text="${item.boundTo}"/>obiektu(ów).</target>
       </trans-unit>
       <trans-unit id="s5a48d5171e1a1522">
@@ -3090,7 +3050,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s4414164d120de61a">
         <source>The following objects use <x id="0" equiv-text="${objName}"/></source>
-        <target>Następujące obiekty używają 
+        <target>Następujące obiekty używają
         <x id="0" equiv-text="${objName}"/></target>
       </trans-unit>
       <trans-unit id="s92e241c9f3c101a2">
@@ -3102,14 +3062,14 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s14401ff4a0cba208">
         <source>Failed to update <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
-        <target>Nie udało się zaktualizować 
-        <x id="0" equiv-text="${this.objectLabel}"/>: 
+        <target>Nie udało się zaktualizować
+        <x id="0" equiv-text="${this.objectLabel}"/>:
         <x id="1" equiv-text="${e.toString()}"/></target>
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
         <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>"?</source>
-        <target>Czy na pewno chcesz zaktualizować 
-        <x id="0" equiv-text="${this.objectLabel}"/>" 
+        <target>Czy na pewno chcesz zaktualizować
+        <x id="0" equiv-text="${this.objectLabel}"/>"
         <x id="1" equiv-text="${this.obj?.name}"/>”?</target>
       </trans-unit>
       <trans-unit id="sc92d7cfb6ee1fec6">
@@ -3142,7 +3102,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s5d7748b1d2363478">
         <source>Are you sure you want to remove the selected users from the group <x id="0" equiv-text="${this.targetGroup?.name}"/>?</source>
-        <target>Czy na pewno chcesz usunąć wybranych użytkowników z grupy 
+        <target>Czy na pewno chcesz usunąć wybranych użytkowników z grupy
         <x id="0" equiv-text="${this.targetGroup?.name}"/>?</target>
       </trans-unit>
       <trans-unit id="sea4f08110bb8f15d">
@@ -3201,10 +3161,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>Recovery link cannot be emailed, user has no email address saved.</source>
         <target>Nie można wysłać linku odzyskiwania, użytkownik nie ma zapisanego adresu e-mail.</target>
       </trans-unit>
-      <trans-unit id="s63d89a6ae0969c30">
-        <source>To let a user directly reset a their password, configure a recovery flow on the currently active tenant.</source>
-        <target>Aby umożliwić użytkownikowi bezpośrednie zresetowanie hasła, skonfiguruj przepływ odzyskiwania w aktualnie aktywnym najemcy.</target>
-      </trans-unit>
       <trans-unit id="s720594461542943f">
         <source>Add User</source>
         <target>Dodaj użytkownika</target>
@@ -3252,7 +3208,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s3616cc78631f5893">
         <source>Warning: You're about to delete the user you're logged in as (<x id="0" equiv-text="${shouldShowWarning.username}"/>). Proceed at your own risk.</source>
-        <target>Ostrzeżenie: masz zamiar usunąć użytkownika, na którym jesteś zalogowany jako ( 
+        <target>Ostrzeżenie: masz zamiar usunąć użytkownika, na którym jesteś zalogowany jako (
         <x id="0" equiv-text="${shouldShowWarning.username}"/>). Kontynuuj na własne ryzyko.</target>
       </trans-unit>
       <trans-unit id="s510c7add9e24c306">
@@ -3276,7 +3232,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="sb4c9ed2a487b238f">
         <source>Are you sure you want to remove user <x id="0" equiv-text="${this.targetUser?.username}"/> from the following groups?</source>
-        <target>Czy na pewno chcesz usunąć użytkownika 
+        <target>Czy na pewno chcesz usunąć użytkownika
         <x id="0" equiv-text="${this.targetUser?.username}"/>z następujących grup?</target>
       </trans-unit>
       <trans-unit id="s964f6725aeb7662f">
@@ -4213,8 +4169,8 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s2d5f69929bb7221d">
         <source><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", of type <x id="2" equiv-text="${prompt.type}"/>)</source>
         <target>
-        <x id="0" equiv-text="${prompt.name}"/>(„ 
-        <x id="1" equiv-text="${prompt.fieldKey}"/>”, typu 
+        <x id="0" equiv-text="${prompt.name}"/>(„
+        <x id="1" equiv-text="${prompt.fieldKey}"/>”, typu
         <x id="2" equiv-text="${prompt.type}"/>)</target>
       </trans-unit>
       <trans-unit id="s3b7b519444181264">
@@ -4336,7 +4292,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s77299a9d3dd932cd">
         <source>Successfully imported <x id="0" equiv-text="${res.count}"/> devices.</source>
-        <target>Pomyślnie zaimportowano 
+        <target>Pomyślnie zaimportowano
         <x id="0" equiv-text="${res.count}"/>urządzenia.</target>
       </trans-unit>
       <trans-unit id="s6a615f6165ef01c9">
@@ -4588,7 +4544,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s65d67612999165e9">
         <source>Event <x id="0" equiv-text="${this.event.pk}"/></source>
-        <target>Zdarzenie 
+        <target>Zdarzenie
         <x id="0" equiv-text="${this.event.pk}"/></target>
       </trans-unit>
       <trans-unit id="s455de2f740b073fd">
@@ -4748,6 +4704,10 @@ Bindings to groups/users are checked against the user of the event.</source>
         <source>Selecting an integration enables the management of the outpost by authentik.</source>
         <target>Wybranie integracji umożliwia zarządzanie placówką przez authentik.</target>
       </trans-unit>
+      <trans-unit id="s554ce268e9727e79">
+        <source>You can only select providers that match the type of the outpost.</source>
+        <target>Możesz wybrać tylko tych dostawców, którzy pasują do typu placówki.</target>
+      </trans-unit>
       <trans-unit id="sf9b1c0661a02d9f9">
         <source>Configuration</source>
         <target>Konfiguracja</target>
@@ -4767,7 +4727,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       <trans-unit id="s1ac2653a6492b435">
         <source><x id="0" equiv-text="${this.outpostHealth.version}"/>, should be <x id="1" equiv-text="${this.outpostHealth.versionShould}"/></source>
         <target>
-        <x id="0" equiv-text="${this.outpostHealth.version}"/>, powinno być 
+        <x id="0" equiv-text="${this.outpostHealth.version}"/>, powinno być
         <x id="1" equiv-text="${this.outpostHealth.versionShould}"/></target>
       </trans-unit>
       <trans-unit id="s1e176e35c828318c">
@@ -4780,7 +4740,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="s02b632a9ac24a824">
         <source>Last seen: <x id="0" equiv-text="${this.outpostHealth.lastSeen?.toLocaleTimeString()}"/></source>
-        <target>Ostatnio widziany: 
+        <target>Ostatnio widziany:
         <x id="0" equiv-text="${this.outpostHealth.lastSeen?.toLocaleTimeString()}"/></target>
       </trans-unit>
       <trans-unit id="sa43153d53ae65063">
@@ -4805,7 +4765,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="sbf5f4c5ba679e847">
         <source>Logging in via <x id="0" equiv-text="${item.config.authentik_host}"/>.</source>
-        <target>Logowanie przez 
+        <target>Logowanie przez
         <x id="0" equiv-text="${item.config.authentik_host}"/>.</target>
       </trans-unit>
       <trans-unit id="s59b6028f19d15cda">
@@ -4960,7 +4920,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="sef50d248448e0df1">
         <source>Yes (<x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"/>)</source>
-        <target>Tak ( 
+        <target>Tak (
         <x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"/>)</target>
       </trans-unit>
       <trans-unit id="s09205907b5b56cda">
@@ -5098,7 +5058,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="s96b3cddf33e1c853">
         <source>You're currently impersonating <x id="0" equiv-text="${this.impersonation}"/>. Click to stop.</source>
-        <target>Obecnie podszywasz się pod 
+        <target>Obecnie podszywasz się pod
         <x id="0" equiv-text="${this.impersonation}"/>. Kliknij, aby zatrzymać.</target>
       </trans-unit>
       <trans-unit id="s7031e6928c44cedd">
@@ -5198,7 +5158,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="s670ad066cc0e50a3">
         <source>Login to continue to <x id="0" equiv-text="${this.challenge.applicationPre}"/>.</source>
-        <target>Zaloguj się, aby przejść do 
+        <target>Zaloguj się, aby przejść do
         <x id="0" equiv-text="${this.challenge.applicationPre}"/>.</target>
       </trans-unit>
       <trans-unit id="scf5ce91bfba10a61">
@@ -5307,12 +5267,12 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="sbbb7318812d64e51">
         <source>Error when creating credential: <x id="0" equiv-text="${err}"/></source>
-        <target>Błąd podczas tworzenia poświadczeń: 
+        <target>Błąd podczas tworzenia poświadczeń:
         <x id="0" equiv-text="${err}"/></target>
       </trans-unit>
       <trans-unit id="sfe199b2564b66054">
         <source>Error when validating assertion on server: <x id="0" equiv-text="${err}"/></source>
-        <target>Błąd podczas walidacji asercji na serwerze: 
+        <target>Błąd podczas walidacji asercji na serwerze:
         <x id="0" equiv-text="${err}"/></target>
       </trans-unit>
       <trans-unit id="se409d01b52c4e12f">
@@ -5451,12 +5411,12 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="s7fa4e5e409d43573">
         <source>Error creating credential: <x id="0" equiv-text="${err}"/></source>
-        <target>Błąd podczas tworzenia poświadczenia: 
+        <target>Błąd podczas tworzenia poświadczenia:
         <x id="0" equiv-text="${err}"/></target>
       </trans-unit>
       <trans-unit id="s9d95f09deb601f34">
         <source>Server validation of credential failed: <x id="0" equiv-text="${err}"/></source>
-        <target>Weryfikacja poświadczeń serwera nie powiodła się: 
+        <target>Weryfikacja poświadczeń serwera nie powiodła się:
         <x id="0" equiv-text="${err}"/></target>
       </trans-unit>
       <trans-unit id="s6c8f05e3be04f62a">
@@ -5525,7 +5485,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="s67dedada007d4067">
         <source>Failed to disconnected source: <x id="0" equiv-text="${exc}"/></source>
-        <target>Nie udało się odłączyć źródła: 
+        <target>Nie udało się odłączyć źródła:
         <x id="0" equiv-text="${exc}"/></target>
       </trans-unit>
       <trans-unit id="sd2208cd1a767644b">
@@ -5538,7 +5498,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="sababff57115130a0">
         <source>Error: unsupported source settings: <x id="0" equiv-text="${source.component}"/></source>
-        <target>Błąd: nieobsługiwane ustawienia źródła: 
+        <target>Błąd: nieobsługiwane ustawienia źródła:
         <x id="0" equiv-text="${source.component}"/></target>
       </trans-unit>
       <trans-unit id="sd1031bddc66dc495">
@@ -6094,9 +6054,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="saf6097bfa25205b8">
   <source>A copy of this recovery link has been placed in your clipboard</source>
 </trans-unit>
-<trans-unit id="s5b8ee296ed258568">
-  <source>The current tenant must have a recovery flow configured to use a recovery link</source>
-</trans-unit>
 <trans-unit id="s895514dda9cb9c94">
   <source>Create recovery link</source>
 </trans-unit>
@@ -6358,36 +6315,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s6dd297c217729828">
   <source>Determines how long a session lasts before being disconnected and requiring re-authorization.</source>
 </trans-unit>
-<trans-unit id="s0db494ff61b48438">
-  <source>Add All Available</source>
-</trans-unit>
-<trans-unit id="s2f68faa5b84ee9fd">
-  <source>Remove All Available</source>
-</trans-unit>
-<trans-unit id="s0ba85594344a5c02">
-  <source>Remove All</source>
-</trans-unit>
-<trans-unit id="s1efa17e3407e0f56">
-  <source>Available options</source>
-</trans-unit>
-<trans-unit id="s886db4d476f66522">
-  <source>Selected options</source>
-</trans-unit>
-<trans-unit id="scb76a63c68b0d81f">
-  <source>Available Applications</source>
-</trans-unit>
-<trans-unit id="sd176021da2ea0fe3">
-  <source>Selected Applications</source>
-</trans-unit>
-<trans-unit id="sd429eba21dd59f44">
-  <source><x id="0" equiv-text="${availableCount}"/> item(s) marked to add.</source>
-</trans-unit>
-<trans-unit id="s4abfe4e0d0665fd1">
-  <source><x id="0" equiv-text="${selectedTotal}"/> item(s) selected.</source>
-</trans-unit>
-<trans-unit id="s56b3d54118c34b2f">
-  <source><x id="0" equiv-text="${selectedCount}"/> item(s) marked to remove.</source>
-</trans-unit>
 <trans-unit id="scc7f34824150bfb8">
   <source>Provider require enterprise.</source>
 </trans-unit>
@@ -6405,6 +6332,143 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s95d56e58f816d211">
   <source>Dutch</source>
+</trans-unit>
+<trans-unit id="s16a15af46bc9aeef">
+  <source>Failed to fetch objects: <x id="0" equiv-text="${this.error.detail}"/></source>
+</trans-unit>
+<trans-unit id="s744401846fea6e76">
+  <source>Brand</source>
+</trans-unit>
+<trans-unit id="sab21e1f62676b56c">
+  <source>Successfully updated brand.</source>
+</trans-unit>
+<trans-unit id="sa43e43fd3a23e22d">
+  <source>Successfully created brand.</source>
+</trans-unit>
+<trans-unit id="s41b3f9b4c98aabd9">
+  <source>Use this brand for each domain that doesn't have a dedicated brand.</source>
+</trans-unit>
+<trans-unit id="s17260b71484b307f">
+  <source>Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this brand.</source>
+</trans-unit>
+<trans-unit id="s79fc990a2b58f27f">
+  <source>Brands</source>
+</trans-unit>
+<trans-unit id="s02774bc46a167346">
+  <source>Brand(s)</source>
+</trans-unit>
+<trans-unit id="s801bf3d03f4a3ff1">
+  <source>Update Brand</source>
+</trans-unit>
+<trans-unit id="s5c3efec5330e0000">
+  <source>Create Brand</source>
+</trans-unit>
+<trans-unit id="sa9d13ce9e83aac17">
+  <source>To let a user directly reset a their password, configure a recovery flow on the currently active brand.</source>
+</trans-unit>
+<trans-unit id="s6709b81e1ed4e39f">
+  <source>The current brand must have a recovery flow configured to use a recovery link</source>
+</trans-unit>
+<trans-unit id="s634e2fd82c397576">
+  <source>Successfully updated settings.</source>
+</trans-unit>
+<trans-unit id="sb8e4edaea6f1d935">
+  <source>Avatars</source>
+</trans-unit>
+<trans-unit id="s945856050217c828">
+  <source>Configure how authentik should show avatars for users. The following values can be set:</source>
+</trans-unit>
+<trans-unit id="sf4ef4c8ce713f775">
+  <source>Disables per-user avatars and just shows a 1x1 pixel transparent picture</source>
+</trans-unit>
+<trans-unit id="s5446842a7e4a963b">
+  <source>Uses gravatar with the user's email address</source>
+</trans-unit>
+<trans-unit id="s35363b9e1cc2abd3">
+  <source>Generated avatars based on the user's name</source>
+</trans-unit>
+<trans-unit id="s48110ca292cad513">
+  <source>Any URL: If you want to use images hosted on another server, you can set any URL. Additionally, these placeholders can be used:</source>
+</trans-unit>
+<trans-unit id="sbe1dfda044bdc93b">
+  <source>The user's username</source>
+</trans-unit>
+<trans-unit id="s653f257c9c2d4dc5">
+  <source>The email address, md5 hashed</source>
+</trans-unit>
+<trans-unit id="s9c9183cd80916b4f">
+  <source>The user's UPN, if set (otherwise an empty string)</source>
+</trans-unit>
+<trans-unit id="h4963ed14d7e239a9">
+  <source>An attribute path like
+                                    <x id="0" equiv-text="&lt;code&gt;"/>attributes.something.avatar<x id="1" equiv-text="&lt;/code&gt;"/>, which can be used in
+                                    combination with the file field to allow users to upload custom
+                                    avatars for themselves.</source>
+</trans-unit>
+<trans-unit id="s4c80c34a67a6f1c9">
+  <source>Multiple values can be set, comma-separated, and authentik will fallback to the next mode when no avatar could be found.</source>
+</trans-unit>
+<trans-unit id="h2fafcc3ebafea2f8">
+  <source>For example, setting this to <x id="0" equiv-text="&lt;code&gt;"/>gravatar,initials<x id="1" equiv-text="&lt;/code&gt;"/> will
+                                attempt to get an avatar from Gravatar, and if the user has not
+                                configured on there, it will fallback to a generated avatar.</source>
+</trans-unit>
+<trans-unit id="s5faec5eb5faf62ac">
+  <source>Allow users to change name</source>
+</trans-unit>
+<trans-unit id="s078ffec0257621c0">
+  <source>Enable the ability for users to change their name.</source>
+</trans-unit>
+<trans-unit id="s456d88f3679190fd">
+  <source>Allow users to change email</source>
+</trans-unit>
+<trans-unit id="s5fc6c14d106f40d3">
+  <source>Enable the ability for users to change their email.</source>
+</trans-unit>
+<trans-unit id="s628e414bb2367057">
+  <source>Allow users to change username</source>
+</trans-unit>
+<trans-unit id="s6d816a95ca43a99d">
+  <source>Enable the ability for users to change their username.</source>
+</trans-unit>
+<trans-unit id="s57b52b60ed5e2bc7">
+  <source>Footer links</source>
+</trans-unit>
+<trans-unit id="s7349802b2f7f99c2">
+  <source>This option configures the footer links on the flow executor pages. It must be a valid JSON list and can be used as follows:</source>
+</trans-unit>
+<trans-unit id="s166b59f3cc5d8ec3">
+  <source>GDPR compliance</source>
+</trans-unit>
+<trans-unit id="sb8b23770f899e5bb">
+  <source>When enabled, all the events caused by a user will be deleted upon the user's deletion.</source>
+</trans-unit>
+<trans-unit id="s29501761df0fe837">
+  <source>Impersonation</source>
+</trans-unit>
+<trans-unit id="s8f503553d8432487">
+  <source>Globally enable/disable impersonation.</source>
+</trans-unit>
+<trans-unit id="see1eb81c1f734079">
+  <source>System settings</source>
+</trans-unit>
+<trans-unit id="s47fb5504f693775b">
+  <source>Changes made:</source>
+</trans-unit>
+<trans-unit id="s506b6a19d12f414c">
+  <source>Key</source>
+</trans-unit>
+<trans-unit id="s4fc9dc73245eab09">
+  <source>Previous value</source>
+</trans-unit>
+<trans-unit id="scb3b0671d7b7f640">
+  <source>New value</source>
+</trans-unit>
+<trans-unit id="s4a642406b0745917">
+  <source>Raw event info</source>
+</trans-unit>
+<trans-unit id="sa65e7bc7ddd3484d">
+  <source>Anonymous user</source>
 </trans-unit>
     </body>
   </file>
