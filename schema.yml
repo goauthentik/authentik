@@ -39931,6 +39931,15 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        default_token_duration:
+          type: string
+          minLength: 1
+          description: Default token duration
+        default_token_length:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Default token length
     PatchedStaticDeviceRequest:
       type: object
       description: Serializer for static authenticator devices
@@ -43059,6 +43068,14 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        default_token_duration:
+          type: string
+          description: Default token duration
+        default_token_length:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Default token length
     SettingsRequest:
       type: object
       description: Settings Serializer
@@ -43090,6 +43107,15 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        default_token_duration:
+          type: string
+          minLength: 1
+          description: Default token duration
+        default_token_length:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Default token length
     SeverityEnum:
       enum:
       - notice

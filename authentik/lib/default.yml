@@ -110,8 +110,6 @@ events:
     asn: "/geoip/GeoLite2-ASN.mmdb"
 
 cert_discovery_dir: /certs
-default_token_length: 60
-default_token_duration: minutes=30
 
 tenants:
   enabled: false

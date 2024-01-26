@@ -8138,10 +8138,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Determines how long a session lasts before being disconnected and requiring re-authorization.</source>
   <target>Détermine combien de temps une session dure avant déconnexion et ré-authorisation.</target>
 </trans-unit>
-<trans-unit id="scc7f34824150bfb8">
-  <source>Provider require enterprise.</source>
-  <target>Ce fournisseur requiert la version entreprise.</target>
-</trans-unit>
 <trans-unit id="s31f1afc1bfe1cb3a">
   <source>Learn more</source>
   <target>En apprendre plus</target>
@@ -8376,6 +8372,21 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s862505f29064fc72">
   <source>This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:</source>
+</trans-unit>
+<trans-unit id="sb2275335377069aa">
+  <source>This feature requires an enterprise license.</source>
+</trans-unit>
+<trans-unit id="s4888252cbd785175">
+  <source>Default token duration</source>
+</trans-unit>
+<trans-unit id="s25c80a16a07871ba">
+  <source>Default duration for generated tokens</source>
+</trans-unit>
+<trans-unit id="se5c9ffc025fdf61d">
+  <source>Default token length</source>
+</trans-unit>
+<trans-unit id="sa6b2c110466d1754">
+  <source>Default length of generated tokens</source>
 </trans-unit>
     </body>
   </file>

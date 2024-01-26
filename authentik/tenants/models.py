@@ -4,6 +4,7 @@ from uuid import uuid4
 
 from django.apps import apps
 from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.utils import IntegrityError
 from django.dispatch import receiver
@@ -79,6 +80,14 @@ class Tenant(TenantMixin, SerializerModel):
     )
     impersonation = models.BooleanField(
         help_text=_("Globally enable/disable impersonation."), default=True
+    )
+    default_token_duration = models.TextField(
+        help_text=_("Default token duration"),
+        default="minutes=30",
+        validators=[timedelta_string_validator],
+    )
+    default_token_length = models.PositiveIntegerField(
+        help_text=_("Default token length"), default=60, validators=[MinValueValidator(1)]
     )
 
     def save(self, *args, **kwargs):

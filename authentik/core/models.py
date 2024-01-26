@@ -23,7 +23,6 @@ from authentik.blueprints.models import ManagedModel
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
-from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
 from authentik.lib.models import (
     CreatedUpdatedModel,
@@ -33,6 +32,7 @@ from authentik.lib.models import (
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.install_id import get_install_id
+from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
 USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
@@ -60,7 +60,7 @@ options.DEFAULT_NAMES = options.DEFAULT_NAMES + (
 
 def default_token_duration():
     """Default duration a Token is valid"""
-    return now() + timedelta_from_string(CONFIG.get("default_token_duration"))
+    return now() + timedelta_from_string(get_current_tenant().default_token_duration)
 
 
 def token_expires_from_timedelta(dt: timedelta) -> datetime:
@@ -72,7 +72,7 @@ def default_token_key():
     """Default token key"""
     # We use generate_id since the chars in the key should be easy
     # to use in Emails (for verification) and URLs (for recovery)
-    return generate_id(CONFIG.get_int("default_token_length"))
+    return generate_id(get_current_tenant().default_token_length)
 
 
 class UserTypes(models.TextChoices):

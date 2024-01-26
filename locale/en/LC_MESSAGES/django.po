@@ -17,6 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
 #: authentik/api/schema.py:25
 msgid "Generic API Error"
 msgstr ""
@@ -102,162 +103,162 @@ msgstr ""
 msgid "No empty segments in user path allowed."
 msgstr ""
 
-#: authentik/core/models.py:101
+#: authentik/core/models.py:98
 msgid "name"
 msgstr ""
 
-#: authentik/core/models.py:103
+#: authentik/core/models.py:100
 msgid "Users added to this group will be superusers."
 msgstr ""
 
-#: authentik/core/models.py:177
+#: authentik/core/models.py:174
 msgid "Group"
 msgstr ""
 
-#: authentik/core/models.py:178
+#: authentik/core/models.py:175
 msgid "Groups"
 msgstr ""
 
-#: authentik/core/models.py:193
+#: authentik/core/models.py:190
 msgid "User's display name."
 msgstr ""
 
-#: authentik/core/models.py:289 authentik/providers/oauth2/models.py:295
+#: authentik/core/models.py:286 authentik/providers/oauth2/models.py:295
 msgid "User"
 msgstr ""
 
-#: authentik/core/models.py:290
+#: authentik/core/models.py:287
 msgid "Users"
 msgstr ""
 
-#: authentik/core/models.py:292
+#: authentik/core/models.py:289
 #: authentik/stages/email/templates/email/password_reset.html:28
 msgid "Reset Password"
 msgstr ""
 
-#: authentik/core/models.py:293
+#: authentik/core/models.py:290
 msgid "Can impersonate other users"
 msgstr ""
 
-#: authentik/core/models.py:294 authentik/rbac/models.py:54
+#: authentik/core/models.py:291 authentik/rbac/models.py:54
 msgid "Can assign permissions to users"
 msgstr ""
 
-#: authentik/core/models.py:295 authentik/rbac/models.py:55
+#: authentik/core/models.py:292 authentik/rbac/models.py:55
 msgid "Can unassign permissions from users"
 msgstr ""
 
-#: authentik/core/models.py:317
+#: authentik/core/models.py:314
 msgid ""
 "Flow used for authentication when the associated application is accessed by "
 "an un-authenticated user."
 msgstr ""
 
-#: authentik/core/models.py:327
+#: authentik/core/models.py:324
 msgid "Flow used when authorizing this provider."
 msgstr ""
 
-#: authentik/core/models.py:339
+#: authentik/core/models.py:336
 msgid ""
 "Accessed from applications; optional backchannel providers for protocols "
 "like LDAP and SCIM."
 msgstr ""
 
-#: authentik/core/models.py:394
+#: authentik/core/models.py:391
 msgid "Application's display Name."
 msgstr ""
 
-#: authentik/core/models.py:395
+#: authentik/core/models.py:392
 msgid "Internal application name, used in URLs."
 msgstr ""
 
-#: authentik/core/models.py:407
+#: authentik/core/models.py:404
 msgid "Open launch URL in a new browser tab or window."
 msgstr ""
 
-#: authentik/core/models.py:471
+#: authentik/core/models.py:468
 msgid "Application"
 msgstr ""
 
-#: authentik/core/models.py:472
+#: authentik/core/models.py:469
 msgid "Applications"
 msgstr ""
 
-#: authentik/core/models.py:478
+#: authentik/core/models.py:475
 msgid "Use the source-specific identifier"
 msgstr ""
 
-#: authentik/core/models.py:480
+#: authentik/core/models.py:477
 msgid ""
 "Link to a user with identical email address. Can have security implications "
 "when a source doesn't validate email addresses."
 msgstr ""
 
-#: authentik/core/models.py:484
+#: authentik/core/models.py:481
 msgid ""
 "Use the user's email address, but deny enrollment when the email address "
 "already exists."
 msgstr ""
 
-#: authentik/core/models.py:487
+#: authentik/core/models.py:484
 msgid ""
 "Link to a user with identical username. Can have security implications when "
 "a username is used with another source."
 msgstr ""
 
-#: authentik/core/models.py:491
+#: authentik/core/models.py:488
 msgid ""
 "Use the user's username, but deny enrollment when the username already "
 "exists."
 msgstr ""
 
-#: authentik/core/models.py:498
+#: authentik/core/models.py:495
 msgid "Source's display Name."
 msgstr ""
 
-#: authentik/core/models.py:499
+#: authentik/core/models.py:496
 msgid "Internal source name, used in URLs."
 msgstr ""
 
-#: authentik/core/models.py:518
+#: authentik/core/models.py:515
 msgid "Flow to use when authenticating existing users."
 msgstr ""
 
-#: authentik/core/models.py:527
+#: authentik/core/models.py:524
 msgid "Flow to use when enrolling new users."
 msgstr ""
 
-#: authentik/core/models.py:535
+#: authentik/core/models.py:532
 msgid ""
 "How the source determines if an existing user should be authenticated or a "
 "new user enrolled."
 msgstr ""
 
-#: authentik/core/models.py:707
+#: authentik/core/models.py:704
 msgid "Token"
 msgstr ""
 
-#: authentik/core/models.py:708
+#: authentik/core/models.py:705
 msgid "Tokens"
 msgstr ""
 
-#: authentik/core/models.py:713
+#: authentik/core/models.py:710
 msgid "View token's key"
 msgstr ""
 
-#: authentik/core/models.py:749
+#: authentik/core/models.py:746
 msgid "Property Mapping"
 msgstr ""
 
-#: authentik/core/models.py:750
+#: authentik/core/models.py:747
 msgid "Property Mappings"
 msgstr ""
 
-#: authentik/core/models.py:787
+#: authentik/core/models.py:784
 msgid "Authenticated Session"
 msgstr ""
 
-#: authentik/core/models.py:788
+#: authentik/core/models.py:785
 msgid "Authenticated Sessions"
 msgstr ""
 
@@ -2752,60 +2753,68 @@ msgstr ""
 msgid "Failed to update user. Please try again later."
 msgstr ""
 
-#: authentik/tenants/models.py:29
+#: authentik/tenants/models.py:30
 msgid ""
 "Schema name must start with t_, only contain lowercase letters and numbers "
 "and be less than 63 characters."
 msgstr ""
 
-#: authentik/tenants/models.py:49
+#: authentik/tenants/models.py:50
 msgid "Configure how authentik should show avatars for users."
 msgstr ""
 
-#: authentik/tenants/models.py:53
+#: authentik/tenants/models.py:54
 msgid "Enable the ability for users to change their name."
 msgstr ""
 
-#: authentik/tenants/models.py:56
+#: authentik/tenants/models.py:57
 msgid "Enable the ability for users to change their email address."
 msgstr ""
 
-#: authentik/tenants/models.py:59
+#: authentik/tenants/models.py:60
 msgid "Enable the ability for users to change their username."
 msgstr ""
 
-#: authentik/tenants/models.py:65
+#: authentik/tenants/models.py:66
 msgid ""
 "Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,"
 "seconds=2)."
 msgstr ""
 
-#: authentik/tenants/models.py:69
+#: authentik/tenants/models.py:70
 msgid "The option configures the footer links on the flow executor pages."
 msgstr ""
 
-#: authentik/tenants/models.py:75
+#: authentik/tenants/models.py:76
 msgid ""
 "When enabled, all the events caused by a user will be deleted upon the "
 "user's deletion."
 msgstr ""
 
-#: authentik/tenants/models.py:81
+#: authentik/tenants/models.py:82
 msgid "Globally enable/disable impersonation."
 msgstr ""
 
-#: authentik/tenants/models.py:104
+#: authentik/tenants/models.py:85
+msgid "Default token duration"
+msgstr ""
+
+#: authentik/tenants/models.py:90
+msgid "Default token length"
+msgstr ""
+
+#: authentik/tenants/models.py:113
 msgid "Tenant"
 msgstr ""
 
-#: authentik/tenants/models.py:105
+#: authentik/tenants/models.py:114
 msgid "Tenants"
 msgstr ""
 
-#: authentik/tenants/models.py:125
+#: authentik/tenants/models.py:134
 msgid "Domain"
 msgstr ""
 
-#: authentik/tenants/models.py:126
+#: authentik/tenants/models.py:135
 msgid "Domains"
 msgstr ""
