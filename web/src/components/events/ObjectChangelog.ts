@@ -1,5 +1,6 @@
 import { EventGeo, EventUser } from "@goauthentik/app/admin/events/utils";
 import { actionToLabel } from "@goauthentik/app/common/labels";
+import { getRelativeTime } from "@goauthentik/app/common/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { uiConfig } from "@goauthentik/common/ui/config";
@@ -46,7 +47,7 @@ export class ObjectChangelog extends Table<Event> {
         let modelName = this._targetModelName;
         let appName = this.targetModelApp;
         if (this._targetModelName.indexOf(".") !== -1) {
-            const parts = this._targetModelName.split(".");
+            const parts = this._targetModelName.split(".", 1);
             appName = parts[0];
             modelName = parts[1];
         }
@@ -77,7 +78,8 @@ export class ObjectChangelog extends Table<Event> {
         return [
             html`${actionToLabel(item.action)}`,
             EventUser(item),
-            html`<span>${item.created?.toLocaleString()}</span>`,
+            html`<div>${getRelativeTime(item.created)}</div>
+                <small>${item.created.toLocaleString()}</small>`,
             html`<div>${item.clientIp || msg("-")}</div>
 
                 <small>${EventGeo(item)}</small>`,

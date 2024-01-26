@@ -22,6 +22,7 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -70,6 +71,7 @@ export class OAuth2ProviderViewPage extends AKElement {
             PFForm,
             PFFormControl,
             PFBanner,
+            PFDivider,
         ];
     }
 
@@ -258,7 +260,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                                     value="${this.providerUrls?.issuer || msg("-")}"
                                 />
                             </div>
-                            <hr />
+                            <hr class="pf-c-divider" />
                             <div class="pf-c-form__group">
                                 <label class="pf-c-form__label">
                                     <span class="pf-c-form__label-text"

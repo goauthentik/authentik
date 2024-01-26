@@ -31,6 +31,10 @@ export class SystemTaskListPage extends TablePage<SystemTask> {
 
     expandable = true;
 
+    searchEnabled(): boolean {
+        return true;
+    }
+
     @property()
     order = "name";
 

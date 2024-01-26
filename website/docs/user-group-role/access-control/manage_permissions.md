@@ -9,21 +9,19 @@ Refer to the following topics for instructions to view and manage permissions.
 
 You can view all permissions that are assigned to a user, group, role, flow, or stage.
 
-### View user, group, and role permissions
+### View user and role permissions
 
-To view _object_ permissions for a specific user, role, or group:
+To view _object_ permissions for a specific user or role:
 
 1. Go to the Admin interface and navigate to **Directory**.
-2. Select either **Users**, **Groups**, or **Roles**
-3. Select a specific user/group/role by clicking on the name (this opens the details page).
-4. Click the **Assigned Permissions** tab at the top of the page (to the right of the **Permissions** tab).
-5. Scroll down to see both the global and object-level permissions.
-
-:::info
-Note that groups do not have global permissions.
-:::
+2. Select either **Users** or **Roles**
+3. Select a specific user/role by clicking on the name (this opens the details page).
+4. Click the **Permissions** tab at the top of the page
+5. Select the **Assigned global permissions** sub-tab to see global permissions and the **Assigned object permissions** sub-tab to see the object-level permissions.
 
 ### View flow permissions
+
+\_These instructions apply to all objects that have a detail page, which can be accessed by clicking on the name in the list page.\_\_
 
 1. Go to the Admin interface and navigate to **Flows and Stages -> Flows**.
 2. Click the name of the flow (this opens the details page).
@@ -31,6 +29,8 @@ Note that groups do not have global permissions.
 4. View the assigned permissions using the **User Object Permissions** and the **Role Object Permissions** tabs.
 
 ### View stage permissions
+
+\_These instructions apply to all objects that **do not** have a detail page.\_\_
 
 1. Go to the Admin interface and navigate to **Flows and Stages -> Stagess**.
 2. On the row for the specific stage whose permissions you want to view, click the lock icon.

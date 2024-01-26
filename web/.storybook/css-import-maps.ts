@@ -27,6 +27,7 @@ const rawCssImportMaps = [
     'import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css";',
     'import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";',
     'import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";',
+    'import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";',
     'import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";',
     'import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";',
     'import PFDualListSelector from "@patternfly/patternfly/components/DualListSelector/dual-list-selector.css";',
@@ -70,10 +71,8 @@ const rawCssImportMaps = [
     'import styles from "./LibraryPageImpl.css";',
 ];
 
-const cssImportMaps = rawCssImportMaps.reduce(
-    (acc, line) => ({ ...acc, [line]: line.replace(/\.css/, ".css?inline") }),
-    {},
-);
+const cssImportMaps = rawCssImportMaps.reduce((acc, line) => (
+{...acc, [line]: line.replace(/\.css/, ".css?inline")}), {});
 
 export { cssImportMaps };
 export default cssImportMaps;

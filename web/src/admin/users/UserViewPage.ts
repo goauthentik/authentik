@@ -3,13 +3,13 @@ import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserChart";
 import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserPasswordForm";
-import "@goauthentik/app/admin/users/UserAssignedGlobalPermissionsTable";
-import "@goauthentik/app/admin/users/UserAssignedObjectPermissionsTable";
 import {
     renderRecoveryEmailRequest,
     requestRecoveryLink,
 } from "@goauthentik/app/admin/users/UserListPage";
 import { me } from "@goauthentik/app/common/users";
+import "@goauthentik/app/elements/oauth/UserAccessTokenList";
+import "@goauthentik/app/elements/oauth/UserRefreshTokenList";
 import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
@@ -31,12 +31,11 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/oauth/UserRefreshList";
 import "@goauthentik/elements/user/SessionList";
 import "@goauthentik/elements/user/UserConsentList";
 
 import { msg, str } from "@lit/localize";
-import { css, html, nothing } from "lit";
+import { TemplateResult, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -227,45 +226,94 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
 
     renderRecoveryButtons(user: User) {
         return html`<div class="ak-button-collection">
-                                <ak-forms-modal size=${PFSize.Medium} id="update-password-request">
-                                    <span slot="submit">${msg("Update password")}</span>
-                                    <span slot="header">${msg("Update password")}</span>
-                                    <ak-user-password-form
-                                        slot="form"
-                                        .instancePk=${user.pk}
-                                    ></ak-user-password-form>
-                                    <button
-                                        slot="trigger"
-                                        class="pf-c-button pf-m-secondary pf-m-block"
-                                    >
-                                        <pf-tooltip
-                                            position="top"
-                                            content=${msg("Enter a new password for this user")}
-                                        >
-                                            ${msg("Set password")}
-                                        </pf-tooltip>
-                                    </button>
-                                </ak-forms-modal>
-                                <ak-action-button
-                                    id="reset-password-button"
-                                    class="pf-m-secondary pf-m-block"
-                                    .apiRequest=${() => requestRecoveryLink(user)}
-                                >
-                                    <pf-tooltip
-                                        position="top"
-                                        content=${msg(
-                                            "Create a link for this user to reset their password",
-                                        )}
-                                    >
-                                        ${msg("Create Recovery Link")}
-                                    </pf-tooltip>
-                                </ak-action-button>
-                                ${user.email ? renderRecoveryEmailRequest(user) : nothing}
-                            </div>
-                        </dd>
+            <ak-forms-modal size=${PFSize.Medium} id="update-password-request">
+                <span slot="submit">${msg("Update password")}</span>
+                <span slot="header">${msg("Update password")}</span>
+                <ak-user-password-form slot="form" .instancePk=${user.pk}></ak-user-password-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary pf-m-block">
+                    <pf-tooltip position="top" content=${msg("Enter a new password for this user")}>
+                        ${msg("Set password")}
+                    </pf-tooltip>
+                </button>
+            </ak-forms-modal>
+            <ak-action-button
+                id="reset-password-button"
+                class="pf-m-secondary pf-m-block"
+                .apiRequest=${() => requestRecoveryLink(user)}
+            >
+                <pf-tooltip
+                    position="top"
+                    content=${msg("Create a link for this user to reset their password")}
+                >
+                    ${msg("Create Recovery Link")}
+                </pf-tooltip>
+            </ak-action-button>
+            ${user.email ? renderRecoveryEmailRequest(user) : nothing}
+        </div> `;
+    }
+
+    renderTabCredentialsToken(user: User): TemplateResult {
+        return html`
+            <ak-tabs pageIdentifier="userCredentialsTokens" ?vertical=${true}>
+                <section
+                    slot="page-sessions"
+                    data-tab-title="${msg("Sessions")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-user-session-list targetUser=${user.username}>
+                            </ak-user-session-list>
+                        </div>
                     </div>
-                </dl>
-            </div>
+                </section>
+                <section
+                    slot="page-consent"
+                    data-tab-title="${msg("Explicit Consent")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-user-consent-list userId=${user.pk}> </ak-user-consent-list>
+                        </div>
+                    </div>
+                </section>
+                <section
+                    slot="page-oauth-access"
+                    data-tab-title="${msg("OAuth Access Tokens")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-user-oauth-access-token-list userId=${user.pk}>
+                            </ak-user-oauth-access-token-list>
+                        </div>
+                    </div>
+                </section>
+                <section
+                    slot="page-oauth-refresh"
+                    data-tab-title="${msg("OAuth Refresh Tokens")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-user-oauth-refresh-token-list userId=${user.pk}>
+                            </ak-user-oauth-refresh-token-list>
+                        </div>
+                    </div>
+                </section>
+                <section
+                    slot="page-mfa-authenticators"
+                    data-tab-title="${msg("MFA Authenticators")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-user-device-table userId=${user.pk}> </ak-user-device-table>
+                        </div>
+                    </div>
+                </section>
+            </ak-tabs>
         `;
     }
 
@@ -327,18 +375,6 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                 </div>
             </section>
             <section
-                slot="page-sessions"
-                data-tab-title="${msg("Sessions")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-user-session-list targetUser=${this.user.username}>
-                        </ak-user-session-list>
-                    </div>
-                </div>
-            </section>
-            <section
                 slot="page-groups"
                 data-tab-title="${msg("Groups")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
@@ -360,78 +396,16 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                     </div>
                 </div>
             </section>
-            <section
-                slot="page-consent"
-                data-tab-title="${msg("Explicit Consent")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-user-consent-list userId=${this.user.pk}> </ak-user-consent-list>
-                    </div>
-                </div>
-            </section>
-            <section
-                slot="page-oauth-refresh"
-                data-tab-title="${msg("OAuth Refresh Tokens")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-user-oauth-refresh-list userId=${this.user.pk}>
-                        </ak-user-oauth-refresh-list>
-                    </div>
-                </div>
-            </section>
-            <section
-                slot="page-mfa-authenticators"
-                data-tab-title="${msg("MFA Authenticators")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-user-device-table userId=${this.user.pk}> </ak-user-device-table>
-                    </div>
-                </div>
+            <section slot="page-credentials" data-tab-title="${msg("Credentials / Tokens")}">
+                ${this.renderTabCredentialsToken(this.user)}
             </section>
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
                 model=${RbacPermissionsAssignedByUsersListModelEnum.CoreUser}
                 objectPk=${this.user.pk}
-            ></ak-rbac-object-permission-page>
-            <div
-                slot="page-mfa-assigned-permissions"
-                data-tab-title="${msg("Assigned permissions")}"
-                class=""
             >
-                <div class="pf-c-banner pf-m-info">
-                    ${msg("RBAC is in preview.")}
-                    <a href="mailto:hello@goauthentik.io">${msg("Send us feedback!")}</a>
-                </div>
-                <section class="pf-c-page__main-section pf-m-no-padding-mobile">
-                    <div class="pf-l-grid pf-m-gutter">
-                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                            <div class="pf-c-card__title">
-                                ${msg("Assigned global permissions")}
-                            </div>
-                            <div class="pf-c-card__body">
-                                <ak-user-assigned-global-permissions-table userId=${this.user.pk}>
-                                </ak-user-assigned-global-permissions-table>
-                            </div>
-                        </div>
-                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                            <div class="pf-c-card__title">
-                                ${msg("Assigned object permissions")}
-                            </div>
-                            <div class="pf-c-card__body">
-                                <ak-user-assigned-object-permissions-table userId=${this.user.pk}>
-                                </ak-user-assigned-object-permissions-table>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </div>
+            </ak-rbac-object-permission-page>
         </ak-tabs>`;
     }
 }
