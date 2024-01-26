@@ -2,7 +2,7 @@ import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import { ascii_letters, digits, groupBy, randomString } from "@goauthentik/common/utils.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
 import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers.js";
-import { registerCustomElement } from "@goauthentik/elements/utils/customElement";
+import { registerCustomElement } from "@goauthentik/elements/utils/customElement.js";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter.js";
 
 import { msg } from "@lit/localize";
@@ -111,7 +111,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
             this.open = false;
             this.shadowRoot
                 ?.querySelectorAll<HTMLInputElement>(
-                    ".pf-c-form-control.pf-c-select__toggle-typeahead"
+                    ".pf-c-form-control.pf-c-select__toggle-typeahead",
                 )
                 .forEach((input) => {
                     input.blur();
@@ -302,7 +302,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
                 </ul>
             </div>`,
             this.dropdownContainer,
-            { host: this }
+            { host: this },
         );
     }
 

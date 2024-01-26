@@ -8,7 +8,7 @@
         "build": "node ./build.mjs",
         "build:bundle": "rollup -c ./rollup.config.mjs",
         "build:compile": "node ./build.mjs",
-        "build:types": "tsc --declaration --emitDeclarationOnly -p ./tsconfig.types.json",
+        "build:types": "tsc --declaration --emitDeclarationOnly -p .",
         "clean": "rimraf dist",
         "fix:lint": "eslint . --max-warnings 0 --fix ./src/",
         "fix:prettier": "prettier --write ./src/* ./src/**/* ./package.json",

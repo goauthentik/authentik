@@ -37,7 +37,7 @@ export class Chip extends AKElement {
                                   new CustomEvent("remove", {
                                       bubbles: true,
                                       composed: true,
-                                  })
+                                  }),
                               );
                           }}
                       >

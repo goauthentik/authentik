@@ -9,5 +9,5 @@ export const ensureCSSStyleSheet = (css: string | CSSStyleSheet | CSSResult): CS
     typeof css === "string"
         ? (unsafeCSS(css).styleSheet as CSSStyleSheet)
         : css instanceof CSSResult
-        ? (css.styleSheet as CSSStyleSheet)
-        : css;
+          ? (css.styleSheet as CSSStyleSheet)
+          : css;

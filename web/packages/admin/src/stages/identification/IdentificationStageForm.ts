@@ -1,4 +1,4 @@
-import "@goauthentik/admin/common/ak-flow-search/ak-flow-search.js";
+import "@goauthentik/admin-common/ak-flow-search/ak-flow-search.js";
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { first, groupBy } from "@goauthentik/common/utils.js";

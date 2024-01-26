@@ -72,7 +72,7 @@ export class SidebarBrand extends WithTenantConfig(AKElement) {
                                   new CustomEvent(EVENT_SIDEBAR_TOGGLE, {
                                       bubbles: true,
                                       composed: true,
-                                  })
+                                  }),
                               );
                           }}
                       >

@@ -9,13 +9,14 @@ export const isCustomEvent = (v: any): v is CustomEvent =>
 
 export interface CustomEmitterElementInterface {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    dispatchCustomEvent(eventName: string, detail?: any, options?: {}): void;
+    dispatchCustomEvent(eventName: string, detail?: any, options?: unknown): void;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type EmitterReturnConstructor = new (...args: any[]) => LitElement & CustomEmitterElementInterface;
 
 export function CustomEmitterElement<T extends Constructor<LitElement>>(
-    superclass: T
+    superclass: T,
 ): T & EmitterReturnConstructor {
     class EmitterElementHandler extends superclass {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -33,7 +34,7 @@ export function CustomEmitterElement<T extends Constructor<LitElement>>(
                     bubbles: true,
                     ...options,
                     detail: fullDetail,
-                })
+                }),
             );
         }
     }
@@ -81,7 +82,7 @@ export function CustomListenerElement<T extends Constructor<LitElement>>(supercl
         private [HK.addHandler](
             eventName: string,
             handler: EventHandler,
-            internalHandler: EventHandler
+            internalHandler: EventHandler,
         ) {
             if (!this[HK.listenHandlers].has(eventName)) {
                 this[HK.listenHandlers].set(eventName, new WeakMap());
@@ -103,7 +104,7 @@ export function CustomListenerElement<T extends Constructor<LitElement>>(supercl
             const internalHandler = (ev: Event) => {
                 if (!isCustomEvent(ev)) {
                     console.error(
-                        `Received a standard event for custom event ${eventName}; event will not be handled.`
+                        `Received a standard event for custom event ${eventName}; event will not be handled.`,
                     );
                     return;
                 }
@@ -118,7 +119,7 @@ export function CustomListenerElement<T extends Constructor<LitElement>>(supercl
             if (realHandler) {
                 this.removeEventListener(
                     eventName,
-                    realHandler as EventListenerOrEventListenerObject
+                    realHandler as EventListenerOrEventListenerObject,
                 );
             }
             this[HK.removeHandler](eventName, handler);

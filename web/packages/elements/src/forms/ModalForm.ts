@@ -44,7 +44,7 @@ export class ModalForm extends ModalButton {
                     new CustomEvent(EVENT_REFRESH, {
                         bubbles: true,
                         composed: true,
-                    })
+                    }),
                 );
             })
             .catch((exc) => {
@@ -72,7 +72,7 @@ export class ModalForm extends ModalButton {
                     window.dispatchEvent(
                         new CustomEvent("scroll", {
                             bubbles: true,
-                        })
+                        }),
                     );
                 }}
             >

@@ -18,11 +18,14 @@ const definitions = {
 
 const tsfiles = globSync("src/**/*.ts");
 
-esbuild.buildSync({
+/*
+  esbuild.buildSync({
     entryPoints: tsfiles,
     outdir: "dist/",
+    tsconfig: "./tsconfig.build.json",
     loader: { ".css": "text", ".md": "text" },
 });
+*/
 
 esbuild.buildSync({
     entryPoints: ["./dist/AdminInterface.js"],
@@ -31,6 +34,7 @@ esbuild.buildSync({
     write: true,
     splitting: true,
     external: ["*.woff", "*.woff2"],
+    tsconfig: "./tsconfig.build.json",
     loader: { ".css": "text", ".md": "text" },
     define: definitions,
     format: "esm",

@@ -1,6 +1,6 @@
 import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
-import "@goauthentik/admin/common/ak-crypto-certificate-search.js";
-import "@goauthentik/admin/common/ak-flow-search/ak-tenanted-flow-search.js";
+import "@goauthentik/admin-common/ak-crypto-certificate-search.js";
+import "@goauthentik/admin-common/ak-flow-search/ak-tenanted-flow-search.js";
 import {
     clientTypeOptions,
     issuerModeOptions,

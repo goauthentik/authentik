@@ -53,5 +53,18 @@
 'sfe211545fd02f73e': `Vérification`,
 'sfe629863ba1338c2': `Erreur de connexion, nouvelle tentative...`,
 'sff930bf2834e2201': `Compte de service (interne)`,
+'sc25edca57df81461': `Authentication`,
+'s6dfb7283452f78fe': `Authorization`,
+'sddcfc6ab24e3a6ed': `Enrollment`,
+'s1fc9c70610c4c67d': `Invalidation`,
+'sdf22dcf939c27cc7': `Stage Configuration`,
+'s6d5bce4321f57cda': `Unenrollment`,
+'sde2bb5418562c5b2': `Unknown designation`,
+'sb9834316ffd4ae3e': `Stacked`,
+'s12146091b2b539a3': `Content left`,
+'sa800871782eba1ac': `Content right`,
+'sb4e50ca3cffdbc10': `Sidebar left`,
+'s745a55f9abf9f2e5': `Sidebar right`,
+'sb3182a87ded1bc91': `Unknown layout`,
     };
   

@@ -41,7 +41,7 @@ export class WizardPage extends AKElement {
     requestUpdate(
         name?: PropertyKey,
         oldValue?: unknown,
-        options?: PropertyDeclaration<unknown, unknown>
+        options?: PropertyDeclaration<unknown, unknown>,
     ): void {
         this.querySelectorAll("*").forEach((el) => {
             if ("requestUpdate" in el) {

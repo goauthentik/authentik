@@ -48,6 +48,8 @@
     },
     "workspaces": [
         "packages/admin",
+        "packages/admin-common",
+        "packages/admin-property-mappings",
         "packages/api-browser",
         "packages/authentik",
         "packages/common",

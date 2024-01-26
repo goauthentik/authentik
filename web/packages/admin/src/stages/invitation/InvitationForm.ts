@@ -1,4 +1,4 @@
-import "@goauthentik/admin/common/ak-flow-search/ak-flow-search.js";
+import "@goauthentik/admin-common/ak-flow-search/ak-flow-search.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { dateTimeLocal, first } from "@goauthentik/common/utils.js";
 import "@goauthentik/elements/CodeMirror.js";

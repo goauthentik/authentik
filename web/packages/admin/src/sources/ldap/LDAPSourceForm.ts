@@ -1,4 +1,4 @@
-import "@goauthentik/admin/common/ak-crypto-certificate-search.js";
+import "@goauthentik/admin-common/ak-crypto-certificate-search.js";
 import { placeholderHelperText } from "@goauthentik/admin/helperText.js";
 import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";

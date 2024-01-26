@@ -90,7 +90,7 @@ export class UserAssignedObjectPermissionTable extends Table<UserAssignedObjectP
                     return Promise.resolve();
                 }
                 return new RbacApi(
-                    DEFAULT_CONFIG
+                    DEFAULT_CONFIG,
                 ).rbacPermissionsAssignedByUsersUnassignPartialUpdate({
                     id: item.pk,
                     patchedPermissionAssignRequest: {

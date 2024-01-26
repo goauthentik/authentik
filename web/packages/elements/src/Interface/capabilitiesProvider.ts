@@ -47,7 +47,7 @@ class WCC {
 
 export function WithCapabilitiesConfig<T extends Constructor<LitElement>>(
     superclass: T,
-    subscribe = true
+    subscribe = true,
 ) {
     abstract class CapabilitiesContext extends superclass {
         @consume({ context: authentikConfigContext, subscribe })
@@ -56,7 +56,7 @@ export function WithCapabilitiesConfig<T extends Constructor<LitElement>>(
         can(c: CapabilitiesEnum) {
             if (!this[WCC.capabilitiesConfig]) {
                 throw new Error(
-                    "ConfigContext: Attempted to access site configuration before initialization."
+                    "ConfigContext: Attempted to access site configuration before initialization.",
                 );
             }
             return this[WCC.capabilitiesConfig].capabilities.includes(c);

@@ -66,7 +66,7 @@ export class TokenCopyButton extends BaseTaskButton {
             : {
                   message: token.key,
                   description: msg(
-                      "The token was displayed because authentik does not have permission to write to the clipboard"
+                      "The token was displayed because authentik does not have permission to write to the clipboard",
                   ),
               };
         showMessage({

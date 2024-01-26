@@ -1,4 +1,4 @@
-import "@goauthentik/admin/common/ak-flow-search/ak-flow-search-no-default.js";
+import "@goauthentik/admin-common/ak-flow-search/ak-flow-search-no-default.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { SentryIgnoredError } from "@goauthentik/common/errors.js";
 import { Form } from "@goauthentik/elements/forms/Form.js";

@@ -53,14 +53,13 @@ const testOptions = [
 export const ToggleGroup = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const displayChange = (ev: any) => {
-        document.getElementById(
-            "toggle-message-pad"
-        )!.innerText = `Value selected: ${ev.detail.value}`;
+        document.getElementById("toggle-message-pad")!.innerText =
+            `Value selected: ${ev.detail.value}`;
     };
 
     return container(
         html`<ak-toggle-group @ak-toggle=${displayChange}>
             ${testOptions.map(([key, label]) => html`<option value="${key}">${label}</option>`)}
-        </ak-toggle-group>`
+        </ak-toggle-group>`,
     );
 };

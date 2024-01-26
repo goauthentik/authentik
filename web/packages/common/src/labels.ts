@@ -1,6 +1,15 @@
 import { msg } from "@lit/localize";
 
-import { Device, EventActions, IntentEnum, SeverityEnum, UserTypeEnum } from "@goauthentik/api";
+import {
+    Device,
+    EventActions,
+    Flow,
+    FlowDesignationEnum,
+    FlowLayoutEnum,
+    IntentEnum,
+    SeverityEnum,
+    UserTypeEnum,
+} from "@goauthentik/api";
 
 /* Various tables in the API for which we need to supply labels */
 
@@ -75,3 +84,31 @@ const _userTypeToLabel = new Map<UserTypeEnum | undefined, string>([
 
 export const userTypeToLabel = (type?: UserTypeEnum): string =>
     _userTypeToLabel.get(type) ?? type ?? "";
+
+const _flowDesignationToLabel = new Map<FlowDesignationEnum, string>([
+    [FlowDesignationEnum.Authentication, msg("Authentication")],
+    [FlowDesignationEnum.Authorization, msg("Authorization")],
+    [FlowDesignationEnum.Enrollment, msg("Enrollment")],
+    [FlowDesignationEnum.Invalidation, msg("Invalidation")],
+    [FlowDesignationEnum.Recovery, msg("Recovery")],
+    [FlowDesignationEnum.StageConfiguration, msg("Stage Configuration")],
+    [FlowDesignationEnum.Unenrollment, msg("Unenrollment")],
+    [FlowDesignationEnum.UnknownDefaultOpenApi, msg("Unknown designation")],
+]);
+
+export const DesignationToLabel = (designation: FlowDesignationEnum): string =>
+    _flowDesignationToLabel.get(designation) ?? msg("Unknown designation");
+
+const _flowLayoutToLabel = new Map<FlowLayoutEnum, string>([
+    [FlowLayoutEnum.Stacked, msg("Stacked")],
+    [FlowLayoutEnum.ContentLeft, msg("Content left")],
+    [FlowLayoutEnum.ContentRight, msg("Content right")],
+    [FlowLayoutEnum.SidebarLeft, msg("Sidebar left")],
+    [FlowLayoutEnum.SidebarRight, msg("Sidebar right")],
+    [FlowLayoutEnum.UnknownDefaultOpenApi, msg("Unknown layout")],
+]);
+
+export const LayoutToLabel = (layout: FlowLayoutEnum): string =>
+    _flowLayoutToLabel.get(layout) ?? msg("Unknown layout");
+
+export const RenderFlowOption = (flow: Flow): string => `${flow.slug} (${flow.name})`;

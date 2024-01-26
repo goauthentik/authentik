@@ -1,6 +1,6 @@
-import { RenderFlowOption } from "@goauthentik/admin/flows/utils.js";
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { RenderFlowOption } from "@goauthentik/common/labels.js";
 import { first } from "@goauthentik/common/utils.js";
 import "@goauthentik/elements/forms/HorizontalFormElement.js";
 import "@goauthentik/elements/forms/SearchSelect/ak-search-select.js";

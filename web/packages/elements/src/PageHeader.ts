@@ -147,7 +147,7 @@ export class PageHeader extends WithTenantConfig(AKElement) {
                             new CustomEvent(EVENT_SIDEBAR_TOGGLE, {
                                 bubbles: true,
                                 composed: true,
-                            })
+                            }),
                         );
                     }}
                 >
@@ -169,7 +169,7 @@ export class PageHeader extends WithTenantConfig(AKElement) {
                             new CustomEvent(EVENT_API_DRAWER_TOGGLE, {
                                 bubbles: true,
                                 composed: true,
-                            })
+                            }),
                         );
                     }}
                 >
@@ -186,7 +186,7 @@ export class PageHeader extends WithTenantConfig(AKElement) {
                             new CustomEvent(EVENT_NOTIFICATION_DRAWER_TOGGLE, {
                                 bubbles: true,
                                 composed: true,
-                            })
+                            }),
                         );
                     }}
                 >

@@ -31,7 +31,7 @@ import {
 
 @customElement("ak-stage-prompt")
 export class PromptStage extends WithCapabilitiesConfig(
-    BaseStage<PromptChallenge, PromptChallengeResponseRequest>
+    BaseStage<PromptChallenge, PromptChallengeResponseRequest>,
 ) {
     static get styles(): CSSResult[] {
         return [
@@ -207,7 +207,7 @@ ${prompt.initialValue}</textarea
                             ?selected=${locale.code === prompt.initialValue}
                         >
                             ${locale.code.toUpperCase()} - ${locale.label()}
-                        </option> `
+                        </option> `,
                 );
 
                 return html`<select class="pf-c-form-control" name="${prompt.fieldKey}">
@@ -301,7 +301,7 @@ ${prompt.initialValue}</textarea
                     })}
                     ${"non_field_errors" in (this.challenge?.responseErrors || {})
                         ? this.renderNonFieldErrors(
-                              this.challenge?.responseErrors?.non_field_errors || []
+                              this.challenge?.responseErrors?.non_field_errors || [],
                           )
                         : html``}
                     ${this.renderContinue()}

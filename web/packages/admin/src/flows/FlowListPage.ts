@@ -1,7 +1,7 @@
 import "@goauthentik/admin/flows/FlowForm.js";
 import "@goauthentik/admin/flows/FlowImportForm.js";
-import { DesignationToLabel } from "@goauthentik/admin/flows/utils.js";
 import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { DesignationToLabel } from "@goauthentik/common/labels.js";
 import { uiConfig } from "@goauthentik/common/ui/config.js";
 import { groupBy } from "@goauthentik/common/utils.js";
 import "@goauthentik/elements/buttons/SpinnerButton/ak-spinner-button.js";

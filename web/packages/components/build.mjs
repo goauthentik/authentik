@@ -1,12 +1,16 @@
 import * as esbuild from "esbuild";
 import { globSync } from "glob";
 
-const tsfiles = globSync('src/**/*.ts');
+const tsfiles = globSync("src/**/*.ts");
 
 esbuild
     .build({
         entryPoints: tsfiles,
         outdir: "dist/",
-        loader: { '.css': 'text' },
+        tsconfig: "./tsconfig.build.json",
+        loader: { ".css": "text" },
     })
-    .catch(() => process.exit(1));
+    .catch(
+        // eslint-disable-next-line no-undef
+        () => process.exit(1),
+    );

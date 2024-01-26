@@ -10,6 +10,8 @@ import { CapabilitiesEnum, Config, ResponseError } from "@goauthentik/api";
 export const TAG_SENTRY_COMPONENT = "authentik.component";
 export const TAG_SENTRY_CAPABILITIES = "authentik.capabilities";
 
+// You wish this was flexxor
+
 export async function configureSentry(canDoPpi = false): Promise<Config> {
     const cfg = await config();
     if (cfg.errorReporting.enabled) {

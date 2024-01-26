@@ -22,9 +22,9 @@ esbuild
     .buildSync({
         entryPoints: tsfiles,
         outdir: "dist/",
+        tsconfig: "./tsconfig.build.json",
         loader: { '.css' : 'text' },
     });
-
 
 esbuild
     .buildSync({
@@ -33,6 +33,7 @@ esbuild
         bundle: true,
         write: true,
         splitting: true,
+        tsconfig: "./tsconfig.build.json",
         external: ["*.woff", "*.woff2"],
         loader: { ".css": "text" },
         define: definitions,

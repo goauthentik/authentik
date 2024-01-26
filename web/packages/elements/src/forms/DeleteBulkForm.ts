@@ -155,7 +155,7 @@ export class DeleteBulkForm<T> extends ModalButton {
             await Promise.all(
                 this.objects.map((item) => {
                     return this.delete(item);
-                })
+                }),
             );
             this.onSuccess();
             this.open = false;
@@ -163,7 +163,7 @@ export class DeleteBulkForm<T> extends ModalButton {
                 new CustomEvent(EVENT_REFRESH, {
                     bubbles: true,
                     composed: true,
-                })
+                }),
             );
         } catch (e) {
             this.onError(e as Error);
@@ -201,7 +201,7 @@ export class DeleteBulkForm<T> extends ModalButton {
                         ${this.actionSubtext
                             ? this.actionSubtext
                             : msg(
-                                  str`Are you sure you want to delete ${this.objects.length} ${this.objectLabel}?`
+                                  str`Are you sure you want to delete ${this.objects.length} ${this.objectLabel}?`,
                               )}
                     </p>
                     <slot name="notice"></slot>

@@ -5,8 +5,8 @@
         "outDir": "./dist/",
         "paths": {
             "@goauthentik/common/*": ["./src/*"],
-            "@goauthentik/locales/*": ["src/locales/*"]
-        }
+            "@goauthentik/locales/*": ["src/locales/*"],
+        },
     },
-    "exclude": ["node_modules", "dist"]
+    "exclude": ["node_modules", "dist"],
 }

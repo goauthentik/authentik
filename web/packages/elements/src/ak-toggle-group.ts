@@ -55,7 +55,7 @@ export class AkToggleGroup extends CustomEmitterElement(AKElement) {
             (option: HTMLOptionElement): Pair => [
                 option.getAttribute("value") ?? "",
                 option.textContent ?? "",
-            ]
+            ],
         );
     }
 
@@ -84,7 +84,7 @@ export class AkToggleGroup extends CustomEmitterElement(AKElement) {
                         </div>
                         ${idx < last
                             ? html`<div class="pf-c-divider pf-m-vertical" role="separator"></div>`
-                            : nothing} `
+                            : nothing} `,
             )}
         </div>`;
     }

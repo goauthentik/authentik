@@ -29,6 +29,7 @@
     ],
     "dependencies": {
         "@goauthentik/api": "^2023.10.6-1705263684",
+        "@goauthentik/admin-common": "*",
         "@goauthentik/flow": "*",
         "@goauthentik/common": "*",
         "@goauthentik/elements": "*",

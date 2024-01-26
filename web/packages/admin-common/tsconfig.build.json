@@ -1,0 +1,11 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "outDir": "./dist/",
+        "paths": {
+            "@goauthentik/admin/common/*": ["./src/*"],
+            "@goauthentik/locales/*": ["src/locales/*"]
+        }
+    }
+}

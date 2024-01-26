@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+<file target-language="zh-CN" source-language="en" original="lit-localize-inputs" datatype="plaintext">
+<body>
+<trans-unit id="s49730f3d5751a433">
+  <source>Loading...</source>
+</trans-unit>
+<trans-unit id="sa50a6326530d8a0d">
+  <source>Show less</source>
+</trans-unit>
+<trans-unit id="sb2c57b2d347203dd">
+  <source>Show more</source>
+</trans-unit>
+<trans-unit id="saae1c70e168b45b4">
+  <source>Admin</source>
+</trans-unit>
+<trans-unit id="s364c4f177a2f8322">
+  <source>Open API drawer</source>
+</trans-unit>
+<trans-unit id="s9ba989e69344ff29">
+  <source>Open Notification drawer</source>
+</trans-unit>
+<trans-unit id="sf45a0d2f00bcc6ff">
+  <source>no tabs defined</source>
+</trans-unit>
+<trans-unit id="sca7cfe2bef51b2a5">
+  <source>Root</source>
+</trans-unit>
+<trans-unit id="s2da4aa7a9abeb653">
+  <source>Pseudolocale (for testing)</source>
+</trans-unit>
+<trans-unit id="s4caed5b7a7e5d89b">
+  <source>English</source>
+</trans-unit>
+<trans-unit id="sf1868dc19e3917bb">
+  <source>Spanish</source>
+</trans-unit>
+<trans-unit id="s63e71d20d1eaca93">
+  <source>German</source>
+</trans-unit>
+<trans-unit id="s75a27f43413e02c5">
+  <source>French</source>
+</trans-unit>
+<trans-unit id="s94d61907ee22a8c1">
+  <source>Korean</source>
+</trans-unit>
+<trans-unit id="s95d56e58f816d211">
+  <source>Dutch</source>
+</trans-unit>
+<trans-unit id="s03f49e598ffb11cc">
+  <source>Polish</source>
+</trans-unit>
+<trans-unit id="s9d2d00982edafabb">
+  <source>Turkish</source>
+</trans-unit>
+<trans-unit id="se3e6af2ce24d80e8">
+  <source>Chinese (traditional)</source>
+</trans-unit>
+<trans-unit id="s4660da32fb311ac0">
+  <source>Taiwanese Mandarin</source>
+</trans-unit>
+<trans-unit id="s354e0a9f146d2869">
+  <source>Chinese (simplified)</source>
+</trans-unit>
+<trans-unit id="sae486938be80729c">
+  <source>Everything is ok.</source>
+</trans-unit>
+<trans-unit id="sdc5690be4a342985">
+  <source>The token has been copied to your clipboard</source>
+</trans-unit>
+<trans-unit id="s7f3edfee24690c9f">
+  <source>The token was displayed because authentik does not have permission to write to the clipboard</source>
+</trans-unit>
+<trans-unit id="s2ed8eb02525a920a">
+  <source><x id="0" equiv-text="${ago}"/> hour(s) ago</source>
+</trans-unit>
+<trans-unit id="s98327528f00365a7">
+  <source>Failed to fetch data.</source>
+</trans-unit>
+<trans-unit id="s08df8d0a773a3ea0">
+  <source>Remove item</source>
+</trans-unit>
+<trans-unit id="s7df5b92a3f93544f">
+  <source>Warning: The current user count has exceeded the configured licenses.</source>
+</trans-unit>
+<trans-unit id="s0141f42936495787">
+  <source>Click here for more info.</source>
+</trans-unit>
+<trans-unit id="s0382d73823585617">
+  <source><x id="0" equiv-text="${this.errorMessage}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
+</trans-unit>
+<trans-unit id="s2ceb11be2290bb1b">
+  <source>Cancel</source>
+</trans-unit>
+<trans-unit id="s04c5a637328c9b67">
+  <source><x id="0" equiv-text="${this.pages?.startIndex}"/> - <x id="1" equiv-text="${this.pages?.endIndex}"/> of <x id="2" equiv-text="${this.pages?.count}"/></source>
+</trans-unit>
+<trans-unit id="s6a89bb10338369b4">
+  <source>Go to previous page</source>
+</trans-unit>
+<trans-unit id="s7edad99c6b7bfe88">
+  <source>Go to next page</source>
+</trans-unit>
+<trans-unit id="sffa721bb6aa3128d">
+  <source>Search...</source>
+</trans-unit>
+<trans-unit id="sb59d68ed12d46377">
+  <source>Loading</source>
+</trans-unit>
+<trans-unit id="s7bc8c327f1f7c82c">
+  <source>No objects found.</source>
+</trans-unit>
+<trans-unit id="sfd44ce578f643145">
+  <source>Failed to fetch objects.</source>
+</trans-unit>
+<trans-unit id="s7b7163270e57e8b4">
+  <source>Refresh</source>
+</trans-unit>
+<trans-unit id="s909e876731a8febb">
+  <source>Select all rows</source>
+</trans-unit>
+<trans-unit id="se09ab93d69f7f45b">
+  <source>Not used by any other object.</source>
+</trans-unit>
+<trans-unit id="s10922bd0ac765562">
+  <source>object will be DELETED</source>
+</trans-unit>
+<trans-unit id="sf3981f36525b0dbd">
+  <source>connection will be deleted</source>
+</trans-unit>
+<trans-unit id="s93cf77a59db53395">
+  <source>reference will be reset to default value</source>
+</trans-unit>
+<trans-unit id="s3e211d29fa10f843">
+  <source>reference will be set to an empty value</source>
+</trans-unit>
+<trans-unit id="s55fa598b754cc3cc">
+  <source><x id="0" equiv-text="${ub.name}"/> (<x id="1" equiv-text="${consequence}"/>)</source>
+</trans-unit>
+<trans-unit id="sef49aec68fd1dc66">
+  <source>Name</source>
+</trans-unit>
+<trans-unit id="s09240e07b5b8d640">
+  <source>ID</source>
+</trans-unit>
+<trans-unit id="se33b158a1ec02a09">
+  <source>Successfully deleted <x id="0" equiv-text="${this.objects.length} ${this.objectLabel}"/></source>
+</trans-unit>
+<trans-unit id="sf6eb148db23d19de">
+  <source>Failed to delete <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
+</trans-unit>
+<trans-unit id="s039b6434e8a75560">
+  <source>Delete <x id="0" equiv-text="${this.objectLabel}"/></source>
+</trans-unit>
+<trans-unit id="s5819a49638f6d7cb">
+  <source>Are you sure you want to delete <x id="0" equiv-text="${this.objects.length} ${this.objectLabel}"/>?</source>
+</trans-unit>
+<trans-unit id="sdc673e73b5c13aea">
+  <source>Delete</source>
+</trans-unit>
+<trans-unit id="s4414164d120de61a">
+  <source>The following objects use <x id="0" equiv-text="${objName}"/></source>
+</trans-unit>
+<trans-unit id="s92e241c9f3c101a2">
+  <source>connecting object will be deleted</source>
+</trans-unit>
+<trans-unit id="s09810653c832e935">
+  <source>Click to change value</source>
+</trans-unit>
+<trans-unit id="sfefce784ec55868f">
+  <source>Select an object.</source>
+</trans-unit>
+<trans-unit id="s04ceadb276bbe149">
+  <source>Loading options...</source>
+</trans-unit>
+<trans-unit id="sd5903cc8de68b3fc">
+  <source>No form found</source>
+</trans-unit>
+<trans-unit id="s45935843b1b5b496">
+  <source>Form didn't return a promise for submitting</source>
+</trans-unit>
+<trans-unit id="sab85321d3b0840b7">
+  <source>API request failed</source>
+</trans-unit>
+<trans-unit id="s32a3efa23718e713">
+  <source>API Requests</source>
+</trans-unit>
+<trans-unit id="sddb3b0176f437721">
+  <source>Open API Browser</source>
+</trans-unit>
+<trans-unit id="s3b3c333481944862">
+  <source>Show details</source>
+</trans-unit>
+<trans-unit id="s5be3c6d61cd9182f">
+  <source>Notifications</source>
+</trans-unit>
+<trans-unit id="sa3438c7bb4e9cce8">
+  <source><x id="0" equiv-text="${this.unread}"/> unread</source>
+</trans-unit>
+<trans-unit id="s5e8250fb85d64c23">
+  <source>Close</source>
+</trans-unit>
+<trans-unit id="s6e6e737601f44b2c">
+  <source>Successfully cleared notifications</source>
+</trans-unit>
+<trans-unit id="s8cda828dac449ea5">
+  <source>Clear all</source>
+</trans-unit>
+<trans-unit id="s7f5869b3d14d7cbc">
+  <source>Provider</source>
+</trans-unit>
+<trans-unit id="s7301a7069b7bc83e">
+  <source>Revoked?</source>
+</trans-unit>
+<trans-unit id="sd924045605feea63">
+  <source>Expires</source>
+</trans-unit>
+<trans-unit id="s2e3ef41a0edd8608">
+  <source>Scopes</source>
+</trans-unit>
+<trans-unit id="s1c8916418c334935">
+  <source>ID Token</source>
+</trans-unit>
+<trans-unit id="s90760e5e02e95dfe">
+  <source>Refresh Tokens(s)</source>
+</trans-unit>
+<trans-unit id="sc615309d10a9228c">
+  <source>RBAC is in preview.</source>
+</trans-unit>
+<trans-unit id="sa1db89262360550b">
+  <source>Send us feedback!</source>
+</trans-unit>
+<trans-unit id="saabeb4cab074b0b9">
+  <source>User Object Permissions</source>
+</trans-unit>
+<trans-unit id="s8489d5559dda260c">
+  <source>Role Object Permissions</source>
+</trans-unit>
+<trans-unit id="sb37880a2a7288ef0">
+  <source>Update Permissions</source>
+</trans-unit>
+<trans-unit id="se8dca0132c66ae03">
+  <source>Permissions</source>
+</trans-unit>
+<trans-unit id="s5da52af9b083c29a">
+  <source>Model</source>
+</trans-unit>
+<trans-unit id="s78ab26da7f067de8">
+  <source>Select permissions to grant</source>
+</trans-unit>
+<trans-unit id="sf9aee319a006c9b4">
+  <source>Add</source>
+</trans-unit>
+<trans-unit id="sf485014051ad0cf7">
+  <source>Successfully assigned permission.</source>
+</trans-unit>
+<trans-unit id="sca7fed2bef53cb99">
+  <source>Role</source>
+</trans-unit>
+<trans-unit id="sc92c1a54034e21cc">
+  <source>Assign</source>
+</trans-unit>
+<trans-unit id="scd84d10ee9137070">
+  <source>Assign permission to role</source>
+</trans-unit>
+<trans-unit id="s5ee6f1b84e9ebc69">
+  <source>Assign to new role</source>
+</trans-unit>
+<trans-unit id="sb923723d27df40ba">
+  <source>Permission(s)</source>
+</trans-unit>
+<trans-unit id="sc5fb00b25c7f5a02">
+  <source>Permission</source>
+</trans-unit>
+<trans-unit id="s4afb26a8fae257e9">
+  <source>Directly assigned</source>
+</trans-unit>
+<trans-unit id="sa48f81f001b893d2">
+  <source>User</source>
+</trans-unit>
+<trans-unit id="sd8051c26e155f043">
+  <source>Assign permission to user</source>
+</trans-unit>
+<trans-unit id="sf79f8681e5ffaee2">
+  <source>Assign to new user</source>
+</trans-unit>
+<trans-unit id="s9fb28be12e2c6317">
+  <source>Superuser</source>
+</trans-unit>
+<trans-unit id="s0a11c2ffb8309d1a">
+  <source>Not found</source>
+</trans-unit>
+<trans-unit id="saa0e2675da69651b">
+  <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
+</trans-unit>
+<trans-unit id="s58cd9c2fe836d9c6">
+  <source>Return home</source>
+</trans-unit>
+<trans-unit id="s5f4586bc1e2740e6">
+  <source>Clear search</source>
+</trans-unit>
+<trans-unit id="s1b88fa3df4423292">
+  <source>Last IP</source>
+</trans-unit>
+<trans-unit id="se63f9d833700af49">
+  <source>Session(s)</source>
+</trans-unit>
+<trans-unit id="sf679b7a62808287e">
+  <source>Expiry</source>
+</trans-unit>
+<trans-unit id="saf63a04c86018698">
+  <source>-</source>
+</trans-unit>
+<trans-unit id="sde1907073fd96017">
+  <source>(Current session)</source>
+</trans-unit>
+<trans-unit id="sf1e9d421f35b51e5">
+  <source>Application</source>
+</trans-unit>
+<trans-unit id="s76881c01b6a3a8c7">
+  <source>Consent(s)</source>
+</trans-unit>
+<trans-unit id="s2236dc563c2dbf76">
+  <source>(Format: hours=-1;minutes=-2;seconds=-3).</source>
+</trans-unit>
+<trans-unit id="sbec40ef4e6f139b7">
+  <source>(Format: hours=1;minutes=2;seconds=3).</source>
+</trans-unit>
+<trans-unit id="sbb8ad22c83d375b1">
+  <source>The following keywords are supported:</source>
+</trans-unit>
+<trans-unit id="sad59707375956ad2">
+  <source>Finish</source>
+</trans-unit>
+<trans-unit id="s0fbf6dc6a1966408">
+  <source>Next</source>
+</trans-unit>
+<trans-unit id="sc16e00a7a8b2fde2">
+  <source>Back</source>
+</trans-unit>
+<trans-unit id="s7181a5504472e856">
+  <source>Apply changes</source>
+</trans-unit>
+</body>
+</file>
+</xliff>

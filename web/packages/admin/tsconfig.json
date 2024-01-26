@@ -4,9 +4,14 @@
         "baseUrl": ".",
         "outDir": "./dist/",
         "paths": {
-            "@goauthentik/docs/*": ["../../../website/docs/*"],
-            "@goauthentik/admin/*": ["src/*"],
-            "@goauthentik/locales/*": ["src/locales/*"]
+            "@goauthentik/admin/*": ["../admin/dist/*"],
+            "@goauthentik/admin-common/*": ["../admin-common/dist/*"],
+            "@goauthentik/elements/*": ["../elements/dist/*"],
+            "@goauthentik/components/*": ["../components/dist/*"],
+            "@goauthentik/common/*": ["../common/dist/*"],
+            "@goauthentik/locales/*": ["src/locales/*"],
+            "@goauthentik/flow/*": ["../flow/dist/*"]
         }
-    }
+    },
+    "exclude": ["node_modules", "dist"]
 }

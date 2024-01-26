@@ -13,12 +13,13 @@ export interface WithTenantConfigInterface {
 }
 
 type WithTenantConfigReturn = abstract new (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ...args: any[]
 ) => LitElement & WithTenantConfigInterface;
 
 export function WithTenantConfig<T extends Constructor<LitElement>>(
     superclass: T,
-    subscribe = true
+    subscribe = true,
 ): T & WithTenantConfigReturn {
     abstract class WithTenantProvider extends superclass {
         @consume({ context: authentikTenantContext, subscribe })

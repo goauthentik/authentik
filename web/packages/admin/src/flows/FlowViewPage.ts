@@ -2,14 +2,14 @@ import "@goauthentik/admin/flows/BoundStagesList.js";
 import "@goauthentik/admin/flows/FlowDiagram.js";
 import "@goauthentik/admin/flows/FlowForm.js";
 import "@goauthentik/admin/policies/BoundPoliciesList.js";
-import { DesignationToLabel } from "@goauthentik/admin/flows/utils.js";
-import "@goauthentik/elements/rbac/ObjectPermissionsPage.js";
 import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { DesignationToLabel } from "@goauthentik/common/labels.js";
 import "@goauthentik/components/events/ObjectChangelog.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/PageHeader.js";
 import "@goauthentik/elements/Tabs.js";
 import "@goauthentik/elements/buttons/SpinnerButton/ak-spinner-button.js";
+import "@goauthentik/elements/rbac/ObjectPermissionsPage.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";

@@ -60,7 +60,7 @@ function assignValue(element: HTMLNamedElement, value: unknown, json: KeyUnknown
  *
  */
 export function serializeForm<T extends KeyUnknown>(
-    elements: NodeListOf<HorizontalFormElement>
+    elements: NodeListOf<HorizontalFormElement>,
 ): T | undefined {
     const json: { [key: string]: unknown } = {};
     elements.forEach((element) => {
@@ -91,7 +91,7 @@ export function serializeForm<T extends KeyUnknown>(
             assignValue(
                 inputElement,
                 Array.from(selectElement.selectedOptions).map((v) => v.value),
-                json
+                json,
             );
         } else if (inputElement.tagName.toLowerCase() === "input" && inputElement.type === "date") {
             assignValue(inputElement, inputElement.valueAsDate, json);
@@ -221,7 +221,7 @@ export abstract class Form<T> extends AKElement {
                     return;
                 }
                 const slugFieldWrapper = form.querySelector(
-                    "ak-form-element-horizontal[name=slug]"
+                    "ak-form-element-horizontal[name=slug]",
                 );
                 if (!slugFieldWrapper) {
                     return;
@@ -254,7 +254,7 @@ export abstract class Form<T> extends AKElement {
         const files: { [key: string]: File } = {};
         const elements =
             this.shadowRoot?.querySelectorAll<HorizontalFormElement>(
-                "ak-form-element-horizontal"
+                "ak-form-element-horizontal",
             ) || [];
         for (let i = 0; i < elements.length; i++) {
             const element = elements[i];
@@ -279,7 +279,7 @@ export abstract class Form<T> extends AKElement {
      */
     serializeForm(): T | undefined {
         const elements = this.shadowRoot?.querySelectorAll<HorizontalFormElement>(
-            "ak-form-element-horizontal"
+            "ak-form-element-horizontal",
         );
         if (!elements) {
             return {} as T;
@@ -309,7 +309,7 @@ export abstract class Form<T> extends AKElement {
                 new CustomEvent(EVENT_REFRESH, {
                     bubbles: true,
                     composed: true,
-                })
+                }),
             );
             return response;
         } catch (ex) {
@@ -324,7 +324,7 @@ export abstract class Form<T> extends AKElement {
                     // assign all input-related errors to their elements
                     const elements =
                         this.shadowRoot?.querySelectorAll<HorizontalFormElement>(
-                            "ak-form-element-horizontal"
+                            "ak-form-element-horizontal",
                         ) || [];
                     elements.forEach((element) => {
                         element.requestUpdate();

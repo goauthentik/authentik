@@ -45,7 +45,7 @@ export const ROUTES: Route[] = [
         return html`<ak-source-view .sourceSlug=${args.slug}></ak-source-view>`;
     }),
     new Route(new RegExp("^/core/property-mappings$"), async () => {
-        await import("@goauthentik/admin/property-mappings/PropertyMappingListPage");
+        await import("@goauthentik/admin-property-mappings/PropertyMappingListPage.js");
         return html`<ak-property-mapping-list></ak-property-mapping-list>`;
     }),
     new Route(new RegExp("^/core/tokens$"), async () => {

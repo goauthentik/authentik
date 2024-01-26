@@ -4,8 +4,11 @@
         "baseUrl": ".",
         "outDir": "./dist/",
         "paths": {
-            "@goauthentik/elements/*": ["./src/*"],
+            "@goauthentik/common/*": ["../common/dist/*"],
+            "@goauthentik/components/*": ["./src/*"],
+            "@goauthentik/elements/*": ["../elements/dist/*"],
             "@goauthentik/locales/*": ["src/locales/*"]
         }
-    }
+    },
+    "exclude": ["node_modules", "dist"]
 }

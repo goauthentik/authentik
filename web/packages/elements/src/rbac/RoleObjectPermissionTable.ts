@@ -85,7 +85,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
             }}
             .delete=${(item: RoleAssignedObjectPermission) => {
                 return new RbacApi(
-                    DEFAULT_CONFIG
+                    DEFAULT_CONFIG,
                 ).rbacPermissionsAssignedByRolesUnassignPartialUpdate({
                     uuid: item.rolePk,
                     patchedPermissionAssignRequest: {
