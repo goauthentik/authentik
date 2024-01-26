@@ -1,5 +1,5 @@
 ---
-title: Synology DSM
+title: Synology DSM (DiskStation Manager)
 ---
 
 <span class="badge badge--secondary">Support level: Community</span>
