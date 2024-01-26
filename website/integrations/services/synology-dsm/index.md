@@ -21,9 +21,10 @@ The following placeholders will be used:
 -   `synology.company` is the FQDN of the Synology DSM server.
 -   `authentik.company` is the FQDN of the authentik install.
 
+## authentik configuration
 ### Step 1
 
-Under _Providers_, create an OAuth2/OpenID provider with these settings:
+In the Admin interface of authentik, under _Providers_, create an OAuth2/OpenID provider with these settings:
 
 -   Name: synology
 -   Redirect URI: `https://synology.company/#/signin` (Note the absence of the trailing slash, and the inclusion of the webinterface port)
@@ -35,18 +36,15 @@ Under _Providers_, create an OAuth2/OpenID provider with these settings:
 
 Create an application which uses this provider. Optionally apply access restrictions to the application.
 
-## Synology DSM setup
+## Synology DSM configuration
 
-To configure Synology DSM to utilize Authelia as an OpenID Connect 1.0 Provider:
+To configure Synology DSM to utilize authentik as an OpenID Connect 1.0 Provider:
 
-1. Go to DSM.
-2. Go to Control Panel.
-3. Go To Domain/LDAP.
-4. Go to SSO Client.
-5. Check the Enable OpenID Connect SSO service checkbox in the OpenID Connect SSO Service section.
+1. In the DSM Control Panel, navigate to **Domain/LDAP** -> **SSO Client**.
+5. Check the **Enable OpenID Connect SSO service** checkbox in the **OpenID Connect SSO Service** section.
 6. Configure the following values:
-7. Profile: OIDC
-8. Name: Authentik
+*   Profile: OIDC
+*   Name: authentik
 9. Well Known URL: Copy this from the 'OpenID Configuration URL' in the authentik provider (URL ends with '/.well-known/openid-configuration')
 10. Application ID: The 'Client ID' from the authentik provider
 11. Application Key: The 'Client secret' from the authentik provider
