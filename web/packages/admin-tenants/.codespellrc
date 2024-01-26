@@ -1,0 +1,6 @@
+[codespell]
+dictionary=../../../.github/codespell-dictionary.txt
+ignore-words=../../../.github/codespell-words.txt
+# Yes, the duplication is necessary because whatever codespell uses for a glob is dumb
+skip=src/locales/*.ts,node_modules/**,./src/locales/*.ts,./node_modules/**
+summary=

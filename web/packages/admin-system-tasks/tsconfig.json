@@ -7,7 +7,7 @@
             "@goauthentik/common/*": ["../common/dist/*"],
             "@goauthentik/components/*": ["../components/dist/*"],
             "@goauthentik/elements/*": ["../elements/dist/*"],
-            "@goauthentik/admin-property-mappings/*": ["./src/*"],
+            "@goauthentik/admin-system-tasks/*": ["./src/*"],
             "@goauthentik/locales/*": ["src/locales/*"]
         }
     },

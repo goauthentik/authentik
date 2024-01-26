@@ -4,7 +4,7 @@
         "baseUrl": ".",
         "outDir": "./dist/",
         "paths": {
-            "@goauthentik/admin-property-mappings/*": ["src/*"],
+            "@goauthentik/admin-tenants/*": ["src/*"],
             "@goauthentik/locales/*": ["src/locales/*"]
         }
     }

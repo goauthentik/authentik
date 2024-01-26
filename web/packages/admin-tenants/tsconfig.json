@@ -4,10 +4,10 @@
         "baseUrl": ".",
         "outDir": "./dist/",
         "paths": {
+            "@goauthentik/admin-tenants/*": ["./src/*"],
             "@goauthentik/common/*": ["../common/dist/*"],
             "@goauthentik/components/*": ["../components/dist/*"],
             "@goauthentik/elements/*": ["../elements/dist/*"],
-            "@goauthentik/admin-property-mappings/*": ["./src/*"],
             "@goauthentik/locales/*": ["src/locales/*"]
         }
     },

@@ -1,4 +1,4 @@
-import "@goauthentik/admin/admin-overview/AdminOverviewPage.js";
+import "@goauthentik/admin-overview/AdminOverviewPage.js";
 import { ID_REGEX, Route, SLUG_REGEX, UUID_REGEX } from "@goauthentik/elements/router/Route.js";
 
 import { html } from "lit";
@@ -13,11 +13,11 @@ export const ROUTES: Route[] = [
         return html`<ak-admin-overview></ak-admin-overview>`;
     }),
     new Route(new RegExp("^/administration/dashboard/users$"), async () => {
-        await import("@goauthentik/admin/admin-overview/DashboardUserPage");
+        await import("@goauthentik/admin-overview/DashboardUserPage.js");
         return html`<ak-admin-dashboard-users></ak-admin-dashboard-users>`;
     }),
     new Route(new RegExp("^/administration/system-tasks$"), async () => {
-        await import("@goauthentik/admin/system-tasks/SystemTaskListPage");
+        await import("@goauthentik/admin-system-tasks/SystemTaskListPage.js");
         return html`<ak-system-task-list></ak-system-task-list>`;
     }),
     new Route(new RegExp("^/core/providers$"), async () => {
@@ -49,11 +49,11 @@ export const ROUTES: Route[] = [
         return html`<ak-property-mapping-list></ak-property-mapping-list>`;
     }),
     new Route(new RegExp("^/core/tokens$"), async () => {
-        await import("@goauthentik/admin/tokens/TokenListPage");
+        await import("@goauthentik/admin-tokens/TokenListPage.js");
         return html`<ak-token-list></ak-token-list>`;
     }),
     new Route(new RegExp("^/core/tenants$"), async () => {
-        await import("@goauthentik/admin/tenants/TenantListPage");
+        await import("@goauthentik/admin-tenants/TenantListPage.js");
         return html`<ak-tenant-list></ak-tenant-list>`;
     }),
     new Route(new RegExp("^/policy/policies$"), async () => {
@@ -125,19 +125,19 @@ export const ROUTES: Route[] = [
         return html`<ak-event-rule-list></ak-event-rule-list>`;
     }),
     new Route(new RegExp("^/outpost/outposts$"), async () => {
-        await import("@goauthentik/admin/outposts/OutpostListPage");
+        await import("@goauthentik/admin-outposts/OutpostListPage.js");
         return html`<ak-outpost-list></ak-outpost-list>`;
     }),
     new Route(new RegExp("^/outpost/integrations$"), async () => {
-        await import("@goauthentik/admin/outposts/ServiceConnectionListPage");
+        await import("@goauthentik/admin-outposts/ServiceConnectionListPage.js");
         return html`<ak-outpost-service-connection-list></ak-outpost-service-connection-list>`;
     }),
     new Route(new RegExp("^/crypto/certificates$"), async () => {
-        await import("@goauthentik/admin/crypto/CertificateKeyPairListPage");
+        await import("@goauthentik/admin-crypto/CertificateKeyPairListPage.js");
         return html`<ak-crypto-certificate-list></ak-crypto-certificate-list>`;
     }),
     new Route(new RegExp("^/blueprints/instances$"), async () => {
-        await import("@goauthentik/admin/blueprints/BlueprintListPage");
+        await import("@goauthentik/admin-blueprints/BlueprintListPage.js");
         return html`<ak-blueprint-list></ak-blueprint-list>`;
     }),
     new Route(new RegExp("^/debug$"), async () => {
@@ -145,7 +145,7 @@ export const ROUTES: Route[] = [
         return html`<ak-admin-debug-page></ak-admin-debug-page>`;
     }),
     new Route(new RegExp("^/enterprise/licenses$"), async () => {
-        await import("@goauthentik/admin/enterprise/EnterpriseLicenseListPage");
+        await import("@goauthentik/admin-enterprise/EnterpriseLicenseListPage.js");
         return html`<ak-enterprise-license-list></ak-enterprise-license-list>`;
     }),
 ];
