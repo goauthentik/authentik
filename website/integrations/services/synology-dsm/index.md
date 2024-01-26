@@ -22,6 +22,7 @@ The following placeholders will be used:
 -   `authentik.company` is the FQDN of the authentik install.
 
 ## authentik configuration
+
 ### Step 1
 
 In the Admin interface of authentik, under _Providers_, create an OAuth2/OpenID provider with these settings:
@@ -41,18 +42,19 @@ Create an application which uses this provider. Optionally apply access restrict
 To configure Synology DSM to utilize authentik as an OpenID Connect 1.0 Provider:
 
 1. In the DSM Control Panel, navigate to **Domain/LDAP** -> **SSO Client**.
-5. Check the **Enable OpenID Connect SSO service** checkbox in the **OpenID Connect SSO Service** section.
-6. Configure the following values:
-*   Profile: OIDC
-*   Name: authentik
-9. Well Known URL: Copy this from the 'OpenID Configuration URL' in the authentik provider (URL ends with '/.well-known/openid-configuration')
-10. Application ID: The 'Client ID' from the authentik provider
-11. Application Key: The 'Client secret' from the authentik provider
-12. Redirect URL: https://synology.company/#/signin (This should match the 'Redirect URI' in authentik exactly)
-13. Authorization Scope: openid profile email
-14. Username Claim: preferred_username
-15. Save the settings.
+2. Check the **Enable OpenID Connect SSO service** checkbox in the **OpenID Connect SSO Service** section.
+3. Configure the following values:
 
+-   Profile: OIDC
+-   Name: authentik
+-   Well Known URL: Copy this from the 'OpenID Configuration URL' in the authentik provider (URL ends with '/.well-known/openid-configuration')
+-   Application ID: The 'Client ID' from the authentik provider
+-   Application Key: The 'Client secret' from the authentik provider
+-   Redirect URL: https://synology.company/#/signin (This should match the 'Redirect URI' in authentik exactly)
+-   Authorization Scope: openid profile email
+-   Username Claim: preferred_username
+-   Save the settings.
 
 ## See also:
+
 [Synology DSM SSO Client Documentation](https://kb.synology.com/en-af/DSM/help/DSM/AdminCenter/file_directory_service_sso?version=7)
