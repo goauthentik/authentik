@@ -24,6 +24,24 @@ The following placeholders will be used:
 -   `hass.company` is the FQDN of the Home Assistant install.
 -   `authentik.company` is the FQDN of the authentik install.
 
+## authentik configuration
+
+1. Create a **Proxy Provider** under **Applications** > **Providers** using the following settings:
+
+    - **Name**: Home Assistant
+    - **Authentication flow**: default-authentication-flow
+    - **Authorization flow**: default-provider-authorization-explicit-consent
+    - **External Host**: Set this to the external URL you will be accessing Home Assistant from
+    - **Internal Host**: `http://hass.company:8123`
+
+2. Create an **Application** under **Applications** > **Applications** using the following settings:
+
+    - **Name**: Home Assistant
+    - **Slug**: homeassistant
+    - **Provider**: Home Assistant (the provider you created in step 1)
+
+3. Create an outpost deployment for the provider you've created above, as described [here](../../../docs/outposts/). Deploy this Outpost either on the same host or a different host that can access Home Assistant. The outpost will connect to authentik and configure itself.
+
 ## Home Assistant configuration
 
 1. Configure [trusted_proxies](https://www.home-assistant.io/integrations/http/#trusted_proxies) for the HTTP integration with the IP(s) of the Host(s) authentik is running on.
@@ -49,21 +67,3 @@ The following placeholders will be used:
             auth_header:
                 username_header: X-ak-hass-user
             ```
-
-## authentik configuration
-
-1. Create a **Proxy Provider** under **Applications** > **Providers** using the following settings:
-
-    - **Name**: Home Assistant
-    - **Authentication flow**: default-authentication-flow
-    - **Authorization flow**: default-provider-authorization-explicit-consent
-    - **External Host**: Set this to the external URL you will be accessing Home Assistant from
-    - **Internal Host**: `http://hass.company:8123`
-
-2. Create an **Application** under **Applications** > **Applications** using the following settings:
-
-    - **Name**: Home Assistant
-    - **Slug**: homeassistant
-    - **Provider**: Home Assistant (the provider you created in step 1)
-
-3. Create an outpost deployment for the provider you've created above, as described [here](../../../docs/outposts/). Deploy this Outpost either on the same host or a different host that can access Home Assistant. The outpost will connect to authentik and configure itself.
