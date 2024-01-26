@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-24 12:44+0000\n"
+"POT-Creation-Date: 2024-01-26 17:26+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -434,126 +434,126 @@ msgstr ""
 msgid "(You are already connected in another tab/window)"
 msgstr ""
 
-#: authentik/events/api/tasks.py:99
+#: authentik/events/api/tasks.py:100
 #, python-format
-msgid "Successfully re-scheduled Task %(name)s!"
+msgid "Successfully started task %(name)s."
 msgstr ""
 
-#: authentik/events/models.py:289
+#: authentik/events/models.py:304
 msgid "Event"
 msgstr ""
 
-#: authentik/events/models.py:290
+#: authentik/events/models.py:305
 msgid "Events"
 msgstr ""
 
-#: authentik/events/models.py:296
+#: authentik/events/models.py:311
 msgid "authentik inbuilt notifications"
 msgstr ""
 
-#: authentik/events/models.py:297
+#: authentik/events/models.py:312
 msgid "Generic Webhook"
 msgstr ""
 
-#: authentik/events/models.py:298
+#: authentik/events/models.py:313
 msgid "Slack Webhook (Slack/Discord)"
 msgstr ""
 
-#: authentik/events/models.py:299
+#: authentik/events/models.py:314
 msgid "Email"
 msgstr ""
 
-#: authentik/events/models.py:317
+#: authentik/events/models.py:332
 msgid ""
 "Only send notification once, for example when sending a webhook into a chat "
 "channel."
 msgstr ""
 
-#: authentik/events/models.py:382
+#: authentik/events/models.py:397
 msgid "Severity"
 msgstr ""
 
-#: authentik/events/models.py:387
+#: authentik/events/models.py:402
 msgid "Dispatched for user"
 msgstr ""
 
-#: authentik/events/models.py:396
+#: authentik/events/models.py:411
 msgid "Event user"
 msgstr ""
 
-#: authentik/events/models.py:490
+#: authentik/events/models.py:505
 msgid "Notification Transport"
 msgstr ""
 
-#: authentik/events/models.py:491
+#: authentik/events/models.py:506
 msgid "Notification Transports"
 msgstr ""
 
-#: authentik/events/models.py:497
+#: authentik/events/models.py:512
 msgid "Notice"
 msgstr ""
 
-#: authentik/events/models.py:498
+#: authentik/events/models.py:513
 msgid "Warning"
 msgstr ""
 
-#: authentik/events/models.py:499
+#: authentik/events/models.py:514
 msgid "Alert"
 msgstr ""
 
-#: authentik/events/models.py:524
+#: authentik/events/models.py:539
 msgid "Notification"
 msgstr ""
 
-#: authentik/events/models.py:525
+#: authentik/events/models.py:540
 msgid "Notifications"
 msgstr ""
 
-#: authentik/events/models.py:535
+#: authentik/events/models.py:550
 msgid ""
 "Select which transports should be used to notify the user. If none are "
 "selected, the notification will only be shown in the authentik UI."
 msgstr ""
 
-#: authentik/events/models.py:543
+#: authentik/events/models.py:558
 msgid "Controls which severity level the created notifications will have."
 msgstr ""
 
-#: authentik/events/models.py:548
+#: authentik/events/models.py:563
 msgid ""
 "Define which group of users this notification should be sent and shown to. "
 "If left empty, Notification won't ben sent."
 msgstr ""
 
-#: authentik/events/models.py:566
+#: authentik/events/models.py:581
 msgid "Notification Rule"
 msgstr ""
 
-#: authentik/events/models.py:567
+#: authentik/events/models.py:582
 msgid "Notification Rules"
 msgstr ""
 
-#: authentik/events/models.py:587
+#: authentik/events/models.py:602
 msgid "Webhook Mapping"
 msgstr ""
 
-#: authentik/events/models.py:588
+#: authentik/events/models.py:603
 msgid "Webhook Mappings"
 msgstr ""
 
-#: authentik/events/models.py:642
-msgid "Rerun task"
+#: authentik/events/models.py:668
+msgid "Run task"
 msgstr ""
 
-#: authentik/events/models.py:643
+#: authentik/events/models.py:669
 msgid "System Task"
 msgstr ""
 
-#: authentik/events/models.py:644
+#: authentik/events/models.py:670
 msgid "System Tasks"
 msgstr ""
 
-#: authentik/events/monitored_tasks.py:128
+#: authentik/events/system_tasks.py:126
 msgid "Task has not been run yet."
 msgstr ""
 
