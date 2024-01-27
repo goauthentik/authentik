@@ -76,7 +76,11 @@ export class SourceStageForm extends BaseStageForm<SourceStage> {
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Return timeout")} ?required=${true} name="returnTimeout">
+            <ak-form-element-horizontal
+                label=${msg("Return timeout")}
+                ?required=${true}
+                name="returnTimeout"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.returnTimeout || "minutes=10")}"
