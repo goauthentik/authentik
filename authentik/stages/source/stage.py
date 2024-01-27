@@ -2,8 +2,7 @@
 from typing import Any
 from uuid import uuid4
 
-from django.http import HttpRequest
-from django.http.response import HttpResponse as HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.utils.text import slugify
 from django.utils.timezone import now
 from guardian.shortcuts import get_anonymous_user
@@ -11,7 +10,7 @@ from guardian.shortcuts import get_anonymous_user
 from authentik.core.models import Source, User
 from authentik.core.sources.flow_manager import SESSION_KEY_OVERRIDE_FLOW_TOKEN
 from authentik.core.types import UILoginButton
-from authentik.flows.challenge import Challenge
+from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.flows.models import FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_IS_RESTORED
 from authentik.flows.stage import ChallengeStageView
@@ -71,3 +70,6 @@ class SourceStageView(ChallengeStageView):
         if token.is_expired:
             token.expire_action()
         return token
+
+    def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
+        return self.executor.stage_ok()

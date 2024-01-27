@@ -12,6 +12,7 @@ class SourceStageSerializer(StageSerializer):
     """SourceStage Serializer"""
 
     def validate_source(self, source: Source) -> Source:
+        """Ensure configured source supports web-based login"""
         login_button = source.ui_login_button(self.context["request"])
         if not login_button:
             raise ValidationError("Invalid source selected, only web-based sources are supported.")
