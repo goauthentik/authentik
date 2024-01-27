@@ -77,13 +77,13 @@ export class SourceStageForm extends BaseStageForm<SourceStage> {
                 </ak-search-select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${msg("Return timeout")}
+                label=${msg("Resume timeout")}
                 ?required=${true}
-                name="returnTimeout"
+                name="resumeTimeout"
             >
                 <input
                     type="text"
-                    value="${ifDefined(this.instance?.returnTimeout || "minutes=10")}"
+                    value="${ifDefined(this.instance?.resumeTimeout || "minutes=10")}"
                     class="pf-c-form-control"
                     required
                 />

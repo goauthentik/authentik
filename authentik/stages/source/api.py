@@ -1,7 +1,9 @@
 """Source Stage API Views"""
+from rest_framework.exceptions import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
+from authentik.core.models import Source
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.source.models import SourceStage
 
@@ -9,13 +11,15 @@ from authentik.stages.source.models import SourceStage
 class SourceStageSerializer(StageSerializer):
     """SourceStage Serializer"""
 
-    # TODO: validate that source is web-based so it can be done in a flow
-    # i.e. oauth/saml/plex
-    # ideally in a generic way
+    def validate_source(self, source: Source) -> Source:
+        login_button = source.ui_login_button(self.context["request"])
+        if not login_button:
+            raise ValidationError("Invalid source selected, only web-based sources are supported.")
+        return source
 
     class Meta:
         model = SourceStage
-        fields = StageSerializer.Meta.fields + ["source", "return_timeout"]
+        fields = StageSerializer.Meta.fields + ["source", "resume_timeout"]
 
 
 class SourceStageViewSet(UsedByMixin, ModelViewSet):

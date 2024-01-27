@@ -7245,10 +7245,10 @@
                     "type": "integer",
                     "title": "Source"
                 },
-                "return_timeout": {
+                "resume_timeout": {
                     "type": "string",
                     "minLength": 1,
-                    "title": "Return timeout",
+                    "title": "Resume timeout",
                     "description": "Amount of time a user can take to return from the source to continue the flow (Format: hours=-1;minutes=-2;seconds=-3)"
                 }
             },

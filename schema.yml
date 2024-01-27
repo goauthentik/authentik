@@ -27904,7 +27904,7 @@ paths:
         schema:
           type: integer
       - in: query
-        name: return_timeout
+        name: resume_timeout
         schema:
           type: string
       - name: search
@@ -40568,7 +40568,7 @@ components:
         source:
           type: string
           format: uuid
-        return_timeout:
+        resume_timeout:
           type: string
           minLength: 1
           description: 'Amount of time a user can take to return from the source to
@@ -43951,7 +43951,7 @@ components:
         source:
           type: string
           format: uuid
-        return_timeout:
+        resume_timeout:
           type: string
           description: 'Amount of time a user can take to return from the source to
             continue the flow (Format: hours=-1;minutes=-2;seconds=-3)'
@@ -43977,7 +43977,7 @@ components:
         source:
           type: string
           format: uuid
-        return_timeout:
+        resume_timeout:
           type: string
           minLength: 1
           description: 'Amount of time a user can take to return from the source to

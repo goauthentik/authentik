@@ -57,7 +57,7 @@ class SourceStageView(ChallengeStageView):
         identifier = slugify(f"ak-source-stage-{current_stage.name}-{str(uuid4())}")
         # Don't check for validity here, we only care if the token exists
         tokens = FlowToken.objects.filter(identifier=identifier)
-        valid_delta = timedelta_from_string(current_stage.return_timeout)
+        valid_delta = timedelta_from_string(current_stage.resume_timeout)
         if not tokens.exists():
             return FlowToken.objects.create(
                 expires=now() + valid_delta,

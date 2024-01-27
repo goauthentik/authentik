@@ -14,7 +14,7 @@ class SourceStage(Stage):
 
     source = models.ForeignKey("authentik_core.Source", on_delete=models.CASCADE)
 
-    return_timeout = models.TextField(
+    resume_timeout = models.TextField(
         default="minutes=10",
         validators=[timedelta_string_validator],
         help_text=_(
