@@ -11,8 +11,11 @@ from authentik.stages.source.models import SourceStage
 class SourceStageSerializer(StageSerializer):
     """SourceStage Serializer"""
 
-    def validate_source(self, source: Source) -> Source:
+    def validate_source(self, _source: Source) -> Source:
         """Ensure configured source supports web-based login"""
+        source = Source.objects.filter(pk=_source.pk).select_subclasses().first()
+        if not source:
+            raise ValidationError("Invalid source")
         login_button = source.ui_login_button(self.context["request"])
         if not login_button:
             raise ValidationError("Invalid source selected, only web-based sources are supported.")
