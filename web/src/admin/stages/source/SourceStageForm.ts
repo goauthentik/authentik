@@ -65,7 +65,7 @@ export class SourceStageForm extends BaseStageForm<SourceStage> {
                         return source.name;
                     }}
                     .renderDescription=${(source: Source): TemplateResult => {
-                        return html`${source.metaModelName}`;
+                        return html`${source.verboseName}`;
                     }}
                     .value=${(source: Source | undefined): string | undefined => {
                         return source?.pk;
