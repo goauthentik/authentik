@@ -122,6 +122,7 @@ export class UserInterface extends Interface {
                     flex-direction: column;
                 }
                 .pf-c-drawer__main {
+                    min-height: calc(100vh - 76px);
                     max-height: calc(100vh - 76px);
                 }
             `,
