@@ -2,20 +2,18 @@
 from typing import Any
 from uuid import uuid4
 
-from django.http import HttpRequest, QueryDict
+from django.http import HttpRequest
 from django.http.response import HttpResponse as HttpResponse
-from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.timezone import now
 from guardian.shortcuts import get_anonymous_user
 
 from authentik.core.models import Source, User
+from authentik.core.sources.flow_manager import SESSION_KEY_OVERRIDE_FLOW_TOKEN
 from authentik.core.types import UILoginButton
 from authentik.flows.challenge import Challenge
 from authentik.flows.models import FlowToken
-from authentik.flows.planner import PLAN_CONTEXT_REDIRECT
 from authentik.flows.stage import ChallengeStageView
-from authentik.flows.views.executor import QS_KEY_TOKEN, QS_QUERY
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.source.models import SourceStage
 
@@ -23,7 +21,8 @@ PLAN_CONTEXT_RESUME_TOKEN = "resume_token"  # nosec
 
 
 class SourceStageView(ChallengeStageView):
-    """TODO."""
+    """Suspend the current flow execution and send the user to a source,
+    after which this flow execution is resumed."""
 
     login_button: UILoginButton
 
@@ -34,19 +33,17 @@ class SourceStageView(ChallengeStageView):
         )
         if not source:
             self.logger.warning("Source does not exist")
-            return self.executor.stage_invalid()
+            return self.executor.stage_invalid("Source does not exist")
         self.login_button = source.ui_login_button(self.request)
         if not self.login_button:
             self.logger.warning("Source does not have a UI login button")
-            return self.executor.stage_invalid()
+            return self.executor.stage_invalid("Invalid source")
         return super().dispatch(request, *args, **kwargs)
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
+        self.executor.stage_ok()
         resume_token = self.create_flow_token()
-        # Old redirect is stored in the resume_token as that captures the flow in its current state
-        self.executor.plan.context[PLAN_CONTEXT_REDIRECT] = self.get_full_url(
-            **{QS_KEY_TOKEN: resume_token.key}
-        )
+        self.request.session[SESSION_KEY_OVERRIDE_FLOW_TOKEN] = resume_token
         return self.login_button.challenge
 
     def create_flow_token(self) -> FlowToken:
@@ -72,22 +69,3 @@ class SourceStageView(ChallengeStageView):
         if token.is_expired:
             token.expire_action()
         return token
-
-    # TODO: Dedupe with email stage
-    def get_full_url(self, **kwargs) -> str:
-        """Get full URL to be used in template"""
-        base_url = reverse(
-            "authentik_core:if-flow",
-            kwargs={"flow_slug": self.executor.flow.slug},
-        )
-        # Parse query string from current URL (full query string)
-        # this view is only run within a flow executor, where we need to get the query string
-        # from the query= parameter (double encoded); but for the redirect
-        # we need to expand it since it'll go through the flow interface
-        query_params = QueryDict(self.request.GET.get(QS_QUERY), mutable=True)
-        query_params.pop(QS_KEY_TOKEN, None)
-        query_params.update(kwargs)
-        full_url = base_url
-        if len(query_params) > 0:
-            full_url = f"{full_url}?{query_params.urlencode()}"
-        return self.request.build_absolute_uri(full_url)
