@@ -18,6 +18,7 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow, FlowToken, Stage, in_memory_stage
 from authentik.flows.planner import (
+    PLAN_CONTEXT_IS_RESTORED,
     PLAN_CONTEXT_PENDING_USER,
     PLAN_CONTEXT_REDIRECT,
     PLAN_CONTEXT_SOURCE,
@@ -228,10 +229,22 @@ class SourceFlowManager:
         **kwargs,
     ) -> HttpResponse:
         """Prepare Authentication Plan, redirect user FlowExecutor"""
+        kwargs.update(
+            {
+                # Since we authenticate the user by their token, they have no backend set
+                PLAN_CONTEXT_AUTHENTICATION_BACKEND: BACKEND_INBUILT,
+                PLAN_CONTEXT_SSO: True,
+                PLAN_CONTEXT_SOURCE: self.source,
+                PLAN_CONTEXT_SOURCES_CONNECTION: connection,
+            }
+        )
+        kwargs.update(self.policy_context)
         if SESSION_KEY_OVERRIDE_FLOW_TOKEN in self.request.session:
             token: FlowToken = self.request.session.get(SESSION_KEY_OVERRIDE_FLOW_TOKEN)
             self._logger.info("Replacing source flow with overridden flow", flow=token.flow.slug)
             plan = token.plan
+            plan.context[PLAN_CONTEXT_IS_RESTORED] = token
+            plan.context.update(kwargs)
             for stage in self.get_stages_to_append(flow):
                 plan.append_stage(stage)
             if stages:
@@ -250,17 +263,9 @@ class SourceFlowManager:
         final_redirect = self.request.session.get(SESSION_KEY_GET, {}).get(
             NEXT_ARG_NAME, "authentik_core:if-user"
         )
-        kwargs.update(
-            {
-                # Since we authenticate the user by their token, they have no backend set
-                PLAN_CONTEXT_AUTHENTICATION_BACKEND: BACKEND_INBUILT,
-                PLAN_CONTEXT_SSO: True,
-                PLAN_CONTEXT_SOURCE: self.source,
-                PLAN_CONTEXT_REDIRECT: final_redirect,
-                PLAN_CONTEXT_SOURCES_CONNECTION: connection,
-            }
-        )
-        kwargs.update(self.policy_context)
+        if PLAN_CONTEXT_REDIRECT not in kwargs:
+            kwargs[PLAN_CONTEXT_REDIRECT] = final_redirect
+
         if not flow:
             return bad_request_message(
                 self.request,
