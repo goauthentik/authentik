@@ -69,11 +69,11 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
     row(item: AuthenticatedSession): TemplateResult[] {
         return [
             html`<div>
+                    ${item.geoIp?.country
+                        ? html`${getUnicodeFlagIcon(item.geoIp.country)}&nbsp;`
+                        : html``}
                     ${item.current ? html`${msg("(Current session)")}&nbsp;` : html``}
                     ${item.lastIp}
-                    ${item.geoIp?.country
-                        ? html`&nbsp;${getUnicodeFlagIcon(item.geoIp.country)} `
-                        : html``}
                 </div>
                 <small>${item.userAgent.userAgent?.family}, ${item.userAgent.os?.family}</small>`,
             html`<div>${getRelativeTime(item.lastUsed)}</div>
