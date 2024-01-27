@@ -32346,7 +32346,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        name:
+          type: string
       required:
+      - name
       - type
     DummyChallengeResponseRequest:
       type: object
