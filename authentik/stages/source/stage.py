@@ -13,6 +13,7 @@ from authentik.core.sources.flow_manager import SESSION_KEY_OVERRIDE_FLOW_TOKEN
 from authentik.core.types import UILoginButton
 from authentik.flows.challenge import Challenge
 from authentik.flows.models import FlowToken
+from authentik.flows.planner import PLAN_CONTEXT_IS_RESTORED
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.source.models import SourceStage
@@ -38,10 +39,11 @@ class SourceStageView(ChallengeStageView):
         if not self.login_button:
             self.logger.warning("Source does not have a UI login button")
             return self.executor.stage_invalid("Invalid source")
+        if PLAN_CONTEXT_IS_RESTORED in self.executor.plan.context:
+            return self.executor.stage_ok()
         return super().dispatch(request, *args, **kwargs)
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
-        self.executor.stage_ok()
         resume_token = self.create_flow_token()
         self.request.session[SESSION_KEY_OVERRIDE_FLOW_TOKEN] = resume_token
         return self.login_button.challenge
