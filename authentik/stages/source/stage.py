@@ -38,7 +38,10 @@ class SourceStageView(ChallengeStageView):
         if not self.login_button:
             self.logger.warning("Source does not have a UI login button")
             return self.executor.stage_invalid("Invalid source")
-        if PLAN_CONTEXT_IS_RESTORED in self.executor.plan.context:
+        restore_token = self.executor.plan.context.get(PLAN_CONTEXT_IS_RESTORED)
+        override_token = self.request.session.get(SESSION_KEY_OVERRIDE_FLOW_TOKEN)
+        if restore_token and override_token and restore_token.pk == override_token.pk:
+            del self.request.session[SESSION_KEY_OVERRIDE_FLOW_TOKEN]
             return self.executor.stage_ok()
         return super().dispatch(request, *args, **kwargs)
 
