@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-24 12:44+0000\n"
+"POT-Creation-Date: 2024-01-26 17:26+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2024\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/authentik/teams/119923/zh-Hans/)\n"
@@ -450,126 +450,126 @@ msgstr "已达到最大连接数。"
 msgid "(You are already connected in another tab/window)"
 msgstr "（您已经在另一个标签页/窗口连接了）"
 
-#: authentik/events/api/tasks.py:99
+#: authentik/events/api/tasks.py:100
 #, python-format
-msgid "Successfully re-scheduled Task %(name)s!"
-msgstr "已成功重新安排任务 %(name)s！"
+msgid "Successfully started task %(name)s."
+msgstr "已成功开始任务 %(name)s。"
 
-#: authentik/events/models.py:289
+#: authentik/events/models.py:304
 msgid "Event"
 msgstr "事件"
 
-#: authentik/events/models.py:290
+#: authentik/events/models.py:305
 msgid "Events"
 msgstr "事件"
 
-#: authentik/events/models.py:296
+#: authentik/events/models.py:311
 msgid "authentik inbuilt notifications"
 msgstr "authentik 内置通知"
 
-#: authentik/events/models.py:297
+#: authentik/events/models.py:312
 msgid "Generic Webhook"
 msgstr "通用 Webhook"
 
-#: authentik/events/models.py:298
+#: authentik/events/models.py:313
 msgid "Slack Webhook (Slack/Discord)"
 msgstr "Slack Webhook（Slack/Discord）"
 
-#: authentik/events/models.py:299
+#: authentik/events/models.py:314
 msgid "Email"
 msgstr "电子邮箱"
 
-#: authentik/events/models.py:317
+#: authentik/events/models.py:332
 msgid ""
 "Only send notification once, for example when sending a webhook into a chat "
 "channel."
 msgstr "仅发送一次通知，例如在向聊天频道发送 Webhook 时。"
 
-#: authentik/events/models.py:382
+#: authentik/events/models.py:397
 msgid "Severity"
 msgstr "严重程度"
 
-#: authentik/events/models.py:387
+#: authentik/events/models.py:402
 msgid "Dispatched for user"
 msgstr "为用户分派"
 
-#: authentik/events/models.py:396
+#: authentik/events/models.py:411
 msgid "Event user"
 msgstr "事件用户"
 
-#: authentik/events/models.py:490
+#: authentik/events/models.py:505
 msgid "Notification Transport"
 msgstr "通知传输"
 
-#: authentik/events/models.py:491
+#: authentik/events/models.py:506
 msgid "Notification Transports"
 msgstr "通知传输"
 
-#: authentik/events/models.py:497
+#: authentik/events/models.py:512
 msgid "Notice"
 msgstr "通知"
 
-#: authentik/events/models.py:498
+#: authentik/events/models.py:513
 msgid "Warning"
 msgstr "警告"
 
-#: authentik/events/models.py:499
+#: authentik/events/models.py:514
 msgid "Alert"
 msgstr "注意"
 
-#: authentik/events/models.py:524
+#: authentik/events/models.py:539
 msgid "Notification"
 msgstr "通知"
 
-#: authentik/events/models.py:525
+#: authentik/events/models.py:540
 msgid "Notifications"
 msgstr "通知"
 
-#: authentik/events/models.py:535
+#: authentik/events/models.py:550
 msgid ""
 "Select which transports should be used to notify the user. If none are "
 "selected, the notification will only be shown in the authentik UI."
 msgstr "选择应使用哪些传输方式来通知用户。如果未选择任何内容，则通知将仅显示在 authentik UI 中。"
 
-#: authentik/events/models.py:543
+#: authentik/events/models.py:558
 msgid "Controls which severity level the created notifications will have."
 msgstr "控制被创建的通知的严重性级别。"
 
-#: authentik/events/models.py:548
+#: authentik/events/models.py:563
 msgid ""
 "Define which group of users this notification should be sent and shown to. "
 "If left empty, Notification won't ben sent."
 msgstr "定义此通知应该发送到哪些用户组。如果留空，则不会发送通知。"
 
-#: authentik/events/models.py:566
+#: authentik/events/models.py:581
 msgid "Notification Rule"
 msgstr "通知规则"
 
-#: authentik/events/models.py:567
+#: authentik/events/models.py:582
 msgid "Notification Rules"
 msgstr "通知规则"
 
-#: authentik/events/models.py:587
+#: authentik/events/models.py:602
 msgid "Webhook Mapping"
 msgstr "Webhook 映射"
 
-#: authentik/events/models.py:588
+#: authentik/events/models.py:603
 msgid "Webhook Mappings"
 msgstr "Webhook 映射"
 
-#: authentik/events/models.py:642
-msgid "Rerun task"
-msgstr "重新运行任务"
+#: authentik/events/models.py:668
+msgid "Run task"
+msgstr "运行任务"
 
-#: authentik/events/models.py:643
+#: authentik/events/models.py:669
 msgid "System Task"
 msgstr "系统任务"
 
-#: authentik/events/models.py:644
+#: authentik/events/models.py:670
 msgid "System Tasks"
 msgstr "系统任务"
 
-#: authentik/events/monitored_tasks.py:128
+#: authentik/events/system_tasks.py:126
 msgid "Task has not been run yet."
 msgstr "任务尚未运行。"
 
