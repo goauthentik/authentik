@@ -538,18 +538,6 @@
         <target>没有 Workers 连接，后台任务将无法运行。</target>
         
       </trans-unit>
-      <trans-unit id="s2ed8eb02525a920a">
-        <source><x id="0" equiv-text="${ago}"/> hour(s) ago</source>
-        <target>
-        <x id="0" equiv-text="${ago}"/>小时前</target>
-        
-      </trans-unit>
-      <trans-unit id="s1f1c857c0c4250e4">
-        <source><x id="0" equiv-text="${ago}"/> day(s) ago</source>
-        <target>
-        <x id="0" equiv-text="${ago}"/>天前</target>
-        
-      </trans-unit>
       <trans-unit id="s11bc220e8fa9d797">
         <source>Authorizations</source>
         <target>授权</target>
@@ -7668,10 +7656,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>User doesn't have view permission so description cannot be retrieved.</source>
   <target>用户不具有查看权限，所以无法获取描述。</target>
 </trans-unit>
-<trans-unit id="sa3a3e09b88ed9791">
-  <source>Assigned permissions</source>
-  <target>分配的权限</target>
-</trans-unit>
 <trans-unit id="s9cc631505c17b028">
   <source>Assigned global permissions</source>
   <target>分配的全局权限</target>
@@ -8140,10 +8124,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Determines how long a session lasts before being disconnected and requiring re-authorization.</source>
   <target>设置会话在被断开连接并需要重新授权之前持续的时间。</target>
 </trans-unit>
-<trans-unit id="scc7f34824150bfb8">
-  <source>Provider require enterprise.</source>
-  <target>提供程序需要企业版。</target>
-</trans-unit>
 <trans-unit id="s31f1afc1bfe1cb3a">
   <source>Learn more</source>
   <target>了解更多</target>
@@ -8389,6 +8369,42 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s862505f29064fc72">
   <source>This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:</source>
   <target>此选项配置流程执行器页面上的页脚链接。必须为有效的 YAML 或 JSON 列表，可以使用以下值：</target>
+</trans-unit>
+<trans-unit id="sb2275335377069aa">
+  <source>This feature requires an enterprise license.</source>
+  <target>此功能需要企业版许可证。</target>
+</trans-unit>
+<trans-unit id="s6d3f81dc4bcacbda">
+  <source>Last used</source>
+  <target>上次使用</target>
+</trans-unit>
+<trans-unit id="s96b2703420bfbd0c">
+  <source>OAuth Access Tokens</source>
+  <target>OAuth 访问令牌</target>
+</trans-unit>
+<trans-unit id="sd99e668c54f78f6e">
+  <source>Credentials / Tokens</source>
+  <target>凭据 / 令牌</target>
+</trans-unit>
+<trans-unit id="saada50e84c7c646d">
+  <source>Permissions set on users which affect this object.</source>
+  <target>为影响此对象的用户设置的权限。</target>
+</trans-unit>
+<trans-unit id="s37d1b74df205b528">
+  <source>Permissions set on roles which affect this object.</source>
+  <target>为影响此对象的角色设置的权限。</target>
+</trans-unit>
+<trans-unit id="sc443bfff8a5dd106">
+  <source>Permissions assigned to this user which affect all object instances of a given type.</source>
+  <target>分配给该用户的权限，会影响给定类型的所有对象实例。</target>
+</trans-unit>
+<trans-unit id="s3eba09a350b7d6c9">
+  <source>Permissions assigned to this user affecting specific object instances.</source>
+  <target>分配给该用户的权限，会影响特定对象实例。</target>
+</trans-unit>
+<trans-unit id="s17032e57ba222d2f">
+  <source>Permissions assigned to this role which affect all object instances of a given type.</source>
+  <target>分配给该角色的权限，会影响给定类型的所有对象实例。</target>
 </trans-unit>
     </body>
   </file>
