@@ -1,5 +1,6 @@
 import "@goauthentik/admin/groups/RelatedGroupList";
 import "@goauthentik/admin/users/UserActiveForm";
+import "@goauthentik/admin/users/UserApplicationTable";
 import "@goauthentik/admin/users/UserChart";
 import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserPasswordForm";
@@ -317,6 +318,14 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
         `;
     }
 
+    renderTabApplications(user: User): TemplateResult {
+        return html`<div class="pf-c-card">
+            <div class="pf-c-card__body">
+                <ak-user-application-table .user=${user}></ak-user-application-table>
+            </div>
+        </div>`;
+    }
+
     renderBody() {
         if (!this.user) {
             return nothing;
@@ -398,6 +407,13 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
             </section>
             <section slot="page-credentials" data-tab-title="${msg("Credentials / Tokens")}">
                 ${this.renderTabCredentialsToken(this.user)}
+            </section>
+            <section
+                slot="page-applications"
+                data-tab-title="${msg("Applications")}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                ${this.renderTabApplications(this.user)}
             </section>
             <ak-rbac-object-permission-page
                 slot="page-permissions"

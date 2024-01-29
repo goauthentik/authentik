@@ -2659,6 +2659,10 @@ paths:
       description: Custom list method that checks Policy based access instead of guardian
       parameters:
       - in: query
+        name: for_user
+        schema:
+          type: integer
+      - in: query
         name: group
         schema:
           type: string
@@ -2931,8 +2935,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/PolicyTestResult'
           description: ''
+        '404':
+          description: for_user user not found
         '400':
-          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
         '403':
           content:
             application/json:
