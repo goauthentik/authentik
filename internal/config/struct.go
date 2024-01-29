@@ -25,16 +25,17 @@ type Config struct {
 }
 
 type RedisConfig struct {
-	Host                   string `yaml:"host" env:"AUTHENTIK_REDIS__HOST"`
-	Port                   int    `yaml:"port" env:"AUTHENTIK_REDIS__PORT"`
-	Password               string `yaml:"password" env:"AUTHENTIK_REDIS__PASSWORD"`
-	TLS                    bool   `yaml:"tls" env:"AUTHENTIK_REDIS__TLS"`
-	TLSReqs                string `yaml:"tls_reqs" env:"AUTHENTIK_REDIS__TLS_REQS"`
-	DB                     int    `yaml:"cache_db" env:"AUTHENTIK_REDIS__DB"`
-	CacheTimeout           int    `yaml:"cache_timeout" env:"AUTHENTIK_REDIS__CACHE_TIMEOUT"`
-	CacheTimeoutFlows      int    `yaml:"cache_timeout_flows" env:"AUTHENTIK_REDIS__CACHE_TIMEOUT_FLOWS"`
-	CacheTimeoutPolicies   int    `yaml:"cache_timeout_policies" env:"AUTHENTIK_REDIS__CACHE_TIMEOUT_POLICIES"`
-	CacheTimeoutReputation int    `yaml:"cache_timeout_reputation" env:"AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION"`
+	Host                   string `yaml:"host" env:"HOST, overwrite"`
+	Port                   int    `yaml:"port" env:"PORT, overwrite"`
+	DB                     int    `yaml:"db" env:"DB, overwrite"`
+	Username               string `yaml:"username" env:"USERNAME, overwrite"`
+	Password               string `yaml:"password" env:"PASSWORD, overwrite"`
+	TLS                    bool   `yaml:"tls" env:"TLS, overwrite"`
+	TLSReqs                string `yaml:"tls_reqs" env:"TLS_REQS, overwrite"`
+	CacheTimeout           int    `yaml:"cache_timeout" env:"CACHE_TIMEOUT, overwrite"`
+	CacheTimeoutFlows      int    `yaml:"cache_timeout_flows" env:"CACHE_TIMEOUT_FLOWS, overwrite"`
+	CacheTimeoutPolicies   int    `yaml:"cache_timeout_policies" env:"CACHE_TIMEOUT_POLICIES, overwrite"`
+	CacheTimeoutReputation int    `yaml:"cache_timeout_reputation" env:"CACHE_TIMEOUT_REPUTATION, overwrite"`
 }
 
 type ListenConfig struct {
