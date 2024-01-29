@@ -159,6 +159,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
             new TableColumn(msg("Name"), "username"),
             new TableColumn(msg("Active"), "is_active"),
             new TableColumn(msg("Last login"), "last_login"),
+            new TableColumn(msg("Type"), "type"),
             new TableColumn(msg("Actions")),
         ];
     }
@@ -248,9 +249,10 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
             html`<a href="#/identity/users/${item.pk}">
                     <div>${item.username}</div>
                     <small>${item.name === "" ? msg("<No name set>") : item.name}</small> </a
-                >&nbsp;<small>${userTypeToLabel(item.type)}</small>`,
+                >`,
             html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
             html`${first(item.lastLogin?.toLocaleString(), msg("-"))}`,
+            html`${userTypeToLabel(item.type)}`,
             html`<ak-forms-modal>
                     <span slot="submit"> ${msg("Update")} </span>
                     <span slot="header"> ${msg("Update User")} </span>
