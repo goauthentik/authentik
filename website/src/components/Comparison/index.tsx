@@ -322,6 +322,30 @@ export default function Comparison() {
                                     <X></X>
                                 </td>
                             </tr>
+                            <tr>
+                                <td className="row-label">Kerberos</td>
+                                <td className="result passed authentik">
+                                    <Check></Check>
+                                </td>
+                                <td className="result passed">
+                                    <Check></Check>
+                                </td>
+                                <td className="result passed">
+                                    <Check></Check>
+                                </td>
+                                <td className="result passed">
+                                    <Check></Check>
+                                </td>
+                                <td className="result passed">
+                                    <Check></Check>
+                                </td>
+                                <td className="result failed">
+                                    <X></X>
+                                </td>
+                                <td className="result failed">
+                                    <X></X>
+                                </td>
+                            </tr>
                         </tbody>
                         <thead className="group">
                             <tr>
