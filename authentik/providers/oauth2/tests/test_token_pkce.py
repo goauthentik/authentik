@@ -22,8 +22,9 @@ class TestTokenPKCE(OAuthTestCase):
         self.factory = RequestFactory()
         self.app = Application.objects.create(name=generate_id(), slug="test")
 
-    def test_pkce_missing_in_token(self):
-        """Test full with pkce"""
+    def test_pkce_missing_in_authorize(self):
+        """Test PKCE with code_challenge in authorize request
+        and missing verifier in token request"""
         flow = create_test_flow()
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
@@ -74,7 +75,77 @@ class TestTokenPKCE(OAuthTestCase):
         )
         self.assertJSONEqual(
             response.content,
-            {"error": "invalid_request", "error_description": "The request is otherwise malformed"},
+            {
+                "error": "invalid_grant",
+                "error_description": (
+                    "The provided authorization grant or refresh token is invalid, expired, "
+                    "revoked, does not match the redirection URI used in the authorization "
+                    "request, or was issued to another client"
+                ),
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_pkce_missing_in_token(self):
+        """Test PKCE with missing code_challenge in authorization request but verifier
+        set in token request"""
+        flow = create_test_flow()
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            authorization_flow=flow,
+            redirect_uris="foo://localhost",
+            access_code_validity="seconds=100",
+        )
+        Application.objects.create(name="app", slug="app", provider=provider)
+        state = generate_id()
+        user = create_test_admin_user()
+        self.client.force_login(user)
+        header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
+        # Step 1, initiate params and get redirect to flow
+        self.client.get(
+            reverse("authentik_providers_oauth2:authorize"),
+            data={
+                "response_type": "code",
+                "client_id": "test",
+                "state": state,
+                "redirect_uri": "foo://localhost",
+                # "code_challenge": challenge,
+                # "code_challenge_method": "S256",
+            },
+        )
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        code: AuthorizationCode = AuthorizationCode.objects.filter(user=user).first()
+        self.assertJSONEqual(
+            response.content.decode(),
+            {
+                "component": "xak-flow-redirect",
+                "type": ChallengeTypes.REDIRECT.value,
+                "to": f"foo://localhost?code={code.code}&state={state}",
+            },
+        )
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            data={
+                "grant_type": GRANT_TYPE_AUTHORIZATION_CODE,
+                "code": code.code,
+                "code_verifier": generate_id(),
+                "redirect_uri": "foo://localhost",
+            },
+            HTTP_AUTHORIZATION=f"Basic {header}",
+        )
+        self.assertJSONEqual(
+            response.content,
+            {
+                "error": "invalid_grant",
+                "error_description": (
+                    "The provided authorization grant or refresh token is invalid, expired, "
+                    "revoked, does not match the redirection URI used in the authorization "
+                    "request, or was issued to another client"
+                ),
+            },
         )
         self.assertEqual(response.status_code, 400)
 
