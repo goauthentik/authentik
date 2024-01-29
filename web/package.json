@@ -42,7 +42,7 @@
         "@codemirror/theme-one-dark": "^6.1.2",
         "@formatjs/intl-listformat": "^7.5.5",
         "@fortawesome/fontawesome-free": "^6.5.1",
-        "@goauthentik/api": "^2023.10.6-1706533149",
+        "@goauthentik/api": "^2023.10.7-1706550558",
         "@lit-labs/context": "^0.4.0",
         "@lit-labs/task": "^3.1.0",
         "@lit/localize": "^0.11.4",
