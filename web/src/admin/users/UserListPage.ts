@@ -9,7 +9,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { userTypeToLabel } from "@goauthentik/common/labels";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { DefaultUIConfig, uiConfig } from "@goauthentik/common/ui/config";
-import { first } from "@goauthentik/common/utils";
+import { first, getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import { rootInterface } from "@goauthentik/elements/Base";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
@@ -247,11 +247,14 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
             this.can(CapabilitiesEnum.CanImpersonate) && item.pk !== this.me?.user.pk;
         return [
             html`<a href="#/identity/users/${item.pk}">
-                    <div>${item.username}</div>
-                    <small>${item.name === "" ? msg("<No name set>") : item.name}</small> </a
-                >`,
+                <div>${item.username}</div>
+                <small>${item.name === "" ? msg("<No name set>") : item.name}</small>
+            </a>`,
             html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
-            html`${first(item.lastLogin?.toLocaleString(), msg("-"))}`,
+            html`${item.lastLogin
+                ? html`<div>${getRelativeTime(item.lastLogin)}</div>
+                      <small>${item.lastLogin.toLocaleString()}</small>`
+                : msg("-")}`,
             html`${userTypeToLabel(item.type)}`,
             html`<ak-forms-modal>
                     <span slot="submit"> ${msg("Update")} </span>

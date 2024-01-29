@@ -9,6 +9,7 @@ import {
     requestRecoveryLink,
 } from "@goauthentik/app/admin/users/UserListPage";
 import { me } from "@goauthentik/app/common/users";
+import { getRelativeTime } from "@goauthentik/app/common/utils";
 import "@goauthentik/app/elements/oauth/UserAccessTokenList";
 import "@goauthentik/app/elements/oauth/UserRefreshTokenList";
 import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
@@ -148,7 +149,10 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
             [msg("Username"), user.username],
             [msg("Name"), user.name],
             [msg("Email"), user.email || "-"],
-            [msg("Last login"), user.lastLogin?.toLocaleString()],
+            [msg("Last login"), user.lastLogin
+                ? html`<div>${getRelativeTime(user.lastLogin)}</div>
+                      <small>${user.lastLogin.toLocaleString()}</small>`
+                : html`${msg("-")}`],
             [msg("Active"), html`<ak-status-label type="warning" ?good=${user.isActive}></ak-status-label>`],
             [msg("Type"), userTypeToLabel(user.type)],
             [msg("Superuser"), html`<ak-status-label type="warning" ?good=${user.isSuperuser}></ak-status-label>`],
