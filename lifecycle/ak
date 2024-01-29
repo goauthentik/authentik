@@ -55,6 +55,7 @@ function cleanup {
 }
 
 function prepare_debug {
+    apt-get install -y --no-install-recommends krb5-kdc krb5-user
     poetry install --no-ansi --no-interaction
     touch /unittest.xml
     chown authentik:authentik /unittest.xml

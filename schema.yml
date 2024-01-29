@@ -18241,6 +18241,8 @@ paths:
           - authentik_sources_plex.plexsourceconnection
           - authentik_sources_saml.samlsource
           - authentik_sources_saml.usersamlsourceconnection
+          - authentik_sources_spnego.spnegosource
+          - authentik_sources_spnego.userspnegosourceconnection
           - authentik_stages_authenticator_duo.authenticatorduostage
           - authentik_stages_authenticator_duo.duodevice
           - authentik_stages_authenticator_sms.authenticatorsmsstage
@@ -18307,6 +18309,8 @@ paths:
           * `authentik_sources_plex.plexsourceconnection` - User Plex Source Connection
           * `authentik_sources_saml.samlsource` - SAML Source
           * `authentik_sources_saml.usersamlsourceconnection` - User SAML Source Connection
+          * `authentik_sources_spnego.spnegosource` - SPNEGO Source
+          * `authentik_sources_spnego.userspnegosourceconnection` - User SPNEGO Source Connection
           * `authentik_stages_authenticator_duo.authenticatorduostage` - Duo Authenticator Setup Stage
           * `authentik_stages_authenticator_duo.duodevice` - Duo Device
           * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
@@ -18529,6 +18533,8 @@ paths:
           - authentik_sources_plex.plexsourceconnection
           - authentik_sources_saml.samlsource
           - authentik_sources_saml.usersamlsourceconnection
+          - authentik_sources_spnego.spnegosource
+          - authentik_sources_spnego.userspnegosourceconnection
           - authentik_stages_authenticator_duo.authenticatorduostage
           - authentik_stages_authenticator_duo.duodevice
           - authentik_stages_authenticator_sms.authenticatorsmsstage
@@ -18595,6 +18601,8 @@ paths:
           * `authentik_sources_plex.plexsourceconnection` - User Plex Source Connection
           * `authentik_sources_saml.samlsource` - SAML Source
           * `authentik_sources_saml.usersamlsourceconnection` - User SAML Source Connection
+          * `authentik_sources_spnego.spnegosource` - SPNEGO Source
+          * `authentik_sources_spnego.userspnegosourceconnection` - User SPNEGO Source Connection
           * `authentik_stages_authenticator_duo.authenticatorduostage` - Duo Authenticator Setup Stage
           * `authentik_stages_authenticator_duo.duodevice` - Duo Device
           * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
@@ -21238,6 +21246,324 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /sources/spnego/:
+    get:
+      operationId: sources_spnego_list
+      description: SPNEGOSource Viewset
+      parameters:
+      - in: query
+        name: authentication_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: enabled
+        schema:
+          type: boolean
+      - in: query
+        name: enrollment_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: managed
+        schema:
+          type: string
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: policy_engine_mode
+        schema:
+          type: string
+          enum:
+          - all
+          - any
+        description: |-
+          * `all` - all, all policies must pass
+          * `any` - any, any policy must pass
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: server_name
+        schema:
+          type: string
+      - in: query
+        name: slug
+        schema:
+          type: string
+      - in: query
+        name: user_matching_mode
+        schema:
+          type: string
+          enum:
+          - email_deny
+          - email_link
+          - identifier
+          - username_deny
+          - username_link
+        description: |-
+          How the source determines if an existing user should be authenticated or a new user enrolled.
+
+          * `identifier` - Use the source-specific identifier
+          * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
+          * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
+          * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
+          * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSPNEGOSourceList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: sources_spnego_create
+      description: SPNEGOSource Viewset
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SPNEGOSourceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SPNEGOSource'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/spnego/{slug}/:
+    get:
+      operationId: sources_spnego_retrieve
+      description: SPNEGOSource Viewset
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SPNEGOSource'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: sources_spnego_update
+      description: SPNEGOSource Viewset
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SPNEGOSourceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SPNEGOSource'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: sources_spnego_partial_update
+      description: SPNEGOSource Viewset
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSPNEGOSourceRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SPNEGOSource'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: sources_spnego_destroy
+      description: SPNEGOSource Viewset
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/spnego/{slug}/used_by/:
+    get:
+      operationId: sources_spnego_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /sources/user_connections/all/:
     get:
       operationId: sources_user_connections_all_list
@@ -22225,6 +22551,270 @@ paths:
         schema:
           type: integer
         description: A unique integer value identifying this User SAML Source Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/user_connections/spnego/:
+    get:
+      operationId: sources_user_connections_spnego_list
+      description: Source Viewset
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: source__slug
+        schema:
+          type: string
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserSPNEGOSourceConnectionList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: sources_user_connections_spnego_create
+      description: Source Viewset
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSPNEGOSourceConnectionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSPNEGOSourceConnection'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/user_connections/spnego/{id}/:
+    get:
+      operationId: sources_user_connections_spnego_retrieve
+      description: Source Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User SPNEGO Source Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSPNEGOSourceConnection'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: sources_user_connections_spnego_update
+      description: Source Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User SPNEGO Source Connection.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSPNEGOSourceConnectionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSPNEGOSourceConnection'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: sources_user_connections_spnego_partial_update
+      description: Source Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User SPNEGO Source Connection.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserSPNEGOSourceConnectionRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSPNEGOSourceConnection'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: sources_user_connections_spnego_destroy
+      description: Source Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User SPNEGO Source Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/user_connections/spnego/{id}/used_by/:
+    get:
+      operationId: sources_user_connections_spnego_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User SPNEGO Source Connection.
         required: true
       tags:
       - sources
@@ -29369,6 +29959,7 @@ components:
       - authentik.sources.oauth
       - authentik.sources.plex
       - authentik.sources.saml
+      - authentik.sources.spnego
       - authentik.stages.authenticator
       - authentik.stages.authenticator_duo
       - authentik.stages.authenticator_sms
@@ -29423,6 +30014,7 @@ components:
         * `authentik.sources.oauth` - authentik Sources.OAuth
         * `authentik.sources.plex` - authentik Sources.Plex
         * `authentik.sources.saml` - authentik Sources.SAML
+        * `authentik.sources.spnego` - authentik Sources.SPNEGO
         * `authentik.stages.authenticator` - authentik Stages.Authenticator
         * `authentik.stages.authenticator_duo` - authentik Stages.Authenticator.Duo
         * `authentik.stages.authenticator_sms` - authentik Stages.Authenticator.SMS
@@ -32424,6 +33016,7 @@ components:
             * `authentik.sources.oauth` - authentik Sources.OAuth
             * `authentik.sources.plex` - authentik Sources.Plex
             * `authentik.sources.saml` - authentik Sources.SAML
+            * `authentik.sources.spnego` - authentik Sources.SPNEGO
             * `authentik.stages.authenticator` - authentik Stages.Authenticator
             * `authentik.stages.authenticator_duo` - authentik Stages.Authenticator.Duo
             * `authentik.stages.authenticator_sms` - authentik Stages.Authenticator.SMS
@@ -32494,6 +33087,8 @@ components:
             * `authentik_sources_plex.plexsourceconnection` - User Plex Source Connection
             * `authentik_sources_saml.samlsource` - SAML Source
             * `authentik_sources_saml.usersamlsourceconnection` - User SAML Source Connection
+            * `authentik_sources_spnego.spnegosource` - SPNEGO Source
+            * `authentik_sources_spnego.userspnegosourceconnection` - User SPNEGO Source Connection
             * `authentik_stages_authenticator_duo.authenticatorduostage` - Duo Authenticator Setup Stage
             * `authentik_stages_authenticator_duo.duodevice` - Duo Device
             * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
@@ -32623,6 +33218,7 @@ components:
             * `authentik.sources.oauth` - authentik Sources.OAuth
             * `authentik.sources.plex` - authentik Sources.Plex
             * `authentik.sources.saml` - authentik Sources.SAML
+            * `authentik.sources.spnego` - authentik Sources.SPNEGO
             * `authentik.stages.authenticator` - authentik Stages.Authenticator
             * `authentik.stages.authenticator_duo` - authentik Stages.Authenticator.Duo
             * `authentik.stages.authenticator_sms` - authentik Stages.Authenticator.SMS
@@ -32693,6 +33289,8 @@ components:
             * `authentik_sources_plex.plexsourceconnection` - User Plex Source Connection
             * `authentik_sources_saml.samlsource` - SAML Source
             * `authentik_sources_saml.usersamlsourceconnection` - User SAML Source Connection
+            * `authentik_sources_spnego.spnegosource` - SPNEGO Source
+            * `authentik_sources_spnego.userspnegosourceconnection` - User SPNEGO Source Connection
             * `authentik_stages_authenticator_duo.authenticatorduostage` - Duo Authenticator Setup Stage
             * `authentik_stages_authenticator_duo.duodevice` - Duo Device
             * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
@@ -35008,6 +35606,8 @@ components:
       - authentik_sources_plex.plexsourceconnection
       - authentik_sources_saml.samlsource
       - authentik_sources_saml.usersamlsourceconnection
+      - authentik_sources_spnego.spnegosource
+      - authentik_sources_spnego.userspnegosourceconnection
       - authentik_stages_authenticator_duo.authenticatorduostage
       - authentik_stages_authenticator_duo.duodevice
       - authentik_stages_authenticator_sms.authenticatorsmsstage
@@ -35084,6 +35684,8 @@ components:
         * `authentik_sources_plex.plexsourceconnection` - User Plex Source Connection
         * `authentik_sources_saml.samlsource` - SAML Source
         * `authentik_sources_saml.usersamlsourceconnection` - User SAML Source Connection
+        * `authentik_sources_spnego.spnegosource` - SPNEGO Source
+        * `authentik_sources_spnego.userspnegosourceconnection` - User SPNEGO Source Connection
         * `authentik_stages_authenticator_duo.authenticatorduostage` - Duo Authenticator Setup Stage
         * `authentik_stages_authenticator_duo.duodevice` - Duo Device
         * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
@@ -37002,6 +37604,18 @@ components:
       required:
       - pagination
       - results
+    PaginatedSPNEGOSourceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SPNEGOSource'
+      required:
+      - pagination
+      - results
     PaginatedScopeMappingList:
       type: object
       properties:
@@ -37215,6 +37829,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserSAMLSourceConnection'
+      required:
+      - pagination
+      - results
+    PaginatedUserSPNEGOSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserSPNEGOSourceConnection'
       required:
       - pagination
       - results
@@ -38250,6 +38876,7 @@ components:
             * `authentik.sources.oauth` - authentik Sources.OAuth
             * `authentik.sources.plex` - authentik Sources.Plex
             * `authentik.sources.saml` - authentik Sources.SAML
+            * `authentik.sources.spnego` - authentik Sources.SPNEGO
             * `authentik.stages.authenticator` - authentik Stages.Authenticator
             * `authentik.stages.authenticator_duo` - authentik Stages.Authenticator.Duo
             * `authentik.stages.authenticator_sms` - authentik Stages.Authenticator.SMS
@@ -38320,6 +38947,8 @@ components:
             * `authentik_sources_plex.plexsourceconnection` - User Plex Source Connection
             * `authentik_sources_saml.samlsource` - SAML Source
             * `authentik_sources_saml.usersamlsourceconnection` - User SAML Source Connection
+            * `authentik_sources_spnego.spnegosource` - SPNEGO Source
+            * `authentik_sources_spnego.userspnegosourceconnection` - User SPNEGO Source Connection
             * `authentik_stages_authenticator_duo.authenticatorduostage` - Duo Authenticator Setup Stage
             * `authentik_stages_authenticator_duo.duodevice` - Duo Device
             * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
@@ -39873,6 +40502,63 @@ components:
           minLength: 1
           description: The human-readable name of this device.
           maxLength: 64
+    PatchedSPNEGOSourceRequest:
+      type: object
+      description: SPNEGOSource Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: Source's display Name.
+        slug:
+          type: string
+          minLength: 1
+          description: Internal source name, used in URLs.
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        enabled:
+          type: boolean
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to use when authenticating existing users.
+        enrollment_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to use when enrolling new users.
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        user_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/UserMatchingModeEnum'
+          description: |-
+            How the source determines if an existing user should be authenticated or a new user enrolled.
+
+            * `identifier` - Use the source-specific identifier
+            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
+            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
+            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
+            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
+        user_path_template:
+          type: string
+          minLength: 1
+        server_name:
+          type: string
+          description: Force the use of a specific server name. If not specified,
+            defaults to HTTP/<host authentik is accessed from>
+        keytab:
+          type: string
+          description: Keytab base64-encoded or path to keytab in the form FILE:path.
+            Leave empty to use the default keytab.
+        ccache:
+          type: string
+          description: Credential cache to use in form type:residual. Leave empty
+            to use a temporary ccache.
+        guess_email:
+          type: boolean
+          description: Guess user email based on their principal.
     PatchedScopeMappingRequest:
       type: object
       description: ScopeMapping Serializer
@@ -40113,6 +40799,15 @@ components:
     PatchedUserSAMLSourceConnectionRequest:
       type: object
       description: SAML Source Serializer
+      properties:
+        user:
+          type: integer
+        identifier:
+          type: string
+          minLength: 1
+    PatchedUserSPNEGOSourceConnectionRequest:
+      type: object
+      description: SPNEGO Source Serializer
       properties:
         user:
           type: integer
@@ -42852,6 +43547,167 @@ components:
           maxLength: 64
       required:
       - name
+    SPNEGOSource:
+      type: object
+      description: SPNEGOSource Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pbm uuid
+        name:
+          type: string
+          description: Source's display Name.
+        slug:
+          type: string
+          description: Internal source name, used in URLs.
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        enabled:
+          type: boolean
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to use when authenticating existing users.
+        enrollment_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to use when enrolling new users.
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        user_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/UserMatchingModeEnum'
+          description: |-
+            How the source determines if an existing user should be authenticated or a new user enrolled.
+
+            * `identifier` - Use the source-specific identifier
+            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
+            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
+            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
+            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+          readOnly: true
+        user_path_template:
+          type: string
+        icon:
+          type: string
+          nullable: true
+          description: |-
+            Get the URL to the Icon. If the name is /static or
+            starts with http it is returned as-is
+          readOnly: true
+        server_name:
+          type: string
+          description: Force the use of a specific server name. If not specified,
+            defaults to HTTP/<host authentik is accessed from>
+        keytab:
+          type: string
+          description: Keytab base64-encoded or path to keytab in the form FILE:path.
+            Leave empty to use the default keytab.
+        ccache:
+          type: string
+          description: Credential cache to use in form type:residual. Leave empty
+            to use a temporary ccache.
+        guess_email:
+          type: boolean
+          description: Guess user email based on their principal.
+      required:
+      - component
+      - icon
+      - managed
+      - meta_model_name
+      - name
+      - pk
+      - slug
+      - verbose_name
+      - verbose_name_plural
+    SPNEGOSourceRequest:
+      type: object
+      description: SPNEGOSource Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: Source's display Name.
+        slug:
+          type: string
+          minLength: 1
+          description: Internal source name, used in URLs.
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        enabled:
+          type: boolean
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to use when authenticating existing users.
+        enrollment_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to use when enrolling new users.
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        user_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/UserMatchingModeEnum'
+          description: |-
+            How the source determines if an existing user should be authenticated or a new user enrolled.
+
+            * `identifier` - Use the source-specific identifier
+            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
+            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
+            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
+            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
+        user_path_template:
+          type: string
+          minLength: 1
+        server_name:
+          type: string
+          description: Force the use of a specific server name. If not specified,
+            defaults to HTTP/<host authentik is accessed from>
+        keytab:
+          type: string
+          description: Keytab base64-encoded or path to keytab in the form FILE:path.
+            Leave empty to use the default keytab.
+        ccache:
+          type: string
+          description: Credential cache to use in form type:residual. Leave empty
+            to use a temporary ccache.
+        guess_email:
+          type: boolean
+          description: Guess user email based on their principal.
+      required:
+      - name
+      - slug
     ScopeMapping:
       type: object
       description: ScopeMapping Serializer
@@ -44575,6 +45431,39 @@ components:
     UserSAMLSourceConnectionRequest:
       type: object
       description: SAML Source Serializer
+      properties:
+        user:
+          type: integer
+        identifier:
+          type: string
+          minLength: 1
+      required:
+      - identifier
+      - user
+    UserSPNEGOSourceConnection:
+      type: object
+      description: SPNEGO Source Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        user:
+          type: integer
+        source:
+          allOf:
+          - $ref: '#/components/schemas/Source'
+          readOnly: true
+        identifier:
+          type: string
+      required:
+      - identifier
+      - pk
+      - source
+      - user
+    UserSPNEGOSourceConnectionRequest:
+      type: object
+      description: SPNEGO Source Serializer
       properties:
         user:
           type: integer

@@ -96,7 +96,7 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloa
 RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/cache/apt \
     apt-get update && \
     # Required for installing pip packages
-    apt-get install -y --no-install-recommends build-essential pkg-config libxmlsec1-dev zlib1g-dev libpq-dev
+    apt-get install -y --no-install-recommends build-essential pkg-config libxmlsec1-dev zlib1g-dev libpq-dev libkrb5-dev
 
 RUN --mount=type=bind,target=./pyproject.toml,src=./pyproject.toml \
     --mount=type=bind,target=./poetry.lock,src=./poetry.lock \
@@ -125,7 +125,7 @@ WORKDIR /
 # We cannot cache this layer otherwise we'll end up with a bigger image
 RUN apt-get update && \
     # Required for runtime
-    apt-get install -y --no-install-recommends libpq5 openssl libxmlsec1-openssl libmaxminddb0 ca-certificates && \
+    apt-get install -y --no-install-recommends libpq5 openssl libxmlsec1-openssl libmaxminddb0 ca-certificates libkrb5-3 && \
     # Required for bootstrap & healtcheck
     apt-get install -y --no-install-recommends runit && \
     apt-get clean && \

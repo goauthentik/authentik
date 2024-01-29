@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-26 17:26+0000\n"
+"POT-Creation-Date: 2024-01-29 14:40+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2035,6 +2035,46 @@ msgstr ""
 
 #: authentik/sources/saml/models.py:243
 msgid "User SAML Source Connections"
+msgstr ""
+
+#: authentik/sources/spnego/models.py:27
+msgid "Force the use of a specific server name"
+msgstr ""
+
+#: authentik/sources/spnego/models.py:32
+msgid "Keytab base64-encoded or path to keytab in the form FILE:path"
+msgstr ""
+
+#: authentik/sources/spnego/models.py:36
+msgid "Credential cache to use in form type:residual"
+msgstr ""
+
+#: authentik/sources/spnego/models.py:41
+msgid "Guess user email based on their principal."
+msgstr ""
+
+#: authentik/sources/spnego/models.py:89
+msgid "SPNEGO Source"
+msgstr ""
+
+#: authentik/sources/spnego/models.py:90
+msgid "SPNEGO Sources"
+msgstr ""
+
+#: authentik/sources/spnego/models.py:151
+msgid "User SPNEGO Source Connection"
+msgstr ""
+
+#: authentik/sources/spnego/models.py:152
+msgid "User SPNEGO Source Connections"
+msgstr ""
+
+#: authentik/sources/spnego/views.py:39
+msgid "SPNEGO authentication required"
+msgstr ""
+
+#: authentik/sources/spnego/views.py:40
+msgid "TODO: add instructions for configuring SPNEGO"
 msgstr ""
 
 #: authentik/stages/authenticator_duo/models.py:79

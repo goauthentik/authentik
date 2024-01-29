@@ -170,6 +170,7 @@ module.exports = {
                         "sources/ldap/index",
                         "sources/oauth/index",
                         "sources/saml/index",
+                        "sources/spnego/index",
                     ],
                 },
                 {

@@ -8254,6 +8254,33 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s17032e57ba222d2f">
   <source>Permissions assigned to this role which affect all object instances of a given type.</source>
 </trans-unit>
+<trans-unit id="sf2546774572e086b">
+  <source>Keytab</source>
+</trans-unit>
+<trans-unit id="s08247c9f36432712">
+  <source>Keytab to use for this provider. Must be base64-encoded. You can also specify a keytab with the format TYPE:residual.</source>
+</trans-unit>
+<trans-unit id="s9125243e17ee4435">
+  <source>Server name</source>
+</trans-unit>
+<trans-unit id="s834fddc0bea4e8a1">
+  <source>Server name to use. Leave empty to try all entries in the keytab or credentials cache.</source>
+</trans-unit>
+<trans-unit id="s8a5ef92f92cabe77">
+  <source>Credentials cache</source>
+</trans-unit>
+<trans-unit id="s7c6739812bab1299">
+  <source>Credentials cache to use for server credentials. Must be of the form TYPE:residual. Leave empty to use the default of creating a credential cache unique to this source.</source>
+</trans-unit>
+<trans-unit id="s1e3c93aa35eec502">
+  <source>Guess email</source>
+</trans-unit>
+<trans-unit id="s945a43eab583e856">
+  <source>Whether to guess the user email based on their realm for enrollment.</source>
+</trans-unit>
+<trans-unit id="s78a6134c0764ca1d">
+  <source>Update SPNEGO Source</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
