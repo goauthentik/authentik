@@ -30,7 +30,8 @@ from drf_spectacular.utils import (
     extend_schema_field,
     inline_serializer,
 )
-from guardian.shortcuts import get_anonymous_user, get_objects_for_user
+from guardian.conf import settings
+from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, IntegerField, ListField, SerializerMethodField
 from rest_framework.request import Request
@@ -78,7 +79,6 @@ from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
 
 LOGGER = get_logger()
-ANONYMOUS_USER_PK = get_anonymous_user().pk
 
 
 class UserGroupSerializer(ModelSerializer):
@@ -395,7 +395,11 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     filterset_class = UsersFilter
 
     def get_queryset(self):  # pragma: no cover
-        return User.objects.all().exclude(pk=ANONYMOUS_USER_PK).prefetch_related("ak_groups")
+        return (
+            User.objects.all()
+            .exclude(**{User.USERNAME_FIELD: settings.ANONYMOUS_USER_NAME})
+            .prefetch_related("ak_groups")
+        )
 
     def _create_recovery_link(self) -> tuple[Optional[str], Optional[Token]]:
         """Create a recovery link (when the current brand has a recovery flow set),
