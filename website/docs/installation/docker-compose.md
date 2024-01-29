@@ -8,7 +8,7 @@ This installation method is for test-setups and small-scale production setups.
 
 -   A host with at least 2 CPU cores and 2 GB of RAM
 -   Docker
--   Docker Compose
+-   Docker Compose (Compose v2 is recommended, see [here](https://docs.docker.com/compose/migrate/) for instructions on how to upgrade)
 
 ## Video
 
