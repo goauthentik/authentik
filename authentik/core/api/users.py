@@ -72,11 +72,13 @@ from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
+from authentik.lib.avatars import get_avatar
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
 
 LOGGER = get_logger()
+ANONYMOUS_USER_PK = get_anonymous_user().pk
 
 
 class UserGroupSerializer(ModelSerializer):
@@ -102,14 +104,21 @@ class UserSerializer(ModelSerializer):
     """User Serializer"""
 
     is_superuser = BooleanField(read_only=True)
-    avatar = CharField(read_only=True)
+    avatar = SerializerMethodField()
     attributes = JSONDictField(required=False)
     groups = PrimaryKeyRelatedField(
-        allow_empty=True, many=True, source="ak_groups", queryset=Group.objects.all(), default=list
+        allow_empty=True,
+        many=True,
+        source="ak_groups",
+        queryset=Group.objects.all().order_by("name"),
+        default=list,
     )
     groups_obj = ListSerializer(child=UserGroupSerializer(), read_only=True, source="ak_groups")
     uid = CharField(read_only=True)
-    username = CharField(max_length=150, validators=[UniqueValidator(queryset=User.objects.all())])
+    username = CharField(
+        max_length=150,
+        validators=[UniqueValidator(queryset=User.objects.all().order_by("username"))],
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -142,6 +151,10 @@ class UserSerializer(ModelSerializer):
         if len(instance.password) == 0:
             instance.set_unusable_password()
             instance.save()
+
+    def get_avatar(self, user: User) -> str:
+        """User's avatar, either a http/https URL or a data URI"""
+        return get_avatar(user, self.context["request"])
 
     def validate_path(self, path: str) -> str:
         """Validate path"""
@@ -197,11 +210,15 @@ class UserSelfSerializer(ModelSerializer):
     """User Serializer for information a user can retrieve about themselves"""
 
     is_superuser = BooleanField(read_only=True)
-    avatar = CharField(read_only=True)
+    avatar = SerializerMethodField()
     groups = SerializerMethodField()
     uid = CharField(read_only=True)
     settings = SerializerMethodField()
     system_permissions = SerializerMethodField()
+
+    def get_avatar(self, user: User) -> str:
+        """User's avatar, either a http/https URL or a data URI"""
+        return get_avatar(user, self.context["request"])
 
     @extend_schema_field(
         ListSerializer(
@@ -329,11 +346,11 @@ class UsersFilter(FilterSet):
     groups_by_name = ModelMultipleChoiceFilter(
         field_name="ak_groups__name",
         to_field_name="name",
-        queryset=Group.objects.all(),
+        queryset=Group.objects.all().order_by("name"),
     )
     groups_by_pk = ModelMultipleChoiceFilter(
         field_name="ak_groups",
-        queryset=Group.objects.all(),
+        queryset=Group.objects.all().order_by("name"),
     )
 
     def filter_attributes(self, queryset, name, value):
@@ -378,7 +395,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     filterset_class = UsersFilter
 
     def get_queryset(self):  # pragma: no cover
-        return User.objects.all().exclude(pk=get_anonymous_user().pk)
+        return User.objects.all().exclude(pk=ANONYMOUS_USER_PK).prefetch_related("ak_groups")
 
     def _create_recovery_link(self) -> tuple[Optional[str], Optional[Token]]:
         """Create a recovery link (when the current brand has a recovery flow set),
