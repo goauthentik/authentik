@@ -1,6 +1,7 @@
 ---
 title: SPNEGO browser configuration
 ---
+
 ## Firefox
 
 1.  In the address bar of Firefox, type `about:config` to display the list of current configuration options.
