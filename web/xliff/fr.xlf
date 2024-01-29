@@ -2015,11 +2015,6 @@
         <target>URL JWKS</target>
         
       </trans-unit>
-      <trans-unit id="s453b0c150a7ca58e">
-        <source>Example JWT payload (for currently authenticated user)</source>
-        <target>Exemple de charge utile JWT (pour l'utilisateur actuellement authentifié)</target>
-        
-      </trans-unit>
       <trans-unit id="sc6e8a34361c7c272">
         <source>Forward auth (domain-level)</source>
         <target>Transférer l'authentification (niveau domaine)</target>
@@ -8383,6 +8378,12 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s17032e57ba222d2f">
   <source>Permissions assigned to this role which affect all object instances of a given type.</source>
+</trans-unit>
+<trans-unit id="sb9b51124d1b3dca0">
+  <source>JWT payload</source>
+</trans-unit>
+<trans-unit id="sbd065743a0c599e3">
+  <source>Preview for user</source>
 </trans-unit>
 <trans-unit id="sf2546774572e086b">
   <source>Keytab</source>

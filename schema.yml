@@ -2931,14 +2931,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/PolicyTestResult'
           description: ''
-        '404':
-          description: for_user user not found
         '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
+          description: Bad request
         '403':
           content:
             application/json:
@@ -16042,6 +16036,10 @@ paths:
       operationId: providers_oauth2_preview_user_retrieve
       description: Preview user data for provider
       parameters:
+      - in: query
+        name: for_user
+        schema:
+          type: integer
       - in: path
         name: id
         schema:
@@ -17409,6 +17407,10 @@ paths:
       operationId: providers_saml_preview_user_retrieve
       description: Preview user data for provider
       parameters:
+      - in: query
+        name: for_user
+        schema:
+          type: integer
       - in: path
         name: id
         schema:

@@ -1,3 +1,5 @@
+import { first } from "@goauthentik/app/common/utils";
+
 import { TemplateResult, html, nothing } from "lit";
 import { classMap } from "lit/directives/class-map.js";
 import { map } from "lit/directives/map.js";
@@ -7,10 +9,10 @@ export type DescriptionPair = [string, DescriptionDesc];
 export type DescriptionRecord = { term: string; desc: DescriptionDesc };
 
 interface DescriptionConfig {
-    horizontal: boolean;
-    compact: boolean;
-    twocolumn: boolean;
-    threecolumn: boolean;
+    horizontal?: boolean;
+    compact?: boolean;
+    twocolumn?: boolean;
+    threecolumn?: boolean;
 }
 
 const isDescriptionRecordCollection = (v: Array<unknown>): v is DescriptionRecord[] =>
@@ -78,10 +80,10 @@ export function renderDescriptionList(
 ) {
     const checkedTerms = alignTermType(terms);
     const classes = classMap({
-        "pf-m-horizontal": config.horizontal,
-        "pf-m-compact": config.compact,
-        "pf-m-2-col-on-lg": config.twocolumn,
-        "pf-m-3-col-on-lg": config.threecolumn,
+        "pf-m-horizontal": first(config.horizontal, false),
+        "pf-m-compact": first(config.compact, false),
+        "pf-m-2-col-on-lg": first(config.twocolumn, false),
+        "pf-m-3-col-on-lg": first(config.threecolumn, false),
     });
 
     return html`

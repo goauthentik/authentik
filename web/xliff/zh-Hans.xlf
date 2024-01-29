@@ -2016,11 +2016,6 @@
         <target>JWKS URL</target>
 
       </trans-unit>
-      <trans-unit id="s453b0c150a7ca58e">
-        <source>Example JWT payload (for currently authenticated user)</source>
-        <target>示例 JWT 载荷（当前经过身份验证的用户）</target>
-
-      </trans-unit>
       <trans-unit id="sc6e8a34361c7c272">
         <source>Forward auth (domain-level)</source>
         <target>Forward Auth（域名级）</target>
@@ -8366,10 +8361,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Selected Applications</source>
   <target>已选应用</target>
 </trans-unit>
-<trans-unit id="s862505f29064fc72">
-  <source>This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:</source>
-  <target>此选项配置流程执行器页面上的页脚链接。必须为有效的 YAML 或 JSON 列表，可以使用以下值：</target>
-</trans-unit>
 <trans-unit id="sb2275335377069aa">
   <source>This feature requires an enterprise license.</source>
 </trans-unit>
@@ -8408,6 +8399,16 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s17032e57ba222d2f">
   <source>Permissions assigned to this role which affect all object instances of a given type.</source>
+</trans-unit>
+<trans-unit id="s862505f29064fc72">
+  <source>This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:</source>
+  <target>此选项配置流程执行器页面上的页脚链接。必须为有效的 YAML 或 JSON 列表，可以使用以下值：</target>
+</trans-unit>
+<trans-unit id="sb9b51124d1b3dca0">
+  <source>JWT payload</source>
+</trans-unit>
+<trans-unit id="sbd065743a0c599e3">
+  <source>Preview for user</source>
 </trans-unit>
 <trans-unit id="sf2546774572e086b">
   <source>Keytab</source>

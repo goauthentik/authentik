@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-29 14:40+0000\n"
+"POT-Creation-Date: 2024-01-29 14:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -148,117 +148,125 @@ msgstr ""
 msgid "Can unassign permissions from users"
 msgstr ""
 
-#: authentik/core/models.py:308
+#: authentik/core/models.py:287
+msgid "Can preview user data sent to providers"
+msgstr ""
+
+#: authentik/core/models.py:288
+msgid "View applications the user has access to"
+msgstr ""
+
+#: authentik/core/models.py:310
 msgid ""
 "Flow used for authentication when the associated application is accessed by "
 "an un-authenticated user."
 msgstr ""
 
-#: authentik/core/models.py:318
+#: authentik/core/models.py:320
 msgid "Flow used when authorizing this provider."
 msgstr ""
 
-#: authentik/core/models.py:330
+#: authentik/core/models.py:332
 msgid ""
 "Accessed from applications; optional backchannel providers for protocols "
 "like LDAP and SCIM."
 msgstr ""
 
-#: authentik/core/models.py:385
+#: authentik/core/models.py:387
 msgid "Application's display Name."
 msgstr ""
 
-#: authentik/core/models.py:386
+#: authentik/core/models.py:388
 msgid "Internal application name, used in URLs."
 msgstr ""
 
-#: authentik/core/models.py:398
+#: authentik/core/models.py:400
 msgid "Open launch URL in a new browser tab or window."
 msgstr ""
 
-#: authentik/core/models.py:462
+#: authentik/core/models.py:464
 msgid "Application"
 msgstr ""
 
-#: authentik/core/models.py:463
+#: authentik/core/models.py:465
 msgid "Applications"
 msgstr ""
 
-#: authentik/core/models.py:469
+#: authentik/core/models.py:471
 msgid "Use the source-specific identifier"
 msgstr ""
 
-#: authentik/core/models.py:471
+#: authentik/core/models.py:473
 msgid ""
 "Link to a user with identical email address. Can have security implications "
 "when a source doesn't validate email addresses."
 msgstr ""
 
-#: authentik/core/models.py:475
+#: authentik/core/models.py:477
 msgid ""
 "Use the user's email address, but deny enrollment when the email address "
 "already exists."
 msgstr ""
 
-#: authentik/core/models.py:478
+#: authentik/core/models.py:480
 msgid ""
 "Link to a user with identical username. Can have security implications when "
 "a username is used with another source."
 msgstr ""
 
-#: authentik/core/models.py:482
+#: authentik/core/models.py:484
 msgid ""
 "Use the user's username, but deny enrollment when the username already "
 "exists."
 msgstr ""
 
-#: authentik/core/models.py:489
+#: authentik/core/models.py:491
 msgid "Source's display Name."
 msgstr ""
 
-#: authentik/core/models.py:490
+#: authentik/core/models.py:492
 msgid "Internal source name, used in URLs."
 msgstr ""
 
-#: authentik/core/models.py:509
+#: authentik/core/models.py:511
 msgid "Flow to use when authenticating existing users."
 msgstr ""
 
-#: authentik/core/models.py:518
+#: authentik/core/models.py:520
 msgid "Flow to use when enrolling new users."
 msgstr ""
 
-#: authentik/core/models.py:526
+#: authentik/core/models.py:528
 msgid ""
 "How the source determines if an existing user should be authenticated or a "
 "new user enrolled."
 msgstr ""
 
-#: authentik/core/models.py:698
+#: authentik/core/models.py:700
 msgid "Token"
 msgstr ""
 
-#: authentik/core/models.py:699
+#: authentik/core/models.py:701
 msgid "Tokens"
 msgstr ""
 
-#: authentik/core/models.py:704
+#: authentik/core/models.py:706
 msgid "View token's key"
 msgstr ""
 
-#: authentik/core/models.py:740
+#: authentik/core/models.py:742
 msgid "Property Mapping"
 msgstr ""
 
-#: authentik/core/models.py:741
+#: authentik/core/models.py:743
 msgid "Property Mappings"
 msgstr ""
 
-#: authentik/core/models.py:778
+#: authentik/core/models.py:780
 msgid "Authenticated Session"
 msgstr ""
 
-#: authentik/core/models.py:779
+#: authentik/core/models.py:781
 msgid "Authenticated Sessions"
 msgstr ""
 
@@ -1422,11 +1430,11 @@ msgstr ""
 msgid "Radius Providers"
 msgstr ""
 
-#: authentik/providers/saml/api/providers.py:258
+#: authentik/providers/saml/api/providers.py:260
 msgid "Invalid XML Syntax"
 msgstr ""
 
-#: authentik/providers/saml/api/providers.py:268
+#: authentik/providers/saml/api/providers.py:270
 #, python-format
 msgid "Failed to import Metadata: %(message)s"
 msgstr ""

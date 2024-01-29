@@ -1544,9 +1544,6 @@
         <source>JWKS URL</source>
         <target>JWKS URL</target>
       </trans-unit>
-      <trans-unit id="s453b0c150a7ca58e">
-        <source>Example JWT payload (for currently authenticated user)</source>
-      </trans-unit>
       <trans-unit id="sc6e8a34361c7c272">
         <source>Forward auth (domain-level)</source>
         <target>Authentifizierung weiterleiten (Domänenebene)</target>
@@ -6387,6 +6384,12 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s17032e57ba222d2f">
   <source>Permissions assigned to this role which affect all object instances of a given type.</source>
+</trans-unit>
+<trans-unit id="sb9b51124d1b3dca0">
+  <source>JWT payload</source>
+</trans-unit>
+<trans-unit id="sbd065743a0c599e3">
+  <source>Preview for user</source>
 </trans-unit>
 <trans-unit id="sf2546774572e086b">
   <source>Keytab</source>
