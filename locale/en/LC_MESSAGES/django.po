@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-29 14:54+0000\n"
+"POT-Creation-Date: 2024-01-29 15:49+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2082,7 +2082,13 @@ msgid "SPNEGO authentication required"
 msgstr ""
 
 #: authentik/sources/spnego/views.py:40
-msgid "TODO: add instructions for configuring SPNEGO"
+msgid ""
+"\n"
+"                    Make sure you have valid tickets (obtainable via kinit) "
+"and configured the browser correctly.\n"
+"                    You can find out more at https://goauthentik.io/"
+"integrations/sources/spnego/browser\n"
+"                "
 msgstr ""
 
 #: authentik/stages/authenticator_duo/models.py:79

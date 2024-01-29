@@ -37,7 +37,10 @@ class SPNEGOView(View):
             "if/error.html",
             context={
                 "title": _("SPNEGO authentication required"),
-                "message": _("TODO: add instructions for configuring SPNEGO"),
+                "message": _("""
+                    Make sure you have valid tickets (obtainable via kinit) and configured the browser correctly.
+                    You can find out more at https://goauthentik.io/integrations/sources/spnego/browser
+                """),
             },
             status=401,
         )
