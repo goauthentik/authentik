@@ -285,6 +285,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
             ("assign_user_permissions", _("Can assign permissions to users")),
             ("unassign_user_permissions", _("Can unassign permissions from users")),
             ("preview_user", _("Can preview user data sent to providers")),
+            ("view_user_applications", _("View applications the user has access to")),
         ]
         authentik_signals_ignored_fields = [
             # Logged by the events `password_set`
