@@ -168,6 +168,7 @@ export abstract class AKChart<T> extends AKElement {
     getOptions(): ChartOptions {
         return {
             maintainAspectRatio: false,
+            responsive: true,
             scales: {
                 x: {
                     type: "time",

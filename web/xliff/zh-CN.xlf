@@ -1483,9 +1483,6 @@
 <trans-unit id="s59f5eda30a904b75">
   <source>JWKS URL</source>
 </trans-unit>
-<trans-unit id="s453b0c150a7ca58e">
-  <source>Example JWT payload (for currently authenticated user)</source>
-</trans-unit>
 <trans-unit id="scb489a1a173ac3f0">
   <source>Yes</source>
 </trans-unit>
@@ -5205,6 +5202,12 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s17032e57ba222d2f">
   <source>Permissions assigned to this role which affect all object instances of a given type.</source>
+</trans-unit>
+<trans-unit id="sb9b51124d1b3dca0">
+  <source>JWT payload</source>
+</trans-unit>
+<trans-unit id="sbd065743a0c599e3">
+  <source>Preview for user</source>
 </trans-unit>
 </body>
 </file>

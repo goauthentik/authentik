@@ -162,7 +162,7 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
         if "for_user" in request.query_params:
             try:
                 for_user = (
-                    get_objects_for_user(request.user, "authentik_core.view_user")
+                    get_objects_for_user(request.user, "authentik_core.preview_user")
                     .filter(pk=request.query_params.get("for_user"))
                     .first()
                 )

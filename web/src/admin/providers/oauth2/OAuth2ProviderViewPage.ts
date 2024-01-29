@@ -14,7 +14,7 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 
-import { msg, str } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
@@ -365,15 +365,13 @@ export class OAuth2ProviderViewPage extends AKElement {
         return html` <div
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
         >
-            <div class="pf-l-grid pf-m-gutter">
-                <div
-                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
-                >
-                    <div class="pf-c-card__title">${msg("Preview settings")}</div>
-                    <div class="pf-c-card__body">
-                        ${renderDescriptionList([
+            <div class="pf-c-card">
+                <div class="pf-c-card__title">${msg("JWT payload")}</div>
+                <div class="pf-c-card__body">
+                    ${renderDescriptionList(
+                        [
                             [
-                                "User",
+                                msg("Preview for user"),
                                 html`
                                     <ak-search-select
                                         .fetchObjects=${async (query?: string): Promise<User[]> => {
@@ -409,25 +407,14 @@ export class OAuth2ProviderViewPage extends AKElement {
                                     </ak-search-select>
                                 `,
                             ],
-                        ])}
-                    </div>
+                        ],
+                        { horizontal: true },
+                    )}
                 </div>
-                <div
-                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
-                >
-                    <div class="pf-c-card__title">
-                        ${msg("Example JWT payload")}
-                        <small>
-                            ${this.previewUser
-                                ? html`${msg(str`For ${this.previewUser.username}`)}`
-                                : html`${msg("For currently authenticated user")}`}
-                        </small>
-                    </div>
-                    <div class="pf-c-card__body">
-                        ${this.preview
-                            ? html`<pre>${JSON.stringify(this.preview?.preview, null, 4)}</pre>`
-                            : html` <ak-empty-state ?loading=${true}></ak-empty-state> `}
-                    </div>
+                <div class="pf-c-card__body">
+                    ${this.preview
+                        ? html`<pre>${JSON.stringify(this.preview?.preview, null, 4)}</pre>`
+                        : html` <ak-empty-state ?loading=${true}></ak-empty-state> `}
                 </div>
             </div>
         </div>`;
