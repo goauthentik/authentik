@@ -30,7 +30,6 @@ from drf_spectacular.utils import (
     extend_schema_field,
     inline_serializer,
 )
-from guardian.conf import settings
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, IntegerField, ListField, SerializerMethodField
@@ -395,11 +394,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     filterset_class = UsersFilter
 
     def get_queryset(self):  # pragma: no cover
-        return (
-            User.objects.all()
-            .exclude(**{User.USERNAME_FIELD: settings.ANONYMOUS_USER_NAME})
-            .prefetch_related("ak_groups")
-        )
+        return User.objects.all().exclude_anonymous().prefetch_related("ak_groups")
 
     def _create_recovery_link(self) -> tuple[Optional[str], Optional[Token]]:
         """Create a recovery link (when the current brand has a recovery flow set),

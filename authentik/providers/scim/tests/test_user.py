@@ -2,7 +2,6 @@
 from json import loads
 
 from django.test import TestCase
-from guardian.shortcuts import get_anonymous_user
 from jsonschema import validate
 from requests_mock import Mocker
 
@@ -22,7 +21,7 @@ class SCIMUserTests(TestCase):
         # Delete all users and groups as the mocked HTTP responses only return one ID
         # which will cause errors with multiple users
         Tenant.objects.update(avatars="none")
-        User.objects.all().exclude(pk=get_anonymous_user().pk).delete()
+        User.objects.all().exclude_anonymous().delete()
         Group.objects.all().delete()
         self.provider: SCIMProvider = SCIMProvider.objects.create(
             name=generate_id(),

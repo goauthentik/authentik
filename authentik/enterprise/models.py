@@ -16,7 +16,6 @@ from django.db import models
 from django.db.models.query import QuerySet
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
-from guardian.shortcuts import get_anonymous_user
 from jwt import PyJWTError, decode, get_unverified_header
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import BaseSerializer
@@ -104,7 +103,7 @@ class LicenseKey:
     @staticmethod
     def base_user_qs() -> QuerySet:
         """Base query set for all users"""
-        return User.objects.all().exclude(is_active=False).exclude(pk=get_anonymous_user().pk)
+        return User.objects.all().exclude_anonymous().exclude(is_active=False)
 
     @staticmethod
     def get_default_user_count():

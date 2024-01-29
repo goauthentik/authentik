@@ -14,6 +14,7 @@ from django.http import HttpRequest
 from django.utils.functional import SimpleLazyObject, cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from guardian.conf import settings
 from guardian.mixins import GuardianUserMixin
 from model_utils.managers import InheritanceManager
 from rest_framework.serializers import Serializer
@@ -169,12 +170,25 @@ class Group(SerializerModel):
         verbose_name_plural = _("Groups")
 
 
+class UserQuerySet(models.QuerySet):
+    """User queryset"""
+
+    def exclude_anonymous(self):
+        return self.exclude(**{User.USERNAME_FIELD: settings.ANONYMOUS_USER_NAME})
+
+
 class UserManager(DjangoUserManager):
     """User manager that doesn't assign is_superuser and is_staff"""
+
+    def get_queryset(self):
+        return UserQuerySet(self.model, using=self._db)
 
     def create_user(self, username, email=None, password=None, **extra_fields):
         """User manager that doesn't assign is_superuser and is_staff"""
         return self._create_user(username, email, password, **extra_fields)
+
+    def exclude_anonymous(self) -> QuerySet:
+        return self.get_queryset().exclude_anonymous()
 
 
 class User(SerializerModel, GuardianUserMixin, AbstractUser):
