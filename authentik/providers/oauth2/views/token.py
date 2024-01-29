@@ -230,7 +230,7 @@ class TokenParams:
         if self.authorization_code.code_challenge:
             # Authorization code had PKCE but we didn't get one
             if not self.code_verifier:
-                raise TokenError("invalid_request")
+                raise TokenError("invalid_grant")
             if self.authorization_code.code_challenge_method == PKCE_METHOD_S256:
                 new_code_challenge = (
                     urlsafe_b64encode(sha256(self.code_verifier.encode("ascii")).digest())
@@ -243,6 +243,10 @@ class TokenParams:
             if new_code_challenge != self.authorization_code.code_challenge:
                 LOGGER.warning("Code challenge not matching")
                 raise TokenError("invalid_grant")
+        # Token request had a code_verifier but code did not have a code challenge
+        # Prevent downgrade
+        if not self.authorization_code.code_challenge and self.code_verifier:
+            raise TokenError("invalid_grant")
 
     def __post_init_refresh(self, raw_token: str, request: HttpRequest):
         if not raw_token:
