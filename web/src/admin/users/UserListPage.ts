@@ -9,7 +9,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { userTypeToLabel } from "@goauthentik/common/labels";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { DefaultUIConfig, uiConfig } from "@goauthentik/common/ui/config";
-import { first, getRelativeTime } from "@goauthentik/common/utils";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import { rootInterface } from "@goauthentik/elements/Base";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";

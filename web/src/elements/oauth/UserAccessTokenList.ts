@@ -1,3 +1,4 @@
+import { getRelativeTime } from "@goauthentik/app/common/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/components/ak-status-label";
@@ -86,7 +87,10 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
         return [
             html`<a href="#/core/providers/${item.provider?.pk}"> ${item.provider?.name} </a>`,
             html`<ak-status-label type="warning" ?good=${item.revoked}></ak-status-label>`,
-            html`${item.expires?.toLocaleString()}`,
+            html`${item.expires
+                ? html`<div>${getRelativeTime(item.expires)}</div>
+                      <small>${item.expires.toLocaleString()}</small>`
+                : msg("-")}`,
             html`${item.scope.join(", ")}`,
         ];
     }

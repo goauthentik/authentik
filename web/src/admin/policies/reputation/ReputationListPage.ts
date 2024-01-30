@@ -1,3 +1,4 @@
+import { getRelativeTime } from "@goauthentik/app/common/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/buttons/ModalButton";
@@ -92,7 +93,8 @@ export class ReputationListPage extends TablePage<Reputation> {
                 : html``}
             ${item.ip}`,
             html`${item.score}`,
-            html`${item.updated.toLocaleString()}`,
+            html`<div>${getRelativeTime(item.updated)}</div>
+                <small>${item.updated.toLocaleString()}</small>`,
             html`
                 <ak-rbac-object-permission-modal
                     model=${RbacPermissionsAssignedByUsersListModelEnum.PoliciesReputationReputationpolicy}

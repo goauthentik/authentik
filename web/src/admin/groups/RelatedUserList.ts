@@ -7,7 +7,7 @@ import { me } from "@goauthentik/app/common/users";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { uiConfig } from "@goauthentik/common/ui/config";
-import { first } from "@goauthentik/common/utils";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import {
@@ -199,7 +199,10 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                 <small>${item.name}</small>
             </a>`,
             html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
-            html`${first(item.lastLogin?.toLocaleString(), msg("-"))}`,
+            html`${item.lastLogin
+                ? html`<div>${getRelativeTime(item.lastLogin)}</div>
+                      <small>${item.lastLogin.toLocaleString()}</small>`
+                : msg("-")}`,
             html`<ak-forms-modal>
                     <span slot="submit"> ${msg("Update")} </span>
                     <span slot="header"> ${msg("Update User")} </span>
