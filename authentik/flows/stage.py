@@ -26,7 +26,7 @@ from authentik.flows.challenge import (
 from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.models import InvalidResponseAction
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
-from authentik.lib.avatars import DEFAULT_AVATAR
+from authentik.lib.avatars import DEFAULT_AVATAR, get_avatar
 from authentik.lib.utils.reflection import class_to_path
 
 if TYPE_CHECKING:
@@ -197,7 +197,7 @@ class ChallengeStageView(StageView):
                     challenge.initial_data["pending_user"] = user.username
                 challenge.initial_data["pending_user_avatar"] = DEFAULT_AVATAR
                 if not isinstance(user, AnonymousUser):
-                    challenge.initial_data["pending_user_avatar"] = user.avatar
+                    challenge.initial_data["pending_user_avatar"] = get_avatar(user, self.request)
         return challenge
 
     def get_challenge(self, *args, **kwargs) -> Challenge:

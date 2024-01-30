@@ -5,12 +5,12 @@ from typing import Optional
 from django.core.cache import cache
 from django.db.models import QuerySet
 from django.db.models.functions import ExtractHour
-from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
@@ -147,7 +147,6 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         ],
         responses={
             200: PolicyTestResultSerializer(),
-            404: OpenApiResponse(description="for_user user not found"),
         },
     )
     @action(detail=True, methods=["GET"])
@@ -160,9 +159,11 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         for_user = request.user
         if request.user.is_superuser and "for_user" in request.query_params:
             try:
-                for_user = get_object_or_404(User, pk=request.query_params.get("for_user"))
+                for_user = User.objects.filter(pk=request.query_params.get("for_user")).first()
             except ValueError:
-                return HttpResponseBadRequest("for_user must be numerical")
+                raise ValidationError({"for_user": "for_user must be numerical"})
+            if not for_user:
+                raise ValidationError({"for_user": "User not found"})
         engine = PolicyEngine(application, for_user, request)
         engine.use_cache = False
         with capture_logs() as logs:

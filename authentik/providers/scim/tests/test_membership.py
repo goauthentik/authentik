@@ -1,6 +1,5 @@
 """SCIM Membership tests"""
 from django.test import TestCase
-from guardian.shortcuts import get_anonymous_user
 from requests_mock import Mocker
 
 from authentik.blueprints.tests import apply_blueprint
@@ -21,7 +20,7 @@ class SCIMMembershipTests(TestCase):
     def setUp(self) -> None:
         # Delete all users and groups as the mocked HTTP responses only return one ID
         # which will cause errors with multiple users
-        User.objects.all().exclude(pk=get_anonymous_user().pk).delete()
+        User.objects.all().exclude_anonymous().delete()
         Group.objects.all().delete()
         Tenant.objects.update(avatars="none")
 

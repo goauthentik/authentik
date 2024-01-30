@@ -7,7 +7,6 @@ from django.contrib.auth import get_user_model
 from django.db.models import Model, Q, QuerySet
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
-from guardian.shortcuts import get_anonymous_user
 from yaml import dump
 
 from authentik.blueprints.v1.common import (
@@ -48,7 +47,7 @@ class Exporter:
         """Return a queryset for `model`. Can be used to filter some
         objects on some models"""
         if model == get_user_model():
-            return model.objects.exclude(pk=get_anonymous_user().pk)
+            return model.objects.exclude_anonymous()
         return model.objects.all()
 
     def _pre_export(self, blueprint: Blueprint):

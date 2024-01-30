@@ -3,7 +3,6 @@ from django.core.cache import cache
 from django.db import models
 from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
-from guardian.shortcuts import get_anonymous_user
 from redis.lock import Lock
 from rest_framework.serializers import Serializer
 
@@ -42,7 +41,7 @@ class SCIMProvider(BackchannelProvider):
     def get_user_qs(self) -> QuerySet[User]:
         """Get queryset of all users with consistent ordering
         according to the provider's settings"""
-        base = User.objects.all().exclude(pk=get_anonymous_user().pk)
+        base = User.objects.all().exclude_anonymous()
         if self.exclude_users_service_account:
             base = base.exclude(type=UserTypes.SERVICE_ACCOUNT).exclude(
                 type=UserTypes.INTERNAL_SERVICE_ACCOUNT

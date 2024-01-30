@@ -8,7 +8,6 @@ from sentry_sdk.hub import Hub
 
 from authentik import get_full_version
 from authentik.brands.models import Brand
-from authentik.tenants.utils import get_current_tenant
 
 _q_default = Q(default=True)
 DEFAULT_BRAND = Brand(domain="fallback")
@@ -36,7 +35,7 @@ def context_processor(request: HttpRequest) -> dict[str, Any]:
         trace = span.to_traceparent()
     return {
         "brand": brand,
-        "footer_links": get_current_tenant().footer_links,
+        "footer_links": request.tenant.footer_links,
         "sentry_trace": trace,
         "version": get_full_version(),
     }
