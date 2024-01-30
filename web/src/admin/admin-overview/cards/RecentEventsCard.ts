@@ -47,6 +47,9 @@ export class RecentEventsCard extends Table<Event> {
                     --pf-c-card__title--FontSize: var(--pf-global--FontSize--md);
                     --pf-c-card__title--FontWeight: var(--pf-global--FontWeight--bold);
                 }
+                * {
+                    word-break: break-all;
+                }
             `,
         );
     }

@@ -1,5 +1,6 @@
 import "@goauthentik/admin/groups/RelatedGroupList";
 import "@goauthentik/admin/users/UserActiveForm";
+import "@goauthentik/admin/users/UserApplicationTable";
 import "@goauthentik/admin/users/UserChart";
 import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserPasswordForm";
@@ -8,6 +9,7 @@ import {
     requestRecoveryLink,
 } from "@goauthentik/app/admin/users/UserListPage";
 import { me } from "@goauthentik/app/common/users";
+import { getRelativeTime } from "@goauthentik/app/common/utils";
 import "@goauthentik/app/elements/oauth/UserAccessTokenList";
 import "@goauthentik/app/elements/oauth/UserRefreshTokenList";
 import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
@@ -147,7 +149,10 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
             [msg("Username"), user.username],
             [msg("Name"), user.name],
             [msg("Email"), user.email || "-"],
-            [msg("Last login"), user.lastLogin?.toLocaleString()],
+            [msg("Last login"), user.lastLogin
+                ? html`<div>${getRelativeTime(user.lastLogin)}</div>
+                      <small>${user.lastLogin.toLocaleString()}</small>`
+                : html`${msg("-")}`],
             [msg("Active"), html`<ak-status-label type="warning" ?good=${user.isActive}></ak-status-label>`],
             [msg("Type"), userTypeToLabel(user.type)],
             [msg("Superuser"), html`<ak-status-label type="warning" ?good=${user.isSuperuser}></ak-status-label>`],
@@ -317,6 +322,14 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
         `;
     }
 
+    renderTabApplications(user: User): TemplateResult {
+        return html`<div class="pf-c-card">
+            <div class="pf-c-card__body">
+                <ak-user-application-table .user=${user}></ak-user-application-table>
+            </div>
+        </div>`;
+    }
+
     renderBody() {
         if (!this.user) {
             return nothing;
@@ -398,6 +411,13 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
             </section>
             <section slot="page-credentials" data-tab-title="${msg("Credentials / Tokens")}">
                 ${this.renderTabCredentialsToken(this.user)}
+            </section>
+            <section
+                slot="page-applications"
+                data-tab-title="${msg("Applications")}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                ${this.renderTabApplications(this.user)}
             </section>
             <ak-rbac-object-permission-page
                 slot="page-permissions"

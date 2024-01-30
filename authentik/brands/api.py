@@ -11,6 +11,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
+from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.authorization import SecretKeyFilter
@@ -57,6 +58,11 @@ class BrandSerializer(ModelSerializer):
             "web_certificate",
             "attributes",
         ]
+        extra_kwargs = {
+            # TODO: This field isn't unique on the database which is hard to backport
+            # hence we just validate the uniqueness here
+            "domain": {"validators": [UniqueValidator(Brand.objects.all())]},
+        }
 
 
 class Themes(models.TextChoices):
