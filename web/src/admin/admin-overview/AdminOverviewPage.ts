@@ -79,7 +79,9 @@ export class AdminOverviewPage extends AKElement {
             <section class="pf-c-page__main-section">
                 <div class="pf-l-grid pf-m-gutter">
                     <!-- row 1 -->
-                    <div class="pf-l-grid__item pf-m-6-col pf-l-grid pf-m-gutter">
+                    <div
+                        class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl pf-l-grid pf-m-gutter"
+                    >
                         <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl">
                             <ak-aggregate-card
                                 icon="fa fa-share"
@@ -167,7 +169,7 @@ export class AdminOverviewPage extends AKElement {
                             <ak-admin-status-card-workers> </ak-admin-status-card-workers>
                         </div>
                     </div>
-                    <div class="pf-l-grid__item pf-m-6-col">
+                    <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl">
                         <ak-recent-events pageSize="6"></ak-recent-events>
                     </div>
                     <div class="pf-l-grid__item pf-m-12-col">
