@@ -1,6 +1,5 @@
 """Mobile authenticator stage"""
 from secrets import choice
-from time import sleep
 from typing import Optional
 from uuid import uuid4
 
@@ -158,6 +157,8 @@ class MobileTransaction(ExpiringModel):
     correct_item = models.TextField()
     selected_item = models.TextField(default=None, null=True)
 
+    _checks = models.IntegerField(default=0)
+
     @property
     def status(self) -> TransactionStates:
         """Get the status"""
@@ -214,29 +215,25 @@ class MobileTransaction(ExpiringModel):
             LOGGER.debug("Sent notification", id=response, tx_id=self.tx_id)
         except (ValueError, RpcError) as exc:
             LOGGER.warning("failed to push", exc=exc, tx_id=self.tx_id)
+            return False
         return True
 
-    def wait_for_response(self, max_checks=30) -> TransactionStates:
-        """Wait for a change in status"""
-        checks = 0
+    def check_response(self, max_checks=30) -> TransactionStates:
+        """Check the transaction's status"""
         # calling self.refresh_from_db can raise an impossible to catch exception
         # (in this case authentik.stages.authenticator_mobile.models.DoesNotExist)
         obj = MobileTransaction.objects.filter(pk=self.pk).first()
         if not obj:
             return TransactionStates.DENY
-        while True:
-            try:
-                obj.refresh_from_db()
-            except MobileTransaction.DoesNotExist:
-                return TransactionStates.DENY
-            if obj.status in [TransactionStates.ACCEPT, TransactionStates.DENY]:
-                obj.delete()
-                return obj.status
-            checks += 1
-            if checks > max_checks:
-                obj.delete()
-                raise TimeoutError()
-            sleep(1)
+        if obj.status in [TransactionStates.ACCEPT, TransactionStates.DENY]:
+            obj.delete()
+            return obj.status
+        obj._checks += 1
+        obj.save()
+        if obj._checks > max_checks:
+            obj.delete()
+            raise TimeoutError()
+        return obj.status
 
 
 class MobileDeviceToken(ExpiringModel):

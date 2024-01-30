@@ -149,7 +149,8 @@ def select_challenge_mobile(request: HttpRequest, stage_view: StageView, device:
 
     try:
         transaction: MobileTransaction = request.session.get(SESSION_KEY_MOBILE_TRANSACTION)
-        transaction.send_message(stage_view.request, **push_context)
+        if not transaction.send_message(stage_view.request, **push_context):
+            raise ValidationError("Failed to send push notification", code="internal")
     except RuntimeError as exc:
         Event.new(
             EventAction.CONFIGURATION_ERROR,
@@ -248,10 +249,13 @@ def validate_challenge_mobile(device_pk: str, stage_view: StageView, user: User)
         LOGGER.warning("device mismatch")
         raise Http404
 
-    transaction = stage_view.request.session[SESSION_KEY_MOBILE_TRANSACTION]
+    transaction: MobileTransaction = stage_view.request.session[SESSION_KEY_MOBILE_TRANSACTION]
 
     try:
-        status = transaction.wait_for_response()
+        status = transaction.check_response()
+        if status == TransactionStates.WAIT:
+            raise ValidationError("Waiting for push notification")
+        stage_view.request.session.delete(SESSION_KEY_MOBILE_TRANSACTION)
         if status == TransactionStates.DENY:
             LOGGER.debug("mobile push response", result=status)
             login_failed.send(
@@ -273,8 +277,6 @@ def validate_challenge_mobile(device_pk: str, stage_view: StageView, user: User)
             user=user,
         ).from_http(stage_view.request, user)
         raise ValidationError("Mobile denied access", code="denied")
-    finally:
-        stage_view.request.session.delete(SESSION_KEY_MOBILE_TRANSACTION)
 
 
 def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) -> Device:
