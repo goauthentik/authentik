@@ -177,7 +177,7 @@ class MobileTransaction(ExpiringModel):
         user: User = self.device.user
         client_ip = ClientIPMiddleware.get_client_ip(request)
 
-        context["_brand"] = request.tenant.branding_title
+        context["_brand"] = request.brand.branding_title
         # pylint: disable=no-member
         context["_user"] = user.username
 

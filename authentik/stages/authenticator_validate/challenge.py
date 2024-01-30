@@ -254,7 +254,7 @@ def validate_challenge_mobile(device_pk: str, stage_view: StageView, user: User)
     try:
         status = transaction.check_response()
         if status == TransactionStates.WAIT:
-            raise ValidationError("Waiting for push notification")
+            raise ValidationError("Waiting for push answer")
         stage_view.request.session.delete(SESSION_KEY_MOBILE_TRANSACTION)
         if status == TransactionStates.DENY:
             LOGGER.debug("mobile push response", result=status)
