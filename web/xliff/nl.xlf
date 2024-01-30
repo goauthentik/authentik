@@ -531,16 +531,6 @@
         <target>Geen medewerkers verbonden. Achtergrondtaken worden niet uitgevoerd.</target>
 
       </trans-unit>
-      <trans-unit id="s2ed8eb02525a920a">
-        <source><x id="0" equiv-text="${ago}"/> hour(s) ago</source>
-        <target><x id="0" equiv-text="${ago}"/> uur geleden</target>
-
-      </trans-unit>
-      <trans-unit id="s1f1c857c0c4250e4">
-        <source><x id="0" equiv-text="${ago}"/> day(s) ago</source>
-        <target><x id="0" equiv-text="${ago}"/> dag(en) geleden</target>
-
-      </trans-unit>
       <trans-unit id="s11bc220e8fa9d797">
         <source>Authorizations</source>
         <target>Autorisaties</target>
@@ -2005,11 +1995,6 @@
       <trans-unit id="s59f5eda30a904b75">
         <source>JWKS URL</source>
         <target>JWKS-URL</target>
-
-      </trans-unit>
-      <trans-unit id="s453b0c150a7ca58e">
-        <source>Example JWT payload (for currently authenticated user)</source>
-        <target>Voorbeeld JWT-payload (voor momenteel geauthenticeerde gebruiker)</target>
 
       </trans-unit>
       <trans-unit id="sc6e8a34361c7c272">
@@ -7523,9 +7508,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="s6827a456c9dfc6ee">
   <source>When using IDP-initiated logins, the relay state will be set to this value.</source>
 </trans-unit>
-<trans-unit id="scc7f34824150bfb8">
-  <source>Provider require enterprise.</source>
-</trans-unit>
 <trans-unit id="s31f1afc1bfe1cb3a">
   <source>Learn more</source>
 </trans-unit>
@@ -7771,9 +7753,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 </trans-unit>
 <trans-unit id="se5c795faf2c07514">
   <source>Create Recovery Link</source>
-</trans-unit>
-<trans-unit id="sa3a3e09b88ed9791">
-  <source>Assigned permissions</source>
 </trans-unit>
 <trans-unit id="s9cc631505c17b028">
   <source>Assigned global permissions</source>
@@ -8085,6 +8064,39 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 </trans-unit>
 <trans-unit id="s862505f29064fc72">
   <source>This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:</source>
+</trans-unit>
+<trans-unit id="sb2275335377069aa">
+  <source>This feature requires an enterprise license.</source>
+</trans-unit>
+<trans-unit id="s6d3f81dc4bcacbda">
+  <source>Last used</source>
+</trans-unit>
+<trans-unit id="s96b2703420bfbd0c">
+  <source>OAuth Access Tokens</source>
+</trans-unit>
+<trans-unit id="sd99e668c54f78f6e">
+  <source>Credentials / Tokens</source>
+</trans-unit>
+<trans-unit id="saada50e84c7c646d">
+  <source>Permissions set on users which affect this object.</source>
+</trans-unit>
+<trans-unit id="s37d1b74df205b528">
+  <source>Permissions set on roles which affect this object.</source>
+</trans-unit>
+<trans-unit id="sc443bfff8a5dd106">
+  <source>Permissions assigned to this user which affect all object instances of a given type.</source>
+</trans-unit>
+<trans-unit id="s3eba09a350b7d6c9">
+  <source>Permissions assigned to this user affecting specific object instances.</source>
+</trans-unit>
+<trans-unit id="s17032e57ba222d2f">
+  <source>Permissions assigned to this role which affect all object instances of a given type.</source>
+</trans-unit>
+<trans-unit id="sb9b51124d1b3dca0">
+  <source>JWT payload</source>
+</trans-unit>
+<trans-unit id="sbd065743a0c599e3">
+  <source>Preview for user</source>
 </trans-unit>
     </body>
   </file>

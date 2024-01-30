@@ -8,7 +8,7 @@ This installation method is for test-setups and small-scale production setups.
 
 -   A host with at least 2 CPU cores and 2 GB of RAM
 -   Docker
--   Docker Compose
+-   Docker Compose (Compose v2 is recommended, see [here](https://docs.docker.com/compose/migrate/) for instructions on how to upgrade)
 
 ## Video
 
@@ -76,7 +76,7 @@ COMPOSE_PORT_HTTP=80
 COMPOSE_PORT_HTTPS=443
 ```
 
-See [Configuration](../installation/configuration) to change the internal ports. Be sure to run `docker-compose up -d` to rebuild with the new port numbers.
+See [Configuration](../installation/configuration) to change the internal ports. Be sure to run `docker compose up -d` to rebuild with the new port numbers.
 
 ## Startup
 
@@ -90,8 +90,8 @@ This will not give any advantages. It will cause problems with OAuth and SAML au
 Afterwards, run these commands to finish:
 
 ```shell
-docker-compose pull
-docker-compose up -d
+docker compose pull
+docker compose up -d
 ```
 
 The `docker-compose.yml` file statically references the latest version available at the time of downloading the compose file. Each time you upgrade to a newer version of authentik, you download a new `docker-compose.yml` file, which points to the latest available version. For more information, refer to the **Upgrading** section in the [Release Notes](../releases).

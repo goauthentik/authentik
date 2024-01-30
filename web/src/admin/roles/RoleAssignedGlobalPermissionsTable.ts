@@ -11,8 +11,8 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import { Permission, RbacApi } from "@goauthentik/api";
 
-@customElement("ak-role-permissions-global-table")
-export class RolePermissionGlobalTable extends Table<Permission> {
+@customElement("ak-role-assigned-global-permissions-table")
+export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
     @property()
     roleUuid?: string;
 

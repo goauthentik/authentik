@@ -25,7 +25,7 @@ import TabItem from "@theme/TabItem";
     If you are using Docker Compose, edit your <code>.env</code> file to append any keys that you want to add, and then run the following command to apply them:
 
     ```
-    docker-compose up -d
+    docker compose up -d
     ```
 
   </TabItem>
@@ -49,7 +49,7 @@ To check if your config has been applied correctly, you can run the following co
   <TabItem value="docker-compose" label="Docker Compose" default>
 
     ```
-    docker-compose run --rm worker dump_config
+    docker compose run --rm worker dump_config
     ```
 
   </TabItem>
@@ -435,6 +435,14 @@ Requires authentik 2023.9.0
 Configure Celery worker concurrency for authentik worker (see https://docs.celeryq.dev/en/latest/userguide/configuration.html#worker-concurrency). This essentially defines the number of worker processes spawned for a single worker.
 
 Defaults to 2.
+
+## System settings
+
+:::info
+Requires authentik 2024.1.0
+:::
+
+Additional settings are configurable using the Admin interface, under **System** -> **Settings** or using the API.
 
 ## Custom python settings
 

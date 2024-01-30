@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2023.10.6
+  version: 2023.10.7
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -2658,6 +2658,10 @@ paths:
       operationId: core_applications_list
       description: Custom list method that checks Policy based access instead of guardian
       parameters:
+      - in: query
+        name: for_user
+        schema:
+          type: integer
       - in: query
         name: group
         schema:
@@ -16042,6 +16046,10 @@ paths:
       operationId: providers_oauth2_preview_user_retrieve
       description: Preview user data for provider
       parameters:
+      - in: query
+        name: for_user
+        schema:
+          type: integer
       - in: path
         name: id
         schema:
@@ -17409,6 +17417,10 @@ paths:
       operationId: providers_saml_preview_user_retrieve
       description: Preview user data for provider
       parameters:
+      - in: query
+        name: for_user
+        schema:
+          type: integer
       - in: path
         name: id
         schema:

@@ -1,4 +1,5 @@
 import { uiConfig } from "@goauthentik/app/common/ui/config";
+import { getRelativeTime } from "@goauthentik/app/common/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { PFColor } from "@goauthentik/elements/Label";
@@ -30,6 +31,10 @@ export class SystemTaskListPage extends TablePage<SystemTask> {
     }
 
     expandable = true;
+
+    searchEnabled(): boolean {
+        return true;
+    }
 
     @property()
     order = "name";
@@ -107,7 +112,8 @@ export class SystemTaskListPage extends TablePage<SystemTask> {
         return [
             html`${item.name}${item.uid ? `:${item.uid}` : ""}`,
             html`${item.description}`,
-            html`${item.finishTimestamp.toLocaleString()}`,
+            html`<div>${getRelativeTime(item.finishTimestamp)}</div>
+                <small>${item.finishTimestamp.toLocaleString()}</small>`,
             this.taskStatus(item),
             html`<ak-action-button
                 class="pf-m-plain"

@@ -538,18 +538,6 @@
         <target>Aucun worker connecté. Les tâches de fond ne tourneront pas.</target>
         
       </trans-unit>
-      <trans-unit id="s2ed8eb02525a920a">
-        <source><x id="0" equiv-text="${ago}"/> hour(s) ago</source>
-        <target>
-Il y a <x id="0" equiv-text="${ago}"/> heure(s)</target>
-        
-      </trans-unit>
-      <trans-unit id="s1f1c857c0c4250e4">
-        <source><x id="0" equiv-text="${ago}"/> day(s) ago</source>
-        <target>
-Il y a <x id="0" equiv-text="${ago}"/> jour(s)</target>
-        
-      </trans-unit>
       <trans-unit id="s11bc220e8fa9d797">
         <source>Authorizations</source>
         <target>Autorisations</target>
@@ -2025,11 +2013,6 @@ Il y a <x id="0" equiv-text="${ago}"/> jour(s)</target>
       <trans-unit id="s59f5eda30a904b75">
         <source>JWKS URL</source>
         <target>URL JWKS</target>
-        
-      </trans-unit>
-      <trans-unit id="s453b0c150a7ca58e">
-        <source>Example JWT payload (for currently authenticated user)</source>
-        <target>Exemple de charge utile JWT (pour l'utilisateur actuellement authentifié)</target>
         
       </trans-unit>
       <trans-unit id="sc6e8a34361c7c272">
@@ -7666,10 +7649,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>User doesn't have view permission so description cannot be retrieved.</source>
   <target>L'utilisateur n'a pas les permissions de lecture, la description ne peut donc pas être récupérée.</target>
 </trans-unit>
-<trans-unit id="sa3a3e09b88ed9791">
-  <source>Assigned permissions</source>
-  <target>Permissions assignées</target>
-</trans-unit>
 <trans-unit id="s9cc631505c17b028">
   <source>Assigned global permissions</source>
   <target>Permissions globales assignées</target>
@@ -8138,10 +8117,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Determines how long a session lasts before being disconnected and requiring re-authorization.</source>
   <target>Détermine combien de temps une session dure avant déconnexion et ré-authorisation.</target>
 </trans-unit>
-<trans-unit id="scc7f34824150bfb8">
-  <source>Provider require enterprise.</source>
-  <target>Ce fournisseur requiert la version entreprise.</target>
-</trans-unit>
 <trans-unit id="s31f1afc1bfe1cb3a">
   <source>Learn more</source>
   <target>En apprendre plus</target>
@@ -8376,6 +8351,39 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s862505f29064fc72">
   <source>This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:</source>
+</trans-unit>
+<trans-unit id="sb2275335377069aa">
+  <source>This feature requires an enterprise license.</source>
+</trans-unit>
+<trans-unit id="s6d3f81dc4bcacbda">
+  <source>Last used</source>
+</trans-unit>
+<trans-unit id="s96b2703420bfbd0c">
+  <source>OAuth Access Tokens</source>
+</trans-unit>
+<trans-unit id="sd99e668c54f78f6e">
+  <source>Credentials / Tokens</source>
+</trans-unit>
+<trans-unit id="saada50e84c7c646d">
+  <source>Permissions set on users which affect this object.</source>
+</trans-unit>
+<trans-unit id="s37d1b74df205b528">
+  <source>Permissions set on roles which affect this object.</source>
+</trans-unit>
+<trans-unit id="sc443bfff8a5dd106">
+  <source>Permissions assigned to this user which affect all object instances of a given type.</source>
+</trans-unit>
+<trans-unit id="s3eba09a350b7d6c9">
+  <source>Permissions assigned to this user affecting specific object instances.</source>
+</trans-unit>
+<trans-unit id="s17032e57ba222d2f">
+  <source>Permissions assigned to this role which affect all object instances of a given type.</source>
+</trans-unit>
+<trans-unit id="sb9b51124d1b3dca0">
+  <source>JWT payload</source>
+</trans-unit>
+<trans-unit id="sbd065743a0c599e3">
+  <source>Preview for user</source>
 </trans-unit>
     </body>
   </file>

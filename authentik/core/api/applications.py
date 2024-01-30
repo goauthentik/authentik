@@ -1,16 +1,17 @@
 """Application API Views"""
+from copy import copy
 from datetime import timedelta
 from typing import Optional
 
 from django.core.cache import cache
 from django.db.models import QuerySet
 from django.db.models.functions import ExtractHour
-from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
@@ -128,10 +129,16 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
             queryset = backend().filter_queryset(self.request, queryset, self)
         return queryset
 
-    def _get_allowed_applications(self, queryset: QuerySet) -> list[Application]:
+    def _get_allowed_applications(
+        self, queryset: QuerySet, user: Optional[User] = None
+    ) -> list[Application]:
         applications = []
+        request = self.request._request
+        if user:
+            request = copy(request)
+            request.user = user
         for application in queryset:
-            engine = PolicyEngine(application, self.request.user, self.request)
+            engine = PolicyEngine(application, request.user, request)
             engine.build()
             if engine.passing:
                 applications.append(application)
@@ -147,7 +154,6 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         ],
         responses={
             200: PolicyTestResultSerializer(),
-            404: OpenApiResponse(description="for_user user not found"),
         },
     )
     @action(detail=True, methods=["GET"])
@@ -160,9 +166,11 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         for_user = request.user
         if request.user.is_superuser and "for_user" in request.query_params:
             try:
-                for_user = get_object_or_404(User, pk=request.query_params.get("for_user"))
+                for_user = User.objects.filter(pk=request.query_params.get("for_user")).first()
             except ValueError:
-                return HttpResponseBadRequest("for_user must be numerical")
+                raise ValidationError({"for_user": "for_user must be numerical"})
+            if not for_user:
+                raise ValidationError({"for_user": "User not found"})
         engine = PolicyEngine(application, for_user, request)
         engine.use_cache = False
         with capture_logs() as logs:
@@ -187,19 +195,42 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
                 name="superuser_full_list",
                 location=OpenApiParameter.QUERY,
                 type=OpenApiTypes.BOOL,
-            )
+            ),
+            OpenApiParameter(
+                name="for_user",
+                location=OpenApiParameter.QUERY,
+                type=OpenApiTypes.INT,
+            ),
         ]
     )
     def list(self, request: Request) -> Response:
         """Custom list method that checks Policy based access instead of guardian"""
-        should_cache = request.GET.get("search", "") == ""
+        should_cache = request.query_params.get("search", "") == ""
 
-        superuser_full_list = str(request.GET.get("superuser_full_list", "false")).lower() == "true"
+        superuser_full_list = (
+            str(request.query_params.get("superuser_full_list", "false")).lower() == "true"
+        )
         if superuser_full_list and request.user.is_superuser:
             return super().list(request)
 
         queryset = self._filter_queryset_for_list(self.get_queryset())
         self.paginate_queryset(queryset)
+
+        if "for_user" in request.query_params:
+            try:
+                for_user: int = int(request.query_params.get("for_user", 0))
+                for_user = (
+                    get_objects_for_user(request.user, "authentik_core.view_user_applications")
+                    .filter(pk=for_user)
+                    .first()
+                )
+                if not for_user:
+                    raise ValidationError({"for_user": "User not found"})
+            except ValueError as exc:
+                raise ValidationError from exc
+            allowed_applications = self._get_allowed_applications(queryset, user=for_user)
+            serializer = self.get_serializer(allowed_applications, many=True)
+            return self.get_paginated_response(serializer.data)
 
         allowed_applications = []
         if not should_cache:

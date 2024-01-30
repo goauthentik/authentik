@@ -36,7 +36,7 @@ PAPERLESS_HTTP_REMOTE_USER_HEADER_NAME=HTTP_X_AUTHENTIK_USERNAME
 Authentik automatically sets this header when we use a proxy outpost.
 
 Now restart your container:
-`docker-compose down && docker-compose up -d`
+`docker compose down && docker compose up -d`
 
 ## authentik
 

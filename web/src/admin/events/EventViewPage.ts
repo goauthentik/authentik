@@ -1,4 +1,5 @@
 import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
+import { getRelativeTime } from "@goauthentik/app/common/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { actionToLabel } from "@goauthentik/common/labels";
@@ -99,7 +100,8 @@ export class EventViewPage extends AKElement {
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
-                                            ${this.event.created?.toLocaleString()}
+                                            <div>${getRelativeTime(this.event.created)}</div>
+                                            <small>${this.event.created.toLocaleString()}</small>
                                         </div>
                                     </dd>
                                 </div>

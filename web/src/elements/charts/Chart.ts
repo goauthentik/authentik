@@ -1,3 +1,4 @@
+import { getRelativeTime } from "@goauthentik/app/common/utils";
 import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
@@ -18,7 +19,7 @@ import { ArcElement, BarElement } from "chart.js";
 import { LinearScale, TimeScale } from "chart.js";
 import "chartjs-adapter-moment";
 
-import { msg, str } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
 
@@ -161,14 +162,13 @@ export abstract class AKChart<T> extends AKElement {
 
     timeTickCallback(tickValue: string | number, index: number, ticks: Tick[]): string {
         const valueStamp = ticks[index];
-        const delta = Date.now() - valueStamp.value;
-        const ago = Math.round(delta / 1000 / 3600);
-        return msg(str`${ago} hour(s) ago`);
+        return getRelativeTime(new Date(valueStamp.value));
     }
 
     getOptions(): ChartOptions {
         return {
             maintainAspectRatio: false,
+            responsive: true,
             scales: {
                 x: {
                     type: "time",

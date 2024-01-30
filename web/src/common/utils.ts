@@ -149,3 +149,25 @@ export function adaptCSS(sheet: AdaptableStylesheet[]): CSSStyleSheet[];
 export function adaptCSS(sheet: AdaptableStylesheet | AdaptableStylesheet[]): AdaptedStylesheets {
     return Array.isArray(sheet) ? sheet.map(_adaptCSS) : _adaptCSS(sheet);
 }
+
+const _timeUnits = new Map<Intl.RelativeTimeFormatUnit, number>([
+    ["year", 24 * 60 * 60 * 1000 * 365],
+    ["month", (24 * 60 * 60 * 1000 * 365) / 12],
+    ["day", 24 * 60 * 60 * 1000],
+    ["hour", 60 * 60 * 1000],
+    ["minute", 60 * 1000],
+    ["second", 1000],
+]);
+
+export function getRelativeTime(d1: Date, d2: Date = new Date()): string {
+    const rtf = new Intl.RelativeTimeFormat("default", { numeric: "auto" });
+    const elapsed = d1.getTime() - d2.getTime();
+
+    // "Math.abs" accounts for both "past" & "future" scenarios
+    for (const [key, value] of _timeUnits) {
+        if (Math.abs(elapsed) > value || key == "second") {
+            return rtf.format(Math.round(elapsed / value), key);
+        }
+    }
+    return rtf.format(Math.round(elapsed / 1000), "second");
+}

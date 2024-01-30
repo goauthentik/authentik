@@ -19,6 +19,7 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
@@ -41,15 +42,12 @@ export class AdminOverviewPage extends AKElement {
             PFPage,
             PFContent,
             PFList,
+            PFDivider,
             css`
-                .row-divider {
-                    margin-top: -4px;
-                    margin-bottom: -4px;
+                .pf-l-grid__item {
+                    height: 100%;
                 }
-                .graph-container {
-                    height: 20em;
-                }
-                .big-graph-container {
+                .pf-l-grid__item.big-graph-container {
                     height: 35em;
                 }
                 .card-container {
@@ -81,10 +79,10 @@ export class AdminOverviewPage extends AKElement {
             <section class="pf-c-page__main-section">
                 <div class="pf-l-grid pf-m-gutter">
                     <!-- row 1 -->
-                    <div class="pf-l-grid__item pf-m-6-col pf-l-grid pf-m-gutter">
-                        <div
-                            class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl graph-container"
-                        >
+                    <div
+                        class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl pf-l-grid pf-m-gutter"
+                    >
+                        <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl">
                             <ak-aggregate-card
                                 icon="fa fa-share"
                                 header=${msg("Quick actions")}
@@ -136,9 +134,7 @@ export class AdminOverviewPage extends AKElement {
                                 </ul>
                             </ak-aggregate-card>
                         </div>
-                        <div
-                            class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl graph-container"
-                        >
+                        <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl">
                             <ak-aggregate-card
                                 icon="pf-icon pf-icon-zone"
                                 header=${msg("Outpost status")}
@@ -148,14 +144,14 @@ export class AdminOverviewPage extends AKElement {
                             </ak-aggregate-card>
                         </div>
                         <div
-                            class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-4-col-on-2xl graph-container"
+                            class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-4-col-on-2xl"
                         >
                             <ak-aggregate-card icon="fa fa-sync-alt" header=${msg("Sync status")}>
                                 <ak-admin-status-chart-sync></ak-admin-status-chart-sync>
                             </ak-aggregate-card>
                         </div>
-                        <div class="pf-l-grid__item pf-m-12-col row-divider">
-                            <hr />
+                        <div class="pf-l-grid__item pf-m-12-col">
+                            <hr class="pf-c-divider" />
                         </div>
                         <div
                             class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-4-col-on-xl card-container"
@@ -173,11 +169,11 @@ export class AdminOverviewPage extends AKElement {
                             <ak-admin-status-card-workers> </ak-admin-status-card-workers>
                         </div>
                     </div>
-                    <div class="pf-l-grid__item pf-m-6-col">
+                    <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl">
                         <ak-recent-events pageSize="6"></ak-recent-events>
                     </div>
-                    <div class="pf-l-grid__item pf-m-12-col row-divider">
-                        <hr />
+                    <div class="pf-l-grid__item pf-m-12-col">
+                        <hr class="pf-c-divider" />
                     </div>
                     <!-- row 3 -->
                     <div
