@@ -18,7 +18,7 @@ tags:
     - authentication
     - Authentik Security
 hide_table_of_contents: false
-image:
+image: container.png
 ---
 
 > **_authentik is an open source Identity Provider that unifies your identity needs into a single platform, replacing Okta, Active Directory, and auth0. Authentik Security is a [public benefit company](https://github.com/OpenCoreVentures/ocv-public-benefit-company/blob/main/ocv-public-benefit-company-charter.md) building on top of the open source project._**
@@ -47,7 +47,7 @@ For developing authentik on local machines, we use Docker for running external t
 
 To actually deploy authentik for our own, internal instance (Yes, we use authentik for all of our own apps here at the company, aka the proverbial dogfooding), we use Kubernetes. Users can choose either Docker Compose or Kubernetes for their authentik instances. Providing a Docker Compose file and container image plus a Helm chart for Kubernetes as part of the regular release package is becoming more and more standard, especially with new tools, so it made sense for us to follow suit. (The same applies for running Kubernetes internally—it’s what basically everyone in the industry is switching to.)
 
-While customers don’t *need* the Helm chart to be able to deploy on Kubernetes (anyone could just take the container image we provide, look at the Docker Compose and adapt it to use on Kubernetes), it’s not a big lift for us to provide it, to eliminate extra steps for people wanting to use Kubernetes. These aren’t lengthy processes and they don’t take much to maintain if set up correctly to begin with.
+While customers don’t _need_ the Helm chart to be able to deploy on Kubernetes (anyone could just take the container image we provide, look at the Docker Compose and adapt it to use on Kubernetes), it’s not a big lift for us to provide it, to eliminate extra steps for people wanting to use Kubernetes. These aren’t lengthy processes and they don’t take much to maintain if set up correctly to begin with.
 
 While writing Docker Compose files is pretty straightforward, the Helm chart can be tricky for developers who don’t have exposure to operations and infrastructure if there’s no dedicated infrastructure engineer on the team. So you may need an infrastructure engineer or at least a developer who runs their own homelab or is at least a bit interested in infrastructure, so they’re willing to spend the time learning how to do these things.
 
@@ -69,7 +69,7 @@ We actually gave up on deploying Wazuh on Kubernetes—we’re running it in a V
 
 For better or worse, Helm is widely used in the industry. It definitely has some annoying quirks. One of those quirks can lead to another common pitfall: not making your Helm charts configurable enough.
 
-This is something to watch out for both as a *user* of Helm charts (if you’re installing services for your company), as well as a *provider*  (if you offer a Helm chart for customers). The manifests that you apply to Kubernetes are, as you know, YAML files. Helm, being a templating tool, enables you to template out YAML from whatever data you provide at the time you install the Helm charts.
+This is something to watch out for both as a _user_ of Helm charts (if you’re installing services for your company), as well as a *provider*  (if you offer a Helm chart for customers). The manifests that you apply to Kubernetes are, as you know, YAML files. Helm, being a templating tool, enables you to template out YAML from whatever data you provide at the time you install the Helm charts.
 
 By default, any data, any variable that you have hardcoded in the template, is impossible to override later, so things can get messy quick..
 
@@ -92,7 +92,7 @@ As you grow your user base, you will likely have more traffic to your services a
 
 At authentik, I use [Robusta KRR](https://github.com/robusta-dev/krr) to produce routine reports on Kubernetes resources. I review these and then make manual updates to requests and limits as necessary. There are tools that automatically update the resources directly on the cluster (i.e. without updating them in Git), however, updating resources automatically has ripple effects: if you’re increasing resources, you need more nodes to run the services, for example. In general, if automated changes OR manual changes are made, you want to be aware of it in case there are downstream effects that you need to adjust for.
 
-“There are some specific use cases where automatic adjustment to resources make sense, but otherwise it’s probably wisest to *automate the reporting, but manually conduct the reviews and updates*.”
+“There are some specific use cases where automatic adjustment to resources make sense, but otherwise it’s probably wisest to _automate the reporting, but manually conduct the reviews and updates_.”
 
 ## Consider setting up firewall rules at the outset
 
