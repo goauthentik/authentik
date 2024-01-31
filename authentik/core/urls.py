@@ -1,4 +1,5 @@
 """authentik URL Configuration"""
+
 from channels.auth import AuthMiddleware
 from channels.sessions import CookieMiddleware
 from django.conf import settings

@@ -1,4 +1,5 @@
-"""Dynamically set SameSite depending on the upstream connection being TLS or not"""
+"""Dynamically set SameSite depending if the upstream connection is TLS or not"""
+
 from hashlib import sha512
 from time import time
 from timeit import default_timer

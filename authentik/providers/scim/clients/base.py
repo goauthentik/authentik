@@ -1,4 +1,5 @@
 """SCIM Client"""
+
 from typing import Generic, TypeVar
 
 from pydantic import ValidationError

@@ -1,4 +1,5 @@
 """Enterprise audit middleware"""
+
 from copy import deepcopy
 from functools import partial
 

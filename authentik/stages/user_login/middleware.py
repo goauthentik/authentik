@@ -1,4 +1,5 @@
 """Sessions bound to ASN/Network and GeoIP/Continent/etc"""
+
 from django.conf import settings
 from django.contrib.auth.middleware import AuthenticationMiddleware
 from django.contrib.auth.signals import user_logged_out

@@ -1,4 +1,5 @@
 """authentik tenants app"""
+
 from django.db import DEFAULT_DB_ALIAS
 from django.db.models.signals import post_migrate
 from django_tenants.utils import get_public_schema_name

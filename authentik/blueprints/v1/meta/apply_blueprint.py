@@ -1,4 +1,5 @@
 """Apply Blueprint meta model"""
+
 from typing import TYPE_CHECKING
 
 from rest_framework.exceptions import ValidationError

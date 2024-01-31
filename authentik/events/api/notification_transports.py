@@ -1,4 +1,5 @@
 """NotificationTransport API Views"""
+
 from typing import Any
 
 from drf_spectacular.types import OpenApiTypes

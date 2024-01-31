@@ -1,4 +1,5 @@
 """Test Evaluator base functions"""
+
 from django.test import TestCase
 
 from authentik.core.tests.utils import create_test_admin_user

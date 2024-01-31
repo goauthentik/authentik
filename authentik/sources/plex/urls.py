@@ -1,4 +1,5 @@
 """API URLs"""
+
 from authentik.sources.plex.api.source import PlexSourceViewSet
 from authentik.sources.plex.api.source_connection import PlexSourceConnectionViewSet
 

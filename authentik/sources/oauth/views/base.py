@@ -1,4 +1,5 @@
 """OAuth Base views"""
+
 from typing import Optional
 
 from django.http.request import HttpRequest

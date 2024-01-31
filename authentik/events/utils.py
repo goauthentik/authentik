@@ -1,4 +1,5 @@
 """event utilities"""
+
 import re
 from copy import copy
 from dataclasses import asdict, is_dataclass

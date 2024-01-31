@@ -1,4 +1,5 @@
 """authentik events signal listener"""
+
 from typing import Any, Optional
 
 from django.contrib.auth.signals import user_logged_in, user_logged_out

@@ -1,4 +1,5 @@
 """Base models"""
+
 from django.apps import apps
 from django.db.models import Model
 from rest_framework.serializers import Serializer

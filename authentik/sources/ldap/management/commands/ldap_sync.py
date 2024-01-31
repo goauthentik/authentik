@@ -1,4 +1,5 @@
 """LDAP Sync"""
+
 from structlog.stdlib import get_logger
 
 from authentik.sources.ldap.models import LDAPSource

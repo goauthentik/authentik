@@ -1,4 +1,5 @@
 """Test TOTP API"""
+
 from time import time
 from urllib.parse import parse_qs, urlsplit
 

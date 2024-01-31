@@ -1,4 +1,5 @@
 """Test event retention"""
+
 from django.test.client import RequestFactory
 from django_tenants.utils import get_public_schema_name
 from rest_framework.test import APITestCase

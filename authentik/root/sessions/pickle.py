@@ -1,6 +1,7 @@
 """
 Module for abstract serializer/unserializer base classes.
 """
+
 import pickle  # nosec
 
 

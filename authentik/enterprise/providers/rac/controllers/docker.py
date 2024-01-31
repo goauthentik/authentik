@@ -1,4 +1,5 @@
 """RAC Provider Docker Controller"""
+
 from authentik.outposts.controllers.docker import DockerController
 from authentik.outposts.models import DockerServiceConnection, Outpost
 

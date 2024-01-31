@@ -1,4 +1,5 @@
 """User client"""
+
 from deepmerge import always_merger
 from pydantic import ValidationError
 

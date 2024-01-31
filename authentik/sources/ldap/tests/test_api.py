@@ -1,4 +1,5 @@
 """LDAP Source API tests"""
+
 from rest_framework.test import APITestCase
 
 from authentik.lib.generators import generate_key

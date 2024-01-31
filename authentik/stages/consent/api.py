@@ -1,4 +1,5 @@
 """ConsentStage API Views"""
+
 from django_filters.rest_framework import DjangoFilterBackend
 from guardian.utils import get_anonymous_user
 from rest_framework import mixins

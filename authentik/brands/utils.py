@@ -1,4 +1,5 @@
 """Brand utilities"""
+
 from typing import Any
 
 from django.db.models import F, Q

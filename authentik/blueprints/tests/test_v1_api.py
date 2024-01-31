@@ -1,4 +1,5 @@
 """Test blueprints v1 api"""
+
 from json import loads
 from tempfile import NamedTemporaryFile, mkdtemp
 

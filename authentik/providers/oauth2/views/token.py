@@ -1,4 +1,5 @@
 """authentik OAuth2 Token views"""
+
 from base64 import urlsafe_b64encode
 from dataclasses import InitVar, dataclass
 from datetime import datetime

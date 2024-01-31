@@ -1,4 +1,5 @@
 """OAuth test helpers"""
+
 from typing import Any
 
 from django.test import TestCase

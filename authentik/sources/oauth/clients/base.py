@@ -1,4 +1,5 @@
 """OAuth Clients"""
+
 from typing import Any, Optional
 from urllib.parse import parse_qs, quote, urlencode, urlparse, urlunparse
 

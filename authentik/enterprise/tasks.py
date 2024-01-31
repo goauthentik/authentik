@@ -1,4 +1,5 @@
 """Enterprise tasks"""
+
 from authentik.enterprise.models import LicenseKey
 from authentik.root.celery import CELERY_APP
 

@@ -1,4 +1,5 @@
 """API URLs"""
+
 from authentik.events.api.events import EventViewSet
 from authentik.events.api.notification_mappings import NotificationWebhookMappingViewSet
 from authentik.events.api.notification_rules import NotificationRuleViewSet

@@ -1,4 +1,5 @@
 """authentik reputation request policy"""
+
 from datetime import timedelta
 from uuid import uuid4
 

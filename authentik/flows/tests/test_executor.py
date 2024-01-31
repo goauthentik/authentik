@@ -1,4 +1,5 @@
 """flow views tests"""
+
 from unittest.mock import MagicMock, PropertyMock, patch
 
 from django.http import HttpRequest, HttpResponse

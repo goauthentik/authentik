@@ -1,4 +1,5 @@
 """Deny stage logic"""
+
 from django.http import HttpRequest, HttpResponse
 
 from authentik.flows.stage import StageView

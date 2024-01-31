@@ -1,4 +1,5 @@
 """OAuth Source Serializer"""
+
 from django.urls.base import reverse_lazy
 from django_filters.filters import BooleanFilter
 from django_filters.filterset import FilterSet

@@ -1,4 +1,5 @@
 """transport tests"""
+
 from unittest.mock import PropertyMock, patch
 
 from django.core import mail

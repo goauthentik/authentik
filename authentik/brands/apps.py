@@ -1,4 +1,5 @@
 """authentik brands app"""
+
 from django.apps import AppConfig
 
 

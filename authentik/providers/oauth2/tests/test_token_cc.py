@@ -1,4 +1,5 @@
 """Test token view"""
+
 from json import loads
 
 from django.test import RequestFactory

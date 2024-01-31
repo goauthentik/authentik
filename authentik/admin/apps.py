@@ -1,4 +1,5 @@
 """authentik admin app config"""
+
 from prometheus_client import Gauge, Info
 
 from authentik.blueprints.apps import ManagedAppConfig

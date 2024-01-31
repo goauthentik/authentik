@@ -1,4 +1,5 @@
 """Device flow finish stage"""
+
 from django.http import HttpResponse
 from rest_framework.fields import CharField
 

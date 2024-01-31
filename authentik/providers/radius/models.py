@@ -1,4 +1,5 @@
 """Radius Provider"""
+
 from typing import Optional, Type
 
 from django.db import models

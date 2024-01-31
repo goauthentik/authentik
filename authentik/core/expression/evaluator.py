@@ -1,4 +1,5 @@
 """Property Mapping Evaluator"""
+
 from typing import Any, Optional
 
 from django.db.models import Model

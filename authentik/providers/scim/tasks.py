@@ -1,4 +1,5 @@
 """SCIM Provider tasks"""
+
 from typing import Any, Optional
 
 from celery.result import allow_join_result

@@ -1,4 +1,5 @@
 """authentik expression policy evaluator"""
+
 import re
 import socket
 from ipaddress import ip_address, ip_network

@@ -1,4 +1,5 @@
 """RAC app config"""
+
 from authentik.enterprise.apps import EnterpriseConfig
 
 

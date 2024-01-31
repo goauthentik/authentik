@@ -1,4 +1,5 @@
 """authentik policy engine"""
+
 from multiprocessing import Pipe, current_process
 from multiprocessing.connection import Connection
 from timeit import default_timer

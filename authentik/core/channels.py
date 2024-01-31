@@ -1,4 +1,5 @@
 """Channels base classes"""
+
 from channels.db import database_sync_to_async
 from channels.exceptions import DenyConnection
 from rest_framework.exceptions import AuthenticationFailed

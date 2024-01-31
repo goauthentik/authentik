@@ -1,4 +1,5 @@
 """root tests"""
+
 from base64 import b64encode
 
 from celery.app.amqp import Connection as AmqpConnection

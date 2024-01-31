@@ -1,4 +1,5 @@
 """Patreon Type tests"""
+
 from django.test import RequestFactory, TestCase
 
 from authentik.sources.oauth.models import OAuthSource

@@ -1,4 +1,5 @@
 """WebAuthn stage"""
+
 from json import loads
 
 from django.http import HttpRequest, HttpResponse

@@ -1,4 +1,5 @@
 """Authentik reputation_policy app config"""
+
 from authentik.blueprints.apps import ManagedAppConfig
 
 

@@ -1,4 +1,5 @@
 """Source flow manager stages"""
+
 from django.http import HttpRequest, HttpResponse
 
 from authentik.core.models import User, UserSourceConnection

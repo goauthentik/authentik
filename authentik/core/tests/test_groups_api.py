@@ -1,4 +1,5 @@
 """Test Groups API"""
+
 from django.urls.base import reverse
 from rest_framework.test import APITestCase
 

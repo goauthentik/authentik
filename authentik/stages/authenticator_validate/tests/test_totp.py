@@ -1,4 +1,5 @@
 """Test validator stage"""
+
 from datetime import datetime, timedelta
 from hashlib import sha256
 from time import sleep

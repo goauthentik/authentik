@@ -1,4 +1,5 @@
 """Group client"""
+
 from deepmerge import always_merger
 from pydantic import ValidationError
 from pydanticscim.group import GroupMember

@@ -1,4 +1,5 @@
 """RBAC API Filter"""
+
 from django.db.models import QuerySet
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.request import Request

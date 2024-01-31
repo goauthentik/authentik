@@ -1,4 +1,5 @@
 """common RBAC serializers"""
+
 from django.apps import apps
 from django.contrib.auth.models import Permission
 from django.db.models import QuerySet

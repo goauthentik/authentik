@@ -1,4 +1,5 @@
 """LogoutRequest parser"""
+
 from base64 import b64decode
 from dataclasses import dataclass
 from typing import Optional

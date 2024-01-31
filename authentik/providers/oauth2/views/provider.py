@@ -1,4 +1,5 @@
 """authentik OAuth2 OpenID well-known views"""
+
 from typing import Any
 
 from django.http import HttpRequest, HttpResponse, JsonResponse

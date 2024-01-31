@@ -1,4 +1,5 @@
 """Events middleware"""
+
 from functools import partial
 from threading import Thread
 from typing import Any, Callable, Optional

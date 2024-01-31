@@ -1,4 +1,5 @@
 """SMS Authenticator models"""
+
 from hashlib import sha256
 from typing import Optional
 

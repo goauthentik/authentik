@@ -1,4 +1,5 @@
 """Application API Views"""
+
 from copy import copy
 from datetime import timedelta
 from typing import Optional

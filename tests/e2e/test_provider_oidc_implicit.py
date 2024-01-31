@@ -1,4 +1,5 @@
 """test OAuth2 OpenID Provider flow"""
+
 from json import loads
 from time import sleep
 
