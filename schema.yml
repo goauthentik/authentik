@@ -30563,8 +30563,9 @@ components:
         pending_user_avatar:
           type: string
         device_challenges:
-          allOf:
-          - $ref: '#/components/schemas/DeviceChallengeTypes'
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceChallengeTypes'
           readOnly: true
         configuration_stages:
           type: array

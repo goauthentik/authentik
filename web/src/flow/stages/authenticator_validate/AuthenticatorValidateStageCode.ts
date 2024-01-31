@@ -10,13 +10,13 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { TOTPDeviceChallengeRequest, TOTPDeviceChallengeResponseRequest } from "@goauthentik/api";
+import { TOTPDeviceChallenge, TOTPDeviceChallengeResponseRequest } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-validate-code")
 export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
     // Technically this stage also supports `static` and `sms` devices
     // however they all have the same serializer
-    TOTPDeviceChallengeRequest,
+    TOTPDeviceChallenge,
     TOTPDeviceChallengeResponseRequest
 > {
     static get styles(): CSSResult[] {

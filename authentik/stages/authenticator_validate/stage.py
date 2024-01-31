@@ -59,10 +59,12 @@ class AuthenticatorValidationChallenge(WithUserInfoChallenge):
     configuration_stages = ListField(child=SelectableStageSerializer())
 
     @extend_schema_field(
-        PolymorphicProxySerializer(
-            component_name="DeviceChallengeTypes",
-            serializers=challenge_types,
-            resource_type_field_name="component",
+        ListField(
+            child=PolymorphicProxySerializer(
+                component_name="DeviceChallengeTypes",
+                serializers=challenge_types,
+                resource_type_field_name="component",
+            )
         )
     )
     def get_device_challenges(self, _) -> list[DeviceChallenge]:

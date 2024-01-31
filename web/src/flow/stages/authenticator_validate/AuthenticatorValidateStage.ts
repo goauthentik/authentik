@@ -20,7 +20,7 @@ import {
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest,
     CurrentBrand,
-    DeviceChallengeTypesRequest,
+    DeviceChallengeTypes,
 } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-validate")
@@ -44,26 +44,26 @@ export class AuthenticatorValidateStage
     }
 
     @state()
-    _selectedDeviceChallenge?: DeviceChallengeTypesRequest;
+    _selectedDeviceChallenge?: DeviceChallengeTypes;
 
-    set selectedDeviceChallenge(value: DeviceChallengeTypesRequest | undefined) {
+    set selectedDeviceChallenge(value: DeviceChallengeTypes | undefined) {
         const previousChallenge = this._selectedDeviceChallenge;
         this._selectedDeviceChallenge = value;
         if (!value) return;
         if (value.uid === previousChallenge?.uid) return;
         const selectionPayload: AuthenticatorValidationChallengeResponseRequest = {
-            selectedChallenge: value,
+            selectedChallengeUid: value.uid,
             component: this.challenge.component,
         };
         this.host?.submit(selectionPayload);
     }
 
-    get selectedDeviceChallenge(): DeviceChallengeTypesRequest | undefined {
+    get selectedDeviceChallenge(): DeviceChallengeTypes | undefined {
         return this._selectedDeviceChallenge;
     }
 
-    get deviceChallenges(): DeviceChallengeTypesRequest[] {
-        return this.challenge.deviceChallenges as DeviceChallengeTypesRequest[];
+    get deviceChallenges(): DeviceChallengeTypes[] {
+        return this.challenge.deviceChallenges as DeviceChallengeTypes[];
     }
 
     submit(payload: AuthenticatorValidationChallengeResponseRequest): Promise<boolean> {
@@ -103,7 +103,7 @@ export class AuthenticatorValidateStage
         `);
     }
 
-    renderDevicePickerSingle(deviceChallenge: DeviceChallengeTypesRequest): TemplateResult {
+    renderDevicePickerSingle(deviceChallenge: DeviceChallengeTypes): TemplateResult {
         switch (deviceChallenge.component) {
             case "ak-stage-authenticator-validate-device-duo":
                 return html`<i class="fas fa-mobile-alt"></i>
