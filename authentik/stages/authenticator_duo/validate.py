@@ -10,7 +10,11 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import Challenge, ChallengeTypes
 from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE
 from authentik.root.middleware import ClientIPMiddleware
-from authentik.stages.authenticator.validate import DeviceChallenge, DeviceValidator
+from authentik.stages.authenticator.validate import (
+    DeviceChallenge,
+    DeviceChallengeResponse,
+    DeviceValidator,
+)
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_validate.models import DeviceClasses
 
@@ -19,8 +23,14 @@ class DuoDeviceChallenge(DeviceChallenge):
     component = CharField(default="ak-stage-authenticator-validate-device-duo")
 
 
+class DuoDeviceChallengeResponse(DeviceChallengeResponse[DuoDevice]):
+    component = CharField(default="ak-stage-authenticator-validate-device-duo")
+
+
 class DuoDeviceValidator(DeviceValidator[DuoDevice]):
     """Validate duo devices"""
+
+    response_class = DuoDeviceChallengeResponse
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
         return DuoDeviceChallenge(

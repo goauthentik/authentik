@@ -68,6 +68,10 @@ class AuthenticatorValidationChallenge(WithUserInfoChallenge):
         )
     )
     def get_device_challenges(self, _) -> list[DeviceChallenge]:
+        """Device challenges"""
+        # We don't want to just have the serializer set as ListField(DeviceChallenge)
+        # as that will only return the fields common to DeviceChallenge
+        # so since we do the serializer validation earlier and just return the data
         return self.initial_data["device_challenges"]
 
 
@@ -115,7 +119,7 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     def validate(self, data: dict):
         if PLAN_CONTEXT_SELECTED_STAGE in self.stage.executor.plan.context:
             return data
-        device_challenge: DeviceChallenge = data.get("selected_challenge")
+        device_challenge: DeviceChallenge = data.get("selected_challenge_uid")
         # We have to get the response data from `initial_data` so
         # it's not pre-validated. As the class only has the field defined
         # as the base serializer, this will loose all custom attributes

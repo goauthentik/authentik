@@ -31571,6 +31571,7 @@ components:
       - verbose_name_plural
     DeviceChallengeResponseRequest:
       oneOf:
+      - $ref: '#/components/schemas/DuoDeviceChallengeResponseRequest'
       - $ref: '#/components/schemas/SMSDeviceChallengeResponseRequest'
       - $ref: '#/components/schemas/StaticDeviceChallengeResponseRequest'
       - $ref: '#/components/schemas/TOTPDeviceChallengeResponseRequest'
@@ -31578,6 +31579,7 @@ components:
       discriminator:
         propertyName: component
         mapping:
+          ak-stage-authenticator-validate-device-duo: '#/components/schemas/DuoDeviceChallengeResponseRequest'
           ak-stage-authenticator-validate-device-sms: '#/components/schemas/SMSDeviceChallengeResponseRequest'
           ak-stage-authenticator-validate-device-static: '#/components/schemas/StaticDeviceChallengeResponseRequest'
           ak-stage-authenticator-validate-device-totp: '#/components/schemas/TOTPDeviceChallengeResponseRequest'
@@ -31947,6 +31949,27 @@ components:
           type: string
       required:
       - type
+      - uid
+    DuoDeviceChallengeResponseRequest:
+      type: object
+      description: |-
+        Response to a device's challenge. May continue no additional fields depending
+        of device type.
+      properties:
+        component:
+          type: string
+          minLength: 1
+          default: ak-stage-authenticator-validate-device-duo
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetailRequest'
+        uid:
+          type: string
+          minLength: 1
+      required:
       - uid
     DuoDeviceEnrollmentStatus:
       type: object
