@@ -1,4 +1,5 @@
 """proxy provider tasks"""
+
 from hashlib import sha256
 
 from asgiref.sync import async_to_sync

@@ -1,4 +1,5 @@
 """Blueprint exporter"""
+
 from typing import Iterable
 from uuid import UUID
 

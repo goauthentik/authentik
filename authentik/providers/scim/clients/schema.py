@@ -1,4 +1,5 @@
 """Custom SCIM schemas"""
+
 from typing import Optional
 
 from pydanticscim.group import Group as BaseGroup

@@ -1,4 +1,5 @@
 """authentik core tasks"""
+
 from datetime import datetime, timedelta
 
 from django.contrib.sessions.backends.cache import KEY_PREFIX

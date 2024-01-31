@@ -1,4 +1,5 @@
 """Test token view"""
+
 from base64 import b64encode, urlsafe_b64encode
 from hashlib import sha256
 

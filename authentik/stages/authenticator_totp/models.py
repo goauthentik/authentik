@@ -1,4 +1,5 @@
 """OTP Time-based models"""
+
 import time
 from base64 import b32encode
 from binascii import unhexlify

@@ -1,4 +1,5 @@
 """authentik events models"""
+
 import time
 from collections import Counter
 from datetime import timedelta

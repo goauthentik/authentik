@@ -1,4 +1,5 @@
 """Time utilities"""
+
 import datetime
 from typing import Optional
 

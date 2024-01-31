@@ -1,4 +1,5 @@
 """authentik benchmark command"""
+
 from csv import DictWriter
 from multiprocessing import Manager, cpu_count, get_context
 from sys import stdout

@@ -1,4 +1,5 @@
 """Flow API Views"""
+
 from django.core.cache import cache
 from django.http import HttpResponse
 from django.urls import reverse
@@ -113,6 +114,7 @@ class FlowImportResultSerializer(PassiveSerializer):
 class FlowViewSet(UsedByMixin, ModelViewSet):
     """Flow Viewset"""
 
+    # pylint: disable=no-member
     queryset = Flow.objects.all().prefetch_related("stages", "policies")
     serializer_class = FlowSerializer
     lookup_field = "slug"

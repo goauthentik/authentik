@@ -1,4 +1,5 @@
 """authentik saml source processor"""
+
 from base64 import b64decode
 from time import mktime
 from typing import TYPE_CHECKING, Any

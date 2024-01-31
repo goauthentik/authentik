@@ -1,4 +1,5 @@
 """authentik LDAP Authentication Backend"""
+
 from typing import Optional
 
 from django.http import HttpRequest

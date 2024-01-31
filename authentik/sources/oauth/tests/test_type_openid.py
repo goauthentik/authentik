@@ -1,4 +1,5 @@
 """OpenID Type tests"""
+
 from django.test import RequestFactory, TestCase
 from requests_mock import Mocker
 

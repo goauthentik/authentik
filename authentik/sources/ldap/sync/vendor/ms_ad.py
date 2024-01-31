@@ -1,4 +1,5 @@
 """Active Directory specific"""
+
 from datetime import datetime, timezone
 from enum import IntFlag
 from typing import Any, Generator

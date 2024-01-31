@@ -1,4 +1,5 @@
 """Plex tasks"""
+
 from requests import RequestException
 
 from authentik.events.models import Event, EventAction, TaskStatus

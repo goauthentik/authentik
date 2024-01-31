@@ -1,4 +1,5 @@
 """email stage tasks"""
+
 from email.utils import make_msgid
 from smtplib import SMTPException
 from typing import Any, Optional

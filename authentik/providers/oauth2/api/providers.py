@@ -1,4 +1,5 @@
 """OAuth2Provider API Views"""
+
 from copy import copy
 
 from django.urls import reverse

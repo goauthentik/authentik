@@ -1,4 +1,5 @@
 """Test validator stage"""
+
 from unittest.mock import MagicMock, patch
 
 from django.test.client import RequestFactory

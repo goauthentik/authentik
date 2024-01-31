@@ -1,4 +1,5 @@
 """SAMLProvider API Views"""
+
 from copy import copy
 from xml.etree.ElementTree import ParseError  # nosec
 
@@ -222,9 +223,9 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
             metadata = proc.build_entity_descriptor()
             if "download" in request.query_params:
                 response = HttpResponse(metadata, content_type="application/xml")
-                response[
-                    "Content-Disposition"
-                ] = f'attachment; filename="{provider.name}_authentik_meta.xml"'
+                response["Content-Disposition"] = (
+                    f'attachment; filename="{provider.name}_authentik_meta.xml"'
+                )
                 return response
             return Response({"metadata": metadata})
         except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member

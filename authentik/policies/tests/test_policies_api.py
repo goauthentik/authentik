@@ -1,4 +1,5 @@
 """Test policies API"""
+
 from json import loads
 from unittest.mock import MagicMock, patch
 

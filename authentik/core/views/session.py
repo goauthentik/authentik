@@ -1,4 +1,5 @@
 """authentik Session Views"""
+
 from typing import Any
 
 from django.shortcuts import get_object_or_404

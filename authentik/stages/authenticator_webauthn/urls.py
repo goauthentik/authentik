@@ -1,4 +1,5 @@
 """API URLs"""
+
 from authentik.stages.authenticator_webauthn.api import (
     AuthenticateWebAuthnStageViewSet,
     WebAuthnAdminDeviceViewSet,

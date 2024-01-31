@@ -1,4 +1,5 @@
 """OAuth2/OpenID Utils"""
+
 import re
 from base64 import b64decode
 from binascii import Error
@@ -161,9 +162,9 @@ def protected_resource_view(scopes: list[str]):
                     raise BearerTokenError("insufficient_scope")
             except BearerTokenError as error:
                 response = HttpResponse(status=error.status)
-                response[
-                    "WWW-Authenticate"
-                ] = f'error="{error.code}", error_description="{error.description}"'
+                response["WWW-Authenticate"] = (
+                    f'error="{error.code}", error_description="{error.description}"'
+                )
                 return response
             kwargs["token"] = token
             CTX_AUTH_VIA.set("oauth_token")

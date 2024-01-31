@@ -1,4 +1,5 @@
 """SAML Source tests"""
+
 from defusedxml import ElementTree
 from django.test import RequestFactory, TestCase
 from lxml import etree  # nosec

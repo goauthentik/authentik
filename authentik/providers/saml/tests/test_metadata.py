@@ -1,4 +1,5 @@
 """Test Service-Provider Metadata Parser"""
+
 import xmlsec
 from defusedxml.lxml import fromstring
 from django.test import RequestFactory, TestCase

@@ -1,4 +1,5 @@
 """OAuth 1 Clients"""
+
 from typing import Any, Optional
 from urllib.parse import parse_qsl
 

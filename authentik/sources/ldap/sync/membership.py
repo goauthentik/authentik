@@ -1,4 +1,5 @@
 """Sync LDAP Users and groups into authentik"""
+
 from typing import Any, Generator, Optional
 
 from django.db.models import Q

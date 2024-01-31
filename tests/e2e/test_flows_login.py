@@ -1,4 +1,5 @@
 """test default login flow"""
+
 from authentik.blueprints.tests import apply_blueprint
 from tests.e2e.utils import SeleniumTestCase, retry
 

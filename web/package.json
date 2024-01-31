@@ -115,7 +115,7 @@
         "npm-run-all": "^4.1.5",
         "prettier": "^3.2.4",
         "pseudolocale": "^2.0.0",
-        "pyright": "=1.1.349",
+        "pyright": "=1.1.338",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "rollup": "^4.9.6",

@@ -1,4 +1,5 @@
 """root settings for authentik"""
+
 import importlib
 import os
 from collections import OrderedDict
@@ -417,9 +418,9 @@ if CONFIG.get("storage.media.backend", "file") == "s3":
             "signature_version": "s3v4",
             "file_overwrite": False,
             "location": "media",
-            "url_protocol": "https:"
-            if CONFIG.get("storage.media.s3.secure_urls", True)
-            else "http:",
+            "url_protocol": (
+                "https:" if CONFIG.get("storage.media.s3.secure_urls", True) else "http:"
+            ),
             "custom_domain": CONFIG.get("storage.media.s3.custom_domain", None),
         },
     }

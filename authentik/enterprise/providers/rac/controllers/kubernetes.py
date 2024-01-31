@@ -1,4 +1,5 @@
 """RAC Provider Kubernetes Controller"""
+
 from authentik.outposts.controllers.k8s.service import ServiceReconciler
 from authentik.outposts.controllers.kubernetes import KubernetesController
 from authentik.outposts.models import KubernetesServiceConnection, Outpost

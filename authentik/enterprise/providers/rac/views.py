@@ -1,4 +1,5 @@
 """RAC Views"""
+
 from typing import Any
 
 from django.http import Http404, HttpRequest, HttpResponse

@@ -1,4 +1,5 @@
 """Enterprise models"""
+
 from base64 import b64decode
 from binascii import Error
 from dataclasses import dataclass, field

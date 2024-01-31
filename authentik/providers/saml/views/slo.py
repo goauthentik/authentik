@@ -1,4 +1,5 @@
 """SLO Views"""
+
 from typing import Optional
 
 from django.http import HttpRequest

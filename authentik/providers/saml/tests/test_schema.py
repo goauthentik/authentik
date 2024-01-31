@@ -1,4 +1,5 @@
 """Test Requests and Responses against schema"""
+
 from base64 import b64encode
 
 from django.test import TestCase

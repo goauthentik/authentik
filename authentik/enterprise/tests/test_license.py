@@ -1,4 +1,5 @@
 """Enterprise license tests"""
+
 from datetime import timedelta
 from time import mktime
 from unittest.mock import MagicMock, patch

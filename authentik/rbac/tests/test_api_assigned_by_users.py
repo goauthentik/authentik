@@ -1,4 +1,5 @@
 """Test UserAssignedPermissionViewSet api"""
+
 from django.urls import reverse
 from guardian.shortcuts import assign_perm
 from rest_framework.test import APITestCase

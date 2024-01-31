@@ -1,4 +1,5 @@
 """Meta API"""
+
 from drf_spectacular.utils import extend_schema
 from rest_framework.fields import CharField
 from rest_framework.permissions import IsAuthenticated

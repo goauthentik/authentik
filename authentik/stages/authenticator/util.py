@@ -1,4 +1,5 @@
 """Authenticator utils"""
+
 import random
 import string
 from binascii import unhexlify

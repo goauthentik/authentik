@@ -1,4 +1,5 @@
 """Inject brand into current request"""
+
 from typing import Callable
 
 from django.http.request import HttpRequest

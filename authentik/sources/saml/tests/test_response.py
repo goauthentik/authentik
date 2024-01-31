@@ -1,4 +1,5 @@
 """SAML Source tests"""
+
 from base64 import b64encode
 
 from django.contrib.sessions.middleware import SessionMiddleware

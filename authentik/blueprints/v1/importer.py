@@ -1,4 +1,5 @@
 """Blueprint importer"""
+
 from contextlib import contextmanager
 from copy import deepcopy
 from typing import Any, Optional

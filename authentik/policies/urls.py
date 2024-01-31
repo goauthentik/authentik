@@ -1,4 +1,5 @@
 """API URLs"""
+
 from authentik.policies.api.bindings import PolicyBindingViewSet
 from authentik.policies.api.policies import PolicyViewSet
 

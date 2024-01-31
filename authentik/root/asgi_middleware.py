@@ -1,4 +1,5 @@
 """ASGI middleware"""
+
 from channels.db import database_sync_to_async
 from channels.sessions import InstanceSessionWrapper as UpstreamInstanceSessionWrapper
 from channels.sessions import SessionMiddleware as UpstreamSessionMiddleware

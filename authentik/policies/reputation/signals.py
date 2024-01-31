@@ -1,4 +1,5 @@
 """authentik reputation request signals"""
+
 from django.contrib.auth.signals import user_logged_in
 from django.core.cache import cache
 from django.dispatch import receiver

@@ -1,4 +1,5 @@
 """Test userinfo view"""
+
 import json
 from dataclasses import asdict
 

@@ -1,4 +1,5 @@
 """google Type tests"""
+
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.test import TestCase
 from django.test.client import RequestFactory

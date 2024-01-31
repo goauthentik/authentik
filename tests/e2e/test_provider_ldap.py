@@ -1,4 +1,5 @@
 """LDAP and Outpost e2e tests"""
+
 from dataclasses import asdict
 from time import sleep
 

@@ -1,4 +1,5 @@
 """authentik crypto app config"""
+
 from datetime import datetime
 from typing import Optional
 

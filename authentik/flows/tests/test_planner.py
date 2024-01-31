@@ -1,4 +1,5 @@
 """flow planner tests"""
+
 from unittest.mock import MagicMock, Mock, PropertyMock, patch
 
 from django.contrib.auth.models import AnonymousUser

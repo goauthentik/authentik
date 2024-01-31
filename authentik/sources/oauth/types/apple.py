@@ -1,4 +1,5 @@
 """Apple OAuth Views"""
+
 from time import time
 from typing import Any, Optional
 

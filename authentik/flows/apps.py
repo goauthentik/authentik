@@ -1,4 +1,5 @@
 """authentik flows app config"""
+
 from prometheus_client import Gauge, Histogram
 
 from authentik.blueprints.apps import ManagedAppConfig

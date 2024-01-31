@@ -1,4 +1,5 @@
 """password tests"""
+
 from unittest.mock import MagicMock, patch
 
 from django.core.exceptions import PermissionDenied

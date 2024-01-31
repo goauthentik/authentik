@@ -1,4 +1,5 @@
 """Test API Utils"""
+
 from rest_framework.exceptions import ValidationError
 from rest_framework.test import APITestCase
 

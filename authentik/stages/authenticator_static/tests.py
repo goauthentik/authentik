@@ -1,4 +1,5 @@
 """Test Static API"""
+
 from django.test.utils import override_settings
 from django.urls import reverse
 from rest_framework.test import APITestCase

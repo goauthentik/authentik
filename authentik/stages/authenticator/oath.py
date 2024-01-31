@@ -1,4 +1,5 @@
 """OATH helpers"""
+
 import hmac
 from hashlib import sha1
 from struct import pack

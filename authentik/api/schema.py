@@ -1,4 +1,5 @@
 """Error Response schema, from https://github.com/axnsan12/drf-yasg/issues/224"""
+
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.generators import SchemaGenerator
 from drf_spectacular.plumbing import (

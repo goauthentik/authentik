@@ -1,4 +1,5 @@
 """password policy"""
+
 import re
 from hashlib import sha1
 

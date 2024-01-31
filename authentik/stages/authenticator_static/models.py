@@ -1,4 +1,5 @@
 """Static Authenticator models"""
+
 from base64 import b32encode
 from os import urandom
 from typing import Optional

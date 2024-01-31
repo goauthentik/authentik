@@ -1,4 +1,5 @@
 """User API Views"""
+
 from datetime import timedelta
 from json import loads
 from typing import Any, Optional

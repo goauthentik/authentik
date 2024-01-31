@@ -1,4 +1,5 @@
 """authentik sentry integration"""
+
 from asyncio.exceptions import CancelledError
 from typing import Any, Optional
 

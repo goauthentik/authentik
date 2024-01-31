@@ -1,4 +1,5 @@
 """outpost tests"""
+
 from shutil import rmtree
 from tempfile import mkdtemp
 

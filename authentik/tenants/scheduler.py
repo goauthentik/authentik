@@ -1,4 +1,5 @@
 """Tenant-aware Celery beat scheduler"""
+
 from tenant_schemas_celery.scheduler import (
     TenantAwarePersistentScheduler as BaseTenantAwarePersistentScheduler,
 )

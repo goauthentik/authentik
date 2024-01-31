@@ -1,4 +1,5 @@
 """authentik core exceptions"""
+
 from authentik.lib.sentry import SentryIgnoredException
 
 

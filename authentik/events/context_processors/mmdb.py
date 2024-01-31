@@ -1,4 +1,5 @@
 """Common logic for reading MMDB files"""
+
 from pathlib import Path
 from typing import Optional
 

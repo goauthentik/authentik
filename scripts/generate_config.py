@@ -1,4 +1,5 @@
 """Generate config for development"""
+
 from yaml import safe_dump
 
 from authentik.lib.generators import generate_id

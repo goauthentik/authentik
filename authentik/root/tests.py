@@ -1,4 +1,5 @@
 """root tests"""
+
 from base64 import b64encode
 
 from django.conf import settings
