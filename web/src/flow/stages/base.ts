@@ -9,7 +9,6 @@ import { CurrentBrand, ErrorDetail } from "@goauthentik/api";
 export interface StageHost {
     challenge?: unknown;
     flowSlug?: string;
-    loading: boolean;
     submit(payload: unknown): Promise<boolean>;
 
     readonly brand?: CurrentBrand;

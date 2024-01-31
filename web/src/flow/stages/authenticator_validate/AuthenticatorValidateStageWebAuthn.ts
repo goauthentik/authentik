@@ -10,6 +10,7 @@ import { AuthenticatorValidateStage } from "@goauthentik/flow/stages/authenticat
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import { WebAuthnDeviceChallenge, WebAuthnDeviceChallengeResponseRequest } from "@goauthentik/api";
 
@@ -90,15 +91,29 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
     }
 
     render(): TemplateResult {
-        if (this.authenticating) {
-            return html`<ak-empty-state ?loading=${true} header=${msg("Loading")}>
-                          </ak-empty-state>`;
-        }
         return html`<div class="pf-c-login__main-body">
+            <form class="pf-c-form">
+                <ak-form-static
+                    class="pf-c-form__group"
+                    userAvatar="${this.challenge.pendingUserAvatar}"
+                    user=${this.challenge.pendingUser}
+                >
+                    <div slot="link">
+                        <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
+                            >${msg("Not you?")}</a
+                        >
+                    </div>
+                </ak-form-static>
+                ${this.authenticating
+                    ? html`<ak-empty-state ?loading=${true} header=${msg("Authenticating")}>
+                      </ak-empty-state>`
+                    : nothing}
                 ${this.authenticateMessage
-                    ? html`<div class="pf-c-form__group pf-m-action">
-                              <p class="pf-m-block">${this.authenticateMessage}</p>
-                          </div>
+                    ? html`<ak-stage-access-denied-icon
+                              errorTitle=${msg("WebAuthn authentication failed")}
+                              errorMessage=${this.authenticateMessage}
+                          >
+                          </ak-stage-access-denied-icon>
                           <div class="pf-c-form__group pf-m-action">
                               <button
                                   class="pf-c-button pf-m-primary pf-m-block"
@@ -121,12 +136,9 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
                                         ${msg("Return to device picker")}
                                     </button>`
                                   : nothing}
-                          </div>
-
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
-            </footer>`
+                          </div>`
                     : nothing}
-            </div>`;
+            </form>
+        </div>`;
     }
 }

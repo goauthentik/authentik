@@ -23,6 +23,9 @@ export class AccessDeniedIcon extends AKElement {
     @property()
     errorMessage?: string;
 
+    @property()
+    errorTitle?: string;
+
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -51,7 +54,7 @@ export class AccessDeniedIcon extends AKElement {
             <p class="big-icon">
                 <i class="pf-icon pf-icon-error-circle-o"></i>
             </p>
-            <h3 class="pf-c-title pf-m-3xl reason">${msg("Request has been denied.")}</h3>
+            <h3 class="pf-c-title pf-m-3xl reason">${this.errorTitle ? this.errorTitle : msg("Request has been denied.")}</h3>
             ${this.errorMessage
                 ? html` <hr class="pf-c-divider" />
                       <p>${this.errorMessage}</p>`

@@ -31,13 +31,6 @@ export class AuthenticatorValidateStage
     >
     implements StageHost
 {
-    set loading(value: boolean) {
-        this.host.loading = value;
-    }
-
-    get loading(): boolean {
-        return this.host.loading;
-    }
 
     get brand(): CurrentBrand | undefined {
         return this.host.brand;
