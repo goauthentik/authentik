@@ -1,28 +1,21 @@
 import { BaseDeviceStage } from "@goauthentik/app/flow/stages/authenticator_validate/base";
-import { checkWebAuthnSupport, transformAssertionForServer, transformCredentialRequestOptions } from "@goauthentik/common/helpers/webauthn";
+import {
+    checkWebAuthnSupport,
+    transformAssertionForServer,
+    transformCredentialRequestOptions,
+} from "@goauthentik/common/helpers/webauthn";
 import { AuthenticatorValidateStage } from "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage";
-
-
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-
-
-import { WebAuthnDeviceChallengeRequest, WebAuthnDeviceChallengeResponseRequest } from "@goauthentik/api";
-
+import {
+    WebAuthnDeviceChallengeRequest,
+    WebAuthnDeviceChallengeResponseRequest,
+} from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-validate-webauthn")
 export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
@@ -35,16 +28,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
     transformedCredentialRequestOptions?: PublicKeyCredentialRequestOptions;
 
     static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFLogin,
-            PFEmptyState,
-            PFBullseye,
-            PFForm,
-            PFFormControl,
-            PFTitle,
-            PFButton,
-        ];
+        return super.styles.concat(PFEmptyState);
     }
 
     async authenticate(): Promise<void> {

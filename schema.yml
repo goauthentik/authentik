@@ -31409,23 +31409,6 @@ components:
         * `content_right` - CONTENT_RIGHT
         * `sidebar_left` - SIDEBAR_LEFT
         * `sidebar_right` - SIDEBAR_RIGHT
-    ContextualFlowInfoRequest:
-      type: object
-      description: Contextual flow information for a challenge
-      properties:
-        title:
-          type: string
-        background:
-          type: string
-          minLength: 1
-        cancel_url:
-          type: string
-          minLength: 1
-        layout:
-          $ref: '#/components/schemas/ContextualFlowInfoLayoutEnum'
-      required:
-      - cancel_url
-      - layout
     Coordinate:
       type: object
       description: Coordinates for diagrams
@@ -42951,10 +42934,6 @@ components:
         Response to a device's challenge. May continue no additional fields depending
         of device type.
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
-        flow_info:
-          $ref: '#/components/schemas/ContextualFlowInfoRequest'
         component:
           type: string
           minLength: 1
@@ -42965,12 +42944,15 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetailRequest'
+        uid:
+          type: string
+          minLength: 1
         code:
           type: string
           minLength: 1
       required:
       - code
-      - type
+      - uid
     SMSDeviceRequest:
       type: object
       description: Serializer for sms authenticator devices
@@ -43586,10 +43568,6 @@ components:
         Response to a device's challenge. May continue no additional fields depending
         of device type.
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
-        flow_info:
-          $ref: '#/components/schemas/ContextualFlowInfoRequest'
         component:
           type: string
           minLength: 1
@@ -43600,12 +43578,15 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetailRequest'
+        uid:
+          type: string
+          minLength: 1
         code:
           type: string
           minLength: 1
       required:
       - code
-      - type
+      - uid
     StaticDeviceRequest:
       type: object
       description: Serializer for static authenticator devices
@@ -43826,10 +43807,6 @@ components:
         Response to a device's challenge. May continue no additional fields depending
         of device type.
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
-        flow_info:
-          $ref: '#/components/schemas/ContextualFlowInfoRequest'
         component:
           type: string
           minLength: 1
@@ -43840,12 +43817,15 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetailRequest'
+        uid:
+          type: string
+          minLength: 1
         code:
           type: string
           minLength: 1
       required:
       - code
-      - type
+      - uid
     TOTPDeviceRequest:
       type: object
       description: Serializer for totp authenticator devices
@@ -45162,10 +45142,6 @@ components:
         Response to a device's challenge. May continue no additional fields depending
         of device type.
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
-        flow_info:
-          $ref: '#/components/schemas/ContextualFlowInfoRequest'
         component:
           type: string
           minLength: 1
@@ -45176,12 +45152,15 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetailRequest'
+        uid:
+          type: string
+          minLength: 1
         data:
           type: object
           additionalProperties: {}
       required:
       - data
-      - type
+      - uid
     WebAuthnDeviceRequest:
       type: object
       description: Serializer for WebAuthn authenticator devices

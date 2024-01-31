@@ -5,16 +5,9 @@ import "@goauthentik/flow/FormStatic";
 import { AuthenticatorValidateStage } from "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { DuoDeviceChallengeRequest } from "@goauthentik/api";
 
@@ -24,10 +17,6 @@ export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<
     // Duo doesn't have a response challenge
     DuoDeviceChallengeRequest
 > {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
-    }
-
     render(): TemplateResult {
         if (!this.challenge) {
             return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>

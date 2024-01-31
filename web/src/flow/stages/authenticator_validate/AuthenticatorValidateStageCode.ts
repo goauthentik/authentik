@@ -10,13 +10,6 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
 import { TOTPDeviceChallengeRequest, TOTPDeviceChallengeResponseRequest } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-validate-code")
@@ -27,24 +20,16 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
     TOTPDeviceChallengeResponseRequest
 > {
     static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFLogin,
-            PFForm,
-            PFFormControl,
-            PFTitle,
-            PFButton,
-            css`
-                .icon-description {
-                    display: flex;
-                }
-                .icon-description i {
-                    font-size: 2em;
-                    padding: 0.25em;
-                    padding-right: 0.5em;
-                }
-            `,
-        ];
+        return super.styles.concat(css`
+            .icon-description {
+                display: flex;
+            }
+            .icon-description i {
+                font-size: 2em;
+                padding: 0.25em;
+                padding-right: 0.5em;
+            }
+        `);
     }
 
     render(): TemplateResult {
@@ -122,14 +107,8 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                             ${msg("Continue")}
                         </button>
-                    </div>
-                </form>
-            </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links">
-                    ${this.showBackButton
-                        ? html`<li class="pf-c-login__main-footer-links-item">
-                              <button
+                        ${this.showBackButton
+                            ? html`<button
                                   class="pf-c-button pf-m-secondary pf-m-block"
                                   @click=${() => {
                                       if (!this.host) return;
@@ -139,10 +118,13 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
                                   }}
                               >
                                   ${msg("Return to device picker")}
-                              </button>
-                          </li>`
-                        : html``}
-                </ul>
+                              </button>`
+                            : html``}
+                    </div>
+                </form>
+            </div>
+            <footer class="pf-c-login__main-footer">
+                <ul class="pf-c-login__main-footer-links"></ul>
             </footer>`;
     }
 }

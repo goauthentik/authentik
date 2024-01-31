@@ -7,7 +7,7 @@ from rest_framework.fields import CharField
 from authentik.core.models import Application
 from authentik.core.signals import login_failed
 from authentik.events.models import Event, EventAction
-from authentik.flows.challenge import Challenge
+from authentik.flows.challenge import Challenge, ChallengeTypes
 from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.authenticator.validate import DeviceChallenge, DeviceValidator
@@ -20,10 +20,16 @@ class DuoDeviceChallenge(DeviceChallenge):
 
 
 class DuoDeviceValidator(DeviceValidator[DuoDevice]):
-    def get_challenge(self, *args, **kwargs) -> Challenge:
-        return DuoDeviceChallenge()
+    """Validate duo devices"""
 
-    def select_challenge(self):
+    def get_challenge(self, *args, **kwargs) -> Challenge:
+        return DuoDeviceChallenge(
+            data={
+                "type": ChallengeTypes.NATIVE.value,
+            }
+        )
+
+    def select_challenge(self, challenge: DuoDeviceChallenge):
         user = self.get_pending_user()
         if self.device.user != user:
             self.logger.warning("device mismatch")

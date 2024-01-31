@@ -120,11 +120,8 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         if not device_validator.device_allowed():
             self.stage.logger.debug("Device not allowed, skipping", device=device)
             raise ValidationError("Invalid device")
-        # Default value for challenge type
-        device_challenge_response.setdefault("type", ChallengeTypes.NATIVE.value)
-        device_validator.get_response_instance(device_challenge_response).is_valid(
-            raise_exception=True
-        )
+        response = device_validator.get_response_instance(device_challenge_response)
+        response.is_valid(raise_exception=True)
         self.stage.executor.plan.context.setdefault(PLAN_CONTEXT_METHOD, "auth_mfa")
         self.stage.executor.plan.context.setdefault(PLAN_CONTEXT_METHOD_ARGS, {})
         self.stage.executor.plan.context[PLAN_CONTEXT_METHOD_ARGS].setdefault("mfa_devices", [])
