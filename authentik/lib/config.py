@@ -1,4 +1,5 @@
 """authentik core config loader"""
+
 import base64
 import json
 import os

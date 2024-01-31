@@ -1,4 +1,5 @@
 """authentik invitation stage app config"""
+
 from django.apps import AppConfig
 
 

@@ -1,4 +1,5 @@
 """SAML AuthnRequest Processor"""
+
 from base64 import b64encode
 from urllib.parse import quote_plus
 

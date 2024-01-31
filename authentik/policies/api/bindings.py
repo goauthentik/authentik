@@ -1,4 +1,5 @@
 """policy binding API Views"""
+
 from typing import OrderedDict
 
 from django.core.exceptions import ObjectDoesNotExist

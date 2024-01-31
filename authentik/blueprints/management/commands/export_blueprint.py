@@ -1,4 +1,5 @@
 """Export blueprint of current authentik install"""
+
 from django.core.management.base import no_translations
 from structlog.stdlib import get_logger
 

@@ -1,4 +1,5 @@
 """Test property mappings API"""
+
 from json import dumps
 
 from django.urls import reverse

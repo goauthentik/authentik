@@ -1,4 +1,5 @@
 """group tests"""
+
 from django.test.testcases import TestCase
 
 from authentik.core.models import Group, User

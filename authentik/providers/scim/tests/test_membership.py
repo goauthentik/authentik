@@ -1,4 +1,5 @@
 """SCIM Membership tests"""
+
 from django.test import TestCase
 from requests_mock import Mocker
 

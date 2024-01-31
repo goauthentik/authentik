@@ -1,4 +1,5 @@
 """v1 blueprints tasks"""
+
 from dataclasses import asdict, dataclass, field
 from hashlib import sha512
 from pathlib import Path

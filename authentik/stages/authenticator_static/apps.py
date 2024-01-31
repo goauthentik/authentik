@@ -1,4 +1,5 @@
 """Authenticator Static stage"""
+
 from authentik.blueprints.apps import ManagedAppConfig
 
 

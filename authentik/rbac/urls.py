@@ -1,4 +1,5 @@
 """RBAC API urls"""
+
 from authentik.rbac.api.rbac import RBACPermissionViewSet
 from authentik.rbac.api.rbac_assigned_by_roles import RoleAssignedPermissionViewSet
 from authentik.rbac.api.rbac_assigned_by_users import UserAssignedPermissionViewSet

@@ -1,4 +1,5 @@
 """api v3 urls"""
+
 from importlib import import_module
 
 from django.urls import path

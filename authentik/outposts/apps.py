@@ -1,4 +1,5 @@
 """authentik outposts app config"""
+
 from prometheus_client import Gauge
 from structlog.stdlib import get_logger
 

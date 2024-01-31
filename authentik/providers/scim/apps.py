@@ -1,4 +1,5 @@
 """authentik SCIM Provider app config"""
+
 from authentik.blueprints.apps import ManagedAppConfig
 
 

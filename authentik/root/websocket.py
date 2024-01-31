@@ -1,4 +1,5 @@
 """root Websocket URLS"""
+
 from importlib import import_module
 
 from structlog.stdlib import get_logger

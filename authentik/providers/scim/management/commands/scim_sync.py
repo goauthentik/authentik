@@ -1,4 +1,5 @@
 """SCIM Sync"""
+
 from structlog.stdlib import get_logger
 
 from authentik.providers.scim.models import SCIMProvider

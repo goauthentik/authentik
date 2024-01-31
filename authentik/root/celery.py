@@ -1,4 +1,5 @@
 """authentik core celery"""
+
 import os
 from contextvars import ContextVar
 from logging.config import dictConfig

@@ -1,4 +1,5 @@
 """authentik access helper classes"""
+
 from typing import Any, Optional
 
 from django.contrib import messages

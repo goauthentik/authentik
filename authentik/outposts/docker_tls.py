@@ -1,4 +1,5 @@
 """Create Docker TLSConfig from CertificateKeyPair"""
+
 from os import unlink
 from pathlib import Path
 from tempfile import gettempdir

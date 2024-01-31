@@ -1,4 +1,5 @@
 """authentik managed models tests"""
+
 from typing import Callable, Type
 
 from django.apps import apps

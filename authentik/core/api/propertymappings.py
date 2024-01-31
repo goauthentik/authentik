@@ -1,4 +1,5 @@
 """PropertyMapping API Views"""
+
 from json import dumps
 
 from drf_spectacular.types import OpenApiTypes

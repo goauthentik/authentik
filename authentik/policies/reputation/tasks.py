@@ -1,4 +1,5 @@
 """Reputation tasks"""
+
 from django.core.cache import cache
 from structlog.stdlib import get_logger
 

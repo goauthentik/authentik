@@ -1,4 +1,5 @@
 """SCIM User tests"""
+
 from json import loads
 
 from django.test import TestCase

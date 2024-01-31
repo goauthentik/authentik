@@ -1,4 +1,5 @@
 """LDAP Sync tasks"""
+
 from typing import Optional
 from uuid import uuid4
 

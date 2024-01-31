@@ -1,4 +1,5 @@
 """Avatar utils"""
+
 from base64 import b64encode
 from functools import cache as funccache
 from hashlib import md5

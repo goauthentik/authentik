@@ -1,4 +1,5 @@
 """SAML Identity Provider Metadata Processor"""
+
 from hashlib import sha256
 from typing import Iterator, Optional
 

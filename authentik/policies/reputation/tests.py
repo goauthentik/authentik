@@ -1,4 +1,5 @@
 """test reputation signals and policy"""
+
 from django.core.cache import cache
 from django.test import RequestFactory, TestCase
 

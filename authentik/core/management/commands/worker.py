@@ -1,4 +1,5 @@
 """Run worker"""
+
 from sys import exit as sysexit
 from tempfile import tempdir
 

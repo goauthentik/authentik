@@ -1,4 +1,5 @@
 """Test Domain API"""
+
 from json import loads
 
 from django.urls import reverse

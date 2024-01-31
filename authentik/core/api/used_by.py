@@ -1,4 +1,5 @@
 """used_by mixin"""
+
 from enum import Enum
 from inspect import getmembers
 

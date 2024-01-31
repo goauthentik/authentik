@@ -1,4 +1,5 @@
 """Websocket tests"""
+
 from dataclasses import asdict
 
 from channels.exceptions import DenyConnection

@@ -1,4 +1,5 @@
 """Crypto API Views"""
+
 from datetime import datetime
 from typing import Optional
 
@@ -272,9 +273,9 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
             response = HttpResponse(
                 certificate.certificate_data, content_type="application/x-pem-file"
             )
-            response[
-                "Content-Disposition"
-            ] = f'attachment; filename="{certificate.name}_certificate.pem"'
+            response["Content-Disposition"] = (
+                f'attachment; filename="{certificate.name}_certificate.pem"'
+            )
             return response
         return Response(CertificateDataSerializer({"data": certificate.certificate_data}).data)
 
@@ -300,8 +301,8 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
         if "download" in request.query_params:
             # Mime type from https://pki-tutorial.readthedocs.io/en/latest/mime.html
             response = HttpResponse(certificate.key_data, content_type="application/x-pem-file")
-            response[
-                "Content-Disposition"
-            ] = f'attachment; filename="{certificate.name}_private_key.pem"'
+            response["Content-Disposition"] = (
+                f'attachment; filename="{certificate.name}_private_key.pem"'
+            )
             return response
         return Response(CertificateDataSerializer({"data": certificate.key_data}).data)

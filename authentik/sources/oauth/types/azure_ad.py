@@ -1,4 +1,5 @@
 """AzureAD OAuth2 Views"""
+
 from typing import Any
 
 from structlog.stdlib import get_logger

@@ -1,4 +1,5 @@
 """admin signals"""
+
 from django.dispatch import receiver
 
 from authentik.admin.apps import GAUGE_WORKERS

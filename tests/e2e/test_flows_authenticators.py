@@ -1,4 +1,5 @@
 """test flow with otp stages"""
+
 from base64 import b32decode
 from time import sleep
 from urllib.parse import parse_qs, urlparse

@@ -1,4 +1,5 @@
 """SAML Service Provider Metadata Processor"""
+
 from typing import Iterator, Optional
 
 from django.http import HttpRequest
@@ -63,9 +64,9 @@ class MetadataProcessor:
         entity_descriptor.attrib["entityID"] = self.source.get_issuer(self.http_request)
 
         sp_sso_descriptor = SubElement(entity_descriptor, f"{{{NS_SAML_METADATA}}}SPSSODescriptor")
-        sp_sso_descriptor.attrib[
-            "protocolSupportEnumeration"
-        ] = "urn:oasis:names:tc:SAML:2.0:protocol"
+        sp_sso_descriptor.attrib["protocolSupportEnumeration"] = (
+            "urn:oasis:names:tc:SAML:2.0:protocol"
+        )
 
         signing_descriptor = self.get_signing_key_descriptor()
         if signing_descriptor is not None:

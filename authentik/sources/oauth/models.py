@@ -1,4 +1,5 @@
 """OAuth Client models"""
+
 from typing import TYPE_CHECKING, Optional
 
 from django.db import models

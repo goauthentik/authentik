@@ -1,4 +1,5 @@
 """authentik consent app"""
+
 from django.apps import AppConfig
 
 

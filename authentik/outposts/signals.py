@@ -1,4 +1,5 @@
 """authentik outpost signals"""
+
 from django.core.cache import cache
 from django.db.models import Model
 from django.db.models.signals import m2m_changed, post_save, pre_delete, pre_save

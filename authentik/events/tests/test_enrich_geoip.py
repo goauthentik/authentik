@@ -1,4 +1,5 @@
 """Test GeoIP Wrapper"""
+
 from django.test import TestCase
 
 from authentik.events.context_processors.geoip import GeoIPContextProcessor

@@ -1,4 +1,5 @@
 """authentik admin Middleware to impersonate users"""
+
 from contextvars import ContextVar
 from typing import Callable, Optional
 from uuid import uuid4

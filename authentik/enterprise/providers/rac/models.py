@@ -1,4 +1,5 @@
 """RAC Models"""
+
 from typing import Optional
 from uuid import uuid4
 

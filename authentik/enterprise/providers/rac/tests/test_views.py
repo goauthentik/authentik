@@ -1,4 +1,5 @@
 """RAC Views tests"""
+
 from datetime import timedelta
 from json import loads
 from time import mktime

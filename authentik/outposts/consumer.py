@@ -1,4 +1,5 @@
 """Outpost websocket handler"""
+
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from enum import IntEnum

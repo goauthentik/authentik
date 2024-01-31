@@ -1,4 +1,5 @@
 """Kubernetes Traefik Middleware Reconciler"""
+
 from dataclasses import asdict, dataclass, field
 from typing import TYPE_CHECKING
 

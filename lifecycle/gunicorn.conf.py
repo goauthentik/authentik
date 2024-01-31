@@ -1,4 +1,5 @@
 """Gunicorn config"""
+
 import os
 from hashlib import sha512
 from multiprocessing import cpu_count

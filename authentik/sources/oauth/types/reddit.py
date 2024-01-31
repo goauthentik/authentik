@@ -1,4 +1,5 @@
 """Reddit OAuth Views"""
+
 from typing import Any
 
 from requests.auth import HTTPBasicAuth

@@ -1,4 +1,5 @@
 """Invitation Stage API Views"""
+
 from django_filters.filters import BooleanFilter
 from django_filters.filterset import FilterSet
 from rest_framework.serializers import ModelSerializer

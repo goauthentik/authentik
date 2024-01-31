@@ -1,4 +1,5 @@
 """Write stage logic"""
+
 from typing import Any, Optional
 
 from django.contrib.auth import update_session_auth_hash

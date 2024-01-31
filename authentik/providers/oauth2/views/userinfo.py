@@ -1,4 +1,5 @@
 """authentik OAuth2 OpenID Userinfo views"""
+
 from typing import Any, Optional
 
 from deepmerge import always_merger

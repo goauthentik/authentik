@@ -1,4 +1,5 @@
 """Tenant utils"""
+
 from django.db import connection
 
 from authentik.tenants.models import Tenant

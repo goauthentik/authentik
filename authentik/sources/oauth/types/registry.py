@@ -1,4 +1,5 @@
 """Source type manager"""
+
 from enum import Enum
 from typing import Callable, Optional, Type
 

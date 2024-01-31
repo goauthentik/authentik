@@ -1,4 +1,5 @@
 """outpost tasks"""
+
 from os import R_OK, access
 from pathlib import Path
 from socket import gethostname

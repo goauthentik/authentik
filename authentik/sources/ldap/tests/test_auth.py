@@ -1,4 +1,5 @@
 """LDAP Source tests"""
+
 from unittest.mock import MagicMock, Mock, patch
 
 from django.db.models import Q

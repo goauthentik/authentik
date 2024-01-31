@@ -1,4 +1,5 @@
 """authentik core signals"""
+
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.contrib.sessions.backends.cache import KEY_PREFIX
 from django.core.cache import cache

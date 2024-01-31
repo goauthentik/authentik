@@ -1,4 +1,5 @@
 """Generic models"""
+
 import re
 
 from django.core.validators import URLValidator

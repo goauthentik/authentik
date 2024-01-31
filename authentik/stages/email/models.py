@@ -1,4 +1,5 @@
 """email stage models"""
+
 from os import R_OK, access
 from pathlib import Path
 from typing import Type

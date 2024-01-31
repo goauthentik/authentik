@@ -1,4 +1,5 @@
 """Delete stage logic"""
+
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.http import HttpRequest, HttpResponse

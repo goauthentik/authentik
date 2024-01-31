@@ -1,4 +1,5 @@
 """Monitored tasks"""
+
 from datetime import timedelta
 from timeit import default_timer
 from typing import Any, Optional

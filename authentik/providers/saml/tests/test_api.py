@@ -1,4 +1,5 @@
 """SAML Provider API Tests"""
+
 from json import loads
 from tempfile import TemporaryFile
 

@@ -1,4 +1,5 @@
 """authentik OAuth2 Authorization views"""
+
 from dataclasses import InitVar, dataclass, field
 from datetime import timedelta
 from hashlib import sha256

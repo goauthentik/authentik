@@ -1,4 +1,5 @@
 """Repair missing permissions"""
+
 from django.apps import apps
 from django.contrib.auth.management import create_permissions
 from django.core.management.base import BaseCommand, no_translations

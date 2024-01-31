@@ -1,4 +1,5 @@
 """authentik storage backends"""
+
 import os
 
 from django.conf import settings

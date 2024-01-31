@@ -1,4 +1,5 @@
 """TOTP"""
+
 from django.apps import AppConfig
 
 

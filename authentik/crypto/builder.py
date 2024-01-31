@@ -1,4 +1,5 @@
 """Create self-signed certificates"""
+
 import datetime
 import uuid
 from typing import Optional

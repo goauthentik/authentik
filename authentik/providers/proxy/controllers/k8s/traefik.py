@@ -1,4 +1,5 @@
 """Kubernetes Traefik Middleware Reconciler"""
+
 from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler
 from authentik.outposts.controllers.kubernetes import KubernetesController
 from authentik.providers.proxy.controllers.k8s.traefik_2 import Traefik2MiddlewareReconciler

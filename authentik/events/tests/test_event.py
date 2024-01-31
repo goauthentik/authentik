@@ -1,4 +1,5 @@
 """event tests"""
+
 from urllib.parse import urlencode
 
 from django.contrib.contenttypes.models import ContentType

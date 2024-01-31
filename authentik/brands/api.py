@@ -1,4 +1,5 @@
 """Serializer for brands models"""
+
 from typing import Any
 
 from django.db import models

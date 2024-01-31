@@ -1,4 +1,5 @@
 """API URLs"""
+
 from authentik.stages.prompt.api import PromptStageViewSet, PromptViewSet
 
 api_urlpatterns = [
