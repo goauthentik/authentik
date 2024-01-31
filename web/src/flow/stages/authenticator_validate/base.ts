@@ -46,7 +46,7 @@ export class BaseDeviceStage<Tin, Tout> extends BaseStage<
         ];
     }
 
-    async submitDeviceChallenge(defaults?: Tout): Promise<boolean> {
+    async submitDeviceChallenge(defaults?: Tout, loading: boolean = true): Promise<boolean> {
         if (!this.deviceChallenge) {
             return false;
         }
@@ -54,7 +54,6 @@ export class BaseDeviceStage<Tin, Tout> extends BaseStage<
             defaults as unknown as DeviceChallengeResponseRequest,
         )) as unknown as DeviceChallengeResponseRequest;
         const selectedChallenge = this.deviceChallenge as unknown as DeviceChallengeTypes;
-        // @ts-expect-error
         formData.component = selectedChallenge.component;
         formData.uid = selectedChallenge.uid;
         const data: AuthenticatorValidationChallengeResponseRequest = {
@@ -62,6 +61,6 @@ export class BaseDeviceStage<Tin, Tout> extends BaseStage<
             selectedChallengeUid: selectedChallenge.uid,
             selectedChallengeResponse: formData,
         };
-        return await this.host.submit(data);
+        return await this.host.submit(data, loading);
     }
 }

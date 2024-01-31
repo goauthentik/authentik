@@ -189,12 +189,12 @@ export class FlowExecutor extends Interface implements StageHost {
         return globalAK()?.brand.uiTheme || UiThemeEnum.Automatic;
     }
 
-    async submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
+    async submit(payload?: FlowChallengeResponseRequest, loading: boolean = true): Promise<boolean> {
         if (!payload) return Promise.reject();
         if (!this.challenge) return Promise.reject();
         // @ts-expect-error
         payload.component = this.challenge.component;
-        this.loading = true;
+        this.loading = loading;
         try {
             const challenge = await new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolve({
                 flowSlug: this.flowSlug,

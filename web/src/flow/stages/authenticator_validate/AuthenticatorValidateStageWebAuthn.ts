@@ -55,6 +55,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
 
         // post the assertion to the server for verification.
         try {
+            this.authenticating = false;
             await this.submitDeviceChallenge({
                 data: transformedAssertionForServer,
                 uid: this.deviceChallenge?.uid || "",
@@ -84,9 +85,6 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
             .catch((e) => {
                 console.error(e);
                 this.authenticateMessage = e.toString();
-            })
-            .finally(() => {
-                this.authenticating = false;
             });
     }
 

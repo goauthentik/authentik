@@ -59,8 +59,8 @@ export class AuthenticatorValidateStage
         return this.challenge.deviceChallenges as DeviceChallengeTypes[];
     }
 
-    submit(payload: AuthenticatorValidationChallengeResponseRequest): Promise<boolean> {
-        return this.host?.submit(payload) || Promise.resolve();
+    submit(payload: AuthenticatorValidationChallengeResponseRequest, loading: boolean = true): Promise<boolean> {
+        return this.host?.submit(payload, loading) || Promise.resolve();
     }
 
     static get styles(): CSSResult[] {

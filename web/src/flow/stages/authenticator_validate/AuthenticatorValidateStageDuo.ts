@@ -9,16 +9,15 @@ import { TemplateResult, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { DuoDeviceChallenge } from "@goauthentik/api";
+import { DuoDeviceChallenge, DuoDeviceChallengeResponseRequest } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-validate-duo")
 export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<
     DuoDeviceChallenge,
-    // Duo doesn't have a response challenge
-    DuoDeviceChallenge
+    DuoDeviceChallengeResponseRequest
 > {
     firstUpdated(): void {
-        this.submitDeviceChallenge();
+        this.submitDeviceChallenge(undefined, false);
     }
 
     render(): TemplateResult {
