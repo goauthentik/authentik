@@ -12,7 +12,7 @@ from webauthn.helpers.structs import UserVerificationRequirement
 
 from authentik.core.api.utils import JSONDictField
 from authentik.core.signals import login_failed
-from authentik.flows.challenge import Challenge
+from authentik.flows.challenge import Challenge, ChallengeTypes
 from authentik.stages.authenticator.validate import (
     DeviceChallenge,
     DeviceChallengeResponse,
@@ -130,5 +130,8 @@ class WebAuthnDeviceValidator(DeviceValidator[WebAuthnDevice]):
         self.request.session[SESSION_KEY_WEBAUTHN_CHALLENGE] = authentication_options.challenge
 
         return WebAuthnDeviceChallenge(
-            data={"data": loads(options_to_json(authentication_options))}
+            data={
+                "type": ChallengeTypes.NATIVE.value,
+                "data": loads(options_to_json(authentication_options)),
+            }
         )

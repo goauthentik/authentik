@@ -6,9 +6,10 @@ from typing import Optional
 
 from django.conf import settings
 from django.http import HttpRequest, HttpResponse
+from drf_spectacular.utils import PolymorphicProxySerializer, extend_schema_field
 from jwt import PyJWTError, decode, encode
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, ListField, UUIDField
+from rest_framework.fields import CharField, ListField, SerializerMethodField, UUIDField
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User
@@ -26,6 +27,7 @@ from authentik.stages.authenticator.validate import (
     DeviceChallenge,
     DeviceChallengeResponse,
     DeviceValidator,
+    challenge_types,
 )
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
@@ -53,8 +55,18 @@ class AuthenticatorValidationChallenge(WithUserInfoChallenge):
 
     component = CharField(default="ak-stage-authenticator-validate")
 
-    device_challenges = ListField(child=DeviceChallenge())
+    device_challenges = SerializerMethodField()
     configuration_stages = ListField(child=SelectableStageSerializer())
+
+    @extend_schema_field(
+        PolymorphicProxySerializer(
+            component_name="DeviceChallengeTypes",
+            serializers=challenge_types,
+            resource_type_field_name="component",
+        )
+    )
+    def get_device_challenges(self, _) -> list[DeviceChallenge]:
+        return self.initial_data["device_challenges"]
 
 
 class AuthenticatorValidationChallengeResponse(ChallengeResponse):
@@ -64,20 +76,16 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
 
     device: Optional[Device]
 
-    selected_challenge = DeviceChallenge(required=False)
+    selected_challenge_uid = CharField(required=False, allow_null=True)
     selected_challenge_response = DeviceChallengeResponse(required=False)
     selected_stage = CharField(required=False)
 
-    def validate_selected_challenge(self, challenge: DeviceChallenge):
-        # Here we can directly access the pre-validated data in the Device Challenge
-        # provider instead of validating it manually, mainly because we only
-        # care about the `uid` field which is already in the base class
-        # and we pass the actual challenge which is saved in the flow to the validator
+    def validate_selected_challenge_uid(self, uid: str):
         device_challenges: list[DeviceChallenge] = self.stage.executor.plan.context.get(
             PLAN_CONTEXT_DEVICE_CHALLENGES, []
         )
         for allowed_challenge in device_challenges:
-            if allowed_challenge.data["uid"] != challenge["uid"]:
+            if allowed_challenge.data["uid"] != uid:
                 continue
             device = allowed_challenge.device
             # Notify the device validator that it has been selected
@@ -120,6 +128,9 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         if not device_validator.device_allowed():
             self.stage.logger.debug("Device not allowed, skipping", device=device)
             raise ValidationError("Invalid device")
+        self.stage.logger.debug(
+            "Validating device challenge response", challenge=device_challenge_response
+        )
         response = device_validator.get_response_instance(device_challenge_response)
         response.is_valid(raise_exception=True)
         self.stage.executor.plan.context.setdefault(PLAN_CONTEXT_METHOD, "auth_mfa")

@@ -6,7 +6,7 @@ from django.http import QueryDict
 from drf_spectacular.utils import PolymorphicProxySerializer, extend_schema_field
 from rest_framework.fields import CharField
 
-from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, SubChallenge
+from authentik.flows.challenge import ChallengeResponse, SubChallenge
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.generators import generate_id

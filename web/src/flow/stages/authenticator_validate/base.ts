@@ -14,7 +14,7 @@ import {
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest,
     DeviceChallengeResponseRequest,
-    DeviceChallengeTypesRequest,
+    DeviceChallengeTypes,
 } from "@goauthentik/api";
 
 export class BaseDeviceStage<Tin, Tout> extends BaseStage<
@@ -51,13 +51,13 @@ export class BaseDeviceStage<Tin, Tout> extends BaseStage<
         const formData = (await this.parseForm(
             defaults as unknown as DeviceChallengeResponseRequest,
         )) as unknown as DeviceChallengeResponseRequest;
-        const selectedChallenge = this.deviceChallenge as unknown as DeviceChallengeTypesRequest;
+        const selectedChallenge = this.deviceChallenge as unknown as DeviceChallengeTypes;
         // @ts-expect-error
         formData.component = selectedChallenge.component;
         formData.uid = selectedChallenge.uid;
         const data: AuthenticatorValidationChallengeResponseRequest = {
             component: this.challenge.component,
-            selectedChallenge: selectedChallenge,
+            selectedChallengeUid: selectedChallenge.uid,
             selectedChallengeResponse: formData,
         };
         return await this.host.submit(data);

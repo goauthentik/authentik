@@ -30563,9 +30563,9 @@ components:
         pending_user_avatar:
           type: string
         device_challenges:
-          type: array
-          items:
-            $ref: '#/components/schemas/DeviceChallenge'
+          allOf:
+          - $ref: '#/components/schemas/DeviceChallengeTypes'
+          readOnly: true
         configuration_stages:
           type: array
           items:
@@ -30584,8 +30584,10 @@ components:
           type: string
           minLength: 1
           default: ak-stage-authenticator-validate
-        selected_challenge:
-          $ref: '#/components/schemas/DeviceChallengeTypesRequest'
+        selected_challenge_uid:
+          type: string
+          nullable: true
+          minLength: 1
         selected_challenge_response:
           $ref: '#/components/schemas/DeviceChallengeResponseRequest'
         selected_stage:
@@ -31566,28 +31568,6 @@ components:
       - type
       - verbose_name
       - verbose_name_plural
-    DeviceChallenge:
-      type: object
-      description: |-
-        Challenge for an individual device, can contain data required
-        to solve the devices' challenge
-      properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
-        component:
-          type: string
-          default: ak-stage-authenticator-validate-device
-        response_errors:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              $ref: '#/components/schemas/ErrorDetail'
-        uid:
-          type: string
-      required:
-      - type
-      - uid
     DeviceChallengeResponseRequest:
       oneOf:
       - $ref: '#/components/schemas/SMSDeviceChallengeResponseRequest'
@@ -31601,21 +31581,21 @@ components:
           ak-stage-authenticator-validate-device-static: '#/components/schemas/StaticDeviceChallengeResponseRequest'
           ak-stage-authenticator-validate-device-totp: '#/components/schemas/TOTPDeviceChallengeResponseRequest'
           ak-stage-authenticator-validate-device-webauthn: '#/components/schemas/WebAuthnDeviceChallengeResponseRequest'
-    DeviceChallengeTypesRequest:
+    DeviceChallengeTypes:
       oneOf:
-      - $ref: '#/components/schemas/DuoDeviceChallengeRequest'
-      - $ref: '#/components/schemas/SMSDeviceChallengeRequest'
-      - $ref: '#/components/schemas/StaticDeviceChallengeRequest'
-      - $ref: '#/components/schemas/TOTPDeviceChallengeRequest'
-      - $ref: '#/components/schemas/WebAuthnDeviceChallengeRequest'
+      - $ref: '#/components/schemas/DuoDeviceChallenge'
+      - $ref: '#/components/schemas/SMSDeviceChallenge'
+      - $ref: '#/components/schemas/StaticDeviceChallenge'
+      - $ref: '#/components/schemas/TOTPDeviceChallenge'
+      - $ref: '#/components/schemas/WebAuthnDeviceChallenge'
       discriminator:
         propertyName: component
         mapping:
-          ak-stage-authenticator-validate-device-duo: '#/components/schemas/DuoDeviceChallengeRequest'
-          ak-stage-authenticator-validate-device-sms: '#/components/schemas/SMSDeviceChallengeRequest'
-          ak-stage-authenticator-validate-device-static: '#/components/schemas/StaticDeviceChallengeRequest'
-          ak-stage-authenticator-validate-device-totp: '#/components/schemas/TOTPDeviceChallengeRequest'
-          ak-stage-authenticator-validate-device-webauthn: '#/components/schemas/WebAuthnDeviceChallengeRequest'
+          ak-stage-authenticator-validate-device-duo: '#/components/schemas/DuoDeviceChallenge'
+          ak-stage-authenticator-validate-device-sms: '#/components/schemas/SMSDeviceChallenge'
+          ak-stage-authenticator-validate-device-static: '#/components/schemas/StaticDeviceChallenge'
+          ak-stage-authenticator-validate-device-totp: '#/components/schemas/TOTPDeviceChallenge'
+          ak-stage-authenticator-validate-device-webauthn: '#/components/schemas/WebAuthnDeviceChallenge'
     DeviceClassesEnum:
       enum:
       - static
@@ -31945,7 +31925,7 @@ components:
       required:
       - name
       - pk
-    DuoDeviceChallengeRequest:
+    DuoDeviceChallenge:
       type: object
       description: |-
         Challenge for an individual device, can contain data required
@@ -31955,17 +31935,15 @@ components:
           $ref: '#/components/schemas/ChallengeChoices'
         component:
           type: string
-          minLength: 1
           default: ak-stage-authenticator-validate-device-duo
         response_errors:
           type: object
           additionalProperties:
             type: array
             items:
-              $ref: '#/components/schemas/ErrorDetailRequest'
+              $ref: '#/components/schemas/ErrorDetail'
         uid:
           type: string
-          minLength: 1
       required:
       - type
       - uid
@@ -42900,7 +42878,7 @@ components:
       - name
       - phone_number
       - pk
-    SMSDeviceChallengeRequest:
+    SMSDeviceChallenge:
       type: object
       description: |-
         Challenge for an individual device, can contain data required
@@ -42910,20 +42888,17 @@ components:
           $ref: '#/components/schemas/ChallengeChoices'
         component:
           type: string
-          minLength: 1
           default: ak-stage-authenticator-validate-device-sms
         response_errors:
           type: object
           additionalProperties:
             type: array
             items:
-              $ref: '#/components/schemas/ErrorDetailRequest'
+              $ref: '#/components/schemas/ErrorDetail'
         uid:
           type: string
-          minLength: 1
         number_preview:
           type: string
-          minLength: 1
       required:
       - number_preview
       - type
@@ -43538,7 +43513,7 @@ components:
       - name
       - pk
       - token_set
-    StaticDeviceChallengeRequest:
+    StaticDeviceChallenge:
       type: object
       description: |-
         Challenge for an individual device, can contain data required
@@ -43548,17 +43523,15 @@ components:
           $ref: '#/components/schemas/ChallengeChoices'
         component:
           type: string
-          minLength: 1
           default: ak-stage-authenticator-validate-device-static
         response_errors:
           type: object
           additionalProperties:
             type: array
             items:
-              $ref: '#/components/schemas/ErrorDetailRequest'
+              $ref: '#/components/schemas/ErrorDetail'
         uid:
           type: string
-          minLength: 1
       required:
       - type
       - uid
@@ -43777,7 +43750,7 @@ components:
       required:
       - name
       - pk
-    TOTPDeviceChallengeRequest:
+    TOTPDeviceChallenge:
       type: object
       description: |-
         Challenge for an individual device, can contain data required
@@ -43787,17 +43760,15 @@ components:
           $ref: '#/components/schemas/ChallengeChoices'
         component:
           type: string
-          minLength: 1
           default: ak-stage-authenticator-validate-device-totp
         response_errors:
           type: object
           additionalProperties:
             type: array
             items:
-              $ref: '#/components/schemas/ErrorDetailRequest'
+              $ref: '#/components/schemas/ErrorDetail'
         uid:
           type: string
-          minLength: 1
       required:
       - type
       - uid
@@ -45108,7 +45079,7 @@ components:
       - created_on
       - name
       - pk
-    WebAuthnDeviceChallengeRequest:
+    WebAuthnDeviceChallenge:
       type: object
       description: |-
         Challenge for an individual device, can contain data required
@@ -45118,17 +45089,15 @@ components:
           $ref: '#/components/schemas/ChallengeChoices'
         component:
           type: string
-          minLength: 1
           default: ak-stage-authenticator-validate-device-webauthn
         response_errors:
           type: object
           additionalProperties:
             type: array
             items:
-              $ref: '#/components/schemas/ErrorDetailRequest'
+              $ref: '#/components/schemas/ErrorDetail'
         uid:
           type: string
-          minLength: 1
         data:
           type: object
           additionalProperties: {}
