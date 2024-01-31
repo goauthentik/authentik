@@ -42,6 +42,20 @@ By default, authentik ships with some pre-configured mappings for the most commo
 
 You can assign the value of a mapping to any user attribute, or save it as a custom attribute by prefixing the object field with `attribute.` Keep in mind though, data types from the LDAP server will be carried over. This means that with some implementations, where fields are stored as array in LDAP, they will be saved as array in authentik. To prevent this, use the built-in `list_flatten` function.
 
+## Password login
+
+By default, authentik doesn't update the password it stores for a user when they log in using their LDAP credentials. That means that if the LDAP server is not reachable by authentik, users will not be able to log in. This behavior can be turned on with the **Update internal password on login** setting on the LDAP source.
+
+:::::note
+Sources created prior to the 2024.2 release have this setting turned on by default.
+:::::
+
+Be aware of the following security considerations when turning on this functionality:
+
+-   Updating the LDAP password does not invalid the password stored in authentik, which means that old passwords are still valid indefinitely.
+-   Logging in via LDAP credentials overwrites the password stored in authentik if users have different passwords in LDAP and authentik.
+-   Custom security measures used to secure the password in LDAP may differ from the ones used in authentik. Depending on thread model and security requirements this could lead to unknowingly being non-compliant.
+
 ## Troubleshooting
 
 To troubleshoot LDAP sources and their synchronization, see [LDAP Troubleshooting](../../../docs/troubleshooting/ldap_source)

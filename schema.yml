@@ -2935,8 +2935,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/PolicyTestResult'
           description: ''
-        '404':
-          description: for_user user not found
         '400':
           content:
             application/json:
@@ -19687,6 +19685,10 @@ paths:
         schema:
           type: integer
       - in: query
+        name: password_login_update_internal_password
+        schema:
+          type: boolean
+      - in: query
         name: peer_certificate
         schema:
           type: string
@@ -34643,6 +34645,10 @@ components:
         object_uniqueness_field:
           type: string
           description: Field which contains a unique Identifier.
+        password_login_update_internal_password:
+          type: boolean
+          description: Update internal authentik password when login succeeds with
+            LDAP
         sync_users:
           type: boolean
         sync_users_password:
@@ -34784,6 +34790,10 @@ components:
           type: string
           minLength: 1
           description: Field which contains a unique Identifier.
+        password_login_update_internal_password:
+          type: boolean
+          description: Update internal authentik password when login succeeds with
+            LDAP
         sync_users:
           type: boolean
         sync_users_password:
@@ -38817,6 +38827,10 @@ components:
           type: string
           minLength: 1
           description: Field which contains a unique Identifier.
+        password_login_update_internal_password:
+          type: boolean
+          description: Update internal authentik password when login succeeds with
+            LDAP
         sync_users:
           type: boolean
         sync_users_password:
@@ -43963,6 +43977,7 @@ components:
           maxLength: 254
         avatar:
           type: string
+          description: User's avatar, either a http/https URL or a data URI
           readOnly: true
         attributes:
           type: object
@@ -44634,6 +44649,7 @@ components:
           maxLength: 254
         avatar:
           type: string
+          description: User's avatar, either a http/https URL or a data URI
           readOnly: true
         uid:
           type: string

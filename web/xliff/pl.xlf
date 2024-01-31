@@ -6516,6 +6516,12 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="se16b4d412ad1aba9">
   <source>Brand name</source>
 </trans-unit>
+<trans-unit id="s39d6971531a270b6">
+  <source>Update internal password on login</source>
+</trans-unit>
+<trans-unit id="sefe04e319223a3d6">
+  <source>When the user logs in to authentik using this source password backend, update their credentials in authentik.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>

@@ -4551,6 +4551,11 @@
                     "title": "Object uniqueness field",
                     "description": "Field which contains a unique Identifier."
                 },
+                "password_login_update_internal_password": {
+                    "type": "boolean",
+                    "title": "Password login update internal password",
+                    "description": "Update internal authentik password when login succeeds with LDAP"
+                },
                 "sync_users": {
                     "type": "boolean",
                     "title": "Sync users"
