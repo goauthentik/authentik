@@ -66,7 +66,7 @@ class SPNEGOSource(Source):
             icon_url=self.icon_url,
         )
 
-    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+    def ui_user_settings(self) -> UserSettingSerializer | None:
         icon = self.icon_url
         if not icon:
             icon = static(f"authentik/sources/{self.slug}.svg")

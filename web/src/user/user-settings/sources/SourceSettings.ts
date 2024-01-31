@@ -7,6 +7,7 @@ import "@goauthentik/elements/EmptyState";
 import "@goauthentik/user/user-settings/sources/SourceSettingsOAuth";
 import "@goauthentik/user/user-settings/sources/SourceSettingsPlex";
 import "@goauthentik/user/user-settings/sources/SourceSettingsSAML";
+import "@goauthentik/user/user-settings/sources/SourceSettingsSPNEGO";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -97,6 +98,15 @@ export class UserSourceSettingsPage extends AKElement {
                 </ak-user-settings-source-plex>`;
             case "ak-user-settings-source-saml":
                 return html`<ak-user-settings-source-saml
+                    class="pf-c-data-list__item-row"
+                    objectId=${source.objectUid}
+                    title=${source.title}
+                    connectionPk=${connectionPk}
+                    .configureUrl=${source.configureUrl}
+                >
+                </ak-user-settings-source-saml>`;
+            case "ak-user-settings-source-spnego":
+                return html`<ak-user-settings-source-spnego
                     class="pf-c-data-list__item-row"
                     objectId=${source.objectUid}
                     title=${source.title}
