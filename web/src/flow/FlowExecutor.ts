@@ -192,7 +192,7 @@ export class FlowExecutor extends Interface implements StageHost {
     async submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
         if (!payload) return Promise.reject();
         if (!this.challenge) return Promise.reject();
-        // @ts-ignore
+        // @ts-expect-error
         payload.component = this.challenge.component;
         this.loading = true;
         try {

@@ -16,11 +16,7 @@ from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN, FlowExecutorView
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import get_request
-from authentik.stages.authenticator_validate.challenge import (
-    get_challenge_for_device,
-    get_webauthn_challenge_without_user,
-    validate_challenge_webauthn,
-)
+from authentik.stages.authenticator_validate.challenge import validate_challenge_webauthn
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_validate.stage import (
     PLAN_CONTEXT_DEVICE_CHALLENGES,

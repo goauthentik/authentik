@@ -1,4 +1,3 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageCode";
 import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageDuo";
 import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn";
@@ -21,9 +20,7 @@ import {
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest,
     CurrentBrand,
-    DeviceChallenge,
-    DeviceClassesEnum,
-    FlowsApi,
+    DeviceChallengeTypesRequest,
 } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-validate")
@@ -34,8 +31,6 @@ export class AuthenticatorValidateStage
     >
     implements StageHost
 {
-    flowSlug = "";
-
     set loading(value: boolean) {
         this.host.loading = value;
     }
@@ -49,28 +44,26 @@ export class AuthenticatorValidateStage
     }
 
     @state()
-    _selectedDeviceChallenge?: DeviceChallenge;
+    _selectedDeviceChallenge?: DeviceChallengeTypesRequest;
 
-    set selectedDeviceChallenge(value: DeviceChallenge | undefined) {
+    set selectedDeviceChallenge(value: DeviceChallengeTypesRequest | undefined) {
         const previousChallenge = this._selectedDeviceChallenge;
         this._selectedDeviceChallenge = value;
         if (!value) return;
-        if (value === previousChallenge) return;
-        // We don't use this.submit here, as we don't want to advance the flow.
-        // We just want to notify the backend which challenge has been selected.
-        new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolve({
-            flowSlug: this.host.flowSlug || "",
-            query: window.location.search.substring(1),
-            flowChallengeResponseRequest: {
-                // @ts-ignore
-                component: this.challenge.component || "",
-                selectedChallenge: value,
-            },
-        });
+        if (value.uid === previousChallenge?.uid) return;
+        const selectionPayload: AuthenticatorValidationChallengeResponseRequest = {
+            selectedChallenge: value,
+            component: this.challenge.component,
+        };
+        this.host?.submit(selectionPayload);
     }
 
-    get selectedDeviceChallenge(): DeviceChallenge | undefined {
+    get selectedDeviceChallenge(): DeviceChallengeTypesRequest | undefined {
         return this._selectedDeviceChallenge;
+    }
+
+    get deviceChallenges(): DeviceChallengeTypesRequest[] {
+        return this.challenge.deviceChallenges as DeviceChallengeTypesRequest[];
     }
 
     submit(payload: AuthenticatorValidationChallengeResponseRequest): Promise<boolean> {
@@ -110,33 +103,33 @@ export class AuthenticatorValidateStage
         `);
     }
 
-    renderDevicePickerSingle(deviceChallenge: DeviceChallenge): TemplateResult {
-        switch (deviceChallenge.deviceClass) {
-            case DeviceClassesEnum.Duo:
+    renderDevicePickerSingle(deviceChallenge: DeviceChallengeTypesRequest): TemplateResult {
+        switch (deviceChallenge.component) {
+            case "ak-stage-authenticator-validate-device-duo":
                 return html`<i class="fas fa-mobile-alt"></i>
                     <div class="right">
                         <p>${msg("Duo push-notifications")}</p>
                         <small>${msg("Receive a push notification on your device.")}</small>
                     </div>`;
-            case DeviceClassesEnum.Webauthn:
+            case "ak-stage-authenticator-validate-device-webauthn":
                 return html`<i class="fas fa-mobile-alt"></i>
                     <div class="right">
                         <p>${msg("Authenticator")}</p>
                         <small>${msg("Use a security key to prove your identity.")}</small>
                     </div>`;
-            case DeviceClassesEnum.Totp:
+            case "ak-stage-authenticator-validate-device-totp":
                 return html`<i class="fas fa-clock"></i>
                     <div class="right">
                         <p>${msg("Traditional authenticator")}</p>
                         <small>${msg("Use a code-based authenticator.")}</small>
                     </div>`;
-            case DeviceClassesEnum.Static:
+            case "ak-stage-authenticator-validate-device-static":
                 return html`<i class="fas fa-key"></i>
                     <div class="right">
                         <p>${msg("Recovery keys")}</p>
                         <small>${msg("In case you can't access any other method.")}</small>
                     </div>`;
-            case DeviceClassesEnum.Sms:
+            case "ak-stage-authenticator-validate-device-sms":
                 return html`<i class="fas fa-mobile-alt"></i>
                     <div class="right">
                         <p>${msg("SMS")}</p>
@@ -150,7 +143,7 @@ export class AuthenticatorValidateStage
 
     renderDevicePicker(): TemplateResult {
         return html`<ul>
-            ${this.challenge?.deviceChallenges.map((challenges) => {
+            ${this.deviceChallenges.map((challenges) => {
                 return html`<li>
                     <button
                         class="pf-c-button authenticator-button"
@@ -177,7 +170,7 @@ export class AuthenticatorValidateStage
                             this.submit({
                                 component: this.challenge.component || "",
                                 selectedStage: stage.pk,
-                            });
+                            } as AuthenticatorValidationChallengeResponseRequest);
                         }}
                     >
                         <div class="right">
@@ -194,10 +187,10 @@ export class AuthenticatorValidateStage
         if (!this.selectedDeviceChallenge) {
             return html``;
         }
-        switch (this.selectedDeviceChallenge?.deviceClass) {
-            case DeviceClassesEnum.Static:
-            case DeviceClassesEnum.Totp:
-            case DeviceClassesEnum.Sms:
+        switch (this.selectedDeviceChallenge.component) {
+            case "ak-stage-authenticator-validate-device-static":
+            case "ak-stage-authenticator-validate-device-totp":
+            case "ak-stage-authenticator-validate-device-sms":
                 return html` <ak-stage-authenticator-validate-code
                     .host=${this}
                     .challenge=${this.challenge}
@@ -205,7 +198,7 @@ export class AuthenticatorValidateStage
                     .showBackButton=${(this.challenge?.deviceChallenges || []).length > 1}
                 >
                 </ak-stage-authenticator-validate-code>`;
-            case DeviceClassesEnum.Webauthn:
+            case "ak-stage-authenticator-validate-device-webauthn":
                 return html` <ak-stage-authenticator-validate-webauthn
                     .host=${this}
                     .challenge=${this.challenge}
@@ -213,7 +206,7 @@ export class AuthenticatorValidateStage
                     .showBackButton=${(this.challenge?.deviceChallenges || []).length > 1}
                 >
                 </ak-stage-authenticator-validate-webauthn>`;
-            case DeviceClassesEnum.Duo:
+            case "ak-stage-authenticator-validate-device-duo":
                 return html` <ak-stage-authenticator-validate-duo
                     .host=${this}
                     .challenge=${this.challenge}
@@ -222,7 +215,6 @@ export class AuthenticatorValidateStage
                 >
                 </ak-stage-authenticator-validate-duo>`;
         }
-        return html``;
     }
 
     render(): TemplateResult {
@@ -231,14 +223,14 @@ export class AuthenticatorValidateStage
             </ak-empty-state>`;
         }
         // User only has a single device class, so we don't show a picker
-        if (this.challenge?.deviceChallenges.length === 1) {
-            this.selectedDeviceChallenge = this.challenge.deviceChallenges[0];
+        if (this.deviceChallenges.length === 1) {
+            this.selectedDeviceChallenge = this.deviceChallenges[0];
         }
         // TOTP is a bit special, assuming that TOTP is allowed from the backend,
         // and we have a pre-filled value from the password manager,
         // directly set the the TOTP device Challenge as active.
-        const totpChallenge = this.challenge.deviceChallenges.find(
-            (challenge) => challenge.deviceClass === DeviceClassesEnum.Totp,
+        const totpChallenge = this.deviceChallenges.find(
+            (challenge) => challenge.component === "ak-stage-authenticator-validate-device-totp",
         );
         if (PasswordManagerPrefill.totp && totpChallenge) {
             console.debug(

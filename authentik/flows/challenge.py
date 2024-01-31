@@ -71,6 +71,11 @@ class Challenge(PassiveSerializer):
     )
 
 
+class SubChallenge(Challenge):
+    """Dummy type for sub challenges, which will not be included as a
+    possible challenge for the root flow executors"""
+
+
 class RedirectChallenge(Challenge):
     """Challenge type to redirect the client"""
 

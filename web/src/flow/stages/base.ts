@@ -34,6 +34,16 @@ export class BaseStage<Tin, Tout> extends AKElement {
 
     async submitForm(e: Event, defaults?: Tout): Promise<boolean> {
         e.preventDefault();
+        const formData = await this.parseForm(defaults);
+        return this.host?.submit(formData).then((successful) => {
+            if (successful) {
+                this.cleanup();
+            }
+            return successful;
+        });
+    }
+
+    async parseForm(defaults?: Tout): Promise<Tout> {
         const object: KeyUnknown = defaults || {};
         const form = new FormData(this.shadowRoot?.querySelector("form") || undefined);
 
@@ -44,12 +54,7 @@ export class BaseStage<Tin, Tout> extends AKElement {
                 object[key] = value;
             }
         }
-        return this.host?.submit(object as unknown as Tout).then((successful) => {
-            if (successful) {
-                this.cleanup();
-            }
-            return successful;
-        });
+        return object as unknown as Tout;
     }
 
     renderNonFieldErrors(errors: ErrorDetail[]): TemplateResult {

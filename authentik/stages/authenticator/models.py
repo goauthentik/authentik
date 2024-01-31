@@ -10,6 +10,7 @@ from django.utils.functional import cached_property
 
 from authentik.core.models import User
 from authentik.stages.authenticator.util import random_number_token
+from authentik.stages.authenticator.validate import DeviceValidator
 
 
 class DeviceManager(models.Manager):
@@ -97,6 +98,11 @@ class Device(models.Model):
             user = None
 
         return "{0} ({1})".format(self.name, user)
+
+    @property
+    def validator(self) -> type[DeviceValidator]:
+        """Get device challenge validator for this model"""
+        raise NotImplementedError
 
     @property
     def persistent_id(self):

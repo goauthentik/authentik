@@ -1,14 +1,14 @@
-import {
-    checkWebAuthnSupport,
-    transformAssertionForServer,
-    transformCredentialRequestOptions,
-} from "@goauthentik/common/helpers/webauthn";
+import { BaseDeviceStage } from "@goauthentik/app/flow/stages/authenticator_validate/base";
+import { checkWebAuthnSupport, transformAssertionForServer, transformCredentialRequestOptions } from "@goauthentik/common/helpers/webauthn";
 import { AuthenticatorValidateStage } from "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+
+
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+
+
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
@@ -19,25 +19,18 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import {
-    AuthenticatorValidationChallenge,
-    AuthenticatorValidationChallengeResponseRequest,
-    DeviceChallenge,
-} from "@goauthentik/api";
+
+
+import { WebAuthnDeviceChallengeRequest, WebAuthnDeviceChallengeResponseRequest } from "@goauthentik/api";
+
 
 @customElement("ak-stage-authenticator-validate-webauthn")
-export class AuthenticatorValidateStageWebAuthn extends BaseStage<
-    AuthenticatorValidationChallenge,
-    AuthenticatorValidationChallengeResponseRequest
+export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
+    WebAuthnDeviceChallengeRequest,
+    WebAuthnDeviceChallengeResponseRequest
 > {
-    @property({ attribute: false })
-    deviceChallenge?: DeviceChallenge;
-
     @property()
     authenticateMessage?: string;
-
-    @property({ type: Boolean })
-    showBackButton = false;
 
     transformedCredentialRequestOptions?: PublicKeyCredentialRequestOptions;
 
@@ -78,8 +71,9 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage<
 
         // post the assertion to the server for verification.
         try {
-            await this.host?.submit({
-                webauthn: transformedAssertionForServer,
+            await this.submitDeviceChallenge({
+                data: transformedAssertionForServer,
+                type: "native",
             });
         } catch (err) {
             throw new Error(msg(str`Error when validating assertion on server: ${err}`));
@@ -90,7 +84,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage<
         // convert certain members of the PublicKeyCredentialRequestOptions into
         // byte arrays as expected by the spec.
         const credentialRequestOptions = this.deviceChallenge
-            ?.challenge as PublicKeyCredentialRequestOptions;
+            ?.data as PublicKeyCredentialRequestOptions;
         this.transformedCredentialRequestOptions =
             transformCredentialRequestOptions(credentialRequestOptions);
         this.authenticateWrapper();

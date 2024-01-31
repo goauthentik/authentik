@@ -15,6 +15,7 @@ from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.http import authentik_user_agent
 from authentik.stages.authenticator.models import Device
+from authentik.stages.authenticator.validate import DeviceValidator
 
 
 class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
@@ -90,6 +91,12 @@ class DuoDevice(SerializerModel, Device):
     stage = models.ForeignKey(AuthenticatorDuoStage, on_delete=models.CASCADE)
     duo_user_id = models.TextField()
     last_t = models.DateTimeField(auto_now=True)
+
+    @property
+    def validator(self) -> type[DeviceValidator]:
+        from authentik.stages.authenticator_duo.validate import DuoDeviceValidator
+
+        return DuoDeviceValidator
 
     @property
     def serializer(self) -> Serializer:

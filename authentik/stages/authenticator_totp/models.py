@@ -18,6 +18,7 @@ from authentik.lib.models import SerializerModel
 from authentik.stages.authenticator.models import Device, ThrottlingMixin
 from authentik.stages.authenticator.oath import TOTP
 from authentik.stages.authenticator.util import hex_validator, random_hex
+from authentik.stages.authenticator.validate import DeviceValidator
 
 
 class TOTPDigits(models.TextChoices):
@@ -151,6 +152,12 @@ class TOTPDevice(SerializerModel, ThrottlingMixin, Device):
             "The next token must be at a higher time step."
         ),
     )
+
+    @property
+    def validator(self) -> type[DeviceValidator]:
+        from authentik.stages.authenticator_totp.validate import TOTPDeviceValidator
+
+        return TOTPDeviceValidator
 
     @property
     def serializer(self) -> type[BaseSerializer]:

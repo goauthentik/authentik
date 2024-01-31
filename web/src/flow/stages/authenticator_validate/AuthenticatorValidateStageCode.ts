@@ -1,13 +1,13 @@
+import { BaseDeviceStage } from "@goauthentik/app/flow/stages/authenticator_validate/base";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
 import "@goauthentik/flow/FormStatic";
 import { AuthenticatorValidateStage } from "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage";
-import { BaseStage } from "@goauthentik/flow/stages/base";
 import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -17,24 +17,15 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import {
-    AuthenticatorValidationChallenge,
-    AuthenticatorValidationChallengeResponseRequest,
-    DeviceChallenge,
-    DeviceClassesEnum,
-} from "@goauthentik/api";
+import { TOTPDeviceChallengeRequest, TOTPDeviceChallengeResponseRequest } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-validate-code")
-export class AuthenticatorValidateStageWebCode extends BaseStage<
-    AuthenticatorValidationChallenge,
-    AuthenticatorValidationChallengeResponseRequest
+export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
+    // Technically this stage also supports `static` and `sms` devices
+    // however they all have the same serializer
+    TOTPDeviceChallengeRequest,
+    TOTPDeviceChallengeResponseRequest
 > {
-    @property({ attribute: false })
-    deviceChallenge?: DeviceChallenge;
-
-    @property({ type: Boolean })
-    showBackButton = false;
-
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -65,7 +56,8 @@ export class AuthenticatorValidateStageWebCode extends BaseStage<
                 <form
                     class="pf-c-form"
                     @submit=${(e: Event) => {
-                        this.submitForm(e);
+                        e.preventDefault();
+                        this.submitDeviceChallenge();
                     }}
                 >
                     <ak-form-static
@@ -81,12 +73,14 @@ export class AuthenticatorValidateStageWebCode extends BaseStage<
                     </ak-form-static>
                     <div class="icon-description">
                         <i
-                            class="fa ${this.deviceChallenge?.deviceClass == DeviceClassesEnum.Sms
+                            class="fa ${this.deviceChallenge?.component ==
+                            "ak-stage-authenticator-validate-device-sms"
                                 ? "fa-key"
                                 : "fa-mobile-alt"}"
                             aria-hidden="true"
                         ></i>
-                        ${this.deviceChallenge?.deviceClass == DeviceClassesEnum.Sms
+                        ${this.deviceChallenge?.component ==
+                        "ak-stage-authenticator-validate-device-sms"
                             ? html`<p>${msg("A code has been sent to you via SMS.")}</p>`
                             : html`<p>
                                   ${msg(
@@ -95,7 +89,8 @@ export class AuthenticatorValidateStageWebCode extends BaseStage<
                               </p>`}
                     </div>
                     <ak-form-element
-                        label="${this.deviceChallenge?.deviceClass === DeviceClassesEnum.Static
+                        label="${this.deviceChallenge?.component ===
+                        "ak-stage-authenticator-validate-device-static"
                             ? msg("Static token")
                             : msg("Authentication code")}"
                         ?required="${true}"
@@ -106,12 +101,12 @@ export class AuthenticatorValidateStageWebCode extends BaseStage<
                         <input
                             type="text"
                             name="code"
-                            inputmode="${this.deviceChallenge?.deviceClass ===
-                            DeviceClassesEnum.Static
+                            inputmode="${this.deviceChallenge?.component ===
+                            "ak-stage-authenticator-validate-device-static"
                                 ? "text"
                                 : "numeric"}"
-                            pattern="${this.deviceChallenge?.deviceClass ===
-                            DeviceClassesEnum.Static
+                            pattern="${this.deviceChallenge?.component ===
+                            "ak-stage-authenticator-validate-device-static"
                                 ? "[0-9a-zA-Z]*"
                                 : "[0-9]*"}"
                             placeholder="${msg("Please enter your code")}"

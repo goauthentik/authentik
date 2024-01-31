@@ -14,6 +14,7 @@ from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.models import SerializerModel
 from authentik.stages.authenticator.models import Device, ThrottlingMixin
+from authentik.stages.authenticator.validate import DeviceValidator
 
 
 class AuthenticatorStaticStage(ConfigurableStage, FriendlyNamedStage, Stage):
@@ -71,6 +72,12 @@ class StaticDevice(SerializerModel, ThrottlingMixin, Device):
         The RelatedManager for our tokens.
 
     """
+
+    @property
+    def validator(self) -> type[DeviceValidator]:
+        from authentik.stages.authenticator_static.validate import StaticDeviceValidator
+
+        return StaticDeviceValidator
 
     @property
     def serializer(self) -> type[BaseSerializer]:

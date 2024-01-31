@@ -15,6 +15,7 @@ from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.models import SerializerModel
 from authentik.stages.authenticator.models import Device
+from authentik.stages.authenticator.validate import DeviceValidator
 
 
 class UserVerification(models.TextChoices):
@@ -127,6 +128,12 @@ class WebAuthnDevice(SerializerModel, Device):
 
     created_on = models.DateTimeField(auto_now_add=True)
     last_t = models.DateTimeField(default=now)
+
+    @property
+    def validator(self) -> type[DeviceValidator]:
+        from authentik.stages.authenticator_webauthn.validate import WebAuthnDeviceValidator
+
+        return WebAuthnDeviceValidator
 
     @property
     def descriptor(self) -> PublicKeyCredentialDescriptor:

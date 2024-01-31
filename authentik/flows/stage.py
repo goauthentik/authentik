@@ -179,7 +179,7 @@ class ChallengeStageView(StageView):
         ):
             if not hasattr(challenge, "initial_data"):
                 challenge.initial_data = {}
-            if "flow_info" not in challenge.initial_data:
+            if "flow_info" not in challenge.initial_data and "flow_info" in challenge.fields:
                 flow_info = ContextualFlowInfo(
                     data={
                         "title": self.format_title(),

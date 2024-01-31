@@ -22,6 +22,7 @@ from authentik.lib.models import SerializerModel
 from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.http import get_http_session
 from authentik.stages.authenticator.models import SideChannelDevice
+from authentik.stages.authenticator.validate import DeviceValidator
 
 LOGGER = get_logger()
 
@@ -202,6 +203,12 @@ class SMSDevice(SerializerModel, SideChannelDevice):
     def set_hashed_number(self):
         """Set phone_number to hashed number"""
         self.phone_number = hash_phone_number(self.phone_number)
+
+    @property
+    def validator(self) -> type[DeviceValidator]:
+        from authentik.stages.authenticator_sms.validate import SMSDeviceValidator
+
+        return SMSDeviceValidator
 
     @property
     def is_hashed(self) -> bool:
