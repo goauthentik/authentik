@@ -63,7 +63,7 @@ Instead of giving you a Helm chart that does everything nicely and automatically
 
 What you want to do instead is have your secrets stored in a secret storage solution (e.g. [Vault](https://www.vaultproject.io/)) and then in your manifests instruct your Kubernetes cluster to go look for those Secrets in Vault. That way you’re only exposing where the secret can be retrieved from, not exposing the secret in the manifest. You still have most of the advantage of the GitOps philosophy while preserving your security.
 
-We actually gave up on deploying Wazuh on Kubernetes—we’re running it in a VM, and not as code. This pattern isn’t unique to Wazuh, plenty of software has this challenge.So it’s definitely worth taking care when you’re deploying a service and making sure that even if they’re not approaching things with a GitOps mindset, that you are.
+We actually gave up on deploying Wazuh on Kubernetes—we’re running it in a VM, and not as code. This pattern isn’t unique to Wazuh, plenty of software has this challenge. So it’s definitely worth taking care when you’re deploying a service and making sure that even if they’re not approaching things with a GitOps mindset, **you** are.
 
 ## Configurability & customization can bite you
 
@@ -72,6 +72,8 @@ For better or worse, Helm is widely used in the industry. It definitely has some
 This is something to watch out for both as a _user_ of Helm charts (if you’re installing services for your company), as well as a *provider*  (if you offer a Helm chart for customers). The manifests that you apply to Kubernetes are, as you know, YAML files. Helm, being a templating tool, enables you to template out YAML from whatever data you provide at the time you install the Helm charts.
 
 By default, any data, any variable that you have hardcoded in the template, is impossible to override later, so things can get messy quick..
+
+![](./HN-qoute.png)
 
 https://lh7-us.googleusercontent.com/isYv8FRGV7sBE9uPIEo5Lp4I9obdOgiEjN8Awh7TxcShgWxSIG2G_AmH6nYkihkZ3Ct1jrw9VkxcitSa5P22lLuac4-fy3Wp6RcZRIPNAOymu_itMM3upiS1dsIjizXMygM8VpZriaPT2weoKeQ8TM0
 
