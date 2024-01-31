@@ -4,31 +4,30 @@ import {
     transformAssertionForServer,
     transformCredentialRequestOptions,
 } from "@goauthentik/common/helpers/webauthn";
+import "@goauthentik/elements/EmptyState";
 import { AuthenticatorValidateStage } from "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
-import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
-
-import {
-    WebAuthnDeviceChallengeRequest,
-    WebAuthnDeviceChallengeResponseRequest,
-} from "@goauthentik/api";
+import { WebAuthnDeviceChallenge, WebAuthnDeviceChallengeResponseRequest } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-validate-webauthn")
 export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
-    WebAuthnDeviceChallengeRequest,
+    WebAuthnDeviceChallenge,
     WebAuthnDeviceChallengeResponseRequest
 > {
     @property()
     authenticateMessage?: string;
 
+    @state()
+    authenticating = false;
+
     transformedCredentialRequestOptions?: PublicKeyCredentialRequestOptions;
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(PFEmptyState);
+        return super.styles.concat(css``);
     }
 
     async authenticate(): Promise<void> {
@@ -57,7 +56,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
         try {
             await this.submitDeviceChallenge({
                 data: transformedAssertionForServer,
-                type: "native",
+                uid: this.deviceChallenge?.uid || "",
             });
         } catch (err) {
             throw new Error(msg(str`Error when validating assertion on server: ${err}`));
@@ -75,58 +74,59 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
     }
 
     async authenticateWrapper(): Promise<void> {
-        if (this.host.loading) {
+        if (this.authenticating) {
             return;
         }
-        this.host.loading = true;
+        this.authenticateMessage = undefined;
+        this.authenticating = true;
         this.authenticate()
             .catch((e) => {
                 console.error(e);
                 this.authenticateMessage = e.toString();
             })
             .finally(() => {
-                this.host.loading = false;
+                this.authenticating = false;
             });
     }
 
     render(): TemplateResult {
+        if (this.authenticating) {
+            return html`<ak-empty-state ?loading=${true} header=${msg("Loading")}>
+                          </ak-empty-state>`;
+        }
         return html`<div class="pf-c-login__main-body">
                 ${this.authenticateMessage
                     ? html`<div class="pf-c-form__group pf-m-action">
-                          <p class="pf-m-block">${this.authenticateMessage}</p>
-                          <button
-                              class="pf-c-button pf-m-primary pf-m-block"
-                              @click=${() => {
-                                  this.authenticateWrapper();
-                              }}
-                          >
-                              ${msg("Retry authentication")}
-                          </button>
-                      </div>`
-                    : html`<div class="pf-c-form__group pf-m-action">
-                          <p class="pf-m-block">&nbsp;</p>
-                          <p class="pf-m-block">&nbsp;</p>
-                          <p class="pf-m-block">&nbsp;</p>
-                      </div> `}
-            </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links">
-                    ${this.showBackButton
-                        ? html`<li class="pf-c-login__main-footer-links-item">
+                              <p class="pf-m-block">${this.authenticateMessage}</p>
+                          </div>
+                          <div class="pf-c-form__group pf-m-action">
                               <button
-                                  class="pf-c-button pf-m-secondary pf-m-block"
+                                  class="pf-c-button pf-m-primary pf-m-block"
                                   @click=${() => {
-                                      if (!this.host) return;
-                                      (
-                                          this.host as AuthenticatorValidateStage
-                                      ).selectedDeviceChallenge = undefined;
+                                      this.authenticateWrapper();
                                   }}
                               >
-                                  ${msg("Return to device picker")}
+                                  ${msg("Retry authentication")}
                               </button>
-                          </li>`
-                        : html``}
-                </ul>
-            </footer>`;
+                              ${this.showBackButton
+                                  ? html`<button
+                                        class="pf-c-button pf-m-secondary pf-m-block"
+                                        @click=${() => {
+                                            if (!this.host) return;
+                                            (
+                                                this.host as AuthenticatorValidateStage
+                                            ).selectedDeviceChallenge = undefined;
+                                        }}
+                                    >
+                                        ${msg("Return to device picker")}
+                                    </button>`
+                                  : nothing}
+                          </div>
+
+            <footer class="pf-c-login__main-footer">
+                <ul class="pf-c-login__main-footer-links"></ul>
+            </footer>`
+                    : nothing}
+            </div>`;
     }
 }
