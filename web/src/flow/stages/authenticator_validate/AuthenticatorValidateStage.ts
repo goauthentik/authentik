@@ -31,7 +31,6 @@ export class AuthenticatorValidateStage
     >
     implements StageHost
 {
-
     get brand(): CurrentBrand | undefined {
         return this.host.brand;
     }
@@ -42,10 +41,9 @@ export class AuthenticatorValidateStage
     set selectedDeviceChallenge(value: DeviceChallengeTypes | undefined) {
         const previousChallenge = this._selectedDeviceChallenge;
         this._selectedDeviceChallenge = value;
-        if (!value) return;
-        if (value.uid === previousChallenge?.uid) return;
+        if (value?.uid === previousChallenge?.uid) return;
         const selectionPayload: AuthenticatorValidationChallengeResponseRequest = {
-            selectedChallengeUid: value.uid,
+            selectedChallengeUid: value?.uid || null,
             component: this.challenge.component,
         };
         this.host?.submit(selectionPayload);
@@ -59,7 +57,10 @@ export class AuthenticatorValidateStage
         return this.challenge.deviceChallenges as DeviceChallengeTypes[];
     }
 
-    submit(payload: AuthenticatorValidationChallengeResponseRequest, loading: boolean = true): Promise<boolean> {
+    submit(
+        payload: AuthenticatorValidationChallengeResponseRequest,
+        loading: boolean = true,
+    ): Promise<boolean> {
         return this.host?.submit(payload, loading) || Promise.resolve();
     }
 

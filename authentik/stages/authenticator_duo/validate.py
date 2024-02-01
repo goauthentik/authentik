@@ -41,7 +41,10 @@ class DuoDeviceChallengeResponse(DeviceChallengeResponse[DuoDevice]):
         )
         if not selected_challenge or not isinstance(selected_challenge, DuoDeviceChallenge):
             raise ValidationError("Invalid selected challenge")
-        auth_status = stage.auth_client().auth_status(selected_challenge.data["duo_txn"])
+        try:
+            auth_status = stage.auth_client().auth_status(selected_challenge.data["duo_txn"])
+        except RuntimeError:
+            raise ValidationError("Failed to check Duo status")
         # {'result': 'allow', 'status': 'allow', 'status_msg': 'Success. Logging you in...'}
         if auth_status["success"] != "allow":
             self.logger.debug(

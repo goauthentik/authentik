@@ -2,7 +2,6 @@ import { BaseDeviceStage } from "@goauthentik/app/flow/stages/authenticator_vali
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
 import "@goauthentik/flow/FormStatic";
-import { AuthenticatorValidateStage } from "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage";
 import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
 
 import { msg } from "@lit/localize";
@@ -111,10 +110,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
                             ? html`<button
                                   class="pf-c-button pf-m-secondary pf-m-block"
                                   @click=${() => {
-                                      if (!this.host) return;
-                                      (
-                                          this.host as AuthenticatorValidateStage
-                                      ).selectedDeviceChallenge = undefined;
+                                      this.returnToDevicePicker();
                                   }}
                               >
                                   ${msg("Return to device picker")}

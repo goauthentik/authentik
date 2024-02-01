@@ -31930,9 +31930,7 @@ components:
       - pk
     DuoDeviceChallenge:
       type: object
-      description: |-
-        Challenge for an individual device, can contain data required
-        to solve the devices' challenge
+      description: Duo device challenge
       properties:
         type:
           $ref: '#/components/schemas/ChallengeChoices'
@@ -31947,14 +31945,15 @@ components:
               $ref: '#/components/schemas/ErrorDetail'
         uid:
           type: string
+        duo_txn:
+          type: string
       required:
+      - duo_txn
       - type
       - uid
     DuoDeviceChallengeResponseRequest:
       type: object
-      description: |-
-        Response to a device's challenge. May continue no additional fields depending
-        of device type.
+      description: Validate Duo device
       properties:
         component:
           type: string
@@ -42930,7 +42929,7 @@ components:
     SMSDeviceChallengeResponseRequest:
       type: object
       description: |-
-        Response to a device's challenge. May continue no additional fields depending
+        Response to a device's challenge. May continue additional fields depending
         of device type.
       properties:
         component:
@@ -43562,7 +43561,7 @@ components:
     StaticDeviceChallengeResponseRequest:
       type: object
       description: |-
-        Response to a device's challenge. May continue no additional fields depending
+        Response to a device's challenge. May continue additional fields depending
         of device type.
       properties:
         component:
@@ -43799,7 +43798,7 @@ components:
     TOTPDeviceChallengeResponseRequest:
       type: object
       description: |-
-        Response to a device's challenge. May continue no additional fields depending
+        Response to a device's challenge. May continue additional fields depending
         of device type.
       properties:
         component:
@@ -45132,7 +45131,7 @@ components:
     WebAuthnDeviceChallengeResponseRequest:
       type: object
       description: |-
-        Response to a device's challenge. May continue no additional fields depending
+        Response to a device's challenge. May continue additional fields depending
         of device type.
       properties:
         component:

@@ -1,3 +1,4 @@
+import { AuthenticatorValidateStage } from "@goauthentik/app/flow/stages/authenticator_validate/AuthenticatorValidateStage";
 import { BaseStage } from "@goauthentik/app/flow/stages/base";
 
 import { CSSResult, css } from "lit";
@@ -44,6 +45,11 @@ export class BaseDeviceStage<Tin, Tout> extends BaseStage<
                 }
             `,
         ];
+    }
+
+    async returnToDevicePicker(): Promise<void> {
+        const host = this.host as AuthenticatorValidateStage;
+        host.selectedDeviceChallenge = undefined;
     }
 
     async submitDeviceChallenge(defaults?: Tout, loading: boolean = true): Promise<boolean> {

@@ -5,7 +5,6 @@ import {
     transformCredentialRequestOptions,
 } from "@goauthentik/common/helpers/webauthn";
 import "@goauthentik/elements/EmptyState";
-import { AuthenticatorValidateStage } from "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
@@ -81,11 +80,10 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
         }
         this.authenticateMessage = undefined;
         this.authenticating = true;
-        this.authenticate()
-            .catch((e) => {
-                console.error(e);
-                this.authenticateMessage = e.toString();
-            });
+        this.authenticate().catch((e) => {
+            console.error(e);
+            this.authenticateMessage = e.toString();
+        });
     }
 
     render(): TemplateResult {
@@ -125,10 +123,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
                                   ? html`<button
                                         class="pf-c-button pf-m-secondary pf-m-block"
                                         @click=${() => {
-                                            if (!this.host) return;
-                                            (
-                                                this.host as AuthenticatorValidateStage
-                                            ).selectedDeviceChallenge = undefined;
+                                            this.returnToDevicePicker();
                                         }}
                                     >
                                         ${msg("Return to device picker")}
