@@ -92,7 +92,7 @@ As you grow your user base, you will likely have more traffic to your services a
 
 At authentik, I use [Robusta KRR](https://github.com/robusta-dev/krr) to produce routine reports on Kubernetes resources. I review these and then make manual updates to requests and limits as necessary. There are tools that automatically update the resources directly on the cluster (i.e. without updating them in Git), however, updating resources automatically has ripple effects: if you’re increasing resources, you need more nodes to run the services, for example. In general, if automated changes OR manual changes are made, you want to be aware of it in case there are downstream effects that you need to adjust for.
 
-“There are some specific use cases where automatic adjustment to resources make sense, but otherwise it’s probably wisest to _automate the reporting, but manually conduct the reviews and updates_.”
+>“There are some specific use cases where automatic adjustment to resources make sense, but otherwise it’s probably wisest to _automate the reporting, but manually conduct the reviews and updates_.”
 
 ## Consider setting up firewall rules at the outset
 
