@@ -26,7 +26,7 @@ class DuoDeviceChallenge(DeviceChallenge):
 
     component = CharField(default="ak-stage-authenticator-validate-device-duo")
 
-    duo_txn = CharField()
+    duo_txn = CharField(allow_blank=True)
 
 
 class DuoDeviceChallengeResponse(DeviceChallengeResponse[DuoDevice]):
@@ -35,13 +35,13 @@ class DuoDeviceChallengeResponse(DeviceChallengeResponse[DuoDevice]):
     component = CharField(default="ak-stage-authenticator-validate-device-duo")
 
     def validate(self, attrs: dict):
-        stage: AuthenticatorDuoStage = self.device.stages
+        stage: AuthenticatorDuoStage = self.device.stage
         selected_challenge = self.stage.executor.plan.context.get(
             PLAN_CONTEXT_SELECTED_CHALLENGE, None
         )
         if not selected_challenge or not isinstance(selected_challenge, DuoDeviceChallenge):
             raise ValidationError("Invalid selected challenge")
-        auth_status = stage.auth_client().auth_status(selected_challenge.duo_txn)
+        auth_status = stage.auth_client().auth_status(selected_challenge.data["duo_txn"])
         # {'result': 'allow', 'status': 'allow', 'status_msg': 'Success. Logging you in...'}
         if auth_status["success"] != "allow":
             self.logger.debug(
@@ -105,6 +105,7 @@ class DuoDeviceValidator(DeviceValidator[DuoDevice]):
                 async_txn=True,
             )
             challenge.data["duo_txn"] = response["txid"]
+            self.logger.info("Sent Duo push notification", stage=stage, response=response)
         except RuntimeError as exc:
             Event.new(
                 EventAction.CONFIGURATION_ERROR,

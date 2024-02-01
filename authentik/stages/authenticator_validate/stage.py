@@ -91,8 +91,18 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         """Replace a device challenge in the flow plan"""
         challenges = self.stage.executor.plan.context.get(PLAN_CONTEXT_DEVICE_CHALLENGES, [])
         self.stage.executor.plan.context[PLAN_CONTEXT_DEVICE_CHALLENGES] = [
-            challenge if x.uid == challenge.uid else x for x in challenges
+            challenge if x.data["uid"] == challenge.data["uid"] else x for x in challenges
         ]
+
+    def get_device_validator(self, challenge: DeviceChallenge) -> DeviceValidator:
+        """Get the device validator used for this challenge's device"""
+        device = challenge.device
+        device_validator_type: type[DeviceValidator] = device.validator
+        device_validator = device_validator_type(self.stage.executor, device)
+        if not device_validator.device_allowed():
+            self.stage.logger.debug("Device not allowed, skipping", device=device)
+            raise ValidationError("Invalid device")
+        return device_validator
 
     def _select_challenge(self, challenge: Optional[DeviceChallenge]):
         """Helper to select a challenge, which also notifies the device validator
@@ -101,12 +111,16 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
             PLAN_CONTEXT_SELECTED_CHALLENGE, None
         )
         # if the challenge uids haven't changed, no callbacks are triggered
-        if previous_challenge and challenge and previous_challenge.uid == challenge.uid:
+        if (
+            previous_challenge
+            and challenge
+            and previous_challenge.data["uid"] == challenge.data["uid"]
+        ):
             return
         if previous_challenge:
             # Notify device validator that its challenge is unselected
             self.stage.logger.debug("Unselecting device challenge", challenge=previous_challenge)
-            new_unselect = previous_challenge.get_device_validator().unselect_challenge(
+            new_unselect = self.get_device_validator(previous_challenge).unselect_challenge(
                 previous_challenge
             )
             # Replace old unselected challenge with a potentially modified one
@@ -115,10 +129,10 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         if challenge:
             # Notify the device validator that it has been selected
             self.stage.logger.debug("Selecting device challenge", challenge=challenge)
-            new_selected = challenge.get_device_validator().select_challenge(challenge)
+            new_selected = self.get_device_validator(challenge).select_challenge(challenge)
             # Replace old unselected challenge with a potentially modified one
             self.replace_device_challenge(new_selected)
-            self.stage.executor.plan.context[PLAN_CONTEXT_SELECTED_CHALLENGE, new_selected]
+            self.stage.executor.plan.context[PLAN_CONTEXT_SELECTED_CHALLENGE] = new_selected
 
     def validate_selected_challenge_uid(self, uid: Optional[str]) -> DeviceChallenge:
         if not uid:

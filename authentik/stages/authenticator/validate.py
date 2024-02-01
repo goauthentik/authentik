@@ -55,16 +55,6 @@ class DeviceChallenge(SubChallenge):
         del self.fields["flow_info"]
         super().__init__(*args, **kwargs)
 
-    def get_device_validator(self):
-        """Get the device validator used for this challenge's device"""
-        device = self.device
-        device_validator_type: type[DeviceValidator] = device.validator
-        device_validator = device_validator_type(self.stage.executor, device)
-        if not device_validator.device_allowed():
-            self.stage.logger.debug("Device not allowed, skipping", device=device)
-            raise ValidationError("Invalid device")
-        return device_validator
-
 
 @extend_schema_field(
     PolymorphicProxySerializer(
