@@ -112,7 +112,7 @@ This is one area where we didn’t anticipate our changing needs as we grow, and
 
 I have a homelab setup where I test new infrastructure configurations, so I was able to experiment with firewalling before implementing it at authentik. If someone on your team has a homelab, this is a great way to validate configurations, experiment, and learn in the process. But if you don’t have that as a resource, it’s still a good idea to have some kind of sandbox environment to iterate on your infrastructure before implementing it for real. That could be a Kubernetes cluster dedicated to sandboxing that’s available to the whole infrastructure team, or running a small Kubernetes cluster on a local machine (using something like [kind](https://kind.sigs.k8s.io/) or [minikube](https://minikube.sigs.k8s.io/docs/)).
 
-Let us know what practices you use, or any practices to avoid, and how you do your testing to find just the right balance of automation, GitOps, SecOs, and sanity. Reach out to us with an email to [hello@goauthentik.io](mailto:hello@goauthentik.io) or on [Discord](https://discord.com/channels/809154715984199690/809154716507963434); we look forward to hearing from you!
+Let us know what practices you use, or any practices to avoid, and how you do your testing to find just the right balance of automation, GitOps, SecOps, and sanity. Reach out to us with an email to [hello@goauthentik.io](mailto:hello@goauthentik.io) or on [Discord](https://discord.com/channels/809154715984199690/809154716507963434); we look forward to hearing from you!
 
 _[Rebecca Dodd](https://thebasementoffice.co.uk/) contributed to this post._
 
