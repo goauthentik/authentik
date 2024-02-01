@@ -61,7 +61,7 @@ For example, we mentioned in a previous post that [we use Wazuh for Security Inf
 
 Instead of giving you a Helm chart that does everything nicely and automatically, you have to clone their repository, edit the manifest by hand, and then apply those changes manually on your Kubernetes cluster. Now here’s the tricky part, when you’re moving fast; if you hardcode those secrets into those manifests (which are just YAML files, so hardly secure), and then push them to Git (because you’re practicing GitOps), now your secrets are exposed.
 
-What you want to do instead is have your secrets stored in a secret storage solution (e.g. [Vault](https://www.vaultproject.io/)) and then in your manifests instruct your Kubernetes cluster to go look for those Secrets in Vault. That way you’re only exposing where the secret can be retrieved from, not exposing the secret in the manifest. You still have most of the advantage of the GitOps philosophy while preserving your security.
+What you want to do instead is have your secrets stored in a secret storage solution (e.g. [Vault](https://www.vaultproject.io/)) and then in your manifests instruct your Kubernetes cluster to go look for those secrets in Vault. That way you’re only exposing where the secret can be retrieved from, not exposing the secret in the manifest. You still have most of the advantage of the GitOps philosophy while preserving your security.
 
 We actually gave up on deploying Wazuh on Kubernetes—we’re running it in a VM, and not as code. This pattern isn’t unique to Wazuh, plenty of software has this challenge. So it’s definitely worth taking care when you’re deploying a service and making sure that even if they’re not approaching things with a GitOps mindset, **you** are.
 
