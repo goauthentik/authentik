@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from django.http import QueryDict
 from drf_spectacular.utils import PolymorphicProxySerializer, extend_schema_field
 from rest_framework.fields import CharField
+from rest_framework.exceptions import ValidationError
 
 from authentik.flows.challenge import ChallengeResponse, SubChallenge
 from authentik.flows.stage import ChallengeStageView
@@ -54,6 +55,16 @@ class DeviceChallenge(SubChallenge):
         del self.fields["flow_info"]
         super().__init__(*args, **kwargs)
 
+    def get_device_validator(self):
+        """Get the device validator used for this challenge's device"""
+        device = self.device
+        device_validator_type: type[DeviceValidator] = device.validator
+        device_validator = device_validator_type(self.stage.executor, device)
+        if not device_validator.device_allowed():
+            self.stage.logger.debug("Device not allowed, skipping", device=device)
+            raise ValidationError("Invalid device")
+        return device_validator
+
 
 @extend_schema_field(
     PolymorphicProxySerializer(
@@ -63,7 +74,7 @@ class DeviceChallenge(SubChallenge):
     )
 )
 class DeviceChallengeResponse[T: "Device"](SubChallenge, ChallengeResponse):
-    """Response to a device's challenge. May continue no additional fields depending
+    """Response to a device's challenge. May continue additional fields depending
     of device type."""
 
     device: T
@@ -107,5 +118,11 @@ class DeviceValidator[T: "Device"](ChallengeStageView):
         the confirmed flag is checked"""
         return self.device.confirmed
 
-    def select_challenge(self, challenge: DeviceChallenge):
+    def select_challenge(self, challenge: DeviceChallenge) -> DeviceChallenge:
         """Optional callback when a device challenge is selected"""
+        return challenge
+
+    def unselect_challenge(self, challenge: DeviceChallenge) -> DeviceChallenge:
+        """Optional callback when a device challenge was selected and the user
+        returns to the device picker"""
+        return challenge

@@ -39,6 +39,7 @@ COOKIE_NAME_MFA = "authentik_mfa"
 PLAN_CONTEXT_STAGES = "goauthentik.io/stages/authenticator_validate/stages"
 PLAN_CONTEXT_SELECTED_STAGE = "goauthentik.io/stages/authenticator_validate/selected_stage"
 PLAN_CONTEXT_DEVICE_CHALLENGES = "goauthentik.io/stages/authenticator_validate/device_challenges"
+PLAN_CONTEXT_SELECTED_CHALLENGE = "goauthentik.io/stages/authenticator_validate/selected_challenge"
 
 
 class SelectableStageSerializer(PassiveSerializer):
@@ -86,22 +87,50 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     selected_challenge_response = DeviceChallengeResponse(required=False)
     selected_stage = CharField(required=False)
 
-    def validate_selected_challenge_uid(self, uid: str):
+    def replace_device_challenge(self, challenge: DeviceChallenge):
+        """Replace a device challenge in the flow plan"""
+        challenges = self.stage.executor.plan.context.get(PLAN_CONTEXT_DEVICE_CHALLENGES, [])
+        self.stage.executor.plan.context[PLAN_CONTEXT_DEVICE_CHALLENGES] = [
+            challenge if x.uid == challenge.uid else x for x in challenges
+        ]
+
+    def _select_challenge(self, challenge: Optional[DeviceChallenge]):
+        """Helper to select a challenge, which also notifies the device validator
+        to unselect the previous challenge"""
+        previous_challenge: Optional[DeviceChallenge] = self.stage.executor.plan.context.get(
+            PLAN_CONTEXT_SELECTED_CHALLENGE, None
+        )
+        # if the challenge uids haven't changed, no callbacks are triggered
+        if previous_challenge and challenge and previous_challenge.uid == challenge.uid:
+            return
+        if previous_challenge:
+            # Notify device validator that its challenge is unselected
+            self.stage.logger.debug("Unselecting device challenge", challenge=previous_challenge)
+            new_unselect = previous_challenge.get_device_validator().unselect_challenge(
+                previous_challenge
+            )
+            # Replace old unselected challenge with a potentially modified one
+            self.replace_device_challenge(new_unselect)
+            self.stage.executor.plan.context.pop(PLAN_CONTEXT_SELECTED_CHALLENGE, None)
+        if challenge:
+            # Notify the device validator that it has been selected
+            self.stage.logger.debug("Selecting device challenge", challenge=challenge)
+            new_selected = challenge.get_device_validator().select_challenge(challenge)
+            # Replace old unselected challenge with a potentially modified one
+            self.replace_device_challenge(new_selected)
+            self.stage.executor.plan.context[PLAN_CONTEXT_SELECTED_CHALLENGE, new_selected]
+
+    def validate_selected_challenge_uid(self, uid: Optional[str]) -> DeviceChallenge:
+        if not uid:
+            # Unselect previous challenge if set
+            self._select_challenge(None)
         device_challenges: list[DeviceChallenge] = self.stage.executor.plan.context.get(
             PLAN_CONTEXT_DEVICE_CHALLENGES, []
         )
         for allowed_challenge in device_challenges:
             if allowed_challenge.data["uid"] != uid:
                 continue
-            device = allowed_challenge.device
-            # Notify the device validator that it has been selected
-            device_validator_type: type[DeviceValidator] = device.validator
-            device_validator = device_validator_type(self.stage.executor, device)
-            if not device_validator.device_allowed():
-                self.stage.logger.debug("Device not allowed, skipping", device=device)
-                raise ValidationError("Invalid device")
-            self.stage.logger.debug("Selecting device challenge", challenge=allowed_challenge)
-            device_validator.select_challenge(allowed_challenge)
+            self._select_challenge(allowed_challenge)
             return allowed_challenge
         raise ValidationError("No compatible device class allowed")
 
