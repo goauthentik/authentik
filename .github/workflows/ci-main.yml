@@ -122,7 +122,7 @@ jobs:
           poetry run make test
           poetry run coverage xml
       - if: ${{ always() }}
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           flags: unit
   test-integration:
@@ -139,7 +139,7 @@ jobs:
           poetry run coverage run manage.py test tests/integration
           poetry run coverage xml
       - if: ${{ always() }}
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           flags: integration
   test-e2e:
@@ -188,7 +188,7 @@ jobs:
           poetry run coverage run manage.py test ${{ matrix.job.glob }}
           poetry run coverage xml
       - if: ${{ always() }}
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           flags: e2e
   ci-core-mark:
