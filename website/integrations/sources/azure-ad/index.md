@@ -49,3 +49,62 @@ Save, and you now have Azure AD as a source.
 :::note
 For more details on how-to have the new source display on the Login Page see [here](../general#add-sources-to-default-login-page).
 :::
+
+### automatic user enrollment and attribute mapping
+
+1. Create a new _Expression Policy_ see [here](../../../docs/policies/index) for details.
+2. Choose _azure-ad-mapping_ as name
+3. Add the following code and adjust to your needs
+
+```python
+# save existing prompt data
+current_prompt_data = context.get('prompt_data', {})
+# make sure we are used in an oauth flow
+if 'oauth_userinfo' not in context:
+  ak_logger.warning(f"Missing expected oauth_userinfo in context. Context{context}")
+  return False
+oauth_data = context['oauth_userinfo']
+# map fields directly to user left hand are the field names provided by
+# the microsoft graph api on the right the user field names as used by authentik
+required_fields_map = {
+  'name': 'username',
+  'upn': 'email',
+  'given_name': 'name'
+}
+missing_fields = set(required_fields_map.keys()) - set(oauth_data.keys())
+if missing_fields:
+  ak_logger.warning(f"Missing expected fields. Missing fields {missing_fields}.")
+  return False
+for oauth_field, user_field in required_fields_map.items():
+  current_prompt_data[user_field] = oauth_data[oauth_field]
+# Define fields that should be mapped as extra user attributes
+attributes_map = {
+  'upn': 'upn',
+  'family_name': 'sn',
+  'name': 'name'
+}
+missing_attributes = set(attributes_map.keys()) - set(oauth_data.keys())
+if missing_attributes:
+  ak_logger.warning(f"Missing attributes: {missing_attributes}.")
+  return False
+# again make sure not to overwrite existing data
+current_attributes = current_prompt_data.get('attributes', {})
+for oauth_field, user_field in attributes_map.items():
+  current_attributes[user_field] = oauth_data[oauth_field]
+current_prompt_data['attributes'] = current_attributes
+context['prompt_data'] = current_prompt_data
+return True
+```
+
+4. Create a new enrollment flow _azure-ad-enrollment_ see [here](../../../docs/flow/index) for details
+5. Add the policy _default-source-enrollment-if-sso_ to the flow. Todo so open the newly created flow.
+   Click on the tab **Policy/Group/User Bindings**. Click on **Bind existing policy** and choose _default-source-enrollment-if-sso_
+   from the list.
+6. Bind the stages _default-source-enrollment-write_ (order 0) and _default-source-enrollment-login_ (order 10) to the flow
+7. Bind the policy _azure-ad-mapping_ to the stage _default-source-enrollment-write_. Todo so open the flow _azure-ad-enrollment_
+   open the tab **Stage Bindings**, open the dropdown menu for the stage _default-source-enrollment-write_ and click on **Bind existing policy**
+   Select _azure-ad-mapping_
+8. Open the source _azure-ad_. Click on edit.
+9. Open **Flow settings** and choose _azure-ad-enrollment_ as enrollment flow.
+
+Try to login with a **_new_** user. You should see no prompts and the user should have the correct information.
