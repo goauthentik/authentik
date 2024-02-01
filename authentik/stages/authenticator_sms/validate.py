@@ -52,6 +52,7 @@ class SMSDeviceValidator(DeviceValidator[SMSDevice]):
     def device_allowed(self) -> bool:
         return super().device_allowed() and not self.device.is_hashed
 
-    def select_challenge(self):
+    def select_challenge(self, challenge: SMSDeviceChallenge):
         self.device.generate_token()
         self.device.stage.send(self.device.token, self.device)
+        return challenge

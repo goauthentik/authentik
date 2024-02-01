@@ -1,3 +1,4 @@
+"""DUO device validator"""
 from urllib.parse import urlencode
 
 from django.utils.translation import gettext as __
@@ -17,14 +18,45 @@ from authentik.stages.authenticator.validate import (
 )
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_validate.models import DeviceClasses
+from authentik.stages.authenticator_validate.stage import PLAN_CONTEXT_SELECTED_CHALLENGE
 
 
 class DuoDeviceChallenge(DeviceChallenge):
+    """Duo device challenge"""
+
     component = CharField(default="ak-stage-authenticator-validate-device-duo")
+
+    duo_txn = CharField()
 
 
 class DuoDeviceChallengeResponse(DeviceChallengeResponse[DuoDevice]):
+    """Validate Duo device"""
+
     component = CharField(default="ak-stage-authenticator-validate-device-duo")
+
+    def validate(self, attrs: dict):
+        stage: AuthenticatorDuoStage = self.device.stages
+        selected_challenge = self.stage.executor.plan.context.get(
+            PLAN_CONTEXT_SELECTED_CHALLENGE, None
+        )
+        if not selected_challenge or not isinstance(selected_challenge, DuoDeviceChallenge):
+            raise ValidationError("Invalid selected challenge")
+        auth_status = stage.auth_client().auth_status(selected_challenge.duo_txn)
+        # {'result': 'allow', 'status': 'allow', 'status_msg': 'Success. Logging you in...'}
+        if auth_status["success"] != "allow":
+            self.logger.debug(
+                "duo push response", result=auth_status["result"], msg=auth_status["status_msg"]
+            )
+            login_failed.send(
+                sender=__name__,
+                credentials={"username": self.device.user.username},
+                request=self.request,
+                stage=self.executor.current_stage,
+                device_class=DeviceClasses.DUO.value,
+                duo_response=auth_status,
+            )
+            raise ValidationError("Duo denied access", code="denied")
+        return attrs
 
 
 class DuoDeviceValidator(DeviceValidator[DuoDevice]):
@@ -36,6 +68,7 @@ class DuoDeviceValidator(DeviceValidator[DuoDevice]):
         return DuoDeviceChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
+                "duo_txn": "",
             }
         )
 
@@ -69,21 +102,9 @@ class DuoDeviceValidator(DeviceValidator[DuoDevice]):
                 display_username=user.username,
                 device="auto",
                 pushinfo=urlencode(pushinfo),
+                async_txn=True,
             )
-            # {'result': 'allow', 'status': 'allow', 'status_msg': 'Success. Logging you in...'}
-            if response["result"] == "deny":
-                self.logger.debug(
-                    "duo push response", result=response["result"], msg=response["status_msg"]
-                )
-                login_failed.send(
-                    sender=__name__,
-                    credentials={"username": user.username},
-                    request=self.request,
-                    stage=self.executor.current_stage,
-                    device_class=DeviceClasses.DUO.value,
-                    duo_response=response,
-                )
-                raise ValidationError("Duo denied access", code="denied")
+            challenge.data["duo_txn"] = response["txid"]
         except RuntimeError as exc:
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
@@ -91,3 +112,4 @@ class DuoDeviceValidator(DeviceValidator[DuoDevice]):
                 user=user,
             ).from_http(self.request, user)
             raise ValidationError("Duo denied access", code="denied")
+        return challenge
