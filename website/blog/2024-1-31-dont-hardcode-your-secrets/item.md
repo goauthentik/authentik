@@ -106,7 +106,7 @@ This isn’t a problem for now (and it’s not at all unusual), but we are worki
 
 Currently all communication between services (apps, DBs, etc.) is allowed. As we’re trying to implement firewall rules, now we’re effectively saying nothing is allowed, and we’re just whitelisting things. It’s much harder to do it this way around: when you’re setting things up and saying nothing is allowed, things will fail if they need to communicate in some way. You get immediate feedback and then can go whitelist it.
 
-The other way around, we can’t just block everything and whitelist nothing because we’ll kill our services. We have to think very carefully about how we’re going to apply firewall rules and make sure everything is in place before we turn off the tap.
+The other way around, we can’t just block everything and whitelist nothing, because we’ll kill our services. We have to think very carefully about how we’re going to apply firewall rules and make sure everything is in place before we turn off the tap.
 
 This is one area where we didn’t anticipate our changing needs as we grow, and didn’t set things up the right way from the outset. But then, we didn’t have a SaaS offering to start with, so we didn’t optimize for it. It just shows that you can’t anticipate everything. Technically, we are able to apply those firewall rules only in the SaaS context and leave the existing setup as is, but while we’re building for SaaS, we might as well retrofit firewall rules everywhere, and be more secure in that way, even if it will cost some engineering time to take all those precautions.
 
