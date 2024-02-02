@@ -52,7 +52,7 @@
         "@docusaurus/module-type-aliases": "3.1.1",
         "@docusaurus/tsconfig": "3.1.1",
         "@docusaurus/types": "3.1.1",
-        "@types/react": "^18.2.48",
+        "@types/react": "^18.2.51",
         "prettier": "3.2.4",
         "typescript": "~5.3.3"
     },
