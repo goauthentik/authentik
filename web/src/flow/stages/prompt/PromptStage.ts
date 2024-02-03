@@ -271,13 +271,20 @@ ${prompt.initialValue}</textarea
         }
         return html` ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}`;
     }
+    handleCancel() {
+        window.history.back();
+    }
 
     renderContinue(): TemplateResult {
-        return html` <div class="pf-c-form__group pf-m-action">
-            <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                ${msg("Continue")}
-            </button>
-        </div>`;
+        return html`<div class="pf-c-form__group pf-m-action" style="display: flex; justify-content: space-between;">
+        <button type="button" class="pf-c-button pf-m-secondary pf-m-block" style="background-color: grey; color: white;" @click=${this.handleCancel}>
+            ${msg("Cancel")}
+        </button>
+        <div style="width: 100px; height: 100%;"></div>
+        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+            ${msg("Continue")}
+        </button>
+    </div>`;
     }
 
     render(): TemplateResult {

@@ -173,20 +173,37 @@ export class IdentificationStage extends BaseStage<
                     if (!this.host) return;
                     this.host.challenge = source.challenge;
                 }}
-                class=${this.challenge.showSourceLabels ? "pf-c-button pf-m-link" : ""}
+                class=${this.challenge.showSourceLabels ? "pf-c-button pf-m-link source-buttons" : "source-buttons"
+            } style="padding: 10px 20px; border: 2px solid #0078d4; border-radius: 5px; display: flex; align-items: center; position: relative; transition: background-color 0.3s ease;"
+            onmouseover="this.style.backgroundColor='#0078d4'; this.style.color='#fff';"
+            onmouseout="this.style.backgroundColor=''; this.style.color='';"
             >
                 <span class="pf-c-button__icon pf-m-start">${icon}</span>
                 ${this.challenge.showSourceLabels ? source.name : ""}
             </button>
         </li>`;
     }
-
+    getRedirectUriParameter(url: string): string | null {
+        const decodedUrl = decodeURIComponent(decodeURIComponent(url));
+        const urlSearchParams = new URLSearchParams(decodedUrl);
+        const redirectUri = urlSearchParams.get('redirect_uri');
+        return redirectUri ? decodedUrl : null;
+    }
     renderFooter(): TemplateResult {
+            // Get and double-decode the redirect_uri parameter
+            const redirectUri = this.challenge?.enrollUrl
+                ? this.getRedirectUriParameter(this.challenge.enrollUrl)
+                : null;
+
+            // Check if the double-decoded redirect_uri contains "/login"
+            const isLoginRedirect = redirectUri
+                ? redirectUri.includes("/login")
+                : false;
         if (!this.challenge?.enrollUrl && !this.challenge?.recoveryUrl) {
             return html``;
         }
         return html`<div class="pf-c-login__main-footer-band">
-            ${this.challenge.enrollUrl
+${this.challenge.enrollUrl&&!isLoginRedirect
                 ? html`<p class="pf-c-login__main-footer-band-item">
                       ${msg("Need an account?")}
                       <a id="enroll" href="${this.challenge.enrollUrl}">${msg("Sign up.")}</a>
@@ -195,12 +212,16 @@ export class IdentificationStage extends BaseStage<
             ${this.challenge.recoveryUrl
                 ? html`<p class="pf-c-login__main-footer-band-item">
                       <a id="recovery" href="${this.challenge.recoveryUrl}"
-                          >${msg("Forgot username or password?")}</a
+                          >${msg("Forgot password?")}</a
                       >
                   </p>`
                 : html``}
         </div>`;
     }
+    handleCancel() {
+        window.history.back();
+    }
+    
 
     renderInput(): TemplateResult {
         let type: "text" | "email" = "text";
@@ -218,7 +239,12 @@ export class IdentificationStage extends BaseStage<
             [UserFieldsEnum.Upn]: msg("UPN"),
         };
         const label = OR_LIST_FORMATTERS.format(fields.map((f) => uiFields[f]));
-        return html`<ak-form-element
+        return html`${(/forgot|recovery|recover/i.test(this.challenge.flowInfo?.title ?? ''))
+        ? html`<p style="padding-bottom: 10px;">
+                Enter the email associated with your account, and we'll send you a link to reset your password.
+            </p>`
+        : ''}
+        <ak-form-element
                 label=${label}
                 ?required="${true}"
                 class="pf-c-form__group"
@@ -257,7 +283,13 @@ export class IdentificationStage extends BaseStage<
             ${"non_field_errors" in (this.challenge?.responseErrors || {})
                 ? this.renderNonFieldErrors(this.challenge?.responseErrors?.non_field_errors || [])
                 : html``}
-            <div class="pf-c-form__group pf-m-action">
+                <div class="pf-c-form__group pf-m-action" style="display: flex; justify-content: space-between;">
+                ${(/forgot|recovery|recover/i.test(this.challenge.flowInfo?.title ?? ''))
+                    ? html`<button type="button" class="pf-c-button pf-m-secondary pf-m-block" style="background-color: grey; color: white;" @click=${this.handleCancel}>
+                            ${msg("Cancel")}
+                        </button>
+                        <div style="width: 100px; height: 100%;"></div>`
+                    : ''}
                 <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                     ${this.challenge.primaryAction}
                 </button>
@@ -269,7 +301,7 @@ export class IdentificationStage extends BaseStage<
                               href=${this.challenge.passwordlessUrl}
                               class="pf-c-button pf-m-secondary pf-m-block"
                           >
-                              ${msg("Use a security key")}
+                              ${msg("Use Passwordless")}
                           </a>
                       </div>`
                 : html``}`;
