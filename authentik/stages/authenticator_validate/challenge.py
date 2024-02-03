@@ -128,7 +128,7 @@ def validate_challenge_code(code: str, stage_view: StageView, user: User) -> Dev
             stage=stage_view.executor.current_stage,
             device_class=DeviceClasses.TOTP.value,
         )
-        raise ValidationError(_("Invalid Token"))
+        raise ValidationError(_("Invalid Token. Please ensure your phone's time is accurate and try again."))
     return device
 
 
