@@ -7,7 +7,7 @@ class DjangoUvicornWorker(UvicornWorker):
     """Custom configured Uvicorn Worker without lifespan"""
 
     CONFIG_KWARGS = {
-        "loop": "uvloop",
+        "loop": "asyncio",
         "http": "httptools",
         "lifespan": "off",
         "ws": "wsproto",
