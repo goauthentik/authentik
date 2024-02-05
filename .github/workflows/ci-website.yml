@@ -12,6 +12,13 @@ on:
       - version-*
 
 jobs:
+  lint-codespell:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
+      - run: poetry run make ci-codespell
   lint-prettier:
     runs-on: ubuntu-latest
     steps:
@@ -63,6 +70,7 @@ jobs:
         run: npm run ${{ matrix.job }}
   ci-website-mark:
     needs:
+      - lint-codespell
       - lint-prettier
       - test
       - build
