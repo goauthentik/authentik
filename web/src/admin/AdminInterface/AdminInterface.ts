@@ -7,7 +7,7 @@ import {
 import { configureSentry } from "@goauthentik/common/sentry";
 import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
-import { Interface } from "@goauthentik/elements/Interface";
+import { EnterpriseAwareInterface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/elements/enterprise/EnterpriseStatusBanner";
 import "@goauthentik/elements/messages/MessageContainer";
@@ -33,7 +33,7 @@ import { AdminApi, SessionUser, UiThemeEnum, Version } from "@goauthentik/api";
 import "./AdminSidebar";
 
 @customElement("ak-interface-admin")
-export class AdminInterface extends Interface {
+export class AdminInterface extends EnterpriseAwareInterface {
     @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 

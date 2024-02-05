@@ -66,6 +66,29 @@ export class Interface extends AKElement implements AkInterface {
         return this._brand;
     }
 
+    constructor() {
+        super();
+        document.adoptedStyleSheets = [...document.adoptedStyleSheets, ensureCSSStyleSheet(PFBase)];
+        brand().then((brand) => (this.brand = brand));
+        config().then((config) => (this.config = config));
+
+        this.dataset.akInterfaceRoot = "true";
+    }
+
+    _activateTheme(root: AdoptedStyleSheetsElement, theme: UiThemeEnum): void {
+        super._activateTheme(root, theme);
+        super._activateTheme(document, theme);
+    }
+
+    async getTheme(): Promise<UiThemeEnum> {
+        if (!this.uiConfig) {
+            this.uiConfig = await uiConfig();
+        }
+        return this.uiConfig.theme?.base || UiThemeEnum.Automatic;
+    }
+}
+
+export class EnterpriseAwareInterface extends Interface {
     _licenseSummaryContext = new ContextProvider(this, {
         context: authentikEnterpriseContext,
         initialValue: undefined,
@@ -86,25 +109,8 @@ export class Interface extends AKElement implements AkInterface {
 
     constructor() {
         super();
-        document.adoptedStyleSheets = [...document.adoptedStyleSheets, ensureCSSStyleSheet(PFBase)];
-        brand().then((brand) => (this.brand = brand));
-        config().then((config) => (this.config = config));
         new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseSummaryRetrieve().then((enterprise) => {
             this.licenseSummary = enterprise;
         });
-
-        this.dataset.akInterfaceRoot = "true";
-    }
-
-    _activateTheme(root: AdoptedStyleSheetsElement, theme: UiThemeEnum): void {
-        super._activateTheme(root, theme);
-        super._activateTheme(document, theme);
-    }
-
-    async getTheme(): Promise<UiThemeEnum> {
-        if (!this.uiConfig) {
-            this.uiConfig = await uiConfig();
-        }
-        return this.uiConfig.theme?.base || UiThemeEnum.Automatic;
     }
 }
