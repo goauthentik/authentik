@@ -6348,6 +6348,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sbd065743a0c599e3">
   <source>Preview for user</source>
 </trans-unit>
+<trans-unit id="se16b4d412ad1aba9">
+  <source>Brand name</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
