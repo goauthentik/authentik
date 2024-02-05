@@ -2,6 +2,7 @@ import "@goauthentik/admin/sources/ldap/LDAPSourceViewPage";
 import "@goauthentik/admin/sources/oauth/OAuthSourceViewPage";
 import "@goauthentik/admin/sources/plex/PlexSourceViewPage";
 import "@goauthentik/admin/sources/saml/SAMLSourceViewPage";
+import "@goauthentik/admin/sources/spnego/SPNEGOSourceViewPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
@@ -47,6 +48,10 @@ export class SourceViewPage extends AKElement {
                 return html`<ak-source-saml-view
                     sourceSlug=${this.source.slug}
                 ></ak-source-saml-view>`;
+            case "ak-source-spnego-form":
+                return html`<ak-source-spnego-view
+                    sourceSlug=${this.source.slug}
+                ></ak-source-spnego-view>`;
             case "ak-source-plex-form":
                 return html`<ak-source-plex-view
                     sourceSlug=${this.source.slug}

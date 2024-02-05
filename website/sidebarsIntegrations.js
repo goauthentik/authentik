@@ -170,6 +170,16 @@ module.exports = {
                         "sources/ldap/index",
                         "sources/oauth/index",
                         "sources/saml/index",
+                        {
+                            type: "category",
+                            label: "SPNEGO",
+                            collapsed: true,
+                            link: {
+                                type: "doc",
+                                id: "sources/spnego/index",
+                            },
+                            items: ["sources/spnego/browser"],
+                        },
                     ],
                 },
                 {
