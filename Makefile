@@ -1,16 +1,8 @@
-.PHONY: gen dev-reset all clean test web website
+.PHONY: gen dev-reset all clean test web-$@ website-$@
 
-.SHELLFLAGS += ${SHELLFLAGS} -e
-PWD = $(shell pwd)
-UID = $(shell id -u)
-GID = $(shell id -g)
-NPM_VERSION = $(shell python -m scripts.npm_version)
-PY_SOURCES = authentik tests scripts lifecycle
-DOCKER_IMAGE ?= "authentik:test"
+all: lint-fix lint test gen web-all website-all  ## Lint, build, and test everything
 
-pg_user := $(shell python -m authentik.lib.config postgresql.user 2>/dev/null)
-pg_host := $(shell python -m authentik.lib.config postgresql.host 2>/dev/null)
-pg_name := $(shell python -m authentik.lib.config postgresql.name 2>/dev/null)
+include scripts/common.mk
 
 CODESPELL_ARGS = -D - -D .github/codespell-dictionary.txt \
 		-I .github/codespell-words.txt \
@@ -26,29 +18,8 @@ CODESPELL_ARGS = -D - -D .github/codespell-dictionary.txt \
 		website/integrations \
 		website/src
 
-all: lint-fix lint test gen web  ## Lint, build, and test everything
-
-HELP_WIDTH := $(shell grep -h '^[a-z][^ ]*:.*\#\#' $(MAKEFILE_LIST) 2>/dev/null | \
-	cut -d':' -f1 | awk '{printf "%d\n", length}' | sort -rn | head -1)
-
-help:  ## Show this help
-	@echo "\nSpecify a command. The choices are:\n"
-	@grep -Eh '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
-		awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[0;36m%-$(HELP_WIDTH)s  \033[m %s\n", $$1, $$2}' | \
-		sort
-	@echo ""
-
 test-go:
 	go test -timeout 0 -v -race -cover ./...
-
-test-docker:  ## Run all tests in a docker-compose
-	echo "PG_PASS=$(openssl rand -base64 32)" >> .env
-	echo "AUTHENTIK_SECRET_KEY=$(openssl rand -base64 32)" >> .env
-	docker-compose pull -q
-	docker-compose up --no-start
-	docker-compose start postgresql redis
-	docker-compose run -u root server test-all
-	rm -f .env
 
 test: ## Run the server tests and produce a coverage report (locally)
 	coverage run manage.py test --keepdb authentik
@@ -122,30 +93,10 @@ gen-diff:  ## (Release) generate the changelog diff between the current schema a
 	sed -i 's/}/&#125;/g' diff.md
 	npx prettier --write diff.md
 
-gen-clean-ts:  ## Remove generated API client for Typescript
-	rm -rf gen-ts-api/
-	rm -rf web/node_modules/@goauthentik/api/
-
 gen-clean-go:  ## Remove generated API client for Go
 	rm -rf gen-go-api/
 
 gen-clean: gen-clean-ts gen-clean-go  ## Remove generated API clients
-
-gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescript into the authentik UI Application
-	docker run \
-		--rm -v ${PWD}:/local \
-		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v6.5.0 generate \
-		-i /local/schema.yml \
-		-g typescript-fetch \
-		-o /local/gen-ts-api \
-		-c /local/scripts/api-ts-config.yaml \
-		--additional-properties=npmVersion=${NPM_VERSION} \
-		--git-repo-id authentik \
-		--git-user-id goauthentik
-	mkdir -p web/node_modules/@goauthentik/api
-	cd gen-ts-api && npm i
-	\cp -rfv gen-ts-api/* web/node_modules/@goauthentik/api
 
 gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
 	mkdir -p ./gen-go-api ./gen-go-api/templates
@@ -170,94 +121,26 @@ gen-dev-config:  ## Generate a local development config file
 gen: gen-build gen-client-ts
 
 #########################
-## Web
-#########################
-
-web-build: web-install  ## Build the Authentik UI
-	cd web && npm run build
-
-web: web-lint-fix web-lint web-check-compile web-i18n-extract  ## Automatically fix formatting issues in the Authentik UI source code, lint the code, and compile it
-
-web-install:  ## Install the necessary libraries to build the Authentik UI
-	cd web && npm ci
-
-web-watch:  ## Build and watch the Authentik UI for changes, updating automatically
-	rm -rf web/dist/
-	mkdir web/dist/
-	touch web/dist/.gitkeep
-	cd web && npm run watch
-
-web-storybook-watch:  ## Build and run the storybook documentation server
-	cd web && npm run storybook
-
-web-lint-fix:
-	cd web && npm run prettier
-
-web-lint:
-	cd web && npm run lint
-	cd web && npm run lit-analyse
-
-web-check-compile:
-	cd web && npm run tsc
-
-web-i18n-extract:
-	cd web && npm run extract-locales
-
-#########################
-## Website
-#########################
-
-website: website-lint-fix website-build  ## Automatically fix formatting issues in the Authentik website/docs source code, lint the code, and compile it
-
-website-install:
-	cd website && npm ci
-
-website-lint-fix:
-	cd website && npm run prettier
-
-website-build:
-	cd website && npm run build
-
-website-watch:  ## Build and watch the documentation website, updating automatically
-	cd website && npm run watch
-
-#########################
 ## Docker
 #########################
 
 docker:  ## Build a docker image of the current source tree
 	DOCKER_BUILDKIT=1 docker build . --progress plain --tag ${DOCKER_IMAGE}
 
-#########################
-## CI
-#########################
-# These targets are use by GitHub actions to allow usage of matrix
-# which makes the YAML File a lot smaller
+test-docker:  ## Run all tests in a docker-compose
+	echo "PG_PASS=$(openssl rand -base64 32)" >> .env
+	echo "AUTHENTIK_SECRET_KEY=$(openssl rand -base64 32)" >> .env
+	docker-compose pull -q
+	docker-compose up --no-start
+	docker-compose start postgresql redis
+	docker-compose run -u root server test-all
+	rm -f .env
 
-ci--meta-debug:
-	python -V
-	node --version
+web-%:
+	$(MAKE) -f ${BUILDDIR}/web/Makefile $(subst web-,,$@)
 
-ci-pylint: ci--meta-debug
-	pylint $(PY_SOURCES)
+website-%:
+	$(MAKE) -f ${BUILDDIR}/website/Makefile $(subst website-,,$@)
 
-ci-black: ci--meta-debug
-	black --check $(PY_SOURCES)
-
-ci-ruff: ci--meta-debug
-	ruff check $(PY_SOURCES)
-
-ci-codespell: ci--meta-debug
-	codespell $(CODESPELL_ARGS) -s
-
-ci-isort: ci--meta-debug
-	isort --check $(PY_SOURCES)
-
-ci-bandit: ci--meta-debug
-	bandit -r $(PY_SOURCES)
-
-ci-pyright: ci--meta-debug
-	./web/node_modules/.bin/pyright $(PY_SOURCES)
-
-ci-pending-migrations: ci--meta-debug
-	ak makemigrations --check
+ci-%:
+	$(MAKE) -f ${BUILDDIR}/scripts/ci.mk $(subst ci-,,$@)
