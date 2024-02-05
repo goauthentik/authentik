@@ -53,7 +53,7 @@
         "@docusaurus/tsconfig": "3.1.1",
         "@docusaurus/types": "3.1.1",
         "@types/react": "^18.2.51",
-        "prettier": "3.2.4",
+        "prettier": "3.2.5",
         "typescript": "~5.3.3"
     },
     "engines": {
