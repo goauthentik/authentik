@@ -25,9 +25,12 @@ jobs:
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: run extract
-        run: poetry run make i18n-extract
+        run: |
+          poetry run make i18n-extract
       - name: run compile
-        run: poetry run ak compilemessages
+        run: |
+          poetry run ak compilemessages
+          make web-check-compile
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
