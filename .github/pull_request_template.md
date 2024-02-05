@@ -27,7 +27,6 @@ If an API change has been made
 If changes to the frontend have been made
 
 -   [ ] The code has been formatted (`make web`)
--   [ ] The translation files have been updated (`make i18n-extract`)
 
 If applicable
 
