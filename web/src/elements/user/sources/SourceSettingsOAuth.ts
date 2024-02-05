@@ -1,14 +1,13 @@
+import { BaseUserSettings } from "@goauthentik/app/elements/user/sources/BaseUserSettings";
 import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { MessageLevel } from "@goauthentik/common/messages";
 import "@goauthentik/elements/Spinner";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import { BaseUserSettings } from "@goauthentik/user/user-settings/BaseUserSettings";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import { SourcesApi } from "@goauthentik/api";
 
@@ -57,13 +56,16 @@ export class SourceSettingsOAuth extends BaseUserSettings {
                 ${msg("Disconnect")}
             </button>`;
         }
-        return html`<a
-            class="pf-c-button pf-m-primary"
-            href="${ifDefined(this.configureUrl)}${AndNext(
-                `/if/user/#/settings;${JSON.stringify({ page: "page-sources" })}`,
-            )}"
-        >
-            ${msg("Connect")}
-        </a>`;
+        if (this.configureUrl) {
+            return html`<a
+                class="pf-c-button pf-m-primary"
+                href="${this.configureUrl}${AndNext(
+                    `/if/user/#/settings;${JSON.stringify({ page: "page-sources" })}`,
+                )}"
+            >
+                ${msg("Connect")}
+            </a>`;
+        }
+        return html`${msg("-")}`;
     }
 }
