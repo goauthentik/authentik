@@ -123,7 +123,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
             if not current_stage.show_matched_user:
                 self.stage.executor.plan.context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = uid_field
             # when `pretend` is enabled, continue regardless
-            if current_stage.pretend_user_exists:
+            if current_stage.pretend_user_exists and not current_stage.password_stage:
                 return attrs
             raise ValidationError("Failed to authenticate.")
         self.pre_user = pre_user
