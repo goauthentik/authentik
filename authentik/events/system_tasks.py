@@ -59,6 +59,13 @@ class SystemTask(TenantTask):
         self._start = now()
         return super().before_start(task_id, args, kwargs)
 
+    def db(self) -> Optional[DBSystemTask]:
+        """Get DB object for latest task"""
+        return DBSystemTask.objects.filter(
+            name=self.__name__,
+            uid=self._uid,
+        ).first()
+
     # pylint: disable=too-many-arguments
     def after_return(self, status, retval, task_id, args: list[Any], kwargs: dict[str, Any], einfo):
         super().after_return(status, retval, task_id, args, kwargs, einfo=einfo)
