@@ -8409,6 +8409,10 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Preview for user</source>
   <target>用户预览</target>
 </trans-unit>
+<trans-unit id="se16b4d412ad1aba9">
+  <source>Brand name</source>
+  <target>品牌名称</target>
+</trans-unit>
     </body>
   </file>
 </xliff>
