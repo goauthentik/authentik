@@ -1,7 +1,7 @@
 """Monitored tasks"""
 
-from datetime import timedelta
-from timeit import default_timer
+from datetime import datetime, timedelta
+from time import perf_counter
 from typing import Any, Optional
 
 from django.utils.timezone import now
@@ -28,7 +28,9 @@ class SystemTask(TenantTask):
     _messages: list[str]
 
     _uid: Optional[str]
-    _start: Optional[float] = None
+    # Precise start time from perf_counter
+    _start_precise: Optional[float] = None
+    _start: Optional[datetime] = None
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -53,8 +55,16 @@ class SystemTask(TenantTask):
         self._messages = [exception_to_string(exception)]
 
     def before_start(self, task_id, args, kwargs):
-        self._start = default_timer()
+        self._start_precise = perf_counter()
+        self._start = now()
         return super().before_start(task_id, args, kwargs)
+
+    def db(self) -> Optional[DBSystemTask]:
+        """Get DB object for latest task"""
+        return DBSystemTask.objects.filter(
+            name=self.__name__,
+            uid=self._uid,
+        ).first()
 
     # pylint: disable=too-many-arguments
     def after_return(self, status, retval, task_id, args: list[Any], kwargs: dict[str, Any], einfo):
@@ -72,8 +82,9 @@ class SystemTask(TenantTask):
             uid=self._uid,
             defaults={
                 "description": self.__doc__,
-                "start_timestamp": self._start or default_timer(),
-                "finish_timestamp": default_timer(),
+                "start_timestamp": self._start or now(),
+                "finish_timestamp": now(),
+                "duration": max(perf_counter() - self._start_precise, 0),
                 "task_call_module": self.__module__,
                 "task_call_func": self.__name__,
                 "task_call_args": args,
@@ -96,8 +107,9 @@ class SystemTask(TenantTask):
             uid=self._uid,
             defaults={
                 "description": self.__doc__,
-                "start_timestamp": self._start or default_timer(),
-                "finish_timestamp": default_timer(),
+                "start_timestamp": self._start or now(),
+                "finish_timestamp": now(),
+                "duration": max(perf_counter() - self._start_precise, 0),
                 "task_call_module": self.__module__,
                 "task_call_func": self.__name__,
                 "task_call_args": args,
@@ -123,11 +135,14 @@ def prefill_task(func):
         DBSystemTask(
             name=func.__name__,
             description=func.__doc__,
+            start_timestamp=now(),
+            finish_timestamp=now(),
             status=TaskStatus.UNKNOWN,
             messages=sanitize_item([_("Task has not been run yet.")]),
             task_call_module=func.__module__,
             task_call_func=func.__name__,
             expiring=False,
+            duration=0,
         )
     )
     return func

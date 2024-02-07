@@ -2935,8 +2935,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/PolicyTestResult'
           description: ''
-        '404':
-          description: for_user user not found
         '400':
           content:
             application/json:
@@ -43573,17 +43571,14 @@ components:
         start_timestamp:
           type: string
           format: date-time
-          description: Timestamp when the task started
           readOnly: true
         finish_timestamp:
           type: string
           format: date-time
-          description: Timestamp when the task finished
           readOnly: true
         duration:
           type: number
           format: double
-          description: Get the duration a task took to run
           readOnly: true
         status:
           $ref: '#/components/schemas/SystemTaskStatusEnum'
@@ -43963,6 +43958,7 @@ components:
           maxLength: 254
         avatar:
           type: string
+          description: User's avatar, either a http/https URL or a data URI
           readOnly: true
         attributes:
           type: object
@@ -44634,6 +44630,7 @@ components:
           maxLength: 254
         avatar:
           type: string
+          description: User's avatar, either a http/https URL or a data URI
           readOnly: true
         uid:
           type: string
