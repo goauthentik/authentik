@@ -1,4 +1,5 @@
 """Make channels use custom Redis layer"""
+
 import logging
 import time
 from asyncio import Lock, get_running_loop
@@ -46,7 +47,7 @@ class CustomLoopLayer:
 
 class CustomChannelLayer(RedisChannelLayer):
     """
-    Custom Redis channel layer to allow for full Redis client support
+    Custom Redis channel layer to allow for improved Redis client support
 
     It routes all messages into remote Redis server. Support for
     sharding among different Redis installations and message

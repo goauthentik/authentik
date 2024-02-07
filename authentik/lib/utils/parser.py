@@ -1,4 +1,5 @@
 """redis URL parser"""
+
 from asyncio import PriorityQueue
 from copy import deepcopy
 from random import shuffle
@@ -363,7 +364,7 @@ def get_redis_options(
 def _config_sentinel(config, service_name, credentials, kwargs, addrs):
     """Configure options for Redis sentinel"""
     if not service_name:
-        raise ValueError("For sentinel usage a mastername has to be specified!")
+        raise ValueError("When using sentinel a mastername has to be specified!")
     sentinel_username, sentinel_password = credentials
     redis_kwargs, pool_kwargs = kwargs
     # Update username / password for sentinel connection
