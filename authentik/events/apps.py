@@ -90,4 +90,8 @@ class AuthentikEventsConfig(ManagedAppConfig):
             due, _ = schedule.is_due(db_task.finish_timestamp)
             if due or db_task.status == TaskStatus.UNKNOWN:
                 self.logger.debug("Running past-due scheduled task", task=task["task"])
-                task_class.delay()
+                task_class.apply_async(
+                    args=task.get("args", None),
+                    kwargs=task.get("kwargs", None),
+                    **task.get("options", {}),
+                )
