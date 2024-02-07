@@ -57,7 +57,7 @@ class AuthentikEventsConfig(ManagedAppConfig):
                 message=msg,
             ).save()
 
-    def reconcile_prefill_tasks(self):
+    def reconcile_tenant_prefill_tasks(self):
         """Prefill tasks"""
         from authentik.events.models import SystemTask
         from authentik.events.system_tasks import _prefill_tasks
