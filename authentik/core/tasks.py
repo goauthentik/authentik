@@ -37,6 +37,7 @@ def clean_expired_models(self: SystemTask):
         messages.append(f"Expired {amount} {cls._meta.verbose_name_plural}")
     # Special case
     amount = 0
+    # pylint: disable=no-member
     for session in AuthenticatedSession.objects.all():
         cache_key = f"{KEY_PREFIX}{session.session_key}"
         value = None
@@ -49,6 +50,7 @@ def clean_expired_models(self: SystemTask):
             session.delete()
             amount += 1
     LOGGER.debug("Expired sessions", model=AuthenticatedSession, amount=amount)
+    # pylint: disable=no-member
     messages.append(f"Expired {amount} {AuthenticatedSession._meta.verbose_name_plural}")
     self.set_status(TaskStatus.SUCCESSFUL, *messages)
 
