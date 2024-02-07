@@ -8,12 +8,14 @@
         "plugin:@typescript-eslint/recommended",
         "plugin:lit/recommended",
         "plugin:custom-elements/recommended",
-        "plugin:storybook/recommended"
+        "plugin:storybook/recommended",
+        "plugin:deprecation/recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaVersion": 12,
-        "sourceType": "module"
+        "sourceType": "module",
+        "project": "./tsconfig.json"
     },
     "plugins": ["@typescript-eslint", "lit", "custom-elements"],
     "ignorePatterns": ["authentik-live-tests/**"],
