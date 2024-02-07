@@ -15,7 +15,7 @@
     "parserOptions": {
         "ecmaVersion": 12,
         "sourceType": "module",
-        "project": "./tsconfig.json"
+        "project": true
     },
     "plugins": ["@typescript-eslint", "lit", "custom-elements"],
     "ignorePatterns": ["authentik-live-tests/**"],
