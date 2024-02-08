@@ -38,6 +38,7 @@ class ManagedAppConfig(AppConfig):
             except ModuleNotFoundError:
                 pass
 
+        import_relative("checks")
         import_relative("tasks")
         import_relative("signals")
 
