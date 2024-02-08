@@ -8,8 +8,8 @@ authors:
       image_url: https://github.com/BeryJu.png
     - name: Nick Moore
       title: Contributing Writer
-      url: https://www.linkedin.com/in/nick-moore-b704a870/
-      image_url: https://media.licdn.com/dms/image/C4E03AQG4X6It_NzcMg/profile-displayphoto-shrink_200_200/0/1552014381924?e=1712793600&v=beta&t=21R71nd__YgsfI14m_BRpmwgBRHl-F6vhse0M22gtvc
+      url: https://nickmoore.me/
+      image_url: https://nickmoore.me/assets/images/image01.jpg?v=128b1f3c
 
 tags:
     - authentik
@@ -72,9 +72,7 @@ Here, Stallman laid out one of the visions that’s continued driving open sourc
 
 Over the following decades, open-source developers and maintainers used the nascent and eventually mature Internet to build software projects that were hobbies, industry-supporting keystones, and everything in between.
 
-https://lh7-us.googleusercontent.com/27Az7alvemOZ_f-J52N_yep4j2eXDzgFROwZ2wtUxXkeSRhH4eu2wPMXRXR_xfDS1gNN_1Fb_9kczC-55IsiIvvW_H6mhi4-DfbJmUfn7N6N78P2P3oTEZpm8r-JqRF2BmObQ_pj9XukCJanv6JpMLM
-
-([Source](https://xkcd.com/2347/))
+[![cartoon of abstract machine, with unsteady building blocks supporting it.](./image1.png)](https://xkcd.com/2347/)
 
 Amongst this growth, another economy surfaced, too: a huge crop of companies that built tooling and platforms for open source as well as a variety of business models, such as open core, to support open source. Open source, once primarily adversarial to private industry, has become integral to it.
 
@@ -108,7 +106,7 @@ Of course, investors could have learned this lesson sooner by looking at open so
 
 As Eghbal writes, open source maintainers are “expected to maintain the code they published for as long as people use it. In some cases, this could be literally decades, unless the maintainer formally steps away from the project.”
 
-https://lh7-us.googleusercontent.com/BotS8o4rpNxVdGmKKeS7pSj2jXE6pVuk2F3kulISoeazwvdgCKDOiCnSA8cpCSOYtm-50VZT6pmnmLGLc04BPXcs7_6hGkYbPeV9m5JmYhMP4qKCzHJ6hLaEF4wFQ3Efk2xDSVT5rOL_30LXWfLPXGo
+![screenshot of Apache website's download page.](./image2.png)
 
 [Apache](https://httpd.apache.org/), for example, launched in 1995, celebrated its 25th anniversary in 2020, and released its most recent version in 2023.
 
@@ -144,9 +142,7 @@ Open source developers rarely have fans in the same way but they frequently run 
 
 Nolan Lawson, for example, a major contributor to PouchDB told Eghbal that open source popularity can create “a perverse effect where, the more successful you are, the more you get ‘punished’ with GitHub notifications.”
 
-https://lh7-us.googleusercontent.com/bxdqHHaJbkvS3kX-SU8wpZqH7f11JQ4z5Wi2VQvNgT5MTAF0S3CLL-awSybz_5PWCVSWsEnEYoJivQYittPfyDBms4BJciYGDstiRVc5vbQ8nFnUowhtfnAT8C--wQVSjG9z5DPiuQcUGiQcK-m8i4c
-
-([Source](https://antfu.me/posts/manage-github-notifcations-2023))
+[![screenshot showing number of notifications at 2,495, from blog page of Anthony Fu writing about how he manages GitHub notifications.](./image3.png)](https://antfu.me/posts/manage-github-notifcations-2023)
 
 As [Alex Danco writes](https://danco.substack.com/p/making-is-show-business-now), “Success brings attention, interaction, and maintenance - both of the code itself, and of the creator’s reputation. This all takes work, and it’s often not the kind of work the creators like doing.”
 
@@ -168,13 +164,9 @@ On the other side of these success stories are open source developers working fo
 
 But the income didn’t [keep up with the influence](https://www.techtarget.com/searchitoperations/feature/Who-profits-from-open-source-maintainers-work). “Our income is disproportionate if this thing is everywhere – across the entire globe, used by Fortune-whatever companies,” Clark said. “It's disproportionate. And there's no easy way to fix that."
 
-This isn’t an isolated feeling. According to
+This isn’t an isolated feeling. According to [2023 Tidelift research](https://4008838.fs1.hubspotusercontent-na1.net/hubfs/4008838/Tidelift-2023-open-source-maintainer-survey.pdf), 77% of the maintainers who are not paid would prefer to get paid, 22% have quit open source, and 36% have considered quitting.
 
-[2023 Tidelift research](https://4008838.fs1.hubspotusercontent-na1.net/hubfs/4008838/Tidelift-2023-open-source-maintainer-survey.pdf)
-
-, 77% of the maintainers who are not paid would prefer to get paid, 22% have quit open source, and 36% have considered quitting.
-
-https://lh7-us.googleusercontent.com/wX-DjldxQfZh3B3mo8aaYhAcqMv2XLIiDqGbonQgxR-8ASLe23OfiMG0uV8rCAfkPMGkHDOVsK6g33ihuJ3clJfKpeFCFPgzeFxmohjJDdnkozsI2YtWq761Qxyv3tFhVwR528klR0CAs7Ep_eRLiN4
+[![graphic depicted poll showing that 77% of unpaid maintainers of open source projects would prefer to be paid.](./image4.png)](https://4008838.fs1.hubspotusercontent-na1.net/hubfs/4008838/Tidelift-2023-open-source-maintainer-survey.pdf)
 
 Open source developers learned the hard way that monetization is hard – even if influence is indisputable.
 
@@ -204,4 +196,6 @@ More and more open source developers are coming to the foreground, including [Ca
 
 As Danco writes, “Making technology seems like a world apart from entertainment and show business. But in this new world, making _is_ show business.”
 
-The more that open source developers can learn from the content creators that came up after them, the more sustainable the whole creator economy will be.
+The more that open source developers and the content creators that came up after them can learn from each other, the more sustainable the whole creator economy will be.
+
+As always, we want to hear your thoughts. Reach out to us via email at [hello@goauthentik.io](mailto:hello@goauthentik.io) or on [Discord](https://discord.com/channels/809154715984199690/809154716507963434)!
