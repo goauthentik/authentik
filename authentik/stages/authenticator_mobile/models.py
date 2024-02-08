@@ -1,4 +1,5 @@
 """Mobile authenticator stage"""
+
 from secrets import choice
 from typing import Optional
 from uuid import uuid4

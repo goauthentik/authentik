@@ -1,4 +1,5 @@
 """Cloud-gateway client helpers"""
+
 from functools import lru_cache
 
 from authentik_cloud_gateway_client.authenticationPush_pb2_grpc import AuthenticationPushStub

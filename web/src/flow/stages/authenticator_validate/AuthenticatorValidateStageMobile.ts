@@ -4,14 +4,10 @@ import "@goauthentik/flow/FormStatic";
 import { AuthenticatorValidateStage } from "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
-
-
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -21,10 +17,12 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-
-
-import { AuthenticatorValidationChallenge, AuthenticatorValidationChallengeResponseRequest, DeviceChallenge, ItemMatchingModeEnum } from "@goauthentik/api";
-
+import {
+    AuthenticatorValidationChallenge,
+    AuthenticatorValidationChallengeResponseRequest,
+    DeviceChallenge,
+    ItemMatchingModeEnum,
+} from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-validate-mobile")
 export class AuthenticatorValidateStageWebMobile extends BaseStage<

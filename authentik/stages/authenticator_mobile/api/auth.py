@@ -1,4 +1,5 @@
 """Mobile device token authentication"""
+
 from typing import Any
 
 from drf_spectacular.extensions import OpenApiAuthenticationExtension

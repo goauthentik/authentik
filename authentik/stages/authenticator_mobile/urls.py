@@ -1,4 +1,5 @@
 """API URLs"""
+
 from rest_framework import routers
 
 from authentik.stages.authenticator_mobile.api.device import (

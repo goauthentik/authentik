@@ -1,4 +1,5 @@
 """AuthenticatorMobileStage API Views"""
+
 from authentik_cloud_gateway_client.meta_pb2_grpc import MetaStub
 from google.protobuf import empty_pb2
 from grpc import RpcError
