@@ -188,7 +188,7 @@ If Mr. Beast retires, every one of his fans will know; if a key open source main
 
 Open source developers are frequently undervalued but between Raymond and Eghbal, as well as some lessons from traditional content creators, we can see a path toward greater recognition.
 
-Raymond writes that, in open source, “the only available measure of competitive success is reputation among one's peers,” but reputation is not automatically granted upon merging code.
+Raymond writes that in open source, “the only available measure of competitive success is reputation among one's peers,” but reputation is not automatically granted upon merging code.
 
 Eghbal clarifies, writing that “Open source developers are chronically undervalued because, unlike other creators, they’re tied to a platform that doesn’t enable them to realize the value of their work. Instead of operating quietly in the background, open source developers ought to come to the forefront again.”
 
