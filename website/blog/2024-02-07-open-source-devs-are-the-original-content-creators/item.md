@@ -134,7 +134,7 @@ She now recommends vendors “lead with [their] bias” and says that she “dis
 
 ### 3. Audiences are a source of survival and stress
 
-Influencers require a significant level of fame to achieve success: enough viewers to earn brand deals, enough fans to clamor outside makeup stores, enough listenters to sell out live shows.
+Influencers require a significant level of fame to achieve success: enough viewers to earn brand deals, enough fans to clamor outside makeup stores, enough listeners to sell out live shows.
 
 But even though creators depend on their audiences, those same audiences can be a huge source of stress. A big audience can mean pressure and it can also sometimes mean a [public pillorying](https://www.distractify.com/p/influencers-canceled-quickly).
 
