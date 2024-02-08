@@ -53,6 +53,9 @@ class NotificationTransportSerializer(ModelSerializer):
             "webhook_url",
             "webhook_mapping",
             "send_once",
+            "enable_batching",
+            "batch_timeout",
+            "max_batch_size",
         ]
 
 

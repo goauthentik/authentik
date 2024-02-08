@@ -172,6 +172,63 @@ class EventManager(Manager):
         return self.get_queryset().get_events_per(time_since, extract, data_points)
 
 
+class EventBatch(ExpiringModel):
+    """Model to store information about batches of events."""
+
+    batch_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    event_type = models.CharField(max_length=255)
+    event_app = models.CharField(max_length=255)
+    event_user = models.CharField(max_length=255)
+    start_time = models.DateTimeField(auto_now_add=True)
+    end_time = models.DateTimeField(null=True, blank=True)
+    event_count = models.IntegerField(default=0)
+    last_updated = models.DateTimeField(auto_now=True)
+    max_batch_size = models.IntegerField(default=10)
+    batch_timeout = models.IntegerField(default=60)  # Timeout in seconds
+    sent = models.BooleanField(default=False)
+
+    def add_event_to_batch(self, event):
+        """Add an event to the batch and check if it's ready to send."""
+        self.add_event(event)
+        if self.check_batch_limits():
+            self.process_batch()
+
+    @staticmethod
+    def get_or_create_batch(action, app, user):
+        """Get or create a batch for a given action."""
+        return EventBatch.objects.filter(
+            event_type=action, event_app=app, event_user=user, end_time__isnull=True
+        ).first() or EventBatch.objects.create(event_type=action, event_app=app, event_user=user)
+
+    def check_batch_limits(self):
+        """Check if the batch has reached its size or timeout limits."""
+        time_elapsed = now() - self.start_time
+        return self.event_count >= self.max_batch_size or time_elapsed >= timedelta(
+            seconds=self.batch_timeout
+        )
+
+    def add_event(self, event):
+        """Add an event to the batch."""
+        self.event_count += 1
+        self.save()
+
+    def create_batch_summary(self):
+        """Create a summary message for the batch."""
+        return f"Batched Event Summary: {self.event_type} action \
+            on {self.event_app} app by {self.event_user} user \
+            occurred {self.event_count} times between {self.start_time} and {now()}"
+
+    def process_batch(self):
+        """Process the batch and check if it's ready to send."""
+        summary_message = self.create_batch_summary()
+        return summary_message
+        
+    def send_notification(self):
+        """Send notification for this batch."""
+        # Implement the logic to send notification
+        pass
+
+
 class Event(SerializerModel, ExpiringModel):
     """An individual Audit/Metrics/Notification/Error Event"""
 
@@ -186,6 +243,8 @@ class Event(SerializerModel, ExpiringModel):
 
     # Shadow the expires attribute from ExpiringModel to override the default duration
     expires = models.DateTimeField(default=default_event_duration)
+
+    batch_id = models.UUIDField(null=True, blank=True)
 
     objects = EventManager()
 
@@ -214,6 +273,7 @@ class Event(SerializerModel, ExpiringModel):
             # Also ensure that closest django app has the correct prefix
             if len(django_apps) > 0 and django_apps[0].startswith(app):
                 app = django_apps[0]
+
         cleaned_kwargs = cleanse_dict(sanitize_dict(kwargs))
         event = Event(action=action, app=app, context=cleaned_kwargs)
         return event
@@ -275,6 +335,9 @@ class Event(SerializerModel, ExpiringModel):
         return self
 
     def save(self, *args, **kwargs):
+        # Creating a batch for this event in the save method
+        batch = EventBatch.get_or_create_batch(self.action, self.user, self.app)
+        self.batch_id = batch.batch_id
         if self._state.adding:
             LOGGER.info(
                 "Created Event",
@@ -334,7 +397,17 @@ class NotificationTransport(SerializerModel):
         ),
     )
 
+    enable_batching = models.BooleanField(default=False)
+    batch_timeout = models.IntegerField(default=60)  # Timeout in seconds
+    max_batch_size = models.IntegerField(default=10)
+
     def send(self, notification: "Notification") -> list[str]:
+        """Send a batched notification or a single notification"""
+        if self.enable_batching:
+            return self.process_batch(notification)
+        return self.send_notification(notification)
+
+    def send_notification(self, notification: "Notification") -> list[str]:
         """Send notification to user, called from async task"""
         if self.mode == TransportMode.LOCAL:
             return self.send_local(notification)

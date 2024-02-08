@@ -38,6 +38,7 @@ class EventSerializer(ModelSerializer):
             "created",
             "expires",
             "brand",
+            "batch_id",
         ]
 
 
