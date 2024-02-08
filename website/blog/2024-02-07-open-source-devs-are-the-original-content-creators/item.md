@@ -178,7 +178,7 @@ But if Mr. Beast, the person, were hit by a bus tomorrow, a channel that routine
 
 Few open source maintainers have anything nearing the celebrity status of Mr. Beast and few open source projects could even really be considered personality-driven. And yet, many open source projects would suffer a similar fate from a similar bus factor.
 
-Tidelift research shows that nearly half of all open source maintainers work alone; [Synopsys research](https://thenewstack.io/open-source-needs-maintainers-but-how-can-they-get-paid/) shows that 91% of codebases contained open source software that had had no developer activity in the past two years; and [Linux Foundation research](https://thenewstack.io/open-source-needs-maintainers-but-how-can-they-get-paid/) found that only 35% of projects had a strong new contributor pipeline.
+Tidelift research shows that nearly half of all open source maintainers work alone; [Synopsis research](https://thenewstack.io/open-source-needs-maintainers-but-how-can-they-get-paid/) shows that 91% of codebases contained open source software that had had no developer activity in the past two years; and [Linux Foundation research](https://thenewstack.io/open-source-needs-maintainers-but-how-can-they-get-paid/) found that only 35% of projects had a strong new contributor pipeline.
 
 In other words, the bus factor is alive and well in open source. If anything, the differences between open source and content creation make the result of this dynamic relatively worse for open source.
 
