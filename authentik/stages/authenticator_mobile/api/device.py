@@ -1,5 +1,6 @@
 """AuthenticatorMobileStage API Views"""
 from django.http import Http404
+from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
@@ -115,7 +116,7 @@ class MobileDeviceViewSet(
     )
     def enrollment_callback(self, request: Request, pk: str) -> Response:
         """Enrollment callback"""
-        device: MobileDevice = self.get_object()
+        device: MobileDevice = get_object_or_404(MobileDevice, pk=pk)
         data = MobileDeviceEnrollmentSerializer(data=request.data)
         data.is_valid(raise_exception=True)
         device.name = data.validated_data["info"]["hostname"]
@@ -162,7 +163,7 @@ class MobileDeviceViewSet(
     )
     def enrollment_status(self, request: Request, pk: str) -> Response:
         """Check device enrollment status"""
-        device: MobileDevice = self.get_object()
+        device: MobileDevice = get_object_or_404(MobileDevice, pk=pk)
         return Response({"status": "success" if device.confirmed else "waiting"})
 
     @extend_schema(
@@ -207,7 +208,7 @@ class MobileDeviceViewSet(
         """Check in data about a device"""
         data = MobileDeviceCheckInSerializer(data=request.data)
         data.is_valid(raise_exception=True)
-        device: MobileDevice = self.get_object()
+        device: MobileDevice = get_object_or_404(MobileDevice, pk=pk)
         device.last_checkin = now()
         device.state = data.validated_data["info"]
         device.firebase_token = data.validated_data["firebase_key"]
