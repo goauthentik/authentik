@@ -156,7 +156,7 @@ gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescri
 		--git-user-id goauthentik
 	mkdir -p web/node_modules/@goauthentik/api
 	cd ./${GEN_API_TS} && npm i
-	\cp -rfv ./${GEN_API_TS}/* web/node_modules/@goauthentik/api
+	\cp -rf ./${GEN_API_TS}/* web/node_modules/@goauthentik/api
 
 gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
 	mkdir -p ./${GEN_API_GO} ./${GEN_API_GO}/templates

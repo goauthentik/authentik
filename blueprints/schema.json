@@ -123,191 +123,6 @@
                         ],
                         "properties": {
                             "model": {
-                                "const": "authentik_events.event"
-                            },
-                            "id": {
-                                "type": "string"
-                            },
-                            "state": {
-                                "type": "string",
-                                "enum": [
-                                    "absent",
-                                    "present",
-                                    "created",
-                                    "must_created"
-                                ],
-                                "default": "present"
-                            },
-                            "conditions": {
-                                "type": "array",
-                                "items": {
-                                    "type": "boolean"
-                                }
-                            },
-                            "attrs": {
-                                "$ref": "#/$defs/model_authentik_events.event"
-                            },
-                            "identifiers": {
-                                "$ref": "#/$defs/model_authentik_events.event"
-                            }
-                        }
-                    },
-                    {
-                        "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
-                        "properties": {
-                            "model": {
-                                "const": "authentik_events.notificationtransport"
-                            },
-                            "id": {
-                                "type": "string"
-                            },
-                            "state": {
-                                "type": "string",
-                                "enum": [
-                                    "absent",
-                                    "present",
-                                    "created",
-                                    "must_created"
-                                ],
-                                "default": "present"
-                            },
-                            "conditions": {
-                                "type": "array",
-                                "items": {
-                                    "type": "boolean"
-                                }
-                            },
-                            "attrs": {
-                                "$ref": "#/$defs/model_authentik_events.notificationtransport"
-                            },
-                            "identifiers": {
-                                "$ref": "#/$defs/model_authentik_events.notificationtransport"
-                            }
-                        }
-                    },
-                    {
-                        "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
-                        "properties": {
-                            "model": {
-                                "const": "authentik_events.notification"
-                            },
-                            "id": {
-                                "type": "string"
-                            },
-                            "state": {
-                                "type": "string",
-                                "enum": [
-                                    "absent",
-                                    "present",
-                                    "created",
-                                    "must_created"
-                                ],
-                                "default": "present"
-                            },
-                            "conditions": {
-                                "type": "array",
-                                "items": {
-                                    "type": "boolean"
-                                }
-                            },
-                            "attrs": {
-                                "$ref": "#/$defs/model_authentik_events.notification"
-                            },
-                            "identifiers": {
-                                "$ref": "#/$defs/model_authentik_events.notification"
-                            }
-                        }
-                    },
-                    {
-                        "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
-                        "properties": {
-                            "model": {
-                                "const": "authentik_events.notificationrule"
-                            },
-                            "id": {
-                                "type": "string"
-                            },
-                            "state": {
-                                "type": "string",
-                                "enum": [
-                                    "absent",
-                                    "present",
-                                    "created",
-                                    "must_created"
-                                ],
-                                "default": "present"
-                            },
-                            "conditions": {
-                                "type": "array",
-                                "items": {
-                                    "type": "boolean"
-                                }
-                            },
-                            "attrs": {
-                                "$ref": "#/$defs/model_authentik_events.notificationrule"
-                            },
-                            "identifiers": {
-                                "$ref": "#/$defs/model_authentik_events.notificationrule"
-                            }
-                        }
-                    },
-                    {
-                        "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
-                        "properties": {
-                            "model": {
-                                "const": "authentik_events.notificationwebhookmapping"
-                            },
-                            "id": {
-                                "type": "string"
-                            },
-                            "state": {
-                                "type": "string",
-                                "enum": [
-                                    "absent",
-                                    "present",
-                                    "created",
-                                    "must_created"
-                                ],
-                                "default": "present"
-                            },
-                            "conditions": {
-                                "type": "array",
-                                "items": {
-                                    "type": "boolean"
-                                }
-                            },
-                            "attrs": {
-                                "$ref": "#/$defs/model_authentik_events.notificationwebhookmapping"
-                            },
-                            "identifiers": {
-                                "$ref": "#/$defs/model_authentik_events.notificationwebhookmapping"
-                            }
-                        }
-                    },
-                    {
-                        "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
-                        "properties": {
-                            "model": {
                                 "const": "authentik_flows.flow"
                             },
                             "id": {
@@ -2787,6 +2602,191 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_events.event"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_events.event"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_events.event"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_events.notificationtransport"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_events.notificationtransport"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_events.notificationtransport"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_events.notification"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_events.notification"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_events.notification"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_events.notificationrule"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_events.notificationrule"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_events.notificationrule"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_events.notificationwebhookmapping"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_events.notificationwebhookmapping"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_events.notificationwebhookmapping"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_blueprints.metaapplyblueprint"
                             },
                             "id": {
@@ -2859,249 +2859,6 @@
                     "type": "string",
                     "title": "Key data",
                     "description": "Optional Private Key. If this is set, you can use this keypair for encryption."
-                }
-            },
-            "required": []
-        },
-        "model_authentik_events.event": {
-            "type": "object",
-            "properties": {
-                "user": {
-                    "type": "object",
-                    "additionalProperties": true,
-                    "title": "User"
-                },
-                "action": {
-                    "type": "string",
-                    "enum": [
-                        "login",
-                        "login_failed",
-                        "logout",
-                        "user_write",
-                        "suspicious_request",
-                        "password_set",
-                        "secret_view",
-                        "secret_rotate",
-                        "invitation_used",
-                        "authorize_application",
-                        "source_linked",
-                        "impersonation_started",
-                        "impersonation_ended",
-                        "flow_execution",
-                        "policy_execution",
-                        "policy_exception",
-                        "property_mapping_exception",
-                        "system_task_execution",
-                        "system_task_exception",
-                        "system_exception",
-                        "configuration_error",
-                        "model_created",
-                        "model_updated",
-                        "model_deleted",
-                        "email_sent",
-                        "update_available",
-                        "custom_"
-                    ],
-                    "title": "Action"
-                },
-                "app": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "App"
-                },
-                "context": {
-                    "type": "object",
-                    "additionalProperties": true,
-                    "title": "Context"
-                },
-                "client_ip": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "minLength": 1,
-                    "title": "Client ip"
-                },
-                "expires": {
-                    "type": "string",
-                    "format": "date-time",
-                    "title": "Expires"
-                },
-                "brand": {
-                    "type": "object",
-                    "additionalProperties": true,
-                    "title": "Brand"
-                }
-            },
-            "required": []
-        },
-        "model_authentik_events.notificationtransport": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Name"
-                },
-                "mode": {
-                    "type": "string",
-                    "enum": [
-                        "local",
-                        "webhook",
-                        "webhook_slack",
-                        "email"
-                    ],
-                    "title": "Mode"
-                },
-                "webhook_url": {
-                    "type": "string",
-                    "title": "Webhook url"
-                },
-                "webhook_mapping": {
-                    "type": "integer",
-                    "title": "Webhook mapping"
-                },
-                "send_once": {
-                    "type": "boolean",
-                    "title": "Send once",
-                    "description": "Only send notification once, for example when sending a webhook into a chat channel."
-                }
-            },
-            "required": []
-        },
-        "model_authentik_events.notification": {
-            "type": "object",
-            "properties": {
-                "event": {
-                    "type": "object",
-                    "properties": {
-                        "user": {
-                            "type": "object",
-                            "additionalProperties": true,
-                            "title": "User"
-                        },
-                        "action": {
-                            "type": "string",
-                            "enum": [
-                                "login",
-                                "login_failed",
-                                "logout",
-                                "user_write",
-                                "suspicious_request",
-                                "password_set",
-                                "secret_view",
-                                "secret_rotate",
-                                "invitation_used",
-                                "authorize_application",
-                                "source_linked",
-                                "impersonation_started",
-                                "impersonation_ended",
-                                "flow_execution",
-                                "policy_execution",
-                                "policy_exception",
-                                "property_mapping_exception",
-                                "system_task_execution",
-                                "system_task_exception",
-                                "system_exception",
-                                "configuration_error",
-                                "model_created",
-                                "model_updated",
-                                "model_deleted",
-                                "email_sent",
-                                "update_available",
-                                "custom_"
-                            ],
-                            "title": "Action"
-                        },
-                        "app": {
-                            "type": "string",
-                            "minLength": 1,
-                            "title": "App"
-                        },
-                        "context": {
-                            "type": "object",
-                            "additionalProperties": true,
-                            "title": "Context"
-                        },
-                        "client_ip": {
-                            "type": [
-                                "string",
-                                "null"
-                            ],
-                            "minLength": 1,
-                            "title": "Client ip"
-                        },
-                        "expires": {
-                            "type": "string",
-                            "format": "date-time",
-                            "title": "Expires"
-                        },
-                        "brand": {
-                            "type": "object",
-                            "additionalProperties": true,
-                            "title": "Brand"
-                        }
-                    },
-                    "required": [
-                        "action",
-                        "app"
-                    ],
-                    "title": "Event"
-                },
-                "seen": {
-                    "type": "boolean",
-                    "title": "Seen"
-                }
-            },
-            "required": []
-        },
-        "model_authentik_events.notificationrule": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Name"
-                },
-                "transports": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer",
-                        "description": "Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI."
-                    },
-                    "title": "Transports",
-                    "description": "Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI."
-                },
-                "severity": {
-                    "type": "string",
-                    "enum": [
-                        "notice",
-                        "warning",
-                        "alert"
-                    ],
-                    "title": "Severity",
-                    "description": "Controls which severity level the created notifications will have."
-                },
-                "group": {
-                    "type": "integer",
-                    "title": "Group",
-                    "description": "Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent."
-                }
-            },
-            "required": []
-        },
-        "model_authentik_events.notificationwebhookmapping": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Name"
-                },
-                "expression": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Expression"
                 }
             },
             "required": []
@@ -3453,7 +3210,6 @@
                         "authentik.admin",
                         "authentik.api",
                         "authentik.crypto",
-                        "authentik.events",
                         "authentik.flows",
                         "authentik.outposts",
                         "authentik.policies.dummy",
@@ -3500,7 +3256,8 @@
                         "authentik.core",
                         "authentik.enterprise",
                         "authentik.enterprise.audit",
-                        "authentik.enterprise.providers.rac"
+                        "authentik.enterprise.providers.rac",
+                        "authentik.events"
                     ],
                     "title": "App",
                     "description": "Match events created by selected application. When left empty, all applications are matched."
@@ -3514,11 +3271,6 @@
                         null,
                         "authentik_tenants.domain",
                         "authentik_crypto.certificatekeypair",
-                        "authentik_events.event",
-                        "authentik_events.notificationtransport",
-                        "authentik_events.notification",
-                        "authentik_events.notificationrule",
-                        "authentik_events.notificationwebhookmapping",
                         "authentik_flows.flow",
                         "authentik_flows.flowstagebinding",
                         "authentik_outposts.dockerserviceconnection",
@@ -3585,7 +3337,12 @@
                         "authentik_enterprise.license",
                         "authentik_providers_rac.racprovider",
                         "authentik_providers_rac.endpoint",
-                        "authentik_providers_rac.racpropertymapping"
+                        "authentik_providers_rac.racpropertymapping",
+                        "authentik_events.event",
+                        "authentik_events.notificationtransport",
+                        "authentik_events.notification",
+                        "authentik_events.notificationrule",
+                        "authentik_events.notificationwebhookmapping"
                     ],
                     "title": "Model",
                     "description": "Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched."
@@ -6168,6 +5925,10 @@
                     "format": "date-time",
                     "title": "Expires"
                 },
+                "expiring": {
+                    "type": "boolean",
+                    "title": "Expiring"
+                },
                 "user": {
                     "type": "object",
                     "properties": {
@@ -8247,6 +8008,249 @@
                     "type": "object",
                     "additionalProperties": true,
                     "title": "Static settings"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_events.event": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "User"
+                },
+                "action": {
+                    "type": "string",
+                    "enum": [
+                        "login",
+                        "login_failed",
+                        "logout",
+                        "user_write",
+                        "suspicious_request",
+                        "password_set",
+                        "secret_view",
+                        "secret_rotate",
+                        "invitation_used",
+                        "authorize_application",
+                        "source_linked",
+                        "impersonation_started",
+                        "impersonation_ended",
+                        "flow_execution",
+                        "policy_execution",
+                        "policy_exception",
+                        "property_mapping_exception",
+                        "system_task_execution",
+                        "system_task_exception",
+                        "system_exception",
+                        "configuration_error",
+                        "model_created",
+                        "model_updated",
+                        "model_deleted",
+                        "email_sent",
+                        "update_available",
+                        "custom_"
+                    ],
+                    "title": "Action"
+                },
+                "app": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "App"
+                },
+                "context": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Context"
+                },
+                "client_ip": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Client ip"
+                },
+                "expires": {
+                    "type": "string",
+                    "format": "date-time",
+                    "title": "Expires"
+                },
+                "brand": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Brand"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_events.notificationtransport": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "mode": {
+                    "type": "string",
+                    "enum": [
+                        "local",
+                        "webhook",
+                        "webhook_slack",
+                        "email"
+                    ],
+                    "title": "Mode"
+                },
+                "webhook_url": {
+                    "type": "string",
+                    "title": "Webhook url"
+                },
+                "webhook_mapping": {
+                    "type": "integer",
+                    "title": "Webhook mapping"
+                },
+                "send_once": {
+                    "type": "boolean",
+                    "title": "Send once",
+                    "description": "Only send notification once, for example when sending a webhook into a chat channel."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_events.notification": {
+            "type": "object",
+            "properties": {
+                "event": {
+                    "type": "object",
+                    "properties": {
+                        "user": {
+                            "type": "object",
+                            "additionalProperties": true,
+                            "title": "User"
+                        },
+                        "action": {
+                            "type": "string",
+                            "enum": [
+                                "login",
+                                "login_failed",
+                                "logout",
+                                "user_write",
+                                "suspicious_request",
+                                "password_set",
+                                "secret_view",
+                                "secret_rotate",
+                                "invitation_used",
+                                "authorize_application",
+                                "source_linked",
+                                "impersonation_started",
+                                "impersonation_ended",
+                                "flow_execution",
+                                "policy_execution",
+                                "policy_exception",
+                                "property_mapping_exception",
+                                "system_task_execution",
+                                "system_task_exception",
+                                "system_exception",
+                                "configuration_error",
+                                "model_created",
+                                "model_updated",
+                                "model_deleted",
+                                "email_sent",
+                                "update_available",
+                                "custom_"
+                            ],
+                            "title": "Action"
+                        },
+                        "app": {
+                            "type": "string",
+                            "minLength": 1,
+                            "title": "App"
+                        },
+                        "context": {
+                            "type": "object",
+                            "additionalProperties": true,
+                            "title": "Context"
+                        },
+                        "client_ip": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "minLength": 1,
+                            "title": "Client ip"
+                        },
+                        "expires": {
+                            "type": "string",
+                            "format": "date-time",
+                            "title": "Expires"
+                        },
+                        "brand": {
+                            "type": "object",
+                            "additionalProperties": true,
+                            "title": "Brand"
+                        }
+                    },
+                    "required": [
+                        "action",
+                        "app"
+                    ],
+                    "title": "Event"
+                },
+                "seen": {
+                    "type": "boolean",
+                    "title": "Seen"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_events.notificationrule": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "transports": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "description": "Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI."
+                    },
+                    "title": "Transports",
+                    "description": "Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI."
+                },
+                "severity": {
+                    "type": "string",
+                    "enum": [
+                        "notice",
+                        "warning",
+                        "alert"
+                    ],
+                    "title": "Severity",
+                    "description": "Controls which severity level the created notifications will have."
+                },
+                "group": {
+                    "type": "integer",
+                    "title": "Group",
+                    "description": "Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_events.notificationwebhookmapping": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "expression": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Expression"
                 }
             },
             "required": []

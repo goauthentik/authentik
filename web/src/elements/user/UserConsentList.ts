@@ -62,7 +62,7 @@ export class UserConsentList extends Table<UserConsent> {
     row(item: UserConsent): TemplateResult[] {
         return [
             html`${item.application.name}`,
-            html`${item.expires
+            html`${item.expires && item.expiring
                 ? html`<div>${getRelativeTime(item.expires)}</div>
                       <small>${item.expires.toLocaleString()}</small>`
                 : msg("-")}`,
