@@ -118,7 +118,9 @@ class PropertyMappingViewSet(
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
     def test(self, request: Request, pk: str) -> Response:
         """Test Property Mapping"""
-        mapping: PropertyMapping = self.get_object()
+        _mapping: PropertyMapping = self.get_object()
+        # Use `get_subclass` to get correct class and correct `.evaluate` implementation
+        mapping = PropertyMapping.objects.get_subclass(pk=_mapping.pk)
         test_params = PolicyTestSerializer(data=request.data)
         if not test_params.is_valid():
             return Response(test_params.errors, status=400)
