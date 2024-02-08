@@ -23,6 +23,12 @@ outputs:
   version:
     description: "version"
     value: ${{ steps.ev.outputs.version }}
+  prerelease:
+    description: "prerelease"
+    value: ${{ steps.ev.outputs.prerelease }}
+  versionRC:
+    description: "versionRC"
+    value: ${{ steps.ev.outputs.versionRC }}
   versionFamily:
     description: "versionFamily"
     value: ${{ steps.ev.outputs.versionFamily }}
@@ -47,7 +53,11 @@ runs:
             branch_name = os.environ["GITHUB_HEAD_REF"]
 
         should_build = str(os.environ.get("DOCKER_USERNAME", "") != "").lower()
-        version = parser.get("bumpversion", "current_version")
+        full_version = parser.get("bumpversion", "current_version")
+        version = full_version.split("-", 1)[0]
+        rc = full_version.split("-", 1)[1] if "-" in full_version else None
+        version_rc = f"-{rc}" if rc else ""
+        prerelease = str(rc is not None).lower()
         version_family = ".".join(version.split(".")[:-1])
         safe_branch_name = branch_name.replace("refs/heads/", "").replace("/", "-")
 
@@ -61,4 +71,6 @@ runs:
             print("shortHash=%s" % sha[:7], file=_output)
             print("shouldBuild=%s" % should_build, file=_output)
             print("version=%s" % version, file=_output)
+            print("versionRC=%s" % version_rc, file=_output)
+            print("prerelease=%s" % prerelease, file=_output)
             print("versionFamily=%s" % version_family, file=_output)
