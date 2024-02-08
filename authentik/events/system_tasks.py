@@ -24,7 +24,7 @@ class SystemTask(TenantTask):
     # For tasks that should only be listed if they failed, set this to False
     save_on_success: bool
 
-    _status: Optional[TaskStatus]
+    _status: TaskStatus
     _messages: list[str]
 
     _uid: Optional[str]
@@ -34,6 +34,7 @@ class SystemTask(TenantTask):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
+        self._status = TaskStatus.SUCCESSFUL
         self.save_on_success = True
         self._uid = None
         self._status = None
