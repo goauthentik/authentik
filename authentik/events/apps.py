@@ -18,7 +18,7 @@ GAUGE_TASKS = Gauge(
 SYSTEM_TASK_TIME = Histogram(
     "authentik_system_tasks_time_seconds",
     "Runtime of system tasks",
-    ["tenant"],
+    ["tenant", "task_name", "task_uid"],
 )
 SYSTEM_TASK_STATUS = Gauge(
     "authentik_system_tasks_status",

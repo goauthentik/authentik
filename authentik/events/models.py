@@ -651,6 +651,8 @@ class SystemTask(SerializerModel, ExpiringModel):
         ).set(self.duration)
         SYSTEM_TASK_TIME.labels(
             tenant=connection.schema_name,
+            task_name=self.name,
+            task_uid=self.uid or "",
         ).observe(self.duration)
         SYSTEM_TASK_STATUS.labels(
             tenant=connection.schema_name,

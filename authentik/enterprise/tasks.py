@@ -1,6 +1,7 @@
 """Enterprise tasks"""
 
 from authentik.enterprise.models import LicenseKey
+from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask, prefill_task
 from authentik.root.celery import CELERY_APP
 
@@ -10,3 +11,4 @@ from authentik.root.celery import CELERY_APP
 def enterprise_update_usage(self: SystemTask):
     """Update enterprise license status"""
     LicenseKey.get_total().record_usage()
+    self.set_status(TaskStatus.SUCCESSFUL)
