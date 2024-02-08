@@ -17,10 +17,6 @@ class AuthentikCryptoConfig(ManagedAppConfig):
     verbose_name = "authentik Crypto"
     default = True
 
-    def reconcile_global_load_crypto_tasks(self):
-        """Load crypto tasks"""
-        self.import_module("authentik.crypto.tasks")
-
     def _create_update_cert(self):
         from authentik.crypto.builder import CertificateBuilder
         from authentik.crypto.models import CertificateKeyPair

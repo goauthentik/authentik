@@ -12,7 +12,3 @@ class AuthentikEnterpriseProviderRAC(EnterpriseConfig):
     default = True
     mountpoint = ""
     ws_mountpoint = "authentik.enterprise.providers.rac.urls"
-
-    def reconcile_global_load_rac_signals(self):
-        """Load rac signals"""
-        self.import_module("authentik.enterprise.providers.rac.signals")
