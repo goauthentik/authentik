@@ -642,17 +642,16 @@ class SystemTask(SerializerModel, ExpiringModel):
 
     def update_metrics(self):
         """Update prometheus metrics"""
-        duration = max(self.finish_timestamp - self.start_timestamp, 0)
         # TODO: Deprecated metric - remove in 2024.2 or later
         GAUGE_TASKS.labels(
             tenant=connection.schema_name,
             task_name=self.name,
             task_uid=self.uid or "",
             status=self.status.lower(),
-        ).set(duration)
+        ).set(self.duration)
         SYSTEM_TASK_TIME.labels(
             tenant=connection.schema_name,
-        ).observe(duration)
+        ).observe(self.duration)
         SYSTEM_TASK_STATUS.labels(
             tenant=connection.schema_name,
             task_name=self.name,
