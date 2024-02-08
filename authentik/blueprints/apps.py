@@ -21,9 +21,25 @@ class ManagedAppConfig(AppConfig):
         self.logger = get_logger().bind(app_name=app_name)
 
     def ready(self) -> None:
+        self.import_related()
         self.reconcile_global()
         self.reconcile_tenant()
         return super().ready()
+
+    def import_related(self):
+        """Automatically import related modules which rely on just being imported
+        to register themselves (mainly django signals and celery tasks)"""
+
+        def import_relative(rel_module: str):
+            try:
+                module_name = f"{self.name}.{rel_module}"
+                import_module(module_name)
+                self.logger.info("Imported related module", module=module_name)
+            except ModuleNotFoundError:
+                pass
+
+        import_relative("tasks")
+        import_relative("signals")
 
     def import_module(self, path: str):
         """Load module"""

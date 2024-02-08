@@ -10,7 +10,3 @@ class AuthentikSourceLDAPConfig(ManagedAppConfig):
     label = "authentik_sources_ldap"
     verbose_name = "authentik Sources.LDAP"
     default = True
-
-    def reconcile_global_load_sources_ldap_signals(self):
-        """Load sources.ldap signals"""
-        self.import_module("authentik.sources.ldap.signals")
