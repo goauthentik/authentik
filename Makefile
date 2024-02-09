@@ -79,7 +79,15 @@ migrate: ## Run the Authentik Django server's migrations
 i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that require translation into files to send to a translation service
 
 core-i18n-extract:
-	ak makemessages --ignore web --ignore internal --ignore ${GEN_API_TS} --ignore website -l en
+	ak makemessages \
+		--add-location file \
+		--no-obsolete \
+		--ignore web \
+		--ignore internal \
+		--ignore ${GEN_API_TS} \
+		--ignore ${GEN_API_GO} \
+		--ignore website \
+		-l en
 
 install: web-install website-install core-install  ## Install all requires dependencies for `web`, `website` and `core`
 
@@ -148,7 +156,7 @@ gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescri
 		--git-user-id goauthentik
 	mkdir -p web/node_modules/@goauthentik/api
 	cd ./${GEN_API_TS} && npm i
-	\cp -rfv ./${GEN_API_TS}/* web/node_modules/@goauthentik/api
+	\cp -rf ./${GEN_API_TS}/* web/node_modules/@goauthentik/api
 
 gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
 	mkdir -p ./${GEN_API_GO} ./${GEN_API_GO}/templates

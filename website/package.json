@@ -25,7 +25,7 @@
         "@mdx-js/react": "^3.0.0",
         "clsx": "^2.1.0",
         "disqus-react": "^1.1.5",
-        "postcss": "^8.4.34",
+        "postcss": "^8.4.35",
         "prism-react-renderer": "^2.3.1",
         "rapidoc": "^9.3.4",
         "react-before-after-slider-component": "^1.1.8",
@@ -52,7 +52,7 @@
         "@docusaurus/module-type-aliases": "3.1.1",
         "@docusaurus/tsconfig": "3.1.1",
         "@docusaurus/types": "3.1.1",
-        "@types/react": "^18.2.54",
+        "@types/react": "^18.2.55",
         "prettier": "3.2.5",
         "typescript": "~5.3.3"
     },

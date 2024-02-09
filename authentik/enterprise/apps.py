@@ -17,10 +17,6 @@ class AuthentikEnterpriseConfig(EnterpriseConfig):
     verbose_name = "authentik Enterprise"
     default = True
 
-    def reconcile_global_load_enterprise_signals(self):
-        """Load enterprise signals"""
-        self.import_module("authentik.enterprise.signals")
-
     def enabled(self):
         """Return true if enterprise is enabled and valid"""
         return self.check_enabled() or settings.TEST

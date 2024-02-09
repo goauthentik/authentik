@@ -68,7 +68,6 @@ TENANT_APPS = [
     "authentik.admin",
     "authentik.api",
     "authentik.crypto",
-    "authentik.events",
     "authentik.flows",
     "authentik.outposts",
     "authentik.policies.dummy",
@@ -499,6 +498,10 @@ try:
     _update_settings("authentik.enterprise.settings")
 except ImportError:
     pass
+
+# Import events after other apps since it relies on tasks and other things from all apps
+# being imported for @prefill_task
+TENANT_APPS.append("authentik.events")
 
 SHARED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))
 INSTALLED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))

@@ -620,8 +620,9 @@ class SystemTask(SerializerModel, ExpiringModel):
     name = models.TextField()
     uid = models.TextField(null=True)
 
-    start_timestamp = models.FloatField()
-    finish_timestamp = models.FloatField()
+    start_timestamp = models.DateTimeField()
+    finish_timestamp = models.DateTimeField()
+    duration = models.FloatField()
 
     status = models.TextField(choices=TaskStatus.choices)
 
@@ -641,17 +642,18 @@ class SystemTask(SerializerModel, ExpiringModel):
 
     def update_metrics(self):
         """Update prometheus metrics"""
-        duration = max(self.finish_timestamp - self.start_timestamp, 0)
         # TODO: Deprecated metric - remove in 2024.2 or later
         GAUGE_TASKS.labels(
             tenant=connection.schema_name,
             task_name=self.name,
             task_uid=self.uid or "",
             status=self.status.lower(),
-        ).set(duration)
+        ).set(self.duration)
         SYSTEM_TASK_TIME.labels(
             tenant=connection.schema_name,
-        ).observe(duration)
+            task_name=self.name,
+            task_uid=self.uid or "",
+        ).observe(self.duration)
         SYSTEM_TASK_STATUS.labels(
             tenant=connection.schema_name,
             task_name=self.name,

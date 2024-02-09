@@ -7,8 +7,8 @@ from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR
 from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR
 from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask, prefill_task
+from authentik.policies.reputation.apps import CACHE_KEY_PREFIX
 from authentik.policies.reputation.models import Reputation
-from authentik.policies.reputation.signals import CACHE_KEY_PREFIX
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()

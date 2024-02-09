@@ -77,7 +77,7 @@ RUN /usr/local/bin/docker-entrypoint.sh generate \
     rm -rf /local/config.yaml /local/templates
 
 # Stage 5: Build go proxy
-FROM --platform=${BUILDPLATFORM} docker.io/golang:1.21.6-bookworm AS go-builder
+FROM --platform=${BUILDPLATFORM} docker.io/golang:1.22.0-bookworm AS go-builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -125,7 +125,7 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "/usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage 7: Python dependencies
-FROM docker.io/python:3.12.1-slim-bookworm AS python-deps
+FROM docker.io/python:3.12.2-slim-bookworm AS python-deps
 
 WORKDIR /ak-root/poetry
 
@@ -150,7 +150,7 @@ RUN --mount=type=bind,target=./pyproject.toml,src=./pyproject.toml \
     poetry install --only=main --no-ansi --no-interaction
 
 # Stage 8: Run
-FROM docker.io/python:3.12.1-slim-bookworm AS final-image
+FROM docker.io/python:3.12.2-slim-bookworm AS final-image
 
 ARG GIT_BUILD_HASH
 ARG VERSION

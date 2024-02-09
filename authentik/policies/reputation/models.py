@@ -19,7 +19,6 @@ from authentik.policies.types import PolicyRequest, PolicyResult
 from authentik.root.middleware import ClientIPMiddleware
 
 LOGGER = get_logger()
-CACHE_KEY_PREFIX = "goauthentik.io/policies/reputation/scores/"
 
 
 def reputation_expiry():

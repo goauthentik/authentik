@@ -91,13 +91,10 @@ def _get_startup_tasks_default_tenant() -> list[Callable]:
 def _get_startup_tasks_all_tenants() -> list[Callable]:
     """Get all tasks to be run on startup for all tenants"""
     from authentik.admin.tasks import clear_update_notifications
-    from authentik.outposts.tasks import outpost_connection_discovery, outpost_controller_all
     from authentik.providers.proxy.tasks import proxy_set_defaults
 
     return [
         clear_update_notifications,
-        outpost_connection_discovery,
-        outpost_controller_all,
         proxy_set_defaults,
     ]
 

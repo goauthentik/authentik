@@ -40,7 +40,7 @@ class UserConsentSerializer(StageSerializer):
 
     class Meta:
         model = UserConsent
-        fields = ["pk", "expires", "user", "application", "permissions"]
+        fields = ["pk", "expires", "expiring", "user", "application", "permissions"]
 
 
 class UserConsentViewSet(

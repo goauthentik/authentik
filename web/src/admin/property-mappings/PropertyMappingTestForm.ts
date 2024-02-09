@@ -84,12 +84,14 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                         user: this.request?.user || 0,
                         context: {
                             ldap: {
-                                name: "test-user",
-                                objectSid: "S-1-5-21-2611707862-2219215769-354220275-1137",
-                                objectClass: "person",
                                 displayName: "authentik test user",
-                                sAMAccountName: "sAMAccountName",
                                 distinguishedName: "cn=user,ou=users,dc=goauthentik,dc=io",
+                                givenName: "test",
+                                name: "test-user",
+                                objectClass: "person",
+                                objectSid: "S-1-5-21-2611707862-2219215769-354220275-1137",
+                                sAMAccountName: "sAMAccountName",
+                                sn: "user",
                             },
                         },
                     };

@@ -2935,8 +2935,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/PolicyTestResult'
           description: ''
-        '404':
-          description: for_user user not found
         '400':
           content:
             application/json:
@@ -18284,11 +18282,6 @@ paths:
         description: |-
           * `authentik_tenants.domain` - Domain
           * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
-          * `authentik_events.event` - Event
-          * `authentik_events.notificationtransport` - Notification Transport
-          * `authentik_events.notification` - Notification
-          * `authentik_events.notificationrule` - Notification Rule
-          * `authentik_events.notificationwebhookmapping` - Webhook Mapping
           * `authentik_flows.flow` - Flow
           * `authentik_flows.flowstagebinding` - Flow Stage Binding
           * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
@@ -18356,6 +18349,11 @@ paths:
           * `authentik_providers_rac.racprovider` - RAC Provider
           * `authentik_providers_rac.endpoint` - RAC Endpoint
           * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
+          * `authentik_events.event` - Event
+          * `authentik_events.notificationtransport` - Notification Transport
+          * `authentik_events.notification` - Notification
+          * `authentik_events.notificationrule` - Notification Rule
+          * `authentik_events.notificationwebhookmapping` - Webhook Mapping
         required: true
       - in: query
         name: object_pk
@@ -18572,11 +18570,6 @@ paths:
         description: |-
           * `authentik_tenants.domain` - Domain
           * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
-          * `authentik_events.event` - Event
-          * `authentik_events.notificationtransport` - Notification Transport
-          * `authentik_events.notification` - Notification
-          * `authentik_events.notificationrule` - Notification Rule
-          * `authentik_events.notificationwebhookmapping` - Webhook Mapping
           * `authentik_flows.flow` - Flow
           * `authentik_flows.flowstagebinding` - Flow Stage Binding
           * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
@@ -18644,6 +18637,11 @@ paths:
           * `authentik_providers_rac.racprovider` - RAC Provider
           * `authentik_providers_rac.endpoint` - RAC Endpoint
           * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
+          * `authentik_events.event` - Event
+          * `authentik_events.notificationtransport` - Notification Transport
+          * `authentik_events.notification` - Notification
+          * `authentik_events.notificationrule` - Notification Rule
+          * `authentik_events.notificationwebhookmapping` - Webhook Mapping
         required: true
       - in: query
         name: object_pk
@@ -29359,7 +29357,6 @@ components:
       - authentik.admin
       - authentik.api
       - authentik.crypto
-      - authentik.events
       - authentik.flows
       - authentik.outposts
       - authentik.policies.dummy
@@ -29407,13 +29404,13 @@ components:
       - authentik.enterprise
       - authentik.enterprise.audit
       - authentik.enterprise.providers.rac
+      - authentik.events
       type: string
       description: |-
         * `authentik.tenants` - authentik Tenants
         * `authentik.admin` - authentik Admin
         * `authentik.api` - authentik API
         * `authentik.crypto` - authentik Crypto
-        * `authentik.events` - authentik Events
         * `authentik.flows` - authentik Flows
         * `authentik.outposts` - authentik Outpost
         * `authentik.policies.dummy` - authentik Policies.Dummy
@@ -29461,6 +29458,7 @@ components:
         * `authentik.enterprise` - authentik Enterprise
         * `authentik.enterprise.audit` - authentik Enterprise.Audit
         * `authentik.enterprise.providers.rac` - authentik Enterprise.Providers.RAC
+        * `authentik.events` - authentik Events
     AppleChallengeResponseRequest:
       type: object
       description: Pseudo class for plex response
@@ -32414,7 +32412,6 @@ components:
             * `authentik.admin` - authentik Admin
             * `authentik.api` - authentik API
             * `authentik.crypto` - authentik Crypto
-            * `authentik.events` - authentik Events
             * `authentik.flows` - authentik Flows
             * `authentik.outposts` - authentik Outpost
             * `authentik.policies.dummy` - authentik Policies.Dummy
@@ -32462,6 +32459,7 @@ components:
             * `authentik.enterprise` - authentik Enterprise
             * `authentik.enterprise.audit` - authentik Enterprise.Audit
             * `authentik.enterprise.providers.rac` - authentik Enterprise.Providers.RAC
+            * `authentik.events` - authentik Events
         model:
           allOf:
           - $ref: '#/components/schemas/ModelEnum'
@@ -32471,11 +32469,6 @@ components:
 
             * `authentik_tenants.domain` - Domain
             * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
-            * `authentik_events.event` - Event
-            * `authentik_events.notificationtransport` - Notification Transport
-            * `authentik_events.notification` - Notification
-            * `authentik_events.notificationrule` - Notification Rule
-            * `authentik_events.notificationwebhookmapping` - Webhook Mapping
             * `authentik_flows.flow` - Flow
             * `authentik_flows.flowstagebinding` - Flow Stage Binding
             * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
@@ -32543,6 +32536,11 @@ components:
             * `authentik_providers_rac.racprovider` - RAC Provider
             * `authentik_providers_rac.endpoint` - RAC Endpoint
             * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
+            * `authentik_events.event` - Event
+            * `authentik_events.notificationtransport` - Notification Transport
+            * `authentik_events.notification` - Notification
+            * `authentik_events.notificationrule` - Notification Rule
+            * `authentik_events.notificationwebhookmapping` - Webhook Mapping
       required:
       - bound_to
       - component
@@ -32613,7 +32611,6 @@ components:
             * `authentik.admin` - authentik Admin
             * `authentik.api` - authentik API
             * `authentik.crypto` - authentik Crypto
-            * `authentik.events` - authentik Events
             * `authentik.flows` - authentik Flows
             * `authentik.outposts` - authentik Outpost
             * `authentik.policies.dummy` - authentik Policies.Dummy
@@ -32661,6 +32658,7 @@ components:
             * `authentik.enterprise` - authentik Enterprise
             * `authentik.enterprise.audit` - authentik Enterprise.Audit
             * `authentik.enterprise.providers.rac` - authentik Enterprise.Providers.RAC
+            * `authentik.events` - authentik Events
         model:
           allOf:
           - $ref: '#/components/schemas/ModelEnum'
@@ -32670,11 +32668,6 @@ components:
 
             * `authentik_tenants.domain` - Domain
             * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
-            * `authentik_events.event` - Event
-            * `authentik_events.notificationtransport` - Notification Transport
-            * `authentik_events.notification` - Notification
-            * `authentik_events.notificationrule` - Notification Rule
-            * `authentik_events.notificationwebhookmapping` - Webhook Mapping
             * `authentik_flows.flow` - Flow
             * `authentik_flows.flowstagebinding` - Flow Stage Binding
             * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
@@ -32742,6 +32735,11 @@ components:
             * `authentik_providers_rac.racprovider` - RAC Provider
             * `authentik_providers_rac.endpoint` - RAC Endpoint
             * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
+            * `authentik_events.event` - Event
+            * `authentik_events.notificationtransport` - Notification Transport
+            * `authentik_events.notification` - Notification
+            * `authentik_events.notificationrule` - Notification Rule
+            * `authentik_events.notificationwebhookmapping` - Webhook Mapping
       required:
       - name
     EventRequest:
@@ -34985,11 +34983,6 @@ components:
       enum:
       - authentik_tenants.domain
       - authentik_crypto.certificatekeypair
-      - authentik_events.event
-      - authentik_events.notificationtransport
-      - authentik_events.notification
-      - authentik_events.notificationrule
-      - authentik_events.notificationwebhookmapping
       - authentik_flows.flow
       - authentik_flows.flowstagebinding
       - authentik_outposts.dockerserviceconnection
@@ -35057,15 +35050,15 @@ components:
       - authentik_providers_rac.racprovider
       - authentik_providers_rac.endpoint
       - authentik_providers_rac.racpropertymapping
+      - authentik_events.event
+      - authentik_events.notificationtransport
+      - authentik_events.notification
+      - authentik_events.notificationrule
+      - authentik_events.notificationwebhookmapping
       type: string
       description: |-
         * `authentik_tenants.domain` - Domain
         * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
-        * `authentik_events.event` - Event
-        * `authentik_events.notificationtransport` - Notification Transport
-        * `authentik_events.notification` - Notification
-        * `authentik_events.notificationrule` - Notification Rule
-        * `authentik_events.notificationwebhookmapping` - Webhook Mapping
         * `authentik_flows.flow` - Flow
         * `authentik_flows.flowstagebinding` - Flow Stage Binding
         * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
@@ -35133,6 +35126,11 @@ components:
         * `authentik_providers_rac.racprovider` - RAC Provider
         * `authentik_providers_rac.endpoint` - RAC Endpoint
         * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
+        * `authentik_events.event` - Event
+        * `authentik_events.notificationtransport` - Notification Transport
+        * `authentik_events.notification` - Notification
+        * `authentik_events.notificationrule` - Notification Rule
+        * `authentik_events.notificationwebhookmapping` - Webhook Mapping
     NameIdPolicyEnum:
       enum:
       - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
@@ -38240,7 +38238,6 @@ components:
             * `authentik.admin` - authentik Admin
             * `authentik.api` - authentik API
             * `authentik.crypto` - authentik Crypto
-            * `authentik.events` - authentik Events
             * `authentik.flows` - authentik Flows
             * `authentik.outposts` - authentik Outpost
             * `authentik.policies.dummy` - authentik Policies.Dummy
@@ -38288,6 +38285,7 @@ components:
             * `authentik.enterprise` - authentik Enterprise
             * `authentik.enterprise.audit` - authentik Enterprise.Audit
             * `authentik.enterprise.providers.rac` - authentik Enterprise.Providers.RAC
+            * `authentik.events` - authentik Events
         model:
           allOf:
           - $ref: '#/components/schemas/ModelEnum'
@@ -38297,11 +38295,6 @@ components:
 
             * `authentik_tenants.domain` - Domain
             * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
-            * `authentik_events.event` - Event
-            * `authentik_events.notificationtransport` - Notification Transport
-            * `authentik_events.notification` - Notification
-            * `authentik_events.notificationrule` - Notification Rule
-            * `authentik_events.notificationwebhookmapping` - Webhook Mapping
             * `authentik_flows.flow` - Flow
             * `authentik_flows.flowstagebinding` - Flow Stage Binding
             * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
@@ -38369,6 +38362,11 @@ components:
             * `authentik_providers_rac.racprovider` - RAC Provider
             * `authentik_providers_rac.endpoint` - RAC Endpoint
             * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
+            * `authentik_events.event` - Event
+            * `authentik_events.notificationtransport` - Notification Transport
+            * `authentik_events.notification` - Notification
+            * `authentik_events.notificationrule` - Notification Rule
+            * `authentik_events.notificationwebhookmapping` - Webhook Mapping
     PatchedEventRequest:
       type: object
       description: Event Serializer
@@ -43573,17 +43571,14 @@ components:
         start_timestamp:
           type: string
           format: date-time
-          description: Timestamp when the task started
           readOnly: true
         finish_timestamp:
           type: string
           format: date-time
-          description: Timestamp when the task finished
           readOnly: true
         duration:
           type: number
           format: double
-          description: Get the duration a task took to run
           readOnly: true
         status:
           $ref: '#/components/schemas/SystemTaskStatusEnum'
@@ -43963,6 +43958,7 @@ components:
           maxLength: 254
         avatar:
           type: string
+          description: User's avatar, either a http/https URL or a data URI
           readOnly: true
         attributes:
           type: object
@@ -44056,6 +44052,8 @@ components:
         expires:
           type: string
           format: date-time
+        expiring:
+          type: boolean
         user:
           $ref: '#/components/schemas/User'
         application:
@@ -44634,6 +44632,7 @@ components:
           maxLength: 254
         avatar:
           type: string
+          description: User's avatar, either a http/https URL or a data URI
           readOnly: true
         uid:
           type: string
