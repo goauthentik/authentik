@@ -7,13 +7,13 @@ on:
       - next
       - version-*
     paths-ignore:
-      - website
+      - website/**
   pull_request:
     branches:
       - main
       - version-*
     paths-ignore:
-      - website
+      - website/**
 
 jobs:
   lint-golint:
