@@ -1,18 +1,17 @@
 ---
 title: Tenancy
 ---
-
 ::::warning
 This feature is in alpha. Use at your own risk.
 ::::
 
 ::::info
-This feature is available from 2024.1.1 and is not to be confused with brands, which used to be called tenants.
+This feature is available from 2024.2 and is not to be confused with brands, which used to be called tenants.
 ::::
 
 ## Preparations
 
-Starting with 2024.1.1, authentik allows for multiple tenants to be created. This allows an operator to manage several authentik installations without having to deploy additional instances.
+Starting with 2024.2, authentik allows for multiple tenants to be created. This allows an operator to manage several authentik installations without having to deploy additional instances.
 
 authentik manages tenants by storing data for each tenant in a separate PostgreSQL schema.
 

@@ -1,7 +1,6 @@
 ---
 title: OAuth2 Provider
 ---
-
 This provider supports both generic OAuth2 as well as OpenID Connect
 
 Scopes can be configured using Scope Mappings, a type of [Property Mappings](../../property-mappings/#scope-mapping).
@@ -38,7 +37,7 @@ To access the user's email address, a scope of `user:email` is required. To acce
 This grant is used to convert an authorization code to an access token (and optionally refresh token). The authorization code is retrieved through the Authorization flow, and can only be used once, and expires quickly.
 
 :::info
-Starting with authentik 2024.1, applications only receive an access token. To receive a refresh token, applications must be allowed to request the `offline_access` scope in authentik and also be configured to request the scope.
+Starting with authentik 2024.2, applications only receive an access token. To receive a refresh token, applications must be allowed to request the `offline_access` scope in authentik and also be configured to request the scope.
 :::
 
 ### `refresh_token`:
@@ -46,7 +45,7 @@ Starting with authentik 2024.1, applications only receive an access token. To re
 Refresh tokens can be used as long-lived tokens to access user data, and further renew the refresh token down the road.
 
 :::info
-Starting with authentik 2024.1, this grant requires the `offline_access` scope.
+Starting with authentik 2024.2, this grant requires the `offline_access` scope.
 :::
 
 ### `client_credentials`:

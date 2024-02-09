@@ -1,7 +1,6 @@
 ---
 title: Events
 ---
-
 Events are authentik's built-in logging system. Whenever any of the following actions occur, an event is created:
 
 Certain information is stripped from events, to ensure no passwords or other credentials are saved in the log.
@@ -306,7 +305,7 @@ A configuration error occurs, for example during the authorization of an applica
 Logged when any model is created/updated/deleted, including the user that sent the request.
 
 :::info
-Starting with authentik Enterprise 2024.1, `model_*` events also include which fields have been changed and their previous and new values.
+Starting with authentik Enterprise 2024.2, `model_*` events also include which fields have been changed and their previous and new values.
 :::
 
 ### `email_sent`
