@@ -49,8 +49,8 @@ runs:
             branch_name = os.environ["GITHUB_HEAD_REF"]
         safe_branch_name = branch_name.replace("refs/heads/", "").replace("/", "-")
 
-        image_names = os.environ.get("INPUT_IMAGE-NAME").split(",")
-        image_arch = os.environ.get("INPUT_IMAGE-ARCH", None)
+        image_names = "${{ inputs.image-name }}".split(",")
+        image_arch = "${{ inputs.image-arch }}" or None
 
         is_pull_request = bool("${{ github.event.pull_request.head.sha }}")
         is_release = "dev" not in image_name
