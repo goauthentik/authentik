@@ -53,7 +53,7 @@ runs:
         image_arch = "${{ inputs.image-arch }}" or None
 
         is_pull_request = bool("${{ github.event.pull_request.head.sha }}")
-        is_release = "dev" not in image_name
+        is_release = "dev" not in image_names[0]
 
         sha = os.environ["GITHUB_SHA"] if not is_pull_request else "${{ github.event.pull_request.head.sha }}"
 
