@@ -125,7 +125,7 @@ gen-diff:  ## (Release) generate the changelog diff between the current schema a
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-diff:2.1.0-beta.6 \
+		docker.io/openapitools/openapi-diff:2.1.0-beta.8 \
 		--markdown /local/diff.md \
 		/local/old_schema.yml /local/schema.yml
 	rm old_schema.yml
