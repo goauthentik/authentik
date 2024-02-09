@@ -6,6 +6,7 @@ import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
+import type { RadioOption } from "@goauthentik/elements/forms/Radio";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -14,19 +15,20 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import { PropertymappingsApi, RACPropertyMapping } from "@goauthentik/api";
 
-export const staticSettingOptions = [
+export const staticSettingOptions: RadioOption<string | undefined>[] = [
     {
         label: msg("Unconfigured"),
         value: undefined,
         default: true,
+        description: html`${msg("This option will not be changed by this mapping.")}`,
     },
     {
         label: msg("Enabled"),
-        value: true,
+        value: "true",
     },
     {
         label: msg("Disabled"),
-        value: false,
+        value: "false",
     },
 ];
 
