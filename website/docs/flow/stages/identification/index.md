@@ -1,6 +1,7 @@
 ---
 title: Identification stage
 ---
+
 This stage provides a ready-to-go form for users to identify themselves.
 
 ## User Fields

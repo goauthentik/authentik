@@ -1,6 +1,7 @@
 ---
 title: Events
 ---
+
 Events are authentik's built-in logging system. Whenever any of the following actions occur, an event is created:
 
 Certain information is stripped from events, to ensure no passwords or other credentials are saved in the log.

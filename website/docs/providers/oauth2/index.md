@@ -1,6 +1,7 @@
 ---
 title: OAuth2 Provider
 ---
+
 This provider supports both generic OAuth2 as well as OpenID Connect
 
 Scopes can be configured using Scope Mappings, a type of [Property Mappings](../../property-mappings/#scope-mapping).
