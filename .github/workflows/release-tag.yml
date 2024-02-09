@@ -1,3 +1,4 @@
+---
 name: authentik-on-tag
 
 on:
@@ -31,6 +32,8 @@ jobs:
       - name: prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
+        with:
+          image-name: ghcr.io/goauthentik/server
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1.1.4
@@ -40,4 +43,4 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ steps.ev.outputs.version }}
           draft: true
-          prerelease: ${{ steps.ev.outputs.prerelease }}
+          prerelease: ${{ steps.ev.outputs.prerelease == 'true' }}
