@@ -1,9 +1,9 @@
 import "@goauthentik/admin/groups/RelatedGroupList";
+import "@goauthentik/admin/providers/rac/ConnectionTokenList";
 import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserApplicationTable";
 import "@goauthentik/admin/users/UserChart";
 import "@goauthentik/admin/users/UserForm";
-import "@goauthentik/admin/providers/rac/ConnectionTokenList";
 import "@goauthentik/admin/users/UserPasswordForm";
 import {
     renderRecoveryEmailRequest,
