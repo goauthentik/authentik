@@ -13,12 +13,7 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import {
-    ConnectionToken,
-    Endpoint,
-    RACProvider,
-    RacApi,
-} from "@goauthentik/api";
+import { ConnectionToken, Endpoint, RACProvider, RacApi } from "@goauthentik/api";
 
 @customElement("ak-rac-connection-token-list")
 export class ConnectionTokenListPage extends Table<ConnectionToken> {
@@ -35,7 +30,7 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
     @property({ attribute: false })
     provider?: RACProvider;
 
-    @property({type: Number})
+    @property({ type: Number })
     userId?: number;
 
     static get styles(): CSSResult[] {
@@ -51,14 +46,6 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
             provider: this.provider?.pk,
             sessionUser: this.userId,
         });
-    }
-
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Host"), "host"),
-            new TableColumn(msg("Actions")),
-        ];
     }
 
     renderToolbarSelected(): TemplateResult {
@@ -89,10 +76,23 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: ConnectionToken): TemplateResult[] {
+    columns(): TableColumn[] {
+        if (this.provider) {
+            return [
+                new TableColumn(msg("Endpoint"), "endpoint__name"),
+                new TableColumn(msg("User"), "session__user"),
+            ];
+        }
         return [
-            html`${item.providerObj.name}`,
-            html`${item.endpointObj.name}`,
+            new TableColumn(msg("Provider"), "provider__name"),
+            new TableColumn(msg("Endpoint"), "endpoint__name"),
         ];
+    }
+
+    row(item: ConnectionToken): TemplateResult[] {
+        if (this.provider) {
+            return [html`${item.endpointObj.name}`, html`${item.user.username}`];
+        }
+        return [html`${item.providerObj.name}`, html`${item.endpointObj.name}`];
     }
 }
