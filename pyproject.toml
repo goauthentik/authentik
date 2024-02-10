@@ -165,7 +165,7 @@ pydantic-scim = "*"
 pyjwt = "*"
 python = "~3.12"
 pyyaml = "*"
-redis = { extras = ["hiredis"], version = "*"}
+redis = { extras = ["hiredis"], version = "5.1.0b3"}
 requests-oauthlib = "*"
 sentry-sdk = "*"
 service_identity = "*"
