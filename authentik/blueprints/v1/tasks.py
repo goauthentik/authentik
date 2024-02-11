@@ -3,6 +3,7 @@
 from dataclasses import asdict, dataclass, field
 from hashlib import sha512
 from pathlib import Path
+from sys import platform
 from typing import Optional
 
 from dacite.core import from_dict
@@ -60,11 +61,11 @@ def start_blueprint_watcher():
     if _file_watcher_started:
         return
     observer = Observer()
+    kwargs = {}
+    if platform.startswith("linux"):
+        kwargs["event_filter"] = (FileCreatedEvent, FileModifiedEvent)
     observer.schedule(
-        BlueprintEventHandler(),
-        CONFIG.get("blueprints_dir"),
-        recursive=True,
-        event_filter=(FileCreatedEvent, FileModifiedEvent),
+        BlueprintEventHandler(), CONFIG.get("blueprints_dir"), recursive=True, **kwargs
     )
     observer.start()
     _file_watcher_started = True
