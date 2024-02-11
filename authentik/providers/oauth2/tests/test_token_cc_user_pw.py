@@ -23,7 +23,7 @@ from authentik.providers.oauth2.models import OAuth2Provider, ScopeMapping
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 
 
-class TestTokenClientCredentials(OAuthTestCase):
+class TestTokenClientCredentialsUserNamePassword(OAuthTestCase):
     """Test token (client_credentials) view"""
 
     @apply_blueprint("system/providers-oauth2.yaml")
