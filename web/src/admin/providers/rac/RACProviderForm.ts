@@ -133,7 +133,6 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                         "When enabled, connection authorizations will be deleted when a client disconnects. This will force clients with flaky internet connections to re-authorize the endpoint.",
                     )}
                 </p>
-                <ak-utils-time-delta-help></ak-utils-time-delta-help>
             </ak-form-element-horizontal>
 
             <ak-form-group .expanded=${true}>
