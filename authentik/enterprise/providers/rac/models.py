@@ -52,6 +52,10 @@ class RACProvider(Provider):
             "(Format: hours=-1;minutes=-2;seconds=-3)"
         ),
     )
+    delete_token_on_disconnect = models.BooleanField(
+        default=False,
+        help_text=_("When set to true, connection tokens will be deleted upon disconnect."),
+    )
 
     @property
     def launch_url(self) -> Optional[str]:

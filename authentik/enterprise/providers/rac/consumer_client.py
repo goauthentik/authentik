@@ -60,6 +60,8 @@ class RACClientConsumer(AsyncWebsocketConsumer):
                 "type": "event.disconnect",
             },
         )
+        if self.provider.delete_token_on_disconnect:
+            await self.token.adelete()
 
     @database_sync_to_async
     def init_outpost_connection(self):
