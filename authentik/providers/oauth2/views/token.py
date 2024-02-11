@@ -337,7 +337,6 @@ class TokenParams:
                 PLAN_CONTEXT_APPLICATION: app,
             },
         ).from_http(request, user=user)
-        return None
 
     # pylint: disable=too-many-locals
     def __post_init_client_credentials_jwt(self, request: HttpRequest):
@@ -458,7 +457,6 @@ class TokenParams:
                 PLAN_CONTEXT_APPLICATION: app,
             },
         ).from_http(request, user=self.user)
-        return None
 
     def __post_init_device_code(self, request: HttpRequest):
         device_code = request.POST.get("device_code", "")
