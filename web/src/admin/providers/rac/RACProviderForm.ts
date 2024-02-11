@@ -18,23 +18,18 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     FlowsInstancesListDesignationEnum,
-    PaginatedEndpointList,
     PaginatedRACPropertyMappingList,
     PropertymappingsApi,
     ProvidersApi,
     RACProvider,
-    RacApi,
 } from "@goauthentik/api";
 
 @customElement("ak-provider-rac-form")
 export class RACProviderFormPage extends ModelForm<RACProvider, number> {
     @state()
-    endpoints?: PaginatedEndpointList;
-
     propertyMappings?: PaginatedRACPropertyMappingList;
 
     async load(): Promise<void> {
-        this.endpoints = await new RacApi(DEFAULT_CONFIG).racEndpointsList({});
         this.propertyMappings = await new PropertymappingsApi(
             DEFAULT_CONFIG,
         ).propertymappingsRacList({
