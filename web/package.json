@@ -107,7 +107,6 @@
         "eslint": "^8.56.0",
         "eslint-config-google": "^0.14.0",
         "eslint-plugin-custom-elements": "0.0.8",
-        "eslint-plugin-deprecation": "^2.0.0",
         "eslint-plugin-lit": "^1.11.0",
         "eslint-plugin-sonarjs": "^0.23.0",
         "eslint-plugin-storybook": "^0.6.15",

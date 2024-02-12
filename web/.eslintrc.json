@@ -8,8 +8,7 @@
         "plugin:@typescript-eslint/recommended",
         "plugin:lit/recommended",
         "plugin:custom-elements/recommended",
-        "plugin:storybook/recommended",
-        "plugin:deprecation/recommended"
+        "plugin:storybook/recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {

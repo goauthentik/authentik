@@ -6,4 +6,3 @@ dist
 coverage
 src/locale-codes.ts
 storybook-static/
-src/locales
