@@ -2,6 +2,7 @@
 
 from importlib import import_module
 from inspect import ismethod
+from typing import Callable
 
 from django.apps import AppConfig
 from django.db import DatabaseError, InternalError, ProgrammingError
@@ -13,8 +14,8 @@ class ManagedAppConfig(AppConfig):
 
     logger: BoundLogger
 
-    RECONCILE_GLOBAL_PREFIX: str = "reconcile_global_"
-    RECONCILE_TENANT_PREFIX: str = "reconcile_tenant_"
+    RECONCILE_GLOBAL_CATEGORY: str = "global"
+    RECONCILE_TENANT_CATEGORY: str = "tenant"
 
     def __init__(self, app_name: str, *args, **kwargs) -> None:
         super().__init__(app_name, *args, **kwargs)
@@ -22,8 +23,8 @@ class ManagedAppConfig(AppConfig):
 
     def ready(self) -> None:
         self.import_related()
-        self.reconcile_global()
-        self.reconcile_tenant()
+        self._reconcile_global()
+        self._reconcile_tenant()
         return super().ready()
 
     def import_related(self):
@@ -51,7 +52,8 @@ class ManagedAppConfig(AppConfig):
             meth = getattr(self, meth_name)
             if not ismethod(meth):
                 continue
-            if not meth_name.startswith(prefix):
+            category = getattr(meth, "_authentik_managed_reconcile", None)
+            if category != prefix:
                 continue
             name = meth_name.replace(prefix, "")
             try:
@@ -61,7 +63,19 @@ class ManagedAppConfig(AppConfig):
             except (DatabaseError, ProgrammingError, InternalError) as exc:
                 self.logger.warning("Failed to run reconcile", name=name, exc=exc)
 
-    def reconcile_tenant(self) -> None:
+    @staticmethod
+    def reconcile_tenant(func: Callable):
+        """Mark a function to be called on startup (for each tenant)"""
+        setattr(func, "_authentik_managed_reconcile", ManagedAppConfig.RECONCILE_TENANT_CATEGORY)
+        return func
+
+    @staticmethod
+    def reconcile_global(func: Callable):
+        """Mark a function to be called on startup (globally)"""
+        setattr(func, "_authentik_managed_reconcile", ManagedAppConfig.RECONCILE_GLOBAL_CATEGORY)
+        return func
+
+    def _reconcile_tenant(self) -> None:
         """reconcile ourselves for tenanted methods"""
         from authentik.tenants.models import Tenant
 
@@ -72,9 +86,9 @@ class ManagedAppConfig(AppConfig):
             return
         for tenant in tenants:
             with tenant:
-                self._reconcile(self.RECONCILE_TENANT_PREFIX)
+                self._reconcile(self.RECONCILE_TENANT_CATEGORY)
 
-    def reconcile_global(self) -> None:
+    def _reconcile_global(self) -> None:
         """
         reconcile ourselves for global methods.
         Used for signals, tasks, etc. Database queries should not be made in here.
@@ -82,7 +96,7 @@ class ManagedAppConfig(AppConfig):
         from django_tenants.utils import get_public_schema_name, schema_context
 
         with schema_context(get_public_schema_name()):
-            self._reconcile(self.RECONCILE_GLOBAL_PREFIX)
+            self._reconcile(self.RECONCILE_GLOBAL_CATEGORY)
 
 
 class AuthentikBlueprintsConfig(ManagedAppConfig):
@@ -93,11 +107,13 @@ class AuthentikBlueprintsConfig(ManagedAppConfig):
     verbose_name = "authentik Blueprints"
     default = True
 
-    def reconcile_global_load_blueprints_v1_tasks(self):
+    @ManagedAppConfig.reconcile_global
+    def load_blueprints_v1_tasks(self):
         """Load v1 tasks"""
         self.import_module("authentik.blueprints.v1.tasks")
 
-    def reconcile_tenant_blueprints_discovery(self):
+    @ManagedAppConfig.reconcile_tenant
+    def blueprints_discovery(self):
         """Run blueprint discovery"""
         from authentik.blueprints.v1.tasks import blueprints_discovery, clear_failed_blueprints
 
