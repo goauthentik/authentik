@@ -33,7 +33,7 @@ The following aspects can be configured:
 
     If the authentik server does not have a volume mounted under `/media`, you'll get a text input. This accepts absolute URLs. If you've mounted single files into the container, you can reference them using `https://authentik.company/media/my-file.png`.
 
-    If there is a mount under `/media`, you'll instead see a field to upload a file.
+    If there is a mount under `/media` or if S3 storage is configured, you'll instead see a field to upload a file.
 
 -   _Publisher_: Text shown below the application
 -   _Description_: Subtext shown on the application card below the publisher
