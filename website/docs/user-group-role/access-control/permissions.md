@@ -39,6 +39,6 @@ For example, the UI below shows a user page for the user named Peter.
 
 You can see in the **User Object Permissions** table that the Admin user (`akaadmin`) and one other user (roberto) has permissions on Peter (that is, on the user object named Peter).
 
-Looking at another example, with a flow object called `default-recovery-flow` you can see that the Admin user (akadmin) has all object permissions on the flow, but roberto only has a few permissions on that flow.
+Looking at another example, with a flow object called `default-recovery-flow`, you can see that the Admin user (akadmin) has all object permissions on the flow, but roberto only has a few permissions on that flow.
 
 ![](./flow-page.png)
