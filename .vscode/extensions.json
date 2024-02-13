@@ -11,7 +11,7 @@
         "mechatroner.rainbow-csv",
         "ms-python.black-formatter",
         "ms-python.isort",
-        "ms-python.pylint",
+        "charliermarsh.ruff",
         "ms-python.python",
         "ms-python.vscode-pylance",
         "ms-python.black-formatter",

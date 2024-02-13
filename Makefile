@@ -66,7 +66,6 @@ lint-fix:  ## Lint and automatically fix errors in the python source code. Repor
 
 lint: ## Lint the python and golang sources
 	bandit -r $(PY_SOURCES) -x node_modules
-	pylint $(PY_SOURCES)
 	golangci-lint run -v
 
 core-install:
@@ -247,9 +246,6 @@ docker:  ## Build a docker image of the current source tree
 ci--meta-debug:
 	python -V
 	node --version
-
-ci-pylint: ci--meta-debug
-	pylint $(PY_SOURCES)
 
 ci-black: ci--meta-debug
 	black --check $(PY_SOURCES)
