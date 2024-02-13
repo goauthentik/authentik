@@ -100,7 +100,6 @@ class KubernetesObjectReconciler(Generic[T]):
 
         return result
 
-    # pylint: disable=invalid-name
     def up(self):
         """Create object if it doesn't exist, update if needed or recreate if needed."""
         current = None
@@ -112,7 +111,7 @@ class KubernetesObjectReconciler(Generic[T]):
             try:
                 current = self.retrieve()
             except (OpenApiException, HTTPError) as exc:
-                # pylint: disable=no-member
+
                 if isinstance(exc, ApiException) and exc.status == 404:
                     self.logger.debug("Failed to get current, triggering recreate")
                     raise NeedsRecreate from exc
@@ -124,7 +123,7 @@ class KubernetesObjectReconciler(Generic[T]):
                 self.update(current, reference)
                 self.logger.debug("Updating")
             except (OpenApiException, HTTPError) as exc:
-                # pylint: disable=no-member
+
                 if isinstance(exc, ApiException) and exc.status == 422:
                     self.logger.debug("Failed to update current, triggering re-create")
                     self._recreate(current=current, reference=reference)
@@ -157,7 +156,7 @@ class KubernetesObjectReconciler(Generic[T]):
             self.delete(current)
             self.logger.debug("Removing")
         except (OpenApiException, HTTPError) as exc:
-            # pylint: disable=no-member
+
             if isinstance(exc, ApiException) and exc.status == 404:
                 self.logger.debug("Failed to get current, assuming non-existent")
                 return

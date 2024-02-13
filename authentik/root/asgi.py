@@ -18,7 +18,7 @@ from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 defuse_stdlib()
 django.setup()
 
-# pylint: disable=wrong-import-position
+
 from authentik.root import websocket  # noqa  # isort:skip
 
 

@@ -60,7 +60,6 @@ class BaseController:
         self.logger = get_logger()
         self.deployment_ports = []
 
-    # pylint: disable=invalid-name
     def up(self):
         """Called by scheduled task to reconcile deployment/service/etc"""
         raise NotImplementedError

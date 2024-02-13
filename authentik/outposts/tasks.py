@@ -49,7 +49,6 @@ LOGGER = get_logger()
 CACHE_KEY_OUTPOST_DOWN = "goauthentik.io/outposts/teardown/%s"
 
 
-# pylint: disable=too-many-return-statements
 def controller_for_outpost(outpost: Outpost) -> Optional[type[BaseController]]:
     """Get a controller for the outpost, when a service connection is defined"""
     if not outpost.service_connection:

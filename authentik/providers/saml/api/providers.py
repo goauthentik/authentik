@@ -70,7 +70,7 @@ class SAMLProviderSerializer(ProviderSerializer):
                     kwargs={"application_slug": instance.application.slug},
                 )
             )
-        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+        except Provider.application.RelatedObjectDoesNotExist:
             return "-"
 
     def get_url_sso_redirect(self, instance: SAMLProvider) -> str:
@@ -85,7 +85,7 @@ class SAMLProviderSerializer(ProviderSerializer):
                     kwargs={"application_slug": instance.application.slug},
                 )
             )
-        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+        except Provider.application.RelatedObjectDoesNotExist:
             return "-"
 
     def get_url_sso_init(self, instance: SAMLProvider) -> str:
@@ -100,7 +100,7 @@ class SAMLProviderSerializer(ProviderSerializer):
                     kwargs={"application_slug": instance.application.slug},
                 )
             )
-        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+        except Provider.application.RelatedObjectDoesNotExist:
             return "-"
 
     def get_url_slo_post(self, instance: SAMLProvider) -> str:
@@ -115,7 +115,7 @@ class SAMLProviderSerializer(ProviderSerializer):
                     kwargs={"application_slug": instance.application.slug},
                 )
             )
-        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+        except Provider.application.RelatedObjectDoesNotExist:
             return "-"
 
     def get_url_slo_redirect(self, instance: SAMLProvider) -> str:
@@ -130,7 +130,7 @@ class SAMLProviderSerializer(ProviderSerializer):
                     kwargs={"application_slug": instance.application.slug},
                 )
             )
-        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+        except Provider.application.RelatedObjectDoesNotExist:
             return "-"
 
     class Meta:
@@ -228,7 +228,7 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
                 )
                 return response
             return Response({"metadata": metadata})
-        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+        except Provider.application.RelatedObjectDoesNotExist:
             return Response({"metadata": ""})
 
     @permission_required(

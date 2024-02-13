@@ -15,7 +15,6 @@ from authentik.flows.models import Flow
 class FlowTestCase(APITestCase):
     """Helpers for testing flows and stages."""
 
-    # pylint: disable=invalid-name
     def assertStageResponse(
         self,
         response: HttpResponse,
@@ -45,7 +44,6 @@ class FlowTestCase(APITestCase):
             self.assertEqual(raw_response[key], expected)
         return raw_response
 
-    # pylint: disable=invalid-name
     def assertStageRedirects(self, response: HttpResponse, to: str) -> dict[str, Any]:
         """Wrapper around assertStageResponse that checks for a redirect"""
         return self.assertStageResponse(

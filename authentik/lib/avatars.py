@@ -91,7 +91,6 @@ def generate_colors(text: str) -> tuple[str, str]:
 
 
 @funccache
-# pylint: disable=too-many-arguments,too-many-locals
 def generate_avatar_from_name(
     name: str,
     length: int = 2,

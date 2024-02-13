@@ -49,7 +49,6 @@ class ServiceConnectionInvalid(SentryIgnoredException):
 
 
 @dataclass
-# pylint: disable=too-many-instance-attributes
 class OutpostConfig:
     """Configuration an outpost uses to configure it self"""
 
@@ -467,7 +466,7 @@ class OutpostState:
             cache.delete(key)
             data = default_data
         state = from_dict(OutpostState, data)
-        # pylint: disable=protected-access
+
         state._outpost = outpost
         return state
 

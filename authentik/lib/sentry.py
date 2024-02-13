@@ -61,7 +61,7 @@ def sentry_init(**sentry_init_kwargs):
         },
     }
     kwargs.update(**sentry_init_kwargs)
-    # pylint: disable=abstract-class-instantiated
+
     sentry_sdk_init(
         dsn=CONFIG.get("error_reporting.sentry_dsn"),
         integrations=[
@@ -98,7 +98,7 @@ def traces_sampler(sampling_context: dict) -> float:
 
 def before_send(event: dict, hint: dict) -> Optional[dict]:
     """Check if error is database error, and ignore if so"""
-    # pylint: disable=no-name-in-module
+
     from psycopg.errors import Error
 
     ignored_classes = (

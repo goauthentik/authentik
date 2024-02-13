@@ -153,7 +153,7 @@ class ChallengeStageView(StageView):
                 "app": self.executor.plan.context.get(PLAN_CONTEXT_APPLICATION, ""),
                 "user": self.get_pending_user(for_display=True),
             }
-        # pylint: disable=broad-except
+
         except Exception as exc:
             self.logger.warning("failed to template title", exc=exc)
             return self.executor.flow.title

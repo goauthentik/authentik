@@ -166,7 +166,6 @@ class AssertionProcessor:
             audience.text = self.provider.audience
         return conditions
 
-    # pylint: disable=too-many-return-statements
     def get_name_id(self) -> Element:
         """Get NameID Element"""
         name_id = Element(f"{{{NS_SAML_ASSERTION}}}NameID")

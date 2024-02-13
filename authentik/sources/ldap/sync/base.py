@@ -90,7 +90,6 @@ class BaseLDAPSynchronizer:
         """Get objects from LDAP, implemented in subclass"""
         raise NotImplementedError()
 
-    # pylint: disable=too-many-arguments
     def search_paginator(
         self,
         search_base,

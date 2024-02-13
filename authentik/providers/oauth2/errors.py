@@ -142,7 +142,6 @@ class AuthorizeError(OAuth2Error):
         ),
     }
 
-    # pylint: disable=too-many-arguments
     def __init__(
         self,
         redirect_uri: str,

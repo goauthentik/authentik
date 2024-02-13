@@ -147,7 +147,7 @@ class SAMLProvider(Provider):
     def launch_url(self) -> Optional[str]:
         """Use IDP-Initiated SAML flow as launch URL"""
         try:
-            # pylint: disable=no-member
+
             return reverse(
                 "authentik_providers_saml:sso-init",
                 kwargs={"application_slug": self.application.slug},

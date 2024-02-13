@@ -43,15 +43,15 @@ class TokenBackend(InbuiltBackend):
         self, request: HttpRequest, username: Optional[str], password: Optional[str], **kwargs: Any
     ) -> Optional[User]:
         try:
-            # pylint: disable=no-member
+
             user = User._default_manager.get_by_natural_key(username)
-        # pylint: disable=no-member
+
         except User.DoesNotExist:
             # Run the default password hasher once to reduce the timing
             # difference between an existing and a nonexistent user (#20760).
             User().set_password(password)
             return None
-        # pylint: disable=no-member
+
         tokens = Token.filter_not_expired(
             user=user, key=password, intent=TokenIntents.INTENT_APP_PASSWORD
         )

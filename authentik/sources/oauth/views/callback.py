@@ -25,7 +25,6 @@ class OAuthCallback(OAuthClientMixin, View):
     source: OAuthSource
     token: Optional[dict] = None
 
-    # pylint: disable=too-many-return-statements
     def dispatch(self, request: HttpRequest, *_, **kwargs) -> HttpResponse:
         """View Get handler"""
         slug = kwargs.get("source_slug", "")

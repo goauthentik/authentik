@@ -67,7 +67,6 @@ class SystemTask(TenantTask):
             uid=self._uid,
         ).first()
 
-    # pylint: disable=too-many-arguments
     def after_return(self, status, retval, task_id, args: list[Any], kwargs: dict[str, Any], einfo):
         super().after_return(status, retval, task_id, args, kwargs, einfo=einfo)
         if not self._status:
@@ -97,7 +96,6 @@ class SystemTask(TenantTask):
             },
         )
 
-    # pylint: disable=too-many-arguments
     def on_failure(self, exc, task_id, args, kwargs, einfo):
         super().on_failure(exc, task_id, args, kwargs, einfo=einfo)
         if not self._status:

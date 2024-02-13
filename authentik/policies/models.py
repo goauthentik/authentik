@@ -138,7 +138,7 @@ class PolicyBinding(SerializerModel):
         suffix = f"{self.target_type.title()} {self.target_name}"
         try:
             return f"Binding from {self.target} #{self.order} to {suffix}"
-        except PolicyBinding.target.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+        except PolicyBinding.target.RelatedObjectDoesNotExist:
             return f"Binding - #{self.order} to {suffix}"
         return ""
 

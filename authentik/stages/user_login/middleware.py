@@ -23,7 +23,6 @@ LOGGER = get_logger()
 class SessionBindingBroken(SentryIgnoredException):
     """Session binding was broken due to specified `reason`"""
 
-    # pylint: disable=too-many-arguments
     def __init__(
         self, reason: str, old_value: str, new_value: str, old_ip: str, new_ip: str
     ) -> None:

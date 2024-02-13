@@ -282,7 +282,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         """Get the locale the user has configured"""
         try:
             return self.attributes.get("settings", {}).get("locale", "")
-        # pylint: disable=broad-except
+
         except Exception as exc:
             LOGGER.warning("Failed to get default locale", exc=exc)
         if request:
@@ -457,7 +457,7 @@ class Application(SerializerModel, PolicyBindingModel):
                 user = user._wrapped
             try:
                 return url % user.__dict__
-            # pylint: disable=broad-except
+
             except Exception as exc:
                 LOGGER.warning("Failed to format launch url", exc=exc)
                 return url
@@ -566,7 +566,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
             return self.user_path_template % {
                 "slug": self.slug,
             }
-        # pylint: disable=broad-except
+
         except Exception as exc:
             LOGGER.warning("Failed to template user path", exc=exc, source=self)
             return User.default_path()

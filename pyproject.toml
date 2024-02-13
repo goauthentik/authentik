@@ -14,6 +14,22 @@ line-length = 100
 target-version = "py312"
 exclude = ["**/migrations/**", "**/node_modules/**"]
 
+[tool.ruff.lint]
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # django
+    "DJ",
+    # pylint
+    "PL",
+]
+
 [tool.isort]
 multi_line_output = 3
 include_trailing_comma = true
@@ -142,6 +158,7 @@ debugpy = "*"
 drf-jsonschema-serializer = "*"
 freezegun = "*"
 importlib-metadata = "*"
+isort = "*"
 pdoc = "*"
 pyrad = "*"
 pytest = "*"

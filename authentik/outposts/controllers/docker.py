@@ -226,7 +226,6 @@ class DockerController(BaseController):
         except NotFound:
             return
 
-    # pylint: disable=too-many-return-statements
     def up(self, depth=1):
         if self.outpost.managed == MANAGED_OUTPOST:
             return None

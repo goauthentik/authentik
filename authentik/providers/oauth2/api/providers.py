@@ -135,7 +135,7 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
                     kwargs={"application_slug": provider.application.slug},
                 )
             )
-        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+        except Provider.application.RelatedObjectDoesNotExist:
             pass
         return Response(data)
 

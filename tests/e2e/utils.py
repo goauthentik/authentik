@@ -245,12 +245,12 @@ def retry(max_retires=RETRIES, exceptions=None):
             nonlocal count
             try:
                 return func(self, *args, **kwargs)
-            # pylint: disable=catching-non-exception
+
             except tuple(exceptions) as exc:
                 count += 1
                 if count > max_retires:
                     logger.debug("Exceeded retry count", exc=exc, test=self)
-                    # pylint: disable=raising-non-exception
+
                     raise exc
                 logger.debug("Retrying on error", exc=exc, test=self)
                 self.tearDown()

@@ -62,7 +62,7 @@ SERIALIZER_CONTEXT_BLUEPRINT = "blueprint_entry"
 def excluded_models() -> list[type[Model]]:
     """Return a list of all excluded models that shouldn't be exposed via API
     or other means (internal only, base classes, non-used objects, etc)"""
-    # pylint: disable=imported-auth-user
+
     from django.contrib.auth.models import Group as DjangoGroup
     from django.contrib.auth.models import User as DjangoUser
 
@@ -197,7 +197,6 @@ class Importer:
 
         return main_query | sub_query
 
-    # pylint: disable-msg=too-many-locals
     def _validate_single(self, entry: BlueprintEntry) -> Optional[BaseSerializer]:
         """Validate a single entry"""
         if not entry.check_all_conditions_match(self._import):

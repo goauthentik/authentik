@@ -95,7 +95,6 @@ def get_user(user: User | AnonymousUser, original_user: Optional[User] = None) -
     return user_data
 
 
-# pylint: disable=too-many-return-statements,too-many-branches
 def sanitize_item(value: Any) -> Any:
     """Sanitize a single item, ensure it is JSON parsable"""
     if is_dataclass(value):

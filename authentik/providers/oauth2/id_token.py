@@ -43,7 +43,6 @@ class SubModes(models.TextChoices):
 
 
 @dataclass(slots=True)
-# pylint: disable=too-many-instance-attributes
 class IDToken:
     """The primary extension that OpenID Connect makes to OAuth 2.0 to enable End-Users to be
     Authenticated is the ID Token data structure. The ID Token is a security token that contains
@@ -83,7 +82,6 @@ class IDToken:
     claims: dict[str, Any] = field(default_factory=dict)
 
     @staticmethod
-    # pylint: disable=too-many-locals
     def new(
         provider: "OAuth2Provider", token: "BaseGrantModel", request: HttpRequest, **kwargs
     ) -> "IDToken":

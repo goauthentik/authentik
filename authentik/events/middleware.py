@@ -144,7 +144,6 @@ class AuditMiddleware:
             )
             thread.run()
 
-    # pylint: disable=too-many-arguments
     def post_save_handler(
         self,
         user: User,

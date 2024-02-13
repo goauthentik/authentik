@@ -25,7 +25,7 @@ class TestProxyKubernetes(TestCase):
 
     def setUp(self):
         # Ensure that local connection have been created
-        outpost_connection_discovery()  # pylint: disable=no-value-for-parameter
+        outpost_connection_discovery()
         self.controller = None
 
     def tearDown(self) -> None:

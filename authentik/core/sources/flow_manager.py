@@ -90,7 +90,6 @@ class SourceFlowManager:
         self._logger = get_logger().bind(source=source, identifier=identifier)
         self.policy_context = {}
 
-    # pylint: disable=too-many-return-statements
     def get_action(self, **kwargs) -> tuple[Action, Optional[UserSourceConnection]]:
         """decide which action should be taken"""
         new_connection = self.connection_type(source=self.source, identifier=self.identifier)
@@ -98,7 +97,7 @@ class SourceFlowManager:
         if self.request.user.is_authenticated:
             new_connection.user = self.request.user
             new_connection = self.update_connection(new_connection, **kwargs)
-            # pylint: disable=no-member
+
             new_connection.save()
             return Action.LINK, new_connection
 

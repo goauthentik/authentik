@@ -94,7 +94,7 @@ class FlowPlan:
             self.markers.remove(marker)
             if not self.has_stages:
                 return None
-            # pylint: disable=not-callable
+
             return self.next(http_request)
         return marked_stage
 

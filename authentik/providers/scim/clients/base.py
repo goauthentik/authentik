@@ -12,7 +12,7 @@ from authentik.providers.scim.clients.schema import ServiceProviderConfiguration
 from authentik.providers.scim.models import SCIMProvider
 
 T = TypeVar("T")
-# pylint: disable=invalid-name
+
 SchemaType = TypeVar("SchemaType")
 
 

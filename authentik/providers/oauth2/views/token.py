@@ -68,7 +68,6 @@ LOGGER = get_logger()
 
 
 @dataclass(slots=True)
-# pylint: disable=too-many-instance-attributes
 class TokenParams:
     """Token params"""
 
@@ -338,7 +337,6 @@ class TokenParams:
             },
         ).from_http(request, user=user)
 
-    # pylint: disable=too-many-locals
     def __post_init_client_credentials_jwt(self, request: HttpRequest):
         assertion_type = request.POST.get(CLIENT_ASSERTION_TYPE, "")
         if assertion_type != CLIENT_ASSERTION_TYPE_JWT:

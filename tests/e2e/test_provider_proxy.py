@@ -212,7 +212,7 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
     @reconcile_app("authentik_crypto")
     def test_proxy_connectivity(self):
         """Test proxy connectivity over websocket"""
-        outpost_connection_discovery()  # pylint: disable=no-value-for-parameter
+        outpost_connection_discovery()
         proxy: ProxyProvider = ProxyProvider.objects.create(
             name=generate_id(),
             authorization_flow=Flow.objects.get(

@@ -13,7 +13,6 @@ from authentik.sources.oauth.models import OAuthSource
 LOGGER = get_logger()
 
 
-# pylint: disable=too-few-public-methods
 class OAuthClientMixin:
     "Mixin for getting OAuth client for a source."
 
@@ -24,7 +23,7 @@ class OAuthClientMixin:
     def get_client(self, source: OAuthSource, **kwargs) -> BaseOAuthClient:
         "Get instance of the OAuth client for this source."
         if self.client_class is not None:
-            # pylint: disable=not-callable
+
             return self.client_class(source, self.request, **kwargs)
         if source.source_type.request_token_url or source.request_token_url:
             client = OAuthClient(source, self.request, **kwargs)

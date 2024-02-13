@@ -114,7 +114,6 @@ class FlowImportResultSerializer(PassiveSerializer):
 class FlowViewSet(UsedByMixin, ModelViewSet):
     """Flow Viewset"""
 
-    # pylint: disable=no-member
     queryset = Flow.objects.all().prefetch_related("stages", "policies")
     serializer_class = FlowSerializer
     lookup_field = "slug"

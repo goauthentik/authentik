@@ -204,7 +204,7 @@ class BaseEvaluator:
                 # Yes this is an exec, yes it is potentially bad. Since we limit what variables are
                 # available here, and these policies can only be edited by admins, this is a risk
                 # we're willing to take.
-                # pylint: disable=exec-used
+
                 exec(ast_obj, self._globals, _locals)  # nosec # noqa
                 result = _locals["result"]
             except Exception as exc:

@@ -241,12 +241,11 @@ class OAuth2Provider(Provider):
             url = reverse(
                 "authentik_providers_oauth2:provider-root",
                 kwargs={
-                    # pylint: disable=no-member
                     "application_slug": self.application.slug,
                 },
             )
             return request.build_absolute_uri(url)
-        # pylint: disable=no-member
+
         except Provider.application.RelatedObjectDoesNotExist:
             return None
 

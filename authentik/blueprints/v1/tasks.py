@@ -56,7 +56,7 @@ class BlueprintFile:
 def start_blueprint_watcher():
     """Start blueprint watcher, if it's not running already."""
     # This function might be called twice since it's called on celery startup
-    # pylint: disable=global-statement
+
     global _file_watcher_started
     if _file_watcher_started:
         return

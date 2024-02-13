@@ -57,7 +57,6 @@ class OAuthSourceSerializer(SourceSerializer):
         """Get source's type configuration"""
         return SourceTypeSerializer(instance.source_type).data
 
-    # pylint: disable=too-many-locals
     def validate(self, attrs: dict) -> dict:
         session = get_http_session()
         source_type = registry.find_type(attrs["provider_type"])

@@ -37,7 +37,6 @@ class TestUserLogoutStage(FlowTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
 
-        # pylint: disable=no-member
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
@@ -54,6 +53,5 @@ class TestUserLogoutStage(FlowTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
 
-        # pylint: disable=no-member
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))

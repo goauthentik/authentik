@@ -81,7 +81,6 @@ FORBIDDEN_URI_SCHEMES = {"javascript", "data", "vbscript"}
 
 
 @dataclass(slots=True)
-# pylint: disable=too-many-instance-attributes
 class OAuthAuthorizationParams:
     """Parameters required to authorize an OAuth Client"""
 
@@ -533,7 +532,7 @@ class OAuthFulfillmentStage(StageView):
         except (ClientIdError, RedirectUriError) as error:
             error.to_event(application=self.application).from_http(request)
             self.executor.stage_invalid()
-            # pylint: disable=no-member
+
             return bad_request_message(request, error.description, title=error.error)
         except AuthorizeError as error:
             error.to_event(application=self.application).from_http(request)
