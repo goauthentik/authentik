@@ -102,6 +102,7 @@ jobs:
         with:
           tags: ${{ steps.ev.outputs.imageTags }}
           file: ${{ matrix.type }}.Dockerfile
+          push: true
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
           platforms: linux/amd64,linux/arm64
