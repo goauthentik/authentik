@@ -1,6 +1,6 @@
 """Enterprise tasks"""
 
-from authentik.enterprise.models import LicenseKey
+from authentik.enterprise.license import LicenseKey
 from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask, prefill_task
 from authentik.root.celery import CELERY_APP
