@@ -66,7 +66,6 @@ lint-fix:  ## Lint and automatically fix errors in the python source code. Repor
 
 lint: ## Lint the python and golang sources
 	bandit -r $(PY_SOURCES) -x node_modules
-	./web/node_modules/.bin/pyright $(PY_SOURCES)
 	pylint $(PY_SOURCES)
 	golangci-lint run -v
 
@@ -266,9 +265,6 @@ ci-isort: ci--meta-debug
 
 ci-bandit: ci--meta-debug
 	bandit -r $(PY_SOURCES)
-
-ci-pyright: ci--meta-debug
-	./web/node_modules/.bin/pyright $(PY_SOURCES)
 
 ci-pending-migrations: ci--meta-debug
 	ak makemigrations --check

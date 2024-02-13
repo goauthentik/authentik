@@ -1,19 +1,8 @@
-[tool.pyright]
-ignore = ["**/migrations/**", "**/node_modules/**"]
-reportMissingTypeStubs = false
-strictParameterNoneValue = true
-strictDictionaryInference = true
-strictListInference = true
-reportOptionalMemberAccess = false
-reportOptionalContextManager = false
-# rest_framework's serializer's `validated_data` is typed as optional None
-reportOptionalSubscript = false
-# Sadly pyright still has issues with enums, and they fall under general type issues
-# so we have to disable those for now
-reportGeneralTypeIssues = false
-verboseOutput = false
-pythonVersion = "3.12"
-pythonPlatform = "All"
+[tool.poetry]
+name = "authentik"
+version = "2024.2.1"
+description = ""
+authors = ["authentik Team <hello@goauthentik.io>"]
 
 [tool.black]
 line-length = 100
@@ -110,12 +99,6 @@ filterwarnings = [
     "ignore:defusedxml.lxml is no longer supported and will be removed in a future release.:DeprecationWarning",
     "ignore:SelectableGroups dict interface is deprecated. Use select.:DeprecationWarning",
 ]
-
-[tool.poetry]
-name = "authentik"
-version = "2024.2.1"
-description = ""
-authors = ["authentik Team <hello@goauthentik.io>"]
 
 [tool.poetry.dependencies]
 argon2-cffi = "*"
