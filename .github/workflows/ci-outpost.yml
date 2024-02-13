@@ -1,3 +1,4 @@
+---
 name: authentik-ci-outpost
 
 on:
@@ -7,13 +8,13 @@ on:
       - next
       - version-*
     paths-ignore:
-      - website
+      - website/**
   pull_request:
     branches:
       - main
       - version-*
     paths-ignore:
-      - website
+      - website/**
 
 jobs:
   lint-golint:
@@ -32,7 +33,7 @@ jobs:
       - name: Generate API
         run: make gen-client-go
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v3
+        uses: golangci/golangci-lint-action@v4
         with:
           version: v1.54.2
           args: --timeout 5000s --verbose
@@ -74,6 +75,7 @@ jobs:
     permissions:
       # Needed to upload contianer images to ghcr.io
       packages: write
+    if: "github.repository == 'goauthentik/authentik'"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -85,11 +87,10 @@ jobs:
       - name: prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        with:
+          image-name: ghcr.io/goauthentik/dev-${{ matrix.type }}
       - name: Login to Container Registry
         uses: docker/login-action@v3
-        if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
@@ -99,15 +100,11 @@ jobs:
       - name: Build Docker Image
         uses: docker/build-push-action@v5
         with:
-          push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
-          tags: |
-            ghcr.io/goauthentik/dev-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchNameContainer }}
-            ghcr.io/goauthentik/dev-${{ matrix.type }}:gh-${{ steps.ev.outputs.sha }}
+          tags: ${{ steps.ev.outputs.imageTags }}
           file: ${{ matrix.type }}.Dockerfile
+          push: true
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
-            VERSION=${{ steps.ev.outputs.version }}
-            VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
           platforms: linux/amd64,linux/arm64
           context: .
           cache-from: type=gha

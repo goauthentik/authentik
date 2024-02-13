@@ -8413,6 +8413,18 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Brand name</source>
   <target>品牌名称</target>
 </trans-unit>
+<trans-unit id="sb7e68dcad68a638c">
+  <source>Remote Access Provider</source>
+  <target>远程访问提供程序</target>
+</trans-unit>
+<trans-unit id="sfb1980a471b7dfb6">
+  <source>Remotely access computers/servers via RDP/SSH/VNC</source>
+  <target>通过 RDP/SSH/VNC 远程访问计算机/服务器</target>
+</trans-unit>
+<trans-unit id="s9ffdea131dddb3c5">
+  <source>Configure Remote Access Provider Provider</source>
+  <target>配置远程访问提供程序</target>
+</trans-unit>
     </body>
   </file>
 </xliff>

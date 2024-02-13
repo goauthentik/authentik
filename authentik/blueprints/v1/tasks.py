@@ -3,6 +3,7 @@
 from dataclasses import asdict, dataclass, field
 from hashlib import sha512
 from pathlib import Path
+from sys import platform
 from typing import Optional
 
 from dacite.core import from_dict
@@ -60,7 +61,12 @@ def start_blueprint_watcher():
     if _file_watcher_started:
         return
     observer = Observer()
-    observer.schedule(BlueprintEventHandler(), CONFIG.get("blueprints_dir"), recursive=True)
+    kwargs = {}
+    if platform.startswith("linux"):
+        kwargs["event_filter"] = (FileCreatedEvent, FileModifiedEvent)
+    observer.schedule(
+        BlueprintEventHandler(), CONFIG.get("blueprints_dir"), recursive=True, **kwargs
+    )
     observer.start()
     _file_watcher_started = True
 
@@ -68,26 +74,36 @@ def start_blueprint_watcher():
 class BlueprintEventHandler(FileSystemEventHandler):
     """Event handler for blueprint events"""
 
-    def on_any_event(self, event: FileSystemEvent):
-        if not isinstance(event, (FileCreatedEvent, FileModifiedEvent)):
-            return
+    # We only ever get creation and modification events.
+    # See the creation of the Observer instance above for the event filtering.
+
+    # Even though we filter to only get file events, we might still get
+    # directory events as some implementations such as inotify do not support
+    # filtering on file/directory.
+
+    def dispatch(self, event: FileSystemEvent) -> None:
+        """Call specific event handler method. Ignores directory changes."""
         if event.is_directory:
-            return
+            return None
+        return super().dispatch(event)
+
+    def on_created(self, event: FileSystemEvent):
+        """Process file creation"""
+        LOGGER.debug("new blueprint file created, starting discovery")
+        for tenant in Tenant.objects.filter(ready=True):
+            with tenant:
+                blueprints_discovery.delay()
+
+    def on_modified(self, event: FileSystemEvent):
+        """Process file modification"""
+        path = Path(event.src_path)
         root = Path(CONFIG.get("blueprints_dir")).absolute()
-        path = Path(event.src_path).absolute()
         rel_path = str(path.relative_to(root))
         for tenant in Tenant.objects.filter(ready=True):
             with tenant:
-                root = Path(CONFIG.get("blueprints_dir")).absolute()
-                path = Path(event.src_path).absolute()
-                rel_path = str(path.relative_to(root))
-                if isinstance(event, FileCreatedEvent):
-                    LOGGER.debug("new blueprint file created, starting discovery", path=rel_path)
-                    blueprints_discovery.delay(rel_path)
-                if isinstance(event, FileModifiedEvent):
-                    for instance in BlueprintInstance.objects.filter(path=rel_path, enabled=True):
-                        LOGGER.debug("modified blueprint file, starting apply", instance=instance)
-                        apply_blueprint.delay(instance.pk.hex)
+                for instance in BlueprintInstance.objects.filter(path=rel_path, enabled=True):
+                    LOGGER.debug("modified blueprint file, starting apply", instance=instance)
+                    apply_blueprint.delay(instance.pk.hex)
 
 
 @CELERY_APP.task(
