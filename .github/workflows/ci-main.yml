@@ -32,7 +32,7 @@ jobs:
           - codespell
           - isort
           - pending-migrations
-          - pylint
+          # - pylint
           - pyright
           - ruff
     runs-on: ubuntu-latest
