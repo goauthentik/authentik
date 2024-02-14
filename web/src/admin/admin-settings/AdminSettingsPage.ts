@@ -14,8 +14,8 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ModalForm";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { CSSResult, TemplateResult, html, nothing } from "lit";
+import { customElement, query, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -46,41 +46,46 @@ export class AdminSettingsPage extends AKElement {
             PFBanner,
         ];
     }
-    @property({ attribute: false })
+
+    @query("ak-admin-settings-form#form")
+    form?: AdminSettingsForm;
+
+    @state()
     settings?: Settings;
 
-    loadSettings(): void {
-        new AdminApi(DEFAULT_CONFIG).adminSettingsRetrieve().then((settings) => {
+    constructor() {
+        super();
+        AdminSettingsPage.fetchSettings().then((settings) => {
             this.settings = settings;
         });
+        this.save = this.save.bind(this);
+        this.reset = this.reset.bind(this);
+        this.addEventListener("ak-admin-setting-changed", this.handleUpdate.bind(this));
     }
 
-    firstUpdated(): void {
-        this.loadSettings();
+    static async fetchSettings() {
+        return await new AdminApi(DEFAULT_CONFIG).adminSettingsRetrieve();
     }
 
-    async save(): Promise<void> {
-        const form = this.shadowRoot?.querySelector<AdminSettingsForm>("ak-admin-settings-form");
-        if (!form) {
+    async handleUpdate() {
+        this.settings = await AdminSettingsPage.fetchSettings();
+    }
+
+    async save() {
+        if (!this.form) {
             return;
         }
-        await form.submit(new Event("submit"));
-        this.resetForm();
+        await this.form.submit(new Event("submit"));
+        this.settings = await AdminSettingsPage.fetchSettings();
     }
 
-    resetForm(): void {
-        const form = this.shadowRoot?.querySelector<AdminSettingsForm>("ak-admin-settings-form");
-        if (!form) {
-            return;
-        }
-        this.loadSettings();
-        form.settings = this.settings!;
-        form.resetForm();
+    async reset() {
+        this.form?.resetForm();
     }
 
     render(): TemplateResult {
         if (!this.settings) {
-            return html``;
+            return nothing;
         }
         return html`
             <ak-page-header icon="fa fa-cog" header="" description="">
@@ -93,18 +98,10 @@ export class AdminSettingsPage extends AKElement {
                         </ak-admin-settings-form>
                     </div>
                     <div class="pf-c-card__footer">
-                        <ak-spinner-button
-                            .callAction=${async () => {
-                                await this.save();
-                            }}
-                            class="pf-m-primary"
+                        <ak-spinner-button .callAction=${this.save} class="pf-m-primary"
                             >${msg("Save")}</ak-spinner-button
                         >
-                        <ak-spinner-button
-                            .callAction=${() => {
-                                this.resetForm();
-                            }}
-                            class="pf-m-secondary"
+                        <ak-spinner-button .callAction=${this.reset} class="pf-m-secondary"
                             >${msg("Cancel")}</ak-spinner-button
                         >
                     </div>

@@ -10,6 +10,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
+import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -21,13 +22,26 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import { AdminApi, Settings, SettingsRequest } from "@goauthentik/api";
 
 @customElement("ak-admin-settings-form")
-export class AdminSettingsForm extends Form<SettingsRequest> {
-    @property({ attribute: false })
+export class AdminSettingsForm extends CustomEmitterElement(Form<SettingsRequest>) {
+    //
+    // Custom property accessors in Lit 2 require a manual call to requestUpdate(). See:
+    // https://lit.dev/docs/v2/components/properties/#accessors-custom
+    //
     set settings(value: Settings) {
         this._settings = value;
+        this.requestUpdate();
+    }
+
+    @property({ type: Object })
+    get settings() {
+        return this._settings;
     }
 
     private _settings?: Settings;
+
+    static get styles(): CSSResult[] {
+        return super.styles.concat(PFList);
+    }
 
     getSuccessMessage(): string {
         return msg("Successfully updated settings.");
@@ -37,10 +51,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
         return new AdminApi(DEFAULT_CONFIG).adminSettingsUpdate({
             settingsRequest: data,
         });
-    }
-
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFList);
+        this.dispatchCustomEvent("ak-admin-setting-changed");
     }
 
     renderForm(): TemplateResult {
