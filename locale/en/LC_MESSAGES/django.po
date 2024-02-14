@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-07 12:04+0000\n"
+"POT-Creation-Date: 2024-02-14 18:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -409,6 +409,10 @@ msgid ""
 msgstr ""
 
 #: authentik/enterprise/providers/rac/models.py
+msgid "When set to true, connection tokens will be deleted upon disconnect."
+msgstr ""
+
+#: authentik/enterprise/providers/rac/models.py
 msgid "RAC Provider"
 msgstr ""
 
@@ -430,6 +434,14 @@ msgstr ""
 
 #: authentik/enterprise/providers/rac/models.py
 msgid "RAC Property Mappings"
+msgstr ""
+
+#: authentik/enterprise/providers/rac/models.py
+msgid "RAC Connection token"
+msgstr ""
+
+#: authentik/enterprise/providers/rac/models.py
+msgid "RAC Connection tokens"
 msgstr ""
 
 #: authentik/enterprise/providers/rac/views.py

@@ -2,7 +2,7 @@
 
 from copy import copy
 from datetime import timedelta
-from typing import Optional
+from typing import Iterator, Optional
 
 from django.core.cache import cache
 from django.db.models import QuerySet
@@ -131,14 +131,14 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         return queryset
 
     def _get_allowed_applications(
-        self, queryset: QuerySet, user: Optional[User] = None
+        self, pagined_apps: Iterator[Application], user: Optional[User] = None
     ) -> list[Application]:
         applications = []
         request = self.request._request
         if user:
             request = copy(request)
             request.user = user
-        for application in queryset:
+        for application in pagined_apps:
             engine = PolicyEngine(application, request.user, request)
             engine.build()
             if engine.passing:
@@ -215,7 +215,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
             return super().list(request)
 
         queryset = self._filter_queryset_for_list(self.get_queryset())
-        self.paginate_queryset(queryset)
+        pagined_apps = self.paginate_queryset(queryset)
 
         if "for_user" in request.query_params:
             try:
@@ -229,18 +229,18 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
                     raise ValidationError({"for_user": "User not found"})
             except ValueError as exc:
                 raise ValidationError from exc
-            allowed_applications = self._get_allowed_applications(queryset, user=for_user)
+            allowed_applications = self._get_allowed_applications(pagined_apps, user=for_user)
             serializer = self.get_serializer(allowed_applications, many=True)
             return self.get_paginated_response(serializer.data)
 
         allowed_applications = []
         if not should_cache:
-            allowed_applications = self._get_allowed_applications(queryset)
+            allowed_applications = self._get_allowed_applications(pagined_apps)
         if should_cache:
             allowed_applications = cache.get(user_app_cache_key(self.request.user.pk))
             if not allowed_applications:
                 LOGGER.debug("Caching allowed application list")
-                allowed_applications = self._get_allowed_applications(queryset)
+                allowed_applications = self._get_allowed_applications(pagined_apps)
                 cache.set(
                     user_app_cache_key(self.request.user.pk),
                     allowed_applications,

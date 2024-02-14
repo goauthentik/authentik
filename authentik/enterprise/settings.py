@@ -16,3 +16,5 @@ TENANT_APPS = [
     "authentik.enterprise.audit",
     "authentik.enterprise.providers.rac",
 ]
+
+MIDDLEWARE = ["authentik.enterprise.middleware.EnterpriseMiddleware"]

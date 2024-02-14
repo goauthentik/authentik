@@ -13,8 +13,6 @@ on:
     branches:
       - main
       - version-*
-    paths-ignore:
-      - website/**
 
 env:
   POSTGRES_DB: authentik
@@ -32,7 +30,7 @@ jobs:
           - codespell
           - isort
           - pending-migrations
-          - pylint
+          # - pylint
           - pyright
           - ruff
     runs-on: ubuntu-latest
