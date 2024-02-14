@@ -1,6 +1,7 @@
 ---
 title: Tenancy
 ---
+
 <span class="badge badge--primary">Enterprise</span>
 
 ---
