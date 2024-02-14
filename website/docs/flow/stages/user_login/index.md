@@ -39,8 +39,6 @@ When configured, all sessions authenticated by this stage will be bound to the s
 Sessions which break this binding will be terminated on use. The created [`logout`](../../../events/index.md#logout) event will contain additional data related to what caused the binding to be broken:
 
 ```json
-
-Context
 {
     "asn": {
         "asn": 6805,
@@ -65,7 +63,7 @@ Context
     },
     "ip": {
         "previous": "1.2.3.4",
-        "new": "5.6.7.8",
+        "new": "5.6.7.8"
     },
     "http_request": {
         "args": {},

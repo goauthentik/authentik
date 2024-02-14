@@ -2,17 +2,23 @@
 title: Tenancy
 ---
 
+<span class="badge badge--primary">Enterprise</span>
+
+---
+
 ::::warning
 This feature is in alpha. Use at your own risk.
 ::::
 
 ::::info
-This feature is available from 2024.1.1 and is not to be confused with brands, which used to be called tenants.
+This feature is available from 2024.2 and is not to be confused with brands, which used to be called tenants.
 ::::
 
 ## Preparations
 
-Starting with 2024.1.1, authentik allows for multiple tenants to be created. This allows an operator to manage several authentik installations without having to deploy additional instances.
+Starting with 2024.2, authentik allows an administrator or operator to create multiple tenants. This means that an operator can manage several authentik installations without having to deploy additional instances.
+
+Note that creating and managing tenants is handled using authentik APIs, not in the Admin interface.
 
 authentik manages tenants by storing data for each tenant in a separate PostgreSQL schema.
 
