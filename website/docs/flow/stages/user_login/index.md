@@ -63,7 +63,7 @@ Sessions which break this binding will be terminated on use. The created [`logou
     },
     "ip": {
         "previous": "1.2.3.4",
-        "new": "5.6.7.8",
+        "new": "5.6.7.8"
     },
     "http_request": {
         "args": {},
