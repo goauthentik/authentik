@@ -23,6 +23,6 @@ class AuthentikEnterpriseConfig(EnterpriseConfig):
 
     def check_enabled(self):
         """Actual enterprise check, cached"""
-        from authentik.enterprise.models import LicenseKey
+        from authentik.enterprise.license import LicenseKey
 
-        return LicenseKey.get_total().is_valid()
+        return LicenseKey.cached_summary().valid

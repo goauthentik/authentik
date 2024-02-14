@@ -19,14 +19,10 @@ from authentik.events.utils import cleanse_dict, sanitize_item
 class EnterpriseAuditMiddleware(AuditMiddleware):
     """Enterprise audit middleware"""
 
-    _enabled = None
-
     @property
     def enabled(self):
-        """Lazy check if audit logging is enabled"""
-        if self._enabled is None:
-            self._enabled = apps.get_app_config("authentik_enterprise").enabled()
-        return self._enabled
+        """Check if audit logging is enabled"""
+        return apps.get_app_config("authentik_enterprise").enabled()
 
     def connect(self, request: HttpRequest):
         super().connect(request)
