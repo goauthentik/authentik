@@ -1281,6 +1281,19 @@ reference = "authentik-fixes"
 resolved_reference = "a7f37c53f62f355a00142473ff1e3451bb794eca"
 
 [[package]]
+name = "djangoql"
+version = "0.18.1"
+description = "DjangoQL: Advanced search language for Django"
+optional = false
+python-versions = "*"
+files = [
+    {file = "djangoql-0.18.1-py2.py3-none-any.whl", hash = "sha256:51b3085a805627ebb43cfd0aa861137cdf8f69cc3c9244699718fe04a6c8e26d"},
+]
+
+[package.dependencies]
+ply = ">=3.8"
+
+[[package]]
 name = "djangorestframework"
 version = "3.14.0"
 description = "Web APIs for Django, made easy."
@@ -2755,6 +2768,17 @@ files = [
 [package.extras]
 dev = ["pre-commit", "tox"]
 testing = ["pytest", "pytest-benchmark"]
+
+[[package]]
+name = "ply"
+version = "3.11"
+description = "Python Lex & Yacc"
+optional = false
+python-versions = "*"
+files = [
+    {file = "ply-3.11-py2.py3-none-any.whl", hash = "sha256:096f9b8350b65ebd2fd1346b12452efe5b9607f7482813ffca50c22722a807ce"},
+    {file = "ply-3.11.tar.gz", hash = "sha256:00c7c1aaa88358b9c765b6d3000c6eec0ba42abca5351b095321aef446081da3"},
+]
 
 [[package]]
 name = "prometheus-client"
@@ -4667,4 +4691,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12"
-content-hash = "872b759c19aa026742ef493c1b13a5f01dc5baab84efe7385163c4bf428b8f8f"
+content-hash = "7708330542104cbf1f25fc96e039827d116a3747fef86fa92bdbb5459e6b9d2e"
