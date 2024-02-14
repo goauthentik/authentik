@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-07 12:04+0000\n"
+"POT-Creation-Date: 2024-02-14 18:51+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2024\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -461,6 +461,11 @@ msgstr ""
 "hours=-1;minutes=-2;seconds=-3)"
 
 #: authentik/enterprise/providers/rac/models.py
+msgid "When set to true, connection tokens will be deleted upon disconnect."
+msgstr ""
+"Si activé, les jetons de connexion seront supprimés lors de la déconnexion."
+
+#: authentik/enterprise/providers/rac/models.py
 msgid "RAC Provider"
 msgstr "Fournisseur RAC"
 
@@ -483,6 +488,14 @@ msgstr "Mappage de propriété RAC"
 #: authentik/enterprise/providers/rac/models.py
 msgid "RAC Property Mappings"
 msgstr "Mappages de propriété RAC"
+
+#: authentik/enterprise/providers/rac/models.py
+msgid "RAC Connection token"
+msgstr "Jeton de connexion RAC"
+
+#: authentik/enterprise/providers/rac/models.py
+msgid "RAC Connection tokens"
+msgstr "Jeton de connexions RAC"
 
 #: authentik/enterprise/providers/rac/views.py
 msgid "Maximum connection limit reached."
