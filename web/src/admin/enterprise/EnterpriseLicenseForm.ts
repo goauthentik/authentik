@@ -1,3 +1,4 @@
+import { EVENT_REFRESH_ENTERPRISE } from "@goauthentik/app/common/constants";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -34,14 +35,19 @@ export class EnterpriseLicenseForm extends ModelForm<License, string> {
     }
 
     async send(data: License): Promise<License> {
-        return this.instance
-            ? new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicensePartialUpdate({
-                  licenseUuid: this.instance.licenseUuid || "",
-                  patchedLicenseRequest: data,
-              })
-            : new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseCreate({
-                  licenseRequest: data,
-              });
+        return (
+            this.instance
+                ? new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicensePartialUpdate({
+                      licenseUuid: this.instance.licenseUuid || "",
+                      patchedLicenseRequest: data,
+                  })
+                : new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseCreate({
+                      licenseRequest: data,
+                  })
+        ).then((data) => {
+            window.dispatchEvent(new CustomEvent(EVENT_REFRESH_ENTERPRISE));
+            return data;
+        });
     }
 
     renderForm(): TemplateResult {

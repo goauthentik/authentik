@@ -107,6 +107,28 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                 </p>
                 <ak-utils-time-delta-help></ak-utils-time-delta-help>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal name="deleteTokenOnDisconnect">
+                <label class="pf-c-switch">
+                    <input
+                        class="pf-c-switch__input"
+                        type="checkbox"
+                        ?checked=${first(this.instance?.deleteTokenOnDisconnect, false)}
+                    />
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label"
+                        >${msg("Delete authorization on disconnect")}</span
+                    >
+                </label>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "When enabled, connection authorizations will be deleted when a client disconnects. This will force clients with flaky internet connections to re-authorize the endpoint.",
+                    )}
+                </p>
+            </ak-form-element-horizontal>
 
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("Protocol settings")} </span>

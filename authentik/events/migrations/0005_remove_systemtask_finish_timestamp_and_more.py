@@ -23,18 +23,15 @@ class Migration(migrations.Migration):
             model_name="systemtask",
             name="duration",
             field=models.FloatField(default=0),
-            preserve_default=False,
         ),
         migrations.AddField(
             model_name="systemtask",
             name="finish_timestamp",
             field=models.DateTimeField(default=django.utils.timezone.now),
-            preserve_default=False,
         ),
         migrations.AddField(
             model_name="systemtask",
             name="start_timestamp",
             field=models.DateTimeField(default=django.utils.timezone.now),
-            preserve_default=False,
         ),
     ]

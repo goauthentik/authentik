@@ -52,6 +52,10 @@ class RACProvider(Provider):
             "(Format: hours=-1;minutes=-2;seconds=-3)"
         ),
     )
+    delete_token_on_disconnect = models.BooleanField(
+        default=False,
+        help_text=_("When set to true, connection tokens will be deleted upon disconnect."),
+    )
 
     @property
     def launch_url(self) -> Optional[str]:
@@ -195,3 +199,13 @@ class ConnectionToken(ExpiringModel):
                 continue
             settings[key] = str(value)
         return settings
+
+    def __str__(self):
+        return (
+            f"RAC Connection token {self.session.user} to "
+            f"{self.endpoint.provider.name}/{self.endpoint.name}"
+        )
+
+    class Meta:
+        verbose_name = _("RAC Connection token")
+        verbose_name_plural = _("RAC Connection tokens")
