@@ -1,6 +1,9 @@
 ---
 title: Tenancy
 ---
+<span class="badge badge--primary">Enterprise</span>
+
+---
 
 ::::warning
 This feature is in alpha. Use at your own risk.
