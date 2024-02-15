@@ -68,10 +68,12 @@ runs:
             for name in image_names:
                 image_tags += [
                     f"{name}:{version}",
-                    f"{name}:{version_family}",
                 ]
             if not prerelease:
-                image_tags += [f"{name}:latest"]
+                image_tags += [
+                    f"{name}:latest",
+                    f"{name}:{version_family}",
+                ]
         else:
             suffix = ""
             if image_arch and image_arch != "amd64":
