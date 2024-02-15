@@ -78,8 +78,9 @@ runs:
                 suffix = f"-{image_arch}"
             for name in image_names:
                 image_tags += [
-                    f"{name}:gh-{sha}{suffix}",
-                    f"{name}:gh-{safe_branch_name}{suffix}",
+                    f"{name}:gh-{sha}{suffix}",  # Used for ArgoCD and PR comments
+                    f"{name}:gh-{safe_branch_name}{suffix}",  # For convenience
+                    f"{name}:gh-{safe_branch_name}-{int(time())}-{sha[:7]}{suffix}",  # Use by FluxCD
                 ]
 
         image_main_tag = image_tags[0]
