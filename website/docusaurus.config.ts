@@ -156,7 +156,8 @@ module.exports = async function (): Promise<Config> {
                                     repository: "goauthentik/authentik",
                                     // Only replace issues and PR links
                                     buildUrl: function (values) {
-                                        return values.type === "issue"
+                                        return values.type === "issue" ||
+                                            values.type === "mention"
                                             ? defaultBuildUrl(values)
                                             : false;
                                     },

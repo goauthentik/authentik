@@ -36,15 +36,15 @@ export class ModalForm extends ModalButton {
                 if (this.closeAfterSuccessfulSubmit) {
                     this.open = false;
                     form?.resetForm();
+                    this.dispatchEvent(
+                        new CustomEvent(EVENT_REFRESH, {
+                            bubbles: true,
+                            composed: true,
+                        }),
+                    );
                 }
                 this.loading = false;
                 this.locked = false;
-                this.dispatchEvent(
-                    new CustomEvent(EVENT_REFRESH, {
-                        bubbles: true,
-                        composed: true,
-                    }),
-                );
             })
             .catch((exc) => {
                 this.loading = false;

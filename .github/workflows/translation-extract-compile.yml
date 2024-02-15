@@ -1,9 +1,8 @@
-name: authentik-backend-translate-compile
+---
+name: authentik-backend-translate-extract-compile
 on:
-  push:
-    branches: [main]
-    paths:
-      - "locale/**"
+  schedule:
+    - cron: "0 0 * * *" # every day at midnight
   workflow_dispatch:
 
 env:
@@ -25,16 +24,20 @@ jobs:
           token: ${{ steps.generate_token.outputs.token }}
       - name: Setup authentik env
         uses: ./.github/actions/setup
+      - name: run extract
+        run: |
+          poetry run make i18n-extract
       - name: run compile
-        run: poetry run ak compilemessages
+        run: |
+          poetry run ak compilemessages
+          make web-check-compile
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
-        id: cpr
         with:
           token: ${{ steps.generate_token.outputs.token }}
-          branch: compile-backend-translation
-          commit-message: "core: compile backend translations"
-          title: "core: compile backend translations"
-          body: "core: compile backend translations"
+          branch: extract-compile-backend-translation
+          commit-message: "core, web: update translations"
+          title: "core, web: update translations"
+          body: "core, web: update translations"
           delete-branch: true
           signoff: true

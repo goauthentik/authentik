@@ -11,7 +11,3 @@ class AuthentikSourceSAMLConfig(ManagedAppConfig):
     verbose_name = "authentik Sources.SAML"
     mountpoint = "source/saml/"
     default = True
-
-    def reconcile_global_load_sources_saml_signals(self):
-        """Load sources.saml signals"""
-        self.import_module("authentik.sources.saml.signals")

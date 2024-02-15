@@ -1,3 +1,4 @@
+import { EVENT_REFRESH_ENTERPRISE } from "@goauthentik/app/common/constants";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { brand, config } from "@goauthentik/common/api/config";
 import { UIConfig, uiConfig } from "@goauthentik/common/ui/config";
@@ -109,8 +110,16 @@ export class EnterpriseAwareInterface extends Interface {
 
     constructor() {
         super();
-        new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseSummaryRetrieve().then((enterprise) => {
-            this.licenseSummary = enterprise;
+        const refreshStatus = () => {
+            new EnterpriseApi(DEFAULT_CONFIG)
+                .enterpriseLicenseSummaryRetrieve()
+                .then((enterprise) => {
+                    this.licenseSummary = enterprise;
+                });
+        };
+        refreshStatus();
+        window.addEventListener(EVENT_REFRESH_ENTERPRISE, () => {
+            refreshStatus();
         });
     }
 }

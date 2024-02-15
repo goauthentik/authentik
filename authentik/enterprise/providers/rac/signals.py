@@ -45,8 +45,8 @@ def pre_delete_connection_token_disconnect(sender, instance: ConnectionToken, **
 
 
 @receiver(post_save, sender=Endpoint)
-def post_save_application(sender: type[Model], instance, created: bool, **_):
-    """Clear user's application cache upon application creation"""
+def post_save_endpoint(sender: type[Model], instance, created: bool, **_):
+    """Clear user's endpoint cache upon endpoint creation"""
     if not created:  # pragma: no cover
         return
 
