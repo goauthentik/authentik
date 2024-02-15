@@ -51,6 +51,8 @@ For more details on how-to have the new source display on the Login Page see [he
 :::
 
 ### automatic user enrollment and attribute mapping
+Via the following process you can enroll your users without interaction or directly control the mapping azure attribute to authentik 
+attribute.
 
 1. Create a new _Expression Policy_ see [here](../../../docs/policies/index) for details.
 2. Choose _azure-ad-mapping_ as name
