@@ -131,6 +131,9 @@ export class DeleteBulkForm<T> extends ModalButton {
     @property()
     actionSubtext?: string;
 
+    @property()
+    buttonLabel = msg("Delete");
+
     @property({ attribute: false })
     metadata: (item: T) => BulkDeleteMetadata = (item: T) => {
         const rec = item as Record<string, unknown>;
@@ -222,7 +225,7 @@ export class DeleteBulkForm<T> extends ModalButton {
                     }}
                     class="pf-m-danger"
                 >
-                    ${msg("Delete")} </ak-spinner-button
+                    ${this.buttonLabel} </ak-spinner-button
                 >&nbsp;
                 <ak-spinner-button
                     .callAction=${async () => {
