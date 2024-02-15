@@ -14,7 +14,7 @@ import { randomId } from "../utils/randomId";
 export interface RadioOption<T> {
     label: string;
     description?: TemplateResult;
-    default: boolean;
+    default?: boolean;
     value: T;
 }
 

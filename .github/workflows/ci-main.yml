@@ -1,3 +1,4 @@
+---
 name: authentik-ci-main
 
 on:
@@ -7,7 +8,7 @@ on:
       - next
       - version-*
     paths-ignore:
-      - website
+      - website/**
   pull_request:
     branches:
       - main
@@ -29,7 +30,7 @@ jobs:
           - codespell
           - isort
           - pending-migrations
-          - pylint
+          # - pylint
           - pyright
           - ruff
     runs-on: ubuntu-latest
@@ -122,9 +123,10 @@ jobs:
           poetry run make test
           poetry run coverage xml
       - if: ${{ always() }}
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           flags: unit
+          token: ${{ secrets.CODECOV_TOKEN }}
   test-integration:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -133,15 +135,16 @@ jobs:
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Create k8s Kind Cluster
-        uses: helm/kind-action@v1.8.0
+        uses: helm/kind-action@v1.9.0
       - name: run integration
         run: |
           poetry run coverage run manage.py test tests/integration
           poetry run coverage xml
       - if: ${{ always() }}
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           flags: integration
+          token: ${{ secrets.CODECOV_TOKEN }}
   test-e2e:
     name: test-e2e (${{ matrix.job.name }})
     runs-on: ubuntu-latest
@@ -188,9 +191,10 @@ jobs:
           poetry run coverage run manage.py test ${{ matrix.job.glob }}
           poetry run coverage xml
       - if: ${{ always() }}
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           flags: e2e
+          token: ${{ secrets.CODECOV_TOKEN }}
   ci-core-mark:
     needs:
       - lint
@@ -203,12 +207,19 @@ jobs:
     steps:
       - run: echo mark
   build:
+    strategy:
+      fail-fast: false
+      matrix:
+        arch:
+          - amd64
+          - arm64
     needs: ci-core-mark
     runs-on: ubuntu-latest
     permissions:
       # Needed to upload contianer images to ghcr.io
       packages: write
     timeout-minutes: 120
+    if: "github.repository == 'goauthentik/authentik'"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -220,11 +231,11 @@ jobs:
       - name: prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        with:
+          image-name: ghcr.io/goauthentik/dev-server
+          image-arch: ${{ matrix.arch }}
       - name: Login to Container Registry
         uses: docker/login-action@v3
-        if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
@@ -238,69 +249,16 @@ jobs:
           secrets: |
             GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
             GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
-          push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
-          tags: |
-            ghcr.io/goauthentik/dev-server:gh-${{ steps.ev.outputs.branchNameContainer }}
-            ghcr.io/goauthentik/dev-server:gh-${{ steps.ev.outputs.sha }}
-            ghcr.io/goauthentik/dev-server:gh-${{ steps.ev.outputs.branchNameContainer }}-${{ steps.ev.outputs.timestamp }}-${{ steps.ev.outputs.shortHash }}
+          tags: ${{ steps.ev.outputs.imageTags }}
+          push: true
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
-            VERSION=${{ steps.ev.outputs.version }}
-            VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-  build-arm64:
-    needs: ci-core-mark
-    runs-on: ubuntu-latest
-    permissions:
-      # Needed to upload contianer images to ghcr.io
-      packages: write
-    timeout-minutes: 120
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.0.0
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: prepare variables
-        uses: ./.github/actions/docker-push-variables
-        id: ev
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      - name: Login to Container Registry
-        uses: docker/login-action@v3
-        if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: generate ts client
-        run: make gen-client-ts
-      - name: Build Docker Image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          secrets: |
-            GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
-            GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
-          push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
-          tags: |
-            ghcr.io/goauthentik/dev-server:gh-${{ steps.ev.outputs.branchNameContainer }}-arm64
-            ghcr.io/goauthentik/dev-server:gh-${{ steps.ev.outputs.sha }}-arm64
-            ghcr.io/goauthentik/dev-server:gh-${{ steps.ev.outputs.branchNameContainer }}-${{ steps.ev.outputs.timestamp }}-${{ steps.ev.outputs.shortHash }}-arm64
-          build-args: |
-            GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
-            VERSION=${{ steps.ev.outputs.version }}
-            VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
-          platforms: linux/arm64
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          platforms: linux/${{ matrix.arch }}
   pr-comment:
     needs:
       - build
-      - build-arm64
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' }}
     permissions:
@@ -314,9 +272,9 @@ jobs:
       - name: prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        with:
+          image-name: ghcr.io/goauthentik/dev-server
       - name: Comment on PR
         uses: ./.github/actions/comment-pr-instructions
         with:
-          tag: gh-${{ steps.ev.outputs.branchNameContainer }}-${{ steps.ev.outputs.timestamp }}-${{ steps.ev.outputs.shortHash }}
+          tag: gh-${{ steps.ev.outputs.imageMainTag }}

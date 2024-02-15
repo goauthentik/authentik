@@ -6,6 +6,7 @@ from django.urls import path
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 from authentik.core.channels import TokenOutpostMiddleware
+from authentik.enterprise.providers.rac.api.connection_tokens import ConnectionTokenViewSet
 from authentik.enterprise.providers.rac.api.endpoints import EndpointViewSet
 from authentik.enterprise.providers.rac.api.property_mappings import RACPropertyMappingViewSet
 from authentik.enterprise.providers.rac.api.providers import RACProviderViewSet
@@ -45,4 +46,5 @@ api_urlpatterns = [
     ("providers/rac", RACProviderViewSet),
     ("propertymappings/rac", RACPropertyMappingViewSet),
     ("rac/endpoints", EndpointViewSet),
+    ("rac/connection_tokens", ConnectionTokenViewSet),
 ]

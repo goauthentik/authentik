@@ -27,7 +27,7 @@ export async function configureSentry(canDoPpi = false): Promise<Config> {
             ],
             release: `authentik@${VERSION}`,
             integrations: [
-                new Sentry.BrowserTracing({
+                Sentry.browserTracingIntegration({
                     shouldCreateSpanForRequest: (url: string) => {
                         return url.startsWith(window.location.host);
                     },
@@ -57,9 +57,6 @@ export async function configureSentry(canDoPpi = false): Promise<Config> {
         Sentry.setTag(TAG_SENTRY_CAPABILITIES, cfg.capabilities.join(","));
         if (window.location.pathname.includes("if/")) {
             Sentry.setTag(TAG_SENTRY_COMPONENT, `web/${currentInterface()}`);
-            Sentry.configureScope((scope) =>
-                scope.setTransactionName(`authentik.web.if.${currentInterface()}`),
-            );
         }
         if (cfg.capabilities.includes(CapabilitiesEnum.CanDebug)) {
             const Spotlight = await import("@spotlightjs/spotlight");

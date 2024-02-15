@@ -1,4 +1,5 @@
 import "@goauthentik/admin/groups/RelatedGroupList";
+import "@goauthentik/admin/providers/rac/ConnectionTokenList";
 import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserApplicationTable";
 import "@goauthentik/admin/users/UserChart";
@@ -13,6 +14,7 @@ import { getRelativeTime } from "@goauthentik/app/common/utils";
 import "@goauthentik/app/elements/oauth/UserAccessTokenList";
 import "@goauthentik/app/elements/oauth/UserRefreshTokenList";
 import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
+import "@goauthentik/app/elements/user/sources/SourceSettings";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { userTypeToLabel } from "@goauthentik/common/labels";
@@ -316,6 +318,26 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                         <div class="pf-c-card__body">
                             <ak-user-device-table userId=${user.pk}> </ak-user-device-table>
                         </div>
+                    </div>
+                </section>
+                <section
+                    slot="page-source-connections"
+                    data-tab-title="${msg("Connected services")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <ak-user-settings-source userId=${user.pk} .canConnect=${false}>
+                        </ak-user-settings-source>
+                    </div>
+                </section>
+                <section
+                    slot="page-rac-connection-tokens"
+                    data-tab-title="${msg("RAC Connections")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <ak-rac-connection-token-list userId=${user.pk}>
+                        </ak-rac-connection-token-list>
                     </div>
                 </section>
             </ak-tabs>

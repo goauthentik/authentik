@@ -110,7 +110,7 @@ export class SystemTaskListPage extends TablePage<SystemTask> {
 
     row(item: SystemTask): TemplateResult[] {
         return [
-            html`${item.name}${item.uid ? `:${item.uid}` : ""}`,
+            html`<pre>${item.name}${item.uid ? `:${item.uid}` : ""}</pre>`,
             html`${item.description}`,
             html`<div>${getRelativeTime(item.finishTimestamp)}</div>
                 <small>${item.finishTimestamp.toLocaleString()}</small>`,

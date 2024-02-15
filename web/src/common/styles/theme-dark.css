@@ -292,6 +292,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 /* data list */
 .pf-c-data-list {
+    padding-inline-start: 0;
     border-top-color: var(--ak-dark-background-lighter);
 }
 .pf-c-data-list__item {

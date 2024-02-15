@@ -11,7 +11,8 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
-from authentik.enterprise.models import License, LicenseKey
+from authentik.enterprise.license import LicenseKey
+from authentik.enterprise.models import License
 from authentik.enterprise.providers.rac.models import Endpoint, Protocols, RACProvider
 from authentik.lib.generators import generate_id
 from authentik.policies.denied import AccessDeniedResponse
@@ -39,7 +40,7 @@ class TestRACViews(APITestCase):
         )
 
     @patch(
-        "authentik.enterprise.models.LicenseKey.validate",
+        "authentik.enterprise.license.LicenseKey.validate",
         MagicMock(
             return_value=LicenseKey(
                 aud="",
@@ -70,7 +71,7 @@ class TestRACViews(APITestCase):
         self.assertEqual(final_response.status_code, 200)
 
     @patch(
-        "authentik.enterprise.models.LicenseKey.validate",
+        "authentik.enterprise.license.LicenseKey.validate",
         MagicMock(
             return_value=LicenseKey(
                 aud="",
@@ -99,7 +100,7 @@ class TestRACViews(APITestCase):
         self.assertIsInstance(response, AccessDeniedResponse)
 
     @patch(
-        "authentik.enterprise.models.LicenseKey.validate",
+        "authentik.enterprise.license.LicenseKey.validate",
         MagicMock(
             return_value=LicenseKey(
                 aud="",

@@ -14,7 +14,7 @@ from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, WithUserInfoChallenge
-from authentik.flows.exceptions import FlowSkipStageException
+from authentik.flows.exceptions import FlowSkipStageException, StageInvalidException
 from authentik.flows.models import FlowDesignation, NotConfiguredAction, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
@@ -154,6 +154,16 @@ class AuthenticatorValidateStageView(ChallengeStageView):
     def get_device_challenges(self) -> list[dict]:
         """Get a list of all device challenges applicable for the current stage"""
         challenges = []
+        pending_user = self.get_pending_user()
+        if pending_user.is_anonymous:
+            # We shouldn't get here without any kind of authentication data
+            raise StageInvalidException()
+        # When `pretend_user_exists` is enabled in the identification stage,
+        # `pending_user` will be a user model that isn't save to the DB
+        # hence it doesn't have a PK. In that case we just return an empty list of
+        # authenticators
+        if not pending_user.pk:
+            return []
         # Convert to a list to have usable log output instead of just <generator ...>
         user_devices = list(devices_for_user(self.get_pending_user()))
         self.logger.debug("Got devices for user", devices=user_devices)

@@ -1,3 +1,4 @@
+import "@goauthentik/app/elements/user/sources/SourceSettings";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";
@@ -8,7 +9,6 @@ import { UserInterface } from "@goauthentik/user/UserInterface";
 import "@goauthentik/user/user-settings/details/UserPassword";
 import "@goauthentik/user/user-settings/details/UserSettingsFlowExecutor";
 import "@goauthentik/user/user-settings/mfa/MFADevicesPage";
-import "@goauthentik/user/user-settings/sources/SourceSettings";
 import "@goauthentik/user/user-settings/tokens/UserTokenList";
 
 import { localized, msg } from "@lit/localize";
@@ -156,9 +156,14 @@ export class UserSettingsPage extends AKElement {
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
                         <div class="pf-c-card">
-                            <div class="pf-c-card__body">
-                                <ak-user-settings-source></ak-user-settings-source>
+                            <div class="pf-c-card__title">
+                                ${msg(
+                                    "Connect your user account to the services listed below, to allow you to login using the service instead of traditional credentials.",
+                                )}
                             </div>
+                            <ak-user-settings-source
+                                userId=${ifDefined(rootInterface<UserInterface>()?.me?.user.pk)}
+                            ></ak-user-settings-source>
                         </div>
                     </section>
                     <section

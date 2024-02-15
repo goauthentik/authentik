@@ -1,4 +1,4 @@
-import { Interface } from "./Interface";
+import { EnterpriseAwareInterface, Interface } from "./Interface";
 
-export { Interface };
+export { Interface, EnterpriseAwareInterface };
 export default Interface;
