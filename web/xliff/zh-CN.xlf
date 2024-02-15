@@ -5209,6 +5209,42 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sbd065743a0c599e3">
   <source>Preview for user</source>
 </trans-unit>
+<trans-unit id="se16b4d412ad1aba9">
+  <source>Brand name</source>
+</trans-unit>
+<trans-unit id="sb7e68dcad68a638c">
+  <source>Remote Access Provider</source>
+</trans-unit>
+<trans-unit id="sfb1980a471b7dfb6">
+  <source>Remotely access computers/servers via RDP/SSH/VNC</source>
+</trans-unit>
+<trans-unit id="s9ffdea131dddb3c5">
+  <source>Configure Remote Access Provider Provider</source>
+</trans-unit>
+<trans-unit id="s56bc67239b9255a2">
+  <source>Delete authorization on disconnect</source>
+</trans-unit>
+<trans-unit id="s3945449bd524d8a5">
+  <source>When enabled, connection authorizations will be deleted when a client disconnects. This will force clients with flaky internet connections to re-authorize the endpoint.</source>
+</trans-unit>
+<trans-unit id="sc93712b5fbdc6810">
+  <source>Connection Token(s)</source>
+</trans-unit>
+<trans-unit id="s526a525cdc79bbdc">
+  <source>Endpoint</source>
+</trans-unit>
+<trans-unit id="s5c18f85cda6e89be">
+  <source>Connections</source>
+</trans-unit>
+<trans-unit id="s269a190f0086d892">
+  <source>Unconfigured</source>
+</trans-unit>
+<trans-unit id="s9e24bec94ec23dc9">
+  <source>This option will not be changed by this mapping.</source>
+</trans-unit>
+<trans-unit id="sac428446e9e41f54">
+  <source>RAC Connections</source>
+</trans-unit>
 </body>
 </file>
 </xliff>

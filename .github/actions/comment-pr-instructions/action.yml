@@ -9,9 +9,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Generate config
-      id: ev
-      uses: ./.github/actions/docker-push-variables
     - name: Find Comment
       uses: peter-evans/find-comment@v2
       id: fc

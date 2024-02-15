@@ -1,17 +1,18 @@
 """RAC Models"""
 
-from typing import Optional
+from typing import Any, Optional
 from uuid import uuid4
 
 from deepmerge import always_merger
 from django.db import models
 from django.db.models import QuerySet
+from django.http import HttpRequest
 from django.utils.translation import gettext as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.core.exceptions import PropertyMappingExpressionException
-from authentik.core.models import ExpiringModel, PropertyMapping, Provider, default_token_key
+from authentik.core.models import ExpiringModel, PropertyMapping, Provider, User, default_token_key
 from authentik.events.models import Event, EventAction
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
@@ -50,6 +51,10 @@ class RACProvider(Provider):
             "that the sessions lasts until the browser is closed. "
             "(Format: hours=-1;minutes=-2;seconds=-3)"
         ),
+    )
+    delete_token_on_disconnect = models.BooleanField(
+        default=False,
+        help_text=_("When set to true, connection tokens will be deleted upon disconnect."),
     )
 
     @property
@@ -107,6 +112,12 @@ class RACPropertyMapping(PropertyMapping):
 
     static_settings = models.JSONField(default=dict)
 
+    def evaluate(self, user: Optional[User], request: Optional[HttpRequest], **kwargs) -> Any:
+        """Evaluate `self.expression` using `**kwargs` as Context."""
+        if len(self.static_settings) > 0:
+            return self.static_settings
+        return super().evaluate(user, request, **kwargs)
+
     @property
     def component(self) -> str:
         return "ak-property-mapping-rac-form"
@@ -155,9 +166,6 @@ class ConnectionToken(ExpiringModel):
         def mapping_evaluator(mappings: QuerySet):
             for mapping in mappings:
                 mapping: RACPropertyMapping
-                if len(mapping.static_settings) > 0:
-                    always_merger.merge(settings, mapping.static_settings)
-                    continue
                 try:
                     mapping_settings = mapping.evaluate(
                         self.session.user, None, endpoint=self.endpoint, provider=self.provider
@@ -191,3 +199,13 @@ class ConnectionToken(ExpiringModel):
                 continue
             settings[key] = str(value)
         return settings
+
+    def __str__(self):
+        return (
+            f"RAC Connection token {self.session.user} to "
+            f"{self.endpoint.provider.name}/{self.endpoint.name}"
+        )
+
+    class Meta:
+        verbose_name = _("RAC Connection token")
+        verbose_name_plural = _("RAC Connection tokens")
