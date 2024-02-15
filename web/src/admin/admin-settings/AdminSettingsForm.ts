@@ -10,7 +10,6 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -22,12 +21,12 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import { AdminApi, Settings, SettingsRequest } from "@goauthentik/api";
 
 @customElement("ak-admin-settings-form")
-export class AdminSettingsForm extends CustomEmitterElement(Form<SettingsRequest>) {
+export class AdminSettingsForm extends Form<SettingsRequest> {
     //
     // Custom property accessors in Lit 2 require a manual call to requestUpdate(). See:
     // https://lit.dev/docs/v2/components/properties/#accessors-custom
     //
-    set settings(value: Settings) {
+    set settings(value: Settings | undefined) {
         this._settings = value;
         this.requestUpdate();
     }
@@ -48,10 +47,11 @@ export class AdminSettingsForm extends CustomEmitterElement(Form<SettingsRequest
     }
 
     async send(data: SettingsRequest): Promise<Settings> {
-        return new AdminApi(DEFAULT_CONFIG).adminSettingsUpdate({
+        const result = await new AdminApi(DEFAULT_CONFIG).adminSettingsUpdate({
             settingsRequest: data,
         });
-        this.dispatchCustomEvent("ak-admin-setting-changed");
+        this.dispatchEvent(new CustomEvent("ak-admin-setting-changed"));
+        return result;
     }
 
     renderForm(): TemplateResult {

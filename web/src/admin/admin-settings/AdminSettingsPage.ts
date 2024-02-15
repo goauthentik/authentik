@@ -14,7 +14,7 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ModalForm";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html, nothing } from "lit";
+import { html, nothing } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -32,7 +32,7 @@ import { AdminApi, Settings } from "@goauthentik/api";
 
 @customElement("ak-admin-settings")
 export class AdminSettingsPage extends AKElement {
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [
             PFBase,
             PFButton,
@@ -83,7 +83,7 @@ export class AdminSettingsPage extends AKElement {
         this.form?.resetForm();
     }
 
-    render(): TemplateResult {
+    render() {
         if (!this.settings) {
             return nothing;
         }
