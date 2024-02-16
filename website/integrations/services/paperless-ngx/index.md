@@ -17,7 +17,7 @@ The following placeholders will be used:
 - `paperless.company` is the FQDN of the Paperless-ngx install.
 - `authentik.company` is the FQDN of the authentik install.
 
-## Authentik Configuration
+## authentik Configuration
 
 ### Step 1 - OAuth2/OpenID Provider
 
