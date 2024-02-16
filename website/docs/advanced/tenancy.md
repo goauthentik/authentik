@@ -18,21 +18,23 @@ This feature is available from 2024.2 and is not to be confused with [brands](..
 
 Starting with version 2024.2, authentik allows an administrator or operator to create multiple tenants. This means that an operator can manage several different and distinct authentik installations, each with it's own Install ID and license(s). The relationships between tenant and installation (Install ID) is a 1:1 relationship, so for each tenant, there is a unique Install ID.
 
+::::danger
+Expression policies currently have access to all tenants.
+::::
+
 The data for each tenant is stored in a separate PostgreSQL schema, providing full separation of user data. License data for the tenant is also stored in the schema.
 
 Note that creating and managing multiple tenants is handled using authentik APIs, not in the Admin interface. For typical authentik installations in which only a single tenant is needed, the default tenant is automatically created by authentik, and does not need to be managed in the Admin interface.
 
 ### Licensing
 
-For each additional tenant (beyond the default one), one or more licenses is required; a license key cannot be used for more than one tenant.
+For each additional tenant (beyond the default one), one or more licenses is required; a license key cannot be used for more than one tenant. Note that the license for the default tenant must be valid and up-to-date in order to create additional tenants.
 
 A single tenant and its corresponding installation can have multiple license keys. For example, a company might purchase one license for 50 users, and then later in the same year need to buy another license for 50 more users, due to company growth. Both licenses are associated to the one installation, the one tenant.
 
-### Important considerations
+Learn more in our documentation about [Enterprise licenses](../enterprise/manage-enterprise#license-management).
 
-::::warning
-Expression policies currently have access to all tenants.
-::::
+### Important considerations
 
 -   Upon creating another tenant, a new schema will be created by cloning the `template` schema. This special schema is like a tenant with no data created in it. Cloning an existing schema instead of creating a new one and running migrations on it is done for efficiency purposes.
 
@@ -48,7 +50,7 @@ To create one or more additional tenants (beyond the default tenant), use the fo
 
 First, enable with the `AUTHENTIK_TENANTS__ENABLED=true` [configuration setting](../installation/configuration.mdx).
 
-Then set `AUTHENTIK_TENANTS__API_KEY` to a random string, which will be used to authenticate to the tenancy API. This key allows the creation of recovery keys for every tenant hosted by authentik, so be sure to _store it securely_.
+Then set `AUTHENTIK_TENANTS__API_KEY` to a random string, which will be used to authenticate to the tenancy API. This key allows the creation of recovery keys for every tenant hosted by authentik, so be sure to _store it securely_. Be aware that creating a recovery key allows access to all data stored inside a tenant.
 
 You will need to disable the embedded outpost with `AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true` because it is not supported with tenants.
 
