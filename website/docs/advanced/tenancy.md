@@ -16,9 +16,7 @@ This feature is available from 2024.2 and is not to be confused with [brands](..
 
 ## About tenants
 
-Starting with version 2024.2, authentik allows an administrator or operator to create multiple tenants. This means that an operator can manage several different and distinct authentik installations, each with it's own Install ID and license(s).
-
-The relationships between tenant and installation (Install ID) is a 1:1 relationship, so for each tenant, there is a unique Install ID.
+Starting with version 2024.2, authentik allows an administrator or operator to create multiple tenants. This means that an operator can manage several different and distinct authentik installations, each with it's own Install ID and license(s). The relationships between tenant and installation (Install ID) is a 1:1 relationship, so for each tenant, there is a unique Install ID.
 
 The data for each tenant is stored in a separate PostgreSQL schema, providing full separation of user data. License data for the tenant is also stored in the schema.
 
@@ -36,33 +34,37 @@ A single tenant and its corresponding installation can have multiple license key
 Expression policies currently have access to all tenants.
 ::::
 
-*   Upon creating another tenant, a new schema will be created by cloning the `template` schema. This special schema is like a tenant with no data created in it. Cloning an existing schema instead of creating a new one and running migrations on it is done for efficiency purposes.
+-   Upon creating another tenant, a new schema will be created by cloning the `template` schema. This special schema is like a tenant with no data created in it. Cloning an existing schema instead of creating a new one and running migrations on it is done for efficiency purposes.
 
-*   Data stored in Redis (cache, tasks, locks) will usually get its keys prefixed by the `schema_name`.
+-   Data stored in Redis (cache, tasks, locks) will usually get its keys prefixed by the `schema_name`.
 
-*   Files are stored by-tenant, under a `schema_name` directory. For example, `/media/t_example`. The same is true regardless of the storage backend.
+-   Files are stored by-tenant, under a `schema_name` directory. For example, `/media/t_example`. The same is true regardless of the storage backend.
 
 ## Usage
 
-To create one or more additional tenants (beyond the default tenant), follow these steps:
+To create one or more additional tenants (beyond the default tenant), use the following instructions.
 
-### Configure authentik to allow multiple tenants
+### 1. Configure authentik to allow multiple tenants
 
-Step 1. Enable with the `AUTHENTIK_TENANTS__ENABLED=true` [configuration setting](../installation/configuration.mdx).
+First, enable with the `AUTHENTIK_TENANTS__ENABLED=true` [configuration setting](../installation/configuration.mdx).
 
-Step 2. Set `AUTHENTIK_TENANTS__API_KEY` to a random string, which will be used to authenticate to the tenancy API. This key allows the creation of recovery keys for every tenant hosted by authentik, so be sure to _store it securely_.
+Then set `AUTHENTIK_TENANTS__API_KEY` to a random string, which will be used to authenticate to the tenancy API. This key allows the creation of recovery keys for every tenant hosted by authentik, so be sure to _store it securely_.
 
-Step 4. Disable the embedded outpost with `AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true` because it is not supported with tenants.
+You will need to disable the embedded outpost with `AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true` because it is not supported with tenants.
 
-### Create a new tenant with authentik API endpoints
+### 2. Create a new tenant with authentik API endpoints
 
 Tenants are created using the API routes associated. Search for `tenant` in the [API browser](../../developer-docs/api/) for the available endpoints.
 
-When creating a tenant, you must specify a `name`, used for display purposes, and a `schema_name`, used to create the PostgreSQL schema associated with the tenant. That `schema_name` must start with `t_` and not be more than 64 characters long.
+When creating a tenant, you must specify a `name`, used for display purposes, and a `schema_name`, used to create the PostgreSQL schema associated with the tenant.
+
+:::info
+The `schema_name` must start with `t_` and not be more than 64 characters long.
+:::
 
 There is always at least one tenant, `public`. This is the default tenant and cannot be deleted. Despite its name, it is not freely available to the world. Instead, it is stored in the `public` schema of the PostgreSQL database.
 
-### Associate the new tenant with a domain
+### 3. Associate the new tenant with a domain
 
 By default, all requests that do not explicitly belong to a tenant are redirected to the default tenant. Thus, after creating a tenant, you must associate a domain for which incoming requests will be redirected to said tenant.
 
