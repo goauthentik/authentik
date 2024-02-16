@@ -44,7 +44,7 @@ Learn more in our documentation about [Enterprise licenses](../enterprise/manage
 
 ## Usage
 
-To create one or more additional tenants (beyond the default tenant), use the following instructions.
+To create one or more additional tenants (beyond the default tenant) use the following instructions.
 
 ### 1. Configure authentik to allow multiple tenants
 
