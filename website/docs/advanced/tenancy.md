@@ -56,7 +56,7 @@ You will need to disable the embedded outpost with `AUTHENTIK_OUTPOSTS__DISABLE_
 
 Tenants are created using the API routes associated. Search for `tenant` in the [API browser](../../developer-docs/api/) for the available endpoints.
 
-When creating a tenant, you must specify a `name`, used for display purposes, and a `schema_name`, used to create the PostgreSQL schema associated with the tenant.
+When creating a tenant you must specify a `name`, used for display purposes, and a `schema_name`, used to create the PostgreSQL schema associated with the tenant.
 
 :::info
 The `schema_name` must start with `t_` and not be more than 64 characters long.
