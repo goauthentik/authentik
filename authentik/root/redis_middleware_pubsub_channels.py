@@ -71,8 +71,11 @@ class CustomPubSubLoopLayer(RedisPubSubLoopLayer):
                 config = process_config(url, pool_kwargs, new_redis_kwargs, tls_kwargs)
                 self._shards.append(CustomSingleShardConnection(config, self))
         else:
-            redis_options = (pool_kwargs, redis_kwargs, tls_kwargs)
-            self._shards = [CustomSingleShardConnection(process_config(url, *redis_options), self)]
+            raise NotImplementedError(
+                "Redis cluster does currently not support asyncio pubsub connections"
+            )
+            # redis_options = (pool_kwargs, redis_kwargs, tls_kwargs)
+            # self._shards = [CustomSingleShardConnection(process_config(url, *redis_options), self)]
 
 
 class CustomSingleShardConnection(RedisSingleShardConnection):
@@ -85,6 +88,10 @@ class CustomSingleShardConnection(RedisSingleShardConnection):
     def __init__(self, config, channel_layer):
         super().__init__(None, channel_layer)
         self.config = config
+        if self.config["type"] == "cluster":
+            raise NotImplementedError(
+                "Redis cluster does currently not support asyncio pubsub connections"
+            )
 
     async def flush(self):
         async with self._lock:
@@ -102,13 +109,18 @@ class CustomSingleShardConnection(RedisSingleShardConnection):
                 if self.config["type"] != "cluster":
                     await _close_redis(self._redis)
                 else:
-                    await self._redis.disconnect()
+                    try:
+                        await self._redis.aclose()
+                    except AttributeError:
+                        await self._redis.close()
                 self._redis = None
                 self._pubsub = None
             self._subscribed_to = set()
 
     def _ensure_redis(self):
         if self._redis is None:
-            pool, client_config = get_connection_pool(self.config, use_async=True)
+            pool, client_config = get_connection_pool(
+                self.config, use_async=self.config["type"] != "cluster"
+            )
             self._redis = get_client(client_config, pool)
             self._pubsub = self._redis.pubsub()
