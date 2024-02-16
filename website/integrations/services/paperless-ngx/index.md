@@ -36,7 +36,7 @@ Create an application (under Resources/Applications) with these settings:
 
 ## Paperless Configuration
 
-Add the following environment variables to your Paperless-ngx setup. If you are using docker-compose, then add the following to your docker-compose.yml file:
+Add the following environment variables to your Paperless-ngx setup. If you are using Docker Compose, then add the following to your docker-compose.yml file:
 
 ```yaml
 PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
