@@ -34,7 +34,7 @@ Create an application (under Resources/Applications) with these settings:
     Slug: paperless
     Provider: Paperless
 
-## Paperless
+## Paperless Configuration
 
 Add the following environment variables to your Paperless-ngx setup. If you are using docker-compose, then add the following to your docker-compose.yml file:
 
