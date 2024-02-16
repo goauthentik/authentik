@@ -79,7 +79,7 @@ Additional information from Microsoft documentation:
 
 From the authentik Admin Dashboard:
 
-1. Open **Customisation > Property Mappings** page from the sidebar.
+1. Open **Customization > Property Mappings** page from the sidebar.
 2. Click **Create** from the property mapping list command bar.
 3. Within the new property mapping form, select **Scope Mapping**.
 4. Click **Next** and enter the following values:
@@ -102,7 +102,7 @@ return {
 
 From the authentik Admin Dashboard:
 
-1. Open **Customisation > Property Mappings** page from the sidebar.
+1. Open **Customization > Property Mappings** page from the sidebar.
 2. Click **Create** from the property mapping list command bar.
 3. Within the new property mapping form, select **Scope Mapping**.
 4. Click **Next** and enter the following values:
