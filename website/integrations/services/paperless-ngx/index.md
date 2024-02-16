@@ -6,7 +6,7 @@ title: Paperless-ngx
 
 ## What is Paperless-ngx
 
-> Paperless-ngx is an application that indexes your scanned documents and allows you to easily search for documents and store metadata alongside your documents. It was a fork from paperless-ngx, in turn a form from the original Paperless, both of which are no longer maintained.
+> Paperless-ngx is an application that indexes your scanned documents and allows you to easily search for documents and store metadata alongside your documents. It was a fork from paperless-ngx, in turn a fork from the original Paperless, neither of which are maintained any longer.
 >
 > -- https://github.com/paperless-ngx/paperless-ngx
 
