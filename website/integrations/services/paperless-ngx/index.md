@@ -66,4 +66,4 @@ Now restart your container:
 
 Now you can access Paperless-ngx by logging in with authentik.
 
-To add Authentik authentication to an existing user, log in to Paperless with local authentication, click the profile icon in the top-right, click My Profile, then Connect new social account.
+To add authentik authentication to an existing user, log in to Paperless with local authentication, click the profile icon in the top-right, click My Profile, then Connect new social account.
