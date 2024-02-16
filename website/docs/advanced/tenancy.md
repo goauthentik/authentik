@@ -42,7 +42,7 @@ Learn more in our documentation about [Enterprise licenses](../enterprise/manage
 
 -   Files are isolated on a per-tenant basis, with each tenant folder named according to the schema_name. For example, `/media/t_example`. The same is true regardless of the storage backend.
 
--   Using an [embedded outpost](../outposts/embedded/embedded.mdx) with multi-tenancy is not currently suppported. Disable the embedded outpost with `AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true` configuration setting.
+-   Using an [embedded outpost](../outposts/embedded/embedded.mdx) with multi-tenancy is not currently supported. Disable the embedded outpost with `AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true` configuration setting.
 
 ## Usage
 
