@@ -25,12 +25,6 @@ export function convertToSlug(text: string): string {
         .replace(/[^\w-]+/g, "");
 }
 
-export function convertToTitle(text: string): string {
-    return text.replace(/\w\S*/g, function (txt) {
-        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    });
-}
-
 /**
  * Truncate a string based on maximum word count
  */
@@ -82,14 +76,6 @@ export function first<T>(...args: Array<T | undefined | null>): T {
         }
     }
     throw new SentryIgnoredError(`No compatible arg given: ${args}`);
-}
-
-export function hexEncode(buf: Uint8Array): string {
-    return Array.from(buf)
-        .map(function (x) {
-            return ("0" + x.toString(16)).substr(-2);
-        })
-        .join("");
 }
 
 // Taken from python's string module

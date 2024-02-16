@@ -1,4 +1,5 @@
 import "@goauthentik/admin/groups/RelatedGroupList";
+import "@goauthentik/admin/providers/rac/ConnectionTokenList";
 import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserApplicationTable";
 import "@goauthentik/admin/users/UserChart";
@@ -327,6 +328,16 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                     <div class="pf-c-card">
                         <ak-user-settings-source userId=${user.pk} .canConnect=${false}>
                         </ak-user-settings-source>
+                    </div>
+                </section>
+                <section
+                    slot="page-rac-connection-tokens"
+                    data-tab-title="${msg("RAC Connections")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <ak-rac-connection-token-list userId=${user.pk}>
+                        </ak-rac-connection-token-list>
                     </div>
                 </section>
             </ak-tabs>

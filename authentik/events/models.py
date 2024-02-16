@@ -620,9 +620,9 @@ class SystemTask(SerializerModel, ExpiringModel):
     name = models.TextField()
     uid = models.TextField(null=True)
 
-    start_timestamp = models.DateTimeField()
-    finish_timestamp = models.DateTimeField()
-    duration = models.FloatField()
+    start_timestamp = models.DateTimeField(default=now)
+    finish_timestamp = models.DateTimeField(default=now)
+    duration = models.FloatField(default=0)
 
     status = models.TextField(choices=TaskStatus.choices)
 

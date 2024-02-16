@@ -1,31 +1,33 @@
+---
 name: "Prepare docker environment variables"
 description: "Prepare docker environment variables"
 
+inputs:
+  image-name:
+    required: true
+    description: "Docker image prefix"
+  image-arch:
+    required: false
+    description: "Docker image arch"
+
 outputs:
-  shouldBuild:
-    description: "Whether to build image or not"
-    value: ${{ steps.ev.outputs.shouldBuild }}
-  branchName:
-    description: "Branch name"
-    value: ${{ steps.ev.outputs.branchName }}
-  branchNameContainer:
-    description: "Branch name (for containers)"
-    value: ${{ steps.ev.outputs.branchNameContainer }}
-  timestamp:
-    description: "Timestamp"
-    value: ${{ steps.ev.outputs.timestamp }}
   sha:
     description: "sha"
     value: ${{ steps.ev.outputs.sha }}
-  shortHash:
-    description: "shortHash"
-    value: ${{ steps.ev.outputs.shortHash }}
+
   version:
-    description: "version"
+    description: "Version"
     value: ${{ steps.ev.outputs.version }}
-  versionFamily:
-    description: "versionFamily"
-    value: ${{ steps.ev.outputs.versionFamily }}
+  prerelease:
+    description: "Prerelease"
+    value: ${{ steps.ev.outputs.prerelease }}
+
+  imageTags:
+    description: "Docker image tags"
+    value: ${{ steps.ev.outputs.imageTags }}
+  imageMainTag:
+    description: "Docker image main tag"
+    value: ${{ steps.ev.outputs.imageMainTag }}
 
 runs:
   using: "composite"
@@ -45,20 +47,50 @@ runs:
         branch_name = os.environ["GITHUB_REF"]
         if os.environ.get("GITHUB_HEAD_REF", "") != "":
             branch_name = os.environ["GITHUB_HEAD_REF"]
-
-        should_build = str(os.environ.get("DOCKER_USERNAME", "") != "").lower()
-        version = parser.get("bumpversion", "current_version")
-        version_family = ".".join(version.split(".")[:-1])
         safe_branch_name = branch_name.replace("refs/heads/", "").replace("/", "-")
 
-        sha = os.environ["GITHUB_SHA"] if not "${{ github.event.pull_request.head.sha }}" else "${{ github.event.pull_request.head.sha }}"
+        image_names = "${{ inputs.image-name }}".split(",")
+        image_arch = "${{ inputs.image-arch }}" or None
+
+        is_pull_request = bool("${{ github.event.pull_request.head.sha }}")
+        is_release = "dev" not in image_names[0]
+
+        sha = os.environ["GITHUB_SHA"] if not is_pull_request else "${{ github.event.pull_request.head.sha }}"
+
+        # 2042.1.0 or 2042.1.0-rc1
+        version = parser.get("bumpversion", "current_version")
+        # 2042.1
+        version_family = ".".join(version.split("-", 1)[0].split(".")[:-1])
+        prerelease = "-" in version
+
+        image_tags = []
+        if is_release:
+            for name in image_names:
+                image_tags += [
+                    f"{name}:{version}",
+                ]
+            if not prerelease:
+                image_tags += [
+                    f"{name}:latest",
+                    f"{name}:{version_family}",
+                ]
+        else:
+            suffix = ""
+            if image_arch and image_arch != "amd64":
+                suffix = f"-{image_arch}"
+            for name in image_names:
+                image_tags += [
+                    f"{name}:gh-{sha}{suffix}",  # Used for ArgoCD and PR comments
+                    f"{name}:gh-{safe_branch_name}{suffix}",  # For convenience
+                    f"{name}:gh-{safe_branch_name}-{int(time())}-{sha[:7]}{suffix}",  # Use by FluxCD
+                ]
+
+        image_main_tag = image_tags[0]
+        image_tags_rendered = ",".join(image_tags)
 
         with open(os.environ["GITHUB_OUTPUT"], "a+", encoding="utf-8") as _output:
-            print("branchName=%s" % branch_name, file=_output)
-            print("branchNameContainer=%s" % safe_branch_name, file=_output)
-            print("timestamp=%s" % int(time()), file=_output)
             print("sha=%s" % sha, file=_output)
-            print("shortHash=%s" % sha[:7], file=_output)
-            print("shouldBuild=%s" % should_build, file=_output)
             print("version=%s" % version, file=_output)
-            print("versionFamily=%s" % version_family, file=_output)
+            print("prerelease=%s" % prerelease, file=_output)
+            print("imageTags=%s" % image_tags_rendered, file=_output)
+            print("imageMainTag=%s" % image_main_tag, file=_output)

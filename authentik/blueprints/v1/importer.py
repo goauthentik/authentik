@@ -39,7 +39,8 @@ from authentik.core.models import (
     Source,
     UserSourceConnection,
 )
-from authentik.enterprise.models import LicenseKey, LicenseUsage
+from authentik.enterprise.license import LicenseKey
+from authentik.enterprise.models import LicenseUsage
 from authentik.enterprise.providers.rac.models import ConnectionToken
 from authentik.events.models import SystemTask
 from authentik.events.utils import cleanse_dict

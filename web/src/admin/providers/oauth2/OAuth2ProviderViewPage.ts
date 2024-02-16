@@ -3,7 +3,6 @@ import "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
 import renderDescriptionList from "@goauthentik/app/components/DescriptionList";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { convertToTitle } from "@goauthentik/common/utils";
 import "@goauthentik/components/events/ObjectChangelog";
 import MDProviderOAuth2 from "@goauthentik/docs/providers/oauth2/index.md";
 import { AKElement } from "@goauthentik/elements/Base";
@@ -31,6 +30,7 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
+    ClientTypeEnum,
     CoreApi,
     CoreUsersListRequest,
     OAuth2Provider,
@@ -40,6 +40,18 @@ import {
     RbacPermissionsAssignedByUsersListModelEnum,
     User,
 } from "@goauthentik/api";
+
+export function TypeToLabel(type?: ClientTypeEnum): string {
+    if (!type) return "";
+    switch (type) {
+        case ClientTypeEnum.Confidential:
+            return msg("Confidential");
+        case ClientTypeEnum.Public:
+            return msg("Public");
+        case ClientTypeEnum.UnknownDefaultOpenApi:
+            return msg("Unknown type");
+    }
+}
 
 @customElement("ak-provider-oauth2-view")
 export class OAuth2ProviderViewPage extends AKElement {
@@ -198,7 +210,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
-                                        ${convertToTitle(this.provider.clientType || "")}
+                                        ${TypeToLabel(this.provider.clientType)}
                                     </div>
                                 </dd>
                             </div>

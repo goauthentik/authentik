@@ -25,7 +25,7 @@ These fields specify if and which flows are linked on the form. The enrollment f
 ## Pretend user exists
 
 :::info
-Requires authentik 2024.1
+Requires authentik 2024.2
 :::
 
 When enabled, any user identifier will be accepted as valid (as long as they match the correct format, i.e. when [User fields](#user-fields) is set to only allow Emails, then the identifier still needs to be an Email). The stage will succeed and the flow will continue to the next stage. Stages like the [Password stage](../password/index.md) and [Email stage](../email/index.mdx) are aware of this "pretend" user and will behave the same as if the user would exist.
