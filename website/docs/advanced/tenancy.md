@@ -38,9 +38,11 @@ Learn more in our documentation about [Enterprise licenses](../enterprise/manage
 
 -   Upon creating another tenant, a new schema will be created by cloning the `template` schema. This special schema is like a tenant with no data created in it. Cloning an existing schema instead of creating a new one and running migrations on it is done for efficiency purposes.
 
--   Data stored in Redis (cache, tasks, locks) will usually get its keys prefixed by the `schema_name`.
+-   In a typical deployment, all data stored in Redis (such as tasks, locks, and cached objects) will have its keys prefixed by the `schema_name`.
 
--   Files are stored by-tenant, under a `schema_name` directory. For example, `/media/t_example`. The same is true regardless of the storage backend.
+-   Files are isolated on a per-tenant basis, with each tenant folder named according to the schema_name. For example, `/media/t_example`. The same is true regardless of the storage backend.
+
+-   Using an [embedded outpost](../outposts/embedded/embedded.mdx) with multi-tenancy is not currently suppported. Disable the embedded outpost with `AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true` configuration setting.
 
 ## Usage
 
@@ -48,11 +50,11 @@ To create one or more additional tenants (beyond the default tenant) use the fol
 
 ### 1. Configure authentik to allow multiple tenants
 
-First, enable with the `AUTHENTIK_TENANTS__ENABLED=true` [configuration setting](../installation/configuration.mdx).
+First, enable the multi-tenancy feature with the `AUTHENTIK_TENANTS__ENABLED=true` [configuration setting](../installation/configuration.mdx).
 
-Then set `AUTHENTIK_TENANTS__API_KEY` to a random string, which will be used to authenticate to the tenancy API. This key allows the creation of recovery keys for every tenant hosted by authentik, so be sure to _store it securely_. Be aware that creating a recovery key allows access to all data stored inside a tenant.
+Next, set `AUTHENTIK_TENANTS__API_KEY` to a random string. This string will be used to authenticate to the tenancy API. This key allows the creation of recovery keys for every tenant hosted by authentik, so be sure to _store it securely_. Be aware that creating a recovery key allows access to all data stored inside a tenant.
 
-You will need to disable the embedded outpost with `AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true` because it is not supported with tenants.
+Be sure to disable the embedded outpost with `AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true` because it is not supported with tenants.
 
 ### 2. Create a new tenant with authentik API endpoints
 
