@@ -16,19 +16,25 @@ This feature is available from 2024.2 and is not to be confused with [brands](..
 
 ## About tenants
 
-Starting with 2024.2, authentik allows an administrator or operator to create multiple tenants. This means that an operator can manage several different and distinct authentik installations, each with it's own Install ID and license(s).
+Starting with version 2024.2, authentik allows an administrator or operator to create multiple tenants. This means that an operator can manage several different and distinct authentik installations, each with it's own Install ID and license(s).
 
 The data for each tenant is stored in a separate PostgreSQL schema, providing full separation of user data. License data for the tenant is also stored in the schema.
 
 Note that creating and managing multiple tenants is handled using authentik APIs, not in the Admin interface. For typical authentik installations in which only a single tenant is needed, the default tenant is deployed and used, and does not need to be managed in the Admin interface.
 
-For each additional tenant (beyond the default one), one or more licenses is required; a license key cannot be used for more than one tenant. The relationships between tenant, installation (Install ID), and licesense are 1:1, so for each tenant, there is a unique Install ID, and a unique license key (or set of keys).
+For each additional tenant (beyond the default one), one or more licenses is required; a license key cannot be used for more than one tenant. The relationships between tenant and installation (Install ID) is a 1:1 relationship, so for each tenant, there is a unique Install ID.
+
+A single tenant and its installation can have multiple license keys. For example, a company might purchase one license for 50 users, and then later in the same year need to buy another license for 50 more users, due to company growth. Both licenses are associated to the one installation, the one tenant.
 
 ## Usage
 
-The multi-tenants feature must be enabled with the `AUTHENTIK_TENANTS__ENABLED=true`.
+The multi-tenants feature must be enabled with the `AUTHENTIK_TENANTS__ENABLED=true`[configuration setting](../installation/configuration.mdx).
 
-You also need to set `AUTHENTIK_TENANTS__API_KEY` to a random string, which will be used to authenticate to the tenancy API. This key will allow the creation of recovery keys for every tenant hosted by authentik, store it securely. You will also need to disable the embedded outpost with `AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true` as it is not supported with tenants.
+You also need to set `AUTHENTIK_TENANTS__API_KEY` to a random string, which will be used to authenticate to the tenancy API. This key allows the creation of recovery keys for every tenant hosted by authentik, so be sure to store it securely.
+
+:::info
+You will also need to disable the embedded outpost with `AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true` because it is not supported with tenants.
+:::
 
 Tenants are created using the API routes associated. Search for `tenant` in the [API browser](../../developer-docs/api/) for the available endpoints.
 
