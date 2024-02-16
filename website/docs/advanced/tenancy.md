@@ -20,7 +20,7 @@ Starting with version 2024.2, authentik allows an administrator or operator to c
 
 The data for each tenant is stored in a separate PostgreSQL schema, providing full separation of user data. License data for the tenant is also stored in the schema.
 
-Note that creating and managing multiple tenants is handled using authentik APIs, not in the Admin interface. For typical authentik installations in which only a single tenant is needed, the default tenant is automatically deployed by authentik, and does not need to be managed in the Admin interface.
+Note that creating and managing multiple tenants is handled using authentik APIs, not in the Admin interface. For typical authentik installations in which only a single tenant is needed, the default tenant is automatically created by authentik, and does not need to be managed in the Admin interface.
 
 ### Licensing
 
