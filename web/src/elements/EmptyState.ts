@@ -23,12 +23,17 @@ export class EmptyState extends AKElement {
     header = "";
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFEmptyState, PFTitle, css`
-            i.pf-c-empty-state__icon {
-                height: var(--pf-global--icon--FontSize--2xl);
-                line-height: var(--pf-global--icon--FontSize--2xl);
-            }
-        `];
+        return [
+            PFBase,
+            PFEmptyState,
+            PFTitle,
+            css`
+                i.pf-c-empty-state__icon {
+                    height: var(--pf-global--icon--FontSize--2xl);
+                    line-height: var(--pf-global--icon--FontSize--2xl);
+                }
+            `,
+        ];
     }
 
     render(): TemplateResult {

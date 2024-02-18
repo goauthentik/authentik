@@ -110,7 +110,6 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
                 >
                 </ak-empty-state>
                 <div class="pf-c-form__group pf-m-action">
-                    ${this.renderReturnToDevicePicker()}
                     ${this.errorMessage
                         ? html` <button
                               class="pf-c-button pf-m-primary pf-m-block"
@@ -121,6 +120,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
                               ${msg("Retry authentication")}
                           </button>`
                         : nothing}
+                    ${this.renderReturnToDevicePicker()}
                 </div>
             </form>
         </div>`;

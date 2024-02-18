@@ -87,10 +87,10 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
                 </ak-form-element>
 
                 <div class="pf-c-form__group pf-m-action">
-                    ${this.renderReturnToDevicePicker()}
                     <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                         ${msg("Continue")}
                     </button>
+                    ${this.renderReturnToDevicePicker()}
                 </div>
             </form>
         </div>`;
