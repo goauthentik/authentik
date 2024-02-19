@@ -2,13 +2,12 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageCode";
 import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageDuo";
 import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn";
-import { BaseStage, StageHost } from "@goauthentik/flow/stages/base";
+import { BaseStage, StageHost, SubmitOptions } from "@goauthentik/flow/stages/base";
 import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -59,7 +58,7 @@ export class AuthenticatorValidateStage
         // We don't use this.submit here, as we don't want to advance the flow.
         // We just want to notify the backend which challenge has been selected.
         new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolve({
-            flowSlug: this.host.flowSlug || "",
+            flowSlug: this.host?.flowSlug || "",
             query: window.location.search.substring(1),
             flowChallengeResponseRequest: {
                 // @ts-ignore
@@ -73,8 +72,11 @@ export class AuthenticatorValidateStage
         return this._selectedDeviceChallenge;
     }
 
-    submit(payload: AuthenticatorValidationChallengeResponseRequest): Promise<boolean> {
-        return this.host?.submit(payload) || Promise.resolve();
+    submit(
+        payload: AuthenticatorValidationChallengeResponseRequest,
+        options?: SubmitOptions,
+    ): Promise<boolean> {
+        return this.host?.submit(payload, options) || Promise.resolve();
     }
 
     static get styles(): CSSResult[] {
@@ -253,23 +255,7 @@ export class AuthenticatorValidateStage
                 ? this.renderDeviceChallenge()
                 : html`<div class="pf-c-login__main-body">
                           <form class="pf-c-form">
-                              <ak-form-static
-                                  class="pf-c-form__group"
-                                  userAvatar="${this.challenge.pendingUserAvatar}"
-                                  user=${this.challenge.pendingUser}
-                              >
-                                  <div slot="link">
-                                      <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                          >${msg("Not you?")}</a
-                                      >
-                                  </div>
-                              </ak-form-static>
-                              <input
-                                  name="username"
-                                  autocomplete="username"
-                                  type="hidden"
-                                  value="${this.challenge.pendingUser}"
-                              />
+                              ${this.renderUserInfo()}
                               ${this.selectedDeviceChallenge
                                   ? ""
                                   : html`<p>${msg("Select an authentication method.")}</p>`}
