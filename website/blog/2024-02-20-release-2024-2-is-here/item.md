@@ -41,7 +41,7 @@ Let’s start with some of the big features, the ones that kept us busy over the
 
 The Remote Access Control provider allows you to remotely connect to other machines over RDP, SSH and VNC through authentik. With the RAC provider, we kept implementation consistent with our other providers; you use the same policy engine and customization options that are possible with other providers and use the same user and admin interface.
 
-Typical use cases for remote access include being able to use authentik exactly as you would on your local machine, be that as a _user_ (I need to reset my password, or authenticate to use a specific application that is running on that remote machine), or as an Admin (I need to manage users, create new login flows, etc.).
+Typical use cases for remote access include being able to access a legacy application on a Windows VM, access an application that isn’t web-based, or give people access to a machine that does not have direct network access.
 
 ### Create new apps (and providers!) with an easy Wizard (Preview)
 
