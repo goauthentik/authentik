@@ -178,7 +178,7 @@ class Prompt(SerializerModel):
                 if dry_run:
                     raise wrapped from exc
 
-        if isinstance(raw_choices, (list, tuple, set)):
+        if isinstance(raw_choices, list | tuple | set):
             choices = raw_choices
         else:
             choices = [raw_choices]

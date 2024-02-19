@@ -194,7 +194,7 @@ def outpost_post_save(model_class: str, model_pk: Any):
         LOGGER.debug("Trigger reconcile for outpost", instance=instance)
         outpost_controller.delay(str(instance.pk))
 
-    if isinstance(instance, (OutpostModel, Outpost)):
+    if isinstance(instance, OutpostModel | Outpost):
         LOGGER.debug("triggering outpost update from outpostmodel/outpost", instance=instance)
         outpost_send_update(instance)
 

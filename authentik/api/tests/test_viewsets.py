@@ -26,6 +26,6 @@ def viewset_tester_factory(test_viewset: type[ModelViewSet]) -> Callable:
 
 
 for _, viewset, _ in router.registry:
-    if not issubclass(viewset, (ModelViewSet, ReadOnlyModelViewSet)):
+    if not issubclass(viewset, ModelViewSet | ReadOnlyModelViewSet):
         continue
     setattr(TestModelViewSets, f"test_viewset_{viewset.__name__}", viewset_tester_factory(viewset))

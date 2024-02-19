@@ -92,7 +92,7 @@ class AssertionProcessor:
                     attribute.attrib["FriendlyName"] = mapping.friendly_name
                 attribute.attrib["Name"] = mapping.saml_name
 
-                if not isinstance(value, (list, GeneratorType)):
+                if not isinstance(value, list | GeneratorType):
                     value = [value]
 
                 for value_item in value:

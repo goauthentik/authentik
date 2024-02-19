@@ -101,7 +101,7 @@ def excluded_models() -> list[type[Model]]:
 
 def is_model_allowed(model: type[Model]) -> bool:
     """Check if model is allowed"""
-    return model not in excluded_models() and issubclass(model, (SerializerModel, BaseMetaModel))
+    return model not in excluded_models() and issubclass(model, SerializerModel | BaseMetaModel)
 
 
 class DoRollback(SentryIgnoredException):

@@ -25,7 +25,7 @@ class SessionBindingBroken(SentryIgnoredException):
 
     def __init__(  # noqa: PLR0913
         self, reason: str, old_value: str, new_value: str, old_ip: str, new_ip: str
-        ) -> None:
+    ) -> None:
         self.reason = reason
         self.old_value = old_value
         self.new_value = new_value

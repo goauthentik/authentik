@@ -413,9 +413,7 @@ class Enumerate(YAMLTag, YAMLTagContext):
         "SEQ": (list, lambda a, b: [*a, b]),
         "MAP": (
             dict,
-            lambda a, b: always_merger.merge(
-                a, {b[0]: b[1]} if isinstance(b, (tuple, list)) else b
-            ),
+            lambda a, b: always_merger.merge(a, {b[0]: b[1]} if isinstance(b, tuple | list) else b),
         ),
     }
 

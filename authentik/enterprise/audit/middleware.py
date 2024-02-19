@@ -62,7 +62,7 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
                 field_value = value.name
 
             # If current field value is an expression, we are not evaluating it
-            if isinstance(field_value, (BaseExpression, Combinable)):
+            if isinstance(field_value, BaseExpression | Combinable):
                 continue
             field_value = field.to_python(field_value)
             data[field.name] = deepcopy(field_value)
