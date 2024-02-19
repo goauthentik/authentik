@@ -31,6 +31,9 @@ select = [
     # pylint
     "PL",
 ]
+ignore = [
+    "DJ001" # Avoid using `null=True` on string-based fields
+]
 
 
 [tool.coverage.run]

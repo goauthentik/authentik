@@ -1,6 +1,6 @@
 """prompt models"""
 
-from typing import Any, Type
+from typing import Any, Type  # noqa: UP035
 from urllib.parse import urlparse, urlunparse
 from uuid import uuid4
 
@@ -143,7 +143,7 @@ class Prompt(SerializerModel):
     initial_value_expression = models.BooleanField(default=False)
 
     @property
-    def serializer(self) -> Type[BaseSerializer]:
+    def serializer(self) -> Type[BaseSerializer]:  # noqa: UP006
         from authentik.stages.prompt.api import PromptSerializer
 
         return PromptSerializer
