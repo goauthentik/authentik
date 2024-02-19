@@ -3,7 +3,7 @@ title: Brands
 slug: /brands
 ---
 
-authentik support soft multi-tenancy. This means that you can configure several options depending on domain, but all the objects like applications, providers, etc, are still global. This can be handy to use the same authentik instance, but branded differently for different domains.
+You can configure several differently "branded" options depending on the associated domain, even though objects such as applications, providers, etc, are still global. This can be handy to use the same authentik instance, but branded differently for different domains.
 
 The main settings that brands influence are flows and branding.
 
@@ -19,4 +19,4 @@ This means that if you want to select a default flow based on policy, you can ju
 
 ## Branding
 
-The brand can configure the branding title (shown in website document title and several other places), and the sidebar/header logo.
+The brand can configure the branding title (shown in website document title and several other places), and the sidebar/header logo that appears in the upper left of the product interface.
