@@ -61,7 +61,7 @@ For the first release of the year, we purposefully included several changes that
 
 ### Tenants renamed to brands
 
-Perhaps the biggest change is that *tenants (*which were previously used to change branding configuration, default flows, and several other settings) have been renamed to *brands*. The term "Brands" more accurately reflect their usage; to configure branding, logos, colors, and overall login flow behavior. For more information, refer to the [Release Notes](https://goauthentik.io/docs/releases/2024.2) and to our documentation for _brands_.
+Perhaps the biggest change is that *tenants* (which were previously used to change branding configuration, default flows, and several other settings) have been renamed to *brands*. The term "Brands" more accurately reflect their usage; to configure branding, logos, colors, and overall login flow behavior. For more information, refer to the [Release Notes](https://goauthentik.io/docs/releases/2024.2) and to our documentation for _brands_.
 
 ### **Helm chart breaking changes**
 
@@ -71,30 +71,30 @@ The Helm Chart used for running authentik in Kubernetes has a number of breaking
 
 Release 2024.2 contains even more; the following additional enhancements will make running and operating authentik even more valuable, no matter your role.
 
--   **AWS S3 file storage**
+-   ### AWS S3 file storage
 
     Media files can now be stored on AWS S3. To learn more and get started with using S3, follow the [setup guide](https://goauthentik.io/docs/installation/storage-s3).
 
--   ***Pretend user exists* option for Identification stage**
+-   ### *Pretend user exists* option for Identification stage
 
     Previously the Identification stage would only continue if a user matching the user identifier exists. While this was the intended functionality, this release adds an option to continue to the next stage even if no matching user was found. "Pretend" users cannot authenticate nor receive emails, and don't exist in the database.
 
--   **Flows can now be restricted to outposts**
+-   ### Flows can now be restricted to outposts
 
-    You can now restrict a flow to be used only by an outpost using a flow’s **Require Outpost** setting. This capability is mainly used for LDAP flows.
+    You can now configure a flow to restrict its use, using the flow’s **Require Outpost** setting. This capability is mainly used for LDAP flows.
 
--   **Admin can see all of a user’s apps**
+-   ### Admin can see all of a user’s apps
 
-    A new tab on the **User** details page now displays all applications to which th euser has access. From the list of applications, the admin can drill down into a specific app and see details about the app, including a changelog on any app modifications, any bindings, and the permissions on the app.
+    A new tab on the **User** details page now displays all applications to which the user has access. From the list of applications, the admin can drill down into a specific app and see details about the app, including a changelog on app modifications, any bindings, and the permissions on the app.
 
--   **View Event volume with a new graph**
+-   ### View Event volume with a new graph
 
-    Another UX imporovement that we are really pleased with is the new graph showing the volume of events over the past 7 days. With a quick glance, admins can spot anomoloies in event volume, and then dig deeper.
+    Another UX improvement that we are really pleased with is the new graph showing the volume of events over the past 7 days. With a quick glance at the **Event Log** page, admins can spot anomalies in event volume and then dig deeper.
 
--   **Keep a closer eye on your System Tasks**
+-   ### Keep a closer eye on your System Tasks
 
     You can now search through system tasks, and view task start time and duration calculation as well as the status (Successful!).
 
     ## Happy upgrading and authenticating!
 
-    There are even more capabilities and enhancements beyond what we covered here in this post, so be sure to read the [Relase Notes](https://goauthentik.io/docs/releases/2024.2) for version 2024.2, and as always, let us know your thoughts.
+    There are even more capabilities and enhancements beyond what we covered here in this post, so be sure to read the [Release Notes](https://goauthentik.io/docs/releases/2024.2) for version 2024.2, and as always, let us know your thoughts.
