@@ -9,7 +9,6 @@ authors:
       image_url: https://github.com/BeryJu.png
 tags:
     - authentik
-    - access management
     - open source
     - new features
     - remote access
@@ -60,7 +59,7 @@ For the first release of the year, we purposefully included several changes that
 
 ### Tenants renamed to brands
 
-Perhaps the biggest change is that *tenants (*which were previously used to change branding configuration, default flows, and several other settings) have been renamed to *brands*. The term "Brands" more accurately reflect their usage; to configure branding, logos, colors, and overall login flow behavior. For more information, refer to the [Release Notes](https://goauthentik.io/docs/releases/2024.2) and to the [documentation for *brands*](../../docs/core/brands.md).
+Perhaps the biggest change is that *tenants (*which were previously used to change branding configuration, default flows, and several other settings) have been renamed to *brands*. The term "Brands" more accurately reflect their usage; to configure branding, logos, colors, and overall login flow behavior. For more information, refer to the [Release Notes](https://goauthentik.io/docs/releases/2024.2) and to the [documentation for _brands_](../../docs/core/brands.md).
 
 ### **Helm chart breaking changes**
 
