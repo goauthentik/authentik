@@ -57,7 +57,7 @@ Sessions for any users can now be bound to a specific geolocation (Continent, Co
 
 ## Sure, there are some breaking changes
 
-For the first release of the year, we purposefully included several changes that were required, some of which might require manual changes to your system configurations. Be sure to refer to the [Release Notes](https://goauthentik.io/docs/releases/2024.2) for instructions about any actions you might need to take. In general, we strive to reduce the number of breaking changes, and to always be transparent about the actions needed and the reasons for the changes. Please be sure to reach out to us via email to hello@goauthentik.io, or in [GitHub](https://github.com/goauthentik/authentik) or [Discord](https://discord.com/channels/809154715984199690/809154716507963434) with any questions and feedback!
+For the first release of the year, we purposefully included several changes that are required for future product growth, some of which might require manual changes to your system configurations. Be sure to refer to the [Release Notes](https://goauthentik.io/docs/releases/2024.2) for instructions about any actions you might need to take. In general, we strive to reduce the number of breaking changes, and to always be transparent about the actions needed and the reasons for the changes. Please be sure to reach out to us via email to hello@goauthentik.io, or in [GitHub](https://github.com/goauthentik/authentik) or [Discord](https://discord.com/channels/809154715984199690/809154716507963434) with any questions and feedback!
 
 ### Tenants renamed to brands
 
