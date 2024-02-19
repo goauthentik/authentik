@@ -191,10 +191,11 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
             user_id=device.duo_user_id,
             ipaddr=ClientIPMiddleware.get_client_ip(stage_view.request),
             type=__(
-                "%(brand_name)s Login request"
-                % {
-                    "brand_name": stage_view.request.brand.branding_title,
-                }
+                "{brand_name} Login request".format_map(
+                    {
+                        "brand_name": stage_view.request.brand.branding_title,
+                    }
+                )
             ),
             display_username=user.username,
             device="auto",

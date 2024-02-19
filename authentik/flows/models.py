@@ -113,7 +113,7 @@ def in_memory_stage(view: type["StageView"], **kwargs) -> Stage:
     # we set the view as a separate property and reference a generic function
     # that returns that member
     setattr(stage, "__in_memory_type", view)
-    stage.name = _("Dynamic In-memory stage: %(doc)s" % {"doc": view.__doc__})
+    stage.name = _("Dynamic In-memory stage: {doc}".format_map({"doc": view.__doc__}))
     stage._meta.verbose_name = class_to_path(view)
     for key, value in kwargs.items():
         setattr(stage, key, value)

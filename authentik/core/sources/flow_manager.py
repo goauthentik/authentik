@@ -90,7 +90,7 @@ class SourceFlowManager:
         self._logger = get_logger().bind(source=source, identifier=identifier)
         self.policy_context = {}
 
-    def get_action(self, **kwargs) -> tuple[Action, UserSourceConnection | None]:
+    def get_action(self, **kwargs) -> tuple[Action, UserSourceConnection | None]:  # noqa: PLR0911
         """decide which action should be taken"""
         new_connection = self.connection_type(source=self.source, identifier=self.identifier)
         # When request is authenticated, always link
@@ -187,8 +187,10 @@ class SourceFlowManager:
         # Default case, assume deny
         error = Exception(
             _(
-                "Request to authenticate with %(source)s has been denied. Please authenticate "
-                "with the source you've previously signed up with." % {"source": self.source.name}
+                "Request to authenticate with {source} has been denied. Please authenticate "
+                "with the source you've previously signed up with.".format_map(
+                    {"source": self.source.name}
+                )
             ),
         )
         return self.error_handler(error)
@@ -269,7 +271,9 @@ class SourceFlowManager:
                 in_memory_stage(
                     MessageStage,
                     message=_(
-                        "Successfully authenticated with %(source)s!" % {"source": self.source.name}
+                        "Successfully authenticated with {source}!".format_map(
+                            {"source": self.source.name}
+                        )
                     ),
                 )
             ],
@@ -293,7 +297,7 @@ class SourceFlowManager:
         ).from_http(self.request)
         messages.success(
             self.request,
-            _("Successfully linked %(source)s!" % {"source": self.source.name}),
+            _("Successfully linked {source}!".format_map({"source": self.source.name})),
         )
         return redirect(
             reverse(
@@ -321,7 +325,9 @@ class SourceFlowManager:
                 in_memory_stage(
                     MessageStage,
                     message=_(
-                        "Successfully authenticated with %(source)s!" % {"source": self.source.name}
+                        "Successfully authenticated with {source}!".format_map(
+                            {"source": self.source.name}
+                        )
                     ),
                 )
             ],

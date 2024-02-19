@@ -28,4 +28,4 @@ class RequiredTogetherValidator:
             raise ValidationError(message, code="required")
 
     def __repr__(self):
-        return "<%s(fields=%s)>" % (self.__class__.__name__, smart_repr(self.fields))
+        return f"<{self.__class__.__name__}(fields={smart_repr(self.fields)})>"

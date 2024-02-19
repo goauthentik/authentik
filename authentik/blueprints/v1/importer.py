@@ -168,7 +168,7 @@ class Importer:
         for key, value in attrs.items():
             try:
                 if isinstance(value, dict):
-                    for idx, _inner_key in enumerate(value):
+                    for _, _inner_key in enumerate(value):
                         value[_inner_key] = updater(value[_inner_key])
                 elif isinstance(value, list):
                     for idx, _inner_value in enumerate(value):

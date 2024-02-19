@@ -97,10 +97,11 @@ class OAuthCallback(OAuthClientMixin, View):
         messages.error(
             self.request,
             _(
-                "Authentication failed: %(reason)s"
-                % {
-                    "reason": reason,
-                }
+                "Authentication failed: {reason}".format_map(
+                    {
+                        "reason": reason,
+                    }
+                )
             ),
         )
         return redirect(self.get_error_redirect(self.source, reason))

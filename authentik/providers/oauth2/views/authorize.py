@@ -485,7 +485,7 @@ class OAuthFulfillmentStage(StageView):
                     "component": "ak-stage-autosubmit",
                     "title": self.executor.plan.context.get(
                         PLAN_CONTEXT_TITLE,
-                        _("Redirecting to %(app)s..." % {"app": self.application.name}),
+                        _("Redirecting to {app}...".format_map({"app": self.application.name})),
                     ),
                     "url": self.params.redirect_uri,
                     "attrs": query_params,

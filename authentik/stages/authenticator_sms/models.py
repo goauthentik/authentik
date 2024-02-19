@@ -78,7 +78,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
 
     def get_message(self, token: str) -> str:
         """Get SMS message"""
-        return _("Use this code to authenticate in authentik: %(token)s" % {"token": token})
+        return _("Use this code to authenticate in authentik: {token}".format_map({"token": token}))
 
     def send_twilio(self, token: str, device: "SMSDevice"):
         """send sms via twilio provider"""
