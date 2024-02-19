@@ -4,6 +4,7 @@ GitLab OAuth Views
 See https://docs.gitlab.com/ee/integration/oauth_provider.html
 and https://docs.gitlab.com/ee/integration/openid_connect_provider.html
 """
+
 from typing import Any
 
 from authentik.sources.oauth.models import OAuthSource

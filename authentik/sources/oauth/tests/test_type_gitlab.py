@@ -1,4 +1,5 @@
 """GitLab Type tests"""
+
 from django.test import TestCase
 
 from authentik.sources.oauth.models import OAuthSource
