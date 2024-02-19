@@ -1,6 +1,6 @@
 ---
 title: "Remote Access, Audit Log, and a new App Wizard: release 2024.2 is here!"
-description: "The latest release of authentic, by Authentic Security, Inc., includes major new features such as remote access and audit logging, plus many DX and UX enhancements."
+description: "The latest release of authentik, by Authentik Security, Inc., includes major new features such as remote access and audit logging, plus many DX and UX enhancements."
 slug: 2024-02-20-release-2024-2-is-here
 authors:
     - name: Jens Langhammer
