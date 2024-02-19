@@ -5050,23 +5050,6 @@ Bindings to groups/users are checked against the user of the event.</source>
         <source>Return to device picker</source>
         <target>Regresar al selector de dispositivos</target>
       </trans-unit>
-      <trans-unit id="sbcf8604929b6a27a">
-        <source>Sending Duo push notification</source>
-      </trans-unit>
-      <trans-unit id="s3b68883dda2682ed">
-        <source>Assertions is empty</source>
-        <target>Las afirmaciones están vacías</target>
-      </trans-unit>
-      <trans-unit id="sbbb7318812d64e51">
-        <source>Error when creating credential: <x id="0" equiv-text="${err}"/></source>
-        <target>Error al crear la credencial:
-        <x id="0" equiv-text="${err}"/></target>
-      </trans-unit>
-      <trans-unit id="sfe199b2564b66054">
-        <source>Error when validating assertion on server: <x id="0" equiv-text="${err}"/></source>
-        <target>Error al validar la afirmación en el servidor:
-        <x id="0" equiv-text="${err}"/></target>
-      </trans-unit>
       <trans-unit id="se409d01b52c4e12f">
         <source>Retry authentication</source>
         <target>Reintentar la autenticación</target>
@@ -6342,6 +6325,18 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sac428446e9e41f54">
   <source>RAC Connections</source>
+</trans-unit>
+<trans-unit id="s39002897db60bb28">
+  <source>Sending Duo push notification...</source>
+</trans-unit>
+<trans-unit id="sd2b8c1caa0340ed6">
+  <source>Failed to authenticate</source>
+</trans-unit>
+<trans-unit id="s5852d37b37d81380">
+  <source>Authentication failed.</source>
+</trans-unit>
+<trans-unit id="sffef1a8596bc58bb">
+  <source>Authenticating...</source>
 </trans-unit>
     </body>
   </file>
