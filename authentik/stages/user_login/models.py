@@ -71,7 +71,7 @@ class UserLoginStage(Stage):
         return UserLoginStageSerializer
 
     @property
-    def type(self) -> type[View]:
+    def view(self) -> type[View]:
         from authentik.stages.user_login.stage import UserLoginStageView
 
         return UserLoginStageView

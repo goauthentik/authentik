@@ -38,7 +38,7 @@ class AuthenticatorTOTPStage(ConfigurableStage, FriendlyNamedStage, Stage):
         return AuthenticatorTOTPStageSerializer
 
     @property
-    def type(self) -> type[View]:
+    def view(self) -> type[View]:
         from authentik.stages.authenticator_totp.stage import AuthenticatorTOTPStageView
 
         return AuthenticatorTOTPStageView

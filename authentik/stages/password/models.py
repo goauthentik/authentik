@@ -51,7 +51,7 @@ class PasswordStage(ConfigurableStage, Stage):
         return PasswordStageSerializer
 
     @property
-    def type(self) -> type[View]:
+    def view(self) -> type[View]:
         from authentik.stages.password.stage import PasswordStageView
 
         return PasswordStageView

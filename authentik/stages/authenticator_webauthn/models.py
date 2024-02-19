@@ -87,7 +87,7 @@ class AuthenticateWebAuthnStage(ConfigurableStage, FriendlyNamedStage, Stage):
         return AuthenticateWebAuthnStageSerializer
 
     @property
-    def type(self) -> type[View]:
+    def view(self) -> type[View]:
         from authentik.stages.authenticator_webauthn.stage import AuthenticatorWebAuthnStageView
 
         return AuthenticatorWebAuthnStageView

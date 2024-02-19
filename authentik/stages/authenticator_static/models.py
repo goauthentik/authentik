@@ -28,7 +28,7 @@ class AuthenticatorStaticStage(ConfigurableStage, FriendlyNamedStage, Stage):
         return AuthenticatorStaticStageSerializer
 
     @property
-    def type(self) -> type[View]:
+    def view(self) -> type[View]:
         from authentik.stages.authenticator_static.stage import AuthenticatorStaticStageView
 
         return AuthenticatorStaticStageView

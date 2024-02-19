@@ -156,7 +156,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
         return AuthenticatorSMSStageSerializer
 
     @property
-    def type(self) -> type[View]:
+    def view(self) -> type[View]:
         from authentik.stages.authenticator_sms.stage import AuthenticatorSMSStageView
 
         return AuthenticatorSMSStageView

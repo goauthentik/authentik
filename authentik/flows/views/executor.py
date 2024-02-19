@@ -217,7 +217,7 @@ class FlowExecutorView(APIView):
                 flow_slug=self.flow.slug,
             )
             try:
-                stage_cls = self.current_stage.type
+                stage_cls = self.current_stage.view
             except NotImplementedError as exc:
                 self._logger.debug("Error getting stage type", exc=exc)
                 return self.stage_invalid()
@@ -531,7 +531,7 @@ class ToDefaultFlow(View):
 
 def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpResponse:
     """Convert normal HttpResponse into JSON Response"""
-    if isinstance(source, HttpResponseRedirect) or source.status_code == 302:
+    if isinstance(source, HttpResponseRedirect) or source.status_code == HttpResponseRedirect.status_code:
         redirect_url = source["Location"]
         # Redirects to the same URL usually indicate an Error within a form
         if request.get_full_path() == redirect_url:

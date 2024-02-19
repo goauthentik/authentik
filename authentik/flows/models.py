@@ -83,7 +83,7 @@ class Stage(SerializerModel):
     objects = InheritanceManager()
 
     @property
-    def type(self) -> type["StageView"]:
+    def view(self) -> type["StageView"]:
         """Return StageView class that implements logic for this stage"""
         # This is a bit of a workaround, since we can't set class methods with setattr
         if hasattr(self, "__in_memory_type"):
