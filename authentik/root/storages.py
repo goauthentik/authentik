@@ -76,7 +76,7 @@ class S3Storage(BaseS3Storage):
 
             return safe_join(self.location, connection.schema_name, name)
         except ValueError:
-            raise SuspiciousOperation("Attempted access to '%s' denied." % name)
+            raise SuspiciousOperation("Attempted access to '%s' denied." % name) from None
 
     # This is a fix for https://github.com/jschneier/django-storages/pull/839
     def url(self, name, parameters=None, expire=None, http_method=None):

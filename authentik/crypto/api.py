@@ -120,7 +120,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
             str(load_pem_x509_certificate(value.encode("utf-8"), default_backend()))
         except ValueError as exc:
             LOGGER.warning("Failed to load certificate", exc=exc)
-            raise ValidationError("Unable to load certificate.")
+            raise ValidationError("Unable to load certificate.") from None
         return value
 
     def validate_key_data(self, value: str) -> str:
@@ -139,7 +139,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
                 )
             except (ValueError, TypeError) as exc:
                 LOGGER.warning("Failed to load private key", exc=exc)
-                raise ValidationError("Unable to load private key (possibly encrypted?).")
+                raise ValidationError("Unable to load private key (possibly encrypted?).") from None
         return value
 
     class Meta:

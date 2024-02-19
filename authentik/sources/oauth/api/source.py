@@ -70,7 +70,7 @@ class OAuthSourceSerializer(SourceSerializer):
                 well_known_config.raise_for_status()
             except RequestException as exc:
                 text = exc.response.text if exc.response else str(exc)
-                raise ValidationError({"oidc_well_known_url": text})
+                raise ValidationError({"oidc_well_known_url": text}) from None
             config = well_known_config.json()
             if "issuer" not in config:
                 raise ValidationError({"oidc_well_known_url": "Invalid well-known configuration"})
@@ -96,7 +96,7 @@ class OAuthSourceSerializer(SourceSerializer):
                 jwks_config.raise_for_status()
             except RequestException as exc:
                 text = exc.response.text if exc.response else str(exc)
-                raise ValidationError({"oidc_jwks_url": text})
+                raise ValidationError({"oidc_jwks_url": text}) from None
             config = jwks_config.json()
             attrs["oidc_jwks"] = config
 

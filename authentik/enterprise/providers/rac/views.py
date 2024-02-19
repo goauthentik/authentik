@@ -47,7 +47,7 @@ class RACStartView(EnterprisePolicyAccessView):
                 },
             )
         except FlowNonApplicableException:
-            raise Http404
+            raise Http404 from None
         plan.insert_stage(
             in_memory_stage(
                 RACFinalStage,

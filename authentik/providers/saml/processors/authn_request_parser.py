@@ -87,7 +87,7 @@ class AuthNRequestParser:
         try:
             decoded_xml = b64decode(saml_request.encode())
         except UnicodeDecodeError:
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST)
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST) from None
 
         verifier = self.provider.verification_kp
         if not verifier:
@@ -128,7 +128,7 @@ class AuthNRequestParser:
         try:
             decoded_xml = decode_base64_and_inflate(saml_request)
         except UnicodeDecodeError:
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST)
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST) from None
 
         verifier = self.provider.verification_kp
         if not verifier:

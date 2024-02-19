@@ -113,7 +113,7 @@ class GroupFilter(FilterSet):
         try:
             value = loads(value)
         except ValueError:
-            raise ValidationError(detail="filter: failed to parse JSON")
+            raise ValidationError(detail="filter: failed to parse JSON") from None
         if not isinstance(value, dict):
             raise ValidationError(detail="filter: value must be key:value mapping")
         qs = {}

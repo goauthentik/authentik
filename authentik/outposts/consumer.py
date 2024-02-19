@@ -71,7 +71,7 @@ class OutpostConsumer(JsonWebsocketConsumer):
             self.accept()
         except RuntimeError as exc:
             self.logger.warning("runtime error during accept", exc=exc)
-            raise DenyConnection()
+            raise DenyConnection() from None
         self.outpost = outpost
         query = QueryDict(self.scope["query_string"].decode())
         self.instance_uid = query.get("instance_uuid", self.channel_name)

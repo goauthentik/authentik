@@ -47,7 +47,7 @@ class LogoutRequestParser:
         try:
             decoded_xml = b64decode(saml_request.encode())
         except UnicodeDecodeError:
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST)
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST) from None
         return self._parse_xml(decoded_xml, relay_state)
 
     def parse_detached(
@@ -59,6 +59,6 @@ class LogoutRequestParser:
         try:
             decoded_xml = decode_base64_and_inflate(saml_request)
         except UnicodeDecodeError:
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST)
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST) from None
 
         return self._parse_xml(decoded_xml, relay_state)

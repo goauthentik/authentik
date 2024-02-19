@@ -598,7 +598,7 @@ class ConfigureFlowInitView(LoginRequiredMixin, View):
             )
         except FlowNonApplicableException:
             LOGGER.warning("Flow not applicable to user")
-            raise Http404
+            raise Http404 from None
         request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(
             "authentik_core:if-flow",

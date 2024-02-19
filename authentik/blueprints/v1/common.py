@@ -93,7 +93,7 @@ class BlueprintEntry:
             attrs=all_attrs,
         )
 
-    def _get_tag_context(
+    def get_tag_context(
         self,
         depth: int = 0,
         context_tag_type: type["YAMLTagContext"] | tuple["YAMLTagContext", ...] | None = None,
@@ -109,8 +109,8 @@ class BlueprintEntry:
 
         try:
             return contexts[-(depth + 1)]
-        except IndexError:
-            raise ValueError(f"invalid depth: {depth}. Max depth: {len(contexts) - 1}")
+        except IndexError as exc:
+            raise ValueError(f"invalid depth: {depth}. Max depth: {len(contexts) - 1}") from exc
 
     def tag_resolver(self, value: Any, blueprint: "Blueprint") -> Any:
         """Check if we have any special tags that need handling"""
@@ -282,7 +282,7 @@ class Format(YAMLTag):
         try:
             return self.format_string % tuple(args)
         except TypeError as exc:
-            raise EntryInvalidError.from_entry(exc, entry)
+            raise EntryInvalidError.from_entry(exc, entry) from exc
 
 
 class Find(YAMLTag):
@@ -367,7 +367,7 @@ class Condition(YAMLTag):
             comparator = self._COMPARATORS[self.mode.upper()]
             return comparator(tuple(bool(x) for x in args))
         except (TypeError, KeyError) as exc:
-            raise EntryInvalidError.from_entry(exc, entry)
+            raise EntryInvalidError.from_entry(exc, entry) from exc
 
 
 class If(YAMLTag):
@@ -399,7 +399,7 @@ class If(YAMLTag):
                 blueprint,
             )
         except TypeError as exc:
-            raise EntryInvalidError.from_entry(exc, entry)
+            raise EntryInvalidError.from_entry(exc, entry) from exc
 
 
 class Enumerate(YAMLTag, YAMLTagContext):
@@ -455,7 +455,7 @@ class Enumerate(YAMLTag, YAMLTagContext):
         try:
             output_class, add_fn = self._OUTPUT_BODIES[self.output_body.upper()]
         except KeyError as exc:
-            raise EntryInvalidError.from_entry(exc, entry)
+            raise EntryInvalidError.from_entry(exc, entry) from exc
 
         result = output_class()
 
@@ -483,13 +483,13 @@ class EnumeratedItem(YAMLTag):
 
     _SUPPORTED_CONTEXT_TAGS = (Enumerate,)
 
-    def __init__(self, loader: "BlueprintLoader", node: ScalarNode) -> None:
+    def __init__(self, _loader: "BlueprintLoader", node: ScalarNode) -> None:
         super().__init__()
         self.depth = int(node.value)
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         try:
-            context_tag: Enumerate = entry._get_tag_context(
+            context_tag: Enumerate = entry.get_tag_context(
                 depth=self.depth,
                 context_tag_type=EnumeratedItem._SUPPORTED_CONTEXT_TAGS,
             )
@@ -499,9 +499,11 @@ class EnumeratedItem(YAMLTag):
                     f"{self.__class__.__name__} tags are only usable "
                     f"inside an {Enumerate.__name__} tag",
                     entry,
-                )
+                ) from exc
 
-            raise EntryInvalidError.from_entry(f"{self.__class__.__name__} tag: {exc}", entry)
+            raise EntryInvalidError.from_entry(
+                f"{self.__class__.__name__} tag: {exc}", entry
+            ) from exc
 
         return context_tag.get_context(entry, blueprint)
 
@@ -514,8 +516,8 @@ class Index(EnumeratedItem):
 
         try:
             return context[0]
-        except IndexError:  # pragma: no cover
-            raise EntryInvalidError.from_entry(f"Empty/invalid context: {context}", entry)
+        except IndexError as exc:  # pragma: no cover
+            raise EntryInvalidError.from_entry(f"Empty/invalid context: {context}", entry) from exc
 
 
 class Value(EnumeratedItem):
@@ -526,8 +528,8 @@ class Value(EnumeratedItem):
 
         try:
             return context[1]
-        except IndexError:  # pragma: no cover
-            raise EntryInvalidError.from_entry(f"Empty/invalid context: {context}", entry)
+        except IndexError as exc:  # pragma: no cover
+            raise EntryInvalidError.from_entry(f"Empty/invalid context: {context}", entry) from exc
 
 
 class BlueprintDumper(SafeDumper):

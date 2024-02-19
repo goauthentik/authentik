@@ -219,7 +219,7 @@ class OAuthAuthorizationParams:
                     redirect_uri_given=self.redirect_uri,
                     redirect_uri_expected=allowed_redirect_urls,
                 )
-                raise RedirectUriError(self.redirect_uri, allowed_redirect_urls)
+                raise RedirectUriError(self.redirect_uri, allowed_redirect_urls) from None
         # Check against forbidden schemes
         if urlparse(self.redirect_uri).scheme in FORBIDDEN_URI_SCHEMES:
             raise RedirectUriError(self.redirect_uri, allowed_redirect_urls)
@@ -346,14 +346,14 @@ class AuthorizationFlowInitView(PolicyAccessView):
             )
         except AuthorizeError as error:
             LOGGER.warning(error.description, redirect_uri=error.redirect_uri)
-            raise RequestValidationError(error.get_response(self.request))
+            raise RequestValidationError(error.get_response(self.request)) from None
         except OAuth2Error as error:
             LOGGER.warning(error.description)
             raise RequestValidationError(
                 bad_request_message(self.request, error.description, title=error.error)
-            )
+            ) from None
         except OAuth2Provider.DoesNotExist:
-            raise Http404
+            raise Http404 from None
         if PROMPT_NONE in self.params.prompt and not self.request.user.is_authenticated:
             # When "prompt" is set to "none" but the user is not logged in, show an error message
             error = AuthorizeError(
@@ -594,7 +594,7 @@ class OAuthFulfillmentStage(StageView):
                 "server_error",
                 self.params.grant_type,
                 self.params.state,
-            )
+            ) from None
 
     def create_implicit_response(self, code: AuthorizationCode | None) -> dict:
         """Create implicit response's URL Fragment dictionary"""

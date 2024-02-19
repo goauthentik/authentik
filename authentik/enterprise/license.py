@@ -88,7 +88,7 @@ class LicenseKey:
         try:
             headers = get_unverified_header(jwt)
         except PyJWTError:
-            raise ValidationError("Unable to verify license")
+            raise ValidationError("Unable to verify license") from None
         x5c: list[str] = headers.get("x5c", [])
         if len(x5c) < 1:
             raise ValidationError("Unable to verify license")
@@ -98,7 +98,7 @@ class LicenseKey:
             our_cert.verify_directly_issued_by(intermediate)
             intermediate.verify_directly_issued_by(get_licensing_key())
         except (InvalidSignature, TypeError, ValueError, Error):
-            raise ValidationError("Unable to verify license")
+            raise ValidationError("Unable to verify license") from None
         try:
             body = from_dict(
                 LicenseKey,
@@ -110,7 +110,7 @@ class LicenseKey:
                 ),
             )
         except PyJWTError:
-            raise ValidationError("Unable to verify license")
+            raise ValidationError("Unable to verify license") from None
         return body
 
     @staticmethod

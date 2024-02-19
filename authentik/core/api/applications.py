@@ -168,7 +168,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
             try:
                 for_user = User.objects.filter(pk=request.query_params.get("for_user")).first()
             except ValueError:
-                raise ValidationError({"for_user": "for_user must be numerical"})
+                raise ValidationError({"for_user": "for_user must be numerical"}) from None
             if not for_user:
                 raise ValidationError({"for_user": "User not found"})
         engine = PolicyEngine(application, for_user, request)

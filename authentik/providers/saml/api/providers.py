@@ -216,7 +216,7 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         try:
             provider = get_object_or_404(SAMLProvider, pk=pk)
         except ValueError:
-            raise Http404
+            raise Http404 from None
         try:
             proc = MetadataProcessor(provider, request)
             proc.force_binding = request.query_params.get("force_binding", None)
@@ -258,7 +258,7 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         try:
             fromstring(file.read())
         except ParseError:
-            raise ValidationError(_("Invalid XML Syntax"))
+            raise ValidationError(_("Invalid XML Syntax")) from None
         file.seek(0)
         try:
             metadata = ServiceProviderMetadataParser().parse(file.read().decode())
@@ -269,7 +269,7 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
             LOGGER.warning(str(exc))
             raise ValidationError(
                 _("Failed to import Metadata: {messages}".format_map({"message": str(exc)})),
-            )
+            ) from None
         return Response(status=204)
 
     @permission_required(
@@ -303,7 +303,7 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
                 if not for_user:
                     raise ValidationError({"for_user": "User not found"})
             except ValueError:
-                raise ValidationError({"for_user": "input must be numerical"})
+                raise ValidationError({"for_user": "input must be numerical"}) from None
 
         new_request = copy(request._request)
         new_request.user = for_user

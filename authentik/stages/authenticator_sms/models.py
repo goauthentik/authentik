@@ -92,7 +92,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
             LOGGER.debug("Sent SMS", to=device, message=message.sid)
         except TwilioRestException as exc:
             LOGGER.warning("Error sending token by Twilio SMS", exc=exc, msg=exc.msg)
-            raise ValidationError(exc.msg)
+            raise ValidationError(exc.msg) from None
 
     def send_generic(self, token: str, device: "SMSDevice"):
         """Send SMS via outside API"""

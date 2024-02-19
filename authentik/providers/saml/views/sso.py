@@ -72,7 +72,7 @@ class SAMLSSOView(PolicyAccessView):
                 },
             )
         except FlowNonApplicableException:
-            raise Http404
+            raise Http404 from None
         plan.append_stage(in_memory_stage(SAMLFlowFinalView))
         request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(

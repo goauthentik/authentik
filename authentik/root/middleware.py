@@ -108,7 +108,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
                             "The request's session was deleted before the "
                             "request completed. The user may have logged "
                             "out in a concurrent request, for example."
-                        )
+                        ) from None
                     payload = {
                         "sid": request.session.session_key,
                         "iss": "authentik",

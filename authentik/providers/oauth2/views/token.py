@@ -209,7 +209,7 @@ class TokenParams:
                     message="Invalid redirect_uri configured",
                     provider=self.provider,
                 ).from_http(request)
-                raise TokenError("invalid_client")
+                raise TokenError("invalid_client") from None
 
         # Check against forbidden schemes
         if urlparse(self.redirect_uri).scheme in FORBIDDEN_URI_SCHEMES:
@@ -366,7 +366,7 @@ class TokenParams:
             )
         except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
             LOGGER.warning("failed to parse JWT for kid lookup", exc=exc)
-            raise TokenError("invalid_grant")
+            raise TokenError("invalid_grant") from None
         expected_kid = decode_unvalidated["header"]["kid"]
         for source in self.provider.jwks_sources.filter(
             oidc_jwks__keys__contains=[{"kid": expected_kid}]

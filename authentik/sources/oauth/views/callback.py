@@ -31,7 +31,7 @@ class OAuthCallback(OAuthClientMixin, View):
         try:
             self.source = OAuthSource.objects.get(slug=slug)
         except OAuthSource.DoesNotExist:
-            raise Http404(f"Unknown OAuth source '{slug}'.")
+            raise Http404(f"Unknown OAuth source '{slug}'.") from None
 
         if not self.source.enabled:
             raise Http404(f"Source {slug} is not enabled.")
