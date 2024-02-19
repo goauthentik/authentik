@@ -1,7 +1,6 @@
 """Flows Diagram API"""
 
 from dataclasses import dataclass, field
-from typing import Optional
 
 from django.utils.translation import gettext as _
 from guardian.shortcuts import get_objects_for_user
@@ -18,8 +17,8 @@ class DiagramElement:
 
     identifier: str
     description: str
-    action: Optional[str] = None
-    source: Optional[list["DiagramElement"]] = None
+    action: str | None = None
+    source: list["DiagramElement"] | None = None
 
     style: list[str] = field(default_factory=lambda: ["[", "]"])
 

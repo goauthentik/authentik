@@ -1,7 +1,8 @@
 """authentik admin Middleware to impersonate users"""
 
+from collections.abc import Callable
 from contextvars import ContextVar
-from typing import Callable, Optional
+from typing import Optional
 from uuid import uuid4
 
 from django.http import HttpRequest, HttpResponse
@@ -55,7 +56,7 @@ class RequestIDMiddleware:
     def __call__(self, request: HttpRequest) -> HttpResponse:
         if not hasattr(request, "request_id"):
             request_id = uuid4().hex
-            setattr(request, "request_id", request_id)
+            request.request_id = request_id
             CTX_REQUEST_ID.set(request_id)
             CTX_HOST.set(request.get_host())
             set_tag("authentik.request_id", request_id)
@@ -67,7 +68,7 @@ class RequestIDMiddleware:
         response = self.get_response(request)
 
         response[RESPONSE_HEADER_ID] = request.request_id
-        setattr(response, "ak_context", {})
+        response.ak_context = {}
         response.ak_context["request_id"] = CTX_REQUEST_ID.get()
         response.ak_context["host"] = CTX_HOST.get()
         response.ak_context[KEY_AUTH_VIA] = CTX_AUTH_VIA.get()

@@ -2,7 +2,7 @@
 
 from base64 import b64decode, b64encode
 from pickle import dumps, loads  # nosec
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from django.db import models
@@ -95,7 +95,7 @@ class Stage(SerializerModel):
         """Return component used to edit this object"""
         raise NotImplementedError
 
-    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+    def ui_user_settings(self) -> UserSettingSerializer | None:
         """Entrypoint to integrate with User settings. Can either return None if no
         user settings are available, or a challenge."""
         return None
@@ -113,8 +113,8 @@ def in_memory_stage(view: type["StageView"], **kwargs) -> Stage:
     # we set the view as a separate property and reference a generic function
     # that returns that member
     setattr(stage, "__in_memory_type", view)
-    setattr(stage, "name", _("Dynamic In-memory stage: %(doc)s" % {"doc": view.__doc__}))
-    setattr(stage._meta, "verbose_name", class_to_path(view))
+    stage.name = _("Dynamic In-memory stage: %(doc)s" % {"doc": view.__doc__})
+    stage._meta.verbose_name = class_to_path(view)
     for key, value in kwargs.items():
         setattr(stage, key, value)
     return stage

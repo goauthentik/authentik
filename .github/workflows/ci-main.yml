@@ -28,7 +28,6 @@ jobs:
           - bandit
           - black
           - codespell
-          - isort
           - pending-migrations
           - ruff
     runs-on: ubuntu-latest

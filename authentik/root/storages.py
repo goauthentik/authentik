@@ -104,7 +104,7 @@ class S3Storage(BaseS3Storage):
             # Remove signing parameter and previously added key "/".
             root_url = self._strip_signing_parameters(root_url_signed)[:-1]
             # Replace bucket domain with custom domain.
-            custom_url = "{}//{}/".format(self.url_protocol, self.custom_domain)
+            custom_url = f"{self.url_protocol}//{self.custom_domain}/"
             url = url.replace(root_url, custom_url)
 
         if self.querystring_auth:

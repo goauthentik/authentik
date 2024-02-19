@@ -1,7 +1,7 @@
 """Source decision helper"""
 
 from enum import Enum
-from typing import Any, Optional
+from typing import Any
 
 from django.contrib import messages
 from django.db import IntegrityError
@@ -90,7 +90,7 @@ class SourceFlowManager:
         self._logger = get_logger().bind(source=source, identifier=identifier)
         self.policy_context = {}
 
-    def get_action(self, **kwargs) -> tuple[Action, Optional[UserSourceConnection]]:
+    def get_action(self, **kwargs) -> tuple[Action, UserSourceConnection | None]:
         """decide which action should be taken"""
         new_connection = self.connection_type(source=self.source, identifier=self.identifier)
         # When request is authenticated, always link
@@ -216,7 +216,7 @@ class SourceFlowManager:
         self,
         flow: Flow,
         connection: UserSourceConnection,
-        stages: Optional[list[StageView]] = None,
+        stages: list[StageView] | None = None,
         **kwargs,
     ) -> HttpResponse:
         """Prepare Authentication Plan, redirect user FlowExecutor"""

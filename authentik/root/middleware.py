@@ -1,8 +1,9 @@
 """Dynamically set SameSite depending if the upstream connection is TLS or not"""
 
+from collections.abc import Callable
 from hashlib import sha512
 from time import perf_counter, time
-from typing import Any, Callable, Optional
+from typing import Any
 
 from django.conf import settings
 from django.contrib.sessions.backends.base import UpdateError
@@ -191,7 +192,7 @@ class ClientIPMiddleware:
 
     # FIXME: this should probably not be in `root` but rather in a middleware in `outposts`
     # but for now it's fine
-    def _get_outpost_override_ip(self, request: HttpRequest) -> Optional[str]:
+    def _get_outpost_override_ip(self, request: HttpRequest) -> str | None:
         """Get the actual remote IP when set by an outpost. Only
         allowed when the request is authenticated, by an outpost internal service account"""
         if (
@@ -228,7 +229,7 @@ class ClientIPMiddleware:
         setattr(request, self.request_attr_outpost_user, user)
         return delegated_ip
 
-    def _get_client_ip(self, request: Optional[HttpRequest]) -> str:
+    def _get_client_ip(self, request: HttpRequest | None) -> str:
         """Attempt to get the client's IP by checking common HTTP Headers.
         Returns none if no IP Could be found"""
         if not request:
@@ -239,7 +240,7 @@ class ClientIPMiddleware:
         return self._get_client_ip_from_meta(request.META)
 
     @staticmethod
-    def get_outpost_user(request: HttpRequest) -> Optional[User]:
+    def get_outpost_user(request: HttpRequest) -> User | None:
         """Get outpost user that authenticated this request"""
         return getattr(request, ClientIPMiddleware.request_attr_outpost_user, None)
 

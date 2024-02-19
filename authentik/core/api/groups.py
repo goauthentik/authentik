@@ -1,7 +1,6 @@
 """Groups API Viewset"""
 
 from json import loads
-from typing import Optional
 
 from django.http import Http404
 from django_filters.filters import CharFilter, ModelMultipleChoiceFilter
@@ -59,7 +58,7 @@ class GroupSerializer(ModelSerializer):
 
     num_pk = IntegerField(read_only=True)
 
-    def validate_parent(self, parent: Optional[Group]):
+    def validate_parent(self, parent: Group | None):
         """Validate group parent (if set), ensuring the parent isn't itself"""
         if not self.instance or not parent:
             return parent

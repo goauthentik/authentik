@@ -27,7 +27,7 @@ CACHE_KEY_ENTERPRISE_LICENSE = "goauthentik.io/enterprise/license"
 CACHE_EXPIRY_ENTERPRISE_LICENSE = 3 * 60 * 60  # 2 Hours
 
 
-@lru_cache()
+@lru_cache
 def get_licensing_key() -> Certificate:
     """Get Root CA PEM"""
     with open("authentik/enterprise/public.pem", "rb") as _key:

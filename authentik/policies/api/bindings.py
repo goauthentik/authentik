@@ -1,6 +1,6 @@
 """policy binding API Views"""
 
-from typing import OrderedDict
+from collections import OrderedDict
 
 from django.core.exceptions import ObjectDoesNotExist
 from django_filters.filters import BooleanFilter, ModelMultipleChoiceFilter

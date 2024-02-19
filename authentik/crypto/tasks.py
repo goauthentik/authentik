@@ -58,7 +58,7 @@ def certificate_discovery(self: SystemTask):
         else:
             cert_name = path.name.replace(path.suffix, "")
         try:
-            with open(path, "r", encoding="utf-8") as _file:
+            with open(path, encoding="utf-8") as _file:
                 body = _file.read()
                 if "PRIVATE KEY" in body:
                     private_keys[cert_name] = ensure_private_key_valid(body)

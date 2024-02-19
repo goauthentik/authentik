@@ -7,7 +7,6 @@ from difflib import get_close_matches
 from functools import lru_cache
 from inspect import currentframe
 from smtplib import SMTPException
-from typing import Optional
 from uuid import uuid4
 
 from django.apps import apps
@@ -65,7 +64,7 @@ def default_brand():
     return sanitize_dict(model_to_dict(DEFAULT_BRAND))
 
 
-@lru_cache()
+@lru_cache
 def django_app_names() -> list[str]:
     """Get a cached list of all django apps' names (not labels)"""
     return [x.name for x in apps.app_configs.values()]
@@ -198,7 +197,7 @@ class Event(SerializerModel, ExpiringModel):
     @staticmethod
     def new(
         action: str | EventAction,
-        app: Optional[str] = None,
+        app: str | None = None,
         **kwargs,
     ) -> "Event":
         """Create new Event instance from arguments. Instance is NOT saved."""
@@ -224,7 +223,7 @@ class Event(SerializerModel, ExpiringModel):
         self.user = get_user(user)
         return self
 
-    def from_http(self, request: HttpRequest, user: Optional[User] = None) -> "Event":
+    def from_http(self, request: HttpRequest, user: User | None = None) -> "Event":
         """Add data from a Django-HttpRequest, allowing the creation of
         Events independently from requests.
         `user` arguments optionally overrides user from requests."""

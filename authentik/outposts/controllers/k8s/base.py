@@ -2,7 +2,7 @@
 
 from dataclasses import asdict
 from json import dumps
-from typing import TYPE_CHECKING, Generic, Optional, TypeVar
+from typing import TYPE_CHECKING, Generic, TypeVar
 
 from dacite.core import from_dict
 from django.utils.text import slugify
@@ -135,7 +135,7 @@ class KubernetesObjectReconciler(Generic[T]):
         else:
             self.logger.debug("Object is up-to-date.")
 
-    def _recreate(self, reference: T, current: Optional[T] = None):
+    def _recreate(self, reference: T, current: T | None = None):
         """Recreate object"""
         self.logger.debug("Recreate requested")
         if current:

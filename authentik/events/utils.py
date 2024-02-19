@@ -7,7 +7,7 @@ from datetime import date, datetime, time, timedelta
 from enum import Enum
 from pathlib import Path
 from types import GeneratorType, NoneType
-from typing import Any, Optional
+from typing import Any
 from uuid import UUID
 
 from django.contrib.auth.models import AnonymousUser
@@ -74,7 +74,7 @@ def model_to_dict(model: Model) -> dict[str, Any]:
     }
 
 
-def get_user(user: User | AnonymousUser, original_user: Optional[User] = None) -> dict[str, Any]:
+def get_user(user: User | AnonymousUser, original_user: User | None = None) -> dict[str, Any]:
     """Convert user object to dictionary, optionally including the original user"""
     if isinstance(user, AnonymousUser):
         try:

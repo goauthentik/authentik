@@ -2,16 +2,15 @@
 
 from datetime import datetime, timedelta
 from time import perf_counter
-from typing import Any, Optional
+from typing import Any
 
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from structlog.stdlib import get_logger
 from tenant_schemas_celery.task import TenantTask
 
-from authentik.events.models import Event, EventAction
+from authentik.events.models import Event, EventAction, TaskStatus
 from authentik.events.models import SystemTask as DBSystemTask
-from authentik.events.models import TaskStatus
 from authentik.events.utils import sanitize_item
 from authentik.lib.utils.errors import exception_to_string
 
@@ -27,10 +26,10 @@ class SystemTask(TenantTask):
     _status: TaskStatus
     _messages: list[str]
 
-    _uid: Optional[str]
+    _uid: str | None
     # Precise start time from perf_counter
-    _start_precise: Optional[float] = None
-    _start: Optional[datetime] = None
+    _start_precise: float | None = None
+    _start: datetime | None = None
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -60,7 +59,7 @@ class SystemTask(TenantTask):
         self._start = now()
         return super().before_start(task_id, args, kwargs)
 
-    def db(self) -> Optional[DBSystemTask]:
+    def db(self) -> DBSystemTask | None:
         """Get DB object for latest task"""
         return DBSystemTask.objects.filter(
             name=self.__name__,

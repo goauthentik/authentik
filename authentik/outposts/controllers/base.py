@@ -1,7 +1,6 @@
 """Base Controller"""
 
 from dataclasses import dataclass
-from typing import Optional
 
 from structlog.stdlib import get_logger
 from structlog.testing import capture_logs
@@ -29,7 +28,7 @@ class DeploymentPort:
     port: int
     name: str
     protocol: str
-    inner_port: Optional[int] = None
+    inner_port: int | None = None
 
 
 class BaseClient:

@@ -20,6 +20,8 @@ select = [
     "E",
     # Pyflakes
     "F",
+    # isort
+    "I",
     # pyupgrade
     "UP",
     # flake8-bugbear
@@ -30,14 +32,6 @@ select = [
     "PL",
 ]
 
-[tool.isort]
-multi_line_output = 3
-include_trailing_comma = true
-force_grid_wrap = 0
-use_parentheses = true
-line_length = 100
-src_paths = ["authentik", "tests", "lifecycle"]
-force_to_top = "*"
 
 [tool.coverage.run]
 source = ["authentik"]
@@ -158,7 +152,6 @@ debugpy = "*"
 drf-jsonschema-serializer = "*"
 freezegun = "*"
 importlib-metadata = "*"
-isort = "*"
 pdoc = "*"
 pyrad = "*"
 pytest = "*"

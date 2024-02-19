@@ -1,6 +1,6 @@
 """Blueprint exporter"""
 
-from typing import Iterable
+from collections.abc import Iterable
 from uuid import UUID
 
 from django.apps import apps

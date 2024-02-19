@@ -1,7 +1,7 @@
 """authentik sentry integration"""
 
 from asyncio.exceptions import CancelledError
-from typing import Any, Optional
+from typing import Any
 
 from billiard.exceptions import SoftTimeLimitExceeded, WorkerLostError
 from celery.exceptions import CeleryError
@@ -96,7 +96,7 @@ def traces_sampler(sampling_context: dict) -> float:
     return float(CONFIG.get("error_reporting.sample_rate", 0.1))
 
 
-def before_send(event: dict, hint: dict) -> Optional[dict]:
+def before_send(event: dict, hint: dict) -> dict | None:
     """Check if error is database error, and ignore if so"""
 
     from psycopg.errors import Error

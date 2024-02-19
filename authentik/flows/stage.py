@@ -1,6 +1,6 @@
 """authentik stage Base view"""
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from django.contrib.auth.models import AnonymousUser
 from django.http import HttpRequest
@@ -234,9 +234,9 @@ class ChallengeStageView(StageView):
 class AccessDeniedChallengeView(ChallengeStageView):
     """Used internally by FlowExecutor's stage_invalid()"""
 
-    error_message: Optional[str]
+    error_message: str | None
 
-    def __init__(self, executor: "FlowExecutorView", error_message: Optional[str] = None, **kwargs):
+    def __init__(self, executor: "FlowExecutorView", error_message: str | None = None, **kwargs):
         super().__init__(executor, **kwargs)
         self.error_message = error_message
 

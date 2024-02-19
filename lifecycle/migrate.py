@@ -56,7 +56,7 @@ def wait_for_lock(cursor: Cursor):
     LOGGER.info("waiting to acquire database lock")
     cursor.execute("SELECT pg_advisory_lock(%s)", (ADV_LOCK_UID,))
 
-    global LOCKED
+    global LOCKED  # noqa: PLW0603
     LOCKED = True
 
 

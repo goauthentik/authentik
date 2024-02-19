@@ -1,7 +1,5 @@
 """RAC Provider API Views"""
 
-from typing import Optional
-
 from django.core.cache import cache
 from django.db.models import QuerySet
 from django.urls import reverse
@@ -36,7 +34,7 @@ class EndpointSerializer(EnterpriseRequiredMixin, ModelSerializer):
     provider_obj = RACProviderSerializer(source="provider", read_only=True)
     launch_url = SerializerMethodField()
 
-    def get_launch_url(self, endpoint: Endpoint) -> Optional[str]:
+    def get_launch_url(self, endpoint: Endpoint) -> str | None:
         """Build actual launch URL (the provider itself does not have one, just
         individual endpoints)"""
         try:

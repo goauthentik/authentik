@@ -1,7 +1,6 @@
 """Docker controller"""
 
 from time import sleep
-from typing import Optional
 from urllib.parse import urlparse
 
 from django.conf import settings
@@ -29,8 +28,8 @@ from authentik.outposts.models import (
 class DockerClient(UpstreamDockerClient, BaseClient):
     """Custom docker client, which can handle TLS and SSH from a database."""
 
-    tls: Optional[DockerInlineTLS]
-    ssh: Optional[DockerInlineSSH]
+    tls: DockerInlineTLS | None
+    ssh: DockerInlineSSH | None
 
     def __init__(self, connection: DockerServiceConnection):
         self.tls = None

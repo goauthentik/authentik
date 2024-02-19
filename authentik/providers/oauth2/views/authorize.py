@@ -6,7 +6,6 @@ from hashlib import sha256
 from json import dumps
 from re import error as RegexError
 from re import fullmatch
-from typing import Optional
 from urllib.parse import parse_qs, urlencode, urlparse, urlsplit, urlunsplit
 from uuid import uuid4
 
@@ -87,21 +86,21 @@ class OAuthAuthorizationParams:
     client_id: str
     redirect_uri: str
     response_type: str
-    response_mode: Optional[str]
+    response_mode: str | None
     scope: set[str]
     state: str
-    nonce: Optional[str]
+    nonce: str | None
     prompt: set[str]
     grant_type: str
 
     provider: OAuth2Provider = field(default_factory=OAuth2Provider)
 
-    request: Optional[str] = None
+    request: str | None = None
 
-    max_age: Optional[int] = None
+    max_age: int | None = None
 
-    code_challenge: Optional[str] = None
-    code_challenge_method: Optional[str] = None
+    code_challenge: str | None = None
+    code_challenge_method: str | None = None
 
     github_compat: InitVar[bool] = False
 
@@ -597,7 +596,7 @@ class OAuthFulfillmentStage(StageView):
                 self.params.state,
             )
 
-    def create_implicit_response(self, code: Optional[AuthorizationCode]) -> dict:
+    def create_implicit_response(self, code: AuthorizationCode | None) -> dict:
         """Create implicit response's URL Fragment dictionary"""
         query_fragment = {}
         auth_event = get_login_event(self.request)

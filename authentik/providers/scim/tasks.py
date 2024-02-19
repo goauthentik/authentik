@@ -1,6 +1,6 @@
 """SCIM Provider tasks"""
 
-from typing import Any, Optional
+from typing import Any
 
 from celery.result import allow_join_result
 from django.core.paginator import Paginator
@@ -174,7 +174,7 @@ def scim_signal_direct(model: str, pk: Any, raw_op: str):
     for provider in SCIMProvider.objects.filter(backchannel_application__isnull=False):
         client = client_for_model(provider, instance)
         # Check if the object is allowed within the provider's restrictions
-        queryset: Optional[QuerySet] = None
+        queryset: QuerySet | None = None
         if isinstance(instance, User):
             queryset = provider.get_user_qs()
         if isinstance(instance, Group):

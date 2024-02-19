@@ -59,9 +59,8 @@ test: ## Run the server tests and produce a coverage report (locally)
 	coverage report
 
 lint-fix:  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
-	isort $(PY_SOURCES)
-	black $(PY_SOURCES)
 	ruff check --fix $(PY_SOURCES)
+	black $(PY_SOURCES)
 	codespell -w $(CODESPELL_ARGS)
 
 lint: ## Lint the python and golang sources
@@ -255,9 +254,6 @@ ci-ruff: ci--meta-debug
 
 ci-codespell: ci--meta-debug
 	codespell $(CODESPELL_ARGS) -s
-
-ci-isort: ci--meta-debug
-	isort --check $(PY_SOURCES)
 
 ci-bandit: ci--meta-debug
 	bandit -r $(PY_SOURCES)

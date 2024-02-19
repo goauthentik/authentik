@@ -3,7 +3,7 @@
 from os import R_OK, access
 from pathlib import Path
 from socket import gethostname
-from typing import Any, Optional
+from typing import Any
 from urllib.parse import urlparse
 
 from asgiref.sync import async_to_sync
@@ -49,7 +49,7 @@ LOGGER = get_logger()
 CACHE_KEY_OUTPOST_DOWN = "goauthentik.io/outposts/teardown/%s"
 
 
-def controller_for_outpost(outpost: Outpost) -> Optional[type[BaseController]]:
+def controller_for_outpost(outpost: Outpost) -> type[BaseController] | None:
     """Get a controller for the outpost, when a service connection is defined"""
     if not outpost.service_connection:
         return None

@@ -65,7 +65,7 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
             )
         except InvalidRegistrationResponse as exc:
             self.stage.logger.warning("registration failed", exc=exc)
-            raise ValidationError(f"Registration failed. Error: {exc}")
+            raise ValidationError(f"Registration failed. Error: {exc}") from exc
 
         credential_id_exists = WebAuthnDevice.objects.filter(
             credential_id=bytes_to_base64url(registration.credential_id)

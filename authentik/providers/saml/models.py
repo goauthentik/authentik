@@ -1,7 +1,5 @@
 """authentik saml_idp Models"""
 
-from typing import Optional
-
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -144,7 +142,7 @@ class SAMLProvider(Provider):
     )
 
     @property
-    def launch_url(self) -> Optional[str]:
+    def launch_url(self) -> str | None:
         """Use IDP-Initiated SAML flow as launch URL"""
         try:
 

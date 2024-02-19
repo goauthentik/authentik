@@ -1,7 +1,6 @@
 """Validation stage challenge checking"""
 
 from json import loads
-from typing import Optional
 from urllib.parse import urlencode
 
 from django.http import HttpRequest
@@ -73,7 +72,7 @@ def get_webauthn_challenge_without_user(
 
 
 def get_webauthn_challenge(
-    request: HttpRequest, stage: AuthenticatorValidateStage, device: Optional[WebAuthnDevice] = None
+    request: HttpRequest, stage: AuthenticatorValidateStage, device: WebAuthnDevice | None = None
 ) -> dict:
     """Send the client a challenge that we'll check later"""
     request.session.pop(SESSION_KEY_WEBAUTHN_CHALLENGE, None)
@@ -220,4 +219,4 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
             message=f"Failed to DUO authenticate user: {str(exc)}",
             user=user,
         ).from_http(stage_view.request, user)
-        raise ValidationError("Duo denied access", code="denied")
+        raise ValidationError("Duo denied access", code="denied") from exc

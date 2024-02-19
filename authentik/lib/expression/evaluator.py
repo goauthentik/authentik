@@ -2,9 +2,10 @@
 
 import re
 import socket
+from collections.abc import Iterable
 from ipaddress import ip_address, ip_network
 from textwrap import indent
-from typing import Any, Iterable, Optional
+from typing import Any
 
 from cachetools import TLRUCache, cached
 from django.core.exceptions import FieldError
@@ -36,7 +37,7 @@ class BaseEvaluator:
     # Filename used for exec
     _filename: str
 
-    def __init__(self, filename: Optional[str] = None):
+    def __init__(self, filename: str | None = None):
         self._filename = filename if filename else "BaseEvaluator"
         # update website/docs/expressions/_objects.md
         # update website/docs/expressions/_functions.md
@@ -60,7 +61,7 @@ class BaseEvaluator:
 
     @cached(cache=TLRUCache(maxsize=32, ttu=lambda key, value, now: now + 180))
     @staticmethod
-    def expr_resolve_dns(host: str, ip_version: Optional[int] = None) -> list[str]:
+    def expr_resolve_dns(host: str, ip_version: int | None = None) -> list[str]:
         """Resolve host to a list of IPv4 and/or IPv6 addresses."""
         # Although it seems to be fine (raising OSError), docs warn
         # against passing `None` for both the host and the port
@@ -92,7 +93,7 @@ class BaseEvaluator:
             return ip_addr
 
     @staticmethod
-    def expr_flatten(value: list[Any] | Any) -> Optional[Any]:
+    def expr_flatten(value: list[Any] | Any) -> Any | None:
         """Flatten `value` if its a list"""
         if isinstance(value, list):
             if len(value) < 1:
@@ -116,7 +117,7 @@ class BaseEvaluator:
         return user.all_groups().filter(**group_filters).exists()
 
     @staticmethod
-    def expr_user_by(**filters) -> Optional[User]:
+    def expr_user_by(**filters) -> User | None:
         """Get user by filters"""
         try:
             users = User.objects.filter(**filters)
@@ -127,7 +128,7 @@ class BaseEvaluator:
             return None
 
     @staticmethod
-    def expr_func_user_has_authenticator(user: User, device_type: Optional[str] = None) -> bool:
+    def expr_func_user_has_authenticator(user: User, device_type: str | None = None) -> bool:
         """Check if a user has any authenticator devices, optionally matching *device_type*"""
         user_devices = devices_for_user(user)
         if device_type:

@@ -1,7 +1,6 @@
 """SMS Authenticator models"""
 
 from hashlib import sha256
-from typing import Optional
 
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -166,7 +165,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
     def component(self) -> str:
         return "ak-stage-authenticator-sms-form"
 
-    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+    def ui_user_settings(self) -> UserSettingSerializer | None:
         return UserSettingSerializer(
             data={
                 "title": self.friendly_name or str(self._meta.verbose_name),

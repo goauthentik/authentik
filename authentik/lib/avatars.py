@@ -3,7 +3,7 @@
 from base64 import b64encode
 from functools import cache as funccache
 from hashlib import md5
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 from urllib.parse import urlencode
 
 from django.core.cache import cache
@@ -37,18 +37,18 @@ SVG_FONTS = [
 ]
 
 
-def avatar_mode_none(user: "User", mode: str) -> Optional[str]:
+def avatar_mode_none(user: "User", mode: str) -> str | None:
     """No avatar"""
     return DEFAULT_AVATAR
 
 
-def avatar_mode_attribute(user: "User", mode: str) -> Optional[str]:
+def avatar_mode_attribute(user: "User", mode: str) -> str | None:
     """Avatars based on a user attribute"""
     avatar = get_path_from_dict(user.attributes, mode[11:], default=None)
     return avatar
 
 
-def avatar_mode_gravatar(user: "User", mode: str) -> Optional[str]:
+def avatar_mode_gravatar(user: "User", mode: str) -> str | None:
     """Gravatar avatars"""
     # gravatar uses md5 for their URLs, so md5 can't be avoided
     mail_hash = md5(user.email.lower().encode("utf-8")).hexdigest()  # nosec
@@ -154,7 +154,7 @@ def generate_avatar_from_name(
     return etree.tostring(root_element).decode()
 
 
-def avatar_mode_generated(user: "User", mode: str) -> Optional[str]:
+def avatar_mode_generated(user: "User", mode: str) -> str | None:
     """Wrapper that converts generated avatar to base64 svg"""
     # By default generate based off of user's display name
     name = user.name.strip()
@@ -168,7 +168,7 @@ def avatar_mode_generated(user: "User", mode: str) -> Optional[str]:
     return f"data:image/svg+xml;base64,{b64encode(svg.encode('utf-8')).decode('utf-8')}"
 
 
-def avatar_mode_url(user: "User", mode: str) -> Optional[str]:
+def avatar_mode_url(user: "User", mode: str) -> str | None:
     """Format url"""
     mail_hash = md5(user.email.lower().encode("utf-8")).hexdigest()  # nosec
     return mode % {
@@ -178,7 +178,7 @@ def avatar_mode_url(user: "User", mode: str) -> Optional[str]:
     }
 
 
-def get_avatar(user: "User", request: Optional[HttpRequest] = None) -> str:
+def get_avatar(user: "User", request: HttpRequest | None = None) -> str:
     """Get avatar with configured mode"""
     mode_map = {
         "none": avatar_mode_none,

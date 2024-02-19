@@ -1,8 +1,8 @@
 """Application API Views"""
 
+from collections.abc import Iterator
 from copy import copy
 from datetime import timedelta
-from typing import Iterator, Optional
 
 from django.core.cache import cache
 from django.db.models import QuerySet
@@ -60,7 +60,7 @@ class ApplicationSerializer(ModelSerializer):
 
     meta_icon = ReadOnlyField(source="get_meta_icon")
 
-    def get_launch_url(self, app: Application) -> Optional[str]:
+    def get_launch_url(self, app: Application) -> str | None:
         """Allow formatting of launch URL"""
         user = None
         if "request" in self.context:
@@ -130,7 +130,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         return queryset
 
     def _get_allowed_applications(
-        self, pagined_apps: Iterator[Application], user: Optional[User] = None
+        self, pagined_apps: Iterator[Application], user: User | None = None
     ) -> list[Application]:
         applications = []
         request = self.request._request

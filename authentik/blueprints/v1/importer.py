@@ -2,7 +2,7 @@
 
 from contextlib import contextmanager
 from copy import deepcopy
-from typing import Any, Optional
+from typing import Any
 
 from dacite.config import Config
 from dacite.core import from_dict
@@ -125,7 +125,7 @@ class Importer:
     logger: BoundLogger
     _import: Blueprint
 
-    def __init__(self, blueprint: Blueprint, context: Optional[dict] = None):
+    def __init__(self, blueprint: Blueprint, context: dict | None = None):
         self.__pk_map: dict[Any, Model] = {}
         self._import = blueprint
         self.logger = get_logger()
@@ -197,7 +197,7 @@ class Importer:
 
         return main_query | sub_query
 
-    def _validate_single(self, entry: BlueprintEntry) -> Optional[BaseSerializer]:
+    def _validate_single(self, entry: BlueprintEntry) -> BaseSerializer | None:
         """Validate a single entry"""
         if not entry.check_all_conditions_match(self._import):
             self.logger.debug("One or more conditions of this entry are not fulfilled, skipping")
@@ -368,7 +368,7 @@ class Importer:
                     self.__pk_map[entry.identifiers["pk"]] = instance.pk
                 entry._state = BlueprintEntryState(instance)
             elif state == BlueprintEntryDesiredState.ABSENT:
-                instance: Optional[Model] = serializer.instance
+                instance: Model | None = serializer.instance
                 if instance.pk:
                     instance.delete()
                     self.logger.debug("deleted model", mode=instance)

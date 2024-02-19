@@ -1,7 +1,7 @@
 """Test helpers"""
 
 from json import loads
-from typing import Any, Optional
+from typing import Any
 
 from django.http.response import HttpResponse
 from django.urls.base import reverse
@@ -18,8 +18,8 @@ class FlowTestCase(APITestCase):
     def assertStageResponse(
         self,
         response: HttpResponse,
-        flow: Optional[Flow] = None,
-        user: Optional[User] = None,
+        flow: Flow | None = None,
+        user: User | None = None,
         **kwargs,
     ) -> dict[str, Any]:
         """Assert various attributes of a stage response"""
