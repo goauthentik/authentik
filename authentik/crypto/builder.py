@@ -44,7 +44,7 @@ class CertificateBuilder:
     def generate_private_key(self) -> PrivateKeyTypes:
         """Generate private key"""
         if self._use_ec_private_key:
-            return ec.generate_private_key(curve=ec.SECP256R1)
+            return ec.generate_private_key(curve=ec.SECP256R1())
         return rsa.generate_private_key(
             public_exponent=65537, key_size=4096, backend=default_backend()
         )
