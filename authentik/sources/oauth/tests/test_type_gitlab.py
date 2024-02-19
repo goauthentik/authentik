@@ -5,7 +5,7 @@ from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.gitlab import GitLabOAuthCallback
 
 GITLAB_USER = {
-    "username": "dev_gitlab",
+    "preferred_username": "dev_gitlab",
     "email": "dev@gitlab.com",
     "name": "Dev",
 }
@@ -24,6 +24,6 @@ class TestTypeGitLab(TestCase):
     def test_enroll_context(self):
         """Test GitLab Enrollment context"""
         ak_context = GitLabOAuthCallback().get_user_enroll_context(GITLAB_USER)
-        self.assertEqual(ak_context["username"], GITLAB_USER["username"])
+        self.assertEqual(ak_context["username"], GITLAB_USER["preferred_username"])
         self.assertEqual(ak_context["email"], GITLAB_USER["email"])
         self.assertEqual(ak_context["name"], f"{GITLAB_USER['name']}")
