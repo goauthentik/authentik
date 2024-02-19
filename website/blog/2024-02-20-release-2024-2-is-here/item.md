@@ -31,6 +31,8 @@ We are happy to announce that 2024 is starting off great, with our first release
 
 ![graphic of release highlights](./2024.2-release-blog.png)
 
+<!--truncate-->
+
 We confess we are possibly the most excited about this release than any in a while, with some new Admin-level capabilities, enhanced functionality for developers (our DX game is heating up!), and some great UX/usability and customization enhancements.
 
 Let’s start with some of the big features, the ones that kept us busy over the holidays and into the new year.
