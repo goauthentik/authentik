@@ -10,7 +10,7 @@ from django.contrib.sessions.backends.base import UpdateError
 from django.contrib.sessions.exceptions import SessionInterrupted
 from django.contrib.sessions.middleware import SessionMiddleware as UpstreamSessionMiddleware
 from django.http.request import HttpRequest
-from django.http.response import HttpResponse
+from django.http.response import HttpResponse, HttpResponseServerError
 from django.middleware.csrf import CSRF_SESSION_KEY
 from django.middleware.csrf import CsrfViewMiddleware as UpstreamCsrfViewMiddleware
 from django.utils.cache import patch_vary_headers
@@ -100,7 +100,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
                     expires = http_date(expires_time)
                 # Save the session data and refresh the client cookie.
                 # Skip session save for 500 responses, refs #3881.
-                if response.status_code != 500:
+                if response.status_code != HttpResponseServerError.status_code:
                     try:
                         request.session.save()
                     except UpdateError:

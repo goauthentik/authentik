@@ -19,6 +19,7 @@ LOGGER = get_logger()
 
 NON_ALPHA = r"~!@#$%^&*_-+=`|\(){}[]:;\"'<>,.?/"
 RE_DISPLAYNAME_SEPARATORS = r",\.–—_\s#\t"
+MIN_TOKEN_SIZE = 3
 
 
 class PwdProperties(IntFlag):
@@ -118,7 +119,7 @@ class LDAPPasswordChanger:
             raise AssertionError()
         user_attributes = users[0]["attributes"]
         # If sAMAccountName is longer than 3 chars, check if its contained in password
-        if len(user_attributes["sAMAccountName"]) >= 3:
+        if len(user_attributes["sAMAccountName"]) >= MIN_TOKEN_SIZE:
             if password.lower() in user_attributes["sAMAccountName"].lower():
                 return False
         # No display name set, can't check any further
@@ -128,7 +129,7 @@ class LDAPPasswordChanger:
             display_name_tokens = split(RE_DISPLAYNAME_SEPARATORS, display_name)
             for token in display_name_tokens:
                 # Ignore tokens under 3 chars
-                if len(token) < 3:
+                if len(token) < MIN_TOKEN_SIZE:
                     continue
                 if token.lower() in password.lower():
                     return False

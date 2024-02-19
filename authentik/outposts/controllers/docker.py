@@ -24,6 +24,8 @@ from authentik.outposts.models import (
     ServiceConnectionInvalid,
 )
 
+DOCKER_MAX_ATTEMPTS = 10
+
 
 class DockerClient(UpstreamDockerClient, BaseClient):
     """Custom docker client, which can handle TLS and SSH from a database."""
@@ -228,7 +230,7 @@ class DockerController(BaseController):
     def up(self, depth=1):
         if self.outpost.managed == MANAGED_OUTPOST:
             return None
-        if depth >= 10:
+        if depth >= DOCKER_MAX_ATTEMPTS:
             raise ControllerException("Giving up since we exceeded recursion limit.")
         self._migrate_container_name()
         try:

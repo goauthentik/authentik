@@ -71,9 +71,9 @@ class BaseEvaluator:
         ip_list = []
 
         family = 0
-        if ip_version == 4:
+        if ip_version == 4:  # noqa: PLR2004
             family = socket.AF_INET
-        if ip_version == 6:
+        if ip_version == 6:  # noqa: PLR2004
             family = socket.AF_INET6
 
         try:

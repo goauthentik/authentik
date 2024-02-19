@@ -17,6 +17,7 @@ from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 LOGGER = get_logger()
+APPLE_CLIENT_ID_PARTS = 3
 
 
 class AppleLoginChallenge(Challenge):
@@ -30,7 +31,7 @@ class AppleLoginChallenge(Challenge):
 
 
 class AppleChallengeResponse(ChallengeResponse):
-    """Pseudo class for plex response"""
+    """Pseudo class for apple response"""
 
     component = CharField(default="ak-source-oauth-apple")
 
@@ -40,14 +41,14 @@ class AppleOAuthClient(OAuth2Client):
 
     def get_client_id(self) -> str:
         parts: list[str] = self.source.consumer_key.split(";")
-        if len(parts) < 3:
+        if len(parts) < APPLE_CLIENT_ID_PARTS:
             return self.source.consumer_key
         return parts[0].strip()
 
     def get_client_secret(self) -> str:
         now = time()
         parts: list[str] = self.source.consumer_key.split(";")
-        if len(parts) < 3:
+        if len(parts) < APPLE_CLIENT_ID_PARTS:
             raise ValueError(
                 "Apple Source client_id should be formatted like "
                 "services_id_identifier;apple_team_id;key_id"

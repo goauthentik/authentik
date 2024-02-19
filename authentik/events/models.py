@@ -51,6 +51,8 @@ from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()
+DISCORD_FIELD_LIMIT = 25
+NOTIFICATION_SUMMARY_LENGTH = 75
 
 
 def default_event_duration():
@@ -417,7 +419,7 @@ class NotificationTransport(SerializerModel):
                 if not isinstance(value, str):
                     continue
                 # https://birdie0.github.io/discord-webhooks-guide/other/field_limits.html
-                if len(fields) >= 25:
+                if len(fields) >= DISCORD_FIELD_LIMIT:
                     continue
                 fields.append({"title": key[:256], "value": value[:1024]})
         body = {
@@ -471,7 +473,7 @@ class NotificationTransport(SerializerModel):
                     continue
                 context["key_value"][key] = value
         else:
-            context["title"] += notification.body[:75]
+            context["title"] += notification.body[:NOTIFICATION_SUMMARY_LENGTH]
         # TODO: improve permission check
         if notification.user.is_superuser:
             context["source"] = {
@@ -532,7 +534,11 @@ class Notification(SerializerModel):
         return NotificationSerializer
 
     def __str__(self) -> str:
-        body_trunc = (self.body[:75] + "..") if len(self.body) > 75 else self.body
+        body_trunc = (
+            (self.body[:NOTIFICATION_SUMMARY_LENGTH] + "..")
+            if len(self.body) > NOTIFICATION_SUMMARY_LENGTH
+            else self.body
+        )
         return f"Notification for user {self.user}: {body_trunc}"
 
     class Meta:

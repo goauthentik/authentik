@@ -4,6 +4,7 @@ from hashlib import sha256
 
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.http import HttpResponseBadRequest
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from requests.exceptions import RequestException
@@ -145,8 +146,8 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
                 status_code=response.status_code,
                 body=response.text,
             ).set_user(device.user).save()
-            if response.status_code >= 400:
-                raise ValidationError(response.text)
+            if response.status_code >= HttpResponseBadRequest.status_code:
+                raise ValidationError(response.text) from None
             raise
 
     @property
