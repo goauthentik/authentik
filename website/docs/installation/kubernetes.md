@@ -45,15 +45,12 @@ ingress:
     ingressClassName: nginx | traefik | kong
     enabled: true
     hosts:
-        # Specify external host name
-        - host: authentik.domain.tld
-          paths:
-              - path: "/"
-                pathType: Prefix
+        - authentik.domain.tld
 
 postgresql:
     enabled: true
-    postgresqlPassword: "ThisIsNotASecurePassword"
+    auth:
+        password: "ThisIsNotASecurePassword"
 redis:
     enabled: true
 ```
