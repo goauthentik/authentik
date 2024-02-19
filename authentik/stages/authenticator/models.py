@@ -314,6 +314,9 @@ class ThrottlingMixin(models.Model):
         default=0, help_text="Number of successive failed attempts."
     )
 
+    class Meta:
+        abstract = True
+
     def verify_is_allowed(self):
         """
         If verification is allowed, returns ``(True, None)``.
@@ -397,6 +400,3 @@ class ThrottlingMixin(models.Model):
 
         """
         raise NotImplementedError()
-
-    class Meta:
-        abstract = True

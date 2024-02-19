@@ -627,6 +627,9 @@ class ExpiringModel(models.Model):
     expires = models.DateTimeField(default=default_token_duration)
     expiring = models.BooleanField(default=True)
 
+    class Meta:
+        abstract = True
+
     def expire_action(self, *args, **kwargs):
         """Handler which is called when this object is expired. By
         default the object is deleted. This is less efficient compared
@@ -648,9 +651,6 @@ class ExpiringModel(models.Model):
         if not self.expiring:
             return False
         return now() > self.expires
-
-    class Meta:
-        abstract = True
 
 
 class TokenIntents(models.TextChoices):
@@ -681,6 +681,21 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="+")
     description = models.TextField(default="", blank=True)
 
+    class Meta:
+        verbose_name = _("Token")
+        verbose_name_plural = _("Tokens")
+        indexes = [
+            models.Index(fields=["identifier"]),
+            models.Index(fields=["key"]),
+        ]
+        permissions = [("view_token_key", _("View token's key"))]
+
+    def __str__(self):
+        description = f"{self.identifier}"
+        if self.expiring:
+            description += f" (expires={self.expires})"
+        return description
+
     @property
     def serializer(self) -> type[Serializer]:
         from authentik.core.api.tokens import TokenSerializer
@@ -707,21 +722,6 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
             token=self,
             message=f"Token {self.identifier}'s secret was rotated.",
         ).save()
-
-    def __str__(self):
-        description = f"{self.identifier}"
-        if self.expiring:
-            description += f" (expires={self.expires})"
-        return description
-
-    class Meta:
-        verbose_name = _("Token")
-        verbose_name_plural = _("Tokens")
-        indexes = [
-            models.Index(fields=["identifier"]),
-            models.Index(fields=["key"]),
-        ]
-        permissions = [("view_token_key", _("View token's key"))]
 
 
 class PropertyMapping(SerializerModel, ManagedModel):
@@ -779,6 +779,10 @@ class AuthenticatedSession(ExpiringModel):
     last_user_agent = models.TextField(blank=True)
     last_used = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        verbose_name = _("Authenticated Session")
+        verbose_name_plural = _("Authenticated Sessions")
+
     @staticmethod
     def from_request(request: HttpRequest, user: User) -> Optional["AuthenticatedSession"]:
         """Create a new session from a http request"""
@@ -793,7 +797,3 @@ class AuthenticatedSession(ExpiringModel):
             last_user_agent=request.META.get("HTTP_USER_AGENT", ""),
             expires=request.session.get_expiry_date(),
         )
-
-    class Meta:
-        verbose_name = _("Authenticated Session")
-        verbose_name_plural = _("Authenticated Sessions")

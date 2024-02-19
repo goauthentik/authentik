@@ -298,6 +298,9 @@ class BaseGrantModel(models.Model):
     auth_time = models.DateTimeField(verbose_name="Authentication time")
     session_id = models.CharField(default="", blank=True)
 
+    class Meta:
+        abstract = True
+
     @property
     def scope(self) -> list[str]:
         """Return scopes as list of strings"""
@@ -306,9 +309,6 @@ class BaseGrantModel(models.Model):
     @scope.setter
     def scope(self, value):
         self._scope = " ".join(value)
-
-    class Meta:
-        abstract = True
 
 
 class AuthorizationCode(SerializerModel, ExpiringModel, BaseGrantModel):
@@ -320,6 +320,13 @@ class AuthorizationCode(SerializerModel, ExpiringModel, BaseGrantModel):
     code_challenge_method = models.CharField(
         max_length=255, null=True, verbose_name=_("Code Challenge Method")
     )
+
+    class Meta:
+        verbose_name = _("Authorization Code")
+        verbose_name_plural = _("Authorization Codes")
+
+    def __str__(self):
+        return f"Authorization code for {self.provider} for user {self.user}"
 
     @property
     def serializer(self) -> Serializer:
@@ -337,19 +344,19 @@ class AuthorizationCode(SerializerModel, ExpiringModel, BaseGrantModel):
             .decode("ascii")
         )
 
-    class Meta:
-        verbose_name = _("Authorization Code")
-        verbose_name_plural = _("Authorization Codes")
-
-    def __str__(self):
-        return f"Authorization code for {self.provider} for user {self.user}"
-
 
 class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
     """OAuth2 access token, non-opaque using a JWT as identifier"""
 
     token = models.TextField()
     _id_token = models.TextField()
+
+    class Meta:
+        verbose_name = _("OAuth2 Access Token")
+        verbose_name_plural = _("OAuth2 Access Tokens")
+
+    def __str__(self):
+        return f"Access Token for {self.provider} for user {self.user}"
 
     @property
     def id_token(self) -> IDToken:
@@ -380,19 +387,19 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
 
         return TokenModelSerializer
 
-    class Meta:
-        verbose_name = _("OAuth2 Access Token")
-        verbose_name_plural = _("OAuth2 Access Tokens")
-
-    def __str__(self):
-        return f"Access Token for {self.provider} for user {self.user}"
-
 
 class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
     """OAuth2 Refresh Token, opaque"""
 
     token = models.TextField(default=generate_client_secret)
     _id_token = models.TextField(verbose_name=_("ID Token"))
+
+    class Meta:
+        verbose_name = _("OAuth2 Refresh Token")
+        verbose_name_plural = _("OAuth2 Refresh Tokens")
+
+    def __str__(self):
+        return f"Refresh Token for {self.provider} for user {self.user}"
 
     @property
     def id_token(self) -> IDToken:
@@ -409,13 +416,6 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
         from authentik.providers.oauth2.api.tokens import TokenModelSerializer
 
         return TokenModelSerializer
-
-    class Meta:
-        verbose_name = _("OAuth2 Refresh Token")
-        verbose_name_plural = _("OAuth2 Refresh Tokens")
-
-    def __str__(self):
-        return f"Refresh Token for {self.provider} for user {self.user}"
 
 
 class DeviceToken(ExpiringModel):

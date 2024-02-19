@@ -127,6 +127,10 @@ class OutpostServiceConnection(models.Model):
 
     objects = InheritanceManager()
 
+    class Meta:
+        verbose_name = _("Outpost Service-Connection")
+        verbose_name_plural = _("Outpost Service-Connections")
+
     @property
     def state_key(self) -> str:
         """Key used to save connection state in cache"""
@@ -149,10 +153,6 @@ class OutpostServiceConnection(models.Model):
         # This is called when creating an outpost with a service connection
         # since the response doesn't use the correct inheritance
         return ""
-
-    class Meta:
-        verbose_name = _("Outpost Service-Connection")
-        verbose_name_plural = _("Outpost Service-Connections")
 
 
 class DockerServiceConnection(SerializerModel, OutpostServiceConnection):
@@ -188,6 +188,13 @@ class DockerServiceConnection(SerializerModel, OutpostServiceConnection):
         ),
     )
 
+    class Meta:
+        verbose_name = _("Docker Service-Connection")
+        verbose_name_plural = _("Docker Service-Connections")
+
+    def __str__(self) -> str:
+        return f"Docker Service-Connection {self.name}"
+
     @property
     def serializer(self) -> Serializer:
         from authentik.outposts.api.service_connections import DockerServiceConnectionSerializer
@@ -197,13 +204,6 @@ class DockerServiceConnection(SerializerModel, OutpostServiceConnection):
     @property
     def component(self) -> str:
         return "ak-service-connection-docker-form"
-
-    def __str__(self) -> str:
-        return f"Docker Service-Connection {self.name}"
-
-    class Meta:
-        verbose_name = _("Docker Service-Connection")
-        verbose_name_plural = _("Docker Service-Connections")
 
 
 class KubernetesServiceConnection(SerializerModel, OutpostServiceConnection):
@@ -220,6 +220,13 @@ class KubernetesServiceConnection(SerializerModel, OutpostServiceConnection):
         default=True, help_text=_("Verify SSL Certificates of the Kubernetes API endpoint")
     )
 
+    class Meta:
+        verbose_name = _("Kubernetes Service-Connection")
+        verbose_name_plural = _("Kubernetes Service-Connections")
+
+    def __str__(self) -> str:
+        return f"Kubernetes Service-Connection {self.name}"
+
     @property
     def serializer(self) -> Serializer:
         from authentik.outposts.api.service_connections import KubernetesServiceConnectionSerializer
@@ -229,13 +236,6 @@ class KubernetesServiceConnection(SerializerModel, OutpostServiceConnection):
     @property
     def component(self) -> str:
         return "ak-service-connection-kubernetes-form"
-
-    def __str__(self) -> str:
-        return f"Kubernetes Service-Connection {self.name}"
-
-    class Meta:
-        verbose_name = _("Kubernetes Service-Connection")
-        verbose_name_plural = _("Kubernetes Service-Connections")
 
 
 class Outpost(SerializerModel, ManagedModel):

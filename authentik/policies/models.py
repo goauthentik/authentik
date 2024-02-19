@@ -40,12 +40,12 @@ class PolicyBindingModel(models.Model):
 
     objects = InheritanceManager()
 
-    def __str__(self) -> str:
-        return f"PolicyBindingModel {self.pbm_uuid}"
-
     class Meta:
         verbose_name = _("Policy Binding Model")
         verbose_name_plural = _("Policy Binding Models")
+
+    def __str__(self) -> str:
+        return f"PolicyBindingModel {self.pbm_uuid}"
 
 
 class PolicyBinding(SerializerModel):

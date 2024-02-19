@@ -115,6 +115,10 @@ class StaticToken(models.Model):
     device = models.ForeignKey(StaticDevice, related_name="token_set", on_delete=models.CASCADE)
     token = models.CharField(max_length=16, db_index=True)
 
+    class Meta:
+        verbose_name = _("Static Token")
+        verbose_name_plural = _("Static Tokens")
+
     @staticmethod
     def random_token():
         """
@@ -124,7 +128,3 @@ class StaticToken(models.Model):
 
         """
         return b32encode(urandom(5)).decode("utf-8").lower()
-
-    class Meta:
-        verbose_name = _("Static Token")
-        verbose_name_plural = _("Static Tokens")
