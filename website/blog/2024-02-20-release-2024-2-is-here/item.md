@@ -61,7 +61,7 @@ For the first release of the year, we purposefully included several changes that
 
 ### Tenants renamed to brands
 
-Perhaps the biggest change is that *tenants* (which were previously used to change branding configuration, default flows, and several other settings) have been renamed to *brands*. The term "Brands" more accurately reflect their usage; to configure branding, logos, colors, and overall login flow behavior. For more information, refer to the [Release Notes](https://goauthentik.io/docs/releases/2024.2) and to our documentation for _brands_.
+Perhaps the biggest change is that _tenants_ (which were previously used to change branding configuration, default flows, and several other settings) have been renamed to *brands*. The term "Brands" more accurately reflect their usage; to configure branding, logos, colors, and overall login flow behavior. For more information, refer to the [Release Notes](https://goauthentik.io/docs/releases/2024.2) and to our documentation for _brands_.
 
 ### **Helm chart breaking changes**
 
