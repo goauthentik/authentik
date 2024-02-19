@@ -29699,7 +29699,7 @@ components:
         * `authentik.events` - authentik Events
     AppleChallengeResponseRequest:
       type: object
-      description: Pseudo class for plex response
+      description: Pseudo class for apple response
       properties:
         component:
           type: string
