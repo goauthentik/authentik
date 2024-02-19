@@ -27,11 +27,11 @@ image: 2024.2-release-blog.png
 
 ---
 
-We are happy to announce that 2024 is starting off great, with a release chock full of new features. Take a look at everything included in the release, check out the [Release Notes](https://goauthentik.io/docs/releases/2024.2) for more details and upgrade instructions, and enjoy the new features!
-
-We confess we are possibly the most excited about this release than any in a while, with some new Admin-level capabilities, enhanced functionality for developers (our DX game is heating up!), and some great UX/usability and customization enhancements.
+We are happy to announce that 2024 is starting off great, with our first release of the year chock full of new features. Take a look at the new features and functionality included in the release, check out the [Release Notes](https://goauthentik.io/docs/releases/2024.2) for more details and upgrade instructions, and enjoy the new features!
 
 ![graphic of release highlights](./2024.2-release-blog.png)
+
+We confess we are possibly the most excited about this release than any in a while, with some new Admin-level capabilities, enhanced functionality for developers (our DX game is heating up!), and some great UX/usability and customization enhancements.
 
 Let’s start with some of the big features, the ones that kept us busy over the holidays and into the new year.
 
@@ -41,9 +41,11 @@ The Remote Access Control provider allows you to remotely connect to other machi
 
 Typical use cases for remote access include being able to use authentik exactly as you would on your local machine, be that as a _user_ (I need to reset my password, or authenticate to use a specific application that is running on that remote machine), or as an Admin (I need to manage users, create new login flows, etc.).
 
-### Create new apps (and providers!) with an easy Wizard
+### Create new apps (and providers!) with an easy Wizard (Preview)
 
-We are very happy to announce our new App Wizard; gone are the days when you started to create a new application, then realized you needed to first go create a provider (a means of authentication against a remote application), then back to the app to finish up… now the steps for creating both a new provider and a new app are managed by the wizard; easy-peasy. We know this was a too-many-hoops hurdle for some new users, so our new App wizard is a new feature that we are particularly pleased to release.
+We are very happy to announce our new App Wizard. It's still in Preview, so please send us your feedback!
+
+Gone are the days when you started to create a new application, then realized you needed to first go create a provider (a means of authentication against a remote application), then back to the app to finish up… now the steps for creating both a new app and a new provider are managed by the wizard; easy-peasy. We know this was a too-many-hoops hurdle for some new users, so our new App wizard is a new feature that we are particularly pleased to release. Be sure to check out our [YouTube video](https://www.youtube.com/watch?v=broUAWrIWDI) covering the wizard!
 
 ### Audit logging now with field-level changes (Enterprise)
 
@@ -92,3 +94,7 @@ Release 2024.2 contains even more; the following additional enhancements will ma
 -   **Keep a closer eye on your System Tasks**
 
     You can now search through system tasks, and view task start time and duration calculation as well as the status (Successful!).
+
+    ## Happy upgrading and authenticating!
+
+    There are even more capabilities and enhancements beyond what we covered here in this post, so be sure to read the [Relase Notes](https://goauthentik.io/docs/releases/2024.2) for version 2024.2, and as always, let us know your thoughts.
