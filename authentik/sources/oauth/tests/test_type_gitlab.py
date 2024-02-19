@@ -26,4 +26,4 @@ class TestTypeGitLab(TestCase):
         ak_context = GitLabOAuthCallback().get_user_enroll_context(GITLAB_USER)
         self.assertEqual(ak_context["username"], GITLAB_USER["preferred_username"])
         self.assertEqual(ak_context["email"], GITLAB_USER["email"])
-        self.assertEqual(ak_context["name"], f"{GITLAB_USER['name']}")
+        self.assertEqual(ak_context["name"], GITLAB_USER["name"])
