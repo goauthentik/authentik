@@ -119,6 +119,9 @@ class StaticToken(models.Model):
         verbose_name = _("Static Token")
         verbose_name_plural = _("Static Tokens")
 
+    def __str__(self) -> str:
+        return "Static Token"
+
     @staticmethod
     def random_token():
         """

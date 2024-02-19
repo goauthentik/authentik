@@ -131,6 +131,9 @@ class OutpostServiceConnection(models.Model):
         verbose_name = _("Outpost Service-Connection")
         verbose_name_plural = _("Outpost Service-Connections")
 
+    def __str__(self) -> __version__:
+        return f"Outpost service connection {self.name}"
+
     @property
     def state_key(self) -> str:
         """Key used to save connection state in cache"""

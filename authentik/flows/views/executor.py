@@ -531,7 +531,10 @@ class ToDefaultFlow(View):
 
 def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpResponse:
     """Convert normal HttpResponse into JSON Response"""
-    if isinstance(source, HttpResponseRedirect) or source.status_code == HttpResponseRedirect.status_code:
+    if (
+        isinstance(source, HttpResponseRedirect)
+        or source.status_code == HttpResponseRedirect.status_code
+    ):
         redirect_url = source["Location"]
         # Redirects to the same URL usually indicate an Error within a form
         if request.get_full_path() == redirect_url:

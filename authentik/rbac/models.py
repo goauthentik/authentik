@@ -73,3 +73,6 @@ class SystemPermission(models.Model):
             ("view_system_settings", _("Can view system settings")),
             ("edit_system_settings", _("Can edit system settings")),
         ]
+
+    def __str__(self) -> str:
+        return "System Permission"

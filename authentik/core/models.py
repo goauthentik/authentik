@@ -783,6 +783,9 @@ class AuthenticatedSession(ExpiringModel):
         verbose_name = _("Authenticated Session")
         verbose_name_plural = _("Authenticated Sessions")
 
+    def __str__(self) -> str:
+        return f"Authenticated Session {self.session_key[:10]}"
+
     @staticmethod
     def from_request(request: HttpRequest, user: User) -> Optional["AuthenticatedSession"]:
         """Create a new session from a http request"""
