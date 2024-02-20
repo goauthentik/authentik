@@ -16,7 +16,7 @@ For a combo topic, the title is typically the name of the feature ("Branding" or
 
 In this first section, right after the title but with no header, write one or two sentences about the task. Keep it brief, just an overview.
 
-## About <feature XYZ>
+## About feature XYZ
 
 In this section, go into a deeper explanation of the feature, provide typical use cases, etc.
 
@@ -36,7 +36,7 @@ In this section, help the reader get oriented... where do they need to be (i.e. 
 
 Have a separate paragraph for each step.
 
-*Start instructions with the desired goal*, followed by the instructions. For example, in this sentence: "To define a new port number, navigate to the Admin interface, and then to the **Settings** tab." we first read the goal (to define a new port) and then we see the instructions.
+_Start instructions with the desired goal_, followed by the instructions. For example, in this sentence: "To define a new port number, navigate to the Admin interface, and then to the **Settings** tab." we first read the goal (to define a new port) and then we see the instructions.
 
 ## Next step of grouped steps (if a second group is needed)
 

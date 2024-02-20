@@ -6,7 +6,7 @@ In technical documentation, there are document "types" (similar to how there are
 
 The most common types are:
 
--   [**Combo**](): For most topics (unless they are very large and complex), we can combine the procedural and conceptual information into a single document. A handy guideline to follow is: "If the actual 1., 2., 3. steps are buried at the bottom, and a reader has to scroll multiple times to find them, then the combo apprach is *not* the right one".
+-   [**Combo**](./combo.md): For most topics (unless they are very large and complex), we can combine the procedural and conceptual information into a single document. A handy guideline to follow is: "If the actual 1., 2., 3. steps are buried at the bottom, and a reader has to scroll multiple times to find them, then the combo apprach is _not_ the right one".
 
 -   [**Procedural**](./procedural.md): these are How To docs, the HOW information, with step-by-step instructions for accomplishing a task. This is what most people are looking for when they open the docs... and best practice is to separate the procedural docs from long, lengthy conceptual or reference docs.
 

@@ -4,7 +4,7 @@ title: "Markdown template: combo"
 
 add brief description of the feature/functionality
 
-## About <feature XYZ>
+## About feature XYZ
 
 In this section, go into a deeper explanation of the feature, provide typical use cases, etc.
 
