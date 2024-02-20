@@ -1,4 +1,5 @@
 """evaluator tests"""
+
 from django.test import RequestFactory, TestCase
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.serializers import ValidationError

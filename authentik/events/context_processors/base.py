@@ -1,4 +1,5 @@
 """Base event enricher"""
+
 from functools import cache
 from typing import TYPE_CHECKING, Optional
 

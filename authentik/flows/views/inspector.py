@@ -1,4 +1,5 @@
 """Flow Inspector"""
+
 from hashlib import sha256
 from typing import Any
 

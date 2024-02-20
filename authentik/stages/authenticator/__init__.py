@@ -1,4 +1,5 @@
 """Authenticator devices helpers"""
+
 from django.db import transaction
 
 

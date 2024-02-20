@@ -1,4 +1,5 @@
 """Test config loader"""
+
 import base64
 from json import dumps
 from os import chmod, environ, unlink, write

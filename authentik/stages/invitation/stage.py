@@ -1,4 +1,5 @@
 """invitation stage logic"""
+
 from typing import Optional
 
 from deepmerge import always_merger

@@ -1,4 +1,5 @@
 """AuthenticatorDuoStage API Views"""
+
 from django.http import Http404
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from drf_spectacular.types import OpenApiTypes

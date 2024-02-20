@@ -1,4 +1,5 @@
 """RAC Views"""
+
 from typing import Any
 
 from django.http import Http404, HttpRequest, HttpResponse
@@ -103,14 +104,15 @@ class RACFinalStage(RedirectStage):
         # Check if we're already at the maximum connection limit
         all_tokens = ConnectionToken.filter_not_expired(
             endpoint=self.endpoint,
-        ).exclude(endpoint__maximum_connections__lte=-1)
-        if all_tokens.count() >= self.endpoint.maximum_connections:
-            msg = [_("Maximum connection limit reached.")]
-            # Check if any other tokens exist for the current user, and inform them
-            # they are already connected
-            if all_tokens.filter(session__user=self.request.user).exists():
-                msg.append(_("(You are already connected in another tab/window)"))
-            return self.executor.stage_invalid(" ".join(msg))
+        )
+        if self.endpoint.maximum_connections > -1:
+            if all_tokens.count() >= self.endpoint.maximum_connections:
+                msg = [_("Maximum connection limit reached.")]
+                # Check if any other tokens exist for the current user, and inform them
+                # they are already connected
+                if all_tokens.filter(session__user=self.request.user).exists():
+                    msg.append(_("(You are already connected in another tab/window)"))
+                return self.executor.stage_invalid(" ".join(msg))
         return super().dispatch(request, *args, **kwargs)
 
     def get_challenge(self, *args, **kwargs) -> RedirectChallenge:

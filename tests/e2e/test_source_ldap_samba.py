@@ -1,4 +1,5 @@
 """test LDAP Source"""
+
 from typing import Any, Optional
 
 from django.db.models import Q

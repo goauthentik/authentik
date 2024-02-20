@@ -1,4 +1,5 @@
 """Kubernetes Traefik Middleware Reconciler"""
+
 from typing import TYPE_CHECKING
 
 from authentik.providers.proxy.controllers.k8s.traefik_3 import Traefik3MiddlewareReconciler

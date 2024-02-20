@@ -1,4 +1,5 @@
 """authentik multi-stage authentication engine"""
+
 from copy import deepcopy
 from typing import Optional
 
@@ -274,13 +275,16 @@ class FlowExecutorView(APIView):
             stage=self.current_stage,
         )
         try:
-            with Hub.current.start_span(
-                op="authentik.flow.executor.stage",
-                description=class_path,
-            ) as span, HIST_FLOW_EXECUTION_STAGE_TIME.labels(
-                method=request.method.upper(),
-                stage_type=class_path,
-            ).time():
+            with (
+                Hub.current.start_span(
+                    op="authentik.flow.executor.stage",
+                    description=class_path,
+                ) as span,
+                HIST_FLOW_EXECUTION_STAGE_TIME.labels(
+                    method=request.method.upper(),
+                    stage_type=class_path,
+                ).time(),
+            ):
                 span.set_data("Method", request.method.upper())
                 span.set_data("authentik Stage", self.current_stage_view)
                 span.set_data("authentik Flow", self.flow.slug)
@@ -322,13 +326,16 @@ class FlowExecutorView(APIView):
             stage=self.current_stage,
         )
         try:
-            with Hub.current.start_span(
-                op="authentik.flow.executor.stage",
-                description=class_path,
-            ) as span, HIST_FLOW_EXECUTION_STAGE_TIME.labels(
-                method=request.method.upper(),
-                stage_type=class_path,
-            ).time():
+            with (
+                Hub.current.start_span(
+                    op="authentik.flow.executor.stage",
+                    description=class_path,
+                ) as span,
+                HIST_FLOW_EXECUTION_STAGE_TIME.labels(
+                    method=request.method.upper(),
+                    stage_type=class_path,
+                ).time(),
+            ):
                 span.set_data("Method", request.method.upper())
                 span.set_data("authentik Stage", self.current_stage_view)
                 span.set_data("authentik Flow", self.flow.slug)

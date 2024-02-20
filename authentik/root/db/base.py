@@ -1,4 +1,5 @@
 """authentik database backend"""
+
 from django_tenants.postgresql_backend.base import DatabaseWrapper as BaseDatabaseWrapper
 
 from authentik.lib.config import CONFIG

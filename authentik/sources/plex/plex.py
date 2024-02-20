@@ -1,4 +1,5 @@
 """Plex Views"""
+
 from urllib.parse import urlencode
 
 from django.http.response import Http404

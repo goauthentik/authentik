@@ -1,3 +1,4 @@
+import { getRelativeTime } from "@goauthentik/app/common/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { intentToLabel } from "@goauthentik/common/labels";
 import { uiConfig } from "@goauthentik/common/ui/config";
@@ -108,7 +109,14 @@ export class UserTokenList extends Table<Token> {
                             </dt>
                             <dd class="pf-c-description-list__description">
                                 <div class="pf-c-description-list__text">
-                                    ${item.expiring ? item.expires?.toLocaleString() : msg("-")}
+                                    ${item.expiring
+                                        ? html`<pf-tooltip
+                                              position="top"
+                                              .content=${item.expires?.toLocaleString()}
+                                          >
+                                              ${getRelativeTime(item.expires!)}
+                                          </pf-tooltip>`
+                                        : msg("-")}
                                 </div>
                             </dd>
                         </div>

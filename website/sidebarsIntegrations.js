@@ -86,6 +86,7 @@ module.exports = {
                         "services/powerdns-admin/index",
                         "services/proftpd/index",
                         "services/qnap-nas/index",
+                        "services/synology-dsm/index",
                         "services/skyhigh/index",
                         "services/snipe-it/index",
                         "services/sssd/index",

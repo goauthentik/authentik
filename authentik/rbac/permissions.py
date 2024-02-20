@@ -1,4 +1,5 @@
 """RBAC Permissions"""
+
 from django.db.models import Model
 from rest_framework.permissions import BasePermission, DjangoObjectPermissions
 from rest_framework.request import Request

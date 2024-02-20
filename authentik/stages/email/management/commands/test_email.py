@@ -1,4 +1,5 @@
 """Send a test-email with global settings"""
+
 from uuid import uuid4
 
 from django.core.management.base import no_translations

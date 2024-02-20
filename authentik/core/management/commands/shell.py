@@ -1,4 +1,5 @@
 """authentik shell command"""
+
 import code
 import platform
 import sys

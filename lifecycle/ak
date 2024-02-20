@@ -86,6 +86,7 @@ elif [[ "$1" == "bash" ]]; then
     /bin/bash
 elif [[ "$1" == "test-all" ]]; then
     prepare_debug
+    chmod 777 /root
     check_if_root "python -m manage test authentik"
 elif [[ "$1" == "healthcheck" ]]; then
     run_authentik healthcheck $(cat $MODE_FILE)

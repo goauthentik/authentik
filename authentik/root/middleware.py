@@ -1,7 +1,7 @@
 """Dynamically set SameSite depending if the upstream connection is TLS or not"""
+
 from hashlib import sha512
-from time import time
-from timeit import default_timer
+from time import perf_counter, time
 from typing import Any, Callable, Optional
 
 from django.conf import settings
@@ -293,14 +293,14 @@ class LoggingMiddleware:
         self.get_response = get_response
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
-        start = default_timer()
+        start = perf_counter()
         response = self.get_response(request)
         status_code = response.status_code
         kwargs = {
             "request_id": getattr(request, "request_id", None),
         }
         kwargs.update(getattr(response, "ak_context", {}))
-        self.log(request, status_code, int((default_timer() - start) * 1000), **kwargs)
+        self.log(request, status_code, int((perf_counter() - start) * 1000), **kwargs)
         return response
 
     def log(self, request: HttpRequest, status_code: int, runtime: int, **kwargs):

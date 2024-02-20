@@ -1,4 +1,5 @@
 """policy exceptions"""
+
 from typing import Optional
 
 from authentik.lib.sentry import SentryIgnoredException

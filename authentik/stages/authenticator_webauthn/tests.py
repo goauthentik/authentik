@@ -1,4 +1,5 @@
 """Test WebAuthn API"""
+
 from base64 import b64decode
 
 from django.urls import reverse

@@ -1,4 +1,5 @@
 """authentik consent stage"""
+
 from typing import Optional
 from uuid import uuid4
 

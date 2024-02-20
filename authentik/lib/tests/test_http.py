@@ -1,4 +1,5 @@
 """Test HTTP Helpers"""
+
 from django.test import RequestFactory, TestCase
 
 from authentik.core.models import Token, TokenIntents, UserTypes

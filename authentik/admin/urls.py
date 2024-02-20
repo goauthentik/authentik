@@ -1,4 +1,5 @@
 """API URLs"""
+
 from django.urls import path
 
 from authentik.admin.api.meta import AppsViewSet, ModelViewSet

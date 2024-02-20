@@ -1,4 +1,5 @@
 """authentik e2e testing utilities"""
+
 import json
 import os
 import socket

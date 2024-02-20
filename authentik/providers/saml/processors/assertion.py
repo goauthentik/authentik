@@ -1,4 +1,5 @@
 """SAML Assertion generator"""
+
 from hashlib import sha256
 from types import GeneratorType
 

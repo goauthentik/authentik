@@ -1,4 +1,5 @@
 """consent tests"""
+
 from time import sleep
 
 from django.urls import reverse

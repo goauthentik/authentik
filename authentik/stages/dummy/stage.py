@@ -1,4 +1,5 @@
 """authentik multi-stage authentication engine"""
+
 from django.http.response import HttpResponse
 from rest_framework.fields import CharField
 

@@ -1,4 +1,5 @@
 """RBAC role tests"""
+
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Group

@@ -1,4 +1,5 @@
 """authentik tenants system checks"""
+
 from django.core.checks import Error, register
 
 from authentik.lib.config import CONFIG

@@ -1,4 +1,5 @@
 """install ID"""
+
 from functools import lru_cache
 from uuid import uuid4
 

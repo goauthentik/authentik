@@ -1,4 +1,5 @@
 """Flow Binding API Views"""
+
 from typing import Any
 
 from rest_framework.exceptions import ValidationError

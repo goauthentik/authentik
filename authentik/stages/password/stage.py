@@ -1,4 +1,5 @@
 """authentik password stage"""
+
 from typing import Any, Optional
 
 from django.contrib.auth import _clean_credentials

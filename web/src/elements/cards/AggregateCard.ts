@@ -84,6 +84,7 @@ export class AggregateCard extends AKElement {
                 ${this.renderInner()}
                 ${this.subtext ? html`<p class="subtext">${this.subtext}</p>` : html``}
             </div>
+            <div class="pf-c-card__footer">&nbsp;</div>
         </div>`;
     }
 }

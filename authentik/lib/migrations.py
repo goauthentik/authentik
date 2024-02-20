@@ -1,4 +1,5 @@
 """Migration helpers"""
+
 from typing import Iterable
 
 from django.apps.registry import Apps

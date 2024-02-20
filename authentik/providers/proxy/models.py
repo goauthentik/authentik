@@ -1,4 +1,5 @@
 """authentik proxy models"""
+
 import string
 from random import SystemRandom
 from typing import Iterable, Optional

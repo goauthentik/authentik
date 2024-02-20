@@ -1,4 +1,5 @@
 """Validation stage challenge checking"""
+
 from json import loads
 from typing import Optional
 from urllib.parse import urlencode

@@ -1,4 +1,5 @@
 """authentik URL Configuration"""
+
 from django.urls import include, path
 from structlog.stdlib import get_logger
 

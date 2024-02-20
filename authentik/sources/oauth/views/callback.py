@@ -1,4 +1,5 @@
 """OAuth Callback Views"""
+
 from json import JSONDecodeError
 from typing import Any, Optional
 

@@ -1,4 +1,5 @@
 """Serializer for tenants models"""
+
 from datetime import timedelta
 from hmac import compare_digest
 

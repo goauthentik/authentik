@@ -1,4 +1,5 @@
 """OAuth Provider Models"""
+
 import base64
 import binascii
 import json

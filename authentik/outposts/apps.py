@@ -1,4 +1,5 @@
 """authentik outposts app config"""
+
 from prometheus_client import Gauge
 from structlog.stdlib import get_logger
 
@@ -28,10 +29,6 @@ class AuthentikOutpostConfig(ManagedAppConfig):
     label = "authentik_outposts"
     verbose_name = "authentik Outpost"
     default = True
-
-    def reconcile_global_load_outposts_signals(self):
-        """Load outposts signals"""
-        self.import_module("authentik.outposts.signals")
 
     def reconcile_tenant_embedded_outpost(self):
         """Ensure embedded outpost"""

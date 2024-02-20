@@ -1,4 +1,5 @@
 """OAuth Redirect Views"""
+
 from typing import Any
 
 from django.http import Http404

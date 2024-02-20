@@ -1,4 +1,5 @@
 """Outpost API Views"""
+
 from dacite.core import from_dict
 from dacite.exceptions import DaciteError
 from django_filters.filters import ModelMultipleChoiceFilter

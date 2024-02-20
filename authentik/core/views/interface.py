@@ -1,4 +1,5 @@
 """Interface views"""
+
 from json import dumps
 from typing import Any
 

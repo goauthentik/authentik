@@ -1,4 +1,5 @@
 """OAuth2Provider API Views"""
+
 from json import dumps
 
 from django_filters.rest_framework import DjangoFilterBackend

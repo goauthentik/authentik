@@ -1,4 +1,5 @@
 """authentik oauth_client config"""
+
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.apps import ManagedAppConfig

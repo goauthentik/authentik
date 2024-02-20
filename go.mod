@@ -5,7 +5,7 @@ go 1.21
 require (
 	beryju.io/ldap v0.1.0
 	github.com/coreos/go-oidc v2.2.1+incompatible
-	github.com/getsentry/sentry-go v0.26.0
+	github.com/getsentry/sentry-go v0.27.0
 	github.com/go-http-utils/etag v0.0.0-20161124023236-513ea8f21eb1
 	github.com/go-ldap/ldap/v3 v3.4.6
 	github.com/go-openapi/runtime v0.27.1
@@ -28,9 +28,9 @@ require (
 	github.com/spf13/cobra v1.8.0
 	github.com/stretchr/testify v1.8.4
 	github.com/wwt/guac v1.3.2
-	goauthentik.io/api/v3 v3.2023106.5
+	goauthentik.io/api/v3 v3.2023107.2
 	golang.org/x/exp v0.0.0-20230210204819-062eb4c674ab
-	golang.org/x/oauth2 v0.16.0
+	golang.org/x/oauth2 v0.17.0
 	golang.org/x/sync v0.6.0
 	gopkg.in/yaml.v2 v2.4.0
 	layeh.com/radius v0.0.0-20210819152912-ad72663a72ab
@@ -74,9 +74,9 @@ require (
 	go.opentelemetry.io/otel v1.17.0 // indirect
 	go.opentelemetry.io/otel/metric v1.17.0 // indirect
 	go.opentelemetry.io/otel/trace v1.17.0 // indirect
-	golang.org/x/crypto v0.18.0 // indirect
-	golang.org/x/net v0.20.0 // indirect
-	golang.org/x/sys v0.16.0 // indirect
+	golang.org/x/crypto v0.19.0 // indirect
+	golang.org/x/net v0.21.0 // indirect
+	golang.org/x/sys v0.17.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect

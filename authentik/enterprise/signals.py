@@ -1,4 +1,5 @@
 """Enterprise signals"""
+
 from datetime import datetime
 
 from django.db.models.signals import pre_save

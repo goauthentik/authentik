@@ -1,4 +1,5 @@
 """Identification stage logic"""
+
 from dataclasses import asdict
 from random import SystemRandom
 from time import sleep
@@ -122,7 +123,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
             if not current_stage.show_matched_user:
                 self.stage.executor.plan.context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = uid_field
             # when `pretend` is enabled, continue regardless
-            if current_stage.pretend_user_exists:
+            if current_stage.pretend_user_exists and not current_stage.password_stage:
                 return attrs
             raise ValidationError("Failed to authenticate.")
         self.pre_user = pre_user
@@ -245,7 +246,7 @@ class IdentificationStageView(ChallengeStageView):
         self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = response.pre_user
         current_stage: IdentificationStage = self.executor.current_stage
         if not current_stage.show_matched_user:
-            self.executor.plan.context[
-                PLAN_CONTEXT_PENDING_USER_IDENTIFIER
-            ] = response.validated_data.get("uid_field")
+            self.executor.plan.context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = (
+                response.validated_data.get("uid_field")
+            )
         return self.executor.stage_ok()

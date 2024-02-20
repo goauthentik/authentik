@@ -1,4 +1,5 @@
 """authentik core models tests"""
+
 from time import sleep
 from typing import Callable
 

@@ -1,4 +1,5 @@
 """authentik saml_idp Models"""
+
 from typing import Optional
 
 from django.db import models

@@ -1,4 +1,5 @@
 """Groups API Viewset"""
+
 from json import loads
 from typing import Optional
 

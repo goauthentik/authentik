@@ -30,7 +30,7 @@ export class BrandListPage extends TablePage<Brand> {
         return msg("Configure visual settings and defaults for different domains.");
     }
     pageIcon(): string {
-        return "pf-icon pf-icon-brand";
+        return "pf-icon pf-icon-tenant";
     }
 
     checkbox = true;
@@ -51,6 +51,7 @@ export class BrandListPage extends TablePage<Brand> {
     columns(): TableColumn[] {
         return [
             new TableColumn(msg("Domain"), "domain"),
+            new TableColumn(msg("Brand name"), "branding_title"),
             new TableColumn(msg("Default?"), "default"),
             new TableColumn(msg("Actions")),
         ];
@@ -84,6 +85,7 @@ export class BrandListPage extends TablePage<Brand> {
     row(item: Brand): TemplateResult[] {
         return [
             html`${item.domain}`,
+            html`${item.brandingTitle}`,
             html`<ak-status-label ?good=${item._default}></ak-status-label>`,
             html`<ak-forms-modal>
                     <span slot="submit"> ${msg("Update")} </span>

@@ -1,4 +1,5 @@
 """Events API Views"""
+
 from datetime import timedelta
 from json import loads
 

@@ -1,4 +1,5 @@
 """Enterprise license tests"""
+
 from datetime import timedelta
 from time import mktime
 from unittest.mock import MagicMock, patch
@@ -7,7 +8,8 @@ from django.test import TestCase
 from django.utils.timezone import now
 from rest_framework.exceptions import ValidationError
 
-from authentik.enterprise.models import License, LicenseKey
+from authentik.enterprise.license import LicenseKey
+from authentik.enterprise.models import License
 from authentik.lib.generators import generate_id
 
 _exp = int(mktime((now() + timedelta(days=3000)).timetuple()))
@@ -17,7 +19,7 @@ class TestEnterpriseLicense(TestCase):
     """Enterprise license tests"""
 
     @patch(
-        "authentik.enterprise.models.LicenseKey.validate",
+        "authentik.enterprise.license.LicenseKey.validate",
         MagicMock(
             return_value=LicenseKey(
                 aud="",
@@ -40,7 +42,7 @@ class TestEnterpriseLicense(TestCase):
             License.objects.create(key=generate_id())
 
     @patch(
-        "authentik.enterprise.models.LicenseKey.validate",
+        "authentik.enterprise.license.LicenseKey.validate",
         MagicMock(
             return_value=LicenseKey(
                 aud="",

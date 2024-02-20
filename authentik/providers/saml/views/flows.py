@@ -1,4 +1,5 @@
 """authentik SAML IDP Views"""
+
 from django.core.validators import URLValidator
 from django.http import HttpRequest, HttpResponse
 from django.http.response import HttpResponseBadRequest

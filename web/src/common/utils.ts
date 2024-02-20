@@ -25,12 +25,6 @@ export function convertToSlug(text: string): string {
         .replace(/[^\w-]+/g, "");
 }
 
-export function convertToTitle(text: string): string {
-    return text.replace(/\w\S*/g, function (txt) {
-        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    });
-}
-
 /**
  * Truncate a string based on maximum word count
  */
@@ -82,14 +76,6 @@ export function first<T>(...args: Array<T | undefined | null>): T {
         }
     }
     throw new SentryIgnoredError(`No compatible arg given: ${args}`);
-}
-
-export function hexEncode(buf: Uint8Array): string {
-    return Array.from(buf)
-        .map(function (x) {
-            return ("0" + x.toString(16)).substr(-2);
-        })
-        .join("");
 }
 
 // Taken from python's string module
@@ -148,4 +134,26 @@ export function adaptCSS(sheet: AdaptableStylesheet): CSSStyleSheet;
 export function adaptCSS(sheet: AdaptableStylesheet[]): CSSStyleSheet[];
 export function adaptCSS(sheet: AdaptableStylesheet | AdaptableStylesheet[]): AdaptedStylesheets {
     return Array.isArray(sheet) ? sheet.map(_adaptCSS) : _adaptCSS(sheet);
+}
+
+const _timeUnits = new Map<Intl.RelativeTimeFormatUnit, number>([
+    ["year", 24 * 60 * 60 * 1000 * 365],
+    ["month", (24 * 60 * 60 * 1000 * 365) / 12],
+    ["day", 24 * 60 * 60 * 1000],
+    ["hour", 60 * 60 * 1000],
+    ["minute", 60 * 1000],
+    ["second", 1000],
+]);
+
+export function getRelativeTime(d1: Date, d2: Date = new Date()): string {
+    const rtf = new Intl.RelativeTimeFormat("default", { numeric: "auto" });
+    const elapsed = d1.getTime() - d2.getTime();
+
+    // "Math.abs" accounts for both "past" & "future" scenarios
+    for (const [key, value] of _timeUnits) {
+        if (Math.abs(elapsed) > value || key == "second") {
+            return rtf.format(Math.round(elapsed / value), key);
+        }
+    }
+    return rtf.format(Math.round(elapsed / 1000), "second");
 }

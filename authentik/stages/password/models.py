@@ -1,4 +1,5 @@
 """password stage models"""
+
 from typing import Optional
 
 from django.contrib.postgres.fields import ArrayField

@@ -1,4 +1,5 @@
 """NotificationTransport API Views"""
+
 from typing import Any
 
 from drf_spectacular.types import OpenApiTypes
@@ -86,7 +87,6 @@ class NotificationTransportViewSet(UsedByMixin, ModelViewSet):
         event = Event.new(
             action="notification_test",
             user=get_user(request.user),
-            app=self.__class__.__module__,
             context={"foo": "bar"},
         )
         event.save()

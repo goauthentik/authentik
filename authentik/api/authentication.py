@@ -1,4 +1,5 @@
 """API Authentication"""
+
 from hmac import compare_digest
 from typing import Any, Optional
 

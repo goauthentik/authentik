@@ -1,4 +1,5 @@
 """Prompt Stage Logic"""
+
 from email.policy import Policy
 from types import MethodType
 from typing import Any, Callable, Iterator

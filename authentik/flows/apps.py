@@ -1,4 +1,5 @@
 """authentik flows app config"""
+
 from prometheus_client import Gauge, Histogram
 
 from authentik.blueprints.apps import ManagedAppConfig
@@ -29,10 +30,6 @@ class AuthentikFlowsConfig(ManagedAppConfig):
     mountpoint = "flows/"
     verbose_name = "authentik Flows"
     default = True
-
-    def reconcile_global_load_flows_signals(self):
-        """Load flows signals"""
-        self.import_module("authentik.flows.signals")
 
     def reconcile_global_load_stages(self):
         """Ensure all stages are loaded"""

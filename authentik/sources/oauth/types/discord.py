@@ -1,4 +1,5 @@
 """Discord OAuth Views"""
+
 from typing import Any
 
 from authentik.sources.oauth.types.registry import SourceType, registry

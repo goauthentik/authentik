@@ -23,25 +23,36 @@ import { AdminApi, Settings, SettingsRequest } from "@goauthentik/api";
 
 @customElement("ak-admin-settings-form")
 export class AdminSettingsForm extends Form<SettingsRequest> {
-    @property({ attribute: false })
-    set settings(value: Settings) {
+    //
+    // Custom property accessors in Lit 2 require a manual call to requestUpdate(). See:
+    // https://lit.dev/docs/v2/components/properties/#accessors-custom
+    //
+    set settings(value: Settings | undefined) {
         this._settings = value;
+        this.requestUpdate();
+    }
+
+    @property({ type: Object })
+    get settings() {
+        return this._settings;
     }
 
     private _settings?: Settings;
+
+    static get styles(): CSSResult[] {
+        return super.styles.concat(PFList);
+    }
 
     getSuccessMessage(): string {
         return msg("Successfully updated settings.");
     }
 
     async send(data: SettingsRequest): Promise<Settings> {
-        return new AdminApi(DEFAULT_CONFIG).adminSettingsUpdate({
+        const result = await new AdminApi(DEFAULT_CONFIG).adminSettingsUpdate({
             settingsRequest: data,
         });
-    }
-
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFList);
+        this.dispatchEvent(new CustomEvent("ak-admin-setting-changed"));
+        return result;
     }
 
     renderForm(): TemplateResult {

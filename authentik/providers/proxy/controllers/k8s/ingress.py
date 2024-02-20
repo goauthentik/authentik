@@ -1,4 +1,5 @@
 """Kubernetes Ingress Reconciler"""
+
 from typing import TYPE_CHECKING
 from urllib.parse import urlparse
 

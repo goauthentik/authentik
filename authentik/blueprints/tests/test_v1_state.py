@@ -1,4 +1,5 @@
 """Test blueprints v1"""
+
 from django.test import TransactionTestCase
 
 from authentik.blueprints.v1.importer import Importer

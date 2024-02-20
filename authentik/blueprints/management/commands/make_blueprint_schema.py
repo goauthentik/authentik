@@ -1,4 +1,5 @@
 """Generate JSON Schema for blueprints"""
+
 from json import dumps
 from typing import Any
 

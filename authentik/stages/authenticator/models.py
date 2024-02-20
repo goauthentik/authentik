@@ -1,4 +1,5 @@
 """Base authenticator models"""
+
 from datetime import timedelta
 
 from django.apps import apps

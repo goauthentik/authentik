@@ -1,4 +1,5 @@
 """Challenge helpers"""
+
 from dataclasses import asdict, is_dataclass
 from enum import Enum
 from typing import TYPE_CHECKING, Optional, TypedDict

@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2023.10.6
+  version: 2023.10.7
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -2659,6 +2659,10 @@ paths:
       description: Custom list method that checks Policy based access instead of guardian
       parameters:
       - in: query
+        name: for_user
+        schema:
+          type: integer
+      - in: query
         name: group
         schema:
           type: string
@@ -2931,8 +2935,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/PolicyTestResult'
           description: ''
-        '404':
-          description: for_user user not found
         '400':
           content:
             application/json:
@@ -16042,6 +16044,10 @@ paths:
       operationId: providers_oauth2_preview_user_retrieve
       description: Preview user data for provider
       parameters:
+      - in: query
+        name: for_user
+        schema:
+          type: integer
       - in: path
         name: id
         schema:
@@ -17409,6 +17415,10 @@ paths:
       operationId: providers_saml_preview_user_retrieve
       description: Preview user data for provider
       parameters:
+      - in: query
+        name: for_user
+        schema:
+          type: integer
       - in: path
         name: id
         schema:
@@ -17785,6 +17795,252 @@ paths:
         required: true
       tags:
       - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /rac/connection_tokens/:
+    get:
+      operationId: rac_connection_tokens_list
+      description: ConnectionToken Viewset
+      parameters:
+      - in: query
+        name: endpoint
+        schema:
+          type: string
+          format: uuid
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: provider
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: session__user
+        schema:
+          type: integer
+      tags:
+      - rac
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedConnectionTokenList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /rac/connection_tokens/{connection_token_uuid}/:
+    get:
+      operationId: rac_connection_tokens_retrieve
+      description: ConnectionToken Viewset
+      parameters:
+      - in: path
+        name: connection_token_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this connection token.
+        required: true
+      tags:
+      - rac
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionToken'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: rac_connection_tokens_update
+      description: ConnectionToken Viewset
+      parameters:
+      - in: path
+        name: connection_token_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this connection token.
+        required: true
+      tags:
+      - rac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConnectionTokenRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionToken'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: rac_connection_tokens_partial_update
+      description: ConnectionToken Viewset
+      parameters:
+      - in: path
+        name: connection_token_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this connection token.
+        required: true
+      tags:
+      - rac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedConnectionTokenRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionToken'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: rac_connection_tokens_destroy
+      description: ConnectionToken Viewset
+      parameters:
+      - in: path
+        name: connection_token_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this connection token.
+        required: true
+      tags:
+      - rac
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /rac/connection_tokens/{connection_token_uuid}/used_by/:
+    get:
+      operationId: rac_connection_tokens_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: connection_token_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this connection token.
+        required: true
+      tags:
+      - rac
       security:
       - authentik: []
       responses:
@@ -18272,11 +18528,6 @@ paths:
         description: |-
           * `authentik_tenants.domain` - Domain
           * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
-          * `authentik_events.event` - Event
-          * `authentik_events.notificationtransport` - Notification Transport
-          * `authentik_events.notification` - Notification
-          * `authentik_events.notificationrule` - Notification Rule
-          * `authentik_events.notificationwebhookmapping` - Webhook Mapping
           * `authentik_flows.flow` - Flow
           * `authentik_flows.flowstagebinding` - Flow Stage Binding
           * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
@@ -18344,6 +18595,11 @@ paths:
           * `authentik_providers_rac.racprovider` - RAC Provider
           * `authentik_providers_rac.endpoint` - RAC Endpoint
           * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
+          * `authentik_events.event` - Event
+          * `authentik_events.notificationtransport` - Notification Transport
+          * `authentik_events.notification` - Notification
+          * `authentik_events.notificationrule` - Notification Rule
+          * `authentik_events.notificationwebhookmapping` - Webhook Mapping
         required: true
       - in: query
         name: object_pk
@@ -18560,11 +18816,6 @@ paths:
         description: |-
           * `authentik_tenants.domain` - Domain
           * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
-          * `authentik_events.event` - Event
-          * `authentik_events.notificationtransport` - Notification Transport
-          * `authentik_events.notification` - Notification
-          * `authentik_events.notificationrule` - Notification Rule
-          * `authentik_events.notificationwebhookmapping` - Webhook Mapping
           * `authentik_flows.flow` - Flow
           * `authentik_flows.flowstagebinding` - Flow Stage Binding
           * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
@@ -18632,6 +18883,11 @@ paths:
           * `authentik_providers_rac.racprovider` - RAC Provider
           * `authentik_providers_rac.endpoint` - RAC Endpoint
           * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
+          * `authentik_events.event` - Event
+          * `authentik_events.notificationtransport` - Notification Transport
+          * `authentik_events.notification` - Notification
+          * `authentik_events.notificationrule` - Notification Rule
+          * `authentik_events.notificationwebhookmapping` - Webhook Mapping
         required: true
       - in: query
         name: object_pk
@@ -29347,7 +29603,6 @@ components:
       - authentik.admin
       - authentik.api
       - authentik.crypto
-      - authentik.events
       - authentik.flows
       - authentik.outposts
       - authentik.policies.dummy
@@ -29395,13 +29650,13 @@ components:
       - authentik.enterprise
       - authentik.enterprise.audit
       - authentik.enterprise.providers.rac
+      - authentik.events
       type: string
       description: |-
         * `authentik.tenants` - authentik Tenants
         * `authentik.admin` - authentik Admin
         * `authentik.api` - authentik API
         * `authentik.crypto` - authentik Crypto
-        * `authentik.events` - authentik Events
         * `authentik.flows` - authentik Flows
         * `authentik.outposts` - authentik Outpost
         * `authentik.policies.dummy` - authentik Policies.Dummy
@@ -29449,6 +29704,7 @@ components:
         * `authentik.enterprise` - authentik Enterprise
         * `authentik.enterprise.audit` - authentik Enterprise.Audit
         * `authentik.enterprise.providers.rac` - authentik Enterprise.Providers.RAC
+        * `authentik.events` - authentik Events
     AppleChallengeResponseRequest:
       type: object
       description: Pseudo class for plex response
@@ -31238,6 +31494,48 @@ components:
       - cache_timeout_reputation
       - capabilities
       - error_reporting
+    ConnectionToken:
+      type: object
+      description: ConnectionToken Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pbm uuid
+        provider:
+          type: integer
+        provider_obj:
+          allOf:
+          - $ref: '#/components/schemas/RACProvider'
+          readOnly: true
+        endpoint:
+          type: string
+          format: uuid
+          readOnly: true
+        endpoint_obj:
+          allOf:
+          - $ref: '#/components/schemas/Endpoint'
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/GroupMember'
+          readOnly: true
+      required:
+      - endpoint
+      - endpoint_obj
+      - pk
+      - provider
+      - provider_obj
+      - user
+    ConnectionTokenRequest:
+      type: object
+      description: ConnectionToken Serializer
+      properties:
+        provider:
+          type: integer
+      required:
+      - provider
     ConsentChallenge:
       type: object
       description: Challenge info for consent screens
@@ -32402,7 +32700,6 @@ components:
             * `authentik.admin` - authentik Admin
             * `authentik.api` - authentik API
             * `authentik.crypto` - authentik Crypto
-            * `authentik.events` - authentik Events
             * `authentik.flows` - authentik Flows
             * `authentik.outposts` - authentik Outpost
             * `authentik.policies.dummy` - authentik Policies.Dummy
@@ -32450,6 +32747,7 @@ components:
             * `authentik.enterprise` - authentik Enterprise
             * `authentik.enterprise.audit` - authentik Enterprise.Audit
             * `authentik.enterprise.providers.rac` - authentik Enterprise.Providers.RAC
+            * `authentik.events` - authentik Events
         model:
           allOf:
           - $ref: '#/components/schemas/ModelEnum'
@@ -32459,11 +32757,6 @@ components:
 
             * `authentik_tenants.domain` - Domain
             * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
-            * `authentik_events.event` - Event
-            * `authentik_events.notificationtransport` - Notification Transport
-            * `authentik_events.notification` - Notification
-            * `authentik_events.notificationrule` - Notification Rule
-            * `authentik_events.notificationwebhookmapping` - Webhook Mapping
             * `authentik_flows.flow` - Flow
             * `authentik_flows.flowstagebinding` - Flow Stage Binding
             * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
@@ -32531,6 +32824,11 @@ components:
             * `authentik_providers_rac.racprovider` - RAC Provider
             * `authentik_providers_rac.endpoint` - RAC Endpoint
             * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
+            * `authentik_events.event` - Event
+            * `authentik_events.notificationtransport` - Notification Transport
+            * `authentik_events.notification` - Notification
+            * `authentik_events.notificationrule` - Notification Rule
+            * `authentik_events.notificationwebhookmapping` - Webhook Mapping
       required:
       - bound_to
       - component
@@ -32601,7 +32899,6 @@ components:
             * `authentik.admin` - authentik Admin
             * `authentik.api` - authentik API
             * `authentik.crypto` - authentik Crypto
-            * `authentik.events` - authentik Events
             * `authentik.flows` - authentik Flows
             * `authentik.outposts` - authentik Outpost
             * `authentik.policies.dummy` - authentik Policies.Dummy
@@ -32649,6 +32946,7 @@ components:
             * `authentik.enterprise` - authentik Enterprise
             * `authentik.enterprise.audit` - authentik Enterprise.Audit
             * `authentik.enterprise.providers.rac` - authentik Enterprise.Providers.RAC
+            * `authentik.events` - authentik Events
         model:
           allOf:
           - $ref: '#/components/schemas/ModelEnum'
@@ -32658,11 +32956,6 @@ components:
 
             * `authentik_tenants.domain` - Domain
             * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
-            * `authentik_events.event` - Event
-            * `authentik_events.notificationtransport` - Notification Transport
-            * `authentik_events.notification` - Notification
-            * `authentik_events.notificationrule` - Notification Rule
-            * `authentik_events.notificationwebhookmapping` - Webhook Mapping
             * `authentik_flows.flow` - Flow
             * `authentik_flows.flowstagebinding` - Flow Stage Binding
             * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
@@ -32730,6 +33023,11 @@ components:
             * `authentik_providers_rac.racprovider` - RAC Provider
             * `authentik_providers_rac.endpoint` - RAC Endpoint
             * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
+            * `authentik_events.event` - Event
+            * `authentik_events.notificationtransport` - Notification Transport
+            * `authentik_events.notification` - Notification
+            * `authentik_events.notificationrule` - Notification Rule
+            * `authentik_events.notificationwebhookmapping` - Webhook Mapping
       required:
       - name
     EventRequest:
@@ -34973,11 +35271,6 @@ components:
       enum:
       - authentik_tenants.domain
       - authentik_crypto.certificatekeypair
-      - authentik_events.event
-      - authentik_events.notificationtransport
-      - authentik_events.notification
-      - authentik_events.notificationrule
-      - authentik_events.notificationwebhookmapping
       - authentik_flows.flow
       - authentik_flows.flowstagebinding
       - authentik_outposts.dockerserviceconnection
@@ -35045,15 +35338,15 @@ components:
       - authentik_providers_rac.racprovider
       - authentik_providers_rac.endpoint
       - authentik_providers_rac.racpropertymapping
+      - authentik_events.event
+      - authentik_events.notificationtransport
+      - authentik_events.notification
+      - authentik_events.notificationrule
+      - authentik_events.notificationwebhookmapping
       type: string
       description: |-
         * `authentik_tenants.domain` - Domain
         * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
-        * `authentik_events.event` - Event
-        * `authentik_events.notificationtransport` - Notification Transport
-        * `authentik_events.notification` - Notification
-        * `authentik_events.notificationrule` - Notification Rule
-        * `authentik_events.notificationwebhookmapping` - Webhook Mapping
         * `authentik_flows.flow` - Flow
         * `authentik_flows.flowstagebinding` - Flow Stage Binding
         * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
@@ -35121,6 +35414,11 @@ components:
         * `authentik_providers_rac.racprovider` - RAC Provider
         * `authentik_providers_rac.endpoint` - RAC Endpoint
         * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
+        * `authentik_events.event` - Event
+        * `authentik_events.notificationtransport` - Notification Transport
+        * `authentik_events.notification` - Notification
+        * `authentik_events.notificationrule` - Notification Rule
+        * `authentik_events.notificationwebhookmapping` - Webhook Mapping
     NameIdPolicyEnum:
       enum:
       - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
@@ -36255,6 +36553,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CertificateKeyPair'
+      required:
+      - pagination
+      - results
+    PaginatedConnectionTokenList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConnectionToken'
       required:
       - pagination
       - results
@@ -37970,6 +38280,12 @@ components:
           writeOnly: true
           description: Optional Private Key. If this is set, you can use this keypair
             for encryption.
+    PatchedConnectionTokenRequest:
+      type: object
+      description: ConnectionToken Serializer
+      properties:
+        provider:
+          type: integer
     PatchedConsentStageRequest:
       type: object
       description: ConsentStage Serializer
@@ -38228,7 +38544,6 @@ components:
             * `authentik.admin` - authentik Admin
             * `authentik.api` - authentik API
             * `authentik.crypto` - authentik Crypto
-            * `authentik.events` - authentik Events
             * `authentik.flows` - authentik Flows
             * `authentik.outposts` - authentik Outpost
             * `authentik.policies.dummy` - authentik Policies.Dummy
@@ -38276,6 +38591,7 @@ components:
             * `authentik.enterprise` - authentik Enterprise
             * `authentik.enterprise.audit` - authentik Enterprise.Audit
             * `authentik.enterprise.providers.rac` - authentik Enterprise.Providers.RAC
+            * `authentik.events` - authentik Events
         model:
           allOf:
           - $ref: '#/components/schemas/ModelEnum'
@@ -38285,11 +38601,6 @@ components:
 
             * `authentik_tenants.domain` - Domain
             * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
-            * `authentik_events.event` - Event
-            * `authentik_events.notificationtransport` - Notification Transport
-            * `authentik_events.notification` - Notification
-            * `authentik_events.notificationrule` - Notification Rule
-            * `authentik_events.notificationwebhookmapping` - Webhook Mapping
             * `authentik_flows.flow` - Flow
             * `authentik_flows.flowstagebinding` - Flow Stage Binding
             * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
@@ -38357,6 +38668,11 @@ components:
             * `authentik_providers_rac.racprovider` - RAC Provider
             * `authentik_providers_rac.endpoint` - RAC Endpoint
             * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
+            * `authentik_events.event` - Event
+            * `authentik_events.notificationtransport` - Notification Transport
+            * `authentik_events.notification` - Notification
+            * `authentik_events.notificationrule` - Notification Rule
+            * `authentik_events.notificationwebhookmapping` - Webhook Mapping
     PatchedEventRequest:
       type: object
       description: Event Serializer
@@ -39532,6 +39848,9 @@ components:
           minLength: 1
           description: 'Determines how long a session lasts. Default of 0 means that
             the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
+        delete_token_on_disconnect:
+          type: boolean
+          description: When set to true, connection tokens will be deleted upon disconnect.
     PatchedRadiusProviderRequest:
       type: object
       description: RadiusProvider Serializer
@@ -41614,6 +41933,9 @@ components:
           type: string
           description: 'Determines how long a session lasts. Default of 0 means that
             the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
+        delete_token_on_disconnect:
+          type: boolean
+          description: When set to true, connection tokens will be deleted upon disconnect.
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -41655,6 +41977,9 @@ components:
           minLength: 1
           description: 'Determines how long a session lasts. Default of 0 means that
             the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
+        delete_token_on_disconnect:
+          type: boolean
+          description: When set to true, connection tokens will be deleted upon disconnect.
       required:
       - authorization_flow
       - name
@@ -43587,17 +43912,14 @@ components:
         start_timestamp:
           type: string
           format: date-time
-          description: Timestamp when the task started
           readOnly: true
         finish_timestamp:
           type: string
           format: date-time
-          description: Timestamp when the task finished
           readOnly: true
         duration:
           type: number
           format: double
-          description: Get the duration a task took to run
           readOnly: true
         status:
           $ref: '#/components/schemas/SystemTaskStatusEnum'
@@ -43977,6 +44299,7 @@ components:
           maxLength: 254
         avatar:
           type: string
+          description: User's avatar, either a http/https URL or a data URI
           readOnly: true
         attributes:
           type: object
@@ -44070,6 +44393,8 @@ components:
         expires:
           type: string
           format: date-time
+        expiring:
+          type: boolean
         user:
           $ref: '#/components/schemas/User'
         application:
@@ -44648,6 +44973,7 @@ components:
           maxLength: 254
         avatar:
           type: string
+          description: User's avatar, either a http/https URL or a data URI
           readOnly: true
         uid:
           type: string

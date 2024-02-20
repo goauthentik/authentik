@@ -1,4 +1,5 @@
 """SCIM Client exceptions"""
+
 from typing import Optional
 
 from pydantic import ValidationError

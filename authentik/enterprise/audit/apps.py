@@ -1,4 +1,5 @@
 """Enterprise app config"""
+
 from django.conf import settings
 
 from authentik.enterprise.apps import EnterpriseConfig

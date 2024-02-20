@@ -1,4 +1,5 @@
 """Uvicorn worker"""
+
 from uvicorn.workers import UvicornWorker
 
 

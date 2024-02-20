@@ -1,4 +1,5 @@
 """Flow models"""
+
 from base64 import b64decode, b64encode
 from pickle import dumps, loads  # nosec
 from typing import TYPE_CHECKING, Optional

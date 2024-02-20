@@ -1,4 +1,5 @@
 """Serializer mixin for managed models"""
+
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework.decorators import action

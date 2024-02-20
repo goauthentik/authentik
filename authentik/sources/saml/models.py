@@ -1,4 +1,5 @@
 """saml sp models"""
+
 from typing import Optional
 
 from django.db import models

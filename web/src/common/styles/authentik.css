@@ -150,3 +150,7 @@ html > form > input {
         margin-top: 13rem;
     }
 }
+
+.pf-c-data-list {
+    padding-inline-start: 0;
+}

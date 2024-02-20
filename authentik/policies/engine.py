@@ -1,7 +1,8 @@
 """authentik policy engine"""
+
 from multiprocessing import Pipe, current_process
 from multiprocessing.connection import Connection
-from timeit import default_timer
+from time import perf_counter
 from typing import Iterator, Optional
 
 from django.core.cache import cache
@@ -83,10 +84,10 @@ class PolicyEngine:
     def _check_cache(self, binding: PolicyBinding):
         if not self.use_cache:
             return False
-        before = default_timer()
+        before = perf_counter()
         key = cache_key(binding, self.request)
         cached_policy = cache.get(key, None)
-        duration = max(default_timer() - before, 0)
+        duration = max(perf_counter() - before, 0)
         if not cached_policy:
             return False
         self.logger.debug(

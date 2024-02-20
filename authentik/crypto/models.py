@@ -1,4 +1,5 @@
 """authentik crypto models"""
+
 from binascii import hexlify
 from hashlib import md5
 from typing import Optional

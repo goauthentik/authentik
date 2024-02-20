@@ -1,4 +1,5 @@
 """authentik expression policy evaluator"""
+
 from ipaddress import ip_address
 from typing import TYPE_CHECKING, Optional
 

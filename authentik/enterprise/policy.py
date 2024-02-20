@@ -1,10 +1,11 @@
 """Enterprise license policies"""
+
 from typing import Optional
 
 from django.utils.translation import gettext_lazy as _
 
 from authentik.core.models import User, UserTypes
-from authentik.enterprise.models import LicenseKey
+from authentik.enterprise.license import LicenseKey
 from authentik.policies.types import PolicyRequest, PolicyResult
 from authentik.policies.views import PolicyAccessView
 

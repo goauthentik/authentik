@@ -1,4 +1,5 @@
 """RBAC models"""
+
 from typing import Optional
 from uuid import uuid4
 

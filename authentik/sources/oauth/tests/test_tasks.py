@@ -1,4 +1,5 @@
 """Test OAuth Source tasks"""
+
 from django.test import TestCase
 from requests_mock import Mocker
 

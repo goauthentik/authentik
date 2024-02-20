@@ -1,4 +1,5 @@
 """Sync LDAP Users and groups into authentik"""
+
 from typing import Any, Generator
 
 from django.conf import settings

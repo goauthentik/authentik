@@ -1,4 +1,5 @@
 """Test blueprints v1 tasks"""
+
 from hashlib import sha512
 from tempfile import NamedTemporaryFile, mkdtemp
 

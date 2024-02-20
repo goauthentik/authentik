@@ -1,4 +1,5 @@
 """test OAuth Provider flow"""
+
 from time import sleep
 from typing import Any, Optional
 

@@ -1,4 +1,5 @@
 """OAuth errors"""
+
 from typing import Optional
 from urllib.parse import quote, urlparse
 

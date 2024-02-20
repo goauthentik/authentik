@@ -1,4 +1,5 @@
 """email utils"""
+
 from email.mime.image import MIMEImage
 from functools import lru_cache
 from pathlib import Path

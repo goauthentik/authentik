@@ -1,4 +1,5 @@
 """rbac signals"""
+
 from django.contrib.auth.models import Group as DjangoGroup
 from django.db.models.signals import m2m_changed, pre_save
 from django.db.transaction import atomic

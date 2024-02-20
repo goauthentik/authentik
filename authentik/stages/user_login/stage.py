@@ -1,4 +1,5 @@
 """Login stage logic"""
+
 from datetime import timedelta
 
 from django.contrib import messages

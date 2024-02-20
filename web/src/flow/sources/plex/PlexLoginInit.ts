@@ -10,6 +10,7 @@ import { TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
@@ -32,7 +33,7 @@ export class PlexLoginInit extends BaseStage<
     authUrl?: string;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
+        return [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle, PFDivider];
     }
 
     async firstUpdated(): Promise<void> {
@@ -76,7 +77,7 @@ export class PlexLoginInit extends BaseStage<
                         header=${msg("Waiting for authentication...")}
                     >
                     </ak-empty-state>
-                    <hr />
+                    <hr class="pf-c-divider" />
                     <p>${msg("If no Plex popup opens, click the button below.")}</p>
                     <button
                         class="pf-c-button pf-m-block pf-m-primary"

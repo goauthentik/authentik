@@ -1,4 +1,5 @@
 """ASN Enricher"""
+
 from typing import TYPE_CHECKING, Optional, TypedDict
 
 from django.http import HttpRequest

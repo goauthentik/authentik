@@ -1,4 +1,5 @@
 """authentik policies app config"""
+
 from prometheus_client import Gauge, Histogram
 
 from authentik.blueprints.apps import ManagedAppConfig
@@ -34,7 +35,3 @@ class AuthentikPoliciesConfig(ManagedAppConfig):
     label = "authentik_policies"
     verbose_name = "authentik Policies"
     default = True
-
-    def reconcile_global_load_policies_signals(self):
-        """Load policies signals"""
-        self.import_module("authentik.policies.signals")

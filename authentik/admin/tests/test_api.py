@@ -1,4 +1,5 @@
 """test admin api"""
+
 from json import loads
 
 from django.test import TestCase

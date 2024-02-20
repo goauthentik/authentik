@@ -1,4 +1,5 @@
 """SAML AuthNRequest Parser and dataclass"""
+
 from base64 import b64decode
 from dataclasses import dataclass
 from typing import Optional

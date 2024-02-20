@@ -1,4 +1,5 @@
 """Mailcow OAuth Views"""
+
 from typing import Any, Optional
 
 from requests.exceptions import RequestException

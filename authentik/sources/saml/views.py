@@ -1,4 +1,5 @@
 """saml sp views"""
+
 from urllib.parse import parse_qsl, urlparse, urlunparse
 
 from django.contrib.auth import logout

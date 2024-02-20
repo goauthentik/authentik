@@ -1,4 +1,5 @@
 """stage view tests"""
+
 from typing import Callable
 
 from django.test import RequestFactory, TestCase

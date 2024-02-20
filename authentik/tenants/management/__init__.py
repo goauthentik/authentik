@@ -1,4 +1,5 @@
 """authentik tenants management command utils"""
+
 from django.core.management.base import BaseCommand
 from django.db import connection
 from django_tenants.utils import get_public_schema_name

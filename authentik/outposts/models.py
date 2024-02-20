@@ -1,4 +1,5 @@
 """Outpost models"""
+
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from typing import Any, Iterable, Optional

@@ -9,7 +9,7 @@ import { UserDisplay } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
 import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
-import { Interface } from "@goauthentik/elements/Interface";
+import { EnterpriseAwareInterface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/enterprise/EnterpriseStatusBanner";
@@ -41,7 +41,7 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import { CoreApi, EventsApi, SessionUser } from "@goauthentik/api";
 
 @customElement("ak-interface-user")
-export class UserInterface extends Interface {
+export class UserInterface extends EnterpriseAwareInterface {
     @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 
@@ -120,6 +120,10 @@ export class UserInterface extends Interface {
                 ak-locale-context {
                     display: flex;
                     flex-direction: column;
+                }
+                .pf-c-drawer__main {
+                    min-height: calc(100vh - 76px);
+                    max-height: calc(100vh - 76px);
                 }
             `,
         ];

@@ -1,4 +1,5 @@
 """core Configs API"""
+
 from pathlib import Path
 
 from django.conf import settings

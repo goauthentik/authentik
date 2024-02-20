@@ -1,4 +1,5 @@
 """policy API Views"""
+
 from django.core.cache import cache
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema

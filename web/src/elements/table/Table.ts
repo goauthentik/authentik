@@ -180,6 +180,12 @@ export abstract class Table<T> extends AKElement implements TableLike {
                 .pf-c-table tbody .pf-c-table__check input {
                     margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
                 }
+                .pf-c-toolbar__content {
+                    row-gap: var(--pf-global--spacer--sm);
+                }
+                .pf-c-toolbar__item .pf-c-input-group {
+                    padding: 0 var(--pf-global--spacer--sm);
+                }
             `,
         ];
     }

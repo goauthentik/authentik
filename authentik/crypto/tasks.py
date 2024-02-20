@@ -1,4 +1,5 @@
 """Crypto tasks"""
+
 from glob import glob
 from pathlib import Path
 

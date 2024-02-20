@@ -1,4 +1,5 @@
 """Flows Diagram API"""
+
 from dataclasses import dataclass, field
 from typing import Optional
 

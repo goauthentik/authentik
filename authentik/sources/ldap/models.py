@@ -1,4 +1,5 @@
 """authentik LDAP Models"""
+
 from os import chmod
 from os.path import dirname, exists
 from shutil import rmtree

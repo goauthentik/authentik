@@ -1,4 +1,5 @@
 """GitHub Type tests"""
+
 from copy import copy
 
 from django.test import RequestFactory, TestCase

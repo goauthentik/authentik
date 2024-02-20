@@ -1,4 +1,5 @@
 """SAML ServiceProvider Metadata Parser and dataclass"""
+
 from dataclasses import dataclass
 from typing import Optional
 

@@ -1,5 +1,6 @@
 import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/saml/SAMLProviderForm";
+import renderDescriptionList from "@goauthentik/app/components/DescriptionList";
 import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
@@ -34,11 +35,14 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
     CertificateKeyPair,
+    CoreApi,
+    CoreUsersListRequest,
     CryptoApi,
     ProvidersApi,
     RbacPermissionsAssignedByUsersListModelEnum,
     SAMLMetadata,
     SAMLProvider,
+    User,
 } from "@goauthentik/api";
 
 interface SAMLPreviewAttribute {
@@ -96,6 +100,9 @@ export class SAMLProviderViewPage extends AKElement {
     @state()
     verifier?: CertificateKeyPair;
 
+    @state()
+    previewUser?: User;
+
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -118,6 +125,17 @@ export class SAMLProviderViewPage extends AKElement {
             if (!this.provider?.pk) return;
             this.providerID = this.provider?.pk;
         });
+    }
+
+    fetchPreview(): void {
+        new ProvidersApi(DEFAULT_CONFIG)
+            .providersSamlPreviewUserRetrieve({
+                id: this.provider?.pk || 0,
+                forUser: this.previewUser?.pk,
+            })
+            .then((preview) => {
+                this.preview = preview.preview as SAMLPreviewAttribute;
+            });
     }
 
     renderRelatedObjects(): TemplateResult {
@@ -203,13 +221,7 @@ export class SAMLProviderViewPage extends AKElement {
                 slot="page-preview"
                 data-tab-title="${msg("Preview")}"
                 @activate=${() => {
-                    new ProvidersApi(DEFAULT_CONFIG)
-                        .providersSamlPreviewUserRetrieve({
-                            id: this.provider?.pk || 0,
-                        })
-                        .then((preview) => {
-                            this.preview = preview.preview as SAMLPreviewAttribute;
-                        });
+                    this.fetchPreview();
                 }}
             >
                 ${this.renderTabPreview()}
@@ -495,6 +507,47 @@ export class SAMLProviderViewPage extends AKElement {
             <div class="pf-c-card">
                 <div class="pf-c-card__title">${msg("Example SAML attributes")}</div>
                 <div class="pf-c-card__body">
+                    ${renderDescriptionList([
+                        [
+                            "Preview for user",
+                            html`
+                                <ak-search-select
+                                    .fetchObjects=${async (query?: string): Promise<User[]> => {
+                                        const args: CoreUsersListRequest = {
+                                            ordering: "username",
+                                        };
+                                        if (query !== undefined) {
+                                            args.search = query;
+                                        }
+                                        const users = await new CoreApi(
+                                            DEFAULT_CONFIG,
+                                        ).coreUsersList(args);
+                                        return users.results;
+                                    }}
+                                    .renderElement=${(user: User): string => {
+                                        return user.username;
+                                    }}
+                                    .renderDescription=${(user: User): TemplateResult => {
+                                        return html`${user.name}`;
+                                    }}
+                                    .value=${(user: User | undefined): number | undefined => {
+                                        return user?.pk;
+                                    }}
+                                    .selected=${(user: User): boolean => {
+                                        return user.pk === this.previewUser?.pk;
+                                    }}
+                                    ?blankable=${true}
+                                    @ak-change=${(ev: CustomEvent) => {
+                                        this.previewUser = ev.detail.value;
+                                        this.fetchPreview();
+                                    }}
+                                >
+                                </ak-search-select>
+                            `,
+                        ],
+                    ])}
+                </div>
+                <div class="pf-c-card__body">
                     <dl class="pf-c-description-list pf-m-2-col-on-lg">
                         <div class="pf-c-description-list__group">
                             <dt class="pf-c-description-list__term">
@@ -519,11 +572,7 @@ export class SAMLProviderViewPage extends AKElement {
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
-                                        <ul class="pf-c-list">
-                                            ${attr.Value.map((value) => {
-                                                return html` <li><pre>${value}</pre></li> `;
-                                            })}
-                                        </ul>
+                                        <ul class="pf-c-list"></ul>
                                     </div>
                                 </dd>
                             </div>`;

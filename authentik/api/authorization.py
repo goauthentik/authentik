@@ -1,4 +1,5 @@
 """API Authorization"""
+
 from django.conf import settings
 from django.db.models import Model
 from django.db.models.query import QuerySet

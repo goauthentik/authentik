@@ -1,4 +1,5 @@
 """Test authorize view"""
+
 from unittest.mock import MagicMock, patch
 
 from django.test import RequestFactory

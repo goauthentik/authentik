@@ -1,4 +1,5 @@
 """Avatar utils"""
+
 from base64 import b64encode
 from functools import cache as funccache
 from hashlib import md5
@@ -6,6 +7,7 @@ from typing import TYPE_CHECKING, Optional
 from urllib.parse import urlencode
 
 from django.core.cache import cache
+from django.http import HttpRequest
 from django.templatetags.static import static
 from lxml import etree  # nosec
 from lxml.etree import Element, SubElement  # nosec
@@ -15,12 +17,12 @@ from authentik.lib.config import get_path_from_dict
 from authentik.lib.utils.http import get_http_session
 from authentik.tenants.utils import get_current_tenant
 
+if TYPE_CHECKING:
+    from authentik.core.models import User
+
 GRAVATAR_URL = "https://secure.gravatar.com"
 DEFAULT_AVATAR = static("dist/assets/images/user_default.png")
 CACHE_KEY_GRAVATAR = "goauthentik.io/lib/avatars/"
-
-if TYPE_CHECKING:
-    from authentik.core.models import User
 
 SVG_XML_NS = "http://www.w3.org/2000/svg"
 SVG_NS_MAP = {None: SVG_XML_NS}
@@ -177,14 +179,19 @@ def avatar_mode_url(user: "User", mode: str) -> Optional[str]:
     }
 
 
-def get_avatar(user: "User") -> str:
+def get_avatar(user: "User", request: Optional[HttpRequest] = None) -> str:
     """Get avatar with configured mode"""
     mode_map = {
         "none": avatar_mode_none,
         "initials": avatar_mode_generated,
         "gravatar": avatar_mode_gravatar,
     }
-    modes: str = get_current_tenant().avatars
+    tenant = None
+    if request:
+        tenant = request.tenant
+    else:
+        tenant = get_current_tenant()
+    modes: str = tenant.avatars
     for mode in modes.split(","):
         avatar = None
         if mode in mode_map:

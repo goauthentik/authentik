@@ -1,4 +1,5 @@
 """authentik core app config"""
+
 from django.conf import settings
 
 from authentik.blueprints.apps import ManagedAppConfig
@@ -12,10 +13,6 @@ class AuthentikCoreConfig(ManagedAppConfig):
     verbose_name = "authentik Core"
     mountpoint = ""
     default = True
-
-    def reconcile_global_load_core_signals(self):
-        """Load core signals"""
-        self.import_module("authentik.core.signals")
 
     def reconcile_global_debug_worker_hook(self):
         """Dispatch startup tasks inline when debugging"""

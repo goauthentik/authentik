@@ -1,4 +1,5 @@
 """authentik events models"""
+
 import time
 from collections import Counter
 from datetime import timedelta
@@ -209,8 +210,9 @@ class Event(SerializerModel, ExpiringModel):
             app = parent.f_globals["__name__"]
             # Attempt to match the calling module to the django app it belongs to
             # if we can't find a match, keep the module name
-            django_apps = get_close_matches(app, django_app_names(), n=1)
-            if len(django_apps) > 0:
+            django_apps: list[str] = get_close_matches(app, django_app_names(), n=1)
+            # Also ensure that closest django app has the correct prefix
+            if len(django_apps) > 0 and django_apps[0].startswith(app):
                 app = django_apps[0]
         cleaned_kwargs = cleanse_dict(sanitize_dict(kwargs))
         event = Event(action=action, app=app, context=cleaned_kwargs)
@@ -618,8 +620,9 @@ class SystemTask(SerializerModel, ExpiringModel):
     name = models.TextField()
     uid = models.TextField(null=True)
 
-    start_timestamp = models.FloatField()
-    finish_timestamp = models.FloatField()
+    start_timestamp = models.DateTimeField(default=now)
+    finish_timestamp = models.DateTimeField(default=now)
+    duration = models.FloatField(default=0)
 
     status = models.TextField(choices=TaskStatus.choices)
 
@@ -639,17 +642,18 @@ class SystemTask(SerializerModel, ExpiringModel):
 
     def update_metrics(self):
         """Update prometheus metrics"""
-        duration = max(self.finish_timestamp - self.start_timestamp, 0)
         # TODO: Deprecated metric - remove in 2024.2 or later
         GAUGE_TASKS.labels(
             tenant=connection.schema_name,
             task_name=self.name,
             task_uid=self.uid or "",
             status=self.status.lower(),
-        ).set(duration)
+        ).set(self.duration)
         SYSTEM_TASK_TIME.labels(
             tenant=connection.schema_name,
-        ).observe(duration)
+            task_name=self.name,
+            task_uid=self.uid or "",
+        ).observe(self.duration)
         SYSTEM_TASK_STATUS.labels(
             tenant=connection.schema_name,
             task_name=self.name,

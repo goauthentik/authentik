@@ -1,8 +1,12 @@
 """authentik events app"""
+
+from celery.schedules import crontab
 from prometheus_client import Gauge, Histogram
 
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.config import CONFIG, ENV_PREFIX
+from authentik.lib.utils.reflection import path_to_class
+from authentik.root.celery import CELERY_APP
 
 # TODO: Deprecated metric - remove in 2024.2 or later
 GAUGE_TASKS = Gauge(
@@ -14,7 +18,7 @@ GAUGE_TASKS = Gauge(
 SYSTEM_TASK_TIME = Histogram(
     "authentik_system_tasks_time_seconds",
     "Runtime of system tasks",
-    ["tenant"],
+    ["tenant", "task_name", "task_uid"],
 )
 SYSTEM_TASK_STATUS = Gauge(
     "authentik_system_tasks_status",
@@ -30,10 +34,6 @@ class AuthentikEventsConfig(ManagedAppConfig):
     label = "authentik_events"
     verbose_name = "authentik Events"
     default = True
-
-    def reconcile_global_load_events_signals(self):
-        """Load events signals"""
-        self.import_module("authentik.events.signals")
 
     def reconcile_global_check_deprecations(self):
         """Check for config deprecations"""
@@ -56,7 +56,7 @@ class AuthentikEventsConfig(ManagedAppConfig):
                 message=msg,
             ).save()
 
-    def reconcile_prefill_tasks(self):
+    def reconcile_tenant_prefill_tasks(self):
         """Prefill tasks"""
         from authentik.events.models import SystemTask
         from authentik.events.system_tasks import _prefill_tasks
@@ -66,3 +66,28 @@ class AuthentikEventsConfig(ManagedAppConfig):
                 continue
             task.save()
             self.logger.debug("prefilled task", task_name=task.name)
+
+    def reconcile_tenant_run_scheduled_tasks(self):
+        """Run schedule tasks which are behind schedule (only applies
+        to tasks of which we keep metrics)"""
+        from authentik.events.models import TaskStatus
+        from authentik.events.system_tasks import SystemTask as CelerySystemTask
+
+        for task in CELERY_APP.conf["beat_schedule"].values():
+            schedule = task["schedule"]
+            if not isinstance(schedule, crontab):
+                continue
+            task_class: CelerySystemTask = path_to_class(task["task"])
+            if not isinstance(task_class, CelerySystemTask):
+                continue
+            db_task = task_class.db()
+            if not db_task:
+                continue
+            due, _ = schedule.is_due(db_task.finish_timestamp)
+            if due or db_task.status == TaskStatus.UNKNOWN:
+                self.logger.debug("Running past-due scheduled task", task=task["task"])
+                task_class.apply_async(
+                    args=task.get("args", None),
+                    kwargs=task.get("kwargs", None),
+                    **task.get("options", {}),
+                )

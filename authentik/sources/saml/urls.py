@@ -1,4 +1,5 @@
 """saml sp urls"""
+
 from django.urls import path
 
 from authentik.sources.saml.api.source import SAMLSourceViewSet
