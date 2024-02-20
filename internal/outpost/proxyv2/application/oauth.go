@@ -1,13 +1,11 @@
 package application
 
 import (
-	"encoding/base64"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
 
-	"github.com/gorilla/securecookie"
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 )
@@ -49,7 +47,6 @@ func (a *Application) checkRedirectParam(r *http.Request) (string, bool) {
 }
 
 func (a *Application) handleAuthStart(rw http.ResponseWriter, r *http.Request) {
-	newState := base64.RawURLEncoding.EncodeToString(securecookie.GenerateRandomKey(32))
 	s, _ := a.sessions.Get(r, a.SessionName())
 	// Check if we already have a state in the session,
 	// and if we do we don't do anything here
@@ -65,17 +62,17 @@ func (a *Application) handleAuthStart(rw http.ResponseWriter, r *http.Request) {
 		http.Redirect(rw, r, a.oauthConfig.AuthCodeURL(currentState), http.StatusFound)
 		return
 	}
-	rd, ok := a.checkRedirectParam(r)
-	if ok {
-		s.Values[constants.SessionRedirect] = rd
-		a.log.WithField("rd", rd).Trace("Setting redirect")
+	state, err := a.createState(r)
+	if err != nil {
+		a.log.WithError(err).Warning("failed to create state")
+		return
 	}
-	s.Values[constants.SessionOAuthState] = newState
-	err := s.Save(r, rw)
+	s.Values[constants.SessionOAuthState] = state
+	err = s.Save(r, rw)
 	if err != nil {
 		a.log.WithError(err).Warning("failed to save session")
 	}
-	http.Redirect(rw, r, a.oauthConfig.AuthCodeURL(newState), http.StatusFound)
+	http.Redirect(rw, r, a.oauthConfig.AuthCodeURL(state), http.StatusFound)
 }
 
 func (a *Application) handleAuthCallback(rw http.ResponseWriter, r *http.Request) {

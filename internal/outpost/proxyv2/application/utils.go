@@ -62,18 +62,13 @@ func (a *Application) redirectToStart(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (a *Application) redirect(rw http.ResponseWriter, r *http.Request) {
-	redirect := a.proxyConfig.ExternalHost
-	s, _ := a.sessions.Get(r, a.SessionName())
-	redirectR, ok := s.Values[constants.SessionRedirect]
-	if ok {
-		redirect = redirectR.(string)
+	fallbackRedirect := a.proxyConfig.ExternalHost
+	state := a.stateFromRequest(r)
+	if state.Redirect == "" {
+		state.Redirect = fallbackRedirect
 	}
-	rd, ok := a.checkRedirectParam(r)
-	if ok {
-		redirect = rd
-	}
-	a.log.WithField("redirect", redirect).Trace("final redirect")
-	http.Redirect(rw, r, redirect, http.StatusFound)
+	a.log.WithField("redirect", state.Redirect).Trace("final redirect")
+	http.Redirect(rw, r, state.Redirect, http.StatusFound)
 }
 
 // toString Generic to string function, currently supports actual strings and integers

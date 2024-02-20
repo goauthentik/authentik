@@ -5,7 +5,7 @@ import (
 	"encoding/base64"
 	"strings"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type KeySet struct {
@@ -22,7 +22,7 @@ func NewKeySet(secret string) *KeySet {
 
 func (ks *KeySet) VerifySignature(ctx context.Context, jwt string) ([]byte, error) {
 	parts := strings.Split(jwt, ".")
-	err := ks.m.Verify(strings.Join(parts[0:2], "."), parts[2], []byte(ks.secret))
+	err := ks.m.Verify(strings.Join(parts[0:2], "."), []byte(parts[2]), []byte(ks.secret))
 	if err != nil {
 		return nil, err
 	}
