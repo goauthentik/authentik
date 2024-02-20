@@ -264,44 +264,46 @@ class Prompt(SerializerModel):
         kwargs = {
             "required": self.required,
         }
-        if self.type in (FieldTypes.TEXT, FieldTypes.TEXT_AREA):
-            kwargs["trim_whitespace"] = False
-            kwargs["allow_blank"] = not self.required
-        if self.type in (FieldTypes.TEXT_READ_ONLY, FieldTypes.TEXT_AREA_READ_ONLY):
-            field_class = ReadOnlyField
-            # required can't be set for ReadOnlyField
-            kwargs["required"] = False
-        if self.type == FieldTypes.EMAIL:
-            field_class = EmailField
-            kwargs["allow_blank"] = not self.required
-        if self.type == FieldTypes.NUMBER:
-            field_class = IntegerField
-        if self.type == FieldTypes.CHECKBOX:
-            field_class = BooleanField
-            kwargs["required"] = False
+        match self.type:
+            case FieldTypes.TEXT | FieldTypes.TEXT_AREA:
+                kwargs["trim_whitespace"] = False
+                kwargs["allow_blank"] = not self.required
+            case FieldTypes.TEXT_READ_ONLY, FieldTypes.TEXT_AREA_READ_ONLY:
+                field_class = ReadOnlyField
+                # required can't be set for ReadOnlyField
+                kwargs["required"] = False
+            case FieldTypes.EMAIL:
+                field_class = EmailField
+                kwargs["allow_blank"] = not self.required
+            case FieldTypes.NUMBER:
+                field_class = IntegerField
+            case FieldTypes.CHECKBOX:
+                field_class = BooleanField
+                kwargs["required"] = False
+            case FieldTypes.DATE:
+                field_class = DateField
+            case FieldTypes.DATE_TIME:
+                field_class = DateTimeField
+            case FieldTypes.FILE:
+                field_class = InlineFileField
+            case FieldTypes.SEPARATOR:
+                kwargs["required"] = False
+                kwargs["label"] = ""
+            case FieldTypes.HIDDEN:
+                field_class = HiddenField
+                kwargs["required"] = False
+                kwargs["default"] = self.placeholder
+            case FieldTypes.STATIC:
+                kwargs["default"] = self.placeholder
+                kwargs["required"] = False
+                kwargs["label"] = ""
+
+            case FieldTypes.AK_LOCALE:
+                kwargs["allow_blank"] = True
+
         if self.type in CHOICE_FIELDS:
             field_class = ChoiceField
             kwargs["choices"] = choices or []
-        if self.type == FieldTypes.DATE:
-            field_class = DateField
-        if self.type == FieldTypes.DATE_TIME:
-            field_class = DateTimeField
-        if self.type == FieldTypes.FILE:
-            field_class = InlineFileField
-        if self.type == FieldTypes.SEPARATOR:
-            kwargs["required"] = False
-            kwargs["label"] = ""
-        if self.type == FieldTypes.HIDDEN:
-            field_class = HiddenField
-            kwargs["required"] = False
-            kwargs["default"] = self.placeholder
-        if self.type == FieldTypes.STATIC:
-            kwargs["default"] = self.placeholder
-            kwargs["required"] = False
-            kwargs["label"] = ""
-
-        if self.type == FieldTypes.AK_LOCALE:
-            kwargs["allow_blank"] = True
 
         if default:
             kwargs["default"] = default
