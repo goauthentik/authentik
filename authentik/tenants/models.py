@@ -23,7 +23,7 @@ LOGGER = get_logger()
 
 VALID_SCHEMA_NAME = re.compile(r"^t_[a-z0-9]{1,61}$")
 
-DEFAULT_TOKEN_DURATION = "minutes=30"
+DEFAULT_TOKEN_DURATION = "minutes=30"  # nosec
 DEFAULT_TOKEN_LENGTH = 60
 
 
