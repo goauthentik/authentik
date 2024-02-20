@@ -116,6 +116,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
                               @click=${() => {
                                   this.authenticateWrapper();
                               }}
+                              type="button"
                           >
                               ${msg("Retry authentication")}
                           </button>`
