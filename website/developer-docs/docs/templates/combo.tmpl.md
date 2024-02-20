@@ -12,6 +12,10 @@ In this section, go into a deeper explanation of the feature, provide typical us
 if needed, use this syntax to add a note (info) or warning (warning).
 :::
 
+### More info about the feature, a sub-category of info
+
+Use this section if there are several big topics or categories of info that the reader needs to know about the feature or task. Add as many of these sections as needed.
+
 ## Prerequisites
 
 bullet list of pre-reqs

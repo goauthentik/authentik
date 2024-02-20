@@ -20,6 +20,10 @@ In this first section, right after the title but with no header, write one or tw
 
 In this section, go into a deeper explanation of the feature, provide typical use cases, etc.
 
+### More info about the feature, a sub-category of info
+
+Use this section if there are several big topics or categories of info that the reader needs to know about the feature or task. Add as many of these sections as needed.
+
 ## Prerequisites (optional section)
 
 In this section, inform the reader of anything they need to do, or have configured or installed, before they start following the procedural instructions below.
