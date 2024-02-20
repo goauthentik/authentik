@@ -32,9 +32,12 @@ select = [
     "PL",
 ]
 ignore = [
-    "DJ001" # Avoid using `null=True` on string-based fields
+    "DJ001" # Avoid using `null=True` on string-based fields,
 ]
-
+[tool.ruff.lint.pylint]
+max-args = 7
+max-branches = 18
+max-returns = 10
 
 [tool.coverage.run]
 source = ["authentik"]

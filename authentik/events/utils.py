@@ -95,7 +95,7 @@ def get_user(user: User | AnonymousUser, original_user: User | None = None) -> d
     return user_data
 
 
-def sanitize_item(value: Any) -> Any:
+def sanitize_item(value: Any) -> Any:  # noqa: PLR0911, PLR0912
     """Sanitize a single item, ensure it is JSON parsable"""
     if is_dataclass(value):
         # Because asdict calls `copy.deepcopy(obj)` on everything that's not tuple/dict,
