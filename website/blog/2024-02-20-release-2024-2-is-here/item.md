@@ -31,11 +31,11 @@ We are happy to announce that 2024 is starting off great, with our first release
 
 ![graphic of release highlights](./2024.2-release-blog.png)
 
-<!--truncate-->
-
 We confess we are possibly the most excited about this release than any in a while, with some new Admin-level capabilities, enhanced functionality for developers (our DX game is heating up!), and some great UX/usability and customization enhancements.
 
 Let’s start with some of the big features, the ones that kept us busy over the holidays and into the new year.
+
+<!--truncate-->
 
 ### **Remote Access Control** (Enterprise)
 
@@ -79,7 +79,7 @@ Release 2024.2 contains even more; the following additional enhancements will ma
 
 -   ### *Pretend user exists* option for Identification stage
 
-    Previously the Identification stage would only continue if a user matching the user identifier exists. While this was the intended functionality, this release adds an option to continue to the next stage even if no matching user was found. "Pretend" users cannot authenticate nor receive emails, and don't exist in the database.
+    Previously the Identification stage would only continue if a user matching the user identifier exists. While this was the intended functionality, this release adds an option to continue to the next stage even if no matching user was found. "Pretend" users can neither authenticate nor receive emails, and don't exist in the database.
 
 -   ### Flows can now be restricted to outposts
 
