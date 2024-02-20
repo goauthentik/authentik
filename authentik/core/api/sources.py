@@ -16,7 +16,6 @@ from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
 from authentik.api.authorization import OwnerFilter, OwnerSuperuserPermissions
-from authentik.api.decorators import permission_required
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
@@ -30,6 +29,7 @@ from authentik.lib.utils.file import (
 )
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.policies.engine import PolicyEngine
+from authentik.rbac.decorators import permission_required
 
 LOGGER = get_logger()
 
