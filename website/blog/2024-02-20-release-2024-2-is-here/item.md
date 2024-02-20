@@ -65,7 +65,7 @@ For the first release of the year, we purposefully included several changes that
 
 Perhaps the biggest change is that _tenants_ (which were previously used to change branding configuration, default flows, and several other settings) have been renamed to *brands*. The term "Brands" more accurately reflect their usage; to configure branding, logos, colors, and overall login flow behavior. For more information, refer to the [Release Notes](https://goauthentik.io/docs/releases/2024.2) and to our documentation for _brands_.
 
-### **Helm chart breaking changes**
+### Helm chart breaking changes
 
 The Helm Chart used for running authentik in Kubernetes has a number of breaking changes. Find out more in the [chart release notes](https://github.com/goauthentik/helm/releases/tag/authentik-2024.2.0).
 
@@ -87,7 +87,7 @@ Release 2024.2 contains even more; the following additional enhancements will ma
 
 -   ### Admin can see all of a user’s apps
 
-    A new tab on the **User** details page now displays all applications to which the user has access. From the list of applications, the admin can drill down into a specific app and see details about the app, including a changelog on app modifications, any bindings, and the permissions on the app.
+    A new tab on the **User** details page now displays all applications to which the user has access. From the list of applications, the admin can drill down into a specific app and see details about the app, including a changelog of app modifications, any bindings, and the permissions on the app.
 
 -   ### View Event volume with a new graph
 
