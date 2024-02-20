@@ -190,16 +190,16 @@ class ConfigLoader:
 
     def update(self, root: dict[str, Any], updatee: dict[str, Any]) -> dict[str, Any]:
         """Recursively update dictionary"""
-        for key, value in updatee.items():
-            if isinstance(value, Mapping):
-                root[key] = self.update(root.get(key, {}), value)
+        for key, raw_value in updatee.items():
+            if isinstance(raw_value, Mapping):
+                root[key] = self.update(root.get(key, {}), raw_value)
             else:
-                if isinstance(value, str):
-                    value = self.parse_uri(value)
-                elif isinstance(value, Attr) and isinstance(value.value, str):
-                    value = self.parse_uri(value.value)
-                elif not isinstance(value, Attr):
-                    value = Attr(value)
+                if isinstance(raw_value, str):
+                    value = self.parse_uri(raw_value)
+                elif isinstance(raw_value, Attr) and isinstance(raw_value.value, str):
+                    value = self.parse_uri(raw_value.value)
+                elif not isinstance(raw_value, Attr):
+                    value = Attr(raw_value)
                 root[key] = value
         return root
 
@@ -257,7 +257,7 @@ class ConfigLoader:
             relative_key = key.replace(f"{ENV_PREFIX}_", "", 1).replace("__", ".").lower()
             # Check if the value is json, and try to load it
             try:
-                value = loads(value)
+                value = loads(value)  # noqa: PLW2901
             except JSONDecodeError:
                 pass
             attr_value = Attr(value, Attr.Source.ENV, relative_key)

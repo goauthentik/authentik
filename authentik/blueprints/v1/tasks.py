@@ -56,7 +56,7 @@ def start_blueprint_watcher():
     """Start blueprint watcher, if it's not running already."""
     # This function might be called twice since it's called on celery startup
 
-    global _file_watcher_started
+    global _file_watcher_started  # noqa: PLW0603
     if _file_watcher_started:
         return
     observer = Observer()

@@ -99,9 +99,8 @@ class AssertionProcessor:
                     attribute_value = SubElement(
                         attribute, f"{{{NS_SAML_ASSERTION}}}AttributeValue"
                     )
-                    if not isinstance(value_item, str):
-                        value_item = str(value_item)
-                    attribute_value.text = value_item
+                    str_value = str(value_item) if not isinstance(value_item, str) else value_item
+                    attribute_value.text = str_value
 
                 attribute_statement.append(attribute)
 
