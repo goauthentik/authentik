@@ -89,8 +89,8 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
         this.authenticating = true;
         this.authenticate()
             .catch((e: Error) => {
-                console.warn(`authentik/flows/authenticator_validate/webauthn: ${e.toString()}`);
-                this.errorMessage = msg("Authentication failed.");
+                console.warn("authentik/flows/authenticator_validate/webauthn: failed to auth", e);
+                this.errorMessage = msg("Authentication failed. Please try again.");
             })
             .finally(() => {
                 this.authenticating = false;
@@ -110,12 +110,13 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
                 >
                 </ak-empty-state>
                 <div class="pf-c-form__group pf-m-action">
-                    ${this.errorMessage
+                    ${!this.authenticating
                         ? html` <button
                               class="pf-c-button pf-m-primary pf-m-block"
                               @click=${() => {
                                   this.authenticateWrapper();
                               }}
+                              type="button"
                           >
                               ${msg("Retry authentication")}
                           </button>`
