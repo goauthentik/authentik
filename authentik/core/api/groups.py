@@ -15,11 +15,11 @@ from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer, ModelSerializer, ValidationError
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.api.decorators import permission_required
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Group, User
 from authentik.rbac.api.roles import RoleSerializer
+from authentik.rbac.decorators import permission_required
 
 
 class GroupMemberSerializer(ModelSerializer):

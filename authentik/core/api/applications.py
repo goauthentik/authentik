@@ -23,7 +23,6 @@ from structlog.stdlib import get_logger
 from structlog.testing import capture_logs
 
 from authentik.admin.api.metrics import CoordinateSerializer
-from authentik.api.decorators import permission_required
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
@@ -39,6 +38,7 @@ from authentik.lib.utils.file import (
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import PolicyResult
+from authentik.rbac.decorators import permission_required
 from authentik.rbac.filters import ObjectFilter
 
 LOGGER = get_logger()

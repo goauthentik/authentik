@@ -14,18 +14,23 @@ LOGGER = get_logger()
 def permission_required(obj_perm: Optional[str] = None, global_perms: Optional[list[str]] = None):
     """Check permissions for a single custom action"""
 
-    def wrapper_outter(func: Callable):
+    def _check_obj_perm(self: ModelViewSet, request: Request):
+        # Check obj_perm both globally and on the specific object
+        # Having the global permission has higher priority
+        if request.user.has_perm(obj_perm):
+            return
+        obj = self.get_object()
+        if not request.user.has_perm(obj_perm, obj):
+            LOGGER.debug("denying access for object", user=request.user, perm=obj_perm, obj=obj)
+            self.permission_denied(request)
+
+    def wrapper_outer(func: Callable):
         """Check permissions for a single custom action"""
 
         @wraps(func)
         def wrapper(self: ModelViewSet, request: Request, *args, **kwargs) -> Response:
             if obj_perm:
-                obj = self.get_object()
-                if not request.user.has_perm(obj_perm, obj):
-                    LOGGER.debug(
-                        "denying access for object", user=request.user, perm=obj_perm, obj=obj
-                    )
-                    return self.permission_denied(request)
+                _check_obj_perm(self, request)
             if global_perms:
                 for other_perm in global_perms:
                     if not request.user.has_perm(other_perm):
@@ -35,4 +40,4 @@ def permission_required(obj_perm: Optional[str] = None, global_perms: Optional[l
 
         return wrapper
 
-    return wrapper_outter
+    return wrapper_outer
