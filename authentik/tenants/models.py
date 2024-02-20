@@ -23,6 +23,9 @@ LOGGER = get_logger()
 
 VALID_SCHEMA_NAME = re.compile(r"^t_[a-z0-9]{1,61}$")
 
+DEFAULT_TOKEN_DURATION = "minutes=30"
+DEFAULT_TOKEN_LENGTH = 60
+
 
 def _validate_schema_name(name):
     if not VALID_SCHEMA_NAME.match(name):
@@ -84,11 +87,13 @@ class Tenant(TenantMixin, SerializerModel):
     )
     default_token_duration = models.TextField(
         help_text=_("Default token duration"),
-        default="minutes=30",
+        default=DEFAULT_TOKEN_DURATION,
         validators=[timedelta_string_validator],
     )
     default_token_length = models.PositiveIntegerField(
-        help_text=_("Default token length"), default=60, validators=[MinValueValidator(1)]
+        help_text=_("Default token length"),
+        default=DEFAULT_TOKEN_LENGTH,
+        validators=[MinValueValidator(1)],
     )
 
     def save(self, *args, **kwargs):
