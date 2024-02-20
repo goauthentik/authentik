@@ -2,6 +2,7 @@
 title: Release next
 slug: /releases/next
 ---
+
 <!-- ## Breaking changes -->
 
 ## Breaking changes
