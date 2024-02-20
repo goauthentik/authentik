@@ -1,4 +1,5 @@
 """authentik core models"""
+
 from datetime import datetime, timedelta
 from hashlib import sha256
 from typing import Any, Optional, Self
