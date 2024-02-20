@@ -21,8 +21,8 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from structlog.stdlib import get_logger
 
-from authentik.api.decorators import permission_required
 from authentik.events.models import SystemTask, TaskStatus
+from authentik.rbac.decorators import permission_required
 
 LOGGER = get_logger()
 
@@ -81,7 +81,7 @@ class SystemTaskViewSet(ReadOnlyModelViewSet):
             500: OpenApiResponse(description="Failed to retry task"),
         },
     )
-    @action(detail=True, methods=["post"])
+    @action(detail=True, methods=["POST"], permission_classes=[])
     def run(self, request: Request, pk=None) -> Response:
         """Run task"""
         task: SystemTask = self.get_object()

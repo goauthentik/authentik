@@ -17,9 +17,9 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.api.authorization import OwnerFilter, OwnerPermissions
-from authentik.api.decorators import permission_required
 from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
+from authentik.rbac.decorators import permission_required
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_duo.stage import SESSION_KEY_DUO_ENROLL
 from authentik.stages.authenticator_duo.tasks import duo_import_devices

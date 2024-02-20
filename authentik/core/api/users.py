@@ -49,7 +49,6 @@ from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.admin.api.metrics import CoordinateSerializer
-from authentik.api.decorators import permission_required
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.brands.models import Brand
 from authentik.core.api.used_by import UsedByMixin
@@ -74,6 +73,7 @@ from authentik.flows.models import FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
+from authentik.rbac.decorators import permission_required
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
@@ -533,7 +533,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             400: OpenApiResponse(description="Bad request"),
         },
     )
-    @action(detail=True, methods=["POST"])
+    @action(detail=True, methods=["POST"], permission_classes=[])
     def set_password(self, request: Request, pk: int) -> Response:
         """Set password for user"""
         user: User = self.get_object()
@@ -631,7 +631,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             "401": OpenApiResponse(description="Access denied"),
         },
     )
-    @action(detail=True, methods=["POST"])
+    @action(detail=True, methods=["POST"], permission_classes=[])
     def impersonate(self, request: Request, pk: int) -> Response:
         """Impersonate a user"""
         if not request.tenant.impersonation:

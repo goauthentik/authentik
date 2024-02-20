@@ -15,7 +15,6 @@ from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
-from authentik.api.decorators import permission_required
 from authentik.blueprints.v1.exporter import FlowExporter
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT, Importer
 from authentik.core.api.used_by import UsedByMixin
@@ -33,6 +32,7 @@ from authentik.lib.utils.file import (
     set_file_url,
 )
 from authentik.lib.views import bad_request_message
+from authentik.rbac.decorators import permission_required
 
 LOGGER = get_logger()
 
