@@ -5,20 +5,10 @@ import (
 	"fmt"
 	"net/url"
 
-	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 )
 
-func (a *Application) redeemCallback(savedState string, u *url.URL, c context.Context) (*Claims, error) {
-	state := u.Query().Get("state")
-	a.log.WithFields(log.Fields{
-		"states":   savedState,
-		"expected": state,
-	}).Trace("tracing states")
-	if savedState != state {
-		return nil, fmt.Errorf("invalid state")
-	}
-
+func (a *Application) redeemCallback(u *url.URL, c context.Context) (*Claims, error) {
 	code := u.Query().Get("code")
 	if code == "" {
 		return nil, fmt.Errorf("blank code")
