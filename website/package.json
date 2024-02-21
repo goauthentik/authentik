@@ -5,8 +5,8 @@
     "license": "MIT",
     "scripts": {
         "docusaurus": "docusaurus",
-        "watch": "docusaurus start",
-        "build": "docusaurus build",
+        "watch": "cp ../docker-compose.yml static/docker-compose.yml && cp ../schema.yml static/schema.yaml && docusaurus start",
+        "build": "cp ../docker-compose.yml static/docker-compose.yml && cp ../schema.yml static/schema.yaml && docusaurus build",
         "swizzle": "docusaurus swizzle",
         "deploy": "docusaurus deploy",
         "serve": "docusaurus serve",
@@ -26,13 +26,13 @@
         "disqus-react": "^1.1.5",
         "postcss": "^8.4.35",
         "prism-react-renderer": "^2.3.1",
-        "rapidoc": "^9.3.4",
+        "react": "^18.2.0",
         "react-before-after-slider-component": "^1.1.8",
         "react-dom": "^18.2.0",
         "react-feather": "^2.0.10",
         "react-toggle": "^4.1.3",
         "react-tooltip": "^5.26.3",
-        "react": "^18.2.0",
+        "redocusaurus": "^2.0.1",
         "remark-github": "^12.0.0"
     },
     "browserslist": {

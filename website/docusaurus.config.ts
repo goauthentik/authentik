@@ -105,6 +105,17 @@ module.exports = async function (): Promise<Config> {
                     },
                 } satisfies Preset.Options,
             ],
+            [
+                "redocusaurus",
+                {
+                    specs: [
+                        {
+                            id: "main",
+                            spec: "static/schema.yaml",
+                        },
+                    ],
+                },
+            ],
         ],
         plugins: [
             [
