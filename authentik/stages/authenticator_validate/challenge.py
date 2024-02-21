@@ -65,7 +65,7 @@ def get_webauthn_challenge_without_user(
     authentication_options = generate_authentication_options(
         rp_id=get_rp_id(request),
         allow_credentials=[],
-        user_verification=stage.webauthn_user_verification,
+        user_verification=UserVerificationRequirement(stage.webauthn_user_verification),
     )
     request.session[SESSION_KEY_WEBAUTHN_CHALLENGE] = authentication_options.challenge
 
