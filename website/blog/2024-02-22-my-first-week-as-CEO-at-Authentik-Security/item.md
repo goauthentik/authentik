@@ -1,6 +1,6 @@
 ---
 title: "My first week as CEO at Authentik Security"
-description: "Fletcher Heisler's first week as the CEO at Authentic Security, and his experience with getting authentic up and running using Docker Compose."
+description: "Fletcher Heisler's first week as the CEO at Authentik Security, and his experience with getting authentik up and running using Docker Compose."
 slug: 2024-02-22-my-first-week-as-ceo-at-authentik-security
 authors:
     - name: Fletcher Heisler
@@ -41,8 +41,7 @@ I went to our [docs](https://goauthentik.io/docs/installation/docker-compose). I
 
 Containerized apps are nothing new, but packaging alone can only take a project so far in helping new users to get started. Jens and the team have made careful decisions and thoughtful choices about our technology, along with how it's organized and documented, that manage to make a very complex product very straightforward in its use.
 
->The ease with which I was able to dive in is a direct reflection of our mission: **make authentication simple**.
->
+> The ease with which I was able to dive in is a direct reflection of our mission: **make authentication simple**.
 
 The choice of Python and Django for building the backend of authentik was another sign to me that Jens and the team are focused on **making authentication simple** by building the best platform for the job. A long while back, I founded [Real Python](https://realpython.com/), a set of online resources and community for Python developers. And while I don't think there's only ever one tool for the job, I have a longstanding belief in Python's ability to be a good tool for most jobs! Python is by far the [most popular programming language in the world](https://www.tiobe.com/tiobe-index/). It allows us to move fast, and it helps make contributing to the platform as accessible as possible for the broadest set of developers.
 
