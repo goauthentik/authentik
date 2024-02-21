@@ -16,7 +16,7 @@ COPY ./website /work/website/
 COPY ./blueprints /work/blueprints/
 COPY ./SECURITY.md /work/
 
-RUN npm run build-docs-only
+RUN npm run build
 
 # Stage 2: Build webui
 FROM --platform=${BUILDPLATFORM} docker.io/node:21 as web-builder
@@ -149,7 +149,7 @@ COPY --from=go-builder /go/authentik /bin/authentik
 COPY --from=python-deps /ak-root/venv /ak-root/venv
 COPY --from=web-builder /work/web/dist/ /web/dist/
 COPY --from=web-builder /work/web/authentik/ /web/authentik/
-COPY --from=website-builder /work/website/help/ /website/help/
+COPY --from=website-builder /work/website/build/ /website/help/
 COPY --from=geoip /usr/share/GeoIP /geoip
 
 USER 1000
