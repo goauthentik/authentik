@@ -2974,9 +2974,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s819509c33a7534ac">
   <source>Notification Transports</source>
 </trans-unit>
-<trans-unit id="s1823625e6f831d73">
-  <source>Customization</source>
-</trans-unit>
 <trans-unit id="saab79cd956ee56a9">
   <source>Blueprints</source>
 </trans-unit>
@@ -4883,9 +4880,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s9d95f09deb601f34">
   <source>Server validation of credential failed: <x id="0" equiv-text="${err}"/></source>
 </trans-unit>
-<trans-unit id="s6c8f05e3be04f62a">
-  <source>Register device</source>
-</trans-unit>
 <trans-unit id="s31aa94a0b3c7edb2">
   <source>Select endpoint to connect to</source>
 </trans-unit>
@@ -5239,11 +5233,26 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sd2b8c1caa0340ed6">
   <source>Failed to authenticate</source>
 </trans-unit>
-<trans-unit id="s5852d37b37d81380">
-  <source>Authentication failed.</source>
-</trans-unit>
 <trans-unit id="sffef1a8596bc58bb">
   <source>Authenticating...</source>
+</trans-unit>
+<trans-unit id="sd12f594a3184c056">
+  <source>Customization</source>
+</trans-unit>
+<trans-unit id="s363abde8a254ea5f">
+  <source>Authentication failed. Please try again.</source>
+</trans-unit>
+<trans-unit id="sb0821a9e92cac5eb">
+  <source>Failed to register. Please try again.</source>
+</trans-unit>
+<trans-unit id="s238784fc1dc672ae">
+  <source>Registering...</source>
+</trans-unit>
+<trans-unit id="s009bd1c98a9f5de2">
+  <source>Failed to register</source>
+</trans-unit>
+<trans-unit id="sb166ce92e8e807d6">
+  <source>Retry registration</source>
 </trans-unit>
 </body>
 </file>
