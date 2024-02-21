@@ -1,12 +1,12 @@
 ---
 title: "My first week as CEO at Authentik Security"
 description: "Fletcher Heisler's first week as the CEO at Authentic Security, and his experience with getting authentic up and running using Docker Compose."
-slug: 2024-02-22-my-first-week-as-CEO-at-Authentik-Security
+slug: 2024-02-22-my-first-week-as-ceo-at-authentik-security
 authors:
     - name: Fletcher Heisler
       title: CEO at Authentik Security Inc
       url: https://www.linkedin.com/in/fheisler/
-      image_url:http://tinyurl.com/3wbafajf
+      image_url: http://tinyurl.com/3wbafajf
 tags:
     - authentik
     - access management
@@ -33,7 +33,7 @@ At the start of my very first "official" day on the job, I got an overview of th
 
 <!--truncate-->
 
-*While on our first call*, in the first few minutes, Jens provisioned me as a new user to our own internal authentik instance. I logged in, added MFA, and *within one minute* I had access to all of the applications I needed to dive in. It's always good to [dogfood](https://en.wikipedia.org/wiki/Eating_your_own_dog_food) your own products, and even better when those products help you get your own work done faster!
+_While on our first call_, in the first few minutes, Jens provisioned me as a new user to our own internal authentik instance. I logged in, added MFA, and _within one minute_ I had access to all of the applications I needed to dive in. It's always good to [dogfood](https://en.wikipedia.org/wiki/Eating_your_own_dog_food) your own products, and even better when those products help you get your own work done faster!
 
 My next step was to spin up my own local authentik instance. I don't plan on contributing code every day, but I did want to start learning my way around the internals of the application. Especially at a startup, this often this involves a lot of back-and-forth with a developer or two, a couple days of gathering up necessary keys, managing dependency conflicts, deciphering outdated documentation, etc...
 
@@ -41,7 +41,8 @@ I went to our [docs](https://goauthentik.io/docs/installation/docker-compose). I
 
 Containerized apps are nothing new, but packaging alone can only take a project so far in helping new users to get started. Jens and the team have made careful decisions and thoughtful choices about our technology, along with how it's organized and documented, that manage to make a very complex product very straightforward in its use.
 
-The ease with which I was able to dive in was a direct reflection of our mission: **make authentication simple**.
+>The ease with which I was able to dive in is a direct reflection of our mission: **make authentication simple**.
+>
 
 The choice of Python and Django for building the backend of authentik was another sign to me that Jens and the team are focused on **making authentication simple** by building the best platform for the job. A long while back, I founded [Real Python](https://realpython.com/), a set of online resources and community for Python developers. And while I don't think there's only ever one tool for the job, I have a longstanding belief in Python's ability to be a good tool for most jobs! Python is by far the [most popular programming language in the world](https://www.tiobe.com/tiobe-index/). It allows us to move fast, and it helps make contributing to the platform as accessible as possible for the broadest set of developers.
 
@@ -53,8 +54,8 @@ By contrast, since all of our application code is open (even the paid Enterprise
 
 I also believe in helping fix broken systems - and we all know that there is a lot to be fixed in the world of security! I previously created Hunter2 (now Veracode Security Labs), a security training platform where developers get hands-on practice hacking and patching real applications. This was a big step forward for the industry, when the most common alternative was to watch a series of boring videos about SQL injection once a year and consider "training" complete.
 
-Right now, authentication as a whole is a series of broken and often frustrating systems, patched together with custom code that's impossible to maintain. Authentik Security has already been building the groundwork for the past few years to help replace these fragile, fragmented setups with a single, simple identity solution, and the community has shown that it's eager to join us as we scale up our efforts:
+Right now, authentication as a whole is a series of broken and often frustrating systems, patched together with custom code that's impossible to maintain. Authentik Security has already been building the groundwork for the past few years to help replace these fragile, fragmented setups with a single, simple identity solution, and the community has shown that it's eager to join us as we scale up our efforts.
 
-https://star-history.com/#goauthentik/authentik&Date
+[![graph showing rising number of GitHub Stars given to authentik](./star-history-authentik.png)](https://star-history.com/#goauthentik/authentik&Date)
 
-Authentik Security can help pave the way to make it simple for anyone to implement identity and access management, from an individual developer with a hobby project to a Fortune 100 company with a 100,000-employee rollout. I'm looking forward to being a part of this journey, and want to hear from you, the community, about how we can best support you: reach out through email to hello@goauthentik.io.com, Discord, or on GitHub.
+Authentik Security can help pave the way to make it simple for anyone to implement identity and access management, from an individual developer with a hobby project to a Fortune 100 company with a 100,000-employee rollout. I'm looking forward to being a part of this journey, and want to hear from you, the community, about how we can best support you: reach out through email to [hello@goauthentik.io](mailto:hello@goauthentik.io) or on [Discord](https://discord.com/channels/809154715984199690/809154716507963434) or [GitHub](https://github.com/goauthentik/authentik).
