@@ -53,7 +53,7 @@ authentik already provides some default _scopes_ with _claims_ inside them, such
 
 If you do not need storage quota or group information in Nextcloud [skip to the next step](#provider-and-application).
 
-However, if you want to be able to control how much storage users in Nextcloud can use, as well as which users are recognized as Nextcloud administrators, you would need to make this information available in Nextcloud. To achieve this you would need to create a custom `profile` scope. To do so, go to _Customisation_ -> _Property mappings_. Create a _Scope mapping_ with the following parameters:
+However, if you want to be able to control how much storage users in Nextcloud can use, as well as which users are recognized as Nextcloud administrators, you would need to make this information available in Nextcloud. To achieve this you would need to create a custom `profile` scope. To do so, go to _Customization_ -> _Property mappings_. Create a _Scope mapping_ with the following parameters:
 
 -   Name: Nextcloud Profile
 -   Scope name: profile

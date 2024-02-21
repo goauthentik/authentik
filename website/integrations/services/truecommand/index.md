@@ -36,7 +36,7 @@ Under _Advanced protocol settings_, set NameID Property to _authentik default SA
 
 The following custom property mappings are required.
 
-Under _Customisation_, select _Property Mappings_, then _Create_. Select _SAML Property Mapping_.
+Under _Customization_, select _Property Mappings_, then _Create_. Select _SAML Property Mapping_.
 
 ### Username
 

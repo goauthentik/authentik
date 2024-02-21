@@ -74,7 +74,7 @@ class Exporter:
 
 
 class FlowExporter(Exporter):
-    """Exporter customised to only return objects related to `flow`"""
+    """Exporter customized to only return objects related to `flow`"""
 
     flow: Flow
     with_policies: bool
