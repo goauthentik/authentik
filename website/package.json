@@ -1,12 +1,12 @@
 {
-    "name": "@goauthentik/website",
+    "name": "@goauthentik/website-docs",
     "version": "0.0.0",
     "private": true,
     "license": "MIT",
     "scripts": {
         "docusaurus": "docusaurus",
-        "watch": "cp ../docker-compose.yml static/docker-compose.yml && cp ../schema.yml static/schema.yaml && docusaurus start",
-        "build": "cp ../docker-compose.yml static/docker-compose.yml && cp ../schema.yml static/schema.yaml && docusaurus build",
+        "watch": "docusaurus start",
+        "build": "docusaurus build",
         "swizzle": "docusaurus swizzle",
         "deploy": "docusaurus deploy",
         "serve": "docusaurus serve",
