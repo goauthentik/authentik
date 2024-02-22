@@ -18,7 +18,7 @@ tags:
     - authentication
     - Authentik Security
 hide_table_of_contents: false
-image: ./star-history-authentik.png
+image: ./brand-top-bigger.png
 ---
 
 > **_authentik is an open source Identity Provider that unifies your identity needs into a single platform, replacing Okta, Active Directory, and auth0. Authentik Security is a [public benefit company](https://github.com/OpenCoreVentures/ocv-public-benefit-company/blob/main/ocv-public-benefit-company-charter.md) building on top of the open source project._**
@@ -28,6 +28,8 @@ image: ./star-history-authentik.png
 Hello world! I'm excited to be joining Authentik Security as CEO. I wanted to take this opportunity to share the experience of my first week with the community and a bit about my background.
 
 At the start of my very first "official" day on the job, I got an overview of the various applications we use from Jens, our founder and CTO. If you have ever been through a company onboarding process, you know that it might take a few days up to a couple weeks to get access to everything, sometimes even longer. In a small and agile startup, that might be as little as a day if you're lucky.
+
+![authentik brand](./brand-top-bigger.png)
 
 <!--truncate-->
 
