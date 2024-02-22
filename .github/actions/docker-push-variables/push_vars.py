@@ -1,4 +1,5 @@
 """Helper script to get the actual branch name, docker safe"""
+
 import configparser
 import os
 from time import time
