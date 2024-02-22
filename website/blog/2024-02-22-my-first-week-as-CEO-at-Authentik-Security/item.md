@@ -33,7 +33,7 @@ At the start of my very first "official" day on the job, I got an overview of th
 
 <!--truncate-->
 
-_While on our first call_, in the first few minutes, Jens provisioned me as a new user to our own internal authentik instance. I logged in, added MFA, and _within one minute_ I had access to all of the applications I needed to dive in. It's always good to [dogfood](https://en.wikipedia.org/wiki/Eating_your_own_dog_food) your own products, and even better when those products help you get your own work done faster!
+_While on our first call_, in the first few minutes, Jens provisioned me as a new user to our own internal authentik instance. I logged in, added MFA, and _within one minute_ I had access to all of the applications I needed to dive in. It's always good to [dogfood](https://en.wikipedia.org/wiki/Eating_your_own_dog_food) your own products, and even better when those products help you get your own work done faster! Onboarding new employees might seem like a specific edge case for an SSO, but it's a great example of how having a flexible identity platform in place can make a broad set of day-to-day chores so much easier.
 
 My next step was to spin up my own local authentik instance. I don't plan on contributing code every day, but I did want to start learning my way around the internals of the application. Especially at a startup, this often this involves a lot of back-and-forth with a developer or two, a couple days of gathering up necessary keys, managing dependency conflicts, deciphering outdated documentation, etc...
 
