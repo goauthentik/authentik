@@ -5,7 +5,7 @@ PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
 NPM_VERSION = $(shell python -m scripts.npm_version)
-PY_SOURCES = authentik tests scripts lifecycle
+PY_SOURCES = authentik tests scripts lifecycle .github
 DOCKER_IMAGE ?= "authentik:test"
 
 GEN_API_TS = "gen-ts-api"
