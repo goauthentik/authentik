@@ -42,7 +42,7 @@ import { CoreApi, ResponseError, SessionUser, User, UserPath } from "@goauthenti
 
 export const requestRecoveryLink = (user: User) =>
     new CoreApi(DEFAULT_CONFIG)
-        .coreUsersRecoveryRetrieve({
+        .coreUsersRecoveryCreate({
             id: user.pk,
         })
         .then((rec) =>

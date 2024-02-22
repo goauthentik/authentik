@@ -4896,8 +4896,8 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
   /core/users/{id}/recovery/:
-    get:
-      operationId: core_users_recovery_retrieve
+    post:
+      operationId: core_users_recovery_create
       description: Create a temporary link that a user can use to recover their accounts
       parameters:
       - in: path
@@ -4917,12 +4917,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Link'
           description: ''
-        '404':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Link'
-          description: ''
         '400':
           content:
             application/json:
@@ -4936,8 +4930,8 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
   /core/users/{id}/recovery_email/:
-    get:
-      operationId: core_users_recovery_email_retrieve
+    post:
+      operationId: core_users_recovery_email_create
       description: Create a temporary link that a user can use to recover their accounts
       parameters:
       - in: query
@@ -4958,8 +4952,6 @@ paths:
       responses:
         '204':
           description: Successfully sent recover email
-        '404':
-          description: Bad request
         '400':
           content:
             application/json:
@@ -17893,7 +17885,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this connection token.
+        description: A UUID string identifying this RAC Connection token.
         required: true
       tags:
       - rac
@@ -17927,7 +17919,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this connection token.
+        description: A UUID string identifying this RAC Connection token.
         required: true
       tags:
       - rac
@@ -17967,7 +17959,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this connection token.
+        description: A UUID string identifying this RAC Connection token.
         required: true
       tags:
       - rac
@@ -18006,7 +17998,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this connection token.
+        description: A UUID string identifying this RAC Connection token.
         required: true
       tags:
       - rac
@@ -18037,7 +18029,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this connection token.
+        description: A UUID string identifying this RAC Connection token.
         required: true
       tags:
       - rac
