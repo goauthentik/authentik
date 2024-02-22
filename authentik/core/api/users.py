@@ -416,7 +416,9 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 },
             )
         except FlowNonApplicableException:
-            raise ValidationError({"non_field_errors": "Recovery flow not applicable to user"}) from None
+            raise ValidationError(
+                {"non_field_errors": "Recovery flow not applicable to user"}
+            ) from None
         token, __ = FlowToken.objects.update_or_create(
             identifier=f"{user.uid}-password-reset",
             defaults={
