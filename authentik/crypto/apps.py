@@ -36,7 +36,8 @@ class AuthentikCryptoConfig(ManagedAppConfig):
             },
         )
 
-    def reconcile_tenant_managed_jwt_cert(self):
+    @ManagedAppConfig.reconcile_tenant
+    def managed_jwt_cert(self):
         """Ensure managed JWT certificate"""
         from authentik.crypto.models import CertificateKeyPair
 
@@ -49,7 +50,8 @@ class AuthentikCryptoConfig(ManagedAppConfig):
         ):
             self._create_update_cert()
 
-    def reconcile_tenant_self_signed(self):
+    @ManagedAppConfig.reconcile_tenant
+    def self_signed(self):
         """Create self-signed keypair"""
         from authentik.crypto.builder import CertificateBuilder
         from authentik.crypto.models import CertificateKeyPair
