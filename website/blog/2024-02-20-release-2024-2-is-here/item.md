@@ -20,7 +20,7 @@ tags:
     - authentication
     - Authentik Security
 hide_table_of_contents: false
-image: 2024.2-release-blog.png
+image: ./2024.2-release-blog.png
 ---
 
 > **_authentik is an open source Identity Provider that unifies your identity needs into a single platform, replacing Okta, Active Directory, and auth0. Authentik Security is a [public benefit company](https://github.com/OpenCoreVentures/ocv-public-benefit-company/blob/main/ocv-public-benefit-company-charter.md) building on top of the open source project._**
