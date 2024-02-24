@@ -92,7 +92,7 @@ class SystemTaskViewSet(ReadOnlyModelViewSet):
             task_func.delay(*task.task_call_args, **task.task_call_kwargs)
             messages.success(
                 self.request,
-                _("Successfully started task %(name)s." % {"name": task.name}),
+                _("Successfully started task {name}.".format_map({"name": task.name})),
             )
             return Response(status=204)
         except (ImportError, AttributeError) as exc:  # pragma: no cover

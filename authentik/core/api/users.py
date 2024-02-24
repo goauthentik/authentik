@@ -2,7 +2,7 @@
 
 from datetime import timedelta
 from json import loads
-from typing import Any, Optional
+from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.sessions.backends.cache import KEY_PREFIX
@@ -142,7 +142,7 @@ class UserSerializer(ModelSerializer):
         self._set_password(instance, password)
         return instance
 
-    def _set_password(self, instance: User, password: Optional[str]):
+    def _set_password(self, instance: User, password: str | None):
         """Set password of user if we're in a blueprint context, and if it's an empty
         string then use an unusable password"""
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context and password:
@@ -358,7 +358,7 @@ class UsersFilter(FilterSet):
         try:
             value = loads(value)
         except ValueError:
-            raise ValidationError(detail="filter: failed to parse JSON")
+            raise ValidationError(detail="filter: failed to parse JSON") from None
         if not isinstance(value, dict):
             raise ValidationError(detail="filter: value must be key:value mapping")
         qs = {}
@@ -416,7 +416,9 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 },
             )
         except FlowNonApplicableException:
-            raise ValidationError({"non_field_errors": "Recovery flow not applicable to user"})
+            raise ValidationError(
+                {"non_field_errors": "Recovery flow not applicable to user"}
+            ) from None
         token, __ = FlowToken.objects.update_or_create(
             identifier=f"{user.uid}-password-reset",
             defaults={

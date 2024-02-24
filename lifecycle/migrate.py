@@ -55,8 +55,8 @@ def wait_for_lock(cursor: Cursor):
     """lock an advisory lock to prevent multiple instances from migrating at once"""
     LOGGER.info("waiting to acquire database lock")
     cursor.execute("SELECT pg_advisory_lock(%s)", (ADV_LOCK_UID,))
-    # pylint: disable=global-statement
-    global LOCKED
+
+    global LOCKED  # noqa: PLW0603
     LOCKED = True
 
 

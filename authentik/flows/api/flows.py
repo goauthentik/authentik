@@ -114,7 +114,6 @@ class FlowImportResultSerializer(PassiveSerializer):
 class FlowViewSet(UsedByMixin, ModelViewSet):
     """Flow Viewset"""
 
-    # pylint: disable=no-member
     queryset = Flow.objects.all().prefetch_related("stages", "policies")
     serializer_class = FlowSerializer
     lookup_field = "slug"
@@ -279,7 +278,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
-    def execute(self, request: Request, slug: str):
+    def execute(self, request: Request, _slug: str):
         """Execute flow for current user"""
         # Because we pre-plan the flow here, and not in the planner, we need to manually clear
         # the history of the inspector
@@ -294,8 +293,9 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
             return bad_request_message(
                 request,
                 _(
-                    "Flow not applicable to current user/request: %(messages)s"
-                    % {"messages": exc.messages}
+                    "Flow not applicable to current user/request: {messages}".format_map(
+                        {"messages": exc.messages}
+                    )
                 ),
             )
         return Response(

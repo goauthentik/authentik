@@ -1,8 +1,9 @@
 """Prompt Stage Logic"""
 
+from collections.abc import Callable, Iterator
 from email.policy import Policy
 from types import MethodType
-from typing import Any, Callable, Iterator
+from typing import Any
 
 from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse
@@ -131,7 +132,7 @@ class PromptChallengeResponse(ChallengeResponse):
         password_fields: QuerySet[Prompt] = self.stage_instance.fields.filter(
             type=FieldTypes.PASSWORD
         )
-        if password_fields.exists() and password_fields.count() == 2:
+        if password_fields.exists() and password_fields.count() == 2:  # noqa: PLR2004
             self._validate_password_fields(*[field.field_key for field in password_fields])
 
         engine = ListPolicyEngine(
@@ -152,7 +153,7 @@ class PromptChallengeResponse(ChallengeResponse):
 def username_field_validator_factory() -> Callable[[PromptChallenge, str], Any]:
     """Return a `clean_` method for `field`. Clean method checks if username is taken already."""
 
-    def username_field_validator(self: PromptChallenge, value: str) -> Any:
+    def username_field_validator(_: PromptChallenge, value: str) -> Any:
         """Check for duplicate usernames"""
         if User.objects.filter(username=value).exists():
             raise ValidationError("Username is already taken.")

@@ -59,15 +59,12 @@ test: ## Run the server tests and produce a coverage report (locally)
 	coverage report
 
 lint-fix:  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
-	isort $(PY_SOURCES)
 	black $(PY_SOURCES)
-	ruff --fix $(PY_SOURCES)
+	ruff check --fix $(PY_SOURCES)
 	codespell -w $(CODESPELL_ARGS)
 
 lint: ## Lint the python and golang sources
 	bandit -r $(PY_SOURCES) -x node_modules
-	./web/node_modules/.bin/pyright $(PY_SOURCES)
-	pylint $(PY_SOURCES)
 	golangci-lint run -v
 
 core-install:
@@ -249,9 +246,6 @@ ci--meta-debug:
 	python -V
 	node --version
 
-ci-pylint: ci--meta-debug
-	pylint $(PY_SOURCES)
-
 ci-black: ci--meta-debug
 	black --check $(PY_SOURCES)
 
@@ -261,14 +255,8 @@ ci-ruff: ci--meta-debug
 ci-codespell: ci--meta-debug
 	codespell $(CODESPELL_ARGS) -s
 
-ci-isort: ci--meta-debug
-	isort --check $(PY_SOURCES)
-
 ci-bandit: ci--meta-debug
 	bandit -r $(PY_SOURCES)
-
-ci-pyright: ci--meta-debug
-	./web/node_modules/.bin/pyright $(PY_SOURCES)
 
 ci-pending-migrations: ci--meta-debug
 	ak makemigrations --check

@@ -1,8 +1,8 @@
 """authentik Blueprints app"""
 
+from collections.abc import Callable
 from importlib import import_module
 from inspect import ismethod
-from typing import Callable
 
 from django.apps import AppConfig
 from django.db import DatabaseError, InternalError, ProgrammingError
@@ -66,13 +66,13 @@ class ManagedAppConfig(AppConfig):
     @staticmethod
     def reconcile_tenant(func: Callable):
         """Mark a function to be called on startup (for each tenant)"""
-        setattr(func, "_authentik_managed_reconcile", ManagedAppConfig.RECONCILE_TENANT_CATEGORY)
+        func._authentik_managed_reconcile = ManagedAppConfig.RECONCILE_TENANT_CATEGORY
         return func
 
     @staticmethod
     def reconcile_global(func: Callable):
         """Mark a function to be called on startup (globally)"""
-        setattr(func, "_authentik_managed_reconcile", ManagedAppConfig.RECONCILE_GLOBAL_CATEGORY)
+        func._authentik_managed_reconcile = ManagedAppConfig.RECONCILE_GLOBAL_CATEGORY
         return func
 
     def _reconcile_tenant(self) -> None:

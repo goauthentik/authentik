@@ -1,7 +1,7 @@
 """authentik core models tests"""
 
+from collections.abc import Callable
 from time import sleep
-from typing import Callable
 
 from django.test import RequestFactory, TestCase
 from django.utils.timezone import now

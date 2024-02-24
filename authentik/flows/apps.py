@@ -37,4 +37,4 @@ class AuthentikFlowsConfig(ManagedAppConfig):
         from authentik.flows.models import Stage
 
         for stage in all_subclasses(Stage):
-            _ = stage().type
+            _ = stage().view

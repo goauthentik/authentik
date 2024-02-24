@@ -28,10 +28,7 @@ jobs:
           - bandit
           - black
           - codespell
-          - isort
           - pending-migrations
-          # - pylint
-          - pyright
           - ruff
     runs-on: ubuntu-latest
     steps:

@@ -1,6 +1,5 @@
 """OAuth errors"""
 
-from typing import Optional
 from urllib.parse import quote, urlparse
 
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
@@ -27,7 +26,7 @@ class OAuth2Error(SentryIgnoredException):
     def __repr__(self) -> str:
         return self.error
 
-    def to_event(self, message: Optional[str] = None, **kwargs) -> Event:
+    def to_event(self, message: str | None = None, **kwargs) -> Event:
         """Create configuration_error Event."""
         return Event.new(
             EventAction.CONFIGURATION_ERROR,
@@ -142,14 +141,13 @@ class AuthorizeError(OAuth2Error):
         ),
     }
 
-    # pylint: disable=too-many-arguments
     def __init__(
         self,
         redirect_uri: str,
         error: str,
         grant_type: str,
         state: str,
-        description: Optional[str] = None,
+        description: str | None = None,
     ):
         super().__init__()
         self.error = error

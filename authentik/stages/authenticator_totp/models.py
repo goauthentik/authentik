@@ -3,7 +3,6 @@
 import time
 from base64 import b32encode
 from binascii import unhexlify
-from typing import Optional
 from urllib.parse import quote, urlencode
 
 from django.conf import settings
@@ -39,7 +38,7 @@ class AuthenticatorTOTPStage(ConfigurableStage, FriendlyNamedStage, Stage):
         return AuthenticatorTOTPStageSerializer
 
     @property
-    def type(self) -> type[View]:
+    def view(self) -> type[View]:
         from authentik.stages.authenticator_totp.stage import AuthenticatorTOTPStageView
 
         return AuthenticatorTOTPStageView
@@ -48,7 +47,7 @@ class AuthenticatorTOTPStage(ConfigurableStage, FriendlyNamedStage, Stage):
     def component(self) -> str:
         return "ak-stage-authenticator-totp-form"
 
-    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+    def ui_user_settings(self) -> UserSettingSerializer | None:
         return UserSettingSerializer(
             data={
                 "title": self.friendly_name or str(self._meta.verbose_name),
@@ -220,16 +219,16 @@ class TOTPDevice(SerializerModel, ThrottlingMixin, Device):
         issuer = self._read_str_from_settings("OTP_TOTP_ISSUER")
         if issuer:
             issuer = issuer.replace(":", "")
-            label = "{}:{}".format(issuer, label)
-            urlencoded_params += "&issuer={}".format(
-                quote(issuer)
-            )  # encode issuer as per RFC 3986, not quote_plus
+            label = f"{issuer}:{label}"
+            urlencoded_params += (
+                f"&issuer={quote(issuer)}"  # encode issuer as per RFC 3986, not quote_plus
+            )
 
         image = self._read_str_from_settings("OTP_TOTP_IMAGE")
         if image:
             urlencoded_params += "&image={}".format(quote(image, safe=":/"))
 
-        url = "otpauth://totp/{}?{}".format(quote(label), urlencoded_params)
+        url = f"otpauth://totp/{quote(label)}?{urlencoded_params}"
 
         return url
 

@@ -1,7 +1,6 @@
 """Groups API Viewset"""
 
 from json import loads
-from typing import Optional
 
 from django.http import Http404
 from django_filters.filters import CharFilter, ModelMultipleChoiceFilter
@@ -59,7 +58,7 @@ class GroupSerializer(ModelSerializer):
 
     num_pk = IntegerField(read_only=True)
 
-    def validate_parent(self, parent: Optional[Group]):
+    def validate_parent(self, parent: Group | None):
         """Validate group parent (if set), ensuring the parent isn't itself"""
         if not self.instance or not parent:
             return parent
@@ -114,7 +113,7 @@ class GroupFilter(FilterSet):
         try:
             value = loads(value)
         except ValueError:
-            raise ValidationError(detail="filter: failed to parse JSON")
+            raise ValidationError(detail="filter: failed to parse JSON") from None
         if not isinstance(value, dict):
             raise ValidationError(detail="filter: value must be key:value mapping")
         qs = {}
@@ -140,7 +139,6 @@ class UserAccountSerializer(PassiveSerializer):
 class GroupViewSet(UsedByMixin, ModelViewSet):
     """Group Viewset"""
 
-    # pylint: disable=no-member
     queryset = Group.objects.all().select_related("parent").prefetch_related("users")
     serializer_class = GroupSerializer
     search_fields = ["name", "is_superuser"]

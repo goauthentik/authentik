@@ -1,6 +1,6 @@
 """authentik OAuth2 OpenID Userinfo views"""
 
-from typing import Any, Optional
+from typing import Any
 
 from deepmerge import always_merger
 from django.http import HttpRequest, HttpResponse
@@ -39,7 +39,7 @@ class UserInfoView(View):
     """Create a dictionary with all the requested claims about the End-User.
     See: http://openid.net/specs/openid-connect-core-1_0.html#UserInfoResponse"""
 
-    token: Optional[RefreshToken]
+    token: RefreshToken | None
 
     def get_scope_descriptions(
         self, scopes: list[str], provider: OAuth2Provider

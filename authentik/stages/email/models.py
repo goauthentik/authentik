@@ -2,7 +2,6 @@
 
 from os import R_OK, access
 from pathlib import Path
-from typing import Type
 
 from django.conf import settings
 from django.core.mail.backends.base import BaseEmailBackend
@@ -88,7 +87,7 @@ class EmailStage(Stage):
         return EmailStageSerializer
 
     @property
-    def type(self) -> type[View]:
+    def view(self) -> type[View]:
         from authentik.stages.email.stage import EmailStageView
 
         return EmailStageView
@@ -98,7 +97,7 @@ class EmailStage(Stage):
         return "ak-stage-email-form"
 
     @property
-    def backend_class(self) -> Type[BaseEmailBackend]:
+    def backend_class(self) -> type[BaseEmailBackend]:
         """Get the email backend class to use"""
         return EmailBackend
 
