@@ -62,11 +62,13 @@ class Brand(SerializerModel):
     attributes = models.JSONField(default=dict, blank=True)
 
     def branding_logo_url(self) -> str:
+        """Get branding_logo with the correct prefix"""
         if self.branding_logo.startswith("/static"):
             return CONFIG.get("web.path", "/")[:-1] + self.branding_logo
         return self.branding_logo
 
     def branding_favicon_url(self) -> str:
+        """Get branding_favicon with the correct prefix"""
         if self.branding_favicon.startswith("/static"):
             return CONFIG.get("web.path", "/")[:-1] + self.branding_favicon
         return self.branding_favicon

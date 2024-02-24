@@ -81,6 +81,10 @@ func NewWebServer() *WebServer {
 	}
 	ws.configureStatic()
 	ws.configureProxy()
+	// Redirect for sub-folder
+	if sp := config.Get().Web.Path; sp != "/" {
+		ws.mainRouter.Path("/").Handler(http.RedirectHandler(sp, http.StatusFound))
+	}
 	hcUrl := fmt.Sprintf("%s%s-/health/live/", ws.upstreamURL.String(), config.Get().Web.Path)
 	ws.g = gounicorn.New(func() bool {
 		req, err := http.NewRequest(http.MethodGet, hcUrl, nil)
