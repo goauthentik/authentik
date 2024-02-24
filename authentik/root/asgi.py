@@ -19,7 +19,7 @@ defuse_stdlib()
 django.setup()
 
 
-from authentik.root import websocket  # noqa  # isort:skip
+from authentik.root import websocket  # noqa
 
 
 class LifespanApp:

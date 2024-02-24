@@ -156,7 +156,7 @@ While the prerequisites above must be satisfied prior to having your pull reques
 
 ### Python Styleguide
 
-All Python code is linted with [black](https://black.readthedocs.io/en/stable/), [Ruff](https://docs.astral.sh/ruff) and [isort](https://pycqa.github.io/isort/).
+All Python code is linted with [black](https://black.readthedocs.io/en/stable/) and [Ruff](https://docs.astral.sh/ruff).
 
 authentik runs on Python 3.12 at the time of writing this.
 
