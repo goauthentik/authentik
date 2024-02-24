@@ -81,8 +81,9 @@ func NewWebServer() *WebServer {
 	}
 	ws.configureStatic()
 	ws.configureProxy()
+	hcUrl := fmt.Sprintf("%s%s-/health/live/", ws.ul.String(), config.Get().Web.Path)
 	ws.g = gounicorn.New(func() bool {
-		req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s/-/health/live/", ws.ul.String()), nil)
+		req, err := http.NewRequest(http.MethodGet, hcUrl, nil)
 		if err != nil {
 			ws.log.WithError(err).Warning("failed to create request for healthcheck")
 			return false

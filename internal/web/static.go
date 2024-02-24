@@ -14,7 +14,7 @@ import (
 )
 
 func (ws *WebServer) configureStatic() {
-	statRouter := ws.lh.NewRoute().Subrouter()
+	statRouter := ws.lh.NewRoute().Path(config.Get().Web.Path).Subrouter()
 	statRouter.Use(ws.staticHeaderMiddleware)
 	indexLessRouter := statRouter.NewRoute().Subrouter()
 	indexLessRouter.Use(web.DisableIndex)
