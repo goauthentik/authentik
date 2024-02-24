@@ -20,6 +20,7 @@ import PFNotificationDrawer from "@patternfly/patternfly/components/Notification
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { EventsApi, Notification } from "@goauthentik/api";
+import { globalAK } from "@goauthentik/app/common/global";
 
 @customElement("ak-notification-drawer")
 export class NotificationDrawer extends AKElement {
@@ -100,7 +101,7 @@ export class NotificationDrawer extends AKElement {
                 html`
                     <a
                         class="pf-c-dropdown__toggle pf-m-plain"
-                        href="/if/admin/#/events/log/${item.event?.pk}"
+                        href="${globalAK().api.base}if/admin/#/events/log/${item.event?.pk}"
                     >
                         <pf-tooltip position="top" content=${msg("Show details")}>
                             <i class="fas fa-share-square"></i>

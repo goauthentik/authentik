@@ -9,6 +9,7 @@ import { until } from "lit/directives/until.js";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import { globalAK } from "@goauthentik/app/common/global";
 
 @customElement("ak-sidebar-user")
 export class SidebarUser extends AKElement {
@@ -35,7 +36,7 @@ export class SidebarUser extends AKElement {
 
     render(): TemplateResult {
         return html`
-            <a href="/if/user/#/settings" class="pf-c-nav__link user-avatar" id="user-settings">
+            <a href="${globalAK().api.base}if/user/#/settings" class="pf-c-nav__link user-avatar" id="user-settings">
                 ${until(
                     me().then((u) => {
                         return html`<img
@@ -47,7 +48,7 @@ export class SidebarUser extends AKElement {
                     html``,
                 )}
             </a>
-            <a href="/flows/-/default/invalidation/" class="pf-c-nav__link user-logout" id="logout">
+            <a href="${globalAK().api.base}flows/-/default/invalidation/" class="pf-c-nav__link user-logout" id="logout">
                 <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
             </a>
         `;

@@ -11,6 +11,7 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import { globalAK } from "@goauthentik/app/common/global";
 
 @customElement("ak-api-drawer")
 export class APIDrawer extends AKElement {
@@ -86,7 +87,7 @@ export class APIDrawer extends AKElement {
                         <h1 class="pf-c-notification-drawer__header-title">
                             ${msg("API Requests")}
                         </h1>
-                        <a href="/api/v3/" target="_blank">${msg("Open API Browser")}</a>
+                        <a href="${globalAK().api.base}api/v3/" target="_blank">${msg("Open API Browser")}</a>
                     </div>
                     <div class="pf-c-notification-drawer__header-action">
                         <div class="pf-c-notification-drawer__header-action-close">

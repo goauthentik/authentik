@@ -49,9 +49,8 @@ func (ws *WebServer) configureStatic() {
 
 		pathStripper(
 			distFs,
+			"if/flow/"+vars["flow_slug"],
 			config.Get().Web.Path,
-			"if/flow",
-			vars["flow_slug"],
 		).ServeHTTP(rw, r)
 	})
 	indexLessRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/if/admin/assets").Handler(http.StripPrefix(fmt.Sprintf("%sif/admin", config.Get().Web.Path), distFs))
@@ -61,9 +60,8 @@ func (ws *WebServer) configureStatic() {
 
 		pathStripper(
 			distFs,
+			"if/rac/"+vars["app_slug"],
 			config.Get().Web.Path,
-			"if/rac",
-			vars["app_slug"],
 		).ServeHTTP(rw, r)
 	})
 

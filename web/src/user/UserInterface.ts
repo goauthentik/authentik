@@ -39,6 +39,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 import { CoreApi, EventsApi, SessionUser } from "@goauthentik/api";
+import { globalAK } from "@goauthentik/app/common/global";
 
 @customElement("ak-interface-user")
 export class UserInterface extends EnterpriseAwareInterface {
@@ -277,7 +278,7 @@ export class UserInterface extends EnterpriseAwareInterface {
                                 : html``}
                             <div class="pf-c-page__header-tools-item">
                                 <a
-                                    href="/flows/-/default/invalidation/"
+                                    href="${globalAK().api.base}flows/-/default/invalidation/"
                                     class="pf-c-button pf-m-plain"
                                 >
                                     <pf-tooltip position="top" content=${msg("Sign out")}>
@@ -288,7 +289,7 @@ export class UserInterface extends EnterpriseAwareInterface {
                             ${canAccessAdmin
                                 ? html`<a
                                       class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
-                                      href="/if/admin/"
+                                      href="${globalAK().api.base}if/admin/"
                                   >
                                       ${msg("Admin interface")}
                                   </a>`
