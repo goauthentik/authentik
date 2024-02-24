@@ -39,8 +39,8 @@ export function globalAK(): GlobalAuthentik {
             versionSubdomain: "",
             build: "",
             api: {
-                base: ( process.env.AK_API_BASE_PATH || window.location.origin),
-            }
+                base: process.env.AK_API_BASE_PATH || window.location.origin,
+            },
         };
     }
     return ak;

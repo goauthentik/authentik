@@ -1,3 +1,4 @@
+import { globalAK } from "@goauthentik/app/common/global";
 import { AKElement } from "@goauthentik/elements/Base";
 import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
 
@@ -6,7 +7,6 @@ import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-import { globalAK } from "@goauthentik/app/common/global";
 
 @customElement("ak-enterprise-status")
 export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
@@ -22,7 +22,9 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
             class="pf-c-banner ${this.licenseSummary?.readOnly ? "pf-m-red" : "pf-m-gold"}"
         >
             ${msg("Warning: The current user count has exceeded the configured licenses.")}
-            <a href="${globalAK().api.base}if/admin/#/enterprise/licenses"> ${msg("Click here for more info.")} </a>
+            <a href="${globalAK().api.base}if/admin/#/enterprise/licenses">
+                ${msg("Click here for more info.")}
+            </a>
         </div>`;
     }
 

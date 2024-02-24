@@ -1,3 +1,4 @@
+import { globalAK } from "@goauthentik/app/common/global";
 import { PFSize } from "@goauthentik/app/elements/Spinner";
 import { truncateWords } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-app-icon";
@@ -18,7 +19,6 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { Application } from "@goauthentik/api";
-import { globalAK } from "@goauthentik/app/common/global";
 
 @customElement("ak-library-app")
 export class LibraryApplication extends AKElement {
@@ -78,7 +78,8 @@ export class LibraryApplication extends AKElement {
                 ? html`
                       <a
                           class="pf-c-button pf-m-control pf-m-small pf-m-block"
-                          href="${globalAK().api.base}if/admin/#/core/applications/${application?.slug}"
+                          href="${globalAK().api
+                              .base}if/admin/#/core/applications/${application?.slug}"
                       >
                           <i class="fas fa-edit"></i>&nbsp;${msg("Edit")}
                       </a>

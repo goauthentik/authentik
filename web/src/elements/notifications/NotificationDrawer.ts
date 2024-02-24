@@ -1,3 +1,4 @@
+import { globalAK } from "@goauthentik/app/common/global";
 import { getRelativeTime } from "@goauthentik/app/common/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_NOTIFICATION_DRAWER_TOGGLE, EVENT_REFRESH } from "@goauthentik/common/constants";
@@ -20,7 +21,6 @@ import PFNotificationDrawer from "@patternfly/patternfly/components/Notification
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { EventsApi, Notification } from "@goauthentik/api";
-import { globalAK } from "@goauthentik/app/common/global";
 
 @customElement("ak-notification-drawer")
 export class NotificationDrawer extends AKElement {

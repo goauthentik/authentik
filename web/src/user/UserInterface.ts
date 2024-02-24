@@ -1,3 +1,4 @@
+import { globalAK } from "@goauthentik/app/common/global";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import {
     EVENT_API_DRAWER_TOGGLE,
@@ -39,7 +40,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 import { CoreApi, EventsApi, SessionUser } from "@goauthentik/api";
-import { globalAK } from "@goauthentik/app/common/global";
 
 @customElement("ak-interface-user")
 export class UserInterface extends EnterpriseAwareInterface {

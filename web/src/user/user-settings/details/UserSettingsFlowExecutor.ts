@@ -1,3 +1,4 @@
+import { globalAK } from "@goauthentik/app/common/global";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { MessageLevel } from "@goauthentik/common/messages";
@@ -29,7 +30,6 @@ import {
     ResponseError,
     ShellChallenge,
 } from "@goauthentik/api";
-import { globalAK } from "@goauthentik/app/common/global";
 
 @customElement("ak-user-settings-flow-executor")
 export class UserSettingsFlowExecutor
@@ -181,7 +181,10 @@ export class UserSettingsFlowExecutor
                             `authentik/user/flows: unsupported stage type ${this.challenge.component}`,
                         );
                         return html`
-                            <a href="${globalAK().api.base}if/flow/${this.flowSlug}" class="pf-c-button pf-m-primary">
+                            <a
+                                href="${globalAK().api.base}if/flow/${this.flowSlug}"
+                                class="pf-c-button pf-m-primary"
+                            >
                                 ${msg("Open settings")}
                             </a>
                         `;
