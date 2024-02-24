@@ -1,3 +1,4 @@
+import { globalAK } from "@goauthentik/app/common/global";
 import { EVENT_MESSAGE, EVENT_WS_MESSAGE } from "@goauthentik/common/constants";
 import { MessageLevel } from "@goauthentik/common/messages";
 
@@ -22,7 +23,7 @@ export class WebsocketClient {
     connect(): void {
         if (navigator.webdriver) return;
         const wsUrl = `${window.location.protocol.replace("http", "ws")}//${
-            window.location.host
+            globalAK().api.base
         }/ws/client/`;
         this.messageSocket = new WebSocket(wsUrl);
         this.messageSocket.addEventListener("open", () => {
