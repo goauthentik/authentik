@@ -389,7 +389,7 @@ if _ERROR_REPORTING:
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATICFILES_DIRS = [BASE_DIR / Path("web")]
-STATIC_URL = "/static/"
+STATIC_URL = CONFIG.get("web.path", "/")+"static/"
 
 STORAGES = {
     "staticfiles": {
