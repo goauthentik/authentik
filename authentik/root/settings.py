@@ -106,7 +106,6 @@ TENANT_APPS = [
     "authentik.stages.invitation",
     "authentik.stages.password",
     "authentik.stages.prompt",
-    "authentik.stages.source",
     "authentik.stages.user_delete",
     "authentik.stages.user_login",
     "authentik.stages.user_logout",

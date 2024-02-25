@@ -18574,7 +18574,6 @@ paths:
           * `authentik_stages_password.passwordstage` - Password Stage
           * `authentik_stages_prompt.prompt` - Prompt
           * `authentik_stages_prompt.promptstage` - Prompt Stage
-          * `authentik_stages_source.sourcestage` - Source Stage
           * `authentik_stages_user_delete.userdeletestage` - User Delete Stage
           * `authentik_stages_user_login.userloginstage` - User Login Stage
           * `authentik_stages_user_logout.userlogoutstage` - User Logout Stage
@@ -18589,6 +18588,7 @@ paths:
           * `authentik_providers_rac.racprovider` - RAC Provider
           * `authentik_providers_rac.endpoint` - RAC Endpoint
           * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
+          * `authentik_stages_source.sourcestage` - Source Stage
           * `authentik_events.event` - Event
           * `authentik_events.notificationtransport` - Notification Transport
           * `authentik_events.notification` - Notification
@@ -18864,7 +18864,6 @@ paths:
           * `authentik_stages_password.passwordstage` - Password Stage
           * `authentik_stages_prompt.prompt` - Prompt
           * `authentik_stages_prompt.promptstage` - Prompt Stage
-          * `authentik_stages_source.sourcestage` - Source Stage
           * `authentik_stages_user_delete.userdeletestage` - User Delete Stage
           * `authentik_stages_user_login.userloginstage` - User Login Stage
           * `authentik_stages_user_logout.userlogoutstage` - User Logout Stage
@@ -18879,6 +18878,7 @@ paths:
           * `authentik_providers_rac.racprovider` - RAC Provider
           * `authentik_providers_rac.endpoint` - RAC Endpoint
           * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
+          * `authentik_stages_source.sourcestage` - Source Stage
           * `authentik_events.event` - Event
           * `authentik_events.notificationtransport` - Notification Transport
           * `authentik_events.notification` - Notification
@@ -29919,7 +29919,6 @@ components:
       - authentik.stages.invitation
       - authentik.stages.password
       - authentik.stages.prompt
-      - authentik.stages.source
       - authentik.stages.user_delete
       - authentik.stages.user_login
       - authentik.stages.user_logout
@@ -29930,6 +29929,7 @@ components:
       - authentik.enterprise
       - authentik.enterprise.audit
       - authentik.enterprise.providers.rac
+      - authentik.enterprise.stages.source
       - authentik.events
       type: string
       description: |-
@@ -29974,7 +29974,6 @@ components:
         * `authentik.stages.invitation` - authentik Stages.User Invitation
         * `authentik.stages.password` - authentik Stages.Password
         * `authentik.stages.prompt` - authentik Stages.Prompt
-        * `authentik.stages.source` - authentik Stages.Source
         * `authentik.stages.user_delete` - authentik Stages.User Delete
         * `authentik.stages.user_login` - authentik Stages.User Login
         * `authentik.stages.user_logout` - authentik Stages.User Logout
@@ -29985,6 +29984,7 @@ components:
         * `authentik.enterprise` - authentik Enterprise
         * `authentik.enterprise.audit` - authentik Enterprise.Audit
         * `authentik.enterprise.providers.rac` - authentik Enterprise.Providers.RAC
+        * `authentik.enterprise.stages.source` - authentik Enterprise.Stages.Source
         * `authentik.events` - authentik Events
     AppleChallengeResponseRequest:
       type: object
@@ -33021,7 +33021,6 @@ components:
             * `authentik.stages.invitation` - authentik Stages.User Invitation
             * `authentik.stages.password` - authentik Stages.Password
             * `authentik.stages.prompt` - authentik Stages.Prompt
-            * `authentik.stages.source` - authentik Stages.Source
             * `authentik.stages.user_delete` - authentik Stages.User Delete
             * `authentik.stages.user_login` - authentik Stages.User Login
             * `authentik.stages.user_logout` - authentik Stages.User Logout
@@ -33032,6 +33031,7 @@ components:
             * `authentik.enterprise` - authentik Enterprise
             * `authentik.enterprise.audit` - authentik Enterprise.Audit
             * `authentik.enterprise.providers.rac` - authentik Enterprise.Providers.RAC
+            * `authentik.enterprise.stages.source` - authentik Enterprise.Stages.Source
             * `authentik.events` - authentik Events
         model:
           allOf:
@@ -33095,7 +33095,6 @@ components:
             * `authentik_stages_password.passwordstage` - Password Stage
             * `authentik_stages_prompt.prompt` - Prompt
             * `authentik_stages_prompt.promptstage` - Prompt Stage
-            * `authentik_stages_source.sourcestage` - Source Stage
             * `authentik_stages_user_delete.userdeletestage` - User Delete Stage
             * `authentik_stages_user_login.userloginstage` - User Login Stage
             * `authentik_stages_user_logout.userlogoutstage` - User Logout Stage
@@ -33110,6 +33109,7 @@ components:
             * `authentik_providers_rac.racprovider` - RAC Provider
             * `authentik_providers_rac.endpoint` - RAC Endpoint
             * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
+            * `authentik_stages_source.sourcestage` - Source Stage
             * `authentik_events.event` - Event
             * `authentik_events.notificationtransport` - Notification Transport
             * `authentik_events.notification` - Notification
@@ -33222,7 +33222,6 @@ components:
             * `authentik.stages.invitation` - authentik Stages.User Invitation
             * `authentik.stages.password` - authentik Stages.Password
             * `authentik.stages.prompt` - authentik Stages.Prompt
-            * `authentik.stages.source` - authentik Stages.Source
             * `authentik.stages.user_delete` - authentik Stages.User Delete
             * `authentik.stages.user_login` - authentik Stages.User Login
             * `authentik.stages.user_logout` - authentik Stages.User Logout
@@ -33233,6 +33232,7 @@ components:
             * `authentik.enterprise` - authentik Enterprise
             * `authentik.enterprise.audit` - authentik Enterprise.Audit
             * `authentik.enterprise.providers.rac` - authentik Enterprise.Providers.RAC
+            * `authentik.enterprise.stages.source` - authentik Enterprise.Stages.Source
             * `authentik.events` - authentik Events
         model:
           allOf:
@@ -33296,7 +33296,6 @@ components:
             * `authentik_stages_password.passwordstage` - Password Stage
             * `authentik_stages_prompt.prompt` - Prompt
             * `authentik_stages_prompt.promptstage` - Prompt Stage
-            * `authentik_stages_source.sourcestage` - Source Stage
             * `authentik_stages_user_delete.userdeletestage` - User Delete Stage
             * `authentik_stages_user_login.userloginstage` - User Login Stage
             * `authentik_stages_user_logout.userlogoutstage` - User Logout Stage
@@ -33311,6 +33310,7 @@ components:
             * `authentik_providers_rac.racprovider` - RAC Provider
             * `authentik_providers_rac.endpoint` - RAC Endpoint
             * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
+            * `authentik_stages_source.sourcestage` - Source Stage
             * `authentik_events.event` - Event
             * `authentik_events.notificationtransport` - Notification Transport
             * `authentik_events.notification` - Notification
@@ -35612,7 +35612,6 @@ components:
       - authentik_stages_password.passwordstage
       - authentik_stages_prompt.prompt
       - authentik_stages_prompt.promptstage
-      - authentik_stages_source.sourcestage
       - authentik_stages_user_delete.userdeletestage
       - authentik_stages_user_login.userloginstage
       - authentik_stages_user_logout.userlogoutstage
@@ -35627,6 +35626,7 @@ components:
       - authentik_providers_rac.racprovider
       - authentik_providers_rac.endpoint
       - authentik_providers_rac.racpropertymapping
+      - authentik_stages_source.sourcestage
       - authentik_events.event
       - authentik_events.notificationtransport
       - authentik_events.notification
@@ -35689,7 +35689,6 @@ components:
         * `authentik_stages_password.passwordstage` - Password Stage
         * `authentik_stages_prompt.prompt` - Prompt
         * `authentik_stages_prompt.promptstage` - Prompt Stage
-        * `authentik_stages_source.sourcestage` - Source Stage
         * `authentik_stages_user_delete.userdeletestage` - User Delete Stage
         * `authentik_stages_user_login.userloginstage` - User Login Stage
         * `authentik_stages_user_logout.userlogoutstage` - User Logout Stage
@@ -35704,6 +35703,7 @@ components:
         * `authentik_providers_rac.racprovider` - RAC Provider
         * `authentik_providers_rac.endpoint` - RAC Endpoint
         * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
+        * `authentik_stages_source.sourcestage` - Source Stage
         * `authentik_events.event` - Event
         * `authentik_events.notificationtransport` - Notification Transport
         * `authentik_events.notification` - Notification
@@ -38883,7 +38883,6 @@ components:
             * `authentik.stages.invitation` - authentik Stages.User Invitation
             * `authentik.stages.password` - authentik Stages.Password
             * `authentik.stages.prompt` - authentik Stages.Prompt
-            * `authentik.stages.source` - authentik Stages.Source
             * `authentik.stages.user_delete` - authentik Stages.User Delete
             * `authentik.stages.user_login` - authentik Stages.User Login
             * `authentik.stages.user_logout` - authentik Stages.User Logout
@@ -38894,6 +38893,7 @@ components:
             * `authentik.enterprise` - authentik Enterprise
             * `authentik.enterprise.audit` - authentik Enterprise.Audit
             * `authentik.enterprise.providers.rac` - authentik Enterprise.Providers.RAC
+            * `authentik.enterprise.stages.source` - authentik Enterprise.Stages.Source
             * `authentik.events` - authentik Events
         model:
           allOf:
@@ -38957,7 +38957,6 @@ components:
             * `authentik_stages_password.passwordstage` - Password Stage
             * `authentik_stages_prompt.prompt` - Prompt
             * `authentik_stages_prompt.promptstage` - Prompt Stage
-            * `authentik_stages_source.sourcestage` - Source Stage
             * `authentik_stages_user_delete.userdeletestage` - User Delete Stage
             * `authentik_stages_user_login.userloginstage` - User Login Stage
             * `authentik_stages_user_logout.userlogoutstage` - User Logout Stage
@@ -38972,6 +38971,7 @@ components:
             * `authentik_providers_rac.racprovider` - RAC Provider
             * `authentik_providers_rac.endpoint` - RAC Endpoint
             * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
+            * `authentik_stages_source.sourcestage` - Source Stage
             * `authentik_events.event` - Event
             * `authentik_events.notificationtransport` - Notification Transport
             * `authentik_events.notification` - Notification

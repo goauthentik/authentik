@@ -1,7 +1,9 @@
 """Source stage tests"""
+
 from django.urls import reverse
 
 from authentik.core.tests.utils import create_test_flow, create_test_user
+from authentik.enterprise.stages.source.models import SourceStage
 from authentik.flows.models import FlowDesignation, FlowStageBinding, FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_IS_RESTORED, FlowPlan
 from authentik.flows.tests import FlowTestCase
@@ -11,7 +13,6 @@ from authentik.sources.saml.models import SAMLSource
 from authentik.stages.identification.models import IdentificationStage, UserFields
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.models import PasswordStage
-from authentik.stages.source.models import SourceStage
 from authentik.stages.user_login.models import UserLoginStage
 
 

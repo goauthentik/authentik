@@ -1,4 +1,5 @@
 """Source stage logic"""
+
 from typing import Any
 from uuid import uuid4
 
@@ -10,12 +11,12 @@ from guardian.shortcuts import get_anonymous_user
 from authentik.core.models import Source, User
 from authentik.core.sources.flow_manager import SESSION_KEY_OVERRIDE_FLOW_TOKEN
 from authentik.core.types import UILoginButton
+from authentik.enterprise.stages.source.models import SourceStage
 from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.flows.models import FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_IS_RESTORED
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.stages.source.models import SourceStage
 
 PLAN_CONTEXT_RESUME_TOKEN = "resume_token"  # nosec
 

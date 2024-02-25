@@ -1,4 +1,5 @@
 """API URLs"""
-from authentik.stages.source.api import SourceStageViewSet
+
+from authentik.enterprise.stages.source.api import SourceStageViewSet
 
 api_urlpatterns = [("stages/source", SourceStageViewSet)]

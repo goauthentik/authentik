@@ -1,4 +1,5 @@
 """Source stage models"""
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.views import View
@@ -25,13 +26,13 @@ class SourceStage(Stage):
 
     @property
     def serializer(self) -> type[BaseSerializer]:
-        from authentik.stages.source.api import SourceStageSerializer
+        from authentik.enterprise.stages.source.api import SourceStageSerializer
 
         return SourceStageSerializer
 
     @property
-    def type(self) -> type[View]:
-        from authentik.stages.source.stage import SourceStageView
+    def view(self) -> type[View]:
+        from authentik.enterprise.stages.source.stage import SourceStageView
 
         return SourceStageView
 

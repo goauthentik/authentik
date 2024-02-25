@@ -1,14 +1,16 @@
 """Source Stage API Views"""
+
 from rest_framework.exceptions import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.models import Source
+from authentik.enterprise.api import EnterpriseRequiredMixin
+from authentik.enterprise.stages.source.models import SourceStage
 from authentik.flows.api.stages import StageSerializer
-from authentik.stages.source.models import SourceStage
 
 
-class SourceStageSerializer(StageSerializer):
+class SourceStageSerializer(EnterpriseRequiredMixin, StageSerializer):
     """SourceStage Serializer"""
 
     def validate_source(self, _source: Source) -> Source:
