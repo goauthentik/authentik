@@ -101,8 +101,8 @@ class UserInfoView(View):
                     value=value,
                 )
                 continue
-            LOGGER.debug("updated scope", scope=scope)
             always_merger.merge(final_claims, value)
+            LOGGER.debug("updated scope", scope=scope)
         return final_claims
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
@@ -121,8 +121,9 @@ class UserInfoView(View):
         """Handle GET Requests for UserInfo"""
         if not self.token:
             return HttpResponseBadRequest()
-        claims = self.get_claims(self.token.provider, self.token)
-        claims["sub"] = self.token.id_token.sub
+        claims = {}
+        claims.setdefault("sub", self.token.id_token.sub)
+        claims.update(self.get_claims(self.token.provider, self.token))
         if self.token.id_token.nonce:
             claims["nonce"] = self.token.id_token.nonce
         response = TokenResponse(claims)
