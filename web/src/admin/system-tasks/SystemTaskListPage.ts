@@ -5,6 +5,7 @@ import { getRelativeTime } from "@goauthentik/common/utils";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/events/LogViewer";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
@@ -95,9 +96,7 @@ export class SystemTaskListPage extends TablePage<SystemTask> {
                             </dt>
                             <dd class="pf-c-description-list__description">
                                 <div class="pf-c-description-list__text">
-                                    ${item.messages.map((m) => {
-                                        return html`<li>${m}</li>`;
-                                    })}
+                                    <ak-log-viewer .logs=${item?.messages}></ak-log-viewer>
                                 </div>
                             </dd>
                         </div>
