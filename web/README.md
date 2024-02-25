@@ -1,7 +1,7 @@
 # authentik WebUI
 
 This is the default UI for the authentik server. The documentation is going to be a little sparse
-for awhile, but at least let's get started.
+for a while, but at least let's get started.
 
 # The Theory of the authentik UI
 
