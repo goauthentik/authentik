@@ -115,6 +115,7 @@ module.exports = {
                     type: "category",
                     label: "Monitoring",
                     items: [
+                        "services/glitchtip/index",
                         "services/grafana/index",
                         "services/sentry/index",
                         "services/ubuntu-landscape/index",
