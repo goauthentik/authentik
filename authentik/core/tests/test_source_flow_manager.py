@@ -173,5 +173,5 @@ class TestSourceFlowManager(TestCase):
         self.assertEqual(action, Action.ENROLL)
         response = flow_manager.get_flow()
         self.assertIsInstance(response, AccessDeniedResponse)
-        # pylint: disable=no-member
+
         self.assertEqual(response.error_message, "foo")

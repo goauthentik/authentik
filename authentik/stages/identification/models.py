@@ -102,7 +102,7 @@ class IdentificationStage(Stage):
         return IdentificationStageSerializer
 
     @property
-    def type(self) -> type[View]:
+    def view(self) -> type[View]:
         from authentik.stages.identification.stage import IdentificationStageView
 
         return IdentificationStageView

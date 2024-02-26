@@ -1,6 +1,6 @@
 """RAC Models"""
 
-from typing import Any, Optional
+from typing import Any
 from uuid import uuid4
 
 from deepmerge import always_merger
@@ -58,7 +58,7 @@ class RACProvider(Provider):
     )
 
     @property
-    def launch_url(self) -> Optional[str]:
+    def launch_url(self) -> str | None:
         """URL to this provider and initiate authorization for the user.
         Can return None for providers that are not URL-based"""
         return "goauthentik.io://providers/rac/launch"
@@ -112,7 +112,7 @@ class RACPropertyMapping(PropertyMapping):
 
     static_settings = models.JSONField(default=dict)
 
-    def evaluate(self, user: Optional[User], request: Optional[HttpRequest], **kwargs) -> Any:
+    def evaluate(self, user: User | None, request: HttpRequest | None, **kwargs) -> Any:
         """Evaluate `self.expression` using `**kwargs` as Context."""
         if len(self.static_settings) > 0:
             return self.static_settings

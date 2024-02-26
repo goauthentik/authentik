@@ -4,7 +4,6 @@ from dataclasses import asdict, dataclass, field
 from hashlib import sha512
 from pathlib import Path
 from sys import platform
-from typing import Optional
 
 from dacite.core import from_dict
 from django.db import DatabaseError, InternalError, ProgrammingError
@@ -50,14 +49,14 @@ class BlueprintFile:
     version: int
     hash: str
     last_m: int
-    meta: Optional[BlueprintMetadata] = field(default=None)
+    meta: BlueprintMetadata | None = field(default=None)
 
 
 def start_blueprint_watcher():
     """Start blueprint watcher, if it's not running already."""
     # This function might be called twice since it's called on celery startup
-    # pylint: disable=global-statement
-    global _file_watcher_started
+
+    global _file_watcher_started  # noqa: PLW0603
     if _file_watcher_started:
         return
     observer = Observer()
@@ -126,7 +125,7 @@ def blueprints_find() -> list[BlueprintFile]:
         # Check if any part in the path starts with a dot and assume a hidden file
         if any(part for part in path.parts if part.startswith(".")):
             continue
-        with open(path, "r", encoding="utf-8") as blueprint_file:
+        with open(path, encoding="utf-8") as blueprint_file:
             try:
                 raw_blueprint = load(blueprint_file.read(), BlueprintLoader)
             except YAMLError as exc:
@@ -150,7 +149,7 @@ def blueprints_find() -> list[BlueprintFile]:
     throws=(DatabaseError, ProgrammingError, InternalError), base=SystemTask, bind=True
 )
 @prefill_task
-def blueprints_discovery(self: SystemTask, path: Optional[str] = None):
+def blueprints_discovery(self: SystemTask, path: str | None = None):
     """Find blueprints and check if they need to be created in the database"""
     count = 0
     for blueprint in blueprints_find():
@@ -197,7 +196,7 @@ def check_blueprint_v1_file(blueprint: BlueprintFile):
 def apply_blueprint(self: SystemTask, instance_pk: str):
     """Apply single blueprint"""
     self.save_on_success = False
-    instance: Optional[BlueprintInstance] = None
+    instance: BlueprintInstance | None = None
     try:
         instance: BlueprintInstance = BlueprintInstance.objects.filter(pk=instance_pk).first()
         if not instance or not instance.enabled:
@@ -225,10 +224,10 @@ def apply_blueprint(self: SystemTask, instance_pk: str):
         instance.last_applied = now()
         self.set_status(TaskStatus.SUCCESSFUL)
     except (
+        OSError,
         DatabaseError,
         ProgrammingError,
         InternalError,
-        IOError,
         BlueprintRetrievalFailed,
         EntryInvalidError,
     ) as exc:

@@ -1,7 +1,7 @@
 """test packaged blueprints"""
 
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable
 
 from django.test import TransactionTestCase
 

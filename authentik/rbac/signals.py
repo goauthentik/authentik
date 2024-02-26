@@ -40,7 +40,6 @@ def rbac_group_role_m2m(sender: type[Group], action: str, instance: Group, rever
         LOGGER.debug("Updated users in group", group=instance)
 
 
-# pylint: disable=no-member
 @receiver(m2m_changed, sender=Group.users.through)
 def rbac_group_users_m2m(
     sender: type[Group], action: str, instance: Group, pk_set: set, reverse: bool, **_

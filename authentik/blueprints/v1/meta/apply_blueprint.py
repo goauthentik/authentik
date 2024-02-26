@@ -43,7 +43,7 @@ class ApplyBlueprintMetaSerializer(PassiveSerializer):
             LOGGER.info("Blueprint does not exist, but not required")
             return MetaResult()
         LOGGER.debug("Applying blueprint from meta model", blueprint=self.blueprint_instance)
-        # pylint: disable=no-value-for-parameter
+
         apply_blueprint(str(self.blueprint_instance.pk))
         return MetaResult()
 

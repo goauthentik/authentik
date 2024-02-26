@@ -2,7 +2,6 @@
 
 import datetime
 import uuid
-from typing import Optional
 
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
@@ -52,7 +51,7 @@ class CertificateBuilder:
     def build(
         self,
         validity_days: int = 365,
-        subject_alt_names: Optional[list[str]] = None,
+        subject_alt_names: list[str] | None = None,
     ):
         """Build self-signed certificate"""
         one_day = datetime.timedelta(1, 0, 0)

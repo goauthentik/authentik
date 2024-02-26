@@ -40,12 +40,12 @@ class PolicyBindingModel(models.Model):
 
     objects = InheritanceManager()
 
-    def __str__(self) -> str:
-        return f"PolicyBindingModel {self.pbm_uuid}"
-
     class Meta:
         verbose_name = _("Policy Binding Model")
         verbose_name_plural = _("Policy Binding Models")
+
+    def __str__(self) -> str:
+        return f"PolicyBindingModel {self.pbm_uuid}"
 
 
 class PolicyBinding(SerializerModel):
@@ -138,7 +138,7 @@ class PolicyBinding(SerializerModel):
         suffix = f"{self.target_type.title()} {self.target_name}"
         try:
             return f"Binding from {self.target} #{self.order} to {suffix}"
-        except PolicyBinding.target.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+        except PolicyBinding.target.RelatedObjectDoesNotExist:
             return f"Binding - #{self.order} to {suffix}"
         return ""
 

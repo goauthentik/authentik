@@ -18,12 +18,10 @@ class ObjectPermissions(DjangoObjectPermissions):
         return super().has_object_permission(request, view, obj)
 
 
-# pylint: disable=invalid-name
 def HasPermission(*perm: str) -> type[BasePermission]:
     """Permission checker for any non-object permissions, returns
     a BasePermission class that can be used with rest_framework"""
 
-    # pylint: disable=missing-class-docstring, invalid-name
     class checker(BasePermission):
         def has_permission(self, request: Request, view):
             return bool(request.user and request.user.has_perms(perm))

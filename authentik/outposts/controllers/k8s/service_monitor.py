@@ -25,7 +25,6 @@ class PrometheusServiceMonitorSpecEndpoint:
 class PrometheusServiceMonitorSpecSelector:
     """Prometheus ServiceMonitor selector spec"""
 
-    # pylint: disable=invalid-name
     matchLabels: dict
 
 
@@ -34,7 +33,7 @@ class PrometheusServiceMonitorSpec:
     """Prometheus ServiceMonitor spec"""
 
     endpoints: list[PrometheusServiceMonitorSpecEndpoint]
-    # pylint: disable=invalid-name
+
     selector: PrometheusServiceMonitorSpecSelector
 
 
@@ -51,7 +50,6 @@ class PrometheusServiceMonitorMetadata:
 class PrometheusServiceMonitor:
     """Prometheus ServiceMonitor"""
 
-    # pylint: disable=invalid-name
     apiVersion: str
     kind: str
     metadata: PrometheusServiceMonitorMetadata

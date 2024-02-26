@@ -2,7 +2,6 @@
 
 from datetime import datetime
 from hashlib import sha256
-from typing import Optional
 
 from django.conf import settings
 from django.http import HttpRequest, HttpResponse
@@ -63,7 +62,7 @@ class AuthenticatorValidationChallenge(WithUserInfoChallenge):
 class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     """Challenge used for Code-based and WebAuthn authenticators"""
 
-    device: Optional[Device]
+    device: Device | None
 
     selected_challenge = DeviceChallenge(required=False)
     selected_stage = CharField(required=False)
@@ -222,8 +221,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         challenge.is_valid()
         return [challenge.data]
 
-    # pylint: disable=too-many-return-statements
-    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:  # noqa: PLR0911
         """Check if a user is set, and check if the user has any devices
         if not, we can skip this entire stage"""
         user = self.get_pending_user()

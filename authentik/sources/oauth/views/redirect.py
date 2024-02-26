@@ -36,7 +36,7 @@ class OAuthRedirect(OAuthClientMixin, RedirectView):
         try:
             source: OAuthSource = OAuthSource.objects.get(slug=slug)
         except OAuthSource.DoesNotExist:
-            raise Http404(f"Unknown OAuth source '{slug}'.")
+            raise Http404(f"Unknown OAuth source '{slug}'.") from None
         if not source.enabled:
             raise Http404(f"source {slug} is not enabled.")
         client = self.get_client(source, callback=self.get_callback_url(source))

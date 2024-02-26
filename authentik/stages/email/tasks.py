@@ -2,7 +2,7 @@
 
 from email.utils import make_msgid
 from smtplib import SMTPException
-from typing import Any, Optional
+from typing import Any
 
 from celery import group
 from django.core.mail import EmailMultiAlternatives
@@ -47,7 +47,7 @@ def get_email_body(email: EmailMultiAlternatives) -> str:
     retry_backoff=True,
     base=SystemTask,
 )
-def send_mail(self: SystemTask, message: dict[Any, Any], email_stage_pk: Optional[str] = None):
+def send_mail(self: SystemTask, message: dict[Any, Any], email_stage_pk: str | None = None):
     """Send Email for Email Stage. Retries are scheduled automatically."""
     self.save_on_success = False
     message_id = make_msgid(domain=DNS_NAME)

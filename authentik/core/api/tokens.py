@@ -3,7 +3,8 @@
 from typing import Any
 
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
+from drf_spectacular.utils import (OpenApiResponse, extend_schema,
+                                   inline_serializer)
 from guardian.shortcuts import assign_perm, get_anonymous_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -15,24 +16,20 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.authorization import OwnerSuperuserPermissions
-from authentik.api.decorators import permission_required
 from authentik.blueprints.api import ManagedSerializer
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import PassiveSerializer
-from authentik.core.models import (
-    USER_ATTRIBUTE_TOKEN_EXPIRING,
-    USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME,
-    Token,
-    TokenIntents,
-    User,
-    default_token_duration,
-    token_expires_from_timedelta,
-)
+from authentik.core.models import (USER_ATTRIBUTE_TOKEN_EXPIRING,
+                                   USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME,
+                                   Token, TokenIntents, User,
+                                   default_token_duration,
+                                   token_expires_from_timedelta)
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import model_to_dict
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.rbac.decorators import permission_required
 
 
 class TokenSerializer(ManagedSerializer, ModelSerializer):
