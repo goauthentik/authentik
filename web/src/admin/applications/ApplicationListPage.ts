@@ -98,7 +98,7 @@ export class ApplicationListPage extends TablePage<Application> {
         return html`<div class="pf-c-sidebar__panel pf-m-width-25">
             <div class="pf-c-card">
                 <div class="pf-c-card__body">
-                    <ak-markdown .md=${MDApplication}></ak-markdown>
+                    <ak-markdown .md=${MDApplication} meta="core/applications.md"></ak-markdown>
                 </div>
             </div>
         </div>`;
