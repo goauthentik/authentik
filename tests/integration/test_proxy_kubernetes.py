@@ -1,7 +1,5 @@
 """Test Controllers"""
 
-from typing import Optional
-
 import pytest
 import yaml
 from django.test import TestCase
@@ -21,11 +19,11 @@ LOGGER = get_logger()
 class TestProxyKubernetes(TestCase):
     """Test Controllers"""
 
-    controller: Optional[KubernetesController]
+    controller: KubernetesController | None
 
     def setUp(self):
         # Ensure that local connection have been created
-        outpost_connection_discovery()  # pylint: disable=no-value-for-parameter
+        outpost_connection_discovery()
         self.controller = None
 
     def tearDown(self) -> None:

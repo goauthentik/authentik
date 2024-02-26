@@ -32,7 +32,7 @@ Depending on platform, some native dependencies might be required. On macOS, run
 4. Add this volume mapping to your compose file
 
     ```yaml
-    version: "3.2"
+    version: "3.4"
 
     services:
         # [...]

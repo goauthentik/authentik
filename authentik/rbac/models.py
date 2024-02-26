@@ -1,6 +1,5 @@
 """RBAC models"""
 
-from typing import Optional
 from uuid import uuid4
 
 from django.db import models
@@ -31,7 +30,7 @@ class Role(SerializerModel):
     # name field has the same constraints as the group model
     name = models.TextField(max_length=150, unique=True)
 
-    def assign_permission(self, *perms: str, obj: Optional[models.Model] = None):
+    def assign_permission(self, *perms: str, obj: models.Model | None = None):
         """Assign permission to role, can handle multiple permissions,
         but when assigning multiple permissions to an object the permissions
         must all belong to the object given"""
@@ -74,3 +73,6 @@ class SystemPermission(models.Model):
             ("view_system_settings", _("Can view system settings")),
             ("edit_system_settings", _("Can edit system settings")),
         ]
+
+    def __str__(self) -> str:
+        return "System Permission"

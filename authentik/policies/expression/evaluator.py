@@ -24,7 +24,7 @@ class PolicyEvaluator(BaseEvaluator):
 
     policy: Optional["ExpressionPolicy"] = None
 
-    def __init__(self, policy_name: Optional[str] = None):
+    def __init__(self, policy_name: str | None = None):
         super().__init__(policy_name or "PolicyEvaluator")
         self._messages = []
         # update website/docs/expressions/_objects.md
@@ -66,7 +66,7 @@ class PolicyEvaluator(BaseEvaluator):
             # PolicyExceptions should be propagated back to the process,
             # which handles recording and returning a correct result
             raise exc
-        except Exception as exc:  # pylint: disable=broad-except
+        except Exception as exc:
             LOGGER.warning("Expression error", exc=exc)
             return PolicyResult(False, str(exc))
         else:

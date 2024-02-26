@@ -4912,10 +4912,6 @@ Bindings to groups/users are checked against the user of the event.</source>
         <source>Logs</source>
         <target>日志</target>
       </trans-unit>
-      <trans-unit id="s1823625e6f831d73">
-        <source>Customisation</source>
-        <target>定制</target>
-      </trans-unit>
       <trans-unit id="sc0829ee663ced008">
         <source>Directory</source>
         <target>目录</target>
@@ -5225,10 +5221,6 @@ Bindings to groups/users are checked against the user of the event.</source>
         <source>Server validation of credential failed: <x id="0" equiv-text="${err}"/></source>
         <target>服务器验证凭据失败：
         <x id="0" equiv-text="${err}"/></target>
-      </trans-unit>
-      <trans-unit id="s6c8f05e3be04f62a">
-        <source>Register device</source>
-        <target>注册设备</target>
       </trans-unit>
       <trans-unit id="s3fb39fc45e840f78">
         <source>Refer to documentation</source>
@@ -6373,11 +6365,26 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sd2b8c1caa0340ed6">
   <source>Failed to authenticate</source>
 </trans-unit>
-<trans-unit id="s5852d37b37d81380">
-  <source>Authentication failed.</source>
-</trans-unit>
 <trans-unit id="sffef1a8596bc58bb">
   <source>Authenticating...</source>
+</trans-unit>
+<trans-unit id="sd12f594a3184c056">
+  <source>Customization</source>
+</trans-unit>
+<trans-unit id="s363abde8a254ea5f">
+  <source>Authentication failed. Please try again.</source>
+</trans-unit>
+<trans-unit id="sb0821a9e92cac5eb">
+  <source>Failed to register. Please try again.</source>
+</trans-unit>
+<trans-unit id="s238784fc1dc672ae">
+  <source>Registering...</source>
+</trans-unit>
+<trans-unit id="s009bd1c98a9f5de2">
+  <source>Failed to register</source>
+</trans-unit>
+<trans-unit id="sb166ce92e8e807d6">
+  <source>Retry registration</source>
 </trans-unit>
     </body>
   </file>

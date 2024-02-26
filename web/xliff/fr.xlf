@@ -6501,11 +6501,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
         <target>Logs</target>
         
       </trans-unit>
-      <trans-unit id="s1823625e6f831d73">
-        <source>Customisation</source>
-        <target>Personalisation</target>
-        
-      </trans-unit>
       <trans-unit id="sc0829ee663ced008">
         <source>Directory</source>
         <target>Répertoire</target>
@@ -6912,11 +6907,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
         <source>Server validation of credential failed: <x id="0" equiv-text="${err}"/></source>
         <target>Erreur lors de la validation des identifiants par le serveur :
         <x id="0" equiv-text="${err}"/></target>
-        
-      </trans-unit>
-      <trans-unit id="s6c8f05e3be04f62a">
-        <source>Register device</source>
-        <target>Enregistrer un appareil</target>
         
       </trans-unit>
       <trans-unit id="s3fb39fc45e840f78">
@@ -8435,15 +8425,33 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s39002897db60bb28">
   <source>Sending Duo push notification...</source>
+  <target>Envoi de la notification push Duo</target>
 </trans-unit>
 <trans-unit id="sd2b8c1caa0340ed6">
   <source>Failed to authenticate</source>
-</trans-unit>
-<trans-unit id="s5852d37b37d81380">
-  <source>Authentication failed.</source>
+  <target>Échec d'authentification</target>
 </trans-unit>
 <trans-unit id="sffef1a8596bc58bb">
   <source>Authenticating...</source>
+  <target>Authentification en cours...</target>
+</trans-unit>
+<trans-unit id="sd12f594a3184c056">
+  <source>Customization</source>
+</trans-unit>
+<trans-unit id="s363abde8a254ea5f">
+  <source>Authentication failed. Please try again.</source>
+</trans-unit>
+<trans-unit id="sb0821a9e92cac5eb">
+  <source>Failed to register. Please try again.</source>
+</trans-unit>
+<trans-unit id="s238784fc1dc672ae">
+  <source>Registering...</source>
+</trans-unit>
+<trans-unit id="s009bd1c98a9f5de2">
+  <source>Failed to register</source>
+</trans-unit>
+<trans-unit id="sb166ce92e8e807d6">
+  <source>Retry registration</source>
 </trans-unit>
     </body>
   </file>

@@ -1,6 +1,5 @@
 """authentik consent stage"""
 
-from typing import Optional
 from uuid import uuid4
 
 from django.http import HttpRequest, HttpResponse
@@ -99,7 +98,7 @@ class ConsentStageView(ChallengeStageView):
         if PLAN_CONTEXT_PENDING_USER in self.executor.plan.context:
             user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
 
-        consent: Optional[UserConsent] = UserConsent.filter_not_expired(
+        consent: UserConsent | None = UserConsent.filter_not_expired(
             user=user, application=application
         ).first()
         self.executor.plan.context[PLAN_CONTEXT_CONSENT] = consent

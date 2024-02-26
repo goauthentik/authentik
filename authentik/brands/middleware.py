@@ -1,6 +1,6 @@
 """Inject brand into current request"""
 
-from typing import Callable
+from collections.abc import Callable
 
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse
@@ -20,7 +20,7 @@ class BrandMiddleware:
     def __call__(self, request: HttpRequest) -> HttpResponse:
         if not hasattr(request, "brand"):
             brand = get_brand_for_request(request)
-            setattr(request, "brand", brand)
+            request.brand = brand
             locale = brand.default_locale
             if locale != "":
                 activate(locale)

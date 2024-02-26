@@ -3,11 +3,12 @@
 import json
 import os
 import socket
+from collections.abc import Callable
 from functools import lru_cache, wraps
 from os import environ
 from sys import stderr
 from time import sleep
-from typing import Any, Callable, Optional
+from typing import Any
 
 from django.apps import apps
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
@@ -66,7 +67,7 @@ class DockerTestCase:
                 return container
             sleep(1)
             attempt += 1
-            if attempt >= 30:
+            if attempt >= 30:  # noqa: PLR2004
                 self.failureException("Container failed to start")
 
 
@@ -74,7 +75,7 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
     """StaticLiveServerTestCase which automatically creates a Webdriver instance"""
 
     host = get_local_ip()
-    container: Optional[Container] = None
+    container: Container | None = None
     wait_timeout: int
     user: User
 
@@ -114,7 +115,7 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
         self.wait_for_container(container)
         return container
 
-    def output_container_logs(self, container: Optional[Container] = None):
+    def output_container_logs(self, container: Container | None = None):
         """Output the container logs to our STDOUT"""
         _container = container or self.container
         if IS_CI:
@@ -124,7 +125,7 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
         if IS_CI:
             print("::endgroup::")
 
-    def get_container_specs(self) -> Optional[dict[str, Any]]:
+    def get_container_specs(self) -> dict[str, Any] | None:
         """Optionally get container specs which will launched on setup, wait for the container to
         be healthy, and deleted again on tearDown"""
         return None
@@ -178,7 +179,7 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
         return f"{self.live_server_url}/if/user/#{view}"
 
     def get_shadow_root(
-        self, selector: str, container: Optional[WebElement | WebDriver] = None
+        self, selector: str, container: WebElement | WebDriver | None = None
     ) -> WebElement:
         """Get shadow root element's inner shadowRoot"""
         if not container:
@@ -245,12 +246,12 @@ def retry(max_retires=RETRIES, exceptions=None):
             nonlocal count
             try:
                 return func(self, *args, **kwargs)
-            # pylint: disable=catching-non-exception
+
             except tuple(exceptions) as exc:
                 count += 1
                 if count > max_retires:
                     logger.debug("Exceeded retry count", exc=exc, test=self)
-                    # pylint: disable=raising-non-exception
+
                     raise exc
                 logger.debug("Retrying on error", exc=exc, test=self)
                 self.tearDown()

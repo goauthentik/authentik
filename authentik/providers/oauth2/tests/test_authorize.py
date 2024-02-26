@@ -344,7 +344,12 @@ class TestAuthorize(OAuthTestCase):
                 ]
             )
         )
-        Application.objects.create(name="app", slug="app", provider=provider)
+        provider.property_mappings.add(
+            ScopeMapping.objects.create(
+                name=generate_id(), scope_name="test", expression="""return {"sub": "foo"}"""
+            )
+        )
+        Application.objects.create(name=generate_id(), slug=generate_id(), provider=provider)
         state = generate_id()
         user = create_test_admin_user()
         self.client.force_login(user)
@@ -365,7 +370,7 @@ class TestAuthorize(OAuthTestCase):
                     "response_type": "id_token",
                     "client_id": "test",
                     "state": state,
-                    "scope": "openid",
+                    "scope": "openid test",
                     "redirect_uri": "http://localhost",
                     "nonce": generate_id(),
                 },
@@ -390,6 +395,7 @@ class TestAuthorize(OAuthTestCase):
             )
             jwt = self.validate_jwt(token, provider)
             self.assertEqual(jwt["amr"], ["pwd"])
+            self.assertEqual(jwt["sub"], "foo")
             self.assertAlmostEqual(
                 jwt["exp"] - now().timestamp(),
                 expires,

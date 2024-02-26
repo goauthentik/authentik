@@ -15,13 +15,13 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.api.decorators import permission_required
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
 from authentik.core.models import Provider
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import AccessToken, OAuth2Provider, ScopeMapping
+from authentik.rbac.decorators import permission_required
 
 
 class OAuth2ProviderSerializer(ProviderSerializer):
@@ -135,7 +135,7 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
                     kwargs={"application_slug": provider.application.slug},
                 )
             )
-        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+        except Provider.application.RelatedObjectDoesNotExist:
             pass
         return Response(data)
 
@@ -170,7 +170,7 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
                 if not for_user:
                     raise ValidationError({"for_user": "User not found"})
             except ValueError:
-                raise ValidationError({"for_user": "input must be numerical"})
+                raise ValidationError({"for_user": "input must be numerical"}) from None
 
         scope_names = ScopeMapping.objects.filter(provider=provider).values_list(
             "scope_name", flat=True

@@ -1,6 +1,6 @@
 """Twitter OAuth Views"""
 
-from typing import Any, Optional
+from typing import Any
 
 from authentik.lib.generators import generate_id
 from authentik.sources.oauth.clients.oauth2 import (
@@ -20,7 +20,7 @@ class TwitterClient(UserprofileHeaderAuthClient):
     # is set via query parameter, so we reuse the azure client
     # see https://github.com/goauthentik/authentik/issues/1910
 
-    def get_access_token(self, **request_kwargs) -> Optional[dict[str, Any]]:
+    def get_access_token(self, **request_kwargs) -> dict[str, Any] | None:
         return super().get_access_token(
             auth=(
                 self.source.consumer_key,

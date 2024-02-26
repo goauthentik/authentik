@@ -7,7 +7,7 @@ from datetime import datetime
 from hashlib import sha256
 from re import error as RegexError
 from re import fullmatch
-from typing import Any, Optional
+from typing import Any
 from urllib.parse import urlparse
 
 from django.http import HttpRequest, HttpResponse
@@ -68,7 +68,6 @@ LOGGER = get_logger()
 
 
 @dataclass(slots=True)
-# pylint: disable=too-many-instance-attributes
 class TokenParams:
     """Token params"""
 
@@ -81,16 +80,16 @@ class TokenParams:
 
     provider: OAuth2Provider
 
-    authorization_code: Optional[AuthorizationCode] = None
-    refresh_token: Optional[RefreshToken] = None
-    device_code: Optional[DeviceToken] = None
-    user: Optional[User] = None
+    authorization_code: AuthorizationCode | None = None
+    refresh_token: RefreshToken | None = None
+    device_code: DeviceToken | None = None
+    user: User | None = None
 
-    code_verifier: Optional[str] = None
+    code_verifier: str | None = None
 
     raw_code: InitVar[str] = ""
     raw_token: InitVar[str] = ""
-    request: InitVar[Optional[HttpRequest]] = None
+    request: InitVar[HttpRequest | None] = None
 
     @staticmethod
     def parse(
@@ -210,7 +209,7 @@ class TokenParams:
                     message="Invalid redirect_uri configured",
                     provider=self.provider,
                 ).from_http(request)
-                raise TokenError("invalid_client")
+                raise TokenError("invalid_client") from None
 
         # Check against forbidden schemes
         if urlparse(self.redirect_uri).scheme in FORBIDDEN_URI_SCHEMES:
@@ -306,7 +305,7 @@ class TokenParams:
             user, _, password = b64decode(self.client_secret).decode("utf-8").partition(":")
             return self.__post_init_client_credentials_creds(request, user, password)
         except (ValueError, Error):
-            raise TokenError("invalid_grant")
+            raise TokenError("invalid_grant") from None
 
     def __post_init_client_credentials_creds(
         self, request: HttpRequest, username: str, password: str
@@ -338,7 +337,6 @@ class TokenParams:
             },
         ).from_http(request, user=user)
 
-    # pylint: disable=too-many-locals
     def __post_init_client_credentials_jwt(self, request: HttpRequest):
         assertion_type = request.POST.get(CLIENT_ASSERTION_TYPE, "")
         if assertion_type != CLIENT_ASSERTION_TYPE_JWT:
@@ -353,8 +351,8 @@ class TokenParams:
 
         token = None
 
-        source: Optional[OAuthSource] = None
-        parsed_key: Optional[PyJWK] = None
+        source: OAuthSource | None = None
+        parsed_key: PyJWK | None = None
 
         # Fully decode the JWT without verifying the signature, so we can get access to
         # the header.
@@ -368,7 +366,7 @@ class TokenParams:
             )
         except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
             LOGGER.warning("failed to parse JWT for kid lookup", exc=exc)
-            raise TokenError("invalid_grant")
+            raise TokenError("invalid_grant") from None
         expected_kid = decode_unvalidated["header"]["kid"]
         for source in self.provider.jwks_sources.filter(
             oidc_jwks__keys__contains=[{"kid": expected_kid}]
@@ -489,8 +487,8 @@ class TokenParams:
 class TokenView(View):
     """Generate tokens for clients"""
 
-    provider: Optional[OAuth2Provider] = None
-    params: Optional[TokenParams] = None
+    provider: OAuth2Provider | None = None
+    params: TokenParams | None = None
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         response = super().dispatch(request, *args, **kwargs)

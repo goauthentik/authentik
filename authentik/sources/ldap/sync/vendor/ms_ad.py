@@ -1,8 +1,9 @@
 """Active Directory specific"""
 
-from datetime import datetime, timezone
+from collections.abc import Generator
+from datetime import UTC, datetime
 from enum import IntFlag
-from typing import Any, Generator
+from typing import Any
 
 from authentik.core.models import User
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
@@ -57,7 +58,7 @@ class MicrosoftActiveDirectory(BaseLDAPSynchronizer):
         if "pwdLastSet" not in attributes:
             return
         pwd_last_set: datetime = attributes.get("pwdLastSet", datetime.now())
-        pwd_last_set = pwd_last_set.replace(tzinfo=timezone.utc)
+        pwd_last_set = pwd_last_set.replace(tzinfo=UTC)
         if created or pwd_last_set >= user.password_change_date:
             self.message(f"'{user.username}': Reset user's password")
             self._logger.debug(

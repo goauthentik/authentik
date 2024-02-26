@@ -1,6 +1,6 @@
 """AuthenticatedSessions API Viewset"""
 
-from typing import Optional, TypedDict
+from typing import TypedDict
 
 from django_filters.rest_framework import DjangoFilterBackend
 from guardian.utils import get_anonymous_user
@@ -72,11 +72,11 @@ class AuthenticatedSessionSerializer(ModelSerializer):
         """Get parsed user agent"""
         return user_agent_parser.Parse(instance.last_user_agent)
 
-    def get_geo_ip(self, instance: AuthenticatedSession) -> Optional[GeoIPDict]:  # pragma: no cover
+    def get_geo_ip(self, instance: AuthenticatedSession) -> GeoIPDict | None:  # pragma: no cover
         """Get GeoIP Data"""
         return GEOIP_CONTEXT_PROCESSOR.city_dict(instance.last_ip)
 
-    def get_asn(self, instance: AuthenticatedSession) -> Optional[ASNDict]:  # pragma: no cover
+    def get_asn(self, instance: AuthenticatedSession) -> ASNDict | None:  # pragma: no cover
         """Get ASN Data"""
         return ASN_CONTEXT_PROCESSOR.asn_dict(instance.last_ip)
 

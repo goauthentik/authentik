@@ -1,7 +1,7 @@
 """Apple OAuth Views"""
 
 from time import time
-from typing import Any, Optional
+from typing import Any
 
 from django.http.request import HttpRequest
 from django.urls.base import reverse
@@ -17,6 +17,7 @@ from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 LOGGER = get_logger()
+APPLE_CLIENT_ID_PARTS = 3
 
 
 class AppleLoginChallenge(Challenge):
@@ -30,7 +31,7 @@ class AppleLoginChallenge(Challenge):
 
 
 class AppleChallengeResponse(ChallengeResponse):
-    """Pseudo class for plex response"""
+    """Pseudo class for apple response"""
 
     component = CharField(default="ak-source-oauth-apple")
 
@@ -40,14 +41,14 @@ class AppleOAuthClient(OAuth2Client):
 
     def get_client_id(self) -> str:
         parts: list[str] = self.source.consumer_key.split(";")
-        if len(parts) < 3:
+        if len(parts) < APPLE_CLIENT_ID_PARTS:
             return self.source.consumer_key
         return parts[0].strip()
 
     def get_client_secret(self) -> str:
         now = time()
         parts: list[str] = self.source.consumer_key.split(";")
-        if len(parts) < 3:
+        if len(parts) < APPLE_CLIENT_ID_PARTS:
             raise ValueError(
                 "Apple Source client_id should be formatted like "
                 "services_id_identifier;apple_team_id;key_id"
@@ -64,7 +65,7 @@ class AppleOAuthClient(OAuth2Client):
         LOGGER.debug("signing payload as secret key", payload=payload, jwt=jwt)
         return jwt
 
-    def get_profile_info(self, token: dict[str, str]) -> Optional[dict[str, Any]]:
+    def get_profile_info(self, token: dict[str, str]) -> dict[str, Any] | None:
         id_token = token.get("id_token")
         return decode(id_token, options={"verify_signature": False})
 
@@ -86,7 +87,7 @@ class AppleOAuth2Callback(OAuthCallback):
 
     client_class = AppleOAuthClient
 
-    def get_user_id(self, info: dict[str, Any]) -> Optional[str]:
+    def get_user_id(self, info: dict[str, Any]) -> str | None:
         return info["sub"]
 
     def get_user_enroll_context(

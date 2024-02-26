@@ -20,10 +20,10 @@ for _authentik_app in get_apps():
     mountpoints = None
     base_url_module = _authentik_app.name + ".urls"
     if hasattr(_authentik_app, "mountpoint"):
-        mountpoint = getattr(_authentik_app, "mountpoint")
+        mountpoint = _authentik_app.mountpoint
         mountpoints = {base_url_module: mountpoint}
     if hasattr(_authentik_app, "mountpoints"):
-        mountpoints = getattr(_authentik_app, "mountpoints")
+        mountpoints = _authentik_app.mountpoints
     if not mountpoints:
         continue
     for module, mountpoint in mountpoints.items():

@@ -115,7 +115,7 @@ You must sync your LDAP database with Snipe-IT. Go to People on the sidebar menu
 
 ## authentik Property Mapping
 
-To create a policy mapping, go to _Customisation/Property Mappings_, click `Create` then `LDAP Property Mapping`. Name is 'sn' and set Object field to sn:
+To create a policy mapping, go to _Customization/Property Mappings_, click `Create` then `LDAP Property Mapping`. Name is 'sn' and set Object field to sn:
 
 ```ini
 def getLastName():
