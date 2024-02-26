@@ -9,7 +9,7 @@ assignees: ""
 **Describe your question/**
 A clear and concise description of what you're trying to do.
 
-**Relevant infos**
+**Relevant info**
 i.e. Version of other software you're using, specifics of your setup
 
 **Screenshots**
