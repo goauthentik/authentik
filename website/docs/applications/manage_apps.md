@@ -14,7 +14,7 @@ Learn from our video or follow the instructions below.
 
 ### Instructions
 
-To add an application to authentik, so that it appears in users' **My applications** page, you can use the Application Wizard, which creates both the new application and the required [provider](../providers) at the same time.
+To add an application to authentik, so that it appears in users' **My applications** page, you can use the Application Wizard, which creates both the new application and the required provider at the same time.
 
 1. Log into authentik as an admin, and navigate to **Applications --> Applications**.
 

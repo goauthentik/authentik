@@ -63,9 +63,7 @@ const docsSidebar = {
                 type: "doc",
                 id: "applications/index",
             },
-            items: [
-                "applications/manage_apps",
-            ],
+            items: ["applications/manage_apps"],
         },
         {
             type: "category",
