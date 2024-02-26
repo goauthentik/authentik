@@ -41,7 +41,6 @@
 
 # Moving doc files
 [[redirects]]
-  from = "/docs/core/applications.md"
-  to = "/docs/applications/index.md"
-  status = 200
-  force = true
+  from = "/docs/core/applications"
+  to = "/docs/applications"
+  status = 302
