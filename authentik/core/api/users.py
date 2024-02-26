@@ -154,7 +154,7 @@ class UserSerializer(ModelSerializer):
 
     def get_avatar(self, user: User) -> str:
         """User's avatar, either a http/https URL or a data URI"""
-        return get_avatar(user, self.context["request"])
+        return get_avatar(user, self.context.get("request"))
 
     def validate_path(self, path: str) -> str:
         """Validate path"""
@@ -218,7 +218,7 @@ class UserSelfSerializer(ModelSerializer):
 
     def get_avatar(self, user: User) -> str:
         """User's avatar, either a http/https URL or a data URI"""
-        return get_avatar(user, self.context["request"])
+        return get_avatar(user, self.context.get("request"))
 
     @extend_schema_field(
         ListSerializer(
