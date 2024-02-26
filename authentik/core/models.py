@@ -9,7 +9,7 @@ from deepmerge import always_merger
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
-from django.db import ProgrammingError, models
+from django.db import models
 from django.db.models import Q, QuerySet, options
 from django.http import HttpRequest
 from django.utils.functional import SimpleLazyObject, cached_property
@@ -63,10 +63,12 @@ options.DEFAULT_NAMES = options.DEFAULT_NAMES + (
 
 def default_token_duration():
     """Default duration a Token is valid"""
-    try:
-        token_duration = get_current_tenant().default_token_duration
-    except ProgrammingError:
-        token_duration = DEFAULT_TOKEN_DURATION
+    current_tenant = get_current_tenant()
+    token_duration = (
+        current_tenant.default_token_duration
+        if current_tenant is not None
+        else DEFAULT_TOKEN_DURATION
+    )
     return now() + timedelta_from_string(token_duration)
 
 
@@ -77,10 +79,10 @@ def token_expires_from_timedelta(dt: timedelta) -> datetime:
 
 def default_token_key():
     """Default token key"""
-    try:
-        token_length = get_current_tenant().default_token_length
-    except ProgrammingError:
-        token_length = DEFAULT_TOKEN_LENGTH
+    current_tenant = get_current_tenant()
+    token_length = (
+        current_tenant.default_token_length if current_tenant is not None else DEFAULT_TOKEN_LENGTH
+    )
     # We use generate_id since the chars in the key should be easy
     # to use in Emails (for verification) and URLs (for recovery)
     return generate_id(token_length)
