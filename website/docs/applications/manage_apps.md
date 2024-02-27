@@ -18,7 +18,7 @@ To add an application to authentik and have it display on users' **My applicatio
 
 1. Log into authentik as an admin, and navigate to **Applications --> Applications**.
 
-2. Click **Create with Wizard**. (Alternatively, use our legacy process and click **Create**.)
+2. Click **Create with Wizard**. (Alternatively, use our legacy process and click **Create**. The legacy process requires that the application and its authentication provider be configured separately.)
 
 3. In the **New application** wizard, define the application details, the provider type and configuration, and then click **Submit**.
 
@@ -37,13 +37,13 @@ When multiple policies/groups/users are attached, you can configure the _Policy 
 
 ## Hide applications
 
-To hide applications without modifying policy settings and without removing it, you can simply set the _Launch URL_ to `blank://blank`, which will hide the application from users.
+To hide an application without modifying its policy settings or removing it, you can simply set the _Launch URL_ to `blank://blank`, which will hide the application from users.
 
-Keep in mind, the users still have access, so they can still authorize access when the login process is started from the application.
+Keep in mind that users still have access, so they can still authorize access when the login process is started from the application.
 
 ## Launch URLs
 
-To give users direct links to applications, you can now use a URL like `https://authentik.company/application/launch/<slug>/`. This will redirect the user directly if they're already logged in, and otherwise authenticate the user, and then forward them.
+To give users direct links to applications, you can now use a URL like `https://authentik.company/application/launch/<slug>/`. If the user is already logged in, they will be redirected to the application automatically. Otherwise, they'll be sent to the authentication flow and, if successful, forwarded to the application.
 
 ## Backchannel providers
 
