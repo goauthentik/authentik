@@ -20,9 +20,9 @@ To add an application to authentik and have it display on users' **My applicatio
 
 2. Click **Create with Wizard**. (Alternatively, use our legacy process and click **Create**.)
 
-3. In the New application wizard, define the application details, the provider type and configuration, and then click **Submit**.
+3. In the **New application** wizard, define the application details, the provider type and configuration, and then click **Submit**.
 
-4. To manage the display of the new application on the **My applications** page, you can optioanlly define the bindings for a specific policy, group, or user. Note that if you do not define bindings, then all users have access to the application, For more information, refer to [authorization](#authorization).
+4. To manage the display of the new application on the **My applications** page, you can optionally define the bindings for a specific policy, group, or user. Note that if you do not define bindings, then all users have access to the application, For more information, refer to [authorization](#authorization).
 
 ## Authorization
 
@@ -30,7 +30,7 @@ Application access can be configured using (Policy) Bindings. Click on an applic
 
 By default, all users can access applications when no policies are bound.
 
-When multiple policies/groups/users are attached, you can configure the _Policy engine mode_ to either
+When multiple policies/groups/users are attached, you can configure the _Policy engine mode_ to either:
 
 -   Require users to pass all bindings/be member of all groups (ALL), or
 -   Require users to pass either binding/be member of either group (ANY)
@@ -43,7 +43,7 @@ Keep in mind, the users still have access, so they can still authorize access wh
 
 ## Launch URLs
 
-To give users direct links to applications, you can now use an URL like `https://authentik.company/application/launch/<slug>/`. This will redirect the user directly if they're already logged in, and otherwise authenticate the user, and then forward them.
+To give users direct links to applications, you can now use a URL like `https://authentik.company/application/launch/<slug>/`. This will redirect the user directly if they're already logged in, and otherwise authenticate the user, and then forward them.
 
 ## Backchannel providers
 
