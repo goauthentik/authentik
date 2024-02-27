@@ -4974,10 +4974,6 @@ Bindings to groups/users are checked against the user of the event.</source>
         <source>Forgot username or password?</source>
         <target>忘记用户名或密码？</target>
       </trans-unit>
-      <trans-unit id="s4a87445f3108db7c">
-        <source>Select one of the sources below to login.</source>
-        <target>选择以下源之一进行登入。</target>
-      </trans-unit>
       <trans-unit id="s091d5407b5b32e84">
         <source>Or</source>
       </trans-unit>
@@ -6385,6 +6381,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sb166ce92e8e807d6">
   <source>Retry registration</source>
+</trans-unit>
+<trans-unit id="s6ecfc18dbfeedd76">
+  <source>Select one of the options below to continue.</source>
 </trans-unit>
     </body>
   </file>
