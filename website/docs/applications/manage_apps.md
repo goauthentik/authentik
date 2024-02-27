@@ -10,11 +10,11 @@ Learn from our video or follow the instructions below.
 
 ### Video
 
-<iframe width="560" height="315" src="https://youtu.be/broUAWrIWDI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/broUAWrIWDI;start=22" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 ### Instructions
 
-To add an application to authentik, so that it appears in users' **My applications** page, you can use the Application Wizard, which creates both the new application and the required provider at the same time.
+To add an application to authentik and have it display on users' **My applications** page, you can use the Application Wizard, which creates both the new application and the required provider at the same time.
 
 1. Log into authentik as an admin, and navigate to **Applications --> Applications**.
 
@@ -43,17 +43,9 @@ Keep in mind, the users still have access, so they can still authorize access wh
 
 ## Launch URLs
 
-:::info
-Requires authentik 2022.3
-:::
-
 To give users direct links to applications, you can now use an URL like `https://authentik.company/application/launch/<slug>/`. This will redirect the user directly if they're already logged in, and otherwise authenticate the user, and then forward them.
 
 ## Backchannel providers
-
-:::info
-Requires authentik version 2023.5 or later.
-:::
 
 Backchannel providers can augment the functionality of applications by using additional protocols. The main provider of an application provides the SSO protocol that is used for logging into the application. Then, additional backchannel providers can be used for protocols such as [SCIM](../providers/scim/index.md) and [LDAP](../providers/ldap/index.md) to provide directory syncing.
 
