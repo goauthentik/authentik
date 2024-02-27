@@ -3,9 +3,11 @@ title: Applications
 slug: /applications
 ---
 
-Applications in authentik are the other half of providers. They exist in a 1-to-1 relationship, each application needs a provider and every provider can be used with one application. Starting with authentik 2023.5, applications can use multiple providers, to augment the functionality of the main provider. For more information, see [Backchannel providers](./manage_apps.md#backchannel-providers).
+Applications in authentik are the other half of providers. They typically exist in a 1-to-1 relationship; each application needs a provider and every provider can be used with one application.
 
-Applications are used to configure and separate the authorization / access control and the appearance in the _My applications_ page.
+Applications can use multiple providers, to augment the functionality of the main provider. For more information, see [Backchannel providers](./manage_apps.md#backchannel-providers).
+
+Applications are used to configure and separate the authorization / access control and the appearance in the **My applications** page.
 
 ## Appearance
 
@@ -31,4 +33,3 @@ The following aspects can be configured:
 
 -   _Publisher_: Text shown below the sapplication
 -   _Description_: Subtext shown on the application card below the publisher
-
