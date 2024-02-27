@@ -6,7 +6,7 @@ Managing the applications that your team uses involves several tasks, from initi
 
 ## Add new applications
 
-Learn from our video or follow the instructions below.
+Learn how to add new applications from our video or follow the instructions below.
 
 ### Video
 
