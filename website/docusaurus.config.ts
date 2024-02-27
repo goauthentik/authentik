@@ -8,7 +8,7 @@ module.exports = async function (): Promise<Config> {
     return {
         title: "authentik",
         tagline: "Bring all of your authentication into a unified platform.",
-        url: "https://goauthentik.io",
+        url: "https://docs.goauthentik.io",
         baseUrl: "/",
         onBrokenLinks: "throw",
         favicon: "img/icon.png",
