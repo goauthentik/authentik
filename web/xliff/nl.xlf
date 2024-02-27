@@ -6536,11 +6536,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
         <target>Gebruikersnaam of wachtwoord vergeten?</target>
 
       </trans-unit>
-      <trans-unit id="s4a87445f3108db7c">
-        <source>Select one of the sources below to login.</source>
-        <target>Selecteer een van de onderstaande bronnen om in te loggen.</target>
-
-      </trans-unit>
       <trans-unit id="s091d5407b5b32e84">
         <source>Or</source>
         <target>Of</target>
@@ -8130,6 +8125,9 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 </trans-unit>
 <trans-unit id="sb166ce92e8e807d6">
   <source>Retry registration</source>
+</trans-unit>
+<trans-unit id="s6ecfc18dbfeedd76">
+  <source>Select one of the options below to continue.</source>
 </trans-unit>
     </body>
   </file>
