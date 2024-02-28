@@ -1,8 +1,6 @@
 import { execSync } from "child_process";
 import path from "path";
-import { fileURLToPath } from "url";
 
-const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const projectRoot = execSync("git rev-parse --show-toplevel", { encoding: "utf8" }).replace(
     "\n",
     "",
