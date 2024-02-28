@@ -26,6 +26,7 @@ module.exports = async function (): Promise<Config> {
                         to: "https://goauthentik.io/blog",
                         label: "Blog",
                         position: "left",
+                        target: "_self",
                     },
                     {
                         to: "docs/",
@@ -46,6 +47,7 @@ module.exports = async function (): Promise<Config> {
                         to: "https://goauthentik.io/pricing/",
                         label: "Pricing",
                         position: "left",
+                        target: "_self",
                     },
                     {
                         href: "https://github.com/goauthentik/authentik",
