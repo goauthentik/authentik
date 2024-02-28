@@ -94,11 +94,11 @@ The following section assumes that the local storage path is `/media` and the bu
 Follow the setup steps above, and then migrate the files from your local directory to s3:
 
 ```bash
-aws s3 sync /media s3://authentik-media
+aws s3 sync /media s3://authentik-media/media
 ```
 
 #### From s3 to file
 
 ```bash
-aws s3 sync s3://authentik-media /media
+aws s3 sync s3://authentik-media/media /media
 ```
