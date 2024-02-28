@@ -18,7 +18,7 @@ Furthermore, the [RAC (Remote Access Control)](../providers/rac/index.md) featur
 Applications are displayed to users when:
 
 -   The user has access defined via policies (or the application has no policies bound)
--   A Valid Launch URL is configured/could be guessed, this consists of URLs starting with http:// and https://
+-   A valid Launch URL is configured/could be guessed, this consists of URLs starting with http:// and https://
 
 The following aspects can be configured:
 
