@@ -7,6 +7,8 @@ from time import time
 parser = configparser.ConfigParser()
 parser.read(".bumpversion.cfg")
 
+should_build = str(os.environ.get("DOCKER_USERNAME", None) is not None).lower()
+
 branch_name = os.environ["GITHUB_REF"]
 if os.environ.get("GITHUB_HEAD_REF", "") != "":
     branch_name = os.environ["GITHUB_HEAD_REF"]
@@ -52,6 +54,7 @@ image_main_tag = image_tags[0]
 image_tags_rendered = ",".join(image_tags)
 
 with open(os.environ["GITHUB_OUTPUT"], "a+", encoding="utf-8") as _output:
+    print("shouldBuild=%s" % should_build, file=_output)
     print("sha=%s" % sha, file=_output)
     print("version=%s" % version, file=_output)
     print("prerelease=%s" % prerelease, file=_output)
