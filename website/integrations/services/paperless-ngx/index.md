@@ -14,8 +14,8 @@ title: Paperless-ngx
 
 The following placeholders will be used:
 
-- `paperless.company` is the FQDN of the Paperless-ngx install.
-- `authentik.company` is the FQDN of the authentik install.
+-   `paperless.company` is the FQDN of the Paperless-ngx install.
+-   `authentik.company` is the FQDN of the authentik install.
 
 ## authentik Configuration
 
@@ -41,22 +41,22 @@ Add the following environment variables to your Paperless-ngx setup. If you are 
 ```yaml
 PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
 PAPERLESS_SOCIALACCOUNT_PROVIDERS: >
-  {
-    "openid_connect": {
-      "APPS": [
-        {
-          "provider_id": "authentik",
-          "name": "Authentik",
-          "client_id": "< Client ID >",
-          "secret": "< Client Secret >,
-          "settings": {
-            "server_url": "https://authentik.company/application/o/paperless/.well-known/openid-configuration"
+    {
+      "openid_connect": {
+        "APPS": [
+          {
+            "provider_id": "authentik",
+            "name": "Authentik",
+            "client_id": "< Client ID >",
+            "secret": "< Client Secret >,
+            "settings": {
+              "server_url": "https://authentik.company/application/o/paperless/.well-known/openid-configuration"
+            }
           }
-        }
-      ],
-      "OAUTH_PKCE_ENABLED": "True"
+        ],
+        "OAUTH_PKCE_ENABLED": "True"
+      }
     }
-  }
 ```
 
 Now restart your container:
