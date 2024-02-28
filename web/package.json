@@ -63,7 +63,7 @@
         "lit": "^2.8.0",
         "mermaid": "^10.8.0",
         "rapidoc": "^9.3.4",
-        "style-mod": "^4.1.0",
+        "style-mod": "^4.1.1",
         "webcomponent-qr-code": "^1.2.0",
         "yaml": "^2.4.0"
     },
