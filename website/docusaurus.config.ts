@@ -20,6 +20,8 @@ module.exports = async function (): Promise<Config> {
                 logo: {
                     alt: "authentik logo",
                     src: "img/icon_left_brand.svg",
+                    href: "https://goauthentik.io/",
+                    target: "_self",
                 },
                 items: [
                     {
@@ -109,11 +111,6 @@ module.exports = async function (): Promise<Config> {
                     },
                     theme: {
                         customCss: require.resolve("./src/css/custom.css"),
-                    },
-                    blog: {
-                        showReadingTime: true,
-                        blogSidebarTitle: "All our posts",
-                        blogSidebarCount: "ALL",
                     },
                 } satisfies Preset.Options,
             ],
