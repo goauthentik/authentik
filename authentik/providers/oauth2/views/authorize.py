@@ -257,9 +257,9 @@ class OAuthAuthorizationParams:
         if SCOPE_OFFLINE_ACCESS in self.scope:
             # https://openid.net/specs/openid-connect-core-1_0.html#OfflineAccess
             if PROMPT_CONSENT not in self.prompt:
-                raise AuthorizeError(
-                    self.redirect_uri, "consent_required", self.grant_type, self.state
-                )
+                # Instead of ignoring the `offline_access` scope when `prompt`
+                # isn't set to `consent`, we set override it ourselves
+                self.prompt.add(PROMPT_CONSENT)
             if self.response_type not in [
                 ResponseTypes.CODE,
                 ResponseTypes.CODE_TOKEN,
