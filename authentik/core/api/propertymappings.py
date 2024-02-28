@@ -14,7 +14,6 @@ from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
 
-from authentik.api.decorators import permission_required
 from authentik.blueprints.api import ManagedSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer, PassiveSerializer, TypeCreateSerializer
@@ -23,6 +22,7 @@ from authentik.core.models import PropertyMapping
 from authentik.events.utils import sanitize_item
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.policies.api.exec import PolicyTestSerializer
+from authentik.rbac.decorators import permission_required
 
 
 class PropertyMappingTestResultSerializer(PassiveSerializer):
@@ -146,7 +146,7 @@ class PropertyMappingViewSet(
             response_data["result"] = dumps(
                 sanitize_item(result), indent=(4 if format_result else None)
             )
-        except Exception as exc:  # pylint: disable=broad-except
+        except Exception as exc:
             response_data["result"] = str(exc)
             response_data["successful"] = False
         response = PropertyMappingTestResultSerializer(response_data)

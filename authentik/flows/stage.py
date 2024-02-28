@@ -1,6 +1,6 @@
 """authentik stage Base view"""
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from django.contrib.auth.models import AnonymousUser
 from django.http import HttpRequest
@@ -153,7 +153,7 @@ class ChallengeStageView(StageView):
                 "app": self.executor.plan.context.get(PLAN_CONTEXT_APPLICATION, ""),
                 "user": self.get_pending_user(for_display=True),
             }
-        # pylint: disable=broad-except
+
         except Exception as exc:
             self.logger.warning("failed to template title", exc=exc)
             return self.executor.flow.title
@@ -234,9 +234,9 @@ class ChallengeStageView(StageView):
 class AccessDeniedChallengeView(ChallengeStageView):
     """Used internally by FlowExecutor's stage_invalid()"""
 
-    error_message: Optional[str]
+    error_message: str | None
 
-    def __init__(self, executor: "FlowExecutorView", error_message: Optional[str] = None, **kwargs):
+    def __init__(self, executor: "FlowExecutorView", error_message: str | None = None, **kwargs):
         super().__init__(executor, **kwargs)
         self.error_message = error_message
 

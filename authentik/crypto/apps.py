@@ -1,7 +1,6 @@
 """authentik crypto app config"""
 
-from datetime import datetime, timezone
-from typing import Optional
+from datetime import UTC, datetime
 
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.generators import generate_id
@@ -36,20 +35,22 @@ class AuthentikCryptoConfig(ManagedAppConfig):
             },
         )
 
-    def reconcile_tenant_managed_jwt_cert(self):
+    @ManagedAppConfig.reconcile_tenant
+    def managed_jwt_cert(self):
         """Ensure managed JWT certificate"""
         from authentik.crypto.models import CertificateKeyPair
 
-        cert: Optional[CertificateKeyPair] = CertificateKeyPair.objects.filter(
+        cert: CertificateKeyPair | None = CertificateKeyPair.objects.filter(
             managed=MANAGED_KEY
         ).first()
-        now = datetime.now(tz=timezone.utc)
+        now = datetime.now(tz=UTC)
         if not cert or (
             now < cert.certificate.not_valid_after_utc or now > cert.certificate.not_valid_after_utc
         ):
             self._create_update_cert()
 
-    def reconcile_tenant_self_signed(self):
+    @ManagedAppConfig.reconcile_tenant
+    def self_signed(self):
         """Create self-signed keypair"""
         from authentik.crypto.builder import CertificateBuilder
         from authentik.crypto.models import CertificateKeyPair

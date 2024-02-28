@@ -1,6 +1,6 @@
 """policy http response"""
 
-from typing import Any, Optional
+from typing import Any
 
 from django.http.request import HttpRequest
 from django.template.response import TemplateResponse
@@ -17,14 +17,14 @@ class AccessDeniedResponse(TemplateResponse):
 
     title: str
 
-    error_message: Optional[str] = None
-    policy_result: Optional[PolicyResult] = None
+    error_message: str | None = None
+    policy_result: PolicyResult | None = None
 
     def __init__(self, request: HttpRequest, template="policies/denied.html") -> None:
         super().__init__(request, template)
         self.title = _("Access denied")
 
-    def resolve_context(self, context: Optional[dict[str, Any]]) -> Optional[dict[str, Any]]:
+    def resolve_context(self, context: dict[str, Any] | None) -> dict[str, Any] | None:
         if not context:
             context = {}
         context["title"] = self.title

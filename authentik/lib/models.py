@@ -12,13 +12,13 @@ from rest_framework.serializers import BaseSerializer
 class SerializerModel(models.Model):
     """Base Abstract Model which has a serializer"""
 
+    class Meta:
+        abstract = True
+
     @property
     def serializer(self) -> type[BaseSerializer]:
         """Get serializer for this model"""
         raise NotImplementedError
-
-    class Meta:
-        abstract = True
 
 
 class CreatedUpdatedModel(models.Model):

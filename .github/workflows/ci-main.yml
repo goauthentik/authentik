@@ -28,10 +28,7 @@ jobs:
           - bandit
           - black
           - codespell
-          - isort
           - pending-migrations
-          # - pylint
-          - pyright
           - ruff
     runs-on: ubuntu-latest
     steps:
@@ -70,7 +67,7 @@ jobs:
           cp authentik/lib/default.yml local.env.yml
           cp -R .github ..
           cp -R scripts ..
-          git checkout version/$(python -c "from authentik import __version__; print(__version__)")
+          git checkout $(git tag --sort=version:refname | grep '^version/' | grep -vE -- '-rc[0-9]+$' | tail -n1)
           rm -rf .github/ scripts/
           mv ../.github ../scripts .
       - name: Setup authentik env (stable)

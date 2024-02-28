@@ -32,7 +32,8 @@ class AuthentikSourceOAuthConfig(ManagedAppConfig):
     mountpoint = "source/oauth/"
     default = True
 
-    def reconcile_global_sources_loaded(self):
+    @ManagedAppConfig.reconcile_global
+    def load_source_types(self):
         """Load source_types from config file"""
         for source_type in AUTHENTIK_SOURCES_OAUTH_TYPES:
             try:

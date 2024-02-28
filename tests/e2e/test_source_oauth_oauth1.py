@@ -1,7 +1,7 @@
 """test OAuth Source"""
 
 from time import sleep
-from typing import Any, Optional
+from typing import Any
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -60,7 +60,7 @@ class TestSourceOAuth1(SeleniumTestCase):
         self.source_slug = generate_id()
         super().setUp()
 
-    def get_container_specs(self) -> Optional[dict[str, Any]]:
+    def get_container_specs(self) -> dict[str, Any] | None:
         return {
             "image": "ghcr.io/beryju/oauth1-test-server:v1.1",
             "detach": True,

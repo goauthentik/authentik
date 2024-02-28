@@ -2,7 +2,6 @@
 
 from multiprocessing import get_context
 from multiprocessing.connection import Connection
-from typing import Optional
 
 from django.core.cache import cache
 from sentry_sdk.hub import Hub
@@ -46,7 +45,7 @@ class PolicyProcess(PROCESS_CLASS):
         self,
         binding: PolicyBinding,
         request: PolicyRequest,
-        connection: Optional[Connection],
+        connection: Connection | None,
     ):
         super().__init__()
         self.binding = binding
@@ -143,6 +142,6 @@ class PolicyProcess(PROCESS_CLASS):
         """Task wrapper to run policy checking"""
         try:
             self.connection.send(self.profiling_wrapper())
-        except Exception as exc:  # pylint: disable=broad-except
+        except Exception as exc:
             LOGGER.warning("Policy failed to run", exc=exception_to_string(exc))
             self.connection.send(PolicyResult(False, str(exc)))

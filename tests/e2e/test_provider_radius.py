@@ -66,7 +66,7 @@ class TestProviderRadius(SeleniumTestCase):
 
         # Wait until outpost healthcheck succeeds
         healthcheck_retries = 0
-        while healthcheck_retries < 50:
+        while healthcheck_retries < 50:  # noqa: PLR2004
             if len(outpost.state) > 0:
                 state = outpost.state[0]
                 if state.last_seen:

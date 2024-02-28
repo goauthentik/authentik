@@ -16,11 +16,11 @@ from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
 
-from authentik.api.decorators import permission_required
 from authentik.core.api.groups import GroupMemberSerializer
 from authentik.core.models import User, UserTypes
 from authentik.policies.event_matcher.models import model_choices
 from authentik.rbac.api.rbac import PermissionAssignSerializer
+from authentik.rbac.decorators import permission_required
 
 
 class UserObjectPermissionSerializer(ModelSerializer):

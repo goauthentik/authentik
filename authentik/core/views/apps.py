@@ -57,7 +57,7 @@ class RedirectToAppLaunch(View):
                 },
             )
         except FlowNonApplicableException:
-            raise Http404
+            raise Http404 from None
         plan.insert_stage(in_memory_stage(RedirectToAppStage))
         request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs("authentik_core:if-flow", request.GET, flow_slug=flow.slug)

@@ -1,7 +1,5 @@
 """SLO Views"""
 
-from typing import Optional
-
 from django.http import HttpRequest
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -36,7 +34,7 @@ class SAMLSLOView(PolicyAccessView):
             SAMLProvider, pk=self.application.provider_id
         )
 
-    def check_saml_request(self) -> Optional[HttpRequest]:
+    def check_saml_request(self) -> HttpRequest | None:
         """Handler to verify the SAML Request. Must be implemented by a subclass"""
         raise NotImplementedError
 
@@ -61,7 +59,7 @@ class SAMLSLOView(PolicyAccessView):
 class SAMLSLOBindingRedirectView(SAMLSLOView):
     """SAML Handler for SLO/Redirect bindings, which are sent via GET"""
 
-    def check_saml_request(self) -> Optional[HttpRequest]:
+    def check_saml_request(self) -> HttpRequest | None:
         if REQUEST_KEY_SAML_REQUEST not in self.request.GET:
             LOGGER.info("check_saml_request: SAML payload missing")
             return bad_request_message(self.request, "The SAML request payload is missing.")
@@ -88,7 +86,7 @@ class SAMLSLOBindingRedirectView(SAMLSLOView):
 class SAMLSLOBindingPOSTView(SAMLSLOView):
     """SAML Handler for SLO/POST bindings"""
 
-    def check_saml_request(self) -> Optional[HttpRequest]:
+    def check_saml_request(self) -> HttpRequest | None:
         payload = self.request.POST
         if REQUEST_KEY_SAML_REQUEST not in payload:
             LOGGER.info("check_saml_request: SAML payload missing")

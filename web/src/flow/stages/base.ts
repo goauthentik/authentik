@@ -1,16 +1,22 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import { KeyUnknown } from "@goauthentik/elements/forms/Form";
 
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
-import { CurrentBrand, ErrorDetail } from "@goauthentik/api";
+import { ContextualFlowInfo, CurrentBrand, ErrorDetail } from "@goauthentik/api";
+
+export interface SubmitOptions {
+    invisible: boolean;
+}
 
 export interface StageHost {
     challenge?: unknown;
     flowSlug?: string;
     loading: boolean;
-    submit(payload: unknown): Promise<boolean>;
+    submit(payload: unknown, options?: SubmitOptions): Promise<boolean>;
 
     readonly brand?: CurrentBrand;
 }
@@ -26,7 +32,21 @@ export function readFileAsync(file: Blob) {
     });
 }
 
-export class BaseStage<Tin, Tout> extends AKElement {
+// Challenge which contains flow info
+export interface FlowInfoChallenge {
+    flowInfo?: ContextualFlowInfo;
+}
+
+// Challenge which has a pending user
+export interface PendingUserChallenge {
+    pendingUser?: string;
+    pendingUserAvatar?: string;
+}
+
+export class BaseStage<
+    Tin extends FlowInfoChallenge & PendingUserChallenge,
+    Tout,
+> extends AKElement {
     host!: StageHost;
 
     @property({ attribute: false })
@@ -66,6 +86,31 @@ export class BaseStage<Tin, Tout> extends AKElement {
                 </div>`;
             })}
         </div>`;
+    }
+
+    renderUserInfo(): TemplateResult {
+        if (!this.challenge.pendingUser || !this.challenge.pendingUserAvatar) {
+            return html``;
+        }
+        return html`
+            <ak-form-static
+                class="pf-c-form__group"
+                userAvatar="${this.challenge.pendingUserAvatar}"
+                user=${this.challenge.pendingUser}
+            >
+                <div slot="link">
+                    <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
+                        >${msg("Not you?")}</a
+                    >
+                </div>
+            </ak-form-static>
+            <input
+                name="username"
+                autocomplete="username"
+                type="hidden"
+                value="${this.challenge.pendingUser}"
+            />
+        `;
     }
 
     cleanup(): void {

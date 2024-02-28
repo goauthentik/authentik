@@ -1,7 +1,5 @@
 """Duo stage"""
 
-from typing import Optional
-
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -35,7 +33,7 @@ class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
         return AuthenticatorDuoStageSerializer
 
     @property
-    def type(self) -> type[View]:
+    def view(self) -> type[View]:
         from authentik.stages.authenticator_duo.stage import AuthenticatorDuoStageView
 
         return AuthenticatorDuoStageView
@@ -65,7 +63,7 @@ class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
     def component(self) -> str:
         return "ak-stage-authenticator-duo-form"
 
-    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+    def ui_user_settings(self) -> UserSettingSerializer | None:
         return UserSettingSerializer(
             data={
                 "title": self.friendly_name or str(self._meta.verbose_name),

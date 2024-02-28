@@ -27,7 +27,7 @@ CACHE_KEY_ENTERPRISE_LICENSE = "goauthentik.io/enterprise/license"
 CACHE_EXPIRY_ENTERPRISE_LICENSE = 3 * 60 * 60  # 2 Hours
 
 
-@lru_cache()
+@lru_cache
 def get_licensing_key() -> Certificate:
     """Get Root CA PEM"""
     with open("authentik/enterprise/public.pem", "rb") as _key:
@@ -88,7 +88,7 @@ class LicenseKey:
         try:
             headers = get_unverified_header(jwt)
         except PyJWTError:
-            raise ValidationError("Unable to verify license")
+            raise ValidationError("Unable to verify license") from None
         x5c: list[str] = headers.get("x5c", [])
         if len(x5c) < 1:
             raise ValidationError("Unable to verify license")
@@ -98,7 +98,7 @@ class LicenseKey:
             our_cert.verify_directly_issued_by(intermediate)
             intermediate.verify_directly_issued_by(get_licensing_key())
         except (InvalidSignature, TypeError, ValueError, Error):
-            raise ValidationError("Unable to verify license")
+            raise ValidationError("Unable to verify license") from None
         try:
             body = from_dict(
                 LicenseKey,
@@ -110,7 +110,7 @@ class LicenseKey:
                 ),
             )
         except PyJWTError:
-            raise ValidationError("Unable to verify license")
+            raise ValidationError("Unable to verify license") from None
         return body
 
     @staticmethod
@@ -188,20 +188,21 @@ class LicenseKey:
 
     def summary(self) -> LicenseSummary:
         """Summary of license status"""
+        has_license = License.objects.all().count() > 0
         last_valid = LicenseKey.last_valid_date()
         show_admin_warning = last_valid < now() - timedelta(weeks=2)
         show_user_warning = last_valid < now() - timedelta(weeks=4)
         read_only = last_valid < now() - timedelta(weeks=6)
         latest_valid = datetime.fromtimestamp(self.exp)
         return LicenseSummary(
-            show_admin_warning=show_admin_warning,
-            show_user_warning=show_user_warning,
-            read_only=read_only,
+            show_admin_warning=show_admin_warning and has_license,
+            show_user_warning=show_user_warning and has_license,
+            read_only=read_only and has_license,
             latest_valid=latest_valid,
             internal_users=self.internal_users,
             external_users=self.external_users,
             valid=self.is_valid(),
-            has_license=License.objects.all().count() > 0,
+            has_license=has_license,
         )
 
     @staticmethod
