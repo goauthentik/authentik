@@ -3,7 +3,9 @@ title: Applications
 slug: /applications
 ---
 
-Applications are used to configure and separate the authorization / access control and the appearance of the application in the **My applications** page. So when a user logs into authentik, they see a list of the applications for which authentik is configured to provide authentication and authorization (the applications that that they are authorized to use).
+Applications, as defined in authentik, are used to configure and separate the authorization/access control and the appearance of a specific software application in the **My applications** page.
+
+When a user logs into authentik, they see a list of the applications for which authentik is configured to provide authentication and authorization (the applications that that they are authorized to use).
 
 Applications are the "other half" of providers. They typically exist in a 1-to-1 relationship; each application needs a provider and every provider can be used with one application.
 
