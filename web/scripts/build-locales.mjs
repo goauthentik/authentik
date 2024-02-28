@@ -1,21 +1,24 @@
 import { spawnSync } from "child_process";
 import fs from "fs";
 import path from "path";
+import process from "process";
 
 const localizeRules = JSON.parse(fs.readFileSync("./lit-localize.json", "utf-8"));
 
-const complete = localizeRules.targetLocales.reduce(function (acc, loc) {
-    if (!acc) {
-        return acc;
-    }
-
+function compareXlfAndSrc(loc) {
     const xlf = path.join("./xliff", `${loc}.xlf`);
     const src = path.join("./src/locales", `${loc}.ts`);
+
+    // Returns false if: the expected XLF file doesn't exist, The expected
+    // generated file doesn't exist, or the XLF file is newer (has a higher date)
+    // than the generated file.  The missing XLF file is important enough it
+    // generates a unique error message and halts the build.
 
     try {
         var xlfStat = fs.statSync(xlf);
     } catch (_error) {
-        return false;
+        console.error(`lit-localize expected '${loc}.xlf', but XLF file is not present`);
+        process.exit(1);
     }
 
     try {
@@ -28,11 +31,20 @@ const complete = localizeRules.targetLocales.reduce(function (acc, loc) {
     if (xlfStat.mtimeMs > srcStat.mtimeMs) {
         return false;
     }
-    return acc;
-}, true);
+    return true;
+}
 
-if (!complete) {
+// For all the expected files, find out if any aren't up-to-date.
+
+const upToDate = localizeRules.targetLocales.reduce(
+    (acc, loc) => acc && compareXlfAndSrc(loc),
+    true,
+);
+
+if (!upToDate) {
     const status = spawnSync("npm", ["run", "build-locales:build"], { encoding: "utf8" });
+
+    // Count all the missing message warnings
     const counts = status.stderr.split("\n").reduce((acc, line) => {
         const match = /^([\w-]+) message/.exec(line);
         if (!match) {
@@ -44,6 +56,7 @@ if (!complete) {
 
     const locales = Array.from(counts.keys());
     locales.sort();
+
     const report = locales
         .map((locale) => `Locale '${locale}' has ${counts.get(locale)} missing translations`)
         .join("\n");
