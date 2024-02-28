@@ -71,7 +71,6 @@ jobs:
     permissions:
       # Needed to upload contianer images to ghcr.io
       packages: write
-    if: "github.repository == 'goauthentik/authentik'"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -86,6 +85,7 @@ jobs:
         with:
           image-name: ghcr.io/goauthentik/dev-${{ matrix.type }}
       - name: Login to Container Registry
+        if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -98,7 +98,7 @@ jobs:
         with:
           tags: ${{ steps.ev.outputs.imageTags }}
           file: ${{ matrix.type }}.Dockerfile
-          push: true
+          push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
           platforms: linux/amd64,linux/arm64
