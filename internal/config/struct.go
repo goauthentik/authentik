@@ -14,7 +14,7 @@ type Config struct {
 	// Config for both core and outposts
 	Debug  bool         `yaml:"debug" env:"AUTHENTIK_DEBUG, overwrite"`
 	Listen ListenConfig `yaml:"listen" env:", prefix=AUTHENTIK_LISTEN__"`
-	Web    WebConfig    `yaml:"web" env:", prefix=AUTHENTIK__WEB__"`
+	Web    WebConfig    `yaml:"web" env:", prefix=AUTHENTIK_WEB__"`
 
 	// Outpost specific config
 	// These are only relevant for proxy/ldap outposts, and cannot be set via YAML
