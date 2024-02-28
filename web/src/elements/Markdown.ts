@@ -5,7 +5,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { matter } from "md-front-matter";
 import * as showdown from "showdown";
 
-import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
+import { CSSResult, PropertyValues, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
@@ -13,9 +13,6 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 
 export interface MarkdownDocument {
-    html: string;
-    metadata: { [key: string]: string };
-    filename: string;
     path: string;
 }
 
@@ -100,7 +97,7 @@ export class Markdown extends AKElement {
         }
     }
 
-    render(): TemplateResult {
+    render() {
         if (!this.md) {
             return nothing;
         }

@@ -5,13 +5,12 @@ import { fileURLToPath } from "url";
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function* walkFilesystem(dir: string): Generator<string, undefined, any> {
+function* walkFilesystem(dir) {
     const openeddir = fs.opendirSync(dir);
     if (!openeddir) {
         return;
     }
-
-    let d: fs.Dirent | null;
+    let d;
     while ((d = openeddir?.readSync())) {
         if (!d) {
             break;
@@ -24,13 +23,14 @@ function* walkFilesystem(dir: string): Generator<string, undefined, any> {
 }
 
 const import_re = /^(import \w+ from .*\.css)";/;
-function extractImportLinesFromFile(path: string) {
+
+function extractImportLinesFromFile(path) {
     const source = fs.readFileSync(path, { encoding: "utf8", flag: "r" });
     const lines = source?.split("\n") ?? [];
     return lines.filter((l) => import_re.test(l));
 }
 
-function createOneImportLine(line: string) {
+function createOneImportLine(line) {
     const importMatch = import_re.exec(line);
     if (!importMatch) {
         throw new Error("How did an unmatchable line get here?");
@@ -43,15 +43,16 @@ function createOneImportLine(line: string) {
 }
 
 const isSourceFile = /\.ts$/;
+
 function getTheSourceFiles() {
     return Array.from(walkFilesystem(path.join(__dirname, "..", "src"))).filter((path) =>
         isSourceFile.test(path),
     );
 }
 
-function getTheImportLines(importPaths: string[]) {
-    const importLines: string[] = importPaths.reduce(
-        (acc: string[], path) => [...acc, extractImportLinesFromFile(path)].flat(),
+function getTheImportLines(importPaths) {
+    const importLines = importPaths.reduce(
+        (acc, path) => [...acc, extractImportLinesFromFile(path)].flat(),
         [],
     );
     const uniqueImportLines = new Set(importLines);

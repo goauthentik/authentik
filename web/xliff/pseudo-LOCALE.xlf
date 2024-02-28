@@ -6539,11 +6539,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Ƒōŕĝōţ ũśēŕńàmē ōŕ ƥàśśŵōŕď?</target>
 
       </trans-unit>
-      <trans-unit id="s4a87445f3108db7c">
-        <source>Select one of the sources below to login.</source>
-  <target>Śēĺēćţ ōńē ōƒ ţĥē śōũŕćēś ƀēĺōŵ ţō ĺōĝĩń.</target>
-
-      </trans-unit>
       <trans-unit id="s091d5407b5b32e84">
         <source>Or</source>
   <target>Ōŕ</target>
@@ -7862,406 +7857,548 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s7513372fe60f6387">
   <source>Event volume</source>
+  <target>Ēvēńţ vōĺũmē</target>
 </trans-unit>
 <trans-unit id="s047a5f0211fedc72">
   <source>Require Outpost (flow can only be executed from an outpost).</source>
+  <target>Ŕēǫũĩŕē Ōũţƥōśţ (ƒĺōŵ ćàń ōńĺŷ ƀē ēxēćũţēď ƒŕōm àń ōũţƥōśţ).</target>
 </trans-unit>
 <trans-unit id="s3271da6c18c25b18">
   <source>Connection settings.</source>
+  <target>Ćōńńēćţĩōń śēţţĩńĝś.</target>
 </trans-unit>
 <trans-unit id="s2f4ca2148183d692">
   <source>Successfully updated endpoint.</source>
+  <target>Śũććēśśƒũĺĺŷ ũƥďàţēď ēńďƥōĩńţ.</target>
 </trans-unit>
 <trans-unit id="s5adee855dbe191d9">
   <source>Successfully created endpoint.</source>
+  <target>Śũććēśśƒũĺĺŷ ćŕēàţēď ēńďƥōĩńţ.</target>
 </trans-unit>
 <trans-unit id="s61e136c0658e27d5">
   <source>Protocol</source>
+  <target>Ƥŕōţōćōĺ</target>
 </trans-unit>
 <trans-unit id="sa062b019ff0c8809">
   <source>RDP</source>
+  <target>ŔĎƤ</target>
 </trans-unit>
 <trans-unit id="s97f9bf19fa5b57d1">
   <source>SSH</source>
+  <target>ŚŚĤ</target>
 </trans-unit>
 <trans-unit id="s7c100119e9ffcc32">
   <source>VNC</source>
+  <target>VŃĆ</target>
 </trans-unit>
 <trans-unit id="s6b05f9d8801fc14f">
   <source>Host</source>
+  <target>Ĥōśţ</target>
 </trans-unit>
 <trans-unit id="sb474f652a2c2fc76">
   <source>Hostname/IP to connect to.</source>
+  <target>Ĥōśţńàmē/ĨƤ ţō ćōńńēćţ ţō.</target>
 </trans-unit>
 <trans-unit id="s8276649077e8715c">
   <source>Endpoint(s)</source>
+  <target>Ēńďƥōĩńţ(ś)</target>
 </trans-unit>
 <trans-unit id="sf1dabfe0fe8a75ad">
   <source>Update Endpoint</source>
+  <target>Ũƥďàţē Ēńďƥōĩńţ</target>
 </trans-unit>
 <trans-unit id="s008496c7716b9812">
   <source>These bindings control which users will have access to this endpoint. Users must also have access to the application.</source>
+  <target>Ţĥēśē ƀĩńďĩńĝś ćōńţŕōĺ ŵĥĩćĥ ũśēŕś ŵĩĺĺ ĥàvē àććēśś ţō ţĥĩś ēńďƥōĩńţ. Ũśēŕś mũśţ àĺśō ĥàvē àććēśś ţō ţĥē àƥƥĺĩćàţĩōń.</target>
 </trans-unit>
 <trans-unit id="s38e7cd1a24e70faa">
   <source>Create Endpoint</source>
+  <target>Ćŕēàţē Ēńďƥōĩńţ</target>
 </trans-unit>
 <trans-unit id="s4770c10e5b1c028c">
   <source>RAC is in preview.</source>
+  <target>ŔÀĆ ĩś ĩń ƥŕēvĩēŵ.</target>
 </trans-unit>
 <trans-unit id="s168565f5ac74a89f">
   <source>Update RAC Provider</source>
+  <target>Ũƥďàţē ŔÀĆ Ƥŕōvĩďēŕ</target>
 </trans-unit>
 <trans-unit id="s8465a2caa2d9ea5d">
   <source>Endpoints</source>
+  <target>Ēńďƥōĩńţś</target>
 </trans-unit>
 <trans-unit id="s9857d883d8eb98fc">
   <source>General settings</source>
+  <target>Ĝēńēŕàĺ śēţţĩńĝś</target>
 </trans-unit>
 <trans-unit id="sd2066881798a1b96">
   <source>RDP settings</source>
+  <target>ŔĎƤ śēţţĩńĝś</target>
 </trans-unit>
 <trans-unit id="sb864dc36a463a155">
   <source>Ignore server certificate</source>
+  <target>Ĩĝńōŕē śēŕvēŕ ćēŕţĩƒĩćàţē</target>
 </trans-unit>
 <trans-unit id="s20366a8d1eaaca54">
   <source>Enable wallpaper</source>
+  <target>Ēńàƀĺē ŵàĺĺƥàƥēŕ</target>
 </trans-unit>
 <trans-unit id="s1e44c5350ef7598c">
   <source>Enable font-smoothing</source>
+  <target>Ēńàƀĺē ƒōńţ-śmōōţĥĩńĝ</target>
 </trans-unit>
 <trans-unit id="s04ff5d6ae711e6d6">
   <source>Enable full window dragging</source>
+  <target>Ēńàƀĺē ƒũĺĺ ŵĩńďōŵ ďŕàĝĝĩńĝ</target>
 </trans-unit>
 <trans-unit id="s663ccbfdf27e8dd0">
   <source>Network binding</source>
+  <target>Ńēţŵōŕķ ƀĩńďĩńĝ</target>
 </trans-unit>
 <trans-unit id="sb108a06693c67753">
   <source>No binding</source>
+  <target>Ńō ƀĩńďĩńĝ</target>
 </trans-unit>
 <trans-unit id="s5aab90c74f1233b8">
   <source>Bind ASN</source>
+  <target>ßĩńď ÀŚŃ</target>
 </trans-unit>
 <trans-unit id="s488303b048afe83b">
   <source>Bind ASN and Network</source>
+  <target>ßĩńď ÀŚŃ àńď Ńēţŵōŕķ</target>
 </trans-unit>
 <trans-unit id="s3268dcfe0c8234dc">
   <source>Bind ASN, Network and IP</source>
+  <target>ßĩńď ÀŚŃ, Ńēţŵōŕķ àńď ĨƤ</target>
 </trans-unit>
 <trans-unit id="s226381aca231644f">
   <source>Configure if sessions created by this stage should be bound to the Networks they were created in.</source>
+  <target>Ćōńƒĩĝũŕē ĩƒ śēśśĩōńś ćŕēàţēď ƀŷ ţĥĩś śţàĝē śĥōũĺď ƀē ƀōũńď ţō ţĥē Ńēţŵōŕķś ţĥēŷ ŵēŕē ćŕēàţēď ĩń.</target>
 </trans-unit>
 <trans-unit id="s2555a1f20f3fd93e">
   <source>GeoIP binding</source>
+  <target>ĜēōĨƤ ƀĩńďĩńĝ</target>
 </trans-unit>
 <trans-unit id="s3d63c78f93c9a92e">
   <source>Bind Continent</source>
+  <target>ßĩńď Ćōńţĩńēńţ</target>
 </trans-unit>
 <trans-unit id="s395d5863b3a259b5">
   <source>Bind Continent and Country</source>
+  <target>ßĩńď Ćōńţĩńēńţ àńď Ćōũńţŕŷ</target>
 </trans-unit>
 <trans-unit id="s625ea0c32b4b136c">
   <source>Bind Continent, Country and City</source>
+  <target>ßĩńď Ćōńţĩńēńţ, Ćōũńţŕŷ àńď Ćĩţŷ</target>
 </trans-unit>
 <trans-unit id="s4bc7a1a88961be90">
   <source>Configure if sessions created by this stage should be bound to their GeoIP-based location</source>
+  <target>Ćōńƒĩĝũŕē ĩƒ śēśśĩōńś ćŕēàţēď ƀŷ ţĥĩś śţàĝē śĥōũĺď ƀē ƀōũńď ţō ţĥēĩŕ ĜēōĨƤ-ƀàśēď ĺōćàţĩōń</target>
 </trans-unit>
 <trans-unit id="sa06cd519ff151b6d">
   <source>RAC</source>
+  <target>ŔÀĆ</target>
 </trans-unit>
 <trans-unit id="s28b99b59541f54ca">
   <source>Connection failed after <x id="0" equiv-text="${this.connectionAttempt}"/> attempts.</source>
+  <target>Ćōńńēćţĩōń ƒàĩĺēď àƒţēŕ <x id="0" equiv-text="${this.connectionAttempt}"/> àţţēmƥţś.</target>
 </trans-unit>
 <trans-unit id="s7c7d956418e1c8c8">
   <source>Re-connecting in <x id="0" equiv-text="${Math.max(1, delay / 1000)}"/> second(s).</source>
+  <target>Ŕē-ćōńńēćţĩńĝ ĩń <x id="0" equiv-text="${Math.max(1, delay / 1000)}"/> śēćōńď(ś).</target>
 </trans-unit>
 <trans-unit id="sfc003381f593d943">
   <source>Connecting...</source>
+  <target>Ćōńńēćţĩńĝ...</target>
 </trans-unit>
 <trans-unit id="s31aa94a0b3c7edb2">
   <source>Select endpoint to connect to</source>
+  <target>Śēĺēćţ ēńďƥōĩńţ ţō ćōńńēćţ ţō</target>
 </trans-unit>
 <trans-unit id="sa2ea0fcd3ffa80e0">
   <source>Connection expiry</source>
+  <target>Ćōńńēćţĩōń ēxƥĩŕŷ</target>
 </trans-unit>
 <trans-unit id="s6dd297c217729828">
   <source>Determines how long a session lasts before being disconnected and requiring re-authorization.</source>
+  <target>Ďēţēŕmĩńēś ĥōŵ ĺōńĝ à śēśśĩōń ĺàśţś ƀēƒōŕē ƀēĩńĝ ďĩśćōńńēćţēď àńď ŕēǫũĩŕĩńĝ ŕē-àũţĥōŕĩźàţĩōń.</target>
 </trans-unit>
 <trans-unit id="s31f1afc1bfe1cb3a">
   <source>Learn more</source>
+  <target>Ĺēàŕń mōŕē</target>
 </trans-unit>
 <trans-unit id="sc39f6abf0daedb0f">
   <source>Maximum concurrent connections</source>
+  <target>Màxĩmũm ćōńćũŕŕēńţ ćōńńēćţĩōńś</target>
 </trans-unit>
 <trans-unit id="s62418cbcd2a25498">
   <source>Maximum concurrent allowed connections to this endpoint. Can be set to -1 to disable the limit.</source>
+  <target>Màxĩmũm ćōńćũŕŕēńţ àĺĺōŵēď ćōńńēćţĩōńś ţō ţĥĩś ēńďƥōĩńţ. Ćàń ƀē śēţ ţō -1 ţō ďĩśàƀĺē ţĥē ĺĩmĩţ.</target>
 </trans-unit>
 <trans-unit id="s94d61907ee22a8c1">
   <source>Korean</source>
+  <target>Ķōŕēàń</target>
 </trans-unit>
 <trans-unit id="s95d56e58f816d211">
   <source>Dutch</source>
+  <target>Ďũţćĥ</target>
 </trans-unit>
 <trans-unit id="s16a15af46bc9aeef">
   <source>Failed to fetch objects: <x id="0" equiv-text="${this.error.detail}"/></source>
+  <target>Ƒàĩĺēď ţō ƒēţćĥ ōƀĴēćţś: <x id="0" equiv-text="${this.error.detail}"/></target>
 </trans-unit>
 <trans-unit id="s744401846fea6e76">
   <source>Brand</source>
+  <target>ßŕàńď</target>
 </trans-unit>
 <trans-unit id="sab21e1f62676b56c">
   <source>Successfully updated brand.</source>
+  <target>Śũććēśśƒũĺĺŷ ũƥďàţēď ƀŕàńď.</target>
 </trans-unit>
 <trans-unit id="sa43e43fd3a23e22d">
   <source>Successfully created brand.</source>
+  <target>Śũććēśśƒũĺĺŷ ćŕēàţēď ƀŕàńď.</target>
 </trans-unit>
 <trans-unit id="s41b3f9b4c98aabd9">
   <source>Use this brand for each domain that doesn't have a dedicated brand.</source>
+  <target>Ũśē ţĥĩś ƀŕàńď ƒōŕ ēàćĥ ďōmàĩń ţĥàţ ďōēśń'ţ ĥàvē à ďēďĩćàţēď ƀŕàńď.</target>
 </trans-unit>
 <trans-unit id="s17260b71484b307f">
   <source>Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this brand.</source>
+  <target>Śēţ ćũśţōm àţţŕĩƀũţēś ũśĩńĝ ŶÀMĹ ōŕ ĵŚŌŃ. Àńŷ àţţŕĩƀũţēś śēţ ĥēŕē ŵĩĺĺ ƀē ĩńĥēŕĩţēď ƀŷ ũśēŕś, ĩƒ ţĥē ŕēǫũēśţ ĩś ĥàńďĺēď ƀŷ ţĥĩś ƀŕàńď.</target>
 </trans-unit>
 <trans-unit id="s79fc990a2b58f27f">
   <source>Brands</source>
+  <target>ßŕàńďś</target>
 </trans-unit>
 <trans-unit id="s02774bc46a167346">
   <source>Brand(s)</source>
+  <target>ßŕàńď(ś)</target>
 </trans-unit>
 <trans-unit id="s801bf3d03f4a3ff1">
   <source>Update Brand</source>
+  <target>Ũƥďàţē ßŕàńď</target>
 </trans-unit>
 <trans-unit id="s5c3efec5330e0000">
   <source>Create Brand</source>
+  <target>Ćŕēàţē ßŕàńď</target>
 </trans-unit>
 <trans-unit id="sa9d13ce9e83aac17">
   <source>To let a user directly reset a their password, configure a recovery flow on the currently active brand.</source>
+  <target>Ţō ĺēţ à ũśēŕ ďĩŕēćţĺŷ ŕēśēţ à ţĥēĩŕ ƥàśśŵōŕď, ćōńƒĩĝũŕē à ŕēćōvēŕŷ ƒĺōŵ ōń ţĥē ćũŕŕēńţĺŷ àćţĩvē ƀŕàńď.</target>
 </trans-unit>
 <trans-unit id="s6709b81e1ed4e39f">
   <source>The current brand must have a recovery flow configured to use a recovery link</source>
+  <target>Ţĥē ćũŕŕēńţ ƀŕàńď mũśţ ĥàvē à ŕēćōvēŕŷ ƒĺōŵ ćōńƒĩĝũŕēď ţō ũśē à ŕēćōvēŕŷ ĺĩńķ</target>
 </trans-unit>
 <trans-unit id="s634e2fd82c397576">
   <source>Successfully updated settings.</source>
+  <target>Śũććēśśƒũĺĺŷ ũƥďàţēď śēţţĩńĝś.</target>
 </trans-unit>
 <trans-unit id="sb8e4edaea6f1d935">
   <source>Avatars</source>
+  <target>Àvàţàŕś</target>
 </trans-unit>
 <trans-unit id="s945856050217c828">
   <source>Configure how authentik should show avatars for users. The following values can be set:</source>
+  <target>Ćōńƒĩĝũŕē ĥōŵ àũţĥēńţĩķ śĥōũĺď śĥōŵ àvàţàŕś ƒōŕ ũśēŕś. Ţĥē ƒōĺĺōŵĩńĝ vàĺũēś ćàń ƀē śēţ:</target>
 </trans-unit>
 <trans-unit id="sf4ef4c8ce713f775">
   <source>Disables per-user avatars and just shows a 1x1 pixel transparent picture</source>
+  <target>Ďĩśàƀĺēś ƥēŕ-ũśēŕ àvàţàŕś àńď Ĵũśţ śĥōŵś à 1x1 ƥĩxēĺ ţŕàńśƥàŕēńţ ƥĩćţũŕē</target>
 </trans-unit>
 <trans-unit id="s5446842a7e4a963b">
   <source>Uses gravatar with the user's email address</source>
+  <target>Ũśēś ĝŕàvàţàŕ ŵĩţĥ ţĥē ũśēŕ'ś ēmàĩĺ àďďŕēśś</target>
 </trans-unit>
 <trans-unit id="s35363b9e1cc2abd3">
   <source>Generated avatars based on the user's name</source>
+  <target>Ĝēńēŕàţēď àvàţàŕś ƀàśēď ōń ţĥē ũśēŕ'ś ńàmē</target>
 </trans-unit>
 <trans-unit id="s48110ca292cad513">
   <source>Any URL: If you want to use images hosted on another server, you can set any URL. Additionally, these placeholders can be used:</source>
+  <target>Àńŷ ŨŔĹ: Ĩƒ ŷōũ ŵàńţ ţō ũśē ĩmàĝēś ĥōśţēď ōń àńōţĥēŕ śēŕvēŕ, ŷōũ ćàń śēţ àńŷ ŨŔĹ. Àďďĩţĩōńàĺĺŷ, ţĥēśē ƥĺàćēĥōĺďēŕś ćàń ƀē ũśēď:</target>
 </trans-unit>
 <trans-unit id="sbe1dfda044bdc93b">
   <source>The user's username</source>
+  <target>Ţĥē ũśēŕ'ś ũśēŕńàmē</target>
 </trans-unit>
 <trans-unit id="s653f257c9c2d4dc5">
   <source>The email address, md5 hashed</source>
+  <target>Ţĥē ēmàĩĺ àďďŕēśś, mď5 ĥàśĥēď</target>
 </trans-unit>
 <trans-unit id="s9c9183cd80916b4f">
   <source>The user's UPN, if set (otherwise an empty string)</source>
+  <target>Ţĥē ũśēŕ'ś ŨƤŃ, ĩƒ śēţ (ōţĥēŕŵĩśē àń ēmƥţŷ śţŕĩńĝ)</target>
 </trans-unit>
 <trans-unit id="h4963ed14d7e239a9">
   <source>An attribute path like
                                     <x id="0" equiv-text="&lt;code&gt;"/>attributes.something.avatar<x id="1" equiv-text="&lt;/code&gt;"/>, which can be used in
                                     combination with the file field to allow users to upload custom
                                     avatars for themselves.</source>
+  <target>Àń àţţŕĩƀũţē ƥàţĥ ĺĩķē
+                                    <x id="0" equiv-text="&lt;code&gt;"/>àţţŕĩƀũţēś.śōmēţĥĩńĝ.àvàţàŕ<x id="1" equiv-text="&lt;/code&gt;"/>, ŵĥĩćĥ ćàń ƀē ũśēď ĩń
+                                    ćōmƀĩńàţĩōń ŵĩţĥ ţĥē ƒĩĺē ƒĩēĺď ţō àĺĺōŵ ũśēŕś ţō ũƥĺōàď ćũśţōm
+                                    àvàţàŕś ƒōŕ ţĥēmśēĺvēś.</target>
 </trans-unit>
 <trans-unit id="s4c80c34a67a6f1c9">
   <source>Multiple values can be set, comma-separated, and authentik will fallback to the next mode when no avatar could be found.</source>
+  <target>Mũĺţĩƥĺē vàĺũēś ćàń ƀē śēţ, ćōmmà-śēƥàŕàţēď, àńď àũţĥēńţĩķ ŵĩĺĺ ƒàĺĺƀàćķ ţō ţĥē ńēxţ mōďē ŵĥēń ńō àvàţàŕ ćōũĺď ƀē ƒōũńď.</target>
 </trans-unit>
 <trans-unit id="h2fafcc3ebafea2f8">
   <source>For example, setting this to <x id="0" equiv-text="&lt;code&gt;"/>gravatar,initials<x id="1" equiv-text="&lt;/code&gt;"/> will
                                 attempt to get an avatar from Gravatar, and if the user has not
                                 configured on there, it will fallback to a generated avatar.</source>
+  <target>Ƒōŕ ēxàmƥĺē, śēţţĩńĝ ţĥĩś ţō <x id="0" equiv-text="&lt;code&gt;"/>ĝŕàvàţàŕ,ĩńĩţĩàĺś<x id="1" equiv-text="&lt;/code&gt;"/> ŵĩĺĺ
+                                àţţēmƥţ ţō ĝēţ àń àvàţàŕ ƒŕōm Ĝŕàvàţàŕ, àńď ĩƒ ţĥē ũśēŕ ĥàś ńōţ
+                                ćōńƒĩĝũŕēď ōń ţĥēŕē, ĩţ ŵĩĺĺ ƒàĺĺƀàćķ ţō à ĝēńēŕàţēď àvàţàŕ.</target>
 </trans-unit>
 <trans-unit id="s5faec5eb5faf62ac">
   <source>Allow users to change name</source>
+  <target>Àĺĺōŵ ũśēŕś ţō ćĥàńĝē ńàmē</target>
 </trans-unit>
 <trans-unit id="s078ffec0257621c0">
   <source>Enable the ability for users to change their name.</source>
+  <target>Ēńàƀĺē ţĥē àƀĩĺĩţŷ ƒōŕ ũśēŕś ţō ćĥàńĝē ţĥēĩŕ ńàmē.</target>
 </trans-unit>
 <trans-unit id="s456d88f3679190fd">
   <source>Allow users to change email</source>
+  <target>Àĺĺōŵ ũśēŕś ţō ćĥàńĝē ēmàĩĺ</target>
 </trans-unit>
 <trans-unit id="s5fc6c14d106f40d3">
   <source>Enable the ability for users to change their email.</source>
+  <target>Ēńàƀĺē ţĥē àƀĩĺĩţŷ ƒōŕ ũśēŕś ţō ćĥàńĝē ţĥēĩŕ ēmàĩĺ.</target>
 </trans-unit>
 <trans-unit id="s628e414bb2367057">
   <source>Allow users to change username</source>
+  <target>Àĺĺōŵ ũśēŕś ţō ćĥàńĝē ũśēŕńàmē</target>
 </trans-unit>
 <trans-unit id="s6d816a95ca43a99d">
   <source>Enable the ability for users to change their username.</source>
+  <target>Ēńàƀĺē ţĥē àƀĩĺĩţŷ ƒōŕ ũśēŕś ţō ćĥàńĝē ţĥēĩŕ ũśēŕńàmē.</target>
 </trans-unit>
 <trans-unit id="s57b52b60ed5e2bc7">
   <source>Footer links</source>
+  <target>Ƒōōţēŕ ĺĩńķś</target>
 </trans-unit>
 <trans-unit id="s166b59f3cc5d8ec3">
   <source>GDPR compliance</source>
+  <target>ĜĎƤŔ ćōmƥĺĩàńćē</target>
 </trans-unit>
 <trans-unit id="sb8b23770f899e5bb">
   <source>When enabled, all the events caused by a user will be deleted upon the user's deletion.</source>
+  <target>Ŵĥēń ēńàƀĺēď, àĺĺ ţĥē ēvēńţś ćàũśēď ƀŷ à ũśēŕ ŵĩĺĺ ƀē ďēĺēţēď ũƥōń ţĥē ũśēŕ'ś ďēĺēţĩōń.</target>
 </trans-unit>
 <trans-unit id="s29501761df0fe837">
   <source>Impersonation</source>
+  <target>Ĩmƥēŕśōńàţĩōń</target>
 </trans-unit>
 <trans-unit id="s8f503553d8432487">
   <source>Globally enable/disable impersonation.</source>
+  <target>Ĝĺōƀàĺĺŷ ēńàƀĺē/ďĩśàƀĺē ĩmƥēŕśōńàţĩōń.</target>
 </trans-unit>
 <trans-unit id="see1eb81c1f734079">
   <source>System settings</source>
+  <target>Śŷśţēm śēţţĩńĝś</target>
 </trans-unit>
 <trans-unit id="s47fb5504f693775b">
   <source>Changes made:</source>
+  <target>Ćĥàńĝēś màďē:</target>
 </trans-unit>
 <trans-unit id="s506b6a19d12f414c">
   <source>Key</source>
+  <target>Ķēŷ</target>
 </trans-unit>
 <trans-unit id="s4fc9dc73245eab09">
   <source>Previous value</source>
+  <target>Ƥŕēvĩōũś vàĺũē</target>
 </trans-unit>
 <trans-unit id="scb3b0671d7b7f640">
   <source>New value</source>
+  <target>Ńēŵ vàĺũē</target>
 </trans-unit>
 <trans-unit id="s4a642406b0745917">
   <source>Raw event info</source>
+  <target>Ŕàŵ ēvēńţ ĩńƒō</target>
 </trans-unit>
 <trans-unit id="sa65e7bc7ddd3484d">
   <source>Anonymous user</source>
+  <target>Àńōńŷmōũś ũśēŕ</target>
 </trans-unit>
 <trans-unit id="s0db494ff61b48438">
   <source>Add All Available</source>
+  <target>Àďď Àĺĺ Àvàĩĺàƀĺē</target>
 </trans-unit>
 <trans-unit id="s2f68faa5b84ee9fd">
   <source>Remove All Available</source>
+  <target>Ŕēmōvē Àĺĺ Àvàĩĺàƀĺē</target>
 </trans-unit>
 <trans-unit id="s0ba85594344a5c02">
   <source>Remove All</source>
+  <target>Ŕēmōvē Àĺĺ</target>
 </trans-unit>
 <trans-unit id="s1efa17e3407e0f56">
   <source>Available options</source>
+  <target>Àvàĩĺàƀĺē ōƥţĩōńś</target>
 </trans-unit>
 <trans-unit id="s886db4d476f66522">
   <source>Selected options</source>
+  <target>Śēĺēćţēď ōƥţĩōńś</target>
 </trans-unit>
 <trans-unit id="sd429eba21dd59f44">
   <source><x id="0" equiv-text="${availableCount}"/> item(s) marked to add.</source>
+  <target><x id="0" equiv-text="${availableCount}"/> ĩţēm(ś) màŕķēď ţō àďď.</target>
 </trans-unit>
 <trans-unit id="s4abfe4e0d0665fd1">
   <source><x id="0" equiv-text="${selectedTotal}"/> item(s) selected.</source>
+  <target><x id="0" equiv-text="${selectedTotal}"/> ĩţēm(ś) śēĺēćţēď.</target>
 </trans-unit>
 <trans-unit id="s56b3d54118c34b2f">
   <source><x id="0" equiv-text="${selectedCount}"/> item(s) marked to remove.</source>
+  <target><x id="0" equiv-text="${selectedCount}"/> ĩţēm(ś) màŕķēď ţō ŕēmōvē.</target>
 </trans-unit>
 <trans-unit id="scb76a63c68b0d81f">
   <source>Available Applications</source>
+  <target>Àvàĩĺàƀĺē Àƥƥĺĩćàţĩōńś</target>
 </trans-unit>
 <trans-unit id="sd176021da2ea0fe3">
   <source>Selected Applications</source>
+  <target>Śēĺēćţēď Àƥƥĺĩćàţĩōńś</target>
 </trans-unit>
 <trans-unit id="s862505f29064fc72">
   <source>This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:</source>
+  <target>Ţĥĩś ōƥţĩōń ćōńƒĩĝũŕēś ţĥē ƒōōţēŕ ĺĩńķś ōń ţĥē ƒĺōŵ ēxēćũţōŕ ƥàĝēś. Ĩţ mũśţ ƀē à vàĺĩď ŶÀMĹ ōŕ ĵŚŌŃ ĺĩśţ àńď ćàń ƀē ũśēď àś ƒōĺĺōŵś:</target>
 </trans-unit>
 <trans-unit id="sb2275335377069aa">
   <source>This feature requires an enterprise license.</source>
+  <target>Ţĥĩś ƒēàţũŕē ŕēǫũĩŕēś àń ēńţēŕƥŕĩśē ĺĩćēńśē.</target>
 </trans-unit>
 <trans-unit id="s6d3f81dc4bcacbda">
   <source>Last used</source>
+  <target>Ĺàśţ ũśēď</target>
 </trans-unit>
 <trans-unit id="s96b2703420bfbd0c">
   <source>OAuth Access Tokens</source>
+  <target>ŌÀũţĥ Àććēśś Ţōķēńś</target>
 </trans-unit>
 <trans-unit id="sd99e668c54f78f6e">
   <source>Credentials / Tokens</source>
+  <target>Ćŕēďēńţĩàĺś / Ţōķēńś</target>
 </trans-unit>
 <trans-unit id="saada50e84c7c646d">
   <source>Permissions set on users which affect this object.</source>
+  <target>Ƥēŕmĩśśĩōńś śēţ ōń ũśēŕś ŵĥĩćĥ àƒƒēćţ ţĥĩś ōƀĴēćţ.</target>
 </trans-unit>
 <trans-unit id="s37d1b74df205b528">
   <source>Permissions set on roles which affect this object.</source>
+  <target>Ƥēŕmĩśśĩōńś śēţ ōń ŕōĺēś ŵĥĩćĥ àƒƒēćţ ţĥĩś ōƀĴēćţ.</target>
 </trans-unit>
 <trans-unit id="sc443bfff8a5dd106">
   <source>Permissions assigned to this user which affect all object instances of a given type.</source>
+  <target>Ƥēŕmĩśśĩōńś àśśĩĝńēď ţō ţĥĩś ũśēŕ ŵĥĩćĥ àƒƒēćţ àĺĺ ōƀĴēćţ ĩńśţàńćēś ōƒ à ĝĩvēń ţŷƥē.</target>
 </trans-unit>
 <trans-unit id="s3eba09a350b7d6c9">
   <source>Permissions assigned to this user affecting specific object instances.</source>
+  <target>Ƥēŕmĩśśĩōńś àśśĩĝńēď ţō ţĥĩś ũśēŕ àƒƒēćţĩńĝ śƥēćĩƒĩć ōƀĴēćţ ĩńśţàńćēś.</target>
 </trans-unit>
 <trans-unit id="s17032e57ba222d2f">
   <source>Permissions assigned to this role which affect all object instances of a given type.</source>
+  <target>Ƥēŕmĩśśĩōńś àśśĩĝńēď ţō ţĥĩś ŕōĺē ŵĥĩćĥ àƒƒēćţ àĺĺ ōƀĴēćţ ĩńśţàńćēś ōƒ à ĝĩvēń ţŷƥē.</target>
 </trans-unit>
 <trans-unit id="sb9b51124d1b3dca0">
   <source>JWT payload</source>
+  <target>ĵŴŢ ƥàŷĺōàď</target>
 </trans-unit>
 <trans-unit id="sbd065743a0c599e3">
   <source>Preview for user</source>
+  <target>Ƥŕēvĩēŵ ƒōŕ ũśēŕ</target>
 </trans-unit>
 <trans-unit id="se16b4d412ad1aba9">
   <source>Brand name</source>
+  <target>ßŕàńď ńàmē</target>
 </trans-unit>
 <trans-unit id="sb7e68dcad68a638c">
   <source>Remote Access Provider</source>
+  <target>Ŕēmōţē Àććēśś Ƥŕōvĩďēŕ</target>
 </trans-unit>
 <trans-unit id="sfb1980a471b7dfb6">
   <source>Remotely access computers/servers via RDP/SSH/VNC</source>
+  <target>Ŕēmōţēĺŷ àććēśś ćōmƥũţēŕś/śēŕvēŕś vĩà ŔĎƤ/ŚŚĤ/VŃĆ</target>
 </trans-unit>
 <trans-unit id="s9ffdea131dddb3c5">
   <source>Configure Remote Access Provider Provider</source>
+  <target>Ćōńƒĩĝũŕē Ŕēmōţē Àććēśś Ƥŕōvĩďēŕ Ƥŕōvĩďēŕ</target>
 </trans-unit>
 <trans-unit id="s56bc67239b9255a2">
   <source>Delete authorization on disconnect</source>
+  <target>Ďēĺēţē àũţĥōŕĩźàţĩōń ōń ďĩśćōńńēćţ</target>
 </trans-unit>
 <trans-unit id="s3945449bd524d8a5">
   <source>When enabled, connection authorizations will be deleted when a client disconnects. This will force clients with flaky internet connections to re-authorize the endpoint.</source>
+  <target>Ŵĥēń ēńàƀĺēď, ćōńńēćţĩōń àũţĥōŕĩźàţĩōńś ŵĩĺĺ ƀē ďēĺēţēď ŵĥēń à ćĺĩēńţ ďĩśćōńńēćţś. Ţĥĩś ŵĩĺĺ ƒōŕćē ćĺĩēńţś ŵĩţĥ ƒĺàķŷ ĩńţēŕńēţ ćōńńēćţĩōńś ţō ŕē-àũţĥōŕĩźē ţĥē ēńďƥōĩńţ.</target>
 </trans-unit>
 <trans-unit id="sc93712b5fbdc6810">
   <source>Connection Token(s)</source>
+  <target>Ćōńńēćţĩōń Ţōķēń(ś)</target>
 </trans-unit>
 <trans-unit id="s526a525cdc79bbdc">
   <source>Endpoint</source>
+  <target>Ēńďƥōĩńţ</target>
 </trans-unit>
 <trans-unit id="s5c18f85cda6e89be">
   <source>Connections</source>
+  <target>Ćōńńēćţĩōńś</target>
 </trans-unit>
 <trans-unit id="s269a190f0086d892">
   <source>Unconfigured</source>
+  <target>Ũńćōńƒĩĝũŕēď</target>
 </trans-unit>
 <trans-unit id="s9e24bec94ec23dc9">
   <source>This option will not be changed by this mapping.</source>
+  <target>Ţĥĩś ōƥţĩōń ŵĩĺĺ ńōţ ƀē ćĥàńĝēď ƀŷ ţĥĩś màƥƥĩńĝ.</target>
 </trans-unit>
 <trans-unit id="sac428446e9e41f54">
   <source>RAC Connections</source>
+  <target>ŔÀĆ Ćōńńēćţĩōńś</target>
 </trans-unit>
 <trans-unit id="s39002897db60bb28">
   <source>Sending Duo push notification...</source>
+  <target>Śēńďĩńĝ Ďũō ƥũśĥ ńōţĩƒĩćàţĩōń...</target>
 </trans-unit>
 <trans-unit id="sd2b8c1caa0340ed6">
   <source>Failed to authenticate</source>
+  <target>Ƒàĩĺēď ţō àũţĥēńţĩćàţē</target>
 </trans-unit>
 <trans-unit id="sffef1a8596bc58bb">
   <source>Authenticating...</source>
+  <target>Àũţĥēńţĩćàţĩńĝ...</target>
 </trans-unit>
 <trans-unit id="sd12f594a3184c056">
   <source>Customization</source>
+  <target>Ćũśţōmĩźàţĩōń</target>
 </trans-unit>
 <trans-unit id="s363abde8a254ea5f">
   <source>Authentication failed. Please try again.</source>
+  <target>Àũţĥēńţĩćàţĩōń ƒàĩĺēď. Ƥĺēàśē ţŕŷ àĝàĩń.</target>
 </trans-unit>
 <trans-unit id="sb0821a9e92cac5eb">
   <source>Failed to register. Please try again.</source>
+  <target>Ƒàĩĺēď ţō ŕēĝĩśţēŕ. Ƥĺēàśē ţŕŷ àĝàĩń.</target>
 </trans-unit>
 <trans-unit id="s238784fc1dc672ae">
   <source>Registering...</source>
+  <target>Ŕēĝĩśţēŕĩńĝ...</target>
 </trans-unit>
 <trans-unit id="s009bd1c98a9f5de2">
   <source>Failed to register</source>
+  <target>Ƒàĩĺēď ţō ŕēĝĩśţēŕ</target>
 </trans-unit>
 <trans-unit id="sb166ce92e8e807d6">
   <source>Retry registration</source>
+  <target>Ŕēţŕŷ ŕēĝĩśţŕàţĩōń</target>
+</trans-unit>
+<trans-unit id="s6ecfc18dbfeedd76">
+  <source>Select one of the options below to continue.</source>
+  <target>Śēĺēćţ ōńē ōƒ ţĥē ōƥţĩōńś ƀēĺōŵ ţō ćōńţĩńũē.</target>
 </trans-unit>
 </body></file></xliff>
