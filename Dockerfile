@@ -104,9 +104,10 @@ RUN --mount=type=bind,target=./pyproject.toml,src=./pyproject.toml \
     --mount=type=cache,target=/root/.cache/pip \
     --mount=type=cache,target=/root/.cache/pypoetry \
     python -m venv /ak-root/venv/ && \
-    pip3 install --upgrade pip && \
-    pip3 install poetry && \
-    poetry install --only=main --no-ansi --no-interaction
+    bash -c "source ${VENV_PATH}/bin/activate && \
+        pip3 install --upgrade pip && \
+        pip3 install poetry && \
+        poetry install --only=main --no-ansi --no-interaction --no-root"
 
 # Stage 6: Run
 FROM docker.io/python:3.12.2-slim-bookworm AS final-image
