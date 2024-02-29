@@ -26,15 +26,14 @@ from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
 from authentik.lib.generators import generate_id
-from authentik.lib.models import (
-    CreatedUpdatedModel,
-    DomainlessFormattedURLValidator,
-    SerializerModel,
-)
+from authentik.lib.models import (CreatedUpdatedModel,
+                                  DomainlessFormattedURLValidator,
+                                  SerializerModel)
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.install_id import get_install_id
-from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
+from authentik.tenants.models import (DEFAULT_TOKEN_DURATION,
+                                      DEFAULT_TOKEN_LENGTH)
 from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
@@ -652,6 +651,7 @@ class ExpiringModel(models.Model):
     def save(self, *args, **kwargs):
         if self.expiring and self.expires is None:
             self.expires = default_token_duration()
+        super().save(*args, **kwargs)
 
     def expire_action(self, *args, **kwargs):
         """Handler which is called when this object is expired. By
@@ -768,7 +768,8 @@ class PropertyMapping(SerializerModel, ManagedModel):
 
     def evaluate(self, user: User | None, request: HttpRequest | None, **kwargs) -> Any:
         """Evaluate `self.expression` using `**kwargs` as Context."""
-        from authentik.core.expression.evaluator import PropertyMappingEvaluator
+        from authentik.core.expression.evaluator import \
+            PropertyMappingEvaluator
 
         evaluator = PropertyMappingEvaluator(self, user, request, **kwargs)
         try:
