@@ -9,7 +9,7 @@ When a user logs into authentik, they see a list of the applications for which a
 
 Applications are the "other half" of providers. They typically exist in a 1-to-1 relationship; each application needs a provider and every provider can be used with one application.
 
-Applications can, however, use multiple providers to augment the functionality of the main provider. For more information, see [Backchannel providers](./manage_apps.md#backchannel-providers).
+Applications can, however, use specific, additional providers to augment the functionality of the main provider. For more information, see [Backchannel providers](./manage_apps.md#backchannel-providers).
 
 Furthermore, the [RAC (Remote Access Control)](../providers/rac/index.md) feature uses a single application and a single provider, but multiple "endpoints". An endpoint defines each remote machine.
 
