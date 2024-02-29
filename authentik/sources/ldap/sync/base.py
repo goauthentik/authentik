@@ -5,27 +5,12 @@ from typing import Any
 
 from django.conf import settings
 from django.db.models.base import Model
-from django.db.models.query import QuerySet
 from ldap3 import DEREF_ALWAYS, SUBTREE, Connection
 from structlog.stdlib import BoundLogger, get_logger
 
-from authentik.core.exceptions import PropertyMappingExpressionException
-from authentik.events.models import Event, EventAction
-from authentik.lib.config import CONFIG, set_path_in_dict
+from authentik.lib.config import CONFIG
 from authentik.lib.merge import MERGE_LIST_UNIQUE
-from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME
-from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
-
-LDAP_UNIQUENESS = "ldap_uniq"
-
-
-def flatten(value: Any) -> Any:
-    """Flatten `value` if its a list"""
-    if isinstance(value, list):
-        if len(value) < 1:
-            return None
-        return value[0]
-    return value
+from authentik.sources.ldap.models import LDAPSource
 
 
 class BaseLDAPSynchronizer:
@@ -133,59 +118,6 @@ class BaseLDAPSynchronizer:
             except KeyError:
                 cookie = None
             yield self._connection.response
-
-    def build_user_properties(self, user_dn: str, **kwargs) -> dict[str, Any]:
-        """Build attributes for User object based on property mappings."""
-        props = self._build_object_properties(user_dn, self._source.property_mappings, **kwargs)
-        props.setdefault("path", self._source.get_user_path())
-        return props
-
-    def build_group_properties(self, group_dn: str, **kwargs) -> dict[str, Any]:
-        """Build attributes for Group object based on property mappings."""
-        return self._build_object_properties(
-            group_dn, self._source.property_mappings_group, **kwargs
-        )
-
-    def _build_object_properties(
-        self, object_dn: str, mappings: QuerySet, **kwargs
-    ) -> dict[str, dict[Any, Any]]:
-        properties = {"attributes": {}}
-        for mapping in mappings.all().select_subclasses():
-            if not isinstance(mapping, LDAPPropertyMapping):
-                continue
-            mapping: LDAPPropertyMapping
-            try:
-                value = mapping.evaluate(
-                    user=None, request=None, ldap=kwargs, dn=object_dn, source=self._source
-                )
-                if value is None:
-                    self._logger.warning("property mapping returned None", mapping=mapping)
-                    continue
-                if isinstance(value, (bytes)):
-                    self._logger.warning("property mapping returned bytes", mapping=mapping)
-                    continue
-                object_field = mapping.object_field
-                if object_field.startswith("attributes."):
-                    # Because returning a list might desired, we can't
-                    # rely on flatten here. Instead, just save the result as-is
-                    set_path_in_dict(properties, object_field, value)
-                else:
-                    properties[object_field] = flatten(value)
-            except PropertyMappingExpressionException as exc:
-                Event.new(
-                    EventAction.CONFIGURATION_ERROR,
-                    message=f"Failed to evaluate property-mapping: '{mapping.name}'",
-                    source=self._source,
-                    mapping=mapping,
-                ).save()
-                self._logger.warning("Mapping failed to evaluate", exc=exc, mapping=mapping)
-                continue
-        if self._source.object_uniqueness_field in kwargs:
-            properties["attributes"][LDAP_UNIQUENESS] = flatten(
-                kwargs.get(self._source.object_uniqueness_field)
-            )
-        properties["attributes"][LDAP_DISTINGUISHED_NAME] = object_dn
-        return properties
 
     def update_or_create_attributes(
         self,

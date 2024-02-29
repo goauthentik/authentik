@@ -8,7 +8,9 @@ from ldap3 import ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE
 
 from authentik.core.models import Group
 from authentik.events.models import Event, EventAction
-from authentik.sources.ldap.sync.base import LDAP_UNIQUENESS, BaseLDAPSynchronizer, flatten
+from authentik.lib.merge import flatten
+from authentik.sources.ldap.models import LDAP_UNIQUENESS
+from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 
 
 class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
@@ -50,8 +52,13 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                 continue
             uniq = flatten(attributes[self._source.object_uniqueness_field])
             try:
-                defaults = self.build_group_properties(group_dn, **attributes)
-                defaults["parent"] = self._source.sync_parent_group
+                defaults = self._source.build_object_properties(
+                    object_type=Group,
+                    user=None,
+                    request=None,
+                    dn=group_dn,
+                    ldap=attributes,
+                )
                 if "name" not in defaults:
                     raise IntegrityError("Name was not set by propertymappings")
                 # Special check for `users` field, as this is an M2M relation, and cannot be sync'd

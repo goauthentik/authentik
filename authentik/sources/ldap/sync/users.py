@@ -8,7 +8,9 @@ from ldap3 import ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE
 
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
-from authentik.sources.ldap.sync.base import LDAP_UNIQUENESS, BaseLDAPSynchronizer, flatten
+from authentik.lib.merge import flatten
+from authentik.sources.ldap.models import LDAP_UNIQUENESS
+from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 from authentik.sources.ldap.sync.vendor.freeipa import FreeIPA
 from authentik.sources.ldap.sync.vendor.ms_ad import MicrosoftActiveDirectory
 
@@ -52,7 +54,9 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 continue
             uniq = flatten(attributes[self._source.object_uniqueness_field])
             try:
-                defaults = self.build_user_properties(user_dn, **attributes)
+                defaults = self._source.build_object_properties(
+                    object_type=User, user=None, request=None, dn=user_dn, ldap=attributes
+                )
                 self._logger.debug("Writing user with attributes", **defaults)
                 if "username" not in defaults:
                     raise IntegrityError("Username was not set by propertymappings")

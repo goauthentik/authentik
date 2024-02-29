@@ -27,7 +27,7 @@ from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
-from authentik.lib.merge import MERGE_LIST_UNIQUE
+from authentik.lib.merge import MERGE_LIST_UNIQUE, flatten_rec, remove_none
 from authentik.lib.models import (
     CreatedUpdatedModel,
     DomainlessFormattedURLValidator,
@@ -513,9 +513,6 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     user_path_template = models.TextField(default="goauthentik.io/sources/%(slug)s")
 
     enabled = models.BooleanField(default=True)
-    property_mappings = models.ManyToManyField(
-        "PropertyMapping", default=None, blank=True, related_name="source_set"
-    )
     user_property_mappings = models.ManyToManyField(
         "PropertyMapping", default=None, blank=True, related_name="source_userpropertymappings_set"
     )
@@ -613,7 +610,9 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     ) -> dict[str, Any | dict[str, Any]]:
         """Get base properties for a user or a group to build final properties upon."""
         if object_type == User:
-            return self.get_base_user_properties(**kwargs)
+            properties = self.get_base_user_properties(**kwargs)
+            properties.setdefault("path", self.get_user_path())
+            return properties
         if object_type == Group:
             return self.get_base_group_properties(**kwargs)
         return {}
@@ -629,6 +628,8 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         from authentik.events.models import Event, EventAction
 
         properties = self.get_base_properties(object_type, **kwargs)
+        if "attributes" not in properties:
+            properties["attributes"] = {}
         mappings = []
         if object_type == User:
             mappings = self.user_property_mappings.all().select_subclasses()
@@ -659,11 +660,12 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
                     message=f"Failed to evaluate property mapping: '{mapping.name}'",
                     source=self,
                     mapping=mapping,
-                )
+                ).save()
                 LOGGER.warning("Mapping failed to evaluate", exc=exc, source=self, mapping=mapping)
                 continue
             MERGE_LIST_UNIQUE.merge(properties, value)
-        return properties
+
+        return remove_none(flatten_rec(properties))
 
     def __str__(self):
         return str(self.name)

@@ -10,16 +10,21 @@ from django.core.cache import cache
 from django.db import connection, models
 from django.utils.translation import gettext_lazy as _
 from ldap3 import ALL, NONE, RANDOM, Connection, Server, ServerPool, Tls
-from ldap3.core.exceptions import LDAPException, LDAPInsufficientAccessRightsResult, LDAPSchemaError
+from ldap3.core.exceptions import (LDAPException,
+                                   LDAPInsufficientAccessRightsResult,
+                                   LDAPSchemaError)
 from redis.lock import Lock
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import Group, PropertyMapping, Source
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG
+from authentik.lib.merge import flatten
 from authentik.lib.models import DomainlessURLValidator
 
 LDAP_TIMEOUT = 15
+LDAP_UNIQUENESS = "ldap_uniq"
+LDAP_DISTINGUISHED_NAME = "distinguishedName"
 
 
 class MultiURLValidator(DomainlessURLValidator):
@@ -91,13 +96,6 @@ class LDAPSource(Source):
         default="objectSid", help_text=_("Field which contains a unique Identifier.")
     )
 
-    property_mappings_group = models.ManyToManyField(
-        PropertyMapping,
-        default=None,
-        blank=True,
-        help_text=_("Property mappings used for group creation/updating."),
-    )
-
     sync_users = models.BooleanField(default=True)
     sync_users_password = models.BooleanField(
         default=True,
@@ -120,6 +118,31 @@ class LDAPSource(Source):
         from authentik.sources.ldap.api import LDAPSourceSerializer
 
         return LDAPSourceSerializer
+
+    @property
+    def property_mapping_type(self) -> "type[PropertyMapping]":
+        from authentik.sources.ldap.models import LDAPPropertyMapping
+
+        return LDAPPropertyMapping
+
+    def update_properties_with_uniqueness_field(self, properties, dn, ldap, **kwargs):
+        if self.object_uniqueness_field in ldap:
+            properties.setdefault("attributes", {})[LDAP_UNIQUENESS] = flatten(
+                ldap.get(self.object_uniqueness_field)
+            )
+        properties.setdefault("attributes", {})[LDAP_DISTINGUISHED_NAME] = dn
+        return properties
+
+    def get_base_user_properties(self, **kwargs):
+        return self.update_properties_with_uniqueness_field({}, **kwargs)
+
+    def get_base_group_properties(self, **kwargs):
+        return self.update_properties_with_uniqueness_field(
+            {
+                "parent": self.sync_parent_group,
+            },
+            **kwargs,
+        )
 
     def server(self, **kwargs) -> ServerPool:
         """Get LDAP Server/ServerPool"""
@@ -212,8 +235,6 @@ class LDAPSource(Source):
 
     def check_connection(self) -> dict[str, dict[str, str]]:
         """Check LDAP Connection"""
-        from authentik.sources.ldap.sync.base import flatten
-
         servers = self.server()
         server_info = {}
         # Check each individual server
@@ -251,8 +272,6 @@ class LDAPSource(Source):
 
 class LDAPPropertyMapping(PropertyMapping):
     """Map LDAP Property to User or Group object attribute"""
-
-    object_field = models.TextField()
 
     @property
     def component(self) -> str:
