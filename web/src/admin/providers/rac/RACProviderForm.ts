@@ -135,7 +135,6 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Property mappings")}
-                        ?required=${true}
                         name="propertyMappings"
                     >
                         <select class="pf-c-form-control" multiple>

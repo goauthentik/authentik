@@ -151,7 +151,6 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("User Property Mappings")}
-                        ?required=${true}
                         name="propertyMappings"
                     >
                         <select class="pf-c-form-control" multiple>
