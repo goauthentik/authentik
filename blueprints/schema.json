@@ -4208,6 +4208,20 @@
                     "title": "Enrollment flow",
                     "description": "Flow to use when enrolling new users."
                 },
+                "user_property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "User property mappings"
+                },
+                "group_property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Group property mappings"
+                },
                 "policy_engine_mode": {
                     "type": "string",
                     "enum": [
@@ -4324,22 +4338,6 @@
                 "sync_parent_group": {
                     "type": "integer",
                     "title": "Sync parent group"
-                },
-                "property_mappings": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    },
-                    "title": "Property mappings"
-                },
-                "property_mappings_group": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer",
-                        "description": "Property mappings used for group creation/updating."
-                    },
-                    "title": "Property mappings group",
-                    "description": "Property mappings used for group creation/updating."
                 }
             },
             "required": []
@@ -4365,11 +4363,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Expression"
-                },
-                "object_field": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Object field"
                 }
             },
             "required": []
@@ -4404,6 +4397,20 @@
                     "type": "integer",
                     "title": "Enrollment flow",
                     "description": "Flow to use when enrolling new users."
+                },
+                "user_property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "User property mappings"
+                },
+                "group_property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Group property mappings"
                 },
                 "policy_engine_mode": {
                     "type": "string",
@@ -4583,6 +4590,20 @@
                     "title": "Enrollment flow",
                     "description": "Flow to use when enrolling new users."
                 },
+                "user_property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "User property mappings"
+                },
+                "group_property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Group property mappings"
+                },
                 "policy_engine_mode": {
                     "type": "string",
                     "enum": [
@@ -4694,6 +4715,20 @@
                     "type": "integer",
                     "title": "Enrollment flow",
                     "description": "Flow to use when enrolling new users."
+                },
+                "user_property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "User property mappings"
+                },
+                "group_property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Group property mappings"
                 },
                 "policy_engine_mode": {
                     "type": "string",
