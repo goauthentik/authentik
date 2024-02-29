@@ -38,3 +38,9 @@
   command = "npm run watch"
   targetPort = 3000
   publish = "build"
+
+# Moving doc files
+[[redirects]]
+  from = "/docs/core/applications"
+  to = "/docs/applications"
+  status = 302
