@@ -123,7 +123,6 @@ export class ApplicationWizardAuthenticationBySCIM extends BaseProviderPanel {
                     <div slot="body" class="pf-c-form">
                         <ak-multi-select
                             label=${msg("User Property Mappings")}
-                            required
                             name="propertyMappings"
                             .options=${propertyPairs}
                             .values=${pmUserValues}
@@ -136,7 +135,6 @@ export class ApplicationWizardAuthenticationBySCIM extends BaseProviderPanel {
                         ></ak-multi-select>
                         <ak-multi-select
                             label=${msg("Group Property Mappings")}
-                            required
                             name="propertyMappingsGroup"
                             .options=${propertyPairs}
                             .values=${pmGroupValues}
