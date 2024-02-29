@@ -27,6 +27,7 @@ from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
+from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.lib.models import (
     CreatedUpdatedModel,
     DomainlessFormattedURLValidator,
@@ -512,7 +513,15 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     user_path_template = models.TextField(default="goauthentik.io/sources/%(slug)s")
 
     enabled = models.BooleanField(default=True)
-    property_mappings = models.ManyToManyField("PropertyMapping", default=None, blank=True)
+    property_mappings = models.ManyToManyField(
+        "PropertyMapping", default=None, blank=True, related_name="source_set"
+    )
+    user_property_mappings = models.ManyToManyField(
+        "PropertyMapping", default=None, blank=True, related_name="source_userpropertymappings_set"
+    )
+    group_property_mappings = models.ManyToManyField(
+        "PropertyMapping", default=None, blank=True, related_name="source_grouppropertymappings_set"
+    )
     icon = models.FileField(
         upload_to="source-icons/",
         default=None,
@@ -576,6 +585,11 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         """Return component used to edit this object"""
         raise NotImplementedError
 
+    @property
+    def property_mapping_type(self) -> "type[PropertyMapping]":
+        """Return property mapping type used by this object"""
+        raise NotImplementedError
+
     def ui_login_button(self, request: HttpRequest) -> UILoginButton | None:
         """If source uses a http-based flow, return UI Information about the login
         button. If source doesn't use http-based flow, return None."""
@@ -585,6 +599,71 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         """Entrypoint to integrate with User settings. Can either return None if no
         user settings are available, or UserSettingSerializer."""
         return None
+
+    def get_base_user_properties(self, **kwargs) -> dict[str, Any | dict[str, Any]]:
+        """Get base properties for a user to build final properties upon."""
+        raise NotImplementedError
+
+    def get_base_group_properties(self, **kwargs) -> dict[str, Any | dict[str, Any]]:
+        """Get base properties for a group to build final properties upon."""
+        raise NotImplementedError
+
+    def get_base_properties(
+        self, object_type: type[User | Group], **kwargs
+    ) -> dict[str, Any | dict[str, Any]]:
+        """Get base properties for a user or a group to build final properties upon."""
+        if object_type == User:
+            return self.get_base_user_properties(**kwargs)
+        if object_type == Group:
+            return self.get_base_group_properties(**kwargs)
+        return {}
+
+    def build_object_properties(
+        self,
+        object_type: type[User | Group],
+        user: User | None = None,
+        request: HttpRequest | None = None,
+        **kwargs,
+    ) -> dict[str, Any | dict[str, Any]]:
+        """Build a user or group properties from the source configured property mappings."""
+        from authentik.events.models import Event, EventAction
+
+        properties = self.get_base_properties(object_type, **kwargs)
+        mappings = []
+        if object_type == User:
+            mappings = self.user_property_mappings.all().select_subclasses()
+        elif object_type == Group:
+            mappings = self.group_property_mappings.all().select_subclasses()
+        print(mappings)
+        for mapping in mappings:
+            if not isinstance(mapping, self.property_mapping_type):
+                continue
+            try:
+                value = mapping.evaluate(
+                    user=user,
+                    request=request,
+                    source=self,
+                    properties=properties,
+                    **kwargs,
+                )
+                if not value or not isinstance(value, dict):
+                    LOGGER.debug(
+                        "Mapping evaluated to None or is not a dict. Skipping",
+                        source=self,
+                        mapping=mapping,
+                    )
+                    continue
+            except PropertyMappingExpressionException as exc:
+                Event.new(
+                    EventAction.CONFIGURATION_ERROR,
+                    message=f"Failed to evaluate property mapping: '{mapping.name}'",
+                    source=self,
+                    mapping=mapping,
+                )
+                LOGGER.warning("Mapping failed to evaluate", exc=exc, source=self, mapping=mapping)
+                continue
+            MERGE_LIST_UNIQUE.merge(properties, value)
+        return properties
 
     def __str__(self):
         return str(self.name)
