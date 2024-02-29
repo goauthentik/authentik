@@ -26,15 +26,14 @@ from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
 from authentik.lib.generators import generate_id
-from authentik.lib.models import (
-    CreatedUpdatedModel,
-    DomainlessFormattedURLValidator,
-    SerializerModel,
-)
+from authentik.lib.models import (CreatedUpdatedModel,
+                                  DomainlessFormattedURLValidator,
+                                  SerializerModel)
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.install_id import get_install_id
-from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
+from authentik.tenants.models import (DEFAULT_TOKEN_DURATION,
+                                      DEFAULT_TOKEN_LENGTH)
 from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
@@ -61,12 +60,12 @@ options.DEFAULT_NAMES = options.DEFAULT_NAMES + (
 )
 
 
-def default_token_duration():
+def default_token_duration() -> datetime:
     """Default duration a Token is valid"""
     current_tenant = get_current_tenant()
     token_duration = (
         current_tenant.default_token_duration
-        if current_tenant is not None
+        if hasattr(current_tenant, "default_token_duration")
         else DEFAULT_TOKEN_DURATION
     )
     return now() + timedelta_from_string(token_duration)
@@ -77,11 +76,13 @@ def token_expires_from_timedelta(dt: timedelta) -> datetime:
     return now() + dt
 
 
-def default_token_key():
+def default_token_key() -> str:
     """Default token key"""
     current_tenant = get_current_tenant()
     token_length = (
-        current_tenant.default_token_length if current_tenant is not None else DEFAULT_TOKEN_LENGTH
+        current_tenant.default_token_length
+        if hasattr(current_tenant, "default_token_length")
+        else DEFAULT_TOKEN_LENGTH
     )
     # We use generate_id since the chars in the key should be easy
     # to use in Emails (for verification) and URLs (for recovery)
@@ -641,11 +642,15 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
 class ExpiringModel(models.Model):
     """Base Model which can expire, and is automatically cleaned up."""
 
-    expires = models.DateTimeField(default=default_token_duration)
+    expires = models.DateTimeField(default=None, null=True)
     expiring = models.BooleanField(default=True)
 
     class Meta:
         abstract = True
+
+    def save(self, *args, **kwargs):
+        if self.expiring and self.expires is None:
+            self.expires = default_token_duration()
 
     def expire_action(self, *args, **kwargs):
         """Handler which is called when this object is expired. By
@@ -762,7 +767,8 @@ class PropertyMapping(SerializerModel, ManagedModel):
 
     def evaluate(self, user: User | None, request: HttpRequest | None, **kwargs) -> Any:
         """Evaluate `self.expression` using `**kwargs` as Context."""
-        from authentik.core.expression.evaluator import PropertyMappingEvaluator
+        from authentik.core.expression.evaluator import \
+            PropertyMappingEvaluator
 
         evaluator = PropertyMappingEvaluator(self, user, request, **kwargs)
         try:
