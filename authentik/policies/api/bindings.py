@@ -1,6 +1,6 @@
 """policy binding API Views"""
 
-from typing import OrderedDict
+from collections import OrderedDict
 
 from django.core.exceptions import ObjectDoesNotExist
 from django_filters.filters import BooleanFilter, ModelMultipleChoiceFilter
@@ -25,7 +25,6 @@ class PolicyBindingModelForeignKey(PrimaryKeyRelatedField):
     def use_pk_only_optimization(self):
         return False
 
-    # pylint: disable=inconsistent-return-statements
     def to_internal_value(self, data):
         if self.pk_field is not None:
             data = self.pk_field.to_internal_value(data)

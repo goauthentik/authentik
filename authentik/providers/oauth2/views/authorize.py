@@ -6,7 +6,6 @@ from hashlib import sha256
 from json import dumps
 from re import error as RegexError
 from re import fullmatch
-from typing import Optional
 from urllib.parse import parse_qs, urlencode, urlparse, urlsplit, urlunsplit
 from uuid import uuid4
 
@@ -81,28 +80,27 @@ FORBIDDEN_URI_SCHEMES = {"javascript", "data", "vbscript"}
 
 
 @dataclass(slots=True)
-# pylint: disable=too-many-instance-attributes
 class OAuthAuthorizationParams:
     """Parameters required to authorize an OAuth Client"""
 
     client_id: str
     redirect_uri: str
     response_type: str
-    response_mode: Optional[str]
+    response_mode: str | None
     scope: set[str]
     state: str
-    nonce: Optional[str]
+    nonce: str | None
     prompt: set[str]
     grant_type: str
 
     provider: OAuth2Provider = field(default_factory=OAuth2Provider)
 
-    request: Optional[str] = None
+    request: str | None = None
 
-    max_age: Optional[int] = None
+    max_age: int | None = None
 
-    code_challenge: Optional[str] = None
-    code_challenge_method: Optional[str] = None
+    code_challenge: str | None = None
+    code_challenge_method: str | None = None
 
     github_compat: InitVar[bool] = False
 
@@ -221,7 +219,7 @@ class OAuthAuthorizationParams:
                     redirect_uri_given=self.redirect_uri,
                     redirect_uri_expected=allowed_redirect_urls,
                 )
-                raise RedirectUriError(self.redirect_uri, allowed_redirect_urls)
+                raise RedirectUriError(self.redirect_uri, allowed_redirect_urls) from None
         # Check against forbidden schemes
         if urlparse(self.redirect_uri).scheme in FORBIDDEN_URI_SCHEMES:
             raise RedirectUriError(self.redirect_uri, allowed_redirect_urls)
@@ -257,9 +255,9 @@ class OAuthAuthorizationParams:
         if SCOPE_OFFLINE_ACCESS in self.scope:
             # https://openid.net/specs/openid-connect-core-1_0.html#OfflineAccess
             if PROMPT_CONSENT not in self.prompt:
-                raise AuthorizeError(
-                    self.redirect_uri, "consent_required", self.grant_type, self.state
-                )
+                # Instead of ignoring the `offline_access` scope when `prompt`
+                # isn't set to `consent`, we set override it ourselves
+                self.prompt.add(PROMPT_CONSENT)
             if self.response_type not in [
                 ResponseTypes.CODE,
                 ResponseTypes.CODE_TOKEN,
@@ -348,14 +346,14 @@ class AuthorizationFlowInitView(PolicyAccessView):
             )
         except AuthorizeError as error:
             LOGGER.warning(error.description, redirect_uri=error.redirect_uri)
-            raise RequestValidationError(error.get_response(self.request))
+            raise RequestValidationError(error.get_response(self.request)) from None
         except OAuth2Error as error:
             LOGGER.warning(error.description)
             raise RequestValidationError(
                 bad_request_message(self.request, error.description, title=error.error)
-            )
+            ) from None
         except OAuth2Provider.DoesNotExist:
-            raise Http404
+            raise Http404 from None
         if PROMPT_NONE in self.params.prompt and not self.request.user.is_authenticated:
             # When "prompt" is set to "none" but the user is not logged in, show an error message
             error = AuthorizeError(
@@ -487,7 +485,7 @@ class OAuthFulfillmentStage(StageView):
                     "component": "ak-stage-autosubmit",
                     "title": self.executor.plan.context.get(
                         PLAN_CONTEXT_TITLE,
-                        _("Redirecting to %(app)s..." % {"app": self.application.name}),
+                        _("Redirecting to {app}...".format_map({"app": self.application.name})),
                     ),
                     "url": self.params.redirect_uri,
                     "attrs": query_params,
@@ -533,7 +531,7 @@ class OAuthFulfillmentStage(StageView):
         except (ClientIdError, RedirectUriError) as error:
             error.to_event(application=self.application).from_http(request)
             self.executor.stage_invalid()
-            # pylint: disable=no-member
+
             return bad_request_message(request, error.description, title=error.error)
         except AuthorizeError as error:
             error.to_event(application=self.application).from_http(request)
@@ -596,9 +594,9 @@ class OAuthFulfillmentStage(StageView):
                 "server_error",
                 self.params.grant_type,
                 self.params.state,
-            )
+            ) from None
 
-    def create_implicit_response(self, code: Optional[AuthorizationCode]) -> dict:
+    def create_implicit_response(self, code: AuthorizationCode | None) -> dict:
         """Create implicit response's URL Fragment dictionary"""
         query_fragment = {}
         auth_event = get_login_event(self.request)

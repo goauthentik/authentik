@@ -30,6 +30,7 @@ module.exports = {
                         "services/nextcloud/index",
                         "services/onlyoffice/index",
                         "services/paperless-ng/index",
+                        "services/paperless-ngx/index",
                         "services/rocketchat/index",
                         "services/roundcube/index",
                         "services/sharepoint-se/index",
@@ -115,6 +116,7 @@ module.exports = {
                     type: "category",
                     label: "Monitoring",
                     items: [
+                        "services/glitchtip/index",
                         "services/grafana/index",
                         "services/sentry/index",
                         "services/ubuntu-landscape/index",

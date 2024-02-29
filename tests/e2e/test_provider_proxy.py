@@ -4,7 +4,7 @@ from base64 import b64encode
 from dataclasses import asdict
 from sys import platform
 from time import sleep
-from typing import Any, Optional
+from typing import Any
 from unittest.case import skip, skipUnless
 
 from channels.testing import ChannelsLiveServerTestCase
@@ -32,7 +32,7 @@ class TestProviderProxy(SeleniumTestCase):
         self.output_container_logs(self.proxy_container)
         self.proxy_container.kill()
 
-    def get_container_specs(self) -> Optional[dict[str, Any]]:
+    def get_container_specs(self) -> dict[str, Any] | None:
         return {
             "image": "traefik/whoami:latest",
             "detach": True,
@@ -101,7 +101,7 @@ class TestProviderProxy(SeleniumTestCase):
 
         # Wait until outpost healthcheck succeeds
         healthcheck_retries = 0
-        while healthcheck_retries < 50:
+        while healthcheck_retries < 50:  # noqa: PLR2004
             if len(outpost.state) > 0:
                 state = outpost.state[0]
                 if state.last_seen:
@@ -171,7 +171,7 @@ class TestProviderProxy(SeleniumTestCase):
 
         # Wait until outpost healthcheck succeeds
         healthcheck_retries = 0
-        while healthcheck_retries < 50:
+        while healthcheck_retries < 50:  # noqa: PLR2004
             if len(outpost.state) > 0:
                 state = outpost.state[0]
                 if state.last_seen:
@@ -212,7 +212,7 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
     @reconcile_app("authentik_crypto")
     def test_proxy_connectivity(self):
         """Test proxy connectivity over websocket"""
-        outpost_connection_discovery()  # pylint: disable=no-value-for-parameter
+        outpost_connection_discovery()
         proxy: ProxyProvider = ProxyProvider.objects.create(
             name=generate_id(),
             authorization_flow=Flow.objects.get(
@@ -238,7 +238,7 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
 
         # Wait until outpost healthcheck succeeds
         healthcheck_retries = 0
-        while healthcheck_retries < 50:
+        while healthcheck_retries < 50:  # noqa: PLR2004
             if len(outpost.state) > 0:
                 state = outpost.state[0]
                 if state.last_seen and state.version:

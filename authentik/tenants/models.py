@@ -136,7 +136,7 @@ def tenant_needs_sync(sender, tenant, **kwargs):
     with tenant:
         for app in apps.get_app_configs():
             if isinstance(app, ManagedAppConfig):
-                app._reconcile(ManagedAppConfig.RECONCILE_TENANT_PREFIX)
+                app._reconcile(ManagedAppConfig.RECONCILE_TENANT_CATEGORY)
 
     tenant.ready = True
     tenant.save()

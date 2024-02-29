@@ -32,6 +32,8 @@ jobs:
       - name: prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         with:
           image-name: ghcr.io/goauthentik/server
       - name: Create Release

@@ -2,7 +2,6 @@
 
 from base64 import b32encode
 from os import urandom
-from typing import Optional
 
 from django.conf import settings
 from django.db import models
@@ -29,7 +28,7 @@ class AuthenticatorStaticStage(ConfigurableStage, FriendlyNamedStage, Stage):
         return AuthenticatorStaticStageSerializer
 
     @property
-    def type(self) -> type[View]:
+    def view(self) -> type[View]:
         from authentik.stages.authenticator_static.stage import AuthenticatorStaticStageView
 
         return AuthenticatorStaticStageView
@@ -38,7 +37,7 @@ class AuthenticatorStaticStage(ConfigurableStage, FriendlyNamedStage, Stage):
     def component(self) -> str:
         return "ak-stage-authenticator-static-form"
 
-    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+    def ui_user_settings(self) -> UserSettingSerializer | None:
         return UserSettingSerializer(
             data={
                 "title": self.friendly_name or str(self._meta.verbose_name),
@@ -116,6 +115,13 @@ class StaticToken(models.Model):
     device = models.ForeignKey(StaticDevice, related_name="token_set", on_delete=models.CASCADE)
     token = models.CharField(max_length=16, db_index=True)
 
+    class Meta:
+        verbose_name = _("Static Token")
+        verbose_name_plural = _("Static Tokens")
+
+    def __str__(self) -> str:
+        return "Static Token"
+
     @staticmethod
     def random_token():
         """
@@ -125,7 +131,3 @@ class StaticToken(models.Model):
 
         """
         return b32encode(urandom(5)).decode("utf-8").lower()
-
-    class Meta:
-        verbose_name = _("Static Token")
-        verbose_name_plural = _("Static Tokens")

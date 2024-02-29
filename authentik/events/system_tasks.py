@@ -2,16 +2,15 @@
 
 from datetime import datetime, timedelta
 from time import perf_counter
-from typing import Any, Optional
+from typing import Any
 
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from structlog.stdlib import get_logger
 from tenant_schemas_celery.task import TenantTask
 
-from authentik.events.models import Event, EventAction
+from authentik.events.models import Event, EventAction, TaskStatus
 from authentik.events.models import SystemTask as DBSystemTask
-from authentik.events.models import TaskStatus
 from authentik.events.utils import sanitize_item
 from authentik.lib.utils.errors import exception_to_string
 
@@ -27,10 +26,10 @@ class SystemTask(TenantTask):
     _status: TaskStatus
     _messages: list[str]
 
-    _uid: Optional[str]
+    _uid: str | None
     # Precise start time from perf_counter
-    _start_precise: Optional[float] = None
-    _start: Optional[datetime] = None
+    _start_precise: float | None = None
+    _start: datetime | None = None
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -60,14 +59,13 @@ class SystemTask(TenantTask):
         self._start = now()
         return super().before_start(task_id, args, kwargs)
 
-    def db(self) -> Optional[DBSystemTask]:
+    def db(self) -> DBSystemTask | None:
         """Get DB object for latest task"""
         return DBSystemTask.objects.filter(
             name=self.__name__,
             uid=self._uid,
         ).first()
 
-    # pylint: disable=too-many-arguments
     def after_return(self, status, retval, task_id, args: list[Any], kwargs: dict[str, Any], einfo):
         super().after_return(status, retval, task_id, args, kwargs, einfo=einfo)
         if not self._status:
@@ -88,8 +86,8 @@ class SystemTask(TenantTask):
                 "duration": max(perf_counter() - self._start_precise, 0),
                 "task_call_module": self.__module__,
                 "task_call_func": self.__name__,
-                "task_call_args": args,
-                "task_call_kwargs": kwargs,
+                "task_call_args": sanitize_item(args),
+                "task_call_kwargs": sanitize_item(kwargs),
                 "status": self._status,
                 "messages": sanitize_item(self._messages),
                 "expires": now() + timedelta(hours=self.result_timeout_hours),
@@ -97,7 +95,6 @@ class SystemTask(TenantTask):
             },
         )
 
-    # pylint: disable=too-many-arguments
     def on_failure(self, exc, task_id, args, kwargs, einfo):
         super().on_failure(exc, task_id, args, kwargs, einfo=einfo)
         if not self._status:
@@ -113,8 +110,8 @@ class SystemTask(TenantTask):
                 "duration": max(perf_counter() - self._start_precise, 0),
                 "task_call_module": self.__module__,
                 "task_call_func": self.__name__,
-                "task_call_args": args,
-                "task_call_kwargs": kwargs,
+                "task_call_args": sanitize_item(args),
+                "task_call_kwargs": sanitize_item(kwargs),
                 "status": self._status,
                 "messages": sanitize_item(self._messages),
                 "expires": now() + timedelta(hours=self.result_timeout_hours),

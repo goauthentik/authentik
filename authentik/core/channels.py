@@ -38,6 +38,6 @@ class TokenOutpostMiddleware:
                 raise DenyConnection()
         except AuthenticationFailed as exc:
             LOGGER.warning("Failed to authenticate", exc=exc)
-            raise DenyConnection()
+            raise DenyConnection() from None
 
         scope["user"] = user

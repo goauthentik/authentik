@@ -1,7 +1,6 @@
 """authentik core dataclasses"""
 
 from dataclasses import dataclass
-from typing import Optional
 
 from rest_framework.fields import CharField
 
@@ -20,7 +19,7 @@ class UILoginButton:
     challenge: Challenge
 
     # Icon URL, used as-is
-    icon_url: Optional[str] = None
+    icon_url: str | None = None
 
 
 class UserSettingSerializer(PassiveSerializer):

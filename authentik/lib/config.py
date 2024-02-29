@@ -13,7 +13,7 @@ from json.decoder import JSONDecodeError
 from pathlib import Path
 from sys import argv, stderr
 from time import time
-from typing import Any, Optional
+from typing import Any
 from urllib.parse import urlparse
 
 import yaml
@@ -89,7 +89,7 @@ class Attr:
 
     # depending on source_type, might contain the environment variable or the path
     # to the config file containing this change or the file containing this value
-    source: Optional[str] = field(default=None)
+    source: str | None = field(default=None)
 
     def __post_init__(self):
         if isinstance(self.value, Attr):
@@ -190,16 +190,18 @@ class ConfigLoader:
 
     def update(self, root: dict[str, Any], updatee: dict[str, Any]) -> dict[str, Any]:
         """Recursively update dictionary"""
-        for key, value in updatee.items():
-            if isinstance(value, Mapping):
-                root[key] = self.update(root.get(key, {}), value)
+        for key, raw_value in updatee.items():
+            if isinstance(raw_value, Mapping):
+                root[key] = self.update(root.get(key, {}), raw_value)
             else:
-                if isinstance(value, str):
-                    value = self.parse_uri(value)
-                elif isinstance(value, Attr) and isinstance(value.value, str):
-                    value = self.parse_uri(value.value)
-                elif not isinstance(value, Attr):
-                    value = Attr(value)
+                if isinstance(raw_value, str):
+                    value = self.parse_uri(raw_value)
+                elif isinstance(raw_value, Attr) and isinstance(raw_value.value, str):
+                    value = self.parse_uri(raw_value.value)
+                elif not isinstance(raw_value, Attr):
+                    value = Attr(raw_value)
+                else:
+                    value = raw_value
                 root[key] = value
         return root
 
@@ -219,7 +221,7 @@ class ConfigLoader:
             parsed_value = os.getenv(url.netloc, url.query)
         if url.scheme == "file":
             try:
-                with open(url.path, "r", encoding="utf8") as _file:
+                with open(url.path, encoding="utf8") as _file:
                     parsed_value = _file.read().strip()
             except OSError as exc:
                 self.log("error", f"Failed to read config value from {url.path}: {exc}")
@@ -257,7 +259,7 @@ class ConfigLoader:
             relative_key = key.replace(f"{ENV_PREFIX}_", "", 1).replace("__", ".").lower()
             # Check if the value is json, and try to load it
             try:
-                value = loads(value)
+                value = loads(value)  # noqa: PLW2901
             except JSONDecodeError:
                 pass
             attr_value = Attr(value, Attr.Source.ENV, relative_key)
@@ -330,7 +332,7 @@ CONFIG = ConfigLoader()
 
 
 if __name__ == "__main__":
-    if len(argv) < 2:
+    if len(argv) < 2:  # noqa: PLR2004
         print(dumps(CONFIG.raw, indent=4, cls=AttrEncoder))
     else:
         print(CONFIG.get(argv[1]))

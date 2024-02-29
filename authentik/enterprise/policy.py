@@ -1,7 +1,5 @@
 """Enterprise license policies"""
 
-from typing import Optional
-
 from django.utils.translation import gettext_lazy as _
 
 from authentik.core.models import User, UserTypes
@@ -21,7 +19,7 @@ class EnterprisePolicyAccessView(PolicyAccessView):
             return PolicyResult(False, _("Feature only accessible for internal users."))
         return PolicyResult(True)
 
-    def user_has_access(self, user: Optional[User] = None) -> PolicyResult:
+    def user_has_access(self, user: User | None = None) -> PolicyResult:
         user = user or self.request.user
         request = PolicyRequest(user)
         request.http_request = self.request

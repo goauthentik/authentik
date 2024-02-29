@@ -6448,11 +6448,6 @@ Bindings to groups/users are checked against the user of the event.</source>
         <target>日誌</target>
 
       </trans-unit>
-      <trans-unit id="s1823625e6f831d73">
-        <source>Customisation</source>
-        <target>客製化設定</target>
-
-      </trans-unit>
       <trans-unit id="sc0829ee663ced008">
         <source>Directory</source>
         <target>使用者目錄</target>
@@ -6531,11 +6526,6 @@ Bindings to groups/users are checked against the user of the event.</source>
       <trans-unit id="sa03aa46068460c95">
         <source>Forgot username or password?</source>
         <target>忘記使用者名稱或密碼？</target>
-
-      </trans-unit>
-      <trans-unit id="s4a87445f3108db7c">
-        <source>Select one of the sources below to login.</source>
-        <target>選擇一下來源進行登入。</target>
 
       </trans-unit>
       <trans-unit id="s091d5407b5b32e84">
@@ -6676,26 +6666,6 @@ Bindings to groups/users are checked against the user of the event.</source>
       <trans-unit id="s18b910437b73e8e8">
         <source>Return to device picker</source>
         <target>回到選擇裝置頁面</target>
-
-      </trans-unit>
-      <trans-unit id="sbcf8604929b6a27a">
-        <source>Sending Duo push notification</source>
-        <target>傳送到 Duo 推播通知</target>
-
-      </trans-unit>
-      <trans-unit id="s3b68883dda2682ed">
-        <source>Assertions is empty</source>
-        <target>斷言為空</target>
-
-      </trans-unit>
-      <trans-unit id="sbbb7318812d64e51">
-        <source>Error when creating credential: <x id="0" equiv-text="${err}"/></source>
-        <target>建立憑證時發生錯誤： <x id="0" equiv-text="${err}"/></target>
-
-      </trans-unit>
-      <trans-unit id="sfe199b2564b66054">
-        <source>Error when validating assertion on server: <x id="0" equiv-text="${err}"/></source>
-        <target>在伺服器上驗證斷言發生錯誤： <x id="0" equiv-text="${err}"/></target>
 
       </trans-unit>
       <trans-unit id="se409d01b52c4e12f">
@@ -6876,11 +6846,6 @@ Bindings to groups/users are checked against the user of the event.</source>
       <trans-unit id="s9d95f09deb601f34">
         <source>Server validation of credential failed: <x id="0" equiv-text="${err}"/></source>
         <target>伺服器驗證憑證失敗：  <x id="0" equiv-text="${err}"/></target>
-
-      </trans-unit>
-      <trans-unit id="s6c8f05e3be04f62a">
-        <source>Register device</source>
-        <target>註冊裝置</target>
 
       </trans-unit>
       <trans-unit id="s3fb39fc45e840f78">
@@ -8251,6 +8216,36 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sac428446e9e41f54">
   <source>RAC Connections</source>
+</trans-unit>
+<trans-unit id="s39002897db60bb28">
+  <source>Sending Duo push notification...</source>
+</trans-unit>
+<trans-unit id="sd2b8c1caa0340ed6">
+  <source>Failed to authenticate</source>
+</trans-unit>
+<trans-unit id="sffef1a8596bc58bb">
+  <source>Authenticating...</source>
+</trans-unit>
+<trans-unit id="sd12f594a3184c056">
+  <source>Customization</source>
+</trans-unit>
+<trans-unit id="s363abde8a254ea5f">
+  <source>Authentication failed. Please try again.</source>
+</trans-unit>
+<trans-unit id="sb0821a9e92cac5eb">
+  <source>Failed to register. Please try again.</source>
+</trans-unit>
+<trans-unit id="s238784fc1dc672ae">
+  <source>Registering...</source>
+</trans-unit>
+<trans-unit id="s009bd1c98a9f5de2">
+  <source>Failed to register</source>
+</trans-unit>
+<trans-unit id="sb166ce92e8e807d6">
+  <source>Retry registration</source>
+</trans-unit>
+<trans-unit id="s6ecfc18dbfeedd76">
+  <source>Select one of the options below to continue.</source>
 </trans-unit>
     </body>
   </file>

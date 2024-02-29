@@ -1,7 +1,7 @@
 """OAuth Callback Views"""
 
 from json import JSONDecodeError
-from typing import Any, Optional
+from typing import Any
 
 from django.conf import settings
 from django.contrib import messages
@@ -23,16 +23,15 @@ class OAuthCallback(OAuthClientMixin, View):
     "Base OAuth callback view."
 
     source: OAuthSource
-    token: Optional[dict] = None
+    token: dict | None = None
 
-    # pylint: disable=too-many-return-statements
     def dispatch(self, request: HttpRequest, *_, **kwargs) -> HttpResponse:
         """View Get handler"""
         slug = kwargs.get("source_slug", "")
         try:
             self.source = OAuthSource.objects.get(slug=slug)
         except OAuthSource.DoesNotExist:
-            raise Http404(f"Unknown OAuth source '{slug}'.")
+            raise Http404(f"Unknown OAuth source '{slug}'.") from None
 
         if not self.source.enabled:
             raise Http404(f"Source {slug} is not enabled.")
@@ -86,7 +85,7 @@ class OAuthCallback(OAuthClientMixin, View):
         """Create a dict of User data"""
         raise NotImplementedError()
 
-    def get_user_id(self, info: dict[str, Any]) -> Optional[str]:
+    def get_user_id(self, info: dict[str, Any]) -> str | None:
         """Return unique identifier from the profile info."""
         if "id" in info:
             return info["id"]
@@ -98,10 +97,11 @@ class OAuthCallback(OAuthClientMixin, View):
         messages.error(
             self.request,
             _(
-                "Authentication failed: %(reason)s"
-                % {
-                    "reason": reason,
-                }
+                "Authentication failed: {reason}".format_map(
+                    {
+                        "reason": reason,
+                    }
+                )
             ),
         )
         return redirect(self.get_error_redirect(self.source, reason))
@@ -115,7 +115,7 @@ class OAuthSourceFlowManager(SourceFlowManager):
     def update_connection(
         self,
         connection: UserOAuthSourceConnection,
-        access_token: Optional[str] = None,
+        access_token: str | None = None,
     ) -> UserOAuthSourceConnection:
         """Set the access_token on the connection"""
         connection.access_token = access_token
