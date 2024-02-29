@@ -12,6 +12,7 @@ AUTHENTIK_SOURCES_OAUTH_TYPES = [
     "authentik.sources.oauth.types.discord",
     "authentik.sources.oauth.types.facebook",
     "authentik.sources.oauth.types.github",
+    "authentik.sources.oauth.types.gitlab",
     "authentik.sources.oauth.types.google",
     "authentik.sources.oauth.types.mailcow",
     "authentik.sources.oauth.types.oidc",
