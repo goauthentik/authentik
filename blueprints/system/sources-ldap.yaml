@@ -6,7 +6,7 @@ metadata:
 entries:
   - identifiers:
       managed: goauthentik.io/sources/ldap/default-dn-path
-    model: authentik_sources_ldap.ldappropertymapping
+    model: authentik_sources_ldap.ldapsourcepropertymapping
     attrs:
       name: "authentik default LDAP Mapping: DN to User Path"
       expression: |
@@ -28,7 +28,7 @@ entries:
         }
   - identifiers:
       managed: goauthentik.io/sources/ldap/default-name
-    model: authentik_sources_ldap.ldappropertymapping
+    model: authentik_sources_ldap.ldapsourcepropertymapping
     attrs:
       name: "authentik default LDAP Mapping: Name"
       expression: |
@@ -37,7 +37,7 @@ entries:
         }
   - identifiers:
       managed: goauthentik.io/sources/ldap/default-mail
-    model: authentik_sources_ldap.ldappropertymapping
+    model: authentik_sources_ldap.ldapsourcepropertymapping
     attrs:
       name: "authentik default LDAP Mapping: mail"
       expression: |
@@ -47,7 +47,7 @@ entries:
   # ActiveDirectory-specific mappings
   - identifiers:
       managed: goauthentik.io/sources/ldap/ms-samaccountname
-    model: authentik_sources_ldap.ldappropertymapping
+    model: authentik_sources_ldap.ldapsourcepropertymapping
     attrs:
       name: "authentik default Active Directory Mapping: sAMAccountName"
       expression: |
@@ -56,7 +56,7 @@ entries:
         }
   - identifiers:
       managed: goauthentik.io/sources/ldap/ms-userprincipalname
-    model: authentik_sources_ldap.ldappropertymapping
+    model: authentik_sources_ldap.ldapsourcepropertymapping
     attrs:
       name: "authentik default Active Directory Mapping: userPrincipalName"
       object_field: "attributes.upn"
@@ -68,7 +68,7 @@ entries:
         }
   - identifiers:
       managed: goauthentik.io/sources/ldap/ms-givenName
-    model: authentik_sources_ldap.ldappropertymapping
+    model: authentik_sources_ldap.ldapsourcepropertymapping
     attrs:
       name: "authentik default Active Directory Mapping: givenName"
       expression: |
@@ -79,7 +79,7 @@ entries:
         }
   - identifiers:
       managed: goauthentik.io/sources/ldap/ms-sn
-    model: authentik_sources_ldap.ldappropertymapping
+    model: authentik_sources_ldap.ldapsourcepropertymapping
     attrs:
       name: "authentik default Active Directory Mapping: sn"
       expression: |
@@ -91,7 +91,7 @@ entries:
   # OpenLDAP specific mappings
   - identifiers:
       managed: goauthentik.io/sources/ldap/openldap-uid
-    model: authentik_sources_ldap.ldappropertymapping
+    model: authentik_sources_ldap.ldapsourcepropertymapping
     attrs:
       name: "authentik default OpenLDAP Mapping: uid"
       expression: |
@@ -100,7 +100,7 @@ entries:
         }
   - identifiers:
       managed: goauthentik.io/sources/ldap/openldap-cn
-    model: authentik_sources_ldap.ldappropertymapping
+    model: authentik_sources_ldap.ldapsourcepropertymapping
     attrs:
       name: "authentik default OpenLDAP Mapping: cn"
       expression: |
