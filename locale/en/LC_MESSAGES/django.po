@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-19 23:33+0000\n"
+"POT-Creation-Date: 2024-03-01 00:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1818,6 +1818,14 @@ msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "GitHub OAuth Sources"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
+msgid "GitLab OAuth Source"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
+msgid "GitLab OAuth Sources"
 msgstr ""
 
 #: authentik/sources/oauth/models.py
