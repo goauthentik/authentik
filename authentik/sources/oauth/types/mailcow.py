@@ -47,16 +47,6 @@ class MailcowOAuth2Callback(OAuthCallback):
 
     client_class = MailcowOAuth2Client
 
-    def get_user_enroll_context(
-        self,
-        info: dict[str, Any],
-    ) -> dict[str, Any]:
-        return {
-            "username": info.get("full_name"),
-            "email": info.get("email"),
-            "name": info.get("full_name"),
-        }
-
 
 @registry.register()
 class MailcowType(SourceType):
@@ -68,3 +58,10 @@ class MailcowType(SourceType):
     name = "mailcow"
 
     urls_customizable = True
+
+    def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
+        return {
+            "username": info.get("full_name"),
+            "email": info.get("email"),
+            "name": info.get("full_name"),
+        }

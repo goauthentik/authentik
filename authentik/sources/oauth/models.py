@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import Source, UserSourceConnection
+from authentik.core.models import PropertyMapping, Source, UserSourceConnection
 from authentik.core.types import UILoginButton, UserSettingSerializer
 
 if TYPE_CHECKING:
@@ -55,6 +55,16 @@ class OAuthSource(Source):
     oidc_jwks_url = models.TextField(default="", blank=True)
     oidc_jwks = models.JSONField(default=dict, blank=True)
 
+    groups_claim = models.TextField(
+        default=None,
+        null=True,
+        help_text=_(
+            "Sync groups and group membership from the source. Only use this option with "
+            "sources that you control, as otherwise unwanted users might get added to "
+            "groups with superuser permissions."
+        ),
+    )
+
     @property
     def source_type(self) -> type["SourceType"]:
         """Return the provider instance for this source"""
@@ -71,6 +81,18 @@ class OAuthSource(Source):
         from authentik.sources.oauth.api.source import OAuthSourceSerializer
 
         return OAuthSourceSerializer
+
+    @property
+    def property_mapping_type(self) -> type[PropertyMapping]:
+        from authentik.sources.oauth.models import OAuthSourcePropertyMapping
+
+        return OAuthSourcePropertyMapping
+
+    def get_base_user_properties(self, **kwargs):
+        return self.source_type.get_base_user_properties(source=self, **kwargs)
+
+    def get_base_group_properties(self, **kwargs):
+        return self.source_type.get_base_group_properties(source=self, **kwargs)
 
     def ui_login_button(self, request: HttpRequest) -> UILoginButton:
         provider_type = self.source_type
@@ -224,6 +246,24 @@ class RedditOAuthSource(OAuthSource):
         abstract = True
         verbose_name = _("Reddit OAuth Source")
         verbose_name_plural = _("Reddit OAuth Sources")
+
+
+class OAuthSourcePropertyMapping(PropertyMapping):
+    """Map OAuth properties to User or Group object attributes"""
+
+    @property
+    def component(self) -> str:
+        return "ak-property-mapping-oauth-source-form"
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.sources.oauth.api import OAuthSourcePropertyMappingSerialzer
+
+        return OAuthSourcePropertyMappingSerialzer
+
+    class Meta:
+        verbose_name = _("OAuth Source Property Mapping")
+        verbose_name_plural = _("OAuth Source Property Mappings")
 
 
 class UserOAuthSourceConnection(UserSourceConnection):

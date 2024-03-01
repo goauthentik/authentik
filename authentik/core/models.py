@@ -28,11 +28,9 @@ from authentik.lib.avatars import get_avatar
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
 from authentik.lib.merge import MERGE_LIST_UNIQUE, flatten_rec, remove_none
-from authentik.lib.models import (
-    CreatedUpdatedModel,
-    DomainlessFormattedURLValidator,
-    SerializerModel,
-)
+from authentik.lib.models import (CreatedUpdatedModel,
+                                  DomainlessFormattedURLValidator,
+                                  SerializerModel)
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.install_id import get_install_id
 
@@ -92,7 +90,7 @@ class Group(SerializerModel):
 
     group_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
-    name = models.CharField(_("name"), max_length=80)
+    name = models.TextField(_("name"))
     is_superuser = models.BooleanField(
         default=False, help_text=_("Users added to this group will be superusers.")
     )
@@ -826,7 +824,8 @@ class PropertyMapping(SerializerModel, ManagedModel):
 
     def evaluate(self, user: User | None, request: HttpRequest | None, **kwargs) -> Any:
         """Evaluate `self.expression` using `**kwargs` as Context."""
-        from authentik.core.expression.evaluator import PropertyMappingEvaluator
+        from authentik.core.expression.evaluator import \
+            PropertyMappingEvaluator
 
         evaluator = PropertyMappingEvaluator(self, user, request, **kwargs)
         try:

@@ -33,16 +33,6 @@ class TwitchOAuth2Callback(OpenIDConnectOAuth2Callback):
 
     client_class = TwitchClient
 
-    def get_user_enroll_context(
-        self,
-        info: dict[str, Any],
-    ) -> dict[str, Any]:
-        return {
-            "username": info.get("preferred_username"),
-            "email": info.get("email"),
-            "name": info.get("preferred_username"),
-        }
-
 
 @registry.register()
 class TwitchType(SourceType):
@@ -56,3 +46,10 @@ class TwitchType(SourceType):
     authorization_url = "https://id.twitch.tv/oauth2/authorize"
     access_token_url = "https://id.twitch.tv/oauth2/token"  # nosec
     profile_url = "https://id.twitch.tv/oauth2/userinfo"
+
+    def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
+        return {
+            "username": info.get("preferred_username"),
+            "email": info.get("email"),
+            "name": info.get("preferred_username"),
+        }

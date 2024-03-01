@@ -2,6 +2,7 @@
 
 from collections.abc import Callable
 from enum import Enum
+from typing import Any
 
 from django.http.request import HttpRequest
 from django.templatetags.static import static
@@ -55,6 +56,24 @@ class SourceType:
                 ),
             }
         )
+
+    def get_base_user_properties(
+        self, source: OAuthSource, info: dict[str, Any], **kwargs
+    ) -> dict[str, Any | dict[str, Any]]:
+        """Get base user properties for enrollment/update"""
+        raise NotImplementedError
+
+    def get_base_group_properties(
+        self, source: OAuthSource, info: str | dict[str, Any], **kwargs
+    ) -> dict[str, Any | dict[str, Any]]:
+        """Get base group properties for creation/update"""
+        raise NotImplementedError
+
+    def get_groups_info(
+        self, source: OAuthSource, info: dict[str, Any], **kwargs
+    ) -> list[str | dict[str, Any]]:
+        """Get groups info from source info"""
+        return []
 
 
 class SourceTypeRegistry:

@@ -90,15 +90,6 @@ class AppleOAuth2Callback(OAuthCallback):
     def get_user_id(self, info: dict[str, Any]) -> str | None:
         return info["sub"]
 
-    def get_user_enroll_context(
-        self,
-        info: dict[str, Any],
-    ) -> dict[str, Any]:
-        return {
-            "email": info.get("email"),
-            "name": info.get("name"),
-        }
-
 
 @registry.register()
 class AppleType(SourceType):
@@ -133,3 +124,9 @@ class AppleType(SourceType):
                 "type": ChallengeTypes.NATIVE.value,
             }
         )
+
+    def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
+        return {
+            "email": info.get("email"),
+            "name": info.get("name"),
+        }

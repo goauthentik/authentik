@@ -118,7 +118,7 @@ class LDAPSource(Source):
         return LDAPSourceSerializer
 
     @property
-    def property_mapping_type(self) -> "type[PropertyMapping]":
+    def property_mapping_type(self) -> type[PropertyMapping]:
         from authentik.sources.ldap.models import LDAPPropertyMapping
 
         return LDAPPropertyMapping
@@ -280,9 +280,6 @@ class LDAPPropertyMapping(PropertyMapping):
         from authentik.sources.ldap.api import LDAPPropertyMappingSerializer
 
         return LDAPPropertyMappingSerializer
-
-    def __str__(self):
-        return str(self.name)
 
     class Meta:
         verbose_name = _("LDAP Property Mapping")
