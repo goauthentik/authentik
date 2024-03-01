@@ -88,12 +88,40 @@ class UserTypes(models.TextChoices):
     INTERNAL_SERVICE_ACCOUNT = "internal_service_account"
 
 
-class Group(SerializerModel):
+class AttributesMixin(models.Model):
+    """Adds an attributes property to a model"""
+
+    attributes = models.JSONField(default=dict, blank=True)
+
+    class Meta:
+        abstract = True
+
+    @classmethod
+    def update_or_create_attributes(
+        cls, query: dict[str, Any], data: dict[str, Any]
+    ) -> tuple[models.Model, bool]:
+        """Same as django's update_or_create but correctly updates attributes by merging dicts"""
+        instance = cls.objects.filter(**query).first()
+        if not instance:
+            return cls.objects.create(**data), True
+        for key, value in data.items():
+            if key == "attributes":
+                continue
+            setattr(instance, key, value)
+        final_attributes = {}
+        MERGE_LIST_UNIQUE.merge(final_attributes, instance.attributes)
+        MERGE_LIST_UNIQUE.merge(final_attributes, data.get("attributes", {}))
+        instance.attributes = final_attributes
+        instance.save()
+        return instance, False
+
+
+class Group(SerializerModel, AttributesMixin):
     """Group model which supports a basic hierarchy and has attributes"""
 
     group_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
-    name = models.CharField(_("name"), max_length=80)
+    name = models.TextField(_("name"))
     is_superuser = models.BooleanField(
         default=False, help_text=_("Users added to this group will be superusers.")
     )
@@ -108,7 +136,6 @@ class Group(SerializerModel):
         on_delete=models.SET_NULL,
         related_name="children",
     )
-    attributes = models.JSONField(default=dict, blank=True)
 
     @property
     def serializer(self) -> Serializer:
@@ -197,7 +224,7 @@ class UserManager(DjangoUserManager):
         return self.get_queryset().exclude_anonymous()
 
 
-class User(SerializerModel, GuardianUserMixin, AbstractUser):
+class User(SerializerModel, GuardianUserMixin, AbstractUser, AttributesMixin):
     """authentik User model, based on django's contrib auth user model."""
 
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
@@ -208,8 +235,6 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
     sources = models.ManyToManyField("Source", through="UserSourceConnection")
     ak_groups = models.ManyToManyField("Group", related_name="users")
     password_change_date = models.DateTimeField(auto_now_add=True)
-
-    attributes = models.JSONField(default=dict, blank=True)
 
     objects = UserManager()
 

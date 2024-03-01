@@ -34,17 +34,6 @@ class RedditOAuth2Callback(OAuthCallback):
 
     client_class = RedditOAuth2Client
 
-    def get_user_enroll_context(
-        self,
-        info: dict[str, Any],
-    ) -> dict[str, Any]:
-        return {
-            "username": info.get("name"),
-            "email": None,
-            "name": info.get("name"),
-            "password": None,
-        }
-
 
 @registry.register()
 class RedditType(SourceType):
@@ -58,3 +47,10 @@ class RedditType(SourceType):
     authorization_url = "https://www.reddit.com/api/v1/authorize"
     access_token_url = "https://www.reddit.com/api/v1/access_token"  # nosec
     profile_url = "https://oauth.reddit.com/api/v1/me"
+
+    def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
+        return {
+            "username": info.get("name"),
+            "email": None,
+            "name": info.get("name"),
+        }

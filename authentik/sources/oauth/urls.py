@@ -2,6 +2,7 @@
 
 from django.urls import path
 
+from authentik.sources.oauth.api.property_mapping import OAuthSourcePropertyMappingViewSet
 from authentik.sources.oauth.api.source import OAuthSourceViewSet
 from authentik.sources.oauth.api.source_connection import UserOAuthSourceConnectionViewSet
 from authentik.sources.oauth.types.registry import RequestKind
@@ -21,6 +22,7 @@ urlpatterns = [
 ]
 
 api_urlpatterns = [
+    ("propertymappings/oauth_source", OAuthSourcePropertyMappingViewSet),
     ("sources/user_connections/oauth", UserOAuthSourceConnectionViewSet),
     ("sources/oauth", OAuthSourceViewSet),
 ]

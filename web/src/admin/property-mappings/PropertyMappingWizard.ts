@@ -1,8 +1,11 @@
 import "@goauthentik/admin/common/ak-license-notice";
-import "@goauthentik/admin/property-mappings/PropertyMappingLDAPForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingLDAPSourceForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingNotification";
+import "@goauthentik/admin/property-mappings/PropertyMappingOAuthSourceForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingPlexSourceForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingRACForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingSAMLForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingSAMLSourceForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingScopeForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingTestForm";
 import { WithLicenseSummary } from "@goauthentik/app/elements/Interface/licenseSummaryProvider";

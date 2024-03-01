@@ -31,17 +31,6 @@ class AzureADOAuthCallback(OpenIDConnectOAuth2Callback):
         # fallback to OpenID logic in case the profile URL was changed
         return info.get("id", super().get_user_id(info))
 
-    def get_user_enroll_context(
-        self,
-        info: dict[str, Any],
-    ) -> dict[str, Any]:
-        mail = info.get("mail", None) or info.get("otherMails", [None])[0]
-        return {
-            "username": info.get("userPrincipalName"),
-            "email": mail,
-            "name": info.get("displayName"),
-        }
-
 
 @registry.register()
 class AzureADType(SourceType):
@@ -61,3 +50,11 @@ class AzureADType(SourceType):
         "https://login.microsoftonline.com/common/.well-known/openid-configuration"
     )
     oidc_jwks_url = "https://login.microsoftonline.com/common/discovery/keys"
+
+    def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
+        mail = info.get("mail", None) or info.get("otherMails", [None])[0]
+        return {
+            "username": info.get("userPrincipalName"),
+            "email": mail,
+            "name": info.get("displayName"),
+        }

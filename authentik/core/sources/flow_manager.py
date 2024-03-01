@@ -12,7 +12,7 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
-from authentik.core.models import Source, SourceUserMatchingModes, User, UserSourceConnection
+from authentik.core.models import Group, Source, SourceUserMatchingModes, User, UserSourceConnection
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION, PostUserEnrollmentStage
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
@@ -33,7 +33,7 @@ from authentik.policies.utils import delete_none_values
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
-from authentik.stages.user_write.stage import PLAN_CONTEXT_USER_PATH
+from authentik.stages.user_write.stage import PLAN_CONTEXT_GROUPS, PLAN_CONTEXT_USER_PATH
 
 
 class Action(Enum):
@@ -74,7 +74,10 @@ class SourceFlowManager:
     connection_type: type[UserSourceConnection] = UserSourceConnection
 
     enroll_info: dict[str, Any]
+    groups_info: list[str | dict[str, Any]]
     policy_context: dict[str, Any]
+    enroll_properties: dict[str, Any | dict[str, Any]]
+    groups_properties: list[dict[str, Any | dict[str, Any]]]
 
     def __init__(
         self,
@@ -82,13 +85,26 @@ class SourceFlowManager:
         request: HttpRequest,
         identifier: str,
         enroll_info: dict[str, Any],
+        groups_info: list[str | dict[Any, Any]],
+        policy_context: dict[str, Any],
     ) -> None:
         self.source = source
         self.request = request
         self.identifier = identifier
         self.enroll_info = enroll_info
+        self.groups_info = groups_info
         self._logger = get_logger().bind(source=source, identifier=identifier)
-        self.policy_context = {}
+        self.policy_context = policy_context
+
+        self.enroll_properties = self.source.build_object_properties(
+            object_type=User, request=request, user=None, **self.enroll_info
+        )
+        self.groups_properties = [
+            self.source.build_object_properties(
+                object_type=Group, request=request, user=None, info=group_info
+            )
+            for group_info in self.groups_info
+        ]
 
     def get_action(self, **kwargs) -> tuple[Action, UserSourceConnection | None]:  # noqa: PLR0911
         """decide which action should be taken"""
@@ -119,18 +135,18 @@ class SourceFlowManager:
             SourceUserMatchingModes.EMAIL_LINK,
             SourceUserMatchingModes.EMAIL_DENY,
         ]:
-            if not self.enroll_info.get("email", None):
+            if not self.enroll_properties.get("email", None):
                 self._logger.warning("Refusing to use none email", source=self.source)
                 return Action.DENY, None
-            query = Q(email__exact=self.enroll_info.get("email", None))
+            query = Q(email__exact=self.enroll_properties.get("email", None))
         if self.source.user_matching_mode in [
             SourceUserMatchingModes.USERNAME_LINK,
             SourceUserMatchingModes.USERNAME_DENY,
         ]:
-            if not self.enroll_info.get("username", None):
+            if not self.enroll_properties.get("username", None):
                 self._logger.warning("Refusing to use none username", source=self.source)
                 return Action.DENY, None
-            query = Q(username__exact=self.enroll_info.get("username", None))
+            query = Q(username__exact=self.enroll_properties.get("username", None))
         self._logger.debug("trying to link with existing user", query=query)
         matching_users = User.objects.filter(query)
         # No matching users, always enroll
@@ -219,7 +235,7 @@ class SourceFlowManager:
         flow: Flow,
         connection: UserSourceConnection,
         stages: list[StageView] | None = None,
-        **kwargs,
+        **flow_context,
     ) -> HttpResponse:
         """Prepare Authentication Plan, redirect user FlowExecutor"""
         # Ensure redirect is carried through when user was trying to
@@ -227,7 +243,7 @@ class SourceFlowManager:
         final_redirect = self.request.session.get(SESSION_KEY_GET, {}).get(
             NEXT_ARG_NAME, "authentik_core:if-user"
         )
-        kwargs.update(
+        flow_context.update(
             {
                 # Since we authenticate the user by their token, they have no backend set
                 PLAN_CONTEXT_AUTHENTICATION_BACKEND: BACKEND_INBUILT,
@@ -235,9 +251,10 @@ class SourceFlowManager:
                 PLAN_CONTEXT_SOURCE: self.source,
                 PLAN_CONTEXT_REDIRECT: final_redirect,
                 PLAN_CONTEXT_SOURCES_CONNECTION: connection,
+                PLAN_CONTEXT_GROUPS: self.groups_properties,
             }
         )
-        kwargs.update(self.policy_context)
+        flow_context.update(self.policy_context)
         if not flow:
             return bad_request_message(
                 self.request,
@@ -245,9 +262,10 @@ class SourceFlowManager:
             )
         # We run the Flow planner here so we can pass the Pending user in the context
         planner = FlowPlanner(flow)
-        plan = planner.plan(self.request, kwargs)
+        plan = planner.plan(self.request, flow_context)
         for stage in self.get_stages_to_append(flow):
             plan.append_stage(stage)
+        plan.append_stage(in_memory_stage(UserUpdateStage))
         if stages:
             for stage in stages:
                 plan.append_stage(stage)
@@ -332,7 +350,34 @@ class SourceFlowManager:
                 )
             ],
             **{
-                PLAN_CONTEXT_PROMPT: delete_none_values(self.enroll_info),
+                PLAN_CONTEXT_PROMPT: delete_none_values(self.enroll_properties),
                 PLAN_CONTEXT_USER_PATH: self.source.get_user_path(),
             },
         )
+
+
+class UserUpdateStage(StageView):
+    """Dynamically injected stage which updates the user after enrollment/authentication."""
+
+    def handle_groups(self):
+        """Sync users' groups from source data"""
+        user: User = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
+        groups_properties: list[dict[str, Any | dict[str, Any]]] = self.executor.plan.context[
+            PLAN_CONTEXT_GROUPS
+        ]
+        group_names = []
+        for group_properties in groups_properties:
+            if "name" not in group_properties:
+                continue
+            Group.update_or_create_attributes({"name": group_properties["name"]}, group_properties)
+            group_names.append(group_properties["name"])
+        user.ak_groups.set(Group.objects.filter(name__in=group_names))
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Stage used after the user has been enrolled"""
+        self.handle_groups()
+        return self.executor.stage_ok()
+
+    def post(self, request: HttpRequest) -> HttpResponse:
+        """Wrapper for post requests"""
+        return self.get(request)

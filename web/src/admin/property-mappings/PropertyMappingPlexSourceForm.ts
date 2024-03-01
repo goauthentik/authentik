@@ -10,25 +10,25 @@ import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { LDAPPropertyMapping, PropertymappingsApi } from "@goauthentik/api";
+import { PropertymappingsApi, SAMLSourcePropertyMapping } from "@goauthentik/api";
 
-@customElement("ak-property-mapping-ldap-form")
-export class PropertyMappingLDAPForm extends BasePropertyMappingForm<LDAPPropertyMapping> {
-    loadInstance(pk: string): Promise<LDAPPropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsLdapRetrieve({
+@customElement("ak-property-mapping-saml-source-form")
+export class PropertyMappingSAMLForm extends BasePropertyMappingForm<SAMLSourcePropertyMapping> {
+    loadInstance(pk: string): Promise<SAMLSourcePropertyMapping> {
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSamlSourceRetrieve({
             pmUuid: pk,
         });
     }
 
-    async send(data: LDAPPropertyMapping): Promise<LDAPPropertyMapping> {
+    async send(data: SAMLSourcePropertyMapping): Promise<SAMLSourcePropertyMapping> {
         if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsLdapUpdate({
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSamlSourceUpdate({
                 pmUuid: this.instance.pk || "",
-                lDAPPropertyMappingRequest: data,
+                sAMLSourcePropertyMappingRequest: data,
             });
         } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsLdapCreate({
-                lDAPPropertyMappingRequest: data,
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSamlSourceCreate({
+                sAMLSourcePropertyMappingRequest: data,
             });
         }
     }

@@ -32,16 +32,6 @@ class FacebookOAuth2Callback(OAuthCallback):
 
     client_class = FacebookOAuth2Client
 
-    def get_user_enroll_context(
-        self,
-        info: dict[str, Any],
-    ) -> dict[str, Any]:
-        return {
-            "username": info.get("name"),
-            "email": info.get("email"),
-            "name": info.get("name"),
-        }
-
 
 @registry.register()
 class FacebookType(SourceType):
@@ -55,3 +45,10 @@ class FacebookType(SourceType):
     authorization_url = "https://www.facebook.com/v7.0/dialog/oauth"
     access_token_url = "https://graph.facebook.com/v7.0/oauth/access_token"  # nosec
     profile_url = "https://graph.facebook.com/v7.0/me?fields=id,name,email"
+
+    def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
+        return {
+            "username": info.get("name"),
+            "email": info.get("email"),
+            "name": info.get("name"),
+        }

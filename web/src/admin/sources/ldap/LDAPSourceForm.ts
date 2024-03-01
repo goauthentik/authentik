@@ -18,7 +18,7 @@ import {
     Group,
     LDAPSource,
     LDAPSourceRequest,
-    PaginatedLDAPPropertyMappingList,
+    PaginatedLDAPSourcePropertyMappingList,
     PropertymappingsApi,
     SourcesApi,
 } from "@goauthentik/api";
@@ -34,12 +34,12 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
     async load(): Promise<void> {
         this.propertyMappings = await new PropertymappingsApi(
             DEFAULT_CONFIG,
-        ).propertymappingsLdapList({
+        ).propertymappingsLdapSourceList({
             ordering: "managed",
         });
     }
 
-    propertyMappings?: PaginatedLDAPPropertyMappingList;
+    propertyMappings?: PaginatedLDAPSourcePropertyMappingList;
 
     async send(data: LDAPSource): Promise<LDAPSource> {
         if (this.instance) {
@@ -283,7 +283,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                             })}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${msg("Property mappings used to user creation.")}
+                            ${msg("Property mappings used for user creation.")}
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${msg("Hold control/command to select multiple items.")}
@@ -316,7 +316,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                             })}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${msg("Property mappings used to group creation.")}
+                            ${msg("Property mappings used for group creation.")}
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${msg("Hold control/command to select multiple items.")}
