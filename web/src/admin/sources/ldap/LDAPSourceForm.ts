@@ -18,7 +18,7 @@ import {
     Group,
     LDAPSource,
     LDAPSourceRequest,
-    PaginatedLDAPPropertyMappingList,
+    PaginatedLDAPSourcePropertyMappingList,
     PropertymappingsApi,
     SourcesApi,
 } from "@goauthentik/api";
@@ -34,12 +34,12 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
     async load(): Promise<void> {
         this.propertyMappings = await new PropertymappingsApi(
             DEFAULT_CONFIG,
-        ).propertymappingsLdapList({
+        ).propertymappingsLdapSourceList({
             ordering: "managed",
         });
     }
 
-    propertyMappings?: PaginatedLDAPPropertyMappingList;
+    propertyMappings?: PaginatedLDAPSourcePropertyMappingList;
 
     async send(data: LDAPSource): Promise<LDAPSource> {
         if (this.instance) {
