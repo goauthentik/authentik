@@ -11,9 +11,7 @@ from django.core.cache import cache
 from django.db import connection, models
 from django.utils.translation import gettext_lazy as _
 from ldap3 import ALL, NONE, RANDOM, Connection, Server, ServerPool, Tls
-from ldap3.core.exceptions import (LDAPException,
-                                   LDAPInsufficientAccessRightsResult,
-                                   LDAPSchemaError)
+from ldap3.core.exceptions import LDAPException, LDAPInsufficientAccessRightsResult, LDAPSchemaError
 from redis.lock import Lock
 from rest_framework.serializers import Serializer
 
