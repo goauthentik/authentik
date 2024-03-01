@@ -5,6 +5,7 @@ from os.path import dirname, exists
 from shutil import rmtree
 from ssl import CERT_REQUIRED
 from tempfile import NamedTemporaryFile, mkdtemp
+from typing import Any
 
 from django.core.cache import cache
 from django.db import connection, models
@@ -17,12 +18,22 @@ from rest_framework.serializers import Serializer
 from authentik.core.models import Group, PropertyMapping, Source
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG
-from authentik.lib.merge import flatten
 from authentik.lib.models import DomainlessURLValidator
 
 LDAP_TIMEOUT = 15
 LDAP_UNIQUENESS = "ldap_uniq"
 LDAP_DISTINGUISHED_NAME = "distinguishedName"
+
+
+def flatten(value: Any) -> Any:
+    """Flatten `value` if its a list, set or tuple"""
+    if isinstance(value, list | set | tuple):
+        if len(value) < 1:
+            return None
+        if isinstance(value, set):
+            return value.pop()
+        return value[0]
+    return value
 
 
 class MultiURLValidator(DomainlessURLValidator):

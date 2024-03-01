@@ -27,13 +27,14 @@ from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
-from authentik.lib.merge import MERGE_LIST_UNIQUE, flatten_rec, remove_none
+from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.lib.models import (
     CreatedUpdatedModel,
     DomainlessFormattedURLValidator,
     SerializerModel,
 )
 from authentik.policies.models import PolicyBindingModel
+from authentik.policies.utils import delete_none_values
 from authentik.root.install_id import get_install_id
 
 LOGGER = get_logger()
@@ -690,7 +691,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
                 continue
             MERGE_LIST_UNIQUE.merge(properties, value)
 
-        return remove_none(flatten_rec(properties))
+        return delete_none_values(properties)
 
     def __str__(self):
         return str(self.name)

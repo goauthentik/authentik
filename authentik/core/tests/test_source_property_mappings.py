@@ -31,7 +31,14 @@ class TestSourcePropertyMappings(TestCase):
         source = ProxySource.objects.create(name=generate_id(), slug=generate_id(), enabled=True)
 
         user_base_properties = source.get_base_properties(User, username="test1")
-        self.assertEqual(user_base_properties, {"username": "test1", "email": "default@authentik"})
+        self.assertEqual(
+            user_base_properties,
+            {
+                "username": "test1",
+                "email": "default@authentik",
+                "path": f"goauthentik.io/sources/{source.slug}",
+            },
+        )
 
         group_base_properties = source.get_base_properties(Group)
         self.assertEqual(group_base_properties, {"name": None})
@@ -52,4 +59,11 @@ class TestSourcePropertyMappings(TestCase):
             object_type=User, user=None, request=None, username="test1", data={"username": "test2"}
         )
 
-        self.assertEqual(properties, {"username": "test2", "email": None})
+        self.assertEqual(
+            properties,
+            {
+                "username": "test2",
+                "path": f"goauthentik.io/sources/{source.slug}",
+                "attributes": {},
+            },
+        )

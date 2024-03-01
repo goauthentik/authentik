@@ -5,7 +5,7 @@ from datetime import UTC, datetime
 from typing import Any
 
 from authentik.core.models import User
-from authentik.lib.merge import flatten
+from authentik.sources.ldap.models import flatten
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 
 

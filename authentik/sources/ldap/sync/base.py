@@ -126,6 +126,7 @@ class BaseLDAPSynchronizer:
         data: dict[str, Any],
     ) -> tuple[Model, bool]:
         """Same as django's update_or_create but correctly update attributes by merging dicts"""
+        print(data)
         instance = obj.objects.filter(**query).first()
         if not instance:
             return (obj.objects.create(**data), True)
