@@ -109,7 +109,9 @@ class PlexSourceViewSet(UsedByMixin, ModelViewSet):
                 source=source,
                 request=request,
                 identifier=str(identifier),
-                enroll_info=user_info,
+                enroll_info={
+                    "user_info": user_info,
+                },
                 groups_info=[],
                 policy_context={},
             )

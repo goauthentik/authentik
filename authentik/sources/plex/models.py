@@ -64,9 +64,9 @@ class PlexSource(Source):
     def property_mapping_type(self) -> type[PropertyMapping]:
         return PlexSourcePropertyMapping
 
-    def get_base_user_properties(self, **kwargs):
+    def get_base_user_properties(self, user_info, **kwargs):
         # Already done before, just return the data
-        return kwargs
+        return user_info
 
     def get_base_group_properties(self, **kwargs):
         return {}
