@@ -5,40 +5,39 @@ import textwrap
 from django.db import migrations
 
 
-def change_expression(expression, field):
-    return f"""
-    def get_field():
-        {textwrap.indent(expression, prefix='    ')}
-    field = "{field}"
-    result = {{"attributes": {{}}}}
-    if field.startswith("attributes."):
-        # Adapted from authentik/lib/config.py::set_path_in_dict
-        root = result
-        path_parts = field.split(".")
-        for comp in path_parts[:-1]
-            if comp not in root:
-                root[comp] = {{}}
-            root = root.get(comp, {{}})
-        root[path_parts[-1]] = get_field()
-    else:
-        result[field] = get_field()
-    return result
-    """
-
-
-def migrate_property_mappings(apps, schema_editor):
+def migrate_ldap_property_mappings(apps, schema_editor):
     if schema_editor.connection.alias != "default":
         return
-    LDAPSource = apps.get_model("authentik_sources_ldap", "LDAPSource")
-    for source in LDAPSource.objects.all():
-        for mapping in source.property_mappings:
-            mapping.expression = change_expression(mapping.expression, mapping.object_field)
-            mapping.save()
-            source.user_property_mappings.add(mapping)
-        for mapping in source.property_mappings_group:
-            mapping.expression = change_expression(mapping.expression, mapping.object_field)
-            mapping.save()
-            source.group_property_mappings.add(mapping)
+    LDAPPropertyMapping = apps.get_model("authentik_sources_ldap", "LDAPPropertyMapping")
+    for mapping in LDAPPropertyMapping.objects.all():
+        mapping.expression = f"""
+            # This property mapping has been automatically changed to match the new semantics of source property mappings.
+            # You can modify it to simplify it if you want.
+            # You should return a dictionary of fields to set on the user or the group.
+            # For instance:
+            # return {{
+            #     "{mapping.field}": ldap.get("{mapping.field}")
+            # }}
+            # Note that this example has been generated and should not be used as-is.
+            def get_field():
+                {textwrap.indent(mapping.expression, prefix='    ')}
+
+            field = "{mapping.field}"
+            result = {{"attributes": {{}}}}
+            if field.startswith("attributes."):
+                # Adapted from authentik/lib/config.py::set_path_in_dict
+                root = result
+                path_parts = field.split(".")
+                for comp in path_parts[:-1]
+                    if comp not in root:
+                        root[comp] = {{}}
+                    root = root.get(comp, {{}})
+                root[path_parts[-1]] = get_field()
+            else:
+                result[field] = get_field()
+            return result
+        """
+        mapping.save()
 
 
 class Migration(migrations.Migration):
@@ -49,7 +48,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(migrate_property_mappings),
+        migrations.RunPython(migrate_ldap_property_mappings),
         migrations.RemoveField(
             model_name="ldappropertymapping",
             name="object_field",
