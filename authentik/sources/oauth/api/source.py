@@ -4,12 +4,10 @@ from django.urls.base import reverse_lazy
 from django_filters.filters import BooleanFilter
 from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import (OpenApiParameter, extend_schema,
-                                   extend_schema_field)
+from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_field
 from requests import RequestException
 from rest_framework.decorators import action
-from rest_framework.fields import (BooleanField, CharField, ChoiceField,
-                                   SerializerMethodField)
+from rest_framework.fields import BooleanField, CharField, ChoiceField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError

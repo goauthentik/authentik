@@ -87,13 +87,6 @@ class OAuthCallback(OAuthClientMixin, View):
         "Return url to redirect on login failure."
         return settings.LOGIN_URL
 
-    def get_user_enroll_context(
-        self,
-        info: dict[str, Any],
-    ) -> dict[str, Any]:
-        """Create a dict of User data"""
-        raise NotImplementedError()
-
     def get_user_id(self, info: dict[str, Any]) -> str | None:
         """Return unique identifier from the profile info."""
         if "id" in info:
