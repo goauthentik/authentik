@@ -41459,6 +41459,7 @@ components:
       - discord
       - facebook
       - github
+      - gitlab
       - google
       - mailcow
       - okta
@@ -41474,6 +41475,7 @@ components:
         * `discord` - Discord
         * `facebook` - Facebook
         * `github` - GitHub
+        * `gitlab` - GitLab
         * `google` - Google
         * `mailcow` - Mailcow
         * `okta` - Okta

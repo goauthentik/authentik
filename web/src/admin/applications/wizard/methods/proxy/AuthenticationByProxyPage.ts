@@ -183,7 +183,6 @@ export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
                         <ak-multi-select
                             label=${msg("AdditionalScopes")}
                             name="propertyMappings"
-                            required
                             .options=${scopePairs}
                             .values=${scopeValues}
                             .errorMessages=${errors?.propertyMappings ?? []}
