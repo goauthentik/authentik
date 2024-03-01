@@ -11,32 +11,32 @@ def migrate_ldap_property_mappings(apps, schema_editor):
     LDAPPropertyMapping = apps.get_model("authentik_sources_ldap", "LDAPPropertyMapping")
     for mapping in LDAPPropertyMapping.objects.all():
         mapping.expression = f"""
-            # This property mapping has been automatically changed to
-            # match the new semantics of source property mappings.
-            # You can simplify it if you want.
-            # You should return a dictionary of fields to set on the user or the group.
-            # For instance:
-            # return {{
-            #     "{mapping.object_field}": ldap.get("{mapping.object_field}")
-            # }}
-            # Note that this example has been generated and should not be used as-is.
-            def get_field():
-                {textwrap.indent(mapping.expression, prefix='    ')}
+# This property mapping has been automatically changed to
+# match the new semantics of source property mappings.
+# You can simplify it if you want.
+# You should return a dictionary of fields to set on the user or the group.
+# For instance:
+# return {{
+#     "{mapping.object_field}": ldap.get("{mapping.object_field}")
+# }}
+# Note that this example has been generated and should not be used as-is.
+def get_field():
+    {textwrap.indent(mapping.expression, prefix='    ')}
 
-            field = "{mapping.object_field}"
-            result = {{"attributes": {{}}}}
-            if field.startswith("attributes."):
-                # Adapted from authentik/lib/config.py::set_path_in_dict
-                root = result
-                path_parts = field.split(".")
-                for comp in path_parts[:-1]
-                    if comp not in root:
-                        root[comp] = {{}}
-                    root = root.get(comp, {{}})
-                root[path_parts[-1]] = get_field()
-            else:
-                result[field] = get_field()
-            return result
+field = "{mapping.object_field}"
+result = {{"attributes": {{}}}}
+if field.startswith("attributes."):
+    # Adapted from authentik/lib/config.py::set_path_in_dict
+    root = result
+    path_parts = field.split(".")
+    for comp in path_parts[:-1]
+        if comp not in root:
+            root[comp] = {{}}
+        root = root.get(comp, {{}})
+    root[path_parts[-1]] = get_field()
+else:
+    result[field] = get_field()
+return result
         """
         mapping.save()
 
