@@ -74,14 +74,12 @@ export class Markdown extends AKElement {
     replaceRelativeLinks(input: string, md: MarkdownDocument): string {
         const baseName = md.path.replace(isFile, "");
         const baseUrl = docLink("");
-        const result = input.replace(isRelativeLink, (match, path) => {
+        return input.replace(isRelativeLink, (match, path) => {
             const pathName = path.replace(isFile, "");
             const link = `docs/${baseName}${pathName}`;
             const url = new URL(link, baseUrl).toString();
-            console.log("4:", url, match);
             return `href="${url}" _target="blank"`;
         });
-        return result;
     }
 
     willUpdate(properties: PropertyValues<this>) {

@@ -17,7 +17,7 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -55,37 +55,10 @@ interface SAMLPreviewAttribute {
 
 @customElement("ak-provider-saml-view")
 export class SAMLProviderViewPage extends AKElement {
-    @property()
-    set args(value: { [key: string]: number }) {
-        this.providerID = value.id;
-    }
-
     @property({ type: Number })
-    set providerID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
-            .providersSamlRetrieve({
-                id: value,
-            })
-            .then((prov) => {
-                this.provider = prov;
-                if (prov.signingKp) {
-                    new CryptoApi(DEFAULT_CONFIG)
-                        .cryptoCertificatekeypairsRetrieve({
-                            kpUuid: prov.signingKp,
-                        })
-                        .then((kp) => (this.signer = kp));
-                }
-                if (prov.verificationKp) {
-                    new CryptoApi(DEFAULT_CONFIG)
-                        .cryptoCertificatekeypairsRetrieve({
-                            kpUuid: prov.verificationKp,
-                        })
-                        .then((kp) => (this.verifier = kp));
-                }
-            });
-    }
+    providerID?: number;
 
-    @property({ attribute: false })
+    @state()
     provider?: SAMLProvider;
 
     @state()
@@ -136,6 +109,36 @@ export class SAMLProviderViewPage extends AKElement {
             .then((preview) => {
                 this.preview = preview.preview as SAMLPreviewAttribute;
             });
+    }
+
+    fetchCertificate(kpUuid: string) {
+        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsRetrieve({ kpUuid });
+    }
+
+    fetchSigningCertificate(kpUuid: string) {
+        this.fetchCertificate(kpUuid).then((kp) => (this.signer = kp));
+    }
+
+    fetchVerificationCertificate(kpUuid: string) {
+        this.fetchCertificate(kpUuid).then((kp) => (this.verifier = kp));
+    }
+
+    fetchProvider(id: number) {
+        new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({ id }).then((prov) => {
+            this.provider = prov;
+            if (this.provider.signingKp) {
+                this.fetchSigningCertificate(this.provider.signingKp);
+            }
+            if (this.provider.verificationKp) {
+                this.fetchVerificationCertificate(this.provider.verificationKp);
+            }
+        });
+    }
+
+    willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("providerID") && this.providerID) {
+            this.fetchProvider(this.providerID);
+        }
     }
 
     renderRelatedObjects(): TemplateResult {
