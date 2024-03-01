@@ -5,7 +5,7 @@ import textwrap
 from django.db import migrations
 
 
-def migrate_ldap_property_mappings(apps, schema_editor):
+def migrate_ldap_property_mappings_object_field(apps, schema_editor):
     if schema_editor.connection.alias != "default":
         return
     LDAPPropertyMapping = apps.get_model("authentik_sources_ldap", "LDAPPropertyMapping")
@@ -41,6 +41,15 @@ return result
         mapping.save()
 
 
+def migrate_ldap_property_mappings_to_new_fields(apps, schema_editor):
+    if schema_editor.connection.alias != "default":
+        return
+    LDAPSource = apps.get_model("authentik_sources_ldap", "LDAPSource")
+    for source in LDAPSource.objects.all():
+        source.user_property_mappings.set(source.property_mappings)
+        source.group_property_mappings.set(source.property_mappings_group)
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -49,7 +58,8 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(migrate_ldap_property_mappings),
+        migrations.RunPython(migrate_ldap_property_mappings_object_field),
+        migrations.RunPython(migrate_ldap_property_mappings_to_new_fields),
         migrations.RemoveField(
             model_name="ldappropertymapping",
             name="object_field",
