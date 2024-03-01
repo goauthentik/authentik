@@ -291,7 +291,6 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Group Property Mappings")}
-                        ?required=${true}
                         name="propertyMappingsGroup"
                     >
                         <select class="pf-c-form-control" multiple>
