@@ -1,5 +1,7 @@
 """saml sp models"""
 
+from typing import Any
+
 from django.db import models
 from django.http import HttpRequest
 from django.templatetags.static import static
@@ -7,14 +9,16 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import Source, UserSourceConnection
+from authentik.core.models import PropertyMapping, Source, UserSourceConnection
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.challenge import ChallengeTypes, RedirectChallenge
 from authentik.flows.models import Flow
+from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.sources.saml.processors.constants import (
     DSA_SHA1,
+    NS_SAML_ASSERTION,
     RSA_SHA1,
     RSA_SHA256,
     RSA_SHA384,
@@ -175,6 +179,33 @@ class SAMLSource(Source):
 
         return SAMLSourceSerializer
 
+    @property
+    def property_mapping_type(self) -> type[PropertyMapping]:
+        return SAMLSourcePropertyMapping
+
+    def get_base_user_properties(self, root: Any, name_id: Any, **kwargs):
+        attributes = {}
+        assertion = root.find(f"{{{NS_SAML_ASSERTION}}}Assertion")
+        if assertion is None:
+            raise ValueError("Assertion element not found")
+        attribute_statement = assertion.find(f"{{{NS_SAML_ASSERTION}}}AttributeStatement")
+        if attribute_statement is None:
+            raise ValueError("Attribute statement element not found")
+        # Get all attributes and their values into a dict
+        for attribute in attribute_statement.iterchildren():
+            key = attribute.attrib["Name"]
+            attributes.setdefault(key, [])
+            for value in attribute.iterchildren():
+                attributes[key].append(value.text)
+        # Flatten all lists in the dict
+        for key, value in attributes.items():
+            attributes[key] = BaseEvaluator.expr_flatten(value)
+        attributes["username"] = name_id.text
+        return attributes
+
+    def get_base_group_properties(self, **kwargs):
+        return {}
+
     def get_issuer(self, request: HttpRequest) -> str:
         """Get Source's Issuer, falling back to our Metadata URL if none is set"""
         if self.issuer is None:
@@ -224,6 +255,24 @@ class SAMLSource(Source):
     class Meta:
         verbose_name = _("SAML Source")
         verbose_name_plural = _("SAML Sources")
+
+
+class SAMLSourcePropertyMapping(PropertyMapping):
+    """Map SAML properties to User or Group object attributes"""
+
+    @property
+    def component(self) -> str:
+        return "ak-property-mapping-saml-source-form"
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.sources.saml.api.property_mapping import SAMLSourcePropertyMappingSerializer
+
+        return SAMLSourcePropertyMappingSerializer
+
+    class Meta:
+        verbose_name = _("SAML Source Property Mapping")
+        verbose_name_plural = _("SAML Source Property Mappings")
 
 
 class UserSAMLSourceConnection(UserSourceConnection):

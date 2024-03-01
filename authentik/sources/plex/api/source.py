@@ -110,6 +110,8 @@ class PlexSourceViewSet(UsedByMixin, ModelViewSet):
                 request=request,
                 identifier=str(identifier),
                 enroll_info=user_info,
+                groups_info=[],
+                policy_context={},
             )
             return to_stage_response(request, sfm.get_flow(plex_token=plex_token))
         LOGGER.warning(

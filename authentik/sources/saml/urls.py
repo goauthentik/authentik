@@ -2,6 +2,7 @@
 
 from django.urls import path
 
+from authentik.sources.saml.api.property_mapping import SAMLSourcePropertyMappingViewSet
 from authentik.sources.saml.api.source import SAMLSourceViewSet
 from authentik.sources.saml.api.source_connection import UserSAMLSourceConnectionViewSet
 from authentik.sources.saml.views import ACSView, InitiateView, MetadataView, SLOView
@@ -14,6 +15,7 @@ urlpatterns = [
 ]
 
 api_urlpatterns = [
+    ("propertymappings/saml_source", SAMLSourcePropertyMappingViewSet),
     ("sources/user_connections/saml", UserSAMLSourceConnectionViewSet),
     ("sources/saml", SAMLSourceViewSet),
 ]

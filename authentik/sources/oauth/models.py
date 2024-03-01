@@ -84,8 +84,6 @@ class OAuthSource(Source):
 
     @property
     def property_mapping_type(self) -> type[PropertyMapping]:
-        from authentik.sources.oauth.models import OAuthSourcePropertyMapping
-
         return OAuthSourcePropertyMapping
 
     def get_base_user_properties(self, **kwargs):
@@ -257,9 +255,11 @@ class OAuthSourcePropertyMapping(PropertyMapping):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.oauth.api import OAuthSourcePropertyMappingSerialzer
+        from authentik.sources.oauth.api.property_mapping import (
+            OAuthSourcePropertyMappingSerializer,
+        )
 
-        return OAuthSourcePropertyMappingSerialzer
+        return OAuthSourcePropertyMappingSerializer
 
     class Meta:
         verbose_name = _("OAuth Source Property Mapping")

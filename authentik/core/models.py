@@ -87,10 +87,13 @@ class UserTypes(models.TextChoices):
     INTERNAL_SERVICE_ACCOUNT = "internal_service_account"
 
 
-class AttributesMixin:
+class AttributesMixin(models.Model):
     """Adds an attributes property to a model"""
 
     attributes = models.JSONField(default=dict, blank=True)
+
+    class Meta:
+        abstract = True
 
     @classmethod
     def update_or_create_attributes(

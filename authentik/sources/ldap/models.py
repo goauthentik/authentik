@@ -119,8 +119,6 @@ class LDAPSource(Source):
 
     @property
     def property_mapping_type(self) -> type[PropertyMapping]:
-        from authentik.sources.ldap.models import LDAPPropertyMapping
-
         return LDAPPropertyMapping
 
     def update_properties_with_uniqueness_field(self, properties, dn, ldap, **kwargs):
