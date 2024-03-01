@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-19 23:33+0000\n"
+"POT-Creation-Date: 2024-03-01 00:07+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2024\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -2028,6 +2028,14 @@ msgstr "Source d'OAuth GitHub"
 #: authentik/sources/oauth/models.py
 msgid "GitHub OAuth Sources"
 msgstr "Sources d'OAuth GitHub"
+
+#: authentik/sources/oauth/models.py
+msgid "GitLab OAuth Source"
+msgstr "Source d'OAuth GitLab"
+
+#: authentik/sources/oauth/models.py
+msgid "GitLab OAuth Sources"
+msgstr "Sources d'OAuth GitLab"
 
 #: authentik/sources/oauth/models.py
 msgid "Twitch OAuth Source"
