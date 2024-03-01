@@ -284,7 +284,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                             })}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${msg("Property mappings used to user creation.")}
+                            ${msg("Property mappings used for user creation.")}
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${msg("Hold control/command to select multiple items.")}
@@ -318,7 +318,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                             })}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${msg("Property mappings used to group creation.")}
+                            ${msg("Property mappings used for group creation.")}
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${msg("Hold control/command to select multiple items.")}

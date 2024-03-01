@@ -24,6 +24,8 @@ import {
     DigestAlgorithmEnum,
     FlowsInstancesListDesignationEnum,
     NameIdPolicyEnum,
+    PaginatedSAMLSourcePropertyMappingList,
+    PropertymappingsApi,
     SAMLSource,
     SignatureAlgorithmEnum,
     SourcesApi,
@@ -42,6 +44,16 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
         this.clearIcon = false;
         return source;
     }
+
+    async load(): Promise<void> {
+        this.propertyMappings = await new PropertymappingsApi(
+            DEFAULT_CONFIG,
+        ).propertymappingsSamlSourceList({
+            ordering: "managed",
+        });
+    }
+
+    propertyMappings?: PaginatedSAMLSourcePropertyMappingList;
 
     async send(data: SAMLSource): Promise<SAMLSource> {
         let source: SAMLSource;
@@ -448,6 +460,41 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                             .value=${this.instance?.signatureAlgorithm}
                         >
                         </ak-radio>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+            <ak-form-group ?expanded=${true}>
+                <span slot="header"> ${msg("SAML Attributes mapping")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("User Property Mappings")}
+                        ?required=${true}
+                        name="userPropertyMappings"
+                    >
+                        <select class="pf-c-form-control" multiple>
+                            ${this.propertyMappings?.results.map((mapping) => {
+                                let selected = false;
+                                if (this.instance?.userPropertyMappings) {
+                                    selected = Array.from(this.instance?.userPropertyMappings).some(
+                                        (su) => {
+                                            return su == mapping.pk;
+                                        },
+                                    );
+                                }
+                                return html`<option
+                                    value=${ifDefined(mapping.pk)}
+                                    ?selected=${selected}
+                                >
+                                    ${mapping.name}
+                                </option>`;
+                            })}
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Property mappings used for user creation.")}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Hold control/command to select multiple items.")}
+                        </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

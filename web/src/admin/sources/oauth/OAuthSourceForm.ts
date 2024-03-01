@@ -23,6 +23,8 @@ import {
     FlowsInstancesListDesignationEnum,
     OAuthSource,
     OAuthSourceRequest,
+    PaginatedOAuthSourcePropertyMappingList,
+    PropertymappingsApi,
     ProviderTypeEnum,
     SourceType,
     SourcesApi,
@@ -39,6 +41,16 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
         this.clearIcon = false;
         return source;
     }
+
+    async load(): Promise<void> {
+        this.propertyMappings = await new PropertymappingsApi(
+            DEFAULT_CONFIG,
+        ).propertymappingsOauthSourceList({
+            ordering: "managed",
+        });
+    }
+
+    propertyMappings?: PaginatedOAuthSourcePropertyMappingList;
 
     _modelName?: string;
 
@@ -65,6 +77,9 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
 
     async send(data: OAuthSource): Promise<OAuthSource> {
         data.providerType = (this.providerType?.name || "") as ProviderTypeEnum;
+        if (data.groupsClaim === "") {
+            data.groupsClaim = null;
+        }
         let source: OAuthSource;
         if (this.instance) {
             source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
@@ -218,6 +233,21 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                               <p class="pf-c-form__helper-text">
                                   ${msg(
                                       "JSON Web Key URL. Keys from the URL will be used to validate JWTs from this source.",
+                                  )}
+                              </p>
+                          </ak-form-element-horizontal>
+                          <ak-form-element-horizontal
+                              label=${msg("OIDC Groups claim")}
+                              name="groupsClaim"
+                          >
+                              <input
+                                  type="text"
+                                  value="${first(this.instance?.groupsClaim, "")}"
+                                  class="pf-c-form-control"
+                              />
+                              <p class="pf-c-form__helper-text">
+                                  ${msg(
+                                      "Sync groups and group membership from the source. Only use this option with sources that you control, as otherwise unwanted users might get added to groups with superuser permissions.",
                                   )}
                               </p>
                           </ak-form-element-horizontal>
@@ -407,6 +437,71 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                 </div>
             </ak-form-group>
             ${this.renderUrlOptions()}
+            <ak-form-group ?expanded=${true}>
+                <span slot="header"> ${msg("OAuth Attributes mapping")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("User Property Mappings")}
+                        ?required=${true}
+                        name="userPropertyMappings"
+                    >
+                        <select class="pf-c-form-control" multiple>
+                            ${this.propertyMappings?.results.map((mapping) => {
+                                let selected = false;
+                                if (this.instance?.userPropertyMappings) {
+                                    selected = Array.from(this.instance?.userPropertyMappings).some(
+                                        (su) => {
+                                            return su == mapping.pk;
+                                        },
+                                    );
+                                }
+                                return html`<option
+                                    value=${ifDefined(mapping.pk)}
+                                    ?selected=${selected}
+                                >
+                                    ${mapping.name}
+                                </option>`;
+                            })}
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Property mappings used for user creation.")}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Hold control/command to select multiple items.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Group Property Mappings")}
+                        ?required=${true}
+                        name="groupPropertyMappings"
+                    >
+                        <select class="pf-c-form-control" multiple>
+                            ${this.propertyMappings?.results.map((mapping) => {
+                                let selected = false;
+                                if (this.instance?.groupPropertyMappings) {
+                                    selected = Array.from(
+                                        this.instance?.groupPropertyMappings,
+                                    ).some((su) => {
+                                        return su == mapping.pk;
+                                    });
+                                }
+                                return html`<option
+                                    value=${ifDefined(mapping.pk)}
+                                    ?selected=${selected}
+                                >
+                                    ${mapping.name}
+                                </option>`;
+                            })}
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Property mappings used for group creation.")}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Hold control/command to select multiple items.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
             <ak-form-group>
                 <span slot="header"> ${msg("Flow settings")} </span>
                 <div slot="body" class="pf-c-form">
