@@ -36,7 +36,6 @@ const docsSidebar = {
             collapsed: true,
             items: [
                 "core/terminology",
-                "core/applications",
                 "core/brands",
                 "core/certificates",
                 "core/geoip",
@@ -56,6 +55,15 @@ const docsSidebar = {
                 "enterprise/manage-enterprise",
                 "enterprise/entsupport",
             ],
+        },
+        {
+            type: "category",
+            label: "Applications",
+            link: {
+                type: "doc",
+                id: "applications/index",
+            },
+            items: ["applications/manage_apps"],
         },
         {
             type: "category",
