@@ -23,7 +23,7 @@ import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 import "@goauthentik/elements/sidebar/SidebarItem";
 import { ROUTES } from "@goauthentik/user/Routes";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-import { P, match } from "ts-pattern";
+import { match } from "ts-pattern";
 
 import { msg } from "@lit/localize";
 import { css, html, nothing } from "lit";
@@ -200,9 +200,9 @@ class UserInterfacePresentation extends AKElement {
                     </div>
                     <div class="pf-c-page__header-tools">
                         <div class="pf-c-page__header-tools-group">
-                            ${this.renderApiDrawer()}
+                            ${this.renderApiDrawerTrigger()}
                             <!-- -->
-                            ${this.renderNotificationDrawer()}
+                            ${this.renderNotificationDrawerTrigger()}
                             <!-- -->
                             ${this.renderSettings()}
                             <div class="pf-c-page__header-tools-item">
@@ -215,7 +215,7 @@ class UserInterfacePresentation extends AKElement {
                                     </pf-tooltip>
                                 </a>
                             </div>
-                            ${this.renderAccessAdmin()}
+                            ${this.renderAdminInterfaceLink()}
                         </div>
                         ${this.renderImpersonation()}
                         <div class="pf-c-page__header-tools-group">
@@ -274,7 +274,7 @@ class UserInterfacePresentation extends AKElement {
         </ak-locale-context>`;
     }
 
-    renderApiDrawer() {
+    renderApiDrawerTrigger() {
         if (!this.uiConfig.enabledFeatures.apiDrawer) {
             return nothing;
         }
@@ -295,7 +295,7 @@ class UserInterfacePresentation extends AKElement {
         </div>`;
     }
 
-    renderNotificationDrawer() {
+    renderNotificationDrawerTrigger() {
         if (!this.uiConfig.enabledFeatures.notificationDrawer) {
             return nothing;
         }
@@ -342,7 +342,7 @@ class UserInterfacePresentation extends AKElement {
         </div>`;
     }
 
-    renderAccessAdmin() {
+    renderAdminInterfaceLink() {
         if (!this.canAccessAdmin) {
             return nothing;
         }
