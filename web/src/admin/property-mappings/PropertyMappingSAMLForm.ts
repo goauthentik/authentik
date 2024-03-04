@@ -6,7 +6,7 @@ import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -33,7 +33,7 @@ export class PropertyMappingSAMLForm extends BasePropertyMappingForm<SAMLPropert
         }
     }
 
-    renderForm(): TemplateResult {
+    renderForm() {
         return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"

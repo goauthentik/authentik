@@ -2,7 +2,7 @@ import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
 import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
 import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
 import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
-import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
@@ -15,7 +15,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { PropertyValues, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -33,6 +33,17 @@ import {
 
 @customElement("ak-source-oauth-form")
 export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuthSource>) {
+    @property()
+    modelName?: string;
+
+    @property({ attribute: false })
+    providerType: SourceType | null = null;
+
+    @state()
+    clearIcon = false;
+
+    propertyMappings?: PaginatedOAuthSourcePropertyMappingList;
+
     async loadInstance(pk: string): Promise<OAuthSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthRetrieve({
             slug: pk,
@@ -50,65 +61,65 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
         });
     }
 
-    propertyMappings?: PaginatedOAuthSourcePropertyMappingList;
-
-    _modelName?: string;
-
-    @property()
-    set modelName(v: string | undefined) {
-        this._modelName = v;
+    fetchProviderType(modelName: string) {
         new SourcesApi(DEFAULT_CONFIG)
             .sourcesOauthSourceTypesList({
-                name: v?.replace("oauthsource", ""),
+                name: modelName?.replace("oauthsource", ""),
             })
             .then((type) => {
                 this.providerType = type[0];
             });
     }
-    get modelName(): string | undefined {
-        return this._modelName;
+
+    willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("modelName") && this.modelName) {
+            this.fetchProviderType(this.modelName);
+        }
     }
-
-    @property({ attribute: false })
-    providerType: SourceType | null = null;
-
-    @state()
-    clearIcon = false;
 
     async send(data: OAuthSource): Promise<OAuthSource> {
         data.providerType = (this.providerType?.name || "") as ProviderTypeEnum;
         if (data.groupsClaim === "") {
             data.groupsClaim = null;
         }
-        let source: OAuthSource;
-        if (this.instance) {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
-                slug: this.instance.slug,
+
+        const sourceUpdate = (slug: string) =>
+            new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
+                slug,
                 patchedOAuthSourceRequest: data,
             });
-        } else {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthCreate({
+
+        const sourceCreate = () =>
+            new SourcesApi(DEFAULT_CONFIG).sourcesOauthCreate({
                 oAuthSourceRequest: data as unknown as OAuthSourceRequest,
             });
-        }
-        const c = await config();
-        if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
-            const icon = this.getFormFiles()["icon"];
-            if (icon || this.clearIcon) {
-                await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconCreate({
-                    slug: source.slug,
-                    file: icon,
-                    clear: this.clearIcon,
-                });
-            }
-        } else {
-            await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconUrlCreate({
+
+        const source = await (this.instance ? sourceUpdate(this.instance.slug) : sourceCreate());
+
+        const createIconSet = (icon: File) =>
+            new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconCreate({
+                slug: source.slug,
+                file: icon,
+                clear: this.clearIcon,
+            });
+
+        const setIconUrl = () =>
+            new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconUrlCreate({
                 slug: source.slug,
                 filePathRequest: {
                     url: data.icon || "",
                 },
             });
+
+        const icon = this.getFormFiles()["icon"];
+        if (this.can(CapabilitiesEnum.CanSaveMedia)) {
+            if (icon || this.clearIcon) {
+                await createIconSet(icon);
+            }
+        } else {
+            await setIconUrl();
         }
+
         return source;
     }
 
