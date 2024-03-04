@@ -19,6 +19,9 @@ import type {
     ScopeMapping,
 } from "@goauthentik/api";
 
+// This is the sort of nonsense that you need to coerce Typescript into accepting, "No, really, they
+// *say* they're all unique, but they have a base class, we just don't have access to it."
+
 type TBase = Extract<
     | LDAPSourcePropertyMapping
     | NotificationWebhookMapping

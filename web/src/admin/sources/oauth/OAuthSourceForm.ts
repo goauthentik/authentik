@@ -31,8 +31,10 @@ import {
     UserMatchingModeEnum,
 } from "@goauthentik/api";
 
+const OAuthSourceFormBase = WithCapabilitiesConfig(BaseSourceForm<OAuthSource>);
+
 @customElement("ak-source-oauth-form")
-export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuthSource>) {
+export class OAuthSourceForm extends OAuthSourceFormBase {
     @property()
     modelName?: string;
 
