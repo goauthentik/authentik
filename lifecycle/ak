@@ -55,6 +55,7 @@ function cleanup {
 }
 
 function prepare_debug {
+    source ${VENV_PATH}/bin/activate
     poetry install --no-ansi --no-interaction
     touch /unittest.xml
     chown authentik:authentik /unittest.xml
