@@ -3,7 +3,7 @@ import { PFSize } from "@goauthentik/app/elements/Spinner";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/components/ak-app-icon";
-import MDApplication from "@goauthentik/docs/core/applications.md";
+import MDApplication from "@goauthentik/docs/applications/index.md";
 import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
