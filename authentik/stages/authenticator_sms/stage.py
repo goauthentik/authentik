@@ -1,5 +1,4 @@
 """SMS Setup stage"""
-from typing import Optional
 
 from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
@@ -75,7 +74,7 @@ class AuthenticatorSMSStageView(ChallengeStageView):
         device: SMSDevice = self.request.session[SESSION_KEY_SMS_DEVICE]
         stage.send(device.token, device)
 
-    def _has_phone_number(self) -> Optional[str]:
+    def _has_phone_number(self) -> str | None:
         context = self.executor.plan.context
         if PLAN_CONTEXT_PHONE in context.get(PLAN_CONTEXT_PROMPT, {}):
             self.logger.debug("got phone number from plan context")

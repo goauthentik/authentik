@@ -54,10 +54,6 @@ make lint # Ensures your code is well-formatted
 make gen # Generates an updated OpenAPI Docs for any changes you make
 ```
 
-:::info
-Linting also requires `pyright`, which is installed in the `web/` folder to make dependency management easier.
-:::
-
 ## Frontend Setup
 
 By default, no compiled bundle of the frontend is included so this step is required even if you're not developing for the UI.
@@ -91,6 +87,7 @@ ak server # Starts authentik server
 And now, authentik should now be accessible at `http://localhost:9000`.
 
 :::info
-To define a password for the default admin (called **akadmin**), you can manually enter the `/if/flow/initial-setup/` path in the browser address bar to launch the initial flow.
-Example: http://localhost:9000/if/flow/initial-setup/
+To define a password for the default admin (called **akadmin**), you can manually enter the `/if/flow/initial-setup/` path in the browser address bar to launch the initial flow. Example: http://localhost:9000/if/flow/initial-setup/.
+
+In case of issues in this process, feel free to use `make dev-reset` which drops and restores the Authentik PostgreSQL instance to a "fresh install" state.
 :::

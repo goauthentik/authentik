@@ -1,5 +1,7 @@
 """Sync LDAP Users and groups into authentik"""
-from typing import Any, Generator
+
+from collections.abc import Generator
+from typing import Any
 
 from django.conf import settings
 from django.db.models.base import Model
@@ -89,8 +91,7 @@ class BaseLDAPSynchronizer:
         """Get objects from LDAP, implemented in subclass"""
         raise NotImplementedError()
 
-    # pylint: disable=too-many-arguments
-    def search_paginator(
+    def search_paginator(  # noqa: PLR0913
         self,
         search_base,
         search_filter,
@@ -102,11 +103,13 @@ class BaseLDAPSynchronizer:
         types_only=False,
         get_operational_attributes=False,
         controls=None,
-        paged_size=CONFIG.get_int("ldap.page_size", 50),
+        paged_size=None,
         paged_criticality=False,
     ):
         """Search in pages, returns each page"""
         cookie = True
+        if not paged_size:
+            paged_size = CONFIG.get_int("ldap.page_size", 50)
         while cookie:
             self._connection.search(
                 search_base,

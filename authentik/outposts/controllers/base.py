@@ -1,6 +1,6 @@
 """Base Controller"""
+
 from dataclasses import dataclass
-from typing import Optional
 
 from structlog.stdlib import get_logger
 from structlog.testing import capture_logs
@@ -28,7 +28,7 @@ class DeploymentPort:
     port: int
     name: str
     protocol: str
-    inner_port: Optional[int] = None
+    inner_port: int | None = None
 
 
 class BaseClient:
@@ -59,7 +59,6 @@ class BaseController:
         self.logger = get_logger()
         self.deployment_ports = []
 
-    # pylint: disable=invalid-name
     def up(self):
         """Called by scheduled task to reconcile deployment/service/etc"""
         raise NotImplementedError

@@ -1,7 +1,8 @@
 """User API Views"""
+
 from datetime import timedelta
 from json import loads
-from typing import Any, Optional
+from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.sessions.backends.cache import KEY_PREFIX
@@ -30,7 +31,7 @@ from drf_spectacular.utils import (
     extend_schema_field,
     inline_serializer,
 )
-from guardian.shortcuts import get_anonymous_user, get_objects_for_user
+from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, IntegerField, ListField, SerializerMethodField
 from rest_framework.request import Request
@@ -48,7 +49,6 @@ from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.admin.api.metrics import CoordinateSerializer
-from authentik.api.decorators import permission_required
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.brands.models import Brand
 from authentik.core.api.used_by import UsedByMixin
@@ -72,6 +72,8 @@ from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
+from authentik.lib.avatars import get_avatar
+from authentik.rbac.decorators import permission_required
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
@@ -102,14 +104,21 @@ class UserSerializer(ModelSerializer):
     """User Serializer"""
 
     is_superuser = BooleanField(read_only=True)
-    avatar = CharField(read_only=True)
+    avatar = SerializerMethodField()
     attributes = JSONDictField(required=False)
     groups = PrimaryKeyRelatedField(
-        allow_empty=True, many=True, source="ak_groups", queryset=Group.objects.all(), default=list
+        allow_empty=True,
+        many=True,
+        source="ak_groups",
+        queryset=Group.objects.all().order_by("name"),
+        default=list,
     )
     groups_obj = ListSerializer(child=UserGroupSerializer(), read_only=True, source="ak_groups")
     uid = CharField(read_only=True)
-    username = CharField(max_length=150, validators=[UniqueValidator(queryset=User.objects.all())])
+    username = CharField(
+        max_length=150,
+        validators=[UniqueValidator(queryset=User.objects.all().order_by("username"))],
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -133,7 +142,7 @@ class UserSerializer(ModelSerializer):
         self._set_password(instance, password)
         return instance
 
-    def _set_password(self, instance: User, password: Optional[str]):
+    def _set_password(self, instance: User, password: str | None):
         """Set password of user if we're in a blueprint context, and if it's an empty
         string then use an unusable password"""
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context and password:
@@ -142,6 +151,10 @@ class UserSerializer(ModelSerializer):
         if len(instance.password) == 0:
             instance.set_unusable_password()
             instance.save()
+
+    def get_avatar(self, user: User) -> str:
+        """User's avatar, either a http/https URL or a data URI"""
+        return get_avatar(user, self.context.get("request"))
 
     def validate_path(self, path: str) -> str:
         """Validate path"""
@@ -197,11 +210,15 @@ class UserSelfSerializer(ModelSerializer):
     """User Serializer for information a user can retrieve about themselves"""
 
     is_superuser = BooleanField(read_only=True)
-    avatar = CharField(read_only=True)
+    avatar = SerializerMethodField()
     groups = SerializerMethodField()
     uid = CharField(read_only=True)
     settings = SerializerMethodField()
     system_permissions = SerializerMethodField()
+
+    def get_avatar(self, user: User) -> str:
+        """User's avatar, either a http/https URL or a data URI"""
+        return get_avatar(user, self.context.get("request"))
 
     @extend_schema_field(
         ListSerializer(
@@ -329,11 +346,11 @@ class UsersFilter(FilterSet):
     groups_by_name = ModelMultipleChoiceFilter(
         field_name="ak_groups__name",
         to_field_name="name",
-        queryset=Group.objects.all(),
+        queryset=Group.objects.all().order_by("name"),
     )
     groups_by_pk = ModelMultipleChoiceFilter(
         field_name="ak_groups",
-        queryset=Group.objects.all(),
+        queryset=Group.objects.all().order_by("name"),
     )
 
     def filter_attributes(self, queryset, name, value):
@@ -341,7 +358,7 @@ class UsersFilter(FilterSet):
         try:
             value = loads(value)
         except ValueError:
-            raise ValidationError(detail="filter: failed to parse JSON")
+            raise ValidationError(detail="filter: failed to parse JSON") from None
         if not isinstance(value, dict):
             raise ValidationError(detail="filter: value must be key:value mapping")
         qs = {}
@@ -378,17 +395,16 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     filterset_class = UsersFilter
 
     def get_queryset(self):  # pragma: no cover
-        return User.objects.all().exclude(pk=get_anonymous_user().pk)
+        return User.objects.all().exclude_anonymous().prefetch_related("ak_groups")
 
-    def _create_recovery_link(self) -> tuple[Optional[str], Optional[Token]]:
+    def _create_recovery_link(self) -> tuple[str, Token]:
         """Create a recovery link (when the current brand has a recovery flow set),
         that can either be shown to an admin or sent to the user directly"""
         brand: Brand = self.request._request.brand
         # Check that there is a recovery flow, if not return an error
         flow = brand.flow_recovery
         if not flow:
-            LOGGER.debug("No recovery flow set")
-            return None, None
+            raise ValidationError({"non_field_errors": "No recovery flow set."})
         user: User = self.get_object()
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
@@ -400,8 +416,9 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 },
             )
         except FlowNonApplicableException:
-            LOGGER.warning("Recovery flow not applicable to user")
-            return None, None
+            raise ValidationError(
+                {"non_field_errors": "Recovery flow not applicable to user"}
+            ) from None
         token, __ = FlowToken.objects.update_or_create(
             identifier=f"{user.uid}-password-reset",
             defaults={
@@ -516,7 +533,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             400: OpenApiResponse(description="Bad request"),
         },
     )
-    @action(detail=True, methods=["POST"])
+    @action(detail=True, methods=["POST"], permission_classes=[])
     def set_password(self, request: Request, pk: int) -> Response:
         """Set password for user"""
         user: User = self.get_object()
@@ -546,16 +563,13 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     @extend_schema(
         responses={
             "200": LinkSerializer(many=False),
-            "404": LinkSerializer(many=False),
         },
+        request=None,
     )
-    @action(detail=True, pagination_class=None, filter_backends=[])
+    @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
     def recovery(self, request: Request, pk: int) -> Response:
         """Create a temporary link that a user can use to recover their accounts"""
         link, _ = self._create_recovery_link()
-        if not link:
-            LOGGER.debug("Couldn't create token")
-            return Response({"link": ""}, status=404)
         return Response({"link": link})
 
     @permission_required("authentik_core.reset_user_password")
@@ -570,27 +584,24 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         ],
         responses={
             "204": OpenApiResponse(description="Successfully sent recover email"),
-            "404": OpenApiResponse(description="Bad request"),
         },
+        request=None,
     )
-    @action(detail=True, pagination_class=None, filter_backends=[])
+    @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
     def recovery_email(self, request: Request, pk: int) -> Response:
         """Create a temporary link that a user can use to recover their accounts"""
         for_user: User = self.get_object()
         if for_user.email == "":
             LOGGER.debug("User doesn't have an email address")
-            return Response(status=404)
+            raise ValidationError({"non_field_errors": "User does not have an email address set."})
         link, token = self._create_recovery_link()
-        if not link:
-            LOGGER.debug("Couldn't create token")
-            return Response(status=404)
         # Lookup the email stage to assure the current user can access it
         stages = get_objects_for_user(
             request.user, "authentik_stages_email.view_emailstage"
         ).filter(pk=request.query_params.get("email_stage"))
         if not stages.exists():
             LOGGER.debug("Email stage does not exist/user has no permissions")
-            return Response(status=404)
+            raise ValidationError({"non_field_errors": "Email stage does not exist."})
         email_stage: EmailStage = stages.first()
         message = TemplateEmailMessage(
             subject=_(email_stage.subject),
@@ -614,7 +625,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             "401": OpenApiResponse(description="Access denied"),
         },
     )
-    @action(detail=True, methods=["POST"])
+    @action(detail=True, methods=["POST"], permission_classes=[])
     def impersonate(self, request: Request, pk: int) -> Response:
         """Impersonate a user"""
         if not request.tenant.impersonation:

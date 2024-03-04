@@ -30,6 +30,7 @@ module.exports = {
                         "services/nextcloud/index",
                         "services/onlyoffice/index",
                         "services/paperless-ng/index",
+                        "services/paperless-ngx/index",
                         "services/rocketchat/index",
                         "services/roundcube/index",
                         "services/sharepoint-se/index",
@@ -86,6 +87,7 @@ module.exports = {
                         "services/powerdns-admin/index",
                         "services/proftpd/index",
                         "services/qnap-nas/index",
+                        "services/synology-dsm/index",
                         "services/skyhigh/index",
                         "services/snipe-it/index",
                         "services/sssd/index",
@@ -114,6 +116,7 @@ module.exports = {
                     type: "category",
                     label: "Monitoring",
                     items: [
+                        "services/glitchtip/index",
                         "services/grafana/index",
                         "services/sentry/index",
                         "services/ubuntu-landscape/index",

@@ -1,4 +1,5 @@
 """authentik recovery createkey command"""
+
 from datetime import timedelta
 from getpass import getuser
 

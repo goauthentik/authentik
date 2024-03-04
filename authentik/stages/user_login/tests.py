@@ -1,4 +1,5 @@
 """login tests"""
+
 from time import sleep
 from unittest.mock import patch
 

@@ -5,8 +5,11 @@ PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
 NPM_VERSION = $(shell python -m scripts.npm_version)
-PY_SOURCES = authentik tests scripts lifecycle
+PY_SOURCES = authentik tests scripts lifecycle .github
 DOCKER_IMAGE ?= "authentik:test"
+
+GEN_API_TS = "gen-ts-api"
+GEN_API_GO = "gen-go-api"
 
 pg_user := $(shell python -m authentik.lib.config postgresql.user 2>/dev/null)
 pg_host := $(shell python -m authentik.lib.config postgresql.host 2>/dev/null)
@@ -56,15 +59,12 @@ test: ## Run the server tests and produce a coverage report (locally)
 	coverage report
 
 lint-fix:  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
-	isort $(PY_SOURCES)
 	black $(PY_SOURCES)
-	ruff --fix $(PY_SOURCES)
+	ruff check --fix $(PY_SOURCES)
 	codespell -w $(CODESPELL_ARGS)
 
 lint: ## Lint the python and golang sources
 	bandit -r $(PY_SOURCES) -x node_modules
-	./web/node_modules/.bin/pyright $(PY_SOURCES)
-	pylint $(PY_SOURCES)
 	golangci-lint run -v
 
 core-install:
@@ -76,7 +76,15 @@ migrate: ## Run the Authentik Django server's migrations
 i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that require translation into files to send to a translation service
 
 core-i18n-extract:
-	ak makemessages --ignore web --ignore internal --ignore web --ignore web-api --ignore website -l en
+	ak makemessages \
+		--add-location file \
+		--no-obsolete \
+		--ignore web \
+		--ignore internal \
+		--ignore ${GEN_API_TS} \
+		--ignore ${GEN_API_GO} \
+		--ignore website \
+		-l en
 
 install: web-install website-install core-install  ## Install all requires dependencies for `web`, `website` and `core`
 
@@ -114,7 +122,7 @@ gen-diff:  ## (Release) generate the changelog diff between the current schema a
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-diff:2.1.0-beta.6 \
+		docker.io/openapitools/openapi-diff:2.1.0-beta.8 \
 		--markdown /local/diff.md \
 		/local/old_schema.yml /local/schema.yml
 	rm old_schema.yml
@@ -123,11 +131,11 @@ gen-diff:  ## (Release) generate the changelog diff between the current schema a
 	npx prettier --write diff.md
 
 gen-clean-ts:  ## Remove generated API client for Typescript
-	rm -rf gen-ts-api/
-	rm -rf web/node_modules/@goauthentik/api/
+	rm -rf ./${GEN_API_TS}/
+	rm -rf ./web/node_modules/@goauthentik/api/
 
 gen-clean-go:  ## Remove generated API client for Go
-	rm -rf gen-go-api/
+	rm -rf ./${GEN_API_GO}/
 
 gen-clean: gen-clean-ts gen-clean-go  ## Remove generated API clients
 
@@ -138,31 +146,31 @@ gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescri
 		docker.io/openapitools/openapi-generator-cli:v6.5.0 generate \
 		-i /local/schema.yml \
 		-g typescript-fetch \
-		-o /local/gen-ts-api \
+		-o /local/${GEN_API_TS} \
 		-c /local/scripts/api-ts-config.yaml \
 		--additional-properties=npmVersion=${NPM_VERSION} \
 		--git-repo-id authentik \
 		--git-user-id goauthentik
 	mkdir -p web/node_modules/@goauthentik/api
-	cd gen-ts-api && npm i
-	\cp -rfv gen-ts-api/* web/node_modules/@goauthentik/api
+	cd ./${GEN_API_TS} && npm i
+	\cp -rf ./${GEN_API_TS}/* web/node_modules/@goauthentik/api
 
 gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
-	mkdir -p ./gen-go-api ./gen-go-api/templates
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/config.yaml -O ./gen-go-api/config.yaml
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/README.mustache -O ./gen-go-api/templates/README.mustache
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/go.mod.mustache -O ./gen-go-api/templates/go.mod.mustache
-	cp schema.yml ./gen-go-api/
+	mkdir -p ./${GEN_API_GO} ./${GEN_API_GO}/templates
+	wget https://raw.githubusercontent.com/goauthentik/client-go/main/config.yaml -O ./${GEN_API_GO}/config.yaml
+	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/README.mustache -O ./${GEN_API_GO}/templates/README.mustache
+	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/go.mod.mustache -O ./${GEN_API_GO}/templates/go.mod.mustache
+	cp schema.yml ./${GEN_API_GO}/
 	docker run \
-		--rm -v ${PWD}/gen-go-api:/local \
+		--rm -v ${PWD}/${GEN_API_GO}:/local \
 		--user ${UID}:${GID} \
 		docker.io/openapitools/openapi-generator-cli:v6.5.0 generate \
 		-i /local/schema.yml \
 		-g go \
 		-o /local/ \
 		-c /local/config.yaml
-	go mod edit -replace goauthentik.io/api/v3=./gen-go-api
-	rm -rf ./gen-go-api/config.yaml ./gen-go-api/templates/
+	go mod edit -replace goauthentik.io/api/v3=./${GEN_API_GO}
+	rm -rf ./${GEN_API_GO}/config.yaml ./${GEN_API_GO}/templates/
 
 gen-dev-config:  ## Generate a local development config file
 	python -m scripts.generate_config
@@ -176,7 +184,7 @@ gen: gen-build gen-client-ts
 web-build: web-install  ## Build the Authentik UI
 	cd web && npm run build
 
-web: web-lint-fix web-lint web-check-compile web-i18n-extract  ## Automatically fix formatting issues in the Authentik UI source code, lint the code, and compile it
+web: web-lint-fix web-lint web-check-compile  ## Automatically fix formatting issues in the Authentik UI source code, lint the code, and compile it
 
 web-install:  ## Install the necessary libraries to build the Authentik UI
 	cd web && npm ci
@@ -238,9 +246,6 @@ ci--meta-debug:
 	python -V
 	node --version
 
-ci-pylint: ci--meta-debug
-	pylint $(PY_SOURCES)
-
 ci-black: ci--meta-debug
 	black --check $(PY_SOURCES)
 
@@ -250,14 +255,8 @@ ci-ruff: ci--meta-debug
 ci-codespell: ci--meta-debug
 	codespell $(CODESPELL_ARGS) -s
 
-ci-isort: ci--meta-debug
-	isort --check $(PY_SOURCES)
-
 ci-bandit: ci--meta-debug
 	bandit -r $(PY_SOURCES)
-
-ci-pyright: ci--meta-debug
-	./web/node_modules/.bin/pyright $(PY_SOURCES)
 
 ci-pending-migrations: ci--meta-debug
 	ak makemigrations --check

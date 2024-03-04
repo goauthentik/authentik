@@ -1,4 +1,5 @@
 """brand models"""
+
 from uuid import uuid4
 
 from django.db import models
@@ -70,7 +71,7 @@ class Brand(SerializerModel):
         """Get default locale"""
         try:
             return self.attributes.get("settings", {}).get("locale", "")
-        # pylint: disable=broad-except
+
         except Exception as exc:
             LOGGER.warning("Failed to get default locale", exc=exc)
             return ""

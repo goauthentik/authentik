@@ -1,4 +1,5 @@
 """Authenticator Devices API Views"""
+
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework.fields import BooleanField, CharField, IntegerField, SerializerMethodField

@@ -1,4 +1,5 @@
 """OAuth2Provider API Views"""
+
 from django_filters.filters import AllValuesMultipleFilter
 from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes

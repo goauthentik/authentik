@@ -1,4 +1,5 @@
 import "@goauthentik/admin/providers/RelatedApplicationButton";
+import "@goauthentik/admin/providers/rac/ConnectionTokenList";
 import "@goauthentik/admin/providers/rac/EndpointForm";
 import "@goauthentik/admin/providers/rac/EndpointList";
 import "@goauthentik/admin/providers/rac/RACProviderForm";
@@ -85,6 +86,15 @@ export class RACProviderViewPage extends AKElement {
         return html`<ak-tabs>
             <section slot="page-overview" data-tab-title="${msg("Overview")}">
                 ${this.renderTabOverview()}
+            </section>
+            <section slot="page-connections" data-tab-title="${msg("Connections")}">
+                <div class="pf-c-card">
+                    <div class="pf-c-card__body">
+                        <ak-rac-connection-token-list
+                            .provider=${this.provider}
+                        ></ak-rac-connection-token-list>
+                    </div>
+                </div>
             </section>
             <section
                 slot="page-changelog"

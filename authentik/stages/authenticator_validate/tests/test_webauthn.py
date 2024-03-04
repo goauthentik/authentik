@@ -1,4 +1,5 @@
 """Test validator stage"""
+
 from time import sleep
 
 from django.test.client import RequestFactory
@@ -163,8 +164,9 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
         """Test webauthn (userless)"""
         request = get_request("/")
         stage = AuthenticatorValidateStage.objects.create(
-            name=generate_id(),
+            name=generate_id(), webauthn_user_verification=UserVerification.PREFERRED
         )
+        stage.refresh_from_db()
         WebAuthnDevice.objects.create(
             user=self.user,
             public_key=(

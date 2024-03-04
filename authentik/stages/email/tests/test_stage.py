@@ -1,4 +1,5 @@
 """email tests"""
+
 from unittest.mock import MagicMock, PropertyMock, patch
 
 from django.core import mail

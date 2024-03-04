@@ -1,4 +1,5 @@
 """OAuth Source tests"""
+
 from django.urls import reverse
 from requests_mock import Mocker
 from rest_framework.test import APITestCase

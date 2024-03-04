@@ -1,4 +1,5 @@
 """event_matcher tests"""
+
 from django.test import TestCase
 from guardian.shortcuts import get_anonymous_user
 

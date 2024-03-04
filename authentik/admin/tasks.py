@@ -1,4 +1,5 @@
 """authentik admin tasks"""
+
 import re
 
 from django.core.cache import cache

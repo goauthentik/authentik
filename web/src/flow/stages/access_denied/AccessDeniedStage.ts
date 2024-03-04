@@ -8,6 +8,7 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
@@ -26,6 +27,7 @@ export class AccessDeniedIcon extends AKElement {
         return [
             PFBase,
             PFTitle,
+            PFDivider,
             css`
                 .big-icon {
                     display: flex;
@@ -51,7 +53,7 @@ export class AccessDeniedIcon extends AKElement {
             </p>
             <h3 class="pf-c-title pf-m-3xl reason">${msg("Request has been denied.")}</h3>
             ${this.errorMessage
-                ? html`<hr />
+                ? html` <hr class="pf-c-divider" />
                       <p>${this.errorMessage}</p>`
                 : html``}
         </div>`;

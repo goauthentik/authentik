@@ -1,10 +1,10 @@
 """authentik LDAP Models"""
+
 from os import chmod
 from os.path import dirname, exists
 from shutil import rmtree
 from ssl import CERT_REQUIRED
 from tempfile import NamedTemporaryFile, mkdtemp
-from typing import Optional
 
 from django.core.cache import cache
 from django.db import connection, models
@@ -159,9 +159,9 @@ class LDAPSource(Source):
 
     def connection(
         self,
-        server: Optional[Server] = None,
-        server_kwargs: Optional[dict] = None,
-        connection_kwargs: Optional[dict] = None,
+        server: Server | None = None,
+        server_kwargs: dict | None = None,
+        connection_kwargs: dict | None = None,
     ) -> Connection:
         """Get a fully connected and bound LDAP Connection"""
         server_kwargs = server_kwargs or {}

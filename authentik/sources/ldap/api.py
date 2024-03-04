@@ -1,5 +1,6 @@
 """Source API Views"""
-from typing import Any, Optional
+
+from typing import Any
 
 from django.core.cache import cache
 from django_filters.filters import AllValuesMultipleFilter
@@ -38,7 +39,7 @@ class LDAPSourceSerializer(SourceSerializer):
         required=False,
     )
 
-    def get_connectivity(self, source: LDAPSource) -> Optional[dict[str, dict[str, str]]]:
+    def get_connectivity(self, source: LDAPSource) -> dict[str, dict[str, str]] | None:
         """Get cached source connectivity"""
         return cache.get(CACHE_KEY_STATUS + source.slug, None)
 

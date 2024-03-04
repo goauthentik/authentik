@@ -1,4 +1,5 @@
 """General API Views"""
+
 from typing import Any
 
 from django.urls import reverse

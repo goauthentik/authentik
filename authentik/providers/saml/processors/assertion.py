@@ -1,4 +1,5 @@
 """SAML Assertion generator"""
+
 from hashlib import sha256
 from types import GeneratorType
 
@@ -91,16 +92,15 @@ class AssertionProcessor:
                     attribute.attrib["FriendlyName"] = mapping.friendly_name
                 attribute.attrib["Name"] = mapping.saml_name
 
-                if not isinstance(value, (list, GeneratorType)):
+                if not isinstance(value, list | GeneratorType):
                     value = [value]
 
                 for value_item in value:
                     attribute_value = SubElement(
                         attribute, f"{{{NS_SAML_ASSERTION}}}AttributeValue"
                     )
-                    if not isinstance(value_item, str):
-                        value_item = str(value_item)
-                    attribute_value.text = value_item
+                    str_value = str(value_item) if not isinstance(value_item, str) else value_item
+                    attribute_value.text = str_value
 
                 attribute_statement.append(attribute)
 
@@ -165,7 +165,6 @@ class AssertionProcessor:
             audience.text = self.provider.audience
         return conditions
 
-    # pylint: disable=too-many-return-statements
     def get_name_id(self) -> Element:
         """Get NameID Element"""
         name_id = Element(f"{{{NS_SAML_ASSERTION}}}NameID")

@@ -1,4 +1,5 @@
 """Test blueprints v1"""
+
 from os import environ
 
 from django.test import TransactionTestCase

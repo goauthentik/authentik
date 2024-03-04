@@ -1,4 +1,5 @@
 """SAML Source processor constants"""
+
 import xmlsec
 
 NS_SAML_PROTOCOL = "urn:oasis:names:tc:SAML:2.0:protocol"

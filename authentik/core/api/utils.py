@@ -1,4 +1,5 @@
 """API Utilities"""
+
 from typing import Any
 
 from django.db.models import Model

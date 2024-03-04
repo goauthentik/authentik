@@ -1,4 +1,5 @@
 """authentik recovery create_admin_group"""
+
 from django.utils.translation import gettext as _
 
 from authentik.core.models import User

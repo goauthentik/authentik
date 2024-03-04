@@ -1,4 +1,5 @@
 """WebAuthn stage"""
+
 from json import loads
 
 from django.http import HttpRequest, HttpResponse
@@ -9,6 +10,7 @@ from webauthn import options_to_json
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
 from webauthn.helpers.exceptions import InvalidRegistrationResponse
 from webauthn.helpers.structs import (
+    AuthenticatorAttachment,
     AuthenticatorSelectionCriteria,
     PublicKeyCredentialCreationOptions,
     ResidentKeyRequirement,
@@ -64,7 +66,7 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
             )
         except InvalidRegistrationResponse as exc:
             self.stage.logger.warning("registration failed", exc=exc)
-            raise ValidationError(f"Registration failed. Error: {exc}")
+            raise ValidationError(f"Registration failed. Error: {exc}") from None
 
         credential_id_exists = WebAuthnDevice.objects.filter(
             credential_id=bytes_to_base64url(registration.credential_id)
@@ -90,7 +92,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
         # set, cast it to string to ensure it's not a django class
         authenticator_attachment = stage.authenticator_attachment
         if authenticator_attachment:
-            authenticator_attachment = str(authenticator_attachment)
+            authenticator_attachment = AuthenticatorAttachment(str(authenticator_attachment))
 
         registration_options: PublicKeyCredentialCreationOptions = generate_registration_options(
             rp_id=get_rp_id(self.request),

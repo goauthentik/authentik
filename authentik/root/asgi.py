@@ -6,6 +6,7 @@ It exposes the ASGI callable as a module-level variable named ``application``.
 For more information on this file, see
 https://docs.djangoproject.com/en/3.0/howto/deployment/asgi/
 """
+
 import django
 from channels.routing import ProtocolTypeRouter, URLRouter
 from defusedxml import defuse_stdlib
@@ -17,8 +18,8 @@ from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 defuse_stdlib()
 django.setup()
 
-# pylint: disable=wrong-import-position
-from authentik.root import websocket  # noqa  # isort:skip
+
+from authentik.root import websocket  # noqa
 
 
 class LifespanApp:

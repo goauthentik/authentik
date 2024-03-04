@@ -427,12 +427,6 @@
         <source>No workers connected. Background tasks will not run.</source>
         <target>没有 workers 连接。后台任务将无法运行。</target>
       </trans-unit>
-      <trans-unit id="s2ed8eb02525a920a">
-        <source><x id="0" equiv-text="${ago}"/> hour(s) ago</source>
-      </trans-unit>
-      <trans-unit id="s1f1c857c0c4250e4">
-        <source><x id="0" equiv-text="${ago}"/> day(s) ago</source>
-      </trans-unit>
       <trans-unit id="s11bc220e8fa9d797">
         <source>Authorizations</source>
         <target>授权</target>
@@ -1534,9 +1528,6 @@
       </trans-unit>
       <trans-unit id="s59f5eda30a904b75">
         <source>JWKS URL</source>
-      </trans-unit>
-      <trans-unit id="s453b0c150a7ca58e">
-        <source>Example JWT payload (for currently authenticated user)</source>
       </trans-unit>
       <trans-unit id="sc6e8a34361c7c272">
         <source>Forward auth (domain-level)</source>
@@ -4921,10 +4912,6 @@ Bindings to groups/users are checked against the user of the event.</source>
         <source>Logs</source>
         <target>日志</target>
       </trans-unit>
-      <trans-unit id="s1823625e6f831d73">
-        <source>Customisation</source>
-        <target>定制</target>
-      </trans-unit>
       <trans-unit id="sc0829ee663ced008">
         <source>Directory</source>
         <target>目录</target>
@@ -4986,10 +4973,6 @@ Bindings to groups/users are checked against the user of the event.</source>
       <trans-unit id="sa03aa46068460c95">
         <source>Forgot username or password?</source>
         <target>忘记用户名或密码？</target>
-      </trans-unit>
-      <trans-unit id="s4a87445f3108db7c">
-        <source>Select one of the sources below to login.</source>
-        <target>选择以下源之一进行登入。</target>
       </trans-unit>
       <trans-unit id="s091d5407b5b32e84">
         <source>Or</source>
@@ -5095,23 +5078,6 @@ Bindings to groups/users are checked against the user of the event.</source>
       <trans-unit id="s18b910437b73e8e8">
         <source>Return to device picker</source>
         <target>返回设备选择器</target>
-      </trans-unit>
-      <trans-unit id="sbcf8604929b6a27a">
-        <source>Sending Duo push notification</source>
-      </trans-unit>
-      <trans-unit id="s3b68883dda2682ed">
-        <source>Assertions is empty</source>
-        <target>断言为空</target>
-      </trans-unit>
-      <trans-unit id="sbbb7318812d64e51">
-        <source>Error when creating credential: <x id="0" equiv-text="${err}"/></source>
-        <target>创建凭证时出错：
-        <x id="0" equiv-text="${err}"/></target>
-      </trans-unit>
-      <trans-unit id="sfe199b2564b66054">
-        <source>Error when validating assertion on server: <x id="0" equiv-text="${err}"/></source>
-        <target>在服务器上验证断言时出错：
-        <x id="0" equiv-text="${err}"/></target>
       </trans-unit>
       <trans-unit id="se409d01b52c4e12f">
         <source>Retry authentication</source>
@@ -5251,10 +5217,6 @@ Bindings to groups/users are checked against the user of the event.</source>
         <source>Server validation of credential failed: <x id="0" equiv-text="${err}"/></source>
         <target>服务器验证凭据失败：
         <x id="0" equiv-text="${err}"/></target>
-      </trans-unit>
-      <trans-unit id="s6c8f05e3be04f62a">
-        <source>Register device</source>
-        <target>注册设备</target>
       </trans-unit>
       <trans-unit id="s3fb39fc45e840f78">
         <source>Refer to documentation</source>
@@ -5791,9 +5753,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s1455753daa00f1bc">
   <source>User doesn't have view permission so description cannot be retrieved.</source>
 </trans-unit>
-<trans-unit id="sa3a3e09b88ed9791">
-  <source>Assigned permissions</source>
-</trans-unit>
 <trans-unit id="s9cc631505c17b028">
   <source>Assigned global permissions</source>
 </trans-unit>
@@ -6145,9 +6104,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s6dd297c217729828">
   <source>Determines how long a session lasts before being disconnected and requiring re-authorization.</source>
 </trans-unit>
-<trans-unit id="scc7f34824150bfb8">
-  <source>Provider require enterprise.</source>
-</trans-unit>
 <trans-unit id="s31f1afc1bfe1cb3a">
   <source>Learn more</source>
 </trans-unit>
@@ -6329,6 +6285,105 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s862505f29064fc72">
   <source>This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:</source>
+</trans-unit>
+<trans-unit id="sb2275335377069aa">
+  <source>This feature requires an enterprise license.</source>
+</trans-unit>
+<trans-unit id="s6d3f81dc4bcacbda">
+  <source>Last used</source>
+</trans-unit>
+<trans-unit id="s96b2703420bfbd0c">
+  <source>OAuth Access Tokens</source>
+</trans-unit>
+<trans-unit id="sd99e668c54f78f6e">
+  <source>Credentials / Tokens</source>
+</trans-unit>
+<trans-unit id="saada50e84c7c646d">
+  <source>Permissions set on users which affect this object.</source>
+</trans-unit>
+<trans-unit id="s37d1b74df205b528">
+  <source>Permissions set on roles which affect this object.</source>
+</trans-unit>
+<trans-unit id="sc443bfff8a5dd106">
+  <source>Permissions assigned to this user which affect all object instances of a given type.</source>
+</trans-unit>
+<trans-unit id="s3eba09a350b7d6c9">
+  <source>Permissions assigned to this user affecting specific object instances.</source>
+</trans-unit>
+<trans-unit id="s17032e57ba222d2f">
+  <source>Permissions assigned to this role which affect all object instances of a given type.</source>
+</trans-unit>
+<trans-unit id="sb9b51124d1b3dca0">
+  <source>JWT payload</source>
+</trans-unit>
+<trans-unit id="sbd065743a0c599e3">
+  <source>Preview for user</source>
+</trans-unit>
+<trans-unit id="se16b4d412ad1aba9">
+  <source>Brand name</source>
+</trans-unit>
+<trans-unit id="sb7e68dcad68a638c">
+  <source>Remote Access Provider</source>
+</trans-unit>
+<trans-unit id="sfb1980a471b7dfb6">
+  <source>Remotely access computers/servers via RDP/SSH/VNC</source>
+</trans-unit>
+<trans-unit id="s9ffdea131dddb3c5">
+  <source>Configure Remote Access Provider Provider</source>
+</trans-unit>
+<trans-unit id="s56bc67239b9255a2">
+  <source>Delete authorization on disconnect</source>
+</trans-unit>
+<trans-unit id="s3945449bd524d8a5">
+  <source>When enabled, connection authorizations will be deleted when a client disconnects. This will force clients with flaky internet connections to re-authorize the endpoint.</source>
+</trans-unit>
+<trans-unit id="sc93712b5fbdc6810">
+  <source>Connection Token(s)</source>
+</trans-unit>
+<trans-unit id="s526a525cdc79bbdc">
+  <source>Endpoint</source>
+</trans-unit>
+<trans-unit id="s5c18f85cda6e89be">
+  <source>Connections</source>
+</trans-unit>
+<trans-unit id="s269a190f0086d892">
+  <source>Unconfigured</source>
+</trans-unit>
+<trans-unit id="s9e24bec94ec23dc9">
+  <source>This option will not be changed by this mapping.</source>
+</trans-unit>
+<trans-unit id="sac428446e9e41f54">
+  <source>RAC Connections</source>
+</trans-unit>
+<trans-unit id="s39002897db60bb28">
+  <source>Sending Duo push notification...</source>
+</trans-unit>
+<trans-unit id="sd2b8c1caa0340ed6">
+  <source>Failed to authenticate</source>
+</trans-unit>
+<trans-unit id="sffef1a8596bc58bb">
+  <source>Authenticating...</source>
+</trans-unit>
+<trans-unit id="sd12f594a3184c056">
+  <source>Customization</source>
+</trans-unit>
+<trans-unit id="s363abde8a254ea5f">
+  <source>Authentication failed. Please try again.</source>
+</trans-unit>
+<trans-unit id="sb0821a9e92cac5eb">
+  <source>Failed to register. Please try again.</source>
+</trans-unit>
+<trans-unit id="s238784fc1dc672ae">
+  <source>Registering...</source>
+</trans-unit>
+<trans-unit id="s009bd1c98a9f5de2">
+  <source>Failed to register</source>
+</trans-unit>
+<trans-unit id="sb166ce92e8e807d6">
+  <source>Retry registration</source>
+</trans-unit>
+<trans-unit id="s6ecfc18dbfeedd76">
+  <source>Select one of the options below to continue.</source>
 </trans-unit>
     </body>
   </file>

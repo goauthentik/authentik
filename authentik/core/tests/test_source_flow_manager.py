@@ -1,4 +1,5 @@
 """Test Source flow_manager"""
+
 from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
 from guardian.utils import get_anonymous_user
@@ -172,5 +173,5 @@ class TestSourceFlowManager(TestCase):
         self.assertEqual(action, Action.ENROLL)
         response = flow_manager.get_flow()
         self.assertIsInstance(response, AccessDeniedResponse)
-        # pylint: disable=no-member
+
         self.assertEqual(response.error_message, "foo")

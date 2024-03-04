@@ -1,3 +1,4 @@
+import { getRelativeTime } from "@goauthentik/app/common/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_NOTIFICATION_DRAWER_TOGGLE, EVENT_REFRESH } from "@goauthentik/common/constants";
 import { actionToLabel } from "@goauthentik/common/labels";
@@ -6,6 +7,7 @@ import { me } from "@goauthentik/common/users";
 import { AKElement } from "@goauthentik/elements/Base";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -132,7 +134,9 @@ export class NotificationDrawer extends AKElement {
             </div>
             <p class="pf-c-notification-drawer__list-item-description">${item.body}</p>
             <small class="pf-c-notification-drawer__list-item-timestamp"
-                >${item.created?.toLocaleString()}</small
+                ><pf-tooltip position="top" .content=${item.created?.toLocaleString()}>
+                    ${getRelativeTime(item.created!)}
+                </pf-tooltip></small
             >
         </li>`;
     }

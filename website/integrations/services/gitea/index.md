@@ -132,6 +132,10 @@ Click `Update` and the configuration authentik is done.
 
 #### Configure Gitea to use the new claims
 
+:::note
+Gitea must set `ENABLE_AUTO_REGISTRATION: true`.
+:::
+
 Navigate to the _Authentication Sources_ page at https://gitea.company/admin/auths and edit the **authentik** Authentication Source.
 
 Change the following fields

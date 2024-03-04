@@ -1,4 +1,5 @@
 """Outpost API Views"""
+
 from dataclasses import asdict
 
 from django.utils.translation import gettext_lazy as _
@@ -132,7 +133,7 @@ class KubernetesServiceConnectionSerializer(ServiceConnectionSerializer):
         try:
             load_kube_config_from_dict(kubeconfig, client_configuration=config)
         except ConfigException:
-            raise serializers.ValidationError(_("Invalid kubeconfig"))
+            raise serializers.ValidationError(_("Invalid kubeconfig")) from None
         return kubeconfig
 
     class Meta:

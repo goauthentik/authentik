@@ -1,9 +1,10 @@
 """SMS Authenticator models"""
+
 from hashlib import sha256
-from typing import Optional
 
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.http import HttpResponseBadRequest
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from requests.exceptions import RequestException
@@ -78,7 +79,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
 
     def get_message(self, token: str) -> str:
         """Get SMS message"""
-        return _("Use this code to authenticate in authentik: %(token)s" % {"token": token})
+        return _("Use this code to authenticate in authentik: {token}".format_map({"token": token}))
 
     def send_twilio(self, token: str, device: "SMSDevice"):
         """send sms via twilio provider"""
@@ -91,7 +92,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
             LOGGER.debug("Sent SMS", to=device, message=message.sid)
         except TwilioRestException as exc:
             LOGGER.warning("Error sending token by Twilio SMS", exc=exc, msg=exc.msg)
-            raise ValidationError(exc.msg)
+            raise ValidationError(exc.msg) from None
 
     def send_generic(self, token: str, device: "SMSDevice"):
         """Send SMS via outside API"""
@@ -145,8 +146,8 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
                 status_code=response.status_code,
                 body=response.text,
             ).set_user(device.user).save()
-            if response.status_code >= 400:
-                raise ValidationError(response.text)
+            if response.status_code >= HttpResponseBadRequest.status_code:
+                raise ValidationError(response.text) from None
             raise
 
     @property
@@ -156,7 +157,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
         return AuthenticatorSMSStageSerializer
 
     @property
-    def type(self) -> type[View]:
+    def view(self) -> type[View]:
         from authentik.stages.authenticator_sms.stage import AuthenticatorSMSStageView
 
         return AuthenticatorSMSStageView
@@ -165,7 +166,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
     def component(self) -> str:
         return "ak-stage-authenticator-sms-form"
 
-    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+    def ui_user_settings(self) -> UserSettingSerializer | None:
         return UserSettingSerializer(
             data={
                 "title": self.friendly_name or str(self._meta.verbose_name),

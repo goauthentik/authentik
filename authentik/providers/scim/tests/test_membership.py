@@ -1,6 +1,6 @@
 """SCIM Membership tests"""
+
 from django.test import TestCase
-from guardian.shortcuts import get_anonymous_user
 from requests_mock import Mocker
 
 from authentik.blueprints.tests import apply_blueprint
@@ -21,7 +21,7 @@ class SCIMMembershipTests(TestCase):
     def setUp(self) -> None:
         # Delete all users and groups as the mocked HTTP responses only return one ID
         # which will cause errors with multiple users
-        User.objects.all().exclude(pk=get_anonymous_user().pk).delete()
+        User.objects.all().exclude_anonymous().delete()
         Group.objects.all().delete()
         Tenant.objects.update(avatars="none")
 
@@ -49,7 +49,7 @@ class SCIMMembershipTests(TestCase):
     def test_member_add(self):
         """Test member add"""
         config = ServiceProviderConfiguration.default()
-        # pylint: disable=assigning-non-slot
+
         config.patch.supported = True
         user_scim_id = generate_id()
         group_scim_id = generate_id()
@@ -139,7 +139,7 @@ class SCIMMembershipTests(TestCase):
     def test_member_remove(self):
         """Test member remove"""
         config = ServiceProviderConfiguration.default()
-        # pylint: disable=assigning-non-slot
+
         config.patch.supported = True
         user_scim_id = generate_id()
         group_scim_id = generate_id()

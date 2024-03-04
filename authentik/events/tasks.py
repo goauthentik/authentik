@@ -1,5 +1,4 @@
 """Event notification tasks"""
-from typing import Optional
 
 from django.db.models.query_utils import Q
 from guardian.shortcuts import get_anonymous_user
@@ -37,7 +36,7 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
     if not event:
         LOGGER.warning("event doesn't exist yet or anymore", event_uuid=event_uuid)
         return
-    trigger: Optional[NotificationRule] = NotificationRule.objects.filter(name=trigger_name).first()
+    trigger: NotificationRule | None = NotificationRule.objects.filter(name=trigger_name).first()
     if not trigger:
         return
 

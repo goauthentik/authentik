@@ -1,7 +1,8 @@
 """test OAuth Source"""
+
 from pathlib import Path
 from time import sleep
-from typing import Any, Optional
+from typing import Any
 
 from docker.models.containers import Container
 from docker.types import Healthcheck
@@ -68,7 +69,7 @@ class TestSourceOAuth2(SeleniumTestCase):
         with open(CONFIG_PATH, "w+", encoding="utf8") as _file:
             safe_dump(config, _file)
 
-    def get_container_specs(self) -> Optional[dict[str, Any]]:
+    def get_container_specs(self) -> dict[str, Any] | None:
         return {
             "image": "ghcr.io/dexidp/dex:v2.28.1",
             "detach": True,

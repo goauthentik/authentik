@@ -1,4 +1,5 @@
 """authentik administration overview"""
+
 from django.core.cache import cache
 from drf_spectacular.utils import extend_schema
 from packaging.version import parse

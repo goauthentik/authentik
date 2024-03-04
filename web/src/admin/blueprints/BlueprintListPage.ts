@@ -1,4 +1,5 @@
 import "@goauthentik/admin/blueprints/BlueprintForm";
+import { getRelativeTime } from "@goauthentik/app/common/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { uiConfig } from "@goauthentik/common/ui/config";
@@ -144,7 +145,8 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
             html`<div>${item.name}</div>
                 ${description ? html`<small>${description}</small>` : html``}`,
             html`${BlueprintStatus(item)}`,
-            html`${item.lastApplied.toLocaleString()}`,
+            html`<div>${getRelativeTime(item.lastApplied)}</div>
+                <small>${item.lastApplied.toLocaleString()}</small>`,
             html`<ak-status-label ?good=${item.enabled}></ak-status-label>`,
             html`<ak-forms-modal>
                     <span slot="submit"> ${msg("Update")} </span>

@@ -1,4 +1,5 @@
 """authentik multi-stage authentication engine"""
+
 from datetime import timedelta
 from uuid import uuid4
 

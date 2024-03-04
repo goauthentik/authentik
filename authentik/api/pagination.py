@@ -1,4 +1,5 @@
 """Pagination which includes total pages and current page"""
+
 from rest_framework import pagination
 from rest_framework.response import Response
 

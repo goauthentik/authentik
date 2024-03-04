@@ -1,4 +1,5 @@
 """Authenticator"""
+
 from django.apps import AppConfig
 
 

@@ -1,4 +1,5 @@
 """Enterprise app config"""
+
 from django.conf import settings
 
 from authentik.enterprise.apps import EnterpriseConfig
@@ -12,7 +13,8 @@ class AuthentikEnterpriseAuditConfig(EnterpriseConfig):
     verbose_name = "authentik Enterprise.Audit"
     default = True
 
-    def reconcile_global_install_middleware(self):
+    @EnterpriseConfig.reconcile_global
+    def install_middleware(self):
         """Install enterprise audit middleware"""
         orig_import = "authentik.events.middleware.AuditMiddleware"
         new_import = "authentik.enterprise.audit.middleware.EnterpriseAuditMiddleware"

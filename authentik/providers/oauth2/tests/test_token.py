@@ -1,4 +1,5 @@
 """Test token view"""
+
 from base64 import b64encode
 from json import dumps
 

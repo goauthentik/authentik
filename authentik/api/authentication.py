@@ -1,6 +1,7 @@
 """API Authentication"""
+
 from hmac import compare_digest
-from typing import Any, Optional
+from typing import Any
 
 from django.conf import settings
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
@@ -16,7 +17,7 @@ from authentik.providers.oauth2.constants import SCOPE_AUTHENTIK_API
 LOGGER = get_logger()
 
 
-def validate_auth(header: bytes) -> Optional[str]:
+def validate_auth(header: bytes) -> str | None:
     """Validate that the header is in a correct format,
     returns type and credentials"""
     auth_credentials = header.decode().strip()
@@ -31,7 +32,7 @@ def validate_auth(header: bytes) -> Optional[str]:
     return auth_credentials
 
 
-def bearer_auth(raw_header: bytes) -> Optional[User]:
+def bearer_auth(raw_header: bytes) -> User | None:
     """raw_header in the Format of `Bearer ....`"""
     user = auth_user_lookup(raw_header)
     if not user:
@@ -41,7 +42,7 @@ def bearer_auth(raw_header: bytes) -> Optional[User]:
     return user
 
 
-def auth_user_lookup(raw_header: bytes) -> Optional[User]:
+def auth_user_lookup(raw_header: bytes) -> User | None:
     """raw_header in the Format of `Bearer ....`"""
     from authentik.providers.oauth2.models import AccessToken
 
@@ -74,7 +75,7 @@ def auth_user_lookup(raw_header: bytes) -> Optional[User]:
     raise AuthenticationFailed("Token invalid/expired")
 
 
-def token_secret_key(value: str) -> Optional[User]:
+def token_secret_key(value: str) -> User | None:
     """Check if the token is the secret key
     and return the service account for the managed outpost"""
     from authentik.outposts.apps import MANAGED_OUTPOST

@@ -1,4 +1,5 @@
 """email tests"""
+
 from smtplib import SMTPException
 from unittest.mock import MagicMock, PropertyMock, patch
 

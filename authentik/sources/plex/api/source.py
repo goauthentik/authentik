@@ -1,4 +1,5 @@
 """Plex Source Serializer"""
+
 from django.shortcuts import get_object_or_404
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
@@ -12,12 +13,12 @@ from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
-from authentik.api.decorators import permission_required
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.flows.challenge import RedirectChallenge
 from authentik.flows.views.executor import to_stage_response
+from authentik.rbac.decorators import permission_required
 from authentik.sources.plex.models import PlexSource, PlexSourceConnection
 from authentik.sources.plex.plex import PlexAuth, PlexSourceFlowManager
 

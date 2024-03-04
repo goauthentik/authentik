@@ -1,6 +1,7 @@
 """Blueprint helpers"""
+
+from collections.abc import Callable
 from functools import wraps
-from typing import Callable
 
 from django.apps import apps
 

@@ -1,8 +1,9 @@
 """Identification stage logic"""
+
 from dataclasses import asdict
 from random import SystemRandom
 from time import sleep
-from typing import Any, Optional
+from typing import Any
 
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
@@ -83,7 +84,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
     password = CharField(required=False, allow_blank=True, allow_null=True)
     component = CharField(default="ak-stage-identification")
 
-    pre_user: Optional[User] = None
+    pre_user: User | None = None
 
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         """Validate that user exists, and optionally their password"""
@@ -122,7 +123,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
             if not current_stage.show_matched_user:
                 self.stage.executor.plan.context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = uid_field
             # when `pretend` is enabled, continue regardless
-            if current_stage.pretend_user_exists:
+            if current_stage.pretend_user_exists and not current_stage.password_stage:
                 return attrs
             raise ValidationError("Failed to authenticate.")
         self.pre_user = pre_user
@@ -158,7 +159,7 @@ class IdentificationStageView(ChallengeStageView):
 
     response_class = IdentificationChallengeResponse
 
-    def get_user(self, uid_value: str) -> Optional[User]:
+    def get_user(self, uid_value: str) -> User | None:
         """Find user instance. Returns None if no user was found."""
         current_stage: IdentificationStage = self.executor.current_stage
         query = Q()
@@ -245,7 +246,7 @@ class IdentificationStageView(ChallengeStageView):
         self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = response.pre_user
         current_stage: IdentificationStage = self.executor.current_stage
         if not current_stage.show_matched_user:
-            self.executor.plan.context[
-                PLAN_CONTEXT_PENDING_USER_IDENTIFIER
-            ] = response.validated_data.get("uid_field")
+            self.executor.plan.context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = (
+                response.validated_data.get("uid_field")
+            )
         return self.executor.stage_ok()

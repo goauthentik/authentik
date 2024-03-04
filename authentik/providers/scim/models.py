@@ -1,9 +1,9 @@
 """SCIM Provider models"""
+
 from django.core.cache import cache
 from django.db import models
 from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
-from guardian.shortcuts import get_anonymous_user
 from redis.lock import Lock
 from rest_framework.serializers import Serializer
 
@@ -42,7 +42,7 @@ class SCIMProvider(BackchannelProvider):
     def get_user_qs(self) -> QuerySet[User]:
         """Get queryset of all users with consistent ordering
         according to the provider's settings"""
-        base = User.objects.all().exclude(pk=get_anonymous_user().pk)
+        base = User.objects.all().exclude_anonymous()
         if self.exclude_users_service_account:
             base = base.exclude(type=UserTypes.SERVICE_ACCOUNT).exclude(
                 type=UserTypes.INTERNAL_SERVICE_ACCOUNT
@@ -104,6 +104,9 @@ class SCIMUser(models.Model):
     class Meta:
         unique_together = (("id", "user", "provider"),)
 
+    def __str__(self) -> str:
+        return f"SCIM User {self.user.username} to {self.provider.name}"
+
 
 class SCIMGroup(models.Model):
     """Mapping of a group and provider to a SCIM user ID"""
@@ -114,3 +117,6 @@ class SCIMGroup(models.Model):
 
     class Meta:
         unique_together = (("id", "group", "provider"),)
+
+    def __str__(self) -> str:
+        return f"SCIM Group {self.group.name} to {self.provider.name}"

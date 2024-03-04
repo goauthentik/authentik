@@ -1,7 +1,9 @@
 """Events middleware"""
+
+from collections.abc import Callable
 from functools import partial
 from threading import Thread
-from typing import Any, Callable, Optional
+from typing import Any
 
 from django.conf import settings
 from django.contrib.sessions.models import Session
@@ -48,9 +50,9 @@ class EventNewThread(Thread):
     action: str
     request: HttpRequest
     kwargs: dict[str, Any]
-    user: Optional[User] = None
+    user: User | None = None
 
-    def __init__(self, action: str, request: HttpRequest, user: Optional[User] = None, **kwargs):
+    def __init__(self, action: str, request: HttpRequest, user: User | None = None, **kwargs):
         super().__init__()
         self.action = action
         self.request = request
@@ -143,7 +145,6 @@ class AuditMiddleware:
             )
             thread.run()
 
-    # pylint: disable=too-many-arguments
     def post_save_handler(
         self,
         user: User,
@@ -151,7 +152,7 @@ class AuditMiddleware:
         sender,
         instance: Model,
         created: bool,
-        thread_kwargs: Optional[dict] = None,
+        thread_kwargs: dict | None = None,
         **_,
     ):
         """Signal handler for all object's post_save"""

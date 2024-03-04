@@ -1,4 +1,5 @@
 """Token revocation endpoint"""
+
 from dataclasses import dataclass
 
 from django.http import Http404, HttpRequest, HttpResponse

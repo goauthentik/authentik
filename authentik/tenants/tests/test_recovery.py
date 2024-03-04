@@ -1,4 +1,5 @@
 """Test Tenant Recovery API"""
+
 from json import loads
 
 from django.urls import reverse
@@ -70,7 +71,7 @@ class TestRecovery(TenantAPITestCase):
         body = loads(response.content.decode())
         token = Token.objects.get(intent=TokenIntents.INTENT_RECOVERY, user=self.user)
         self.assertIn(token.key, body["url"])
-        self.assertEqual(len(Token.objects.all()), 1)
+        self.assertEqual(len(Token.objects.filter(intent=TokenIntents.INTENT_RECOVERY)), 1)
 
     @CONFIG.patch("outposts.disable_embedded_outpost", True)
     @CONFIG.patch("tenants.enabled", True)
@@ -86,4 +87,4 @@ class TestRecovery(TenantAPITestCase):
             headers=HEADERS,
         )
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(len(Token.objects.all()), 0)
+        self.assertEqual(len(Token.objects.filter(intent=TokenIntents.INTENT_RECOVERY)), 0)

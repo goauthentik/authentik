@@ -1,4 +1,5 @@
 """authentik reputation request signals"""
+
 from django.contrib.auth.signals import user_logged_in
 from django.core.cache import cache
 from django.dispatch import receiver
@@ -7,7 +8,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.signals import login_failed
 from authentik.lib.config import CONFIG
-from authentik.policies.reputation.models import CACHE_KEY_PREFIX
+from authentik.policies.reputation.apps import CACHE_KEY_PREFIX
 from authentik.policies.reputation.tasks import save_reputation
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.identification.signals import identification_failed

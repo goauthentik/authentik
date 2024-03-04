@@ -1,4 +1,5 @@
 """SCIM Provider API Views"""
+
 from django.utils.text import slugify
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user

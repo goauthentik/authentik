@@ -1,4 +1,5 @@
 """consent tests"""
+
 from time import sleep
 
 from django.urls import reverse
@@ -53,7 +54,7 @@ class TestConsentStage(FlowTestCase):
                 "token": session[SESSION_KEY_CONSENT_TOKEN],
             },
         )
-        # pylint: disable=no-member
+
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
         self.assertFalse(UserConsent.objects.filter(user=self.user).exists())

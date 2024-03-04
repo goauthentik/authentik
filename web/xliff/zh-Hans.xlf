@@ -538,18 +538,6 @@
         <target>没有 Workers 连接，后台任务将无法运行。</target>
         
       </trans-unit>
-      <trans-unit id="s2ed8eb02525a920a">
-        <source><x id="0" equiv-text="${ago}"/> hour(s) ago</source>
-        <target>
-        <x id="0" equiv-text="${ago}"/>小时前</target>
-        
-      </trans-unit>
-      <trans-unit id="s1f1c857c0c4250e4">
-        <source><x id="0" equiv-text="${ago}"/> day(s) ago</source>
-        <target>
-        <x id="0" equiv-text="${ago}"/>天前</target>
-        
-      </trans-unit>
       <trans-unit id="s11bc220e8fa9d797">
         <source>Authorizations</source>
         <target>授权</target>
@@ -2026,11 +2014,6 @@
       <trans-unit id="s59f5eda30a904b75">
         <source>JWKS URL</source>
         <target>JWKS URL</target>
-        
-      </trans-unit>
-      <trans-unit id="s453b0c150a7ca58e">
-        <source>Example JWT payload (for currently authenticated user)</source>
-        <target>示例 JWT 载荷（当前经过身份验证的用户）</target>
         
       </trans-unit>
       <trans-unit id="sc6e8a34361c7c272">
@@ -6520,11 +6503,6 @@ Bindings to groups/users are checked against the user of the event.</source>
         <target>日志</target>
         
       </trans-unit>
-      <trans-unit id="s1823625e6f831d73">
-        <source>Customisation</source>
-        <target>自定义</target>
-        
-      </trans-unit>
       <trans-unit id="sc0829ee663ced008">
         <source>Directory</source>
         <target>目录</target>
@@ -6603,11 +6581,6 @@ Bindings to groups/users are checked against the user of the event.</source>
       <trans-unit id="sa03aa46068460c95">
         <source>Forgot username or password?</source>
         <target>忘记用户名或密码？</target>
-        
-      </trans-unit>
-      <trans-unit id="s4a87445f3108db7c">
-        <source>Select one of the sources below to login.</source>
-        <target>选择以下源之一进行登录。</target>
         
       </trans-unit>
       <trans-unit id="s091d5407b5b32e84">
@@ -6749,28 +6722,6 @@ Bindings to groups/users are checked against the user of the event.</source>
       <trans-unit id="s18b910437b73e8e8">
         <source>Return to device picker</source>
         <target>返回设备选择器</target>
-        
-      </trans-unit>
-      <trans-unit id="sbcf8604929b6a27a">
-        <source>Sending Duo push notification</source>
-        <target>发送 Duo 推送通知</target>
-        
-      </trans-unit>
-      <trans-unit id="s3b68883dda2682ed">
-        <source>Assertions is empty</source>
-        <target>断言为空</target>
-        
-      </trans-unit>
-      <trans-unit id="sbbb7318812d64e51">
-        <source>Error when creating credential: <x id="0" equiv-text="${err}"/></source>
-        <target>创建凭据时出错：
-        <x id="0" equiv-text="${err}"/></target>
-        
-      </trans-unit>
-      <trans-unit id="sfe199b2564b66054">
-        <source>Error when validating assertion on server: <x id="0" equiv-text="${err}"/></source>
-        <target>在服务器上验证断言时出错：
-        <x id="0" equiv-text="${err}"/></target>
         
       </trans-unit>
       <trans-unit id="se409d01b52c4e12f">
@@ -6953,11 +6904,6 @@ Bindings to groups/users are checked against the user of the event.</source>
         <source>Server validation of credential failed: <x id="0" equiv-text="${err}"/></source>
         <target>服务器验证凭据失败：
         <x id="0" equiv-text="${err}"/></target>
-        
-      </trans-unit>
-      <trans-unit id="s6c8f05e3be04f62a">
-        <source>Register device</source>
-        <target>注册设备</target>
         
       </trans-unit>
       <trans-unit id="s3fb39fc45e840f78">
@@ -7668,10 +7614,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>User doesn't have view permission so description cannot be retrieved.</source>
   <target>用户不具有查看权限，所以无法获取描述。</target>
 </trans-unit>
-<trans-unit id="sa3a3e09b88ed9791">
-  <source>Assigned permissions</source>
-  <target>分配的权限</target>
-</trans-unit>
 <trans-unit id="s9cc631505c17b028">
   <source>Assigned global permissions</source>
   <target>分配的全局权限</target>
@@ -8140,10 +8082,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Determines how long a session lasts before being disconnected and requiring re-authorization.</source>
   <target>设置会话在被断开连接并需要重新授权之前持续的时间。</target>
 </trans-unit>
-<trans-unit id="scc7f34824150bfb8">
-  <source>Provider require enterprise.</source>
-  <target>提供程序需要企业版。</target>
-</trans-unit>
 <trans-unit id="s31f1afc1bfe1cb3a">
   <source>Learn more</source>
   <target>了解更多</target>
@@ -8348,36 +8286,179 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s0db494ff61b48438">
   <source>Add All Available</source>
+  <target>添加所有可用</target>
 </trans-unit>
 <trans-unit id="s2f68faa5b84ee9fd">
   <source>Remove All Available</source>
+  <target>删除所有可用</target>
 </trans-unit>
 <trans-unit id="s0ba85594344a5c02">
   <source>Remove All</source>
+  <target>删除所有</target>
 </trans-unit>
 <trans-unit id="s1efa17e3407e0f56">
   <source>Available options</source>
+  <target>可用选项</target>
 </trans-unit>
 <trans-unit id="s886db4d476f66522">
   <source>Selected options</source>
+  <target>已选项目</target>
 </trans-unit>
 <trans-unit id="sd429eba21dd59f44">
   <source><x id="0" equiv-text="${availableCount}"/> item(s) marked to add.</source>
+  <target><x id="0" equiv-text="${availableCount}"/> 项被标记为添加。</target>
 </trans-unit>
 <trans-unit id="s4abfe4e0d0665fd1">
   <source><x id="0" equiv-text="${selectedTotal}"/> item(s) selected.</source>
+  <target><x id="0" equiv-text="${selectedTotal}"/> 项已选择。</target>
 </trans-unit>
 <trans-unit id="s56b3d54118c34b2f">
   <source><x id="0" equiv-text="${selectedCount}"/> item(s) marked to remove.</source>
+  <target><x id="0" equiv-text="${availableCount}"/> 项被标记为删除。</target>
 </trans-unit>
 <trans-unit id="scb76a63c68b0d81f">
   <source>Available Applications</source>
+  <target>可用应用</target>
 </trans-unit>
 <trans-unit id="sd176021da2ea0fe3">
   <source>Selected Applications</source>
+  <target>已选应用</target>
 </trans-unit>
 <trans-unit id="s862505f29064fc72">
   <source>This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:</source>
+  <target>此选项配置流程执行器页面上的页脚链接。必须为有效的 YAML 或 JSON 列表，可以使用以下值：</target>
+</trans-unit>
+<trans-unit id="sb2275335377069aa">
+  <source>This feature requires an enterprise license.</source>
+  <target>此功能需要企业版许可证。</target>
+</trans-unit>
+<trans-unit id="s6d3f81dc4bcacbda">
+  <source>Last used</source>
+  <target>上次使用</target>
+</trans-unit>
+<trans-unit id="s96b2703420bfbd0c">
+  <source>OAuth Access Tokens</source>
+  <target>OAuth 访问令牌</target>
+</trans-unit>
+<trans-unit id="sd99e668c54f78f6e">
+  <source>Credentials / Tokens</source>
+  <target>凭据 / 令牌</target>
+</trans-unit>
+<trans-unit id="saada50e84c7c646d">
+  <source>Permissions set on users which affect this object.</source>
+  <target>为影响此对象的用户设置的权限。</target>
+</trans-unit>
+<trans-unit id="s37d1b74df205b528">
+  <source>Permissions set on roles which affect this object.</source>
+  <target>为影响此对象的角色设置的权限。</target>
+</trans-unit>
+<trans-unit id="sc443bfff8a5dd106">
+  <source>Permissions assigned to this user which affect all object instances of a given type.</source>
+  <target>分配给该用户的权限，会影响给定类型的所有对象实例。</target>
+</trans-unit>
+<trans-unit id="s3eba09a350b7d6c9">
+  <source>Permissions assigned to this user affecting specific object instances.</source>
+  <target>分配给该用户的权限，会影响特定对象实例。</target>
+</trans-unit>
+<trans-unit id="s17032e57ba222d2f">
+  <source>Permissions assigned to this role which affect all object instances of a given type.</source>
+  <target>分配给该角色的权限，会影响给定类型的所有对象实例。</target>
+</trans-unit>
+<trans-unit id="sb9b51124d1b3dca0">
+  <source>JWT payload</source>
+  <target>JWT 载荷</target>
+</trans-unit>
+<trans-unit id="sbd065743a0c599e3">
+  <source>Preview for user</source>
+  <target>用户预览</target>
+</trans-unit>
+<trans-unit id="se16b4d412ad1aba9">
+  <source>Brand name</source>
+  <target>品牌名称</target>
+</trans-unit>
+<trans-unit id="sb7e68dcad68a638c">
+  <source>Remote Access Provider</source>
+  <target>远程访问提供程序</target>
+</trans-unit>
+<trans-unit id="sfb1980a471b7dfb6">
+  <source>Remotely access computers/servers via RDP/SSH/VNC</source>
+  <target>通过 RDP/SSH/VNC 远程访问计算机/服务器</target>
+</trans-unit>
+<trans-unit id="s9ffdea131dddb3c5">
+  <source>Configure Remote Access Provider Provider</source>
+  <target>配置远程访问提供程序</target>
+</trans-unit>
+<trans-unit id="s56bc67239b9255a2">
+  <source>Delete authorization on disconnect</source>
+  <target>断开连接时删除授权</target>
+</trans-unit>
+<trans-unit id="s3945449bd524d8a5">
+  <source>When enabled, connection authorizations will be deleted when a client disconnects. This will force clients with flaky internet connections to re-authorize the endpoint.</source>
+  <target>启用时，客户端断开连接时，其连接授权将会被删除。这会导致网络连接不稳定的客户端重新授权此端点。</target>
+</trans-unit>
+<trans-unit id="sc93712b5fbdc6810">
+  <source>Connection Token(s)</source>
+  <target>连接令牌</target>
+</trans-unit>
+<trans-unit id="s526a525cdc79bbdc">
+  <source>Endpoint</source>
+  <target>端点</target>
+</trans-unit>
+<trans-unit id="s5c18f85cda6e89be">
+  <source>Connections</source>
+  <target>连接</target>
+</trans-unit>
+<trans-unit id="s269a190f0086d892">
+  <source>Unconfigured</source>
+  <target>未配置</target>
+</trans-unit>
+<trans-unit id="s9e24bec94ec23dc9">
+  <source>This option will not be changed by this mapping.</source>
+  <target>此选项不会被此映射更改。</target>
+</trans-unit>
+<trans-unit id="sac428446e9e41f54">
+  <source>RAC Connections</source>
+  <target>RAC 连接</target>
+</trans-unit>
+<trans-unit id="s39002897db60bb28">
+  <source>Sending Duo push notification...</source>
+  <target>正在发送 Duo 推送通知...</target>
+</trans-unit>
+<trans-unit id="sd2b8c1caa0340ed6">
+  <source>Failed to authenticate</source>
+  <target>身份验证失败</target>
+</trans-unit>
+<trans-unit id="sffef1a8596bc58bb">
+  <source>Authenticating...</source>
+  <target>正在验证身份...</target>
+</trans-unit>
+<trans-unit id="sd12f594a3184c056">
+  <source>Customization</source>
+  <target>自定义</target>
+</trans-unit>
+<trans-unit id="s363abde8a254ea5f">
+  <source>Authentication failed. Please try again.</source>
+  <target>身份验证失败。请重试。</target>
+</trans-unit>
+<trans-unit id="sb0821a9e92cac5eb">
+  <source>Failed to register. Please try again.</source>
+  <target>注册失败。请重试。</target>
+</trans-unit>
+<trans-unit id="s238784fc1dc672ae">
+  <source>Registering...</source>
+  <target>正在注册...</target>
+</trans-unit>
+<trans-unit id="s009bd1c98a9f5de2">
+  <source>Failed to register</source>
+  <target>注册失败</target>
+</trans-unit>
+<trans-unit id="sb166ce92e8e807d6">
+  <source>Retry registration</source>
+  <target>重试注册</target>
+</trans-unit>
+<trans-unit id="s6ecfc18dbfeedd76">
+  <source>Select one of the options below to continue.</source>
+  <target>选择以下选项之一以继续。</target>
 </trans-unit>
     </body>
   </file>

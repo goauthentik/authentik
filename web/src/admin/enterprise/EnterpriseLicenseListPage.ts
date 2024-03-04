@@ -1,4 +1,5 @@
 import "@goauthentik/admin/enterprise/EnterpriseLicenseForm";
+import { getRelativeTime } from "@goauthentik/app/common/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import { PFColor } from "@goauthentik/elements/Label";
@@ -202,7 +203,8 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                         subtext=${msg("Cumulative license expiry")}
                     >
                         ${this.summary?.hasLicense
-                            ? this.summary.latestValid.toLocaleString()
+                            ? html`<div>${getRelativeTime(this.summary.latestValid)}</div>
+                                  <small>${this.summary.latestValid.toLocaleString()}</small>`
                             : "-"}
                     </ak-aggregate-card>
                 </div>

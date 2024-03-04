@@ -1,4 +1,5 @@
 """TOTP Setup stage"""
+
 from urllib.parse import quote
 
 from django.http import HttpRequest, HttpResponse

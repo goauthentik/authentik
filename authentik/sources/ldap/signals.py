@@ -1,4 +1,5 @@
 """authentik ldap source signals"""
+
 from typing import Any
 
 from django.db.models.signals import post_save

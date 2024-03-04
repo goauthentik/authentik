@@ -1,4 +1,5 @@
 """authentik administration overview"""
+
 import platform
 from datetime import datetime
 from sys import version as python_version

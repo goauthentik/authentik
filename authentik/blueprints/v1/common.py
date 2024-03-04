@@ -1,12 +1,14 @@
 """transfer common classes"""
+
 from collections import OrderedDict
+from collections.abc import Iterable, Mapping
 from copy import copy
 from dataclasses import asdict, dataclass, field, is_dataclass
 from enum import Enum
 from functools import reduce
 from operator import ixor
 from os import getenv
-from typing import Any, Iterable, Literal, Mapping, Optional, Union
+from typing import Any, Literal, Union
 from uuid import UUID
 
 from deepmerge import always_merger
@@ -44,7 +46,7 @@ def get_attrs(obj: SerializerModel) -> dict[str, Any]:
 class BlueprintEntryState:
     """State of a single instance"""
 
-    instance: Optional[Model] = None
+    instance: Model | None = None
 
 
 class BlueprintEntryDesiredState(Enum):
@@ -66,9 +68,9 @@ class BlueprintEntry:
     )
     conditions: list[Any] = field(default_factory=list)
     identifiers: dict[str, Any] = field(default_factory=dict)
-    attrs: Optional[dict[str, Any]] = field(default_factory=dict)
+    attrs: dict[str, Any] | None = field(default_factory=dict)
 
-    id: Optional[str] = None
+    id: str | None = None
 
     _state: BlueprintEntryState = field(default_factory=BlueprintEntryState)
 
@@ -91,10 +93,10 @@ class BlueprintEntry:
             attrs=all_attrs,
         )
 
-    def _get_tag_context(
+    def get_tag_context(
         self,
         depth: int = 0,
-        context_tag_type: Optional[type["YAMLTagContext"] | tuple["YAMLTagContext", ...]] = None,
+        context_tag_type: type["YAMLTagContext"] | tuple["YAMLTagContext", ...] | None = None,
     ) -> "YAMLTagContext":
         """Get a YAMLTagContext object located at a certain depth in the tag tree"""
         if depth < 0:
@@ -107,8 +109,8 @@ class BlueprintEntry:
 
         try:
             return contexts[-(depth + 1)]
-        except IndexError:
-            raise ValueError(f"invalid depth: {depth}. Max depth: {len(contexts) - 1}")
+        except IndexError as exc:
+            raise ValueError(f"invalid depth: {depth}. Max depth: {len(contexts) - 1}") from exc
 
     def tag_resolver(self, value: Any, blueprint: "Blueprint") -> Any:
         """Check if we have any special tags that need handling"""
@@ -169,7 +171,7 @@ class Blueprint:
     entries: list[BlueprintEntry] = field(default_factory=list)
     context: dict = field(default_factory=dict)
 
-    metadata: Optional[BlueprintMetadata] = field(default=None)
+    metadata: BlueprintMetadata | None = field(default=None)
 
 
 class YAMLTag:
@@ -217,7 +219,7 @@ class Env(YAMLTag):
     """Lookup environment variable with optional default"""
 
     key: str
-    default: Optional[Any]
+    default: Any | None
 
     def __init__(self, loader: "BlueprintLoader", node: ScalarNode | SequenceNode) -> None:
         super().__init__()
@@ -236,7 +238,7 @@ class Context(YAMLTag):
     """Lookup key from instance context"""
 
     key: str
-    default: Optional[Any]
+    default: Any | None
 
     def __init__(self, loader: "BlueprintLoader", node: ScalarNode | SequenceNode) -> None:
         super().__init__()
@@ -280,7 +282,7 @@ class Format(YAMLTag):
         try:
             return self.format_string % tuple(args)
         except TypeError as exc:
-            raise EntryInvalidError.from_entry(exc, entry)
+            raise EntryInvalidError.from_entry(exc, entry) from exc
 
 
 class Find(YAMLTag):
@@ -365,7 +367,7 @@ class Condition(YAMLTag):
             comparator = self._COMPARATORS[self.mode.upper()]
             return comparator(tuple(bool(x) for x in args))
         except (TypeError, KeyError) as exc:
-            raise EntryInvalidError.from_entry(exc, entry)
+            raise EntryInvalidError.from_entry(exc, entry) from exc
 
 
 class If(YAMLTag):
@@ -397,7 +399,7 @@ class If(YAMLTag):
                 blueprint,
             )
         except TypeError as exc:
-            raise EntryInvalidError.from_entry(exc, entry)
+            raise EntryInvalidError.from_entry(exc, entry) from exc
 
 
 class Enumerate(YAMLTag, YAMLTagContext):
@@ -411,9 +413,7 @@ class Enumerate(YAMLTag, YAMLTagContext):
         "SEQ": (list, lambda a, b: [*a, b]),
         "MAP": (
             dict,
-            lambda a, b: always_merger.merge(
-                a, {b[0]: b[1]} if isinstance(b, (tuple, list)) else b
-            ),
+            lambda a, b: always_merger.merge(a, {b[0]: b[1]} if isinstance(b, tuple | list) else b),
         ),
     }
 
@@ -455,7 +455,7 @@ class Enumerate(YAMLTag, YAMLTagContext):
         try:
             output_class, add_fn = self._OUTPUT_BODIES[self.output_body.upper()]
         except KeyError as exc:
-            raise EntryInvalidError.from_entry(exc, entry)
+            raise EntryInvalidError.from_entry(exc, entry) from exc
 
         result = output_class()
 
@@ -483,13 +483,13 @@ class EnumeratedItem(YAMLTag):
 
     _SUPPORTED_CONTEXT_TAGS = (Enumerate,)
 
-    def __init__(self, loader: "BlueprintLoader", node: ScalarNode) -> None:
+    def __init__(self, _loader: "BlueprintLoader", node: ScalarNode) -> None:
         super().__init__()
         self.depth = int(node.value)
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         try:
-            context_tag: Enumerate = entry._get_tag_context(
+            context_tag: Enumerate = entry.get_tag_context(
                 depth=self.depth,
                 context_tag_type=EnumeratedItem._SUPPORTED_CONTEXT_TAGS,
             )
@@ -499,9 +499,11 @@ class EnumeratedItem(YAMLTag):
                     f"{self.__class__.__name__} tags are only usable "
                     f"inside an {Enumerate.__name__} tag",
                     entry,
-                )
+                ) from exc
 
-            raise EntryInvalidError.from_entry(f"{self.__class__.__name__} tag: {exc}", entry)
+            raise EntryInvalidError.from_entry(
+                f"{self.__class__.__name__} tag: {exc}", entry
+            ) from exc
 
         return context_tag.get_context(entry, blueprint)
 
@@ -514,8 +516,8 @@ class Index(EnumeratedItem):
 
         try:
             return context[0]
-        except IndexError:  # pragma: no cover
-            raise EntryInvalidError.from_entry(f"Empty/invalid context: {context}", entry)
+        except IndexError as exc:  # pragma: no cover
+            raise EntryInvalidError.from_entry(f"Empty/invalid context: {context}", entry) from exc
 
 
 class Value(EnumeratedItem):
@@ -526,8 +528,8 @@ class Value(EnumeratedItem):
 
         try:
             return context[1]
-        except IndexError:  # pragma: no cover
-            raise EntryInvalidError.from_entry(f"Empty/invalid context: {context}", entry)
+        except IndexError as exc:  # pragma: no cover
+            raise EntryInvalidError.from_entry(f"Empty/invalid context: {context}", entry) from exc
 
 
 class BlueprintDumper(SafeDumper):
@@ -581,13 +583,13 @@ class BlueprintLoader(SafeLoader):
 class EntryInvalidError(SentryIgnoredException):
     """Error raised when an entry is invalid"""
 
-    entry_model: Optional[str]
-    entry_id: Optional[str]
-    validation_error: Optional[ValidationError]
-    serializer: Optional[Serializer] = None
+    entry_model: str | None
+    entry_id: str | None
+    validation_error: ValidationError | None
+    serializer: Serializer | None = None
 
     def __init__(
-        self, *args: object, validation_error: Optional[ValidationError] = None, **kwargs
+        self, *args: object, validation_error: ValidationError | None = None, **kwargs
     ) -> None:
         super().__init__(*args)
         self.entry_model = None

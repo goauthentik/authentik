@@ -1,4 +1,5 @@
 """Test Users Avatars"""
+
 from json import loads
 
 from django.urls.base import reverse

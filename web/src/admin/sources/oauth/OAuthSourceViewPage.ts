@@ -44,6 +44,8 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
             return "Facebook";
         case ProviderTypeEnum.Github:
             return "GitHub";
+        case ProviderTypeEnum.Gitlab:
+            return "GitLab";
         case ProviderTypeEnum.Google:
             return "Google";
         case ProviderTypeEnum.Mailcow:

@@ -1,4 +1,5 @@
 """email tests"""
+
 from os import chmod, unlink
 from pathlib import Path
 from shutil import rmtree

@@ -1,4 +1,5 @@
 """common RBAC serializers"""
+
 from django.db.models import Q, QuerySet
 from django.db.transaction import atomic
 from django_filters.filters import CharFilter, ChoiceFilter
@@ -14,10 +15,10 @@ from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
 
-from authentik.api.decorators import permission_required
 from authentik.core.api.utils import PassiveSerializer
 from authentik.policies.event_matcher.models import model_choices
 from authentik.rbac.api.rbac import PermissionAssignSerializer
+from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import Role
 
 

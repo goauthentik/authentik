@@ -1,4 +1,5 @@
 """password policy"""
+
 import re
 from hashlib import sha1
 
@@ -86,7 +87,6 @@ class PasswordPolicy(Policy):
                 return zxcvbn_result
         return PolicyResult(True)
 
-    # pylint: disable=too-many-return-statements
     def passes_static(self, password: str, request: PolicyRequest) -> PolicyResult:
         """Check static rules"""
         if len(password) < self.length_min:

@@ -1,5 +1,4 @@
 """Plex source"""
-from typing import Optional
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
@@ -78,7 +77,7 @@ class PlexSource(Source):
             name=self.name,
         )
 
-    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+    def ui_user_settings(self) -> UserSettingSerializer | None:
         icon = self.icon_url
         if not icon:
             icon = static("authentik/sources/plex.svg")

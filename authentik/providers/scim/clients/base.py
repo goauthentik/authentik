@@ -1,6 +1,8 @@
 """SCIM Client"""
+
 from typing import Generic, TypeVar
 
+from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from pydantic import ValidationError
 from requests import RequestException, Session
 from structlog.stdlib import get_logger
@@ -11,7 +13,7 @@ from authentik.providers.scim.clients.schema import ServiceProviderConfiguration
 from authentik.providers.scim.models import SCIMProvider
 
 T = TypeVar("T")
-# pylint: disable=invalid-name
+
 SchemaType = TypeVar("SchemaType")
 
 
@@ -53,14 +55,14 @@ class SCIMClient(Generic[T, SchemaType]):
         except RequestException as exc:
             raise SCIMRequestException(message="Failed to send request") from exc
         self.logger.debug("scim request", path=path, method=method, **kwargs)
-        if response.status_code >= 400:
-            if response.status_code == 404:
+        if response.status_code >= HttpResponseBadRequest.status_code:
+            if response.status_code == HttpResponseNotFound.status_code:
                 raise ResourceMissing(response)
             self.logger.warning(
                 "Failed to send SCIM request", path=path, method=method, response=response.text
             )
             raise SCIMRequestException(response)
-        if response.status_code == 204:
+        if response.status_code == 204:  # noqa: PLR2004
             return {}
         return response.json()
 

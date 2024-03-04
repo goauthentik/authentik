@@ -1,5 +1,6 @@
 """SCIM Provider tasks"""
-from typing import Any, Optional
+
+from typing import Any
 
 from celery.result import allow_join_result
 from django.core.paginator import Paginator
@@ -100,21 +101,23 @@ def scim_sync_users(page: int, provider_pk: int):
             LOGGER.warning("failed to sync user", exc=exc, user=user)
             messages.append(
                 _(
-                    "Failed to sync user %(user_name)s due to remote error: %(error)s"
-                    % {
-                        "user_name": user.username,
-                        "error": exc.detail(),
-                    }
+                    "Failed to sync user {user_name} due to remote error: {error}".format_map(
+                        {
+                            "user_name": user.username,
+                            "error": exc.detail(),
+                        }
+                    )
                 )
             )
         except StopSync as exc:
             LOGGER.warning("Stopping sync", exc=exc)
             messages.append(
                 _(
-                    "Stopping sync due to error: %(error)s"
-                    % {
-                        "error": exc.detail(),
-                    }
+                    "Stopping sync due to error: {error}".format_map(
+                        {
+                            "error": exc.detail(),
+                        }
+                    )
                 )
             )
             break
@@ -141,21 +144,23 @@ def scim_sync_group(page: int, provider_pk: int):
             LOGGER.warning("failed to sync group", exc=exc, group=group)
             messages.append(
                 _(
-                    "Failed to sync group %(group_name)s due to remote error: %(error)s"
-                    % {
-                        "group_name": group.name,
-                        "error": exc.detail(),
-                    }
+                    "Failed to sync group {group_name} due to remote error: {error}".format_map(
+                        {
+                            "group_name": group.name,
+                            "error": exc.detail(),
+                        }
+                    )
                 )
             )
         except StopSync as exc:
             LOGGER.warning("Stopping sync", exc=exc)
             messages.append(
                 _(
-                    "Stopping sync due to error: %(error)s"
-                    % {
-                        "error": exc.detail(),
-                    }
+                    "Stopping sync due to error: {error}".format_map(
+                        {
+                            "error": exc.detail(),
+                        }
+                    )
                 )
             )
             break
@@ -173,7 +178,7 @@ def scim_signal_direct(model: str, pk: Any, raw_op: str):
     for provider in SCIMProvider.objects.filter(backchannel_application__isnull=False):
         client = client_for_model(provider, instance)
         # Check if the object is allowed within the provider's restrictions
-        queryset: Optional[QuerySet] = None
+        queryset: QuerySet | None = None
         if isinstance(instance, User):
             queryset = provider.get_user_qs()
         if isinstance(instance, Group):

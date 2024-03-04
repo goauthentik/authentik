@@ -1,7 +1,7 @@
 """Authenticator Validation"""
+
 from datetime import datetime
 from hashlib import sha256
-from typing import Optional
 
 from django.conf import settings
 from django.http import HttpRequest, HttpResponse
@@ -13,7 +13,7 @@ from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, WithUserInfoChallenge
-from authentik.flows.exceptions import FlowSkipStageException
+from authentik.flows.exceptions import FlowSkipStageException, StageInvalidException
 from authentik.flows.models import FlowDesignation, NotConfiguredAction, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
@@ -62,7 +62,7 @@ class AuthenticatorValidationChallenge(WithUserInfoChallenge):
 class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     """Challenge used for Code-based and WebAuthn authenticators"""
 
-    device: Optional[Device]
+    device: Device | None
 
     selected_challenge = DeviceChallenge(required=False)
     selected_stage = CharField(required=False)
@@ -153,6 +153,16 @@ class AuthenticatorValidateStageView(ChallengeStageView):
     def get_device_challenges(self) -> list[dict]:
         """Get a list of all device challenges applicable for the current stage"""
         challenges = []
+        pending_user = self.get_pending_user()
+        if pending_user.is_anonymous:
+            # We shouldn't get here without any kind of authentication data
+            raise StageInvalidException()
+        # When `pretend_user_exists` is enabled in the identification stage,
+        # `pending_user` will be a user model that isn't save to the DB
+        # hence it doesn't have a PK. In that case we just return an empty list of
+        # authenticators
+        if not pending_user.pk:
+            return []
         # Convert to a list to have usable log output instead of just <generator ...>
         user_devices = list(devices_for_user(self.get_pending_user()))
         self.logger.debug("Got devices for user", devices=user_devices)
@@ -211,8 +221,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         challenge.is_valid()
         return [challenge.data]
 
-    # pylint: disable=too-many-return-statements
-    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:  # noqa: PLR0911
         """Check if a user is set, and check if the user has any devices
         if not, we can skip this entire stage"""
         user = self.get_pending_user()

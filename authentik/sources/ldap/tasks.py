@@ -1,5 +1,5 @@
 """LDAP Sync tasks"""
-from typing import Optional
+
 from uuid import uuid4
 
 from celery import chain, group
@@ -39,7 +39,7 @@ def ldap_sync_all():
 
 
 @CELERY_APP.task()
-def ldap_connectivity_check(pk: Optional[str] = None):
+def ldap_connectivity_check(pk: str | None = None):
     """Check connectivity for LDAP Sources"""
     # 2 hour timeout, this task should run every hour
     timeout = 60 * 60 * 2

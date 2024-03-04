@@ -1,4 +1,5 @@
 """Test OAuth Source tasks"""
+
 from django.test import TestCase
 from requests_mock import Mocker
 
@@ -34,7 +35,7 @@ class TestOAuthSourceTasks(TestCase):
             },
         )
         mock.get("http://foo/jwks", json={"foo": "bar"})
-        update_well_known_jwks()  # pylint: disable=no-value-for-parameter
+        update_well_known_jwks()
         self.source.refresh_from_db()
         self.assertEqual(self.source.authorization_url, "foo")
         self.assertEqual(self.source.access_token_url, "foo")

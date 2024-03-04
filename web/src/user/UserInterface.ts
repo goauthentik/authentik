@@ -9,7 +9,7 @@ import { UIConfig, UserDisplay } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import { AKElement } from "@goauthentik/elements/Base";
-import { Interface } from "@goauthentik/elements/Interface";
+import { EnterpriseAwareInterface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/enterprise/EnterpriseStatusBanner";
@@ -94,6 +94,10 @@ const customStyles = css`
     ak-locale-context {
         display: flex;
         flex-direction: column;
+    }
+    .pf-c-drawer__main {
+        min-height: calc(100vh - 76px);
+        max-height: calc(100vh - 76px);
     }
 `;
 
@@ -278,7 +282,7 @@ class UserInterfacePresentation extends AKElement {
         const onClick = (ev: Event) => {
             ev.stopPropagation();
             this.dispatchEvent(
-                new Event(EVENT_API_DRAWER_TOGGLE, { bubbles: true, composed: true })
+                new Event(EVENT_API_DRAWER_TOGGLE, { bubbles: true, composed: true }),
             );
         };
 
@@ -299,7 +303,7 @@ class UserInterfacePresentation extends AKElement {
         const onClick = (ev: Event) => {
             ev.stopPropagation();
             this.dispatchEvent(
-                new Event(EVENT_NOTIFICATION_DRAWER_TOGGLE, { bubbles: true, composed: true })
+                new Event(EVENT_NOTIFICATION_DRAWER_TOGGLE, { bubbles: true, composed: true }),
             );
         };
 
@@ -380,8 +384,8 @@ class UserInterfacePresentation extends AKElement {
 //
 //
 @customElement("ak-interface-user")
-export class UserInterface extends Interface {
-    @state()
+export class UserInterface extends EnterpriseAwareInterface {
+    @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 
     @state()
