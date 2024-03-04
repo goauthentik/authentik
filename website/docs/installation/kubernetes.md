@@ -40,12 +40,13 @@ authentik:
     postgresql:
         password: "ThisIsNotASecurePassword"
 
-ingress:
-    # Specify kubernetes ingress controller class name
-    ingressClassName: nginx | traefik | kong
-    enabled: true
-    hosts:
-        - authentik.domain.tld
+server:
+    ingress:
+        # Specify kubernetes ingress controller class name
+        ingressClassName: nginx | traefik | kong
+        enabled: true
+        hosts:
+            - authentik.domain.tld
 
 postgresql:
     enabled: true
