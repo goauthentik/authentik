@@ -50,7 +50,7 @@ Save, and you now have Azure AD as a source.
 For more details on how-to have the new source display on the Login Page see [here](../general#add-sources-to-default-login-page).
 :::
 
-### automatic user enrollment and attribute mapping
+### Automatic user enrollment and attribute mapping
 
 Using the following process you can auto-enroll your users without interaction, and directly control the mapping Azure attribute to authentik.
 attribute.
