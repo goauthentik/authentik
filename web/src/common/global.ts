@@ -11,6 +11,9 @@ export interface GlobalAuthentik {
     versionFamily: string;
     versionSubdomain: string;
     build: string;
+    api: {
+        base: string;
+    };
 }
 
 export interface AuthentikWindow {
@@ -35,6 +38,9 @@ export function globalAK(): GlobalAuthentik {
             versionFamily: "",
             versionSubdomain: "",
             build: "",
+            api: {
+                base: process.env.AK_API_BASE_PATH || window.location.origin,
+            },
         };
     }
     return ak;

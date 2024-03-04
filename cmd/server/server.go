@@ -61,7 +61,7 @@ var rootCmd = &cobra.Command{
 		ex := common.Init()
 		defer common.Defer()
 
-		u, err := url.Parse(fmt.Sprintf("http://%s", config.Get().Listen.HTTP))
+		u, err := url.Parse(fmt.Sprintf("http://%s%s", config.Get().Listen.HTTP, config.Get().Web.Path))
 		if err != nil {
 			panic(err)
 		}

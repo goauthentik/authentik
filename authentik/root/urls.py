@@ -4,6 +4,7 @@ from django.urls import include, path
 from structlog.stdlib import get_logger
 
 from authentik.core.views import error
+from authentik.lib.config import CONFIG
 from authentik.lib.utils.reflection import get_apps
 from authentik.root.monitoring import LiveView, MetricsView, ReadyView
 
@@ -14,7 +15,7 @@ handler403 = error.ForbiddenView.as_view()
 handler404 = error.NotFoundView.as_view()
 handler500 = error.ServerErrorView.as_view()
 
-urlpatterns = []
+_urlpatterns = []
 
 for _authentik_app in get_apps():
     mountpoints = None
@@ -35,7 +36,7 @@ for _authentik_app in get_apps():
                 namespace=namespace,
             ),
         )
-        urlpatterns.append(_path)
+        _urlpatterns.append(_path)
         LOGGER.debug(
             "Mounted URLs",
             app_name=_authentik_app.name,
@@ -43,8 +44,10 @@ for _authentik_app in get_apps():
             namespace=namespace,
         )
 
-urlpatterns += [
+_urlpatterns += [
     path("-/metrics/", MetricsView.as_view(), name="metrics"),
     path("-/health/live/", LiveView.as_view(), name="health-live"),
     path("-/health/ready/", ReadyView.as_view(), name="health-ready"),
 ]
+
+urlpatterns = [path(CONFIG.get("web.path", "/")[1:], include(_urlpatterns))]

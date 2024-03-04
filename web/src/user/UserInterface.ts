@@ -1,3 +1,4 @@
+import { globalAK } from "@goauthentik/app/common/global";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import {
     EVENT_API_DRAWER_TOGGLE,
@@ -277,7 +278,7 @@ export class UserInterface extends EnterpriseAwareInterface {
                                 : html``}
                             <div class="pf-c-page__header-tools-item">
                                 <a
-                                    href="/flows/-/default/invalidation/"
+                                    href="${globalAK().api.base}flows/-/default/invalidation/"
                                     class="pf-c-button pf-m-plain"
                                 >
                                     <pf-tooltip position="top" content=${msg("Sign out")}>
@@ -288,7 +289,7 @@ export class UserInterface extends EnterpriseAwareInterface {
                             ${canAccessAdmin
                                 ? html`<a
                                       class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
-                                      href="/if/admin/"
+                                      href="${globalAK().api.base}if/admin/"
                                   >
                                       ${msg("Admin interface")}
                                   </a>`
