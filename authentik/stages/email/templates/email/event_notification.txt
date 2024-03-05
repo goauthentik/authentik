@@ -1,4 +1,4 @@
-{% load authentik_stages_email %}{% load i18n %}{% translate "Dear authentik user," %}
+{% load authentik_stages_email %}{% load i18n %}{% autoescape off %}{% translate "Dear authentik user," %}
 
 {% translate "The following notification was created:" %}
 
@@ -14,5 +14,6 @@
 This email was sent from the notification transport {{ name }}.
 {% endblocktranslate %}{% endif %}
 
--- 
+--
 Powered by goauthentik.io.
+{% endautoescape %}
