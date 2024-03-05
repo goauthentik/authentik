@@ -6,7 +6,7 @@
     "scripts": {
         "docusaurus": "docusaurus",
         "watch": "docusaurus start",
-        "build": "cp ../schema.yml static/schema.yaml && docusaurus build",
+        "build": "cp ../docker-compose.yml static/docker-compose.yml && cp ../schema.yml static/schema.yaml && docusaurus build",
         "swizzle": "docusaurus swizzle",
         "deploy": "docusaurus deploy",
         "serve": "docusaurus serve",
@@ -51,7 +51,7 @@
         "@docusaurus/module-type-aliases": "3.1.1",
         "@docusaurus/tsconfig": "3.1.1",
         "@docusaurus/types": "3.1.1",
-        "@types/react": "^18.2.61",
+        "@types/react": "^18.2.62",
         "prettier": "3.2.5",
         "typescript": "~5.3.3"
     },
