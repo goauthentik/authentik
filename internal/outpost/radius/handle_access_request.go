@@ -24,6 +24,10 @@ func (rs *RadiusServer) Handle_AccessRequest(w radius.ResponseWriter, r *RadiusR
 	fe.Answers[flow.StagePassword] = rfc2865.UserPassword_GetString(r.Packet)
 	if r.pi.MFASupport {
 		fe.CheckPasswordInlineMFA()
+	} else {
+		// If code-based MFA is disabled StageAuthenticatorValidate answer is set to StagePassword answer.
+		// This allows flows with only a mfa stage
+		fe.Answers[flow.StageAuthenticatorValidate] = fe.Answers[flow.StagePassword]
 	}
 
 	passed, err := fe.Execute()
