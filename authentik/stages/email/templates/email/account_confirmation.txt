@@ -4,6 +4,6 @@
 
 {{ url }}
 
---
+-- 
 Powered by goauthentik.io.
 {% endautoescape %}
