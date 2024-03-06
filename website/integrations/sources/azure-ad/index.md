@@ -55,9 +55,9 @@ For more details on how-to have the new source display on the Login Page see [he
 Using the following process you can auto-enroll your users without interaction, and directly control the mapping Azure attribute to authentik.
 attribute.
 
-1. Create a new _Expression Policy_ see [here](../../../docs/policies/) for details.
-2. Choose _azure-ad-mapping_ as name
-3. Add the following code and adjust to your needs
+1. Create a new _Expression Policy_ (see [here](../../../docs/policies/) for details).
+2. Use _azure-ad-mapping_ as the name.
+3. Add the following code and adjust to your needs.
 
 ```python
 # save existing prompt data
@@ -99,14 +99,14 @@ context['prompt_data'] = current_prompt_data
 return True
 ```
 
-4. Create a new enrollment flow _azure-ad-enrollment_ see [here](../../../docs/flow/) for details
-5. Add the policy _default-source-enrollment-if-sso_ to the flow. Todo so open the newly created flow.
+4. Create a new enrollment flow _azure-ad-enrollment_ (see [here](../../../docs/flow/) for details).
+5. Add the policy _default-source-enrollment-if-sso_ to the flow. To do so open the newly created flow.
    Click on the tab **Policy/Group/User Bindings**. Click on **Bind existing policy** and choose _default-source-enrollment-if-sso_
    from the list.
-6. Bind the stages _default-source-enrollment-write_ (order 0) and _default-source-enrollment-login_ (order 10) to the flow
-7. Bind the policy _azure-ad-mapping_ to the stage _default-source-enrollment-write_. Todo so open the flow _azure-ad-enrollment_
+6. Bind the stages _default-source-enrollment-write_ (order 0) and _default-source-enrollment-login_ (order 10) to the flow.
+7. Bind the policy _azure-ad-mapping_ to the stage _default-source-enrollment-write_. To do so open the flow _azure-ad-enrollment_
    open the tab **Stage Bindings**, open the dropdown menu for the stage _default-source-enrollment-write_ and click on **Bind existing policy**
-   Select _azure-ad-mapping_
+   Select _azure-ad-mapping_.
 8. Open the source _azure-ad_. Click on edit.
 9. Open **Flow settings** and choose _azure-ad-enrollment_ as enrollment flow.
 
