@@ -7,9 +7,8 @@ from django.db.models import Q
 from ldap3 import SUBTREE
 
 from authentik.core.models import Group, User
-from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME
-from authentik.sources.ldap.models import LDAPSource
-from authentik.sources.ldap.sync.base import LDAP_UNIQUENESS, BaseLDAPSynchronizer
+from authentik.sources.ldap.models import LDAP_DISTINGUISHED_NAME, LDAP_UNIQUENESS, LDAPSource
+from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 
 
 class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):

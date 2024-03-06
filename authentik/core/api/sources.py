@@ -61,6 +61,8 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
             "enabled",
             "authentication_flow",
             "enrollment_flow",
+            "user_property_mappings",
+            "group_property_mappings",
             "component",
             "verbose_name",
             "verbose_name_plural",
