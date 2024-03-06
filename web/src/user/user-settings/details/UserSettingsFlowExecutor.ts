@@ -9,7 +9,7 @@ import { StageHost } from "@goauthentik/flow/stages/base";
 import "@goauthentik/user/user-settings/details/stages/prompt/PromptStage";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
@@ -53,7 +53,7 @@ export class UserSettingsFlowExecutor
     @property({ type: Boolean })
     loading = false;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFCard, PFPage, PFButton, PFContent];
     }
 

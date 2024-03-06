@@ -26,6 +26,16 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 import { RbacApi, RbacPermissionsAssignedByUsersListModelEnum, Role } from "@goauthentik/api";
 
+const customCSS = css`
+    .pf-c-description-list__description ak-action-button {
+        margin-right: 6px;
+        margin-bottom: 6px;
+    }
+    .ak-button-collection {
+        max-width: 12em;
+    }
+`;
+
 @customElement("ak-role-view")
 export class RoleViewPage extends AKElement {
     @property({ type: String })
@@ -52,15 +62,7 @@ export class RoleViewPage extends AKElement {
             PFContent,
             PFCard,
             PFDescriptionList,
-            css`
-                .pf-c-description-list__description ak-action-button {
-                    margin-right: 6px;
-                    margin-bottom: 6px;
-                }
-                .ak-button-collection {
-                    max-width: 12em;
-                }
-            `,
+            customCSS,
         ];
     }
 

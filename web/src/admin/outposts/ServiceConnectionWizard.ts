@@ -9,7 +9,7 @@ import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
 import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -24,7 +24,7 @@ export class InitialServiceConnectionWizardPage extends WizardPage {
     @property({ attribute: false })
     connectionTypes: TypeCreate[] = [];
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFForm, PFButton, PFRadio];
     }
     sidebarLabel = () => msg("Select type");
@@ -69,7 +69,7 @@ export class InitialServiceConnectionWizardPage extends WizardPage {
 
 @customElement("ak-service-connection-wizard")
 export class ServiceConnectionWizard extends AKElement {
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFButton, PFRadio];
     }
 

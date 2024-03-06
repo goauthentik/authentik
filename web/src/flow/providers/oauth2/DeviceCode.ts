@@ -4,7 +4,7 @@ import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -24,7 +24,7 @@ export class OAuth2DeviceCode extends BaseStage<
     OAuthDeviceCodeChallenge,
     OAuthDeviceCodeChallengeResponseRequest
 > {
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
     }
 

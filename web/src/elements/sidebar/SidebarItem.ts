@@ -1,7 +1,7 @@
 import { ROUTE_SEPARATOR } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
 
-import { CSSResult, css } from "lit";
+import { css } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -9,63 +9,60 @@ import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+const customCSS = css`
+    :host {
+        z-index: 100;
+        box-shadow: none !important;
+    }
+    :host([highlight]) .pf-c-nav__item {
+        background-color: var(--ak-accent);
+        margin: 16px;
+    }
+    :host([highlight]) .pf-c-nav__item .pf-c-nav__link {
+        padding-left: 0.5rem;
+    }
+    .pf-c-nav__link.pf-m-current::after,
+    .pf-c-nav__link.pf-m-current:hover::after,
+    .pf-c-nav__item.pf-m-current:not(.pf-m-expanded) .pf-c-nav__link::after {
+        --pf-c-nav__link--m-current--after--BorderColor: #fd4b2d;
+    }
+
+    .pf-c-nav__section + .pf-c-nav__section {
+        --pf-c-nav__section--section--MarginTop: var(--pf-global--spacer--sm);
+    }
+    .pf-c-nav__list .sidebar-brand {
+        max-height: 82px;
+        margin-bottom: -0.5rem;
+    }
+    nav {
+        display: flex;
+        flex-direction: column;
+        max-height: 100vh;
+        height: 100%;
+        overflow-y: hidden;
+    }
+    .pf-c-nav__list {
+        flex-grow: 1;
+        overflow-y: auto;
+    }
+
+    .pf-c-nav__link {
+        --pf-c-nav__link--PaddingTop: 0.5rem;
+        --pf-c-nav__link--PaddingRight: 0.5rem;
+        --pf-c-nav__link--PaddingBottom: 0.5rem;
+    }
+    .pf-c-nav__section-title {
+        font-size: 12px;
+    }
+    .pf-c-nav__item {
+        --pf-c-nav__item--MarginTop: 0px;
+    }
+`;
+
 @customElement("ak-sidebar-item")
 export class SidebarItem extends AKElement {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFPage,
-            PFNav,
-            css`
-                :host {
-                    z-index: 100;
-                    box-shadow: none !important;
-                }
-                :host([highlight]) .pf-c-nav__item {
-                    background-color: var(--ak-accent);
-                    margin: 16px;
-                }
-                :host([highlight]) .pf-c-nav__item .pf-c-nav__link {
-                    padding-left: 0.5rem;
-                }
-                .pf-c-nav__link.pf-m-current::after,
-                .pf-c-nav__link.pf-m-current:hover::after,
-                .pf-c-nav__item.pf-m-current:not(.pf-m-expanded) .pf-c-nav__link::after {
-                    --pf-c-nav__link--m-current--after--BorderColor: #fd4b2d;
-                }
-
-                .pf-c-nav__section + .pf-c-nav__section {
-                    --pf-c-nav__section--section--MarginTop: var(--pf-global--spacer--sm);
-                }
-                .pf-c-nav__list .sidebar-brand {
-                    max-height: 82px;
-                    margin-bottom: -0.5rem;
-                }
-                nav {
-                    display: flex;
-                    flex-direction: column;
-                    max-height: 100vh;
-                    height: 100%;
-                    overflow-y: hidden;
-                }
-                .pf-c-nav__list {
-                    flex-grow: 1;
-                    overflow-y: auto;
-                }
-
-                .pf-c-nav__link {
-                    --pf-c-nav__link--PaddingTop: 0.5rem;
-                    --pf-c-nav__link--PaddingRight: 0.5rem;
-                    --pf-c-nav__link--PaddingBottom: 0.5rem;
-                }
-                .pf-c-nav__section-title {
-                    font-size: 12px;
-                }
-                .pf-c-nav__item {
-                    --pf-c-nav__item--MarginTop: 0px;
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFPage, PFNav, customCSS];
     }
 
     @property()

@@ -5,7 +5,6 @@ import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
-import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
@@ -32,7 +31,7 @@ export class PlexLoginInit extends BaseStage<
     @state()
     authUrl?: string;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle, PFDivider];
     }
 

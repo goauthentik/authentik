@@ -3,7 +3,7 @@ import { EVENT_API_DRAWER_TOGGLE, EVENT_REQUEST_POST } from "@goauthentik/common
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -12,43 +12,38 @@ import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css"
 import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+const customCSS = css`
+    :host {
+        --header-height: 114px;
+    }
+    .pf-c-notification-drawer__header {
+        height: var(--header-height);
+        align-items: center;
+    }
+    .pf-c-notification-drawer__header-action,
+    .pf-c-notification-drawer__header-action-close,
+    .pf-c-notification-drawer__header-action-close > .pf-c-button.pf-m-plain {
+        height: 100%;
+    }
+    .pf-c-notification-drawer__list-item-description {
+        white-space: pre-wrap;
+        font-family: monospace;
+    }
+    .pf-c-notification-drawer__body {
+        overflow-x: hidden;
+    }
+    .pf-c-notification-drawer__list {
+        max-height: calc(100vh - var(--header-height));
+    }
+`;
+
 @customElement("ak-api-drawer")
 export class APIDrawer extends AKElement {
     @property({ attribute: false })
     requests: RequestInfo[] = [];
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFNotificationDrawer,
-            PFButton,
-            PFContent,
-            PFDropdown,
-            css`
-                :host {
-                    --header-height: 114px;
-                }
-                .pf-c-notification-drawer__header {
-                    height: var(--header-height);
-                    align-items: center;
-                }
-                .pf-c-notification-drawer__header-action,
-                .pf-c-notification-drawer__header-action-close,
-                .pf-c-notification-drawer__header-action-close > .pf-c-button.pf-m-plain {
-                    height: 100%;
-                }
-                .pf-c-notification-drawer__list-item-description {
-                    white-space: pre-wrap;
-                    font-family: monospace;
-                }
-                .pf-c-notification-drawer__body {
-                    overflow-x: hidden;
-                }
-                .pf-c-notification-drawer__list {
-                    max-height: calc(100vh - var(--header-height));
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFNotificationDrawer, PFButton, PFContent, PFDropdown, customCSS];
     }
 
     constructor() {

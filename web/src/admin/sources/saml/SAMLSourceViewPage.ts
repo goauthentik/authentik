@@ -12,7 +12,7 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ModalForm";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -50,7 +50,7 @@ export class SAMLSourceViewPage extends AKElement {
     @state()
     metadata?: SAMLMetadata;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFPage, PFGrid, PFButton, PFContent, PFCard, PFDescriptionList];
     }
 

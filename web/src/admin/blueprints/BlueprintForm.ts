@@ -11,7 +11,7 @@ import "@goauthentik/elements/forms/SearchSelect";
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -49,7 +49,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
             : msg("Successfully created instance.");
     }
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [...super.styles, PFContent];
     }
 

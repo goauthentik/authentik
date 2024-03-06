@@ -12,7 +12,7 @@ import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
+import { PropertyValues, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -46,7 +46,7 @@ export class LDAPProviderViewPage extends AKElement {
     @state()
     me?: SessionUser;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [
             PFBase,
             PFButton,
@@ -122,13 +122,7 @@ export class LDAPProviderViewPage extends AKElement {
             return html``;
         }
         return html`
-            ${
-                this.provider?.outpostSet.length < 1
-                    ? html`<div slot="header" class="pf-c-banner pf-m-warning">
-                          ${msg("Warning: Provider is not used by any Outpost.")}
-                      </div>`
-                    : html``
-            }
+            ${this.provider?.outpostSet.length < 1 ? html`<div slot="header" class="pf-c-banner pf-m-warning">${msg("Warning: Provider is not used by any Outpost.")}</div>` : html``}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                     <div class="pf-c-card__body">
@@ -204,16 +198,12 @@ export class LDAPProviderViewPage extends AKElement {
                                     class="pf-c-form-control"
                                     readonly
                                     type="text"
-                                    value=${`cn=${
-                                        this.me?.user.username
-                                    },ou=users,${this.provider?.baseDn?.toLowerCase()}`}
+                                    value=${`cn=${this.me?.user.username},ou=users,${this.provider?.baseDn?.toLowerCase()}`}
                                 />
                             </div>
                             <div class="pf-c-form__group">
                                 <label class="pf-c-form__label">
-                                    <span class="pf-c-form__label-text">${msg(
-                                        "Bind Password",
-                                    )}</span>
+                                    <span class="pf-c-form__label-text">${msg("Bind Password")}</span>
                                 </label>
                                 <input
                                     class="pf-c-form-control"

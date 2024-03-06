@@ -7,7 +7,7 @@ import { BaseStage } from "@goauthentik/flow/stages/base";
 import "webcomponent-qr-code";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -23,27 +23,21 @@ import {
     AuthenticatorTOTPChallengeResponseRequest,
 } from "@goauthentik/api";
 
+const customCSS = css`
+    .qr-container {
+        display: flex;
+        flex-direction: column;
+        place-items: center;
+    }
+`;
+
 @customElement("ak-stage-authenticator-totp")
 export class AuthenticatorTOTPStage extends BaseStage<
     AuthenticatorTOTPChallenge,
     AuthenticatorTOTPChallengeResponseRequest
 > {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFLogin,
-            PFForm,
-            PFFormControl,
-            PFTitle,
-            PFButton,
-            css`
-                .qr-container {
-                    display: flex;
-                    flex-direction: column;
-                    place-items: center;
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, customCSS];
     }
 
     render(): TemplateResult {

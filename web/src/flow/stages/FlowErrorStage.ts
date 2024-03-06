@@ -3,7 +3,7 @@ import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -14,26 +14,21 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { FlowChallengeResponseRequest, FlowErrorChallenge } from "@goauthentik/api";
 
+const customCSS = css`
+    pre {
+        overflow-x: scroll;
+        max-width: calc(
+            35rem - var(--pf-c-login__main-body--PaddingRight) - var(
+                    --pf-c-login__main-body--PaddingRight
+                )
+        );
+    }
+`;
+
 @customElement("ak-stage-flow-error")
 export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeResponseRequest> {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFLogin,
-            PFForm,
-            PFFormControl,
-            PFTitle,
-            css`
-                pre {
-                    overflow-x: scroll;
-                    max-width: calc(
-                        35rem - var(--pf-c-login__main-body--PaddingRight) - var(
-                                --pf-c-login__main-body--PaddingRight
-                            )
-                    );
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, customCSS];
     }
 
     render(): TemplateResult {

@@ -4,7 +4,7 @@ import "@goauthentik/elements/LoadingOverlay";
 import Guacamole from "guacamole-common-js";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -25,34 +25,30 @@ const AUDIO_INPUT_MIMETYPE = "audio/L16;rate=44100,channels=2";
 const RECONNECT_ATTEMPTS_INITIAL = 5;
 const RECONNECT_ATTEMPTS = 5;
 
+const customCSS = css`
+    :host {
+        cursor: none;
+    }
+    canvas {
+        z-index: unset !important;
+    }
+    .container {
+        overflow: hidden;
+        height: 100vh;
+        background-color: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    ak-loading-overlay {
+        z-index: 5;
+    }
+`;
+
 @customElement("ak-rac")
 export class RacInterface extends Interface {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFPage,
-            PFContent,
-            AKGlobal,
-            css`
-                :host {
-                    cursor: none;
-                }
-                canvas {
-                    z-index: unset !important;
-                }
-                .container {
-                    overflow: hidden;
-                    height: 100vh;
-                    background-color: black;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                }
-                ak-loading-overlay {
-                    z-index: 5;
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFPage, PFContent, AKGlobal, customCSS];
     }
 
     client?: Guacamole.Client;
@@ -127,9 +123,7 @@ export class RacInterface extends Interface {
 
     async firstUpdated(): Promise<void> {
         this.updateTitle();
-        const wsUrl = `${window.location.protocol.replace("http", "ws")}//${
-            window.location.host
-        }/ws/rac/${this.token}/`;
+        const wsUrl = `${window.location.protocol.replace("http", "ws")}//${window.location.host}/ws/rac/${this.token}/`;
         this.tunnel = new Guacamole.WebSocketTunnel(wsUrl);
         this.tunnel.receiveTimeout = 10 * 1000; // 10 seconds
         this.tunnel.onerror = (status) => {

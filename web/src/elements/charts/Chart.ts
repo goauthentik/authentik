@@ -20,7 +20,7 @@ import { LinearScale, TimeScale } from "chart.js";
 import "chartjs-adapter-moment";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
 
 import { ResponseError, UiThemeEnum } from "@goauthentik/api";
@@ -29,6 +29,25 @@ Chart.register(Legend, Tooltip);
 Chart.register(LineController, BarController, DoughnutController);
 Chart.register(ArcElement, BarElement, PointElement, LineElement);
 Chart.register(TimeScale, LinearScale, Filler);
+
+const customCSS = css`
+    .container {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+    }
+    .container > span {
+        position: absolute;
+        font-size: 2.5rem;
+    }
+    canvas {
+        width: 100px;
+        height: 100px;
+        z-index: 1;
+    }
+`;
 
 export const FONT_COLOUR_DARK_MODE = "#fafafa";
 export const FONT_COLOUR_LIGHT_MODE = "#151515";
@@ -74,27 +93,8 @@ export abstract class AKChart<T> extends AKElement {
 
     fontColour = FONT_COLOUR_LIGHT_MODE;
 
-    static get styles(): CSSResult[] {
-        return [
-            css`
-                .container {
-                    height: 100%;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    position: relative;
-                }
-                .container > span {
-                    position: absolute;
-                    font-size: 2.5rem;
-                }
-                canvas {
-                    width: 100px;
-                    height: 100px;
-                    z-index: 1;
-                }
-            `,
-        ];
+    static get styles() {
+        return [customCSS];
     }
 
     connectedCallback(): void {

@@ -12,10 +12,16 @@ import { TablePage } from "@goauthentik/elements/table/TablePage";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { Event, EventsApi } from "@goauthentik/api";
+
+const customCSS = css`
+    .pf-m-no-padding-bottom {
+        padding-bottom: 0;
+    }
+`;
 
 @customElement("ak-event-list")
 export class EventListPage extends TablePage<Event> {
@@ -37,12 +43,8 @@ export class EventListPage extends TablePage<Event> {
     @property()
     order = "-created";
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(css`
-            .pf-m-no-padding-bottom {
-                padding-bottom: 0;
-            }
-        `);
+    static get styles() {
+        return [...super.styles, customCSS];
     }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<Event>> {

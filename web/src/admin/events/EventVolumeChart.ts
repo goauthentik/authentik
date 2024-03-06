@@ -3,12 +3,18 @@ import { AKChart } from "@goauthentik/app/elements/charts/Chart";
 import { ChartData } from "chart.js";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 import { Coordinate, EventsApi, EventsEventsListRequest } from "@goauthentik/api";
+
+const customCSS = css`
+    .pf-c-card__body {
+        height: 12rem;
+    }
+`;
 
 @customElement("ak-events-volume-chart")
 export class EventVolumeChart extends AKChart<Coordinate[]> {
@@ -20,15 +26,8 @@ export class EventVolumeChart extends AKChart<Coordinate[]> {
         this.refreshHandler();
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(
-            PFCard,
-            css`
-                .pf-c-card__body {
-                    height: 12rem;
-                }
-            `,
-        );
+    static get styles() {
+        return [...super.styles, PFCard, customCSS];
     }
 
     apiRequest(): Promise<Coordinate[]> {

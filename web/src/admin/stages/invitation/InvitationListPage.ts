@@ -14,7 +14,7 @@ import { TablePage } from "@goauthentik/elements/table/TablePage";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -46,8 +46,8 @@ export class InvitationListPage extends TablePage<Invitation> {
         return "pf-icon pf-icon-migration";
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFBanner);
+    static get styles() {
+        return [...super.styles, PFBanner];
     }
 
     checkbox = true;

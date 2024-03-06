@@ -3,7 +3,6 @@ import { PFSize } from "@goauthentik/elements/Spinner";
 import { MODAL_BUTTON_STYLES } from "@goauthentik/elements/buttons/ModalButton";
 import { Table } from "@goauthentik/elements/table/Table";
 
-import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
@@ -32,8 +31,9 @@ export abstract class TableModal<T> extends Table<T> {
 
     _open = false;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(
+    static get styles() {
+        return [
+            ...super.styles,
             PFModalBox,
             PFBullseye,
             PFContent,
@@ -41,7 +41,7 @@ export abstract class TableModal<T> extends Table<T> {
             PFPage,
             PFStack,
             MODAL_BUTTON_STYLES,
-        );
+        ];
     }
 
     constructor() {

@@ -5,7 +5,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -47,8 +47,8 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
         this.result = undefined;
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
+    static get styles() {
+        return [...super.styles, PFDescriptionList];
     }
 
     renderResult(): TemplateResult {

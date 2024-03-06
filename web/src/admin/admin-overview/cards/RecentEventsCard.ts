@@ -12,12 +12,23 @@ import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 import { Event, EventsApi } from "@goauthentik/api";
+
+const customCSS = css`
+    .pf-c-card__title {
+        --pf-c-card__title--FontFamily: var(--pf-global--FontFamily--heading--sans-serif);
+        --pf-c-card__title--FontSize: var(--pf-global--FontSize--md);
+        --pf-c-card__title--FontWeight: var(--pf-global--FontWeight--bold);
+    }
+    * {
+        word-break: break-all;
+    }
+`;
 
 @customElement("ak-recent-events")
 export class RecentEventsCard extends Table<Event> {
@@ -36,22 +47,8 @@ export class RecentEventsCard extends Table<Event> {
         });
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(
-            PFCard,
-            css`
-                .pf-c-card__title {
-                    --pf-c-card__title--FontFamily: var(
-                        --pf-global--FontFamily--heading--sans-serif
-                    );
-                    --pf-c-card__title--FontSize: var(--pf-global--FontSize--md);
-                    --pf-c-card__title--FontWeight: var(--pf-global--FontWeight--bold);
-                }
-                * {
-                    word-break: break-all;
-                }
-            `,
-        );
+    static get styles() {
+        return [...super.styles, PFCard, customCSS];
     }
 
     columns(): TableColumn[] {

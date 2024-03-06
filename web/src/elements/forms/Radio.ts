@@ -1,7 +1,7 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 
@@ -18,6 +18,16 @@ export interface RadioOption<T> {
     value: T;
 }
 
+const customCSS = css`
+    .pf-c-form__group-control {
+        padding-top: calc(var(--pf-c-form--m-horizontal__group-label--md--PaddingTop) * 1.3);
+    }
+    .pf-c-radio label,
+    .pf-c-radio span {
+        user-select: none;
+    }
+`;
+
 @customElement("ak-radio")
 export class Radio<T> extends CustomEmitterElement(AKElement) {
     @property({ attribute: false })
@@ -31,23 +41,8 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
 
     internalId: string;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFRadio,
-            PFForm,
-            css`
-                .pf-c-form__group-control {
-                    padding-top: calc(
-                        var(--pf-c-form--m-horizontal__group-label--md--PaddingTop) * 1.3
-                    );
-                }
-                .pf-c-radio label,
-                .pf-c-radio span {
-                    user-select: none;
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFRadio, PFForm, customCSS];
     }
 
     constructor() {

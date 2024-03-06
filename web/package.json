@@ -15,7 +15,7 @@
         "build-proxy": "run-s build-locales esbuild:build-proxy",
         "watch": "run-s build-locales esbuild:watch",
         "lint": "eslint . --max-warnings 0 --fix",
-        "lint:precommit": "node scripts/eslint-precommit.mjs",
+        "lint:precommit": "cross-env NODE_OPTIONS='--max_old_space_size=8192' node scripts/eslint-precommit.mjs",
         "lint:spelling": "node scripts/check-spelling.mjs",
         "lit-analyse": "lit-analyzer src",
         "precommit": "npm-run-all --parallel tsc lit-analyse lint:spelling --sequential lint:precommit prettier",

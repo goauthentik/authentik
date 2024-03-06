@@ -11,7 +11,7 @@ import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/buttons/SpinnerButton";
 
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -33,7 +33,7 @@ export class ProviderViewPage extends AKElement {
     @property({ attribute: false })
     provider?: Provider;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFPage];
     }
 

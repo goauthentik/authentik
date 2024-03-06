@@ -8,12 +8,30 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css";
 
 import { PaginatedUserSourceConnectionList, SourcesApi, UserSetting } from "@goauthentik/api";
+
+const customCSS = css`
+    .pf-c-data-list__cell {
+        display: flex;
+        align-items: center;
+    }
+    .pf-c-data-list__cell img {
+        max-width: 48px;
+        width: 48px;
+        margin-right: 16px;
+    }
+    :host([theme="dark"]) .pf-c-data-list__cell img {
+        filter: invert(1);
+    }
+    .pf-c-data-list__item {
+        background-color: transparent;
+    }
+`;
 
 @customElement("ak-user-settings-source")
 export class UserSourceSettingsPage extends AKElement {
@@ -29,27 +47,8 @@ export class UserSourceSettingsPage extends AKElement {
     @property({ type: Boolean })
     canConnect = true;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFDataList,
-            css`
-                .pf-c-data-list__cell {
-                    display: flex;
-                    align-items: center;
-                }
-                .pf-c-data-list__cell img {
-                    max-width: 48px;
-                    width: 48px;
-                    margin-right: 16px;
-                }
-                :host([theme="dark"]) .pf-c-data-list__cell img {
-                    filter: invert(1);
-                }
-                .pf-c-data-list__item {
-                    background-color: transparent;
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFDataList, customCSS];
     }
 
     constructor() {

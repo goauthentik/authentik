@@ -5,7 +5,7 @@ import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -21,8 +21,8 @@ export class FlowImportForm extends Form<Flow> {
         return msg("Successfully imported flow.");
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
+    static get styles() {
+        return [...super.styles, PFDescriptionList];
     }
 
     async send(): Promise<FlowImportResult> {

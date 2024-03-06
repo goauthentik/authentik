@@ -42,8 +42,6 @@ function mapDualPairs(pairs: DualSelectPair[]) {
     return new Map(pairs.map(([k, v, _]) => [k, v]));
 }
 
-const styles = [PFBase, PFButton, globalVariables, mainStyles];
-
 /**
  * @element ak-dual-select
  *
@@ -62,7 +60,7 @@ const keyfinder =
 @customElement("ak-dual-select")
 export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKElement)) {
     static get styles() {
-        return styles;
+        return [PFBase, PFButton, globalVariables, mainStyles];
     }
 
     /* The list of options to *currently* show. Note that this is not *all* the options, only the

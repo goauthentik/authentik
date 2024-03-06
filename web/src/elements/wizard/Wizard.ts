@@ -5,7 +5,7 @@ import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { property } from "@lit/reactive-element/decorators/property.js";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { state } from "lit/decorators.js";
 
 import PFWizard from "@patternfly/patternfly/components/Wizard/wizard.css";
@@ -35,8 +35,8 @@ export class Wizard extends ModalButton {
     @property({ type: Boolean })
     isValid = false;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFWizard);
+    static get styles() {
+        return [...super.styles, PFWizard];
     }
 
     @state()

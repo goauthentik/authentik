@@ -10,7 +10,7 @@ import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -21,6 +21,31 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { EventsApi, Notification } from "@goauthentik/api";
 
+const customCSS = css`
+    .pf-c-drawer__body {
+        height: 100%;
+    }
+    .pf-c-notification-drawer__body {
+        flex-grow: 1;
+        overflow-x: hidden;
+    }
+    .pf-c-notification-drawer__header {
+        height: 114px;
+        align-items: center;
+    }
+    .pf-c-notification-drawer__header-action,
+    .pf-c-notification-drawer__header-action-close,
+    .pf-c-notification-drawer__header-action-close > .pf-c-button.pf-m-plain {
+        height: 100%;
+    }
+    .pf-c-notification-drawer__list-item-description {
+        white-space: pre-wrap;
+    }
+    .pf-c-notification-drawer__footer {
+        margin: 1rem;
+    }
+`;
+
 @customElement("ak-notification-drawer")
 export class NotificationDrawer extends AKElement {
     @property({ attribute: false })
@@ -29,31 +54,8 @@ export class NotificationDrawer extends AKElement {
     @property({ type: Number })
     unread = 0;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFNotificationDrawer, PFContent, PFDropdown].concat(css`
-            .pf-c-drawer__body {
-                height: 100%;
-            }
-            .pf-c-notification-drawer__body {
-                flex-grow: 1;
-                overflow-x: hidden;
-            }
-            .pf-c-notification-drawer__header {
-                height: 114px;
-                align-items: center;
-            }
-            .pf-c-notification-drawer__header-action,
-            .pf-c-notification-drawer__header-action-close,
-            .pf-c-notification-drawer__header-action-close > .pf-c-button.pf-m-plain {
-                height: 100%;
-            }
-            .pf-c-notification-drawer__list-item-description {
-                white-space: pre-wrap;
-            }
-            .pf-c-notification-drawer__footer {
-                margin: 1rem;
-            }
-        `);
+    static get styles() {
+        return [PFBase, PFButton, PFNotificationDrawer, PFContent, PFDropdown, customCSS];
     }
 
     firstUpdated(): void {

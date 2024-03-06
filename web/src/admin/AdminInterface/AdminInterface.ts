@@ -19,7 +19,7 @@ import "@goauthentik/elements/router/RouterOutlet";
 import "@goauthentik/elements/sidebar/Sidebar";
 import "@goauthentik/elements/sidebar/SidebarItem";
 
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
@@ -31,6 +31,25 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { AdminApi, SessionUser, UiThemeEnum, Version } from "@goauthentik/api";
 
 import "./AdminSidebar";
+
+const customCSS = css`
+    .pf-c-page__main,
+    .pf-c-drawer__content,
+    .pf-c-page__drawer {
+        z-index: auto !important;
+        background-color: transparent;
+    }
+    .display-none {
+        display: none;
+    }
+    .pf-c-page {
+        background-color: var(--pf-c-page--BackgroundColor) !important;
+    }
+    /* Global page background colour */
+    :host([theme="dark"]) .pf-c-page {
+        --pf-c-page--BackgroundColor: var(--ak-dark-background);
+    }
+`;
 
 @customElement("ak-interface-admin")
 export class AdminInterface extends EnterpriseAwareInterface {
@@ -48,31 +67,8 @@ export class AdminInterface extends EnterpriseAwareInterface {
     @state()
     user?: SessionUser;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFPage,
-            PFButton,
-            PFDrawer,
-            css`
-                .pf-c-page__main,
-                .pf-c-drawer__content,
-                .pf-c-page__drawer {
-                    z-index: auto !important;
-                    background-color: transparent;
-                }
-                .display-none {
-                    display: none;
-                }
-                .pf-c-page {
-                    background-color: var(--pf-c-page--BackgroundColor) !important;
-                }
-                /* Global page background colour */
-                :host([theme="dark"]) .pf-c-page {
-                    --pf-c-page--BackgroundColor: var(--ak-dark-background);
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFPage, PFButton, PFDrawer, customCSS];
     }
 
     constructor() {

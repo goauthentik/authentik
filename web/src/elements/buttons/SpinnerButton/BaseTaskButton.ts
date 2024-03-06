@@ -13,19 +13,14 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 // `pointer-events: none` makes the button inaccessible during the processing phase.
 
-const buttonStyles = [
-    PFBase,
-    PFButton,
-    PFSpinner,
-    css`
-        #spinner-button {
-            transition: all var(--pf-c-button--m-progress--TransitionDuration) ease 0s;
-        }
-        #spinner-button.working {
-            pointer-events: none;
-        }
-    `,
-];
+const customCSS = css`
+    #spinner-button {
+        transition: all var(--pf-c-button--m-progress--TransitionDuration) ease 0s;
+    }
+    #spinner-button.working {
+        pointer-events: none;
+    }
+`;
 
 const StatusMap = new Map<TaskStatus, string>([
     [TaskStatus.INITIAL, ""],
@@ -51,7 +46,7 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
     eventPrefix = "ak-button";
 
     static get styles() {
-        return buttonStyles;
+        return [PFBase, PFButton, PFSpinner, customCSS];
     }
 
     callAction!: () => Promise<unknown>;

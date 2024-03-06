@@ -2,7 +2,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
@@ -21,7 +21,7 @@ export class InvitationListLink extends AKElement {
     @property()
     selectedFlow?: string;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFForm, PFFormControl, PFDescriptionList];
     }
 

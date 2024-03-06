@@ -14,7 +14,7 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/SpinnerButton";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
+import { PropertyValues, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -46,7 +46,7 @@ export class ApplicationViewPage extends AKElement {
     @state()
     missingOutpost = false;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [
             PFBase,
             PFList,

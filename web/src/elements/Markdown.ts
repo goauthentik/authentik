@@ -5,7 +5,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { matter } from "md-front-matter";
 import * as showdown from "showdown";
 
-import { CSSResult, PropertyValues, css, html, nothing } from "lit";
+import { PropertyValues, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
@@ -15,6 +15,12 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 export interface MarkdownDocument {
     path: string;
 }
+
+const customCSS = css`
+    h2:first-of-type {
+        margin-top: 0;
+    }
+`;
 
 export type Replacer = (input: string, md: MarkdownDocument) => string;
 
@@ -41,16 +47,8 @@ export class Markdown extends AKElement {
         this.replaceRelativeLinks,
     ];
 
-    static get styles(): CSSResult[] {
-        return [
-            PFList,
-            PFContent,
-            css`
-                h2:first-of-type {
-                    margin-top: 0;
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFList, PFContent, customCSS];
     }
 
     converter = new showdown.Converter({ metadata: true });

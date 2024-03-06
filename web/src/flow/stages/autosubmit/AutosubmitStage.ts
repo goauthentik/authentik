@@ -2,7 +2,7 @@ import "@goauthentik/elements/EmptyState";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -19,7 +19,7 @@ export class AutosubmitStage extends BaseStage<
     AutosubmitChallenge,
     AutoSubmitChallengeResponseRequest
 > {
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
     }
 

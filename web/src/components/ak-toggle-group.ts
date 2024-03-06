@@ -23,18 +23,16 @@ type Pair = [string, string];
 // MYNIS:
 // A 'name' property so that the event carries *which* toggle group emitted the event.
 
+const customCSS = css`
+    .pf-c-toggle-group {
+        justify-content: center;
+    }
+`;
+
 @customElement("ak-toggle-group")
 export class AkToggleGroup extends CustomEmitterElement(AKElement) {
     static get styles() {
-        return [
-            PFBase,
-            PFToggleGroup,
-            css`
-                .pf-c-toggle-group {
-                    justify-content: center;
-                }
-            `,
-        ];
+        return [PFBase, PFToggleGroup, customCSS];
     }
 
     /*

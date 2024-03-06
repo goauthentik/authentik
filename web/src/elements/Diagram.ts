@@ -3,12 +3,19 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import mermaid, { MermaidConfig } from "mermaid";
 
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
 
 import { UiThemeEnum } from "@goauthentik/api";
+
+const customCSS = css`
+    :host {
+        display: flex;
+        justify-content: center;
+    }
+`;
 
 @customElement("ak-diagram")
 export class Diagram extends AKElement {
@@ -22,15 +29,8 @@ export class Diagram extends AKElement {
 
     handlerBound = false;
 
-    static get styles(): CSSResult[] {
-        return [
-            css`
-                :host {
-                    display: flex;
-                    justify-content: center;
-                }
-            `,
-        ];
+    static get styles() {
+        return [customCSS];
     }
 
     config: MermaidConfig;

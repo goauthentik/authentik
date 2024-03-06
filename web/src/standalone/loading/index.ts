@@ -2,7 +2,7 @@ import { globalAK } from "@goauthentik/common/global";
 import { Interface } from "@goauthentik/elements/Interface";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
@@ -12,20 +12,16 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { UiThemeEnum } from "@goauthentik/api";
 
+const customCSS = css`
+    :host([theme="dark"]) h1 {
+        color: var(--ak-dark-foreground);
+    }
+`;
+
 @customElement("ak-loading")
 export class Loading extends Interface {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFPage,
-            PFSpinner,
-            PFEmptyState,
-            css`
-                :host([theme="dark"]) h1 {
-                    color: var(--ak-dark-foreground);
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFPage, PFSpinner, PFEmptyState, customCSS];
     }
 
     async getTheme(): Promise<UiThemeEnum> {

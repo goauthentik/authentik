@@ -11,12 +11,10 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import type { SearchbarEvent } from "../types";
 
-const styles = [PFBase, globalVariables, searchStyles];
-
 @customElement("ak-search-bar")
 export class AkSearchbar extends CustomEmitterElement(AKElement) {
     static get styles() {
-        return styles;
+        return [PFBase, globalVariables, searchStyles];
     }
 
     @property({ type: String, reflect: true })

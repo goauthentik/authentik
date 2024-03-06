@@ -2,7 +2,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -17,7 +17,7 @@ export class Chip extends AKElement {
     @property({ type: Boolean })
     removable = false;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFButton, PFChip];
     }
 

@@ -1,7 +1,7 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import { Chip } from "@goauthentik/elements/chips/Chip";
 
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -9,23 +9,19 @@ import PFChip from "@patternfly/patternfly/components/Chip/chip.css";
 import PFChipGroup from "@patternfly/patternfly/components/ChipGroup/chip-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+const customCSS = css`
+    ::slotted(*) {
+        margin: 0 2px;
+    }
+    .pf-c-chip-group {
+        margin-bottom: 8px;
+    }
+`;
+
 @customElement("ak-chip-group")
 export class ChipGroup extends AKElement {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFChip,
-            PFChipGroup,
-            PFButton,
-            css`
-                ::slotted(*) {
-                    margin: 0 2px;
-                }
-                .pf-c-chip-group {
-                    margin-bottom: 8px;
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFChip, PFChipGroup, PFButton, customCSS];
     }
 
     @property()

@@ -31,7 +31,7 @@ import { writeToClipboard } from "@goauthentik/elements/utils/writeToClipboard";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
@@ -124,7 +124,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     @state()
     me?: SessionUser;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [...super.styles, PFDescriptionList, PFCard, PFAlert, recoveryButtonStyles];
     }
 

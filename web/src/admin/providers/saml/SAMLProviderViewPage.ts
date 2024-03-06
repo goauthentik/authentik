@@ -17,7 +17,7 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
+import { PropertyValues, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -76,7 +76,7 @@ export class SAMLProviderViewPage extends AKElement {
     @state()
     previewUser?: User;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [
             PFBase,
             PFButton,
@@ -257,13 +257,7 @@ export class SAMLProviderViewPage extends AKElement {
         if (!this.provider) {
             return html``;
         }
-        return html`${
-            this.provider?.assignedApplicationName
-                ? html``
-                : html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${msg("Warning: Provider is not used by an Application.")}
-                  </div>`
-        }
+        return html`${this.provider?.assignedApplicationName ? html`` : html`<div slot="header" class="pf-c-banner pf-m-warning">${msg("Warning: Provider is not used by an Application.")}</div>`}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                     <div class="pf-c-card__body">
@@ -294,9 +288,7 @@ export class SAMLProviderViewPage extends AKElement {
                             </div>
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg(
-                                        "ACS URL",
-                                    )}</span>
+                                    <span class="pf-c-description-list__text">${msg("ACS URL")}</span>
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
@@ -306,9 +298,7 @@ export class SAMLProviderViewPage extends AKElement {
                             </div>
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg(
-                                        "Audience",
-                                    )}</span>
+                                    <span class="pf-c-description-list__text">${msg("Audience")}</span>
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
@@ -318,9 +308,7 @@ export class SAMLProviderViewPage extends AKElement {
                             </div>
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg(
-                                        "Issuer",
-                                    )}</span>
+                                    <span class="pf-c-description-list__text">${msg("Issuer")}</span>
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">

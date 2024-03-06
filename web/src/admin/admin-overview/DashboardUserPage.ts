@@ -4,7 +4,7 @@ import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/cards/AggregatePromiseCard";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -15,24 +15,19 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { EventActions } from "@goauthentik/api";
 
+const customCSS = css`
+    .big-graph-container {
+        height: 35em;
+    }
+    .card-container {
+        max-height: 10em;
+    }
+`;
+
 @customElement("ak-admin-dashboard-users")
 export class DashboardUserPage extends AKElement {
-    static get styles(): CSSResult[] {
-        return [
-            PFGrid,
-            PFPage,
-            PFContent,
-            PFList,
-            PFDivider,
-            css`
-                .big-graph-container {
-                    height: 35em;
-                }
-                .card-container {
-                    max-height: 10em;
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFGrid, PFPage, PFContent, PFList, PFDivider, customCSS];
     }
 
     render(): TemplateResult {

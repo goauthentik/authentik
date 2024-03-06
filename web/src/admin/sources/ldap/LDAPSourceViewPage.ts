@@ -12,7 +12,7 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ModalForm";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -51,7 +51,7 @@ export class LDAPSourceViewPage extends AKElement {
     @state()
     syncState?: LDAPSyncStatus;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFPage, PFButton, PFGrid, PFContent, PFCard, PFDescriptionList, PFList];
     }
 

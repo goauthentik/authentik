@@ -1,7 +1,7 @@
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
@@ -18,7 +18,7 @@ export class Spinner extends AKElement {
     @property()
     size: PFSize = PFSize.Medium;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFSpinner];
     }
 

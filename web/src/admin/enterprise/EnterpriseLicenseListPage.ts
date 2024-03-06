@@ -15,7 +15,7 @@ import { TablePage } from "@goauthentik/elements/table/TablePage";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -32,6 +32,12 @@ import {
     LicenseSummary,
     RbacPermissionsAssignedByUsersListModelEnum,
 } from "@goauthentik/api";
+
+const customCSS: Readonly<CSSResult> = css`
+    .pf-m-no-padding-bottom {
+        padding-bottom: 0;
+    }
+`;
 
 @customElement("ak-enterprise-license-list")
 export class EnterpriseLicenseListPage extends TablePage<License> {
@@ -63,20 +69,17 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     @state()
     installID?: string;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(
+    static get styles() {
+        return [
+            ...super.styles,
             PFDescriptionList,
             PFGrid,
             PFBanner,
             PFFormControl,
             PFButton,
             PFCard,
-            css`
-                .pf-m-no-padding-bottom {
-                    padding-bottom: 0;
-                }
-            `,
-        );
+            customCSS,
+        ];
     }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<License>> {

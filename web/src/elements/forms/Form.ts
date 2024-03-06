@@ -7,7 +7,7 @@ import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFor
 import { SearchSelect } from "@goauthentik/elements/forms/SearchSelect";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
@@ -138,6 +138,12 @@ export function serializeForm<T extends KeyUnknown>(
     return json as unknown as T;
 }
 
+const customCSS = css`
+    select[multiple] {
+        height: 15em;
+    }
+`;
+
 /**
  * Form
  *
@@ -181,7 +187,7 @@ export abstract class Form<T> extends AKElement {
     @state()
     nonFieldErrors?: string[];
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [
             PFBase,
             PFCard,
@@ -191,11 +197,7 @@ export abstract class Form<T> extends AKElement {
             PFInputGroup,
             PFFormControl,
             PFSwitch,
-            css`
-                select[multiple] {
-                    height: 15em;
-                }
-            `,
+            customCSS,
         ];
     }
 

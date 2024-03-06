@@ -4,7 +4,7 @@ import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -26,7 +26,7 @@ export class AuthenticatorSMSStage extends BaseStage<
     AuthenticatorSMSChallenge,
     AuthenticatorSMSChallengeResponseRequest
 > {
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFAlert, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
     }
 

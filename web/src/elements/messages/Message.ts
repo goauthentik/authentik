@@ -1,7 +1,7 @@
 import { MessageLevel } from "@goauthentik/common/messages";
 import { AKElement } from "@goauthentik/elements/Base";
 
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
@@ -34,7 +34,7 @@ export class Message extends AKElement {
     @property({ attribute: false })
     onRemove?: (m: APIMessage) => void;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFButton, PFAlert, PFAlertGroup];
     }
 

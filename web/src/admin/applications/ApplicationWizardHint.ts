@@ -33,20 +33,17 @@ const closeButtonIcon = html`<svg
     ></path>
 </svg>`;
 
+const customCSS = css`
+    .pf-c-page__main-section {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+`;
+
 @customElement("ak-application-wizard-hint")
 export class AkApplicationWizardHint extends AKElement implements ShowHintControllerHost {
     static get styles() {
-        return [
-            PFButton,
-            PFPage,
-            PFLabel,
-            css`
-                .pf-c-page__main-section {
-                    padding-top: 0;
-                    padding-bottom: 0;
-                }
-            `,
-        ];
+        return [PFButton, PFPage, PFLabel, customCSS];
     }
 
     @property({ type: Boolean, attribute: "show-hint" })

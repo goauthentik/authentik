@@ -11,7 +11,7 @@ import "@goauthentik/elements/forms/SearchSelect";
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -23,20 +23,22 @@ import {
     RbacApi,
 } from "@goauthentik/api";
 
+const customCSS = css`
+    .pf-c-button.pf-m-control {
+        height: 100%;
+    }
+    .pf-c-form-control {
+        height: auto !important;
+    }
+`;
+
 @customElement("ak-group-form")
 export class GroupForm extends ModelForm<Group, string> {
     @state()
     roles?: PaginatedRoleList;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(css`
-            .pf-c-button.pf-m-control {
-                height: 100%;
-            }
-            .pf-c-form-control {
-                height: auto !important;
-            }
-        `);
+    static get styles() {
+        return [...super.styles, customCSS];
     }
 
     loadInstance(pk: string): Promise<Group> {

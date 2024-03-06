@@ -3,7 +3,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { setURLParams } from "@goauthentik/elements/router/RouteMatch";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFTreeView from "@patternfly/patternfly/components/TreeView/tree-view.css";
@@ -136,7 +136,7 @@ export class TreeViewNode extends AKElement {
 
 @customElement("ak-treeview")
 export class TreeView extends AKElement {
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFTreeView];
     }
 

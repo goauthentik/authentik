@@ -9,7 +9,7 @@ import "@goauthentik/elements/forms/SearchSelect";
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -48,8 +48,8 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
         return (this.result = result);
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
+    static get styles() {
+        return [...super.styles, PFDescriptionList];
     }
 
     renderResult(): TemplateResult {

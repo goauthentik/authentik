@@ -1,7 +1,7 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import { PFSize } from "@goauthentik/elements/Spinner";
 
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBackdrop from "@patternfly/patternfly/components/Backdrop/backdrop.css";
@@ -30,6 +30,12 @@ export const MODAL_BUTTON_STYLES = css`
     }
 `;
 
+const localCustomCSS = css`
+    .locked {
+        overflow-y: hidden !important;
+    }
+`;
+
 @customElement("ak-modal-button")
 export class ModalButton extends AKElement {
     @property()
@@ -43,7 +49,7 @@ export class ModalButton extends AKElement {
 
     handlerBound = false;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [
             PFBase,
             PFButton,
@@ -57,11 +63,7 @@ export class ModalButton extends AKElement {
             PFCard,
             PFContent,
             MODAL_BUTTON_STYLES,
-            css`
-                .locked {
-                    overflow-y: hidden !important;
-                }
-            `,
+            localCustomCSS,
         ];
     }
 

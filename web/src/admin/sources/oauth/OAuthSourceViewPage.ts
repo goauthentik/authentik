@@ -12,7 +12,7 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ModalForm";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -83,7 +83,7 @@ export class OAuthSourceViewPage extends AKElement {
     @property({ attribute: false })
     source?: OAuthSource;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFPage, PFButton, PFGrid, PFContent, PFCard, PFDescriptionList];
     }
 

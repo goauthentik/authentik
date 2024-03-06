@@ -1,7 +1,7 @@
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -11,6 +11,12 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+const customCSS = css`
+    ::-webkit-search-cancel-button {
+        display: none;
+    }
+`;
+
 @customElement("ak-table-search")
 export class TableSearch extends AKElement {
     @property()
@@ -19,19 +25,8 @@ export class TableSearch extends AKElement {
     @property()
     onSearch?: (value: string) => void;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFToolbar,
-            PFInputGroup,
-            PFFormControl,
-            css`
-                ::-webkit-search-cancel-button {
-                    display: none;
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFButton, PFToolbar, PFInputGroup, PFFormControl, customCSS];
     }
 
     render(): TemplateResult {

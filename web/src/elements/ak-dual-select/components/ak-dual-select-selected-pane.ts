@@ -14,8 +14,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { EVENT_REMOVE_ONE } from "../constants";
 import type { DualSelectPair } from "../types";
 
-const styles = [PFBase, PFButton, PFDualListSelector, listStyles, selectedPaneStyles];
-
 const hostAttributes = [
     ["aria-labelledby", "dual-list-selector-selected-pane-status"],
     ["aria-multiselectable", "true"],
@@ -40,7 +38,7 @@ const hostAttributes = [
 @customElement("ak-dual-select-selected-pane")
 export class AkDualSelectSelectedPane extends CustomEmitterElement(AKElement) {
     static get styles() {
-        return styles;
+        return [PFBase, PFButton, PFDualListSelector, listStyles, selectedPaneStyles];
     }
 
     /* The array of key/value pairs that are in the selected list.  ALL of them. */

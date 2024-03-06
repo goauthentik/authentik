@@ -5,7 +5,7 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
@@ -15,8 +15,8 @@ import { UsedBy, UsedByActionEnum } from "@goauthentik/api";
 
 @customElement("ak-forms-delete")
 export class DeleteForm extends ModalButton {
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFList);
+    static get styles() {
+        return [...super.styles, PFList];
     }
 
     @property({ attribute: false })

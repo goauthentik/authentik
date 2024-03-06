@@ -4,7 +4,7 @@ import "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/forms/ModalForm";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -14,7 +14,7 @@ import { Provider } from "@goauthentik/api";
 
 @customElement("ak-provider-related-application")
 export class RelatedApplicationButton extends AKElement {
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFButton];
     }
 

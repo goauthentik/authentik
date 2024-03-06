@@ -7,7 +7,7 @@ import "@goauthentik/elements/Spinner";
 import { PFSize } from "@goauthentik/elements/Spinner";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 import { until } from "lit/directives/until.js";
@@ -23,6 +23,24 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { EventActions, FlowsApi } from "@goauthentik/api";
 
 type Pair = [string, string | number | EventContext | EventModel | string[] | TemplateResult];
+
+const customCSS = css`
+    code {
+        display: block;
+        white-space: pre-wrap;
+        word-break: break-all;
+    }
+    .pf-l-flex {
+        justify-content: space-between;
+    }
+    .pf-l-flex__item {
+        min-width: 25%;
+    }
+    iframe {
+        width: 100%;
+        height: 50rem;
+    }
+`;
 
 // https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-issues/about-automation-for-issues-and-pull-requests-with-query-parameters
 
@@ -73,33 +91,8 @@ export class EventInfo extends AKElement {
     @property({ attribute: false })
     event!: EventWithContext;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFFlex,
-            PFCard,
-            PFTable,
-            PFList,
-            PFDescriptionList,
-            css`
-                code {
-                    display: block;
-                    white-space: pre-wrap;
-                    word-break: break-all;
-                }
-                .pf-l-flex {
-                    justify-content: space-between;
-                }
-                .pf-l-flex__item {
-                    min-width: 25%;
-                }
-                iframe {
-                    width: 100%;
-                    height: 50rem;
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFButton, PFFlex, PFCard, PFTable, PFList, PFDescriptionList, customCSS];
     }
 
     renderDescriptionGroup([term, description]: Pair) {

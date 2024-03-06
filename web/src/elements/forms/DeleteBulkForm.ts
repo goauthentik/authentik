@@ -8,7 +8,7 @@ import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
@@ -34,8 +34,8 @@ export class DeleteObjectsTable<T> extends Table<T> {
     @state()
     usedByData: Map<T, UsedBy[]> = new Map();
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFList);
+    static get styles() {
+        return [...super.styles, PFList];
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<T>> {

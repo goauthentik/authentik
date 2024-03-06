@@ -6,7 +6,7 @@ import { BaseStage, StageHost, SubmitOptions } from "@goauthentik/flow/stages/ba
 import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -24,6 +24,37 @@ import {
     DeviceClassesEnum,
     FlowsApi,
 } from "@goauthentik/api";
+
+const customCSS = css`
+    ul {
+        padding-top: 1rem;
+    }
+    ul > li:not(:last-child) {
+        padding-bottom: 1rem;
+    }
+    .authenticator-button {
+        display: flex;
+        align-items: center;
+    }
+    :host([theme="dark"]) .authenticator-button {
+        color: var(--ak-dark-foreground) !important;
+    }
+    i {
+        font-size: 1.5rem;
+        padding: 1rem 0;
+        width: 3rem;
+    }
+    .right {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+        text-align: left;
+    }
+    .right > * {
+        height: 50%;
+    }
+`;
 
 @customElement("ak-stage-authenticator-validate")
 export class AuthenticatorValidateStage
@@ -79,37 +110,8 @@ export class AuthenticatorValidateStage
         return this.host?.submit(payload, options) || Promise.resolve();
     }
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton].concat(css`
-            ul {
-                padding-top: 1rem;
-            }
-            ul > li:not(:last-child) {
-                padding-bottom: 1rem;
-            }
-            .authenticator-button {
-                display: flex;
-                align-items: center;
-            }
-            :host([theme="dark"]) .authenticator-button {
-                color: var(--ak-dark-foreground) !important;
-            }
-            i {
-                font-size: 1.5rem;
-                padding: 1rem 0;
-                width: 3rem;
-            }
-            .right {
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                height: 100%;
-                text-align: left;
-            }
-            .right > * {
-                height: 50%;
-            }
-        `);
+    static get styles() {
+        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, customCSS];
     }
 
     renderDevicePickerSingle(deviceChallenge: DeviceChallenge): TemplateResult {

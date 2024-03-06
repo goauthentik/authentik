@@ -4,7 +4,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Expand";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -17,6 +17,20 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { FlowInspection, FlowsApi, Stage } from "@goauthentik/api";
 
+const customCSS = css`
+    code.break {
+        word-break: break-all;
+    }
+    pre {
+        word-break: break-all;
+        overflow-x: hidden;
+        white-space: break-spaces;
+    }
+    .pf-c-notification-drawer__body {
+        overflow-x: hidden;
+    }
+`;
+
 @customElement("ak-flow-inspector")
 export class FlowInspector extends AKElement {
     flowSlug: string;
@@ -27,7 +41,7 @@ export class FlowInspector extends AKElement {
     @property({ attribute: false })
     error?: Response;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [
             PFBase,
             PFButton,
@@ -36,19 +50,7 @@ export class FlowInspector extends AKElement {
             PFNotificationDrawer,
             PFDescriptionList,
             PFProgressStepper,
-            css`
-                code.break {
-                    word-break: break-all;
-                }
-                pre {
-                    word-break: break-all;
-                    overflow-x: hidden;
-                    white-space: break-spaces;
-                }
-                .pf-c-notification-drawer__body {
-                    overflow-x: hidden;
-                }
-            `,
+            customCSS,
         ];
     }
 

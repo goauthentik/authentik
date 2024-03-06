@@ -12,7 +12,7 @@ import "@goauthentik/user/user-settings/mfa/MFADevicesPage";
 import "@goauthentik/user/user-settings/tokens/UserTokenList";
 
 import { localized, msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -30,10 +30,32 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 import { StagesApi, UserSetting } from "@goauthentik/api";
 
+const customCSS = css`
+    .pf-c-page {
+        --pf-c-page--BackgroundColor: transparent;
+    }
+    .pf-c-page__main-section {
+        --pf-c-page__main-section--BackgroundColor: transparent;
+    }
+    :host([theme="dark"]) .pf-c-page {
+        --pf-c-page--BackgroundColor: transparent;
+    }
+    :host([theme="dark"]) .pf-c-page__main-section {
+        --pf-c-page__main-section--BackgroundColor: transparent;
+    }
+    @media screen and (min-width: 1200px) {
+        :host {
+            width: 90rem;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
+`;
+
 @localized()
 @customElement("ak-user-settings")
 export class UserSettingsPage extends AKElement {
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [
             PFBase,
             PFPage,
@@ -46,27 +68,7 @@ export class UserSettingsPage extends AKElement {
             PFForm,
             PFFormControl,
             PFStack,
-            css`
-                .pf-c-page {
-                    --pf-c-page--BackgroundColor: transparent;
-                }
-                .pf-c-page__main-section {
-                    --pf-c-page__main-section--BackgroundColor: transparent;
-                }
-                :host([theme="dark"]) .pf-c-page {
-                    --pf-c-page--BackgroundColor: transparent;
-                }
-                :host([theme="dark"]) .pf-c-page__main-section {
-                    --pf-c-page__main-section--BackgroundColor: transparent;
-                }
-                @media screen and (min-width: 1200px) {
-                    :host {
-                        width: 90rem;
-                        margin-left: auto;
-                        margin-right: auto;
-                    }
-                }
-            `,
+            customCSS,
         ];
     }
 

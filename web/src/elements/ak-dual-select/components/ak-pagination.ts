@@ -11,25 +11,20 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import type { BasePagination } from "../types";
 
-const styles = [
-    PFBase,
-    PFButton,
-    PFPagination,
-    css`
-        :host([theme="dark"]) .pf-c-pagination__nav-control .pf-c-button {
-            color: var(--pf-c-button--m-plain--disabled--Color);
-            --pf-c-button--disabled--Color: var(--pf-c-button--m-plain--Color);
-        }
-        :host([theme="dark"]) .pf-c-pagination__nav-control .pf-c-button:disabled {
-            color: var(--pf-c-button--disabled--Color);
-        }
-    `,
-];
+const customCSS = css`
+    :host([theme="dark"]) .pf-c-pagination__nav-control .pf-c-button {
+        color: var(--pf-c-button--m-plain--disabled--Color);
+        --pf-c-button--disabled--Color: var(--pf-c-button--m-plain--Color);
+    }
+    :host([theme="dark"]) .pf-c-pagination__nav-control .pf-c-button:disabled {
+        color: var(--pf-c-button--disabled--Color);
+    }
+`;
 
 @customElement("ak-pagination")
 export class AkPagination extends CustomEmitterElement(AKElement) {
     static get styles() {
-        return styles;
+        return [PFBase, PFButton, PFPagination, customCSS];
     }
 
     @property({ attribute: false })

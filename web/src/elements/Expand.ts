@@ -1,11 +1,17 @@
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFExpandableSection from "@patternfly/patternfly/components/ExpandableSection/expandable-section.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+const customCSS = css`
+    .pf-c-expandable-section.pf-m-display-lg {
+        background-color: var(--pf-global--BackgroundColor--100);
+    }
+`;
 
 @customElement("ak-expand")
 export class Expand extends AKElement {
@@ -18,16 +24,8 @@ export class Expand extends AKElement {
     @property()
     textClosed = msg("Show more");
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFExpandableSection,
-            css`
-                .pf-c-expandable-section.pf-m-display-lg {
-                    background-color: var(--pf-global--BackgroundColor--100);
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFExpandableSection, customCSS];
     }
 
     render(): TemplateResult {

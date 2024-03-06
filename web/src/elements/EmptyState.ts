@@ -1,12 +1,19 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import { PFSize } from "@goauthentik/elements/Spinner";
 
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+const customCSS = css`
+    i.pf-c-empty-state__icon {
+        height: var(--pf-global--icon--FontSize--2xl);
+        line-height: var(--pf-global--icon--FontSize--2xl);
+    }
+`;
 
 @customElement("ak-empty-state")
 export class EmptyState extends AKElement {
@@ -22,18 +29,8 @@ export class EmptyState extends AKElement {
     @property()
     header = "";
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFEmptyState,
-            PFTitle,
-            css`
-                i.pf-c-empty-state__icon {
-                    height: var(--pf-global--icon--FontSize--2xl);
-                    line-height: var(--pf-global--icon--FontSize--2xl);
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFEmptyState, PFTitle, customCSS];
     }
 
     render(): TemplateResult {

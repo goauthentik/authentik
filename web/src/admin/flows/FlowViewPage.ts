@@ -12,7 +12,7 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/SpinnerButton";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, css, html } from "lit";
+import { PropertyValues, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -30,6 +30,15 @@ import {
     ResponseError,
 } from "@goauthentik/api";
 
+const customCSS = css`
+    img.pf-icon {
+        max-height: 24px;
+    }
+    ak-tabs {
+        height: 100%;
+    }
+`;
+
 @customElement("ak-flow-view")
 export class FlowViewPage extends AKElement {
     @property({ type: String })
@@ -38,15 +47,8 @@ export class FlowViewPage extends AKElement {
     @state()
     flow!: Flow;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFDescriptionList, PFButton, PFCard, PFContent, PFGrid].concat(css`
-            img.pf-icon {
-                max-height: 24px;
-            }
-            ak-tabs {
-                height: 100%;
-            }
-        `);
+    static get styles() {
+        return [PFBase, PFPage, PFDescriptionList, PFButton, PFCard, PFContent, PFGrid, customCSS];
     }
 
     fetchFlow(slug: string) {
@@ -151,11 +153,7 @@ export class FlowViewPage extends AKElement {
                                                 <button
                                                     class="pf-c-button pf-m-block pf-m-primary"
                                                     @click=${() => {
-                                                        const finalURL = `${
-                                                            window.location.origin
-                                                        }/if/flow/${this.flow.slug}/${AndNext(
-                                                            `${window.location.pathname}#${window.location.hash}`,
-                                                        )}`;
+                                                        const finalURL = `${window.location.origin}/if/flow/${this.flow.slug}/${AndNext(`${window.location.pathname}#${window.location.hash}`)}`;
                                                         window.open(finalURL, "_blank");
                                                     }}
                                                 >
@@ -169,11 +167,7 @@ export class FlowViewPage extends AKElement {
                                                                 slug: this.flow.slug,
                                                             })
                                                             .then((link) => {
-                                                                const finalURL = `${
-                                                                    link.link
-                                                                }${AndNext(
-                                                                    `${window.location.pathname}#${window.location.hash}`,
-                                                                )}`;
+                                                                const finalURL = `${link.link}${AndNext(`${window.location.pathname}#${window.location.hash}`)}`;
                                                                 window.open(finalURL, "_blank");
                                                             });
                                                     }}
@@ -188,11 +182,7 @@ export class FlowViewPage extends AKElement {
                                                                 slug: this.flow.slug,
                                                             })
                                                             .then((link) => {
-                                                                const finalURL = `${
-                                                                    link.link
-                                                                }?${encodeURI(
-                                                                    `inspector&next=/#${window.location.hash}`,
-                                                                )}`;
+                                                                const finalURL = `${link.link}?${encodeURI(`inspector&next=/#${window.location.hash}`)}`;
                                                                 window.open(finalURL, "_blank");
                                                             })
                                                             .catch((exc: ResponseError) => {

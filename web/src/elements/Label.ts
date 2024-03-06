@@ -1,6 +1,6 @@
 import { AKElement } from "@goauthentik/elements/Base";
 
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFLabel from "@patternfly/patternfly/components/Label/label.css";
@@ -24,7 +24,7 @@ export class Label extends AKElement {
     @property({ type: Boolean })
     compact = false;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFLabel];
     }
 

@@ -7,7 +7,7 @@ import "@goauthentik/user/LibraryApplication/RACLaunchEndpointModal";
 import { UserInterface } from "@goauthentik/user/UserInterface";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -18,6 +18,34 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { Application } from "@goauthentik/api";
+
+const customCSS = css`
+    .pf-c-card {
+        --pf-c-card--BoxShadow: var(--pf-global--BoxShadow--md);
+    }
+    .pf-c-card__header {
+        justify-content: space-between;
+        flex-direction: column;
+    }
+    .pf-c-card__header a {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    a:hover {
+        text-decoration: none;
+    }
+    .expander {
+        flex-grow: 1;
+    }
+    .pf-c-card__title {
+        text-align: center;
+        /* This is not ideal as it hard limits us to 2 lines of text for the title
+                    of the application. In theory that should be fine for most cases, but ideally
+                    we don't do this */
+        height: 48px;
+    }
+`;
 
 @customElement("ak-library-app")
 export class LibraryApplication extends AKElement {
@@ -30,39 +58,8 @@ export class LibraryApplication extends AKElement {
     @property()
     background = "";
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFCard,
-            PFButton,
-            css`
-                .pf-c-card {
-                    --pf-c-card--BoxShadow: var(--pf-global--BoxShadow--md);
-                }
-                .pf-c-card__header {
-                    justify-content: space-between;
-                    flex-direction: column;
-                }
-                .pf-c-card__header a {
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                }
-                a:hover {
-                    text-decoration: none;
-                }
-                .expander {
-                    flex-grow: 1;
-                }
-                .pf-c-card__title {
-                    text-align: center;
-                    /* This is not ideal as it hard limits us to 2 lines of text for the title
-                    of the application. In theory that should be fine for most cases, but ideally
-                    we don't do this */
-                    height: 48px;
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFCard, PFButton, customCSS];
     }
 
     renderExpansion(application: Application) {

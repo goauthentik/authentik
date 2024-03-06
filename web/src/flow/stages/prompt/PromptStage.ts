@@ -9,7 +9,7 @@ import "@goauthentik/elements/forms/FormElement";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
@@ -29,11 +29,19 @@ import {
     StagePrompt,
 } from "@goauthentik/api";
 
+const customCSS = css`
+    textarea {
+        min-height: 4em;
+        max-height: 15em;
+        resize: vertical;
+    }
+`;
+
 @customElement("ak-stage-prompt")
 export class PromptStage extends WithCapabilitiesConfig(
     BaseStage<PromptChallenge, PromptChallengeResponseRequest>,
 ) {
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [
             PFBase,
             PFLogin,
@@ -43,13 +51,7 @@ export class PromptStage extends WithCapabilitiesConfig(
             PFTitle,
             PFButton,
             PFCheck,
-            css`
-                textarea {
-                    min-height: 4em;
-                    max-height: 15em;
-                    resize: vertical;
-                }
-            `,
+            customCSS,
         ];
     }
 

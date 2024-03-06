@@ -2,7 +2,7 @@ import { AKElement } from "@goauthentik/app/elements/Base";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFList from "@patternfly/patternfly/components/List/list.css";
@@ -17,7 +17,7 @@ export class LDAPSourceConnectivity extends AKElement {
         };
     };
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFList];
     }
 

@@ -8,7 +8,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/PageHeader";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
+import { PropertyValues, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -28,7 +28,7 @@ export class EventViewPage extends AKElement {
     @state()
     event!: EventWithContext;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFGrid, PFDescriptionList, PFPage, PFContent, PFCard];
     }
 

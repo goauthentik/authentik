@@ -7,27 +7,27 @@ import "@goauthentik/elements/ak-locale-context";
 import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 import "rapidoc";
 
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import { UiThemeEnum } from "@goauthentik/api";
+
+const customCSS = css`
+    img.logo {
+        width: 100%;
+        padding: 1rem 0.5rem 1.5rem 0.5rem;
+        min-height: 48px;
+    }
+`;
 
 @customElement("ak-api-browser")
 export class APIBrowser extends Interface {
     @property()
     schemaPath?: string;
 
-    static get styles(): CSSResult[] {
-        return [
-            css`
-                img.logo {
-                    width: 100%;
-                    padding: 1rem 0.5rem 1.5rem 0.5rem;
-                    min-height: 48px;
-                }
-            `,
-        ];
+    static get styles() {
+        return [customCSS];
     }
 
     @state()

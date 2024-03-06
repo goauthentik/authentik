@@ -1,7 +1,7 @@
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -9,6 +9,16 @@ import PFPagination from "@patternfly/patternfly/components/Pagination/paginatio
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { Pagination } from "@goauthentik/api";
+
+const customCSS = css`
+    :host([theme="dark"]) .pf-c-pagination__nav-control .pf-c-button {
+        color: var(--pf-c-button--m-plain--disabled--Color);
+        --pf-c-button--disabled--Color: var(--pf-c-button--m-plain--Color);
+    }
+    :host([theme="dark"]) .pf-c-pagination__nav-control .pf-c-button:disabled {
+        color: var(--pf-c-button--disabled--Color);
+    }
+`;
 
 @customElement("ak-table-pagination")
 export class TablePagination extends AKElement {
@@ -20,21 +30,8 @@ export class TablePagination extends AKElement {
         return;
     };
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFPagination,
-            css`
-                :host([theme="dark"]) .pf-c-pagination__nav-control .pf-c-button {
-                    color: var(--pf-c-button--m-plain--disabled--Color);
-                    --pf-c-button--disabled--Color: var(--pf-c-button--m-plain--Color);
-                }
-                :host([theme="dark"]) .pf-c-pagination__nav-control .pf-c-button:disabled {
-                    color: var(--pf-c-button--disabled--Color);
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFButton, PFPagination, customCSS];
     }
 
     render(): TemplateResult {

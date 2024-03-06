@@ -69,21 +69,16 @@ const successState: State = {
     icon: ["fa-check-circle", "pf-m-success"],
 };
 
+const customCSS = css`
+    .pf-c-title {
+        padding-bottom: var(--pf-global--spacer--md);
+    }
+`;
+
 @customElement("ak-application-wizard-commit-application")
 export class ApplicationWizardCommitApplication extends BasePanel {
     static get styles() {
-        return [
-            ...super.styles,
-            PFBullseye,
-            PFEmptyState,
-            PFTitle,
-            PFProgressStepper,
-            css`
-                .pf-c-title {
-                    padding-bottom: var(--pf-global--spacer--md);
-                }
-            `,
-        ];
+        return [...super.styles, PFBullseye, PFEmptyState, PFTitle, PFProgressStepper, customCSS];
     }
 
     @state()
@@ -104,11 +99,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
             );
             if (!providerModel) {
                 throw new Error(
-                    `Could not determine provider model from user request: ${JSON.stringify(
-                        this.wizard,
-                        null,
-                        2,
-                    )}`,
+                    `Could not determine provider model from user request: ${JSON.stringify(this.wizard, null, 2)}`,
                 );
             }
 

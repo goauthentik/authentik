@@ -4,7 +4,7 @@ import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -18,32 +18,29 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { AccessDeniedChallenge, FlowChallengeResponseRequest } from "@goauthentik/api";
 
+const customCSS = css`
+    .big-icon {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        height: 5rem;
+    }
+    .big-icon i {
+        font-size: 3rem;
+    }
+    .reason {
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+`;
+
 @customElement("ak-stage-access-denied-icon")
 export class AccessDeniedIcon extends AKElement {
     @property()
     errorMessage?: string;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFTitle,
-            PFDivider,
-            css`
-                .big-icon {
-                    display: flex;
-                    width: 100%;
-                    justify-content: center;
-                    height: 5rem;
-                }
-                .big-icon i {
-                    font-size: 3rem;
-                }
-                .reason {
-                    margin-bottom: 1rem;
-                    text-align: center;
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFTitle, PFDivider, customCSS];
     }
 
     render(): TemplateResult {
@@ -65,7 +62,7 @@ export class AccessDeniedStage extends BaseStage<
     AccessDeniedChallenge,
     FlowChallengeResponseRequest
 > {
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFLogin, PFForm, PFList, PFFormControl, PFTitle];
     }
 

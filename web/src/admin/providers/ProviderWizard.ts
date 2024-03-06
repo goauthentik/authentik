@@ -16,7 +16,7 @@ import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
 import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
-import { CSSResult, TemplateResult, html, nothing } from "lit";
+import { TemplateResult, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -32,7 +32,7 @@ export class InitialProviderWizardPage extends WithLicenseSummary(WizardPage) {
     @property({ attribute: false })
     providerTypes: TypeCreate[] = [];
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFForm, PFHint, PFButton, PFRadio];
     }
     sidebarLabel = () => msg("Select type");
@@ -100,7 +100,7 @@ export class InitialProviderWizardPage extends WithLicenseSummary(WizardPage) {
 
 @customElement("ak-provider-wizard")
 export class ProviderWizard extends AKElement {
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFButton, PFRadio];
     }
 

@@ -99,11 +99,8 @@ const container = (testItem: TemplateResult) => {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const displayChange = (ev: any) => {
-    document.getElementById("message-pad")!.innerText = `Value selected: ${JSON.stringify(
-        ev.target.value,
-        null,
-        2,
-    )}`;
+    document.getElementById("message-pad")!.innerText =
+        `Value selected: ${JSON.stringify(ev.target.value, null, 2)}`;
 };
 
 export const Default = () =>

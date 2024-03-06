@@ -15,7 +15,7 @@ import "@goauthentik/elements/cards/AggregatePromiseCard";
 import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -33,35 +33,29 @@ export function versionFamily(): string {
     return parts.join(".");
 }
 
+const customCSS = css`
+    .pf-l-grid__item {
+        height: 100%;
+    }
+    .pf-l-grid__item.big-graph-container {
+        height: 35em;
+    }
+    .card-container {
+        max-height: 10em;
+    }
+    .ak-external-link {
+        display: inline-block;
+        margin-left: 0.175rem;
+        vertical-align: super;
+        line-height: normal;
+        font-size: var(--pf-global--icon--FontSize--sm);
+    }
+`;
+
 @customElement("ak-admin-overview")
 export class AdminOverviewPage extends AKElement {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFGrid,
-            PFPage,
-            PFContent,
-            PFList,
-            PFDivider,
-            css`
-                .pf-l-grid__item {
-                    height: 100%;
-                }
-                .pf-l-grid__item.big-graph-container {
-                    height: 35em;
-                }
-                .card-container {
-                    max-height: 10em;
-                }
-                .ak-external-link {
-                    display: inline-block;
-                    margin-left: 0.175rem;
-                    vertical-align: super;
-                    line-height: normal;
-                    font-size: var(--pf-global--icon--FontSize--sm);
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFGrid, PFPage, PFContent, PFList, PFDivider, customCSS];
     }
 
     @state()
