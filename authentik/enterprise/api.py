@@ -31,7 +31,7 @@ class EnterpriseRequiredMixin:
 
     def validate(self, attrs: dict) -> dict:
         """Check that a valid license exists"""
-        if not LicenseKey.cached_summary().valid:
+        if not LicenseKey.cached_summary().has_license:
             raise ValidationError(_("Enterprise is required to create/update this object."))
         return super().validate(attrs)
 
