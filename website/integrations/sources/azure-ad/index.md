@@ -55,7 +55,7 @@ For more details on how-to have the new source display on the Login Page see [he
 Using the following process you can auto-enroll your users without interaction, and directly control the mapping Azure attribute to authentik.
 attribute.
 
-1. Create a new _Expression Policy_ see [here](../../../docs/policies/index) for details.
+1. Create a new _Expression Policy_ see [here](../../../docs/policies/index.md) for details.
 2. Choose _azure-ad-mapping_ as name
 3. Add the following code and adjust to your needs
 
@@ -99,7 +99,7 @@ context['prompt_data'] = current_prompt_data
 return True
 ```
 
-4. Create a new enrollment flow _azure-ad-enrollment_ see [here](../../../docs/flow/index) for details
+4. Create a new enrollment flow _azure-ad-enrollment_ see [here](../../../docs/flow/index.md) for details
 5. Add the policy _default-source-enrollment-if-sso_ to the flow. Todo so open the newly created flow.
    Click on the tab **Policy/Group/User Bindings**. Click on **Bind existing policy** and choose _default-source-enrollment-if-sso_
    from the list.
