@@ -1,14 +1,14 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import { PFSize } from "@goauthentik/elements/Spinner";
 
-import { TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     i.pf-c-empty-state__icon {
         height: var(--pf-global--icon--FontSize--2xl);
         line-height: var(--pf-global--icon--FontSize--2xl);

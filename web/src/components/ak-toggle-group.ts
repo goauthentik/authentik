@@ -1,7 +1,7 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
-import { css, html, nothing } from "lit";
+import { CSSResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
@@ -23,7 +23,7 @@ type Pair = [string, string];
 // MYNIS:
 // A 'name' property so that the event carries *which* toggle group emitted the event.
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     .pf-c-toggle-group {
         justify-content: center;
     }

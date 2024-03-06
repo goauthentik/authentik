@@ -1,11 +1,11 @@
 import { AKElement } from "@goauthentik/elements/Base";
 
-import { TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     .separator {
         display: flex;
         align-items: center;

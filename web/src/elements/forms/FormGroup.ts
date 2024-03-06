@@ -1,6 +1,6 @@
 import { AKElement } from "@goauthentik/elements/Base";
 
-import { TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -20,7 +20,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  * trigger the `expanded` property as needed.
  */
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     slot[name="body"][hidden] {
         display: none !important;
     }

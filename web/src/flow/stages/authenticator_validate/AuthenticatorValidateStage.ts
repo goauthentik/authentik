@@ -6,7 +6,7 @@ import { BaseStage, StageHost, SubmitOptions } from "@goauthentik/flow/stages/ba
 import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -25,7 +25,7 @@ import {
     FlowsApi,
 } from "@goauthentik/api";
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     ul {
         padding-top: 1rem;
     }

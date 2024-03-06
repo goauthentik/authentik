@@ -3,14 +3,14 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { getURLParams, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFTabs from "@patternfly/patternfly/components/Tabs/tabs.css";
 import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     ::slotted(*) {
         flex-grow: 2;
     }

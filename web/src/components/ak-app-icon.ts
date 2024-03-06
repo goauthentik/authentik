@@ -2,7 +2,7 @@ import { AKElement } from "@goauthentik/app/elements/Base";
 import { PFSize } from "@goauthentik/app/elements/Spinner";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -11,7 +11,7 @@ import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 
 import { Application } from "@goauthentik/api";
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     :host {
         max-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
     }

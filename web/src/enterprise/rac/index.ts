@@ -4,7 +4,7 @@ import "@goauthentik/elements/LoadingOverlay";
 import Guacamole from "guacamole-common-js";
 
 import { msg, str } from "@lit/localize";
-import { TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -25,7 +25,7 @@ const AUDIO_INPUT_MIMETYPE = "audio/L16;rate=44100,channels=2";
 const RECONNECT_ATTEMPTS_INITIAL = 5;
 const RECONNECT_ATTEMPTS = 5;
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     :host {
         cursor: none;
     }

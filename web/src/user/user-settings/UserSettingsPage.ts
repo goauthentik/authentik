@@ -12,7 +12,7 @@ import "@goauthentik/user/user-settings/mfa/MFADevicesPage";
 import "@goauthentik/user/user-settings/tokens/UserTokenList";
 
 import { localized, msg } from "@lit/localize";
-import { TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -30,7 +30,7 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 import { StagesApi, UserSetting } from "@goauthentik/api";
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     .pf-c-page {
         --pf-c-page--BackgroundColor: transparent;
     }

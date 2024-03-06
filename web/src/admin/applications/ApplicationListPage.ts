@@ -15,7 +15,7 @@ import { TablePage } from "@goauthentik/elements/table/TablePage";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -24,7 +24,7 @@ import { Application, CoreApi } from "@goauthentik/api";
 
 import "./ApplicationWizardHint";
 
-export const customCSS = css`
+export const customCSS: Readonly<CSSResult> = css`
     /* Fix alignment issues with images in tables */
     .pf-c-table tbody > tr > * {
         vertical-align: middle;

@@ -2,7 +2,7 @@ import { EVENT_SIDEBAR_TOGGLE } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 
-import { TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -26,7 +26,7 @@ export const DefaultBrand: CurrentBrand = {
     defaultLocale: "",
 };
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     :host {
         display: flex;
         flex-direction: row;

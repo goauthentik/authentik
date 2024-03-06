@@ -9,7 +9,7 @@ import "@goauthentik/elements/forms/FormElement";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
@@ -29,7 +29,7 @@ import {
     StagePrompt,
 } from "@goauthentik/api";
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     textarea {
         min-height: 4em;
         max-height: 15em;

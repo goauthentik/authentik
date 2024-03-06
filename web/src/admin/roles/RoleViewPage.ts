@@ -12,7 +12,7 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/forms/ModalForm";
 
 import { msg, str } from "@lit/localize";
-import { css, html, nothing } from "lit";
+import { CSSResult, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -26,7 +26,7 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 import { RbacApi, RbacPermissionsAssignedByUsersListModelEnum, Role } from "@goauthentik/api";
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     .pf-c-description-list__description ak-action-button {
         margin-right: 6px;
         margin-bottom: 6px;

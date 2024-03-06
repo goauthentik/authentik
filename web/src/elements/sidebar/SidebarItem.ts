@@ -2,14 +2,14 @@ import { ROUTE_SEPARATOR } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { css } from "lit";
-import { TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     :host {
         z-index: 100;
         box-shadow: none !important;

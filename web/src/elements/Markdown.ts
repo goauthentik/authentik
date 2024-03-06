@@ -5,7 +5,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { matter } from "md-front-matter";
 import * as showdown from "showdown";
 
-import { PropertyValues, css, html, nothing } from "lit";
+import { CSSResult, PropertyValues, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
@@ -16,7 +16,7 @@ export interface MarkdownDocument {
     path: string;
 }
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     h2:first-of-type {
         margin-top: 0;
     }

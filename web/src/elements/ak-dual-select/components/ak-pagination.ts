@@ -2,7 +2,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg, str } from "@lit/localize";
-import { css, html, nothing } from "lit";
+import { CSSResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -11,7 +11,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import type { BasePagination } from "../types";
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     :host([theme="dark"]) .pf-c-pagination__nav-control .pf-c-button {
         color: var(--pf-c-button--m-plain--disabled--Color);
         --pf-c-button--disabled--Color: var(--pf-c-button--m-plain--Color);

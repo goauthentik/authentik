@@ -7,7 +7,7 @@ import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFor
 import { SearchSelect } from "@goauthentik/elements/forms/SearchSelect";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
-import { TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
@@ -138,7 +138,7 @@ export function serializeForm<T extends KeyUnknown>(
     return json as unknown as T;
 }
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     select[multiple] {
         height: 15em;
     }

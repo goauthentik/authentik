@@ -7,7 +7,7 @@ import "@goauthentik/user/LibraryApplication/RACLaunchEndpointModal";
 import { UserInterface } from "@goauthentik/user/UserInterface";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, css, html, nothing } from "lit";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -19,7 +19,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { Application } from "@goauthentik/api";
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     .pf-c-card {
         --pf-c-card--BoxShadow: var(--pf-global--BoxShadow--md);
     }

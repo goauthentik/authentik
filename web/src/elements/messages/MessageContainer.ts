@@ -9,13 +9,13 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/messages/Message";
 import { APIMessage } from "@goauthentik/elements/messages/Message";
 
-import { TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     /* Fix spacing between messages */
     ak-message {
         display: block;

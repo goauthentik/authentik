@@ -11,7 +11,7 @@ import "@goauthentik/elements/buttons/ActionButton/ak-action-button";
 import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
 
 import { msg } from "@lit/localize";
-import { css, html } from "lit";
+import { CSSResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
 
@@ -33,7 +33,7 @@ const closeButtonIcon = html`<svg
     ></path>
 </svg>`;
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     .pf-c-page__main-section {
         padding-top: 0;
         padding-bottom: 0;

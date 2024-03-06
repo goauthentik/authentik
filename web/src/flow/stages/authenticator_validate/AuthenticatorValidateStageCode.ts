@@ -4,7 +4,7 @@ import "@goauthentik/elements/forms/FormElement";
 import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import {
@@ -13,7 +13,7 @@ import {
     DeviceClassesEnum,
 } from "@goauthentik/api";
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     .icon-description {
         display: flex;
     }

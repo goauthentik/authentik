@@ -1,13 +1,13 @@
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     /* Form with user */
     .form-control-static {
         margin-top: var(--pf-global--spacer--sm);

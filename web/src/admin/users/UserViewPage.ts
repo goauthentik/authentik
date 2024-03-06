@@ -39,7 +39,7 @@ import "@goauthentik/elements/user/SessionList";
 import "@goauthentik/elements/user/UserConsentList";
 
 import { msg, str } from "@lit/localize";
-import { TemplateResult, css, html, nothing } from "lit";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -63,7 +63,7 @@ import {
 
 import "./UserDevicesTable";
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     .ak-button-collection {
         display: flex;
         flex-direction: column;

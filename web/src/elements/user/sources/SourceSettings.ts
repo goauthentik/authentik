@@ -8,14 +8,14 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 
 import { msg, str } from "@lit/localize";
-import { TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css";
 
 import { PaginatedUserSourceConnectionList, SourcesApi, UserSetting } from "@goauthentik/api";
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     .pf-c-data-list__cell {
         display: flex;
         align-items: center;

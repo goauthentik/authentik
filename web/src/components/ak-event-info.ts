@@ -7,7 +7,7 @@ import "@goauthentik/elements/Spinner";
 import { PFSize } from "@goauthentik/elements/Spinner";
 
 import { msg, str } from "@lit/localize";
-import { TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 import { until } from "lit/directives/until.js";
@@ -24,7 +24,7 @@ import { EventActions, FlowsApi } from "@goauthentik/api";
 
 type Pair = [string, string | number | EventContext | EventModel | string[] | TemplateResult];
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     code {
         display: block;
         white-space: pre-wrap;

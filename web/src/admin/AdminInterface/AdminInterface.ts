@@ -19,7 +19,7 @@ import "@goauthentik/elements/router/RouterOutlet";
 import "@goauthentik/elements/sidebar/Sidebar";
 import "@goauthentik/elements/sidebar/SidebarItem";
 
-import { TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
@@ -32,7 +32,7 @@ import { AdminApi, SessionUser, UiThemeEnum, Version } from "@goauthentik/api";
 
 import "./AdminSidebar";
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     .pf-c-page__main,
     .pf-c-drawer__content,
     .pf-c-page__drawer {

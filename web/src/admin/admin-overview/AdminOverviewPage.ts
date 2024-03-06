@@ -15,7 +15,7 @@ import "@goauthentik/elements/cards/AggregatePromiseCard";
 import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
 
 import { msg, str } from "@lit/localize";
-import { TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -33,7 +33,7 @@ export function versionFamily(): string {
     return parts.join(".");
 }
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     .pf-l-grid__item {
         height: 100%;
     }

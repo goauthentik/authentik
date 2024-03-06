@@ -2,7 +2,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
-import { css, html, nothing } from "lit";
+import { CSSResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -16,7 +16,7 @@ import {
     EVENT_REMOVE_SELECTED,
 } from "../constants";
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     :host {
         align-self: center;
         padding-right: var(--pf-c-dual-list-selector__controls--PaddingRight);

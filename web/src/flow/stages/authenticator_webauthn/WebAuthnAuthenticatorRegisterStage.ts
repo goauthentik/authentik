@@ -8,7 +8,7 @@ import "@goauthentik/elements/EmptyState";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg, str } from "@lit/localize";
-import { TemplateResult, css, html, nothing } from "lit";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -28,7 +28,7 @@ export interface WebAuthnAuthenticatorRegisterChallengeResponse {
 }
 
 // FIXME: this is technically duplicate with ../authenticator_validate/base.ts
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     .pf-c-form__group.pf-m-action {
         display: flex;
         gap: 16px;

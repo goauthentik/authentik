@@ -11,7 +11,7 @@ import "@goauthentik/elements/table/TablePagination";
 import "@goauthentik/elements/table/TableSearch";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -94,7 +94,7 @@ export interface PaginatedResponse<T> {
     results: Array<T>;
 }
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     .pf-c-table thead .pf-c-table__check {
         min-width: 3rem;
     }

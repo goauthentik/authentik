@@ -12,14 +12,14 @@ import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 import { Event, EventsApi } from "@goauthentik/api";
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     .pf-c-card__title {
         --pf-c-card__title--FontFamily: var(--pf-global--FontFamily--heading--sans-serif);
         --pf-c-card__title--FontSize: var(--pf-global--FontSize--md);

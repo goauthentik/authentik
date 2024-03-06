@@ -4,7 +4,7 @@ import { FormGroup } from "@goauthentik/elements/forms/FormGroup";
 
 import { msg } from "@lit/localize";
 import { css } from "lit";
-import { TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -36,7 +36,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  * 
  */
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     .pf-c-form__group {
         display: grid;
         grid-template-columns:

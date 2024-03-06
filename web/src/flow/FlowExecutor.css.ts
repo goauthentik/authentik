@@ -1,6 +1,6 @@
-import { css } from "lit";
+import { CSSResult, css } from "lit";
 
-export const customCSS = css`
+export const customCSS: Readonly<CSSResult> = css`
     :host {
         --pf-c-login__main-body--PaddingBottom: var(--pf-global--spacer--2xl);
     }

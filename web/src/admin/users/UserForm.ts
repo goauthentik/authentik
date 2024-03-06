@@ -9,13 +9,13 @@ import "@goauthentik/elements/forms/Radio";
 import YAML from "yaml";
 
 import { msg, str } from "@lit/localize";
-import { TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import { CoreApi, Group, User, UserTypeEnum } from "@goauthentik/api";
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     .pf-c-button.pf-m-control {
         height: 100%;
     }

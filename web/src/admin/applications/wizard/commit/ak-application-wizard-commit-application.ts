@@ -9,7 +9,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 
 import { msg } from "@lit/localize";
 import { customElement, state } from "@lit/reactive-element/decorators.js";
-import { TemplateResult, css, html, nothing } from "lit";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
@@ -69,7 +69,7 @@ const successState: State = {
     icon: ["fa-check-circle", "pf-m-success"],
 };
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     .pf-c-title {
         padding-bottom: var(--pf-global--spacer--md);
     }

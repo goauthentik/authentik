@@ -5,7 +5,7 @@ import "@goauthentik/elements/forms/FormElement";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg, str } from "@lit/localize";
-import { TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
@@ -36,7 +36,7 @@ export const OR_LIST_FORMATTERS = new Intl.ListFormat("default", {
     type: "disjunction",
 });
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     /* login page's icons */
     .pf-c-login__main-footer-links-item button {
         background-color: transparent;

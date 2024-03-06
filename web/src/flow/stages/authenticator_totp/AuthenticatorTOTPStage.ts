@@ -7,7 +7,7 @@ import { BaseStage } from "@goauthentik/flow/stages/base";
 import "webcomponent-qr-code";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -23,7 +23,7 @@ import {
     AuthenticatorTOTPChallengeResponseRequest,
 } from "@goauthentik/api";
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     .qr-container {
         display: flex;
         flex-direction: column;

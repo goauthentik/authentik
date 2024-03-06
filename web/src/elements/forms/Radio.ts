@@ -1,7 +1,7 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
-import { TemplateResult, css, html, nothing } from "lit";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 
@@ -18,7 +18,7 @@ export interface RadioOption<T> {
     value: T;
 }
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     .pf-c-form__group-control {
         padding-top: calc(var(--pf-c-form--m-horizontal__group-label--md--PaddingTop) * 1.3);
     }

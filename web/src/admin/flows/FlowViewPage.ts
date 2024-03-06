@@ -12,7 +12,7 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/SpinnerButton";
 
 import { msg } from "@lit/localize";
-import { PropertyValues, TemplateResult, css, html } from "lit";
+import { PropertyValues, CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -30,7 +30,7 @@ import {
     ResponseError,
 } from "@goauthentik/api";
 
-const customCSS = css`
+const customCSS: Readonly<CSSResult> = css`
     img.pf-icon {
         max-height: 24px;
     }
