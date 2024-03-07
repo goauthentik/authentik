@@ -81,27 +81,25 @@ const baseArgs = {
 };
 
 function buildAuthentik(interfaces) {
-    const start = Date.now();
-    console.clear();
     for (const [source, dest] of interfaces) {
         const DIST = path.join(__dirname, "./dist", dest);
-        console.log(`[${new Date(start).toISOString()}] Starting build for target ${source}`);
+        console.log(`[${new Date(Date.now()).toISOString()}] Starting build for target ${source}`);
         try {
+            const start = Date.now();
             esbuild.buildSync({
                 ...baseArgs,
                 entryPoints: [`./src/${source}`],
                 outdir: DIST,
             });
+            const end = Date.now();
+            console.log(
+                `[${new Date(end).toISOString()}] Finished build for target ${source} in ${Date.now() - start}ms`,
+            );
         } catch (exc) {
             console.error(
                 `[${new Date(Date.now()).toISOString()}] Failed to build ${source}: ${exc}`,
             );
-            continue;
         }
-        const end = Date.now();
-        console.log(
-            `[${new Date(end).toISOString()}] Finished build for target ${source} in ${Date.now() - start}ms`,
-        );
     }
 }
 
@@ -111,6 +109,7 @@ function debouncedBuild() {
         clearTimeout(timeoutId);
     }
     timeoutId = setTimeout(() => {
+        console.clear();
         buildAuthentik(interfaces);
     }, 250);
 }
