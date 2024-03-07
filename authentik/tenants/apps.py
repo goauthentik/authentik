@@ -16,7 +16,7 @@ def ensure_default_tenant(*args, using=DEFAULT_DB_ALIAS, **kwargs):
     with schema_context(get_public_schema_name()):
         Tenant.objects.using(using).update_or_create(
             defaults={"name": "Default", "ready": True},
-            schema_name="public",
+            schema_name=get_public_schema_name(),
         )
 
 
