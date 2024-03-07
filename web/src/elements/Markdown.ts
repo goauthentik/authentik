@@ -19,7 +19,7 @@ export interface MarkdownDocument {
 export type Replacer = (input: string, md: MarkdownDocument) => string;
 
 const isRelativeLink = /href="(\.[^"]*)"/gm;
-const isFile = /[^/]+\.md$/;
+const isFile = /[^/]+\.md/;
 
 @customElement("ak-markdown")
 export class Markdown extends AKElement {
@@ -75,10 +75,9 @@ export class Markdown extends AKElement {
         const baseName = md.path.replace(isFile, "");
         const baseUrl = docLink("");
         const result = input.replace(isRelativeLink, (match, path) => {
-            const pathName = path.replace(isFile, "");
+            const pathName = path.replace(".md", "");
             const link = `docs/${baseName}${pathName}`;
             const url = new URL(link, baseUrl).toString();
-            console.log("4:", url, match);
             return `href="${url}" _target="blank"`;
         });
         return result;
