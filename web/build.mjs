@@ -126,15 +126,11 @@ if (process.argv.length > 2 && (process.argv[2] === "-w" || process.argv[2] === 
         }
         debouncedBuild();
     });
-}
-
-// There's no watch-for-proxy, sorry.
-
-if (process.argv.length > 2 && (process.argv[2] === "-p" || process.argv[2] === "--proxy")) {
-    buildauthentik(interfaces.slice(0, 2));
+} else if (process.argv.length > 2 && (process.argv[2] === "-p" || process.argv[2] === "--proxy")) {
+    // There's no watch-for-proxy, sorry.
+    buildAuthentik(interfaces.slice(0, 2));
     process.exit(0);
+} else {
+    // And the fallback: just build it.
+    buildAuthentik(interfaces);
 }
-
-// And the fallback: just build it.
-
-buildauthentik(interfaces);
