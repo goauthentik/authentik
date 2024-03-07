@@ -70,7 +70,7 @@ class TestCrypto(APITestCase):
         instance = builder.save()
         now = datetime.datetime.today()
         self.assertEqual(instance.name, name)
-        self.assertEqual((instance.certificate.not_valid_after - now).days, 2)
+        self.assertEqual((instance.certificate.not_valid_after_utc - now).days, 2)
 
     def test_builder_api(self):
         """Test Builder (via API)"""
