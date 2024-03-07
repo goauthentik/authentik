@@ -79,8 +79,8 @@ export class ApplicationViewPage extends AKElement {
             if (
                 app.providerObj &&
                 [
-                    "authentik_providers_proxy.proxyprovider",
-                    "authentik_providers_ldap.ldapprovider",
+                    RbacPermissionsAssignedByUsersListModelEnum.ProvidersProxyProxyprovider.toString(),
+                    RbacPermissionsAssignedByUsersListModelEnum.ProvidersLdapLdapprovider.toString(),
                 ].includes(app.providerObj.metaModelName)
             ) {
                 this.fetchIsMissingOutpost([app.provider || 0]);
