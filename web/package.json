@@ -33,7 +33,7 @@
         "@codemirror/lang-html": "^6.4.8",
         "@codemirror/lang-javascript": "^6.2.2",
         "@codemirror/lang-python": "^6.1.4",
-        "@codemirror/lang-xml": "^6.0.2",
+        "@codemirror/lang-xml": "^6.1.0",
         "@codemirror/legacy-modes": "^6.3.3",
         "@codemirror/theme-one-dark": "^6.1.2",
         "@formatjs/intl-listformat": "^7.5.5",
