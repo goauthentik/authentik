@@ -17,7 +17,7 @@ COPY ./blueprints /work/blueprints/
 COPY ./schema.yml /work/
 COPY ./SECURITY.md /work/
 
-RUN npm run build
+RUN npm run build-bundled
 
 # Stage 2: Build webui
 FROM --platform=${BUILDPLATFORM} docker.io/node:21 as web-builder
