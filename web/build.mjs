@@ -80,18 +80,29 @@ const baseArgs = {
     format: "esm",
 };
 
-function buildauthentik(interfaces) {
+function buildAuthentik(interfaces) {
     const start = Date.now();
+    console.clear();
     for (const [source, dest] of interfaces) {
         const DIST = path.join(__dirname, "./dist", dest);
-        esbuild.buildSync({
-            ...baseArgs,
-            entryPoints: [`./src/${source}`],
-            outdir: DIST,
-        });
+        console.log(`[${new Date(start).toISOString()}] Starting build for target ${source}`);
+        try {
+            esbuild.buildSync({
+                ...baseArgs,
+                entryPoints: [`./src/${source}`],
+                outdir: DIST,
+            });
+        } catch (exc) {
+            console.error(
+                `[${new Date(Date.now()).toISOString()}] Failed to build ${source}: ${exc}`,
+            );
+            continue;
+        }
+        const end = Date.now();
+        console.log(
+            `[${new Date(end).toISOString()}] Finished build for target ${source} in ${Date.now() - start}ms`,
+        );
     }
-    const end = Date.now();
-    console.log(`[${new Date(end).toISOString()}] authentikUI built in ${Date.now() - start}ms`);
 }
 
 let timeoutId = null;
@@ -100,7 +111,7 @@ function debouncedBuild() {
         clearTimeout(timeoutId);
     }
     timeoutId = setTimeout(() => {
-        buildauthentik(interfaces);
+        buildAuthentik(interfaces);
     }, 250);
 }
 
