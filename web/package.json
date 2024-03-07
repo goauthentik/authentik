@@ -118,7 +118,7 @@
         "pseudolocale": "^2.0.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "rollup": "^4.12.0",
+        "rollup": "^4.12.1",
         "rollup-plugin-copy": "^3.5.0",
         "rollup-plugin-cssimport": "^1.0.3",
         "rollup-plugin-modify": "^3.0.0",
