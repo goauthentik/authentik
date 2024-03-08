@@ -1,6 +1,6 @@
 import { SentryIgnoredError } from "@goauthentik/common/errors";
 
-import { CSSResult, css } from "lit";
+import { CSSResult, css, unsafeCSS } from "lit";
 
 export function getCookie(name: string): string {
     let cookieValue = "";
@@ -123,7 +123,7 @@ const isCSSResult = (v: unknown): v is CSSResult =>
 
 // prettier-ignore
 export const _adaptCSS = (sheet: AdaptableStylesheet): CSSStyleSheet =>
-    (typeof sheet === "string" ? css([sheet] as unknown as TemplateStringsArray, ...[]).styleSheet
+    (typeof sheet === "string" ? unsafeCSS(sheet).styleSheet
         : isCSSResult(sheet) ? sheet.styleSheet
         : sheet) as CSSStyleSheet;
 
