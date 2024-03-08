@@ -30,7 +30,7 @@ class Command(TenantCommand):
             delete_stage = True
         message = TemplateEmailMessage(
             subject="authentik Test-Email",
-            to=[options["to"]],
+            to=[("", options["to"])],
             template_name="email/setup.html",
             template_context={},
         )
