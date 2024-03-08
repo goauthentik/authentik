@@ -1,4 +1,4 @@
-{% load i18n %}{% translate "Welcome!" %}
+{% load i18n %}{% autoescape off %}{% translate "Welcome!" %}
 
 {% translate "We're excited to have you get started. First, you need to confirm your account. Just open the link below." %}
 
@@ -6,3 +6,4 @@
 
 -- 
 Powered by goauthentik.io.
+{% endautoescape %}

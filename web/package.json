@@ -33,7 +33,7 @@
         "@codemirror/lang-html": "^6.4.8",
         "@codemirror/lang-javascript": "^6.2.2",
         "@codemirror/lang-python": "^6.1.4",
-        "@codemirror/lang-xml": "^6.0.2",
+        "@codemirror/lang-xml": "^6.1.0",
         "@codemirror/legacy-modes": "^6.3.3",
         "@codemirror/theme-one-dark": "^6.1.2",
         "@formatjs/intl-listformat": "^7.5.5",
@@ -46,7 +46,7 @@
         "@open-wc/lit-helpers": "^0.7.0",
         "@patternfly/elements": "^2.4.0",
         "@patternfly/patternfly": "^4.224.2",
-        "@sentry/browser": "^7.104.0",
+        "@sentry/browser": "^7.106.0",
         "@webcomponents/webcomponentsjs": "^2.8.0",
         "base64-js": "^1.5.1",
         "chart.js": "^4.4.2",
@@ -59,13 +59,13 @@
         "guacamole-common-js": "^1.5.0",
         "lit": "^3.1.2",
         "md-front-matter": "^1.0.4",
-        "mermaid": "^10.8.0",
+        "mermaid": "^10.9.0",
         "rapidoc": "^9.3.4",
         "showdown": "^2.1.0",
         "style-mod": "^4.1.2",
         "ts-pattern": "^5.0.6",
         "webcomponent-qr-code": "^1.2.0",
-        "yaml": "^2.4.0"
+        "yaml": "^2.4.1"
     },
     "devDependencies": {
         "@babel/core": "^7.24.0",
@@ -95,6 +95,9 @@
         "@types/showdown": "^2.0.6",
         "@typescript-eslint/eslint-plugin": "^7.1.1",
         "@typescript-eslint/parser": "^7.1.1",
+        "@rollup/plugin-replace": "^5.0.5",
+        "rollup-plugin-modify": "^3.0.0",
+        "rollup-plugin-postcss-lit": "^2.1.0",
         "babel-plugin-macros": "^3.1.0",
         "babel-plugin-tsconfig-paths": "^1.0.3",
         "chokidar": "^3.6.0",
@@ -119,13 +122,16 @@
         "ts-lit-plugin": "^2.0.2",
         "tslib": "^2.6.2",
         "turnstile-types": "^1.2.0",
-        "typescript": "^5.3.3",
+        "typescript": "^5.4.2",
         "vite-tsconfig-paths": "^4.3.1"
     },
     "optionalDependencies": {
         "@esbuild/darwin-arm64": "^0.20.1",
         "@esbuild/linux-amd64": "^0.18.11",
-        "@esbuild/linux-arm64": "^0.20.1"
+        "@esbuild/linux-arm64": "^0.20.1",
+        "@rollup/rollup-darwin-arm64": "4.12.1",
+        "@rollup/rollup-linux-arm64-gnu": "4.12.1",
+        "@rollup/rollup-linux-x64-gnu": "4.12.1"
     },
     "engines": {
         "node": ">=20"

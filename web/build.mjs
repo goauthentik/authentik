@@ -80,18 +80,27 @@ const baseArgs = {
     format: "esm",
 };
 
-function buildauthentik(interfaces) {
-    const start = Date.now();
+function buildAuthentik(interfaces) {
     for (const [source, dest] of interfaces) {
         const DIST = path.join(__dirname, "./dist", dest);
-        esbuild.buildSync({
-            ...baseArgs,
-            entryPoints: [`./src/${source}`],
-            outdir: DIST,
-        });
+        console.log(`[${new Date(Date.now()).toISOString()}] Starting build for target ${source}`);
+        try {
+            const start = Date.now();
+            esbuild.buildSync({
+                ...baseArgs,
+                entryPoints: [`./src/${source}`],
+                outdir: DIST,
+            });
+            const end = Date.now();
+            console.log(
+                `[${new Date(end).toISOString()}] Finished build for target ${source} in ${Date.now() - start}ms`,
+            );
+        } catch (exc) {
+            console.error(
+                `[${new Date(Date.now()).toISOString()}] Failed to build ${source}: ${exc}`,
+            );
+        }
     }
-    const end = Date.now();
-    console.log(`[${new Date(end).toISOString()}] authentikUI built in ${Date.now() - start}ms`);
 }
 
 let timeoutId = null;
@@ -100,7 +109,8 @@ function debouncedBuild() {
         clearTimeout(timeoutId);
     }
     timeoutId = setTimeout(() => {
-        buildauthentik(interfaces);
+        console.clear();
+        buildAuthentik(interfaces);
     }, 250);
 }
 
@@ -126,15 +136,11 @@ if (process.argv.length > 2 && (process.argv[2] === "-w" || process.argv[2] === 
         }
         debouncedBuild();
     });
-}
-
-// There's no watch-for-proxy, sorry.
-
-if (process.argv.length > 2 && (process.argv[2] === "-p" || process.argv[2] === "--proxy")) {
-    buildauthentik(interfaces.slice(0, 2));
+} else if (process.argv.length > 2 && (process.argv[2] === "-p" || process.argv[2] === "--proxy")) {
+    // There's no watch-for-proxy, sorry.
+    buildAuthentik(interfaces.slice(0, 2));
     process.exit(0);
+} else {
+    // And the fallback: just build it.
+    buildAuthentik(interfaces);
 }
-
-// And the fallback: just build it.
-
-buildauthentik(interfaces);
