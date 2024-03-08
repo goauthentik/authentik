@@ -75,7 +75,7 @@ export class IdentificationStage extends BaseStage<
         // meaning that without the auto-redirect the user would only have the option
         // to manually click on the source button
         if ((this.challenge.userFields || []).length !== 0) return;
-// we also don't want to auto-redirect if there's a passwordless URL configured
+        // we also don't want to auto-redirect if there's a passwordless URL configured
         if (this.challenge.passwordlessUrl) return;
         const source = this.challenge.sources[0];
         this.host.challenge = source.challenge;
@@ -182,13 +182,13 @@ export class IdentificationStage extends BaseStage<
             </button>
         </li>`;
     }
-    
+
     renderFooter(): TemplateResult {
-                    if (!this.challenge?.enrollUrl && !this.challenge?.recoveryUrl) {
+        if (!this.challenge?.enrollUrl && !this.challenge?.recoveryUrl) {
             return html``;
         }
         return html`<div class="pf-c-login__main-footer-band">
-${this.challenge.enrollUrl
+            ${this.challenge.enrollUrl
                 ? html`<p class="pf-c-login__main-footer-band-item">
                       ${msg("Need an account?")}
                       <a id="enroll" href="${this.challenge.enrollUrl}">${msg("Sign up.")}</a>
@@ -203,7 +203,7 @@ ${this.challenge.enrollUrl
                 : html``}
         </div>`;
     }
-    
+
     renderInput(): TemplateResult {
         let type: "text" | "email" = "text";
         if (!this.challenge?.userFields || this.challenge.userFields.length === 0) {
@@ -220,12 +220,14 @@ ${this.challenge.enrollUrl
             [UserFieldsEnum.Upn]: msg("UPN"),
         };
         const label = OR_LIST_FORMATTERS.format(fields.map((f) => uiFields[f]));
-        return html`${(/forgot|recovery|recover/i.test(this.challenge.flowInfo?.title ?? ''))
-        ? html`<p style="padding-bottom: 10px;">
-             ${msg("Enter the email associated with your account, and we'll send you a link to reset your password.")}
-            </p>`
-        : ''}
-        <ak-form-element
+        return html`${/forgot|recovery|recover/i.test(this.challenge.flowInfo?.title ?? "")
+                ? html`<p style="padding-bottom: 10px;">
+                      ${msg(
+                          "Enter the email associated with your account, and we'll send you a link to reset your password.",
+                      )}
+                  </p>`
+                : ""}
+            <ak-form-element
                 label=${label}
                 ?required="${true}"
                 class="pf-c-form__group"
@@ -264,7 +266,7 @@ ${this.challenge.enrollUrl
             ${"non_field_errors" in (this.challenge?.responseErrors || {})
                 ? this.renderNonFieldErrors(this.challenge?.responseErrors?.non_field_errors || [])
                 : html``}
-                <div class="pf-c-form__group pf-m-action">
+            <div class="pf-c-form__group pf-m-action">
                 <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                     ${this.challenge.primaryAction}
                 </button>
