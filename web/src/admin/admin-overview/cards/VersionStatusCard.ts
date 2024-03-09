@@ -31,10 +31,16 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
                 message: html`${msg(str`${value.versionLatest} is available!`)}`,
             });
         }
+        if (value.version_latest_valid) {
+            return Promise.resolve<AdminStatus>({
+                icon: "fa fa-check-circle pf-m-success",
+                message: html`${msg("Up-to-date!")}`,
+            });
+        }
         return Promise.resolve<AdminStatus>({
-            icon: "fa fa-check-circle pf-m-success",
-            message: html`${msg("Up-to-date!")}`,
-        });
+            icon: "fa fa-question-circle",
+            message: html`${msg("Latest version unknown")}`,
+        }); 
     }
 
     renderHeader(): TemplateResult {
