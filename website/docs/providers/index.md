@@ -3,4 +3,20 @@ title: Providers
 slug: /providers
 ---
 
-A Provider is a way for other applications to authenticate against authentik. Common Providers are OpenID Connect (OIDC) and SAML.
+A Provider is an authentication method, a service that is used by authentik to authenticate the user for the associated application. Common Providers are OpenID Connect (OIDC)/OAuth2, LDAP, SAML, and generic proxy provider, and others.
+
+Providers are the "other half" of [applications](../applications/index.md). They typically exist in a 1-to-1 relationship; each application needs a provider and every provider can be used with one application.
+
+You can create a new provider in the Admin interface, or you can use the [Application wizard](../applications/manage_apps.md#instructions) to create a new application and its provider at the same time.
+
+Refer to the documentation for each provider:
+
+*   [LDAP](./ldap/)
+*   [OAuth2/OpenID](./oauth2/)
+*   [Proxy provider](./proxy/)
+*   [RAC (Remote Access Control)](./rac/)
+*   [Radius](./radius/)
+*   [SAML](./saml/)
+*   [SCIM](./scim/)
+
+You can also create a SAML provider by uploading an SP metadata XML file that contains the service provider's configuration data. SAML metadata is used to share configuration information between the Identity Provider (IdP) and the Service Provider (SP). An SP metadata XML file typically contains the SP certificate, the entity ID, the Assertion Consumer Service URL (ACS URL), and a log out URL (SingleLogoutService).
