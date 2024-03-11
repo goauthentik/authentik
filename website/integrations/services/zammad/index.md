@@ -22,7 +22,7 @@ The following placeholders will be used:
 
 ### Step 1 - Property Mappings
 
-Create two Mappings (under _Customisation/Property Mappings_) with these settings:
+Create two Mappings (under _Customization/Property Mappings_) with these settings:
 
 #### name mapping
 

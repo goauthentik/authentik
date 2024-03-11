@@ -23,7 +23,6 @@ from authentik.stages.prompt.stage import (
 )
 
 
-# pylint: disable=too-many-public-methods
 class TestPromptStage(FlowTestCase):
     """Prompt tests"""
 

@@ -1,7 +1,7 @@
 """Twitch OAuth Views"""
 
 from json import dumps
-from typing import Any, Optional
+from typing import Any
 
 from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
 from authentik.sources.oauth.types.oidc import OpenIDConnectOAuth2Callback
@@ -12,7 +12,7 @@ from authentik.sources.oauth.views.redirect import OAuthRedirect
 class TwitchClient(UserprofileHeaderAuthClient):
     """Twitch needs the token_type to be capitalized for the request header."""
 
-    def get_profile_info(self, token: dict[str, str]) -> Optional[dict[str, Any]]:
+    def get_profile_info(self, token: dict[str, str]) -> dict[str, Any] | None:
         token["token_type"] = token["token_type"].capitalize()
         return super().get_profile_info(token)
 

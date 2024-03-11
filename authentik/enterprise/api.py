@@ -16,13 +16,13 @@ from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.api.decorators import permission_required
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User, UserTypes
 from authentik.enterprise.license import LicenseKey, LicenseSummarySerializer
 from authentik.enterprise.models import License
-from authentik.root.install_id import get_install_id
+from authentik.rbac.decorators import permission_required
+from authentik.tenants.utils import get_unique_identifier
 
 
 class EnterpriseRequiredMixin:
@@ -31,7 +31,7 @@ class EnterpriseRequiredMixin:
 
     def validate(self, attrs: dict) -> dict:
         """Check that a valid license exists"""
-        if not LicenseKey.cached_summary().valid:
+        if not LicenseKey.cached_summary().has_license:
             raise ValidationError(_("Enterprise is required to create/update this object."))
         return super().validate(attrs)
 
@@ -92,7 +92,7 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
         """Get install_id"""
         return Response(
             data={
-                "install_id": get_install_id(),
+                "install_id": get_unique_identifier(),
             }
         )
 

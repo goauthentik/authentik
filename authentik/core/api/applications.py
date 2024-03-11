@@ -1,8 +1,8 @@
 """Application API Views"""
 
+from collections.abc import Iterator
 from copy import copy
 from datetime import timedelta
-from typing import Iterator, Optional
 
 from django.core.cache import cache
 from django.db.models import QuerySet
@@ -23,7 +23,6 @@ from structlog.stdlib import get_logger
 from structlog.testing import capture_logs
 
 from authentik.admin.api.metrics import CoordinateSerializer
-from authentik.api.decorators import permission_required
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
@@ -39,6 +38,7 @@ from authentik.lib.utils.file import (
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import PolicyResult
+from authentik.rbac.decorators import permission_required
 from authentik.rbac.filters import ObjectFilter
 
 LOGGER = get_logger()
@@ -60,7 +60,7 @@ class ApplicationSerializer(ModelSerializer):
 
     meta_icon = ReadOnlyField(source="get_meta_icon")
 
-    def get_launch_url(self, app: Application) -> Optional[str]:
+    def get_launch_url(self, app: Application) -> str | None:
         """Allow formatting of launch URL"""
         user = None
         if "request" in self.context:
@@ -100,7 +100,6 @@ class ApplicationSerializer(ModelSerializer):
 class ApplicationViewSet(UsedByMixin, ModelViewSet):
     """Application Viewset"""
 
-    # pylint: disable=no-member
     queryset = Application.objects.all().prefetch_related("provider")
     serializer_class = ApplicationSerializer
     search_fields = [
@@ -131,7 +130,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         return queryset
 
     def _get_allowed_applications(
-        self, pagined_apps: Iterator[Application], user: Optional[User] = None
+        self, pagined_apps: Iterator[Application], user: User | None = None
     ) -> list[Application]:
         applications = []
         request = self.request._request
@@ -169,7 +168,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
             try:
                 for_user = User.objects.filter(pk=request.query_params.get("for_user")).first()
             except ValueError:
-                raise ValidationError({"for_user": "for_user must be numerical"})
+                raise ValidationError({"for_user": "for_user must be numerical"}) from None
             if not for_user:
                 raise ValidationError({"for_user": "User not found"})
         engine = PolicyEngine(application, for_user, request)

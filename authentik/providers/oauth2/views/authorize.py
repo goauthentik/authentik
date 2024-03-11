@@ -6,7 +6,6 @@ from hashlib import sha256
 from json import dumps
 from re import error as RegexError
 from re import fullmatch
-from typing import Optional
 from urllib.parse import parse_qs, urlencode, urlparse, urlsplit, urlunsplit
 from uuid import uuid4
 
@@ -81,28 +80,27 @@ FORBIDDEN_URI_SCHEMES = {"javascript", "data", "vbscript"}
 
 
 @dataclass(slots=True)
-# pylint: disable=too-many-instance-attributes
 class OAuthAuthorizationParams:
     """Parameters required to authorize an OAuth Client"""
 
     client_id: str
     redirect_uri: str
     response_type: str
-    response_mode: Optional[str]
+    response_mode: str | None
     scope: set[str]
     state: str
-    nonce: Optional[str]
+    nonce: str | None
     prompt: set[str]
     grant_type: str
 
     provider: OAuth2Provider = field(default_factory=OAuth2Provider)
 
-    request: Optional[str] = None
+    request: str | None = None
 
-    max_age: Optional[int] = None
+    max_age: int | None = None
 
-    code_challenge: Optional[str] = None
-    code_challenge_method: Optional[str] = None
+    code_challenge: str | None = None
+    code_challenge_method: str | None = None
 
     github_compat: InitVar[bool] = False
 
@@ -121,36 +119,10 @@ class OAuthAuthorizationParams:
         redirect_uri = query_dict.get("redirect_uri", "")
 
         response_type = query_dict.get("response_type", "")
-        grant_type = None
-        # Determine which flow to use.
-        if response_type in [ResponseTypes.CODE]:
-            grant_type = GrantTypes.AUTHORIZATION_CODE
-        elif response_type in [
-            ResponseTypes.ID_TOKEN,
-            ResponseTypes.ID_TOKEN_TOKEN,
-        ]:
-            grant_type = GrantTypes.IMPLICIT
-        elif response_type in [
-            ResponseTypes.CODE_TOKEN,
-            ResponseTypes.CODE_ID_TOKEN,
-            ResponseTypes.CODE_ID_TOKEN_TOKEN,
-        ]:
-            grant_type = GrantTypes.HYBRID
-
-        # Grant type validation.
-        if not grant_type:
-            LOGGER.warning("Invalid response type", type=response_type)
-            raise AuthorizeError(redirect_uri, "unsupported_response_type", "", state)
 
         # Validate and check the response_mode against the predefined dict
         # Set to Query or Fragment if not defined in request
         response_mode = query_dict.get("response_mode", False)
-
-        if response_mode not in ResponseMode.values:
-            response_mode = ResponseMode.QUERY
-
-            if grant_type in [GrantTypes.IMPLICIT, GrantTypes.HYBRID]:
-                response_mode = ResponseMode.FRAGMENT
 
         max_age = query_dict.get("max_age")
         return OAuthAuthorizationParams(
@@ -158,7 +130,7 @@ class OAuthAuthorizationParams:
             redirect_uri=redirect_uri,
             response_type=response_type,
             response_mode=response_mode,
-            grant_type=grant_type,
+            grant_type="",
             scope=set(query_dict.get("scope", "").split()),
             state=state,
             nonce=query_dict.get("nonce"),
@@ -178,6 +150,7 @@ class OAuthAuthorizationParams:
             LOGGER.warning("Invalid client identifier", client_id=self.client_id)
             raise ClientIdError(client_id=self.client_id)
         self.check_redirect_uri()
+        self.check_grant()
         self.check_scope(github_compat)
         self.check_nonce()
         self.check_code_challenge()
@@ -185,6 +158,34 @@ class OAuthAuthorizationParams:
             raise AuthorizeError(
                 self.redirect_uri, "request_not_supported", self.grant_type, self.state
             )
+
+    def check_grant(self):
+        """Check grant"""
+        # Determine which flow to use.
+        if self.response_type in [ResponseTypes.CODE]:
+            self.grant_type = GrantTypes.AUTHORIZATION_CODE
+        elif self.response_type in [
+            ResponseTypes.ID_TOKEN,
+            ResponseTypes.ID_TOKEN_TOKEN,
+        ]:
+            self.grant_type = GrantTypes.IMPLICIT
+        elif self.response_type in [
+            ResponseTypes.CODE_TOKEN,
+            ResponseTypes.CODE_ID_TOKEN,
+            ResponseTypes.CODE_ID_TOKEN_TOKEN,
+        ]:
+            self.grant_type = GrantTypes.HYBRID
+
+        # Grant type validation.
+        if not self.grant_type:
+            LOGGER.warning("Invalid response type", type=self.response_type)
+            raise AuthorizeError(self.redirect_uri, "unsupported_response_type", "", self.state)
+
+        if self.response_mode not in ResponseMode.values:
+            self.response_mode = ResponseMode.QUERY
+
+            if self.grant_type in [GrantTypes.IMPLICIT, GrantTypes.HYBRID]:
+                self.response_mode = ResponseMode.FRAGMENT
 
     def check_redirect_uri(self):
         """Redirect URI validation."""
@@ -221,7 +222,7 @@ class OAuthAuthorizationParams:
                     redirect_uri_given=self.redirect_uri,
                     redirect_uri_expected=allowed_redirect_urls,
                 )
-                raise RedirectUriError(self.redirect_uri, allowed_redirect_urls)
+                raise RedirectUriError(self.redirect_uri, allowed_redirect_urls) from None
         # Check against forbidden schemes
         if urlparse(self.redirect_uri).scheme in FORBIDDEN_URI_SCHEMES:
             raise RedirectUriError(self.redirect_uri, allowed_redirect_urls)
@@ -257,9 +258,9 @@ class OAuthAuthorizationParams:
         if SCOPE_OFFLINE_ACCESS in self.scope:
             # https://openid.net/specs/openid-connect-core-1_0.html#OfflineAccess
             if PROMPT_CONSENT not in self.prompt:
-                raise AuthorizeError(
-                    self.redirect_uri, "consent_required", self.grant_type, self.state
-                )
+                # Instead of ignoring the `offline_access` scope when `prompt`
+                # isn't set to `consent`, we set override it ourselves
+                self.prompt.add(PROMPT_CONSENT)
             if self.response_type not in [
                 ResponseTypes.CODE,
                 ResponseTypes.CODE_TOKEN,
@@ -348,14 +349,14 @@ class AuthorizationFlowInitView(PolicyAccessView):
             )
         except AuthorizeError as error:
             LOGGER.warning(error.description, redirect_uri=error.redirect_uri)
-            raise RequestValidationError(error.get_response(self.request))
+            raise RequestValidationError(error.get_response(self.request)) from None
         except OAuth2Error as error:
             LOGGER.warning(error.description)
             raise RequestValidationError(
                 bad_request_message(self.request, error.description, title=error.error)
-            )
+            ) from None
         except OAuth2Provider.DoesNotExist:
-            raise Http404
+            raise Http404 from None
         if PROMPT_NONE in self.params.prompt and not self.request.user.is_authenticated:
             # When "prompt" is set to "none" but the user is not logged in, show an error message
             error = AuthorizeError(
@@ -487,7 +488,7 @@ class OAuthFulfillmentStage(StageView):
                     "component": "ak-stage-autosubmit",
                     "title": self.executor.plan.context.get(
                         PLAN_CONTEXT_TITLE,
-                        _("Redirecting to %(app)s..." % {"app": self.application.name}),
+                        _("Redirecting to {app}...".format_map({"app": self.application.name})),
                     ),
                     "url": self.params.redirect_uri,
                     "attrs": query_params,
@@ -533,7 +534,7 @@ class OAuthFulfillmentStage(StageView):
         except (ClientIdError, RedirectUriError) as error:
             error.to_event(application=self.application).from_http(request)
             self.executor.stage_invalid()
-            # pylint: disable=no-member
+
             return bad_request_message(request, error.description, title=error.error)
         except AuthorizeError as error:
             error.to_event(application=self.application).from_http(request)
@@ -596,9 +597,9 @@ class OAuthFulfillmentStage(StageView):
                 "server_error",
                 self.params.grant_type,
                 self.params.state,
-            )
+            ) from None
 
-    def create_implicit_response(self, code: Optional[AuthorizationCode]) -> dict:
+    def create_implicit_response(self, code: AuthorizationCode | None) -> dict:
         """Create implicit response's URL Fragment dictionary"""
         query_fragment = {}
         auth_event = get_login_event(self.request)

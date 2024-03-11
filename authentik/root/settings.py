@@ -472,13 +472,6 @@ def _update_settings(app_path: str):
         pass
 
 
-# Load subapps's settings
-for _app in set(SHARED_APPS + TENANT_APPS):
-    if not _app.startswith("authentik"):
-        continue
-    _update_settings(f"{_app}.settings")
-_update_settings("data.user_settings")
-
 if DEBUG:
     CELERY["task_always_eager"] = True
     os.environ[ENV_GIT_HASH_KEY] = "dev"
@@ -502,6 +495,14 @@ except ImportError:
 # Import events after other apps since it relies on tasks and other things from all apps
 # being imported for @prefill_task
 TENANT_APPS.append("authentik.events")
+
+
+# Load subapps's settings
+for _app in set(SHARED_APPS + TENANT_APPS):
+    if not _app.startswith("authentik"):
+        continue
+    _update_settings(f"{_app}.settings")
+_update_settings("data.user_settings")
 
 SHARED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))
 INSTALLED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))

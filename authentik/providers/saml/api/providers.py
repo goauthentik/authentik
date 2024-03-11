@@ -22,7 +22,6 @@ from rest_framework.serializers import PrimaryKeyRelatedField, ValidationError
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
-from authentik.api.decorators import permission_required
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
@@ -33,6 +32,7 @@ from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
 from authentik.providers.saml.processors.metadata import MetadataProcessor
 from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
+from authentik.rbac.decorators import permission_required
 from authentik.sources.saml.processors.constants import SAML_BINDING_POST, SAML_BINDING_REDIRECT
 
 LOGGER = get_logger()
@@ -70,7 +70,7 @@ class SAMLProviderSerializer(ProviderSerializer):
                     kwargs={"application_slug": instance.application.slug},
                 )
             )
-        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+        except Provider.application.RelatedObjectDoesNotExist:
             return "-"
 
     def get_url_sso_redirect(self, instance: SAMLProvider) -> str:
@@ -85,7 +85,7 @@ class SAMLProviderSerializer(ProviderSerializer):
                     kwargs={"application_slug": instance.application.slug},
                 )
             )
-        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+        except Provider.application.RelatedObjectDoesNotExist:
             return "-"
 
     def get_url_sso_init(self, instance: SAMLProvider) -> str:
@@ -100,7 +100,7 @@ class SAMLProviderSerializer(ProviderSerializer):
                     kwargs={"application_slug": instance.application.slug},
                 )
             )
-        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+        except Provider.application.RelatedObjectDoesNotExist:
             return "-"
 
     def get_url_slo_post(self, instance: SAMLProvider) -> str:
@@ -115,7 +115,7 @@ class SAMLProviderSerializer(ProviderSerializer):
                     kwargs={"application_slug": instance.application.slug},
                 )
             )
-        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+        except Provider.application.RelatedObjectDoesNotExist:
             return "-"
 
     def get_url_slo_redirect(self, instance: SAMLProvider) -> str:
@@ -130,7 +130,7 @@ class SAMLProviderSerializer(ProviderSerializer):
                     kwargs={"application_slug": instance.application.slug},
                 )
             )
-        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+        except Provider.application.RelatedObjectDoesNotExist:
             return "-"
 
     class Meta:
@@ -216,7 +216,7 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         try:
             provider = get_object_or_404(SAMLProvider, pk=pk)
         except ValueError:
-            raise Http404
+            raise Http404 from None
         try:
             proc = MetadataProcessor(provider, request)
             proc.force_binding = request.query_params.get("force_binding", None)
@@ -228,7 +228,7 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
                 )
                 return response
             return Response({"metadata": metadata})
-        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+        except Provider.application.RelatedObjectDoesNotExist:
             return Response({"metadata": ""})
 
     @permission_required(
@@ -258,7 +258,7 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         try:
             fromstring(file.read())
         except ParseError:
-            raise ValidationError(_("Invalid XML Syntax"))
+            raise ValidationError(_("Invalid XML Syntax")) from None
         file.seek(0)
         try:
             metadata = ServiceProviderMetadataParser().parse(file.read().decode())
@@ -268,8 +268,8 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         except ValueError as exc:  # pragma: no cover
             LOGGER.warning(str(exc))
             raise ValidationError(
-                _("Failed to import Metadata: %(message)s" % {"message": str(exc)}),
-            )
+                _("Failed to import Metadata: {messages}".format_map({"message": str(exc)})),
+            ) from None
         return Response(status=204)
 
     @permission_required(
@@ -303,7 +303,7 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
                 if not for_user:
                     raise ValidationError({"for_user": "User not found"})
             except ValueError:
-                raise ValidationError({"for_user": "input must be numerical"})
+                raise ValidationError({"for_user": "input must be numerical"}) from None
 
         new_request = copy(request._request)
         new_request.user = for_user

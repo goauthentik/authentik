@@ -1,6 +1,5 @@
 """Crypto tests"""
 
-import datetime
 from json import loads
 from os import makedirs
 from tempfile import TemporaryDirectory
@@ -8,6 +7,7 @@ from tempfile import TemporaryDirectory
 from cryptography.x509.extensions import SubjectAlternativeName
 from cryptography.x509.general_name import DNSName
 from django.urls import reverse
+from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
 from authentik.core.api.used_by import DeleteAction
@@ -68,9 +68,9 @@ class TestCrypto(APITestCase):
             validity_days=3,
         )
         instance = builder.save()
-        now = datetime.datetime.today()
+        _now = now()
         self.assertEqual(instance.name, name)
-        self.assertEqual((instance.certificate.not_valid_after - now).days, 2)
+        self.assertEqual((instance.certificate.not_valid_after_utc - _now).days, 2)
 
     def test_builder_api(self):
         """Test Builder (via API)"""
@@ -267,7 +267,7 @@ class TestCrypto(APITestCase):
             with open(f"{temp_dir}/foo.bar/privkey.pem", "w+", encoding="utf-8") as _key:
                 _key.write(builder.private_key)
             with CONFIG.patch("cert_discovery_dir", temp_dir):
-                certificate_discovery()  # pylint: disable=no-value-for-parameter
+                certificate_discovery()
         keypair: CertificateKeyPair = CertificateKeyPair.objects.filter(
             managed=MANAGED_DISCOVERED % "foo"
         ).first()

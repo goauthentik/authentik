@@ -1,6 +1,6 @@
 """OAuth Client models"""
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from django.db import models
 from django.http.request import HttpRequest
@@ -84,7 +84,7 @@ class OAuthSource(Source):
             icon_url=icon,
         )
 
-    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+    def ui_user_settings(self) -> UserSettingSerializer | None:
         provider_type = self.source_type
         icon = self.icon_url
         if not icon:
@@ -116,6 +116,15 @@ class GitHubOAuthSource(OAuthSource):
         abstract = True
         verbose_name = _("GitHub OAuth Source")
         verbose_name_plural = _("GitHub OAuth Sources")
+
+
+class GitLabOAuthSource(OAuthSource):
+    """Social Login using GitLab.com or a GitLab Instance."""
+
+    class Meta:
+        abstract = True
+        verbose_name = _("GitLab OAuth Source")
+        verbose_name_plural = _("GitLab OAuth Sources")
 
 
 class TwitchOAuthSource(OAuthSource):

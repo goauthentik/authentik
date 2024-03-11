@@ -15,7 +15,7 @@ import "@goauthentik/flow/sources/apple/AppleLoginInit";
 import "@goauthentik/flow/sources/plex/PlexLoginInit";
 import "@goauthentik/flow/stages/FlowErrorStage";
 import "@goauthentik/flow/stages/RedirectStage";
-import { StageHost } from "@goauthentik/flow/stages/base";
+import { StageHost, SubmitOptions } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
@@ -189,12 +189,17 @@ export class FlowExecutor extends Interface implements StageHost {
         return globalAK()?.brand.uiTheme || UiThemeEnum.Automatic;
     }
 
-    async submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
+    async submit(
+        payload?: FlowChallengeResponseRequest,
+        options?: SubmitOptions,
+    ): Promise<boolean> {
         if (!payload) return Promise.reject();
         if (!this.challenge) return Promise.reject();
-        // @ts-ignore
+        // @ts-expect-error
         payload.component = this.challenge.component;
-        this.loading = true;
+        if (!options?.invisible) {
+            this.loading = true;
+        }
         try {
             const challenge = await new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolve({
                 flowSlug: this.flowSlug,

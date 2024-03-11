@@ -1,6 +1,6 @@
 """authentik OAuth2 OpenID Userinfo views"""
 
-from typing import Any, Optional
+from typing import Any
 
 from deepmerge import always_merger
 from django.http import HttpRequest, HttpResponse
@@ -39,7 +39,7 @@ class UserInfoView(View):
     """Create a dictionary with all the requested claims about the End-User.
     See: http://openid.net/specs/openid-connect-core-1_0.html#UserInfoResponse"""
 
-    token: Optional[RefreshToken]
+    token: RefreshToken | None
 
     def get_scope_descriptions(
         self, scopes: list[str], provider: OAuth2Provider
@@ -101,8 +101,8 @@ class UserInfoView(View):
                     value=value,
                 )
                 continue
-            LOGGER.debug("updated scope", scope=scope)
             always_merger.merge(final_claims, value)
+            LOGGER.debug("updated scope", scope=scope)
         return final_claims
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
@@ -121,8 +121,9 @@ class UserInfoView(View):
         """Handle GET Requests for UserInfo"""
         if not self.token:
             return HttpResponseBadRequest()
-        claims = self.get_claims(self.token.provider, self.token)
-        claims["sub"] = self.token.id_token.sub
+        claims = {}
+        claims.setdefault("sub", self.token.id_token.sub)
+        claims.update(self.get_claims(self.token.provider, self.token))
         if self.token.id_token.nonce:
             claims["nonce"] = self.token.id_token.nonce
         response = TokenResponse(claims)

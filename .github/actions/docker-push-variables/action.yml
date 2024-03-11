@@ -11,6 +11,10 @@ inputs:
     description: "Docker image arch"
 
 outputs:
+  shouldBuild:
+    description: "Whether to build image or not"
+    value: ${{ steps.ev.outputs.shouldBuild }}
+
   sha:
     description: "sha"
     value: ${{ steps.ev.outputs.sha }}
@@ -34,63 +38,10 @@ runs:
   steps:
     - name: Generate config
       id: ev
-      shell: python
+      shell: bash
+      env:
+        IMAGE_NAME: ${{ inputs.image-name }}
+        IMAGE_ARCH: ${{ inputs.image-arch }}
+        PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
       run: |
-        """Helper script to get the actual branch name, docker safe"""
-        import configparser
-        import os
-        from time import time
-
-        parser = configparser.ConfigParser()
-        parser.read(".bumpversion.cfg")
-
-        branch_name = os.environ["GITHUB_REF"]
-        if os.environ.get("GITHUB_HEAD_REF", "") != "":
-            branch_name = os.environ["GITHUB_HEAD_REF"]
-        safe_branch_name = branch_name.replace("refs/heads/", "").replace("/", "-")
-
-        image_names = "${{ inputs.image-name }}".split(",")
-        image_arch = "${{ inputs.image-arch }}" or None
-
-        is_pull_request = bool("${{ github.event.pull_request.head.sha }}")
-        is_release = "dev" not in image_names[0]
-
-        sha = os.environ["GITHUB_SHA"] if not is_pull_request else "${{ github.event.pull_request.head.sha }}"
-
-        # 2042.1.0 or 2042.1.0-rc1
-        version = parser.get("bumpversion", "current_version")
-        # 2042.1
-        version_family = ".".join(version.split("-", 1)[0].split(".")[:-1])
-        prerelease = "-" in version
-
-        image_tags = []
-        if is_release:
-            for name in image_names:
-                image_tags += [
-                    f"{name}:{version}",
-                ]
-            if not prerelease:
-                image_tags += [
-                    f"{name}:latest",
-                    f"{name}:{version_family}",
-                ]
-        else:
-            suffix = ""
-            if image_arch and image_arch != "amd64":
-                suffix = f"-{image_arch}"
-            for name in image_names:
-                image_tags += [
-                    f"{name}:gh-{sha}{suffix}",  # Used for ArgoCD and PR comments
-                    f"{name}:gh-{safe_branch_name}{suffix}",  # For convenience
-                    f"{name}:gh-{safe_branch_name}-{int(time())}-{sha[:7]}{suffix}",  # Use by FluxCD
-                ]
-
-        image_main_tag = image_tags[0]
-        image_tags_rendered = ",".join(image_tags)
-
-        with open(os.environ["GITHUB_OUTPUT"], "a+", encoding="utf-8") as _output:
-            print("sha=%s" % sha, file=_output)
-            print("version=%s" % version, file=_output)
-            print("prerelease=%s" % prerelease, file=_output)
-            print("imageTags=%s" % image_tags_rendered, file=_output)
-            print("imageMainTag=%s" % image_main_tag, file=_output)
+        python3 ${{ github.action_path }}/push_vars.py

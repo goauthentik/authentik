@@ -1,7 +1,6 @@
 """Docker controller"""
 
 from time import sleep
-from typing import Optional
 from urllib.parse import urlparse
 
 from django.conf import settings
@@ -25,12 +24,14 @@ from authentik.outposts.models import (
     ServiceConnectionInvalid,
 )
 
+DOCKER_MAX_ATTEMPTS = 10
+
 
 class DockerClient(UpstreamDockerClient, BaseClient):
     """Custom docker client, which can handle TLS and SSH from a database."""
 
-    tls: Optional[DockerInlineTLS]
-    ssh: Optional[DockerInlineSSH]
+    tls: DockerInlineTLS | None
+    ssh: DockerInlineSSH | None
 
     def __init__(self, connection: DockerServiceConnection):
         self.tls = None
@@ -226,11 +227,10 @@ class DockerController(BaseController):
         except NotFound:
             return
 
-    # pylint: disable=too-many-return-statements
     def up(self, depth=1):
         if self.outpost.managed == MANAGED_OUTPOST:
             return None
-        if depth >= 10:
+        if depth >= DOCKER_MAX_ATTEMPTS:
             raise ControllerException("Giving up since we exceeded recursion limit.")
         self._migrate_container_name()
         try:

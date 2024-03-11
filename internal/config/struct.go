@@ -51,12 +51,12 @@ type StorageConfig struct {
 }
 
 type StorageMediaConfig struct {
-	Backend string            `yaml:"backend" env:"AUTHENTIK_STORAGE_MEDIA_BACKEND"`
+	Backend string            `yaml:"backend" env:"AUTHENTIK_STORAGE__MEDIA__BACKEND"`
 	File    StorageFileConfig `yaml:"file"`
 }
 
 type StorageFileConfig struct {
-	Path string `yaml:"path" env:"AUTHENTIK_STORAGE_MEDIA_FILE_PATH"`
+	Path string `yaml:"path" env:"AUTHENTIK_STORAGE__MEDIA__FILE__PATH"`
 }
 
 type ErrorReportingConfig struct {

@@ -71,6 +71,19 @@ class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
     enabled = models.BooleanField(default=True)
     managed_models = ArrayField(models.TextField(), default=list)
 
+    class Meta:
+        verbose_name = _("Blueprint Instance")
+        verbose_name_plural = _("Blueprint Instances")
+        unique_together = (
+            (
+                "name",
+                "path",
+            ),
+        )
+
+    def __str__(self) -> str:
+        return f"Blueprint Instance {self.name}"
+
     def retrieve_oci(self) -> str:
         """Get blueprint from an OCI registry"""
         client = BlueprintOCIClient(self.path.replace(OCI_PREFIX, "https://"))
@@ -89,7 +102,7 @@ class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
                 raise BlueprintRetrievalFailed("Invalid blueprint path")
             with full_path.open("r", encoding="utf-8") as _file:
                 return _file.read()
-        except (IOError, OSError) as exc:
+        except OSError as exc:
             raise BlueprintRetrievalFailed(exc) from exc
 
     def retrieve(self) -> str:
@@ -105,16 +118,3 @@ class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
         from authentik.blueprints.api import BlueprintInstanceSerializer
 
         return BlueprintInstanceSerializer
-
-    def __str__(self) -> str:
-        return f"Blueprint Instance {self.name}"
-
-    class Meta:
-        verbose_name = _("Blueprint Instance")
-        verbose_name_plural = _("Blueprint Instances")
-        unique_together = (
-            (
-                "name",
-                "path",
-            ),
-        )

@@ -41,7 +41,9 @@ class TestFlowsEnroll(SeleniumTestCase):
         interface_user = self.get_shadow_root("ak-interface-user")
         wait = WebDriverWait(interface_user, self.wait_timeout)
 
-        wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, ".pf-c-page__header")))
+        wait.until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, "ak-interface-user-presentation"))
+        )
         self.driver.get(self.if_user_url("/settings"))
 
         user = User.objects.get(username="foo")
@@ -94,7 +96,9 @@ class TestFlowsEnroll(SeleniumTestCase):
         # We're now logged in
         wait = WebDriverWait(self.get_shadow_root("ak-interface-user"), self.wait_timeout)
 
-        wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, ".pf-c-page__header")))
+        wait.until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, "ak-interface-user-presentation"))
+        )
         self.driver.get(self.if_user_url("/settings"))
 
         self.assert_user(User.objects.get(username="foo"))

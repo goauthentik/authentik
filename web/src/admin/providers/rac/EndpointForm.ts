@@ -123,11 +123,7 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Property mappings")}
-                ?required=${true}
-                name="propertyMappings"
-            >
+            <ak-form-element-horizontal label=${msg("Property mappings")} name="propertyMappings">
                 <select class="pf-c-form-control" multiple>
                     ${this.propertyMappings?.results.map((mapping) => {
                         let selected = false;

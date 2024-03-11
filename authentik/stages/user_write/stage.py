@@ -1,6 +1,6 @@
 """Write stage logic"""
 
-from typing import Any, Optional
+from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
 from django.db import transaction
@@ -49,7 +49,7 @@ class UserWriteStageView(StageView):
             parts = parts[1:]
         set_path_in_dict(user.attributes, ".".join(parts), value)
 
-    def ensure_user(self) -> tuple[Optional[User], bool]:
+    def ensure_user(self) -> tuple[User | None, bool]:
         """Ensure a user exists"""
         user_created = False
         path = self.executor.plan.context.get(

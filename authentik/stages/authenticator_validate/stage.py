@@ -2,7 +2,6 @@
 
 from datetime import datetime
 from hashlib import sha256
-from typing import Optional
 
 from django.conf import settings
 from django.http import HttpRequest, HttpResponse
@@ -19,7 +18,6 @@ from authentik.flows.models import FlowDesignation, NotConfiguredAction, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.root.install_id import get_install_id
 from authentik.stages.authenticator import devices_for_user
 from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_sms.models import SMSDevice
@@ -35,6 +33,7 @@ from authentik.stages.authenticator_validate.challenge import (
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
+from authentik.tenants.utils import get_unique_identifier
 
 COOKIE_NAME_MFA = "authentik_mfa"
 
@@ -63,7 +62,7 @@ class AuthenticatorValidationChallenge(WithUserInfoChallenge):
 class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     """Challenge used for Code-based and WebAuthn authenticators"""
 
-    device: Optional[Device]
+    device: Device | None
 
     selected_challenge = DeviceChallenge(required=False)
     selected_stage = CharField(required=False)
@@ -222,8 +221,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         challenge.is_valid()
         return [challenge.data]
 
-    # pylint: disable=too-many-return-statements
-    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:  # noqa: PLR0911
         """Check if a user is set, and check if the user has any devices
         if not, we can skip this entire stage"""
         user = self.get_pending_user()
@@ -333,7 +331,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
     def cookie_jwt_key(self) -> str:
         """Signing key for MFA Cookie for this stage"""
         return sha256(
-            f"{get_install_id()}:{self.executor.current_stage.pk.hex}".encode("ascii")
+            f"{get_unique_identifier()}:{self.executor.current_stage.pk.hex}".encode("ascii")
         ).hexdigest()
 
     def check_mfa_cookie(self, allowed_devices: list[Device]):

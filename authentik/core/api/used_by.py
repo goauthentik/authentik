@@ -54,7 +54,6 @@ class UsedByMixin:
         responses={200: UsedBySerializer(many=True)},
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
-    # pylint: disable=too-many-locals
     def used_by(self, request: Request, *args, **kwargs) -> Response:
         """Get a list of all objects that use this object"""
         model: Model = self.get_object()

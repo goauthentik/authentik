@@ -1,7 +1,7 @@
 """test SAML Source"""
 
 from time import sleep
-from typing import Any, Optional
+from typing import Any
 
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
@@ -77,7 +77,7 @@ class TestSourceSAML(SeleniumTestCase):
         self.slug = generate_id()
         super().setUp()
 
-    def get_container_specs(self) -> Optional[dict[str, Any]]:
+    def get_container_specs(self) -> dict[str, Any] | None:
         return {
             "image": "kristophjunge/test-saml-idp:1.15",
             "detach": True,

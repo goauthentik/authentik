@@ -32,7 +32,7 @@ class InvitationStage(Stage):
         return InvitationStageSerializer
 
     @property
-    def type(self) -> type[View]:
+    def view(self) -> type[View]:
         from authentik.stages.invitation.stage import InvitationStageView
 
         return InvitationStageView

@@ -16,7 +16,7 @@ def ensure_default_tenant(*args, using=DEFAULT_DB_ALIAS, **kwargs):
     with schema_context(get_public_schema_name()):
         Tenant.objects.using(using).update_or_create(
             defaults={"name": "Default", "ready": True},
-            schema_name="public",
+            schema_name=get_public_schema_name(),
         )
 
 
@@ -28,7 +28,8 @@ class AuthentikTenantsConfig(ManagedAppConfig):
     verbose_name = "authentik Tenants"
     default = True
 
-    def reconcile_global_default_tenant(self):
+    @ManagedAppConfig.reconcile_global
+    def default_tenant(self):
         """Make sure default tenant exists, especially after a migration"""
         post_migrate.connect(ensure_default_tenant)
         ensure_default_tenant()

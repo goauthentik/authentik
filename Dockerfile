@@ -14,9 +14,10 @@ RUN --mount=type=bind,target=/work/website/package.json,src=./website/package.js
 
 COPY ./website /work/website/
 COPY ./blueprints /work/blueprints/
+COPY ./schema.yml /work/
 COPY ./SECURITY.md /work/
 
-RUN npm run build-docs-only
+RUN npm run build-bundled
 
 # Stage 2: Generate static Typescript files
 FROM --platform=${BUILDPLATFORM} docker.io/python:3.12.0-slim-bookworm AS npm-version
@@ -77,7 +78,7 @@ RUN /usr/local/bin/docker-entrypoint.sh generate \
     rm -rf /local/config.yaml /local/templates
 
 # Stage 5: Build go proxy
-FROM --platform=${BUILDPLATFORM} docker.io/golang:1.22.0-bookworm AS go-builder
+FROM --platform=${BUILDPLATFORM} docker.io/golang:1.22.1-bookworm AS go-builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -150,9 +151,10 @@ RUN --mount=type=bind,target=./pyproject.toml,src=./pyproject.toml \
     --mount=type=cache,target=/root/.cache/pip \
     --mount=type=cache,target=/root/.cache/pypoetry \
     python -m venv /ak-root/venv/ && \
-    pip3 install --upgrade pip && \
-    pip3 install poetry && \
-    poetry install --only=main --no-ansi --no-interaction
+    bash -c "source ${VENV_PATH}/bin/activate && \
+        pip3 install --upgrade pip && \
+        pip3 install poetry && \
+        poetry install --only=main --no-ansi --no-interaction --no-root"
 
 # Stage 8: Run
 FROM docker.io/python:3.12.2-slim-bookworm AS final-image
@@ -196,7 +198,7 @@ COPY --from=go-builder /go/authentik /bin/authentik
 COPY --from=python-deps /ak-root/venv /ak-root/venv
 COPY --from=web-builder /work/web/dist/ /web/dist/
 COPY --from=web-builder /work/web/authentik/ /web/authentik/
-COPY --from=website-builder /work/website/help/ /website/help/
+COPY --from=website-builder /work/website/build/ /website/help/
 COPY --from=geoip /usr/share/GeoIP /geoip
 
 USER 1000

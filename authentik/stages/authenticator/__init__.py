@@ -121,7 +121,8 @@ def device_classes():
     """
     Returns an iterable of all loaded device models.
     """
-    from django.apps import apps  # isort: skip
+    from django.apps import apps
+
     from authentik.stages.authenticator.models import Device
 
     for config in apps.get_app_configs():

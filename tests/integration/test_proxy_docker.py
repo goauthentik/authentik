@@ -54,7 +54,7 @@ class TestProxyDocker(DockerTestCase, ChannelsLiveServerTestCase):
         self.ssl_folder = mkdtemp()
         self.container = self._start_container(self.ssl_folder)
         # Ensure that local connection have been created
-        outpost_connection_discovery()  # pylint: disable=no-value-for-parameter
+        outpost_connection_discovery()
         self.provider: ProxyProvider = ProxyProvider.objects.create(
             name="test",
             internal_host="http://localhost",

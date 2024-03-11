@@ -10,13 +10,13 @@ from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer, ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.api.decorators import permission_required
 from authentik.blueprints.models import BlueprintInstance
 from authentik.blueprints.v1.importer import Importer
 from authentik.blueprints.v1.oci import OCI_PREFIX
 from authentik.blueprints.v1.tasks import apply_blueprint, blueprints_find_dict
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
+from authentik.rbac.decorators import permission_required
 
 
 class ManagedSerializer:
@@ -52,7 +52,9 @@ class BlueprintInstanceSerializer(ModelSerializer):
         valid, logs = Importer.from_string(content, context).validate()
         if not valid:
             text_logs = "\n".join([x["event"] for x in logs])
-            raise ValidationError(_("Failed to validate blueprint: %(logs)s" % {"logs": text_logs}))
+            raise ValidationError(
+                _("Failed to validate blueprint: {logs}".format_map({"logs": text_logs}))
+            )
         return content
 
     def validate(self, attrs: dict) -> dict:

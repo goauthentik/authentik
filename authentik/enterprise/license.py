@@ -21,13 +21,13 @@ from rest_framework.fields import BooleanField, DateTimeField, IntegerField
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User, UserTypes
 from authentik.enterprise.models import License, LicenseUsage
-from authentik.root.install_id import get_install_id
+from authentik.tenants.utils import get_unique_identifier
 
 CACHE_KEY_ENTERPRISE_LICENSE = "goauthentik.io/enterprise/license"
 CACHE_EXPIRY_ENTERPRISE_LICENSE = 3 * 60 * 60  # 2 Hours
 
 
-@lru_cache()
+@lru_cache
 def get_licensing_key() -> Certificate:
     """Get Root CA PEM"""
     with open("authentik/enterprise/public.pem", "rb") as _key:
@@ -36,7 +36,7 @@ def get_licensing_key() -> Certificate:
 
 def get_license_aud() -> str:
     """Get the JWT audience field"""
-    return f"enterprise.goauthentik.io/license/{get_install_id()}"
+    return f"enterprise.goauthentik.io/license/{get_unique_identifier()}"
 
 
 class LicenseFlags(Enum):
@@ -88,7 +88,7 @@ class LicenseKey:
         try:
             headers = get_unverified_header(jwt)
         except PyJWTError:
-            raise ValidationError("Unable to verify license")
+            raise ValidationError("Unable to verify license") from None
         x5c: list[str] = headers.get("x5c", [])
         if len(x5c) < 1:
             raise ValidationError("Unable to verify license")
@@ -98,7 +98,7 @@ class LicenseKey:
             our_cert.verify_directly_issued_by(intermediate)
             intermediate.verify_directly_issued_by(get_licensing_key())
         except (InvalidSignature, TypeError, ValueError, Error):
-            raise ValidationError("Unable to verify license")
+            raise ValidationError("Unable to verify license") from None
         try:
             body = from_dict(
                 LicenseKey,
@@ -110,7 +110,7 @@ class LicenseKey:
                 ),
             )
         except PyJWTError:
-            raise ValidationError("Unable to verify license")
+            raise ValidationError("Unable to verify license") from None
         return body
 
     @staticmethod
@@ -142,13 +142,7 @@ class LicenseKey:
     @staticmethod
     def get_external_user_count():
         """Get current external user count"""
-        # Count since start of the month
-        last_month = now().replace(day=1)
-        return (
-            LicenseKey.base_user_qs()
-            .filter(type=UserTypes.EXTERNAL, last_login__gte=last_month)
-            .count()
-        )
+        return LicenseKey.base_user_qs().filter(type=UserTypes.EXTERNAL).count()
 
     def is_valid(self) -> bool:
         """Check if the given license body covers all users
@@ -188,20 +182,21 @@ class LicenseKey:
 
     def summary(self) -> LicenseSummary:
         """Summary of license status"""
+        has_license = License.objects.all().count() > 0
         last_valid = LicenseKey.last_valid_date()
         show_admin_warning = last_valid < now() - timedelta(weeks=2)
         show_user_warning = last_valid < now() - timedelta(weeks=4)
         read_only = last_valid < now() - timedelta(weeks=6)
         latest_valid = datetime.fromtimestamp(self.exp)
         return LicenseSummary(
-            show_admin_warning=show_admin_warning,
-            show_user_warning=show_user_warning,
-            read_only=read_only,
+            show_admin_warning=show_admin_warning and has_license,
+            show_user_warning=show_user_warning and has_license,
+            read_only=read_only and has_license,
             latest_valid=latest_valid,
             internal_users=self.internal_users,
             external_users=self.external_users,
             valid=self.is_valid(),
-            has_license=License.objects.all().count() > 0,
+            has_license=has_license,
         )
 
     @staticmethod

@@ -36,7 +36,6 @@ const docsSidebar = {
             collapsed: true,
             items: [
                 "core/terminology",
-                "core/applications",
                 "core/brands",
                 "core/certificates",
                 "core/geoip",
@@ -56,6 +55,15 @@ const docsSidebar = {
                 "enterprise/manage-enterprise",
                 "enterprise/entsupport",
             ],
+        },
+        {
+            type: "category",
+            label: "Applications",
+            link: {
+                type: "doc",
+                id: "applications/index",
+            },
+            items: ["applications/manage_apps"],
         },
         {
             type: "category",
@@ -422,17 +430,6 @@ const docsSidebar = {
                 "security/CVE-2022-46145",
                 "security/CVE-2022-46172",
             ],
-        },
-        {
-            type: "category",
-            label: "Advanced topics",
-            link: {
-                type: "generated-index",
-                title: "Advanced topics",
-                slug: "advanced",
-                description: "Documentation for advanced features",
-            },
-            items: ["advanced/tenancy"],
         },
     ],
 };

@@ -191,7 +191,6 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Property mappings")}
-                        ?required=${true}
                         name="propertyMappings"
                     >
                         <select class="pf-c-form-control" multiple>

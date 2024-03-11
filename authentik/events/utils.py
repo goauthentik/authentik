@@ -7,7 +7,7 @@ from datetime import date, datetime, time, timedelta
 from enum import Enum
 from pathlib import Path
 from types import GeneratorType, NoneType
-from typing import Any, Optional
+from typing import Any
 from uuid import UUID
 
 from django.contrib.auth.models import AnonymousUser
@@ -37,7 +37,7 @@ def cleanse_item(key: str, value: Any) -> Any:
     """Cleanse a single item"""
     if isinstance(value, dict):
         return cleanse_dict(value)
-    if isinstance(value, (list, tuple, set)):
+    if isinstance(value, list | tuple | set):
         for idx, item in enumerate(value):
             value[idx] = cleanse_item(key, item)
         return value
@@ -74,7 +74,7 @@ def model_to_dict(model: Model) -> dict[str, Any]:
     }
 
 
-def get_user(user: User | AnonymousUser, original_user: Optional[User] = None) -> dict[str, Any]:
+def get_user(user: User | AnonymousUser, original_user: User | None = None) -> dict[str, Any]:
     """Convert user object to dictionary, optionally including the original user"""
     if isinstance(user, AnonymousUser):
         try:
@@ -95,8 +95,7 @@ def get_user(user: User | AnonymousUser, original_user: Optional[User] = None) -
     return user_data
 
 
-# pylint: disable=too-many-return-statements,too-many-branches
-def sanitize_item(value: Any) -> Any:
+def sanitize_item(value: Any) -> Any:  # noqa: PLR0911, PLR0912
     """Sanitize a single item, ensure it is JSON parsable"""
     if is_dataclass(value):
         # Because asdict calls `copy.deepcopy(obj)` on everything that's not tuple/dict,
@@ -115,20 +114,20 @@ def sanitize_item(value: Any) -> Any:
         return sanitize_dict(value)
     if isinstance(value, GeneratorType):
         return sanitize_item(list(value))
-    if isinstance(value, (list, tuple, set)):
+    if isinstance(value, list | tuple | set):
         new_values = []
         for item in value:
             new_value = sanitize_item(item)
             if new_value:
                 new_values.append(new_value)
         return new_values
-    if isinstance(value, (User, AnonymousUser)):
+    if isinstance(value, User | AnonymousUser):
         return sanitize_dict(get_user(value))
     if isinstance(value, models.Model):
         return sanitize_dict(model_to_dict(value))
     if isinstance(value, UUID):
         return value.hex
-    if isinstance(value, (HttpRequest, WSGIRequest)):
+    if isinstance(value, HttpRequest | WSGIRequest):
         return ...
     if isinstance(value, City):
         return GEOIP_CONTEXT_PROCESSOR.city_to_dict(value)
@@ -171,7 +170,7 @@ def sanitize_item(value: Any) -> Any:
             "module": value.__module__,
         }
     # List taken from the stdlib's JSON encoder (_make_iterencode, encoder.py:415)
-    if isinstance(value, (bool, int, float, NoneType, list, tuple, dict)):
+    if isinstance(value, bool | int | float | NoneType | list | tuple | dict):
         return value
     try:
         return DjangoJSONEncoder().default(value)

@@ -305,7 +305,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                                                   class="pf-m-secondary"
                                                   .apiRequest=${() => {
                                                       return new CoreApi(DEFAULT_CONFIG)
-                                                          .coreUsersRecoveryRetrieve({
+                                                          .coreUsersRecoveryCreate({
                                                               id: item.pk,
                                                           })
                                                           .then((rec) => {

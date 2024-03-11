@@ -60,28 +60,28 @@ AWS_ACCESS_KEY_ID=access_key AWS_SECRET_ACCESS_KEY=secret_key aws s3api --endpoi
 Add the following to your `.env` file:
 
 ```env
-AUTHENTIK_STORAGE_MEDIA_BACKEND=s3
-AUTHENTIK_STORAGE_MEDIA_S3_ACCESS__KEY=access_key
-AUTHENTIK_STORAGE_MEDIA_S3_SECRET__KEY=secret_key
-AUTHENTIK_STORAGE_MEDIA_S3_BUCKET__NAME=authentik-media
+AUTHENTIK_STORAGE__MEDIA__BACKEND=s3
+AUTHENTIK_STORAGE__MEDIA__S3__ACCESS_KEY=access_key
+AUTHENTIK_STORAGE__MEDIA__S3__SECRET_KEY=secret_key
+AUTHENTIK_STORAGE__MEDIA__S3__BUCKET_NAME=authentik-media
 ```
 
 If you're using AWS S3 as your S3 provider, add the following:
 
 ```env
-AUTHENTIK_STORAGE_MEDIA_S3_REGION=us-east-1  # Use the region of the bucket
+AUTHENTIK_STORAGE__MEDIA__S3__REGION=us-east-1  # Use the region of the bucket
 ```
 
 If you're not using AWS S3 as your S3 provider, add the following:
 
 ```env
-AUTHENTIK_STORAGE_MEDIA_S3_ENDPOINT=https://s3.provider
-AUTHENTIK_STORAGE_MEDIA_S3_CUSTOM__DOMAIN=s3.provider/authentik-media
+AUTHENTIK_STORAGE__MEDIA__S3__ENDPOINT=https://s3.provider
+AUTHENTIK_STORAGE__MEDIA__S3__CUSTOM_DOMAIN=s3.provider/authentik-media
 ```
 
 The `ENDPOINT` setting specifies how authentik talks to the S3 provider.
 
-The `CUSTOM__DOMAIN` setting specifies how URLs are constructed to be shown on the web interface. For example, an object stored at `application-icons/application.png` with a `CUSTOM__DOMAIN` setting of `s3.provider/authentik-media` will result in a URL of `https://s3.provider/authentik-media/application-icons/application.png`. You can also use subdomains for your buckets depending on what your S3 provider offers: `authentik-media.s3.provider`. Whether HTTPS is used is controlled by the `AUTHENTIK_STORAGE_MEDIA_S3_SECURE__URLS` which defaults to true.
+The `CUSTOM_DOMAIN` setting specifies how URLs are constructed to be shown on the web interface. For example, an object stored at `application-icons/application.png` with a `CUSTOM__DOMAIN` setting of `s3.provider/authentik-media` will result in a URL of `https://s3.provider/authentik-media/application-icons/application.png`. You can also use subdomains for your buckets depending on what your S3 provider offers: `authentik-media.s3.provider`. Whether HTTPS is used is controlled by the `AUTHENTIK_STORAGE__MEDIA__S3__SECURE_URLS` which defaults to true.
 
 For more control over settings, refer to the [configuration reference](./configuration.mdx#media-storage-settings)
 
@@ -94,11 +94,11 @@ The following section assumes that the local storage path is `/media` and the bu
 Follow the setup steps above, and then migrate the files from your local directory to s3:
 
 ```bash
-aws s3 sync /media s3://authentik-media
+aws s3 sync /media s3://authentik-media/media
 ```
 
 #### From s3 to file
 
 ```bash
-aws s3 sync s3://authentik-media /media
+aws s3 sync s3://authentik-media/media /media
 ```

@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-14 18:51+0000\n"
+"POT-Creation-Date: 2024-03-05 00:07+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/authentik/teams/119923/zh_CN/)\n"
@@ -37,9 +37,9 @@ msgid "Blueprint file does not exist"
 msgstr "蓝图文件不存在"
 
 #: authentik/blueprints/api.py
-#, python-format
-msgid "Failed to validate blueprint: %(logs)s"
-msgstr "验证蓝图失败：%(logs)s"
+#, python-brace-format
+msgid "Failed to validate blueprint: {logs}"
+msgstr "验证蓝图失败：{logs}"
 
 #: authentik/blueprints/api.py
 msgid "Either path or content must be set."
@@ -68,9 +68,9 @@ msgid "Blueprint Instances"
 msgstr "蓝图实例"
 
 #: authentik/blueprints/v1/exporter.py
-#, python-format
-msgid "authentik Export - %(date)s"
-msgstr "authentik 导出 - %(date)s"
+#, python-brace-format
+msgid "authentik Export - {date}"
+msgstr "authentik 导出 - {date}"
 
 #: authentik/blueprints/v1/tasks.py authentik/crypto/tasks.py
 #, python-format
@@ -279,25 +279,25 @@ msgid "Authenticated Sessions"
 msgstr "已认证会话"
 
 #: authentik/core/sources/flow_manager.py
-#, python-format
+#, python-brace-format
 msgid ""
-"Request to authenticate with %(source)s has been denied. Please authenticate"
-" with the source you've previously signed up with."
-msgstr "来自 %(source)s 的身份验证请求被拒绝。请用您注册时使用的方式验证身份。"
+"Request to authenticate with {source} has been denied. Please authenticate "
+"with the source you've previously signed up with."
+msgstr "来自 {source} 的身份验证请求被拒绝。请用您注册时使用的方式验证身份。"
 
 #: authentik/core/sources/flow_manager.py
 msgid "Configured flow does not exist."
 msgstr "配置的流程不存在。"
 
 #: authentik/core/sources/flow_manager.py
-#, python-format
-msgid "Successfully authenticated with %(source)s!"
-msgstr "成功通过 %(source)s 认证！"
+#, python-brace-format
+msgid "Successfully authenticated with {source}!"
+msgstr "成功通过 {source} 认证！"
 
 #: authentik/core/sources/flow_manager.py
-#, python-format
-msgid "Successfully linked %(source)s!"
-msgstr "成功链接 %(source)s！"
+#, python-brace-format
+msgid "Successfully linked {source}!"
+msgstr "成功链接 {source}！"
 
 #: authentik/core/sources/flow_manager.py
 msgid "Source is not configured for enrollment."
@@ -469,9 +469,9 @@ msgid "(You are already connected in another tab/window)"
 msgstr "（您已经在另一个标签页/窗口连接了）"
 
 #: authentik/events/api/tasks.py
-#, python-format
-msgid "Successfully started task %(name)s."
-msgstr "已成功开始任务 %(name)s。"
+#, python-brace-format
+msgid "Successfully started task {name}."
+msgstr "已成功开始任务 {name}。"
 
 #: authentik/events/models.py
 msgid "Event"
@@ -592,28 +592,28 @@ msgid "Task has not been run yet."
 msgstr "任务尚未运行。"
 
 #: authentik/flows/api/flows.py
-#, python-format
-msgid "Flow not applicable to current user/request: %(messages)s"
-msgstr "流程不适用于当前用户/请求：%(messages)s"
+#, python-brace-format
+msgid "Flow not applicable to current user/request: {messages}"
+msgstr "流程不适用于当前用户/请求：{messages}"
 
 #: authentik/flows/api/flows_diagram.py
-#, python-format
-msgid "Policy (%(type)s)"
-msgstr "策略（%(type)s）"
+#, python-brace-format
+msgid "Policy ({type})"
+msgstr "策略（{type}）"
 
 #: authentik/flows/api/flows_diagram.py
-#, python-format
-msgid "Binding %(order)d"
-msgstr "绑定 %(order)d"
+#, python-brace-format
+msgid "Binding {order}"
+msgstr "绑定 {order}"
 
 #: authentik/flows/api/flows_diagram.py
 msgid "Policy passed"
 msgstr "策略通过"
 
 #: authentik/flows/api/flows_diagram.py
-#, python-format
-msgid "Stage (%(type)s)"
-msgstr "阶段（%(type)s）"
+#, python-brace-format
+msgid "Stage ({type})"
+msgstr "阶段（{type}）"
 
 #: authentik/flows/api/flows_diagram.py
 msgid "Policy denied"
@@ -648,9 +648,9 @@ msgid "Flow does not apply to current user."
 msgstr "流程不应用于当前用户。"
 
 #: authentik/flows/models.py
-#, python-format
-msgid "Dynamic In-memory stage: %(doc)s"
-msgstr "动态内存中阶段：%(doc)s"
+#, python-brace-format
+msgid "Dynamic In-memory stage: {doc}"
+msgstr "动态内存中阶段：{doc}"
 
 #: authentik/flows/models.py
 msgid "Visible in the URL."
@@ -743,6 +743,10 @@ msgstr "流程令牌"
 #: authentik/flows/models.py
 msgid "Flow Tokens"
 msgstr "流程令牌"
+
+#: authentik/flows/views/executor.py
+msgid "Invalid next URL"
+msgstr "无效的 next URL"
 
 #: authentik/lib/utils/time.py
 #, python-format
@@ -1347,9 +1351,9 @@ msgstr "设备令牌"
 
 #: authentik/providers/oauth2/views/authorize.py
 #: authentik/providers/saml/views/flows.py
-#, python-format
-msgid "Redirecting to %(app)s..."
-msgstr "正在跳转到 %(app)s…"
+#, python-brace-format
+msgid "Redirecting to {app}..."
+msgstr "正在跳转到 {app}…"
 
 #: authentik/providers/oauth2/views/device_init.py
 msgid "Invalid code"
@@ -1466,9 +1470,9 @@ msgid "Invalid XML Syntax"
 msgstr "无效 XML 语法"
 
 #: authentik/providers/saml/api/providers.py
-#, python-format
-msgid "Failed to import Metadata: %(message)s"
-msgstr "导入元数据失败：%(message)s"
+#, python-brace-format
+msgid "Failed to import Metadata: {messages}"
+msgstr "导入元数据失败：{messages}"
 
 #: authentik/providers/saml/models.py
 msgid "ACS URL"
@@ -1639,19 +1643,19 @@ msgid "Syncing page %(page)d of groups"
 msgstr "正在同步群组页面 %(page)d"
 
 #: authentik/providers/scim/tasks.py
-#, python-format
-msgid "Failed to sync user %(user_name)s due to remote error: %(error)s"
-msgstr "由于远端错误，同步用户 %(user_name)s 失败：%(error)s"
+#, python-brace-format
+msgid "Failed to sync user {user_name} due to remote error: {error}"
+msgstr "由于远端错误，同步用户 {user_name} 失败：{error}"
 
 #: authentik/providers/scim/tasks.py
-#, python-format
-msgid "Stopping sync due to error: %(error)s"
-msgstr "由于以下错误，同步停止：%(error)s"
+#, python-brace-format
+msgid "Stopping sync due to error: {error}"
+msgstr "由于以下错误，同步停止：{error}"
 
 #: authentik/providers/scim/tasks.py
-#, python-format
-msgid "Failed to sync group %(group_name)s due to remote error: %(error)s"
-msgstr "由于远端错误，同步组 %(group_name)s 失败：%(error)s"
+#, python-brace-format
+msgid "Failed to sync group {group_name} due to remote error: {error}"
+msgstr "由于远端错误，同步组 {group_name} 失败：{error}"
 
 #: authentik/rbac/models.py
 msgid "Role"
@@ -1853,6 +1857,14 @@ msgid "GitHub OAuth Sources"
 msgstr "GitHub OAuth 源"
 
 #: authentik/sources/oauth/models.py
+msgid "GitLab OAuth Source"
+msgstr "GitLab OAuth 源"
+
+#: authentik/sources/oauth/models.py
+msgid "GitLab OAuth Sources"
+msgstr "GitLab OAuth 源"
+
+#: authentik/sources/oauth/models.py
 msgid "Twitch OAuth Source"
 msgstr "Twitch OAuth 源"
 
@@ -1957,9 +1969,9 @@ msgid "User OAuth Source Connections"
 msgstr "用户 OAuth 源连接"
 
 #: authentik/sources/oauth/views/callback.py
-#, python-format
-msgid "Authentication failed: %(reason)s"
-msgstr "身份验证失败：%(reason)s"
+#, python-brace-format
+msgid "Authentication failed: {reason}"
+msgstr "身份验证失败：{reason}"
 
 #: authentik/sources/plex/models.py
 msgid "Client identifier used to talk to Plex."
@@ -2109,9 +2121,9 @@ msgid "Optionally modify the payload being sent to custom providers."
 msgstr "可选地，修改发送到自定义提供程序的载荷。"
 
 #: authentik/stages/authenticator_sms/models.py
-#, python-format
-msgid "Use this code to authenticate in authentik: %(token)s"
-msgstr "使用此代码在 authentik 中验证身份：%(token)s"
+#, python-brace-format
+msgid "Use this code to authenticate in authentik: {token}"
+msgstr "使用此代码在 authentik 中验证身份：{token}"
 
 #: authentik/stages/authenticator_sms/models.py
 msgid "SMS Authenticator Setup Stage"

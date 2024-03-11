@@ -1,7 +1,6 @@
 """Common logic for reading MMDB files"""
 
 from pathlib import Path
-from typing import Optional
 
 from geoip2.database import Reader
 from structlog.stdlib import get_logger
@@ -13,7 +12,7 @@ class MMDBContextProcessor(EventContextProcessor):
     """Common logic for reading MaxMind DB files, including re-loading if the file has changed"""
 
     def __init__(self):
-        self.reader: Optional[Reader] = None
+        self.reader: Reader | None = None
         self._last_mtime: float = 0.0
         self.logger = get_logger()
         self.open()

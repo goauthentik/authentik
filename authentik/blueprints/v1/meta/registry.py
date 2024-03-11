@@ -8,14 +8,14 @@ from rest_framework.serializers import Serializer
 class BaseMetaModel(Model):
     """Base models"""
 
+    class Meta:
+        abstract = True
+
     @staticmethod
     def serializer() -> Serializer:
         """Serializer similar to SerializerModel, but as a static method since
         this is an abstract model"""
         raise NotImplementedError
-
-    class Meta:
-        abstract = True
 
 
 class MetaResult:

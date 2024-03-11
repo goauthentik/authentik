@@ -16,13 +16,8 @@ from authentik.events.middleware import should_log_model
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import model_to_dict
 
-BANNER_TEXT = """### authentik shell ({authentik})
-### Node {node} | Arch {arch} | Python {python} """.format(
-    node=platform.node(),
-    python=platform.python_version(),
-    arch=platform.machine(),
-    authentik=get_full_version(),
-)
+BANNER_TEXT = f"""### authentik shell ({get_full_version()})
+### Node {platform.node()} | Arch {platform.machine()} | Python {platform.python_version()} """
 
 
 class Command(BaseCommand):
@@ -86,7 +81,7 @@ class Command(BaseCommand):
 
         # If Python code has been passed, execute it and exit.
         if options["command"]:
-            # pylint: disable=exec-used
+
             exec(options["command"], namespace)  # nosec # noqa
             return
 
@@ -99,7 +94,7 @@ class Command(BaseCommand):
         else:
             try:
                 hook()
-            except Exception:  # pylint: disable=broad-except
+            except Exception:
                 # Match the behavior of the cpython shell where an error in
                 # sys.__interactivehook__ prints a warning and the exception
                 # and continues.

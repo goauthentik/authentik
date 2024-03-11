@@ -15,7 +15,6 @@ from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
-from authentik.api.decorators import permission_required
 from authentik.blueprints.v1.exporter import FlowExporter
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT, Importer
 from authentik.core.api.used_by import UsedByMixin
@@ -33,6 +32,7 @@ from authentik.lib.utils.file import (
     set_file_url,
 )
 from authentik.lib.views import bad_request_message
+from authentik.rbac.decorators import permission_required
 
 LOGGER = get_logger()
 
@@ -114,7 +114,6 @@ class FlowImportResultSerializer(PassiveSerializer):
 class FlowViewSet(UsedByMixin, ModelViewSet):
     """Flow Viewset"""
 
-    # pylint: disable=no-member
     queryset = Flow.objects.all().prefetch_related("stages", "policies")
     serializer_class = FlowSerializer
     lookup_field = "slug"
@@ -279,7 +278,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
-    def execute(self, request: Request, slug: str):
+    def execute(self, request: Request, _slug: str):
         """Execute flow for current user"""
         # Because we pre-plan the flow here, and not in the planner, we need to manually clear
         # the history of the inspector
@@ -294,8 +293,9 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
             return bad_request_message(
                 request,
                 _(
-                    "Flow not applicable to current user/request: %(messages)s"
-                    % {"messages": exc.messages}
+                    "Flow not applicable to current user/request: {messages}".format_map(
+                        {"messages": exc.messages}
+                    )
                 ),
             )
         return Response(

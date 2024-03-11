@@ -24,7 +24,8 @@ from authentik.flows.api.bindings import FlowStageBindingSerializer
 from authentik.flows.models import Flow
 from authentik.flows.planner import FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_HISTORY, SESSION_KEY_PLAN
-from authentik.root.install_id import get_install_id
+
+MIN_FLOW_LENGTH = 2
 
 
 class FlowInspectorPlanSerializer(PassiveSerializer):
@@ -41,7 +42,7 @@ class FlowInspectorPlanSerializer(PassiveSerializer):
 
     def get_next_planned_stage(self, plan: FlowPlan) -> FlowStageBindingSerializer:
         """Get the next planned stage"""
-        if len(plan.bindings) < 2:
+        if len(plan.bindings) < MIN_FLOW_LENGTH:
             return FlowStageBindingSerializer().data
         return FlowStageBindingSerializer(instance=plan.bindings[1]).data
 
@@ -49,12 +50,10 @@ class FlowInspectorPlanSerializer(PassiveSerializer):
         """Get the plan's context, sanitized"""
         return sanitize_dict(plan.context)
 
-    def get_session_id(self, plan: FlowPlan) -> str:
+    def get_session_id(self, _plan: FlowPlan) -> str:
         """Get a unique session ID"""
         request: Request = self.context["request"]
-        return sha256(
-            f"{request._request.session.session_key}-{get_install_id()}".encode("ascii")
-        ).hexdigest()
+        return sha256(request._request.session.session_key.encode("ascii")).hexdigest()
 
 
 class FlowInspectionSerializer(PassiveSerializer):

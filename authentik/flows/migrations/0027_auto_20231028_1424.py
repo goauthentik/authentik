@@ -16,7 +16,7 @@ def set_oobe_flow_authentication(apps: Apps, schema_editor: BaseDatabaseSchemaEd
     users = User.objects.using(db_alias).exclude(username="akadmin")
     try:
         users = users.exclude(pk=get_anonymous_user().pk)
-    # pylint: disable=broad-except
+
     except Exception:  # nosec
         pass
 

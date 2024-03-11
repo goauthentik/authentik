@@ -54,10 +54,6 @@ make lint # Ensures your code is well-formatted
 make gen # Generates an updated OpenAPI Docs for any changes you make
 ```
 
-:::info
-Linting also requires `pyright`, which is installed in the `web/` folder to make dependency management easier.
-:::
-
 ## Frontend Setup
 
 By default, no compiled bundle of the frontend is included so this step is required even if you're not developing for the UI.

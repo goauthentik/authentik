@@ -33,7 +33,7 @@ from authentik.lib.models import (
     SerializerModel,
 )
 from authentik.policies.models import PolicyBindingModel
-from authentik.root.install_id import get_install_id
+from authentik.tenants.utils import get_unique_identifier
 
 LOGGER = get_logger()
 USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
@@ -222,7 +222,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         there are at most 3 queries done"""
         return Group.children_recursive(self.ak_groups.all())
 
-    def group_attributes(self, request: Optional[HttpRequest] = None) -> dict[str, Any]:
+    def group_attributes(self, request: HttpRequest | None = None) -> dict[str, Any]:
         """Get a dictionary containing the attributes from all groups the user belongs to,
         including the users attributes"""
         final_attributes = {}
@@ -276,13 +276,13 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
     @property
     def uid(self) -> str:
         """Generate a globally unique UID, based on the user ID and the hashed secret key"""
-        return sha256(f"{self.id}-{get_install_id()}".encode("ascii")).hexdigest()
+        return sha256(f"{self.id}-{get_unique_identifier()}".encode("ascii")).hexdigest()
 
-    def locale(self, request: Optional[HttpRequest] = None) -> str:
+    def locale(self, request: HttpRequest | None = None) -> str:
         """Get the locale the user has configured"""
         try:
             return self.attributes.get("settings", {}).get("locale", "")
-        # pylint: disable=broad-except
+
         except Exception as exc:
             LOGGER.warning("Failed to get default locale", exc=exc)
         if request:
@@ -358,7 +358,7 @@ class Provider(SerializerModel):
     objects = InheritanceManager()
 
     @property
-    def launch_url(self) -> Optional[str]:
+    def launch_url(self) -> str | None:
         """URL to this provider and initiate authorization for the user.
         Can return None for providers that are not URL-based"""
         return None
@@ -435,7 +435,7 @@ class Application(SerializerModel, PolicyBindingModel):
         return ApplicationSerializer
 
     @property
-    def get_meta_icon(self) -> Optional[str]:
+    def get_meta_icon(self) -> str | None:
         """Get the URL to the App Icon image. If the name is /static or starts with http
         it is returned as-is"""
         if not self.meta_icon:
@@ -444,7 +444,7 @@ class Application(SerializerModel, PolicyBindingModel):
             return self.meta_icon.name
         return self.meta_icon.url
 
-    def get_launch_url(self, user: Optional["User"] = None) -> Optional[str]:
+    def get_launch_url(self, user: Optional["User"] = None) -> str | None:
         """Get launch URL if set, otherwise attempt to get launch URL based on provider."""
         url = None
         if self.meta_launch_url:
@@ -457,13 +457,13 @@ class Application(SerializerModel, PolicyBindingModel):
                 user = user._wrapped
             try:
                 return url % user.__dict__
-            # pylint: disable=broad-except
+
             except Exception as exc:
                 LOGGER.warning("Failed to format launch url", exc=exc)
                 return url
         return url
 
-    def get_provider(self) -> Optional[Provider]:
+    def get_provider(self) -> Provider | None:
         """Get casted provider instance"""
         if not self.provider:
             return None
@@ -551,7 +551,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     objects = InheritanceManager()
 
     @property
-    def icon_url(self) -> Optional[str]:
+    def icon_url(self) -> str | None:
         """Get the URL to the Icon. If the name is /static or
         starts with http it is returned as-is"""
         if not self.icon:
@@ -566,7 +566,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
             return self.user_path_template % {
                 "slug": self.slug,
             }
-        # pylint: disable=broad-except
+
         except Exception as exc:
             LOGGER.warning("Failed to template user path", exc=exc, source=self)
             return User.default_path()
@@ -576,12 +576,12 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         """Return component used to edit this object"""
         raise NotImplementedError
 
-    def ui_login_button(self, request: HttpRequest) -> Optional[UILoginButton]:
+    def ui_login_button(self, request: HttpRequest) -> UILoginButton | None:
         """If source uses a http-based flow, return UI Information about the login
         button. If source doesn't use http-based flow, return None."""
         return None
 
-    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+    def ui_user_settings(self) -> UserSettingSerializer | None:
         """Entrypoint to integrate with User settings. Can either return None if no
         user settings are available, or UserSettingSerializer."""
         return None
@@ -627,6 +627,9 @@ class ExpiringModel(models.Model):
     expires = models.DateTimeField(default=default_token_duration)
     expiring = models.BooleanField(default=True)
 
+    class Meta:
+        abstract = True
+
     def expire_action(self, *args, **kwargs):
         """Handler which is called when this object is expired. By
         default the object is deleted. This is less efficient compared
@@ -648,9 +651,6 @@ class ExpiringModel(models.Model):
         if not self.expiring:
             return False
         return now() > self.expires
-
-    class Meta:
-        abstract = True
 
 
 class TokenIntents(models.TextChoices):
@@ -681,6 +681,21 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="+")
     description = models.TextField(default="", blank=True)
 
+    class Meta:
+        verbose_name = _("Token")
+        verbose_name_plural = _("Tokens")
+        indexes = [
+            models.Index(fields=["identifier"]),
+            models.Index(fields=["key"]),
+        ]
+        permissions = [("view_token_key", _("View token's key"))]
+
+    def __str__(self):
+        description = f"{self.identifier}"
+        if self.expiring:
+            description += f" (expires={self.expires})"
+        return description
+
     @property
     def serializer(self) -> type[Serializer]:
         from authentik.core.api.tokens import TokenSerializer
@@ -708,21 +723,6 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
             message=f"Token {self.identifier}'s secret was rotated.",
         ).save()
 
-    def __str__(self):
-        description = f"{self.identifier}"
-        if self.expiring:
-            description += f" (expires={self.expires})"
-        return description
-
-    class Meta:
-        verbose_name = _("Token")
-        verbose_name_plural = _("Tokens")
-        indexes = [
-            models.Index(fields=["identifier"]),
-            models.Index(fields=["key"]),
-        ]
-        permissions = [("view_token_key", _("View token's key"))]
-
 
 class PropertyMapping(SerializerModel, ManagedModel):
     """User-defined key -> x mapping which can be used by providers to expose extra data."""
@@ -743,7 +743,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
         """Get serializer for this model"""
         raise NotImplementedError
 
-    def evaluate(self, user: Optional[User], request: Optional[HttpRequest], **kwargs) -> Any:
+    def evaluate(self, user: User | None, request: HttpRequest | None, **kwargs) -> Any:
         """Evaluate `self.expression` using `**kwargs` as Context."""
         from authentik.core.expression.evaluator import PropertyMappingEvaluator
 
@@ -779,6 +779,13 @@ class AuthenticatedSession(ExpiringModel):
     last_user_agent = models.TextField(blank=True)
     last_used = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        verbose_name = _("Authenticated Session")
+        verbose_name_plural = _("Authenticated Sessions")
+
+    def __str__(self) -> str:
+        return f"Authenticated Session {self.session_key[:10]}"
+
     @staticmethod
     def from_request(request: HttpRequest, user: User) -> Optional["AuthenticatedSession"]:
         """Create a new session from a http request"""
@@ -793,7 +800,3 @@ class AuthenticatedSession(ExpiringModel):
             last_user_agent=request.META.get("HTTP_USER_AGENT", ""),
             expires=request.session.get_expiry_date(),
         )
-
-    class Meta:
-        verbose_name = _("Authenticated Session")
-        verbose_name_plural = _("Authenticated Sessions")

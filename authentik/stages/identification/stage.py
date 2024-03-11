@@ -3,7 +3,7 @@
 from dataclasses import asdict
 from random import SystemRandom
 from time import sleep
-from typing import Any, Optional
+from typing import Any
 
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
@@ -84,7 +84,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
     password = CharField(required=False, allow_blank=True, allow_null=True)
     component = CharField(default="ak-stage-identification")
 
-    pre_user: Optional[User] = None
+    pre_user: User | None = None
 
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         """Validate that user exists, and optionally their password"""
@@ -159,7 +159,7 @@ class IdentificationStageView(ChallengeStageView):
 
     response_class = IdentificationChallengeResponse
 
-    def get_user(self, uid_value: str) -> Optional[User]:
+    def get_user(self, uid_value: str) -> User | None:
         """Find user instance. Returns None if no user was found."""
         current_stage: IdentificationStage = self.executor.current_stage
         query = Q()
