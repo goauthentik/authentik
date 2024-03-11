@@ -15,8 +15,8 @@ import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -38,21 +38,10 @@ import {
 
 @customElement("ak-provider-rac-view")
 export class RACProviderViewPage extends AKElement {
-    @property()
-    set args(value: { [key: string]: number }) {
-        this.providerID = value.id;
-    }
-
     @property({ type: Number })
-    set providerID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
-            .providersRacRetrieve({
-                id: value,
-            })
-            .then((prov) => (this.provider = prov));
-    }
+    providerID?: number;
 
-    @property({ attribute: false })
+    @state()
     provider?: RACProvider;
 
     static get styles(): CSSResult[] {
@@ -77,6 +66,18 @@ export class RACProviderViewPage extends AKElement {
             if (!this.provider?.pk) return;
             this.providerID = this.provider?.pk;
         });
+    }
+
+    fetchProvider(id: number) {
+        new ProvidersApi(DEFAULT_CONFIG)
+            .providersRacRetrieve({ id })
+            .then((prov) => (this.provider = prov));
+    }
+
+    willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("providerID") && this.providerID) {
+            this.fetchProvider(this.providerID);
+        }
     }
 
     render(): TemplateResult {

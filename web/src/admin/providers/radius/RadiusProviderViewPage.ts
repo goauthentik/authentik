@@ -11,8 +11,8 @@ import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -32,21 +32,10 @@ import {
 
 @customElement("ak-provider-radius-view")
 export class RadiusProviderViewPage extends AKElement {
-    @property()
-    set args(value: { [key: string]: number }) {
-        this.providerID = value.id;
-    }
-
     @property({ type: Number })
-    set providerID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
-            .providersRadiusRetrieve({
-                id: value,
-            })
-            .then((prov) => (this.provider = prov));
-    }
+    providerID?: number;
 
-    @property({ attribute: false })
+    @state()
     provider?: RadiusProvider;
 
     static get styles(): CSSResult[] {
@@ -69,6 +58,18 @@ export class RadiusProviderViewPage extends AKElement {
             if (!this.provider?.pk) return;
             this.providerID = this.provider?.pk;
         });
+    }
+
+    fetchProvider(id: number) {
+        new ProvidersApi(DEFAULT_CONFIG)
+            .providersRadiusRetrieve({ id })
+            .then((prov) => (this.provider = prov));
+    }
+
+    willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("providerID") && this.providerID) {
+            this.fetchProvider(this.providerID);
+        }
     }
 
     render(): TemplateResult {
