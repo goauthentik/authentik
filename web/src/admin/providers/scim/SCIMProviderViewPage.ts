@@ -249,7 +249,10 @@ export class SCIMProviderViewPage extends AKElement {
                 </div>
                 <div class="pf-c-card pf-l-grid__item pf-m-5-col">
                     <div class="pf-c-card__body">
-                        <ak-markdown .md=${MDSCIMProvider}></ak-markdown>
+                        <ak-markdown
+                            .md=${MDSCIMProvider}
+                            meta="providers/scim/index.md"
+                        ></ak-markdown>
                     </div>
                 </div>
             </div>`;

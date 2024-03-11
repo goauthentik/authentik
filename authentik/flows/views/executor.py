@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext as _
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.generic import View
 from drf_spectacular.types import OpenApiTypes
@@ -176,6 +177,8 @@ class FlowExecutorView(APIView):
                     self.cancel()
                 self._logger.debug("f(exec): Continuing existing plan")
 
+            # Initial flow request, check if we have an upstream query string passed in
+            request.session[SESSION_KEY_GET] = get_params
             # Don't check session again as we've either already loaded the plan or we need to plan
             if not self.plan:
                 request.session[SESSION_KEY_HISTORY] = []
@@ -190,8 +193,6 @@ class FlowExecutorView(APIView):
                     # To match behaviour with loading an empty flow plan from cache,
                     # we don't show an error message here, but rather call _flow_done()
                     return self._flow_done()
-            # Initial flow request, check if we have an upstream query string passed in
-            request.session[SESSION_KEY_GET] = get_params
             # We don't save the Plan after getting the next stage
             # as it hasn't been successfully passed yet
             try:
@@ -390,7 +391,11 @@ class FlowExecutorView(APIView):
             NEXT_ARG_NAME, "authentik_core:root-redirect"
         )
         self.cancel()
-        return to_stage_response(self.request, redirect_with_qs(next_param))
+        if next_param and not is_url_absolute(next_param):
+            return to_stage_response(self.request, redirect_with_qs(next_param))
+        return to_stage_response(
+            self.request, self.stage_invalid(error_message=_("Invalid next URL"))
+        )
 
     def stage_ok(self) -> HttpResponse:
         """Callback called by stages upon successful completion.

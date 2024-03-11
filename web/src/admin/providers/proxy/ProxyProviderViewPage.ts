@@ -121,30 +121,37 @@ export class ProxyProviderViewPage extends AKElement {
             {
                 label: msg("Nginx (Ingress)"),
                 md: MDNginxIngress,
+                meta: "providers/proxy/_nginx_ingress.md",
             },
             {
                 label: msg("Nginx (Proxy Manager)"),
                 md: MDNginxPM,
+                meta: "providers/proxy/_nginx_proxy_manager.md",
             },
             {
                 label: msg("Nginx (standalone)"),
                 md: MDNginxStandalone,
+                meta: "providers/proxy/_nginx_standalone.md",
             },
             {
                 label: msg("Traefik (Ingress)"),
                 md: MDTraefikIngress,
+                meta: "providers/proxy/_traefik_ingress.md",
             },
             {
                 label: msg("Traefik (Compose)"),
                 md: MDTraefikCompose,
+                meta: "providers/proxy/_traefik_compose.md",
             },
             {
                 label: msg("Traefik (Standalone)"),
                 md: MDTraefikStandalone,
+                meta: "providers/proxy/_traefik_standalone.md",
             },
             {
                 label: msg("Caddy (Standalone)"),
                 md: MDCaddyStandalone,
+                meta: "providers/proxy/_caddy_standalone.md",
             },
         ];
         const replacers: Replacer[] = [
@@ -182,7 +189,11 @@ export class ProxyProviderViewPage extends AKElement {
                     data-tab-title="${server.label}"
                     class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
                 >
-                    <ak-markdown .replacers=${replacers} .md=${server.md}></ak-markdown>
+                    <ak-markdown
+                        .replacers=${replacers}
+                        .md=${server.md}
+                        meta=${server.meta}
+                    ></ak-markdown>
                 </section>`;
             })}</ak-tabs
         >`;
@@ -248,7 +259,10 @@ export class ProxyProviderViewPage extends AKElement {
             </div>
             <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                 <div class="pf-c-card__body">
-                    <ak-markdown .md=${MDHeaderAuthentication}></ak-markdown>
+                    <ak-markdown
+                        .md=${MDHeaderAuthentication}
+                        meta="proxy/header_authentication.md"
+                    ></ak-markdown>
                 </div>
             </div>
         </div>`;

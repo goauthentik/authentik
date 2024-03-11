@@ -36,8 +36,21 @@ class TestAuthorize(OAuthTestCase):
 
     def test_invalid_grant_type(self):
         """Test with invalid grant type"""
+        OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            authorization_flow=create_test_flow(),
+            redirect_uris="http://local.invalid/Foo",
+        )
         with self.assertRaises(AuthorizeError):
-            request = self.factory.get("/", data={"response_type": "invalid"})
+            request = self.factory.get(
+                "/",
+                data={
+                    "response_type": "invalid",
+                    "client_id": "test",
+                    "redirect_uri": "http://local.invalid/Foo",
+                },
+            )
             OAuthAuthorizationParams.from_request(request)
 
     def test_invalid_client_id(self):
