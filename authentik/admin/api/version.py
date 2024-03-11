@@ -41,7 +41,7 @@ class VersionSerializer(PassiveSerializer):
 
     def get_version_latest_valid(self, _) -> str:
         """Check if latest version is valid"""
-        return self.get_latest() != VERSION_NULL
+        return cache.get(VERSION_CACHE_KEY) != VERSION_NULL
 
     def get_outdated(self, instance) -> bool:
         """Check if we're running the latest version"""
