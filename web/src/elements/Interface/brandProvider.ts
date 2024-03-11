@@ -1,6 +1,6 @@
 import { authentikBrandContext } from "@goauthentik/elements/AuthentikContexts";
 
-import { consume } from "@lit-labs/context";
+import { consume } from "@lit/context";
 import type { LitElement } from "lit";
 
 import type { CurrentBrand } from "@goauthentik/api";

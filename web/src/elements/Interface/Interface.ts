@@ -7,10 +7,9 @@ import {
     authentikConfigContext,
     authentikEnterpriseContext,
 } from "@goauthentik/elements/AuthentikContexts";
-import type { AdoptedStyleSheetsElement } from "@goauthentik/elements/types";
 import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
 
-import { ContextProvider } from "@lit-labs/context";
+import { ContextProvider } from "@lit/context";
 import { state } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -76,9 +75,9 @@ export class Interface extends AKElement implements AkInterface {
         this.dataset.akInterfaceRoot = "true";
     }
 
-    _activateTheme(root: AdoptedStyleSheetsElement, theme: UiThemeEnum): void {
+    _activateTheme(root: DocumentOrShadowRoot, theme: UiThemeEnum): void {
         super._activateTheme(root, theme);
-        super._activateTheme(document, theme);
+        super._activateTheme(document as unknown as DocumentOrShadowRoot, theme);
     }
 
     async getTheme(): Promise<UiThemeEnum> {
