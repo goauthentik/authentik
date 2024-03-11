@@ -11,12 +11,12 @@ You can create a new provider in the Admin interface, or you can use the [Applic
 
 Refer to the documentation for each provider:
 
-*   [LDAP](./ldap/)
-*   [OAuth2/OpenID](./oauth2/)
-*   [Proxy provider](./proxy/)
-*   [RAC (Remote Access Control)](./rac/)
-*   [Radius](./radius/)
-*   [SAML](./saml/)
-*   [SCIM](./scim/)
+-   [LDAP](./ldap/index.md)
+-   [OAuth2/OpenID](./oauth2/index.md)
+-   [Proxy provider](./proxy/index.md)
+-   [RAC (Remote Access Control)](./rac/index.md)
+-   [Radius](./radius/index.md)
+-   [SAML](./saml/index.md)
+-   [SCIM](./scim/index.md)
 
 You can also create a SAML provider by uploading an SP metadata XML file that contains the service provider's configuration data. SAML metadata is used to share configuration information between the Identity Provider (IdP) and the Service Provider (SP). An SP metadata XML file typically contains the SP certificate, the entity ID, the Assertion Consumer Service URL (ACS URL), and a log out URL (SingleLogoutService).
