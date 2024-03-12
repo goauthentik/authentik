@@ -68,6 +68,10 @@ const docsSidebar = {
         {
             type: "category",
             label: "Providers",
+            link: {
+                type: "doc",
+                id: "providers/index",
+            },
             items: [
                 {
                     type: "category",

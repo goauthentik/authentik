@@ -1,5 +1,5 @@
 ---
-title: Overview
+title: Policies
 ---
 
 ## Event-matcher policy
