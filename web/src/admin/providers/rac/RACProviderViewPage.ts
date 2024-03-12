@@ -3,7 +3,6 @@ import "@goauthentik/admin/providers/rac/ConnectionTokenList";
 import "@goauthentik/admin/providers/rac/EndpointForm";
 import "@goauthentik/admin/providers/rac/EndpointList";
 import "@goauthentik/admin/providers/rac/RACProviderForm";
-import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/ak-status-label";
@@ -13,6 +12,7 @@ import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, html } from "lit";

@@ -1,5 +1,5 @@
-import { EVENT_REFRESH_ENTERPRISE } from "@goauthentik/app/common/constants";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { EVENT_REFRESH_ENTERPRISE } from "@goauthentik/common/constants";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
