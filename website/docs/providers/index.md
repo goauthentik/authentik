@@ -7,6 +7,8 @@ A Provider is an authentication method, a service that is used by authentik to a
 
 Providers are the "other half" of [applications](../applications/index.md). They typically exist in a 1-to-1 relationship; each application needs a provider and every provider can be used with one application.
 
+Applications can use additional providers to augment the functionality of the main provider. For more information, see [Backchannel providers](../applications/manage_apps.md#backchannel-providers).
+
 You can create a new provider in the Admin interface, or you can use the [Application wizard](../applications/manage_apps.md#instructions) to create a new application and its provider at the same time.
 
 Refer to the documentation for each provider:
