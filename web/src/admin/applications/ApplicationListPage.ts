@@ -93,12 +93,10 @@ export class ApplicationListPage extends TablePage<Application> {
     }
 
     renderSidebarAfter(): TemplateResult {
-        // Rendering the wizard with .open here, as if we set the attribute in
-        // renderObjectCreate() it'll open two wizards, since that function gets called twice
         return html`<div class="pf-c-sidebar__panel pf-m-width-25">
             <div class="pf-c-card">
                 <div class="pf-c-card__body">
-                    <ak-markdown .md=${MDApplication} meta="core/applications.md"></ak-markdown>
+                    <ak-markdown .md=${MDApplication} meta="applications/index.md"></ak-markdown>
                 </div>
             </div>
         </div>`;

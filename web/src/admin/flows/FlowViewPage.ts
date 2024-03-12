@@ -12,7 +12,7 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/SpinnerButton";
 
 import { msg } from "@lit/localize";
-import { PropertyValues, CSSResult, TemplateResult, css, html } from "lit";
+import { CSSResult, PropertyValues, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -153,7 +153,11 @@ export class FlowViewPage extends AKElement {
                                                 <button
                                                     class="pf-c-button pf-m-block pf-m-primary"
                                                     @click=${() => {
-                                                        const finalURL = `${window.location.origin}/if/flow/${this.flow.slug}/${AndNext(`${window.location.pathname}#${window.location.hash}`)}`;
+                                                        const finalURL = `${
+                                                            window.location.origin
+                                                        }/if/flow/${this.flow.slug}/${AndNext(
+                                                            `${window.location.pathname}#${window.location.hash}`,
+                                                        )}`;
                                                         window.open(finalURL, "_blank");
                                                     }}
                                                 >
@@ -167,7 +171,11 @@ export class FlowViewPage extends AKElement {
                                                                 slug: this.flow.slug,
                                                             })
                                                             .then((link) => {
-                                                                const finalURL = `${link.link}${AndNext(`${window.location.pathname}#${window.location.hash}`)}`;
+                                                                const finalURL = `${
+                                                                    link.link
+                                                                }${AndNext(
+                                                                    `${window.location.pathname}#${window.location.hash}`,
+                                                                )}`;
                                                                 window.open(finalURL, "_blank");
                                                             });
                                                     }}
@@ -182,7 +190,11 @@ export class FlowViewPage extends AKElement {
                                                                 slug: this.flow.slug,
                                                             })
                                                             .then((link) => {
-                                                                const finalURL = `${link.link}?${encodeURI(`inspector&next=/#${window.location.hash}`)}`;
+                                                                const finalURL = `${
+                                                                    link.link
+                                                                }?${encodeURI(
+                                                                    `inspector&next=/#${window.location.hash}`,
+                                                                )}`;
                                                                 window.open(finalURL, "_blank");
                                                             })
                                                             .catch((exc: ResponseError) => {

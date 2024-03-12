@@ -17,7 +17,7 @@ COPY ./blueprints /work/blueprints/
 COPY ./schema.yml /work/
 COPY ./SECURITY.md /work/
 
-RUN npm run build
+RUN npm run build-bundled
 
 # Stage 2: Build webui
 FROM --platform=${BUILDPLATFORM} docker.io/node:21 as web-builder
@@ -38,7 +38,7 @@ COPY ./gen-ts-api /work/web/node_modules/@goauthentik/api
 RUN npm run build
 
 # Stage 3: Build go proxy
-FROM --platform=${BUILDPLATFORM} docker.io/golang:1.22.0-bookworm AS go-builder
+FROM --platform=${BUILDPLATFORM} docker.io/golang:1.22.1-bookworm AS go-builder
 
 ARG TARGETOS
 ARG TARGETARCH
