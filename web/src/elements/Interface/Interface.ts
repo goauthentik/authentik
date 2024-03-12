@@ -1,6 +1,6 @@
-import { EVENT_REFRESH_ENTERPRISE } from "@goauthentik/app/common/constants";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { brand, config } from "@goauthentik/common/api/config";
+import { EVENT_REFRESH_ENTERPRISE } from "@goauthentik/common/constants";
 import { UIConfig, uiConfig } from "@goauthentik/common/ui/config";
 import {
     authentikBrandContext,

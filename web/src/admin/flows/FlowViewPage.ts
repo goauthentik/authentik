@@ -1,15 +1,15 @@
 import "@goauthentik/admin/flows/BoundStagesList";
 import "@goauthentik/admin/flows/FlowDiagram";
 import "@goauthentik/admin/flows/FlowForm";
+import { DesignationToLabel } from "@goauthentik/admin/flows/utils";
 import "@goauthentik/admin/policies/BoundPoliciesList";
-import { DesignationToLabel } from "@goauthentik/app/admin/flows/utils";
-import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, css, html } from "lit";

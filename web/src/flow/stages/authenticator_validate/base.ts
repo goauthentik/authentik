@@ -1,9 +1,5 @@
-import {
-    BaseStage,
-    FlowInfoChallenge,
-    PendingUserChallenge,
-} from "@goauthentik/app/flow/stages/base";
 import { AuthenticatorValidateStage } from "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage";
+import { BaseStage, FlowInfoChallenge, PendingUserChallenge } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";

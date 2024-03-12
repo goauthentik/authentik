@@ -1,11 +1,11 @@
-import { renderSourceIcon } from "@goauthentik/app/admin/sources/utils";
-import "@goauthentik/app/elements/user/sources/SourceSettingsOAuth";
-import "@goauthentik/app/elements/user/sources/SourceSettingsPlex";
-import "@goauthentik/app/elements/user/sources/SourceSettingsSAML";
+import { renderSourceIcon } from "@goauthentik/admin/sources/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
+import "@goauthentik/elements/user/sources/SourceSettingsOAuth";
+import "@goauthentik/elements/user/sources/SourceSettingsPlex";
+import "@goauthentik/elements/user/sources/SourceSettingsSAML";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";

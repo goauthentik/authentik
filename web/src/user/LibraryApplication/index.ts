@@ -1,4 +1,4 @@
-import { PFSize } from "@goauthentik/app/elements/Spinner";
+import { PFSize } from "@goauthentik/common/enums.js";
 import { truncateWords } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-app-icon";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";

@@ -1,6 +1,6 @@
 ///<reference types="@hcaptcha/types"/>
+import { PFSize } from "@goauthentik/common/enums.js";
 import "@goauthentik/elements/EmptyState";
-import { PFSize } from "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/forms/FormElement";
 import "@goauthentik/flow/FormStatic";
 import "@goauthentik/flow/stages/access_denied/AccessDeniedStage";

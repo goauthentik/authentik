@@ -1,4 +1,4 @@
-import { AKElement } from "@goauthentik/app/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/ModalForm";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/rbac/ObjectPermissionsPage";
