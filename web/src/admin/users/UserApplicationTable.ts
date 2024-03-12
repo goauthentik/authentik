@@ -1,8 +1,8 @@
 import { applicationListStyle } from "@goauthentik/admin/applications/ApplicationListPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { PFSize } from "@goauthentik/common/enums.js";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/components/ak-app-icon";
-import { PFSize } from "@goauthentik/elements/Spinner";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
