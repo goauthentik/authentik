@@ -2,23 +2,37 @@
 title: Outposts
 ---
 
-An outpost is a single deployment of an authentik component, which can be deployed in a completely separate environment:
+An outpost is a single deployment of an authentik component, essentially a service, that can be deployed anywhere that allows for a connection to the authentik API.
+
+An outpost is required if you use any of the following types of providers with your application:
 
 -   [LDAP Provider](../providers/ldap/index.md)
 -   [Proxy Provider](../providers/proxy/index.md)
 -   [RADIUS Provider](../providers/radius/index.md)
 -   [RAC Provider](../providers/rac/index.md)
 
+These types of providers use an outpost for increased flexibility and speed. Instead of the provider interacting directly with the business logic in the authentik Core to process all transactions, these providers uses an outpost to handle the logic, and because the outpost is written in Go it is much faster than the provider (written in Python).
+
+An additional advantage of using an outpost is that transactions between the application, the provider, and the outpost occur via the authentik API, and do not have to be via the internet, so offline connections to remote machines that are not on the internet are supported.
+
+An outpost is given permissions to access the authentik API using a service account and token, both of which are auto-generateed when you create a new outpost. The outpost is granted rights to only the one app/provider pair.
+
+Any change made to the outpost's associated app or provider immediately triggers an event to update the configuration data stored on the outpost, via websockets. Websockets are also used to send authentik auto-scheduled health-checks on the outpost.
+
+## Create and configure an outpost
+
+When you create a new outpost, use the **Configuration** field to define ......
+
 ![](outposts.png)
 
-Upon creation, a service account and a token is generated. The service account only has permissions to read the outpost and provider configuration. This token is used by the Outpost to connect to authentik.
+Upon creation, a service account and a token is generated. The service account only has permissions to read the outpost and provider configuration. This token is used by the outpost to connect to authentik.
 
 authentik can manage the deployment, updating and general lifecycle of an Outpost. To communicate with the underlying platforms on which the outpost is deployed, authentik has several built-in integrations.
 
 -   If you've deployed authentik on Docker Compose, authentik automatically creates an integration for the local docker socket (See [Docker](./integrations/docker.md)).
 -   If you've deployed authentik on Kubernetes, with `kubernetesIntegration` set to true (default), authentik automatically creates an integrations for the local Kubernetes Cluster (See [Kubernetes](./integrations/kubernetes.md)).
 
-To deploy an outpost with these integrations, simply select them during the creation of an Outpost. A background task is started, which creates the container/deployment. You can see that Status on the System Tasks page.
+To deploy an outpost with these integrations, simply select them during the creation of an outpost. A background task is started, which creates the container/deployment. You can see that Status on the **Dashboards -> System Tasks** page.
 
 To deploy an outpost manually, see:
 
@@ -35,6 +49,6 @@ import Configuration from "./_config.md";
 
 ## Metrics
 
-Each authentik outpost has a Prometheus metrics endpoint accessible under port `:9300/metrics`. This endpoint is not mapped via docker, as the endpoint doesn't have any authentication.
+Each authentik outpost has a Prometheus metrics endpoint accessible under port `:9300/metrics`. This endpoint is not mapped via Docker, as the endpoint doesn't have any authentication.
 
 For the embedded outpost, the metrics of the outpost and the metrics of the core authentik server are both returned under the same endpoint.
