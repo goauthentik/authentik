@@ -4,8 +4,8 @@
     "type": "module",
     "devDependencies": {
         "@trivago/prettier-plugin-sort-imports": "^4.3.0",
-        "@typescript-eslint/eslint-plugin": "^7.1.1",
-        "@typescript-eslint/parser": "^7.1.1",
+        "@typescript-eslint/eslint-plugin": "^7.2.0",
+        "@typescript-eslint/parser": "^7.2.0",
         "@wdio/cli": "^8.33.1",
         "@wdio/local-runner": "^8.33.1",
         "@wdio/mocha-framework": "^8.33.1",
@@ -32,6 +32,6 @@
         "node": ">=20"
     },
     "dependencies": {
-        "chromedriver": "^122.0.4"
+        "chromedriver": "^122.0.5"
     }
 }
