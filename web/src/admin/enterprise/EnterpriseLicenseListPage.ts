@@ -1,3 +1,4 @@
+import "@goauthentik/admin/enterprise/EnterpriseLicenseForm";
 import { getRelativeTime } from "@goauthentik/app/common/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
