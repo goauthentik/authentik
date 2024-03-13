@@ -129,9 +129,9 @@
         "@esbuild/darwin-arm64": "^0.20.1",
         "@esbuild/linux-amd64": "^0.18.11",
         "@esbuild/linux-arm64": "^0.20.1",
-        "@rollup/rollup-darwin-arm64": "4.12.1",
-        "@rollup/rollup-linux-arm64-gnu": "4.12.1",
-        "@rollup/rollup-linux-x64-gnu": "4.12.1"
+        "@rollup/rollup-darwin-arm64": "4.13.0",
+        "@rollup/rollup-linux-arm64-gnu": "4.13.0",
+        "@rollup/rollup-linux-x64-gnu": "4.13.0"
     },
     "engines": {
         "node": ">=20"
