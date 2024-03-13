@@ -12,7 +12,7 @@ import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 
 import { msg, str } from "@lit/localize";
-import { css, html, nothing } from "lit";
+import { CSSResult, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -25,6 +25,16 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 import { RbacApi, RbacPermissionsAssignedByUsersListModelEnum, Role } from "@goauthentik/api";
+
+const customCSS: Readonly<CSSResult> = css`
+    .pf-c-description-list__description ak-action-button {
+        margin-right: 6px;
+        margin-bottom: 6px;
+    }
+    .ak-button-collection {
+        max-width: 12em;
+    }
+`;
 
 @customElement("ak-role-view")
 export class RoleViewPage extends AKElement {
@@ -52,15 +62,7 @@ export class RoleViewPage extends AKElement {
             PFContent,
             PFCard,
             PFDescriptionList,
-            css`
-                .pf-c-description-list__description ak-action-button {
-                    margin-right: 6px;
-                    margin-bottom: 6px;
-                }
-                .ak-button-collection {
-                    max-width: 12em;
-                }
-            `,
+            customCSS,
         ];
     }
 

@@ -3,7 +3,7 @@ import { WizardAction } from "@goauthentik/elements/wizard/Wizard";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
@@ -29,7 +29,7 @@ export interface ActionStateBundle {
 
 @customElement("ak-wizard-page-action")
 export class ActionWizardPage extends WizardPage {
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFBullseye, PFEmptyState, PFTitle, PFProgressStepper];
     }
 

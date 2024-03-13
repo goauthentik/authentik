@@ -1,14 +1,14 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import { Wizard } from "@goauthentik/elements/wizard/Wizard";
 
-import { CSSResult, PropertyDeclaration, TemplateResult, html } from "lit";
+import { PropertyDeclaration, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-wizard-page")
 export class WizardPage extends AKElement {
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase];
     }
 

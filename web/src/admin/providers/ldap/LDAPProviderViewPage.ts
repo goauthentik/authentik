@@ -12,7 +12,7 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
+import { PropertyValues, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -46,7 +46,7 @@ export class LDAPProviderViewPage extends AKElement {
     @state()
     me?: SessionUser;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [
             PFBase,
             PFButton,

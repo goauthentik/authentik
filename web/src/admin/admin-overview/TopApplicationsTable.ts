@@ -3,7 +3,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Spinner";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
@@ -15,7 +15,7 @@ export class TopApplicationsTable extends AKElement {
     @property({ attribute: false })
     topN?: EventTopPerUser[];
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFTable];
     }
 

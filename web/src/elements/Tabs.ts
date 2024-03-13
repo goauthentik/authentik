@@ -10,6 +10,24 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import PFTabs from "@patternfly/patternfly/components/Tabs/tabs.css";
 import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
 
+const customCSS: Readonly<CSSResult> = css`
+    ::slotted(*) {
+        flex-grow: 2;
+    }
+    :host([vertical]) {
+        display: flex;
+    }
+    :host([vertical]) .pf-c-tabs {
+        width: auto !important;
+    }
+    :host([vertical]) .pf-c-tabs__list {
+        height: 100%;
+    }
+    :host([vertical]) .pf-c-tabs .pf-c-tabs__list::before {
+        border-color: transparent;
+    }
+`;
+
 @customElement("ak-tabs")
 export class Tabs extends AKElement {
     @property()
@@ -21,28 +39,8 @@ export class Tabs extends AKElement {
     @property({ type: Boolean })
     vertical = false;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFGlobal,
-            PFTabs,
-            css`
-                ::slotted(*) {
-                    flex-grow: 2;
-                }
-                :host([vertical]) {
-                    display: flex;
-                }
-                :host([vertical]) .pf-c-tabs {
-                    width: auto !important;
-                }
-                :host([vertical]) .pf-c-tabs__list {
-                    height: 100%;
-                }
-                :host([vertical]) .pf-c-tabs .pf-c-tabs__list::before {
-                    border-color: transparent;
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFGlobal, PFTabs, customCSS];
     }
 
     observer: MutationObserver;

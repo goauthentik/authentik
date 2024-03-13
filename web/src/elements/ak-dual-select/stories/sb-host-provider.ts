@@ -13,7 +13,7 @@ import { globalVariables } from "../components/styles.css";
 @customElement("sb-dual-select-host-provider")
 export class SbHostProvider extends LitElement {
     static get styles() {
-        return globalVariables;
+        return [globalVariables];
     }
 
     render() {

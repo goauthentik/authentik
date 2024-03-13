@@ -30,6 +30,15 @@ import {
     ResponseError,
 } from "@goauthentik/api";
 
+const customCSS: Readonly<CSSResult> = css`
+    img.pf-icon {
+        max-height: 24px;
+    }
+    ak-tabs {
+        height: 100%;
+    }
+`;
+
 @customElement("ak-flow-view")
 export class FlowViewPage extends AKElement {
     @property({ type: String })
@@ -38,15 +47,8 @@ export class FlowViewPage extends AKElement {
     @state()
     flow!: Flow;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFDescriptionList, PFButton, PFCard, PFContent, PFGrid].concat(css`
-            img.pf-icon {
-                max-height: 24px;
-            }
-            ak-tabs {
-                height: 100%;
-            }
-        `);
+    static get styles() {
+        return [PFBase, PFPage, PFDescriptionList, PFButton, PFCard, PFContent, PFGrid, customCSS];
     }
 
     fetchFlow(slug: string) {

@@ -24,6 +24,24 @@ import { EventActions, FlowsApi } from "@goauthentik/api";
 
 type Pair = [string, string | number | EventContext | EventModel | string[] | TemplateResult];
 
+const customCSS: Readonly<CSSResult> = css`
+    code {
+        display: block;
+        white-space: pre-wrap;
+        word-break: break-all;
+    }
+    .pf-l-flex {
+        justify-content: space-between;
+    }
+    .pf-l-flex__item {
+        min-width: 25%;
+    }
+    iframe {
+        width: 100%;
+        height: 50rem;
+    }
+`;
+
 // https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-issues/about-automation-for-issues-and-pull-requests-with-query-parameters
 
 // This is the template message body with our stacktrace passed to github via a querystring. It is
@@ -73,33 +91,8 @@ export class EventInfo extends AKElement {
     @property({ attribute: false })
     event!: EventWithContext;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFFlex,
-            PFCard,
-            PFTable,
-            PFList,
-            PFDescriptionList,
-            css`
-                code {
-                    display: block;
-                    white-space: pre-wrap;
-                    word-break: break-all;
-                }
-                .pf-l-flex {
-                    justify-content: space-between;
-                }
-                .pf-l-flex__item {
-                    min-width: 25%;
-                }
-                iframe {
-                    width: 100%;
-                    height: 50rem;
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFButton, PFFlex, PFCard, PFTable, PFList, PFDescriptionList, customCSS];
     }
 
     renderDescriptionGroup([term, description]: Pair) {

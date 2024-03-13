@@ -15,24 +15,19 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { EventActions } from "@goauthentik/api";
 
+const customCSS: Readonly<CSSResult> = css`
+    .big-graph-container {
+        height: 35em;
+    }
+    .card-container {
+        max-height: 10em;
+    }
+`;
+
 @customElement("ak-admin-dashboard-users")
 export class DashboardUserPage extends AKElement {
-    static get styles(): CSSResult[] {
-        return [
-            PFGrid,
-            PFPage,
-            PFContent,
-            PFList,
-            PFDivider,
-            css`
-                .big-graph-container {
-                    height: 35em;
-                }
-                .card-container {
-                    max-height: 10em;
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFGrid, PFPage, PFContent, PFList, PFDivider, customCSS];
     }
 
     render(): TemplateResult {

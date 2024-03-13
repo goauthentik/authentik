@@ -20,6 +20,12 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  * trigger the `expanded` property as needed.
  */
 
+const customCSS: Readonly<CSSResult> = css`
+    slot[name="body"][hidden] {
+        display: none !important;
+    }
+`;
+
 @customElement("ak-form-group")
 export class FormGroup extends AKElement {
     @property({ type: Boolean, reflect: true })
@@ -28,18 +34,8 @@ export class FormGroup extends AKElement {
     @property({ type: String, attribute: "aria-label", reflect: true })
     ariaLabel = "Details";
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFForm,
-            PFButton,
-            PFFormControl,
-            css`
-                slot[name="body"][hidden] {
-                    display: none !important;
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFForm, PFButton, PFFormControl, customCSS];
     }
 
     render(): TemplateResult {

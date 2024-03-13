@@ -1,4 +1,4 @@
-import { applicationListStyle } from "@goauthentik/admin/applications/ApplicationListPage";
+import { customCSS } from "@goauthentik/admin/applications/ApplicationListPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { PFSize } from "@goauthentik/common/enums.js";
 import { uiConfig } from "@goauthentik/common/ui/config";
@@ -7,7 +7,7 @@ import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/tab
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { Application, CoreApi, User } from "@goauthentik/api";
@@ -17,8 +17,8 @@ export class UserApplicationTable extends Table<Application> {
     @property({ attribute: false })
     user?: User;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(applicationListStyle);
+    static get styles() {
+        return [...super.styles, customCSS];
     }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<Application>> {

@@ -12,20 +12,16 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { UiThemeEnum } from "@goauthentik/api";
 
+const customCSS: Readonly<CSSResult> = css`
+    :host([theme="dark"]) h1 {
+        color: var(--ak-dark-foreground);
+    }
+`;
+
 @customElement("ak-loading")
 export class Loading extends Interface {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFPage,
-            PFSpinner,
-            PFEmptyState,
-            css`
-                :host([theme="dark"]) h1 {
-                    color: var(--ak-dark-foreground);
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFPage, PFSpinner, PFEmptyState, customCSS];
     }
 
     async getTheme(): Promise<UiThemeEnum> {

@@ -7,7 +7,6 @@ import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { msg } from "@lit/localize";
-import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
@@ -70,7 +69,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
         }
     }
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [...super.styles, PFContent];
     }
 

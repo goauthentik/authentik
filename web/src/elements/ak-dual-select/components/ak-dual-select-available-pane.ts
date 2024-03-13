@@ -14,8 +14,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { EVENT_ADD_ONE } from "../constants";
 import type { DualSelectPair } from "../types";
 
-const styles = [PFBase, PFButton, PFDualListSelector, listStyles, availablePaneStyles];
-
 const hostAttributes = [
     ["aria-labelledby", "dual-list-selector-available-pane-status"],
     ["aria-multiselectable", "true"],
@@ -42,7 +40,7 @@ const hostAttributes = [
 @customElement("ak-dual-select-available-pane")
 export class AkDualSelectAvailablePane extends CustomEmitterElement(AKElement) {
     static get styles() {
-        return styles;
+        return [PFBase, PFButton, PFDualListSelector, listStyles, availablePaneStyles];
     }
 
     /* The array of key/value pairs this pane is currently showing */

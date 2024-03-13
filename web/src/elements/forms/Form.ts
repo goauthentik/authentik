@@ -138,6 +138,12 @@ export function serializeForm<T extends KeyUnknown>(
     return json as unknown as T;
 }
 
+const customCSS: Readonly<CSSResult> = css`
+    select[multiple] {
+        height: 15em;
+    }
+`;
+
 /**
  * Form
  *
@@ -181,7 +187,7 @@ export abstract class Form<T> extends AKElement {
     @state()
     nonFieldErrors?: string[];
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [
             PFBase,
             PFCard,
@@ -191,11 +197,7 @@ export abstract class Form<T> extends AKElement {
             PFInputGroup,
             PFFormControl,
             PFSwitch,
-            css`
-                select[multiple] {
-                    height: 15em;
-                }
-            `,
+            customCSS,
         ];
     }
 

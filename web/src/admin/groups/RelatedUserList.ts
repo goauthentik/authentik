@@ -28,7 +28,7 @@ import { UserOption } from "@goauthentik/elements/user/utils";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, html, nothing } from "lit";
+import { TemplateResult, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -131,8 +131,8 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
     @state()
     me?: SessionUser;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList, PFAlert, PFBanner);
+    static get styles() {
+        return [...super.styles, PFDescriptionList, PFAlert, PFBanner];
     }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<User>> {

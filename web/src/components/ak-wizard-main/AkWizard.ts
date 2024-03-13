@@ -24,8 +24,9 @@ export class AkWizard<D, Step extends WizardStep = WizardStep>
     extends AKElement
     implements ReactiveControllerHost
 {
-    // prettier-ignore
-    static get styles() { return [PFBase, PFButton]; }
+    static get styles() {
+        return [PFBase, PFButton];
+    }
 
     @state()
     steps: Step[] = [];

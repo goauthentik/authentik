@@ -24,7 +24,7 @@ import { Application, CoreApi } from "@goauthentik/api";
 
 import "./ApplicationWizardHint";
 
-export const applicationListStyle = css`
+export const customCSS: Readonly<CSSResult> = css`
     /* Fix alignment issues with images in tables */
     .pf-c-table tbody > tr > * {
         vertical-align: middle;
@@ -73,8 +73,8 @@ export class ApplicationListPage extends TablePage<Application> {
         });
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFCard, applicationListStyle);
+    static get styles() {
+        return [...super.styles, PFCard, customCSS];
     }
 
     columns(): TableColumn[] {

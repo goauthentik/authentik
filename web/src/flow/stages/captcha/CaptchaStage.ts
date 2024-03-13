@@ -8,7 +8,7 @@ import { BaseStage } from "@goauthentik/flow/stages/base";
 import type { TurnstileObject } from "turnstile-types";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -27,7 +27,7 @@ interface TurnstileWindow extends Window {
 
 @customElement("ak-stage-captcha")
 export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeResponseRequest> {
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
     }
 

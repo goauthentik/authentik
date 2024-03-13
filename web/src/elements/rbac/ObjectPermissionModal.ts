@@ -4,7 +4,7 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -52,7 +52,7 @@ export class ObjectPermissionModal extends AKElement {
     @property()
     objectPk?: string | number;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFButton, PFBanner];
     }
 

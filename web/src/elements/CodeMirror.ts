@@ -18,7 +18,7 @@ import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
 import YAML from "yaml";
 
-import { CSSResult, css } from "lit";
+import { css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { UiThemeEnum } from "@goauthentik/api";
@@ -30,6 +30,19 @@ export enum CodeMirrorMode {
     Python = "python",
     YAML = "yaml",
 }
+
+const customCSS = css`
+    .cm-editor {
+        padding-top: calc(
+            var(--pf-global--spacer--form-element) - var(--pf-global--BorderWidth--sm)
+        );
+        padding-bottom: calc(
+            var(--pf-global--spacer--form-element) - var(--pf-global--BorderWidth--sm)
+        );
+        padding-right: var(--pf-c-form-control--inset--base);
+        padding-left: var(--pf-c-form-control--inset--base);
+    }
+`;
 
 @customElement("ak-codemirror")
 export class CodeMirrorTextarea<T> extends AKElement {
@@ -54,22 +67,9 @@ export class CodeMirrorTextarea<T> extends AKElement {
     themeLight: Extension;
     themeDark: Extension;
 
-    static get styles(): CSSResult[] {
-        return [
-            // Better alignment with patternfly components
-            css`
-                .cm-editor {
-                    padding-top: calc(
-                        var(--pf-global--spacer--form-element) - var(--pf-global--BorderWidth--sm)
-                    );
-                    padding-bottom: calc(
-                        var(--pf-global--spacer--form-element) - var(--pf-global--BorderWidth--sm)
-                    );
-                    padding-right: var(--pf-c-form-control--inset--base);
-                    padding-left: var(--pf-c-form-control--inset--base);
-                }
-            `,
-        ];
+    static get styles() {
+        // Better alignment with patternfly components
+        return [customCSS];
     }
 
     @property()

@@ -5,7 +5,7 @@ import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/Spinner";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -26,7 +26,7 @@ export class OutpostHealthSimpleElement extends AKElement {
     @property({ attribute: false })
     showVersion = true;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase];
     }
 

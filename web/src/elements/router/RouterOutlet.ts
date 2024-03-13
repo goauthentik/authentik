@@ -4,7 +4,7 @@ import { Route } from "@goauthentik/elements/router/Route";
 import { RouteMatch } from "@goauthentik/elements/router/RouteMatch";
 import "@goauthentik/elements/router/Router404";
 
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 // Poliyfill for hashchange.newURL,
@@ -42,6 +42,15 @@ export function navigate(url: string, params?: { [key: string]: unknown }): void
     window.location.assign(paramURL(url, params));
 }
 
+const customCSS = css`
+    :host {
+        background-color: transparent !important;
+    }
+    *:first-child {
+        flex-direction: column;
+    }
+`;
+
 @customElement("ak-router-outlet")
 export class RouterOutlet extends AKElement {
     @property({ attribute: false })
@@ -53,17 +62,8 @@ export class RouterOutlet extends AKElement {
     @property({ attribute: false })
     routes: Route[] = [];
 
-    static get styles(): CSSResult[] {
-        return [
-            css`
-                :host {
-                    background-color: transparent !important;
-                }
-                *:first-child {
-                    flex-direction: column;
-                }
-            `,
-        ];
+    static get styles() {
+        return [customCSS];
     }
 
     constructor() {

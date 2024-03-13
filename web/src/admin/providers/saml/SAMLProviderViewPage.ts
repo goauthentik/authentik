@@ -17,7 +17,7 @@ import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
+import { PropertyValues, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -76,7 +76,7 @@ export class SAMLProviderViewPage extends AKElement {
     @state()
     previewUser?: User;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [
             PFBase,
             PFButton,

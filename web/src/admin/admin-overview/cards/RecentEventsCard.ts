@@ -19,6 +19,17 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 import { Event, EventsApi } from "@goauthentik/api";
 
+const customCSS: Readonly<CSSResult> = css`
+    .pf-c-card__title {
+        --pf-c-card__title--FontFamily: var(--pf-global--FontFamily--heading--sans-serif);
+        --pf-c-card__title--FontSize: var(--pf-global--FontSize--md);
+        --pf-c-card__title--FontWeight: var(--pf-global--FontWeight--bold);
+    }
+    * {
+        word-break: break-all;
+    }
+`;
+
 @customElement("ak-recent-events")
 export class RecentEventsCard extends Table<Event> {
     @property()
@@ -36,22 +47,8 @@ export class RecentEventsCard extends Table<Event> {
         });
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(
-            PFCard,
-            css`
-                .pf-c-card__title {
-                    --pf-c-card__title--FontFamily: var(
-                        --pf-global--FontFamily--heading--sans-serif
-                    );
-                    --pf-c-card__title--FontSize: var(--pf-global--FontSize--md);
-                    --pf-c-card__title--FontWeight: var(--pf-global--FontWeight--bold);
-                }
-                * {
-                    word-break: break-all;
-                }
-            `,
-        );
+    static get styles() {
+        return [...super.styles, PFCard, customCSS];
     }
 
     columns(): TableColumn[] {

@@ -26,34 +26,30 @@ export const DefaultBrand: CurrentBrand = {
     defaultLocale: "",
 };
 
+const customCSS: Readonly<CSSResult> = css`
+    :host {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        height: 114px;
+        min-height: 114px;
+    }
+    .pf-c-brand img {
+        padding: 0 0.5rem;
+        height: 42px;
+    }
+    button.pf-c-button.sidebar-trigger {
+        background-color: transparent;
+        border-radius: 0px;
+        height: 100%;
+        color: var(--ak-dark-foreground);
+    }
+`;
+
 @customElement("ak-sidebar-brand")
 export class SidebarBrand extends WithBrandConfig(AKElement) {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFGlobal,
-            PFPage,
-            PFButton,
-            css`
-                :host {
-                    display: flex;
-                    flex-direction: row;
-                    align-items: center;
-                    height: 114px;
-                    min-height: 114px;
-                }
-                .pf-c-brand img {
-                    padding: 0 0.5rem;
-                    height: 42px;
-                }
-                button.pf-c-button.sidebar-trigger {
-                    background-color: transparent;
-                    border-radius: 0px;
-                    height: 100%;
-                    color: var(--ak-dark-foreground);
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFGlobal, PFPage, PFButton, customCSS];
     }
 
     constructor() {

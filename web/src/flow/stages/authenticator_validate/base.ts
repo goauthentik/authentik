@@ -14,6 +14,16 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { DeviceChallenge } from "@goauthentik/api";
 
+const customCSS: Readonly<CSSResult> = css`
+    .pf-c-form__group.pf-m-action {
+        display: flex;
+        gap: 16px;
+        margin-top: 0;
+        margin-bottom: calc(var(--pf-c-form__group--m-action--MarginTop) / 2);
+        flex-direction: column;
+    }
+`;
+
 export class BaseDeviceStage<
     Tin extends FlowInfoChallenge & PendingUserChallenge,
     Tout,
@@ -24,24 +34,8 @@ export class BaseDeviceStage<
     @property({ type: Boolean })
     showBackButton = false;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFLogin,
-            PFForm,
-            PFFormControl,
-            PFTitle,
-            PFButton,
-            css`
-                .pf-c-form__group.pf-m-action {
-                    display: flex;
-                    gap: 16px;
-                    margin-top: 0;
-                    margin-bottom: calc(var(--pf-c-form__group--m-action--MarginTop) / 2);
-                    flex-direction: column;
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, customCSS];
     }
 
     submit(payload: Tin): Promise<boolean> {

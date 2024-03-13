@@ -15,7 +15,7 @@ import "@goauthentik/user/user-settings/tokens/UserTokenForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -52,8 +52,8 @@ export class UserTokenList extends Table<Token> {
         return [new TableColumn(msg("Identifier"), "identifier"), new TableColumn("")];
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
+    static get styles() {
+        return [...super.styles, PFDescriptionList];
     }
 
     renderToolbar(): TemplateResult {

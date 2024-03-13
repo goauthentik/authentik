@@ -32,6 +32,25 @@ import { AdminApi, SessionUser, UiThemeEnum, Version } from "@goauthentik/api";
 
 import "./AdminSidebar";
 
+const customCSS: Readonly<CSSResult> = css`
+    .pf-c-page__main,
+    .pf-c-drawer__content,
+    .pf-c-page__drawer {
+        z-index: auto !important;
+        background-color: transparent;
+    }
+    .display-none {
+        display: none;
+    }
+    .pf-c-page {
+        background-color: var(--pf-c-page--BackgroundColor) !important;
+    }
+    /* Global page background colour */
+    :host([theme="dark"]) .pf-c-page {
+        --pf-c-page--BackgroundColor: var(--ak-dark-background);
+    }
+`;
+
 @customElement("ak-interface-admin")
 export class AdminInterface extends EnterpriseAwareInterface {
     @property({ type: Boolean })
@@ -48,31 +67,8 @@ export class AdminInterface extends EnterpriseAwareInterface {
     @state()
     user?: SessionUser;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFPage,
-            PFButton,
-            PFDrawer,
-            css`
-                .pf-c-page__main,
-                .pf-c-drawer__content,
-                .pf-c-page__drawer {
-                    z-index: auto !important;
-                    background-color: transparent;
-                }
-                .display-none {
-                    display: none;
-                }
-                .pf-c-page {
-                    background-color: var(--pf-c-page--BackgroundColor) !important;
-                }
-                /* Global page background colour */
-                :host([theme="dark"]) .pf-c-page {
-                    --pf-c-page--BackgroundColor: var(--ak-dark-background);
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFPage, PFButton, PFDrawer, customCSS];
     }
 
     constructor() {

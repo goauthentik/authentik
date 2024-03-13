@@ -16,6 +16,12 @@ export interface MarkdownDocument {
     path: string;
 }
 
+const customCSS: Readonly<CSSResult> = css`
+    h2:first-of-type {
+        margin-top: 0;
+    }
+`;
+
 export type Replacer = (input: string, md: MarkdownDocument) => string;
 
 const isRelativeLink = /href="(\.[^"]*)"/gm;
@@ -41,16 +47,8 @@ export class Markdown extends AKElement {
         this.replaceRelativeLinks,
     ];
 
-    static get styles(): CSSResult[] {
-        return [
-            PFList,
-            PFContent,
-            css`
-                h2:first-of-type {
-                    margin-top: 0;
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFList, PFContent, customCSS];
     }
 
     converter = new showdown.Converter({ metadata: true });
@@ -74,13 +72,12 @@ export class Markdown extends AKElement {
     replaceRelativeLinks(input: string, md: MarkdownDocument): string {
         const baseName = md.path.replace(isFile, "");
         const baseUrl = docLink("");
-        const result = input.replace(isRelativeLink, (match, path) => {
+        return input.replace(isRelativeLink, (match, path) => {
             const pathName = path.replace(".md", "");
             const link = `docs/${baseName}${pathName}`;
             const url = new URL(link, baseUrl).toString();
             return `href="${url}" _target="blank"`;
         });
-        return result;
     }
 
     willUpdate(properties: PropertyValues<this>) {

@@ -8,7 +8,7 @@ import { StageHost } from "@goauthentik/flow/stages/base";
 import "@goauthentik/flow/stages/prompt/PromptStage";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -95,8 +95,8 @@ export class PromptForm extends ModelForm<Prompt, string> {
             : msg("Successfully created prompt.");
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFGrid, PFTitle);
+    static get styles() {
+        return [...super.styles, PFGrid, PFTitle];
     }
 
     _shouldRefresh = false;

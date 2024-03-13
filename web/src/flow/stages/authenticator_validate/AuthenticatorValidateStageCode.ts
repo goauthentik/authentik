@@ -13,22 +13,24 @@ import {
     DeviceClassesEnum,
 } from "@goauthentik/api";
 
+const customCSS: Readonly<CSSResult> = css`
+    .icon-description {
+        display: flex;
+    }
+    .icon-description i {
+        font-size: 2em;
+        padding: 0.25em;
+        padding-right: 0.5em;
+    }
+`;
+
 @customElement("ak-stage-authenticator-validate-code")
 export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest
 > {
-    static get styles(): CSSResult[] {
-        return super.styles.concat(css`
-            .icon-description {
-                display: flex;
-            }
-            .icon-description i {
-                font-size: 2em;
-                padding: 0.25em;
-                padding-right: 0.5em;
-            }
-        `);
+    static get styles() {
+        return [...super.styles, customCSS];
     }
 
     render(): TemplateResult {

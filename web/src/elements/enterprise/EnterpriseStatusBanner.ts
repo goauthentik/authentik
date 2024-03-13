@@ -2,7 +2,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -12,7 +12,7 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
     @property()
     interface: "admin" | "user" | "" = "";
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBanner];
     }
 

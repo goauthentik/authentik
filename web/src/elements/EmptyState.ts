@@ -8,6 +8,13 @@ import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-sta
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+const customCSS: Readonly<CSSResult> = css`
+    i.pf-c-empty-state__icon {
+        height: var(--pf-global--icon--FontSize--2xl);
+        line-height: var(--pf-global--icon--FontSize--2xl);
+    }
+`;
+
 @customElement("ak-empty-state")
 export class EmptyState extends AKElement {
     @property({ type: String })
@@ -22,18 +29,8 @@ export class EmptyState extends AKElement {
     @property()
     header = "";
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFEmptyState,
-            PFTitle,
-            css`
-                i.pf-c-empty-state__icon {
-                    height: var(--pf-global--icon--FontSize--2xl);
-                    line-height: var(--pf-global--icon--FontSize--2xl);
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFEmptyState, PFTitle, customCSS];
     }
 
     render(): TemplateResult {

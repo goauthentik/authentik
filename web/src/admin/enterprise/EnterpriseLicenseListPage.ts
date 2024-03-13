@@ -33,6 +33,12 @@ import {
     RbacPermissionsAssignedByUsersListModelEnum,
 } from "@goauthentik/api";
 
+const customCSS: Readonly<CSSResult> = css`
+    .pf-m-no-padding-bottom {
+        padding-bottom: 0;
+    }
+`;
+
 @customElement("ak-enterprise-license-list")
 export class EnterpriseLicenseListPage extends TablePage<License> {
     checkbox = true;
@@ -63,20 +69,17 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     @state()
     installID?: string;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(
+    static get styles() {
+        return [
+            ...super.styles,
             PFDescriptionList,
             PFGrid,
             PFBanner,
             PFFormControl,
             PFButton,
             PFCard,
-            css`
-                .pf-m-no-padding-bottom {
-                    padding-bottom: 0;
-                }
-            `,
-        );
+            customCSS,
+        ];
     }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<License>> {

@@ -13,6 +13,12 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { FlowChallengeResponseRequest, RedirectChallenge } from "@goauthentik/api";
 
+const customCSS: Readonly<CSSResult> = css`
+    code {
+        word-break: break-all;
+    }
+`;
+
 @customElement("ak-stage-redirect")
 export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeResponseRequest> {
     @property({ type: Boolean })
@@ -21,20 +27,8 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
     @state()
     startedRedirect = false;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFLogin,
-            PFForm,
-            PFButton,
-            PFFormControl,
-            PFTitle,
-            css`
-                code {
-                    word-break: break-all;
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFLogin, PFForm, PFButton, PFFormControl, PFTitle, customCSS];
     }
 
     getURL(): string {

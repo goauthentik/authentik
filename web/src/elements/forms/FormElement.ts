@@ -1,6 +1,5 @@
 import { AKElement } from "@goauthentik/elements/Base";
 
-import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -18,7 +17,7 @@ import { ErrorDetail } from "@goauthentik/api";
 
 @customElement("ak-form-element")
 export class FormElement extends AKElement {
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFForm, PFFormControl];
     }
 

@@ -10,7 +10,7 @@ import { TablePage } from "@goauthentik/elements/table/TablePage";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -38,7 +38,7 @@ export class RoleListPage extends TablePage<Role> {
     @property()
     order = "name";
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [...super.styles, PFBanner];
     }
 

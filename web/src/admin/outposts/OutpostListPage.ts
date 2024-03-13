@@ -17,7 +17,6 @@ import { TablePage } from "@goauthentik/elements/table/TablePage";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -102,8 +101,8 @@ export class OutpostListPage extends TablePage<Outpost> {
         ];
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
+    static get styles() {
+        return [...super.styles, PFDescriptionList];
     }
 
     checkbox = true;

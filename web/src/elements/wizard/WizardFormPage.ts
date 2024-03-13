@@ -1,7 +1,7 @@
 import { Form, KeyUnknown } from "@goauthentik/elements/forms/Form";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
@@ -34,7 +34,7 @@ export abstract class WizardForm extends Form<KeyUnknown> {
 }
 
 export class WizardFormPage extends WizardPage {
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFCard, PFButton, PFForm, PFAlert, PFInputGroup, PFFormControl];
     }
 

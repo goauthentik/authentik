@@ -23,20 +23,22 @@ import {
     RbacApi,
 } from "@goauthentik/api";
 
+const customCSS: Readonly<CSSResult> = css`
+    .pf-c-button.pf-m-control {
+        height: 100%;
+    }
+    .pf-c-form-control {
+        height: auto !important;
+    }
+`;
+
 @customElement("ak-group-form")
 export class GroupForm extends ModelForm<Group, string> {
     @state()
     roles?: PaginatedRoleList;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(css`
-            .pf-c-button.pf-m-control {
-                height: 100%;
-            }
-            .pf-c-form-control {
-                height: auto !important;
-            }
-        `);
+    static get styles() {
+        return [...super.styles, customCSS];
     }
 
     loadInstance(pk: string): Promise<Group> {

@@ -11,7 +11,7 @@ import { TableColumn } from "@goauthentik/elements/table/Table";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -39,8 +39,8 @@ export class EndpointListPage extends Table<Endpoint> {
     @property({ attribute: false })
     provider?: RACProvider;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
+    static get styles() {
+        return [...super.styles, PFDescriptionList];
     }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<Endpoint>> {

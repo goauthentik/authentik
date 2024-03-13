@@ -3,7 +3,6 @@ import { AKElement } from "@goauthentik/elements/Base";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
-import { CSSResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -19,7 +18,7 @@ export class UserSettingsPassword extends AKElement {
     @property()
     configureUrl?: string;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFCard, PFButton, PFForm, PFFormControl];
     }
 

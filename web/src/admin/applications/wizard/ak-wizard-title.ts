@@ -1,23 +1,21 @@
 import { AKElement } from "@goauthentik/elements/Base";
 
-import { css, html } from "lit";
+import { CSSResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
+const customCSS: Readonly<CSSResult> = css`
+    .ak-bottom-spacing {
+        padding-bottom: var(--pf-global--spacer--lg);
+    }
+`;
+
 @customElement("ak-wizard-title")
 export class AkWizardTitle extends AKElement {
     static get styles() {
-        return [
-            PFContent,
-            PFTitle,
-            css`
-                .ak-bottom-spacing {
-                    padding-bottom: var(--pf-global--spacer--lg);
-                }
-            `,
-        ];
+        return [PFContent, PFTitle, customCSS];
     }
 
     render() {

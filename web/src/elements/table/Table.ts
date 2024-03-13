@@ -94,6 +94,21 @@ export interface PaginatedResponse<T> {
     results: Array<T>;
 }
 
+const customCSS: Readonly<CSSResult> = css`
+    .pf-c-table thead .pf-c-table__check {
+        min-width: 3rem;
+    }
+    .pf-c-table tbody .pf-c-table__check input {
+        margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
+    }
+    .pf-c-toolbar__content {
+        row-gap: var(--pf-global--spacer--sm);
+    }
+    .pf-c-toolbar__item .pf-c-input-group {
+        padding: 0 var(--pf-global--spacer--sm);
+    }
+`;
+
 export abstract class Table<T> extends AKElement implements TableLike {
     abstract apiEndpoint(page: number): Promise<PaginatedResponse<T>>;
     abstract columns(): TableColumn[];
@@ -163,7 +178,7 @@ export abstract class Table<T> extends AKElement implements TableLike {
     @state()
     error?: APIErrorTypes;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [
             PFBase,
             PFTable,
@@ -173,20 +188,7 @@ export abstract class Table<T> extends AKElement implements TableLike {
             PFToolbar,
             PFDropdown,
             PFPagination,
-            css`
-                .pf-c-table thead .pf-c-table__check {
-                    min-width: 3rem;
-                }
-                .pf-c-table tbody .pf-c-table__check input {
-                    margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
-                }
-                .pf-c-toolbar__content {
-                    row-gap: var(--pf-global--spacer--sm);
-                }
-                .pf-c-toolbar__item .pf-c-input-group {
-                    padding: 0 var(--pf-global--spacer--sm);
-                }
-            `,
+            customCSS,
         ];
     }
 

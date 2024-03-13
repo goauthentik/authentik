@@ -7,7 +7,7 @@ import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TableModal } from "@goauthentik/elements/table/TableModal";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -28,8 +28,8 @@ export class PermissionSelectModal extends TableModal<Permission> {
 
     order = "content_type__app_label,content_type__model";
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFBanner);
+    static get styles() {
+        return [...super.styles, PFBanner];
     }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<Permission>> {

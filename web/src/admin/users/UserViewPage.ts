@@ -39,7 +39,7 @@ import "@goauthentik/elements/user/UserConsentList";
 import "@goauthentik/elements/user/sources/SourceSettings";
 
 import { msg, str } from "@lit/localize";
-import { TemplateResult, css, html, nothing } from "lit";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -62,6 +62,28 @@ import {
 } from "@goauthentik/api";
 
 import "./UserDevicesTable";
+
+const customCSS: Readonly<CSSResult> = css`
+    .ak-button-collection {
+        display: flex;
+        flex-direction: column;
+        gap: 0.375rem;
+        max-width: 12rem;
+    }
+    .ak-button-collection > * {
+        flex: 1 0 100%;
+    }
+    #reset-password-button {
+        margin-right: 0;
+    }
+
+    #ak-email-recovery-request,
+    #update-password-request .pf-c-button,
+    #ak-email-recovery-request .pf-c-button {
+        margin: 0;
+        width: 100%;
+    }
+`;
 
 @customElement("ak-user-view")
 export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
@@ -97,27 +119,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
             PFDescriptionList,
             PFSizing,
             PFBanner,
-            css`
-                .ak-button-collection {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 0.375rem;
-                    max-width: 12rem;
-                }
-                .ak-button-collection > * {
-                    flex: 1 0 100%;
-                }
-                #reset-password-button {
-                    margin-right: 0;
-                }
-
-                #ak-email-recovery-request,
-                #update-password-request .pf-c-button,
-                #ak-email-recovery-request .pf-c-button {
-                    margin: 0;
-                    width: 100%;
-                }
-            `,
+            customCSS,
         ];
     }
 

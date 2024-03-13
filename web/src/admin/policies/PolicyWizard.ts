@@ -15,7 +15,7 @@ import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
 import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -30,7 +30,7 @@ export class InitialPolicyWizardPage extends WizardPage {
     @property({ attribute: false })
     policyTypes: TypeCreate[] = [];
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFForm, PFButton, PFRadio];
     }
     sidebarLabel = () => msg("Select type");
@@ -82,7 +82,7 @@ export class InitialPolicyWizardPage extends WizardPage {
 
 @customElement("ak-policy-wizard")
 export class PolicyWizard extends AKElement {
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFButton, PFRadio];
     }
 

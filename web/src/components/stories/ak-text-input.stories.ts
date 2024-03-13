@@ -39,11 +39,8 @@ const container = (testItem: TemplateResult) =>
 export const TextInput = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const displayChange = (ev: any) => {
-        document.getElementById("text-message-pad")!.innerText = `Value selected: ${JSON.stringify(
-            ev.target.value,
-            null,
-            2,
-        )}`;
+        document.getElementById("text-message-pad")!.innerText =
+            `Value selected: ${JSON.stringify(ev.target.value, null, 2)}`;
     };
 
     return container(

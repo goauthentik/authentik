@@ -20,36 +20,30 @@ import {
     AuthenticatorStaticChallengeResponseRequest,
 } from "@goauthentik/api";
 
+const customCSS: Readonly<CSSResult> = css`
+    /* Static OTP Tokens */
+    ul {
+        list-style: circle;
+        columns: 2;
+        -webkit-columns: 2;
+        -moz-columns: 2;
+        column-width: 1em;
+        margin-left: var(--pf-global--spacer--xs);
+    }
+    ul li {
+        font-size: var(--pf-global--FontSize--2xl);
+        font-family: monospace;
+        margin: 0 2rem;
+    }
+`;
+
 @customElement("ak-stage-authenticator-static")
 export class AuthenticatorStaticStage extends BaseStage<
     AuthenticatorStaticChallenge,
     AuthenticatorStaticChallengeResponseRequest
 > {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFLogin,
-            PFForm,
-            PFFormControl,
-            PFTitle,
-            PFButton,
-            css`
-                /* Static OTP Tokens */
-                ul {
-                    list-style: circle;
-                    columns: 2;
-                    -webkit-columns: 2;
-                    -moz-columns: 2;
-                    column-width: 1em;
-                    margin-left: var(--pf-global--spacer--xs);
-                }
-                ul li {
-                    font-size: var(--pf-global--FontSize--2xl);
-                    font-family: monospace;
-                    margin: 0 2rem;
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, customCSS];
     }
 
     render(): TemplateResult {

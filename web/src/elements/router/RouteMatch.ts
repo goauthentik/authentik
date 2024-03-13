@@ -18,9 +18,7 @@ export class RouteMatch {
     }
 
     toString(): string {
-        return `<RouteMatch url=${this.fullUrl} route=${this.route} arguments=${JSON.stringify(
-            this.arguments,
-        )}>`;
+        return `<RouteMatch url=${this.fullUrl} route=${this.route} arguments=${JSON.stringify(this.arguments)}>`;
     }
 }
 

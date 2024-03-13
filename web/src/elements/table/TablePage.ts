@@ -3,7 +3,6 @@ import { updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import { Table } from "@goauthentik/elements/table/Table";
 
 import { msg } from "@lit/localize";
-import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -16,8 +15,8 @@ export abstract class TablePage<T> extends Table<T> {
     abstract pageDescription(): string | undefined;
     abstract pageIcon(): string;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFPage, PFContent, PFSidebar);
+    static get styles() {
+        return [...super.styles, PFPage, PFContent, PFSidebar];
     }
 
     renderSidebarBefore(): TemplateResult {

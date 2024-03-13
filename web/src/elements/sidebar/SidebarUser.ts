@@ -10,27 +10,24 @@ import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+const customCSS: Readonly<CSSResult> = css`
+    :host {
+        display: flex;
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .pf-c-nav__link {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+    }
+`;
+
 @customElement("ak-sidebar-user")
 export class SidebarUser extends AKElement {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFNav,
-            PFAvatar,
-            css`
-                :host {
-                    display: flex;
-                    width: 100%;
-                    flex-direction: row;
-                    justify-content: space-between;
-                }
-                .pf-c-nav__link {
-                    align-items: center;
-                    display: flex;
-                    justify-content: center;
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFNav, PFAvatar, customCSS];
     }
 
     render(): TemplateResult {

@@ -1,6 +1,6 @@
 import { AKElement } from "@goauthentik/elements/Base";
 
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
@@ -21,7 +21,7 @@ export class Alert extends AKElement {
     @property()
     level: Level = Level.Warning;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFAlert];
     }
 

@@ -23,27 +23,21 @@ import {
     AuthenticatorTOTPChallengeResponseRequest,
 } from "@goauthentik/api";
 
+const customCSS: Readonly<CSSResult> = css`
+    .qr-container {
+        display: flex;
+        flex-direction: column;
+        place-items: center;
+    }
+`;
+
 @customElement("ak-stage-authenticator-totp")
 export class AuthenticatorTOTPStage extends BaseStage<
     AuthenticatorTOTPChallenge,
     AuthenticatorTOTPChallengeResponseRequest
 > {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFLogin,
-            PFForm,
-            PFFormControl,
-            PFTitle,
-            PFButton,
-            css`
-                .qr-container {
-                    display: flex;
-                    flex-direction: column;
-                    place-items: center;
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, customCSS];
     }
 
     render(): TemplateResult {

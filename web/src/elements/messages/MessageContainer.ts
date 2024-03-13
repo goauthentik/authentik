@@ -15,6 +15,13 @@ import { customElement, property } from "lit/decorators.js";
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+const customCSS: Readonly<CSSResult> = css`
+    /* Fix spacing between messages */
+    ak-message {
+        display: block;
+    }
+`;
+
 export function showMessage(message: APIMessage, unique = false): void {
     const container = document.querySelector<MessageContainer>("ak-message-container");
     if (!container) {
@@ -29,17 +36,8 @@ export class MessageContainer extends AKElement {
     @property({ attribute: false })
     messages: APIMessage[] = [];
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFAlertGroup,
-            css`
-                /* Fix spacing between messages */
-                ak-message {
-                    display: block;
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFAlertGroup, customCSS];
     }
 
     constructor() {

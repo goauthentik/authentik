@@ -2,7 +2,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
-import { css, html, nothing } from "lit";
+import { CSSResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -16,26 +16,22 @@ import {
     EVENT_REMOVE_SELECTED,
 } from "../constants";
 
-const styles = [
-    PFBase,
-    PFButton,
-    css`
-        :host {
-            align-self: center;
-            padding-right: var(--pf-c-dual-list-selector__controls--PaddingRight);
-            padding-left: var(--pf-c-dual-list-selector__controls--PaddingLeft);
-        }
-        .pf-c-dual-list-selector {
-            max-width: 4rem;
-        }
-        .ak-dual-list-selector__controls {
-            display: grid;
-            justify-content: center;
-            align-content: center;
-            height: 100%;
-        }
-    `,
-];
+const customCSS: Readonly<CSSResult> = css`
+    :host {
+        align-self: center;
+        padding-right: var(--pf-c-dual-list-selector__controls--PaddingRight);
+        padding-left: var(--pf-c-dual-list-selector__controls--PaddingLeft);
+    }
+    .pf-c-dual-list-selector {
+        max-width: 4rem;
+    }
+    .ak-dual-list-selector__controls {
+        display: grid;
+        justify-content: center;
+        align-content: center;
+        height: 100%;
+    }
+`;
 
 /**
  * @element ak-dual-select-controls
@@ -49,7 +45,7 @@ const styles = [
 @customElement("ak-dual-select-controls")
 export class AkDualSelectControls extends CustomEmitterElement(AKElement) {
     static get styles() {
-        return styles;
+        return [PFBase, PFButton, customCSS];
     }
 
     /* Set to true if any *visible* elements can be added to the selected list

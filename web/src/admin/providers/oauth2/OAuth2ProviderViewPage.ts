@@ -14,7 +14,7 @@ import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -78,7 +78,7 @@ export class OAuth2ProviderViewPage extends AKElement {
     @state()
     previewUser?: User;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [
             PFBase,
             PFButton,

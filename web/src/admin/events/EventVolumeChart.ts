@@ -10,6 +10,12 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 import { Coordinate, EventsApi, EventsEventsListRequest } from "@goauthentik/api";
 
+const customCSS: Readonly<CSSResult> = css`
+    .pf-c-card__body {
+        height: 12rem;
+    }
+`;
+
 @customElement("ak-events-volume-chart")
 export class EventVolumeChart extends AKChart<Coordinate[]> {
     _query?: EventsEventsListRequest;
@@ -20,15 +26,8 @@ export class EventVolumeChart extends AKChart<Coordinate[]> {
         this.refreshHandler();
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(
-            PFCard,
-            css`
-                .pf-c-card__body {
-                    height: 12rem;
-                }
-            `,
-        );
+    static get styles() {
+        return [...super.styles, PFCard, customCSS];
     }
 
     apiRequest(): Promise<Coordinate[]> {

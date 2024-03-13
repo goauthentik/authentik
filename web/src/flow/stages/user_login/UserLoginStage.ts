@@ -4,7 +4,7 @@ import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -23,7 +23,7 @@ export class PasswordStage extends BaseStage<
     UserLoginChallenge,
     UserLoginChallengeResponseRequest
 > {
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFLogin, PFForm, PFFormControl, PFSpacing, PFButton, PFTitle];
     }
 

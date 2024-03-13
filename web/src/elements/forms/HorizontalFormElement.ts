@@ -3,8 +3,8 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { FormGroup } from "@goauthentik/elements/forms/FormGroup";
 
 import { msg } from "@lit/localize";
-import { CSSResult, css } from "lit";
-import { TemplateResult, html } from "lit";
+import { css } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -36,6 +36,18 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  * 
  */
 
+const customCSS: Readonly<CSSResult> = css`
+    .pf-c-form__group {
+        display: grid;
+        grid-template-columns:
+            var(--pf-c-form--m-horizontal__group-label--md--GridColumnWidth)
+            var(--pf-c-form--m-horizontal__group-control--md--GridColumnWidth);
+    }
+    .pf-c-form__group-label {
+        padding-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
+    }
+`;
+
 const isAkControl = (el: unknown): boolean =>
     el instanceof HTMLElement &&
     "dataset" in el &&
@@ -54,23 +66,8 @@ const nameables = new Set([
 
 @customElement("ak-form-element-horizontal")
 export class HorizontalFormElement extends AKElement {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFForm,
-            PFFormControl,
-            css`
-                .pf-c-form__group {
-                    display: grid;
-                    grid-template-columns:
-                        var(--pf-c-form--m-horizontal__group-label--md--GridColumnWidth)
-                        var(--pf-c-form--m-horizontal__group-control--md--GridColumnWidth);
-                }
-                .pf-c-form__group-label {
-                    padding-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFForm, PFFormControl, customCSS];
     }
 
     @property()

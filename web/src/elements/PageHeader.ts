@@ -23,6 +23,43 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { EventsApi } from "@goauthentik/api";
 
+const customCSS: Readonly<CSSResult> = css`
+    .bar {
+        display: flex;
+        flex-direction: row;
+        min-height: 114px;
+    }
+    .pf-c-button.pf-m-plain {
+        background-color: transparent;
+        border-radius: 0px;
+    }
+    .pf-c-page__main-section.pf-m-light {
+        background-color: transparent;
+    }
+    .pf-c-page__main-section {
+        flex-grow: 1;
+        flex-shrink: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    img.pf-icon {
+        max-height: 24px;
+    }
+    .sidebar-trigger,
+    .notification-trigger {
+        font-size: 24px;
+    }
+    .notification-trigger.has-notifications {
+        color: var(--pf-global--active-color--100);
+    }
+    h1 {
+        display: flex;
+        flex-direction: row;
+        align-items: center !important;
+    }
+`;
+
 @customElement("ak-page-header")
 export class PageHeader extends WithBrandConfig(AKElement) {
     @property()
@@ -40,49 +77,8 @@ export class PageHeader extends WithBrandConfig(AKElement) {
     @property()
     description?: string;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFPage,
-            PFContent,
-            css`
-                .bar {
-                    display: flex;
-                    flex-direction: row;
-                    min-height: 114px;
-                }
-                .pf-c-button.pf-m-plain {
-                    background-color: transparent;
-                    border-radius: 0px;
-                }
-                .pf-c-page__main-section.pf-m-light {
-                    background-color: transparent;
-                }
-                .pf-c-page__main-section {
-                    flex-grow: 1;
-                    flex-shrink: 1;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                }
-                img.pf-icon {
-                    max-height: 24px;
-                }
-                .sidebar-trigger,
-                .notification-trigger {
-                    font-size: 24px;
-                }
-                .notification-trigger.has-notifications {
-                    color: var(--pf-global--active-color--100);
-                }
-                h1 {
-                    display: flex;
-                    flex-direction: row;
-                    align-items: center !important;
-                }
-            `,
-        ];
+    static get styles() {
+        return [PFBase, PFButton, PFPage, PFContent, customCSS];
     }
 
     constructor() {

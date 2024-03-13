@@ -1,6 +1,5 @@
 import { AKElement } from "@goauthentik/elements/Base";
 
-import { CSSResult } from "lit";
 import { property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -15,7 +14,7 @@ export abstract class BaseUserSettings extends AKElement {
     @property()
     configureUrl?: string;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFButton, PFForm, PFFormControl];
     }
 }

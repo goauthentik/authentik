@@ -7,7 +7,7 @@ import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
@@ -21,8 +21,8 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
     @property({ type: Number })
     userId?: number;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFFlex);
+    static get styles() {
+        return [...super.styles, PFFlex];
     }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<TokenModel>> {
