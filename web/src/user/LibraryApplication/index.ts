@@ -1,8 +1,8 @@
+import { PFSize } from "@goauthentik/common/enums.js";
 import { truncateWords } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-app-icon";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Expand";
-import { PFSize } from "@goauthentik/elements/Spinner";
 import "@goauthentik/user/LibraryApplication/RACLaunchEndpointModal";
 import { UserInterface } from "@goauthentik/user/UserInterface";
 

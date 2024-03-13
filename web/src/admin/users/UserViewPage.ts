@@ -11,6 +11,7 @@ import {
 import "@goauthentik/admin/users/UserPasswordForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { PFSize } from "@goauthentik/common/enums.js";
 import { userTypeToLabel } from "@goauthentik/common/labels";
 import { me } from "@goauthentik/common/users";
 import { getRelativeTime } from "@goauthentik/common/utils";
@@ -26,7 +27,6 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import { WithCapabilitiesConfig } from "@goauthentik/elements/Interface/capabilitiesProvider";
 import "@goauthentik/elements/PageHeader";
-import { PFSize } from "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
