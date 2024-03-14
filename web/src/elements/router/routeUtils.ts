@@ -3,13 +3,17 @@ import { P, match } from "ts-pattern";
 
 import { TemplateResult } from "lit";
 
-type RouteInvoke =
-    | ((_1: RouteArgs) => Promise<TemplateResult<1>>)
-    | (() => Promise<TemplateResult<1>>);
+type ListRoute = () => Promise<TemplateResult<1>>;
+type ViewRoute = (_1: RouteArgs) => Promise<TemplateResult<1>>;
+type InternalRedirect = string;
+type ExternalRedirect = [string, boolean];
 
-type _RawRedirect = [string, string | [string, boolean]];
-type _RawRoute = [string, RouteInvoke];
-export type RawRoute = _RawRoute | _RawRedirect;
+type RouteInvoke = ViewRoute | ListRoute;
+
+type RedirectRoute = [string, InternalRedirect | ExternalRedirect];
+type PageRoute = [string, RouteInvoke];
+
+export type RawRoute = PageRoute | RedirectRoute;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isLoader = (v: any): v is RouteInvoke => typeof v === "function";
