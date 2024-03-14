@@ -15,6 +15,7 @@ CELERY_BEAT_SCHEDULE = {
 TENANT_APPS = [
     "authentik.enterprise.audit",
     "authentik.enterprise.providers.rac",
+    "authentik.enterprise.stages.source",
 ]
 
 MIDDLEWARE = ["authentik.enterprise.middleware.EnterpriseMiddleware"]

@@ -13,6 +13,7 @@ from structlog.stdlib import get_logger
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
 from authentik.core.types import UserSettingSerializer
+from authentik.enterprise.apps import EnterpriseConfig
 from authentik.flows.api.flows import FlowSetSerializer
 from authentik.flows.models import ConfigurableStage, Stage
 from authentik.lib.utils.reflection import all_subclasses
@@ -75,6 +76,7 @@ class StageViewSet(
                     "description": subclass.__doc__,
                     "component": subclass().component,
                     "model_name": subclass._meta.model_name,
+                    "requires_enterprise": isinstance(subclass._meta.app_config, EnterpriseConfig),
                 }
             )
         data = sorted(data, key=lambda x: x["name"])

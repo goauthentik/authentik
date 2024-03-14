@@ -617,6 +617,9 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
         """Get serializer for this model"""
         raise NotImplementedError
 
+    def __str__(self) -> str:
+        return f"User-source connection (user={self.user.username}, source={self.source.slug})"
+
     class Meta:
         unique_together = (("user", "source"),)
 

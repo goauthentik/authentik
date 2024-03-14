@@ -2602,6 +2602,43 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_stages_source.sourcestage"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_stages_source.sourcestage"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_stages_source.sourcestage"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_events.event"
                             },
                             "id": {
@@ -3257,6 +3294,7 @@
                         "authentik.enterprise",
                         "authentik.enterprise.audit",
                         "authentik.enterprise.providers.rac",
+                        "authentik.enterprise.stages.source",
                         "authentik.events"
                     ],
                     "title": "App",
@@ -3338,6 +3376,7 @@
                         "authentik_providers_rac.racprovider",
                         "authentik_providers_rac.endpoint",
                         "authentik_providers_rac.racpropertymapping",
+                        "authentik_stages_source.sourcestage",
                         "authentik_events.event",
                         "authentik_events.notificationtransport",
                         "authentik_events.notification",
@@ -8014,6 +8053,109 @@
                     "type": "object",
                     "additionalProperties": true,
                     "title": "Static settings"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_stages_source.sourcestage": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "flow_set": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "minLength": 1,
+                                "title": "Name"
+                            },
+                            "slug": {
+                                "type": "string",
+                                "maxLength": 50,
+                                "minLength": 1,
+                                "pattern": "^[-a-zA-Z0-9_]+$",
+                                "title": "Slug",
+                                "description": "Visible in the URL."
+                            },
+                            "title": {
+                                "type": "string",
+                                "minLength": 1,
+                                "title": "Title",
+                                "description": "Shown as the Title in Flow pages."
+                            },
+                            "designation": {
+                                "type": "string",
+                                "enum": [
+                                    "authentication",
+                                    "authorization",
+                                    "invalidation",
+                                    "enrollment",
+                                    "unenrollment",
+                                    "recovery",
+                                    "stage_configuration"
+                                ],
+                                "title": "Designation",
+                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
+                            },
+                            "policy_engine_mode": {
+                                "type": "string",
+                                "enum": [
+                                    "all",
+                                    "any"
+                                ],
+                                "title": "Policy engine mode"
+                            },
+                            "compatibility_mode": {
+                                "type": "boolean",
+                                "title": "Compatibility mode",
+                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
+                            },
+                            "layout": {
+                                "type": "string",
+                                "enum": [
+                                    "stacked",
+                                    "content_left",
+                                    "content_right",
+                                    "sidebar_left",
+                                    "sidebar_right"
+                                ],
+                                "title": "Layout"
+                            },
+                            "denied_action": {
+                                "type": "string",
+                                "enum": [
+                                    "message_continue",
+                                    "message",
+                                    "continue"
+                                ],
+                                "title": "Denied action",
+                                "description": "Configure what should happen when a flow denies access to a user."
+                            }
+                        },
+                        "required": [
+                            "name",
+                            "slug",
+                            "title",
+                            "designation"
+                        ]
+                    },
+                    "title": "Flow set"
+                },
+                "source": {
+                    "type": "integer",
+                    "title": "Source"
+                },
+                "resume_timeout": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Resume timeout",
+                    "description": "Amount of time a user can take to return from the source to continue the flow (Format: hours=-1;minutes=-2;seconds=-3)"
                 }
             },
             "required": []

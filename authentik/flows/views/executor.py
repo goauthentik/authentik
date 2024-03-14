@@ -469,7 +469,7 @@ class FlowExecutorView(APIView):
 
 
 class CancelView(View):
-    """View which canels the currently active plan"""
+    """View which cancels the currently active plan"""
 
     def get(self, request: HttpRequest) -> HttpResponse:
         """View which canels the currently active plan"""
