@@ -1,9 +1,9 @@
-import { BaseUserSettings } from "@goauthentik/app/elements/user/sources/BaseUserSettings";
 import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { MessageLevel } from "@goauthentik/common/messages";
 import "@goauthentik/elements/Spinner";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { BaseUserSettings } from "@goauthentik/elements/user/sources/BaseUserSettings";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";

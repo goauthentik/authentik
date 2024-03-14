@@ -1,7 +1,7 @@
-import { WithLicenseSummary } from "@goauthentik/app/elements/Interface/licenseSummaryProvider";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
+import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";

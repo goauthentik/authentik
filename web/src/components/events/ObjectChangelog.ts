@@ -1,9 +1,9 @@
-import { EventGeo, EventUser } from "@goauthentik/app/admin/events/utils";
-import { actionToLabel } from "@goauthentik/app/common/labels";
-import { getRelativeTime } from "@goauthentik/app/common/utils";
+import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
+import { actionToLabel } from "@goauthentik/common/labels";
 import { uiConfig } from "@goauthentik/common/ui/config";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-event-info";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/Dropdown";
