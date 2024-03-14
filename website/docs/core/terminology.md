@@ -55,7 +55,7 @@ A stage represents a single verification or logic step. They are used to authent
 
 #### Dynamic in-memory stage
 
-Certain use-cases of flows within authentik add steps which are run as part of a flow. These steps are a special type of stage called the "Dynamic in-memory" stage, as they are added to flows dynamically when required, only exist in memory and are thus not configurable by administrators.
+Certain use cases within authentik add steps that are run as part of a flow. These steps are a special type of stage called the "Dynamic in-memory" stage, as they are added to flows dynamically when required, only exist in memory, and are thus not configurable by administrators.
 
 See [Flows](../flow/index.md)
 
