@@ -22,7 +22,7 @@ For instructions on creating a RAC provider, see see the [Managing RAC providers
 
 There are several components used with a RAC provider; let's take a closer look at the high-level configuration layout and then each of these components and how they are managed using endpoints and connections.
 
-![](./rac-v2.png)
+![](./rac-v3.png)
 
 ## Endpoints
 
