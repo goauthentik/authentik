@@ -7,18 +7,26 @@ title: Remote Access (RAC) Provider
 ---
 
 :::info
-This feature is in technical preview, so please report any Bugs you run into on [GitHub](https://github.com/goauthentik/authentik/issues)
+This feature is in technical preview, so please report any Bugs you run into on [GitHub](https://github.com/goauthentik/authentik/issues).
 :::
 
 :::info
-This provider requires the deployment of the [RAC Outpost](../../outposts/)
+This provider requires the deployment of the [RAC Outpost](../../outposts/).
 :::
 
-The Remote Access (RAC) provider allows users to access Windows/macOS/Linux machines via [RDP](https://en.wikipedia.org/wiki/Remote_Desktop_Protocol)/[SSH](https://en.wikipedia.org/wiki/Secure_Shell)/[VNC](https://en.wikipedia.org/wiki/Virtual_Network_Computing).
+## About the Remote Access Control (RAC) Provider
+
+The Remote Access (RAC) provider allows users to access Windows, macOS, and Linux machines via [RDP](https://en.wikipedia.org/wiki/Remote_Desktop_Protocol)/[SSH](https://en.wikipedia.org/wiki/Secure_Shell)/[VNC](https://en.wikipedia.org/wiki/Virtual_Network_Computing). Just like other providers in [authentik], the RAC provider is associated with an application that appears on a user's **My applications** page. With RAC, you create a single application that serves to connect with all remote machnes that you want to configure for access via RAC.
+
+For instructions on creating a RAC provider, see see the [Managing RAC providers](./how-to-rac.md) documentation. You can also view our [video on YouTube](https://www.youtube.com/watch?v=9wahIBRV6Ts) for setting up a RAC.
+
+There are several components used with a RAC provider; let's take a closer look at the high-level configuration layout and then each of these components and how they are managed using endpoints and connections.
+
+![](./rac-v2.png)
 
 ## Endpoints
 
-Unlike other providers, where one provider-application pair must be created for each resource you wish to access, the RAC provider handles this slightly differently. For each remote machine (computer/server) that should be accessible, an _Endpoint_ object must be created within a RAC provider.
+Unlike other providers, where one provider-application pair must be created for each resource you wish to access, the RAC provider handles this slightly differently. For each remote machine (computer/server) that should be accessible, you create an _Endpoint_ object within a RAC provider. (And as mentioned above, a single provider-application pair is used for all remote connections.)
 
 The _Endpoint_ object specifies the hostname/IP of the machine to connect to, as well as the protocol to use. Additionally it is possible to bind policies to _endpoint_ objects to restrict access. Users must have access to both the application the RAC Provider is using as well as the individual endpoint.
 
