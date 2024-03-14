@@ -1,10 +1,10 @@
-import { BaseDeviceStage } from "@goauthentik/app/flow/stages/authenticator_validate/base";
 import {
     checkWebAuthnSupport,
     transformAssertionForServer,
     transformCredentialRequestOptions,
 } from "@goauthentik/common/helpers/webauthn";
 import "@goauthentik/elements/EmptyState";
+import { BaseDeviceStage } from "@goauthentik/flow/stages/authenticator_validate/base";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html, nothing } from "lit";
