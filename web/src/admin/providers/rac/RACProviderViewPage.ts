@@ -87,7 +87,11 @@ export class RACProviderViewPage extends AKElement {
             <section slot="page-overview" data-tab-title="${msg("Overview")}">
                 ${this.renderTabOverview()}
             </section>
-            <section slot="page-connections" data-tab-title="${msg("Connections")}">
+            <section
+                slot="page-connections"
+                data-tab-title="${msg("Connections")}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
                 <div class="pf-c-card">
                     <div class="pf-c-card__body">
                         <ak-rac-connection-token-list
