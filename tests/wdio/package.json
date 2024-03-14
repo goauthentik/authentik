@@ -32,6 +32,6 @@
         "node": ">=20"
     },
     "dependencies": {
-        "chromedriver": "^122.0.5"
+        "chromedriver": "^122.0.6"
     }
 }
