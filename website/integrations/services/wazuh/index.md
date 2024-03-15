@@ -143,7 +143,7 @@ authc:
         kibana_url: "https://<YOUR_WAZUH_IP_OR_HOSTNAME>"
         roles_key: Roles
         exchange_key: "MIIGIODCCA+ygAwIBAgITREIpdNn++usuy4Gq5g0W2/SQs..."
-     authentication_backend:
+      authentication_backend:
        type: noop
 ```
 
