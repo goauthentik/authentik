@@ -84,7 +84,7 @@ sudo yum install openldap-clients -y # CentOS-based systems
 ```
 ldapsearch \
   -x \
-  -H ldap://<LDAP Outpost IP address>:<Portnumber 389/636, production should use SSL 636> \
+  -H ldap://<LDAP Outpost IP address>:<Port number 389> \ # In production it is recommended to use SSL, which also requires `ldaps://` as the protocol and the SSL port 
   -D 'cn=ldapservice,ou=users,DC=ldap,DC=goauthentik,DC=io' \
   -w '<ldapuserpassword>' \
   -b 'DC=ldap,DC=goauthentik,DC=io' \
