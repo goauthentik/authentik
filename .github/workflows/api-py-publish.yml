@@ -1,4 +1,4 @@
-name: authentik-web-api-publish
+name: authentik-api-py-publish
 on:
   push:
     branches: [main]
@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - id: generate_token
         uses: tibdex/github-app-token@v2
@@ -17,32 +19,32 @@ jobs:
       - uses: actions/checkout@v4
         with:
           token: ${{ steps.generate_token.outputs.token }}
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-python@v4
         with:
-          node-version-file: web/package.json
-          registry-url: "https://registry.npmjs.org"
+          python-version-file: "pyproject.toml"
+          cache: "poetry"
       - name: Generate API Client
-        run: make gen-client-ts
+        run: make gen-client-py
       - name: Publish package
-        working-directory: gen-ts-api/
+        working-directory: gen-py-api/
         run: |
-          npm ci
-          npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
-      - name: Upgrade /web
-        working-directory: web/
+          poetry build
+      - name: Publish package to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: gen-py-api/dist/
+      - name: Upgrade /
         run: |
-          export VERSION=`node -e 'console.log(require("../gen-ts-api/package.json").version)'`
-          npm i @goauthentik/api@$VERSION
+          export VERSION=$(cd gen-py-api && poetry version -s)
+          poetry add "authentik_client=$VERSION" --allow-prereleases --lock
       - uses: peter-evans/create-pull-request@v6
         id: cpr
         with:
           token: ${{ steps.generate_token.outputs.token }}
-          branch: update-web-api-client
-          commit-message: "web: bump API Client version"
-          title: "web: bump API Client version"
-          body: "web: bump API Client version"
+          branch: update-root-api-client
+          commit-message: "root: bump API Client version"
+          title: "root: bump API Client version"
+          body: "root: bump API Client version"
           delete-branch: true
           signoff: true
           # ID from https://api.github.com/users/authentik-automation[bot]
