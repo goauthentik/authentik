@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentik import __version__, get_build_hash
-from authentik.admin.tasks import VERSION_CACHE_KEY, update_latest_version
+from authentik.admin.tasks import VERSION_CACHE_KEY, VERSION_NULL, update_latest_version
 from authentik.core.api.utils import PassiveSerializer
 
 
@@ -19,6 +19,7 @@ class VersionSerializer(PassiveSerializer):
 
     version_current = SerializerMethodField()
     version_latest = SerializerMethodField()
+    version_latest_valid = SerializerMethodField()
     build_hash = SerializerMethodField()
     outdated = SerializerMethodField()
 
@@ -37,6 +38,10 @@ class VersionSerializer(PassiveSerializer):
             update_latest_version.delay()
             return __version__
         return version_in_cache
+
+    def get_version_latest_valid(self, _) -> str:
+        """Check if latest version is valid"""
+        return cache.get(VERSION_CACHE_KEY) != VERSION_NULL
 
     def get_outdated(self, instance) -> bool:
         """Check if we're running the latest version"""

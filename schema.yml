@@ -45583,6 +45583,10 @@ components:
           type: string
           description: Get latest version from cache
           readOnly: true
+        version_latest_valid:
+          type: boolean
+          description: Latest version query is a valid non-default value
+          readOnly: true
         build_hash:
           type: string
           description: Get build hash, if version is not latest or released
@@ -45596,6 +45600,7 @@ components:
       - outdated
       - version_current
       - version_latest
+      - version_latest_valid
     WebAuthnDevice:
       type: object
       description: Serializer for WebAuthn authenticator devices
