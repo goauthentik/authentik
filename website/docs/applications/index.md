@@ -11,7 +11,9 @@ Applications are the "other half" of providers. They typically exist in a 1-to-1
 
 Furthermore, the [RAC (Remote Access Control)](../providers/rac/index.md) feature uses a single application and a single provider, but multiple "endpoints". An endpoint defines each remote machine.
 
+:::info
 For information about creating and managing applications, refer to [Manage applications](./manage_apps.md).
+:::
 
 ## Appearance
 
