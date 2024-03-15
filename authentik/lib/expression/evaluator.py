@@ -4,10 +4,35 @@ import re
 import socket
 from collections.abc import Iterable
 from ipaddress import ip_address, ip_network
+from pathlib import Path
+from tempfile import gettempdir
 from textwrap import indent
 from typing import Any
 
+from authentik_client.api.admin_api import AdminApi
+from authentik_client.api.authenticators_api import AuthenticatorsApi
+from authentik_client.api.core_api import CoreApi
+from authentik_client.api.crypto_api import CryptoApi
+from authentik_client.api.enterprise_api import EnterpriseApi
+from authentik_client.api.events_api import EventsApi
+from authentik_client.api.flows_api import FlowsApi
+from authentik_client.api.managed_api import ManagedApi
+from authentik_client.api.oauth2_api import Oauth2Api
+from authentik_client.api.outposts_api import OutpostsApi
+from authentik_client.api.policies_api import PoliciesApi
+from authentik_client.api.propertymappings_api import PropertymappingsApi
+from authentik_client.api.providers_api import ProvidersApi
+from authentik_client.api.rac_api import RacApi
+from authentik_client.api.rbac_api import RbacApi
+from authentik_client.api.root_api import RootApi
+from authentik_client.api.schema_api import SchemaApi
+from authentik_client.api.sources_api import SourcesApi
+from authentik_client.api.stages_api import StagesApi
+from authentik_client.api.tenants_api import TenantsApi
+from authentik_client.api_client import ApiClient
+from authentik_client.configuration import Configuration
 from cachetools import TLRUCache, cached
+from django.conf import settings
 from django.core.exceptions import FieldError
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.serializers import ValidationError
@@ -32,6 +57,30 @@ from authentik.policies.types import PolicyRequest, PolicyResult
 from authentik.stages.authenticator import devices_for_user
 
 LOGGER = get_logger()
+_tmp = Path(gettempdir())
+
+API_CLIENTS = {
+    "AdminApi": AdminApi,
+    "AuthenticatorsApi": AuthenticatorsApi,
+    "CoreApi": CoreApi,
+    "CryptoApi": CryptoApi,
+    "EnterpriseApi": EnterpriseApi,
+    "EventsApi": EventsApi,
+    "FlowsApi": FlowsApi,
+    "ManagedApi": ManagedApi,
+    "Oauth2Api": Oauth2Api,
+    "OutpostsApi": OutpostsApi,
+    "PoliciesApi": PoliciesApi,
+    "PropertymappingsApi": PropertymappingsApi,
+    "ProvidersApi": ProvidersApi,
+    "RacApi": RacApi,
+    "RbacApi": RbacApi,
+    "RootApi": RootApi,
+    "SchemaApi": SchemaApi,
+    "SourcesApi": SourcesApi,
+    "StagesApi": StagesApi,
+    "TenantsApi": TenantsApi,
+}
 
 
 class BaseEvaluator:
@@ -69,12 +118,27 @@ class BaseEvaluator:
             "USER_ATTRIBUTE_CHANGE_EMAIL": USER_ATTRIBUTE_CHANGE_EMAIL,
             "USER_ATTRIBUTE_CHANGE_NAME": USER_ATTRIBUTE_CHANGE_NAME,
             "USER_ATTRIBUTE_CHANGE_USERNAME": USER_ATTRIBUTE_CHANGE_USERNAME,
+            "api": self.get_api_client(),
         }
         for app in get_apps():
             # Load models from each app
             for model in app.get_models():
                 self._globals[model.__name__] = model
+        self._globals.update(API_CLIENTS)
         self._context = {}
+
+    def get_api_client(self):
+        token = ""
+        config = Configuration(
+            f"unix://{str(_tmp.joinpath('authentik-core.sock'))}",
+            api_key={
+                "authentik": token,
+            },
+            api_key_prefix={"authentik": "Bearer "},
+        )
+        if settings.DEBUG:
+            config.host = "http://localhost:8000"
+        return ApiClient(config)
 
     @cached(cache=TLRUCache(maxsize=32, ttu=lambda key, value, now: now + 180))
     @staticmethod
