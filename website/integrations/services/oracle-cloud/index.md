@@ -49,7 +49,7 @@ Navigate to _IdP Policies_ in the sidebar and open the default policy by clickin
 
 ## Alternative method: Federation using a SAML Provider from Metadata
 
-When the Orancle Cloud tenancy does not have an _Identity & Security_ menu and does not have the _Domains_ entry but _Federation_, then this method will have to be used instead.
+When the Oracle Cloud tenancy does not have an _Identity & Security_ menu and does not have the _Domains_ entry but _Federation_, then this method will have to be used instead.
 
 In contrast to the OpenID Method, no OCI user is used or created for the SAML logins, but a Group Mapping is used instead.
 
@@ -104,7 +104,7 @@ Name: The name you enter here will be shown to the users when they select an Ide
 Description: Whatever you like.
 Type: SAML 2.0 Compliant Identity Provider
 Upload the FederationMetadata.xml document from your Active Directory Federation Services server: Upload or drop the Metadata file downloaded from the authentik provider's Overview page.
-Authentication Context Class References: Don't select any, as Authentik provides different references that are not listed here. If they do not match, the user gets an XML error showing both.
+Authentication Context Class References: Don't select any, as authentik provides different references that are not listed here. If they do not match, the user gets an XML error showing both.
 
 Click Continue
 
