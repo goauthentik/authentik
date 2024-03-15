@@ -18,6 +18,7 @@ import { getURLParam, updateURLParams } from "@goauthentik/elements/router/Route
 import "@goauthentik/elements/router/RouterOutlet";
 import "@goauthentik/elements/sidebar/Sidebar";
 import "@goauthentik/elements/sidebar/SidebarItem";
+import "ninja-keys";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
@@ -30,6 +31,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { AdminApi, SessionUser, UiThemeEnum, Version } from "@goauthentik/api";
 
+import { adminCommands } from "./AdminCommands";
 import "./AdminSidebar";
 
 @customElement("ak-interface-admin")
@@ -117,6 +119,7 @@ export class AdminInterface extends EnterpriseAwareInterface {
         };
 
         return html` <ak-locale-context>
+            <ninja-keys .data=${adminCommands} noAutoLoadMdicons></ninja-keys>
             <div class="pf-c-page">
                 <ak-admin-sidebar
                     class="pf-c-page__sidebar ${classMap(sidebarClasses)}"
