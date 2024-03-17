@@ -75,6 +75,7 @@ export class AdminInterface extends EnterpriseAwareInterface {
                 }
                 ninja-keys {
                     --ninja-z-index: 99999;
+                    --ninja-accent-color: var(--ak-accent);
                 }
             `,
         ];
