@@ -122,7 +122,11 @@ export class AdminInterface extends EnterpriseAwareInterface {
         };
 
         return html` <ak-locale-context>
-            <ninja-keys .data=${adminCommands} noAutoLoadMdicons></ninja-keys>
+            <ninja-keys
+                .data=${adminCommands}
+                noAutoLoadMdicons
+                class="${this.activeTheme === UiThemeEnum.Dark ? "dark" : ""}"
+            ></ninja-keys>
             <div class="pf-c-page">
                 <ak-admin-sidebar
                     class="pf-c-page__sidebar ${classMap(sidebarClasses)}"
