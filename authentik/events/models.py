@@ -452,6 +452,13 @@ class NotificationTransport(SerializerModel):
 
     def send_email(self, notification: "Notification") -> list[str]:
         """Send notification via global email configuration"""
+        if notification.user.email.strip() == "":
+            LOGGER.info(
+                "Discarding notification as user has no email address",
+                user=notification.user,
+                notification=notification,
+            )
+            return None
         subject_prefix = "authentik Notification: "
         context = {
             "key_value": {
