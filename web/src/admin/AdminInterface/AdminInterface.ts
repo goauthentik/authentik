@@ -73,6 +73,9 @@ export class AdminInterface extends EnterpriseAwareInterface {
                 :host([theme="dark"]) .pf-c-page {
                     --pf-c-page--BackgroundColor: var(--ak-dark-background);
                 }
+                ninja-keys {
+                    --ninja-z-index: 99999;
+                }
             `,
         ];
     }
