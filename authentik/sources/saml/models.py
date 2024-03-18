@@ -190,7 +190,7 @@ class SAMLSource(Source):
     def ui_login_button(self, request: HttpRequest) -> UILoginButton:
         return UILoginButton(
             challenge=RedirectChallenge(
-                instance={
+                data={
                     "type": ChallengeTypes.REDIRECT.value,
                     "to": reverse(
                         "authentik_sources_saml:login",

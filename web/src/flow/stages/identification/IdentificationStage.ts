@@ -1,4 +1,4 @@
-import { renderSourceIcon } from "@goauthentik/app/admin/sources/utils";
+import { renderSourceIcon } from "@goauthentik/admin/sources/utils";
 import "@goauthentik/elements/Divider";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
@@ -207,7 +207,7 @@ export class IdentificationStage extends BaseStage<
     renderInput(): TemplateResult {
         let type: "text" | "email" = "text";
         if (!this.challenge?.userFields || this.challenge.userFields.length === 0) {
-            return html`<p>${msg("Select one of the sources below to login.")}</p>`;
+            return html`<p>${msg("Select one of the options below to continue.")}</p>`;
         }
         const fields = (this.challenge?.userFields || []).sort();
         // Check if the field should be *only* email to set the input type

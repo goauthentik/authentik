@@ -18,7 +18,7 @@ import "@goauthentik/flow/stages/RedirectStage";
 import { StageHost, SubmitOptions } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
@@ -32,6 +32,7 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
+    CapabilitiesEnum,
     ChallengeChoices,
     ChallengeTypes,
     ContextualFlowInfo,
@@ -72,24 +73,8 @@ export class FlowExecutor extends Interface implements StageHost {
     @state()
     inspectorOpen = false;
 
-    _flowInfo?: ContextualFlowInfo;
-
     @state()
-    set flowInfo(value: ContextualFlowInfo | undefined) {
-        this._flowInfo = value;
-        if (!value) {
-            return;
-        }
-        this.shadowRoot
-            ?.querySelectorAll<HTMLDivElement>(".pf-c-background-image")
-            .forEach((bg) => {
-                bg.style.setProperty("--ak-flow-background", `url('${value?.background}')`);
-            });
-    }
-
-    get flowInfo(): ContextualFlowInfo | undefined {
-        return this._flowInfo;
-    }
+    flowInfo?: ContextualFlowInfo;
 
     ws: WebsocketClient;
 
@@ -178,7 +163,7 @@ export class FlowExecutor extends Interface implements StageHost {
         super();
         this.ws = new WebsocketClient();
         if (window.location.search.includes("inspector")) {
-            this.inspectorOpen = !this.inspectorOpen;
+            this.inspectorOpen = true;
         }
         this.addEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, () => {
             this.inspectorOpen = !this.inspectorOpen;
@@ -218,10 +203,7 @@ export class FlowExecutor extends Interface implements StageHost {
             if (this.challenge.flowInfo) {
                 this.flowInfo = this.challenge.flowInfo;
             }
-            if (this.challenge.responseErrors) {
-                return false;
-            }
-            return true;
+            return !this.challenge.responseErrors;
         } catch (exc: unknown) {
             this.errorMessage(exc as Error | ResponseError);
             return false;
@@ -232,6 +214,9 @@ export class FlowExecutor extends Interface implements StageHost {
 
     async firstUpdated(): Promise<void> {
         configureSentry();
+        if (this.config?.capabilities.includes(CapabilitiesEnum.CanDebug)) {
+            this.inspectorOpen = true;
+        }
         this.loading = true;
         try {
             const challenge = await new FlowsApi(DEFAULT_CONFIG).flowsExecutorGet({
@@ -272,6 +257,24 @@ export class FlowExecutor extends Interface implements StageHost {
             requestId: "",
         };
         this.challenge = challenge as ChallengeTypes;
+    }
+
+    setShadowStyles(value: ContextualFlowInfo) {
+        if (!value) {
+            return;
+        }
+        this.shadowRoot
+            ?.querySelectorAll<HTMLDivElement>(".pf-c-background-image")
+            .forEach((bg) => {
+                bg.style.setProperty("--ak-flow-background", `url('${value?.background}')`);
+            });
+    }
+
+    // DOM post-processing has to happen after the render.
+    updated(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("flowInfo") && this.flowInfo !== undefined) {
+            this.setShadowStyles(this.flowInfo);
+        }
     }
 
     async renderChallengeNativeElement(): Promise<TemplateResult> {

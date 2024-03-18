@@ -26,16 +26,14 @@ from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
 from authentik.lib.generators import generate_id
-from authentik.lib.models import (
-    CreatedUpdatedModel,
-    DomainlessFormattedURLValidator,
-    SerializerModel,
-)
+from authentik.lib.models import (CreatedUpdatedModel,
+                                  DomainlessFormattedURLValidator,
+                                  SerializerModel)
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
-from authentik.root.install_id import get_install_id
-from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
-from authentik.tenants.utils import get_current_tenant
+from authentik.tenants.models import (DEFAULT_TOKEN_DURATION,
+                                      DEFAULT_TOKEN_LENGTH)
+from authentik.tenants.utils import get_current_tenant, get_unique_identifier
 
 LOGGER = get_logger()
 USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
@@ -295,7 +293,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
     @property
     def uid(self) -> str:
         """Generate a globally unique UID, based on the user ID and the hashed secret key"""
-        return sha256(f"{self.id}-{get_install_id()}".encode("ascii")).hexdigest()
+        return sha256(f"{self.id}-{get_unique_identifier()}".encode("ascii")).hexdigest()
 
     def locale(self, request: HttpRequest | None = None) -> str:
         """Get the locale the user has configured"""
@@ -636,6 +634,9 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
         """Get serializer for this model"""
         raise NotImplementedError
 
+    def __str__(self) -> str:
+        return f"User-source connection (user={self.user.username}, source={self.source.slug})"
+
     class Meta:
         unique_together = (("user", "source"),)
 
@@ -769,7 +770,8 @@ class PropertyMapping(SerializerModel, ManagedModel):
 
     def evaluate(self, user: User | None, request: HttpRequest | None, **kwargs) -> Any:
         """Evaluate `self.expression` using `**kwargs` as Context."""
-        from authentik.core.expression.evaluator import PropertyMappingEvaluator
+        from authentik.core.expression.evaluator import \
+            PropertyMappingEvaluator
 
         evaluator = PropertyMappingEvaluator(self, user, request, **kwargs)
         try:

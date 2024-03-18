@@ -101,11 +101,6 @@ class Tenant(TenantMixin, SerializerModel):
             raise IntegrityError("Cannot create schema named template")
         super().save(*args, **kwargs)
 
-    def delete(self, *args, **kwargs):
-        if self.schema_name in ("public", "template"):
-            raise IntegrityError("Cannot delete schema public or template")
-        super().delete(*args, **kwargs)
-
     @property
     def serializer(self) -> Serializer:
         from authentik.tenants.api.tenants import TenantSerializer

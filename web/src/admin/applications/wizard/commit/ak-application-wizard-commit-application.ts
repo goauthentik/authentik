@@ -1,5 +1,5 @@
-import { EVENT_REFRESH } from "@goauthentik/app/common/constants";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";

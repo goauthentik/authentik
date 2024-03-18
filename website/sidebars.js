@@ -36,7 +36,6 @@ const docsSidebar = {
             collapsed: true,
             items: [
                 "core/terminology",
-                "core/applications",
                 "core/brands",
                 "core/certificates",
                 "core/geoip",
@@ -59,7 +58,20 @@ const docsSidebar = {
         },
         {
             type: "category",
+            label: "Applications",
+            link: {
+                type: "doc",
+                id: "applications/index",
+            },
+            items: ["applications/manage_apps"],
+        },
+        {
+            type: "category",
             label: "Providers",
+            link: {
+                type: "doc",
+                id: "providers/index",
+            },
             items: [
                 {
                     type: "category",
@@ -192,6 +204,7 @@ const docsSidebar = {
                 "flow/stages/invitation/index",
                 "flow/stages/password/index",
                 "flow/stages/prompt/index",
+                "flow/stages/source/index",
                 "flow/stages/user_delete",
                 "flow/stages/user_login/index",
                 "flow/stages/user_logout",

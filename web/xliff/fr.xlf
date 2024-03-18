@@ -6581,11 +6581,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
         <target>Mot de passe ou nom d'utilisateur oublié ?</target>
         
       </trans-unit>
-      <trans-unit id="s4a87445f3108db7c">
-        <source>Select one of the sources below to login.</source>
-        <target>Sélectionnez l'une des sources ci-dessous pour se connecter.</target>
-        
-      </trans-unit>
       <trans-unit id="s091d5407b5b32e84">
         <source>Or</source>
         <target>Ou</target>
@@ -8437,21 +8432,34 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="sd12f594a3184c056">
   <source>Customization</source>
+  <target>Personnalisation</target>
 </trans-unit>
 <trans-unit id="s363abde8a254ea5f">
   <source>Authentication failed. Please try again.</source>
+  <target>Échec d'authentification. Veuillez réessayer.</target>
 </trans-unit>
 <trans-unit id="sb0821a9e92cac5eb">
   <source>Failed to register. Please try again.</source>
+  <target>Échec d'enregistrement. Veuillez réessayer.</target>
 </trans-unit>
 <trans-unit id="s238784fc1dc672ae">
   <source>Registering...</source>
+  <target>Enregistrement...</target>
 </trans-unit>
 <trans-unit id="s009bd1c98a9f5de2">
   <source>Failed to register</source>
+  <target>Échec de l'enregistrement</target>
 </trans-unit>
 <trans-unit id="sb166ce92e8e807d6">
   <source>Retry registration</source>
+  <target>Réessayer l'enregistrement</target>
+</trans-unit>
+<trans-unit id="s6ecfc18dbfeedd76">
+  <source>Select one of the options below to continue.</source>
+  <target>Sélectionner une des options suivantes pour continuer.</target>
+</trans-unit>
+<trans-unit id="s4fe832d815563329">
+  <source>TODO.</source>
 </trans-unit>
     </body>
   </file>

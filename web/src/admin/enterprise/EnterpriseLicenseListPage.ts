@@ -1,7 +1,7 @@
 import "@goauthentik/admin/enterprise/EnterpriseLicenseForm";
-import { getRelativeTime } from "@goauthentik/app/common/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/buttons/SpinnerButton";
@@ -158,22 +158,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                 <div
                     class="pf-l-grid pf-m-gutter pf-m-all-6-col-on-sm pf-m-all-4-col-on-md pf-m-all-3-col-on-lg pf-m-all-3-col-on-xl"
                 >
-                    <div class="pf-l-grid__item pf-c-card">
-                        <div class="pf-c-card__title">${msg("Get a license")}</div>
-                        <div class="pf-c-card__body">
-                            ${this.installID
-                                ? html` <a
-                                      target="_blank"
-                                      href=${`https://customers.goauthentik.io/from_authentik/purchase/?install_id=${encodeURIComponent(
-                                          this.installID,
-                                      )}&authentik_url=${encodeURI(window.location.origin)}`}
-                                      class="pf-c-button pf-m-primary pf-m-block"
-                                      >${msg("Go to Customer Portal")}</a
-                                  >`
-                                : html`<ak-spinner></ak-spinner>`}
-                        </div>
-                    </div>
-
+                    ${this.renderGetLicenseCard()}
                     <ak-aggregate-card
                         class="pf-l-grid__item"
                         icon="pf-icon pf-icon-user"
@@ -247,6 +232,39 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                 >
                 </ak-rbac-object-permission-modal> `,
         ];
+    }
+
+    renderGetLicenseCard() {
+        const renderSpinner = () =>
+            html` <div class="pf-c-card__body">
+                <ak-spinner></ak-spinner>
+            </div>`;
+
+        const installURL = (installID: string) =>
+            [
+                "https://customers.goauthentik.io/from_authentik/purchase/?install_id=",
+                encodeURIComponent(installID),
+                "&authentik_url=",
+                encodeURI(window.location.origin),
+            ].join("");
+
+        const renderCard = (installID: string) => html`
+            <div class="pf-c-card__title">${msg("Get a license")}</div>
+            <div class="pf-c-card__body">
+                <a
+                    target="_blank"
+                    href="${installURL(installID)}"
+                    class="pf-c-button pf-m-primary pf-m-block"
+                    >${msg("Go to Customer Portal")}</a
+                >
+            </div>
+            <div class="pf-c-card__title">${msg("Your Install ID")}</div>
+            <div class="pf-c-card__body">${installID}</div>
+        `;
+
+        return html`<div class="pf-l-grid__item pf-c-card">
+            ${this.installID ? renderCard(this.installID) : renderSpinner()}
+        </div> `;
     }
 
     renderObjectCreate(): TemplateResult {

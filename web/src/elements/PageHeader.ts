@@ -13,8 +13,8 @@ import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { CSSResult, PropertyValues, TemplateResult, css, html } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -35,28 +35,10 @@ export class PageHeader extends WithBrandConfig(AKElement) {
     hasNotifications = false;
 
     @property()
-    set header(value: string) {
-        const currentIf = currentInterface();
-        let title = this.brand?.brandingTitle || TITLE_DEFAULT;
-        if (currentIf === "admin") {
-            title = `${msg("Admin")} - ${title}`;
-        }
-        if (value !== "") {
-            title = `${value} - ${title}`;
-        }
-        document.title = title;
-        this._header = value;
-    }
-
-    get header(): string {
-        return this._header;
-    }
+    header = "";
 
     @property()
     description?: string;
-
-    @state()
-    _header = "";
 
     static get styles(): CSSResult[] {
         return [
@@ -123,6 +105,23 @@ export class PageHeader extends WithBrandConfig(AKElement) {
                     this.hasNotifications = r.pagination.count > 0;
                 });
         });
+    }
+
+    setTitle(value: string) {
+        const currentIf = currentInterface();
+        const title = this.brand?.brandingTitle || TITLE_DEFAULT;
+        document.title =
+            currentIf === "admin"
+                ? `${msg("Admin")} - ${title}`
+                : value !== ""
+                  ? `${value} - ${title}`
+                  : title;
+    }
+
+    willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("header") && this.header) {
+            this.setTitle(this.header);
+        }
     }
 
     renderIcon(): TemplateResult {

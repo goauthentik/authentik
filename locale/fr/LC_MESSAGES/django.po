@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-14 18:51+0000\n"
+"POT-Creation-Date: 2024-03-01 00:07+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2024\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -42,9 +42,9 @@ msgid "Blueprint file does not exist"
 msgstr "Le fichier de plan n'existe pas"
 
 #: authentik/blueprints/api.py
-#, python-format
-msgid "Failed to validate blueprint: %(logs)s"
-msgstr "Échec de validation du plan: %(logs)s"
+#, python-brace-format
+msgid "Failed to validate blueprint: {logs}"
+msgstr "Échec de validation du plan : {logs}"
 
 #: authentik/blueprints/api.py
 msgid "Either path or content must be set."
@@ -76,9 +76,9 @@ msgid "Blueprint Instances"
 msgstr "Instances du plan"
 
 #: authentik/blueprints/v1/exporter.py
-#, python-format
-msgid "authentik Export - %(date)s"
-msgstr "Export authentik - %(date)s"
+#, python-brace-format
+msgid "authentik Export - {date}"
+msgstr "Export authentik - {date}"
 
 #: authentik/blueprints/v1/tasks.py authentik/crypto/tasks.py
 #, python-format
@@ -307,12 +307,12 @@ msgid "Authenticated Sessions"
 msgstr "Sessions Authentifiées"
 
 #: authentik/core/sources/flow_manager.py
-#, python-format
+#, python-brace-format
 msgid ""
-"Request to authenticate with %(source)s has been denied. Please authenticate"
-" with the source you've previously signed up with."
+"Request to authenticate with {source} has been denied. Please authenticate "
+"with the source you've previously signed up with."
 msgstr ""
-"La requête d'authentification avec %(source)s a été refusée. Merci de vous "
+"La requête d'authentification avec {source} a été refusée. Merci de vous "
 "authentifier avec la source utilisée précédemment."
 
 #: authentik/core/sources/flow_manager.py
@@ -320,14 +320,14 @@ msgid "Configured flow does not exist."
 msgstr "Le flux configuré n'existe pas."
 
 #: authentik/core/sources/flow_manager.py
-#, python-format
-msgid "Successfully authenticated with %(source)s!"
-msgstr "Authentifié avec succès avec %(source)s!"
+#, python-brace-format
+msgid "Successfully authenticated with {source}!"
+msgstr "Authentifié avec succès avec {source} !"
 
 #: authentik/core/sources/flow_manager.py
-#, python-format
-msgid "Successfully linked %(source)s!"
-msgstr "%(source)s lié avec succès!"
+#, python-brace-format
+msgid "Successfully linked {source}!"
+msgstr "{source} liée avec succès !"
 
 #: authentik/core/sources/flow_manager.py
 msgid "Source is not configured for enrollment."
@@ -506,9 +506,9 @@ msgid "(You are already connected in another tab/window)"
 msgstr "(Vous êtes déjà connecté dans un autre onglet/une autre fenêtre)"
 
 #: authentik/events/api/tasks.py
-#, python-format
-msgid "Successfully started task %(name)s."
-msgstr "La tâche %(name)s a été démarrée avec succès."
+#, python-brace-format
+msgid "Successfully started task {name}."
+msgstr "La tâche {name} a été démarrée avec succès."
 
 #: authentik/events/models.py
 msgid "Event"
@@ -636,30 +636,30 @@ msgid "Task has not been run yet."
 msgstr "Tâche pas encore exécutée."
 
 #: authentik/flows/api/flows.py
-#, python-format
-msgid "Flow not applicable to current user/request: %(messages)s"
+#, python-brace-format
+msgid "Flow not applicable to current user/request: {messages}"
 msgstr ""
-"Ce flux n'est pas applicable à l'utilisateur ou à la requête courrante : "
-"%(messages)s"
+"Ce flux n'est pas applicable à l'utilisateur ou à la requête courante : "
+"{messages}"
 
 #: authentik/flows/api/flows_diagram.py
-#, python-format
-msgid "Policy (%(type)s)"
-msgstr "Politique (%(type)s)"
+#, python-brace-format
+msgid "Policy ({type})"
+msgstr "Politique ({type})"
 
 #: authentik/flows/api/flows_diagram.py
-#, python-format
-msgid "Binding %(order)d"
-msgstr "Liaison %(order)d"
+#, python-brace-format
+msgid "Binding {order}"
+msgstr "Liaison {order}"
 
 #: authentik/flows/api/flows_diagram.py
 msgid "Policy passed"
 msgstr "Politique acceptée"
 
 #: authentik/flows/api/flows_diagram.py
-#, python-format
-msgid "Stage (%(type)s)"
-msgstr "Étape (%(type)s)"
+#, python-brace-format
+msgid "Stage ({type})"
+msgstr "Étape ({type})"
 
 #: authentik/flows/api/flows_diagram.py
 msgid "Policy denied"
@@ -694,9 +694,9 @@ msgid "Flow does not apply to current user."
 msgstr "Le flux ne s'applique pas à l'utilisateur actuel"
 
 #: authentik/flows/models.py
-#, python-format
-msgid "Dynamic In-memory stage: %(doc)s"
-msgstr "Étape dynamique en mémoire : %(doc)s"
+#, python-brace-format
+msgid "Dynamic In-memory stage: {doc}"
+msgstr "Étape dynamique en mémoire : {doc}"
 
 #: authentik/flows/models.py
 msgid "Visible in the URL."
@@ -1470,9 +1470,9 @@ msgstr "Jetons d'équipement"
 
 #: authentik/providers/oauth2/views/authorize.py
 #: authentik/providers/saml/views/flows.py
-#, python-format
-msgid "Redirecting to %(app)s..."
-msgstr "Redirection vers %(app)s..."
+#, python-brace-format
+msgid "Redirecting to {app}..."
+msgstr "Redirection vers {app}..."
 
 #: authentik/providers/oauth2/views/device_init.py
 msgid "Invalid code"
@@ -1612,9 +1612,9 @@ msgid "Invalid XML Syntax"
 msgstr "Syntaxe XML Invalide"
 
 #: authentik/providers/saml/api/providers.py
-#, python-format
-msgid "Failed to import Metadata: %(message)s"
-msgstr "Échec d'import des metadata : %(message)s"
+#, python-brace-format
+msgid "Failed to import Metadata: {messages}"
+msgstr "Échec d'import des métadonnées : {messages}"
 
 #: authentik/providers/saml/models.py
 msgid "ACS URL"
@@ -1804,23 +1804,23 @@ msgid "Syncing page %(page)d of groups"
 msgstr "Synchronisation de la page %(page)d de groupes"
 
 #: authentik/providers/scim/tasks.py
-#, python-format
-msgid "Failed to sync user %(user_name)s due to remote error: %(error)s"
+#, python-brace-format
+msgid "Failed to sync user {user_name} due to remote error: {error}"
 msgstr ""
-"Échec de synchronisation de l'utilisateur %(user_name)s dû à une erreur "
-"distante : %(error)s"
+"Échec de synchronisation de l'utilisateur {user_name} dû à une erreur "
+"distante : {error}"
 
 #: authentik/providers/scim/tasks.py
-#, python-format
-msgid "Stopping sync due to error: %(error)s"
-msgstr "Arrêt de la synchronisation due à l'erreur : %(error)s"
+#, python-brace-format
+msgid "Stopping sync due to error: {error}"
+msgstr "Arrêt de la synchronisation due à l'erreur : {error}"
 
 #: authentik/providers/scim/tasks.py
-#, python-format
-msgid "Failed to sync group %(group_name)s due to remote error: %(error)s"
+#, python-brace-format
+msgid "Failed to sync group {group_name} due to remote error: {error}"
 msgstr ""
-"Échec de synchronisation du group %(group_name)s dû à une erreur distante : "
-"%(error)s"
+"Échec de synchronisation du groupe {group_name} dû à une erreur distante : "
+"{error}"
 
 #: authentik/rbac/models.py
 msgid "Role"
@@ -2030,6 +2030,14 @@ msgid "GitHub OAuth Sources"
 msgstr "Sources d'OAuth GitHub"
 
 #: authentik/sources/oauth/models.py
+msgid "GitLab OAuth Source"
+msgstr "Source d'OAuth GitLab"
+
+#: authentik/sources/oauth/models.py
+msgid "GitLab OAuth Sources"
+msgstr "Sources d'OAuth GitLab"
+
+#: authentik/sources/oauth/models.py
 msgid "Twitch OAuth Source"
 msgstr "Source d'OAuth Twitch"
 
@@ -2134,9 +2142,9 @@ msgid "User OAuth Source Connections"
 msgstr "Connexion de l'utilisateur aux sources OAuth"
 
 #: authentik/sources/oauth/views/callback.py
-#, python-format
-msgid "Authentication failed: %(reason)s"
-msgstr "Échec d'authentification : %(reason)s"
+#, python-brace-format
+msgid "Authentication failed: {reason}"
+msgstr "Échec d'authentification : {reason}"
 
 #: authentik/sources/plex/models.py
 msgid "Client identifier used to talk to Plex."
@@ -2303,9 +2311,9 @@ msgstr ""
 "Éventuellement modifier le contenu envoyé aux fournisseurs personnalisés."
 
 #: authentik/stages/authenticator_sms/models.py
-#, python-format
-msgid "Use this code to authenticate in authentik: %(token)s"
-msgstr "Utilisez ce code pour s'authentifier à authentik : %(token)s"
+#, python-brace-format
+msgid "Use this code to authenticate in authentik: {token}"
+msgstr "Utilisez ce code pour s'authentifier à authentik : {token}"
 
 #: authentik/stages/authenticator_sms/models.py
 msgid "SMS Authenticator Setup Stage"
