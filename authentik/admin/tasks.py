@@ -18,6 +18,7 @@ from authentik.lib.utils.http import get_http_session
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()
+VERSION_NULL = "0.0.0"
 VERSION_CACHE_KEY = "authentik_latest_version"
 VERSION_CACHE_TIMEOUT = 8 * 60 * 60  # 8 hours
 # Chop of the first ^ because we want to search the entire string
@@ -55,7 +56,7 @@ def clear_update_notifications():
 def update_latest_version(self: SystemTask):
     """Update latest version info"""
     if CONFIG.get_bool("disable_update_check"):
-        cache.set(VERSION_CACHE_KEY, "0.0.0", VERSION_CACHE_TIMEOUT)
+        cache.set(VERSION_CACHE_KEY, VERSION_NULL, VERSION_CACHE_TIMEOUT)
         self.set_status(TaskStatus.WARNING, "Version check disabled.")
         return
     try:
@@ -82,7 +83,7 @@ def update_latest_version(self: SystemTask):
                 event_dict["message"] = f"Changelog: {match.group()}"
             Event.new(EventAction.UPDATE_AVAILABLE, **event_dict).save()
     except (RequestException, IndexError) as exc:
-        cache.set(VERSION_CACHE_KEY, "0.0.0", VERSION_CACHE_TIMEOUT)
+        cache.set(VERSION_CACHE_KEY, VERSION_NULL, VERSION_CACHE_TIMEOUT)
         self.set_error(exc)
 
 

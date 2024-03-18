@@ -2,7 +2,7 @@ import "@goauthentik/elements/EmptyState";
 import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -36,6 +36,7 @@ export class DummyStage extends BaseStage<DummyChallenge, DummyChallengeResponse
                         this.submitForm(e);
                     }}
                 >
+                    <p>${msg(str`Stage name: ${this.challenge.name}`)}</p>
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                             ${msg("Continue")}

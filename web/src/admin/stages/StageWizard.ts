@@ -1,3 +1,4 @@
+import "@goauthentik/admin/common/ak-license-notice";
 import { StageBindingForm } from "@goauthentik/admin/flows/StageBindingForm";
 import "@goauthentik/admin/stages/authenticator_duo/AuthenticatorDuoStageForm";
 import "@goauthentik/admin/stages/authenticator_sms/AuthenticatorSMSStageForm";
@@ -14,12 +15,14 @@ import "@goauthentik/admin/stages/identification/IdentificationStageForm";
 import "@goauthentik/admin/stages/invitation/InvitationStageForm";
 import "@goauthentik/admin/stages/password/PasswordStageForm";
 import "@goauthentik/admin/stages/prompt/PromptStageForm";
+import "@goauthentik/admin/stages/source/SourceStageForm";
 import "@goauthentik/admin/stages/user_delete/UserDeleteStageForm";
 import "@goauthentik/admin/stages/user_login/UserLoginStageForm";
 import "@goauthentik/admin/stages/user_logout/UserLogoutStageForm";
 import "@goauthentik/admin/stages/user_write/UserWriteStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKElement } from "@goauthentik/elements/Base";
+import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
 import "@goauthentik/elements/forms/ProxyForm";
 import "@goauthentik/elements/wizard/FormWizardPage";
 import { FormWizardPage } from "@goauthentik/elements/wizard/FormWizardPage";
@@ -28,7 +31,7 @@ import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
 import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -39,7 +42,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { FlowStageBinding, Stage, StagesApi, TypeCreate } from "@goauthentik/api";
 
 @customElement("ak-stage-wizard-initial")
-export class InitialStageWizardPage extends WizardPage {
+export class InitialStageWizardPage extends WithLicenseSummary(WizardPage) {
     @property({ attribute: false })
     stageTypes: TypeCreate[] = [];
     sidebarLabel = () => msg("Select type");
@@ -62,6 +65,7 @@ export class InitialStageWizardPage extends WizardPage {
     render(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             ${this.stageTypes.map((type) => {
+                const requiresEnterprise = type.requiresEnterprise && !this.hasEnterpriseLicense;
                 return html`<div class="pf-c-radio">
                     <input
                         class="pf-c-radio__input"
@@ -82,11 +86,15 @@ export class InitialStageWizardPage extends WizardPage {
                             );
                             this.host.isValid = true;
                         }}
+                        ?disabled=${requiresEnterprise}
                     />
                     <label class="pf-c-radio__label" for=${`${type.component}-${type.modelName}`}
                         >${type.name}</label
                     >
-                    <span class="pf-c-radio__description">${type.description}</span>
+                    <span class="pf-c-radio__description">${type.description}${
+                        requiresEnterprise ? html`<ak-license-notice></ak-license-notice>` : nothing
+                    }</span>
+                    </span>
                 </div>`;
             })}
         </form>`;

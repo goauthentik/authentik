@@ -22,7 +22,7 @@ The following outpost settings are used:
 -   `kubernetes_replicas`: Replica count for the deployment of the outpost
 -   `kubernetes_namespace`: Namespace to deploy in, defaults to the same namespace authentik is deployed in (if available)
 -   `kubernetes_ingress_annotations`: Any additional annotations to add to the ingress object, for example cert-manager
--   `kubernetes_ingress_secret_name`: Name of the secret that is used for TLS connections
+-   `kubernetes_ingress_secret_name`: Name of the secret that is used for TLS connections, can be empty to disable TLS config
 -   `kubernetes_ingress_class_name`: Optionally set the ingress class used for the generated ingress, requires authentik 2022.11.0
 -   `kubernetes_service_type`: Service kind created, can be set to LoadBalancer for LDAP outposts for example
 -   `kubernetes_disabled_components`: Disable any components of the kubernetes integration, can be any of

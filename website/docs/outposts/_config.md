@@ -43,7 +43,7 @@ kubernetes_replicas: 1
 kubernetes_namespace: authentik
 # Any additional annotations to add to the ingress object, for example cert-manager
 kubernetes_ingress_annotations: {}
-# Name of the secret that is used for TLS connections
+# Name of the secret that is used for TLS connections, leave empty to disable TLS
 kubernetes_ingress_secret_name: authentik-outpost-tls
 # Service kind created, can be set to LoadBalancer for LDAP outposts for example
 kubernetes_service_type: ClusterIP

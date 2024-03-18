@@ -13,7 +13,7 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { ConnectionToken, Endpoint, RACProvider, RacApi } from "@goauthentik/api";
+import { ConnectionToken, RACProvider, RacApi } from "@goauthentik/api";
 
 @customElement("ak-rac-connection-token-list")
 export class ConnectionTokenListPage extends Table<ConnectionToken> {
@@ -53,18 +53,18 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Connection Token(s)")}
             .objects=${this.selectedElements}
-            .metadata=${(item: Endpoint) => {
+            .metadata=${(item: ConnectionToken) => {
                 return [
-                    { key: msg("Name"), value: item.name },
-                    { key: msg("Host"), value: item.host },
+                    { key: msg("Endpoint"), value: item.endpointObj.name },
+                    { key: msg("User"), value: item.user.username },
                 ];
             }}
-            .usedBy=${(item: Endpoint) => {
+            .usedBy=${(item: ConnectionToken) => {
                 return new RacApi(DEFAULT_CONFIG).racConnectionTokensUsedByList({
                     connectionTokenUuid: item.pk,
                 });
             }}
-            .delete=${(item: Endpoint) => {
+            .delete=${(item: ConnectionToken) => {
                 return new RacApi(DEFAULT_CONFIG).racConnectionTokensDestroy({
                     connectionTokenUuid: item.pk,
                 });

@@ -140,7 +140,7 @@ twilio = "*"
 twisted = "*"
 ua-parser = "*"
 # Pinned because of botocore https://github.com/orgs/python-poetry/discussions/7937
-urllib3 = { extras = ["secure"], version = "<2" }
+urllib3 = { extras = ["secure"], version = "<3" }
 uvicorn = { extras = ["standard"], version = "*" }
 watchdog = "*"
 webauthn = "*"

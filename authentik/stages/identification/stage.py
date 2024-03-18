@@ -237,7 +237,9 @@ class IdentificationStageView(ChallengeStageView):
             ui_login_button = source.ui_login_button(self.request)
             if ui_login_button:
                 button = asdict(ui_login_button)
-                button["challenge"] = ui_login_button.challenge.data
+                source_challenge = ui_login_button.challenge
+                source_challenge.is_valid()
+                button["challenge"] = source_challenge.data
                 ui_sources.append(button)
         challenge.initial_data["sources"] = ui_sources
         return challenge

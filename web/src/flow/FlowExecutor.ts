@@ -32,6 +32,7 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
+    CapabilitiesEnum,
     ChallengeChoices,
     ChallengeTypes,
     ContextualFlowInfo,
@@ -162,7 +163,7 @@ export class FlowExecutor extends Interface implements StageHost {
         super();
         this.ws = new WebsocketClient();
         if (window.location.search.includes("inspector")) {
-            this.inspectorOpen = !this.inspectorOpen;
+            this.inspectorOpen = true;
         }
         this.addEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, () => {
             this.inspectorOpen = !this.inspectorOpen;
@@ -213,6 +214,9 @@ export class FlowExecutor extends Interface implements StageHost {
 
     async firstUpdated(): Promise<void> {
         configureSentry();
+        if (this.config?.capabilities.includes(CapabilitiesEnum.CanDebug)) {
+            this.inspectorOpen = true;
+        }
         this.loading = true;
         try {
             const challenge = await new FlowsApi(DEFAULT_CONFIG).flowsExecutorGet({
