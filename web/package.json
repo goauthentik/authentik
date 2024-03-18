@@ -80,7 +80,7 @@
         "@jeysal/storybook-addon-css-user-preferences": "^0.2.0",
         "@lit/localize-tools": "^0.7.2",
         "@rollup/plugin-replace": "^5.0.5",
-        "@spotlightjs/spotlight": "^1.2.12",
+        "@spotlightjs/spotlight": "^1.2.14",
         "@storybook/addon-essentials": "^7.6.17",
         "@storybook/addon-links": "^7.6.17",
         "@storybook/api": "^7.6.17",
