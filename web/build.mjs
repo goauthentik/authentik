@@ -80,27 +80,30 @@ const baseArgs = {
     format: "esm",
 };
 
-function buildAuthentik(interfaces) {
-    for (const [source, dest] of interfaces) {
-        const DIST = path.join(__dirname, "./dist", dest);
-        console.log(`[${new Date(Date.now()).toISOString()}] Starting build for target ${source}`);
-        try {
-            const start = Date.now();
-            esbuild.buildSync({
-                ...baseArgs,
-                entryPoints: [`./src/${source}`],
-                outdir: DIST,
-            });
-            const end = Date.now();
-            console.log(
-                `[${new Date(end).toISOString()}] Finished build for target ${source} in ${Date.now() - start}ms`,
-            );
-        } catch (exc) {
-            console.error(
-                `[${new Date(Date.now()).toISOString()}] Failed to build ${source}: ${exc}`,
-            );
-        }
+async function buildOneSource(source, dest) {
+    const DIST = path.join(__dirname, "./dist", dest);
+    console.log(`[${new Date(Date.now()).toISOString()}] Starting build for target ${source}`);
+
+    try {
+        const start = Date.now();
+        await esbuild.build({
+            ...baseArgs,
+            entryPoints: [`./src/${source}`],
+            outdir: DIST,
+        });
+        const end = Date.now();
+        console.log(
+            `[${new Date(end).toISOString()}] Finished build for target ${source} in ${
+                Date.now() - start
+            }ms`,
+        );
+    } catch (exc) {
+        console.error(`[${new Date(Date.now()).toISOString()}] Failed to build ${source}: ${exc}`);
     }
+}
+
+async function buildAuthentik(interfaces) {
+    await Promise.allSettled(interfaces.map(([source, dest]) => buildOneSource(source, dest)));
 }
 
 let timeoutId = null;
