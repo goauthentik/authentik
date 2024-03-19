@@ -57,13 +57,13 @@ for (const [source, rawdest, strip] of otherFiles) {
 // options for building: watching, building, and building the proxy.
 
 const interfaces = [
-    ["polyfill/poly.ts", "."],
-    ["standalone/loading/index.ts", "standalone/loading"],
-    ["flow/FlowInterface.ts", "flow"],
-    ["user/UserInterface.ts", "user"],
-    ["enterprise/rac/index.ts", "enterprise/rac"],
-    ["standalone/api-browser/index.ts", "standalone/api-browser"],
     ["admin/AdminInterface/AdminInterface.ts", "admin"],
+    ["user/UserInterface.ts", "user"],
+    ["flow/FlowInterface.ts", "flow"],
+    ["standalone/api-browser/index.ts", "standalone/api-browser"],
+    ["enterprise/rac/index.ts", "enterprise/rac"],
+    ["standalone/loading/index.ts", "standalone/loading"],
+    ["polyfill/poly.ts", "."],
 ];
 
 const baseArgs = {
@@ -141,9 +141,11 @@ if (process.argv.length > 2 && (process.argv[2] === "-w" || process.argv[2] === 
     });
 } else if (process.argv.length > 2 && (process.argv[2] === "-p" || process.argv[2] === "--proxy")) {
     // There's no watch-for-proxy, sorry.
-    buildAuthentik(interfaces.slice(0, 2));
+    await buildAuthentik(
+        interfaces.filter(([path, dest]) => ["standalone/loading", "."].includes(dest)),
+    );
     process.exit(0);
 } else {
     // And the fallback: just build it.
-    buildAuthentik(interfaces);
+    await buildAuthentik(interfaces);
 }
