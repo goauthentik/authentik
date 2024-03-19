@@ -55,7 +55,7 @@ for (const [source, rawdest, strip] of otherFiles) {
 
 // This starts the definitions used for esbuild: Our targets, our arguments, the function for running a build, and three
 // options for building: watching, building, and building the proxy.
-
+// Ordered by largest to smallest interface to build even faster
 const interfaces = [
     ["admin/AdminInterface/AdminInterface.ts", "admin"],
     ["user/UserInterface.ts", "user"],
@@ -142,7 +142,7 @@ if (process.argv.length > 2 && (process.argv[2] === "-w" || process.argv[2] === 
 } else if (process.argv.length > 2 && (process.argv[2] === "-p" || process.argv[2] === "--proxy")) {
     // There's no watch-for-proxy, sorry.
     await buildAuthentik(
-        interfaces.filter(([path, dest]) => ["standalone/loading", "."].includes(dest)),
+        interfaces.filter(([_, dest]) => ["standalone/loading", "."].includes(dest)),
     );
     process.exit(0);
 } else {
