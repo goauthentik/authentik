@@ -33,24 +33,26 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: gen-py-api/dist/
-      - name: Upgrade /
-        run: |
-          export VERSION=$(cd gen-py-api && poetry version -s)
-          poetry add "authentik_client=$VERSION" --allow-prereleases --lock
-      - uses: peter-evans/create-pull-request@v6
-        id: cpr
-        with:
-          token: ${{ steps.generate_token.outputs.token }}
-          branch: update-root-api-client
-          commit-message: "root: bump API Client version"
-          title: "root: bump API Client version"
-          body: "root: bump API Client version"
-          delete-branch: true
-          signoff: true
-          # ID from https://api.github.com/users/authentik-automation[bot]
-          author: authentik-automation[bot] <135050075+authentik-automation[bot]@users.noreply.github.com>
-      - uses: peter-evans/enable-pull-request-automerge@v3
-        with:
-          token: ${{ steps.generate_token.outputs.token }}
-          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
-          merge-method: squash
+      # We can't easily upgrade the API client being used due to poetry being poetry
+      # so we'll have to rely on dependabot
+      # - name: Upgrade /
+      #   run: |
+      #     export VERSION=$(cd gen-py-api && poetry version -s)
+      #     poetry add "authentik_client=$VERSION" --allow-prereleases --lock
+      # - uses: peter-evans/create-pull-request@v6
+      #   id: cpr
+      #   with:
+      #     token: ${{ steps.generate_token.outputs.token }}
+      #     branch: update-root-api-client
+      #     commit-message: "root: bump API Client version"
+      #     title: "root: bump API Client version"
+      #     body: "root: bump API Client version"
+      #     delete-branch: true
+      #     signoff: true
+      #     # ID from https://api.github.com/users/authentik-automation[bot]
+      #     author: authentik-automation[bot] <135050075+authentik-automation[bot]@users.noreply.github.com>
+      # - uses: peter-evans/enable-pull-request-automerge@v3
+      #   with:
+      #     token: ${{ steps.generate_token.outputs.token }}
+      #     pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+      #     merge-method: squash
