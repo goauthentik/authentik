@@ -55,15 +55,15 @@ for (const [source, rawdest, strip] of otherFiles) {
 
 // This starts the definitions used for esbuild: Our targets, our arguments, the function for running a build, and three
 // options for building: watching, building, and building the proxy.
-
+// Ordered by largest to smallest interface to build even faster
 const interfaces = [
-    ["polyfill/poly.ts", "."],
-    ["standalone/loading/index.ts", "standalone/loading"],
-    ["flow/FlowInterface.ts", "flow"],
-    ["user/UserInterface.ts", "user"],
-    ["enterprise/rac/index.ts", "enterprise/rac"],
-    ["standalone/api-browser/index.ts", "standalone/api-browser"],
     ["admin/AdminInterface/AdminInterface.ts", "admin"],
+    ["user/UserInterface.ts", "user"],
+    ["flow/FlowInterface.ts", "flow"],
+    ["standalone/api-browser/index.ts", "standalone/api-browser"],
+    ["enterprise/rac/index.ts", "enterprise/rac"],
+    ["standalone/loading/index.ts", "standalone/loading"],
+    ["polyfill/poly.ts", "."],
 ];
 
 const baseArgs = {
@@ -80,27 +80,30 @@ const baseArgs = {
     format: "esm",
 };
 
-function buildAuthentik(interfaces) {
-    for (const [source, dest] of interfaces) {
-        const DIST = path.join(__dirname, "./dist", dest);
-        console.log(`[${new Date(Date.now()).toISOString()}] Starting build for target ${source}`);
-        try {
-            const start = Date.now();
-            esbuild.buildSync({
-                ...baseArgs,
-                entryPoints: [`./src/${source}`],
-                outdir: DIST,
-            });
-            const end = Date.now();
-            console.log(
-                `[${new Date(end).toISOString()}] Finished build for target ${source} in ${Date.now() - start}ms`,
-            );
-        } catch (exc) {
-            console.error(
-                `[${new Date(Date.now()).toISOString()}] Failed to build ${source}: ${exc}`,
-            );
-        }
+async function buildOneSource(source, dest) {
+    const DIST = path.join(__dirname, "./dist", dest);
+    console.log(`[${new Date(Date.now()).toISOString()}] Starting build for target ${source}`);
+
+    try {
+        const start = Date.now();
+        await esbuild.build({
+            ...baseArgs,
+            entryPoints: [`./src/${source}`],
+            outdir: DIST,
+        });
+        const end = Date.now();
+        console.log(
+            `[${new Date(end).toISOString()}] Finished build for target ${source} in ${
+                Date.now() - start
+            }ms`,
+        );
+    } catch (exc) {
+        console.error(`[${new Date(Date.now()).toISOString()}] Failed to build ${source}: ${exc}`);
     }
+}
+
+async function buildAuthentik(interfaces) {
+    await Promise.allSettled(interfaces.map(([source, dest]) => buildOneSource(source, dest)));
 }
 
 let timeoutId = null;
@@ -138,9 +141,11 @@ if (process.argv.length > 2 && (process.argv[2] === "-w" || process.argv[2] === 
     });
 } else if (process.argv.length > 2 && (process.argv[2] === "-p" || process.argv[2] === "--proxy")) {
     // There's no watch-for-proxy, sorry.
-    buildAuthentik(interfaces.slice(0, 2));
+    await buildAuthentik(
+        interfaces.filter(([_, dest]) => ["standalone/loading", "."].includes(dest)),
+    );
     process.exit(0);
 } else {
     // And the fallback: just build it.
-    buildAuthentik(interfaces);
+    await buildAuthentik(interfaces);
 }
