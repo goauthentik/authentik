@@ -6,9 +6,9 @@ title: Reverse-proxy
 Since authentik uses WebSockets to communicate with Outposts, it does not support HTTP/1.0 reverse-proxies. The HTTP/1.0 specification does not officially support WebSockets or protocol upgrades, though some clients may allow it.
 :::
 
-If you want to access authentik behind a reverse-proxy, there are a few headers that must be passed upstream:
+If you want to access authentik behind a reverse proxy, there are a few headers that must be passed upstream:
 
--   `X-Forwarded-Proto`: Tells authentik and Proxy Providers if they are being served over a HTTPS connection.
+-   `X-Forwarded-Proto`: Tells authentik and Proxy Providers if they are being served over an HTTPS connection.
 -   `X-Forwarded-For`: Without this, authentik will not know the IP addresses of clients.
 -   `Host`: Required for various security checks, WebSocket handshake, and Outpost and Proxy Provider communication.
 -   `Connection: Upgrade` and `Upgrade: WebSocket`: Required to upgrade protocols for requests to the WebSocket endpoints under HTTP/1.1.
