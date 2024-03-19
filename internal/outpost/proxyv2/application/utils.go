@@ -3,7 +3,6 @@ package application
 import (
 	"net/http"
 	"net/url"
-	"path"
 	"strconv"
 	"strings"
 
@@ -11,22 +10,12 @@ import (
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 )
 
-func urlPathSet(originalUrl string, newPath string) string {
-	u, err := url.Parse(originalUrl)
-	if err != nil {
-		return originalUrl
-	}
-	u.Path = newPath
-	return u.String()
-}
-
 func urlJoin(originalUrl string, newPath string) string {
-	u, err := url.Parse(originalUrl)
+	u, err := url.JoinPath(originalUrl, newPath)
 	if err != nil {
 		return originalUrl
 	}
-	u.Path = path.Join(u.Path, newPath)
-	return u.String()
+	return u
 }
 
 func (a *Application) redirectToStart(rw http.ResponseWriter, r *http.Request) {
@@ -46,7 +35,7 @@ func (a *Application) redirectToStart(rw http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	redirectUrl := urlPathSet(a.proxyConfig.ExternalHost, r.URL.Path)
+	redirectUrl := urlJoin(a.proxyConfig.ExternalHost, r.URL.Path)
 
 	if a.Mode() == api.PROXYMODE_FORWARD_DOMAIN {
 		dom := strings.TrimPrefix(*a.proxyConfig.CookieDomain, ".")
