@@ -55,7 +55,7 @@ certs/
 └── foo.pem
 ```
 
-Files are checked every 5 minutes and will trigger an Outpost refresh if the files differ.
+Files are checked every 5 minutes and will trigger an Outpost refresh if a file has changed.
 
 #### Manual imports
 
@@ -67,7 +67,7 @@ ak import_certificate --certificate /certs/mycert.pem --private-key /certs/somet
 # ak import_certificate --certificate /certs/othercert.pem --name test2
 ```
 
-This will import the certificate into authentik under the given name. This command is idempotent, meaning you can run it via a cron job and authentik will only update the certificate when it changes.
+This will import the certificate into authentik under the given name. This command is safe to run as a cron job; authentik will only re-import the certificate if it changes.
 
 ## Web certificates
 
