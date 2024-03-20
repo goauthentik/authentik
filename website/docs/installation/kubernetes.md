@@ -72,7 +72,7 @@ During the installation process, the database migrations will be applied automat
 
 ### Accessing authentik
 
-Once the installation is complete, access authentik at `https://<ingress-host-name>/if/flow/initial-setup/`. Here, you can set a password for the default `akadmin` user.
+After the installation is complete, access authentik at `https://<ingress-host-name>/if/flow/initial-setup/`. Here, you can set a password for the default `akadmin` user.
 
 ### Optional step: Configure global email credentials
 
