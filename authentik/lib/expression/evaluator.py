@@ -50,6 +50,7 @@ from authentik.core.models import (
 )
 from authentik.events.models import Event
 from authentik.lib.config import CONFIG
+from authentik.lib.generators import generate_key
 from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.http import authentik_user_agent, get_http_session
 from authentik.lib.utils.reflection import get_apps
@@ -60,6 +61,7 @@ from authentik.stages.authenticator import devices_for_user
 
 LOGGER = get_logger()
 _tmp = Path(gettempdir())
+token_path = _tmp / "authentik-evaluator-token"
 
 API_CLIENTS = {
     "AdminApi": AdminApi,
@@ -89,7 +91,13 @@ JWT_AUD = "goauthentik.io/api/expression"
 
 @lru_cache
 def get_api_token_secret():
-    return "foo"
+    if token_path.exists():
+        with open(token_path) as _token_file:
+            return _token_file.read()
+    key = generate_key()
+    with open(_tmp / "authentik-evaluator-token", "w") as _token_file:
+        _token_file.write(key)
+    return key
 
 
 def authenticate_token(raw_value: str):
