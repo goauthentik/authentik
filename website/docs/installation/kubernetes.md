@@ -87,17 +87,17 @@ email:
     # -- SMTP Server emails are sent from, fully optional
     host: ""
     port: 587
-    # -- SMTP credentials; when left empty, no authentication will be done
+    # -- SMTP credentials. When left empty, no authentication will be done.
     username: ""
-    # -- SMTP credentials; when left empty, no authentication will be done
+    # -- SMTP credentials. When left empty, no authentication will be done.
     password: ""
-    # -- Enable either use_tls or use_ssl; they can't be enabled at the same time.
+    # -- Enable either use_tls or use_ssl. They can't be enabled at the same time.
     use_tls: false
-    # -- Enable either use_tls or use_ssl; they can't be enabled at the same time.
+    # -- Enable either use_tls or use_ssl. They can't be enabled at the same time.
     use_ssl: false
-    # -- Connection timeout
+    # -- Connection timeout in seconds
     timeout: 30
-    # -- Email from address, can either be in the format "foo@bar.baz" or "authentik <foo@bar.baz>"
+    # -- Email 'from' address can either be in the format "foo@bar.baz" or "authentik <foo@bar.baz>"
     from: ""
 ```
 
