@@ -45,9 +45,7 @@ from sentry_sdk.hub import Hub
 from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
 
-from authentik.core.models import (
-    User,
-)
+from authentik.core.models import User
 from authentik.events.models import Event
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_key
@@ -104,7 +102,7 @@ def authenticate_token(raw_value: str):
     """Authenticate API call from evaluator token"""
     try:
         jwt = decode(raw_value, get_api_token_secret(), ["HS256"], audience=JWT_AUD)
-        return User.objects.filter(uuid=jwt["sub"]).first()
+        return User.objects.filter(pk=jwt["sub"]).first()
     except PyJWTError as exc:
         LOGGER.debug("failed to auth", exc=exc)
         return None
@@ -157,11 +155,13 @@ class BaseEvaluator:
     def get_token(self) -> str:
         """Generate API token to be used by the API Client"""
         _now = now()
+        if not self._user:
+            self._user = get_anonymous_user()
         return encode(
             {
                 "aud": JWT_AUD,
                 "iss": f"goauthentik.io/expression/{self._filename}",
-                "sub": str(self._user.uuid),
+                "sub": str(self._user.pk),
                 "iat": int(_now.timestamp()),
                 "exp": int((_now + timedelta(seconds=self.timeout)).timestamp()),
             },

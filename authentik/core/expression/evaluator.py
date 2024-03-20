@@ -36,7 +36,7 @@ class PropertyMappingEvaluator(BaseEvaluator):
             _filename = model.name
         else:
             _filename = str(model)
-        super().__init__(user=user, filename=_filename)
+        super().__init__(None, filename=_filename)
         req = PolicyRequest(user=User())
         req.obj = model
         if user:
