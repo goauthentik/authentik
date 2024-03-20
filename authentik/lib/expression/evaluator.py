@@ -3,6 +3,8 @@
 import re
 import socket
 from collections.abc import Iterable
+from datetime import timedelta
+from functools import lru_cache
 from ipaddress import ip_address, ip_network
 from pathlib import Path
 from tempfile import gettempdir
@@ -34,7 +36,9 @@ from authentik_client.configuration import Configuration
 from cachetools import TLRUCache, cached
 from django.conf import settings
 from django.core.exceptions import FieldError
+from django.utils.timezone import now
 from guardian.shortcuts import get_anonymous_user
+from jwt import PyJWTError, decode, encode
 from rest_framework.serializers import ValidationError
 from RestrictedPython import compile_restricted, limited_builtins, safe_builtins, utility_builtins
 from sentry_sdk.hub import Hub
@@ -42,14 +46,12 @@ from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
 
 from authentik.core.models import (
-    USER_ATTRIBUTE_CHANGE_EMAIL,
-    USER_ATTRIBUTE_CHANGE_NAME,
-    USER_ATTRIBUTE_CHANGE_USERNAME,
     User,
 )
 from authentik.events.models import Event
 from authentik.lib.config import CONFIG
-from authentik.lib.utils.http import get_http_session
+from authentik.lib.utils.errors import exception_to_string
+from authentik.lib.utils.http import authentik_user_agent, get_http_session
 from authentik.lib.utils.reflection import get_apps
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.policies.process import PolicyProcess
@@ -82,6 +84,23 @@ API_CLIENTS = {
     "TenantsApi": TenantsApi,
 }
 
+JWT_AUD = "goauthentik.io/api/expression"
+
+
+@lru_cache
+def get_api_token_secret():
+    return "foo"
+
+
+def authenticate_token(raw_value: str):
+    """Authenticate API call from evaluator token"""
+    try:
+        jwt = decode(raw_value, get_api_token_secret(), ["HS256"], audience=JWT_AUD)
+        return User.objects.filter(uuid=jwt["sub"]).first()
+    except PyJWTError as exc:
+        LOGGER.debug("failed to auth", exc=exc)
+        return None
+
 
 class BaseEvaluator:
     """Validate and evaluate python-based expressions"""
@@ -94,8 +113,14 @@ class BaseEvaluator:
     # Filename used for exec
     _filename: str
 
-    def __init__(self, filename: str | None = None):
+    _user: User
+
+    # Timeout in seconds, used for the expiration of the API key
+    timeout = 30
+
+    def __init__(self, user: User, filename: str | None = None):
         self._filename = filename if filename else "BaseEvaluator"
+        self._user = user
         # update website/docs/expressions/_objects.md
         # update website/docs/expressions/_functions.md
         self._globals = {
@@ -113,12 +138,6 @@ class BaseEvaluator:
             "requests": get_http_session(),
             "resolve_dns": BaseEvaluator.expr_resolve_dns,
             "reverse_dns": BaseEvaluator.expr_reverse_dns,
-            # Temporary addition of config until #7590 is through and this is not needed anymore
-            "CONFIG": CONFIG,
-            "USER_ATTRIBUTE_CHANGE_EMAIL": USER_ATTRIBUTE_CHANGE_EMAIL,
-            "USER_ATTRIBUTE_CHANGE_NAME": USER_ATTRIBUTE_CHANGE_NAME,
-            "USER_ATTRIBUTE_CHANGE_USERNAME": USER_ATTRIBUTE_CHANGE_USERNAME,
-            "api": self.get_api_client(),
         }
         for app in get_apps():
             # Load models from each app
@@ -127,18 +146,34 @@ class BaseEvaluator:
         self._globals.update(API_CLIENTS)
         self._context = {}
 
+    def get_token(self) -> str:
+        """Generate API token to be used by the API Client"""
+        _now = now()
+        return encode(
+            {
+                "aud": JWT_AUD,
+                "iss": f"goauthentik.io/expression/{self._filename}",
+                "sub": str(self._user.uuid),
+                "iat": int(_now.timestamp()),
+                "exp": int((_now + timedelta(seconds=self.timeout)).timestamp()),
+            },
+            get_api_token_secret(),
+        )
+
     def get_api_client(self):
-        token = ""
+        token = self.get_token()
         config = Configuration(
-            f"unix://{str(_tmp.joinpath('authentik-core.sock'))}",
+            f"unix://{str(_tmp.joinpath('authentik-core.sock'))}/api/v3",
             api_key={
                 "authentik": token,
             },
-            api_key_prefix={"authentik": "Bearer "},
+            api_key_prefix={"authentik": "Bearer"},
         )
         if settings.DEBUG:
-            config.host = "http://localhost:8000"
-        return ApiClient(config)
+            config.host = "http://localhost:8000/api/v3"
+        client = ApiClient(config)
+        client.user_agent = authentik_user_agent()
+        return client
 
     @cached(cache=TLRUCache(maxsize=32, ttu=lambda key, value, now: now + 180))
     @staticmethod
@@ -296,6 +331,9 @@ class BaseEvaluator:
                         **utility_builtins,
                     }
                 _locals = self._context
+                # We need to create the API Client later so that the token is valid
+                # from when the execution starts
+                self._globals["api"] = self.get_api_client()
                 # Yes this is an exec, yes it is potentially bad. Since we limit what variables are
                 # available here, and these policies can only be edited by admins, this is a risk
                 # we're willing to take.
@@ -303,6 +341,7 @@ class BaseEvaluator:
                 exec(ast_obj, self._globals, _locals)  # nosec # noqa
                 result = _locals["result"]
             except Exception as exc:
+                print(exception_to_string(exc))
                 # So, this is a bit questionable. Essentially, we are edit the stacktrace
                 # so the user only sees information relevant to them
                 # and none of our surrounding error handling

@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Optional
 from django.http import HttpRequest
 from structlog.stdlib import get_logger
 
+from authentik.core.models import User
 from authentik.flows.planner import PLAN_CONTEXT_SSO
 from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.policies.exceptions import PolicyException
@@ -24,8 +25,8 @@ class PolicyEvaluator(BaseEvaluator):
 
     policy: Optional["ExpressionPolicy"] = None
 
-    def __init__(self, policy_name: str | None = None):
-        super().__init__(policy_name or "PolicyEvaluator")
+    def __init__(self, user: User, policy_name: str | None = None):
+        super().__init__(user, policy_name or "PolicyEvaluator")
         self._messages = []
         # update website/docs/expressions/_objects.md
         # update website/docs/expressions/_functions.md
@@ -44,6 +45,8 @@ class PolicyEvaluator(BaseEvaluator):
         if request.http_request:
             self.set_http_request(request.http_request)
         self._context["request"] = request
+        if not self._user:
+            self._user = request.user
         self._context["context"] = request.context
 
     def set_http_request(self, request: HttpRequest):
