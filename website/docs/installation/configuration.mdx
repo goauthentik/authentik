@@ -144,7 +144,7 @@ These settings affect where media files are stored. Those files include applicat
 -   `AUTHENTIK_STORAGE__MEDIA__S3__SECURITY_TOKEN`: Security token to authenticate to S3. May be omitted. Supports hot-reloading.
 -   `AUTHENTIK_STORAGE__MEDIA__S3__BUCKET_NAME`: Name of the bucket to use to store files.
 -   `AUTHENTIK_STORAGE__MEDIA__S3__CUSTOM_DOMAIN`: Domain to use to create URLs for users. Mainly useful for non-AWS providers. May include a port. Must include the bucket. Example: `s3.company:8080/authentik-media`.
--   `AUTHENTIK_STORAGE__MEDIA__S3__SECURE_URLS`: Whether URLS created for users use `https` rather than `http`. Defaults to `true`.
+-   `AUTHENTIK_STORAGE__MEDIA__S3__SECURE_URLS`: Whether URLs created use HTTPS (set to `true` by default) or HTTP.
 
 ## authentik Settings
 
