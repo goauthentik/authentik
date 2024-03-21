@@ -150,10 +150,6 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
 
     renderSectionBefore(): TemplateResult {
         return html`
-            <div class="pf-c-banner pf-m-info">
-                ${msg("Enterprise is in preview.")}
-                <a href="mailto:hello@goauthentik.io">${msg("Send us feedback!")}</a>
-            </div>
             <section class="pf-c-page__main-section pf-m-no-padding-bottom">
                 <div
                     class="pf-l-grid pf-m-gutter pf-m-all-6-col-on-sm pf-m-all-4-col-on-md pf-m-all-3-col-on-lg pf-m-all-3-col-on-xl"
