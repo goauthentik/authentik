@@ -5,8 +5,13 @@ title: Inspector
 The flow inspector, introduced in 2021.10, allows administrators to easily figure out how custom flows work, inspect the current context and debug issues.
 
 :::info
-When running a flow with the inspector enabled, the flow is still executed normally. This means that for example, a `user_write` stage will _actually_ write user data.
+When running a flow with the inspector enabled, the flow is still executed normally. This means that for example, a [User write](../flow/stages/user_write.md) stage will _actually_ write user data.
 :::
+
+### Accessing the inspector
+
+By default, the inspector can only be enabled when the currently authenticated user is a superuser.
+When developing authentik with the debug-mode enabled, the inspector is enabled by default and can be accessed by both unauthenticated users and standard users. However the debug-mode should only be used for the development of authentik.
 
 ![](./inspector.png)
 
@@ -31,7 +36,3 @@ This data is not cleaned, so if your flow involves inputting a password, it will
 ## Session ID
 
 The unique ID for the currently used session. This can be used to debug issues with flows restarting/losing state.
-
-# Access to the inspector
-
-By default, the inspector can only be enabled when the currently authenticated user is a superuser. When running authentik with debug-mode enabled, the inspector is enabled by default and can be accessed by both unauthenticated users and standard users.
