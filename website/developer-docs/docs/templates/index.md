@@ -14,4 +14,11 @@ The most common types are:
 
 -   [**Reference**](./reference.md): this is typically tables or lists of reference information, such as configuration values, or functions, or most commmonly APIs.
 
-To add documentation for a new [integration](../../../integrations/services/index.mdx) (with support level Community or Vendor), please use the [template](../../../integrations/_template/service.md).
+### Add a new integration
+
+To add documentation for a new [integration](../../../integrations/) (with support level Community or Vendor), please use the integration template [`service.md`](https://github.com/goauthentik/authentik/blob/main/website/integrations/_template/service.md) file from our GitHub repo. You can download the template file using the following command:
+
+```
+wget https://raw.githubusercontent.com/goauthentik/authentik/main/website/integrations/_template/service.md
+```
+
