@@ -34,7 +34,7 @@ The following placeholders will be used:
 
 You need to set the following `env` variables for Docker-based installations.
 
-Set the following values:
+1. Set the following values:
 
 ```yaml
 OIDC_CLIENT_ID=
