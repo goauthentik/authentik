@@ -163,14 +163,15 @@ gen-client-py:
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v7.3.0 generate \
+		ghcr.io/beryju/openapi-generator-cli:v7.4.0 generate \
 		-i /local/schema.yml \
-		-g python-pydantic-v1 \
+		-g python-pydantic-v2 \
 		-o /local/${GEN_API_PY} \
 		-c /local/scripts/api-py-config.yaml \
 		--additional-properties=packageVersion=${NPM_VERSION} \
 		--git-repo-id authentik \
 		--git-user-id goauthentik
+	pip install ./${GEN_API_PY}
 
 gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
 	mkdir -p ./${GEN_API_GO} ./${GEN_API_GO}/templates
