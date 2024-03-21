@@ -222,13 +222,16 @@ const docsSidebar = {
                 {
                     type: "category",
                     label: "Working with policies",
-                    items: ["policies/working_with_policies/whitelist_email"],
                     link: {
                         type: "generated-index",
                         title: "Working with policies",
                         slug: "policies/working_with_policies",
                         description: "Overview of policies configuration",
                     },
+                    items: [
+                        "policies/working_with_policies/whitelist_email",
+                        "policies/working_with_policies/unique_email",
+                    ],
                 },
                 "policies/expression",
             ],
