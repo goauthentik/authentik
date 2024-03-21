@@ -89,9 +89,9 @@ entries:
     expression: |
       # This policy ensures that the setup flow can only be
       # used one time
-      Flow.objects.filter(slug="initial-setup").update(
-          authentication=Flow.authentication.field.default.__class__.REQUIRE_SUPERUSER,
-      )
+      FlowsApi(api).flows_instances_partial_update("initial-setup", {
+          "authentication": "REQUIRE_SUPERUSER"
+      })
       return True
   id: policy-default-oobe-flow-set-authentication
   identifiers:
