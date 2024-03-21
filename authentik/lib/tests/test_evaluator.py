@@ -1,6 +1,7 @@
 """Test Evaluator base functions"""
 
 from django.test import TestCase
+from guardian.shortcuts import get_anonymous_user
 
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.events.models import Event
@@ -33,7 +34,7 @@ class TestEvaluator(TestCase):
 
     def test_expr_event_create(self):
         """Test expr_event_create"""
-        evaluator = BaseEvaluator(generate_id())
+        evaluator = BaseEvaluator(get_anonymous_user(), generate_id())
         evaluator._context = {
             "foo": "bar",
         }

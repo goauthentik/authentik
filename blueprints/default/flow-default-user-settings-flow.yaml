@@ -86,7 +86,7 @@ entries:
   - attrs:
       expression: |
         prompt_data = request.context.get("prompt_data")
-        user_group_attributes = request.user.group_attributes(request.http_request
+        user_group_attributes = request.user.group_attributes(request.http_request)
         if not user_group_attributes.get(USER_ATTRIBUTE_CHANGE_EMAIL, request.http_request.tenant.default_user_change_email):
             if prompt_data.get("email") != request.user.email:
                 ak_message("Not allowed to change email address.")
