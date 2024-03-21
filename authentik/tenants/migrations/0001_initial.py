@@ -143,8 +143,4 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.RunPython(code=create_default_tenant, reverse_code=migrations.RunPython.noop),
-        migrations.RunSQL(
-            sql="CREATE SCHEMA IF NOT EXISTS template;",
-            reverse_sql="DROP SCHEMA IF EXISTS template;",
-        ),
     ]
