@@ -12,6 +12,7 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { FlowChallengeResponseRequest, RedirectChallenge } from "@goauthentik/api";
+import { globalAK } from "@goauthentik/authentik/common/global";
 
 @customElement("ak-stage-redirect")
 export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeResponseRequest> {
@@ -49,8 +50,25 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
             "authentik/stages/redirect: redirecting to url from server",
             this.challenge.to,
         );
-        window.location.assign(this.challenge.to);
         this.startedRedirect = true;
+        if (this.host.frameMode && window.top) {
+            try {
+                window.top.location.assign(this.challenge.to);
+            } catch {
+                window.top.postMessage(
+                    {
+                        source: "goauthentik.io",
+                        context: "flow-executor",
+                        component: this.challenge.component,
+                        to: this.challenge.to,
+                    },
+                    globalAK().brand.matchedDomain,
+                );
+            }
+            if (this.challenge.to.startsWith("http")) {
+                return;
+            }
+        }
     }
 
     renderLoading(): TemplateResult {
