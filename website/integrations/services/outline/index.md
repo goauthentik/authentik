@@ -18,7 +18,10 @@ The following placeholders will be used:
 -   `outline.company` is the FQDN of the Outline install.
 -   `authentik.company` is the FQDN of the authentik install.
 
-Create an OAuth2/OpenID provider with the following parameters:
+
+## authentik configuration
+
+1. Create an OAuth2/OpenID provider with the following parameters:
 
 -   Client Type: `Confidential`
 -   Scopes: OpenID, Email and Profile
