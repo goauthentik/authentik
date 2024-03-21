@@ -28,7 +28,7 @@ The following placeholders will be used:
 -   Signing Key: Select any available key
 -   Redirect URIs: `https://outline.company/auth/oidc.callback`
 
-Note the Client ID and Client Secret values.
+2. Note the Client ID and Client Secret values.
 
 ## Outline
 
