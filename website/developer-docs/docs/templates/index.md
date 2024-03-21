@@ -2,7 +2,7 @@
 title: "Templates"
 ---
 
-In technical documentation, there are document "types" (similar to how there are data types).
+In technical documentation, there are document "types" (similar to how there are data types). We have templates for the different types, to make it super-easy for whomever wants to contribute some documentation!
 
 The most common types are:
 
@@ -14,4 +14,4 @@ The most common types are:
 
 -   [**Reference**](./reference.md): this is typically tables or lists of reference information, such as configuration values, or functions, or most commmonly APIs.
 
-We have templates for the different types, to make it super-easy for whomever wants to contribute some documentation!
+To add documentation for a new [integration](../../../integrations/services/index.mdx) (with support level Community or Vendor), please use the [template](../../../integrations/_template/service.md).
