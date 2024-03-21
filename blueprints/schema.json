@@ -7652,6 +7652,11 @@
                     "type": "integer",
                     "title": "Flow device code"
                 },
+                "default_application": {
+                    "type": "integer",
+                    "title": "Default application",
+                    "description": "When set, external users will be redirected to this application after authenticating."
+                },
                 "web_certificate": {
                     "type": "integer",
                     "title": "Web certificate",
