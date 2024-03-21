@@ -14,7 +14,8 @@ class ExpressionPolicySerializer(PolicySerializer):
     def validate_expression(self, expr: str) -> str:
         """validate the syntax of the expression"""
         name = "temp-policy" if not self.instance else self.instance.name
-        PolicyEvaluator(self.context["request"].user, name).validate(expr)
+        request = self.context.get("request")
+        PolicyEvaluator(request.user if request else None, name).validate(expr)
         return expr
 
     class Meta:

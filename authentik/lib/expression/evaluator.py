@@ -86,6 +86,14 @@ API_CLIENTS = {
 
 JWT_AUD = "goauthentik.io/api/expression"
 
+_SAFE_MODULES = frozenset(("authentik_client",))
+
+
+def _safe_import(name, *args, **kwargs):
+    if name not in _SAFE_MODULES:
+        raise Exception(f"Don't you even think about {name!r}")
+    return __import__(name, *args, **kwargs)
+
 
 @lru_cache
 def get_api_token_secret():
@@ -310,7 +318,9 @@ class BaseEvaluator:
         """Parse expression. Raises SyntaxError or ValueError if the syntax is incorrect."""
         param_keys = self._context.keys()
         compiler = (
-            compile_restricted if CONFIG.get_bool("epxressions.restricted", False) else compile
+            compile_restricted
+            if CONFIG.get("expressions.global_runtime") == "python_restricted"
+            else compile
         )
         return compiler(
             self.wrap_expression(expression, param_keys),
@@ -332,11 +342,12 @@ class BaseEvaluator:
                 self.handle_error(exc, expression_source)
                 raise exc
             try:
-                if CONFIG.get_bool("expressions.restricted", False):
+                if CONFIG.get("expressions.global_runtime") == "python_restricted":
                     self._globals["__builtins__"] = {
                         **safe_builtins,
                         **limited_builtins,
                         **utility_builtins,
+                        "__import__": _safe_import,
                     }
                 _locals = self._context
                 # We need to create the API Client later so that the token is valid

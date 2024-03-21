@@ -96,7 +96,7 @@ outposts:
   disable_embedded_outpost: false
 
 expressions:
-  restricted: false
+  global_runtime: python # or python_restricted
 
 ldap:
   task_timeout_hours: 2
