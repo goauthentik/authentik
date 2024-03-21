@@ -21,4 +21,3 @@ To add documentation for a new [integration](../../../integrations/) (with suppo
 ```
 wget https://raw.githubusercontent.com/goauthentik/authentik/main/website/integrations/_template/service.md
 ```
-
