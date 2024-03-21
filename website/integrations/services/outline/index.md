@@ -32,7 +32,7 @@ The following placeholders will be used:
 
 ## Outline configuration
 
-You need to set the following `env` Variables for Docker based installations.
+You need to set the following `env` variables for Docker-based installations.
 
 Set the following values:
 
