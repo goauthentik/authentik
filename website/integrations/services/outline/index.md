@@ -30,7 +30,7 @@ The following placeholders will be used:
 
 2. Note the Client ID and Client Secret values.
 
-## Outline
+## Outline configuration
 
 You need to set the following `env` Variables for Docker based installations.
 
