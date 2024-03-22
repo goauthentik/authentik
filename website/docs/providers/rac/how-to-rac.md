@@ -30,7 +30,6 @@ The first step is to create the RAC app and provider.
 
 3. Click **Create with Wizard**. Follow the [instructions](../../applications/manage_apps.md#instructions) to create your RAC application and provider.
 
-
 ### Step 2. Create RAC property mapping
 
 Next, you need to add a property mapping for each of the remote machines you want to access. Property mappings allow you to pass information to external applications, and with RAC they are used to pass the host name, IP address, and access credentials for the remote machines.
@@ -41,19 +40,20 @@ Next, you need to add a property mapping for each of the remote machines you wan
 
 3. On the **New property mapping** modal, set the following:
 
-    * **Select Type**: RAC Property Mappings
-    * **Create RAC Property Mapping**:
-        * **Name**s: define a name for the property mapping, perhaps include the type of connection (RDP, SSH, VNC)
-        * **General settings**:
-            * **Username**: the username for the remote machine
-            * **Password**: the password for remote machines
-        * **RDP settings**:
-            * **Ignore server certificate: select **Enabled** (This setting is required for TRAC to work)
-            * **Enable wallpaper**: optional
-            * **Enable font smooting**: optional
-            * **Enable full window dragging**: optional
-        * Advanced settings:
-            * **Expressions**: optional, using Python you can define custom [expressions](../../property-mappings/expression.mdx).
+    - **Select Type**: RAC Property Mappings
+    - **Create RAC Property Mapping**:
+        - **Name**s: define a name for the property mapping, perhaps include the type of connection (RDP, SSH, VNC)
+        - **General settings**:
+            - **Username**: the username for the remote machine
+            - **Password**: the password for remote machines
+        - **RDP settings**:
+            - **Ignore server certificate: select **Enabled\*\* (This setting is required for TRAC to work)
+            - **Enable wallpaper**: optional
+            - **Enable font smooting**: optional
+            - **Enable full window dragging**: optional
+        - Advanced settings:
+            - **Expressions**: optional, using Python you can define custom [expressions](../../property-mappings/expression.mdx).
+
 4. Click **Finish** to save your settings and close the modal.
 
 ### Step 3. Create Endpoints for the Provider
@@ -67,12 +67,13 @@ Finally, you need to create an endpoint for each remote machine. Endpoints are d
 3. On the Provider page, under **Endpoints**, click **Create**.
 
 4. On the **Create Endpoint** modal, provide the following settings:
-    * **Name**s: define a name for the endpoint, perhaps include the type of connection (RDP, SSH, VNC)
-    * **Protocol**: select the appropriate protocol
-    * **Host**: the host name or IP address of the system you are connecting to.
-    **Maximum concurrent connections**: select a value or use `-1` to disable the limitation.
-    ** Property mapping**: select either the property mapping that you created in Step 2, or use one of the default settings.
-    **Advance settings**: optional
+
+    - **Name**s: define a name for the endpoint, perhaps include the type of connection (RDP, SSH, VNC)
+    - **Protocol**: select the appropriate protocol
+    - **Host**: the host name or IP address of the system you are connecting to.
+      **Maximum concurrent connections**: select a value or use `-1` to disable the limitation.
+      ** Property mapping**: select either the property mapping that you created in Step 2, or use one of the default settings.
+      **Advance settings**: optional
 
 5. Click **Create** to save your settings and close the modal.
 
@@ -81,10 +82,3 @@ Finally, you need to create an endpoint for each remote machine. Endpoints are d
 To verify your configuration and access the remote machine, go to the **User interface** of you authentik instance. On the **My applications** page click the **Remote Access** application to display the defined endpoint(s).
 
 Click the endpoint for the remote machine that you want to access. authentik connects you to a secure shell on the remote machine, in your web browser.
-
-
-
-
-
-
-
