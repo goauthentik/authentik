@@ -7,7 +7,7 @@ title: Remote Access (RAC) Provider
 ---
 
 :::info
-This feature is in technical preview, so please report any Bugs you run into on [GitHub](https://github.com/goauthentik/authentik/issues).
+This feature is in technical preview, so please report any bugs you run into on [GitHub](https://github.com/goauthentik/authentik/issues).
 :::
 
 :::info
@@ -16,7 +16,9 @@ This provider requires the deployment of the [RAC Outpost](../../outposts/).
 
 ## About the Remote Access Control (RAC) Provider
 
-The Remote Access (RAC) provider allows users to access Windows, macOS, and Linux machines via [RDP](https://en.wikipedia.org/wiki/Remote_Desktop_Protocol)/[SSH](https://en.wikipedia.org/wiki/Secure_Shell)/[VNC](https://en.wikipedia.org/wiki/Virtual_Network_Computing). Just like other providers in [authentik], the RAC provider is associated with an application that appears on a user's **My applications** page. With RAC, you create a single application that serves to connect with all remote machnes that you want to configure for access via RAC.
+The Remote Access (RAC) provider allows users to access Windows, macOS, and Linux machines via [RDP](https://en.wikipedia.org/wiki/Remote_Desktop_Protocol)/[SSH](https://en.wikipedia.org/wiki/Secure_Shell)/[VNC](https://en.wikipedia.org/wiki/Virtual_Network_Computing). Just like other providers in [authentik], the RAC provider is associated with an application that appears on a user's **My applications** page.
+
+With RAC, you create a single application that serves to connect with all remote machnes that you want to configure for access via RAC.
 
 For instructions on creating a RAC provider, see see the [Managing RAC providers](./how-to-rac.md) documentation. You can also view our [video on YouTube](https://www.youtube.com/watch?v=9wahIBRV6Ts) for setting up a RAC.
 
