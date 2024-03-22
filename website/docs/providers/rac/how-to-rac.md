@@ -3,7 +3,7 @@ title: Create a Remote Access Control (RAC) provider
 ---
 
 :::info
-This feature is in technical preview, so please report any gugs on [GitHub](https://github.com/goauthentik/authentik/issues)
+This feature is in technical preview, so please report any bugs on [GitHub](https://github.com/goauthentik/authentik/issues)
 :::
 
 The RAC provider is a highly flexible feature for accessing remote machines. This document provides instructions for the basic creation and configuration of a RAC provider within a defined scenario.
