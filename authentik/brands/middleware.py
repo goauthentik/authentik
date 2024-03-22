@@ -60,9 +60,7 @@ class BrandCSPHeaderMiddleware:
     def get_csp(self, request: HttpRequest) -> str:
         brand: "Brand" = request.brand
         elements = self.default_csp_elements.copy()
-        elements["frame-ancestors"] = [
-            f"{'https' if request.is_secure() else 'http'}://{brand.domain}"
-        ]
+        elements["frame-ancestors"] = [" ".join(brand.embeddable_domains.split(","))]
         return ";".join(f"{attr} {" ".join(value)}" for attr, value in elements.items())
 
     def __call__(self, request: HttpRequest) -> HttpResponse:

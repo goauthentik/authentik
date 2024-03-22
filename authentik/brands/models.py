@@ -61,6 +61,8 @@ class Brand(SerializerModel):
         ),
     )
 
+    embeddable_domains = models.TextField(default="")
+
     web_certificate = models.ForeignKey(
         CertificateKeyPair,
         null=True,
