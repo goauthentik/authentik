@@ -9,4 +9,4 @@ class Migration(BaseMigration):
         return not bool(self.cur.rowcount)
 
     def run(self):
-        self.cur.execute("CREATE SCHEMA IF NOT EXISTS template;")
+        self.cur.execute("CREATE SCHEMA IF NOT EXISTS template; COMMIT;")
