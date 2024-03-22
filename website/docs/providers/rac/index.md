@@ -19,7 +19,7 @@ This provider requires the deployment of the [RAC Outpost](../../outposts/).
 The RAC provider allows users to access remote Windows, macOS, and Linux machines via [RDP](https://en.wikipedia.org/wiki/Remote_Desktop_Protocol)/[SSH](https://en.wikipedia.org/wiki/Secure_Shell)/[VNC](https://en.wikipedia.org/wiki/Virtual_Network_Computing). Just like other providers in authentik, the RAC provider is associated with an application that appears on a user's **My applications** page.
 
 :::info
-Note that with RAC, you create a single application and associated provider that serves to connect with *all remote machines* that you want to configure for access via RAC.
+Note that with RAC, you create a single application and associated provider that serves to connect with _all remote machines_ that you want to configure for access via RAC.
 :::
 
 For instructions on creating a RAC provider, refer to the [Managing RAC providers](./how-to-rac.md) documentation. You can also view our [video on YouTube](https://www.youtube.com/watch?v=9wahIBRV6Ts) for setting up a RAC.

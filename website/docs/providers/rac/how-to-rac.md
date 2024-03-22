@@ -1,5 +1,5 @@
 ---
-title: Create a Remote Access (RAC) provider
+title: Create a Remote Access Control (RAC) provider
 ---
 
 :::info
