@@ -126,7 +126,7 @@ const docsSidebar = {
                 "providers/scim/index",
                 {
                     type: "category",
-                    label: "RAC (Remote Access) Provider",
+                    label: "RAC (Remote Access Control) Provider",
                     link: {
                         type: "doc",
                         id: "providers/rac/index",
