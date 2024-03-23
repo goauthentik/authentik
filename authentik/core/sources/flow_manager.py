@@ -16,8 +16,9 @@ from authentik.core.models import Source, SourceUserMatchingModes, User, UserSou
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION, PostUserEnrollmentStage
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
-from authentik.flows.models import Flow, Stage, in_memory_stage
+from authentik.flows.models import Flow, FlowToken, Stage, in_memory_stage
 from authentik.flows.planner import (
+    PLAN_CONTEXT_IS_RESTORED,
     PLAN_CONTEXT_PENDING_USER,
     PLAN_CONTEXT_REDIRECT,
     PLAN_CONTEXT_SOURCE,
@@ -34,6 +35,8 @@ from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 from authentik.stages.user_write.stage import PLAN_CONTEXT_USER_PATH
+
+SESSION_KEY_OVERRIDE_FLOW_TOKEN = "authentik/flows/source_override_flow_token"  # nosec
 
 
 class Action(Enum):
@@ -222,22 +225,43 @@ class SourceFlowManager:
         **kwargs,
     ) -> HttpResponse:
         """Prepare Authentication Plan, redirect user FlowExecutor"""
-        # Ensure redirect is carried through when user was trying to
-        # authorize application
-        final_redirect = self.request.session.get(SESSION_KEY_GET, {}).get(
-            NEXT_ARG_NAME, "authentik_core:if-user"
-        )
         kwargs.update(
             {
                 # Since we authenticate the user by their token, they have no backend set
                 PLAN_CONTEXT_AUTHENTICATION_BACKEND: BACKEND_INBUILT,
                 PLAN_CONTEXT_SSO: True,
                 PLAN_CONTEXT_SOURCE: self.source,
-                PLAN_CONTEXT_REDIRECT: final_redirect,
                 PLAN_CONTEXT_SOURCES_CONNECTION: connection,
             }
         )
         kwargs.update(self.policy_context)
+        if SESSION_KEY_OVERRIDE_FLOW_TOKEN in self.request.session:
+            token: FlowToken = self.request.session.get(SESSION_KEY_OVERRIDE_FLOW_TOKEN)
+            self._logger.info("Replacing source flow with overridden flow", flow=token.flow.slug)
+            plan = token.plan
+            plan.context[PLAN_CONTEXT_IS_RESTORED] = token
+            plan.context.update(kwargs)
+            for stage in self.get_stages_to_append(flow):
+                plan.append_stage(stage)
+            if stages:
+                for stage in stages:
+                    plan.append_stage(stage)
+            self.request.session[SESSION_KEY_PLAN] = plan
+            flow_slug = token.flow.slug
+            token.delete()
+            return redirect_with_qs(
+                "authentik_core:if-flow",
+                self.request.GET,
+                flow_slug=flow_slug,
+            )
+        # Ensure redirect is carried through when user was trying to
+        # authorize application
+        final_redirect = self.request.session.get(SESSION_KEY_GET, {}).get(
+            NEXT_ARG_NAME, "authentik_core:if-user"
+        )
+        if PLAN_CONTEXT_REDIRECT not in kwargs:
+            kwargs[PLAN_CONTEXT_REDIRECT] = final_redirect
+
         if not flow:
             return bad_request_message(
                 self.request,

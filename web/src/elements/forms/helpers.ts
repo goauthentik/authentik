@@ -1,4 +1,4 @@
-import { HorizontalFormElement } from "@goauthentik/app/elements/forms/HorizontalFormElement";
+import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
 
 export class PreventFormSubmit {
     // Stub class which can be returned by form elements to prevent the form from submitting

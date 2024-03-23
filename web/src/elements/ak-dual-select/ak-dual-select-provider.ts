@@ -77,8 +77,9 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
 
         if (changedProperties.has("provider")) {
             this.pagination = undefined;
-            if (changedProperties.get("provider")) {
-                this.selectedMap.set(changedProperties.get("provider"), this.selected);
+            const previousProvider = changedProperties.get("provider");
+            if (previousProvider) {
+                this.selectedMap.set(previousProvider, this.selected);
                 this.selected = this.selectedMap.get(this.provider) ?? [];
             }
             this.fetch();

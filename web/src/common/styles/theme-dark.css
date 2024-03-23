@@ -329,3 +329,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .pf-c-tree-view__content:focus-within {
     --pf-c-tree-view__node--hover--BackgroundColor: var(--ak-dark-background-light-ish);
 }
+/* stepper */
+.pf-c-progress-stepper__step-title {
+    --pf-c-progress-stepper__step-title--Color: var(--ak-dark-foreground);
+}

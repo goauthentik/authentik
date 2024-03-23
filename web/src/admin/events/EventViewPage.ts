@@ -1,15 +1,15 @@
 import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
-import { getRelativeTime } from "@goauthentik/app/common/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { actionToLabel } from "@goauthentik/common/labels";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-event-info";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/PageHeader";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -22,22 +22,26 @@ import { EventsApi } from "@goauthentik/api";
 
 @customElement("ak-event-view")
 export class EventViewPage extends AKElement {
-    @property()
-    set eventID(value: string) {
-        new EventsApi(DEFAULT_CONFIG)
-            .eventsEventsRetrieve({
-                eventUuid: value,
-            })
-            .then((ev) => {
-                this.event = ev as EventWithContext;
-            });
-    }
+    @property({ type: String })
+    eventID?: string;
 
-    @property({ attribute: false })
+    @state()
     event!: EventWithContext;
 
     static get styles(): CSSResult[] {
         return [PFBase, PFGrid, PFDescriptionList, PFPage, PFContent, PFCard];
+    }
+
+    fetchEvent(eventUuid: string) {
+        new EventsApi(DEFAULT_CONFIG).eventsEventsRetrieve({ eventUuid }).then((ev) => {
+            this.event = ev as EventWithContext;
+        });
+    }
+
+    willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("eventID") && this.eventID) {
+            this.fetchEvent(this.eventID);
+        }
     }
 
     render(): TemplateResult {

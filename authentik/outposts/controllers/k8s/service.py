@@ -33,6 +33,8 @@ class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
         # priority than being updated.
         if current.spec.selector != reference.spec.selector:
             raise NeedsUpdate()
+        if current.spec.type != reference.spec.type:
+            raise NeedsUpdate()
         super().reconcile(current, reference)
 
     def get_reference_object(self) -> V1Service:

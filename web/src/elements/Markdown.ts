@@ -53,7 +53,7 @@ export class Markdown extends AKElement {
         ];
     }
 
-    converter = new showdown.Converter({ metadata: true });
+    converter = new showdown.Converter({ metadata: true, tables: true });
 
     replaceAdmonitions(input: string): string {
         const admonitionStart = /:::(\w+)<br\s\/>/gm;
@@ -74,13 +74,12 @@ export class Markdown extends AKElement {
     replaceRelativeLinks(input: string, md: MarkdownDocument): string {
         const baseName = md.path.replace(isFile, "");
         const baseUrl = docLink("");
-        const result = input.replace(isRelativeLink, (match, path) => {
+        return input.replace(isRelativeLink, (_match, path) => {
             const pathName = path.replace(".md", "");
             const link = `docs/${baseName}${pathName}`;
             const url = new URL(link, baseUrl).toString();
             return `href="${url}" _target="blank"`;
         });
-        return result;
     }
 
     willUpdate(properties: PropertyValues<this>) {

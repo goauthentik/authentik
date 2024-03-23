@@ -7,8 +7,6 @@ on:
       - main
       - next
       - version-*
-    paths-ignore:
-      - website/**
   pull_request:
     branches:
       - main

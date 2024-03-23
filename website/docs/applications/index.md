@@ -7,11 +7,13 @@ Applications, as defined in authentik, are used to configure and separate the au
 
 When a user logs into authentik, they see a list of the applications for which authentik is configured to provide authentication and authorization (the applications that that they are authorized to use).
 
-Applications are the "other half" of providers. They typically exist in a 1-to-1 relationship; each application needs a provider and every provider can be used with one application.
-
-Applications can, however, use specific, additional providers to augment the functionality of the main provider. For more information, see [Backchannel providers](./manage_apps.md#backchannel-providers).
+Applications are the "other half" of providers. They typically exist in a 1-to-1 relationship; each application needs a provider and every provider can be used with one application. Applications can, however, use specific, additional providers to augment the functionality of the main provider. For more information, see [Backchannel providers](./manage_apps.md#backchannel-providers).
 
 Furthermore, the [RAC (Remote Access Control)](../providers/rac/index.md) feature uses a single application and a single provider, but multiple "endpoints". An endpoint defines each remote machine.
+
+:::info
+For information about creating and managing applications, refer to [Manage applications](./manage_apps.md).
+:::
 
 ## Appearance
 

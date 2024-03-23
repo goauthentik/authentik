@@ -68,6 +68,10 @@ const docsSidebar = {
         {
             type: "category",
             label: "Providers",
+            link: {
+                type: "doc",
+                id: "providers/index",
+            },
             items: [
                 {
                     type: "category",
@@ -200,6 +204,7 @@ const docsSidebar = {
                 "flow/stages/invitation/index",
                 "flow/stages/password/index",
                 "flow/stages/prompt/index",
+                "flow/stages/source/index",
                 "flow/stages/user_delete",
                 "flow/stages/user_login/index",
                 "flow/stages/user_logout",
@@ -217,13 +222,16 @@ const docsSidebar = {
                 {
                     type: "category",
                     label: "Working with policies",
-                    items: ["policies/working_with_policies/whitelist_email"],
                     link: {
                         type: "generated-index",
                         title: "Working with policies",
                         slug: "policies/working_with_policies",
                         description: "Overview of policies configuration",
                     },
+                    items: [
+                        "policies/working_with_policies/whitelist_email",
+                        "policies/working_with_policies/unique_email",
+                    ],
                 },
                 "policies/expression",
             ],

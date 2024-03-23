@@ -1,5 +1,5 @@
-import { APIErrorTypes, parseAPIError } from "@goauthentik/app/common/errors";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { APIErrorTypes, parseAPIError } from "@goauthentik/common/errors";
 import { groupBy } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";

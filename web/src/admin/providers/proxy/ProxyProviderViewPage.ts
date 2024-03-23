@@ -1,6 +1,5 @@
 import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/proxy/ProxyProviderForm";
-import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { convertToSlug } from "@goauthentik/common/utils";
@@ -22,11 +21,12 @@ import { Replacer } from "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -75,21 +75,10 @@ export function isForward(mode: ProxyMode): boolean {
 
 @customElement("ak-provider-proxy-view")
 export class ProxyProviderViewPage extends AKElement {
-    @property()
-    set args(value: { [key: string]: number }) {
-        this.providerID = value.id;
-    }
-
     @property({ type: Number })
-    set providerID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
-            .providersProxyRetrieve({
-                id: value,
-            })
-            .then((prov) => (this.provider = prov));
-    }
+    providerID?: number;
 
-    @property({ attribute: false })
+    @state()
     provider?: ProxyProvider;
 
     static get styles(): CSSResult[] {
@@ -114,6 +103,18 @@ export class ProxyProviderViewPage extends AKElement {
             if (!this.provider?.pk) return;
             this.providerID = this.provider?.pk;
         });
+    }
+
+    fetchProvider(id: number) {
+        new ProvidersApi(DEFAULT_CONFIG)
+            .providersProxyRetrieve({ id })
+            .then((prov) => (this.provider = prov));
+    }
+
+    willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("providerID") && this.providerID) {
+            this.fetchProvider(this.providerID);
+        }
     }
 
     renderConfig(): TemplateResult {

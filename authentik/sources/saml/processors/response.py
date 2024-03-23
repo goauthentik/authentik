@@ -234,12 +234,14 @@ class ResponseProcessor:
         if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_TRANSIENT:
             return self._handle_name_id_transient()
 
-        return SAMLSourceFlowManager(
+        flow_manager = SAMLSourceFlowManager(
             self._source,
             self._http_request,
             name_id.text,
             delete_none_values(self.get_attributes()),
         )
+        flow_manager.policy_context["saml_response"] = self._root
+        return flow_manager
 
 
 class SAMLSourceFlowManager(SourceFlowManager):
