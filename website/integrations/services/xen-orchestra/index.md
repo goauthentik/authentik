@@ -52,7 +52,7 @@ All of the URLs mentioned below can be copied & pasted from authentik (_Applicat
 
 1. Navigate to Settings -> Plugins
 2. Scroll to **auth-oidc** and click on the **+** icon on the right hand side.
-3. Set the `Auto-discovery URL` to `https://authentik.company/application/o/xenorchestra/.well-known/openid-configuration`
+3. Set the `Auto-discovery URL` to `https://authentik.company/application/o/xenorchestra/.well-known/openid-configuration`.
 4. Set the `Client identifier (key)` to the Client ID from your notes.
 5. Set the `Client secret` to the Client Secret from your notes.
 6. Check the `Fill information (optional)`-Checkbox to open the Advanced menu.
