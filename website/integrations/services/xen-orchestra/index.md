@@ -48,7 +48,7 @@ Optionally apply access restrictions to the application.
 ## Xen Orchestra configuration
 
 Xen Orchestra allows the configuration of the OpenID Connect authentication in the plugin-section.
-All of the URLs metioned below can be copied & pasted from authentik (Applications -> Providers -> the provider created earlier)
+All of the URLs mentioned below can be copied & pasted from authentik (_Applications -> Providers -> *the provider created earlier*_).
 
 1. Navigate to Settings -> Plugins
 2. Scroll to "auth-oidc" and click on the "+ Icon" on the right hand side.
