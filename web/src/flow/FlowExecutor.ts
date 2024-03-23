@@ -149,8 +149,16 @@ export class FlowExecutor extends Interface implements StageHost {
                 padding: 0;
                 min-height: initial !important;
             }
+            .pf-c-login.frame .pf-c-login__main {
+                margin-bottom: 0;
+                height: 100%;
+            }
+            .pf-c-login.frame .ak-login-container {
+                height: 100vh;
+                width: 100vw;
+            }
             .pf-c-login.frame .pf-c-login__footer {
-                flex-grow: 0;
+                display: none;
             }
             .pf-c-login.frame .pf-c-login__footer .pf-c-list {
                 padding: 0;
