@@ -41,7 +41,7 @@ Create an application with the following details:
 
 -   Slug: `xenorchestra` (If you want to choose a different slug, your URLs for the Xen Orchestra Configuration may vary)
 -   Provider: Select the one we have created in Step 1
--   Set the Launch URL to `https://xenorchestra.company/`.
+-   Set the Launch URL to `https://xenorchestra.company/`
 
 Optionally apply access restrictions to the application.
 
