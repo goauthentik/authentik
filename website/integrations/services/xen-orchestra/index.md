@@ -51,7 +51,7 @@ Xen Orchestra allows the configuration of the OpenID Connect authentication in t
 All of the URLs mentioned below can be copied & pasted from authentik (_Applications -> Providers -> *the provider created earlier*_).
 
 1. Navigate to Settings -> Plugins
-2. Scroll to "auth-oidc" and click on the "+ Icon" on the right hand side.
+2. Scroll to **auth-oidc** and click on the **+** icon on the right hand side.
 3. Set the `Auto-discovery URL` to `https://authentik.company/application/o/xenorchestra/.well-known/openid-configuration`
 4. Set the `Client identifier (key)` to the Client ID from your notes.
 5. Set the `Client secret` to the Client Secret from your notes.
