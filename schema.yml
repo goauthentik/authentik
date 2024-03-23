@@ -17738,6 +17738,50 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /providers/scim/{id}/sync_single/:
+    post:
+      operationId: providers_scim_sync_single_create
+      description: Get provider's sync status
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this SCIM Provider.
+        required: true
+      - in: query
+        name: user
+        schema:
+          type: integer
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SCIMProviderRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemTask'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /providers/scim/{id}/sync_status/:
     get:
       operationId: providers_scim_sync_status_retrieve
