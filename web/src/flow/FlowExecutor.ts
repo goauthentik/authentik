@@ -80,8 +80,6 @@ export class FlowExecutor extends Interface implements StageHost {
     @state()
     frameMode = window !== window.top;
 
-    ws: WebsocketClient;
-
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFDrawer, PFButton, PFTitle, PFList, PFBackgroundImage].concat(css`
             :host {
@@ -196,8 +194,9 @@ export class FlowExecutor extends Interface implements StageHost {
                     }
                 `),
             ];
+        } else {
+            new WebsocketClient();
         }
-        this.ws = new WebsocketClient();
         if (window.location.search.includes("inspector")) {
             this.inspectorOpen = true;
         }
