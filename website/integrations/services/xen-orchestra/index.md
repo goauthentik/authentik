@@ -52,19 +52,22 @@ All of the URLs mentioned below can be copied & pasted from authentik (_Applicat
 
 1. Navigate to Settings -> Plugins
 2. Scroll to **auth-oidc** and click on the **+** icon on the right hand side.
-3. Set the `Auto-discovery URL` to `https://authentik.company/application/o/xenorchestra/.well-known/openid-configuration`.
-4. Set the `Client identifier (key)` to the Client ID from your notes.
-5. Set the `Client secret` to the Client Secret from your notes.
-6. Check the `Fill information (optional)`-Checkbox to open the Advanced menu.
-7. Set the `Authorization URL` to `https://authentik.company/application/o/authorize/`
-8. Set the `Callback URL` to `https://xenorchestra.company/signin/oidc/callback`
-9. Set the `Issuer` to `https://authentik.company/application/o/xenorchestra/`
-10. Set the `Token URL` to `https://authentik.company/application/o/token/`
-11. Set the `User info URL` to `https://authentik.company/application/o/userinfo/`
-12. Set the `Username field` to `username`
-13. Set the `Scopes` to `openid profile email`
-14. Enable the `auth-oidc`-Plugin by toggling the switch above the configuration.
-15. You should be able to login with OIDC.
+3. Configure the auth-oidc plugin with the following configuration values:
+
+-   Set the `Auto-discovery URL` to `https://authentik.company/application/o/xenorchestra/.well-known/openid-configuration`.
+-   Set the `Client identifier (key)` to the Client ID from your notes.
+-   Set the `Client secret` to the Client Secret from your notes.
+-   Check the `Fill information (optional)`-Checkbox to open the advanced menu.
+-   Set the `Authorization URL` to `https://authentik.company/application/o/authorize/`
+-   Set the `Callback URL` to `https://xenorchestra.company/signin/oidc/callback`
+-   Set the `Issuer` to `https://authentik.company/application/o/xenorchestra/`
+-   Set the `Token URL` to `https://authentik.company/application/o/token/`
+-   Set the `User info URL` to `https://authentik.company/application/o/userinfo/`
+-   Set the `Username field` to `username`
+-   Set the `Scopes` to `openid profile email`
+
+4. Enable the `auth-oidc`-Plugin by toggling the switch above the configuration.
+5. You should be able to login with OIDC.
 
 :::note
 You need to create the user with the according username in Xen Orchestra, before you are able to login using OIDC.
