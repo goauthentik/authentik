@@ -67,5 +67,5 @@ All of the URLs mentioned below can be copied & pasted from authentik (_Applicat
 15. You should be able to login with OIDC.
 
 :::note
-You need to create the user with the according username in XenOrchestra, before you are able to login using OIDC.
+You need to create the user with the according username in Xen Orchestra, before you are able to login using OIDC.
 :::
