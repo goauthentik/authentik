@@ -33,7 +33,7 @@ Under _Providers_, create an OAuth2/OpenID provider with these settings:
 -   Client type: Confidental
 -   Redirect URIs/Origins: `https://xenorchestra.company/signin/oidc/callback`
 
-Take note of the Client ID and the Client Secret, because we need them for the Configuration in Xen Orchestra.
+Take note of the Client ID and the Client Secret, because we need them for the configuration of Xen Orchestra.
 
 ### 2. Application
 
