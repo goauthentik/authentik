@@ -53,6 +53,8 @@ export class UserSettingsFlowExecutor
     @property({ type: Boolean })
     loading = false;
 
+    frameMode = false;
+
     static get styles(): CSSResult[] {
         return [PFBase, PFCard, PFPage, PFButton, PFContent];
     }
