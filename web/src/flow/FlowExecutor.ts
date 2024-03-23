@@ -473,9 +473,11 @@ export class FlowExecutor extends Interface implements StageHost {
     }
 
     renderChallengeWrapper(): TemplateResult {
-        const logo = html`<div class="pf-c-login__main-header pf-c-brand ak-brand">
-            <img src="${first(this.brand?.brandingLogo, "")}" alt="authentik Logo" />
-        </div>`;
+        const logo = this.frameMode
+            ? nothing
+            : html`<div class="pf-c-login__main-header pf-c-brand ak-brand">
+                  <img src="${first(this.brand?.brandingLogo, "")}" alt="authentik Logo" />
+              </div>`;
         if (!this.challenge) {
             return html`${logo}<ak-empty-state ?loading=${true} header=${msg("Loading")}>
                 </ak-empty-state>`;
