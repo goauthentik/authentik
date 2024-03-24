@@ -280,15 +280,18 @@ class SessionEndStage(ChallengeStageView):
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
         application: Application | None = self.executor.plan.context.get(PLAN_CONTEXT_APPLICATION)
-        data = {}
+        data = {
+            "type": ChallengeTypes.NATIVE.value,
+            "component": "ak-stage-session-end",
+        }
         if application:
             data["application_name"] = application.name
             data["application_launch_url"] = application.get_launch_url(self.get_pending_user())
-        if self.request.brand.invalidation_flow:
+        if self.request.brand.flow_invalidation:
             data["invalidation_flow_url"] = reverse(
                 "authentik_core:if-flow",
                 kwargs={
-                    "flow_slug": self.request.brand.invalidation_flow.slug,
+                    "flow_slug": self.request.brand.flow_invalidation.slug,
                 },
             )
         return SessionEndChallenge(data=data)

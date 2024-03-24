@@ -56,6 +56,9 @@ export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {
                           `
                         : html``}
                 </form>
-            </div>`;
+            </div>
+            <footer class="pf-c-login__main-footer">
+                <ul class="pf-c-login__main-footer-links"></ul>
+            </footer>`;
     }
 }
