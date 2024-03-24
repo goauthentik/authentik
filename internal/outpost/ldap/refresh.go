@@ -29,16 +29,6 @@ func (ls *LDAPServer) getCurrentProvider(pk int32) *ProviderInstance {
 	return nil
 }
 
-func (ls *LDAPServer) getInvalidationFlow() string {
-	req, _, err := ls.ac.Client.CoreApi.CoreBrandsCurrentRetrieve(context.Background()).Execute()
-	if err != nil {
-		ls.log.WithError(err).Warning("failed to fetch brand config")
-		return ""
-	}
-	flow := req.GetFlowInvalidation()
-	return flow
-}
-
 func (ls *LDAPServer) Refresh() error {
 	outposts, _, err := ls.ac.Client.OutpostsApi.OutpostsLdapList(context.Background()).Execute()
 	if err != nil {
@@ -48,7 +38,6 @@ func (ls *LDAPServer) Refresh() error {
 		return errors.New("no ldap provider defined")
 	}
 	providers := make([]*ProviderInstance, len(outposts.Results))
-	invalidationFlow := ls.getInvalidationFlow()
 	for idx, provider := range outposts.Results {
 		userDN := strings.ToLower(fmt.Sprintf("ou=%s,%s", constants.OUUsers, *provider.BaseDn))
 		groupDN := strings.ToLower(fmt.Sprintf("ou=%s,%s", constants.OUGroups, *provider.BaseDn))
@@ -72,7 +61,7 @@ func (ls *LDAPServer) Refresh() error {
 			UserDN:                 userDN,
 			appSlug:                provider.ApplicationSlug,
 			authenticationFlowSlug: provider.BindFlowSlug,
-			invalidationFlowSlug:   invalidationFlow,
+			invalidationFlowSlug:   provider.UnbindFlowSlug,
 			searchAllowedGroups:    []*strfmt.UUID{(*strfmt.UUID)(provider.SearchGroup.Get())},
 			boundUsersMutex:        usersMutex,
 			boundUsers:             users,

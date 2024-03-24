@@ -37577,6 +37577,8 @@ components:
           description: DN under which objects are accessible.
         bind_flow_slug:
           type: string
+        unbind_flow_slug:
+          type: string
         application_slug:
           type: string
           description: Prioritise backchannel slug over direct application slug
@@ -37624,6 +37626,7 @@ components:
       - bind_flow_slug
       - name
       - pk
+      - unbind_flow_slug
     LDAPPropertyMapping:
       type: object
       description: LDAP PropertyMapping Serializer
