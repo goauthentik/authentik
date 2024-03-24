@@ -1,4 +1,5 @@
 """oauth2 provider end_session Views"""
+
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
 

@@ -439,7 +439,7 @@ class TestProviderSAML(SeleniumTestCase):
         )
         provider.property_mappings.set(SAMLPropertyMapping.objects.all())
         provider.save()
-        app = Application.objects.create(
+        Application.objects.create(
             name="SAML",
             slug="authentik-saml",
             provider=provider,
