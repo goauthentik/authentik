@@ -1,6 +1,6 @@
 """SLO Views"""
 
-from django.http import HttpRequest
+from django.http import Http404, HttpRequest
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
@@ -11,7 +11,7 @@ from structlog.stdlib import get_logger
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import SessionEndChallenge
-from authentik.flows.models import in_memory_stage
+from authentik.flows.models import Flow, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlanner
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.utils.urls import redirect_with_qs
@@ -33,11 +33,16 @@ class SAMLSLOView(PolicyAccessView):
     """ "SAML SLO Base View, which plans a flow and injects our final stage.
     Calls get/post handler."""
 
+    flow: Flow
+
     def resolve_provider_application(self):
         self.application = get_object_or_404(Application, slug=self.kwargs["application_slug"])
         self.provider: SAMLProvider = get_object_or_404(
             SAMLProvider, pk=self.application.provider_id
         )
+        self.flow = self.provider.invalidation_flow or self.request.brand.flow_invalidation
+        if not self.flow:
+            raise Http404
 
     def check_saml_request(self) -> HttpRequest | None:
         """Handler to verify the SAML Request. Must be implemented by a subclass"""
@@ -50,7 +55,7 @@ class SAMLSLOView(PolicyAccessView):
         method_response = self.check_saml_request()
         if method_response:
             return method_response
-        planner = FlowPlanner(self.provider.invalidation_flow)
+        planner = FlowPlanner(self.flow)
         planner.allow_empty_flows = True
         plan = planner.plan(
             request,
@@ -63,7 +68,7 @@ class SAMLSLOView(PolicyAccessView):
         return redirect_with_qs(
             "authentik_core:if-flow",
             self.request.GET,
-            flow_slug=self.provider.invalidation_flow.slug,
+            flow_slug=self.flow.slug,
         )
 
     def post(self, request: HttpRequest, application_slug: str) -> HttpResponse:

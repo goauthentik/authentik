@@ -79,13 +79,23 @@ class LDAPOutpostConfigSerializer(ModelSerializer):
 
     application_slug = SerializerMethodField()
     bind_flow_slug = CharField(source="authorization_flow.slug")
-    unbind_flow_slug = CharField(source="invalidation_flow.slug")
+    unbind_flow_slug = SerializerMethodField()
 
     def get_application_slug(self, instance: LDAPProvider) -> str:
         """Prioritise backchannel slug over direct application slug"""
         if instance.backchannel_application:
             return instance.backchannel_application.slug
         return instance.application.slug
+
+    def get_unbind_flow_slug(self, instance: LDAPProvider) -> str | None:
+        """Get slug for unbind flow, defaulting to brand's default flow."""
+        flow = instance.invalidation_flow
+        if not flow and "request" in  self.context:
+            request = self.context.get("request")
+            flow = request.brand.flow_invalidation
+        if not flow:
+            return None
+        return flow.slug
 
     class Meta:
         model = LDAPProvider

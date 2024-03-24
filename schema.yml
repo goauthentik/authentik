@@ -37579,6 +37579,9 @@ components:
           type: string
         unbind_flow_slug:
           type: string
+          nullable: true
+          description: Get slug for unbind flow, defaulting to brand's default flow.
+          readOnly: true
         application_slug:
           type: string
           description: Prioritise backchannel slug over direct application slug
