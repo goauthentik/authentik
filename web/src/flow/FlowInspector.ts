@@ -115,7 +115,6 @@ export class FlowInspector extends AKElement {
             return this.renderAccessDenied();
         }
         if (!this.state) {
-            this.advanceHandler();
             return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
             </ak-empty-state>`;
         }
