@@ -47002,6 +47002,8 @@ components:
           type: string
         application_launch_url:
           type: string
+        invalidation_flow_url:
+          type: string
       required:
       - application_name
       - pending_user

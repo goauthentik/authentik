@@ -135,6 +135,8 @@ class SessionEndChallenge(WithUserInfoChallenge):
     application_name = CharField(required=True)
     application_launch_url = CharField(required=False)
 
+    invalidation_flow_url = CharField(required=False)
+
 
 class PermissionDict(TypedDict):
     """Consent Permission"""

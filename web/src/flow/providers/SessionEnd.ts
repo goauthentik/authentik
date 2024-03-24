@@ -35,11 +35,10 @@ export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {
                         )}
                     </p>
                     <a href="/" class="pf-c-button pf-m-primary"> ${msg("Go back to overview")} </a>
-                    ${this.host.brand && this.host.brand.flowInvalidation
+                    ${this.host.brand && this.challenge.invalidationFlowUrl
                         ? html`
-                              <!-- TODO: don't construct URL here -->
                               <a
-                                  href="/if/flow/${this.host.brand.flowInvalidation}/"
+                                  href="${this.challenge.invalidationFlowUrl}"
                                   class="pf-c-button pf-m-secondary"
                               >
                                   ${msg(str`Log out of ${this.host.brand.brandingTitle}`)}
