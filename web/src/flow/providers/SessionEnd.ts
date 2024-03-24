@@ -45,7 +45,7 @@ export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {
                               </a>
                           `
                         : html``}
-                    ${this.challenge.applicationLaunchUrl
+                    ${this.challenge.applicationLaunchUrl && this.challenge.applicationName
                         ? html`
                               <a
                                   href="${this.challenge.applicationLaunchUrl}"

@@ -10,9 +10,9 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
-from authentik.flows.challenge import SessionEndChallenge
 from authentik.flows.models import Flow, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlanner
+from authentik.flows.stage import SessionEndStage
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.lib.views import bad_request_message
@@ -63,7 +63,7 @@ class SAMLSLOView(PolicyAccessView):
                 PLAN_CONTEXT_APPLICATION: self.application,
             },
         )
-        plan.insert_stage(in_memory_stage(SessionEndChallenge))
+        plan.insert_stage(in_memory_stage(SessionEndStage))
         request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(
             "authentik_core:if-flow",

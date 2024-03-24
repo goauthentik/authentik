@@ -13,7 +13,7 @@ from rest_framework.request import Request
 from sentry_sdk.hub import Hub
 from structlog.stdlib import BoundLogger, get_logger
 
-from authentik.core.models import User
+from authentik.core.models import Application, User
 from authentik.flows.challenge import (
     AccessDeniedChallenge,
     Challenge,
@@ -22,6 +22,7 @@ from authentik.flows.challenge import (
     ContextualFlowInfo,
     HttpChallengeResponse,
     RedirectChallenge,
+    SessionEndChallenge,
     WithUserInfoChallenge,
 )
 from authentik.flows.exceptions import StageInvalidException
@@ -231,7 +232,7 @@ class ChallengeStageView(StageView):
         return HttpChallengeResponse(challenge_response)
 
 
-class AccessDeniedChallengeView(ChallengeStageView):
+class AccessDeniedStage(ChallengeStageView):
     """Used internally by FlowExecutor's stage_invalid()"""
 
     error_message: str | None
@@ -271,3 +272,27 @@ class RedirectStage(ChallengeStageView):
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         return HttpChallengeResponse(self.get_challenge())
+
+
+class SessionEndStage(ChallengeStageView):
+    """Stage inserted when a flow is used as invalidation flow. By default shows actions
+    that the user is likely to take after signing out of a provider."""
+
+    def get_challenge(self, *args, **kwargs) -> Challenge:
+        application: Application | None = self.executor.plan.context.get(
+            PLAN_CONTEXT_APPLICATION
+        )
+        data = {}
+        if application:
+            data["application_name"] = application.name
+            data["application_launch_url"] = application.get_launch_url(self.get_pending_user())
+        if self.request.brand.invalidation_flow:
+            data["invalidation_flow_url"] = reverse("authentik_core:if-flow", kwargs={
+                "flow_slug": self.request.brand.invalidation_flow.slug,
+            })
+        return SessionEndChallenge(data=data)
+
+    # This can never be reached since this challenge is created on demand and only the
+    # .get() method is called
+    def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:  # pragma: no cover
+        return self.executor.cancel()

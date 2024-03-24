@@ -132,7 +132,7 @@ class SessionEndChallenge(WithUserInfoChallenge):
 
     component = CharField(default="ak-stage-session-end")
 
-    application_name = CharField(required=True)
+    application_name = CharField(required=False)
     application_launch_url = CharField(required=False)
 
     invalidation_flow_url = CharField(required=False)
