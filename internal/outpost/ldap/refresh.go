@@ -61,7 +61,7 @@ func (ls *LDAPServer) Refresh() error {
 			UserDN:                 userDN,
 			appSlug:                provider.ApplicationSlug,
 			authenticationFlowSlug: provider.BindFlowSlug,
-			invalidationFlowSlug:   provider.UnbindFlowSlug,
+			invalidationFlowSlug:   provider.UnbindFlowSlug.Get(),
 			searchAllowedGroups:    []*strfmt.UUID{(*strfmt.UUID)(provider.SearchGroup.Get())},
 			boundUsersMutex:        usersMutex,
 			boundUsers:             users,
