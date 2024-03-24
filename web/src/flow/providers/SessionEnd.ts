@@ -1,8 +1,6 @@
-import { rootInterface } from "@goauthentik/elements/Base";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -23,26 +21,28 @@ export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
+            </ak-empty-state>`;
         }
-        const tenant = rootInterface()?.tenant;
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
             </header>
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form">
                     <p>
-                        ${t`You've logged out of ${this.challenge.applicationName}. You can go back to the overview to launch another application, or log out of your authentik account.`}
+                        ${msg(
+                            str`You've logged out of ${this.challenge.applicationName}. You can go back to the overview to launch another application, or log out of your authentik account.`,
+                        )}
                     </p>
-                    <a href="/" class="pf-c-button pf-m-primary"> ${t`Go back to overview`} </a>
-                    ${tenant && tenant.flowInvalidation
+                    <a href="/" class="pf-c-button pf-m-primary"> ${msg("Go back to overview")} </a>
+                    ${this.host.brand && this.host.brand.flowInvalidation
                         ? html`
                               <!-- TODO: don't construct URL here -->
                               <a
-                                  href="/if/flow/${tenant.flowInvalidation}/"
+                                  href="/if/flow/${this.host.brand.flowInvalidation}/"
                                   class="pf-c-button pf-m-secondary"
                               >
-                                  ${t`Log out of ${tenant.brandingTitle}`}
+                                  ${msg(str`Log out of ${this.host.brand.brandingTitle}`)}
                               </a>
                           `
                         : html``}
@@ -52,7 +52,7 @@ export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {
                                   href="${this.challenge.applicationLaunchUrl}"
                                   class="pf-c-button pf-m-secondary"
                               >
-                                  ${t`Log back into ${this.challenge.applicationName}`}
+                                  ${msg(str`Log back into ${this.challenge.applicationName}`)}
                               </a>
                           `
                         : html``}

@@ -48,35 +48,16 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`Invalidation flow`}
+                label=${msg("Invalidation flow")}
                 ?required=${true}
                 name="invalidationFlow"
             >
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                        const args: FlowsInstancesListRequest = {
-                            ordering: "slug",
-                            designation: FlowsInstancesListDesignationEnum.Invalidation,
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(args);
-                        return flows.results;
-                    }}
-                    .renderElement=${(flow: Flow): string => {
-                        return RenderFlowOption(flow);
-                    }}
-                    .renderDescription=${(flow: Flow): TemplateResult => {
-                        return html`${flow.name}`;
-                    }}
-                    .value=${(flow: Flow | undefined): string | undefined => {
-                        return flow?.pk;
-                    }}
-                >
-                </ak-search-select>
+                <ak-flow-search-no-default
+                    flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                    required
+                ></ak-flow-search-no-default>
                 <p class="pf-c-form__helper-text">
-                    ${t`Flow used when logging out of this provider.`}
+                    ${msg("Flow used when logging out of this provider.")}
                 </p>
             </ak-form-element-horizontal>
 
