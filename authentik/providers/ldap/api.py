@@ -90,7 +90,7 @@ class LDAPOutpostConfigSerializer(ModelSerializer):
     def get_unbind_flow_slug(self, instance: LDAPProvider) -> str | None:
         """Get slug for unbind flow, defaulting to brand's default flow."""
         flow = instance.invalidation_flow
-        if not flow and "request" in  self.context:
+        if not flow and "request" in self.context:
             request = self.context.get("request")
             flow = request.brand.flow_invalidation
         if not flow:

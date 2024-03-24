@@ -279,17 +279,18 @@ class SessionEndStage(ChallengeStageView):
     that the user is likely to take after signing out of a provider."""
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
-        application: Application | None = self.executor.plan.context.get(
-            PLAN_CONTEXT_APPLICATION
-        )
+        application: Application | None = self.executor.plan.context.get(PLAN_CONTEXT_APPLICATION)
         data = {}
         if application:
             data["application_name"] = application.name
             data["application_launch_url"] = application.get_launch_url(self.get_pending_user())
         if self.request.brand.invalidation_flow:
-            data["invalidation_flow_url"] = reverse("authentik_core:if-flow", kwargs={
-                "flow_slug": self.request.brand.invalidation_flow.slug,
-            })
+            data["invalidation_flow_url"] = reverse(
+                "authentik_core:if-flow",
+                kwargs={
+                    "flow_slug": self.request.brand.invalidation_flow.slug,
+                },
+            )
         return SessionEndChallenge(data=data)
 
     # This can never be reached since this challenge is created on demand and only the
