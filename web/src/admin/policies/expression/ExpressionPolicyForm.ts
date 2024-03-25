@@ -12,7 +12,13 @@ import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { ExpressionPolicy, PoliciesApi } from "@goauthentik/api";
+import {
+    CoreApi,
+    CoreUsersListRequest,
+    ExpressionPolicy,
+    PoliciesApi,
+    User,
+} from "@goauthentik/api";
 
 @customElement("ak-policy-expression-form")
 export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
@@ -90,6 +96,39 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                             >
                                 ${msg("See documentation for a list of all variables.")}
                             </a>
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${msg("Execution user")} name="executionUser">
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<User[]> => {
+                                const args: CoreUsersListRequest = {
+                                    ordering: "username",
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList(args);
+                                return users.results;
+                            }}
+                            .renderElement=${(user: User): string => {
+                                return user.username;
+                            }}
+                            .renderDescription=${(user: User): TemplateResult => {
+                                return html`${user.name}`;
+                            }}
+                            .value=${(user: User | undefined): number | undefined => {
+                                return user?.pk;
+                            }}
+                            .selected=${(user: User): boolean => {
+                                return this.instance?.executionUser === user.pk;
+                            }}
+                            blankable
+                        >
+                        </ak-search-select>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Configure which user the bundled API client authenticates as. When left empty, the API client will inherit the permissions of the user triggering the policy execution.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

@@ -41,14 +41,14 @@ class TestEvaluator(TestCase):
     def test_valid(self):
         """test simple value expression"""
         template = "return True"
-        evaluator = PolicyEvaluator("test")
+        evaluator = PolicyEvaluator(self.request.user, "test")
         evaluator.set_policy_request(self.request)
         self.assertEqual(evaluator.evaluate(template).passing, True)
 
     def test_messages(self):
         """test expression with message return"""
         template = 'ak_message("some message");return False'
-        evaluator = PolicyEvaluator("test")
+        evaluator = PolicyEvaluator(self.request.user, "test")
         evaluator.set_policy_request(self.request)
         result = evaluator.evaluate(template)
         self.assertEqual(result.passing, False)
@@ -57,7 +57,7 @@ class TestEvaluator(TestCase):
     def test_invalid_syntax(self):
         """test invalid syntax"""
         template = ";"
-        evaluator = PolicyEvaluator("test")
+        evaluator = PolicyEvaluator(self.request.user, "test")
         evaluator.set_policy_request(self.request)
         with self.assertRaises(PolicyException):
             evaluator.evaluate(template)
@@ -65,14 +65,14 @@ class TestEvaluator(TestCase):
     def test_validate(self):
         """test validate"""
         template = "True"
-        evaluator = PolicyEvaluator("test")
+        evaluator = PolicyEvaluator(self.request.user, "test")
         result = evaluator.validate(template)
         self.assertEqual(result, True)
 
     def test_validate_invalid(self):
         """test validate"""
         template = ";"
-        evaluator = PolicyEvaluator("test")
+        evaluator = PolicyEvaluator(self.request.user, "test")
         with self.assertRaises(ValidationError):
             evaluator.validate(template)
 
@@ -83,7 +83,7 @@ class TestEvaluator(TestCase):
             execution_logging=True,
             expression="ak_message(request.http_request.path)\nreturn True",
         )
-        evaluator = PolicyEvaluator("test")
+        evaluator = PolicyEvaluator(self.request.user, "test")
         evaluator.set_policy_request(self.request)
         proc = PolicyProcess(PolicyBinding(policy=expr), request=self.request, connection=None)
         res = proc.profiling_wrapper()
@@ -106,7 +106,7 @@ class TestEvaluator(TestCase):
         """
             % expr.name
         )
-        evaluator = PolicyEvaluator("test")
+        evaluator = PolicyEvaluator(self.request.user, "test")
         evaluator.set_policy_request(self.request)
         res = evaluator.evaluate(tmpl)
         self.assertEqual(res.messages, ("/", "/", "/"))

@@ -99,7 +99,7 @@ class SystemTask(TenantTask):
         super().on_failure(exc, task_id, args, kwargs, einfo=einfo)
         if not self._status:
             self._status = TaskStatus.ERROR
-            self._messages = exception_to_string(exc)
+            self._messages = [exception_to_string(exc)]
         DBSystemTask.objects.update_or_create(
             name=self.__name__,
             uid=self._uid,

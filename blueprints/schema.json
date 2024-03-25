@@ -3432,6 +3432,10 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Expression"
+                },
+                "execution_user": {
+                    "type": "integer",
+                    "title": "Execution user"
                 }
             },
             "required": []

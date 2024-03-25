@@ -156,6 +156,7 @@ SPECTACULAR_SETTINGS = {
         "UserTypeEnum": "authentik.core.models.UserTypes",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
+    "ENUM_GENERATE_CHOICE_DESCRIPTION": False,
     "POSTPROCESSING_HOOKS": [
         "authentik.api.schema.postprocess_schema_responses",
         "drf_spectacular.hooks.postprocess_schema_enums",

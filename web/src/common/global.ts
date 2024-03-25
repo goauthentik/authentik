@@ -44,7 +44,7 @@ export function docLink(path: string): string {
     const ak = globalAK();
     // Default case or beta build which should always point to latest
     if (!ak || ak.build !== "") {
-        return `https://goauthentik.io${path}`;
+        return `https://docs.goauthentik.io${path}`;
     }
     return `https://${ak.versionSubdomain}.goauthentik.io${path}`;
 }

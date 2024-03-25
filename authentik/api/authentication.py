@@ -72,6 +72,11 @@ def auth_user_lookup(raw_header: bytes) -> User | None:
     if user:
         CTX_AUTH_VIA.set("secret_key")
         return user
+    # then try to auth via expression JWT
+    user = token_expression_jwt(auth_credentials)
+    if user:
+        CTX_AUTH_VIA.set("expression_jwt")
+        return user
     raise AuthenticationFailed("Token invalid/expired")
 
 
@@ -87,6 +92,13 @@ def token_secret_key(value: str) -> User | None:
         return None
     outpost = outposts.first()
     return outpost.user
+
+
+def token_expression_jwt(value: str) -> User | None:
+    """Authenticate API call made by Expressions"""
+    from authentik.lib.expression.evaluator import authenticate_token
+
+    return authenticate_token(value)
 
 
 class TokenAuthentication(BaseAuthentication):
