@@ -37,7 +37,7 @@ from authentik.lib.utils.file import (
 )
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import PolicyEngine
-from authentik.policies.types import PolicyResult
+from authentik.policies.types import CACHE_PREFIX, PolicyResult
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.filters import ObjectFilter
 
@@ -46,7 +46,7 @@ LOGGER = get_logger()
 
 def user_app_cache_key(user_pk: str) -> str:
     """Cache key where application list for user is saved"""
-    return f"goauthentik.io/core/app_access/{user_pk}"
+    return f"{CACHE_PREFIX}/app_access/{user_pk}"
 
 
 class ApplicationSerializer(ModelSerializer):
@@ -214,7 +214,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
             return super().list(request)
 
         queryset = self._filter_queryset_for_list(self.get_queryset())
-        pagined_apps = self.paginate_queryset(queryset)
+        paginated_apps = self.paginate_queryset(queryset)
 
         if "for_user" in request.query_params:
             try:
@@ -228,18 +228,18 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
                     raise ValidationError({"for_user": "User not found"})
             except ValueError as exc:
                 raise ValidationError from exc
-            allowed_applications = self._get_allowed_applications(pagined_apps, user=for_user)
+            allowed_applications = self._get_allowed_applications(paginated_apps, user=for_user)
             serializer = self.get_serializer(allowed_applications, many=True)
             return self.get_paginated_response(serializer.data)
 
         allowed_applications = []
         if not should_cache:
-            allowed_applications = self._get_allowed_applications(pagined_apps)
+            allowed_applications = self._get_allowed_applications(paginated_apps)
         if should_cache:
             allowed_applications = cache.get(user_app_cache_key(self.request.user.pk))
             if not allowed_applications:
                 LOGGER.debug("Caching allowed application list")
-                allowed_applications = self._get_allowed_applications(pagined_apps)
+                allowed_applications = self._get_allowed_applications(paginated_apps)
                 cache.set(
                     user_app_cache_key(self.request.user.pk),
                     allowed_applications,

@@ -1,5 +1,5 @@
+import { PFSize } from "@goauthentik/common/enums.js";
 import { AKElement } from "@goauthentik/elements/Base";
-import { PFSize } from "@goauthentik/elements/Spinner";
 import { MODAL_BUTTON_STYLES } from "@goauthentik/elements/buttons/ModalButton";
 import { Table } from "@goauthentik/elements/table/Table";
 

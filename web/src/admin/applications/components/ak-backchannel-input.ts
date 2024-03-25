@@ -20,8 +20,9 @@ export class AkBackchannelProvidersInput extends AKElement {
     // TODO: This abstraction is wrong; it's putting *more* layers in as a way of managing the
     // visual clutter and legibility issues of ak-form-elemental-horizontal and patternfly in
     // general.
+
     protected createRenderRoot() {
-        return this;
+        return this as HTMLElement;
     }
 
     @property({ type: String })

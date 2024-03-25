@@ -1,9 +1,9 @@
 import { ERROR_CLASS, PROGRESS_CLASS, SUCCESS_CLASS } from "@goauthentik/common/constants";
+import { PFSize } from "@goauthentik/common/enums.js";
 import { AKElement } from "@goauthentik/elements/Base";
-import { PFSize } from "@goauthentik/elements/Spinner";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
-import { Task, TaskStatus } from "@lit-labs/task";
+import { Task, TaskStatus } from "@lit/task";
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";
 

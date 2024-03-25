@@ -32,8 +32,8 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 	}
 	if a.isEmbedded {
 		client := redis.NewClient(&redis.Options{
-			Addr: fmt.Sprintf("%s:%d", config.Get().Redis.Host, config.Get().Redis.Port),
-			// Username: config.Get().Redis.Password,
+			Addr:     fmt.Sprintf("%s:%d", config.Get().Redis.Host, config.Get().Redis.Port),
+			Username: config.Get().Redis.Username,
 			Password: config.Get().Redis.Password,
 			DB:       config.Get().Redis.DB,
 		})

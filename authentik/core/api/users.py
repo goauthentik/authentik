@@ -605,7 +605,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         email_stage: EmailStage = stages.first()
         message = TemplateEmailMessage(
             subject=_(email_stage.subject),
-            to=[for_user.email],
+            to=[(for_user.name, for_user.email)],
             template_name=email_stage.template,
             language=for_user.locale(request),
             template_context={

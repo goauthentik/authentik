@@ -21,7 +21,7 @@ from rest_framework.fields import BooleanField, DateTimeField, IntegerField
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User, UserTypes
 from authentik.enterprise.models import License, LicenseUsage
-from authentik.root.install_id import get_install_id
+from authentik.tenants.utils import get_unique_identifier
 
 CACHE_KEY_ENTERPRISE_LICENSE = "goauthentik.io/enterprise/license"
 CACHE_EXPIRY_ENTERPRISE_LICENSE = 3 * 60 * 60  # 2 Hours
@@ -36,7 +36,7 @@ def get_licensing_key() -> Certificate:
 
 def get_license_aud() -> str:
     """Get the JWT audience field"""
-    return f"enterprise.goauthentik.io/license/{get_install_id()}"
+    return f"enterprise.goauthentik.io/license/{get_unique_identifier()}"
 
 
 class LicenseFlags(Enum):
@@ -142,13 +142,7 @@ class LicenseKey:
     @staticmethod
     def get_external_user_count():
         """Get current external user count"""
-        # Count since start of the month
-        last_month = now().replace(day=1)
-        return (
-            LicenseKey.base_user_qs()
-            .filter(type=UserTypes.EXTERNAL, last_login__gte=last_month)
-            .count()
-        )
+        return LicenseKey.base_user_qs().filter(type=UserTypes.EXTERNAL).count()
 
     def is_valid(self) -> bool:
         """Check if the given license body covers all users

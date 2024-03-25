@@ -1,4 +1,4 @@
-import "@goauthentik/app/components/ak-wizard-main/ak-wizard-frame";
+import "@goauthentik/components/ak-wizard-main/ak-wizard-frame";
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { msg } from "@lit/localize";

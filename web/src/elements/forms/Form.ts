@@ -1,10 +1,10 @@
-import { PreventFormSubmit } from "@goauthentik/app/elements/forms/helpers";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { camelToSnake, convertToSlug } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
 import { SearchSelect } from "@goauthentik/elements/forms/SearchSelect";
+import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
 import { CSSResult, TemplateResult, css, html } from "lit";

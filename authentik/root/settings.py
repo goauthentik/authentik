@@ -196,8 +196,10 @@ if CONFIG.get_bool("redis.tls", False):
     _redis_protocol_prefix = "rediss://"
     _redis_celery_tls_requirements = f"?ssl_cert_reqs={CONFIG.get('redis.tls_reqs')}"
 _redis_url = (
-    f"{_redis_protocol_prefix}:"
-    f"{quote_plus(CONFIG.get('redis.password'))}@{quote_plus(CONFIG.get('redis.host'))}:"
+    f"{_redis_protocol_prefix}"
+    f"{quote_plus(CONFIG.get('redis.username'))}:"
+    f"{quote_plus(CONFIG.get('redis.password'))}@"
+    f"{quote_plus(CONFIG.get('redis.host'))}:"
     f"{CONFIG.get_int('redis.port')}"
 )
 

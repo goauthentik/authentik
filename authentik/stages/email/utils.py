@@ -25,8 +25,19 @@ def logo_data() -> MIMEImage:
 class TemplateEmailMessage(EmailMultiAlternatives):
     """Wrapper around EmailMultiAlternatives with integrated template rendering"""
 
-    def __init__(self, template_name=None, template_context=None, language="", **kwargs):
-        super().__init__(**kwargs)
+    def __init__(
+        self, to: list[tuple[str]], template_name=None, template_context=None, language="", **kwargs
+    ):
+        sanitized_to = []
+        # Ensure that all recipients are valid
+        for recipient_name, recipient_email in to:
+            if recipient_name == recipient_email:
+                sanitized_to.append(recipient_email)
+            else:
+                sanitized_to.append(f"{recipient_name} <{recipient_email}>")
+        super().__init__(to=sanitized_to, **kwargs)
+        if not template_name:
+            return
         with translation.override(language):
             html_content = render_to_string(template_name, template_context)
             try:

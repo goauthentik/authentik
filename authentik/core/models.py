@@ -33,7 +33,7 @@ from authentik.lib.models import (
     SerializerModel,
 )
 from authentik.policies.models import PolicyBindingModel
-from authentik.root.install_id import get_install_id
+from authentik.tenants.utils import get_unique_identifier
 
 LOGGER = get_logger()
 USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
@@ -276,7 +276,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
     @property
     def uid(self) -> str:
         """Generate a globally unique UID, based on the user ID and the hashed secret key"""
-        return sha256(f"{self.id}-{get_install_id()}".encode("ascii")).hexdigest()
+        return sha256(f"{self.id}-{get_unique_identifier()}".encode("ascii")).hexdigest()
 
     def locale(self, request: HttpRequest | None = None) -> str:
         """Get the locale the user has configured"""
@@ -616,6 +616,9 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
     def serializer(self) -> type[Serializer]:
         """Get serializer for this model"""
         raise NotImplementedError
+
+    def __str__(self) -> str:
+        return f"User-source connection (user={self.user.username}, source={self.source.slug})"
 
     class Meta:
         unique_together = (("user", "source"),)
