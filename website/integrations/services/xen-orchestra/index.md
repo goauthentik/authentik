@@ -11,7 +11,7 @@ title: Xen Orchestra
 > -- https://xen-orchestra.com/
 
 :::note
-Xen Orchestra offers authentication plugins for OpenID Connect, SAML and LDAP. This guide is usind the OpenID Connect plugin.
+Xen Orchestra offers authentication plugins for OpenID Connect, SAML and LDAP. This guide is using the OpenID Connect plugin.
 If you are using the Xen Orchestra Appliance, the OIDC Plugin should be present. If you are using Xen Orchestra compiled from sources, make sure the plugin `auth-oidc` is installed.
 :::
 
@@ -29,8 +29,8 @@ The following placeholders will be used:
 Under _Providers_, create an OAuth2/OpenID provider with these settings:
 
 -   Name: Provider for XenOrchestra
--   Authorization Flow: Select one of the availible Flows.
--   Client type: Confidental
+-   Authorization Flow: Select one of the available Flows.
+-   Client type: Confidential
 -   Redirect URIs/Origins: `https://xenorchestra.company/signin/oidc/callback`
 
 Take note of the Client ID and the Client Secret, because we need them for the configuration of Xen Orchestra.
