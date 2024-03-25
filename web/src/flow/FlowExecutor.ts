@@ -402,6 +402,12 @@ export class FlowExecutor extends Interface implements StageHost {
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-flow-provider-oauth2-code-finish>`;
+            case "ak-stage-session-end":
+                await import("@goauthentik/flow/providers/SessionEnd");
+                return html`<ak-stage-session-end
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-session-end>`;
             // Internal stages
             case "ak-stage-flow-error":
                 return html`<ak-stage-flow-error

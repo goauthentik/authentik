@@ -13,7 +13,7 @@ type LDAPServerInstance interface {
 	GetOutpostName() string
 
 	GetAuthenticationFlowSlug() string
-	GetInvalidationFlowSlug() string
+	GetInvalidationFlowSlug() *string
 	GetAppSlug() string
 	GetSearchAllowedGroups() []*strfmt.UUID
 

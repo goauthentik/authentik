@@ -44,6 +44,7 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
             "name",
             "authentication_flow",
             "authorization_flow",
+            "invalidation_flow",
             "property_mappings",
             "component",
             "assigned_application_slug",
