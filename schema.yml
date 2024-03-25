@@ -19927,6 +19927,10 @@ paths:
         schema:
           type: integer
       - in: query
+        name: password_login_update_internal_password
+        schema:
+          type: boolean
+      - in: query
         name: peer_certificate
         schema:
           type: string
@@ -35225,6 +35229,10 @@ components:
         object_uniqueness_field:
           type: string
           description: Field which contains a unique Identifier.
+        password_login_update_internal_password:
+          type: boolean
+          description: Update internal authentik password when login succeeds with
+            LDAP
         sync_users:
           type: boolean
         sync_users_password:
@@ -35366,6 +35374,10 @@ components:
           type: string
           minLength: 1
           description: Field which contains a unique Identifier.
+        password_login_update_internal_password:
+          type: boolean
+          description: Update internal authentik password when login succeeds with
+            LDAP
         sync_users:
           type: boolean
         sync_users_password:
@@ -39440,6 +39452,10 @@ components:
           type: string
           minLength: 1
           description: Field which contains a unique Identifier.
+        password_login_update_internal_password:
+          type: boolean
+          description: Update internal authentik password when login succeeds with
+            LDAP
         sync_users:
           type: boolean
         sync_users_password:
