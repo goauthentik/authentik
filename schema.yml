@@ -45615,7 +45615,7 @@ components:
           description: Get latest version from cache
           readOnly: true
         version_latest_valid:
-          type: string
+          type: boolean
           description: Check if latest version is valid
           readOnly: true
         build_hash:
