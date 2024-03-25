@@ -58,11 +58,6 @@ All of the URLs mentioned below can be copied & pasted from authentik (_Applicat
 -   Set the `Client identifier (key)` to the Client ID from your notes.
 -   Set the `Client secret` to the Client Secret from your notes.
 -   Check the `Fill information (optional)`-Checkbox to open the advanced menu.
--   Set the `Authorization URL` to `https://authentik.company/application/o/authorize/`
--   Set the `Callback URL` to `https://xenorchestra.company/signin/oidc/callback`
--   Set the `Issuer` to `https://authentik.company/application/o/xenorchestra/`
--   Set the `Token URL` to `https://authentik.company/application/o/token/`
--   Set the `User info URL` to `https://authentik.company/application/o/userinfo/`
 -   Set the `Username field` to `username`
 -   Set the `Scopes` to `openid profile email`
 
