@@ -64,6 +64,7 @@ def release_lock(cursor: Cursor):
     """Release database lock"""
     if not LOCKED:
         return
+    LOGGER.info("releasing database lock")
     cursor.execute("SELECT pg_advisory_unlock(%s)", (ADV_LOCK_UID,))
 
 
