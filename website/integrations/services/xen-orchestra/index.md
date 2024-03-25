@@ -65,5 +65,5 @@ All of the URLs mentioned below can be copied & pasted from authentik (_Applicat
 5. You should be able to login with OIDC.
 
 :::note
-You need to create the user with the according username in Xen Orchestra, before you are able to login using OIDC.
+You need to create the user with the according username in Xen Orchestra, before you are able to login using OIDC. If you want to map the users by their e-mail-address you have to set the `Username field` to `email` in the Xen Orchestra plugin configuration.
 :::
