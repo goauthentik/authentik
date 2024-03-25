@@ -5,7 +5,7 @@ import "@goauthentik/elements/forms/FormElement";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
@@ -17,6 +17,7 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
+    FlowDesignationEnum,
     IdentificationChallenge,
     IdentificationChallengeResponseRequest,
     LoginSource,
@@ -220,13 +221,15 @@ export class IdentificationStage extends BaseStage<
             [UserFieldsEnum.Upn]: msg("UPN"),
         };
         const label = OR_LIST_FORMATTERS.format(fields.map((f) => uiFields[f]));
-        return html`${/forgot|recovery|recover/i.test(this.challenge.flowInfo?.title ?? "")
-                ? html`<p style="padding-bottom: 10px;">
-                      ${msg(
-                          "Enter the email associated with your account, and we'll send you a link to reset your password.",
-                      )}
-                  </p>`
-                : ""}
+        return html`${this.challenge.flowDesignation === FlowDesignationEnum.Recovery
+                ? html`
+                      <p>
+                          ${msg(
+                              "Enter the email associated with your account, and we'll send you a link to reset your password.",
+                          )}
+                      </p>
+                  `
+                : nothing}
             <ak-form-element
                 label=${label}
                 ?required="${true}"
