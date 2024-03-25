@@ -30366,6 +30366,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
       required:
       - asn
       - current
@@ -33383,6 +33384,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
         scope:
           type: array
           items:
@@ -34576,6 +34578,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
         fixed_data:
           type: object
           additionalProperties: {}
@@ -34612,6 +34615,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
         fixed_data:
           type: object
           additionalProperties: {}
@@ -39226,6 +39230,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
         fixed_data:
           type: object
           additionalProperties: {}
@@ -40585,6 +40590,15 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        default_token_duration:
+          type: string
+          minLength: 1
+          description: Default token duration
+        default_token_length:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Default token length
     PatchedSourceStageRequest:
       type: object
       description: SourceStage Serializer
@@ -40662,6 +40676,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
         expiring:
           type: boolean
     PatchedUserDeleteStageRequest:
@@ -43740,6 +43755,14 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        default_token_duration:
+          type: string
+          description: Default token duration
+        default_token_length:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Default token length
     SettingsRequest:
       type: object
       description: Settings Serializer
@@ -43771,6 +43794,15 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        default_token_duration:
+          type: string
+          minLength: 1
+          description: Default token duration
+        default_token_length:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Default token length
     SeverityEnum:
       enum:
       - notice
@@ -44475,6 +44507,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
         expiring:
           type: boolean
       required:
@@ -44500,6 +44533,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
         scope:
           type: array
           items:
@@ -44544,6 +44578,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
         expiring:
           type: boolean
       required:
@@ -44791,6 +44826,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
         expiring:
           type: boolean
         user:

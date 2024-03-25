@@ -8,6 +8,7 @@ from django.http import HttpRequest
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from authentik.core.models import default_token_duration
 from authentik.events.signals import get_login_event
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.constants import (
@@ -87,7 +88,9 @@ class IDToken:
     ) -> "IDToken":
         """Create ID Token"""
         id_token = IDToken(provider, token, **kwargs)
-        id_token.exp = int(token.expires.timestamp())
+        id_token.exp = int(
+            (token.expires if token.expires is not None else default_token_duration()).timestamp()
+        )
         id_token.iss = provider.get_issuer(request)
         id_token.aud = provider.client_id
         id_token.claims = {}

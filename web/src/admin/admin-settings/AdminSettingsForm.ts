@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-number-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/elements/CodeMirror";
@@ -192,6 +193,24 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 help=${msg("Globally enable/disable impersonation.")}
             >
             </ak-switch-input>
+            <ak-text-input
+                name="defaultTokenDuration"
+                label=${msg("Default token duration")}
+                required
+                value="${ifDefined(this._settings?.defaultTokenDuration)}"
+                .bighelp=${html`<p class="pf-c-form__helper-text">
+                        ${msg("Default duration for generated tokens")}
+                    </p>
+                    <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
+            >
+            </ak-text-input>
+            <ak-number-input
+                label=${msg("Default token length")}
+                required
+                name="defaultTokenLength"
+                value="${first(this._settings?.defaultTokenLength, 60)}"
+                help=${msg("Default length of generated tokens")}
+            ></ak-number-input>
         `;
     }
 }
