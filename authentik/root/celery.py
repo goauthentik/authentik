@@ -23,16 +23,16 @@ from django.db import ProgrammingError
 from django_tenants.utils import get_public_schema_name
 from structlog.contextvars import STRUCTLOG_KEY_PREFIX
 from structlog.stdlib import get_logger
-from tenant_schemas_celery.app import CeleryApp as TenantAwareCeleryApp
 
 from authentik.lib.sentry import before_send
 from authentik.lib.utils.errors import exception_to_string
+from authentik.root.redis_middleware_celery import CustomCelery
 
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
 
 LOGGER = get_logger()
-CELERY_APP = TenantAwareCeleryApp("authentik")
+CELERY_APP = CustomCelery("authentik")
 CTX_TASK_ID = ContextVar(STRUCTLOG_KEY_PREFIX + "task_id", default=Ellipsis)
 HEARTBEAT_FILE = Path(gettempdir() + "/authentik-worker")
 

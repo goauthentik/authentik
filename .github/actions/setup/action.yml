@@ -5,6 +5,9 @@ inputs:
   postgresql_version:
     description: "Optional postgresql image tag"
     default: "16"
+  redis_config:
+    description: "Optional redis configuration"
+    default: "redis"
 
 runs:
   using: "composite"
@@ -33,8 +36,19 @@ runs:
     - name: Setup dependencies
       shell: bash
       run: |
+        case ${{ inputs.redis_config }} in
+          redis-sentinel)
+            echo "redis_url=redis+sentinel://bitnami@localhost:26379/0?mastername=mymaster" >> $GITHUB_ENV
+            ;;
+          redis-cluster)
+            echo "redis_url=redis+cluster://bitnami@localhost:6379,localhost:6380,localhost:6381,localhost:6382,localhost:6383,localhost:6384/0" >> $GITHUB_ENV
+            ;;
+          *)
+            echo "redis_url=redis://localhost:6379/0" >> $GITHUB_ENV
+            ;;
+        esac
         export PSQL_TAG=${{ inputs.postgresql_version }}
-        docker-compose -f .github/actions/setup/docker-compose.yml up -d
+        docker-compose -f .github/actions/setup/docker-compose.yml --profile ${{ inputs.redis_config }} up -d
         poetry install
         cd web && npm ci
     - name: Generate config
@@ -48,6 +62,9 @@ runs:
                 {
                     "log_level": "debug",
                     "secret_key": generate_id(),
+                    "redis": {
+                      "url": "${{ env.redis_url }}"
+                    },
                 },
                 _config,
                 default_flow_style=False,

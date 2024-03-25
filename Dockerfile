@@ -19,7 +19,28 @@ COPY ./SECURITY.md /work/
 
 RUN npm run build-bundled
 
-# Stage 2: Build webui
+# Stage 2: Generate static Typescript files
+FROM --platform=${BUILDPLATFORM} docker.io/python:3.12.0-slim-bookworm AS npm-version
+
+RUN --mount=type=bind,target=./scripts/npm_version.py,src=./scripts/npm_version.py \
+    --mount=type=bind,target=./authentik,src=./authentik \
+    python -m scripts.npm_version > /NPM_VERSION
+
+FROM --platform=${BUILDPLATFORM} docker.io/openapitools/openapi-generator-cli:v6.5.0 as ts-generator
+
+WORKDIR /local
+
+COPY ./schema.yml .
+COPY ./scripts/api-ts-config.yaml ./scripts/api-ts-config.yaml
+COPY ./scripts/api-ts-templates ./scripts/api-ts-templates
+COPY --from=npm-version /NPM_VERSION .
+
+RUN NPM_VERSION=$(cat ./NPM_VERSION) && \
+    /usr/local/bin/docker-entrypoint.sh generate \
+    -i /local/schema.yml -g typescript-fetch -o /local/gen-ts-api -c /local/scripts/api-ts-config.yaml \
+    --additional-properties=npmVersion=${NPM_VERSION} --git-repo-id authentik --git-user-id goauthentik
+
+# Stage 3: Build webui
 FROM --platform=${BUILDPLATFORM} docker.io/node:21 as web-builder
 
 ENV NODE_ENV=production
@@ -33,11 +54,30 @@ RUN --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
 
 COPY ./web /work/web/
 COPY ./website /work/website/
-COPY ./gen-ts-api /work/web/node_modules/@goauthentik/api
+COPY --from=ts-generator /local/gen-ts-api /work/web/node_modules/@goauthentik/api
+
+RUN cd /work/web/node_modules/@goauthentik/api && \
+    npm install
 
 RUN npm run build
 
-# Stage 3: Build go proxy
+# Stage 4: Generate static Go files
+FROM --platform=${BUILDPLATFORM} docker.io/openapitools/openapi-generator-cli:v6.5.0 as go-generator
+
+WORKDIR /local
+
+RUN mkdir -p templates && \
+    wget https://raw.githubusercontent.com/goauthentik/client-go/main/config.yaml -O ./config.yaml && \
+	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/README.mustache -O ./templates/README.mustache && \
+	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/go.mod.mustache -O ./templates/go.mod.mustache
+
+COPY ./schema.yml .
+
+RUN /usr/local/bin/docker-entrypoint.sh generate \
+    -i /local/schema.yml -g go -o /local/ -c /local/config.yaml && \
+    rm -rf /local/config.yaml /local/templates
+
+# Stage 5: Build go proxy
 FROM --platform=${BUILDPLATFORM} docker.io/golang:1.22.1-bookworm AS go-builder
 
 ARG TARGETOS
@@ -49,9 +89,13 @@ ARG GOARCH=$TARGETARCH
 
 WORKDIR /go/src/goauthentik.io
 
-RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
-    --mount=type=bind,target=/go/src/goauthentik.io/go.sum,src=./go.sum \
-    --mount=type=cache,target=/go/pkg/mod \
+COPY --from=go-generator /local /go/src/goauthentik.io/gen-go-api
+
+COPY ./go.mod /go/src/goauthentik.io/go.mod
+COPY ./go.sum /go/src/goauthentik.io/go.sum
+
+RUN --mount=type=cache,target=/go/pkg/mod \
+    go mod edit -replace goauthentik.io/api/v3=./gen-go-api && \
     go mod download
 
 COPY ./cmd /go/src/goauthentik.io/cmd
@@ -60,8 +104,6 @@ COPY ./web/static.go /go/src/goauthentik.io/web/static.go
 COPY --from=web-builder /work/web/robots.txt /go/src/goauthentik.io/web/robots.txt
 COPY --from=web-builder /work/web/security.txt /go/src/goauthentik.io/web/security.txt
 COPY ./internal /go/src/goauthentik.io/internal
-COPY ./go.mod /go/src/goauthentik.io/go.mod
-COPY ./go.sum /go/src/goauthentik.io/go.sum
 
 ENV CGO_ENABLED=0
 
@@ -69,7 +111,7 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
     GOARM="${TARGETVARIANT#v}" go build -o /go/authentik ./cmd/server
 
-# Stage 4: MaxMind GeoIP
+# Stage 6: MaxMind GeoIP
 FROM --platform=${BUILDPLATFORM} ghcr.io/maxmind/geoipupdate:v6.1 as geoip
 
 ENV GEOIPUPDATE_EDITION_IDS="GeoLite2-City GeoLite2-ASN"
@@ -83,13 +125,18 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     mkdir -p /usr/share/GeoIP && \
     /bin/sh -c "/usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
-# Stage 5: Python dependencies
+# Stage 7: Python dependencies
 FROM docker.io/python:3.12.2-slim-bookworm AS python-deps
 
 WORKDIR /ak-root/poetry
 
 ENV VENV_PATH="/ak-root/venv" \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=off \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
     POETRY_VIRTUALENVS_CREATE=false \
+    POETRY_NO_INTERACTION=1 \
     PATH="/ak-root/venv/bin:$PATH"
 
 RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
@@ -109,7 +156,7 @@ RUN --mount=type=bind,target=./pyproject.toml,src=./pyproject.toml \
         pip3 install poetry && \
         poetry install --only=main --no-ansi --no-interaction --no-root"
 
-# Stage 6: Run
+# Stage 8: Run
 FROM docker.io/python:3.12.2-slim-bookworm AS final-image
 
 ARG GIT_BUILD_HASH
@@ -161,7 +208,10 @@ ENV TMPDIR=/dev/shm/ \
     PYTHONUNBUFFERED=1 \
     PATH="/ak-root/venv/bin:/lifecycle:$PATH" \
     VENV_PATH="/ak-root/venv" \
-    POETRY_VIRTUALENVS_CREATE=false
+    PIP_NO_CACHE_DIR=off \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    POETRY_VIRTUALENVS_CREATE=false \
+    POETRY_NO_INTERACTION=1
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 CMD [ "ak", "healthcheck" ]
 

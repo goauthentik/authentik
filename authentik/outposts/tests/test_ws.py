@@ -50,6 +50,7 @@ class TestOutpostWS(TransactionTestCase):
         )
         connected, _ = await communicator.connect()
         self.assertTrue(connected)
+        await communicator.disconnect()
 
     async def test_send(self):
         """Test sending of Hello"""
@@ -77,6 +78,7 @@ class TestOutpostWS(TransactionTestCase):
             response, asdict(WebsocketMessage(instruction=WebsocketMessageInstruction.ACK, args={}))
         )
         await communicator.disconnect()
+        del communicator
 
     async def test_send_ack(self):
         """Test sending of ACK"""
@@ -96,3 +98,4 @@ class TestOutpostWS(TransactionTestCase):
             )
         )
         await communicator.disconnect()
+        del communicator

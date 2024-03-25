@@ -97,7 +97,7 @@ jobs:
         run: |
           poetry run make test
   test-unittest:
-    name: test-unittest - PostgreSQL ${{ matrix.psql }}
+    name: test-unittest - PostgreSQL ${{ matrix.psql }} - Redis ${{ matrix.redis }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
@@ -107,12 +107,17 @@ jobs:
           - 12-alpine
           - 15-alpine
           - 16-alpine
+        redis:
+          - redis
+          - redis-sentinel
+          - redis-cluster
     steps:
       - uses: actions/checkout@v4
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
           postgresql_version: ${{ matrix.psql }}
+          redis_config: ${{ matrix.redis }}
       - name: run unittest
         run: |
           poetry run make test

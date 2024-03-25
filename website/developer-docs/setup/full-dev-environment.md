@@ -6,7 +6,7 @@ title: Full development environment
 
 -   Python 3.12
 -   Poetry, which is used to manage dependencies
--   Go 1.20
+-   Go 1.21
 -   Node.js 20
 -   PostgreSQL (any recent version will do)
 -   Redis (any recent version will do)

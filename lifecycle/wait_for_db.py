@@ -3,13 +3,12 @@
 import authentik. This is done by the dockerfile."""
 from sys import exit as sysexit
 from time import sleep
-from urllib.parse import quote_plus
 
 from psycopg import OperationalError, connect
-from redis import Redis
 from redis.exceptions import RedisError
 
 from authentik.lib.config import CONFIG
+from authentik.lib.utils.parser import parse_url
 
 CONFIG.log("info", "Starting authentik bootstrap")
 
@@ -41,20 +40,14 @@ while True:
         CONFIG.log("info", f"PostgreSQL connection failed, retrying... ({exc})")
 CONFIG.log("info", "PostgreSQL connection successful")
 
-REDIS_PROTOCOL_PREFIX = "redis://"
-if CONFIG.get_bool("redis.tls", False):
-    REDIS_PROTOCOL_PREFIX = "rediss://"
-REDIS_URL = (
-    f"{REDIS_PROTOCOL_PREFIX}:"
-    f"{quote_plus(CONFIG.get('redis.password'))}@{quote_plus(CONFIG.get('redis.host'))}:"
-    f"{CONFIG.get_int('redis.port')}/{CONFIG.get('redis.db')}"
-)
+REDIS_URL = CONFIG.get("redis.url")
 while True:
     try:
-        redis = Redis.from_url(REDIS_URL)
+        redis = parse_url(REDIS_URL)
         redis.ping()
         break
-    except RedisError as exc:
+    # Catch index error for Redis cluster that is still initializing
+    except (RedisError, IndexError) as exc:
         sleep(1)
         CONFIG.log("info", f"Redis Connection failed, retrying... ({exc})", redis_url=REDIS_URL)
 CONFIG.log("info", "Redis Connection successful")

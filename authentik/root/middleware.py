@@ -27,7 +27,7 @@ SIGNING_HASH = sha512(settings.SECRET_KEY.encode()).hexdigest()
 
 
 class SessionMiddleware(UpstreamSessionMiddleware):
-    """Dynamically set SameSite depending if the upstream connection is TLS or not"""
+    """Dynamically set SameSite depending on the upstream connection being TLS or not"""
 
     @staticmethod
     def is_secure(request: HttpRequest) -> bool:

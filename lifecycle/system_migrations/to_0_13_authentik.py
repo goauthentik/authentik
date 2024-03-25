@@ -1,7 +1,14 @@
 # flake8: noqa
-from redis import Redis
+from urllib.parse import urlparse
 
 from authentik.lib.config import CONFIG
+from authentik.lib.utils.parser import (
+    get_client,
+    get_connection_pool,
+    get_redis_options,
+    parse_url,
+    process_config,
+)
 from lifecycle.migrate import BaseMigration
 
 SQL_STATEMENT = """BEGIN TRANSACTION;
@@ -107,16 +114,15 @@ class Migration(BaseMigration):
         with self.con.transaction():
             self.cur.execute(SQL_STATEMENT)
             # We also need to clean the cache to make sure no pickeled objects still exist
+            url = urlparse(CONFIG.get("redis.url"))
+            pool_kwargs, redis_kwargs, tls_kwargs = get_redis_options(url)
             for db in [
-                CONFIG.get("redis.message_queue_db"),
-                CONFIG.get("redis.cache_db"),
-                CONFIG.get("redis.ws_db"),
+                CONFIG.get_int("redis.message_queue_db"),
+                CONFIG.get_int("redis.cache_db"),
+                CONFIG.get_int("redis.ws_db"),
             ]:
-                redis = Redis(
-                    host=CONFIG.get("redis.host"),
-                    port=6379,
-                    db=db,
-                    username=CONFIG.get("redis.username"),
-                    password=CONFIG.get("redis.password"),
-                )
+                redis_kwargs["db"] = db
+                config = process_config(url, pool_kwargs, redis_kwargs, tls_kwargs)
+                pool, client_config = get_connection_pool(config)
+                _, redis = get_client(client_config, pool)
                 redis.flushall()

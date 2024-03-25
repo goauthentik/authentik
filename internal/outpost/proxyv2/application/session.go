@@ -2,7 +2,6 @@ package application
 
 import (
 	"context"
-	"fmt"
 	"math"
 	"net/http"
 	"net/url"
@@ -12,8 +11,6 @@ import (
 
 	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
-	"github.com/redis/go-redis/v9"
-
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/proxyv2/codecs"
@@ -31,32 +28,34 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 		maxAge = int(*t) + 1
 	}
 	if a.isEmbedded {
-		client := redis.NewClient(&redis.Options{
-			Addr:     fmt.Sprintf("%s:%d", config.Get().Redis.Host, config.Get().Redis.Port),
-			Username: config.Get().Redis.Username,
-			Password: config.Get().Redis.Password,
-			DB:       config.Get().Redis.DB,
-		})
-
-		// New default RedisStore
-		rs, err := redisstore.NewRedisStore(context.Background(), client)
+		redisURL, err := url.Parse(config.Get().Redis.URL)
 		if err != nil {
-			a.log.WithError(err).Panic("failed to connect to redis")
+			client, err := redisstore.GetRedisClient(redisURL)
+			if err != nil {
+				panic(err)
+			}
+			rs, err := redisstore.NewStore(
+				client,
+				redisstore.WithOptions(&sessions.Options{
+					Path: "/",
+					Domain: *p.CookieDomain,
+					HttpOnly: true,
+					MaxAge: maxAge,
+					SameSite: http.SameSiteLaxMode,
+					Secure: strings.ToLower(externalHost.Scheme) == "https",
+				}),
+				redisstore.WithKeyPrefix(RedisKeyPrefix),
+				redisstore.WithMaxLength(math.MaxInt),
+				redisstore.WithCodecs(codecs.CodecsFromPairs(maxAge, []byte(*p.CookieSecret))),
+			)
+			if err != nil {
+				panic(err)
+			}
+			a.log.Trace("using redis session backend")
+			return rs
 		}
-
-		rs.KeyPrefix(RedisKeyPrefix)
-		rs.Options(sessions.Options{
-			HttpOnly: true,
-			Secure:   strings.ToLower(externalHost.Scheme) == "https",
-			Domain:   *p.CookieDomain,
-			SameSite: http.SameSiteLaxMode,
-			MaxAge:   maxAge,
-			Path:     "/",
-		})
-
-		a.log.Trace("using redis session backend")
-		return rs
 	}
+
 	dir := os.TempDir()
 	cs := sessions.NewFilesystemStore(dir)
 	cs.Codecs = codecs.CodecsFromPairs(maxAge, []byte(*p.CookieSecret))
@@ -131,20 +130,18 @@ func (a *Application) Logout(ctx context.Context, filter func(c Claims) bool) er
 		}
 	}
 	if rs, ok := a.sessions.(*redisstore.RedisStore); ok {
-		client := rs.Client()
-		keys, err := client.Keys(ctx, fmt.Sprintf("%s*", RedisKeyPrefix)).Result()
+		keys, err := rs.Keys()
 		if err != nil {
 			return err
 		}
-		serializer := redisstore.GobSerializer{}
 		for _, key := range keys {
-			v, err := client.Get(ctx, key).Result()
+			b, err := rs.GetBytesByKey(key)
 			if err != nil {
-				a.log.WithError(err).Warning("failed to get value")
+				a.log.WithError(err).Warning("failed to load value")
 				continue
 			}
 			s := sessions.Session{}
-			err = serializer.Deserialize([]byte(v), &s)
+			err = rs.Deserialize(b, &s)
 			if err != nil {
 				a.log.WithError(err).Warning("failed to deserialize")
 				continue
@@ -156,7 +153,7 @@ func (a *Application) Logout(ctx context.Context, filter func(c Claims) bool) er
 			claims := c.(Claims)
 			if filter(claims) {
 				a.log.WithField("key", key).Trace("deleting session")
-				_, err := client.Del(ctx, key).Result()
+				err := rs.DeleteByKey(key)
 				if err != nil {
 					a.log.WithError(err).Warning("failed to delete key")
 					continue

@@ -12,6 +12,7 @@ require (
 	github.com/go-ldap/ldap/v3 v3.4.6
 	github.com/go-openapi/runtime v0.28.0
 	github.com/go-openapi/strfmt v0.23.0
+    github.com/go-redis/redismock/v9 v9.0.3
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/handlers v1.5.2
