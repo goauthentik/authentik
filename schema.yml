@@ -31782,8 +31782,7 @@ components:
         pk:
           type: string
           format: uuid
-          readOnly: true
-          title: Pbm uuid
+          title: Connection token uuid
         provider:
           type: integer
         provider_obj:
@@ -31793,7 +31792,6 @@ components:
         endpoint:
           type: string
           format: uuid
-          readOnly: true
         endpoint_obj:
           allOf:
           - $ref: '#/components/schemas/Endpoint'
@@ -31805,7 +31803,6 @@ components:
       required:
       - endpoint
       - endpoint_obj
-      - pk
       - provider
       - provider_obj
       - user
@@ -31813,9 +31810,17 @@ components:
       type: object
       description: ConnectionToken Serializer
       properties:
+        pk:
+          type: string
+          format: uuid
+          title: Connection token uuid
         provider:
           type: integer
+        endpoint:
+          type: string
+          format: uuid
       required:
+      - endpoint
       - provider
     ConsentChallenge:
       type: object
@@ -34332,6 +34337,8 @@ components:
           type: boolean
         application_pre:
           type: string
+        flow_designation:
+          $ref: '#/components/schemas/FlowDesignationEnum'
         enroll_url:
           type: string
         recovery_url:
@@ -34347,6 +34354,7 @@ components:
         show_source_labels:
           type: boolean
       required:
+      - flow_designation
       - password_fields
       - primary_action
       - show_source_labels
@@ -38586,8 +38594,15 @@ components:
       type: object
       description: ConnectionToken Serializer
       properties:
+        pk:
+          type: string
+          format: uuid
+          title: Connection token uuid
         provider:
           type: integer
+        endpoint:
+          type: string
+          format: uuid
     PatchedConsentStageRequest:
       type: object
       description: ConsentStage Serializer
@@ -45584,8 +45599,8 @@ components:
           description: Get latest version from cache
           readOnly: true
         version_latest_valid:
-          type: boolean
-          description: Latest version query is a valid non-default value
+          type: string
+          description: Check if latest version is valid
           readOnly: true
         build_hash:
           type: string

@@ -61,12 +61,12 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
             }}
             .usedBy=${(item: ConnectionToken) => {
                 return new RacApi(DEFAULT_CONFIG).racConnectionTokensUsedByList({
-                    connectionTokenUuid: item.pk,
+                    connectionTokenUuid: item.pk || "",
                 });
             }}
             .delete=${(item: ConnectionToken) => {
                 return new RacApi(DEFAULT_CONFIG).racConnectionTokensDestroy({
-                    connectionTokenUuid: item.pk,
+                    connectionTokenUuid: item.pk || "",
                 });
             }}
         >
