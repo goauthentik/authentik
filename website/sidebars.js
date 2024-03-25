@@ -40,6 +40,7 @@ const docsSidebar = {
                 "core/certificates",
                 "core/geoip",
                 "core/architecture",
+                "core/settings",
             ],
         },
         {
