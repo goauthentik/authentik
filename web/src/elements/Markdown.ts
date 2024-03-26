@@ -56,7 +56,7 @@ export class Markdown extends AKElement {
     converter = new showdown.Converter({ metadata: true, tables: true });
 
     replaceAdmonitions(input: string): string {
-        const admonitionStart = /:::(\w+)<br\s\/>/gm;
+        const admonitionStart = /:::(\w+)(<br\s*\/>|\s*$)/gm;
         const admonitionEnd = /:::/gm;
         return (
             input
