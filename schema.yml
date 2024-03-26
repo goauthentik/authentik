@@ -19927,6 +19927,10 @@ paths:
         schema:
           type: integer
       - in: query
+        name: password_login_update_internal_password
+        schema:
+          type: boolean
+      - in: query
         name: peer_certificate
         schema:
           type: string
@@ -31782,8 +31786,7 @@ components:
         pk:
           type: string
           format: uuid
-          readOnly: true
-          title: Pbm uuid
+          title: Connection token uuid
         provider:
           type: integer
         provider_obj:
@@ -31793,7 +31796,6 @@ components:
         endpoint:
           type: string
           format: uuid
-          readOnly: true
         endpoint_obj:
           allOf:
           - $ref: '#/components/schemas/Endpoint'
@@ -31805,7 +31807,6 @@ components:
       required:
       - endpoint
       - endpoint_obj
-      - pk
       - provider
       - provider_obj
       - user
@@ -31813,9 +31814,17 @@ components:
       type: object
       description: ConnectionToken Serializer
       properties:
+        pk:
+          type: string
+          format: uuid
+          title: Connection token uuid
         provider:
           type: integer
+        endpoint:
+          type: string
+          format: uuid
       required:
+      - endpoint
       - provider
     ConsentChallenge:
       type: object
@@ -34332,6 +34341,8 @@ components:
           type: boolean
         application_pre:
           type: string
+        flow_designation:
+          $ref: '#/components/schemas/FlowDesignationEnum'
         enroll_url:
           type: string
         recovery_url:
@@ -34347,6 +34358,7 @@ components:
         show_source_labels:
           type: boolean
       required:
+      - flow_designation
       - password_fields
       - primary_action
       - show_source_labels
@@ -35217,6 +35229,10 @@ components:
         object_uniqueness_field:
           type: string
           description: Field which contains a unique Identifier.
+        password_login_update_internal_password:
+          type: boolean
+          description: Update internal authentik password when login succeeds with
+            LDAP
         sync_users:
           type: boolean
         sync_users_password:
@@ -35358,6 +35374,10 @@ components:
           type: string
           minLength: 1
           description: Field which contains a unique Identifier.
+        password_login_update_internal_password:
+          type: boolean
+          description: Update internal authentik password when login succeeds with
+            LDAP
         sync_users:
           type: boolean
         sync_users_password:
@@ -38586,8 +38606,15 @@ components:
       type: object
       description: ConnectionToken Serializer
       properties:
+        pk:
+          type: string
+          format: uuid
+          title: Connection token uuid
         provider:
           type: integer
+        endpoint:
+          type: string
+          format: uuid
     PatchedConsentStageRequest:
       type: object
       description: ConsentStage Serializer
@@ -39425,6 +39452,10 @@ components:
           type: string
           minLength: 1
           description: Field which contains a unique Identifier.
+        password_login_update_internal_password:
+          type: boolean
+          description: Update internal authentik password when login succeeds with
+            LDAP
         sync_users:
           type: boolean
         sync_users_password:
@@ -45585,7 +45616,7 @@ components:
           readOnly: true
         version_latest_valid:
           type: boolean
-          description: Latest version query is a valid non-default value
+          description: Check if latest version is valid
           readOnly: true
         build_hash:
           type: string

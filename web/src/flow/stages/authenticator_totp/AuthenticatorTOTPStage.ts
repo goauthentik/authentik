@@ -106,6 +106,11 @@ export class AuthenticatorTOTPStage extends BaseStage<
                             </button>
                         </div>
                     </ak-form-element>
+                    <p>
+                        ${msg(
+                            "Please scan the QR code above using the Microsoft Authenticator, Google Authenticator, or other authenticator apps on your device, and enter the code the device displays below to finish setting up the MFA device.",
+                        )}
+                    </p>
                     <ak-form-element
                         label="${msg("Code")}"
                         ?required="${true}"

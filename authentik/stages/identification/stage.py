@@ -10,7 +10,7 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.utils.translation import gettext as _
 from drf_spectacular.utils import PolymorphicProxySerializer, extend_schema_field
-from rest_framework.fields import BooleanField, CharField, DictField, ListField
+from rest_framework.fields import BooleanField, CharField, ChoiceField, DictField, ListField
 from rest_framework.serializers import ValidationError
 from sentry_sdk.hub import Hub
 
@@ -66,6 +66,7 @@ class IdentificationChallenge(Challenge):
     user_fields = ListField(child=CharField(), allow_empty=True, allow_null=True)
     password_fields = BooleanField()
     application_pre = CharField(required=False)
+    flow_designation = ChoiceField(FlowDesignation.choices)
 
     enroll_url = CharField(required=False)
     recovery_url = CharField(required=False)
@@ -194,11 +195,12 @@ class IdentificationStageView(ChallengeStageView):
         challenge = IdentificationChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "primary_action": self.get_primary_action(),
                 "component": "ak-stage-identification",
+                "primary_action": self.get_primary_action(),
                 "user_fields": current_stage.user_fields,
                 "password_fields": bool(current_stage.password_stage),
                 "show_source_labels": current_stage.show_source_labels,
+                "flow_designation": self.executor.flow.designation,
             }
         )
         # If the user has been redirected to us whilst trying to access an

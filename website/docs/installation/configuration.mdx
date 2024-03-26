@@ -110,7 +110,7 @@ To check if your config has been applied correctly, you can run the following co
 ## Broker Settings
 
 -   `AUTHENTIK_BROKER__URL`: Broker configuration URL, defaults to Redis using [the respective settings](#redis-settings)
--   `AUTHENTIK_BROKER__TRANSPORT_OPTIONS`: Base64 encoded broker transport options
+-   `AUTHENTIK_BROKER__TRANSPORT_OPTIONS`: Base64-encoded broker transport options
 
     :::info
     `AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION` only applies to the cache expiry, see [`AUTHENTIK_REPUTATION__EXPIRY`](#authentik_reputation__expiry) to control how long reputation is persisted for.
@@ -144,19 +144,19 @@ These settings affect where media files are stored. Those files include applicat
 -   `AUTHENTIK_STORAGE__MEDIA__S3__SECURITY_TOKEN`: Security token to authenticate to S3. May be omitted. Supports hot-reloading.
 -   `AUTHENTIK_STORAGE__MEDIA__S3__BUCKET_NAME`: Name of the bucket to use to store files.
 -   `AUTHENTIK_STORAGE__MEDIA__S3__CUSTOM_DOMAIN`: Domain to use to create URLs for users. Mainly useful for non-AWS providers. May include a port. Must include the bucket. Example: `s3.company:8080/authentik-media`.
--   `AUTHENTIK_STORAGE__MEDIA__S3__SECURE_URLS`: Whether URLS created for users use `http` or `https`. Defaults to `true`.
+-   `AUTHENTIK_STORAGE__MEDIA__S3__SECURE_URLS`: Whether URLs created use HTTPS (set to `true` by default) or HTTP.
 
 ## authentik Settings
 
 ### `AUTHENTIK_SECRET_KEY`
 
-Secret key used for cookie signing and unique user IDs, don't change this after the first install.
+Secret key used for cookie signing and unique user IDs. Do not change this after the first install.
 
 ### `AUTHENTIK_LOG_LEVEL`
 
-Log level for the server and worker containers. Possible values: debug, info, warning, error
+Log level for the server and worker containers. Possible values: `debug`, `info`, `warning`, `error`.
 
-Starting with 2021.12.3, you can also set the log level to _trace_. This has no affect on the core authentik server, but shows additional messages for the embedded outpost.
+Starting with 2021.12.3, you can also set the log level to `trace`. This has no effect on the core authentik server, but shows additional messages for the embedded outpost.
 
 :::danger
 Setting the log level to `trace` will include sensitive details in logs, so it shouldn't be used in most cases.
@@ -188,7 +188,7 @@ Disable the inbuilt update-checker. Defaults to `false`.
 
     Enable error reporting. Defaults to `false`.
 
-    Error reports are sent to https://sentry.io, and are used for debugging and general feedback. Anonymous performance data is also sent.
+    Error reports are sent to https://sentry.io and are used for debugging and general feedback. Anonymous performance data is also sent.
 
 -   `AUTHENTIK_ERROR_REPORTING__SENTRY_DSN`
 
@@ -202,8 +202,7 @@ Disable the inbuilt update-checker. Defaults to `false`.
 
     The environment tag associated with all data sent to Sentry. Defaults to `customer`.
 
-    When error reporting has been enabled to aid in debugging issues, this should be set to a unique
-    value, such as an e-mail address.
+    When error reporting has been enabled to aid in debugging issues, this should be set to a unique value, such as an email address.
 
 -   `AUTHENTIK_ERROR_REPORTING__SEND_PII`
 
@@ -326,7 +325,7 @@ Requires authentik 2022.9
 Configure how many gunicorn worker processes should be started (see https://docs.gunicorn.org/en/stable/design.html).
 
 If running in Kubernetes, the default value is set to 2 and should in most cases not be changed, as scaling can be done with multiple pods running the web server.
-Otherwise, authentik will use 1 worker for each 4 CPU cores + 1 as a value below 2 workers is not recommended.
+Otherwise, authentik will use 1 worker for each 4 CPU cores + 1. A value below 2 workers is not recommended.
 
 ### `AUTHENTIK_WEB__THREADS`
 
@@ -358,7 +357,7 @@ Additional settings are configurable using the Admin interface, under **System**
 
 ## Custom python settings
 
-To modify additional settings further than the options above allow, you can create a custom python file and mount it to `/data/user_settings.py`. This file will be loaded on startup by both the server and the worker. All default settings are [here](https://github.com/goauthentik/authentik/blob/main/authentik/root/settings.py)
+To modify additional settings further than the options above allow, you can create a custom Python file and mount it to `/data/user_settings.py`. This file will be loaded on startup by both the server and the worker. All default settings are [here](https://github.com/goauthentik/authentik/blob/main/authentik/root/settings.py)
 
 :::caution
 Using these custom settings is not supported and can prevent your authentik instance from starting. Use with caution.

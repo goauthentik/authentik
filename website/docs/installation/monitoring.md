@@ -2,11 +2,11 @@
 title: Monitoring
 ---
 
-authentik can be easily monitored multiple ways.
+authentik can be easily monitored in multiple ways.
 
 ## Server monitoring
 
-Configure your monitoring software to send requests to `/-/health/live/`, which will return a HTTP 204 response as long as authentik is running. You can also send HTTP requests to `/-/health/ready/`, which will return HTTP 204 if both PostgreSQL and Redis connections can be/have been established correctly.
+Configure your monitoring software to send requests to `/-/health/live/`, which will return a `HTTP 204` response as long as authentik is running. You can also send HTTP requests to `/-/health/ready/`, which will return `HTTP 204` if both PostgreSQL and Redis connections can be/have been established correctly.
 
 ## Worker monitoring
 
@@ -14,11 +14,11 @@ The worker container can be monitored by running `ak healthcheck` in the worker 
 
 ## Outpost monitoring
 
-Both kinds of outpost (proxy and LDAP) listen on a separate port (9300), and can be monitored by sending HTTP requests to `/outpost.goauthentik.io/ping`.
+Both kinds of outpost (proxy and LDAP) listen on a separate port (9300) and can be monitored by sending HTTP requests to `/outpost.goauthentik.io/ping`.
 
 ---
 
-Both docker-compose and Kubernetes deployments use these methods by default to determine when authentik is ready after starting, and to only route traffic to healthy instances, and unhealthy instances are restarted
+Both Docker Compose and Kubernetes deployments use these methods by default to determine when authentik is ready after starting, and to only route traffic to healthy instances; unhealthy instances are restarted.
 
 ## Metrics
 
