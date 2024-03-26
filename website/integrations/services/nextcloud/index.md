@@ -286,7 +286,7 @@ Create a custom SAML Property Mapping:
 -   Set the _Expression_ to:
 
 ```python
-for group in user.ak_groups.all():
+for group in request.user.all_groups():
     yield group.name
 if ak_is_group_member(request.user, name="<authentik nextcloud admin group's name>"):
     yield "admin"
