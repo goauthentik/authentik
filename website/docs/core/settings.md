@@ -48,7 +48,7 @@ This option configures the footer links on the flow executor pages.
 The setting can be used as follows:
 
 ```json
-[{"name": "Link Name","href":"https://goauthentik.io"}]
+[{ "name": "Link Name", "href": "https://goauthentik.io" }]
 ```
 
 ### GDPR compliance

@@ -150,6 +150,17 @@ module.exports = async function (): Promise<Config> {
                         "https://github.com/goauthentik/authentik/edit/main/website/",
                 },
             ],
+            [
+                "@docusaurus/plugin-client-redirects",
+                {
+                    redirects: [
+                        {
+                            to: "/",
+                            from: "/docs",
+                        },
+                    ],
+                },
+            ],
         ],
         markdown: {
             mermaid: true,
