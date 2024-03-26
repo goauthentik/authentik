@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
         "strict": true,
-        "esModuleInterop": true,
         "baseUrl": ".",
+        "esModuleInterop": true,
         "paths": {
             "@goauthentik/docs/*": ["../website/docs/*"]
         },
