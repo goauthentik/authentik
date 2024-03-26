@@ -39,7 +39,7 @@ class VersionSerializer(PassiveSerializer):
             return __version__
         return version_in_cache
 
-    def get_version_latest_valid(self, _) -> str:
+    def get_version_latest_valid(self, _) -> bool:
         """Check if latest version is valid"""
         return cache.get(VERSION_CACHE_KEY) != VERSION_NULL
 
