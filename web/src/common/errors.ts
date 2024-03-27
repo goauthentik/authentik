@@ -16,7 +16,7 @@ export async function parseAPIError(error: Error): Promise<APIErrorTypes> {
     if (!(error instanceof ResponseError)) {
         return error;
     }
-    if (error.response.status < 400 && error.response.status > 499) {
+    if (error.response.status < 400 || error.response.status > 499) {
         return error;
     }
     const body = await error.response.json();
