@@ -63,6 +63,7 @@ module.exports = {
                         "services/portainer/index",
                         "services/proxmox-ve/index",
                         "services/rancher/index",
+                        "services/xen-orchestra/index",
                         "services/vmware-vcenter/index",
                     ],
                 },
