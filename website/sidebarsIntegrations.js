@@ -29,6 +29,7 @@ module.exports = {
                         "services/mobilizon/index",
                         "services/nextcloud/index",
                         "services/onlyoffice/index",
+                        "services/openproject/index",
                         "services/paperless-ng/index",
                         "services/paperless-ngx/index",
                         "services/rocketchat/index",
