@@ -4,11 +4,9 @@ import re
 from base64 import b64decode
 from binascii import Error
 from typing import Any
-from urllib.parse import urlparse
 
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.http.response import HttpResponseRedirect
-from django.utils.cache import patch_vary_headers
 from structlog.stdlib import get_logger
 
 from authentik.core.middleware import CTX_AUTH_VIA, KEY_USER
@@ -28,49 +26,6 @@ class TokenResponse(JsonResponse):
         super().__init__(*args, **kwargs)
         self["Cache-Control"] = "no-store"
         self["Pragma"] = "no-cache"
-
-
-def cors_allow(request: HttpRequest, response: HttpResponse, *allowed_origins: str):
-    """Add headers to permit CORS requests from allowed_origins, with or without credentials,
-    with any headers."""
-    origin = request.META.get("HTTP_ORIGIN")
-    if not origin:
-        return response
-
-    # OPTIONS requests don't have an authorization header -> hence
-    # we can't extract the provider this request is for
-    # so for options requests we allow the calling origin without checking
-    allowed = request.method == "OPTIONS"
-    received_origin = urlparse(origin)
-    for allowed_origin in allowed_origins:
-        url = urlparse(allowed_origin)
-        if (
-            received_origin.scheme == url.scheme
-            and received_origin.hostname == url.hostname
-            and received_origin.port == url.port
-        ):
-            allowed = True
-    if not allowed:
-        LOGGER.warning(
-            "CORS: Origin is not an allowed origin",
-            requested=received_origin,
-            allowed=allowed_origins,
-        )
-        return response
-
-    # From the CORS spec: The string "*" cannot be used for a resource that supports credentials.
-    response["Access-Control-Allow-Origin"] = origin
-    patch_vary_headers(response, ["Origin"])
-    response["Access-Control-Allow-Credentials"] = "true"
-
-    if request.method == "OPTIONS":
-        if "HTTP_ACCESS_CONTROL_REQUEST_HEADERS" in request.META:
-            response["Access-Control-Allow-Headers"] = request.META[
-                "HTTP_ACCESS_CONTROL_REQUEST_HEADERS"
-            ]
-        response["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
-
-    return response
 
 
 def extract_access_token(request: HttpRequest) -> str | None:

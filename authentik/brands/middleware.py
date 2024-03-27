@@ -32,8 +32,8 @@ class BrandMiddleware:
         return self.get_response(request)
 
 
-class BrandCSPHeaderMiddleware:
-    """Add CSP header from currently active brand"""
+class BrandHeaderMiddleware:
+    """Add headers from currently active brand"""
 
     get_response: Callable[[HttpRequest], HttpResponse]
     default_csp_elements: dict[str, list[str]] = {}
@@ -60,7 +60,8 @@ class BrandCSPHeaderMiddleware:
     def get_csp(self, request: HttpRequest) -> str:
         brand: "Brand" = request.brand
         elements = self.default_csp_elements.copy()
-        elements["frame-ancestors"] = [" ".join(brand.embeddable_domains.split(","))]
+        if brand.origin != "":
+            elements["frame-ancestors"] = [brand.origin]
         return ";".join(f"{attr} {" ".join(value)}" for attr, value in elements.items())
 
     def __call__(self, request: HttpRequest) -> HttpResponse:

@@ -7609,6 +7609,11 @@
                     "title": "Domain",
                     "description": "Domain that activates this brand. Can be a superset, i.e. `a.b` for `aa.b` and `ba.b`"
                 },
+                "origin": {
+                    "type": "string",
+                    "title": "Origin",
+                    "description": "Origin domain that activates this brand. Can be left empty to not allow any origins."
+                },
                 "default": {
                     "type": "boolean",
                     "title": "Default"

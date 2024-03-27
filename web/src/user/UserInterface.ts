@@ -22,6 +22,7 @@ import "@goauthentik/elements/sidebar/Sidebar";
 import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 import "@goauthentik/elements/sidebar/SidebarItem";
 import { ROUTES } from "@goauthentik/user/Routes";
+import "@goauthentik/user/user-settings/details/UserSettingsFlowExecutor";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { match } from "ts-pattern";
 

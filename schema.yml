@@ -31334,6 +31334,10 @@ components:
           type: string
           description: Domain that activates this brand. Can be a superset, i.e. `a.b`
             for `aa.b` and `ba.b`
+        origin:
+          type: string
+          description: Origin domain that activates this brand. Can be left empty
+            to not allow any origins.
         default:
           type: boolean
         branding_title:
@@ -31390,6 +31394,10 @@ components:
           minLength: 1
           description: Domain that activates this brand. Can be a superset, i.e. `a.b`
             for `aa.b` and `ba.b`
+        origin:
+          type: string
+          description: Origin domain that activates this brand. Can be left empty
+            to not allow any origins.
         default:
           type: boolean
         branding_title:
@@ -38530,6 +38538,10 @@ components:
           minLength: 1
           description: Domain that activates this brand. Can be a superset, i.e. `a.b`
             for `aa.b` and `ba.b`
+        origin:
+          type: string
+          description: Origin domain that activates this brand. Can be left empty
+            to not allow any origins.
         default:
           type: boolean
         branding_title:

@@ -24,6 +24,7 @@ from sentry_sdk.hub import Hub
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.brands.models import Brand
+from authentik.brands.utils import cors_allow
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction, cleanse_dict
 from authentik.flows.apps import HIST_FLOW_EXECUTION_STAGE_TIME
@@ -155,6 +156,14 @@ class FlowExecutorView(APIView):
         return plan
 
     def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
+        response = self.dispatch_wrapper(request, flow_slug)
+        origins = []
+        if request.brand.origin != "":
+            origins.append(request.brand.origin)
+        cors_allow(request, response, *origins)
+        return response
+
+    def dispatch_wrapper(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
         with Hub.current.start_span(
             op="authentik.flow.executor.dispatch", description=self.flow.slug
         ) as span:

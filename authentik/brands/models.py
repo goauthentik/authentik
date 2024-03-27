@@ -23,6 +23,12 @@ class Brand(SerializerModel):
             "Domain that activates this brand. Can be a superset, i.e. `a.b` for `aa.b` and `ba.b`"
         )
     )
+    origin = models.TextField(
+        help_text=_(
+            "Origin domain that activates this brand. Can be left empty to not allow any origins."
+        ),
+        blank=True,
+    )
     default = models.BooleanField(
         default=False,
     )
@@ -60,8 +66,6 @@ class Brand(SerializerModel):
             "When set, external users will be redirected to this application after authenticating."
         ),
     )
-
-    embeddable_domains = models.TextField(default="")
 
     web_certificate = models.ForeignKey(
         CertificateKeyPair,

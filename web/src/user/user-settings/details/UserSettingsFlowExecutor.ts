@@ -89,7 +89,7 @@ export class UserSettingsFlowExecutor
     }
 
     firstUpdated(): void {
-        this.flowSlug = this.brand?.flowUserSettings;
+        this.flowSlug = this.flowSlug || this.brand?.flowUserSettings;
         if (!this.flowSlug) {
             return;
         }

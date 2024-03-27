@@ -46,6 +46,7 @@ class BrandSerializer(ModelSerializer):
         fields = [
             "brand_uuid",
             "domain",
+            "origin",
             "default",
             "branding_title",
             "branding_logo",
@@ -57,7 +58,6 @@ class BrandSerializer(ModelSerializer):
             "flow_user_settings",
             "flow_device_code",
             "default_application",
-            "embeddable_domains",
             "web_certificate",
             "attributes",
         ]

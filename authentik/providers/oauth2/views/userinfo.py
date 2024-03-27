@@ -11,6 +11,7 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
+from authentik.brands.utils import cors_allow
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import PermissionDict
@@ -28,7 +29,7 @@ from authentik.providers.oauth2.models import (
     RefreshToken,
     ScopeMapping,
 )
-from authentik.providers.oauth2.utils import TokenResponse, cors_allow, protected_resource_view
+from authentik.providers.oauth2.utils import TokenResponse, protected_resource_view
 
 LOGGER = get_logger()
 

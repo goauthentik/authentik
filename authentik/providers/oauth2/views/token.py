@@ -20,6 +20,7 @@ from jwt import PyJWK, PyJWT, PyJWTError, decode
 from sentry_sdk.hub import Hub
 from structlog.stdlib import get_logger
 
+from authentik.brands.utils import cors_allow
 from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.core.models import (
     USER_ATTRIBUTE_EXPIRES,
@@ -59,7 +60,7 @@ from authentik.providers.oauth2.models import (
     OAuth2Provider,
     RefreshToken,
 )
-from authentik.providers.oauth2.utils import TokenResponse, cors_allow, extract_client_auth
+from authentik.providers.oauth2.utils import TokenResponse, extract_client_auth
 from authentik.providers.oauth2.views.authorize import FORBIDDEN_URI_SCHEMES
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS

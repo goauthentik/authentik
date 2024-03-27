@@ -13,13 +13,14 @@ import { TablePage } from "@goauthentik/elements/table/TablePage";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { TemplateResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { Brand, CoreApi, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
+import { WithBrandConfig } from "@goauthentik/authentik/elements/Interface/brandProvider";
 
 @customElement("ak-brand-list")
-export class BrandListPage extends TablePage<Brand> {
+export class BrandListPage extends WithBrandConfig(TablePage<Brand>) {
     searchEnabled(): boolean {
         return true;
     }
@@ -84,7 +85,9 @@ export class BrandListPage extends TablePage<Brand> {
 
     row(item: Brand): TemplateResult[] {
         return [
-            html`${item.domain}`,
+            html`${item.domain}${this.brand.matchedDomain === item.domain ? html`
+                &nbsp;<ak-status-label ?good=${false} type="info" bad-label=${msg("Active")}></ak-status-label>
+            ` : nothing}`,
             html`${item.brandingTitle}`,
             html`<ak-status-label ?good=${item._default}></ak-status-label>`,
             html`<ak-forms-modal>
