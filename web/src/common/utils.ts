@@ -83,7 +83,7 @@ export const ascii_lowercase = "abcdefghijklmnopqrstuvwxyz";
 export const ascii_uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 export const ascii_letters = ascii_lowercase + ascii_uppercase;
 export const digits = "0123456789";
-export const hexdigts = digits + "abcdef" + "ABCDEF";
+export const hexdigits = digits + "abcdef" + "ABCDEF";
 export const octdigits = "01234567";
 export const punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
