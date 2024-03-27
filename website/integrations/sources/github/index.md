@@ -56,17 +56,18 @@ For more details on how-to have the new source display on the Login Page see [he
 Requires authentik 2021.12.5.
 :::
 
-To check if the user is member of an organisation, you can use the following policy on your flows:
-
 :::info
 Make sure to include `read:org` in the sources' _Scopes_ setting.
 :::
 
+To check if the user is member of an organisation, you can use the following bindings policy on your Enrollment flows. To do so with the default Enrollment flow, go to "Flows and Stages" -> "Flows" -> "Enrollment", click "default-source-enrollment", go to the "Policy / Group / User Bindings" tab, then "Create and bind Policy". Select "Expression Policy", "Next", set a useful Name, paste in the Python code below and edit as needed, "Next", set the Order value to 0 and ensure "Failure result" is "Don't pass", and finally click "Finish. Further, for this policy to actually be enforced, you must edit the Flow to only send a `MESSAGE` and not `MESSAGE_CONTINUE`, which is an effectively-silent fail-through, and you must require "all" policies to match. Continuing the example, in the "default-source-enrollment" flow, go to the "Flow Overview" tab, click "Edit" on the left side, expand "Behavior settings", and change "Denied action" to "Message" and "Policy engine mode" to "all", and finally click "Update" to apply the changes.
+
 ```python
-# Ensure flow is only run during oauth logins via Github
+# Ensure flow is only run during oauth logins via Github (this is a fixed type regardless of what you name your provider)
 if context["source"].provider_type != "github":
     return True
 
+# Edit this to match the GitHub organization you want to check for
 accepted_org = "foo"
 
 # Get the user-source connection object from the context, and get the access token
