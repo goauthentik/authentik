@@ -1,0 +1,53 @@
+import { EVENT_REFRESH_ENTERPRISE } from "@goauthentik/authentik/common/constants";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { authentikEnterpriseContext } from "@goauthentik/elements/AuthentikContexts";
+
+import { ContextProvider } from "@lit/context";
+import { ReactiveController, ReactiveControllerHost } from "lit";
+
+import type { LicenseSummary } from "@goauthentik/api";
+import { EnterpriseApi } from "@goauthentik/api";
+
+import type { AkEnterpriseInterface } from "./Interface";
+
+type ReactiveElementHost = Partial<ReactiveControllerHost> & AkEnterpriseInterface;
+
+export class EnterpriseContextController implements ReactiveController {
+    host!: ReactiveElementHost;
+
+    context!: ContextProvider<{ __context__: LicenseSummary | undefined }>;
+
+    constructor(host: ReactiveElementHost) {
+        this.host = host;
+        this.context = new ContextProvider(this.host, {
+            context: authentikEnterpriseContext,
+            initialValue: undefined,
+        });
+        this.fetch = this.fetch.bind(this);
+        this.fetch();
+    }
+
+    fetch() {
+        new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseSummaryRetrieve().then((enterprise) => {
+            this.context.setValue(enterprise);
+            this.host.licenseSummary = enterprise;
+        });
+    }
+
+    hostConnected() {
+        window.addEventListener(EVENT_REFRESH_ENTERPRISE, this.fetch);
+    }
+
+    hostDisconnected() {
+        window.removeEventListener(EVENT_REFRESH_ENTERPRISE, this.fetch);
+    }
+
+    hostUpdate() {
+        // If the Interface changes its config information, we should notify all
+        // users of the context of that change, without creating an infinite
+        // loop of resets.
+        if (this.host.licenseSummary !== this.context.value) {
+            this.context.setValue(this.host.licenseSummary);
+        }
+    }
+}

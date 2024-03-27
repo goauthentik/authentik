@@ -3,7 +3,7 @@ import {
     EventMiddleware,
     LoggingMiddleware,
 } from "@goauthentik/common/api/middleware";
-import { EVENT_LOCALE_REQUEST, EVENT_REFRESH, VERSION } from "@goauthentik/common/constants";
+import { EVENT_LOCALE_REQUEST, VERSION } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
 
 import { Config, Configuration, CoreApi, CurrentBrand, RootApi } from "@goauthentik/api";
@@ -85,14 +85,5 @@ export const DEFAULT_CONFIG = new Configuration({
 export function AndNext(url: string): string {
     return `?next=${encodeURIComponent(url)}`;
 }
-
-window.addEventListener(EVENT_REFRESH, () => {
-    // Upon global refresh, disregard whatever was pre-hydrated and
-    // actually load info from API
-    globalConfigPromise = undefined;
-    globalBrandPromise = undefined;
-    config();
-    brand();
-});
 
 console.debug(`authentik(early): version ${VERSION}, apiBase ${DEFAULT_CONFIG.basePath}`);
