@@ -124,7 +124,15 @@ const docsSidebar = {
                     items: ["providers/ldap/generic_setup"],
                 },
                 "providers/scim/index",
-                "providers/rac/index",
+                {
+                    type: "category",
+                    label: "RAC (Remote Access Control) Provider",
+                    link: {
+                        type: "doc",
+                        id: "providers/rac/index",
+                    },
+                    items: ["providers/rac/how-to-rac"],
+                },
             ],
         },
         {
