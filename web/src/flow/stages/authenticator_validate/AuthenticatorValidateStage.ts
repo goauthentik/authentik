@@ -47,6 +47,10 @@ export class AuthenticatorValidateStage
         return this.host.brand;
     }
 
+    get frameMode(): boolean {
+        return this.host.frameMode;
+    }
+
     @state()
     _selectedDeviceChallenge?: DeviceChallenge;
 

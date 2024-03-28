@@ -49,8 +49,27 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
             "authentik/stages/redirect: redirecting to url from server",
             this.challenge.to,
         );
-        window.location.assign(this.challenge.to);
         this.startedRedirect = true;
+        if (this.host.frameMode && window.top) {
+            try {
+                window.top.location.assign(this.challenge.to);
+            } catch {
+                window.top.postMessage(
+                    {
+                        source: "goauthentik.io",
+                        context: "flow-executor",
+                        component: this.challenge.component,
+                        to: this.challenge.to,
+                    },
+                    document.location.ancestorOrigins[0],
+                );
+            }
+            if (this.challenge.to.startsWith("http")) {
+                return;
+            }
+        } else {
+            window.location.assign(this.challenge.to);
+        }
     }
 
     renderLoading(): TemplateResult {

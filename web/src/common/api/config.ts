@@ -61,16 +61,18 @@ export function brand(): Promise<CurrentBrand> {
     return globalBrandPromise;
 }
 
-export function getMetaContent(key: string): string {
+export function getMetaContent(key: string): string | undefined {
     const metaEl = document.querySelector<HTMLMetaElement>(`meta[name=${key}]`);
-    if (!metaEl) return "";
-    return metaEl.content;
+    return metaEl?.content;
 }
 
 export const DEFAULT_CONFIG = new Configuration({
-    basePath: (process.env.AK_API_BASE_PATH || window.location.origin) + "/api/v3",
+    basePath:
+        (process.env.AK_API_BASE_PATH ||
+            getMetaContent("authentik-api") ||
+            window.location.origin) + "/api/v3",
     headers: {
-        "sentry-trace": getMetaContent("sentry-trace"),
+        "sentry-trace": getMetaContent("sentry-trace") || "",
     },
     middleware: [
         new CSRFMiddleware(),

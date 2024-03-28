@@ -53,6 +53,8 @@ export class UserSettingsFlowExecutor
     @property({ type: Boolean })
     loading = false;
 
+    frameMode = false;
+
     static get styles(): CSSResult[] {
         return [PFBase, PFCard, PFPage, PFButton, PFContent];
     }
@@ -87,7 +89,7 @@ export class UserSettingsFlowExecutor
     }
 
     firstUpdated(): void {
-        this.flowSlug = this.brand?.flowUserSettings;
+        this.flowSlug = this.flowSlug || this.brand?.flowUserSettings;
         if (!this.flowSlug) {
             return;
         }

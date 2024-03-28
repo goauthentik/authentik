@@ -1,3 +1,4 @@
+import { ensureCSSStyleSheet } from "@goauthentik/authentik/elements/utils/ensureCSSStyleSheet";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import {
     EVENT_FLOW_ADVANCE,
@@ -76,7 +77,8 @@ export class FlowExecutor extends Interface implements StageHost {
     @state()
     flowInfo?: ContextualFlowInfo;
 
-    ws: WebsocketClient;
+    @state()
+    frameMode = window !== window.top;
 
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFDrawer, PFButton, PFTitle, PFList, PFBackgroundImage].concat(css`
@@ -140,6 +142,25 @@ export class FlowExecutor extends Interface implements StageHost {
             :host([theme="dark"]) .pf-c-login.sidebar_right .pf-c-list {
                 color: var(--ak-dark-foreground);
             }
+            /* frame design */
+            .pf-c-login.frame {
+                padding: 0;
+                min-height: initial !important;
+            }
+            .pf-c-login.frame .pf-c-login__main {
+                margin-bottom: 0;
+                height: 100%;
+            }
+            .pf-c-login.frame .ak-login-container {
+                height: 100vh;
+                width: 100vw;
+            }
+            .pf-c-login.frame .pf-c-login__footer {
+                display: none;
+            }
+            .pf-c-login.frame .pf-c-login__footer .pf-c-list {
+                padding: 0;
+            }
             .pf-c-brand {
                 padding-top: calc(
                     var(--pf-c-login__main-footer-links--PaddingTop) +
@@ -161,7 +182,21 @@ export class FlowExecutor extends Interface implements StageHost {
 
     constructor() {
         super();
-        this.ws = new WebsocketClient();
+        if (this.frameMode) {
+            // PatternFly sets html and body to 100% height, which we don't
+            // want in this case since the iframe should only take the space it needs
+            document.adoptedStyleSheets = [
+                ...document.adoptedStyleSheets,
+                ensureCSSStyleSheet(css`
+                    body,
+                    html {
+                        height: unset !important;
+                    }
+                `),
+            ];
+        } else {
+            new WebsocketClient();
+        }
         if (window.location.search.includes("inspector")) {
             this.inspectorOpen = true;
         }
@@ -437,9 +472,11 @@ export class FlowExecutor extends Interface implements StageHost {
     }
 
     renderChallengeWrapper(): TemplateResult {
-        const logo = html`<div class="pf-c-login__main-header pf-c-brand ak-brand">
-            <img src="${first(this.brand?.brandingLogo, "")}" alt="authentik Logo" />
-        </div>`;
+        const logo = this.frameMode
+            ? nothing
+            : html`<div class="pf-c-login__main-header pf-c-brand ak-brand">
+                  <img src="${first(this.brand?.brandingLogo, "")}" alt="authentik Logo" />
+              </div>`;
         if (!this.challenge) {
             return html`${logo}<ak-empty-state ?loading=${true} header=${msg("Loading")}>
                 </ak-empty-state>`;
@@ -482,7 +519,26 @@ export class FlowExecutor extends Interface implements StageHost {
     }
 
     render(): TemplateResult {
-        return html` <ak-locale-context>
+        if (this.frameMode) {
+            return html`<ak-locale-context>
+                <div class="pf-c-login frame">
+                    <div class="ak-login-container">
+                        <div class="pf-c-login__main">${this.renderChallengeWrapper()}</div>
+                        <footer class="pf-c-login__footer">
+                            <ul class="pf-c-list pf-m-inline">
+                                <li>
+                                    <a
+                                        href="https://goauthentik.io?utm_source=authentik&amp;utm_medium=flow"
+                                        >${msg("Powered by authentik")}</a
+                                    >
+                                </li>
+                            </ul>
+                        </footer>
+                    </div>
+                </div>
+            </ak-locale-context>`;
+        }
+        return html`<ak-locale-context>
             <div class="pf-c-background-image"></div>
             <div class="pf-c-page__drawer">
                 <div class="pf-c-drawer ${this.inspectorOpen ? "pf-m-expanded" : "pf-m-collapsed"}">

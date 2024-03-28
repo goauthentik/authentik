@@ -7609,6 +7609,11 @@
                     "title": "Domain",
                     "description": "Domain that activates this brand. Can be a superset, i.e. `a.b` for `aa.b` and `ba.b`"
                 },
+                "origin": {
+                    "type": "string",
+                    "title": "Origin",
+                    "description": "Origin domain that activates this brand. Can be left empty to not allow any origins."
+                },
                 "default": {
                     "type": "boolean",
                     "title": "Default"
@@ -7651,6 +7656,11 @@
                 "flow_device_code": {
                     "type": "integer",
                     "title": "Flow device code"
+                },
+                "default_application": {
+                    "type": "integer",
+                    "title": "Default application",
+                    "description": "When set, external users will be redirected to this application after authenticating."
                 },
                 "web_certificate": {
                     "type": "integer",

@@ -8,6 +8,7 @@ from django.views import View
 from guardian.shortcuts import get_anonymous_user
 from structlog.stdlib import get_logger
 
+from authentik.brands.utils import cors_allow
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Application
 from authentik.providers.oauth2.constants import (
@@ -28,7 +29,6 @@ from authentik.providers.oauth2.models import (
     ResponseTypes,
     ScopeMapping,
 )
-from authentik.providers.oauth2.utils import cors_allow
 
 LOGGER = get_logger()
 

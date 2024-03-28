@@ -241,7 +241,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "authentik.root.middleware.CsrfViewMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "authentik.brands.middleware.BrandHeaderMiddleware",
     "authentik.core.middleware.ImpersonateMiddleware",
     "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]

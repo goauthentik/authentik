@@ -23,6 +23,12 @@ class Brand(SerializerModel):
             "Domain that activates this brand. Can be a superset, i.e. `a.b` for `aa.b` and `ba.b`"
         )
     )
+    origin = models.TextField(
+        help_text=_(
+            "Origin domain that activates this brand. Can be left empty to not allow any origins."
+        ),
+        blank=True,
+    )
     default = models.BooleanField(
         default=False,
     )
@@ -49,6 +55,16 @@ class Brand(SerializerModel):
     )
     flow_device_code = models.ForeignKey(
         Flow, null=True, on_delete=models.SET_NULL, related_name="brand_device_code"
+    )
+
+    default_application = models.ForeignKey(
+        "authentik_core.Application",
+        null=True,
+        default=None,
+        on_delete=models.SET_DEFAULT,
+        help_text=_(
+            "When set, external users will be redirected to this application after authenticating."
+        ),
     )
 
     web_certificate = models.ForeignKey(

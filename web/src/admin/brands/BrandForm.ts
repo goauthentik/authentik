@@ -15,7 +15,13 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import { Brand, CoreApi, FlowsInstancesListDesignationEnum } from "@goauthentik/api";
+import {
+    Application,
+    Brand,
+    CoreApi,
+    CoreApplicationsListRequest,
+    FlowsInstancesListDesignationEnum,
+} from "@goauthentik/api";
 
 @customElement("ak-brand-form")
 export class BrandForm extends ModelForm<Brand, string> {
@@ -137,6 +143,46 @@ export class BrandForm extends ModelForm<Brand, string> {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
+
+            <ak-form-group>
+                <span slot="header"> ${msg("External user settings")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("Default application")}
+                        name="defaultApplication"
+                    >
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<Application[]> => {
+                                const args: CoreApplicationsListRequest = {
+                                    ordering: "name",
+                                    superuserFullList: true,
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const users = await new CoreApi(
+                                    DEFAULT_CONFIG,
+                                ).coreApplicationsList(args);
+                                return users.results;
+                            }}
+                            .renderElement=${(item: Application): string => {
+                                return item.name;
+                            }}
+                            .renderDescription=${(item: Application): TemplateResult => {
+                                return html`${item.slug}`;
+                            }}
+                            .value=${(item: Application | undefined): string | undefined => {
+                                return item?.pk;
+                            }}
+                            .selected=${(item: Application): boolean => {
+                                return item.pk === this.instance?.defaultApplication;
+                            }}
+                        >
+                        </ak-search-select>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+
             <ak-form-group>
                 <span slot="header"> ${msg("Default flows")} </span>
                 <div slot="body" class="pf-c-form">
