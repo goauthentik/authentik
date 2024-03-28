@@ -217,6 +217,15 @@ class AppleOAuthSource(OAuthSource):
         verbose_name_plural = _("Apple OAuth Sources")
 
 
+class ClasslinkOAuthSource(OAuthSource):
+    """Social Login using Classlink."""
+
+    class Meta:
+        abstract = True
+        verbose_name = _("Classlink OAuth Source")
+        verbose_name_plural = _("Classlink OAuth Sources")
+
+
 class OktaOAuthSource(OAuthSource):
     """Social Login using Okta."""
 
