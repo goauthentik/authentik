@@ -3332,22 +3332,20 @@ use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
 name = "requests-mock"
-version = "1.11.0"
+version = "1.12.0"
 description = "Mock out responses from the requests package"
 optional = false
 python-versions = "*"
 files = [
-    {file = "requests-mock-1.11.0.tar.gz", hash = "sha256:ef10b572b489a5f28e09b708697208c4a3b2b89ef80a9f01584340ea357ec3c4"},
-    {file = "requests_mock-1.11.0-py2.py3-none-any.whl", hash = "sha256:f7fae383f228633f6bececebdab236c478ace2284d6292c6e7e2867b9ab74d15"},
+    {file = "requests-mock-1.12.0.tar.gz", hash = "sha256:4e34f2a2752f0b78397fb414526605d95fcdeab021ac1f26d18960e7eb41f6a8"},
+    {file = "requests_mock-1.12.0-py2.py3-none-any.whl", hash = "sha256:4f6fdf956de568e0bac99eee4ad96b391c602e614cc0ad33e7f5c72edd699e70"},
 ]
 
 [package.dependencies]
-requests = ">=2.3,<3"
-six = "*"
+requests = ">=2.22,<3"
 
 [package.extras]
 fixture = ["fixtures"]
-test = ["fixtures", "mock", "purl", "pytest", "requests-futures", "sphinx", "testtools"]
 
 [[package]]
 name = "requests-oauthlib"
