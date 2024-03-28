@@ -68,5 +68,12 @@ class TestReputationPolicy(TestCase):
 
     def test_api(self):
         """Test API Validation"""
-        no_toggle = ReputationPolicySerializer(data={"name": generate_id(), "threshold": -5})
+        no_toggle = ReputationPolicySerializer(
+            data={
+                "name": generate_id(),
+                "threshold": -5,
+                "check_ip": False,
+                "check_username": False,
+            }
+        )
         self.assertFalse(no_toggle.is_valid())

@@ -36625,7 +36625,6 @@ components:
       - providers_obj
       - service_connection_obj
       - token_identifier
-      - type
     OutpostDefaultConfig:
       type: object
       description: Global default outpost config
@@ -36709,7 +36708,6 @@ components:
       - config
       - name
       - providers
-      - type
     OutpostTypeEnum:
       enum:
       - proxy
@@ -40654,7 +40652,9 @@ components:
           maxLength: 255
           pattern: ^[-a-zA-Z0-9_]+$
         intent:
-          $ref: '#/components/schemas/IntentEnum'
+          allOf:
+          - $ref: '#/components/schemas/IntentEnum'
+          default: api
         user:
           type: integer
         description:
@@ -44463,7 +44463,9 @@ components:
           maxLength: 255
           pattern: ^[-a-zA-Z0-9_]+$
         intent:
-          $ref: '#/components/schemas/IntentEnum'
+          allOf:
+          - $ref: '#/components/schemas/IntentEnum'
+          default: api
         user:
           type: integer
         user_obj:
@@ -44536,7 +44538,9 @@ components:
           maxLength: 255
           pattern: ^[-a-zA-Z0-9_]+$
         intent:
-          $ref: '#/components/schemas/IntentEnum'
+          allOf:
+          - $ref: '#/components/schemas/IntentEnum'
+          default: api
         user:
           type: integer
         description:

@@ -102,7 +102,6 @@ class OutpostSerializer(ModelSerializer):
             "config",
             "managed",
         ]
-        extra_kwargs = {"type": {"required": True}}
 
 
 class OutpostDefaultConfigSerializer(PassiveSerializer):

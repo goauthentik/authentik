@@ -66,6 +66,7 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
         ]
         extra_kwargs = {
             "user": {"required": False},
+            "intent": {"default": TokenIntents.INTENT_API},
         }
 
 
