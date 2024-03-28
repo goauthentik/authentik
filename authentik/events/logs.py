@@ -46,6 +46,15 @@ class LogEventSerializer(PassiveSerializer):
     event = CharField()
     attributes = DictField()
 
+    # TODO(2024.6?): This is a migration helper to return a correct API response for logs that
+    # have been saved in an older format (mostly just list[str] with just the messages)
+    def to_representation(self, instance):
+        if isinstance(instance, str):
+            instance = LogEvent(instance, "", "")
+        elif isinstance(instance, list):
+            instance = [LogEvent(x, "", "") for x in instance]
+        return super().to_representation(instance)
+
 
 @contextmanager
 def capture_logs(log_default_output=True) -> Generator[list[LogEvent], None, None]:
