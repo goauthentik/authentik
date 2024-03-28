@@ -26,6 +26,7 @@ The following placeholders will be used:
 Under _Providers_, create an OAuth2/OpenID provider with these settings:
 
 -   Name: proxmox
+-   Authentication Flow: default-authentication-flow (Welcome to authentik!)
 -   Redirect URI: `https://proxmox.company:8006` (Note the absence of the trailing slash, and the inclusion of the webinterface port)
 -   Signing Key: Select any available key
 
