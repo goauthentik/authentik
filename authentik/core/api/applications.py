@@ -20,15 +20,14 @@ from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
-from structlog.testing import capture_logs
 
 from authentik.admin.api.metrics import CoordinateSerializer
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.models import Application, User
+from authentik.events.logs import LogEventSerializer, capture_logs
 from authentik.events.models import EventAction
-from authentik.events.utils import sanitize_dict
 from authentik.lib.utils.file import (
     FilePathSerializer,
     FileUploadSerializer,
@@ -182,9 +181,9 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         if request.user.is_superuser:
             log_messages = []
             for log in logs:
-                if log.get("process", "") == "PolicyProcess":
+                if log.attributes.get("process", "") == "PolicyProcess":
                     continue
-                log_messages.append(sanitize_dict(log))
+                log_messages.append(LogEventSerializer(log).data)
             result.log_messages = log_messages
             response = PolicyTestResultSerializer(result)
         return Response(response.data)
