@@ -1,5 +1,4 @@
 import { docLink } from "@goauthentik/common/global";
-import { adaptCSS } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
 
@@ -20,23 +19,23 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
  * administrator, provide a link to the "Create a new application" page.
  */
 
-const styles = adaptCSS([
-    PFBase,
-    PFEmptyState,
-    PFButton,
-    PFContent,
-    PFSpacing,
-    css`
-        .cta {
-            display: inline-block;
-            font-weight: bold;
-        }
-    `,
-]);
-
 @customElement("ak-library-application-empty-list")
 export class LibraryPageApplicationEmptyList extends AKElement {
-    static styles = styles;
+    static get styles() {
+        return [
+            PFBase,
+            PFEmptyState,
+            PFButton,
+            PFContent,
+            PFSpacing,
+            css`
+                .cta {
+                    display: inline-block;
+                    font-weight: bold;
+                }
+            `,
+        ];
+    }
 
     @property({ attribute: "isadmin", type: Boolean })
     isAdmin = false;
