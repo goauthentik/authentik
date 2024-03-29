@@ -68,7 +68,8 @@ def capture_logs(log_default_output=True) -> Generator[list[LogEvent], None, Non
     old_processors = processors.copy()
     try:
         # clear processors list and use LogCapture for testing
-        processors.remove(ProcessorFormatter.wrap_for_formatter)
+        if ProcessorFormatter.wrap_for_formatter in processors:
+            processors.remove(ProcessorFormatter.wrap_for_formatter)
         processors.append(cap)
         configure(processors=processors)
         yield logs
