@@ -450,7 +450,7 @@ class FlowExecutorView(APIView):
         return to_stage_response(self.request, challenge_view.get(self.request))
 
     def cancel(self):
-        """Cancel current execution and return a redirect"""
+        """Cancel current flow execution"""
         keys_to_delete = [
             SESSION_KEY_APPLICATION_PRE,
             SESSION_KEY_PLAN,

@@ -12,7 +12,6 @@ from rest_framework.fields import (
     ChoiceField,
     DateTimeField,
     FloatField,
-    ListField,
     SerializerMethodField,
 )
 from rest_framework.request import Request
@@ -21,6 +20,7 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from structlog.stdlib import get_logger
 
+from authentik.events.logs import LogEventSerializer
 from authentik.events.models import SystemTask, TaskStatus
 from authentik.rbac.decorators import permission_required
 
@@ -39,7 +39,7 @@ class SystemTaskSerializer(ModelSerializer):
     duration = FloatField(read_only=True)
 
     status = ChoiceField(choices=[(x.value, x.name) for x in TaskStatus])
-    messages = ListField(child=CharField())
+    messages = LogEventSerializer(many=True)
 
     def get_full_name(self, instance: SystemTask) -> str:
         """Get full name with UID"""
