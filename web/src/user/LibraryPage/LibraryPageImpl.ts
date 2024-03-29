@@ -35,7 +35,9 @@ import type { AppGroupList, PageUIConfig } from "./types";
 
 @customElement("ak-library-impl")
 export class LibraryPage extends AKElement {
-    static styles = styles;
+    static get styles() {
+        return styles;
+    }
 
     @property({ attribute: "isadmin", type: Boolean })
     isAdmin = false;
