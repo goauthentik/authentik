@@ -1,4 +1,5 @@
 """Make Kombu use custom Redis connection"""
+
 from contextlib import contextmanager
 from queue import Empty
 from time import time
@@ -6,9 +7,8 @@ from urllib.parse import urlparse
 
 from kombu import Connection
 from kombu.transport import virtual
-from kombu.transport.redis import Channel, MultiChannelPoller, MutexHeld
+from kombu.transport.redis import Channel, MultiChannelPoller, MutexHeld, Transport
 from kombu.transport.redis import QoS as RedisQoS
-from kombu.transport.redis import Transport
 from kombu.utils import uuid
 from kombu.utils.collections import HashedSeq
 from kombu.utils.compat import _detect_environment
@@ -383,7 +383,7 @@ class CustomClusterChannel(Channel):
                     client.reinitialize_counter = 0
                 else:
                     client.nodes_manager.update_moved_exception(exc)
-                raise Empty()
+                raise Empty() from None
 
             if resp:
                 dest, item = resp

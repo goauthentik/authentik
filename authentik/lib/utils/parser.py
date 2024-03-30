@@ -6,7 +6,7 @@ from random import shuffle
 from socket import TCP_KEEPCNT, TCP_KEEPINTVL
 from socket import timeout as SocketTimeout
 from sys import platform
-from typing import Any, Dict, Tuple
+from typing import Any
 from urllib.parse import ParseResultBytes, parse_qs, unquote, unquote_plus, urlparse
 
 from django.utils.module_loading import import_string
@@ -98,8 +98,8 @@ def parse_hostport(addr_str, default_port=6379):
     else:
         try:
             port = int(out[1])
-        except ValueError:
-            raise ValueError("Invalid host:port '%s'" % addr_str)
+        except ValueError as err:
+            raise ValueError("Invalid host:port '%s'" % addr_str) from err
 
     return out[0], port
 
@@ -252,7 +252,7 @@ def _handle_default(
 # pylint: disable=too-many-locals, too-many-statements
 def get_redis_options(
     url: ParseResultBytes, disable_socket_timeout=False
-) -> Tuple[Dict, Dict, Dict]:
+) -> tuple[dict, dict, dict]:
     """Converts a parsed url into necessary dicts to create a redis client"""
     pool_kwargs = {}
     redis_kwargs = {}

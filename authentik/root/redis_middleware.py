@@ -1,4 +1,5 @@
 """Inject a custom master discovery method to Redis sentinel"""
+
 from redis.asyncio import Sentinel as AsyncSentinel
 from redis.sentinel import MasterNotFoundError, Sentinel
 

@@ -10,11 +10,11 @@ from channels_redis.pubsub import (
     RedisPubSubLoopLayer,
     RedisSingleShardConnection,
 )
-from channels_redis.utils import _wrap_close, _close_redis
+from channels_redis.utils import _close_redis, _wrap_close
 
 from authentik.lib.utils.parser import (
-    get_connection_pool,
     get_client,
+    get_connection_pool,
     get_redis_options,
     process_config,
 )
@@ -75,7 +75,12 @@ class CustomPubSubLoopLayer(RedisPubSubLoopLayer):
                 "Redis cluster does currently not support asyncio pubsub connections"
             )
             # redis_options = (pool_kwargs, redis_kwargs, tls_kwargs)
-            # self._shards = [CustomSingleShardConnection(process_config(url, *redis_options), self)]
+            # self._shards = [
+            #     CustomSingleShardConnection(
+            #         process_config(url, *redis_options),
+            #         self
+            #     )
+            # ]
 
 
 class CustomSingleShardConnection(RedisSingleShardConnection):

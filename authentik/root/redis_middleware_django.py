@@ -1,9 +1,10 @@
 """Make Django use custom Redis client"""
+
 from collections import OrderedDict
 from copy import deepcopy
 from hashlib import sha256
 from json import dumps as json_dumps
-from typing import Any, Dict, List, Optional
+from typing import Any
 from urllib.parse import urlparse
 
 from django_redis.client.default import DefaultClient, _main_exceptions
@@ -46,7 +47,7 @@ class CustomClient(DefaultClient):
         config = self._server[index]
         return self.connection_factory.connect(config)
 
-    def get_many(self, keys, version: Optional[int] = None, client=None) -> OrderedDict:
+    def get_many(self, keys, version: int | None = None, client=None) -> OrderedDict:
         """
         Retrieve many keys.
         """
@@ -71,15 +72,15 @@ class CustomClient(DefaultClient):
         except _main_exceptions as exc:
             raise ConnectionInterrupted(connection=client) from exc
 
-        for key, value in zip(map_keys, results):
+        for key, value in zip(map_keys, results, strict=False):
             if value is None:
                 continue
             recovered_data[map_keys[key]] = self.decode(value)
         return recovered_data
 
     def keys(
-        self, search: str, version: Optional[int] = None, client: Optional[Redis] = None
-    ) -> List[Any]:
+        self, search: str, version: int | None = None, client: Redis | None = None
+    ) -> list[Any]:
         """
         Execute KEYS command and return matched results.
         Warning: this can return huge number of results, in
@@ -94,7 +95,7 @@ class CustomClient(DefaultClient):
         except _main_exceptions as exc:
             raise ConnectionInterrupted(connection=client) from exc
 
-    def delete_many(self, keys, version: Optional[int] = None, client=None):
+    def delete_many(self, keys, version: int | None = None, client=None):
         """
         Remove multiple keys at once.
         """
@@ -131,7 +132,7 @@ class CustomConnectionFactory:
             if pool is not None:
                 pool.disconnect()
 
-    def connect(self, config: Dict):
+    def connect(self, config: dict):
         """
         Given a basic connection parameters,
         return a new connection.

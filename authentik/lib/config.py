@@ -14,7 +14,7 @@ from pathlib import Path
 from string import Template
 from sys import argv, stderr
 from time import time
-from typing import Any, Optional
+from typing import Any
 from urllib.parse import quote_plus, urlencode, urlparse
 
 import yaml
