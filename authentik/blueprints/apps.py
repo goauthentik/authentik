@@ -40,7 +40,7 @@ class ManagedAppConfig(AppConfig):
             try:
                 module_name = f"{self.name}.{rel_module}"
                 import_module(module_name)
-                self.logger.info("Imported related module", module=module_name)
+                self.logger.debug("Imported related module", module=module_name)
             except ModuleNotFoundError:
                 pass
 
