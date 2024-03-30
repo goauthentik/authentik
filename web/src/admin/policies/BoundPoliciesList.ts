@@ -31,10 +31,12 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     checkbox = true;
     clearOnRefresh = true;
 
+    order = "order";
+
     async apiEndpoint(page: number): Promise<PaginatedResponse<PolicyBinding>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsList({
             target: this.target || "",
-            ordering: "order",
+            ordering: this.order,
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,
         });
