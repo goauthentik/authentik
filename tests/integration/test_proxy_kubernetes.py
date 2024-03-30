@@ -26,12 +26,6 @@ class TestProxyKubernetes(TestCase):
         outpost_connection_discovery()
         self.controller = None
 
-    def tearDown(self) -> None:
-        if self.controller:
-            for log in self.controller.down_with_logs():
-                LOGGER.info(log)
-        return super().tearDown()
-
     @pytest.mark.timeout(120)
     def test_kubernetes_controller_static(self):
         """Test Kubernetes Controller"""

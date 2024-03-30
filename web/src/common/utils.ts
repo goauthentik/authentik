@@ -123,7 +123,7 @@ const isCSSResult = (v: unknown): v is CSSResult =>
 
 // prettier-ignore
 export const _adaptCSS = (sheet: AdaptableStylesheet): CSSStyleSheet =>
-    (typeof sheet === "string" ? css([sheet] as unknown as TemplateStringsArray, ...[]).styleSheet
+    (typeof sheet === "string" ? css([sheet] as unknown as TemplateStringsArray, []).styleSheet
         : isCSSResult(sheet) ? sheet.styleSheet
         : sheet) as CSSStyleSheet;
 

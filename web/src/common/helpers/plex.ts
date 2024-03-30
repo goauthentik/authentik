@@ -55,9 +55,7 @@ export class PlexAPIClient {
     ): Promise<{ authUrl: string; pin: PlexPinResponse }> {
         const headers = {
             ...DEFAULT_HEADERS,
-            ...{
-                "X-Plex-Client-Identifier": clientIdentifier,
-            },
+            "X-Plex-Client-Identifier": clientIdentifier,
         };
         const pinResponse = await fetch("https://plex.tv/api/v2/pins.json?strong=true", {
             method: "POST",
@@ -75,9 +73,7 @@ export class PlexAPIClient {
     static async pinStatus(clientIdentifier: string, id: number): Promise<string | undefined> {
         const headers = {
             ...DEFAULT_HEADERS,
-            ...{
-                "X-Plex-Client-Identifier": clientIdentifier,
-            },
+            "X-Plex-Client-Identifier": clientIdentifier,
         };
         const pinResponse = await fetch(`https://plex.tv/api/v2/pins/${id}`, {
             headers: headers,
