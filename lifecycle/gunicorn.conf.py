@@ -45,12 +45,7 @@ max_requests_jitter = 50
 
 logconfig_dict = get_logger_config()
 
-# if we're running in kubernetes, use fixed workers because we can scale with more pods
-# otherwise (assume docker-compose), use as much as we can
-if SERVICE_HOST_ENV_NAME in os.environ:
-    default_workers = 2
-else:
-    default_workers = max(cpu_count() * 0.25, 1) + 1  # Minimum of 2 workers
+default_workers = 2
 
 workers = CONFIG.get_int("web.workers", default_workers)
 threads = CONFIG.get_int("web.threads", 4)
