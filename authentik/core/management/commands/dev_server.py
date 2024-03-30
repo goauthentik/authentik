@@ -4,7 +4,6 @@ from typing import TextIO
 
 from daphne.management.commands.runserver import Command as RunServer
 from daphne.server import Server
-from structlog.stdlib import get_logger
 
 from authentik.root.signals import post_startup, pre_startup, startup
 
@@ -30,8 +29,6 @@ class Command(RunServer):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # Redirect standard stdout banner from Daphne into the void
+        # as there are a couple more steps that happen before startup is fully done
         self.stdout = TextIO()
-        self.logger = get_logger()
-
-    def on_bind(self, server_port):
-        pass

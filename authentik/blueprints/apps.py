@@ -25,7 +25,7 @@ class ManagedAppConfig(AppConfig):
 
     def ready(self) -> None:
         self.import_related()
-        startup.connect(self._on_startup_callback)
+        startup.connect(self._on_startup_callback, dispatch_uid=self.label)
         return super().ready()
 
     def _on_startup_callback(self, sender, **_):
