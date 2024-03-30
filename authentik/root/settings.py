@@ -471,7 +471,7 @@ SILENCED_SYSTEM_CHECKS = [
 def _update_settings(app_path: str):
     try:
         settings_module = importlib.import_module(app_path)
-        get_logger().debug( "Loaded app settings", path=app_path)
+        get_logger().debug("Loaded app settings", path=app_path)
         SHARED_APPS.extend(getattr(settings_module, "SHARED_APPS", []))
         TENANT_APPS.extend(getattr(settings_module, "TENANT_APPS", []))
         MIDDLEWARE.extend(getattr(settings_module, "MIDDLEWARE", []))

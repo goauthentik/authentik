@@ -32,9 +32,6 @@ func (ws *WebServer) configureProxy() {
 	}
 	rp.ErrorHandler = ws.proxyErrorHandler
 	rp.ModifyResponse = ws.proxyModifyResponse
-	ws.m.Path("/-/health/live/").HandlerFunc(sentry.SentryNoSample(func(rw http.ResponseWriter, r *http.Request) {
-		rw.WriteHeader(204)
-	}))
 	ws.m.PathPrefix("/").HandlerFunc(sentry.SentryNoSample(func(rw http.ResponseWriter, r *http.Request) {
 		if !ws.g.IsRunning() {
 			ws.proxyErrorHandler(rw, r, errors.New("authentik starting"))
