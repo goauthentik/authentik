@@ -8,6 +8,8 @@ from django.apps import AppConfig
 from django.db import DatabaseError, InternalError, ProgrammingError
 from structlog.stdlib import BoundLogger, get_logger
 
+from authentik.root.signals import startup
+
 
 class ManagedAppConfig(AppConfig):
     """Basic reconciliation logic for apps"""
@@ -23,9 +25,12 @@ class ManagedAppConfig(AppConfig):
 
     def ready(self) -> None:
         self.import_related()
+        startup.connect(self._on_startup_callback)
+        return super().ready()
+
+    def _on_startup_callback(self, sender, **_):
         self._reconcile_global()
         self._reconcile_tenant()
-        return super().ready()
 
     def import_related(self):
         """Automatically import related modules which rely on just being imported

@@ -20,7 +20,10 @@ from authentik.root.install_id import get_install_id_raw
 from lifecycle.worker import DjangoUvicornWorker
 
 if TYPE_CHECKING:
+    from gunicorn.app.wsgiapp import WSGIApplication
     from gunicorn.arbiter import Arbiter
+
+    from authentik.root.asgi import AuthentikAsgi
 
 _tmp = Path(gettempdir())
 worker_class = "lifecycle.worker.DjangoUvicornWorker"
@@ -34,6 +37,8 @@ bind = f"unix://{str(_tmp.joinpath('authentik-core.sock'))}"
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
 os.environ.setdefault("PROMETHEUS_MULTIPROC_DIR", prometheus_tmp_dir)
+
+preload = True
 
 max_requests = 1000
 max_requests_jitter = 50
@@ -98,6 +103,13 @@ def on_reload(server: "Arbiter"):
 def pre_fork(server: "Arbiter", worker: DjangoUvicornWorker):
     """Attach the next free worker_id before forking off."""
     worker._worker_id = _next_worker_id(server)
+
+
+def post_worker_init(worker: DjangoUvicornWorker):
+    """Notify ASGI app that its started up"""
+    app: "WSGIApplication" = worker.app
+    root_app: "AuthentikAsgi" = app.callable
+    root_app.call_startup()
 
 
 if not CONFIG.get_bool("disable_startup_analytics", False):
