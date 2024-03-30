@@ -107,6 +107,11 @@ def pre_fork(server: "Arbiter", worker: DjangoUvicornWorker):
 
 def post_worker_init(worker: DjangoUvicornWorker):
     """Notify ASGI app that its started up"""
+    # Only trigger startup DB logic on first worker
+    # Startup code that imports code or is otherwise needed in every worker
+    # does not use this signal, so we can skip this safely
+    if worker._worker_id != 1:
+        return
     app: "WSGIApplication" = worker.app
     root_app: "AuthentikAsgi" = app.callable
     root_app.call_startup()
