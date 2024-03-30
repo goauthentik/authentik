@@ -2,13 +2,11 @@
 
 import os
 from hashlib import sha512
-from multiprocessing import cpu_count
 from os import makedirs
 from pathlib import Path
 from tempfile import gettempdir
 from typing import TYPE_CHECKING
 
-from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
 from prometheus_client.values import MultiProcessValue
 
 from authentik import get_full_version
