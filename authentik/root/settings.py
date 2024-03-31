@@ -18,6 +18,8 @@ from authentik.lib.sentry import sentry_init
 from authentik.lib.utils.reflection import get_env
 from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BACKEND_LDAP
 
+LOGGER = get_logger()
+
 BASE_DIR = Path(__file__).absolute().parent.parent.parent
 
 DEBUG = CONFIG.get_bool("debug")
@@ -443,7 +445,6 @@ else:
 TEST = False
 TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
 
-structlog_configure()
 LOGGING = get_logger_config()
 
 
@@ -471,7 +472,7 @@ SILENCED_SYSTEM_CHECKS = [
 def _update_settings(app_path: str):
     try:
         settings_module = importlib.import_module(app_path)
-        get_logger().debug("Loaded app settings", path=app_path)
+        LOGGER.debug("Loaded app settings", path=app_path)
         SHARED_APPS.extend(getattr(settings_module, "SHARED_APPS", []))
         TENANT_APPS.extend(getattr(settings_module, "TENANT_APPS", []))
         MIDDLEWARE.extend(getattr(settings_module, "MIDDLEWARE", []))
@@ -493,12 +494,12 @@ if DEBUG:
 
 TENANT_APPS.append("authentik.core")
 
-CONFIG.log("info", "Booting authentik", version=__version__)
+LOGGER.info("Booting authentik", version=__version__)
 
 # Attempt to load enterprise app, if available
 try:
     importlib.import_module("authentik.enterprise.apps")
-    CONFIG.log("info", "Enabled authentik enterprise")
+    LOGGER.info("Enabled authentik enterprise")
     TENANT_APPS.append("authentik.enterprise")
     _update_settings("authentik.enterprise.settings")
 except ImportError:
@@ -518,3 +519,5 @@ _update_settings("data.user_settings")
 
 SHARED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))
 INSTALLED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))
+
+structlog_configure()

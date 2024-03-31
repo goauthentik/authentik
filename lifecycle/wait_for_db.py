@@ -8,16 +8,19 @@ from urllib.parse import quote_plus
 from psycopg import OperationalError, connect
 from redis import Redis
 from redis.exceptions import RedisError
+from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG
 
-CONFIG.log("info", "Starting authentik bootstrap")
+LOGGER = get_logger()
+
+LOGGER.info("Starting authentik bootstrap")
 
 # Sanity check, ensure SECRET_KEY is set before we even check for database connectivity
 if CONFIG.get("secret_key") is None or len(CONFIG.get("secret_key")) == 0:
-    CONFIG.log("info", "----------------------------------------------------------------------")
-    CONFIG.log("info", "Secret key missing, check https://goauthentik.io/docs/installation/.")
-    CONFIG.log("info", "----------------------------------------------------------------------")
+    LOGGER.info("----------------------------------------------------------------------")
+    LOGGER.info("Secret key missing, check https://goauthentik.io/docs/installation/.")
+    LOGGER.info("----------------------------------------------------------------------")
     sysexit(1)
 
 
@@ -38,8 +41,8 @@ while True:
         break
     except OperationalError as exc:
         sleep(1)
-        CONFIG.log("info", f"PostgreSQL connection failed, retrying... ({exc})")
-CONFIG.log("info", "PostgreSQL connection successful")
+        LOGGER.info(f"PostgreSQL connection failed, retrying... ({exc})")
+LOGGER.info("PostgreSQL connection successful")
 
 REDIS_PROTOCOL_PREFIX = "redis://"
 if CONFIG.get_bool("redis.tls", False):
@@ -56,7 +59,7 @@ while True:
         break
     except RedisError as exc:
         sleep(1)
-        CONFIG.log("info", f"Redis Connection failed, retrying... ({exc})", redis_url=REDIS_URL)
-CONFIG.log("info", "Redis Connection successful")
+        LOGGER.info(f"Redis Connection failed, retrying... ({exc})", redis_url=REDIS_URL)
+LOGGER.info("Redis Connection successful")
 
-CONFIG.log("info", "Finished authentik bootstrap")
+LOGGER.info("Finished authentik bootstrap")

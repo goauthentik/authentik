@@ -7,8 +7,6 @@ from os import getpid
 import structlog
 from django.db import connection
 
-from authentik.lib.config import CONFIG
-
 LOG_PRE_CHAIN = [
     # Add the log level and a timestamp to the event_dict if the log entry
     # is not from structlog.
@@ -20,6 +18,8 @@ LOG_PRE_CHAIN = [
 
 
 def get_log_level():
+    from authentik.lib.config import CONFIG
+
     """Get log level, clamp trace to debug"""
     level = CONFIG.get("log_level").upper()
     # We could add a custom level to stdlib logging and structlog, but it's not easy or clean
@@ -31,9 +31,28 @@ def get_log_level():
     return level
 
 
+def structlog_configure_early():
+    structlog.configure(
+        processors=[
+            structlog.stdlib.add_log_level,
+            structlog.stdlib.add_logger_name,
+            structlog.contextvars.merge_contextvars,
+            add_process_id,
+            structlog.stdlib.PositionalArgumentsFormatter(),
+            structlog.processors.TimeStamper(fmt="iso", utc=False),
+            structlog.processors.StackInfoRenderer(),
+            structlog.processors.dict_tracebacks,
+            structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
+        ],
+        logger_factory=structlog.stdlib.LoggerFactory(),
+        wrapper_class=structlog.make_filtering_bound_logger(logging.INFO),
+        cache_logger_on_first_use=True,
+    )
+
+
 def structlog_configure():
     """Configure structlog itself"""
-    structlog.configure_once(
+    structlog.configure(
         processors=[
             structlog.stdlib.add_log_level,
             structlog.stdlib.add_logger_name,
@@ -55,6 +74,8 @@ def structlog_configure():
 
 
 def get_logger_config():
+    from authentik.lib.config import CONFIG
+
     """Configure python stdlib's logging"""
     debug = CONFIG.get_bool("debug")
     global_level = get_log_level()
