@@ -11,15 +11,13 @@ from glob import glob
 from json import JSONEncoder, dumps, loads
 from json.decoder import JSONDecodeError
 from pathlib import Path
-from sys import argv
+from sys import argv, stderr
+from time import time
 from typing import Any
 from urllib.parse import urlparse
 
 import yaml
 from django.conf import ImproperlyConfigured
-from structlog.stdlib import get_logger
-
-from authentik.lib.logging import structlog_configure_early
 
 SEARCH_PATHS = ["authentik/lib/default.yml", "/etc/authentik/config.yml", ""] + glob(
     "/etc/authentik/config.d/*.yml", recursive=True
@@ -47,8 +45,6 @@ DEPRECATIONS = {
     "redis.cache_timeout_policies": "cache.timeout_policies",
     "redis.cache_timeout_reputation": "cache.timeout_reputation",
 }
-
-structlog_configure_early()
 
 
 def get_path_from_dict(root: dict, path: str, sep=".", default=None) -> Any:
@@ -124,7 +120,6 @@ class ConfigLoader:
     def __init__(self, **kwargs):
         super().__init__()
         self.__config = {}
-        self._logger = get_logger()
         base_dir = Path(__file__).parent.joinpath(Path("../..")).resolve()
         for _path in SEARCH_PATHS:
             path = Path(_path)
@@ -171,12 +166,27 @@ class ConfigLoader:
                 f"'{deprecation}' has been deprecated in favor of '{replacement}'! "
                 + "Please update your configuration."
             )
-            self._logger.warning(message)
+            self.log(
+                "warning",
+                message,
+            )
             deprecation_replacements[(deprecation, replacement)] = message
 
             deprecated_attr = _pop_deprecated_key(self.__config, deprecation.split("."), 0)
             self.set(replacement, deprecated_attr)
         return deprecation_replacements
+
+    def log(self, level: str, message: str, **kwargs):
+        """Custom Log method, we want to ensure ConfigLoader always logs JSON even when
+        'structlog' or 'logging' hasn't been configured yet."""
+        output = {
+            "event": message,
+            "level": level,
+            "logger": self.__class__.__module__,
+            "timestamp": time(),
+        }
+        output.update(kwargs)
+        print(dumps(output), file=stderr)
 
     def update(self, root: dict[str, Any], updatee: dict[str, Any]) -> dict[str, Any]:
         """Recursively update dictionary"""
@@ -214,7 +224,7 @@ class ConfigLoader:
                 with open(url.path, encoding="utf8") as _file:
                     parsed_value = _file.read().strip()
             except OSError as exc:
-                self._logger.error(f"Failed to read config value from {url.path}: {exc}")
+                self.log("error", f"Failed to read config value from {url.path}: {exc}")
                 parsed_value = url.query
         return Attr(parsed_value, Attr.Source.URI, value)
 
@@ -224,11 +234,12 @@ class ConfigLoader:
             with open(path, encoding="utf8") as file:
                 try:
                     self.update(self.__config, yaml.safe_load(file))
-                    self._logger.debug("Loaded config", file=str(path))
+                    self.log("debug", "Loaded config", file=str(path))
                 except yaml.YAMLError as exc:
                     raise ImproperlyConfigured from exc
         except PermissionError as exc:
-            self._logger.warning(
+            self.log(
+                "warning",
                 "Permission denied while reading file",
                 path=path,
                 error=str(exc),
@@ -255,7 +266,7 @@ class ConfigLoader:
             set_path_in_dict(outer, relative_key, attr_value)
             idx += 1
         if idx > 0:
-            self._logger.debug("Loaded environment variables", count=idx)
+            self.log("debug", "Loaded environment variables", count=idx)
             self.update(self.__config, outer)
 
     @contextmanager
@@ -286,7 +297,7 @@ class ConfigLoader:
         try:
             return int(self.get(path, default))
         except ValueError as exc:
-            self._logger.warning("Failed to parse config as int", path=path, exc=str(exc))
+            self.log("warning", "Failed to parse config as int", path=path, exc=str(exc))
             return default
 
     def get_bool(self, path: str, default=False) -> bool:
@@ -304,7 +315,8 @@ class ConfigLoader:
             b64decoded_str = "{" + b64decoded_str + "}"
             return json.loads(b64decoded_str)
         except (JSONDecodeError, TypeError, ValueError) as exc:
-            self._logger.warning(
+            self.log(
+                "warning",
                 f"Ignored invalid configuration for '{path}' due to exception: {str(exc)}",
             )
             return default if isinstance(default, dict) else {}
