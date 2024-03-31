@@ -25,6 +25,7 @@ from authentik.core.views.interface import (
     RootRedirectView,
 )
 from authentik.flows.views.interface import FlowInterfaceView
+from authentik.lib.expression.consumer_lsp import LSPConsumer
 from authentik.root.asgi_middleware import SessionMiddleware
 from authentik.root.messages.consumer import MessageConsumer
 from authentik.root.middleware import ChannelsLoggingMiddleware
@@ -96,6 +97,12 @@ websocket_urlpatterns = [
         "ws/client/",
         ChannelsLoggingMiddleware(
             CookieMiddleware(SessionMiddleware(AuthMiddleware(MessageConsumer.as_asgi())))
+        ),
+    ),
+    path(
+        "ws/lsp/",
+        ChannelsLoggingMiddleware(
+            CookieMiddleware(SessionMiddleware(AuthMiddleware(LSPConsumer.as_asgi())))
         ),
     ),
 ]

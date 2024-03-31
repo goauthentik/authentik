@@ -17,6 +17,7 @@ import { EditorView, drawSelection, keymap, lineNumbers } from "@codemirror/view
 import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
 import YAML from "yaml";
+import { languageServer } from "codemirror-languageserver";
 
 import { CSSResult, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -141,20 +142,30 @@ export class CodeMirrorTextarea<T> extends AKElement {
         return this.editor.state.doc.toString();
     }
 
-    getLanguageExtension(): LanguageSupport | undefined {
+    getLanguageExtension(): Extension[] {
         switch (this.mode.toLowerCase()) {
             case CodeMirrorMode.XML:
-                return xml();
+                return [xml()];
             case CodeMirrorMode.JavaScript:
-                return javascript();
+                return [javascript()];
             case CodeMirrorMode.HTML:
-                return htmlLang();
+                return [htmlLang()];
             case CodeMirrorMode.Python:
-                return python();
+                return [
+                    languageServer({
+                        // WebSocket server uri and other client options.
+                        serverUri: "ws://localhost:9000/ws/lsp/",
+                        rootUri: "file:///",
+                        documentUri: `file:///foo`,
+                        workspaceFolders: [],
+                        languageId: "python",
+                    }),
+                    python()
+                ];
             case CodeMirrorMode.YAML:
-                return new LanguageSupport(StreamLanguage.define(yamlMode.yaml));
+                return [new LanguageSupport(StreamLanguage.define(yamlMode.yaml))];
         }
-        return undefined;
+        return [];
     }
 
     firstUpdated(): void {
@@ -173,7 +184,7 @@ export class CodeMirrorTextarea<T> extends AKElement {
             history(),
             keymap.of([...defaultKeymap, ...historyKeymap]),
             syntaxHighlighting(defaultHighlightStyle),
-            this.getLanguageExtension(),
+            ...this.getLanguageExtension(),
             lineNumbers(),
             drawSelection(),
             EditorView.lineWrapping,
