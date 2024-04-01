@@ -25,6 +25,8 @@ import type { PageUIConfig } from "./types";
  *
  */
 
+const coreApi = () => new CoreApi(DEFAULT_CONFIG);
+
 @localized()
 @customElement("ak-library")
 export class LibraryPage extends AKElement {
@@ -35,15 +37,13 @@ export class LibraryPage extends AKElement {
     isAdmin = false;
 
     @state()
-    apps!: PaginatedResponse<Application>;
+    apps: Application[] = [];
 
     @state()
     uiConfig: PageUIConfig;
 
     constructor() {
         super();
-        const applicationListFetch = new CoreApi(DEFAULT_CONFIG).coreApplicationsList({});
-        const meFetch = me();
         const uiConfig = rootInterface()?.uiConfig;
         if (!uiConfig) {
             throw new Error("Could not retrieve uiConfig. Reason: unknown. Check logs.");
@@ -55,23 +55,41 @@ export class LibraryPage extends AKElement {
             searchEnabled: uiConfig.enabledFeatures.search,
         };
 
-        Promise.allSettled([applicationListFetch, meFetch]).then(
-            ([applicationListStatus, meStatus]) => {
-                if (meStatus.status === "rejected") {
-                    throw new Error(
-                        `Could not determine status of user. Reason: ${meStatus.reason}`,
-                    );
-                }
-                if (applicationListStatus.status === "rejected") {
-                    throw new Error(
-                        `Could not retrieve list of applications. Reason: ${applicationListStatus.reason}`,
-                    );
-                }
-                this.isAdmin = meStatus.value.user.isSuperuser;
-                this.apps = applicationListStatus.value;
+        Promise.all([this.fetchApplications(), me()]).then(
+            ([applications, meStatus]) => {
+                this.isAdmin = meStatus.user.isSuperuser;
+                this.apps = applications;
                 this.ready = true;
             },
         );
+    }
+
+    async fetchApplications(): Promise<Application[]> {
+        const applicationListParams = (page = 1) => ({
+            ordering: "name",
+            page,
+            pageSize: 100,
+        });
+
+        const applicationListFetch = await coreApi().coreApplicationsList(applicationListParams(1));
+        const pageCount = applicationListFetch.pagination.totalPages;
+        if (pageCount === 1) {
+            return applicationListFetch.results;
+        }
+
+        const applicationLaterPages = await Promise.allSettled(
+            Array.from({ length: pageCount - 1 }).map((_a, idx) =>
+                coreApi().coreApplicationsList(applicationListParams(idx + 2)),
+            ),
+        );
+
+        return applicationLaterPages.reduce(function(acc, result) {
+            if (result.status === "rejected") {
+                const reason = JSON.stringify(result.reason, null, 2);
+                throw new Error(`Could not retrieve list of applications. Reason: ${reason}`);
+            }
+            return [...acc, ...result.value.results];
+        }, [...applicationListFetch.results]);
     }
 
     pageTitle(): string {
