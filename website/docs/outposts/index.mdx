@@ -11,7 +11,7 @@ An outpost is required if you use any of the following types of providers with y
 -   [RADIUS Provider](../providers/radius/index.md)
 -   [RAC Provider](../providers/rac/index.md)
 
-These types of providers use an outpost for increased flexibility and speed. Instead of the provider interacting directly with the business logic in the authentik Core to process all transactions, these providers use an outpost to handle the logic, which provides better isolation and  performance improvements (because the outpost is written in Go while the provider is written in Python).
+These types of providers use an outpost for increased flexibility and speed. Instead of the provider interacting directly with the business logic in the authentik Core to process all transactions, these providers use an outpost to handle the logic, which provides better isolation and performance improvements (because the outpost is written in Go while the provider is written in Python).
 
 An additional advantage of using an outpost is that outposts, like authentik itself, do not require access to the wider internet. Transactions between the application, the provider, and the outpost occur via the authentik API, and support single sign-on operations in firewalled or airgapped deployments and offline connections to remote machines that are not on the internet.
 
