@@ -2,7 +2,6 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { me } from "@goauthentik/common/users";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 
 import { localized, msg } from "@lit/localize";
 import { html } from "lit";
@@ -55,13 +54,11 @@ export class LibraryPage extends AKElement {
             searchEnabled: uiConfig.enabledFeatures.search,
         };
 
-        Promise.all([this.fetchApplications(), me()]).then(
-            ([applications, meStatus]) => {
-                this.isAdmin = meStatus.user.isSuperuser;
-                this.apps = applications;
-                this.ready = true;
-            },
-        );
+        Promise.all([this.fetchApplications(), me()]).then(([applications, meStatus]) => {
+            this.isAdmin = meStatus.user.isSuperuser;
+            this.apps = applications;
+            this.ready = true;
+        });
     }
 
     async fetchApplications(): Promise<Application[]> {
@@ -83,13 +80,16 @@ export class LibraryPage extends AKElement {
             ),
         );
 
-        return applicationLaterPages.reduce(function(acc, result) {
-            if (result.status === "rejected") {
-                const reason = JSON.stringify(result.reason, null, 2);
-                throw new Error(`Could not retrieve list of applications. Reason: ${reason}`);
-            }
-            return [...acc, ...result.value.results];
-        }, [...applicationListFetch.results]);
+        return applicationLaterPages.reduce(
+            function (acc, result) {
+                if (result.status === "rejected") {
+                    const reason = JSON.stringify(result.reason, null, 2);
+                    throw new Error(`Could not retrieve list of applications. Reason: ${reason}`);
+                }
+                return [...acc, ...result.value.results];
+            },
+            [...applicationListFetch.results],
+        );
     }
 
     pageTitle(): string {

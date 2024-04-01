@@ -1,7 +1,6 @@
 import { groupBy } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import "@goauthentik/user/LibraryApplication";
 
 import { msg } from "@lit/localize";
