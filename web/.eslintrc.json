@@ -32,6 +32,7 @@
                 "varsIgnorePattern": "^_",
                 "caughtErrorsIgnorePattern": "^_"
             }
-        ]
+        ],
+        "no-console": ["error", { "allow": ["debug", "warn", "error"] }]
     }
 }
