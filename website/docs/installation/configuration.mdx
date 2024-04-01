@@ -150,7 +150,11 @@ These settings affect where media files are stored. Those files include applicat
 
 ### `AUTHENTIK_SECRET_KEY`
 
-Secret key used for cookie signing and unique user IDs. Do not change this after the first install.
+Secret key used for cookie signing. Changing this will invalidate active sessions.
+
+:::caution
+Prior to 2023.06.0 it was also used for unique user IDs and should not be changed after the first install.
+:::
 
 ### `AUTHENTIK_LOG_LEVEL`
 
