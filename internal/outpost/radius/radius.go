@@ -9,20 +9,25 @@ import (
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ak"
+	"goauthentik.io/internal/outpost/ldap/flags"
 	"goauthentik.io/internal/outpost/radius/metrics"
 
 	"layeh.com/radius"
 )
 
 type ProviderInstance struct {
-	ClientNetworks []*net.IPNet
-	SharedSecret   []byte
-	MFASupport     bool
+	ClientNetworks  []*net.IPNet
+	SharedSecret    []byte
+	MFASupport      bool
+	boundUsersMutex *sync.RWMutex
+	boundUsers      map[string]*flags.UserFlags
+	providerPk      int32
 
-	appSlug  string
-	flowSlug string
-	s        *RadiusServer
-	log      *log.Entry
+	appSlug                string
+	authenticationFlowSlug string
+	invalidationFlowSlug   string
+	s                      *RadiusServer
+	log                    *log.Entry
 }
 
 type RadiusServer struct {

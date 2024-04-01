@@ -74,7 +74,12 @@ func (rs *RadiusServer) ServeRADIUS(w radius.ResponseWriter, r *radius.Request) 
 	}
 	nr.pi = pi
 
-	if nr.Code == radius.CodeAccessRequest {
+	switch nr.Code {
+	case radius.CodeAccessRequest:
 		rs.Handle_AccessRequest(w, nr)
+	case radius.CodeDisconnectRequest:
+		rs.Handle_DisconnectRequest(w, nr)
+	default:
+		nr.Log().WithField("code", nr.Code.String()).Debug("Unsupported packet code")
 	}
 }

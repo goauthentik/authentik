@@ -4,15 +4,17 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/flow"
+	"goauthentik.io/internal/outpost/ldap/flags"
 	"goauthentik.io/internal/outpost/radius/metrics"
 	"layeh.com/radius"
 	"layeh.com/radius/rfc2865"
+	"layeh.com/radius/rfc2866"
 )
 
 func (rs *RadiusServer) Handle_AccessRequest(w radius.ResponseWriter, r *RadiusRequest) {
 	username := rfc2865.UserName_GetString(r.Packet)
 
-	fe := flow.NewFlowExecutor(r.Context(), r.pi.flowSlug, r.pi.s.ac.Client.GetConfig(), log.Fields{
+	fe := flow.NewFlowExecutor(r.Context(), r.pi.authenticationFlowSlug, r.pi.s.ac.Client.GetConfig(), log.Fields{
 		"username":  username,
 		"client":    r.RemoteAddr(),
 		"requestId": r.ID(),
@@ -64,5 +66,28 @@ func (rs *RadiusServer) Handle_AccessRequest(w radius.ResponseWriter, r *RadiusR
 		}).Inc()
 		return
 	}
-	_ = w.Write(r.Response(radius.CodeAccessAccept))
+	// Get user info to store in context
+	userInfo, _, err := fe.ApiClient().CoreApi.CoreUsersMeRetrieve(r.Context()).Execute()
+	if err != nil {
+		metrics.RequestsRejected.With(prometheus.Labels{
+			"outpost_name": rs.ac.Outpost.Name,
+			"type":         "bind",
+			"reason":       "user_info_fail",
+		}).Inc()
+		r.Log().WithError(err).Warning("failed to get user info")
+		return
+	}
+
+	response := r.Response(radius.CodeAccessAccept)
+	_ = rfc2866.AcctSessionID_SetString(response, fe.GetSession().String())
+	r.pi.boundUsersMutex.Lock()
+	r.pi.boundUsers[fe.GetSession().String()] = &flags.UserFlags{
+		Session: fe.GetSession(),
+		UserPk:  userInfo.Original.Pk,
+	}
+	r.pi.boundUsersMutex.Unlock()
+	err = w.Write(response)
+	if err != nil {
+		r.Log().WithError(err).Warning("failed to write response")
+	}
 }
