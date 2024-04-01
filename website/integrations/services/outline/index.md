@@ -18,7 +18,6 @@ The following placeholders will be used:
 -   `outline.company` is the FQDN of the Outline install.
 -   `authentik.company` is the FQDN of the authentik install.
 
-
 ## authentik configuration
 
 1. Create an OAuth2/OpenID provider with the following parameters:

@@ -133,7 +133,7 @@ class OAuthDeviceCodeChallengeResponse(ChallengeResponse):
         """Validate code and save the returned http response"""
         response = validate_code(code, self.stage.request)
         if not response:
-            raise ValidationError("Invalid code", "invalid")
+            raise ValidationError(_("Invalid code"), "invalid")
         return response
 
 
