@@ -13,7 +13,7 @@ An outpost is required if you use any of the following types of providers with y
 
 These types of providers use an outpost for increased flexibility and speed. Instead of the provider interacting directly with the business logic in the authentik Core to process all transactions, these providers use an outpost to handle the logic, which provides better isolation and possible performance improvements (because the outpost is written in Go while the provider is written in Python).
 
-An additional advantage of using an outpost is that outposts, like authentik itself, do not require access to the wider internet. Transactions between the application, the provider, and the outpost occur via the authentik API, and support single sign-sign operations in firewalled or airgapped deployments and offline connections to remote machines that are not on the internet.
+An additional advantage of using an outpost is that outposts, like authentik itself, do not require access to the wider internet. Transactions between the application, the provider, and the outpost occur via the authentik API, and support single sign-on operations in firewalled or airgapped deployments and offline connections to remote machines that are not on the internet.
 
 An outpost is given permissions to access the authentik API using a service account and token, both of which are auto-generated when you create a new outpost. The outpost is granted rights to only the one app/provider pair.
 
