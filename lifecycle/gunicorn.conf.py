@@ -15,6 +15,8 @@ from authentik.lib.logging import get_logger_config
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.reflection import get_env
 from authentik.root.install_id import get_install_id_raw
+from lifecycle.migrate import run_migrations
+from lifecycle.wait_for_db import wait_for_db
 from lifecycle.worker import DjangoUvicornWorker
 
 if TYPE_CHECKING:
@@ -22,6 +24,8 @@ if TYPE_CHECKING:
     from gunicorn.arbiter import Arbiter
 
     from authentik.root.asgi import AuthentikAsgi
+
+wait_for_db()
 
 _tmp = Path(gettempdir())
 worker_class = "lifecycle.worker.DjangoUvicornWorker"
@@ -139,3 +143,5 @@ if CONFIG.get_bool("remote_debug"):
     import debugpy
 
     debugpy.listen(("0.0.0.0", 6800))  # nosec
+
+run_migrations()

@@ -68,7 +68,7 @@ def release_lock(cursor: Cursor):
     cursor.execute("SELECT pg_advisory_unlock(%s)", (ADV_LOCK_UID,))
 
 
-if __name__ == "__main__":
+def run_migrations():
     conn = connect(
         dbname=CONFIG.get("postgresql.name"),
         user=CONFIG.get("postgresql.user"),
@@ -117,3 +117,7 @@ if __name__ == "__main__":
         )
     finally:
         release_lock(curr)
+
+
+if __name__ == "__main__":
+    run_migrations()
