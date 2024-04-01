@@ -3,7 +3,7 @@ title: Create a Remote Access Control (RAC) provider
 ---
 
 :::info
-This feature is in technical preview, so please report any bugs on [GitHub](https://github.com/goauthentik/authentik/issues)
+This feature is in technical preview, so please report any bugs on [GitHub](https://github.com/goauthentik/authentik/issues).
 :::
 
 The RAC provider is a highly flexible feature for accessing remote machines. This document provides instructions for the basic creation and configuration of a RAC provider within a defined scenario.
@@ -16,7 +16,7 @@ The RAC provider requires the deployment of the [RAC Outpost](../../outposts/).
 
 ## Overview workflow to create a RAC provider
 
-The typcial workflow to create and configure a RAC provider is to 1. create app/provider, 2. create property mappings (that define the access credentials to each remote machine), 3. create an endpoint for each remote machine you want to connect to.
+The typical workflow to create and configure a RAC provider is to 1. create app/provider, 2. create property mappings (that define the access credentials to each remote machine), 3. create an endpoint for each remote machine you want to connect to.
 
 Depending on whether you are connecting using RDP, SSH, or VNC, the exact configuration choices might differ, but the overall workflow applies to all RAC connections.
 
@@ -49,7 +49,7 @@ Next, you need to add a property mapping for each of the remote machines you wan
         - **RDP settings**:
             - **Ignore server certificate: select **Enabled\*\* (This setting is required for TRAC to work)
             - **Enable wallpaper**: optional
-            - **Enable font smooting**: optional
+            - **Enable font smoothing**: optional
             - **Enable full window dragging**: optional
         - Advanced settings:
             - **Expressions**: optional, using Python you can define custom [expressions](../../property-mappings/expression.mdx).
