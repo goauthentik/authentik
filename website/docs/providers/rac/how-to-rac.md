@@ -45,7 +45,7 @@ Next, you need to add a property mapping for each of the remote machines you wan
         - **Name**s: define a name for the property mapping, perhaps include the type of connection (RDP, SSH, VNC)
         - **General settings**:
             - **Username**: the username for the remote machine
-            - **Password**: the password for remote machines
+            - **Password**: the password for the remote machine
         - **RDP settings**:
             - **Ignore server certificate: select **Enabled\*\* (This setting is required for TRAC to work)
             - **Enable wallpaper**: optional
@@ -68,17 +68,17 @@ Finally, you need to create an endpoint for each remote machine. Endpoints are d
 
 4. On the **Create Endpoint** modal, provide the following settings:
 
-    - **Name**s: define a name for the endpoint, perhaps include the type of connection (RDP, SSH, VNC)
+    - **Name**: define a name for the endpoint, perhaps include the type of connection (RDP, SSH, VNC)
     - **Protocol**: select the appropriate protocol
     - **Host**: the host name or IP address of the system you are connecting to.
       **Maximum concurrent connections**: select a value or use `-1` to disable the limitation.
-      ** Property mapping**: select either the property mapping that you created in Step 2, or use one of the default settings.
+      **Property mapping**: select either the property mapping that you created in Step 2, or use one of the default settings.
       **Advance settings**: optional
 
 5. Click **Create** to save your settings and close the modal.
 
 ### Access the remote machine
 
-To verify your configuration and access the remote machine, go to the **User interface** of you authentik instance. On the **My applications** page click the **Remote Access** application to display the defined endpoint(s).
+To verify your configuration and access the remote machine, go to the **User interface** of your authentik instance. On the **My applications** page click the **Remote Access** application to display the defined endpoint(s).
 
 Click the endpoint for the remote machine that you want to access. authentik connects you to a secure shell on the remote machine, in your web browser.
