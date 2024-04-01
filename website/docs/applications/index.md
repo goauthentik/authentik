@@ -37,5 +37,5 @@ The following aspects can be configured:
 
     If there is a mount under `/media` or if [S3 storage](../installation/storage-s3.md) is configured, you'll instead see a field to upload a file.
 
--   _Publisher_: Text shown below the sapplication
+-   _Publisher_: Text shown below the application
 -   _Description_: Subtext shown on the application card below the publisher
