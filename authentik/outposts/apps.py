@@ -45,14 +45,14 @@ class AuthentikOutpostConfig(ManagedAppConfig):
                 outpost.managed = MANAGED_OUTPOST
                 outpost.save()
                 return
-            outpost, updated = Outpost.objects.update_or_create(
+            outpost, created = Outpost.objects.update_or_create(
                 defaults={
                     "type": OutpostType.PROXY,
                     "name": MANAGED_OUTPOST_NAME,
                 },
                 managed=MANAGED_OUTPOST,
             )
-            if updated:
+            if created:
                 if KubernetesServiceConnection.objects.exists():
                     outpost.service_connection = KubernetesServiceConnection.objects.first()
                 elif DockerServiceConnection.objects.exists():
