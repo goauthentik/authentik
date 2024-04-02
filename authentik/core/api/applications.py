@@ -22,6 +22,7 @@ from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.admin.api.metrics import CoordinateSerializer
+from authentik.api.pagination import Pagination
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
@@ -43,9 +44,9 @@ from authentik.rbac.filters import ObjectFilter
 LOGGER = get_logger()
 
 
-def user_app_cache_key(user_pk: str) -> str:
+def user_app_cache_key(user_pk: str, page_number: int) -> str:
     """Cache key where application list for user is saved"""
-    return f"{CACHE_PREFIX}/app_access/{user_pk}"
+    return f"{CACHE_PREFIX}/app_access/{user_pk}/{page_number}"
 
 
 class ApplicationSerializer(ModelSerializer):
@@ -213,7 +214,8 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
             return super().list(request)
 
         queryset = self._filter_queryset_for_list(self.get_queryset())
-        paginated_apps = self.paginate_queryset(queryset)
+        paginator: Pagination = self.paginator
+        paginated_apps = paginator.paginate_queryset(queryset)
 
         if "for_user" in request.query_params:
             try:
@@ -235,12 +237,14 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         if not should_cache:
             allowed_applications = self._get_allowed_applications(paginated_apps)
         if should_cache:
-            allowed_applications = cache.get(user_app_cache_key(self.request.user.pk))
+            allowed_applications = cache.get(
+                user_app_cache_key(self.request.user.pk, paginator.page.number)
+            )
             if not allowed_applications:
-                LOGGER.debug("Caching allowed application list")
+                LOGGER.debug("Caching allowed application list", page=paginator.page.number)
                 allowed_applications = self._get_allowed_applications(paginated_apps)
                 cache.set(
-                    user_app_cache_key(self.request.user.pk),
+                    user_app_cache_key(self.request.user.pk, paginator.page.number),
                     allowed_applications,
                     timeout=86400,
                 )
