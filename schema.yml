@@ -24023,6 +24023,15 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: device_type_restrictions
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
+      - in: query
         name: friendly_name
         schema:
           type: string
@@ -29786,6 +29795,11 @@ components:
           nullable: true
         resident_key_requirement:
           $ref: '#/components/schemas/ResidentKeyRequirementEnum'
+        device_type_restrictions:
+          type: array
+          items:
+            type: string
+            format: uuid
       required:
       - component
       - meta_model_name
@@ -29822,6 +29836,11 @@ components:
           nullable: true
         resident_key_requirement:
           $ref: '#/components/schemas/ResidentKeyRequirementEnum'
+        device_type_restrictions:
+          type: array
+          items:
+            type: string
+            format: uuid
       required:
       - name
     AuthenticatedSession:
@@ -37259,6 +37278,11 @@ components:
           nullable: true
         resident_key_requirement:
           $ref: '#/components/schemas/ResidentKeyRequirementEnum'
+        device_type_restrictions:
+          type: array
+          items:
+            type: string
+            format: uuid
     PatchedAuthenticatorDuoStageRequest:
       type: object
       description: AuthenticatorDuoStage Serializer

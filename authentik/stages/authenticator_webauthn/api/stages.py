@@ -18,6 +18,7 @@ class AuthenticateWebAuthnStageSerializer(StageSerializer):
             "user_verification",
             "authenticator_attachment",
             "resident_key_requirement",
+            "device_type_restrictions",
         ]
 
 
@@ -29,4 +30,3 @@ class AuthenticateWebAuthnStageViewSet(UsedByMixin, ModelViewSet):
     filterset_fields = "__all__"
     ordering = ["name"]
     search_fields = ["name"]
-

@@ -5761,6 +5761,13 @@
                         "required"
                     ],
                     "title": "Resident key requirement"
+                },
+                "device_type_restrictions": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Device type restrictions"
                 }
             },
             "required": []
