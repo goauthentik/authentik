@@ -7,7 +7,7 @@ from django.core.cache import cache
 from django.db.transaction import atomic
 from fido2.mds3 import filter_revoked, parse_blob
 
-from authentik.root.settings import CELERY
+from authentik.root.celery import CELERY_APP
 from authentik.stages.authenticator_webauthn.models import (
     UNKNOWN_DEVICE_TYPE_AAGUID,
     WebAuthnDeviceType,
@@ -23,7 +23,7 @@ def mds_ca() -> bytes:
         return _raw_root.read()
 
 
-@CELERY.task()
+@CELERY_APP.task()
 def webauthn_mds_import():
     """Background task to import FIDO Alliance MDS blob into database"""
     with open(Path(__file__).parent / "mds" / "blob.jwt", mode="rb") as _raw_blob:

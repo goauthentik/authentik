@@ -84,7 +84,9 @@ class AuthenticateWebAuthnStage(ConfigurableStage, FriendlyNamedStage, Stage):
 
     @property
     def serializer(self) -> type[BaseSerializer]:
-        from authentik.stages.authenticator_webauthn.api import AuthenticateWebAuthnStageSerializer
+        from authentik.stages.authenticator_webauthn.api.stages import (
+            AuthenticateWebAuthnStageSerializer,
+        )
 
         return AuthenticateWebAuthnStageSerializer
 
@@ -141,7 +143,7 @@ class WebAuthnDevice(SerializerModel, Device):
 
     @property
     def serializer(self) -> Serializer:
-        from authentik.stages.authenticator_webauthn.api import WebAuthnDeviceSerializer
+        from authentik.stages.authenticator_webauthn.api.devices import WebAuthnDeviceSerializer
 
         return WebAuthnDeviceSerializer
 
@@ -153,13 +155,21 @@ class WebAuthnDevice(SerializerModel, Device):
         verbose_name_plural = _("WebAuthn Devices")
 
 
-class WebAuthnDeviceType(models.Model):
+class WebAuthnDeviceType(SerializerModel):
     """WebAuthn device type, used to restrict which device types are allowed"""
 
     aaguid = models.UUIDField(primary_key=True, unique=True)
 
     description = models.TextField()
     icon = models.TextField(null=True)
+
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.stages.authenticator_webauthn.api.device_types import (
+            WebAuthnDeviceTypeSerializer,
+        )
+
+        return WebAuthnDeviceTypeSerializer
 
     class Meta:
         verbose_name = _("WebAuthn Device type")
