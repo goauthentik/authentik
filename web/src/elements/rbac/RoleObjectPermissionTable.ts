@@ -112,9 +112,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
                 item.permissions.filter((uperm) => uperm.codename === perm.codename).length > 0;
             baseRow.push(
                 html`${granted
-                    ? html`<pf-tooltip
-                          position="top"
-                          content=${msg("Directly assigned")}
+                    ? html`<pf-tooltip position="top" content=${msg("Directly assigned")}
                           >✓</pf-tooltip
                       >`
                     : html`X`} `,
