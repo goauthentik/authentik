@@ -44,9 +44,12 @@ from authentik.rbac.filters import ObjectFilter
 LOGGER = get_logger()
 
 
-def user_app_cache_key(user_pk: str, page_number: int) -> str:
+def user_app_cache_key(user_pk: str, page_number: int | None = None) -> str:
     """Cache key where application list for user is saved"""
-    return f"{CACHE_PREFIX}/app_access/{user_pk}/{page_number}"
+    key = f"{CACHE_PREFIX}/app_access/{user_pk}"
+    if page_number:
+        key += f"/{page_number}"
+    return key
 
 
 class ApplicationSerializer(ModelSerializer):
@@ -215,7 +218,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
 
         queryset = self._filter_queryset_for_list(self.get_queryset())
         paginator: Pagination = self.paginator
-        paginated_apps = paginator.paginate_queryset(queryset)
+        paginated_apps = paginator.paginate_queryset(queryset, request)
 
         if "for_user" in request.query_params:
             try:
