@@ -163,9 +163,9 @@ gen-client-py:
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		ghcr.io/beryju/openapi-generator-cli:v7.4.0 generate \
+		docker.io/openapitools/openapi-generator-cli:v7.4.0 generate \
 		-i /local/schema.yml \
-		-g python-pydantic-v2 \
+		-g python \
 		-o /local/${GEN_API_PY} \
 		-c /local/scripts/api-py-config.yaml \
 		--additional-properties=packageVersion=${NPM_VERSION} \
