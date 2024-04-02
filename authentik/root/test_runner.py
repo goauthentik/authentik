@@ -9,6 +9,7 @@ from django.test.runner import DiscoverRunner
 
 from authentik.lib.config import CONFIG
 from authentik.lib.sentry import sentry_init
+from authentik.root.signals import post_startup, pre_startup, startup
 from tests.e2e.utils import get_docker_tag
 
 # globally set maxDiff to none to show full assert error
@@ -45,6 +46,10 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         CONFIG.set("error_reporting.environment", "testing")
         CONFIG.set("error_reporting.send_pii", True)
         sentry_init()
+
+        pre_startup.send(sender=self, mode="test")
+        startup.send(sender=self, mode="test")
+        post_startup.send(sender=self, mode="test")
 
     @classmethod
     def add_arguments(cls, parser: ArgumentParser):

@@ -44,7 +44,7 @@ const container = (testItem: TemplateResult) =>
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const handleMoveChanged = (result: any) => {
-    console.log(result);
+    console.debug(result);
     const target = document.querySelector("#action-button-message-pad");
     target!.append(
         new DOMParser().parseFromString(
