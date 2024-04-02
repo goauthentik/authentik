@@ -22,6 +22,7 @@ import {
     AuthenticatorWebAuthnChallenge,
     AuthenticatorWebAuthnChallengeResponseRequest,
 } from "@goauthentik/api";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 export interface WebAuthnAuthenticatorRegisterChallengeResponse {
     response: Assertion;
@@ -130,6 +131,17 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
             </header>
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form">
+                    <ak-form-static
+                        class="pf-c-form__group"
+                        userAvatar="${this.challenge.pendingUserAvatar}"
+                        user=${this.challenge.pendingUser}
+                    >
+                        <div slot="link">
+                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
+                                >${msg("Not you?")}</a
+                            >
+                        </div>
+                    </ak-form-static>
                     <ak-empty-state
                         ?loading="${this.registerRunning}"
                         header=${this.registerRunning
