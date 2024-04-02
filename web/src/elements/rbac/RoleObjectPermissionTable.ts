@@ -110,20 +110,15 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         this.modelPermissions?.results.forEach((perm) => {
             const granted =
                 item.permissions.filter((uperm) => uperm.codename === perm.codename).length > 0;
-            baseRow.push(html`
-                <ak-action-button
-                    .apiRequest=${async () => {
-                        console.log(granted);
-                    }}
-                    class="pf-m-link"
-                >
-                    ${granted
-                        ? html`<pf-tooltip position="top" content=${msg("Directly assigned")}
-                              >✓</pf-tooltip
-                          >`
-                        : html`X`}
-                </ak-action-button>
-            `);
+            baseRow.push(
+                html`${granted
+                    ? html`<pf-tooltip
+                          position="top"
+                          content=${msg("Directly assigned")}
+                          >✓</pf-tooltip
+                      >`
+                    : html`X`} `,
+            );
         });
         return baseRow;
     }
