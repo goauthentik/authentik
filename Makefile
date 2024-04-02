@@ -47,10 +47,10 @@ test-go:
 test-docker:  ## Run all tests in a docker-compose
 	echo "PG_PASS=$(openssl rand -base64 32)" >> .env
 	echo "AUTHENTIK_SECRET_KEY=$(openssl rand -base64 32)" >> .env
-	docker-compose pull -q
-	docker-compose up --no-start
-	docker-compose start postgresql redis
-	docker-compose run -u root server test-all
+	docker compose pull -q
+	docker compose up --no-start
+	docker compose start postgresql redis
+	docker compose run -u root server test-all
 	rm -f .env
 
 test: ## Run the server tests and produce a coverage report (locally)
