@@ -34,7 +34,11 @@ from authentik.flows.challenge import (
     WithUserInfoChallenge,
 )
 from authentik.flows.stage import ChallengeStageView
-from authentik.stages.authenticator_webauthn.models import AuthenticateWebAuthnStage, WebAuthnDevice
+from authentik.stages.authenticator_webauthn.models import (
+    AuthenticateWebAuthnStage,
+    WebAuthnDevice,
+    WebAuthnDeviceType,
+)
 from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
 
 SESSION_KEY_WEBAUTHN_CHALLENGE = "authentik/stages/authenticator_webauthn/challenge"
@@ -144,13 +148,19 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
             credential_id=bytes_to_base64url(webauthn_credential.credential_id)
         ).first()
         if not existing_device:
+            name = "WebAuthn Device"
+            device_type = WebAuthnDeviceType.objects.filter(
+                aaguid=webauthn_credential.aaguid
+            ).first()
+            if device_type and device_type.description:
+                name = device_type.description
             WebAuthnDevice.objects.create(
                 user=self.get_pending_user(),
                 public_key=bytes_to_base64url(webauthn_credential.credential_public_key),
                 credential_id=bytes_to_base64url(webauthn_credential.credential_id),
                 sign_count=webauthn_credential.sign_count,
                 rp_id=get_rp_id(self.request),
-                name="WebAuthn Device",
+                name=name,
             )
         else:
             return self.executor.stage_invalid("Device with Credential ID already exists.")
