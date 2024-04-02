@@ -1640,43 +1640,6 @@
                         ],
                         "properties": {
                             "model": {
-                                "const": "authentik_stages_authenticator_webauthn.webauthndevicetype"
-                            },
-                            "id": {
-                                "type": "string"
-                            },
-                            "state": {
-                                "type": "string",
-                                "enum": [
-                                    "absent",
-                                    "present",
-                                    "created",
-                                    "must_created"
-                                ],
-                                "default": "present"
-                            },
-                            "conditions": {
-                                "type": "array",
-                                "items": {
-                                    "type": "boolean"
-                                }
-                            },
-                            "attrs": {
-                                "$ref": "#/$defs/model_authentik_stages_authenticator_webauthn.webauthndevicetype"
-                            },
-                            "identifiers": {
-                                "$ref": "#/$defs/model_authentik_stages_authenticator_webauthn.webauthndevicetype"
-                            }
-                        }
-                    },
-                    {
-                        "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
-                        "properties": {
-                            "model": {
                                 "const": "authentik_stages_captcha.captchastage"
                             },
                             "id": {
@@ -3387,7 +3350,6 @@
                         "authentik_stages_authenticator_validate.authenticatorvalidatestage",
                         "authentik_stages_authenticator_webauthn.authenticatewebauthnstage",
                         "authentik_stages_authenticator_webauthn.webauthndevice",
-                        "authentik_stages_authenticator_webauthn.webauthndevicetype",
                         "authentik_stages_captcha.captchastage",
                         "authentik_stages_consent.consentstage",
                         "authentik_stages_consent.userconsent",
@@ -5780,30 +5742,6 @@
                     "maxLength": 200,
                     "minLength": 1,
                     "title": "Name"
-                }
-            },
-            "required": []
-        },
-        "model_authentik_stages_authenticator_webauthn.webauthndevicetype": {
-            "type": "object",
-            "properties": {
-                "aaguid": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Aaguid"
-                },
-                "description": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Description"
-                },
-                "icon": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []

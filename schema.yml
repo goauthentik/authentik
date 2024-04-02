@@ -24320,6 +24320,106 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /stages/authenticator/webauthn_device_types/:
+    get:
+      operationId: stages_authenticator_webauthn_device_types_list
+      description: WebAuthnDeviceType Viewset
+      parameters:
+      - in: query
+        name: aaguid
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: description
+        schema:
+          type: string
+      - in: query
+        name: icon
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedWebAuthnDeviceTypeList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /stages/authenticator/webauthn_device_types/{aaguid}/:
+    get:
+      operationId: stages_authenticator_webauthn_device_types_retrieve
+      description: WebAuthnDeviceType Viewset
+      parameters:
+      - in: path
+        name: aaguid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this WebAuthn Device type.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebAuthnDeviceType'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /stages/captcha/:
     get:
       operationId: stages_captcha_list
@@ -29800,8 +29900,14 @@ components:
           items:
             type: string
             format: uuid
+        device_type_restrictions_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnDeviceType'
+          readOnly: true
       required:
       - component
+      - device_type_restrictions_obj
       - meta_model_name
       - name
       - pk
@@ -36841,6 +36947,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WebAuthnDevice'
+      required:
+      - pagination
+      - results
+    PaginatedWebAuthnDeviceTypeList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnDeviceType'
       required:
       - pagination
       - results
@@ -44157,8 +44275,14 @@ components:
           type: string
           format: date-time
           readOnly: true
+        device_type:
+          allOf:
+          - $ref: '#/components/schemas/WebAuthnDeviceType'
+          readOnly: true
+          nullable: true
       required:
       - created_on
+      - device_type
       - name
       - pk
     WebAuthnDeviceRequest:
@@ -44171,6 +44295,38 @@ components:
           maxLength: 200
       required:
       - name
+    WebAuthnDeviceType:
+      type: object
+      description: WebAuthnDeviceType Serializer
+      properties:
+        aaguid:
+          type: string
+          format: uuid
+        description:
+          type: string
+        icon:
+          type: string
+          nullable: true
+      required:
+      - aaguid
+      - description
+    WebAuthnDeviceTypeRequest:
+      type: object
+      description: WebAuthnDeviceType Serializer
+      properties:
+        aaguid:
+          type: string
+          format: uuid
+        description:
+          type: string
+          minLength: 1
+        icon:
+          type: string
+          nullable: true
+          minLength: 1
+      required:
+      - aaguid
+      - description
     Workers:
       type: object
       properties:

@@ -9,16 +9,18 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.core.api.used_by import UsedByMixin
+from authentik.stages.authenticator_webauthn.api.device_types import WebAuthnDeviceTypeSerializer
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 
 
 class WebAuthnDeviceSerializer(ModelSerializer):
     """Serializer for WebAuthn authenticator devices"""
 
+    device_type = WebAuthnDeviceTypeSerializer(read_only=True, allow_null=True)
+
     class Meta:
         model = WebAuthnDevice
-        fields = ["pk", "name", "created_on"]
-        depth = 2
+        fields = ["pk", "name", "created_on", "device_type"]
 
 
 class WebAuthnDeviceViewSet(

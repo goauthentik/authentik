@@ -155,12 +155,13 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
             if device_type and device_type.description:
                 name = device_type.description
             WebAuthnDevice.objects.create(
+                name=name,
                 user=self.get_pending_user(),
                 public_key=bytes_to_base64url(webauthn_credential.credential_public_key),
                 credential_id=bytes_to_base64url(webauthn_credential.credential_id),
                 sign_count=webauthn_credential.sign_count,
                 rp_id=get_rp_id(self.request),
-                name=name,
+                device_type=device_type,
             )
         else:
             return self.executor.stage_invalid("Device with Credential ID already exists.")

@@ -132,6 +132,10 @@ class WebAuthnDevice(SerializerModel, Device):
     created_on = models.DateTimeField(auto_now_add=True)
     last_t = models.DateTimeField(default=now)
 
+    device_type = models.ForeignKey(
+        "WebAuthnDeviceType", on_delete=models.SET_DEFAULT, null=True, default=None
+    )
+
     @property
     def descriptor(self) -> PublicKeyCredentialDescriptor:
         """Get a publickeydescriptor for this device"""
