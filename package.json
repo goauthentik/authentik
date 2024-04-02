@@ -1,5 +1,10 @@
 {
   "name": "@goauthentik/authentik",
   "version": "1.0.0",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "@docusaurus/core": "^3.2.0",
+    "@docusaurus/plugin-client-redirects": "^3.2.0",
+    "@docusaurus/plugin-content-docs": "^3.2.0"
+  }
 }
