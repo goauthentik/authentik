@@ -4,11 +4,16 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
+from authentik.stages.authenticator_webauthn.api.device_types import WebAuthnDeviceTypeSerializer
 from authentik.stages.authenticator_webauthn.models import AuthenticateWebAuthnStage
 
 
 class AuthenticateWebAuthnStageSerializer(StageSerializer):
     """AuthenticateWebAuthnStage Serializer"""
+
+    device_type_restrictions_obj = WebAuthnDeviceTypeSerializer(
+        source="device_type_restrictions", many=True, read_only=True
+    )
 
     class Meta:
         model = AuthenticateWebAuthnStage
@@ -19,6 +24,7 @@ class AuthenticateWebAuthnStageSerializer(StageSerializer):
             "authenticator_attachment",
             "resident_key_requirement",
             "device_type_restrictions",
+            "device_type_restrictions_obj",
         ]
 
 

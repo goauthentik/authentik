@@ -41,7 +41,8 @@ def webauthn_mds_import():
             aaguid = entry.aaguid
             if not aaguid:
                 continue
-            if filter_revoked(entry):
+            if not filter_revoked(entry):
+                WebAuthnDeviceType.objects.filter(aaguid=str(aaguid)).delete()
                 continue
             metadata = entry.metadata_statement
             WebAuthnDeviceType.objects.update_or_create(

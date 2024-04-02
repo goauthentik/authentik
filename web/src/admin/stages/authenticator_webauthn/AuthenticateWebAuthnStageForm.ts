@@ -1,7 +1,12 @@
 import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
+import {
+    DataProvision,
+    DualSelectPair,
+} from "@goauthentik/authentik/elements/ak-dual-select/types";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -20,10 +25,21 @@ import {
     ResidentKeyRequirementEnum,
     StagesApi,
     UserVerificationEnum,
+    WebAuthnDeviceType,
 } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-webauthn-form")
 export class AuthenticateWebAuthnStageForm extends BaseStageForm<AuthenticateWebAuthnStage> {
+    deviceTypeRestrictionPair(item: WebAuthnDeviceType): DualSelectPair {
+        const label = item.description ? item.description : item.aaguid;
+        return [
+            item.aaguid,
+            html`<div class="selection-main">${label}</div>
+                <div class="selection-desc">${item.aaguid}</div>`,
+            label,
+        ];
+    }
+
     loadInstance(pk: string): Promise<AuthenticateWebAuthnStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnRetrieve({
             stageUuid: pk,
@@ -163,6 +179,31 @@ export class AuthenticateWebAuthnStageForm extends BaseStageForm<AuthenticateWeb
                             .value=${this.instance?.authenticatorAttachment}
                         >
                         </ak-radio>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${msg("Device type restrictions")} name="deviceTypeRestrictions">
+                        <ak-dual-select-provider
+                            .provider=${(page: number, search?: string): Promise<DataProvision> => {
+                                return new StagesApi(
+                                    DEFAULT_CONFIG,
+                                ).stagesAuthenticatorWebauthnDeviceTypesList({
+                                    page: page,
+                                    search: search,
+                                }).then(results => {
+                                    return {
+                                        pagination: results.pagination,
+                                        options: results.results.map(this.deviceTypeRestrictionPair),
+                                    };
+                                });
+                            }}
+                            .selected=${(this.instance?.deviceTypeRestrictionsObj ?? []).map(this.deviceTypeRestrictionPair)}
+                            available-label="${msg("Available Device types")}"
+                            selected-label="${msg("Selected Device types")}"
+                        ></ak-dual-select-provider>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Optionally restrict which WebAuthn device types may be used. When no device types are selected, all devices are allowed.",
+                            )}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Configuration flow")}
