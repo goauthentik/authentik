@@ -14,6 +14,8 @@ from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.models import SerializerModel
 from authentik.stages.authenticator.models import Device
 
+UNKNOWN_DEVICE_TYPE_AAGUID = "00000000-0000-0000-0000-000000000000"
+
 
 class UserVerification(models.TextChoices):
     """The degree to which the Relying Party wishes to verify a user's identity.
@@ -149,3 +151,19 @@ class WebAuthnDevice(SerializerModel, Device):
     class Meta:
         verbose_name = _("WebAuthn Device")
         verbose_name_plural = _("WebAuthn Devices")
+
+
+class WebAuthnDeviceType(models.Model):
+    """WebAuthn device type, used to restrict which device types are allowed"""
+
+    aaguid = models.UUIDField(primary_key=True, unique=True)
+
+    description = models.TextField()
+    icon = models.TextField(null=True)
+
+    class Meta:
+        verbose_name = _("WebAuthn Device type")
+        verbose_name_plural = _("WebAuthn Device types")
+
+    def __str__(self) -> str:
+        return f"WebAuthn device type {self.description} ({self.aaguid})"
