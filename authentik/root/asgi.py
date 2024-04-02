@@ -60,7 +60,18 @@ class RouteNotFoundMiddleware:
                 raise exc
 
 
-application = SentryAsgiMiddleware(
+class AuthentikAsgi(SentryAsgiMiddleware):
+    """Root ASGI App wrapper"""
+
+    def call_startup(self):
+        from authentik.root.signals import post_startup, pre_startup, startup
+
+        pre_startup.send(sender=self)
+        startup.send(sender=self)
+        post_startup.send(sender=self)
+
+
+application = AuthentikAsgi(
     ProtocolTypeRouter(
         {
             "http": get_asgi_application(),
