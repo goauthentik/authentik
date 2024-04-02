@@ -10,6 +10,7 @@ from webauthn import options_to_json
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
 from webauthn.helpers.exceptions import InvalidRegistrationResponse
 from webauthn.helpers.structs import (
+    AttestationConveyancePreference,
     AuthenticatorAttachment,
     AuthenticatorSelectionCriteria,
     PublicKeyCredentialCreationOptions,
@@ -105,6 +106,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
                 user_verification=UserVerificationRequirement(str(stage.user_verification)),
                 authenticator_attachment=authenticator_attachment,
             ),
+            attestation=AttestationConveyancePreference.DIRECT,
         )
 
         self.request.session[SESSION_KEY_WEBAUTHN_CHALLENGE] = registration_options.challenge
