@@ -34603,15 +34603,6 @@ components:
       - debug
       - notset
       type: string
-      description: |-
-        * `critical` - critical
-        * `exception` - exception
-        * `error` - error
-        * `warn` - warn
-        * `warning` - warning
-        * `info` - info
-        * `debug` - debug
-        * `notset` - notset
     LoginChallengeTypes:
       oneOf:
       - $ref: '#/components/schemas/RedirectChallenge'
@@ -43432,6 +43423,7 @@ components:
         parent_name:
           type: string
           readOnly: true
+          nullable: true
         attributes:
           type: object
           additionalProperties: {}
