@@ -17,7 +17,7 @@ An additional advantage of using an outpost is that outposts, like authentik its
 
 An outpost is given permissions to access the authentik API using a service account and token, both of which are auto-generated when you create a new outpost. The outpost is granted rights to only the application/provider pairs configured (and other necessary related objects such as certificates).
 
-Any change made to the outpost's associated app or provider immediately triggers an event to update the configuration data stored on the outpost, via websockets. Websockets are also used to send authentik auto-scheduled health-checks on the outpost.
+Any change made to the outpost's associated app or provider immediately triggers an event to update the configuration data stored on the outpost, via websockets. Websockets are used also by the outpost to send healthchecks to the authentik Core.
 
 ## Create and configure an outpost
 
