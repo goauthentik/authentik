@@ -72,7 +72,7 @@ Finally, you need to create an endpoint for each remote machine. Endpoints are d
     - **Protocol**: select the appropriate protocol
     - **Host**: the host name or IP address of the system you are connecting to.
     - **Maximum concurrent connections**: select a value or use `-1` to disable the limitation.
-      **Property mapping**: select either the property mapping that you created in Step 2, or use one of the default settings.
+    - **Property mapping**: select either the property mapping that you created in Step 2, or use one of the default settings.
       **Advance settings**: optional
 
 5. Click **Create** to save your settings and close the modal.
