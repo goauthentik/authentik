@@ -47,7 +47,7 @@ Next, you need to add a property mapping for each of the remote machines you wan
             - **Username**: the username for the remote machine
             - **Password**: the password for the remote machine
         - **RDP settings**:
-            - **Ignore server certificate: select **Enabled\*\* (This setting is required for TRAC to work)
+            - **Ignore server certificate: select **Enabled\*\* (Depending on the setup of your RDP Server, it might be required to enable this setting.)
             - **Enable wallpaper**: optional
             - **Enable font smoothing**: optional
             - **Enable full window dragging**: optional
