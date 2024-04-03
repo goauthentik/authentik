@@ -14,7 +14,6 @@ class WebAuthnDeviceTypeSerializer(StageSerializer):
         fields = [
             "aaguid",
             "description",
-            "icon",
         ]
 
 

@@ -44304,9 +44304,6 @@ components:
           format: uuid
         description:
           type: string
-        icon:
-          type: string
-          nullable: true
       required:
       - aaguid
       - description
@@ -44319,10 +44316,6 @@ components:
           format: uuid
         description:
           type: string
-          minLength: 1
-        icon:
-          type: string
-          nullable: true
           minLength: 1
       required:
       - aaguid
