@@ -1,6 +1,7 @@
 """MDS Helpers"""
 
 from functools import lru_cache
+from json import loads
 from pathlib import Path
 
 from django.core.cache import cache
@@ -14,6 +15,7 @@ from authentik.stages.authenticator_webauthn.models import (
 )
 
 CACHE_KEY_MDS_NO = "goauthentik.io/stages/authenticator_webauthn/mds_no"
+AAGUID_BLOB_PATH = Path(__file__).parent / "mds" / "aaguid.json"
 MDS_BLOB_PATH = Path(__file__).parent / "mds" / "blob.jwt"
 MDS_CA_PATH = Path(__file__).parent / "mds" / "root-r3.crt"
 
@@ -52,3 +54,16 @@ def webauthn_mds_import(force=False):
                 defaults={"description": metadata.description, "icon": metadata.icon},
             )
     cache.set(CACHE_KEY_MDS_NO, blob.no)
+
+
+@CELERY_APP.task()
+def webauthn_aaguid_import(force=False):
+    """Background task to import AAGUIDs into database"""
+    with open(AAGUID_BLOB_PATH, mode="rb") as _raw_blob:
+        entries = loads(_raw_blob.read())
+    with atomic():
+        for aaguid, details in entries.items():
+            WebAuthnDeviceType.objects.update_or_create(
+                aaguid=str(aaguid),
+                defaults={"description": details.get("name"), "icon": details.get("icon_light")},
+            )

@@ -13,6 +13,10 @@ class AuthentikStageAuthenticatorWebAuthnConfig(ManagedAppConfig):
 
     @ManagedAppConfig.reconcile_tenant
     def webauthn_device_types(self):
-        from authentik.stages.authenticator_webauthn.tasks import webauthn_mds_import
+        from authentik.stages.authenticator_webauthn.tasks import (
+            webauthn_aaguid_import,
+            webauthn_mds_import,
+        )
 
         webauthn_mds_import.delay()
+        webauthn_aaguid_import.delay()

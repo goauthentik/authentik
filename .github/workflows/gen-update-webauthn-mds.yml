@@ -1,4 +1,4 @@
-name: authentik-gen-update-fido-mds3
+name: authentik-gen-update-webauthn-mds
 on:
   workflow_dispatch:
   schedule:
@@ -17,15 +17,15 @@ jobs:
           token: ${{ steps.generate_token.outputs.token }}
       - name: Setup authentik env
         uses: ./.github/actions/setup
-      - run: poetry run ak update_fido_mds3
+      - run: poetry run ak update_webauthn_mds
       - uses: peter-evans/create-pull-request@v6
         id: cpr
         with:
           token: ${{ steps.generate_token.outputs.token }}
           branch: update-fido-mds-client
-          commit-message: "stages/authenticator_webauthn: Update FIDO MDS3 blob"
-          title: "stages/authenticator_webauthn: Update FIDO MDS3 blob"
-          body: "stages/authenticator_webauthn: Update FIDO MDS3 blob"
+          commit-message: "stages/authenticator_webauthn: Update FIDO MDS3 & Passkey aaguid blobs"
+          title: "stages/authenticator_webauthn: Update FIDO MDS3 & Passkey aaguid blobs"
+          body: "stages/authenticator_webauthn: Update FIDO MDS3 & Passkey aaguid blobs"
           delete-branch: true
           signoff: true
           # ID from https://api.github.com/users/authentik-automation[bot]
