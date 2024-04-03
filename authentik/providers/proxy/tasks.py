@@ -23,8 +23,10 @@ def proxy_set_defaults():
 
 
 @CELERY_APP.task()
-def proxy_on_logout(session_id: str):
+def proxy_on_logout(session_id: str | None):
     """Update outpost instances connected to a single outpost"""
+    if session_id is None:
+        return
     layer = get_channel_layer()
     hashed_session_id = sha256(session_id.encode("ascii")).hexdigest()
     for outpost in Outpost.objects.filter(type=OutpostType.PROXY):
