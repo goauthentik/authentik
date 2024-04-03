@@ -14,19 +14,21 @@ from authentik.stages.authenticator_webauthn.models import (
 )
 
 CACHE_KEY_MDS_NO = "goauthentik.io/stages/authenticator_webauthn/mds_no"
+MDS_BLOB_PATH = Path(__file__).parent / "mds" / "blob.jwt"
+MDS_CA_PATH = Path(__file__).parent / "mds" / "root-r3.crt"
 
 
 @lru_cache
 def mds_ca() -> bytes:
     """Cache MDS Signature CA, GlobalSign Root CA - R3"""
-    with open(Path(__file__).parent / "mds" / "root-r3.crt", mode="rb") as _raw_root:
+    with open(MDS_CA_PATH, mode="rb") as _raw_root:
         return _raw_root.read()
 
 
 @CELERY_APP.task()
 def webauthn_mds_import():
     """Background task to import FIDO Alliance MDS blob into database"""
-    with open(Path(__file__).parent / "mds" / "blob.jwt", mode="rb") as _raw_blob:
+    with open(MDS_BLOB_PATH, mode="rb") as _raw_blob:
         blob = parse_blob(_raw_blob.read(), mds_ca())
     with atomic():
         WebAuthnDeviceType.objects.update_or_create(
