@@ -13,6 +13,7 @@ from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.stages.authenticator_webauthn.models import (
+    UNKNOWN_DEVICE_TYPE_AAGUID,
     AuthenticatorWebAuthnStage,
     WebAuthnDevice,
     WebAuthnDeviceType,
@@ -252,5 +253,57 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
             SERVER_PORT="9000",
         )
         self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        self.assertTrue(WebAuthnDevice.objects.filter(user=self.user).exists())
+
+    def test_register_restricted_device_type_allow_unknown(self):
+        """Test registration with restricted devices (allow, unknown device type)"""
+        webauthn_mds_import(force=True)
+        webauthn_aaguid_import()
+        WebAuthnDeviceType.objects.filter(description="iCloud Keychain").delete()
+        self.stage.device_type_restrictions.set(
+            WebAuthnDeviceType.objects.filter(aaguid=UNKNOWN_DEVICE_TYPE_AAGUID)
+        )
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session[SESSION_KEY_WEBAUTHN_CHALLENGE] = b64decode(
+            b"03Xodi54gKsfnP5I9VFfhaGXVVE2NUyZpBBXns/JI+x6V9RY2Tw2QmxRJkhh7174EkRazUntIwjMVY9bFG60Lw=="
+        )
+        session.save()
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            data={
+                "component": "ak-stage-authenticator-webauthn",
+                "response": {
+                    "id": "kqnmrVLnDG-OwsSNHkihYZaNz5s",
+                    "rawId": "kqnmrVLnDG-OwsSNHkihYZaNz5s",
+                    "type": "public-key",
+                    "registrationClientExtensions": "{}",
+                    "response": {
+                        "clientDataJSON": (
+                            "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmd"
+                            "lIjoiMDNYb2RpNTRnS3NmblA1STlWRmZoYUdYVlZFMk5VeV"
+                            "pwQkJYbnNfSkkteDZWOVJZMlR3MlFteFJKa2hoNzE3NEVrU"
+                            "mF6VW50SXdqTVZZOWJGRzYwTHciLCJvcmlnaW4iOiJodHRw"
+                            "Oi8vbG9jYWxob3N0OjkwMDAiLCJjcm9zc09yaWdpbiI6ZmFsc2V9"
+                        ),
+                        "attestationObject": (
+                            "o2NmbXRkbm9uZWdhdHRTdG10oGhhdXRoRGF0YViYSZYN5Yg"
+                            "OjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NdAAAAAPv8MA"
+                            "cVTk7MjAtuAgVX170AFJKp5q1S5wxvjsLEjR5IoWGWjc-bp"
+                            "QECAyYgASFYIKtcZHPumH37XHs0IM1v3pUBRIqHVV_SE-Lq"
+                            "2zpJAOVXIlgg74Fg_WdB0kuLYqCKbxogkEPaVtR_iR3IyQFIJAXBzds"
+                        ),
+                    },
+                },
+            },
+            SERVER_NAME="localhost",
+            SERVER_PORT="9000",
+        )
+        self.assertEqual(response.status_code, 200)
+        print(response.content)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
         self.assertTrue(WebAuthnDevice.objects.filter(user=self.user).exists())

@@ -35,6 +35,7 @@ from authentik.flows.challenge import (
 )
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_webauthn.models import (
+    UNKNOWN_DEVICE_TYPE_AAGUID,
     AuthenticatorWebAuthnStage,
     WebAuthnDevice,
     WebAuthnDeviceType,
@@ -85,14 +86,26 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
         aaguid = registration.aaguid
         allowed_aaguids = stage.device_type_restrictions.values_list("aaguid", flat=True)
         if allowed_aaguids.exists():
-            if not aaguid or (UUID(aaguid) not in allowed_aaguids):
-                raise ValidationError(
-                    _(
-                        "Invalid device type. Contact your {brand} administrator for help.".format(
-                            brand=self.stage.request.brand.branding_title
-                        )
+            invalid_error = ValidationError(
+                _(
+                    "Invalid device type. Contact your {brand} administrator for help.".format(
+                        brand=self.stage.request.brand.branding_title
                     )
                 )
+            )
+            # If there are any restrictions set and we didn't get an aaguid, invalid
+            if not aaguid:
+                raise invalid_error
+            # If one of the restrictions is the "special" unknown device type UUID
+            # but we do have a device type for the given aaguid, invalid
+            if (
+                UUID(UNKNOWN_DEVICE_TYPE_AAGUID) in allowed_aaguids
+                and not WebAuthnDeviceType.objects.filter(aaguid=aaguid).exists()
+            ):
+                return registration
+            # Otherwise just check if the given aaguid is in the allowed aaguids
+            if UUID(aaguid) not in allowed_aaguids:
+                raise invalid_error
         return registration
 
 
