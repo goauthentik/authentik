@@ -8,7 +8,9 @@ This feature is in technical preview, so please report any bugs on [GitHub](http
 
 The RAC provider is a highly flexible feature for accessing remote machines. This document provides instructions for the basic creation and configuration of a RAC provider within a defined scenario.
 
-For more information about using a RAC provider, see the [Overview](./index.md) documentation. You can also view our [video on YouTube](https://www.youtube.com/watch?v=9wahIBRV6Ts) for setting up RAC.
+Fow more information about using a RAC provider, see the [Overview](./index.md) documentation. You can also view our video on YouTube for setting up RAC.
+
+<iframe width="560" height="315" src="https://www.youtube.com/watch?v=9wahIBRV6Ts" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 ## Prereqisites
 
