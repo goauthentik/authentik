@@ -90,6 +90,6 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
                     "requireResidentKey": False,
                     "userVerification": "preferred",
                 },
-                "attestation": "none",
+                "attestation": "direct",
             },
         )

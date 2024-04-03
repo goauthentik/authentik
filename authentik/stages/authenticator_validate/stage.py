@@ -398,5 +398,6 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             self.executor.plan.context[PLAN_CONTEXT_METHOD] = "auth_webauthn_pwl"
             self.executor.plan.context[PLAN_CONTEXT_METHOD_ARGS] = {
                 "device": webauthn_device,
+                "device_type": webauthn_device.device_type,
             }
         return self.set_valid_mfa_cookie(response.device)

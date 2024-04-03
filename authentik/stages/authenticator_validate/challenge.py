@@ -163,6 +163,7 @@ def validate_challenge_webauthn(data: dict, stage_view: StageView, user: User) -
             stage=stage_view.executor.current_stage,
             device=device,
             device_class=DeviceClasses.WEBAUTHN.value,
+            device_type=device.device_type,
         )
         raise ValidationError("Assertion failed") from exc
 
