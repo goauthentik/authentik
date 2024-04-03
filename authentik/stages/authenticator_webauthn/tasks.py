@@ -26,7 +26,7 @@ def mds_ca() -> bytes:
 
 
 @CELERY_APP.task()
-def webauthn_mds_import():
+def webauthn_mds_import(force=False):
     """Background task to import FIDO Alliance MDS blob into database"""
     with open(MDS_BLOB_PATH, mode="rb") as _raw_blob:
         blob = parse_blob(_raw_blob.read(), mds_ca())
@@ -37,7 +37,7 @@ def webauthn_mds_import():
                 "description": "authentik: Unknown devices",
             },
         )
-        if cache.get(CACHE_KEY_MDS_NO) == blob.no:
+        if cache.get(CACHE_KEY_MDS_NO) == blob.no and not force:
             return
         for entry in blob.entries:
             aaguid = entry.aaguid

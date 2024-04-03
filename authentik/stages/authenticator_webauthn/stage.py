@@ -84,14 +84,15 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
         stage: AuthenticatorWebAuthnStage = self.stage.executor.current_stage
         aaguid = registration.aaguid
         allowed_aaguids = stage.device_type_restrictions.values_list("aaguid", flat=True)
-        if (not aaguid and allowed_aaguids.exists()) or (UUID(aaguid) not in allowed_aaguids):
-            raise ValidationError(
-                _(
-                    "Invalid device type. Contact your {brand} administrator for help.".format(
-                        brand=self.stage.request.brand.branding_title
+        if allowed_aaguids.exists():
+            if not aaguid or (UUID(aaguid) not in allowed_aaguids):
+                raise ValidationError(
+                    _(
+                        "Invalid device type. Contact your {brand} administrator for help.".format(
+                            brand=self.stage.request.brand.branding_title
+                        )
                     )
                 )
-            )
         return registration
 
 
