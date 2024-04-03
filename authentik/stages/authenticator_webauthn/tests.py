@@ -12,7 +12,10 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
-from authentik.stages.authenticator_webauthn.models import AuthenticateWebAuthnStage, WebAuthnDevice
+from authentik.stages.authenticator_webauthn.models import (
+    AuthenticatorWebAuthnStage,
+    WebAuthnDevice,
+)
 from authentik.stages.authenticator_webauthn.stage import SESSION_KEY_WEBAUTHN_CHALLENGE
 
 
@@ -20,7 +23,7 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
     """Test WebAuthn API"""
 
     def setUp(self) -> None:
-        self.stage = AuthenticateWebAuthnStage.objects.create(
+        self.stage = AuthenticatorWebAuthnStage.objects.create(
             name=generate_id(),
         )
         self.flow = create_test_flow()

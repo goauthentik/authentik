@@ -1,4 +1,4 @@
-"""AuthenticateWebAuthnStage API Views"""
+"""AuthenticatorWebAuthnStage API Views"""
 
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from rest_framework import mixins

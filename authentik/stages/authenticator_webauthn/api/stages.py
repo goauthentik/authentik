@@ -1,22 +1,22 @@
-"""AuthenticateWebAuthnStage API Views"""
+"""AuthenticatorWebAuthnStage API Views"""
 
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.authenticator_webauthn.api.device_types import WebAuthnDeviceTypeSerializer
-from authentik.stages.authenticator_webauthn.models import AuthenticateWebAuthnStage
+from authentik.stages.authenticator_webauthn.models import AuthenticatorWebAuthnStage
 
 
-class AuthenticateWebAuthnStageSerializer(StageSerializer):
-    """AuthenticateWebAuthnStage Serializer"""
+class AuthenticatorWebAuthnStageSerializer(StageSerializer):
+    """AuthenticatorWebAuthnStage Serializer"""
 
     device_type_restrictions_obj = WebAuthnDeviceTypeSerializer(
         source="device_type_restrictions", many=True, read_only=True
     )
 
     class Meta:
-        model = AuthenticateWebAuthnStage
+        model = AuthenticatorWebAuthnStage
         fields = StageSerializer.Meta.fields + [
             "configure_flow",
             "friendly_name",
@@ -28,11 +28,11 @@ class AuthenticateWebAuthnStageSerializer(StageSerializer):
         ]
 
 
-class AuthenticateWebAuthnStageViewSet(UsedByMixin, ModelViewSet):
-    """AuthenticateWebAuthnStage Viewset"""
+class AuthenticatorWebAuthnStageViewSet(UsedByMixin, ModelViewSet):
+    """AuthenticatorWebAuthnStage Viewset"""
 
-    queryset = AuthenticateWebAuthnStage.objects.all()
-    serializer_class = AuthenticateWebAuthnStageSerializer
+    queryset = AuthenticatorWebAuthnStage.objects.all()
+    serializer_class = AuthenticatorWebAuthnStageSerializer
     filterset_fields = "__all__"
     ordering = ["name"]
     search_fields = ["name"]

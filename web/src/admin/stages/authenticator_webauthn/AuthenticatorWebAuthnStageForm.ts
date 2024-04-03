@@ -16,8 +16,8 @@ import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import {
-    AuthenticateWebAuthnStage,
     AuthenticatorAttachmentEnum,
+    AuthenticatorWebAuthnStage,
     Flow,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
@@ -29,7 +29,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-webauthn-form")
-export class AuthenticateWebAuthnStageForm extends BaseStageForm<AuthenticateWebAuthnStage> {
+export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorWebAuthnStage> {
     deviceTypeRestrictionPair(item: WebAuthnDeviceType): DualSelectPair {
         const label = item.description ? item.description : item.aaguid;
         return [
@@ -40,24 +40,24 @@ export class AuthenticateWebAuthnStageForm extends BaseStageForm<AuthenticateWeb
         ];
     }
 
-    loadInstance(pk: string): Promise<AuthenticateWebAuthnStage> {
+    loadInstance(pk: string): Promise<AuthenticatorWebAuthnStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnRetrieve({
             stageUuid: pk,
         });
     }
 
-    async send(data: AuthenticateWebAuthnStage): Promise<AuthenticateWebAuthnStage> {
+    async send(data: AuthenticatorWebAuthnStage): Promise<AuthenticatorWebAuthnStage> {
         if (data.authenticatorAttachment?.toString() === "") {
             data.authenticatorAttachment = null;
         }
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnUpdate({
                 stageUuid: this.instance.pk || "",
-                authenticateWebAuthnStageRequest: data,
+                authenticatorWebAuthnStageRequest: data,
             });
         } else {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnCreate({
-                authenticateWebAuthnStageRequest: data,
+                authenticatorWebAuthnStageRequest: data,
             });
         }
     }
@@ -180,22 +180,29 @@ export class AuthenticateWebAuthnStageForm extends BaseStageForm<AuthenticateWeb
                         >
                         </ak-radio>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("Device type restrictions")} name="deviceTypeRestrictions">
+                    <ak-form-element-horizontal
+                        label=${msg("Device type restrictions")}
+                        name="deviceTypeRestrictions"
+                    >
                         <ak-dual-select-provider
                             .provider=${(page: number, search?: string): Promise<DataProvision> => {
-                                return new StagesApi(
-                                    DEFAULT_CONFIG,
-                                ).stagesAuthenticatorWebauthnDeviceTypesList({
-                                    page: page,
-                                    search: search,
-                                }).then(results => {
-                                    return {
-                                        pagination: results.pagination,
-                                        options: results.results.map(this.deviceTypeRestrictionPair),
-                                    };
-                                });
+                                return new StagesApi(DEFAULT_CONFIG)
+                                    .stagesAuthenticatorWebauthnDeviceTypesList({
+                                        page: page,
+                                        search: search,
+                                    })
+                                    .then((results) => {
+                                        return {
+                                            pagination: results.pagination,
+                                            options: results.results.map(
+                                                this.deviceTypeRestrictionPair,
+                                            ),
+                                        };
+                                    });
                             }}
-                            .selected=${(this.instance?.deviceTypeRestrictionsObj ?? []).map(this.deviceTypeRestrictionPair)}
+                            .selected=${(this.instance?.deviceTypeRestrictionsObj ?? []).map(
+                                this.deviceTypeRestrictionPair,
+                            )}
                             available-label="${msg("Available Device types")}"
                             selected-label="${msg("Selected Device types")}"
                         ></ak-dual-select-provider>

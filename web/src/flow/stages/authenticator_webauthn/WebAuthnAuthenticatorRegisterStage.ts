@@ -10,6 +10,7 @@ import { BaseStage } from "@goauthentik/flow/stages/base";
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -22,7 +23,6 @@ import {
     AuthenticatorWebAuthnChallenge,
     AuthenticatorWebAuthnChallengeResponseRequest,
 } from "@goauthentik/api";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 export interface WebAuthnAuthenticatorRegisterChallengeResponse {
     response: Assertion;

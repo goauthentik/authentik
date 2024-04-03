@@ -35,7 +35,7 @@ from authentik.flows.challenge import (
 )
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_webauthn.models import (
-    AuthenticateWebAuthnStage,
+    AuthenticatorWebAuthnStage,
     WebAuthnDevice,
     WebAuthnDeviceType,
 )
@@ -81,7 +81,7 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
         if credential_id_exists:
             raise ValidationError("Credential ID already exists.")
 
-        stage: AuthenticateWebAuthnStage = self.stage.executor.current_stage
+        stage: AuthenticatorWebAuthnStage = self.stage.executor.current_stage
         aaguid = registration.aaguid
         allowed_aaguids = stage.device_type_restrictions.values_list("aaguid", flat=True)
         if (not aaguid and allowed_aaguids.exists()) or (UUID(aaguid) not in allowed_aaguids):
@@ -103,7 +103,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
     def get_challenge(self, *args, **kwargs) -> Challenge:
         # clear session variables prior to starting a new registration
         self.request.session.pop(SESSION_KEY_WEBAUTHN_CHALLENGE, None)
-        stage: AuthenticateWebAuthnStage = self.executor.current_stage
+        stage: AuthenticatorWebAuthnStage = self.executor.current_stage
         user = self.get_pending_user()
 
         # library accepts none so we store null in the database, but if there is a value

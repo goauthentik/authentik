@@ -67,7 +67,7 @@ class AuthenticatorAttachment(models.TextChoices):
     CROSS_PLATFORM = "cross-platform"
 
 
-class AuthenticateWebAuthnStage(ConfigurableStage, FriendlyNamedStage, Stage):
+class AuthenticatorWebAuthnStage(ConfigurableStage, FriendlyNamedStage, Stage):
     """WebAuthn stage"""
 
     user_verification = models.TextField(
@@ -87,10 +87,10 @@ class AuthenticateWebAuthnStage(ConfigurableStage, FriendlyNamedStage, Stage):
     @property
     def serializer(self) -> type[BaseSerializer]:
         from authentik.stages.authenticator_webauthn.api.stages import (
-            AuthenticateWebAuthnStageSerializer,
+            AuthenticatorWebAuthnStageSerializer,
         )
 
-        return AuthenticateWebAuthnStageSerializer
+        return AuthenticatorWebAuthnStageSerializer
 
     @property
     def view(self) -> type[View]:
