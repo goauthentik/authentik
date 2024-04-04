@@ -9,6 +9,7 @@ PY_SOURCES = authentik tests scripts lifecycle .github
 DOCKER_IMAGE ?= "authentik:test"
 
 GEN_API_TS = "gen-ts-api"
+GEN_API_PY = "gen-py-api"
 GEN_API_GO = "gen-go-api"
 
 pg_user := $(shell python -m authentik.lib.config postgresql.user 2>/dev/null)
@@ -137,7 +138,10 @@ gen-clean-ts:  ## Remove generated API client for Typescript
 gen-clean-go:  ## Remove generated API client for Go
 	rm -rf ./${GEN_API_GO}/
 
-gen-clean: gen-clean-ts gen-clean-go  ## Remove generated API clients
+gen-clean-py:  ## Remove generated API client for Python
+	rm -rf ./${GEN_API_PY}/
+
+gen-clean: gen-clean-ts gen-clean-go gen-clean-py  ## Remove generated API clients
 
 gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescript into the authentik UI Application
 	docker run \
@@ -154,6 +158,20 @@ gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescri
 	mkdir -p web/node_modules/@goauthentik/api
 	cd ./${GEN_API_TS} && npm i
 	\cp -rf ./${GEN_API_TS}/* web/node_modules/@goauthentik/api
+
+gen-client-py: gen-clean-py ## Build and install the authentik API for Python
+	docker run \
+		--rm -v ${PWD}:/local \
+		--user ${UID}:${GID} \
+		docker.io/openapitools/openapi-generator-cli:v7.4.0 generate \
+		-i /local/schema.yml \
+		-g python \
+		-o /local/${GEN_API_PY} \
+		-c /local/scripts/api-py-config.yaml \
+		--additional-properties=packageVersion=${NPM_VERSION} \
+		--git-repo-id authentik \
+		--git-user-id goauthentik
+	pip install ./${GEN_API_PY}
 
 gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
 	mkdir -p ./${GEN_API_GO} ./${GEN_API_GO}/templates
