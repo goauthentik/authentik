@@ -2,12 +2,12 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, property, queryAll } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 
 import PFCheck from "@patternfly/patternfly/components/Check/check.css";
-import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 type CheckboxKv = { name: string; label: string | TemplateResult };
@@ -79,7 +79,18 @@ const AkElementWithCustomEvents = CustomEmitterElement(AKElement);
 @customElement("ak-checkbox-group")
 export class CheckboxGroup extends AkElementWithCustomEvents {
     static get styles() {
-        return [PFBase, PFFlex, PFCheck];
+        return [
+            PFBase,
+            PFForm,
+            PFCheck,
+            css`
+                .pf-c-form__group-control {
+                    padding-top: calc(
+                        var(--pf-c-form--m-horizontal__group-label--md--PaddingTop) * 1.3
+                    );
+                }
+            `,
+        ];
     }
 
     static get formAssociated() {
@@ -177,11 +188,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
                 e.stopImmediatePropagation();
             };
 
-            return html` <div
-                part="checkbox"
-                class="pf-l-flex__item pf-c-check"
-                @click=${this.onClick}
-            >
+            return html` <div part="checkbox" class="pf-c-check" @click=${this.onClick}>
                 <input
                     part="input"
                     @change=${blockFwd}
@@ -198,7 +205,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
             </div>`;
         };
 
-        return html`<div part="checkbox-group" class="pf-l-flex pf-m-space-items-sm pf-m-column">
+        return html`<div part="checkbox-group" class="pf-c-form__group-control pf-m-stack">
             ${map(kvToPairs(this.options), renderOne)}
         </div>`;
     }
