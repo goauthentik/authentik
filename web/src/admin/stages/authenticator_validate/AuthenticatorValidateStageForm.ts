@@ -63,6 +63,14 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
     }
 
     renderForm(): TemplateResult {
+        const authenticators = [
+            [DeviceClassesEnum.Static, msg("Static Tokens")],
+            [DeviceClassesEnum.Totp, msg("TOTP Authenticators")],
+            [DeviceClassesEnum.Webauthn, msg("WebAuthn Authenticators")],
+            [DeviceClassesEnum.Duo, msg("Duo Authenticators")],
+            [DeviceClassesEnum.Sms, msg("SMS-based Authenticators")],
+        ];
+
         return html` <span>
                 ${msg(
                     "Stage used to validate any authenticator. This stage should be used during authentication or authorization flows.",
@@ -84,43 +92,18 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                         ?required=${true}
                         name="deviceClasses"
                     >
-                        <select name="users" class="pf-c-form-control" multiple>
-                            <option
-                                value=${DeviceClassesEnum.Static}
-                                ?selected=${this.isDeviceClassSelected(DeviceClassesEnum.Static)}
-                            >
-                                ${msg("Static Tokens")}
-                            </option>
-                            <option
-                                value=${DeviceClassesEnum.Totp}
-                                ?selected=${this.isDeviceClassSelected(DeviceClassesEnum.Totp)}
-                            >
-                                ${msg("TOTP Authenticators")}
-                            </option>
-                            <option
-                                value=${DeviceClassesEnum.Webauthn}
-                                ?selected=${this.isDeviceClassSelected(DeviceClassesEnum.Webauthn)}
-                            >
-                                ${msg("WebAuthn Authenticators")}
-                            </option>
-                            <option
-                                value=${DeviceClassesEnum.Duo}
-                                ?selected=${this.isDeviceClassSelected(DeviceClassesEnum.Duo)}
-                            >
-                                ${msg("Duo Authenticators")}
-                            </option>
-                            <option
-                                value=${DeviceClassesEnum.Sms}
-                                ?selected=${this.isDeviceClassSelected(DeviceClassesEnum.Sms)}
-                            >
-                                ${msg("SMS-based Authenticators")}
-                            </option>
-                        </select>
+                        <ak-checkbox-group
+                            name="users"
+                            class="user-field-select"
+                            .options=${authenticators}
+                            .value=${authenticators
+                                .map((authenticator) => authenticator[0])
+                                .filter((name) =>
+                                    this.isDeviceClassSelected(name as DeviceClassesEnum),
+                                )}
+                        ></ak-checkbox-group>
                         <p class="pf-c-form__helper-text">
                             ${msg("Device classes which can be used to authenticate.")}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
