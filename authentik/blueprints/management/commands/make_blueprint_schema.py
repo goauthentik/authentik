@@ -11,6 +11,7 @@ from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
+from authentik import __version__
 from authentik.blueprints.v1.common import BlueprintEntryDesiredState
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT, is_model_allowed
 from authentik.blueprints.v1.meta.registry import BaseMetaModel, registry
@@ -47,7 +48,7 @@ class Command(BaseCommand):
             "$schema": "http://json-schema.org/draft-07/schema",
             "$id": "https://goauthentik.io/blueprints/schema.json",
             "type": "object",
-            "title": "authentik Blueprint schema",
+            "title": f"authentik {__version__} Blueprint schema",
             "required": ["version", "entries"],
             "properties": {
                 "version": {

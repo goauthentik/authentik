@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik Blueprint schema",
+    "title": "authentik 2024.2.2 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -2873,6 +2873,7 @@
                 },
                 "tenant": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Tenant"
                 }
             },
@@ -2995,10 +2996,12 @@
             "properties": {
                 "target": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Target"
                 },
                 "stage": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Stage"
                 },
                 "evaluate_on_plan": {
@@ -3059,11 +3062,13 @@
                 },
                 "tls_verification": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Tls verification",
                     "description": "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
                 },
                 "tls_authentication": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Tls authentication",
                     "description": "Certificate/Key used for authentication. Can be left empty for no authentication."
                 }
@@ -3124,6 +3129,7 @@
                 },
                 "service_connection": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Service connection",
                     "description": "Select Service-Connection authentik should use to manage this outpost. Leave empty if authentik should not handle the deployment."
                 },
@@ -3558,10 +3564,12 @@
             "properties": {
                 "policy": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Policy"
                 },
                 "group": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Group"
                 },
                 "user": {
@@ -3570,6 +3578,7 @@
                 },
                 "target": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Target"
                 },
                 "negate": {
@@ -3612,18 +3621,21 @@
                 },
                 "authentication_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Authentication flow",
                     "description": "Flow used for authentication when the associated application is accessed by an un-authenticated user."
                 },
                 "authorization_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Authorization flow",
                     "description": "Flow used when authorizing this provider."
                 },
                 "property_mappings": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     },
                     "title": "Property mappings"
                 },
@@ -3635,11 +3647,13 @@
                 },
                 "search_group": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Search group",
                     "description": "Users in this group can do search queries. If not set, every user can execute search queries."
                 },
                 "certificate": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Certificate"
                 },
                 "tls_server_name": {
@@ -3730,18 +3744,21 @@
                 },
                 "authentication_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Authentication flow",
                     "description": "Flow used for authentication when the associated application is accessed by an un-authenticated user."
                 },
                 "authorization_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Authorization flow",
                     "description": "Flow used when authorizing this provider."
                 },
                 "property_mappings": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     },
                     "title": "Property mappings"
                 },
@@ -3790,6 +3807,7 @@
                 },
                 "signing_key": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Signing Key",
                     "description": "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
                 },
@@ -3841,18 +3859,21 @@
                 },
                 "authentication_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Authentication flow",
                     "description": "Flow used for authentication when the associated application is accessed by an un-authenticated user."
                 },
                 "authorization_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Authorization flow",
                     "description": "Flow used when authorizing this provider."
                 },
                 "property_mappings": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     },
                     "title": "Property mappings"
                 },
@@ -3872,6 +3893,7 @@
                 },
                 "certificate": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Certificate"
                 },
                 "skip_path_regex": {
@@ -3946,18 +3968,21 @@
                 },
                 "authentication_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Authentication flow",
                     "description": "Flow used for authentication when the associated application is accessed by an un-authenticated user."
                 },
                 "authorization_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Authorization flow",
                     "description": "Flow used when authorizing this provider."
                 },
                 "property_mappings": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     },
                     "title": "Property mappings"
                 },
@@ -3991,18 +4016,21 @@
                 },
                 "authentication_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Authentication flow",
                     "description": "Flow used for authentication when the associated application is accessed by an un-authenticated user."
                 },
                 "authorization_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Authorization flow",
                     "description": "Flow used when authorizing this provider."
                 },
                 "property_mappings": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     },
                     "title": "Property mappings"
                 },
@@ -4070,11 +4098,13 @@
                 },
                 "signing_kp": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Signing Keypair",
                     "description": "Keypair used to sign outgoing Responses going to the Service Provider."
                 },
                 "verification_kp": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Verification Certificate",
                     "description": "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default."
                 },
@@ -4143,7 +4173,8 @@
                 "property_mappings": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     },
                     "title": "Property mappings"
                 },
@@ -4151,6 +4182,7 @@
                     "type": "array",
                     "items": {
                         "type": "string",
+                        "format": "uuid",
                         "description": "Property mappings used for group creation/updating."
                     },
                     "title": "Property mappings group",
@@ -4174,6 +4206,7 @@
                 },
                 "filter_group": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Filter group"
                 }
             },
@@ -4239,11 +4272,13 @@
                 },
                 "authentication_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Authentication flow",
                     "description": "Flow to use when authenticating existing users."
                 },
                 "enrollment_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Enrollment flow",
                     "description": "Flow to use when enrolling new users."
                 },
@@ -4284,11 +4319,13 @@
                 },
                 "peer_certificate": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Peer certificate",
                     "description": "Optionally verify the LDAP Server's Certificate against the CA Chain in this keypair."
                 },
                 "client_certificate": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Client certificate",
                     "description": "Client certificate to authenticate against the LDAP Server's Certificate."
                 },
@@ -4367,12 +4404,14 @@
                 },
                 "sync_parent_group": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Sync parent group"
                 },
                 "property_mappings": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     },
                     "title": "Property mappings"
                 },
@@ -4380,6 +4419,7 @@
                     "type": "array",
                     "items": {
                         "type": "string",
+                        "format": "uuid",
                         "description": "Property mappings used for group creation/updating."
                     },
                     "title": "Property mappings group",
@@ -4441,11 +4481,13 @@
                 },
                 "authentication_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Authentication flow",
                     "description": "Flow to use when authenticating existing users."
                 },
                 "enrollment_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Enrollment flow",
                     "description": "Flow to use when enrolling new users."
                 },
@@ -4620,11 +4662,13 @@
                 },
                 "authentication_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Authentication flow",
                     "description": "Flow to use when authenticating existing users."
                 },
                 "enrollment_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Enrollment flow",
                     "description": "Flow to use when enrolling new users."
                 },
@@ -4732,11 +4776,13 @@
                 },
                 "authentication_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Authentication flow",
                     "description": "Flow to use when authenticating existing users."
                 },
                 "enrollment_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Enrollment flow",
                     "description": "Flow to use when enrolling new users."
                 },
@@ -4772,6 +4818,7 @@
                 },
                 "pre_authentication_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Pre authentication flow",
                     "description": "Flow used before authentication."
                 },
@@ -4826,11 +4873,13 @@
                 },
                 "verification_kp": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Verification Certificate",
                     "description": "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default."
                 },
                 "signing_kp": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Signing Keypair",
                     "description": "Keypair used to sign outgoing Responses going to the Identity Provider."
                 },
@@ -4976,6 +5025,7 @@
                 },
                 "configure_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Configure flow",
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
@@ -5118,6 +5168,7 @@
                 },
                 "configure_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Configure flow",
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
@@ -5282,6 +5333,7 @@
                 },
                 "configure_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Configure flow",
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
@@ -5413,6 +5465,7 @@
                 },
                 "configure_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Configure flow",
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
@@ -5567,6 +5620,7 @@
                     "type": "array",
                     "items": {
                         "type": "string",
+                        "format": "uuid",
                         "description": "Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again."
                     },
                     "title": "Configuration stages",
@@ -5683,6 +5737,7 @@
                 },
                 "configure_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Configure flow",
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
@@ -6004,7 +6059,8 @@
                         "groups": {
                             "type": "array",
                             "items": {
-                                "type": "string"
+                                "type": "string",
+                                "format": "uuid"
                             },
                             "title": "Groups"
                         },
@@ -6588,16 +6644,19 @@
                 },
                 "enrollment_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Enrollment flow",
                     "description": "Optional enrollment flow, which is linked at the bottom of the page."
                 },
                 "recovery_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Recovery flow",
                     "description": "Optional recovery flow, which is linked at the bottom of the page."
                 },
                 "passwordless_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Passwordless flow",
                     "description": "Optional passwordless flow, which is linked at the bottom of the page."
                 },
@@ -6747,6 +6806,7 @@
                 },
                 "flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Flow",
                     "description": "When set, only the configured flow can use this invitation."
                 }
@@ -6859,6 +6919,7 @@
                 },
                 "configure_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Configure flow",
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
@@ -7142,14 +7203,16 @@
                 "fields": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     },
                     "title": "Fields"
                 },
                 "validation_policies": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     },
                     "title": "Validation policies"
                 }
@@ -7580,6 +7643,7 @@
                 },
                 "create_users_group": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Create users group",
                     "description": "Optionally add newly created users to this group."
                 },
@@ -7630,30 +7694,37 @@
                 },
                 "flow_authentication": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Flow authentication"
                 },
                 "flow_invalidation": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Flow invalidation"
                 },
                 "flow_recovery": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Flow recovery"
                 },
                 "flow_unenrollment": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Flow unenrollment"
                 },
                 "flow_user_settings": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Flow user settings"
                 },
                 "flow_device_code": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Flow device code"
                 },
                 "web_certificate": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Web certificate",
                     "description": "Web Certificate used by the authentik Core webserver."
                 },
@@ -7709,6 +7780,7 @@
                 },
                 "parent": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Parent"
                 },
                 "users": {
@@ -7726,7 +7798,8 @@
                 "roles": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     },
                     "title": "Roles"
                 }
@@ -7763,7 +7836,8 @@
                 "groups": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     },
                     "title": "Groups"
                 },
@@ -7944,18 +8018,21 @@
                 },
                 "authentication_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Authentication flow",
                     "description": "Flow used for authentication when the associated application is accessed by an un-authenticated user."
                 },
                 "authorization_flow": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Authorization flow",
                     "description": "Flow used when authorizing this provider."
                 },
                 "property_mappings": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     },
                     "title": "Property mappings"
                 },
@@ -8012,7 +8089,8 @@
                 "property_mappings": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     },
                     "title": "Property mappings"
                 },
@@ -8369,6 +8447,7 @@
                     "type": "array",
                     "items": {
                         "type": "string",
+                        "format": "uuid",
                         "description": "Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI."
                     },
                     "title": "Transports",
@@ -8386,6 +8465,7 @@
                 },
                 "group": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Group",
                     "description": "Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent."
                 }
