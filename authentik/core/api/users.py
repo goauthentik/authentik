@@ -85,7 +85,7 @@ class UserGroupSerializer(ModelSerializer):
     """Simplified Group Serializer for user's groups"""
 
     attributes = JSONDictField(required=False)
-    parent_name = CharField(source="parent.name", read_only=True)
+    parent_name = CharField(source="parent.name", read_only=True, allow_null=True)
 
     class Meta:
         model = Group

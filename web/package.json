@@ -37,8 +37,8 @@
         "@codemirror/legacy-modes": "^6.3.3",
         "@codemirror/theme-one-dark": "^6.1.2",
         "@formatjs/intl-listformat": "^7.5.5",
-        "@fortawesome/fontawesome-free": "^6.5.1",
-        "@goauthentik/api": "^2024.2.2-1711643691",
+        "@fortawesome/fontawesome-free": "^6.5.2",
+        "@goauthentik/api": "^2024.2.2-1712238004",
         "@lit-labs/task": "^3.1.0",
         "@lit/context": "^1.1.0",
         "@lit/localize": "^0.12.1",
@@ -68,13 +68,13 @@
         "yaml": "^2.4.1"
     },
     "devDependencies": {
-        "@babel/core": "^7.24.3",
+        "@babel/core": "^7.24.4",
         "@babel/plugin-proposal-class-properties": "^7.18.6",
         "@babel/plugin-proposal-decorators": "^7.24.1",
         "@babel/plugin-transform-private-methods": "^7.24.1",
         "@babel/plugin-transform-private-property-in-object": "^7.24.1",
         "@babel/plugin-transform-runtime": "^7.24.3",
-        "@babel/preset-env": "^7.24.3",
+        "@babel/preset-env": "^7.24.4",
         "@babel/preset-typescript": "^7.24.1",
         "@hcaptcha/types": "^1.0.3",
         "@jeysal/storybook-addon-css-user-preferences": "^0.2.0",
@@ -105,7 +105,7 @@
         "eslint-config-google": "^0.14.0",
         "eslint-plugin-custom-elements": "0.0.8",
         "eslint-plugin-lit": "^1.11.0",
-        "eslint-plugin-sonarjs": "^0.25.0",
+        "eslint-plugin-sonarjs": "^0.25.1",
         "eslint-plugin-storybook": "^0.8.0",
         "github-slugger": "^2.0.0",
         "glob": "^10.3.12",
@@ -129,9 +129,9 @@
         "@esbuild/darwin-arm64": "^0.20.1",
         "@esbuild/linux-amd64": "^0.18.11",
         "@esbuild/linux-arm64": "^0.20.1",
-        "@rollup/rollup-darwin-arm64": "4.13.2",
-        "@rollup/rollup-linux-arm64-gnu": "4.13.2",
-        "@rollup/rollup-linux-x64-gnu": "4.13.2"
+        "@rollup/rollup-darwin-arm64": "4.14.0",
+        "@rollup/rollup-linux-arm64-gnu": "4.14.0",
+        "@rollup/rollup-linux-x64-gnu": "4.14.0"
     },
     "engines": {
         "node": ">=20"

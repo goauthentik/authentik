@@ -11,7 +11,7 @@ title: OPNsense
 > -- https://opnsense.org/
 
 :::note
-This is based on authentik 2022.4.1 and OPNsense 22.1.6-amd64 installed using https://docs.opnsense.org/manual/install.html. Instructions may differ between versions.
+This is based on authentik 2024.2.2 and OPNsense 24.1.3_1-amd64 installed using https://docs.opnsense.org/manual/install.html. Instructions may differ between versions.
 :::
 
 ## Preparation
@@ -25,7 +25,7 @@ The following placeholders will be used:
 ### Step 1
 
 In authentik, go and 'Create Service account' (under _Directory/Users_) for OPNsense to use as the LDAP Binder, leaving 'Create group' ticked as we'll need that group for the provider.
-In this example, we'll use `opnsense` as the Service account's username
+In this example, we'll use `opnsense-user` as the Service account's username
 
 :::note
 Take note of the password for this user as you'll need to give it to OPNsense in _Step 4_.
@@ -91,6 +91,10 @@ Change the following fields
 In OPNsense, go to _System/Settings/Administration_ and under _Authentication_ at the bottom of that page, add `authentik` to the Server list
 
 ![](./opnsense2.png)
+
+### Step 7
+
+You can now either import users, or synchronize from Authentik LDAP. See https://docs.opnsense.org/manual/how-tos/user-ldap.html for more.
 
 ## Notes
 
