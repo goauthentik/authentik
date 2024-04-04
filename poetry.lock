@@ -677,19 +677,19 @@ pycparser = "*"
 
 [[package]]
 name = "channels"
-version = "4.0.0"
+version = "4.1.0"
 description = "Brings async, event-driven capabilities to Django 3.2 and up."
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "channels-4.0.0-py3-none-any.whl", hash = "sha256:2253334ac76f67cba68c2072273f7e0e67dbdac77eeb7e318f511d2f9a53c5e4"},
-    {file = "channels-4.0.0.tar.gz", hash = "sha256:0ce53507a7da7b148eaa454526e0e05f7da5e5d1c23440e4886cf146981d8420"},
+    {file = "channels-4.1.0-py3-none-any.whl", hash = "sha256:a3c4419307f582c3f71d67bfb6eff748ae819c2f360b9b141694d84f242baa48"},
+    {file = "channels-4.1.0.tar.gz", hash = "sha256:e0ed375719f5c1851861f05ed4ce78b0166f9245ca0ecd836cb77d4bb531489d"},
 ]
 
 [package.dependencies]
-asgiref = ">=3.5.0,<4"
+asgiref = ">=3.6.0,<4"
 daphne = {version = ">=4.0.0", optional = true, markers = "extra == \"daphne\""}
-Django = ">=3.2"
+Django = ">=4.2"
 
 [package.extras]
 daphne = ["daphne (>=4.0.0)"]
