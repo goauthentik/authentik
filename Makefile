@@ -138,7 +138,7 @@ gen-clean-ts:  ## Remove generated API client for Typescript
 gen-clean-go:  ## Remove generated API client for Go
 	rm -rf ./${GEN_API_GO}/
 
-gen-clean-py:
+gen-clean-py:  ## Remove generated API client for Python
 	rm -rf ./${GEN_API_PY}/
 
 gen-clean: gen-clean-ts gen-clean-go gen-clean-py  ## Remove generated API clients
@@ -159,7 +159,7 @@ gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescri
 	cd ./${GEN_API_TS} && npm i
 	\cp -rf ./${GEN_API_TS}/* web/node_modules/@goauthentik/api
 
-gen-client-py:
+gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
