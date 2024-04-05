@@ -122,7 +122,7 @@
         "ts-lit-plugin": "^2.0.2",
         "tslib": "^2.6.2",
         "turnstile-types": "^1.2.0",
-        "typescript": "^5.4.3",
+        "typescript": "^5.4.4",
         "vite-tsconfig-paths": "^4.3.2"
     },
     "optionalDependencies": {
