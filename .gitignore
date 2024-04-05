@@ -209,3 +209,9 @@ source_docs/
 
 ### Golang ###
 /vendor/
+
+### Benchmark ###
+tests/benchmark/k6
+tests/benchmark/**/*.json
+tests/benchmark/**/*.ndjson
+tests/benchmark/**/*.html

@@ -278,3 +278,12 @@ ci-bandit: ci--meta-debug
 
 ci-pending-migrations: ci--meta-debug
 	ak makemigrations --check
+
+#########################
+## Benchmark
+#########################
+
+benchmark-install:
+	cd tests/benchmark
+	go install go.k6.io/xk6/cmd/xk6@latest
+	$$(go env GOPATH)/bin/xk6 build latest --with github.com/grafana/xk6-exec@latest
