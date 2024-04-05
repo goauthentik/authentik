@@ -4,6 +4,8 @@ title: Manage users
 
 The following topics are for the basic management of users: how to create, modify, delete or deactivate users, and using a recovery email.
 
+[Policies](../../policies/index.md) can be used to further manage how users are authenticated. For example, in authentik email addresses are (by default) not required to be unique, but you can use a policy to [enforce unique email addresses](../../policies/working_with_policies/unique_email.md).
+
 ### Create a user
 
 > If you want to automate user creation, you can do that either by [invitations](./invitations.md), [`user_write` stage](../../flow/stages/user_write), or [using the API](/developer-docs/api/browser).
