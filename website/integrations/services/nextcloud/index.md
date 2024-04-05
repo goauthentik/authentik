@@ -141,7 +141,7 @@ Add a new provider using the `+` button and set the following values:
     :::tip
     To avoid your group assignment being a hash value, deselect **Use unique user ID**.
     :::
-    
+
 At this stage you should be able to login with SSO.
 
 ##### Making the OIDC provider the default login method
