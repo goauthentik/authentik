@@ -139,7 +139,7 @@ Add a new provider using the `+` button and set the following values:
         :::
 -   Use unique user ID: If you only have one provider you can uncheck this if you prefer.
     :::tip
-    If groups are hashed, ence you are not assigned to the admin group, you can try to uncheck this.
+    To avoid your group assignment being a hash value, deselect **Use unique user ID**.
     :::
     
 At this stage you should be able to login with SSO.
