@@ -8520,6 +8520,9 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Inject an OAuth or SAML Source into the flow execution. This allows for additional user verification, or to dynamically access different sources for different user identifiers (username, email address, etc).</source>
   <target>将 OAuth 或 SAML 源注入到流程执行过程中。这允许额外的用户验证，或者基于不同的用户标识符（用户名、电子邮件地址等）动态访问不同的源。</target>
 </trans-unit>
+<trans-unit id="sc7d071fb5cc1f6bf">
+  <source>A selection is required</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
