@@ -1,6 +1,16 @@
-import { t } from "@lingui/macro";
+import "@goauthentik/admin/sources/scim/SCIMSourceForm";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import "@goauthentik/components/events/ObjectChangelog";
+import { AKElement } from "@goauthentik/elements/Base";
+import "@goauthentik/elements/Tabs";
+import "@goauthentik/elements/buttons/ActionButton";
+import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 
-import { CSSResult, LitElement, TemplateResult, html } from "lit";
+import { msg } from "@lit/localize";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "../../../authentik.css";
@@ -14,21 +24,14 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { SCIMSource, SourcesApi } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import { EVENT_REFRESH } from "../../../constants";
-import "../../../elements/CodeMirror";
-import "../../../elements/Tabs";
-import "../../../elements/buttons/SpinnerButton";
-import "../../../elements/buttons/TokenCopyButton";
-import "../../../elements/events/ObjectChangelog";
-import "../../../elements/forms/ModalForm";
-import "../../policies/BoundPoliciesList";
-import "./SCIMSourceForm";
+import {
+    RbacPermissionsAssignedByUsersListModelEnum,
+    SCIMSource,
+    SourcesApi,
+} from "@goauthentik/api";
 
 @customElement("ak-source-scim-view")
-export class SCIMSourceViewPage extends LitElement {
+export class SCIMSourceViewPage extends AKElement {
     @property({ type: String })
     set sourceSlug(value: string) {
         new SourcesApi(DEFAULT_CONFIG)
@@ -73,7 +76,7 @@ export class SCIMSourceViewPage extends LitElement {
         return html`<ak-tabs>
             <section
                 slot="page-overview"
-                data-tab-title="${t`Overview`}"
+                data-tab-title="${msg("Overview")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
@@ -82,7 +85,9 @@ export class SCIMSourceViewPage extends LitElement {
                             <dl class="pf-c-description-list pf-m-2-col-on-lg">
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text">${t`Name`}</span>
+                                        <span class="pf-c-description-list__text"
+                                            >${msg("Name")}</span
+                                        >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
@@ -92,7 +97,9 @@ export class SCIMSourceViewPage extends LitElement {
                                 </div>
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text">${t`Slug`}</span>
+                                        <span class="pf-c-description-list__text"
+                                            >${msg("Slug")}</span
+                                        >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
@@ -104,12 +111,12 @@ export class SCIMSourceViewPage extends LitElement {
                         </div>
                         <div class="pf-c-card__footer">
                             <ak-forms-modal>
-                                <span slot="submit"> ${t`Update`} </span>
-                                <span slot="header"> ${t`Update SCIM Source`} </span>
+                                <span slot="submit"> ${msg("Update")} </span>
+                                <span slot="header"> ${msg("Update SCIM Source")} </span>
                                 <ak-source-scim-form slot="form" .instancePk=${this.source.slug}>
                                 </ak-source-scim-form>
                                 <button slot="trigger" class="pf-c-button pf-m-primary">
-                                    ${t`Edit`}
+                                    ${msg("Edit")}
                                 </button>
                             </ak-forms-modal>
                         </div>
@@ -121,7 +128,7 @@ export class SCIMSourceViewPage extends LitElement {
                                     <div class="pf-c-form__group">
                                         <label class="pf-c-form__label">
                                             <span class="pf-c-form__label-text"
-                                                >${t`SCIM Base URL`}</span
+                                                >${msg("SCIM Base URL")}</span
                                             >
                                         </label>
                                         <input
@@ -133,14 +140,16 @@ export class SCIMSourceViewPage extends LitElement {
                                     </div>
                                     <div class="pf-c-form__group">
                                         <label class="pf-c-form__label">
-                                            <span class="pf-c-form__label-text">${t`Token`}</span>
+                                            <span class="pf-c-form__label-text"
+                                                >${msg("Token")}</span
+                                            >
                                         </label>
                                         <div>
                                             <ak-token-copy-button
                                                 class="pf-m-primary"
                                                 identifier="${this.source?.tokenObj.identifier}"
                                             >
-                                                ${t`Click to copy token`}
+                                                ${msg("Click to copy token")}
                                             </ak-token-copy-button>
                                         </div>
                                     </div>
@@ -152,7 +161,7 @@ export class SCIMSourceViewPage extends LitElement {
             </section>
             <section
                 slot="page-changelog"
-                data-tab-title="${t`Changelog`}"
+                data-tab-title="${msg("Changelog")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
@@ -168,6 +177,12 @@ export class SCIMSourceViewPage extends LitElement {
                     </div>
                 </div>
             </section>
+            <ak-rbac-object-permission-page
+                slot="page-permissions"
+                data-tab-title="${msg("Permissions")}"
+                model=${RbacPermissionsAssignedByUsersListModelEnum.SourcesScimScimsource}
+                objectPk=${this.source.pk}
+            ></ak-rbac-object-permission-page>
         </ak-tabs>`;
     }
 }

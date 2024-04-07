@@ -1,21 +1,19 @@
-import { t } from "@lingui/macro";
+import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { first } from "@goauthentik/common/utils";
+import "@goauthentik/elements/forms/FormGroup";
+import "@goauthentik/elements/forms/HorizontalFormElement";
 
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import { SCIMSource, SCIMSourceRequest, SourcesApi } from "@goauthentik/api";
 
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import "../../../elements/CodeMirror";
-import "../../../elements/forms/FormGroup";
-import "../../../elements/forms/HorizontalFormElement";
-import { ModelForm } from "../../../elements/forms/ModelForm";
-import { first } from "../../../utils";
-
 @customElement("ak-source-scim-form")
-export class SCIMSourceForm extends ModelForm<SCIMSource, string> {
-    loadInstance(pk: string): Promise<SCIMSource> {
+export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
+    async loadInstance(pk: string): Promise<SCIMSource> {
         return new SourcesApi(DEFAULT_CONFIG)
             .sourcesScimRetrieve({
                 slug: pk,
@@ -23,14 +21,6 @@ export class SCIMSourceForm extends ModelForm<SCIMSource, string> {
             .then((source) => {
                 return source;
             });
-    }
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return t`Successfully updated source.`;
-        } else {
-            return t`Successfully created source.`;
-        }
     }
 
     send = (data: SCIMSource): Promise<SCIMSource> => {
@@ -48,7 +38,7 @@ export class SCIMSourceForm extends ModelForm<SCIMSource, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -56,7 +46,7 @@ export class SCIMSourceForm extends ModelForm<SCIMSource, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Slug`} ?required=${true} name="slug">
+            <ak-form-element-horizontal label=${msg("Slug")} ?required=${true} name="slug">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.slug)}"
@@ -71,7 +61,7 @@ export class SCIMSourceForm extends ModelForm<SCIMSource, string> {
                         class="pf-c-check__input"
                         ?checked=${first(this.instance?.enabled, true)}
                     />
-                    <label class="pf-c-check__label"> ${t`Enabled`} </label>
+                    <label class="pf-c-check__label"> ${msg("Enabled")} </label>
                 </div>
             </ak-form-element-horizontal>
         </form>`;
