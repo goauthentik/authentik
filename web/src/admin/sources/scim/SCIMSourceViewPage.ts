@@ -8,12 +8,12 @@ import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/rbac/ObjectPermissionsPage";
+import "@goauthentik/elements/buttons/TokenCopyButton";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "../../../authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -57,7 +57,6 @@ export class SCIMSourceViewPage extends AKElement {
             PFContent,
             PFCard,
             PFDescriptionList,
-            AKGlobal,
         ];
     }
 

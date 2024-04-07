@@ -1,9 +1,12 @@
 """SCIM Group Views"""
 
+from uuid import uuid4
+
 from django.conf import settings
 from django.core.paginator import Paginator
 from django.db.transaction import atomic
 from django.http import Http404, QueryDict
+from django.urls import reverse
 from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -23,24 +26,19 @@ class GroupsView(SCIMView):
             id=str(scim_group.group.pk),
             externalId=scim_group.id,
             displayName=scim_group.group.name,
+            meta={
+                "resourceType": "Group",
+                "location": self.request.build_absolute_uri(
+                    reverse(
+                        "authentik_sources_scim:v2-groups",
+                        kwargs={
+                            "source_slug": self.kwargs["source_slug"],
+                            "group_id": str(scim_group.group.pk),
+                        },
+                    )
+                ),
+            },
         )
-        # payload = {
-        #     "meta": {
-        #         "resourceType": "User",
-        #         "created": scim_user.user.date_joined,
-        #         # TODO: use events to find last edit?
-        #         "lastModified": scim_user.user.date_joined,
-        #         "location": self.request.build_absolute_uri(
-        #             reverse(
-        #                 "authentik_sources_scim:v2-users",
-        #                 kwargs={
-        #                     "source_slug": self.kwargs["source_slug"],
-        #                     "user_id": str(scim_user.user.pk),
-        #                 },
-        #             )
-        #         ),
-        #     },
-        # }
         return payload.model_dump(
             mode="json",
             exclude_unset=True,
@@ -50,7 +48,7 @@ class GroupsView(SCIMView):
         """List Group handler"""
         if group_id:
             connection = (
-                SCIMSourceGroup.objects.filter(source=self.source, id=group_id)
+                SCIMSourceGroup.objects.filter(source=self.source, group__group_uuid=group_id)
                 .select_related("group")
                 .first()
             )
@@ -80,7 +78,7 @@ class GroupsView(SCIMView):
     def update_group(self, connection: SCIMSourceGroup | None, data: QueryDict):
         """Partial update a group"""
         group = connection.group if connection else Group()
-        if "name" in data:
+        if "displayName" in data:
             group.name = data.get("displayName")
         if group.name == "":
             raise ValidationError("Invalid group")
@@ -90,7 +88,7 @@ class GroupsView(SCIMView):
                 source=self.source,
                 group=group,
                 attributes=data,
-                id=data.get("externalId"),
+                id=data.get("externalId") or str(uuid4()),
             )
         else:
             connection.attributes = data
@@ -101,7 +99,7 @@ class GroupsView(SCIMView):
         """Create group handler"""
         connection = SCIMSourceGroup.objects.filter(
             source=self.source,
-            id=request.data.get("externalId"),
+            group__group_uuid=request.data.get("id"),
         ).first()
         if connection:
             self.logger.debug("Found existing group")
@@ -111,7 +109,9 @@ class GroupsView(SCIMView):
 
     def put(self, request: Request, group_id: str, **kwargs) -> Response:
         """Update group handler"""
-        connection = SCIMSourceGroup.objects.filter(source=self.source, id=group_id).first()
+        connection = SCIMSourceGroup.objects.filter(
+            source=self.source, group__group_uuid=group_id
+        ).first()
         if not connection:
             raise Http404
         connection = self.update_group(connection, request.data)
@@ -120,7 +120,9 @@ class GroupsView(SCIMView):
     @atomic
     def delete(self, request: Request, group_id: str, **kwargs) -> Response:
         """Delete group handler"""
-        connection = SCIMSourceGroup.objects.filter(source=self.source, id=group_id).first()
+        connection = SCIMSourceGroup.objects.filter(
+            source=self.source, group__group_uuid=group_id
+        ).first()
         if not connection:
             raise Http404
         connection.group.delete()

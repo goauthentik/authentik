@@ -43,7 +43,7 @@ class TestSCIMUsers(APITestCase):
 
     def test_user_list_single(self):
         """Test full user list (single user)"""
-        connection = SCIMSourceUser.objects.create(
+        SCIMSourceUser.objects.create(
             source=self.source,
             user=self.user,
             id=str(uuid4()),
@@ -53,7 +53,7 @@ class TestSCIMUsers(APITestCase):
                 "authentik_sources_scim:v2-users",
                 kwargs={
                     "source_slug": self.source.slug,
-                    "user_id": connection.id,
+                    "user_id": str(self.user.uuid),
                 },
             ),
             HTTP_AUTHORIZATION=f"Bearer {self.token.key}",

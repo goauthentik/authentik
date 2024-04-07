@@ -17,6 +17,7 @@ class User(BaseUser):
         "urn:ietf:params:scim:schemas:core:2.0:User",
     ]
     externalId: str | None = None
+    meta: dict | None = None
 
 
 class Group(BaseGroup):
@@ -26,6 +27,7 @@ class Group(BaseGroup):
         "urn:ietf:params:scim:schemas:core:2.0:Group",
     ]
     externalId: str | None = None
+    meta: dict | None = None
 
 
 class ServiceProviderConfiguration(BaseServiceProviderConfiguration):

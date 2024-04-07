@@ -26,7 +26,7 @@ class ServiceProviderConfigView(SCIMView):
                         "primary": True,
                     },
                 ],
-                "patch": {"supported": True},
+                "patch": {"supported": False},
                 "bulk": {"supported": False, "maxOperations": 0, "maxPayloadSize": 0},
                 "filter": {"supported": False, "maxResults": 200},
                 "changePassword": {"supported": False},
