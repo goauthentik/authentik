@@ -1,4 +1,5 @@
 """SCIMSource API Views"""
+
 from django.urls import reverse_lazy
 from rest_framework.fields import SerializerMethodField
 from rest_framework.viewsets import ModelViewSet

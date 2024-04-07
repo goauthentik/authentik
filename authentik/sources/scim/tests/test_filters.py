@@ -15,9 +15,7 @@ class TestSCIMFilter(APITestCase):
         ]
         for filter, expected in filters:
             with self.subTest(filter=filter, expected=expected):
-                lexer = ScimFilterLexer(
-                    InputStream(filter)
-                )
+                lexer = ScimFilterLexer(InputStream(filter))
                 stream = CommonTokenStream(lexer)
                 parser = ScimFilterParser(stream)
                 tree = parser.filter_()

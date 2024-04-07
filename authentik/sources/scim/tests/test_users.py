@@ -1,4 +1,5 @@
 """Test SCIM User"""
+
 from json import dumps
 
 from django.urls import reverse

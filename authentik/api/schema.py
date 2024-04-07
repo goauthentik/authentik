@@ -12,9 +12,8 @@ from drf_spectacular.settings import spectacular_settings
 from drf_spectacular.types import OpenApiTypes
 from rest_framework.settings import api_settings
 
-from authentik.api.pagination import PAGINATION_COMPONENT_NAME, PAGINATION_SCHEMA
-
 from authentik.api.apps import AuthentikAPIConfig
+from authentik.api.pagination import PAGINATION_COMPONENT_NAME, PAGINATION_SCHEMA
 
 
 def build_standard_type(obj, **kwargs):

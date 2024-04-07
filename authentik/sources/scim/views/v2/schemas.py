@@ -1,6 +1,6 @@
 """Schema Views"""
+
 from json import loads
-from typing import Optional
 
 from django.http import Http404
 from django.urls import reverse
@@ -9,7 +9,7 @@ from rest_framework.response import Response
 
 from authentik.sources.scim.views.v2.base import SCIMView
 
-with open("authentik/sources/scim/schemas/schema.json", "r", encoding="utf-8") as SCHEMA_FILE:
+with open("authentik/sources/scim/schemas/schema.json", encoding="utf-8") as SCHEMA_FILE:
     _raw_schemas = loads(SCHEMA_FILE.read())
 
 
@@ -33,7 +33,7 @@ class SchemaView(SCIMView):
         return schemas
 
     # pylint: disable=unused-argument
-    def get(self, request: Request, source_slug: str, schema_uri: Optional[str] = None) -> Response:
+    def get(self, request: Request, source_slug: str, schema_uri: str | None = None) -> Response:
         """Get schemas as SCIM response"""
         schemas = self.get_schemas()
         if schema_uri:

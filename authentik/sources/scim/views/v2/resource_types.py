@@ -1,5 +1,4 @@
 """SCIM Meta views"""
-from typing import Optional
 
 from django.http import Http404
 from django.urls import reverse
@@ -132,9 +131,7 @@ class ResourceTypesView(SCIMView):
         ]
 
     # pylint: disable=unused-argument
-    def get(
-        self, request: Request, source_slug: str, resource_type: Optional[str] = None
-    ) -> Response:
+    def get(self, request: Request, source_slug: str, resource_type: str | None = None) -> Response:
         """Get resource types as SCIM response"""
         resource_types = self.get_resource_types()
         if resource_type:

@@ -1,5 +1,5 @@
 """SCIM Utils"""
-from typing import Optional
+
 from urllib.parse import urlparse
 
 from antlr4 import CommonTokenStream, InputStream, ParseTreeWalker
@@ -40,7 +40,7 @@ class SCIMView(APIView):
     parser_classes = [SCIMParser]
     renderer_classes = [SCIMRenderer]
 
-    def patch_resolve_value(self, raw_value: dict) -> Optional[User | Group]:
+    def patch_resolve_value(self, raw_value: dict) -> User | Group | None:
         """Attempt to resolve a raw `value` attribute of a patch operation into
         a database model"""
         model = User

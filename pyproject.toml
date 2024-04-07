@@ -83,7 +83,6 @@ filterwarnings = [
 ]
 
 [tool.poetry.dependencies]
-antlr4-python3-runtime = "*"
 argon2-cffi = "*"
 celery = "*"
 channels = { version = "*", extras = ["daphne"] }
@@ -133,6 +132,7 @@ pyjwt = "*"
 python = "~3.12"
 pyyaml = "*"
 requests-oauthlib = "*"
+scim2-filter-parser = "*"
 sentry-sdk = "*"
 service_identity = "*"
 setproctitle = "*"

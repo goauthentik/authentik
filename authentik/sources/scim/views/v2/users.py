@@ -1,5 +1,4 @@
 """SCIM User Views"""
-from typing import Optional
 
 from django.core.paginator import Paginator
 from django.http import Http404, QueryDict
@@ -67,7 +66,7 @@ class UsersView(SCIMView):
             payload["externalId"] = user.attributes[USER_ATTRIBUTE_SCIM_ID]
         return payload
 
-    def get(self, request: Request, user_id: Optional[str] = None, **kwargs) -> Response:
+    def get(self, request: Request, user_id: str | None = None, **kwargs) -> Response:
         """List User handler"""
         if user_id:
             user = User.objects.filter(pk=user_id).first()
@@ -132,7 +131,7 @@ class UsersView(SCIMView):
 
     def put(self, request: Request, user_id: str, **kwargs) -> Response:
         """Update user handler"""
-        user: Optional[User] = User.objects.filter(pk=user_id).first()
+        user: User | None = User.objects.filter(pk=user_id).first()
         if not user:
             raise Http404
         self.update_user(user, request.data)
@@ -141,7 +140,7 @@ class UsersView(SCIMView):
 
     def delete(self, request: Request, user_id: str, **kwargs) -> Response:
         """Delete user handler"""
-        user: Optional[User] = User.objects.filter(pk=user_id).first()
+        user: User | None = User.objects.filter(pk=user_id).first()
         if not user:
             raise Http404
         user.delete()

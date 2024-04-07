@@ -1,5 +1,4 @@
 """SCIM Group Views"""
-from typing import Optional
 
 from django.core.paginator import Paginator
 from django.db.transaction import atomic
@@ -39,7 +38,7 @@ class GroupsView(SCIMView):
             "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
         }
 
-    def get(self, request: Request, group_id: Optional[str] = None, **kwargs) -> Response:
+    def get(self, request: Request, group_id: str | None = None, **kwargs) -> Response:
         """List Group handler"""
         if group_id:
             group = Group.objects.filter(pk=group_id).first()
@@ -79,7 +78,7 @@ class GroupsView(SCIMView):
 
     def patch(self, request: Request, group_id: str, **kwargs) -> Response:
         """Update group handler"""
-        group: Optional[Group] = Group.objects.filter(pk=group_id).first()
+        group: Group | None = Group.objects.filter(pk=group_id).first()
         if not group:
             raise Http404
         if request.data.get("schemas", []) != ["urn:ietf:params:scim:api:messages:2.0:PatchOp"]:
@@ -104,7 +103,7 @@ class GroupsView(SCIMView):
 
     def put(self, request: Request, group_id: str, **kwargs) -> Response:
         """Update group handler"""
-        group: Optional[Group] = Group.objects.filter(pk=group_id).first()
+        group: Group | None = Group.objects.filter(pk=group_id).first()
         if not group:
             raise Http404
         self.update_group(group, request.data)
@@ -113,7 +112,7 @@ class GroupsView(SCIMView):
 
     def delete(self, request: Request, group_id: str, **kwargs) -> Response:
         """Delete group handler"""
-        group: Optional[Group] = Group.objects.filter(pk=group_id).first()
+        group: Group | None = Group.objects.filter(pk=group_id).first()
         if not group:
             raise Http404
         group.delete()

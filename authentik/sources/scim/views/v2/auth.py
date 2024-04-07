@@ -1,6 +1,7 @@
 """SCIM Token auth"""
+
 from base64 import b64decode
-from typing import Any, Optional, Union
+from typing import Any
 
 from django.conf import settings
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
@@ -12,7 +13,7 @@ from authentik.core.models import Token, TokenIntents, User
 class SCIMTokenAuth(BaseAuthentication):
     """SCIM Token auth"""
 
-    def legacy(self, key: str, source_slug: str) -> Optional[Token]:  # pragma: no cover
+    def legacy(self, key: str, source_slug: str) -> Token | None:  # pragma: no cover
         """Legacy HTTP-Basic auth for testing"""
         if not settings.TEST and not settings.DEBUG:
             return None
@@ -22,7 +23,7 @@ class SCIMTokenAuth(BaseAuthentication):
             return (token.user, token)
         return None
 
-    def check_token(self, key: str, source_slug: str) -> Optional[Token]:
+    def check_token(self, key: str, source_slug: str) -> Token | None:
         """Check that a token exists, is not expired, and is assigned to the correct source"""
         token = Token.filter_not_expired(key=key, intent=TokenIntents.INTENT_API).first()
         if not token:
@@ -33,7 +34,7 @@ class SCIMTokenAuth(BaseAuthentication):
             return None
         return token
 
-    def authenticate(self, request: Request) -> Union[tuple[User, Any], None]:
+    def authenticate(self, request: Request) -> tuple[User, Any] | None:
         kwargs = request._request.resolver_match.kwargs
         source_slug = kwargs.get("source_slug", None)
         auth = get_authorization_header(request).decode()

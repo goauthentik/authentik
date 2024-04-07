@@ -1,4 +1,5 @@
 """SCIM URLs"""
+
 from django.urls import path
 
 from authentik.sources.scim.views.v2 import (
