@@ -134,6 +134,7 @@ redis = { extras = ["hiredis"], version = "5.1.0b4"}
 requests-oauthlib = "*"
 sentry-sdk = "*"
 service_identity = "*"
+setproctitle = "*"
 structlog = "*"
 swagger-spec-validator = "*"
 tenant-schemas-celery = "*"

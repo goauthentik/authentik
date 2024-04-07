@@ -22,7 +22,7 @@ entries:
             return ''
       initial_value_expression: true
       required: true
-      type: text
+      type: username
       field_key: username
       label: Username
     identifiers:

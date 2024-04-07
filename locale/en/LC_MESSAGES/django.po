@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-05 00:07+0000\n"
+"POT-Creation-Date: 2024-04-01 23:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -450,6 +450,20 @@ msgstr ""
 
 #: authentik/enterprise/providers/rac/views.py
 msgid "(You are already connected in another tab/window)"
+msgstr ""
+
+#: authentik/enterprise/stages/source/models.py
+msgid ""
+"Amount of time a user can take to return from the source to continue the "
+"flow (Format: hours=-1;minutes=-2;seconds=-3)"
+msgstr ""
+
+#: authentik/enterprise/stages/source/models.py
+msgid "Source Stage"
+msgstr ""
+
+#: authentik/enterprise/stages/source/models.py
+msgid "Source Stages"
 msgstr ""
 
 #: authentik/events/api/tasks.py
@@ -1742,6 +1756,10 @@ msgid "Field which contains a unique Identifier."
 msgstr ""
 
 #: authentik/sources/ldap/models.py
+msgid "Update internal authentik password when login succeeds with LDAP"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
 msgid ""
 "When a user changes their password, sync it back to LDAP. This can only be "
 "enabled on a single LDAP source."
@@ -2163,7 +2181,9 @@ msgid "TOTP Devices"
 msgstr ""
 
 #: authentik/stages/authenticator_validate/challenge.py
-msgid "Invalid Token"
+msgid ""
+"Invalid Token. Please ensure the time on your device is accurate and try "
+"again."
 msgstr ""
 
 #: authentik/stages/authenticator_validate/models.py

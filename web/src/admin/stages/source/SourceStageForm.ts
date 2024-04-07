@@ -40,7 +40,11 @@ export class SourceStageForm extends BaseStageForm<SourceStage> {
 
     renderForm(): TemplateResult {
         return html`
-            <span> ${msg("TODO.")} </span>
+            <span
+                >${msg(
+                    "Inject an OAuth or SAML Source into the flow execution. This allows for additional user verification, or to dynamically access different sources for different user identifiers (username, email address, etc).",
+                )}</span
+            >
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"

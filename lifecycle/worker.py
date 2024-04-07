@@ -12,3 +12,5 @@ class DjangoUvicornWorker(UvicornWorker):
         "lifespan": "off",
         "ws": "wsproto",
     }
+
+    _worker_id: int

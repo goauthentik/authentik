@@ -78,7 +78,7 @@ RUN /usr/local/bin/docker-entrypoint.sh generate \
     rm -rf /local/config.yaml /local/templates
 
 # Stage 5: Build go proxy
-FROM --platform=${BUILDPLATFORM} docker.io/golang:1.22.1-bookworm AS go-builder
+FROM --platform=${BUILDPLATFORM} docker.io/golang:1.22.2-bookworm AS go-builder
 
 ARG TARGETOS
 ARG TARGETARCH

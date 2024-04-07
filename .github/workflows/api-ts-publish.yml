@@ -1,4 +1,4 @@
-name: authentik-web-api-publish
+name: authentik-api-ts-publish
 on:
   push:
     branches: [main]
