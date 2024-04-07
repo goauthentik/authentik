@@ -1,5 +1,6 @@
 """SCIM Meta views"""
 
+from django.conf import settings
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -12,23 +13,32 @@ class ServiceProviderConfigView(SCIMView):
     # pylint: disable=unused-argument
     def get(self, request: Request, source_slug: str) -> Response:
         """Get ServiceProviderConfig"""
+        auth_schemas = [
+            {
+                "type": "oauthbearertoken",
+                "name": "OAuth Bearer Token",
+                "description": "Authentication scheme using the OAuth Bearer Token Standard",
+                "primary": True,
+            },
+        ]
+        if settings.TEST or settings.DEBUG:
+            auth_schemas.append(
+                {
+                    "type": "httpbasic",
+                    "name": "HTTP Basic",
+                    "description": "Authentication scheme using HTTP Basic authorization",
+                },
+            )
         return Response(
             {
                 "schemas": ["urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig"],
-                "authenticationSchemes": [
-                    {
-                        "type": "oauthbearertoken",
-                        "name": "OAuth Bearer Token",
-                        "description": (
-                            "Authentication scheme using the OAuth Bearer Token Standard"
-                        ),
-                        "specUri": "https://www.rfc-editor.org/info/rfc6750",
-                        "primary": True,
-                    },
-                ],
+                "authenticationSchemes": auth_schemas,
                 "patch": {"supported": False},
                 "bulk": {"supported": False, "maxOperations": 0, "maxPayloadSize": 0},
-                "filter": {"supported": False, "maxResults": 200},
+                "filter": {
+                    "supported": True,
+                    "maxResults": int(settings.REST_FRAMEWORK["PAGE_SIZE"]),
+                },
                 "changePassword": {"supported": False},
                 "sort": {"supported": False},
                 "etag": {"supported": False},

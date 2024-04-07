@@ -3,6 +3,9 @@
 from typing import Any
 from urllib.parse import urlparse
 
+from django.conf import settings
+from django.core.paginator import Page, Paginator
+from django.db.models import Model, Q, QuerySet
 from django.http import HttpRequest
 from django.urls import resolve
 from rest_framework.parsers import JSONParser
@@ -44,6 +47,8 @@ class SCIMView(APIView):
     parser_classes = [SCIMParser]
     renderer_classes = [SCIMRenderer]
 
+    model: type[Model]
+
     def setup(self, request: HttpRequest, *args: Any, **kwargs: Any) -> None:
         self.logger = get_logger().bind()
         return super().setup(request, *args, **kwargs)
@@ -73,9 +78,39 @@ class SCIMView(APIView):
             return None
         return model.objects.filter(**query).first()
 
-    def patch_parse_path(self, path: str):
+    def filter_parse(self, request: Request):
         """Parse the path of a Patch Operation"""
-        return get_query(path, {})
+        path = request.query_params.get("filter")
+        if not path:
+            return Q()
+        attr_map = {}
+        if self.model == User:
+            attr_map = {
+                ("userName", None, None): "user__username",
+                ("active", None, None): "user__is_active",
+                ("name", "familyName", None): "attributes__familyName",
+            }
+        elif self.model == Group:
+            attr_map = {
+                ("displayName", None, None): "group__name",
+                ("members", None, None): "group__users",
+            }
+        return get_query(
+            path,
+            attr_map,
+        )
+
+    def paginate_query(self, query: QuerySet) -> Page:
+        per_page = 50
+        start_index = 1
+        try:
+            per_page = int(settings.REST_FRAMEWORK["PAGE_SIZE"])
+            start_index = int(self.request.query_params.get("startIndex", 1))
+        except ValueError:
+            pass
+        paginator = Paginator(query, per_page=per_page)
+        page = paginator.page(int(max(start_index / per_page, 1)))
+        return page
 
 
 class SCIMRootView(SCIMView):

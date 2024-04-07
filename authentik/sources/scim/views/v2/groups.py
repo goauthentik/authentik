@@ -2,8 +2,6 @@
 
 from uuid import uuid4
 
-from django.conf import settings
-from django.core.paginator import Paginator
 from django.db.transaction import atomic
 from django.http import Http404, QueryDict
 from django.urls import reverse
@@ -19,6 +17,8 @@ from authentik.sources.scim.views.v2.base import SCIMView
 
 class GroupsView(SCIMView):
     """SCIM Group view"""
+
+    model = Group
 
     def group_to_scim(self, scim_group: SCIMSourceGroup) -> dict:
         """Convert Group to SCIM data"""
@@ -60,14 +60,12 @@ class GroupsView(SCIMView):
             .select_related("group")
             .order_by("pk")
         )
-        per_page = settings.REST_FRAMEWORK["PAGE_SIZE"]
-        paginator = Paginator(connections, per_page=per_page)
-        start_index = int(request.query_params.get("startIndex", 1))
-        page = paginator.page(int(max(start_index / per_page, 1)))
+        connections = connections.filter(self.filter_parse(request))
+        page = self.paginate_query(connections)
         return Response(
             {
-                "totalResults": paginator.count,
-                "itemsPerPage": per_page,
+                "totalResults": page.paginator.count,
+                "itemsPerPage": page.paginator.per_page,
                 "startIndex": page.start_index(),
                 "schemas": ["urn:ietf:params:scim:api:messages:2.0:ListResponse"],
                 "Resources": [self.group_to_scim(connection) for connection in page],
