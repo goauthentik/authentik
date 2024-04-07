@@ -1,53 +1,69 @@
 """SCIM Group Views"""
 
+from django.conf import settings
 from django.core.paginator import Paginator
 from django.db.transaction import atomic
 from django.http import Http404, QueryDict
-from django.urls import reverse
+from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
-from structlog.stdlib import get_logger
 
 from authentik.core.models import Group
-from authentik.sources.scim.errors import PatchError
-from authentik.sources.scim.views.v2.base import SCIM_CONTENT_TYPE, SCIMView
-
-LOGGER = get_logger()
+from authentik.providers.scim.clients.schema import Group as SCIMGroupModel
+from authentik.sources.scim.models import SCIMSourceGroup
+from authentik.sources.scim.views.v2.base import SCIMView
 
 
 class GroupsView(SCIMView):
-    """SCIM Group View"""
+    """SCIM Group view"""
 
-    def group_to_scim(self, group: Group) -> dict:
-        """Convert group to SCIM"""
-        return {
-            "id": str(group.pk),
-            "meta": {
-                "resourceType": "Group",
-                "location": self.request.build_absolute_uri(
-                    reverse(
-                        "authentik_sources_scim:v2-groups",
-                        kwargs={
-                            "source_slug": self.kwargs["source_slug"],
-                            "group_id": str(group.pk),
-                        },
-                    )
-                ),
-            },
-            "displayName": group.name,
-            "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
-        }
+    def group_to_scim(self, scim_group: SCIMSourceGroup) -> dict:
+        """Convert Group to SCIM data"""
+        payload = SCIMGroupModel(
+            id=str(scim_group.group.pk),
+            externalId=scim_group.id,
+            displayName=scim_group.group.name,
+        )
+        # payload = {
+        #     "meta": {
+        #         "resourceType": "User",
+        #         "created": scim_user.user.date_joined,
+        #         # TODO: use events to find last edit?
+        #         "lastModified": scim_user.user.date_joined,
+        #         "location": self.request.build_absolute_uri(
+        #             reverse(
+        #                 "authentik_sources_scim:v2-users",
+        #                 kwargs={
+        #                     "source_slug": self.kwargs["source_slug"],
+        #                     "user_id": str(scim_user.user.pk),
+        #                 },
+        #             )
+        #         ),
+        #     },
+        # }
+        return payload.model_dump(
+            mode="json",
+            exclude_unset=True,
+        )
 
     def get(self, request: Request, group_id: str | None = None, **kwargs) -> Response:
         """List Group handler"""
         if group_id:
-            group = Group.objects.filter(pk=group_id).first()
-            if not group:
+            connection = (
+                SCIMSourceGroup.objects.filter(source=self.source, id=group_id)
+                .select_related("group")
+                .first()
+            )
+            if not connection:
                 raise Http404
-            return Response(self.group_to_scim(group))
-        groups = Group.objects.all().order_by("pk")
-        per_page = 50
-        paginator = Paginator(groups, per_page=per_page)
+            return Response(self.group_to_scim(connection))
+        connections = (
+            SCIMSourceGroup.objects.filter(source=self.source)
+            .select_related("group")
+            .order_by("pk")
+        )
+        per_page = settings.REST_FRAMEWORK["PAGE_SIZE"]
+        paginator = Paginator(connections, per_page=per_page)
         start_index = int(request.query_params.get("startIndex", 1))
         page = paginator.page(int(max(start_index / per_page, 1)))
         return Response(
@@ -56,70 +72,57 @@ class GroupsView(SCIMView):
                 "itemsPerPage": per_page,
                 "startIndex": page.start_index(),
                 "schemas": ["urn:ietf:params:scim:api:messages:2.0:ListResponse"],
-                "Resources": [self.group_to_scim(group) for group in page],
+                "Resources": [self.group_to_scim(connection) for connection in page],
             }
         )
 
-    def update_group(self, group: Group, data: QueryDict) -> Group:
+    @atomic
+    def update_group(self, connection: SCIMSourceGroup | None, data: QueryDict):
         """Partial update a group"""
-        if "displayName" in data:
+        group = connection.group if connection else Group()
+        if "name" in data:
             group.name = data.get("displayName")
-        return group
+        if group.name == "":
+            raise ValidationError("Invalid group")
+        group.save()
+        if not connection:
+            connection, _ = SCIMSourceGroup.objects.get_or_create(
+                source=self.source,
+                group=group,
+                attributes=data,
+                id=data.get("externalId"),
+            )
+        else:
+            connection.attributes = data
+            connection.save()
+        return connection
 
     def post(self, request: Request, **kwargs) -> Response:
         """Create group handler"""
-        group = Group.objects.filter(name=request.data.get("displayName")).first()
-        if group:
-            LOGGER.debug("Found existing group")
+        connection = SCIMSourceGroup.objects.filter(
+            source=self.source,
+            id=request.data.get("externalId"),
+        ).first()
+        if connection:
+            self.logger.debug("Found existing group")
             return Response(status=409)
-        group = self.update_group(Group(), request.data)
-        group.save()
-        return Response(self.group_to_scim(group), status=201)
-
-    def patch(self, request: Request, group_id: str, **kwargs) -> Response:
-        """Update group handler"""
-        group: Group | None = Group.objects.filter(pk=group_id).first()
-        if not group:
-            raise Http404
-        if request.data.get("schemas", []) != ["urn:ietf:params:scim:api:messages:2.0:PatchOp"]:
-            return Response(status=400)
-        try:
-            with atomic():
-                for op in request.data.get("Operations", []):
-                    path = self.patch_parse_path(op["path"])
-                    operation = op["op"]
-                    raw_value = op.get("value", None)
-                    values = []
-                    for value in raw_value:
-                        values.append(self.patch_resolve_value(value))
-                    match operation:
-                        case "add":
-                            group.users.add(*[x.pk for x in values])
-                        case "remove":
-                            pass
-                return Response(self.group_to_scim(group), status=200)
-        except (KeyError, PatchError):
-            return Response(status=400)
+        connection = self.update_group(None, request.data)
+        return Response(self.group_to_scim(connection), status=201)
 
     def put(self, request: Request, group_id: str, **kwargs) -> Response:
         """Update group handler"""
-        group: Group | None = Group.objects.filter(pk=group_id).first()
-        if not group:
+        connection = SCIMSourceGroup.objects.filter(source=self.source, id=group_id).first()
+        if not connection:
             raise Http404
-        self.update_group(group, request.data)
-        group.save()
-        return Response(self.group_to_scim(group), status=200)
+        connection = self.update_group(connection, request.data)
+        return Response(self.group_to_scim(connection), status=200)
 
+    @atomic
     def delete(self, request: Request, group_id: str, **kwargs) -> Response:
         """Delete group handler"""
-        group: Group | None = Group.objects.filter(pk=group_id).first()
-        if not group:
+        connection = SCIMSourceGroup.objects.filter(source=self.source, id=group_id).first()
+        if not connection:
             raise Http404
-        group.delete()
-        return Response(
-            {},
-            status=204,
-            headers={
-                "Content-Type": SCIM_CONTENT_TYPE,
-            },
-        )
+        connection.group.delete()
+        connection.delete()
+        return Response({}, status=204)

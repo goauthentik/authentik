@@ -1,14 +1,16 @@
 """Test SCIM User"""
 
 from json import dumps
+from uuid import uuid4
 
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.models import Token, TokenIntents, User
+from authentik.core.models import Token, TokenIntents
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.generators import generate_id
-from authentik.sources.scim.models import USER_ATTRIBUTE_SCIM_ID, SCIMSource
+from authentik.providers.scim.clients.schema import User as SCIMUserSchema
+from authentik.sources.scim.models import SCIMSource, SCIMSourceUser
 from authentik.sources.scim.views.v2.base import SCIM_CONTENT_TYPE
 
 
@@ -41,17 +43,23 @@ class TestSCIMUsers(APITestCase):
 
     def test_user_list_single(self):
         """Test full user list (single user)"""
+        connection = SCIMSourceUser.objects.create(
+            source=self.source,
+            user=self.user,
+            id=str(uuid4()),
+        )
         response = self.client.get(
             reverse(
                 "authentik_sources_scim:v2-users",
                 kwargs={
                     "source_slug": self.source.slug,
-                    "user_id": str(self.user.pk),
+                    "user_id": connection.id,
                 },
             ),
             HTTP_AUTHORIZATION=f"Bearer {self.token.key}",
         )
         self.assertEqual(response.status_code, 200)
+        SCIMUserSchema.model_validate_json(response.content, strict=True)
 
     def test_user_create(self):
         """Test user create"""
@@ -79,6 +87,4 @@ class TestSCIMUsers(APITestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.token.key}",
         )
         self.assertEqual(response.status_code, 201)
-        self.assertTrue(
-            User.objects.filter(**{f"attributes__{USER_ATTRIBUTE_SCIM_ID}": ext_id}).exists()
-        )
+        self.assertTrue(SCIMSourceUser.objects.filter(source=self.source, id=ext_id).exists())

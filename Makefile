@@ -11,7 +11,6 @@ DOCKER_IMAGE ?= "authentik:test"
 GEN_API_TS = "gen-ts-api"
 GEN_API_PY = "gen-py-api"
 GEN_API_GO = "gen-go-api"
-GEN_SCIM_LEXER_PY = "authentik/sources/scim/filters/"
 
 pg_user := $(shell python -m authentik.lib.config postgresql.user 2>/dev/null)
 pg_host := $(shell python -m authentik.lib.config postgresql.host 2>/dev/null)

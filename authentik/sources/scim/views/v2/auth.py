@@ -6,12 +6,18 @@ from typing import Any
 from django.conf import settings
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from rest_framework.request import Request
+from rest_framework.views import APIView
 
 from authentik.core.models import Token, TokenIntents, User
+from authentik.sources.scim.models import SCIMSource
 
 
 class SCIMTokenAuth(BaseAuthentication):
     """SCIM Token auth"""
+
+    def __init__(self, view: APIView) -> None:
+        super().__init__()
+        self.view = view
 
     def legacy(self, key: str, source_slug: str) -> Token | None:  # pragma: no cover
         """Legacy HTTP-Basic auth for testing"""
@@ -28,10 +34,12 @@ class SCIMTokenAuth(BaseAuthentication):
         token = Token.filter_not_expired(key=key, intent=TokenIntents.INTENT_API).first()
         if not token:
             return None
-        if not token.scimsource_set.exists():
+        source: SCIMSource = token.scimsource_set.first()
+        if not source:
             return None
-        if token.scimsource_set.first().slug != source_slug:
+        if source.slug != source_slug:
             return None
+        self.view.source = source
         return token
 
     def authenticate(self, request: Request) -> tuple[User, Any] | None:

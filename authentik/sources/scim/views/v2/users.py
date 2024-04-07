@@ -1,23 +1,18 @@
 """SCIM User Views"""
 
+from django.conf import settings
 from django.core.paginator import Paginator
+from django.db.transaction import atomic
 from django.http import Http404, QueryDict
-from django.urls import reverse
-from guardian.shortcuts import get_anonymous_user
+from pydanticscim.user import Email, EmailKind, Name
 from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
-from structlog.stdlib import get_logger
 
 from authentik.core.models import User
-from authentik.sources.scim.models import (
-    USER_ATTRIBUTE_SCIM_ADDRESS,
-    USER_ATTRIBUTE_SCIM_ENTERPRISE,
-    USER_ATTRIBUTE_SCIM_ID,
-)
-from authentik.sources.scim.views.v2.base import SCIM_CONTENT_TYPE, SCIMView
-
-LOGGER = get_logger()
+from authentik.providers.scim.clients.schema import User as SCIMUserModel
+from authentik.sources.scim.models import SCIMSourceUser
+from authentik.sources.scim.views.v2.base import SCIMView
 
 
 class UsersView(SCIMView):
@@ -30,52 +25,57 @@ class UsersView(SCIMView):
                 return email.get("value")
         return data[0].get("value")
 
-    def user_to_scim(self, user: User) -> dict:
+    def user_to_scim(self, scim_user: SCIMSourceUser) -> dict:
         """Convert User to SCIM data"""
-        payload = {
-            "id": str(user.pk),
-            "meta": {
-                "resourceType": "User",
-                "created": user.date_joined,
-                # TODO: use events to find last edit?
-                "lastModified": user.date_joined,
-                "location": self.request.build_absolute_uri(
-                    reverse(
-                        "authentik_sources_scim:v2-users",
-                        kwargs={
-                            "source_slug": self.kwargs["source_slug"],
-                            "user_id": str(user.pk),
-                        },
-                    )
-                ),
-            },
-            "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User": user.attributes.get(
-                USER_ATTRIBUTE_SCIM_ENTERPRISE, {}
+        payload = SCIMUserModel(
+            id=str(scim_user.user.pk),
+            externalId=scim_user.id,
+            userName=scim_user.user.username,
+            name=Name(
+                formatted=scim_user.user.name,
             ),
-            "schemas": [
-                "urn:ietf:params:scim:schemas:core:2.0:User",
-                "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User",
-            ],
-            "userName": user.username,
-            "name": {},
-            "displayName": user.name,
-            "active": user.is_active,
-            "emails": [{"value": user.email, "type": "work", "primary": True}],
-        }
-        if USER_ATTRIBUTE_SCIM_ID in user.attributes:
-            payload["externalId"] = user.attributes[USER_ATTRIBUTE_SCIM_ID]
-        return payload
+            displayName=scim_user.user.name,
+            active=scim_user.user.is_active,
+            emails=[Email(value=scim_user.user.email, type=EmailKind.work, primary=True)],
+        )
+        # payload = {
+        #     "meta": {
+        #         "resourceType": "User",
+        #         "created": scim_user.user.date_joined,
+        #         # TODO: use events to find last edit?
+        #         "lastModified": scim_user.user.date_joined,
+        #         "location": self.request.build_absolute_uri(
+        #             reverse(
+        #                 "authentik_sources_scim:v2-users",
+        #                 kwargs={
+        #                     "source_slug": self.kwargs["source_slug"],
+        #                     "user_id": str(scim_user.user.pk),
+        #                 },
+        #             )
+        #         ),
+        #     },
+        # }
+        return payload.model_dump(
+            mode="json",
+            exclude_unset=True,
+        )
 
     def get(self, request: Request, user_id: str | None = None, **kwargs) -> Response:
         """List User handler"""
         if user_id:
-            user = User.objects.filter(pk=user_id).first()
-            if not user:
+            connection = (
+                SCIMSourceUser.objects.filter(source=self.source, id=user_id)
+                .select_related("user")
+                .first()
+            )
+            if not connection:
                 raise Http404
-            return Response(self.user_to_scim(user))
-        users = User.objects.all().exclude(pk=get_anonymous_user().pk).order_by("pk")
-        per_page = 50
-        paginator = Paginator(users, per_page=per_page)
+            return Response(self.user_to_scim(connection))
+        connections = (
+            SCIMSourceUser.objects.filter(source=self.source).select_related("user").order_by("pk")
+        )
+        per_page = settings.REST_FRAMEWORK["PAGE_SIZE"]
+        paginator = Paginator(connections, per_page=per_page)
         start_index = int(request.query_params.get("startIndex", 1))
         page = paginator.page(int(max(start_index / per_page, 1)))
         return Response(
@@ -84,12 +84,14 @@ class UsersView(SCIMView):
                 "itemsPerPage": per_page,
                 "startIndex": page.start_index(),
                 "schemas": ["urn:ietf:params:scim:api:messages:2.0:ListResponse"],
-                "Resources": [self.user_to_scim(user) for user in page],
+                "Resources": [self.user_to_scim(connection) for connection in page],
             }
         )
 
-    def update_user(self, user: User, data: QueryDict) -> User:
+    @atomic
+    def update_user(self, connection: SCIMSourceUser | None, data: QueryDict):
         """Partial update a user"""
+        user = connection.user if connection else User()
         if "userName" in data:
             user.username = data.get("userName")
         if "name" in data:
@@ -98,56 +100,47 @@ class UsersView(SCIMView):
             user.email = self.get_email(data.get("emails"))
         if "active" in data:
             user.is_active = data.get("active")
-        if "externalId" in data:
-            user.attributes[USER_ATTRIBUTE_SCIM_ID] = data.get("externalId")
-        if "addresses" in data:
-            user.attributes[USER_ATTRIBUTE_SCIM_ADDRESS] = data.get("addresses")
-        if "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User" in data:
-            user.attributes[USER_ATTRIBUTE_SCIM_ENTERPRISE] = data.get(
-                "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User"
-            )
         if user.username == "":
             raise ValidationError("Invalid user")
-        return user
+        user.save()
+        if not connection:
+            connection, _ = SCIMSourceUser.objects.get_or_create(
+                source=self.source,
+                user=user,
+                attributes=data,
+                id=data.get("externalId"),
+            )
+        else:
+            connection.attributes = data
+            connection.save()
+        return connection
 
     def post(self, request: Request, **kwargs) -> Response:
         """Create user handler"""
-        user = User.objects.filter(
-            **{
-                f"attributes__{USER_ATTRIBUTE_SCIM_ID}": request.data.get("externalId"),
-                "username": request.data.get("userName"),
-            }
+        connection = SCIMSourceUser.objects.filter(
+            source=self.source,
+            id=request.data.get("externalId"),
         ).first()
-        if user:
-            LOGGER.debug("Found existing user")
+        if connection:
+            self.logger.debug("Found existing user")
             return Response(status=409)
-        user = self.update_user(User(), request.data)
-        user.save()
-        return Response(self.user_to_scim(user), status=201)
-
-    def patch(self, request: Request, user_id: str, **kwargs) -> Response:
-        """Update user handler"""
-        return self.put(request, user_id, **kwargs)
+        connection = self.update_user(None, request.data)
+        return Response(self.user_to_scim(connection), status=201)
 
     def put(self, request: Request, user_id: str, **kwargs) -> Response:
         """Update user handler"""
-        user: User | None = User.objects.filter(pk=user_id).first()
-        if not user:
+        connection = SCIMSourceUser.objects.filter(source=self.source, id=user_id).first()
+        if not connection:
             raise Http404
-        self.update_user(user, request.data)
-        user.save()
-        return Response(self.user_to_scim(user), status=200)
+        self.update_user(connection, request.data)
+        return Response(self.user_to_scim(connection), status=200)
 
+    @atomic
     def delete(self, request: Request, user_id: str, **kwargs) -> Response:
         """Delete user handler"""
-        user: User | None = User.objects.filter(pk=user_id).first()
-        if not user:
+        connection = SCIMSourceUser.objects.filter(source=self.source, id=user_id).first()
+        if not connection:
             raise Http404
-        user.delete()
-        return Response(
-            {},
-            status=204,
-            headers={
-                "Content-Type": SCIM_CONTENT_TYPE,
-            },
-        )
+        connection.user.delete()
+        connection.delete()
+        return Response({}, status=204)
