@@ -6,9 +6,9 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/buttons/TokenCopyButton";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/rbac/ObjectPermissionsPage";
-import "@goauthentik/elements/buttons/TokenCopyButton";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
