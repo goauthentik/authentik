@@ -54,6 +54,21 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
     }
 
     renderForm(): TemplateResult {
+        const backends = [
+            {
+                name: BackendsEnum.CoreAuthInbuiltBackend,
+                label: msg("User database + standard password"),
+            },
+            {
+                name: BackendsEnum.CoreAuthTokenBackend,
+                label: msg("User database + app passwords"),
+            },
+            {
+                name: BackendsEnum.SourcesLdapAuthLdapBackend,
+                label: msg("User database + LDAP password"),
+            },
+        ];
+
         return html` <span>
                 ${msg("Validate the user's password against the selected backend(s).")}
             </span>
@@ -73,32 +88,13 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                         ?required=${true}
                         name="backends"
                     >
-                        <select name="users" class="pf-c-form-control" multiple>
-                            <option
-                                value=${BackendsEnum.CoreAuthInbuiltBackend}
-                                ?selected=${this.isBackendSelected(
-                                    BackendsEnum.CoreAuthInbuiltBackend,
-                                )}
-                            >
-                                ${msg("User database + standard password")}
-                            </option>
-                            <option
-                                value=${BackendsEnum.CoreAuthTokenBackend}
-                                ?selected=${this.isBackendSelected(
-                                    BackendsEnum.CoreAuthTokenBackend,
-                                )}
-                            >
-                                ${msg("User database + app passwords")}
-                            </option>
-                            <option
-                                value=${BackendsEnum.SourcesLdapAuthLdapBackend}
-                                ?selected=${this.isBackendSelected(
-                                    BackendsEnum.SourcesLdapAuthLdapBackend,
-                                )}
-                            >
-                                ${msg("User database + LDAP password")}
-                            </option>
-                        </select>
+                        <ak-checkbox-group
+                            class="user-field-select"
+                            .options=${backends}
+                            .value=${backends
+                                .map(({ name }) => name)
+                                .filter((name) => this.isBackendSelected(name))}
+                        ></ak-checkbox-group>
                         <p class="pf-c-form__helper-text">
                             ${msg("Selection of backends to test the password against.")}
                         </p>

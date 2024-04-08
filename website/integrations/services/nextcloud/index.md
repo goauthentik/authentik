@@ -104,8 +104,8 @@ Create a provider for Nextcloud. In the Admin Interface, go to _Applications_ ->
 
 Before continuing, make sure to take note of your `client ID` and `secret ID`. Don't worry you can go back to see/change them at any time.
 
-:::warning
-Currently there is a bug in the Nextcloud OIDC app, that is [limiting the size of the secret ID](https://github.com/nextcloud/user_oidc/issues/405) token to 64 characters. Since authentik uses 128 characters for a secret ID by default, you will need to trim it down to 64 characters in order to be able to set it in Nextcloud. Don't worry, 64 characters is still sufficiently long and should not compromise security.
+:::note
+There were an issue in the Nextcloud OIDC app that was [limiting the size of the secret ID](https://github.com/nextcloud/user_oidc/issues/405) token to 64 characters. This issue was fixed in December 2023, so make sure you update to the latest version of the [OpenID Connect user backend](https://apps.nextcloud.com/apps/user_oidc) application.
 :::
 
 :::note

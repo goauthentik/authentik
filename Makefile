@@ -65,7 +65,7 @@ lint-fix:  ## Lint and automatically fix errors in the python source code. Repor
 	codespell -w $(CODESPELL_ARGS)
 
 lint: ## Lint the python and golang sources
-	bandit -r $(PY_SOURCES) -x node_modules
+	bandit -r $(PY_SOURCES) -x web/node_modules -x tests/wdio/node_modules -x website/node_modules
 	golangci-lint run -v
 
 core-install:

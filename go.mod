@@ -9,7 +9,7 @@ require (
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/getsentry/sentry-go v0.27.0
 	github.com/go-http-utils/etag v0.0.0-20161124023236-513ea8f21eb1
-	github.com/go-ldap/ldap/v3 v3.4.6
+	github.com/go-ldap/ldap/v3 v3.4.7
 	github.com/go-openapi/runtime v0.28.0
 	github.com/go-openapi/strfmt v0.23.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
@@ -32,8 +32,8 @@ require (
 	github.com/wwt/guac v1.3.2
 	goauthentik.io/api/v3 v3.2024022.7
 	golang.org/x/exp v0.0.0-20230210204819-062eb4c674ab
-	golang.org/x/oauth2 v0.18.0
-	golang.org/x/sync v0.6.0
+	golang.org/x/oauth2 v0.19.0
+	golang.org/x/sync v0.7.0
 	gopkg.in/yaml.v2 v2.4.0
 	layeh.com/radius v0.0.0-20210819152912-ad72663a72ab
 )
@@ -59,7 +59,6 @@ require (
 	github.com/go-openapi/spec v0.21.0 // indirect
 	github.com/go-openapi/swag v0.23.0 // indirect
 	github.com/go-openapi/validate v0.24.0 // indirect
-	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
@@ -79,7 +78,6 @@ require (
 	golang.org/x/net v0.22.0 // indirect
 	golang.org/x/sys v0.18.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
-	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/square/go-jose.v2 v2.5.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
