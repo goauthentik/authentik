@@ -289,12 +289,14 @@ benchmark-install:
 	mv k6 tests/benchmark/k6
 
 benchmark-fixtures-create:
-	./tests/benchmark/fixtures.py create
+	tests/benchmark/fixtures.py create
 
 benchmark-run:
-	./tests/benchmark/run.sh
+	docker compose -f tests/benchmark/docker-compose.yml up -d
+	sleep 5
+	tests/benchmark/run.sh
 
 benchmark-fixtures-delete:
-	./tests/benchmark/fixtures.py delete
+	tests/benchmark/fixtures.py delete
 
 benchmark: benchmark-install benchmark-fixtures-create benchmark-run benchmark-fixtures-delete

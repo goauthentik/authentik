@@ -21,6 +21,7 @@ settings.CELERY["task_always_eager"] = True
 
 
 def user_list():
+    print("user_list")
     # Number of users, groups per user, parents per groups
     tenants = [
         (10, 0, 0),
@@ -38,26 +39,31 @@ def user_list():
     ]
 
     for tenant in tenants:
+        print(tenant)
         user_count = tenant[0]
         groups_per_user = tenant[1]
         parents_per_group = tenant[2]
         tenant_name = f"user-list-{user_count}-{groups_per_user}-{parents_per_group}"
 
+        print("tenant")
         t = Tenant.objects.create(schema_name=f"t_{tenant_name.replace('-', '_')}", name=uuid4())
         Domain.objects.create(tenant=t, domain=f"{tenant_name}.localhost")
 
         with t:
-            for _ in range(user_count):
-                User.objects.create(username=uuid4(), name=uuid4())
-            for user in User.objects.exclude_anonymous().exclude(username="akadmin"):
-                for _ in range(groups_per_user):
-                    user.ak_groups.add(Group.objects.create(name=uuid4()))
-            for group in Group.objects.exclude(name="authentik Admins"):
+            print("groups")
+            for _ in range(groups_per_user * 5):
+                group = Group.objects.create(name=uuid4())
                 for _ in range(parents_per_group):
                     new_group = Group.objects.create(name=uuid4())
                     group.parent = new_group
                     group.save()
                     group = new_group
+            print("users")
+            for _ in range(user_count):
+                user = User.objects.create(username=uuid4(), name=uuid4())
+                user.ak_groups.set(
+                    Group.objects.exclude(name="authentik Admins").order_by("?")[:groups_per_user]
+                )
 
 
 def delete():

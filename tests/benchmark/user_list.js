@@ -29,8 +29,8 @@ export const options = {
             {
                 executor: "constant-vus",
                 vus: 10,
-                duration: "30s",
-                startTime: `${30 * i}s`,
+                duration: "300s",
+                startTime: `${315 * i}s`,
                 env: {
                     USER_COUNT: `${obj[0]}`,
                     GROUPS_PER_USER: `${obj[1]}`,
@@ -38,6 +38,7 @@ export const options = {
                     PAGE_SIZE: `${obj[3]}`,
                 },
                 tags: {
+                    testid: `user_list_${obj[0]}_${obj[1]}_${obj[2]}_${obj[3]}`,
                     user_count: `${obj[0]}`,
                     groups_per_user: `${obj[1]}`,
                     parents_per_group: `${obj[2]}`,
