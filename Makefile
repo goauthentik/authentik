@@ -284,6 +284,17 @@ ci-pending-migrations: ci--meta-debug
 #########################
 
 benchmark-install:
-	cd tests/benchmark
 	go install go.k6.io/xk6/cmd/xk6@latest
 	$$(go env GOPATH)/bin/xk6 build latest --with github.com/grafana/xk6-exec@latest
+	mv k6 tests/benchmark/k6
+
+benchmark-fixtures-create:
+	./tests/benchmark/fixtures.py create
+
+benchmark-run:
+	./tests/benchmark/run.sh
+
+benchmark-fixtures-delete:
+	./tests/benchmark/fixtures.py delete
+
+benchmark: benchmark-install benchmark-fixtures-create benchmark-run benchmark-fixtures-delete
