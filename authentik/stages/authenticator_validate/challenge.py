@@ -21,6 +21,7 @@ from webauthn.helpers.structs import UserVerificationRequirement
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Application, User
 from authentik.core.signals import login_failed
+from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE
@@ -167,7 +168,8 @@ def validate_challenge_webauthn(data: dict, stage_view: StageView, user: User) -
         )
         raise ValidationError("Assertion failed") from exc
 
-    device.set_sign_count(authentication_verification.new_sign_count)
+    with audit_ignore():
+        device.set_sign_count(authentication_verification.new_sign_count)
     return device
 
 
