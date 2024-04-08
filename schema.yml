@@ -39680,18 +39680,6 @@ components:
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
-        authentication_flow:
-          type: string
-          format: uuid
-          nullable: true
-          description: Flow to use when authenticating existing users.
-        enrollment_flow:
-          type: string
-          format: uuid
-          nullable: true
-          description: Flow to use when enrolling new users.
-        policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
@@ -39700,10 +39688,6 @@ components:
         user_path_template:
           type: string
           minLength: 1
-        token:
-          type: string
-          format: uuid
-          nullable: true
     PatchedSMSDeviceRequest:
       type: object
       description: Serializer for sms authenticator devices
@@ -42577,16 +42561,6 @@ components:
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
-        authentication_flow:
-          type: string
-          format: uuid
-          nullable: true
-          description: Flow to use when authenticating existing users.
-        enrollment_flow:
-          type: string
-          format: uuid
-          nullable: true
-          description: Flow to use when enrolling new users.
         component:
           type: string
           description: Get object component so that we know how to edit the object
@@ -42603,8 +42577,6 @@ components:
           type: string
           description: Return internal model name
           readOnly: true
-        policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
@@ -42621,17 +42593,6 @@ components:
           readOnly: true
         user_path_template:
           type: string
-        icon:
-          type: string
-          nullable: true
-          description: |-
-            Get the URL to the Icon. If the name is /static or
-            starts with http it is returned as-is
-          readOnly: true
-        token:
-          type: string
-          format: uuid
-          nullable: true
         root_url:
           type: string
           description: Get Root URL
@@ -42642,7 +42603,6 @@ components:
           readOnly: true
       required:
       - component
-      - icon
       - managed
       - meta_model_name
       - name
@@ -42668,18 +42628,6 @@ components:
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
-        authentication_flow:
-          type: string
-          format: uuid
-          nullable: true
-          description: Flow to use when authenticating existing users.
-        enrollment_flow:
-          type: string
-          format: uuid
-          nullable: true
-          description: Flow to use when enrolling new users.
-        policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
@@ -42688,10 +42636,6 @@ components:
         user_path_template:
           type: string
           minLength: 1
-        token:
-          type: string
-          format: uuid
-          nullable: true
       required:
       - name
       - slug

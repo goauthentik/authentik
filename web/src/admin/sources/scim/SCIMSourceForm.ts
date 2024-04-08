@@ -1,4 +1,5 @@
 import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
+import { placeholderHelperText } from "@goauthentik/authentik/admin/helperText";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
@@ -23,7 +24,7 @@ export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
             });
     }
 
-    send = (data: SCIMSource): Promise<SCIMSource> => {
+    async send(data: SCIMSource): Promise<SCIMSource> {
         if (this.instance?.slug) {
             return new SourcesApi(DEFAULT_CONFIG).sourcesScimPartialUpdate({
                 slug: this.instance.slug,
@@ -34,7 +35,7 @@ export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
                 sCIMSourceRequest: data as unknown as SCIMSourceRequest,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
@@ -64,6 +65,22 @@ export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
                     <label class="pf-c-check__label"> ${msg("Enabled")} </label>
                 </div>
             </ak-form-element-horizontal>
+            <ak-form-group>
+                <span slot="header"> ${msg("Advanced protocol settings")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
+                        <input
+                            type="text"
+                            value="${first(
+                                this.instance?.userPathTemplate,
+                                "goauthentik.io/sources/%(slug)s",
+                            )}"
+                            class="pf-c-form-control"
+                        />
+                        <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
         </form>`;
     }
 }

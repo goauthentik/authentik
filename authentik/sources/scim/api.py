@@ -49,7 +49,21 @@ class SCIMSourceSerializer(SourceSerializer):
     class Meta:
 
         model = SCIMSource
-        fields = SourceSerializer.Meta.fields + ["token", "root_url", "token_obj"]
+        fields = [
+            "pk",
+            "name",
+            "slug",
+            "enabled",
+            "component",
+            "verbose_name",
+            "verbose_name_plural",
+            "meta_model_name",
+            "user_matching_mode",
+            "managed",
+            "user_path_template",
+            "root_url",
+            "token_obj",
+        ]
 
 
 class SCIMSourceViewSet(UsedByMixin, ModelViewSet):

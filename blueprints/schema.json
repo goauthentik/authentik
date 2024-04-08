@@ -4989,26 +4989,6 @@
                     "type": "boolean",
                     "title": "Enabled"
                 },
-                "authentication_flow": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Authentication flow",
-                    "description": "Flow to use when authenticating existing users."
-                },
-                "enrollment_flow": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Enrollment flow",
-                    "description": "Flow to use when enrolling new users."
-                },
-                "policy_engine_mode": {
-                    "type": "string",
-                    "enum": [
-                        "all",
-                        "any"
-                    ],
-                    "title": "Policy engine mode"
-                },
                 "user_matching_mode": {
                     "type": "string",
                     "enum": [
@@ -5030,11 +5010,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Icon"
-                },
-                "token": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Token"
                 }
             },
             "required": []
