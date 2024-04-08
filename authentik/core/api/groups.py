@@ -5,10 +5,15 @@ from json import loads
 from django.http import Http404
 from django_filters.filters import CharFilter, ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    OpenApiResponse,
+    extend_schema,
+    extend_schema_field,
+)
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, IntegerField
+from rest_framework.fields import CharField, IntegerField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer, ModelSerializer, ValidationError
@@ -45,9 +50,7 @@ class GroupSerializer(ModelSerializer):
     """Group Serializer"""
 
     attributes = JSONDictField(required=False)
-    users_obj = ListSerializer(
-        child=GroupMemberSerializer(), read_only=True, source="users", required=False
-    )
+    users_obj = SerializerMethodField()
     roles_obj = ListSerializer(
         child=RoleSerializer(),
         read_only=True,
@@ -57,6 +60,19 @@ class GroupSerializer(ModelSerializer):
     parent_name = CharField(source="parent.name", read_only=True, allow_null=True)
 
     num_pk = IntegerField(read_only=True)
+
+    @property
+    def _should_include_users(self) -> bool:
+        request: Request = self.context.get("request", None)
+        if not request:
+            return True
+        return str(request.query_params.get("include_users", "true")).lower() == "true"
+
+    @extend_schema_field(GroupMemberSerializer(many=True))
+    def get_users_obj(self, instance: Group) -> list[GroupMemberSerializer] | None:
+        if not self._should_include_users:
+            return None
+        return GroupMemberSerializer(instance.users, many=True).data
 
     def validate_parent(self, parent: Group | None):
         """Validate group parent (if set), ensuring the parent isn't itself"""
@@ -144,6 +160,14 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     search_fields = ["name", "is_superuser"]
     filterset_class = GroupFilter
     ordering = ["name"]
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter("include_users", bool, default=True),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     @permission_required(None, ["authentik_core.add_user"])
     @extend_schema(
