@@ -125,4 +125,4 @@ class GroupsView(SCIMView):
             raise Http404
         connection.group.delete()
         connection.delete()
-        return Response({}, status=204)
+        return Response(status=204)

@@ -144,4 +144,4 @@ class UsersView(SCIMView):
             raise Http404
         connection.user.delete()
         connection.delete()
-        return Response({}, status=204)
+        return Response(status=204)
