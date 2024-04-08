@@ -1566,7 +1566,7 @@
                         ],
                         "properties": {
                             "model": {
-                                "const": "authentik_stages_authenticator_webauthn.authenticatewebauthnstage"
+                                "const": "authentik_stages_authenticator_webauthn.authenticatorwebauthnstage"
                             },
                             "id": {
                                 "type": "string"
@@ -1588,10 +1588,10 @@
                                 }
                             },
                             "attrs": {
-                                "$ref": "#/$defs/model_authentik_stages_authenticator_webauthn.authenticatewebauthnstage"
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_webauthn.authenticatorwebauthnstage"
                             },
                             "identifiers": {
-                                "$ref": "#/$defs/model_authentik_stages_authenticator_webauthn.authenticatewebauthnstage"
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_webauthn.authenticatorwebauthnstage"
                             }
                         }
                     },
@@ -3354,7 +3354,7 @@
                         "authentik_stages_authenticator_totp.authenticatortotpstage",
                         "authentik_stages_authenticator_totp.totpdevice",
                         "authentik_stages_authenticator_validate.authenticatorvalidatestage",
-                        "authentik_stages_authenticator_webauthn.authenticatewebauthnstage",
+                        "authentik_stages_authenticator_webauthn.authenticatorwebauthnstage",
                         "authentik_stages_authenticator_webauthn.webauthndevice",
                         "authentik_stages_captcha.captchastage",
                         "authentik_stages_consent.consentstage",
@@ -5645,7 +5645,7 @@
             },
             "required": []
         },
-        "model_authentik_stages_authenticator_webauthn.authenticatewebauthnstage": {
+        "model_authentik_stages_authenticator_webauthn.authenticatorwebauthnstage": {
             "type": "object",
             "properties": {
                 "name": {
@@ -5778,6 +5778,13 @@
                         "required"
                     ],
                     "title": "Resident key requirement"
+                },
+                "device_type_restrictions": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Device type restrictions"
                 }
             },
             "required": []
