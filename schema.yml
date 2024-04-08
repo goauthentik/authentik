@@ -30619,6 +30619,16 @@ components:
           allOf:
           - $ref: '#/components/schemas/UserVerificationEnum'
           description: Enforce user verification for WebAuthn devices.
+        webauthn_allowed_device_types:
+          type: array
+          items:
+            type: string
+            format: uuid
+        webauthn_allowed_device_types_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnDeviceType'
+          readOnly: true
       required:
       - component
       - meta_model_name
@@ -30626,6 +30636,7 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+      - webauthn_allowed_device_types_obj
     AuthenticatorValidateStageRequest:
       type: object
       description: AuthenticatorValidateStage Serializer
@@ -30661,6 +30672,11 @@ components:
           allOf:
           - $ref: '#/components/schemas/UserVerificationEnum'
           description: Enforce user verification for WebAuthn devices.
+        webauthn_allowed_device_types:
+          type: array
+          items:
+            type: string
+            format: uuid
       required:
       - name
     AuthenticatorValidationChallenge:
@@ -37532,6 +37548,11 @@ components:
           allOf:
           - $ref: '#/components/schemas/UserVerificationEnum'
           description: Enforce user verification for WebAuthn devices.
+        webauthn_allowed_device_types:
+          type: array
+          items:
+            type: string
+            format: uuid
     PatchedAuthenticatorWebAuthnStageRequest:
       type: object
       description: AuthenticatorWebAuthnStage Serializer

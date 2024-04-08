@@ -5637,6 +5637,14 @@
                     ],
                     "title": "Webauthn user verification",
                     "description": "Enforce user verification for WebAuthn devices."
+                },
+                "webauthn_allowed_device_types": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Webauthn allowed device types"
                 }
             },
             "required": []
