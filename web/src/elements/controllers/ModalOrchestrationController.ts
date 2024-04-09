@@ -94,7 +94,8 @@ export class ModalOrchestrationController implements ReactiveController {
     }
 
     removeTopmostModal() {
-        while (true) {
+        let checking = true;
+        while (checking) {
             const modal = this.knownModals.pop();
             if (!modal) {
                 break;
@@ -103,8 +104,10 @@ export class ModalOrchestrationController implements ReactiveController {
                 continue;
             }
 
-            modal.closeModal();
-            this.scheduleCleanup(modal);
+            if (modal.closeModal() !== false) {
+                this.scheduleCleanup(modal);
+            }
+            checking = false;
             break;
         }
     }
