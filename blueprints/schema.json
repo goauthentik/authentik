@@ -4547,7 +4547,6 @@
                         "null"
                     ],
                     "maxLength": 255,
-                    "minLength": 1,
                     "title": "Request Token URL",
                     "description": "URL used to request the initial token. This URL is only required for OAuth 1."
                 },
@@ -4557,7 +4556,6 @@
                         "null"
                     ],
                     "maxLength": 255,
-                    "minLength": 1,
                     "title": "Authorization URL",
                     "description": "URL the user is redirect to to conest the flow."
                 },
@@ -4567,7 +4565,6 @@
                         "null"
                     ],
                     "maxLength": 255,
-                    "minLength": 1,
                     "title": "Access Token URL",
                     "description": "URL used by authentik to retrieve tokens."
                 },
@@ -4577,7 +4574,6 @@
                         "null"
                     ],
                     "maxLength": 255,
-                    "minLength": 1,
                     "title": "Profile URL",
                     "description": "URL used by authentik to get user information."
                 },
@@ -5782,7 +5778,8 @@
                 "device_type_restrictions": {
                     "type": "array",
                     "items": {
-                        "type": "integer"
+                        "type": "string",
+                        "format": "uuid"
                     },
                     "title": "Device type restrictions"
                 }
