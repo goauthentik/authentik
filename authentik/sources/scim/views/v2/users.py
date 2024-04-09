@@ -26,6 +26,8 @@ class UsersView(SCIMView):
         for email in data:
             if email.get("primary", False):
                 return email.get("value")
+        if len(data) < 1:
+            return ""
         return data[0].get("value")
 
     def user_to_scim(self, scim_user: SCIMSourceUser) -> dict:
@@ -39,7 +41,11 @@ class UsersView(SCIMView):
             ),
             displayName=scim_user.user.name,
             active=scim_user.user.is_active,
-            emails=[Email(value=scim_user.user.email, type=EmailKind.work, primary=True)],
+            emails=(
+                [Email(value=scim_user.user.email, type=EmailKind.work, primary=True)]
+                if scim_user.user.email
+                else []
+            ),
             meta={
                 "resourceType": "User",
                 "created": scim_user.user.date_joined,

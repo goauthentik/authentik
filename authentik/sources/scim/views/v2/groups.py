@@ -92,7 +92,7 @@ class GroupsView(SCIMView):
                 except PydanticValidationError as exc:
                     self.logger.warning("Invalid group member", exc=exc)
                     continue
-                query |= Q(user__uuid=member.value)
+                query |= Q(uuid=member.value)
             group.users.set(User.objects.filter(query))
         if not connection:
             connection, _ = SCIMSourceGroup.objects.get_or_create(
