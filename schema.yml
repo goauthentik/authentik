@@ -18405,7 +18405,7 @@ paths:
           - authentik_stages_authenticator_totp.authenticatortotpstage
           - authentik_stages_authenticator_totp.totpdevice
           - authentik_stages_authenticator_validate.authenticatorvalidatestage
-          - authentik_stages_authenticator_webauthn.authenticatewebauthnstage
+          - authentik_stages_authenticator_webauthn.authenticatorwebauthnstage
           - authentik_stages_authenticator_webauthn.webauthndevice
           - authentik_stages_captcha.captchastage
           - authentik_stages_consent.consentstage
@@ -18619,7 +18619,7 @@ paths:
           - authentik_stages_authenticator_totp.authenticatortotpstage
           - authentik_stages_authenticator_totp.totpdevice
           - authentik_stages_authenticator_validate.authenticatorvalidatestage
-          - authentik_stages_authenticator_webauthn.authenticatewebauthnstage
+          - authentik_stages_authenticator_webauthn.authenticatorwebauthnstage
           - authentik_stages_authenticator_webauthn.webauthndevice
           - authentik_stages_captcha.captchastage
           - authentik_stages_consent.consentstage
@@ -24007,7 +24007,7 @@ paths:
   /stages/authenticator/webauthn/:
     get:
       operationId: stages_authenticator_webauthn_list
-      description: AuthenticateWebAuthnStage Viewset
+      description: AuthenticatorWebAuthnStage Viewset
       parameters:
       - in: query
         name: authenticator_attachment
@@ -24022,6 +24022,15 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: device_type_restrictions
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
       - in: query
         name: friendly_name
         schema:
@@ -24084,7 +24093,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedAuthenticateWebAuthnStageList'
+                $ref: '#/components/schemas/PaginatedAuthenticatorWebAuthnStageList'
           description: ''
         '400':
           content:
@@ -24100,14 +24109,14 @@ paths:
           description: ''
     post:
       operationId: stages_authenticator_webauthn_create
-      description: AuthenticateWebAuthnStage Viewset
+      description: AuthenticatorWebAuthnStage Viewset
       tags:
       - stages
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AuthenticateWebAuthnStageRequest'
+              $ref: '#/components/schemas/AuthenticatorWebAuthnStageRequest'
         required: true
       security:
       - authentik: []
@@ -24116,7 +24125,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthenticateWebAuthnStage'
+                $ref: '#/components/schemas/AuthenticatorWebAuthnStage'
           description: ''
         '400':
           content:
@@ -24133,7 +24142,7 @@ paths:
   /stages/authenticator/webauthn/{stage_uuid}/:
     get:
       operationId: stages_authenticator_webauthn_retrieve
-      description: AuthenticateWebAuthnStage Viewset
+      description: AuthenticatorWebAuthnStage Viewset
       parameters:
       - in: path
         name: stage_uuid
@@ -24151,7 +24160,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthenticateWebAuthnStage'
+                $ref: '#/components/schemas/AuthenticatorWebAuthnStage'
           description: ''
         '400':
           content:
@@ -24167,7 +24176,7 @@ paths:
           description: ''
     put:
       operationId: stages_authenticator_webauthn_update
-      description: AuthenticateWebAuthnStage Viewset
+      description: AuthenticatorWebAuthnStage Viewset
       parameters:
       - in: path
         name: stage_uuid
@@ -24182,7 +24191,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AuthenticateWebAuthnStageRequest'
+              $ref: '#/components/schemas/AuthenticatorWebAuthnStageRequest'
         required: true
       security:
       - authentik: []
@@ -24191,7 +24200,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthenticateWebAuthnStage'
+                $ref: '#/components/schemas/AuthenticatorWebAuthnStage'
           description: ''
         '400':
           content:
@@ -24207,7 +24216,7 @@ paths:
           description: ''
     patch:
       operationId: stages_authenticator_webauthn_partial_update
-      description: AuthenticateWebAuthnStage Viewset
+      description: AuthenticatorWebAuthnStage Viewset
       parameters:
       - in: path
         name: stage_uuid
@@ -24222,7 +24231,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedAuthenticateWebAuthnStageRequest'
+              $ref: '#/components/schemas/PatchedAuthenticatorWebAuthnStageRequest'
       security:
       - authentik: []
       responses:
@@ -24230,7 +24239,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthenticateWebAuthnStage'
+                $ref: '#/components/schemas/AuthenticatorWebAuthnStage'
           description: ''
         '400':
           content:
@@ -24246,7 +24255,7 @@ paths:
           description: ''
     delete:
       operationId: stages_authenticator_webauthn_destroy
-      description: AuthenticateWebAuthnStage Viewset
+      description: AuthenticatorWebAuthnStage Viewset
       parameters:
       - in: path
         name: stage_uuid
@@ -24298,6 +24307,106 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /stages/authenticator/webauthn_device_types/:
+    get:
+      operationId: stages_authenticator_webauthn_device_types_list
+      description: WebAuthnDeviceType Viewset
+      parameters:
+      - in: query
+        name: aaguid
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: description
+        schema:
+          type: string
+      - in: query
+        name: icon
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedWebAuthnDeviceTypeList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /stages/authenticator/webauthn_device_types/{aaguid}/:
+    get:
+      operationId: stages_authenticator_webauthn_device_types_retrieve
+      description: WebAuthnDeviceType Viewset
+      parameters:
+      - in: path
+        name: aaguid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this WebAuthn Device type.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebAuthnDeviceType'
           description: ''
         '400':
           content:
@@ -29738,92 +29847,6 @@ components:
       - basic
       - bearer
       type: string
-    AuthenticateWebAuthnStage:
-      type: object
-      description: AuthenticateWebAuthnStage Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Stage uuid
-        name:
-          type: string
-        component:
-          type: string
-          description: Get object type so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSet'
-        configure_flow:
-          type: string
-          format: uuid
-          nullable: true
-          description: Flow used by an authenticated user to configure this Stage.
-            If empty, user will not be able to configure this stage.
-        friendly_name:
-          type: string
-          nullable: true
-        user_verification:
-          $ref: '#/components/schemas/UserVerificationEnum'
-        authenticator_attachment:
-          allOf:
-          - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
-          nullable: true
-        resident_key_requirement:
-          $ref: '#/components/schemas/ResidentKeyRequirementEnum'
-      required:
-      - component
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    AuthenticateWebAuthnStageRequest:
-      type: object
-      description: AuthenticateWebAuthnStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
-        configure_flow:
-          type: string
-          format: uuid
-          nullable: true
-          description: Flow used by an authenticated user to configure this Stage.
-            If empty, user will not be able to configure this stage.
-        friendly_name:
-          type: string
-          nullable: true
-          minLength: 1
-        user_verification:
-          $ref: '#/components/schemas/UserVerificationEnum'
-        authenticator_attachment:
-          allOf:
-          - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
-          nullable: true
-        resident_key_requirement:
-          $ref: '#/components/schemas/ResidentKeyRequirementEnum'
-      required:
-      - name
     AuthenticatedSession:
       type: object
       description: AuthenticatedSession Serializer
@@ -30738,6 +30761,108 @@ components:
           additionalProperties: {}
       required:
       - response
+    AuthenticatorWebAuthnStage:
+      type: object
+      description: AuthenticatorWebAuthnStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+        configure_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used by an authenticated user to configure this Stage.
+            If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+          nullable: true
+        user_verification:
+          $ref: '#/components/schemas/UserVerificationEnum'
+        authenticator_attachment:
+          allOf:
+          - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
+          nullable: true
+        resident_key_requirement:
+          $ref: '#/components/schemas/ResidentKeyRequirementEnum'
+        device_type_restrictions:
+          type: array
+          items:
+            type: string
+            format: uuid
+        device_type_restrictions_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnDeviceType'
+          readOnly: true
+      required:
+      - component
+      - device_type_restrictions_obj
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    AuthenticatorWebAuthnStageRequest:
+      type: object
+      description: AuthenticatorWebAuthnStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSetRequest'
+        configure_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used by an authenticated user to configure this Stage.
+            If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+          nullable: true
+          minLength: 1
+        user_verification:
+          $ref: '#/components/schemas/UserVerificationEnum'
+        authenticator_attachment:
+          allOf:
+          - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
+          nullable: true
+        resident_key_requirement:
+          $ref: '#/components/schemas/ResidentKeyRequirementEnum'
+        device_type_restrictions:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - name
     AutoSubmitChallengeResponseRequest:
       type: object
       description: Pseudo class for autosubmit response
@@ -34706,7 +34831,7 @@ components:
       - authentik_stages_authenticator_totp.authenticatortotpstage
       - authentik_stages_authenticator_totp.totpdevice
       - authentik_stages_authenticator_validate.authenticatorvalidatestage
-      - authentik_stages_authenticator_webauthn.authenticatewebauthnstage
+      - authentik_stages_authenticator_webauthn.authenticatorwebauthnstage
       - authentik_stages_authenticator_webauthn.webauthndevice
       - authentik_stages_captcha.captchastage
       - authentik_stages_consent.consentstage
@@ -35673,18 +35798,6 @@ components:
       required:
       - pagination
       - results
-    PaginatedAuthenticateWebAuthnStageList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/AuthenticateWebAuthnStage'
-      required:
-      - pagination
-      - results
     PaginatedAuthenticatedSessionList:
       type: object
       properties:
@@ -35754,6 +35867,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AuthenticatorValidateStage'
+      required:
+      - pagination
+      - results
+    PaginatedAuthenticatorWebAuthnStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticatorWebAuthnStage'
       required:
       - pagination
       - results
@@ -36825,6 +36950,18 @@ components:
       required:
       - pagination
       - results
+    PaginatedWebAuthnDeviceTypeList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnDeviceType'
+      required:
+      - pagination
+      - results
     Pagination:
       type: object
       properties:
@@ -37230,35 +37367,6 @@ components:
           $ref: '#/components/schemas/PolicyEngineMode'
         group:
           type: string
-    PatchedAuthenticateWebAuthnStageRequest:
-      type: object
-      description: AuthenticateWebAuthnStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
-        configure_flow:
-          type: string
-          format: uuid
-          nullable: true
-          description: Flow used by an authenticated user to configure this Stage.
-            If empty, user will not be able to configure this stage.
-        friendly_name:
-          type: string
-          nullable: true
-          minLength: 1
-        user_verification:
-          $ref: '#/components/schemas/UserVerificationEnum'
-        authenticator_attachment:
-          allOf:
-          - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
-          nullable: true
-        resident_key_requirement:
-          $ref: '#/components/schemas/ResidentKeyRequirementEnum'
     PatchedAuthenticatorDuoStageRequest:
       type: object
       description: AuthenticatorDuoStage Serializer
@@ -37428,6 +37536,40 @@ components:
           allOf:
           - $ref: '#/components/schemas/UserVerificationEnum'
           description: Enforce user verification for WebAuthn devices.
+    PatchedAuthenticatorWebAuthnStageRequest:
+      type: object
+      description: AuthenticatorWebAuthnStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSetRequest'
+        configure_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used by an authenticated user to configure this Stage.
+            If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+          nullable: true
+          minLength: 1
+        user_verification:
+          $ref: '#/components/schemas/UserVerificationEnum'
+        authenticator_attachment:
+          allOf:
+          - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
+          nullable: true
+        resident_key_requirement:
+          $ref: '#/components/schemas/ResidentKeyRequirementEnum'
+        device_type_restrictions:
+          type: array
+          items:
+            type: string
+            format: uuid
     PatchedBlueprintInstanceRequest:
       type: object
       description: Info about a single blueprint instance file
@@ -44133,8 +44275,14 @@ components:
           type: string
           format: date-time
           readOnly: true
+        device_type:
+          allOf:
+          - $ref: '#/components/schemas/WebAuthnDeviceType'
+          readOnly: true
+          nullable: true
       required:
       - created_on
+      - device_type
       - name
       - pk
     WebAuthnDeviceRequest:
@@ -44147,6 +44295,31 @@ components:
           maxLength: 200
       required:
       - name
+    WebAuthnDeviceType:
+      type: object
+      description: WebAuthnDeviceType Serializer
+      properties:
+        aaguid:
+          type: string
+          format: uuid
+        description:
+          type: string
+      required:
+      - aaguid
+      - description
+    WebAuthnDeviceTypeRequest:
+      type: object
+      description: WebAuthnDeviceType Serializer
+      properties:
+        aaguid:
+          type: string
+          format: uuid
+        description:
+          type: string
+          minLength: 1
+      required:
+      - aaguid
+      - description
     Workers:
       type: object
       properties:

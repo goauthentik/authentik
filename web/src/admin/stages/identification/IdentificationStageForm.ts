@@ -2,12 +2,13 @@ import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first, groupBy } from "@goauthentik/common/utils";
+import "@goauthentik/elements/ak-checkbox-group/ak-checkbox-group.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -24,6 +25,17 @@ import {
 
 @customElement("ak-stage-identification-form")
 export class IdentificationStageForm extends BaseStageForm<IdentificationStage> {
+    static get styles() {
+        return [
+            ...super.styles,
+            css`
+                ak-checkbox-group::part(checkbox-group) {
+                    padding-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
+                }
+            `,
+        ];
+    }
+
     loadInstance(pk: string): Promise<IdentificationStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesIdentificationRetrieve({
             stageUuid: pk,
@@ -60,6 +72,12 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
     }
 
     renderForm(): TemplateResult {
+        const userSelectFields = [
+            { name: UserFieldsEnum.Username, label: msg("Username") },
+            { name: UserFieldsEnum.Email, label: msg("Email") },
+            { name: UserFieldsEnum.Upn, label: msg("UPN") },
+        ];
+
         return html`<span>
                 ${msg("Let the user identify themselves with their username or Email address.")}
             </span>
@@ -75,33 +93,17 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("User fields")} name="userFields">
-                        <select class="pf-c-form-control" multiple>
-                            <option
-                                value=${UserFieldsEnum.Username}
-                                ?selected=${this.isUserFieldSelected(UserFieldsEnum.Username)}
-                            >
-                                ${msg("Username")}
-                            </option>
-                            <option
-                                value=${UserFieldsEnum.Email}
-                                ?selected=${this.isUserFieldSelected(UserFieldsEnum.Email)}
-                            >
-                                ${msg("Email")}
-                            </option>
-                            <option
-                                value=${UserFieldsEnum.Upn}
-                                ?selected=${this.isUserFieldSelected(UserFieldsEnum.Upn)}
-                            >
-                                ${msg("UPN")}
-                            </option>
-                        </select>
+                        <ak-checkbox-group
+                            class="user-field-select"
+                            .options=${userSelectFields}
+                            .value=${userSelectFields
+                                .map(({ name }) => name)
+                                .filter((name) => this.isUserFieldSelected(name))}
+                        ></ak-checkbox-group>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources.",
                             )}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Password stage")} name="passwordStage">
