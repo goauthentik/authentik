@@ -20,10 +20,6 @@ services:
     environment:
       GF_AUTH_ANONYMOUS_ENABLED: "true"
       GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
-      # GF_INSTALL_PLUGINS: grafana-image-renderer
-      # GF_RENDERING_SERVER_URL: http://renderer:8081/render
-      # GF_RENDERING_CALLBACK_URL: http://grafana:3000/
-      # GF_LOG_FILTERS: rendering:debug
     ports:
       - 127.0.0.1:3000:3000
     volumes:
