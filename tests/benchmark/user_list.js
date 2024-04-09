@@ -1,7 +1,6 @@
 import exec from "k6/execution";
-import { command } from "k6/x/exec";
 import http from "k6/http";
-import { check, group } from "k6";
+import { check } from "k6";
 
 export const options = {
     discardResponseBodies: true,

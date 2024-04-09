@@ -1,6 +1,4 @@
-import { Counter } from "k6/metrics";
 import http from "k6/http";
-import exec from "k6/execution";
 import { check, fail } from "k6";
 
 export const options = {
