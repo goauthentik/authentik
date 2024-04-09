@@ -4,7 +4,7 @@ import { LitElement, ReactiveController, ReactiveControllerHost } from "lit";
 
 type ReactiveElementHost = Partial<ReactiveControllerHost> & LitElement;
 
-type ModalElement = LitElement & { closeModal(): void };
+type ModalElement = LitElement & { closeModal(): void | boolean };
 
 export class ModalShowEvent extends Event {
     modal: ModalElement;
@@ -39,6 +39,14 @@ const modalIsLive = (modal: ModalElement) => modal.isConnected && modal.checkVis
  * references to it eliminated) whenever the user presses the Escape key.
  * Can also take ModalHideEvent requests and automatically close the modal
  * sending the event.
+ *
+ * Both events that this responds to expect a reference to the modal to be part
+ * of the event payload.
+ *
+ * If the `.closeModal()` method on the target modal returns `false`
+ * *explicitly*, it will abort cleanup and the stack will keep the record that
+ * the modal is still open. This allows `.closeModal()` to return `undefined`
+ * and still behave correctly.
  */
 
 export class ModalOrchestrationController implements ReactiveController {
@@ -80,8 +88,9 @@ export class ModalOrchestrationController implements ReactiveController {
         if (!modalIsLive(modal)) {
             return;
         }
-        modal.closeModal();
-        this.scheduleCleanup(modal);
+        if (modal.closeModal() !== false) {
+            this.scheduleCleanup(modal);
+        }
     }
 
     removeTopmostModal() {
