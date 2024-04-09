@@ -2,14 +2,17 @@
 
 from uuid import uuid4
 
+from django.db.models import Q
 from django.db.transaction import atomic
 from django.http import Http404, QueryDict
 from django.urls import reverse
+from pydantic import ValidationError as PydanticValidationError
+from pydanticscim.group import GroupMember
 from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from authentik.core.models import Group
+from authentik.core.models import Group, User
 from authentik.providers.scim.clients.schema import Group as SCIMGroupModel
 from authentik.sources.scim.models import SCIMSourceGroup
 from authentik.sources.scim.views.v2.base import SCIMView
@@ -81,6 +84,16 @@ class GroupsView(SCIMView):
         if group.name == "":
             raise ValidationError("Invalid group")
         group.save()
+        if "members" in data:
+            query = Q()
+            for _member in data.get("members", []):
+                try:
+                    member = GroupMember.model_validate(_member)
+                except PydanticValidationError as exc:
+                    self.logger.warning("Invalid group member", exc=exc)
+                    continue
+                query |= Q(user__uuid=member.value)
+            group.users.set(User.objects.filter(query))
         if not connection:
             connection, _ = SCIMSourceGroup.objects.get_or_create(
                 source=self.source,
