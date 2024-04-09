@@ -1,7 +1,6 @@
 import { groupBy } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import "@goauthentik/user/LibraryApplication";
 
 import { msg } from "@lit/localize";
@@ -42,8 +41,8 @@ export class LibraryPage extends AKElement {
     @property({ attribute: "isadmin", type: Boolean })
     isAdmin = false;
 
-    @property({ attribute: false })
-    apps!: PaginatedResponse<Application>;
+    @property({ attribute: false, type: Array })
+    apps!: Application[];
 
     @property({ attribute: false })
     uiConfig!: PageUIConfig;
@@ -66,7 +65,7 @@ export class LibraryPage extends AKElement {
 
     connectedCallback() {
         super.connectedCallback();
-        this.filteredApps = this.apps?.results;
+        this.filteredApps = this.apps;
         if (this.filteredApps === undefined) {
             throw new Error(
                 "Application.results should never be undefined when passed to the Library Page.",
@@ -89,7 +88,7 @@ export class LibraryPage extends AKElement {
         event.stopPropagation();
         const apps = event.detail.apps;
         this.selectedApp = undefined;
-        this.filteredApps = this.apps.results;
+        this.filteredApps = this.apps;
         if (apps.length > 0) {
             this.selectedApp = apps[0];
             this.filteredApps = event.detail.apps;
@@ -132,7 +131,7 @@ export class LibraryPage extends AKElement {
     }
 
     renderSearch() {
-        return html`<ak-library-list-search .apps=${this.apps.results}></ak-library-list-search>`;
+        return html`<ak-library-list-search .apps=${this.apps}></ak-library-list-search>`;
     }
 
     render() {
