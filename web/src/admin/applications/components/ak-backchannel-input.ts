@@ -74,7 +74,7 @@ export class AkBackchannelProvidersInput extends AKElement {
                         <ak-chip-group> ${map(this.providers, renderOneChip)} </ak-chip-group>
                     </div>
                 </div>
-                ${this.help ? html`<p class="pf-c-form__helper-radio">${this.help}</p>` : nothing}
+                ${this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing}
             </ak-form-element-horizontal>
         `;
     }
