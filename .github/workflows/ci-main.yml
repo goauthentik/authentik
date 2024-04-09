@@ -100,9 +100,6 @@ jobs:
     name: test-unittest - PostgreSQL ${{ matrix.psql }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    permissions:
-      id-token: write
-      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -124,13 +121,10 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           flags: unit
-          use_oidc: true
+          token: ${{ secrets.CODECOV_TOKEN }}
   test-integration:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    permissions:
-      id-token: write
-      contents: read
     steps:
       - uses: actions/checkout@v4
       - name: Setup authentik env
@@ -145,14 +139,11 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           flags: integration
-          use_oidc: true
+          token: ${{ secrets.CODECOV_TOKEN }}
   test-e2e:
     name: test-e2e (${{ matrix.job.name }})
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    permissions:
-      id-token: write
-      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -200,7 +191,7 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           flags: e2e
-          use_oidc: true
+          token: ${{ secrets.CODECOV_TOKEN }}
   ci-core-mark:
     needs:
       - lint
