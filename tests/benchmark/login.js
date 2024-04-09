@@ -7,7 +7,7 @@ export const options = {
             obj,
             {
                 executor: "constant-vus",
-                vus: 10,
+                vus: 12,
                 duration: "300s",
                 startTime: `${315 * i}s`,
                 env: {
@@ -42,6 +42,10 @@ export default function () {
         check(res, {
             "status is 200": (res) => res.status === 200,
         });
+        if (res.status !== 200) {
+            fail("Endpoint did not return 200.");
+            break;
+        }
 
         const component = res.json()["component"];
         let payload = {};
@@ -55,7 +59,7 @@ export default function () {
             };
         } else if (component === "ak-stage-authenticator-validate") {
             payload = {
-                code: `staticToken`,
+                code: "staticToken",
             };
         } else if (component === "xak-flow-redirect") {
             break;

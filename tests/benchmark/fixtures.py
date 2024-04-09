@@ -15,8 +15,7 @@ django.setup()
 from django.conf import settings
 
 from authentik.core.models import Group, User
-from authentik.stages.authenticator_static.models import (StaticDevice,
-                                                          StaticToken)
+from authentik.stages.authenticator_static.models import StaticToken
 from authentik.tenants.models import Domain, Tenant
 
 settings.CELERY["task_always_eager"] = True
@@ -29,14 +28,15 @@ def user_list():
         (100, 0, 0),
         (1000, 0, 0),
         (10000, 0, 0),
-        (10, 20, 0),
+        (100, 3, 0),
+        (1000, 3, 0),
+        (10000, 3, 0),
         (100, 20, 0),
         (1000, 20, 0),
         (10000, 20, 0),
-        (10, 20, 10),
-        (100, 20, 10),
-        (1000, 20, 10),
-        (10000, 20, 10),
+        (100, 20, 3),
+        (1000, 20, 3),
+        (10000, 20, 3),
     ]
 
     for tenant in tenants:
@@ -49,18 +49,29 @@ def user_list():
         Domain.objects.create(tenant=t, domain=f"{tenant_name}.localhost")
 
         with t:
-            for _ in range(groups_per_user * 5):
-                group = Group.objects.create(name=uuid4())
+            Group.objects.bulk_create([Group(name=uuid4()) for _ in range(groups_per_user * 5)])
+            for group in Group.objects.exclude(name="authentik Admins"):
                 for _ in range(parents_per_group):
                     new_group = Group.objects.create(name=uuid4())
                     group.parent = new_group
                     group.save()
                     group = new_group
-            for _ in range(user_count):
-                user = User.objects.create(username=uuid4(), name=uuid4())
-                user.ak_groups.set(
-                    Group.objects.exclude(name="authentik Admins").order_by("?")[:groups_per_user]
-                )
+            User.objects.bulk_create(
+                [
+                    User(
+                        username=uuid4(),
+                        name=uuid4(),
+                    )
+                    for _ in range(user_count)
+                ]
+            )
+            if groups_per_user:
+                for user in User.objects.exclude_anonymous().exclude(username="akadmin"):
+                    user.ak_groups.set(
+                        Group.objects.exclude(name="authentik Admins").order_by("?")[
+                            :groups_per_user
+                        ]
+                    )
 
 
 def login():
@@ -82,7 +93,7 @@ def login():
         device = user.staticdevice_set.create()
         # Multiple token with same token for all the iterations in the test
         device.token_set.bulk_create(
-            [StaticToken(device=device, token=f"staticToken") for _ in range(10000)]
+            [StaticToken(device=device, token=f"staticToken") for _ in range(100000)]
         )
 
 
