@@ -21475,6 +21475,551 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /sources/scim_groups/:
+    get:
+      operationId: sources_scim_groups_list
+      description: SCIMSourceGroup Viewset
+      parameters:
+      - in: query
+        name: group__group_uuid
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: group__name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: source__slug
+        schema:
+          type: string
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSCIMSourceGroupList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: sources_scim_groups_create
+      description: SCIMSourceGroup Viewset
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SCIMSourceGroupRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMSourceGroup'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/scim_groups/{id}/:
+    get:
+      operationId: sources_scim_groups_retrieve
+      description: SCIMSourceGroup Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this scim source group.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMSourceGroup'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: sources_scim_groups_update
+      description: SCIMSourceGroup Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this scim source group.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SCIMSourceGroupRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMSourceGroup'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: sources_scim_groups_partial_update
+      description: SCIMSourceGroup Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this scim source group.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSCIMSourceGroupRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMSourceGroup'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: sources_scim_groups_destroy
+      description: SCIMSourceGroup Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this scim source group.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/scim_groups/{id}/used_by/:
+    get:
+      operationId: sources_scim_groups_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this scim source group.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/scim_users/:
+    get:
+      operationId: sources_scim_users_list
+      description: SCIMSourceUser Viewset
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: source__slug
+        schema:
+          type: string
+      - in: query
+        name: user__id
+        schema:
+          type: integer
+      - in: query
+        name: user__username
+        schema:
+          type: string
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSCIMSourceUserList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: sources_scim_users_create
+      description: SCIMSourceUser Viewset
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SCIMSourceUserRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMSourceUser'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/scim_users/{id}/:
+    get:
+      operationId: sources_scim_users_retrieve
+      description: SCIMSourceUser Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this scim source user.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMSourceUser'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: sources_scim_users_update
+      description: SCIMSourceUser Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this scim source user.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SCIMSourceUserRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMSourceUser'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: sources_scim_users_partial_update
+      description: SCIMSourceUser Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this scim source user.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSCIMSourceUserRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMSourceUser'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: sources_scim_users_destroy
+      description: SCIMSourceUser Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this scim source user.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/scim_users/{id}/used_by/:
+    get:
+      operationId: sources_scim_users_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this scim source user.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /sources/user_connections/all/:
     get:
       operationId: sources_user_connections_all_list
@@ -36962,6 +37507,18 @@ components:
       required:
       - pagination
       - results
+    PaginatedSCIMSourceGroupList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SCIMSourceGroup'
+      required:
+      - pagination
+      - results
     PaginatedSCIMSourceList:
       type: object
       properties:
@@ -36971,6 +37528,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SCIMSource'
+      required:
+      - pagination
+      - results
+    PaginatedSCIMSourceUserList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SCIMSourceUser'
       required:
       - pagination
       - results
@@ -39664,6 +40233,20 @@ components:
           type: string
           format: uuid
           nullable: true
+    PatchedSCIMSourceGroupRequest:
+      type: object
+      description: SCIMSourceGroup Serializer
+      properties:
+        id:
+          type: string
+          minLength: 1
+        group:
+          type: string
+          format: uuid
+        source:
+          type: string
+          format: uuid
+        attributes: {}
     PatchedSCIMSourceRequest:
       type: object
       description: SCIMSource Serializer
@@ -39688,6 +40271,19 @@ components:
         user_path_template:
           type: string
           minLength: 1
+    PatchedSCIMSourceUserRequest:
+      type: object
+      description: SCIMSourceUser Serializer
+      properties:
+        id:
+          type: string
+          minLength: 1
+        user:
+          type: integer
+        source:
+          type: string
+          format: uuid
+        attributes: {}
     PatchedSMSDeviceRequest:
       type: object
       description: Serializer for sms authenticator devices
@@ -42612,6 +43208,41 @@ components:
       - token_obj
       - verbose_name
       - verbose_name_plural
+    SCIMSourceGroup:
+      type: object
+      description: SCIMSourceGroup Serializer
+      properties:
+        id:
+          type: string
+        group:
+          type: string
+          format: uuid
+        source:
+          type: string
+          format: uuid
+        attributes: {}
+      required:
+      - group
+      - id
+      - source
+    SCIMSourceGroupRequest:
+      type: object
+      description: SCIMSourceGroup Serializer
+      properties:
+        id:
+          type: string
+          minLength: 1
+        group:
+          type: string
+          format: uuid
+        source:
+          type: string
+          format: uuid
+        attributes: {}
+      required:
+      - group
+      - id
+      - source
     SCIMSourceRequest:
       type: object
       description: SCIMSource Serializer
@@ -42639,6 +43270,39 @@ components:
       required:
       - name
       - slug
+    SCIMSourceUser:
+      type: object
+      description: SCIMSourceUser Serializer
+      properties:
+        id:
+          type: string
+        user:
+          type: integer
+        source:
+          type: string
+          format: uuid
+        attributes: {}
+      required:
+      - id
+      - source
+      - user
+    SCIMSourceUserRequest:
+      type: object
+      description: SCIMSourceUser Serializer
+      properties:
+        id:
+          type: string
+          minLength: 1
+        user:
+          type: integer
+        source:
+          type: string
+          format: uuid
+        attributes: {}
+      required:
+      - id
+      - source
+      - user
     SCIMSyncStatus:
       type: object
       description: SCIM Provider sync status

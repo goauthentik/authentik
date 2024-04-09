@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import BaseSerializer
 
 from authentik.core.models import Group, Source, Token, User
+from authentik.lib.models import SerializerModel
 
 
 class SCIMSource(Source):
@@ -20,7 +21,7 @@ class SCIMSource(Source):
 
     @property
     def serializer(self) -> BaseSerializer:
-        from authentik.sources.scim.api import SCIMSourceSerializer
+        from authentik.sources.scim.api.sources import SCIMSourceSerializer
 
         return SCIMSourceSerializer
 
@@ -33,13 +34,19 @@ class SCIMSource(Source):
         verbose_name_plural = _("SCIM Sources")
 
 
-class SCIMSourceUser(models.Model):
+class SCIMSourceUser(SerializerModel):
     """Mapping of a user and source to a SCIM user ID"""
 
     id = models.TextField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     source = models.ForeignKey(SCIMSource, on_delete=models.CASCADE)
     attributes = models.JSONField(default=dict)
+
+    @property
+    def serializer(self) -> BaseSerializer:
+        from authentik.sources.scim.api.users import SCIMSourceUserSerializer
+
+        return SCIMSourceUserSerializer
 
     class Meta:
         unique_together = (("id", "user", "source"),)
@@ -48,13 +55,19 @@ class SCIMSourceUser(models.Model):
         return f"SCIM User {self.user.username} to {self.source.name}"
 
 
-class SCIMSourceGroup(models.Model):
+class SCIMSourceGroup(SerializerModel):
     """Mapping of a group and source to a SCIM user ID"""
 
     id = models.TextField(primary_key=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     source = models.ForeignKey(SCIMSource, on_delete=models.CASCADE)
     attributes = models.JSONField(default=dict)
+
+    @property
+    def serializer(self) -> BaseSerializer:
+        from authentik.sources.scim.api.groups import SCIMSourceGroupSerializer
+
+        return SCIMSourceGroupSerializer
 
     class Meta:
         unique_together = (("id", "group", "source"),)
