@@ -41,7 +41,6 @@ const modalIsLive = (modal: ModalElement) => modal.isConnected && modal.checkVis
  * sending the event.
  */
 
-
 export class ModalOrchestrationController implements ReactiveController {
     host!: ReactiveElementHost;
 

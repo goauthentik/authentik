@@ -2,7 +2,6 @@ import { PFSize } from "@goauthentik/common/enums.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import { MODAL_BUTTON_STYLES } from "@goauthentik/elements/buttons/ModalButton";
 import { ModalShowEvent } from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
-import { layer } from "@goauthentik/elements/controllers/layers";
 import { Table } from "@goauthentik/elements/table/Table";
 
 import { CSSResult } from "lit";
@@ -56,7 +55,7 @@ export abstract class TableModal<T> extends Table<T> {
     closeModal() {
         this.resetForms();
         this.open = false;
-     };
+    }
 
     resetForms(): void {
         this.querySelectorAll<HTMLFormElement>("[slot=form]").forEach((form) => {

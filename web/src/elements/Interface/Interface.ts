@@ -1,4 +1,5 @@
 import { UIConfig, uiConfig } from "@goauthentik/common/ui/config";
+import { ModalOrchestrationController } from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
 import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
 
 import { state } from "lit/decorators.js";
@@ -12,7 +13,6 @@ import { AKElement } from "../Base";
 import { BrandContextController } from "./BrandContextController";
 import { ConfigContextController } from "./ConfigContextController";
 import { EnterpriseContextController } from "./EnterpriseContextController";
-import { ModalOrchestrationController } from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
 
 export type AkInterface = HTMLElement & {
     getTheme: () => Promise<UiThemeEnum>;

@@ -12,7 +12,11 @@
 // table; once you'd bound the method you could reuse that bound method for that
 // instance, instead of throwing it away?
 
-export function bound(target: unknown, key: string, descriptor: PropertyDescriptor): PropertyDescriptor {
+export function bound(
+    target: unknown,
+    key: string,
+    descriptor: PropertyDescriptor,
+): PropertyDescriptor {
     if (typeof descriptor?.value !== "function") {
         throw new Error("Only methods can be @bound.");
     }

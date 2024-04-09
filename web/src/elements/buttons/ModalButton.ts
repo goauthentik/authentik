@@ -1,9 +1,12 @@
 import { PFSize } from "@goauthentik/common/enums.js";
 import { AKElement } from "@goauthentik/elements/Base";
+import {
+    ModalHideEvent,
+    ModalShowEvent,
+} from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
 
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ModalShowEvent, ModalHideEvent } from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
 
 import PFBackdrop from "@patternfly/patternfly/components/Backdrop/backdrop.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -69,7 +72,7 @@ export class ModalButton extends AKElement {
     closeModal() {
         this.resetForms();
         this.open = false;
-    };
+    }
 
     resetForms(): void {
         this.querySelectorAll<HTMLFormElement>("[slot=form]").forEach((form) => {
@@ -108,7 +111,7 @@ export class ModalButton extends AKElement {
                 >
                     <button
                         @click=${() => {
-                        this.dispatchEvent(new ModalHideEvent(this));
+                            this.dispatchEvent(new ModalHideEvent(this));
                         }}
                         class="pf-c-button pf-m-plain"
                         type="button"
