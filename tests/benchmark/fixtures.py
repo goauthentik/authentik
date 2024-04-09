@@ -98,7 +98,7 @@ if __name__ == "__main__":
 
     match action:
         case "create":
-            # user_list()
+            user_list()
             login()
         case "delete":
             delete()
