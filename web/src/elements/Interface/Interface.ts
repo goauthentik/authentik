@@ -12,6 +12,7 @@ import { AKElement } from "../Base";
 import { BrandContextController } from "./BrandContextController";
 import { ConfigContextController } from "./ConfigContextController";
 import { EnterpriseContextController } from "./EnterpriseContextController";
+import { ModalOrchestrationController } from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
 
 export type AkInterface = HTMLElement & {
     getTheme: () => Promise<UiThemeEnum>;
@@ -22,6 +23,7 @@ export type AkInterface = HTMLElement & {
 
 const brandContext = Symbol("brandContext");
 const configContext = Symbol("configContext");
+const modalController = Symbol("modalController");
 
 export class Interface extends AKElement implements AkInterface {
     @state()
@@ -30,6 +32,8 @@ export class Interface extends AKElement implements AkInterface {
     [brandContext]!: BrandContextController;
 
     [configContext]!: ConfigContextController;
+
+    [modalController]!: ModalOrchestrationController;
 
     @state()
     config?: Config;
@@ -42,6 +46,7 @@ export class Interface extends AKElement implements AkInterface {
         document.adoptedStyleSheets = [...document.adoptedStyleSheets, ensureCSSStyleSheet(PFBase)];
         this[brandContext] = new BrandContextController(this);
         this[configContext] = new ConfigContextController(this);
+        this[modalController] = new ModalOrchestrationController(this);
         this.dataset.akInterfaceRoot = "true";
     }
 

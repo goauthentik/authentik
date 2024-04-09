@@ -1,6 +1,8 @@
 import { PFSize } from "@goauthentik/common/enums.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import { MODAL_BUTTON_STYLES } from "@goauthentik/elements/buttons/ModalButton";
+import { ModalShowEvent } from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
+import { layer } from "@goauthentik/elements/controllers/layers";
 import { Table } from "@goauthentik/elements/table/Table";
 
 import { CSSResult } from "lit";
@@ -44,22 +46,17 @@ export abstract class TableModal<T> extends Table<T> {
         );
     }
 
-    constructor() {
-        super();
-        window.addEventListener("keyup", (e) => {
-            if (e.code === "Escape") {
-                this.resetForms();
-                this.open = false;
-            }
-        });
-    }
-
     public async fetch(): Promise<void> {
         if (!this.open) {
             return;
         }
         return super.fetch();
     }
+
+    closeModal() {
+        this.resetForms();
+        this.open = false;
+     };
 
     resetForms(): void {
         this.querySelectorAll<HTMLFormElement>("[slot=form]").forEach((form) => {
@@ -71,6 +68,7 @@ export abstract class TableModal<T> extends Table<T> {
 
     onClick(): void {
         this.open = true;
+        this.dispatchEvent(new ModalShowEvent(this));
         this.querySelectorAll("*").forEach((child) => {
             if ("requestUpdate" in child) {
                 (child as AKElement).requestUpdate();
