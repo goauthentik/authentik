@@ -575,7 +575,11 @@ export class SAMLProviderViewPage extends AKElement {
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
-                                        <ul class="pf-c-list"></ul>
+                                        <ul class="pf-c-list">
+                                            ${attr.Value.map((value) => {
+                                                return html` <li><pre>${value}</pre></li> `;
+                                            })}
+                                        </ul>
                                     </div>
                                 </dd>
                             </div>`;
