@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-01 23:02+0000\n"
+"POT-Creation-Date: 2024-04-09 00:08+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/authentik/teams/119923/zh_CN/)\n"
@@ -2286,6 +2286,19 @@ msgstr "WebAuthn 设备"
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Devices"
 msgstr "WebAuthn 设备"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Device type"
+msgstr "WebAuthn 设备类型"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Device types"
+msgstr "WebAuthn 设备类型"
+
+#: authentik/stages/authenticator_webauthn/stage.py
+#, python-brace-format
+msgid "Invalid device type. Contact your {brand} administrator for help."
+msgstr "无效的设备类型。请联系您的 {brand} 管理员获得帮助。"
 
 #: authentik/stages/captcha/models.py
 msgid "Public key, acquired your captcha Provider."
