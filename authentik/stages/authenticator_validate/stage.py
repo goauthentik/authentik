@@ -267,7 +267,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
                 return self.executor.stage_ok()
             if stage.not_configured_action == NotConfiguredAction.DENY:
                 self.logger.debug("Authenticator not configured, denying")
-                return self.executor.stage_invalid(_("No MFA authenticator configured."))
+                return self.executor.stage_invalid(_("No (allowed) MFA authenticator configured."))
             if stage.not_configured_action == NotConfiguredAction.CONFIGURE:
                 self.logger.debug("Authenticator not configured, forcing configure")
                 return self.prepare_stages(user)

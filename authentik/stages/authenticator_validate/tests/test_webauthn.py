@@ -128,7 +128,56 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
                 {}, StageView(FlowExecutorView(current_stage=stage), request=request), self.user
             )
 
-    def test_get_challenge(self):
+    def test_device_challenge_webauthn_restricted(self):
+        """Test webauthn (getting device challenges with a webauthn
+        device that is not allowed due to aaguid restrictions)"""
+        webauthn_mds_import(force=True)
+        webauthn_aaguid_import()
+        request = get_request("/")
+        request.user = self.user
+
+        WebAuthnDevice.objects.create(
+            user=self.user,
+            public_key=bytes_to_base64url(b"qwerqwerqre"),
+            credential_id=bytes_to_base64url(b"foobarbaz"),
+            sign_count=0,
+            rp_id=generate_id(),
+            device_type=WebAuthnDeviceType.objects.get(
+                aaguid="2fc0579f-8113-47ea-b116-bb5a8db9202a"
+            ),
+        )
+        flow = create_test_flow()
+        stage = AuthenticatorValidateStage.objects.create(
+            name=generate_id(),
+            last_auth_threshold="milliseconds=0",
+            not_configured_action=NotConfiguredAction.DENY,
+            device_classes=[DeviceClasses.WEBAUTHN],
+            webauthn_user_verification=UserVerification.PREFERRED,
+        )
+        stage.webauthn_allowed_device_types.set(
+            WebAuthnDeviceType.objects.filter(
+                description="Android Authenticator with SafetyNet Attestation"
+            )
+        )
+        session = self.client.session
+        plan = FlowPlan(flow_pk=flow.pk.hex)
+        plan.append_stage(stage)
+        plan.append_stage(UserLoginStage(name=generate_id()))
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        self.assertStageResponse(
+            response,
+            flow,
+            component="ak-stage-access-denied",
+            error_message="No (allowed) MFA authenticator configured.",
+        )
+
+    def test_raw_get_challenge(self):
         """Test webauthn"""
         request = get_request("/")
         request.user = self.user
@@ -199,7 +248,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
         )
 
     def test_validate_challenge_unrestricted(self):
-        """Test webauthn"""
+        """Test webauthn authentication (unrestricted webauthn device)"""
         webauthn_mds_import(force=True)
         webauthn_aaguid_import()
         device = WebAuthnDevice.objects.create(
@@ -273,7 +322,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
     def test_validate_challenge_restricted(self):
-        """Test webauthn"""
+        """Test webauthn authentication (restricted device type, failure)"""
         webauthn_mds_import(force=True)
         webauthn_aaguid_import()
         device = WebAuthnDevice.objects.create(
