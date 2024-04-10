@@ -124,7 +124,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "If any of the devices user of the types selected above have been used within this duration, this stage will be skipped.",
+                                "If the user has successfully authenticated with a device in the classes listed above within this configured duration, this stage will be skipped.",
                             )}
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
