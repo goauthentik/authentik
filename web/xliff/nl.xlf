@@ -7123,10 +7123,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
   <source>License(s)</source>
   <target>Licentie(s)</target>
 </trans-unit>
-<trans-unit id="s3be1d90ffa46b7f1">
-  <source>Enterprise is in preview.</source>
-  <target>Enterprise is in voorbeeldweergave.</target>
-</trans-unit>
 <trans-unit id="sd22bd01bdf28c548">
   <source>Cumulative license expiry</source>
   <target>Cumulatieve licentieverloop</target>
@@ -8128,6 +8124,69 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 </trans-unit>
 <trans-unit id="s6ecfc18dbfeedd76">
   <source>Select one of the options below to continue.</source>
+</trans-unit>
+<trans-unit id="s00bcaadd620a11f8">
+  <source>Latest version unknown</source>
+</trans-unit>
+<trans-unit id="s10fedec3a779ea63">
+  <source>Timestamp</source>
+</trans-unit>
+<trans-unit id="s48e186fb300e5464">
+  <source>Time</source>
+</trans-unit>
+<trans-unit id="saa8aa81ad6f055fd">
+  <source>Level</source>
+</trans-unit>
+<trans-unit id="sd0ea7366ebc403ff">
+  <source>Event</source>
+</trans-unit>
+<trans-unit id="s225f3e57c6a0d635">
+  <source>Logger</source>
+</trans-unit>
+<trans-unit id="s39d6971531a270b6">
+  <source>Update internal password on login</source>
+</trans-unit>
+<trans-unit id="sefe04e319223a3d6">
+  <source>When the user logs in to authentik using this source password backend, update their credentials in authentik.</source>
+</trans-unit>
+<trans-unit id="s5f43af3669b1e098">
+  <source>Source</source>
+</trans-unit>
+<trans-unit id="sd9f752de8448bcc9">
+  <source>Resume timeout</source>
+</trans-unit>
+<trans-unit id="s517954806d7610f2">
+  <source>Amount of time a user can take to return from the source to continue the flow.</source>
+</trans-unit>
+<trans-unit id="s8c4bc6e515949112">
+  <source>Your Install ID</source>
+</trans-unit>
+<trans-unit id="s8cc0075913c67566">
+  <source>Enter the email associated with your account, and we'll send you a link to reset your password.</source>
+</trans-unit>
+<trans-unit id="s06bfe45ffef2cf60">
+  <source>Stage name: <x id="0" equiv-text="${this.challenge.name}"/></source>
+</trans-unit>
+<trans-unit id="s90064dd5c4dde2c6">
+  <source>Please scan the QR code above using the Microsoft Authenticator, Google Authenticator, or other authenticator apps on your device, and enter the code the device displays below to finish setting up the MFA device.</source>
+</trans-unit>
+<trans-unit id="s02160dc6adba3456">
+  <source>Inject an OAuth or SAML Source into the flow execution. This allows for additional user verification, or to dynamically access different sources for different user identifiers (username, email address, etc).</source>
+</trans-unit>
+<trans-unit id="sc7d071fb5cc1f6bf">
+  <source>A selection is required</source>
+</trans-unit>
+<trans-unit id="sa64fb483becc9c2c">
+  <source>Device type restrictions</source>
+</trans-unit>
+<trans-unit id="sbb928551c84cd63f">
+  <source>Available Device types</source>
+</trans-unit>
+<trans-unit id="s6446c35d6b411e53">
+  <source>Selected Device types</source>
+</trans-unit>
+<trans-unit id="s1f4df216b56de4ac">
+  <source>Optionally restrict which WebAuthn device types may be used. When no device types are selected, all devices are allowed.</source>
 </trans-unit>
     </body>
   </file>

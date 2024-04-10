@@ -25,7 +25,7 @@ class OAuthDeviceCodeFinishChallengeResponse(ChallengeResponse):
 
 
 class OAuthDeviceCodeFinishStage(ChallengeStageView):
-    """Stage show at the end of a device flow"""
+    """Stage to finish the OAuth device code flow"""
 
     response_class = OAuthDeviceCodeFinishChallengeResponse
 

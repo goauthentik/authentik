@@ -11,6 +11,7 @@ module.exports = async function (): Promise<Config> {
         url: "https://docs.goauthentik.io",
         baseUrl: "/",
         onBrokenLinks: "throw",
+        onBrokenAnchors: "throw",
         favicon: "img/icon.png",
         organizationName: "Authentik Security Inc.",
         projectName: "authentik",

@@ -40,6 +40,7 @@ const docsSidebar = {
                 "core/certificates",
                 "core/geoip",
                 "core/architecture",
+                "core/settings",
             ],
         },
         {
@@ -123,7 +124,15 @@ const docsSidebar = {
                     items: ["providers/ldap/generic_setup"],
                 },
                 "providers/scim/index",
-                "providers/rac/index",
+                {
+                    type: "category",
+                    label: "RAC (Remote Access Control) Provider",
+                    link: {
+                        type: "doc",
+                        id: "providers/rac/index",
+                    },
+                    items: ["providers/rac/how-to-rac"],
+                },
             ],
         },
         {
@@ -222,13 +231,16 @@ const docsSidebar = {
                 {
                     type: "category",
                     label: "Working with policies",
-                    items: ["policies/working_with_policies/whitelist_email"],
                     link: {
                         type: "generated-index",
                         title: "Working with policies",
                         slug: "policies/working_with_policies",
                         description: "Overview of policies configuration",
                     },
+                    items: [
+                        "policies/working_with_policies/whitelist_email",
+                        "policies/working_with_policies/unique_email",
+                    ],
                 },
                 "policies/expression",
             ],

@@ -1,4 +1,4 @@
-"""AuthenticateWebAuthnStage API Views"""
+"""AuthenticatorWebAuthnStage API Views"""
 
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from rest_framework import mixins
@@ -9,41 +9,18 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.core.api.used_by import UsedByMixin
-from authentik.flows.api.stages import StageSerializer
-from authentik.stages.authenticator_webauthn.models import AuthenticateWebAuthnStage, WebAuthnDevice
-
-
-class AuthenticateWebAuthnStageSerializer(StageSerializer):
-    """AuthenticateWebAuthnStage Serializer"""
-
-    class Meta:
-        model = AuthenticateWebAuthnStage
-        fields = StageSerializer.Meta.fields + [
-            "configure_flow",
-            "friendly_name",
-            "user_verification",
-            "authenticator_attachment",
-            "resident_key_requirement",
-        ]
-
-
-class AuthenticateWebAuthnStageViewSet(UsedByMixin, ModelViewSet):
-    """AuthenticateWebAuthnStage Viewset"""
-
-    queryset = AuthenticateWebAuthnStage.objects.all()
-    serializer_class = AuthenticateWebAuthnStageSerializer
-    filterset_fields = "__all__"
-    ordering = ["name"]
-    search_fields = ["name"]
+from authentik.stages.authenticator_webauthn.api.device_types import WebAuthnDeviceTypeSerializer
+from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 
 
 class WebAuthnDeviceSerializer(ModelSerializer):
     """Serializer for WebAuthn authenticator devices"""
 
+    device_type = WebAuthnDeviceTypeSerializer(read_only=True, allow_null=True)
+
     class Meta:
         model = WebAuthnDevice
-        fields = ["pk", "name", "created_on"]
-        depth = 2
+        fields = ["pk", "name", "created_on", "device_type"]
 
 
 class WebAuthnDeviceViewSet(

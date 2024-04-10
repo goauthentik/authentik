@@ -75,6 +75,9 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                 .pf-m-no-padding-bottom {
                     padding-bottom: 0;
                 }
+                .install-id {
+                    word-break: break-all;
+                }
             `,
         );
     }
@@ -150,10 +153,6 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
 
     renderSectionBefore(): TemplateResult {
         return html`
-            <div class="pf-c-banner pf-m-info">
-                ${msg("Enterprise is in preview.")}
-                <a href="mailto:hello@goauthentik.io">${msg("Send us feedback!")}</a>
-            </div>
             <section class="pf-c-page__main-section pf-m-no-padding-bottom">
                 <div
                     class="pf-l-grid pf-m-gutter pf-m-all-6-col-on-sm pf-m-all-4-col-on-md pf-m-all-3-col-on-lg pf-m-all-3-col-on-xl"
@@ -259,7 +258,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                 >
             </div>
             <div class="pf-c-card__title">${msg("Your Install ID")}</div>
-            <div class="pf-c-card__body">${installID}</div>
+            <div class="pf-c-card__body install-id">${installID}</div>
         `;
 
         return html`<div class="pf-l-grid__item pf-c-card">

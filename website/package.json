@@ -16,16 +16,16 @@
         "test": "node --test"
     },
     "dependencies": {
-        "@docusaurus/core": "^3.1.1",
-        "@docusaurus/plugin-client-redirects": "^3.1.1",
-        "@docusaurus/plugin-content-docs": "^3.1.1",
-        "@docusaurus/preset-classic": "^3.1.1",
-        "@docusaurus/theme-common": "^3.1.1",
-        "@docusaurus/theme-mermaid": "^3.1.1",
+        "@docusaurus/core": "^3.2.1",
+        "@docusaurus/plugin-client-redirects": "^3.2.1",
+        "@docusaurus/plugin-content-docs": "^3.2.1",
+        "@docusaurus/preset-classic": "^3.2.1",
+        "@docusaurus/theme-common": "^3.2.1",
+        "@docusaurus/theme-mermaid": "^3.2.1",
         "@mdx-js/react": "^3.0.1",
         "clsx": "^2.1.0",
         "disqus-react": "^1.1.5",
-        "postcss": "^8.4.37",
+        "postcss": "^8.4.38",
         "prism-react-renderer": "^2.3.1",
         "react": "^18.2.0",
         "react-before-after-slider-component": "^1.1.8",
@@ -49,12 +49,12 @@
         ]
     },
     "devDependencies": {
-        "@docusaurus/module-type-aliases": "3.1.1",
-        "@docusaurus/tsconfig": "3.1.1",
-        "@docusaurus/types": "3.1.1",
-        "@types/react": "^18.2.67",
+        "@docusaurus/module-type-aliases": "3.2.1",
+        "@docusaurus/tsconfig": "3.2.1",
+        "@docusaurus/types": "3.2.1",
+        "@types/react": "^18.2.75",
         "prettier": "3.2.5",
-        "typescript": "~5.4.2"
+        "typescript": "~5.4.4"
     },
     "engines": {
         "node": ">=20"

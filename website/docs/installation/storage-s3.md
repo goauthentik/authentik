@@ -6,9 +6,9 @@ title: S3 storage setup
 
 First, create a user on your S3 storage provider and get access credentials for S3, hereafter referred as `access_key` and `secret_key`.
 
-You'll also need to know which endpoint authentik is going to use to access the S3 API, hereafter referred as `https://s3.provider`.
+You will also need to know which endpoint authentik is going to use to access the S3 API, hereafter referred as `https://s3.provider`.
 
-The bucket in which authentik is going to store files is going to be called `authentik-media`. You may need to change this name depending on your S3 provider limitations. Also, we're suffixing the bucket name with `-media` as authentik currently only stores media files, but may use other buckets in the future.
+The bucket in which authentik is going to store files is going to be called `authentik-media`. You may need to change this name depending on your S3 provider limitations. Also, we are suffixing the bucket name with `-media` as authentik currently only stores media files, but may use other buckets in the future.
 
 The domain used to access authentik is going to be referred to as `authentik.company`.
 
@@ -18,7 +18,7 @@ You will also need the AWS CLI.
 
 #### Bucket creation
 
-Let's create the bucket in which authentik is going to store files:
+Create the bucket in which authentik is going to store files:
 
 ```bash
 AWS_ACCESS_KEY_ID=access_key AWS_SECRET_ACCESS_KEY=secret_key aws s3api --endpoint-url=https://s3.provider create-bucket --bucket=authentik-media --acl=private
@@ -30,7 +30,7 @@ The bucket ACL is set to private, although that is not strictly necessary, as an
 
 #### CORS policy
 
-Next, let's associate a CORS policy to the bucket, to allow the authentik web interface to show images stored in the bucket.
+Next, associate a CORS policy to the bucket to allow the authentik web interface to show images stored in the bucket.
 
 First, save the following file locally as `cors.json`:
 
@@ -49,7 +49,7 @@ First, save the following file locally as `cors.json`:
 
 If authentik is accessed from multiple domains, you can add them to the `AllowedOrigins` list.
 
-Let's apply that policy to the bucket:
+Apply that policy to the bucket:
 
 ```bash
 AWS_ACCESS_KEY_ID=access_key AWS_SECRET_ACCESS_KEY=secret_key aws s3api --endpoint-url=https://s3.provider put-bucket-cors --bucket=authentik-media --cors-configuration=file://cors.json
@@ -66,13 +66,13 @@ AUTHENTIK_STORAGE__MEDIA__S3__SECRET_KEY=secret_key
 AUTHENTIK_STORAGE__MEDIA__S3__BUCKET_NAME=authentik-media
 ```
 
-If you're using AWS S3 as your S3 provider, add the following:
+If you are using AWS S3 as your S3 provider, add the following:
 
 ```env
 AUTHENTIK_STORAGE__MEDIA__S3__REGION=us-east-1  # Use the region of the bucket
 ```
 
-If you're not using AWS S3 as your S3 provider, add the following:
+If you are not using AWS S3 as your S3 provider, add the following:
 
 ```env
 AUTHENTIK_STORAGE__MEDIA__S3__ENDPOINT=https://s3.provider
@@ -81,7 +81,7 @@ AUTHENTIK_STORAGE__MEDIA__S3__CUSTOM_DOMAIN=s3.provider/authentik-media
 
 The `ENDPOINT` setting specifies how authentik talks to the S3 provider.
 
-The `CUSTOM_DOMAIN` setting specifies how URLs are constructed to be shown on the web interface. For example, an object stored at `application-icons/application.png` with a `CUSTOM__DOMAIN` setting of `s3.provider/authentik-media` will result in a URL of `https://s3.provider/authentik-media/application-icons/application.png`. You can also use subdomains for your buckets depending on what your S3 provider offers: `authentik-media.s3.provider`. Whether HTTPS is used is controlled by the `AUTHENTIK_STORAGE__MEDIA__S3__SECURE_URLS` which defaults to true.
+The `CUSTOM_DOMAIN` setting specifies how URLs are constructed to be shown on the web interface. For example, an object stored at `application-icons/application.png` with a `CUSTOM__DOMAIN` setting of `s3.provider/authentik-media` will result in a URL of `https://s3.provider/authentik-media/application-icons/application.png`. You can also use subdomains for your buckets depending on what your S3 provider offers: `authentik-media.s3.provider`. Whether HTTPS is used is controlled by `AUTHENTIK_STORAGE__MEDIA__S3__SECURE_URLS`, which defaults to true.
 
 For more control over settings, refer to the [configuration reference](./configuration.mdx#media-storage-settings)
 
