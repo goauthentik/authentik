@@ -38,8 +38,8 @@ func NewMemorySearcher(si server.LDAPServerInstance) *MemorySearcher {
 		ds:  direct.NewDirectSearcher(si),
 	}
 	ms.log.Debug("initialised memory searcher")
-	ms.users = paginator.FetchUsers(ms.si.GetAPIClient().CoreApi.CoreUsersList(context.TODO()))
-	ms.groups = paginator.FetchGroups(ms.si.GetAPIClient().CoreApi.CoreGroupsList(context.TODO()))
+	ms.users = paginator.FetchUsers(ms.si.GetAPIClient().CoreApi.CoreUsersList(context.TODO()).IncludeGroups(true))
+	ms.groups = paginator.FetchGroups(ms.si.GetAPIClient().CoreApi.CoreGroupsList(context.TODO()).IncludeUsers(true))
 	return ms
 }
 
