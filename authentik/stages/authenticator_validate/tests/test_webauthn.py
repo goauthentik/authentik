@@ -331,11 +331,11 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
                             "mFrX0RQNDV4TUgxcXl4elVNNWlDMnhjNFF0aFFiMDl2N200cURCbV"
                             "k4RnZXdmh4RnpTdUZsRFlRbWNscmg1ZldTNXEwVFB4Z0pHRjR2aW1"
                             "jRlEiLCJvcmlnaW4iOiJodHRwOi8vbG9jYWxob3N0OjkwMDAiLCJj"
-                            "cm9zc09yaWdpbiI6ZmFsc2V9",
+                            "cm9zc09yaWdpbiI6ZmFsc2V9"
                         ),
                         "signature": (
                             "MEQCIAHQCGfE_PX1z6mBDaXUNqK_NrllhXylNOmETUD3Khv9AiBTl"
-                            "rX3GDRj5OaOfTToOwUwAhtd74tu0T6DZAVHPb_hlQ==",
+                            "rX3GDRj5OaOfTToOwUwAhtd74tu0T6DZAVHPb_hlQ=="
                         ),
                         "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MFAAAABg==",
                         "userHandle": None,
@@ -350,7 +350,16 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
             response,
             flow,
             component="ak-stage-authenticator-validate",
-            response_errors={"webauthn": [{"string": "Invalid device", "code": "invalid"}]},
+            response_errors={
+                "webauthn": [
+                    {
+                        "string": (
+                            "Invalid device type. Contact your authentik administrator for help."
+                        ),
+                        "code": "invalid",
+                    }
+                ]
+            },
         )
 
     def test_validate_challenge_userless(self):

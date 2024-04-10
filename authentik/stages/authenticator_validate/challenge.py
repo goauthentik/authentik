@@ -135,11 +135,18 @@ def validate_challenge_webauthn(data: dict, stage_view: StageView, user: User) -
     stage: AuthenticatorValidateStage = stage_view.executor.current_stage
     try:
         credential = parse_authentication_credential_json(data)
-    except InvalidJSONStructure:
+    except InvalidJSONStructure as exc:
+        LOGGER.warning("Invalid WebAuthn challenge response", exc=exc)
         raise ValidationError("Invalid device", "invalid") from None
 
     device = WebAuthnDevice.objects.filter(credential_id=credential.id).first()
     if not device:
+        raise ValidationError("Invalid device", "invalid")
+    # We can only check the device's user if the user we're given isn't anonymous
+    # as this validation is also used for password-less login where webauthn is the very first
+    # step done by a user. Only if this validation happens at a later stage we can check
+    # that the device belongs to the user
+    if not user.is_anonymous and device.user != user:
         raise ValidationError("Invalid device", "invalid")
     # When a device_type was set when creating the device (2024.4+), and we have a limitation,
     # make sure the device type is allowed.
@@ -148,13 +155,14 @@ def validate_challenge_webauthn(data: dict, stage_view: StageView, user: User) -
         and stage.webauthn_allowed_device_types.exists()
         and not stage.webauthn_allowed_device_types.filter(pk=device.device_type.pk).exists()
     ):
-        raise ValidationError("Invalid device", "invalid")
-    # We can only check the device's user if the user we're given isn't anonymous
-    # as this validation is also used for password-less login where webauthn is the very first
-    # step done by a user. Only if this validation happens at a later stage we can check
-    # that the device belongs to the user
-    if not user.is_anonymous and device.user != user:
-        raise ValidationError("Invalid device", "invalid")
+        raise ValidationError(
+            _(
+                "Invalid device type. Contact your {brand} administrator for help.".format(
+                    brand=stage_view.request.brand.branding_title
+                )
+            ),
+            "invalid",
+        )
     try:
         authentication_verification = verify_authentication_response(
             credential=credential,
