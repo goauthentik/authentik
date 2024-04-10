@@ -68,3 +68,13 @@ Flows can be imported and exported to share with other people, the community and
 Download our [Example flows](./examples/flows.md) and then import them into your authentik instance.
 
 Starting with authentik 2022.8, flows will be exported as YAML, but JSON-based flows can still be imported.
+
+## Behavior settings
+
+### Compatibility mode
+
+The compatibility mode increases compatibility with password managers. Password managers like [1Password](https://1password.com/) for example don't need this setting to be enabled, when accessing the flow from a desktop browser. However accessing the flow from a mobile device might necessitate this setting to be enabled.
+
+The technical reasons for this settings' existence is due to the JavaScript libraries we're using for the default flow interface. These interfaces are implemented using [Lit](https://lit.dev/), which is a modern web development library. It uses a web standard called ["Shadow DOMs"](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_shadow_DOM), which makes encapsulating styles simpler. Due to differences in Browser APIs, many password managers are not compatible with this technology.
+
+When the compatibility mode is enabled, authentik uses a polyfill which emulates the Shadow DOM APIs without actually using the feature, and instead a traditional DOM is rendered. This increases support for password managers, especially on mobile devices.
