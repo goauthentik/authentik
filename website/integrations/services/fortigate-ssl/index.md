@@ -200,7 +200,7 @@ Before you can see any output you need to enable the debug mode.
 
 ### Debug saml daemon
 
-This will provide all possible output from the saml daemon.\
+This will provide all possible output from the SAML daemon.
 `diag debug application samld -1`
 
 ### Debug sslvpn (optional)
