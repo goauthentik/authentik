@@ -86,7 +86,7 @@ end
 > [!IMPORTANT]
 > If you created a new firewall group, instead of using an existing sslvpn firewall group, then remember to map it to a portal in the 'SSL-VPN Settings' page, and add the `fgt.user.group` to firewall rules, or you will be redirected back to authentik with a logout immediately upon each login attempt.
 
-Next get the meta data from the FortiGate to help us with the SAML configuration in authentik. Copy all the output from the command below and save it in a xml file named fgt-metadata.xml. You will upload that to authentik later, so we get a lot of the configuration set for us.
+Next get the metadata from the FortiGate to help us with the SAML configuration in authentik. Copy all the output from the command below and save it in a xml file named `fgt-metadata.xml`. You will upload that to authentik later, to facilitate auto-configuration.
 
 ```
 diag vpn ssl saml-metadata saml.sp.name
