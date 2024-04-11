@@ -42,7 +42,7 @@ The following placeholders will be used:
 ### Setup SAML SP
 
 1.  SSH to the Fortigate (If you are using vdom change to the correct vdom).
-2.  copy the config below to your prefered editor and change the placeholders to your settings, then paste it into the Fortigate
+2.  Copy the config below to your preferred editor and change the placeholders to your settings, then paste it into the Fortigate.
 
 > [!NOTE]
 > Some are https and some are http, that is on purpose, and as described by FortiNet.
