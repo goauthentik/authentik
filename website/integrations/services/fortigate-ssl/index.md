@@ -100,7 +100,7 @@ It's time to login to authentik and setup the provider and application.
 
 Lets setup the provider using the saml metadata from the FortiGate
 
-### Setup the Provider using metadata
+### Setup the provider using metadata
 
 -   Go to **Applications -> Providers**.
 -   Click **Create**.
