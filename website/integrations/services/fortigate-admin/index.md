@@ -96,7 +96,7 @@ You can use the following commands on the FortiGate to enable debugging:
 Open this URL (`https://fgt.company/saml/?acs`) in a browser and choose `Login Locally`.
 
 **Method 2**:
-Open the CLI and set the login page back to normal
+Open the CLI and set the login page back to normal.
 
 ```bash
 config system saml
