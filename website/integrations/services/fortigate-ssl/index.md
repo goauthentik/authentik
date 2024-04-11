@@ -195,7 +195,7 @@ These are just suggestions of what **could** be the cause of an issue and how to
 
 ### Enabling debug output
 
-Before you can see any output you need to enable the debug
+Before you can see any output you need to enable the debug mode.
 `diagnose debug enable`
 
 ### Debug saml daemon
