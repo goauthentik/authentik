@@ -61,7 +61,7 @@ Then navigate to `https://fgt.company/fabric-connector/edit/security-fabric-conn
 
 FortiGate creates a new user by default if one does not exist, so you will need to set the Default Admin Profile to the permissions you want any new users to have. (I have created a `no_permissions` profile to assign by default.)
 
-Under `SP Details` you should find SP entity ID. Make sure it is `https` as well and note it for later use (this is your Audience value of the authentik SP-provider).
+Under `SP Details` set the **SP entity ID** to `https`. Note it for later use (this is your Audience value of the authentik SP-provider).
 
 > [!IMPORTANT]
 > On both `IdP Login and Logout URL` change the `<SLUG>` to your own from the authentik application you have created.
