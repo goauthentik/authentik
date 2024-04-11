@@ -2,7 +2,11 @@
 
 #### `!KeyOf`
 
-Example: `policy: !KeyOf my-policy-id`
+Example:
+
+```yaml
+policy: !KeyOf my-policy-id
+```
 
 Resolves to the primary key of the model instance defined by id _my-policy-id_.
 
@@ -10,7 +14,11 @@ If no matching entry can be found, an error is raised and the blueprint is inval
 
 #### `!Env`
 
-Example: `password: !Env my_env_var`
+Example:
+
+```yaml
+password: !Env my_env_var
+```
 
 Returns the value of the given environment variable. Can be used as a scalar with `!Env my_env_var, default` to return a default value.
 
@@ -18,9 +26,11 @@ Returns the value of the given environment variable. Can be used as a scalar wit
 
 Examples:
 
-`configure_flow: !Find [authentik_flows.flow, [slug, default-password-change]]`
-
+```yaml
+configure_flow: !Find [authentik_flows.flow, [slug, default-password-change]]
 ```
+
+```yaml
 configure_flow: !Find [
   authentik_flows.flow,
   [
@@ -35,13 +45,21 @@ First argument is the model to be queried, remaining arguments are expected to b
 
 #### `!Context`
 
-Example: `configure_flow: !Context foo`
+Example:
+
+```yaml
+configure_flow: !Context foo
+```
 
 Find values from the context. Can optionally be called with a default like `!Context [foo, default-value]`.
 
 #### `!Format`
 
-Example: `name: !Format [my-policy-%s, !Context instance_name]`
+Example:
+
+```yaml
+name: !Format [my-policy-%s, !Context instance_name]
+```
 
 Format a string using python's % formatting. First argument is the format string, any remaining arguments are used for formatting.
 
@@ -63,7 +81,7 @@ required: !If [true, true, false]
 
 Full example:
 
-```
+```yaml
 attributes: !If [
     !Condition [...], # Or any valid YAML or custom tag. Evaluated as boolean in Python
     { # When condition evaluates to true
@@ -95,11 +113,13 @@ The second argument is used when the condition is `true`, and the third - when `
 
 Minimal example:
 
-`required: !Condition [OR, true]`
+```yaml
+required: !Condition [OR, true]
+```
 
 Full example:
 
-```
+```yaml
 required: !Condition [
     AND, # Valid modes are: AND, NAND, OR, NOR, XOR, XNOR
     !Context instance_name,
@@ -124,7 +144,7 @@ These tags collectively make it possible to iterate over objects which support i
 
 This tag takes 3 arguments:
 
-```
+```yaml
 !Enumerate [<iterable>, <output_object_type>, <single_item_yaml>]
 ```
 
@@ -140,7 +160,7 @@ This tag is only valid inside an `!Enumerate` tag
 
 This tag takes 1 argument:
 
-```
+```yaml
 !Index <depth>
 ```
 
@@ -158,7 +178,7 @@ This tag is only valid inside an `!Enumerate` tag
 
 This tag takes 1 argument:
 
-```
+```yaml
 !Value <depth>
 ```
 
@@ -170,7 +190,7 @@ For example, given a sequence like this - `["a", "b", "c"]`, this tag will resol
 
 Minimal examples:
 
-```
+```yaml
 configuration_stages: !Enumerate [
     !Context map_of_totp_stage_names_and_types,
     SEQ, # Output a sequence
@@ -180,7 +200,7 @@ configuration_stages: !Enumerate [
 
 The above example will resolve to something like this:
 
-```
+```yaml
 configuration_stages:
 - !Find [authentik_stages_authenticator_<stage_type_1>.authenticator<stage_type_1>stage, [name, <stage_name_1>]]
 - !Find [authentik_stages_authenticator_<stage_type_2>.authenticator<stage_type_2>stage, [name, <stage_name_2>]]
@@ -188,7 +208,7 @@ configuration_stages:
 
 Similarly, a mapping can be generated like so:
 
-```
+```yaml
 example: !Enumerate [
     !Context list_of_totp_stage_names,
     MAP, # Output a map
@@ -201,7 +221,7 @@ example: !Enumerate [
 
 The above example will resolve to something like this:
 
-```
+```yaml
 example:
   0: <stage_name_1>
   1: <stage_name_2>
@@ -213,7 +233,7 @@ Full example:
 Note that an `!Enumeration` tag's iterable can never be an `!Item` or `!Value` tag with a depth of `0`. Minimum depth allowed is `1`. This is because a depth of `0` refers to the `!Enumeration` tag the `!Item` or `!Value` tag is in, and an `!Enumeration` tag cannot iterate over itself.
 :::
 
-```
+```yaml
 example: !Enumerate [
     !Context sequence, # ["foo", "bar"]
     MAP, # Output a map
@@ -232,7 +252,7 @@ example: !Enumerate [
 
 The above example will resolve to something like this:
 
-```
+```yaml
 '0':
 - 'foo: (index: 0, letter: f)'
 - 'foo: (index: 1, letter: o)'
