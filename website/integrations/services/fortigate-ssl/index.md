@@ -175,7 +175,7 @@ This is the user group that you matched on in the FortiGate "firewall group" abo
 -   Order = 10
 -   Timeout = 30
 -   Failure result = Don't pass
--   Click create
+-   Click **Create**.
 
 You should now be able to login by selecting SSO login either on the portal or in FortiClient, depending on your portal configuration.
 
