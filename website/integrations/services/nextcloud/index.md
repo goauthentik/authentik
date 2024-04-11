@@ -138,6 +138,9 @@ Add a new provider using the `+` button and set the following values:
         You need to enable the "Use group provisioning" checkmark to be able to write to this field
         :::
 -   Use unique user ID: If you only have one provider you can uncheck this if you prefer.
+    :::tip
+    To avoid your group assignment being a hash value, deselect **Use unique user ID**.
+    :::
 
 At this stage you should be able to login with SSO.
 

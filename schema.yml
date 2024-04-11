@@ -29976,6 +29976,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
       required:
       - asn
       - current
@@ -30619,6 +30620,16 @@ components:
           allOf:
           - $ref: '#/components/schemas/UserVerificationEnum'
           description: Enforce user verification for WebAuthn devices.
+        webauthn_allowed_device_types:
+          type: array
+          items:
+            type: string
+            format: uuid
+        webauthn_allowed_device_types_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnDeviceType'
+          readOnly: true
       required:
       - component
       - meta_model_name
@@ -30626,6 +30637,7 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+      - webauthn_allowed_device_types_obj
     AuthenticatorValidateStageRequest:
       type: object
       description: AuthenticatorValidateStage Serializer
@@ -30661,6 +30673,11 @@ components:
           allOf:
           - $ref: '#/components/schemas/UserVerificationEnum'
           description: Enforce user verification for WebAuthn devices.
+        webauthn_allowed_device_types:
+          type: array
+          items:
+            type: string
+            format: uuid
       required:
       - name
     AuthenticatorValidationChallenge:
@@ -32674,6 +32691,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
         scope:
           type: array
           items:
@@ -33774,6 +33792,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
         fixed_data:
           type: object
           additionalProperties: {}
@@ -33810,6 +33829,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
         fixed_data:
           type: object
           additionalProperties: {}
@@ -35551,26 +35571,22 @@ components:
         request_token_url:
           type: string
           nullable: true
-          minLength: 1
           description: URL used to request the initial token. This URL is only required
             for OAuth 1.
           maxLength: 255
         authorization_url:
           type: string
           nullable: true
-          minLength: 1
           description: URL the user is redirect to to conest the flow.
           maxLength: 255
         access_token_url:
           type: string
           nullable: true
-          minLength: 1
           description: URL used by authentik to retrieve tokens.
           maxLength: 255
         profile_url:
           type: string
           nullable: true
-          minLength: 1
           description: URL used by authentik to get user information.
           maxLength: 255
         consumer_key:
@@ -37536,6 +37552,11 @@ components:
           allOf:
           - $ref: '#/components/schemas/UserVerificationEnum'
           description: Enforce user verification for WebAuthn devices.
+        webauthn_allowed_device_types:
+          type: array
+          items:
+            type: string
+            format: uuid
     PatchedAuthenticatorWebAuthnStageRequest:
       type: object
       description: AuthenticatorWebAuthnStage Serializer
@@ -38125,6 +38146,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
         fixed_data:
           type: object
           additionalProperties: {}
@@ -38563,26 +38585,22 @@ components:
         request_token_url:
           type: string
           nullable: true
-          minLength: 1
           description: URL used to request the initial token. This URL is only required
             for OAuth 1.
           maxLength: 255
         authorization_url:
           type: string
           nullable: true
-          minLength: 1
           description: URL the user is redirect to to conest the flow.
           maxLength: 255
         access_token_url:
           type: string
           nullable: true
-          minLength: 1
           description: URL used by authentik to retrieve tokens.
           maxLength: 255
         profile_url:
           type: string
           nullable: true
-          minLength: 1
           description: URL used by authentik to get user information.
           maxLength: 255
         consumer_key:
@@ -39429,6 +39447,15 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        default_token_duration:
+          type: string
+          minLength: 1
+          description: Default token duration
+        default_token_length:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Default token length
     PatchedSourceStageRequest:
       type: object
       description: SourceStage Serializer
@@ -39506,6 +39533,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
         expiring:
           type: boolean
     PatchedUserDeleteStageRequest:
@@ -42458,6 +42486,14 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        default_token_duration:
+          type: string
+          description: Default token duration
+        default_token_length:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Default token length
     SettingsRequest:
       type: object
       description: Settings Serializer
@@ -42489,6 +42525,15 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        default_token_duration:
+          type: string
+          minLength: 1
+          description: Default token duration
+        default_token_length:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Default token length
     SeverityEnum:
       enum:
       - notice
@@ -43156,6 +43201,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
         expiring:
           type: boolean
       required:
@@ -43181,6 +43227,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
         scope:
           type: array
           items:
@@ -43225,6 +43272,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
         expiring:
           type: boolean
       required:
@@ -43463,6 +43511,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
         expiring:
           type: boolean
         user:

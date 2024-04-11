@@ -8526,15 +8526,19 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sa64fb483becc9c2c">
   <source>Device type restrictions</source>
+  <target>设备类型限制</target>
 </trans-unit>
 <trans-unit id="sbb928551c84cd63f">
   <source>Available Device types</source>
+  <target>可用设备类型</target>
 </trans-unit>
 <trans-unit id="s6446c35d6b411e53">
   <source>Selected Device types</source>
+  <target>已选设备类型</target>
 </trans-unit>
 <trans-unit id="s1f4df216b56de4ac">
   <source>Optionally restrict which WebAuthn device types may be used. When no device types are selected, all devices are allowed.</source>
+  <target>可选的 WebAuthn 可用设备类型限制。如果未选择设备类型，则允许所有设备。</target>
 </trans-unit>
     </body>
   </file>

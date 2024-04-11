@@ -38,7 +38,7 @@
         "@codemirror/theme-one-dark": "^6.1.2",
         "@formatjs/intl-listformat": "^7.5.5",
         "@fortawesome/fontawesome-free": "^6.5.2",
-        "@goauthentik/api": "^2024.2.2-1712571709",
+        "@goauthentik/api": "^2024.2.2-1712833826",
         "@lit-labs/task": "^3.1.0",
         "@lit/context": "^1.1.0",
         "@lit/localize": "^0.12.1",
@@ -122,7 +122,7 @@
         "ts-lit-plugin": "^2.0.2",
         "tslib": "^2.6.2",
         "turnstile-types": "^1.2.0",
-        "typescript": "^5.4.4",
+        "typescript": "^5.4.5",
         "vite-tsconfig-paths": "^4.3.2"
     },
     "optionalDependencies": {
