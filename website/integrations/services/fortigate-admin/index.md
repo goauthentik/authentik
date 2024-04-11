@@ -80,7 +80,7 @@ These are just suggestions of what **could** be the cause of an issue and how to
 You can use the following commands on the FortiGate to enable debugging:
 
 1. Debug saml daemon
-   This will provide all possible output from the saml daemon.
+   This will provide all possible output from the SAML daemon.
    `diag debug application samld -1`
 
 2. Enable debug timestamps (optional)
