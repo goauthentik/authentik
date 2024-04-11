@@ -236,4 +236,4 @@ User group `fgt.user.group` is not mapped to any portals ( Fortigate settings pa
 
 ### Error: authentik page shows "missing post data"
 
-I can't remember the exact error message shown by authentik, but it will complain about missing data. this means you have used the wrong `idp-single-sign-on-url` and most likely the wrong `idp-single-logout-url` in the FortiGate SAML SP configuration. These should be the redirect url's from authentik's Provider configuration and not the post url's.
+An error message abouit missing data is displayed by authentik. This error means you have used the wrong `idp-single-sign-on-url` and most likely the wrong `idp-single-logout-url` in the FortiGate SAML SP configuration. These should be the redirect URLs from authentik's provider configuration and not the post URLs.
