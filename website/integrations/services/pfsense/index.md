@@ -70,6 +70,7 @@ Change the following fields
 -   Port value: 389
 -   Transport: Standard TCP
 -   Base DN: `DC=ldap,DC=goauthentik,DC=io`
+-   Search Scope: Subtree
 -   Authentication containers: `OU=users,DC=ldap,DC=goauthentik,DC=io`
 -   Bind anonymous: **unticked**
 -   Bind credentials:
@@ -128,6 +129,7 @@ Change the following fields
 -   Transport: SSL/TLS Encrypted
 -   Peer Certificate Authority: `pfSense CA`
 -   Base DN: `DC=ldap,DC=goauthentik,DC=io`
+-   Search Scope: Subtree
 -   Authentication containers: `OU=users,DC=ldap,DC=goauthentik,DC=io`
 -   Bind anonymous: **unticked**
 -   Bind credentials:
