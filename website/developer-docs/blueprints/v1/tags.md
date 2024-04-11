@@ -31,13 +31,11 @@ configure_flow: !Find [authentik_flows.flow, [slug, default-password-change]]
 ```
 
 ```yaml
-configure_flow: !Find [
-  authentik_flows.flow,
-  [
-    !Context property_name,
-    !Context property_value
-  ]
-]
+configure_flow:
+    !Find [
+        authentik_flows.flow,
+        [!Context property_name, !Context property_value],
+    ]
 ```
 
 Looks up any model and resolves to the the matches' primary key.
@@ -83,24 +81,23 @@ Full example:
 
 ```yaml
 attributes: !If [
-    !Condition [...], # Or any valid YAML or custom tag. Evaluated as boolean in Python
-    { # When condition evaluates to true
-        dictionary:
+        !Condition [...], # Or any valid YAML or custom tag. Evaluated as boolean in Python
         {
-            with:
-            {
-                keys: "and_values"
-            },
-            and_nested_custom_tags: !Format ["foo-%s", !Context foo]
-        }
-    },
-    [ # When condition evaluates to false
-        list,
-        with,
-        items,
-        !Format ["foo-%s", !Context foo]
+            # When condition evaluates to true
+            dictionary:
+                {
+                    with: { keys: "and_values" },
+                    and_nested_custom_tags: !Format ["foo-%s", !Context foo],
+                },
+        },
+        [
+            # When condition evaluates to false
+            list,
+            with,
+            items,
+            !Format ["foo-%s", !Context foo],
+        ],
     ]
-]
 ```
 
 Conditionally add YAML to a blueprint.
@@ -192,39 +189,52 @@ Minimal examples:
 
 ```yaml
 configuration_stages: !Enumerate [
-    !Context map_of_totp_stage_names_and_types,
-    SEQ, # Output a sequence
-    !Find [!Format ["authentik_stages_authenticator_%s.authenticator%sstage", !Index 0, !Index 0], [name, !Value 0]] # The value of each item in the sequence
-]
+        !Context map_of_totp_stage_names_and_types,
+        SEQ, # Output a sequence
+        !Find [
+            !Format [
+                "authentik_stages_authenticator_%s.authenticator%sstage",
+                !Index 0,
+                !Index 0,
+            ],
+            [name, !Value 0],
+        ], # The value of each item in the sequence
+    ]
 ```
 
 The above example will resolve to something like this:
 
 ```yaml
 configuration_stages:
-- !Find [authentik_stages_authenticator_<stage_type_1>.authenticator<stage_type_1>stage, [name, <stage_name_1>]]
-- !Find [authentik_stages_authenticator_<stage_type_2>.authenticator<stage_type_2>stage, [name, <stage_name_2>]]
+    - !Find [
+          authentik_stages_authenticator_<stage_type_1>.authenticator<stage_type_1>stage,
+          [name, <stage_name_1>],
+      ]
+    - !Find [
+          authentik_stages_authenticator_<stage_type_2>.authenticator<stage_type_2>stage,
+          [name, <stage_name_2>],
+      ]
 ```
 
 Similarly, a mapping can be generated like so:
 
 ```yaml
 example: !Enumerate [
-    !Context list_of_totp_stage_names,
-    MAP, # Output a map
-    [
-        !Index 0, # The key to assign to each entry
-        !Value 0, # The value to assign to each entry
+        !Context list_of_totp_stage_names,
+        MAP, # Output a map
+        [
+            !Index 0, # The key to assign to each entry
+            !Value 0, # The value to assign to each entry
+        ],
     ]
-]
 ```
 
 The above example will resolve to something like this:
 
 ```yaml
 example:
-  0: <stage_name_1>
-  1: <stage_name_2>
+    0: <stage_name_1>
+    1: <stage_name_2>
 ```
 
 Full example:
@@ -235,30 +245,36 @@ Note that an `!Enumeration` tag's iterable can never be an `!Item` or `!Value` t
 
 ```yaml
 example: !Enumerate [
-    !Context sequence, # ["foo", "bar"]
-    MAP, # Output a map
-    [
-        !Index 0, # Use the indexes of the items in the sequence as keys
-        !Enumerate [ # Nested enumeration
-            # Iterate over each item of the parent enumerate tag.
-            # Notice depth is 1, not 0, since we are inside the nested enumeration tag!
-            !Value 1,
-            SEQ, # Output a sequence
-            !Format ["%s: (index: %d, letter: %s)", !Value 1, !Index 0, !Value 0]
-        ]
+        !Context sequence, # ["foo", "bar"]
+        MAP, # Output a map
+        [
+            !Index 0, # Use the indexes of the items in the sequence as keys
+            !Enumerate [
+                # Nested enumeration
+                # Iterate over each item of the parent enumerate tag.
+                # Notice depth is 1, not 0, since we are inside the nested enumeration tag!
+                !Value 1,
+                SEQ, # Output a sequence
+                !Format [
+                    "%s: (index: %d, letter: %s)",
+                    !Value 1,
+                    !Index 0,
+                    !Value 0,
+                ],
+            ],
+        ],
     ]
-]
 ```
 
 The above example will resolve to something like this:
 
 ```yaml
-'0':
-- 'foo: (index: 0, letter: f)'
-- 'foo: (index: 1, letter: o)'
-- 'foo: (index: 2, letter: o)'
-'1':
-- 'bar: (index: 0, letter: b)'
-- 'bar: (index: 1, letter: a)'
-- 'bar: (index: 2, letter: r)'
+"0":
+    - "foo: (index: 0, letter: f)"
+    - "foo: (index: 1, letter: o)"
+    - "foo: (index: 2, letter: o)"
+"1":
+    - "bar: (index: 0, letter: b)"
+    - "bar: (index: 1, letter: a)"
+    - "bar: (index: 2, letter: r)"
 ```
