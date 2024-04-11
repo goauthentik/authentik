@@ -31,7 +31,7 @@ Create a new SAML Property Mapping under the Customization settings.
 -   `username` is the value for the SAML Attribute Name.
 -   `return request.user.email` is the value for the Expression.
 
-Create an application and Provider in authentik, note the slug, as this will be used later. Create a SAML provider with the following parameters:
+Create an application and SAML provider in authentik, and note the slug, because this will be used later. Create a SAML provider with the following parameters:
 
 Provider:
 
