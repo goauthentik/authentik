@@ -18,7 +18,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { EventsApi } from "@goauthentik/api";
+import { EventToJSON, EventsApi } from "@goauthentik/api";
 
 @customElement("ak-event-view")
 export class EventViewPage extends AKElement {
@@ -143,7 +143,7 @@ export class EventViewPage extends AKElement {
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                         <div class="pf-c-card__title">${msg("Raw event info")}</div>
                         <div class="pf-c-card__body">
-                            <pre>${JSON.stringify(this.event, null, 4)}</pre>
+                            <pre>${JSON.stringify(EventToJSON(this.event), null, 4)}</pre>
                         </div>
                     </div>
                 </div>

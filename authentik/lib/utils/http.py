@@ -2,11 +2,11 @@
 
 from uuid import uuid4
 
-from django.conf import settings
 from requests.sessions import PreparedRequest, Session
 from structlog.stdlib import get_logger
 
 from authentik import get_full_version
+from authentik.lib.config import CONFIG
 
 LOGGER = get_logger()
 
@@ -35,6 +35,6 @@ class DebugSession(Session):
 
 def get_http_session() -> Session:
     """Get a requests session with common headers"""
-    session = DebugSession() if settings.DEBUG else Session()
+    session = DebugSession() if CONFIG.get_bool("debug") else Session()
     session.headers["User-Agent"] = authentik_user_agent()
     return session

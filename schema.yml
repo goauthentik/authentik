@@ -4006,11 +4006,6 @@ paths:
           - app_password
           - recovery
           - verification
-        description: |-
-          * `verification` - Intent Verification
-          * `api` - Intent Api
-          * `recovery` - Intent Recovery
-          * `app_password` - Intent App Password
       - in: query
         name: managed
         schema:
@@ -4618,11 +4613,6 @@ paths:
             - internal
             - internal_service_account
             - service_account
-        description: |-
-          * `internal` - Internal
-          * `external` - External
-          * `service_account` - Service Account
-          * `internal_service_account` - Internal Service Account
         explode: true
         style: form
       - in: query
@@ -6393,10 +6383,6 @@ paths:
           - alert
           - notice
           - warning
-        description: |-
-          * `notice` - Notice
-          * `warning` - Warning
-          * `alert` - Alert
       - in: query
         name: user
         schema:
@@ -6672,12 +6658,9 @@ paths:
           - alert
           - notice
           - warning
-        description: |-
+        description: |+
           Controls which severity level the created notifications will have.
 
-          * `notice` - Notice
-          * `warning` - Warning
-          * `alert` - Alert
       tags:
       - events
       security:
@@ -6956,11 +6939,6 @@ paths:
           - successful
           - unknown
           - warning
-        description: |-
-          * `unknown` - Unknown
-          * `successful` - Successful
-          * `warning` - Warning
-          * `error` - Error
       - in: query
         name: uid
         schema:
@@ -7072,11 +7050,6 @@ paths:
           - local
           - webhook
           - webhook_slack
-        description: |-
-          * `local` - authentik inbuilt notifications
-          * `webhook` - Generic Webhook
-          * `webhook_slack` - Slack Webhook (Slack/Discord)
-          * `email` - Email
       - in: query
         name: name
         schema:
@@ -7410,12 +7383,9 @@ paths:
           - restart
           - restart_with_context
           - retry
-        description: |-
+        description: |+
           Configure how the flow executor should handle an invalid response to a challenge. RETRY returns the error message and a similar challenge to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current context.
 
-          * `retry` - Retry
-          * `restart` - Restart
-          * `restart_with_context` - Restart With Context
       - in: query
         name: order
         schema:
@@ -7459,9 +7429,6 @@ paths:
           enum:
           - all
           - any
-        description: |-
-          * `all` - all, all policies must pass
-          * `any` - any, any policy must pass
       - in: query
         name: re_evaluate_policies
         schema:
@@ -7845,12 +7812,9 @@ paths:
           - continue
           - message
           - message_continue
-        description: |-
+        description: |+
           Configure what should happen when a flow denies access to a user.
 
-          * `message_continue` - Message Continue
-          * `message` - Message
-          * `continue` - Continue
       - in: query
         name: designation
         schema:
@@ -7863,16 +7827,9 @@ paths:
           - recovery
           - stage_configuration
           - unenrollment
-        description: |-
+        description: |+
           Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.
 
-          * `authentication` - Authentication
-          * `authorization` - Authorization
-          * `invalidation` - Invalidation
-          * `enrollment` - Enrollment
-          * `unenrollment` - Unrenollment
-          * `recovery` - Recovery
-          * `stage_configuration` - Stage Configuration
       - in: query
         name: flow_uuid
         schema:
@@ -11573,36 +11530,9 @@ paths:
           - system_task_execution
           - update_available
           - user_write
-        description: |-
+        description: |+
           Match created events with this action type. When left empty, all action types will be matched.
 
-          * `login` - Login
-          * `login_failed` - Login Failed
-          * `logout` - Logout
-          * `user_write` - User Write
-          * `suspicious_request` - Suspicious Request
-          * `password_set` - Password Set
-          * `secret_view` - Secret View
-          * `secret_rotate` - Secret Rotate
-          * `invitation_used` - Invite Used
-          * `authorize_application` - Authorize Application
-          * `source_linked` - Source Linked
-          * `impersonation_started` - Impersonation Started
-          * `impersonation_ended` - Impersonation Ended
-          * `flow_execution` - Flow Execution
-          * `policy_execution` - Policy Execution
-          * `policy_exception` - Policy Exception
-          * `property_mapping_exception` - Property Mapping Exception
-          * `system_task_execution` - System Task Execution
-          * `system_task_exception` - System Task Exception
-          * `system_exception` - System Exception
-          * `configuration_error` - Configuration Error
-          * `model_created` - Model Created
-          * `model_updated` - Model Updated
-          * `model_deleted` - Model Deleted
-          * `email_sent` - Email Sent
-          * `update_available` - Update Available
-          * `custom_` - Custom Prefix
       - in: query
         name: app
         schema:
@@ -15745,11 +15675,9 @@ paths:
           enum:
           - confidential
           - public
-        description: |-
+        description: |+
           Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable
 
-          * `confidential` - Confidential
-          * `public` - Public
       - in: query
         name: include_claims_in_id_token
         schema:
@@ -15761,11 +15689,9 @@ paths:
           enum:
           - global
           - per_provider
-        description: |-
+        description: |+
           Configure how the issuer field of the ID Token should be filled.
 
-          * `global` - Same identifier is used for all providers
-          * `per_provider` - Each provider has a different issuer, based on the application slug.
       - in: query
         name: name
         schema:
@@ -15827,15 +15753,9 @@ paths:
           - user_upn
           - user_username
           - user_uuid
-        description: |-
+        description: |+
           Configure what data should be used as unique User Identifier. For most cases, the default should be fine.
 
-          * `hashed_user_id` - Based on the Hashed User ID
-          * `user_id` - Based on user ID
-          * `user_uuid` - Based on user UUID
-          * `user_username` - Based on the username
-          * `user_email` - Based on the User's Email. This is recommended over the UPN method.
-          * `user_upn` - Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains.
       tags:
       - providers
       security:
@@ -17060,11 +16980,6 @@ paths:
           - http://www.w3.org/2001/04/xmldsig-more#sha384
           - http://www.w3.org/2001/04/xmlenc#sha256
           - http://www.w3.org/2001/04/xmlenc#sha512
-        description: |-
-          * `http://www.w3.org/2000/09/xmldsig#sha1` - SHA1
-          * `http://www.w3.org/2001/04/xmlenc#sha256` - SHA256
-          * `http://www.w3.org/2001/04/xmldsig-more#sha384` - SHA384
-          * `http://www.w3.org/2001/04/xmlenc#sha512` - SHA512
       - in: query
         name: is_backchannel
         schema:
@@ -17129,12 +17044,6 @@ paths:
           - http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
           - http://www.w3.org/2001/04/xmldsig-more#rsa-sha384
           - http://www.w3.org/2001/04/xmldsig-more#rsa-sha512
-        description: |-
-          * `http://www.w3.org/2000/09/xmldsig#rsa-sha1` - RSA-SHA1
-          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256` - RSA-SHA256
-          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha384` - RSA-SHA384
-          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha512` - RSA-SHA512
-          * `http://www.w3.org/2000/09/xmldsig#dsa-sha1` - DSA-SHA1
       - in: query
         name: signing_kp
         schema:
@@ -17148,11 +17057,9 @@ paths:
           enum:
           - post
           - redirect
-        description: |-
+        description: |+
           This determines how authentik sends the response back to the Service Provider.
 
-          * `redirect` - Redirect
-          * `post` - Post
       - in: query
         name: verification_kp
         schema:
@@ -18498,7 +18405,7 @@ paths:
           - authentik_stages_authenticator_totp.authenticatortotpstage
           - authentik_stages_authenticator_totp.totpdevice
           - authentik_stages_authenticator_validate.authenticatorvalidatestage
-          - authentik_stages_authenticator_webauthn.authenticatewebauthnstage
+          - authentik_stages_authenticator_webauthn.authenticatorwebauthnstage
           - authentik_stages_authenticator_webauthn.webauthndevice
           - authentik_stages_captcha.captchastage
           - authentik_stages_consent.consentstage
@@ -18518,82 +18425,6 @@ paths:
           - authentik_stages_user_logout.userlogoutstage
           - authentik_stages_user_write.userwritestage
           - authentik_tenants.domain
-        description: |-
-          * `authentik_tenants.domain` - Domain
-          * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
-          * `authentik_flows.flow` - Flow
-          * `authentik_flows.flowstagebinding` - Flow Stage Binding
-          * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
-          * `authentik_outposts.kubernetesserviceconnection` - Kubernetes Service-Connection
-          * `authentik_outposts.outpost` - Outpost
-          * `authentik_policies_dummy.dummypolicy` - Dummy Policy
-          * `authentik_policies_event_matcher.eventmatcherpolicy` - Event Matcher Policy
-          * `authentik_policies_expiry.passwordexpirypolicy` - Password Expiry Policy
-          * `authentik_policies_expression.expressionpolicy` - Expression Policy
-          * `authentik_policies_password.passwordpolicy` - Password Policy
-          * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
-          * `authentik_policies.policybinding` - Policy Binding
-          * `authentik_providers_ldap.ldapprovider` - LDAP Provider
-          * `authentik_providers_oauth2.scopemapping` - Scope Mapping
-          * `authentik_providers_oauth2.oauth2provider` - OAuth2/OpenID Provider
-          * `authentik_providers_proxy.proxyprovider` - Proxy Provider
-          * `authentik_providers_radius.radiusprovider` - Radius Provider
-          * `authentik_providers_saml.samlprovider` - SAML Provider
-          * `authentik_providers_saml.samlpropertymapping` - SAML Property Mapping
-          * `authentik_providers_scim.scimprovider` - SCIM Provider
-          * `authentik_providers_scim.scimmapping` - SCIM Mapping
-          * `authentik_rbac.role` - Role
-          * `authentik_sources_ldap.ldapsource` - LDAP Source
-          * `authentik_sources_ldap.ldappropertymapping` - LDAP Property Mapping
-          * `authentik_sources_oauth.oauthsource` - OAuth Source
-          * `authentik_sources_oauth.useroauthsourceconnection` - User OAuth Source Connection
-          * `authentik_sources_plex.plexsource` - Plex Source
-          * `authentik_sources_plex.plexsourceconnection` - User Plex Source Connection
-          * `authentik_sources_saml.samlsource` - SAML Source
-          * `authentik_sources_saml.usersamlsourceconnection` - User SAML Source Connection
-          * `authentik_stages_authenticator_duo.authenticatorduostage` - Duo Authenticator Setup Stage
-          * `authentik_stages_authenticator_duo.duodevice` - Duo Device
-          * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
-          * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
-          * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Setup Stage
-          * `authentik_stages_authenticator_static.staticdevice` - Static Device
-          * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
-          * `authentik_stages_authenticator_totp.totpdevice` - TOTP Device
-          * `authentik_stages_authenticator_validate.authenticatorvalidatestage` - Authenticator Validation Stage
-          * `authentik_stages_authenticator_webauthn.authenticatewebauthnstage` - WebAuthn Authenticator Setup Stage
-          * `authentik_stages_authenticator_webauthn.webauthndevice` - WebAuthn Device
-          * `authentik_stages_captcha.captchastage` - Captcha Stage
-          * `authentik_stages_consent.consentstage` - Consent Stage
-          * `authentik_stages_consent.userconsent` - User Consent
-          * `authentik_stages_deny.denystage` - Deny Stage
-          * `authentik_stages_dummy.dummystage` - Dummy Stage
-          * `authentik_stages_email.emailstage` - Email Stage
-          * `authentik_stages_identification.identificationstage` - Identification Stage
-          * `authentik_stages_invitation.invitationstage` - Invitation Stage
-          * `authentik_stages_invitation.invitation` - Invitation
-          * `authentik_stages_password.passwordstage` - Password Stage
-          * `authentik_stages_prompt.prompt` - Prompt
-          * `authentik_stages_prompt.promptstage` - Prompt Stage
-          * `authentik_stages_user_delete.userdeletestage` - User Delete Stage
-          * `authentik_stages_user_login.userloginstage` - User Login Stage
-          * `authentik_stages_user_logout.userlogoutstage` - User Logout Stage
-          * `authentik_stages_user_write.userwritestage` - User Write Stage
-          * `authentik_brands.brand` - Brand
-          * `authentik_blueprints.blueprintinstance` - Blueprint Instance
-          * `authentik_core.group` - Group
-          * `authentik_core.user` - User
-          * `authentik_core.application` - Application
-          * `authentik_core.token` - Token
-          * `authentik_enterprise.license` - License
-          * `authentik_providers_rac.racprovider` - RAC Provider
-          * `authentik_providers_rac.endpoint` - RAC Endpoint
-          * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
-          * `authentik_stages_source.sourcestage` - Source Stage
-          * `authentik_events.event` - Event
-          * `authentik_events.notificationtransport` - Notification Transport
-          * `authentik_events.notification` - Notification
-          * `authentik_events.notificationrule` - Notification Rule
-          * `authentik_events.notificationwebhookmapping` - Webhook Mapping
         required: true
       - in: query
         name: object_pk
@@ -18788,7 +18619,7 @@ paths:
           - authentik_stages_authenticator_totp.authenticatortotpstage
           - authentik_stages_authenticator_totp.totpdevice
           - authentik_stages_authenticator_validate.authenticatorvalidatestage
-          - authentik_stages_authenticator_webauthn.authenticatewebauthnstage
+          - authentik_stages_authenticator_webauthn.authenticatorwebauthnstage
           - authentik_stages_authenticator_webauthn.webauthndevice
           - authentik_stages_captcha.captchastage
           - authentik_stages_consent.consentstage
@@ -18808,82 +18639,6 @@ paths:
           - authentik_stages_user_logout.userlogoutstage
           - authentik_stages_user_write.userwritestage
           - authentik_tenants.domain
-        description: |-
-          * `authentik_tenants.domain` - Domain
-          * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
-          * `authentik_flows.flow` - Flow
-          * `authentik_flows.flowstagebinding` - Flow Stage Binding
-          * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
-          * `authentik_outposts.kubernetesserviceconnection` - Kubernetes Service-Connection
-          * `authentik_outposts.outpost` - Outpost
-          * `authentik_policies_dummy.dummypolicy` - Dummy Policy
-          * `authentik_policies_event_matcher.eventmatcherpolicy` - Event Matcher Policy
-          * `authentik_policies_expiry.passwordexpirypolicy` - Password Expiry Policy
-          * `authentik_policies_expression.expressionpolicy` - Expression Policy
-          * `authentik_policies_password.passwordpolicy` - Password Policy
-          * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
-          * `authentik_policies.policybinding` - Policy Binding
-          * `authentik_providers_ldap.ldapprovider` - LDAP Provider
-          * `authentik_providers_oauth2.scopemapping` - Scope Mapping
-          * `authentik_providers_oauth2.oauth2provider` - OAuth2/OpenID Provider
-          * `authentik_providers_proxy.proxyprovider` - Proxy Provider
-          * `authentik_providers_radius.radiusprovider` - Radius Provider
-          * `authentik_providers_saml.samlprovider` - SAML Provider
-          * `authentik_providers_saml.samlpropertymapping` - SAML Property Mapping
-          * `authentik_providers_scim.scimprovider` - SCIM Provider
-          * `authentik_providers_scim.scimmapping` - SCIM Mapping
-          * `authentik_rbac.role` - Role
-          * `authentik_sources_ldap.ldapsource` - LDAP Source
-          * `authentik_sources_ldap.ldappropertymapping` - LDAP Property Mapping
-          * `authentik_sources_oauth.oauthsource` - OAuth Source
-          * `authentik_sources_oauth.useroauthsourceconnection` - User OAuth Source Connection
-          * `authentik_sources_plex.plexsource` - Plex Source
-          * `authentik_sources_plex.plexsourceconnection` - User Plex Source Connection
-          * `authentik_sources_saml.samlsource` - SAML Source
-          * `authentik_sources_saml.usersamlsourceconnection` - User SAML Source Connection
-          * `authentik_stages_authenticator_duo.authenticatorduostage` - Duo Authenticator Setup Stage
-          * `authentik_stages_authenticator_duo.duodevice` - Duo Device
-          * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
-          * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
-          * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Setup Stage
-          * `authentik_stages_authenticator_static.staticdevice` - Static Device
-          * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
-          * `authentik_stages_authenticator_totp.totpdevice` - TOTP Device
-          * `authentik_stages_authenticator_validate.authenticatorvalidatestage` - Authenticator Validation Stage
-          * `authentik_stages_authenticator_webauthn.authenticatewebauthnstage` - WebAuthn Authenticator Setup Stage
-          * `authentik_stages_authenticator_webauthn.webauthndevice` - WebAuthn Device
-          * `authentik_stages_captcha.captchastage` - Captcha Stage
-          * `authentik_stages_consent.consentstage` - Consent Stage
-          * `authentik_stages_consent.userconsent` - User Consent
-          * `authentik_stages_deny.denystage` - Deny Stage
-          * `authentik_stages_dummy.dummystage` - Dummy Stage
-          * `authentik_stages_email.emailstage` - Email Stage
-          * `authentik_stages_identification.identificationstage` - Identification Stage
-          * `authentik_stages_invitation.invitationstage` - Invitation Stage
-          * `authentik_stages_invitation.invitation` - Invitation
-          * `authentik_stages_password.passwordstage` - Password Stage
-          * `authentik_stages_prompt.prompt` - Prompt
-          * `authentik_stages_prompt.promptstage` - Prompt Stage
-          * `authentik_stages_user_delete.userdeletestage` - User Delete Stage
-          * `authentik_stages_user_login.userloginstage` - User Login Stage
-          * `authentik_stages_user_logout.userlogoutstage` - User Logout Stage
-          * `authentik_stages_user_write.userwritestage` - User Write Stage
-          * `authentik_brands.brand` - Brand
-          * `authentik_blueprints.blueprintinstance` - Blueprint Instance
-          * `authentik_core.group` - Group
-          * `authentik_core.user` - User
-          * `authentik_core.application` - Application
-          * `authentik_core.token` - Token
-          * `authentik_enterprise.license` - License
-          * `authentik_providers_rac.racprovider` - RAC Provider
-          * `authentik_providers_rac.endpoint` - RAC Endpoint
-          * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
-          * `authentik_stages_source.sourcestage` - Source Stage
-          * `authentik_events.event` - Event
-          * `authentik_events.notificationtransport` - Notification Transport
-          * `authentik_events.notification` - Notification
-          * `authentik_events.notificationrule` - Notification Rule
-          * `authentik_events.notificationwebhookmapping` - Webhook Mapping
         required: true
       - in: query
         name: object_pk
@@ -20364,9 +20119,6 @@ paths:
           enum:
           - all
           - any
-        description: |-
-          * `all` - all, all policies must pass
-          * `any` - any, any policy must pass
       - in: query
         name: profile_url
         schema:
@@ -20399,14 +20151,9 @@ paths:
           - identifier
           - username_deny
           - username_link
-        description: |-
+        description: |+
           How the source determines if an existing user should be authenticated or a new user enrolled.
 
-          * `identifier` - Use the source-specific identifier
-          * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
-          * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
-          * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
-          * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
       tags:
       - sources
       security:
@@ -20730,9 +20477,6 @@ paths:
           enum:
           - all
           - any
-        description: |-
-          * `all` - all, all policies must pass
-          * `any` - any, any policy must pass
       - name: search
         required: false
         in: query
@@ -20753,14 +20497,9 @@ paths:
           - identifier
           - username_deny
           - username_link
-        description: |-
+        description: |+
           How the source determines if an existing user should be authenticated or a new user enrolled.
 
-          * `identifier` - Use the source-specific identifier
-          * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
-          * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
-          * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
-          * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
       tags:
       - sources
       security:
@@ -21073,10 +20812,6 @@ paths:
           - POST
           - POST_AUTO
           - REDIRECT
-        description: |-
-          * `REDIRECT` - Redirect Binding
-          * `POST` - POST Binding
-          * `POST_AUTO` - POST Binding with auto-confirmation
       - in: query
         name: digest_algorithm
         schema:
@@ -21086,11 +20821,6 @@ paths:
           - http://www.w3.org/2001/04/xmldsig-more#sha384
           - http://www.w3.org/2001/04/xmlenc#sha256
           - http://www.w3.org/2001/04/xmlenc#sha512
-        description: |-
-          * `http://www.w3.org/2000/09/xmldsig#sha1` - SHA1
-          * `http://www.w3.org/2001/04/xmlenc#sha256` - SHA256
-          * `http://www.w3.org/2001/04/xmldsig-more#sha384` - SHA384
-          * `http://www.w3.org/2001/04/xmlenc#sha512` - SHA512
       - in: query
         name: enabled
         schema:
@@ -21122,14 +20852,9 @@ paths:
           - urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName
           - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
           - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
-        description: |-
+        description: |+
           NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
 
-          * `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress` - Email
-          * `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent` - Persistent
-          * `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName` - X509
-          * `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName` - Windows
-          * `urn:oasis:names:tc:SAML:2.0:nameid-format:transient` - Transient
       - name: ordering
         required: false
         in: query
@@ -21155,9 +20880,6 @@ paths:
           enum:
           - all
           - any
-        description: |-
-          * `all` - all, all policies must pass
-          * `any` - any, any policy must pass
       - in: query
         name: pre_authentication_flow
         schema:
@@ -21179,12 +20901,6 @@ paths:
           - http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
           - http://www.w3.org/2001/04/xmldsig-more#rsa-sha384
           - http://www.w3.org/2001/04/xmldsig-more#rsa-sha512
-        description: |-
-          * `http://www.w3.org/2000/09/xmldsig#rsa-sha1` - RSA-SHA1
-          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256` - RSA-SHA256
-          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha384` - RSA-SHA384
-          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha512` - RSA-SHA512
-          * `http://www.w3.org/2000/09/xmldsig#dsa-sha1` - DSA-SHA1
       - in: query
         name: signing_kp
         schema:
@@ -21216,14 +20932,9 @@ paths:
           - identifier
           - username_deny
           - username_link
-        description: |-
+        description: |+
           How the source determines if an existing user should be authenticated or a new user enrolled.
 
-          * `identifier` - Use the source-specific identifier
-          * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
-          * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
-          * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
-          * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
       - in: query
         name: verification_kp
         schema:
@@ -23128,9 +22839,6 @@ paths:
           enum:
           - basic
           - bearer
-        description: |-
-          * `basic` - Basic
-          * `bearer` - Bearer
       - in: query
         name: configure_flow
         schema:
@@ -23178,9 +22886,6 @@ paths:
           enum:
           - generic
           - twilio
-        description: |-
-          * `twilio` - Twilio
-          * `generic` - Generic
       - name: search
         required: false
         in: query
@@ -23740,9 +23445,6 @@ paths:
           enum:
           - '6'
           - '8'
-        description: |-
-          * `6` - 6 digits, widely compatible
-          * `8` - 8 digits, not compatible with apps like Google Authenticator
       - in: query
         name: friendly_name
         schema:
@@ -24042,10 +23744,6 @@ paths:
           - configure
           - deny
           - skip
-        description: |-
-          * `skip` - Skip
-          * `deny` - Deny
-          * `configure` - Configure
       - name: ordering
         required: false
         in: query
@@ -24309,7 +24007,7 @@ paths:
   /stages/authenticator/webauthn/:
     get:
       operationId: stages_authenticator_webauthn_list
-      description: AuthenticateWebAuthnStage Viewset
+      description: AuthenticatorWebAuthnStage Viewset
       parameters:
       - in: query
         name: authenticator_attachment
@@ -24319,14 +24017,20 @@ paths:
           enum:
           - cross-platform
           - platform
-        description: |-
-          * `platform` - Platform
-          * `cross-platform` - Cross Platform
       - in: query
         name: configure_flow
         schema:
           type: string
           format: uuid
+      - in: query
+        name: device_type_restrictions
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
       - in: query
         name: friendly_name
         schema:
@@ -24361,10 +24065,6 @@ paths:
           - discouraged
           - preferred
           - required
-        description: |-
-          * `discouraged` - Discouraged
-          * `preferred` - Preferred
-          * `required` - Required
       - name: search
         required: false
         in: query
@@ -24384,10 +24084,6 @@ paths:
           - discouraged
           - preferred
           - required
-        description: |-
-          * `required` - Required
-          * `preferred` - Preferred
-          * `discouraged` - Discouraged
       tags:
       - stages
       security:
@@ -24397,7 +24093,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedAuthenticateWebAuthnStageList'
+                $ref: '#/components/schemas/PaginatedAuthenticatorWebAuthnStageList'
           description: ''
         '400':
           content:
@@ -24413,14 +24109,14 @@ paths:
           description: ''
     post:
       operationId: stages_authenticator_webauthn_create
-      description: AuthenticateWebAuthnStage Viewset
+      description: AuthenticatorWebAuthnStage Viewset
       tags:
       - stages
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AuthenticateWebAuthnStageRequest'
+              $ref: '#/components/schemas/AuthenticatorWebAuthnStageRequest'
         required: true
       security:
       - authentik: []
@@ -24429,7 +24125,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthenticateWebAuthnStage'
+                $ref: '#/components/schemas/AuthenticatorWebAuthnStage'
           description: ''
         '400':
           content:
@@ -24446,7 +24142,7 @@ paths:
   /stages/authenticator/webauthn/{stage_uuid}/:
     get:
       operationId: stages_authenticator_webauthn_retrieve
-      description: AuthenticateWebAuthnStage Viewset
+      description: AuthenticatorWebAuthnStage Viewset
       parameters:
       - in: path
         name: stage_uuid
@@ -24464,7 +24160,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthenticateWebAuthnStage'
+                $ref: '#/components/schemas/AuthenticatorWebAuthnStage'
           description: ''
         '400':
           content:
@@ -24480,7 +24176,7 @@ paths:
           description: ''
     put:
       operationId: stages_authenticator_webauthn_update
-      description: AuthenticateWebAuthnStage Viewset
+      description: AuthenticatorWebAuthnStage Viewset
       parameters:
       - in: path
         name: stage_uuid
@@ -24495,7 +24191,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AuthenticateWebAuthnStageRequest'
+              $ref: '#/components/schemas/AuthenticatorWebAuthnStageRequest'
         required: true
       security:
       - authentik: []
@@ -24504,7 +24200,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthenticateWebAuthnStage'
+                $ref: '#/components/schemas/AuthenticatorWebAuthnStage'
           description: ''
         '400':
           content:
@@ -24520,7 +24216,7 @@ paths:
           description: ''
     patch:
       operationId: stages_authenticator_webauthn_partial_update
-      description: AuthenticateWebAuthnStage Viewset
+      description: AuthenticatorWebAuthnStage Viewset
       parameters:
       - in: path
         name: stage_uuid
@@ -24535,7 +24231,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedAuthenticateWebAuthnStageRequest'
+              $ref: '#/components/schemas/PatchedAuthenticatorWebAuthnStageRequest'
       security:
       - authentik: []
       responses:
@@ -24543,7 +24239,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthenticateWebAuthnStage'
+                $ref: '#/components/schemas/AuthenticatorWebAuthnStage'
           description: ''
         '400':
           content:
@@ -24559,7 +24255,7 @@ paths:
           description: ''
     delete:
       operationId: stages_authenticator_webauthn_destroy
-      description: AuthenticateWebAuthnStage Viewset
+      description: AuthenticatorWebAuthnStage Viewset
       parameters:
       - in: path
         name: stage_uuid
@@ -24611,6 +24307,106 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /stages/authenticator/webauthn_device_types/:
+    get:
+      operationId: stages_authenticator_webauthn_device_types_list
+      description: WebAuthnDeviceType Viewset
+      parameters:
+      - in: query
+        name: aaguid
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: description
+        schema:
+          type: string
+      - in: query
+        name: icon
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedWebAuthnDeviceTypeList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /stages/authenticator/webauthn_device_types/{aaguid}/:
+    get:
+      operationId: stages_authenticator_webauthn_device_types_retrieve
+      description: WebAuthnDeviceType Viewset
+      parameters:
+      - in: path
+        name: aaguid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this WebAuthn Device type.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebAuthnDeviceType'
           description: ''
         '400':
           content:
@@ -24914,10 +24710,6 @@ paths:
           - always_require
           - expiring
           - permanent
-        description: |-
-          * `always_require` - Always Require
-          * `permanent` - Permanent
-          * `expiring` - Expiring
       - in: query
         name: name
         schema:
@@ -27300,25 +27092,6 @@ paths:
           - text_area_read_only
           - text_read_only
           - username
-        description: |-
-          * `text` - Text: Simple Text input
-          * `text_area` - Text area: Multiline Text Input.
-          * `text_read_only` - Text (read-only): Simple Text input, but cannot be edited.
-          * `text_area_read_only` - Text area (read-only): Multiline Text input, but cannot be edited.
-          * `username` - Username: Same as Text input, but checks for and prevents duplicate usernames.
-          * `email` - Email: Text field with Email type.
-          * `password` - Password: Masked input, multiple inputs of this type on the same prompt need to be identical.
-          * `number` - Number
-          * `checkbox` - Checkbox
-          * `radio-button-group` - Fixed choice field rendered as a group of radio buttons.
-          * `dropdown` - Fixed choice field rendered as a dropdown.
-          * `date` - Date
-          * `date-time` - Date Time
-          * `file` - File: File upload for arbitrary files. File content will be available in flow context as data-URI
-          * `separator` - Separator: Static Separator Line
-          * `hidden` - Hidden: Hidden field, can be used to insert data into form.
-          * `static` - Static: Static value, displayed as-is.
-          * `ak-locale` - authentik: Selection of locales authentik supports
       tags:
       - stages
       security:
@@ -28451,13 +28224,9 @@ paths:
           - bind_continent_country
           - bind_continent_country_city
           - no_binding
-        description: |-
+        description: |+
           Bind sessions created by this stage to the configured GeoIP location
 
-          * `no_binding` - No Binding
-          * `bind_continent` - Bind Continent
-          * `bind_continent_country` - Bind Continent Country
-          * `bind_continent_country_city` - Bind Continent Country City
       - in: query
         name: name
         schema:
@@ -28471,13 +28240,9 @@ paths:
           - bind_asn_network
           - bind_asn_network_ip
           - no_binding
-        description: |-
+        description: |+
           Bind sessions created by this stage to the configured network
 
-          * `no_binding` - No Binding
-          * `bind_asn` - Bind Asn
-          * `bind_asn_network` - Bind Asn Network
-          * `bind_asn_network_ip` - Bind Asn Network Ip
       - name: ordering
         required: false
         in: query
@@ -29084,10 +28849,6 @@ paths:
           - always_create
           - create_when_required
           - never_create
-        description: |-
-          * `never_create` - Never Create
-          * `create_when_required` - Create When Required
-          * `always_create` - Always Create
       - in: query
         name: user_path_template
         schema:
@@ -29101,11 +28862,6 @@ paths:
           - internal
           - internal_service_account
           - service_account
-        description: |-
-          * `internal` - Internal
-          * `external` - External
-          * `service_account` - Service Account
-          * `internal_service_account` - Internal Service Account
       tags:
       - stages
       security:
@@ -29936,60 +29692,6 @@ components:
       - authentik.enterprise.stages.source
       - authentik.events
       type: string
-      description: |-
-        * `authentik.tenants` - authentik Tenants
-        * `authentik.admin` - authentik Admin
-        * `authentik.api` - authentik API
-        * `authentik.crypto` - authentik Crypto
-        * `authentik.flows` - authentik Flows
-        * `authentik.outposts` - authentik Outpost
-        * `authentik.policies.dummy` - authentik Policies.Dummy
-        * `authentik.policies.event_matcher` - authentik Policies.Event Matcher
-        * `authentik.policies.expiry` - authentik Policies.Expiry
-        * `authentik.policies.expression` - authentik Policies.Expression
-        * `authentik.policies.password` - authentik Policies.Password
-        * `authentik.policies.reputation` - authentik Policies.Reputation
-        * `authentik.policies` - authentik Policies
-        * `authentik.providers.ldap` - authentik Providers.LDAP
-        * `authentik.providers.oauth2` - authentik Providers.OAuth2
-        * `authentik.providers.proxy` - authentik Providers.Proxy
-        * `authentik.providers.radius` - authentik Providers.Radius
-        * `authentik.providers.saml` - authentik Providers.SAML
-        * `authentik.providers.scim` - authentik Providers.SCIM
-        * `authentik.rbac` - authentik RBAC
-        * `authentik.recovery` - authentik Recovery
-        * `authentik.sources.ldap` - authentik Sources.LDAP
-        * `authentik.sources.oauth` - authentik Sources.OAuth
-        * `authentik.sources.plex` - authentik Sources.Plex
-        * `authentik.sources.saml` - authentik Sources.SAML
-        * `authentik.stages.authenticator` - authentik Stages.Authenticator
-        * `authentik.stages.authenticator_duo` - authentik Stages.Authenticator.Duo
-        * `authentik.stages.authenticator_sms` - authentik Stages.Authenticator.SMS
-        * `authentik.stages.authenticator_static` - authentik Stages.Authenticator.Static
-        * `authentik.stages.authenticator_totp` - authentik Stages.Authenticator.TOTP
-        * `authentik.stages.authenticator_validate` - authentik Stages.Authenticator.Validate
-        * `authentik.stages.authenticator_webauthn` - authentik Stages.Authenticator.WebAuthn
-        * `authentik.stages.captcha` - authentik Stages.Captcha
-        * `authentik.stages.consent` - authentik Stages.Consent
-        * `authentik.stages.deny` - authentik Stages.Deny
-        * `authentik.stages.dummy` - authentik Stages.Dummy
-        * `authentik.stages.email` - authentik Stages.Email
-        * `authentik.stages.identification` - authentik Stages.Identification
-        * `authentik.stages.invitation` - authentik Stages.User Invitation
-        * `authentik.stages.password` - authentik Stages.Password
-        * `authentik.stages.prompt` - authentik Stages.Prompt
-        * `authentik.stages.user_delete` - authentik Stages.User Delete
-        * `authentik.stages.user_login` - authentik Stages.User Login
-        * `authentik.stages.user_logout` - authentik Stages.User Logout
-        * `authentik.stages.user_write` - authentik Stages.User Write
-        * `authentik.brands` - authentik Brands
-        * `authentik.blueprints` - authentik Blueprints
-        * `authentik.core` - authentik Core
-        * `authentik.enterprise` - authentik Enterprise
-        * `authentik.enterprise.audit` - authentik Enterprise.Audit
-        * `authentik.enterprise.providers.rac` - authentik Enterprise.Providers.RAC
-        * `authentik.enterprise.stages.source` - authentik Enterprise.Stages.Source
-        * `authentik.events` - authentik Events
     AppleChallengeResponseRequest:
       type: object
       description: Pseudo class for apple response
@@ -30140,103 +29842,11 @@ components:
       - static
       - prompt
       type: string
-      description: |-
-        * `static` - Static
-        * `prompt` - Prompt
     AuthTypeEnum:
       enum:
       - basic
       - bearer
       type: string
-      description: |-
-        * `basic` - Basic
-        * `bearer` - Bearer
-    AuthenticateWebAuthnStage:
-      type: object
-      description: AuthenticateWebAuthnStage Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Stage uuid
-        name:
-          type: string
-        component:
-          type: string
-          description: Get object type so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSet'
-        configure_flow:
-          type: string
-          format: uuid
-          nullable: true
-          description: Flow used by an authenticated user to configure this Stage.
-            If empty, user will not be able to configure this stage.
-        friendly_name:
-          type: string
-          nullable: true
-        user_verification:
-          $ref: '#/components/schemas/UserVerificationEnum'
-        authenticator_attachment:
-          allOf:
-          - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
-          nullable: true
-        resident_key_requirement:
-          $ref: '#/components/schemas/ResidentKeyRequirementEnum'
-      required:
-      - component
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    AuthenticateWebAuthnStageRequest:
-      type: object
-      description: AuthenticateWebAuthnStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
-        configure_flow:
-          type: string
-          format: uuid
-          nullable: true
-          description: Flow used by an authenticated user to configure this Stage.
-            If empty, user will not be able to configure this stage.
-        friendly_name:
-          type: string
-          nullable: true
-          minLength: 1
-        user_verification:
-          $ref: '#/components/schemas/UserVerificationEnum'
-        authenticator_attachment:
-          allOf:
-          - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
-          nullable: true
-        resident_key_requirement:
-          $ref: '#/components/schemas/ResidentKeyRequirementEnum'
-      required:
-      - name
     AuthenticatedSession:
       type: object
       description: AuthenticatedSession Serializer
@@ -30366,6 +29976,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
       required:
       - asn
       - current
@@ -30382,20 +29993,11 @@ components:
       - require_superuser
       - require_outpost
       type: string
-      description: |-
-        * `none` - None
-        * `require_authenticated` - Require Authenticated
-        * `require_unauthenticated` - Require Unauthenticated
-        * `require_superuser` - Require Superuser
-        * `require_outpost` - Require Outpost
     AuthenticatorAttachmentEnum:
       enum:
       - platform
       - cross-platform
       type: string
-      description: |-
-        * `platform` - Platform
-        * `cross-platform` - Cross Platform
     AuthenticatorDuoChallenge:
       type: object
       description: Duo Challenge
@@ -31017,12 +30619,17 @@ components:
         webauthn_user_verification:
           allOf:
           - $ref: '#/components/schemas/UserVerificationEnum'
-          description: |-
-            Enforce user verification for WebAuthn devices.
-
-            * `required` - Required
-            * `preferred` - Preferred
-            * `discouraged` - Discouraged
+          description: Enforce user verification for WebAuthn devices.
+        webauthn_allowed_device_types:
+          type: array
+          items:
+            type: string
+            format: uuid
+        webauthn_allowed_device_types_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnDeviceType'
+          readOnly: true
       required:
       - component
       - meta_model_name
@@ -31030,6 +30637,7 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+      - webauthn_allowed_device_types_obj
     AuthenticatorValidateStageRequest:
       type: object
       description: AuthenticatorValidateStage Serializer
@@ -31064,12 +30672,12 @@ components:
         webauthn_user_verification:
           allOf:
           - $ref: '#/components/schemas/UserVerificationEnum'
-          description: |-
-            Enforce user verification for WebAuthn devices.
-
-            * `required` - Required
-            * `preferred` - Preferred
-            * `discouraged` - Discouraged
+          description: Enforce user verification for WebAuthn devices.
+        webauthn_allowed_device_types:
+          type: array
+          items:
+            type: string
+            format: uuid
       required:
       - name
     AuthenticatorValidationChallenge:
@@ -31170,6 +30778,108 @@ components:
           additionalProperties: {}
       required:
       - response
+    AuthenticatorWebAuthnStage:
+      type: object
+      description: AuthenticatorWebAuthnStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+        configure_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used by an authenticated user to configure this Stage.
+            If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+          nullable: true
+        user_verification:
+          $ref: '#/components/schemas/UserVerificationEnum'
+        authenticator_attachment:
+          allOf:
+          - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
+          nullable: true
+        resident_key_requirement:
+          $ref: '#/components/schemas/ResidentKeyRequirementEnum'
+        device_type_restrictions:
+          type: array
+          items:
+            type: string
+            format: uuid
+        device_type_restrictions_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnDeviceType'
+          readOnly: true
+      required:
+      - component
+      - device_type_restrictions_obj
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    AuthenticatorWebAuthnStageRequest:
+      type: object
+      description: AuthenticatorWebAuthnStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSetRequest'
+        configure_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used by an authenticated user to configure this Stage.
+            If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+          nullable: true
+          minLength: 1
+        user_verification:
+          $ref: '#/components/schemas/UserVerificationEnum'
+        authenticator_attachment:
+          allOf:
+          - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
+          nullable: true
+        resident_key_requirement:
+          $ref: '#/components/schemas/ResidentKeyRequirementEnum'
+        device_type_restrictions:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - name
     AutoSubmitChallengeResponseRequest:
       type: object
       description: Pseudo class for autosubmit response
@@ -31213,20 +30923,12 @@ components:
       - authentik.core.auth.TokenBackend
       - authentik.sources.ldap.auth.LDAPBackend
       type: string
-      description: |-
-        * `authentik.core.auth.InbuiltBackend` - User database + standard password
-        * `authentik.core.auth.TokenBackend` - User database + app passwords
-        * `authentik.sources.ldap.auth.LDAPBackend` - User database + LDAP password
     BindingTypeEnum:
       enum:
       - REDIRECT
       - POST
       - POST_AUTO
       type: string
-      description: |-
-        * `REDIRECT` - Redirect Binding
-        * `POST` - POST Binding
-        * `POST_AUTO` - POST Binding with auto-confirmation
     BlueprintFile:
       type: object
       properties:
@@ -31316,12 +31018,6 @@ components:
       - orphaned
       - unknown
       type: string
-      description: |-
-        * `successful` - Successful
-        * `warning` - Warning
-        * `error` - Error
-        * `orphaned` - Orphaned
-        * `unknown` - Unknown
     Brand:
       type: object
       description: Brand Serializer
@@ -31445,13 +31141,6 @@ components:
       - can_debug
       - is_enterprise
       type: string
-      description: |-
-        * `can_save_media` - Can Save Media
-        * `can_geo_ip` - Can Geo Ip
-        * `can_asn` - Can Asn
-        * `can_impersonate` - Can Impersonate
-        * `can_debug` - Can Debug
-        * `is_enterprise` - Is Enterprise
     CaptchaChallenge:
       type: object
       description: Site public key
@@ -31691,10 +31380,6 @@ components:
       - shell
       - redirect
       type: string
-      description: |-
-        * `native` - NATIVE
-        * `shell` - SHELL
-        * `redirect` - REDIRECT
     ChallengeTypes:
       oneOf:
       - $ref: '#/components/schemas/AccessDeniedChallenge'
@@ -31751,9 +31436,6 @@ components:
       - confidential
       - public
       type: string
-      description: |-
-        * `confidential` - Confidential
-        * `public` - Public
     Config:
       type: object
       description: Serialize authentik Config into DRF Object
@@ -31940,10 +31622,6 @@ components:
       - permanent
       - expiring
       type: string
-      description: |-
-        * `always_require` - Always Require
-        * `permanent` - Permanent
-        * `expiring` - Expiring
     ConsentStageRequest:
       type: object
       description: ConsentStage Serializer
@@ -31987,12 +31665,6 @@ components:
       - sidebar_left
       - sidebar_right
       type: string
-      description: |-
-        * `stacked` - STACKED
-        * `content_left` - CONTENT_LEFT
-        * `content_right` - CONTENT_RIGHT
-        * `sidebar_left` - SIDEBAR_LEFT
-        * `sidebar_right` - SIDEBAR_RIGHT
     Coordinate:
       type: object
       description: Coordinates for diagrams
@@ -32057,10 +31729,6 @@ components:
       - message
       - continue
       type: string
-      description: |-
-        * `message_continue` - Message Continue
-        * `message` - Message
-        * `continue` - Continue
     DenyStage:
       type: object
       description: DenyStage Serializer
@@ -32190,12 +31858,6 @@ components:
       - duo
       - sms
       type: string
-      description: |-
-        * `static` - Static
-        * `totp` - TOTP
-        * `webauthn` - WebAuthn
-        * `duo` - Duo
-        * `sms` - SMS
     DigestAlgorithmEnum:
       enum:
       - http://www.w3.org/2000/09/xmldsig#sha1
@@ -32203,19 +31865,11 @@ components:
       - http://www.w3.org/2001/04/xmldsig-more#sha384
       - http://www.w3.org/2001/04/xmlenc#sha512
       type: string
-      description: |-
-        * `http://www.w3.org/2000/09/xmldsig#sha1` - SHA1
-        * `http://www.w3.org/2001/04/xmlenc#sha256` - SHA256
-        * `http://www.w3.org/2001/04/xmldsig-more#sha384` - SHA384
-        * `http://www.w3.org/2001/04/xmlenc#sha512` - SHA512
     DigitsEnum:
       enum:
       - '6'
       - '8'
       type: string
-      description: |-
-        * `6` - 6 digits, widely compatible
-        * `8` - 8 digits, not compatible with apps like Google Authenticator
     DockerServiceConnection:
       type: object
       description: DockerServiceConnection Serializer
@@ -32538,10 +32192,6 @@ components:
       - waiting
       - invalid
       type: string
-      description: |-
-        * `success` - Success
-        * `waiting` - Waiting
-        * `invalid` - Invalid
     EmailChallenge:
       type: object
       description: Email challenge
@@ -32880,34 +32530,6 @@ components:
       - update_available
       - custom_
       type: string
-      description: |-
-        * `login` - Login
-        * `login_failed` - Login Failed
-        * `logout` - Logout
-        * `user_write` - User Write
-        * `suspicious_request` - Suspicious Request
-        * `password_set` - Password Set
-        * `secret_view` - Secret View
-        * `secret_rotate` - Secret Rotate
-        * `invitation_used` - Invite Used
-        * `authorize_application` - Authorize Application
-        * `source_linked` - Source Linked
-        * `impersonation_started` - Impersonation Started
-        * `impersonation_ended` - Impersonation Ended
-        * `flow_execution` - Flow Execution
-        * `policy_execution` - Policy Execution
-        * `policy_exception` - Policy Exception
-        * `property_mapping_exception` - Property Mapping Exception
-        * `system_task_execution` - System Task Execution
-        * `system_task_exception` - System Task Exception
-        * `system_exception` - System Exception
-        * `configuration_error` - Configuration Error
-        * `model_created` - Model Created
-        * `model_updated` - Model Updated
-        * `model_deleted` - Model Deleted
-        * `email_sent` - Email Sent
-        * `update_available` - Update Available
-        * `custom_` - Custom Prefix
     EventMatcherPolicy:
       type: object
       description: Event Matcher Policy Serializer
@@ -32947,36 +32569,8 @@ components:
           allOf:
           - $ref: '#/components/schemas/EventActions'
           nullable: true
-          description: |-
-            Match created events with this action type. When left empty, all action types will be matched.
-
-            * `login` - Login
-            * `login_failed` - Login Failed
-            * `logout` - Logout
-            * `user_write` - User Write
-            * `suspicious_request` - Suspicious Request
-            * `password_set` - Password Set
-            * `secret_view` - Secret View
-            * `secret_rotate` - Secret Rotate
-            * `invitation_used` - Invite Used
-            * `authorize_application` - Authorize Application
-            * `source_linked` - Source Linked
-            * `impersonation_started` - Impersonation Started
-            * `impersonation_ended` - Impersonation Ended
-            * `flow_execution` - Flow Execution
-            * `policy_execution` - Policy Execution
-            * `policy_exception` - Policy Exception
-            * `property_mapping_exception` - Property Mapping Exception
-            * `system_task_execution` - System Task Execution
-            * `system_task_exception` - System Task Exception
-            * `system_exception` - System Exception
-            * `configuration_error` - Configuration Error
-            * `model_created` - Model Created
-            * `model_updated` - Model Updated
-            * `model_deleted` - Model Deleted
-            * `email_sent` - Email Sent
-            * `update_available` - Update Available
-            * `custom_` - Custom Prefix
+          description: Match created events with this action type. When left empty,
+            all action types will be matched.
         client_ip:
           type: string
           nullable: true
@@ -32986,144 +32580,15 @@ components:
           allOf:
           - $ref: '#/components/schemas/AppEnum'
           nullable: true
-          description: |-
-            Match events created by selected application. When left empty, all applications are matched.
-
-            * `authentik.tenants` - authentik Tenants
-            * `authentik.admin` - authentik Admin
-            * `authentik.api` - authentik API
-            * `authentik.crypto` - authentik Crypto
-            * `authentik.flows` - authentik Flows
-            * `authentik.outposts` - authentik Outpost
-            * `authentik.policies.dummy` - authentik Policies.Dummy
-            * `authentik.policies.event_matcher` - authentik Policies.Event Matcher
-            * `authentik.policies.expiry` - authentik Policies.Expiry
-            * `authentik.policies.expression` - authentik Policies.Expression
-            * `authentik.policies.password` - authentik Policies.Password
-            * `authentik.policies.reputation` - authentik Policies.Reputation
-            * `authentik.policies` - authentik Policies
-            * `authentik.providers.ldap` - authentik Providers.LDAP
-            * `authentik.providers.oauth2` - authentik Providers.OAuth2
-            * `authentik.providers.proxy` - authentik Providers.Proxy
-            * `authentik.providers.radius` - authentik Providers.Radius
-            * `authentik.providers.saml` - authentik Providers.SAML
-            * `authentik.providers.scim` - authentik Providers.SCIM
-            * `authentik.rbac` - authentik RBAC
-            * `authentik.recovery` - authentik Recovery
-            * `authentik.sources.ldap` - authentik Sources.LDAP
-            * `authentik.sources.oauth` - authentik Sources.OAuth
-            * `authentik.sources.plex` - authentik Sources.Plex
-            * `authentik.sources.saml` - authentik Sources.SAML
-            * `authentik.stages.authenticator` - authentik Stages.Authenticator
-            * `authentik.stages.authenticator_duo` - authentik Stages.Authenticator.Duo
-            * `authentik.stages.authenticator_sms` - authentik Stages.Authenticator.SMS
-            * `authentik.stages.authenticator_static` - authentik Stages.Authenticator.Static
-            * `authentik.stages.authenticator_totp` - authentik Stages.Authenticator.TOTP
-            * `authentik.stages.authenticator_validate` - authentik Stages.Authenticator.Validate
-            * `authentik.stages.authenticator_webauthn` - authentik Stages.Authenticator.WebAuthn
-            * `authentik.stages.captcha` - authentik Stages.Captcha
-            * `authentik.stages.consent` - authentik Stages.Consent
-            * `authentik.stages.deny` - authentik Stages.Deny
-            * `authentik.stages.dummy` - authentik Stages.Dummy
-            * `authentik.stages.email` - authentik Stages.Email
-            * `authentik.stages.identification` - authentik Stages.Identification
-            * `authentik.stages.invitation` - authentik Stages.User Invitation
-            * `authentik.stages.password` - authentik Stages.Password
-            * `authentik.stages.prompt` - authentik Stages.Prompt
-            * `authentik.stages.user_delete` - authentik Stages.User Delete
-            * `authentik.stages.user_login` - authentik Stages.User Login
-            * `authentik.stages.user_logout` - authentik Stages.User Logout
-            * `authentik.stages.user_write` - authentik Stages.User Write
-            * `authentik.brands` - authentik Brands
-            * `authentik.blueprints` - authentik Blueprints
-            * `authentik.core` - authentik Core
-            * `authentik.enterprise` - authentik Enterprise
-            * `authentik.enterprise.audit` - authentik Enterprise.Audit
-            * `authentik.enterprise.providers.rac` - authentik Enterprise.Providers.RAC
-            * `authentik.enterprise.stages.source` - authentik Enterprise.Stages.Source
-            * `authentik.events` - authentik Events
+          description: Match events created by selected application. When left empty,
+            all applications are matched.
         model:
           allOf:
           - $ref: '#/components/schemas/ModelEnum'
           nullable: true
-          description: |-
-            Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
-
-            * `authentik_tenants.domain` - Domain
-            * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
-            * `authentik_flows.flow` - Flow
-            * `authentik_flows.flowstagebinding` - Flow Stage Binding
-            * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
-            * `authentik_outposts.kubernetesserviceconnection` - Kubernetes Service-Connection
-            * `authentik_outposts.outpost` - Outpost
-            * `authentik_policies_dummy.dummypolicy` - Dummy Policy
-            * `authentik_policies_event_matcher.eventmatcherpolicy` - Event Matcher Policy
-            * `authentik_policies_expiry.passwordexpirypolicy` - Password Expiry Policy
-            * `authentik_policies_expression.expressionpolicy` - Expression Policy
-            * `authentik_policies_password.passwordpolicy` - Password Policy
-            * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
-            * `authentik_policies.policybinding` - Policy Binding
-            * `authentik_providers_ldap.ldapprovider` - LDAP Provider
-            * `authentik_providers_oauth2.scopemapping` - Scope Mapping
-            * `authentik_providers_oauth2.oauth2provider` - OAuth2/OpenID Provider
-            * `authentik_providers_proxy.proxyprovider` - Proxy Provider
-            * `authentik_providers_radius.radiusprovider` - Radius Provider
-            * `authentik_providers_saml.samlprovider` - SAML Provider
-            * `authentik_providers_saml.samlpropertymapping` - SAML Property Mapping
-            * `authentik_providers_scim.scimprovider` - SCIM Provider
-            * `authentik_providers_scim.scimmapping` - SCIM Mapping
-            * `authentik_rbac.role` - Role
-            * `authentik_sources_ldap.ldapsource` - LDAP Source
-            * `authentik_sources_ldap.ldappropertymapping` - LDAP Property Mapping
-            * `authentik_sources_oauth.oauthsource` - OAuth Source
-            * `authentik_sources_oauth.useroauthsourceconnection` - User OAuth Source Connection
-            * `authentik_sources_plex.plexsource` - Plex Source
-            * `authentik_sources_plex.plexsourceconnection` - User Plex Source Connection
-            * `authentik_sources_saml.samlsource` - SAML Source
-            * `authentik_sources_saml.usersamlsourceconnection` - User SAML Source Connection
-            * `authentik_stages_authenticator_duo.authenticatorduostage` - Duo Authenticator Setup Stage
-            * `authentik_stages_authenticator_duo.duodevice` - Duo Device
-            * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
-            * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
-            * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Setup Stage
-            * `authentik_stages_authenticator_static.staticdevice` - Static Device
-            * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
-            * `authentik_stages_authenticator_totp.totpdevice` - TOTP Device
-            * `authentik_stages_authenticator_validate.authenticatorvalidatestage` - Authenticator Validation Stage
-            * `authentik_stages_authenticator_webauthn.authenticatewebauthnstage` - WebAuthn Authenticator Setup Stage
-            * `authentik_stages_authenticator_webauthn.webauthndevice` - WebAuthn Device
-            * `authentik_stages_captcha.captchastage` - Captcha Stage
-            * `authentik_stages_consent.consentstage` - Consent Stage
-            * `authentik_stages_consent.userconsent` - User Consent
-            * `authentik_stages_deny.denystage` - Deny Stage
-            * `authentik_stages_dummy.dummystage` - Dummy Stage
-            * `authentik_stages_email.emailstage` - Email Stage
-            * `authentik_stages_identification.identificationstage` - Identification Stage
-            * `authentik_stages_invitation.invitationstage` - Invitation Stage
-            * `authentik_stages_invitation.invitation` - Invitation
-            * `authentik_stages_password.passwordstage` - Password Stage
-            * `authentik_stages_prompt.prompt` - Prompt
-            * `authentik_stages_prompt.promptstage` - Prompt Stage
-            * `authentik_stages_user_delete.userdeletestage` - User Delete Stage
-            * `authentik_stages_user_login.userloginstage` - User Login Stage
-            * `authentik_stages_user_logout.userlogoutstage` - User Logout Stage
-            * `authentik_stages_user_write.userwritestage` - User Write Stage
-            * `authentik_brands.brand` - Brand
-            * `authentik_blueprints.blueprintinstance` - Blueprint Instance
-            * `authentik_core.group` - Group
-            * `authentik_core.user` - User
-            * `authentik_core.application` - Application
-            * `authentik_core.token` - Token
-            * `authentik_enterprise.license` - License
-            * `authentik_providers_rac.racprovider` - RAC Provider
-            * `authentik_providers_rac.endpoint` - RAC Endpoint
-            * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
-            * `authentik_stages_source.sourcestage` - Source Stage
-            * `authentik_events.event` - Event
-            * `authentik_events.notificationtransport` - Notification Transport
-            * `authentik_events.notification` - Notification
-            * `authentik_events.notificationrule` - Notification Rule
-            * `authentik_events.notificationwebhookmapping` - Webhook Mapping
+          description: Match events created by selected model. When left empty, all
+            models are matched. When an app is selected, all the application's models
+            are matched.
       required:
       - bound_to
       - component
@@ -33147,36 +32612,8 @@ components:
           allOf:
           - $ref: '#/components/schemas/EventActions'
           nullable: true
-          description: |-
-            Match created events with this action type. When left empty, all action types will be matched.
-
-            * `login` - Login
-            * `login_failed` - Login Failed
-            * `logout` - Logout
-            * `user_write` - User Write
-            * `suspicious_request` - Suspicious Request
-            * `password_set` - Password Set
-            * `secret_view` - Secret View
-            * `secret_rotate` - Secret Rotate
-            * `invitation_used` - Invite Used
-            * `authorize_application` - Authorize Application
-            * `source_linked` - Source Linked
-            * `impersonation_started` - Impersonation Started
-            * `impersonation_ended` - Impersonation Ended
-            * `flow_execution` - Flow Execution
-            * `policy_execution` - Policy Execution
-            * `policy_exception` - Policy Exception
-            * `property_mapping_exception` - Property Mapping Exception
-            * `system_task_execution` - System Task Execution
-            * `system_task_exception` - System Task Exception
-            * `system_exception` - System Exception
-            * `configuration_error` - Configuration Error
-            * `model_created` - Model Created
-            * `model_updated` - Model Updated
-            * `model_deleted` - Model Deleted
-            * `email_sent` - Email Sent
-            * `update_available` - Update Available
-            * `custom_` - Custom Prefix
+          description: Match created events with this action type. When left empty,
+            all action types will be matched.
         client_ip:
           type: string
           nullable: true
@@ -33187,144 +32624,15 @@ components:
           allOf:
           - $ref: '#/components/schemas/AppEnum'
           nullable: true
-          description: |-
-            Match events created by selected application. When left empty, all applications are matched.
-
-            * `authentik.tenants` - authentik Tenants
-            * `authentik.admin` - authentik Admin
-            * `authentik.api` - authentik API
-            * `authentik.crypto` - authentik Crypto
-            * `authentik.flows` - authentik Flows
-            * `authentik.outposts` - authentik Outpost
-            * `authentik.policies.dummy` - authentik Policies.Dummy
-            * `authentik.policies.event_matcher` - authentik Policies.Event Matcher
-            * `authentik.policies.expiry` - authentik Policies.Expiry
-            * `authentik.policies.expression` - authentik Policies.Expression
-            * `authentik.policies.password` - authentik Policies.Password
-            * `authentik.policies.reputation` - authentik Policies.Reputation
-            * `authentik.policies` - authentik Policies
-            * `authentik.providers.ldap` - authentik Providers.LDAP
-            * `authentik.providers.oauth2` - authentik Providers.OAuth2
-            * `authentik.providers.proxy` - authentik Providers.Proxy
-            * `authentik.providers.radius` - authentik Providers.Radius
-            * `authentik.providers.saml` - authentik Providers.SAML
-            * `authentik.providers.scim` - authentik Providers.SCIM
-            * `authentik.rbac` - authentik RBAC
-            * `authentik.recovery` - authentik Recovery
-            * `authentik.sources.ldap` - authentik Sources.LDAP
-            * `authentik.sources.oauth` - authentik Sources.OAuth
-            * `authentik.sources.plex` - authentik Sources.Plex
-            * `authentik.sources.saml` - authentik Sources.SAML
-            * `authentik.stages.authenticator` - authentik Stages.Authenticator
-            * `authentik.stages.authenticator_duo` - authentik Stages.Authenticator.Duo
-            * `authentik.stages.authenticator_sms` - authentik Stages.Authenticator.SMS
-            * `authentik.stages.authenticator_static` - authentik Stages.Authenticator.Static
-            * `authentik.stages.authenticator_totp` - authentik Stages.Authenticator.TOTP
-            * `authentik.stages.authenticator_validate` - authentik Stages.Authenticator.Validate
-            * `authentik.stages.authenticator_webauthn` - authentik Stages.Authenticator.WebAuthn
-            * `authentik.stages.captcha` - authentik Stages.Captcha
-            * `authentik.stages.consent` - authentik Stages.Consent
-            * `authentik.stages.deny` - authentik Stages.Deny
-            * `authentik.stages.dummy` - authentik Stages.Dummy
-            * `authentik.stages.email` - authentik Stages.Email
-            * `authentik.stages.identification` - authentik Stages.Identification
-            * `authentik.stages.invitation` - authentik Stages.User Invitation
-            * `authentik.stages.password` - authentik Stages.Password
-            * `authentik.stages.prompt` - authentik Stages.Prompt
-            * `authentik.stages.user_delete` - authentik Stages.User Delete
-            * `authentik.stages.user_login` - authentik Stages.User Login
-            * `authentik.stages.user_logout` - authentik Stages.User Logout
-            * `authentik.stages.user_write` - authentik Stages.User Write
-            * `authentik.brands` - authentik Brands
-            * `authentik.blueprints` - authentik Blueprints
-            * `authentik.core` - authentik Core
-            * `authentik.enterprise` - authentik Enterprise
-            * `authentik.enterprise.audit` - authentik Enterprise.Audit
-            * `authentik.enterprise.providers.rac` - authentik Enterprise.Providers.RAC
-            * `authentik.enterprise.stages.source` - authentik Enterprise.Stages.Source
-            * `authentik.events` - authentik Events
+          description: Match events created by selected application. When left empty,
+            all applications are matched.
         model:
           allOf:
           - $ref: '#/components/schemas/ModelEnum'
           nullable: true
-          description: |-
-            Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
-
-            * `authentik_tenants.domain` - Domain
-            * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
-            * `authentik_flows.flow` - Flow
-            * `authentik_flows.flowstagebinding` - Flow Stage Binding
-            * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
-            * `authentik_outposts.kubernetesserviceconnection` - Kubernetes Service-Connection
-            * `authentik_outposts.outpost` - Outpost
-            * `authentik_policies_dummy.dummypolicy` - Dummy Policy
-            * `authentik_policies_event_matcher.eventmatcherpolicy` - Event Matcher Policy
-            * `authentik_policies_expiry.passwordexpirypolicy` - Password Expiry Policy
-            * `authentik_policies_expression.expressionpolicy` - Expression Policy
-            * `authentik_policies_password.passwordpolicy` - Password Policy
-            * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
-            * `authentik_policies.policybinding` - Policy Binding
-            * `authentik_providers_ldap.ldapprovider` - LDAP Provider
-            * `authentik_providers_oauth2.scopemapping` - Scope Mapping
-            * `authentik_providers_oauth2.oauth2provider` - OAuth2/OpenID Provider
-            * `authentik_providers_proxy.proxyprovider` - Proxy Provider
-            * `authentik_providers_radius.radiusprovider` - Radius Provider
-            * `authentik_providers_saml.samlprovider` - SAML Provider
-            * `authentik_providers_saml.samlpropertymapping` - SAML Property Mapping
-            * `authentik_providers_scim.scimprovider` - SCIM Provider
-            * `authentik_providers_scim.scimmapping` - SCIM Mapping
-            * `authentik_rbac.role` - Role
-            * `authentik_sources_ldap.ldapsource` - LDAP Source
-            * `authentik_sources_ldap.ldappropertymapping` - LDAP Property Mapping
-            * `authentik_sources_oauth.oauthsource` - OAuth Source
-            * `authentik_sources_oauth.useroauthsourceconnection` - User OAuth Source Connection
-            * `authentik_sources_plex.plexsource` - Plex Source
-            * `authentik_sources_plex.plexsourceconnection` - User Plex Source Connection
-            * `authentik_sources_saml.samlsource` - SAML Source
-            * `authentik_sources_saml.usersamlsourceconnection` - User SAML Source Connection
-            * `authentik_stages_authenticator_duo.authenticatorduostage` - Duo Authenticator Setup Stage
-            * `authentik_stages_authenticator_duo.duodevice` - Duo Device
-            * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
-            * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
-            * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Setup Stage
-            * `authentik_stages_authenticator_static.staticdevice` - Static Device
-            * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
-            * `authentik_stages_authenticator_totp.totpdevice` - TOTP Device
-            * `authentik_stages_authenticator_validate.authenticatorvalidatestage` - Authenticator Validation Stage
-            * `authentik_stages_authenticator_webauthn.authenticatewebauthnstage` - WebAuthn Authenticator Setup Stage
-            * `authentik_stages_authenticator_webauthn.webauthndevice` - WebAuthn Device
-            * `authentik_stages_captcha.captchastage` - Captcha Stage
-            * `authentik_stages_consent.consentstage` - Consent Stage
-            * `authentik_stages_consent.userconsent` - User Consent
-            * `authentik_stages_deny.denystage` - Deny Stage
-            * `authentik_stages_dummy.dummystage` - Dummy Stage
-            * `authentik_stages_email.emailstage` - Email Stage
-            * `authentik_stages_identification.identificationstage` - Identification Stage
-            * `authentik_stages_invitation.invitationstage` - Invitation Stage
-            * `authentik_stages_invitation.invitation` - Invitation
-            * `authentik_stages_password.passwordstage` - Password Stage
-            * `authentik_stages_prompt.prompt` - Prompt
-            * `authentik_stages_prompt.promptstage` - Prompt Stage
-            * `authentik_stages_user_delete.userdeletestage` - User Delete Stage
-            * `authentik_stages_user_login.userloginstage` - User Login Stage
-            * `authentik_stages_user_logout.userlogoutstage` - User Logout Stage
-            * `authentik_stages_user_write.userwritestage` - User Write Stage
-            * `authentik_brands.brand` - Brand
-            * `authentik_blueprints.blueprintinstance` - Blueprint Instance
-            * `authentik_core.group` - Group
-            * `authentik_core.user` - User
-            * `authentik_core.application` - Application
-            * `authentik_core.token` - Token
-            * `authentik_enterprise.license` - License
-            * `authentik_providers_rac.racprovider` - RAC Provider
-            * `authentik_providers_rac.endpoint` - RAC Endpoint
-            * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
-            * `authentik_stages_source.sourcestage` - Source Stage
-            * `authentik_events.event` - Event
-            * `authentik_events.notificationtransport` - Notification Transport
-            * `authentik_events.notification` - Notification
-            * `authentik_events.notificationrule` - Notification Rule
-            * `authentik_events.notificationwebhookmapping` - Webhook Mapping
+          description: Match events created by selected model. When left empty, all
+            models are matched. When an app is selected, all the application's models
+            are matched.
       required:
       - name
     EventRequest:
@@ -33383,6 +32691,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
         scope:
           type: array
           items:
@@ -33601,16 +32910,8 @@ components:
         designation:
           allOf:
           - $ref: '#/components/schemas/FlowDesignationEnum'
-          description: |-
-            Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.
-
-            * `authentication` - Authentication
-            * `authorization` - Authorization
-            * `invalidation` - Invalidation
-            * `enrollment` - Enrollment
-            * `unenrollment` - Unrenollment
-            * `recovery` - Recovery
-            * `stage_configuration` - Stage Configuration
+          description: Decides what this Flow is used for. For example, the Authentication
+            flow is redirect to when an un-authenticated user visits authentik.
         background:
           type: string
           description: |-
@@ -33648,23 +32949,13 @@ components:
         denied_action:
           allOf:
           - $ref: '#/components/schemas/DeniedActionEnum'
-          description: |-
-            Configure what should happen when a flow denies access to a user.
-
-            * `message_continue` - Message Continue
-            * `message` - Message
-            * `continue` - Continue
+          description: Configure what should happen when a flow denies access to a
+            user.
         authentication:
           allOf:
           - $ref: '#/components/schemas/AuthenticationEnum'
-          description: |-
-            Required level of authentication and authorization to access a flow.
-
-            * `none` - None
-            * `require_authenticated` - Require Authenticated
-            * `require_unauthenticated` - Require Unauthenticated
-            * `require_superuser` - Require Superuser
-            * `require_outpost` - Require Outpost
+          description: Required level of authentication and authorization to access
+            a flow.
       required:
       - background
       - cache_count
@@ -33730,14 +33021,6 @@ components:
       - recovery
       - stage_configuration
       type: string
-      description: |-
-        * `authentication` - Authentication
-        * `authorization` - Authorization
-        * `invalidation` - Invalidation
-        * `enrollment` - Enrollment
-        * `unenrollment` - Unrenollment
-        * `recovery` - Recovery
-        * `stage_configuration` - Stage Configuration
     FlowDiagram:
       type: object
       description: response of the flow's diagram action
@@ -33839,12 +33122,6 @@ components:
       - sidebar_left
       - sidebar_right
       type: string
-      description: |-
-        * `stacked` - Stacked
-        * `content_left` - Content Left
-        * `content_right` - Content Right
-        * `sidebar_left` - Sidebar Left
-        * `sidebar_right` - Sidebar Right
     FlowRequest:
       type: object
       description: Flow Serializer
@@ -33865,16 +33142,8 @@ components:
         designation:
           allOf:
           - $ref: '#/components/schemas/FlowDesignationEnum'
-          description: |-
-            Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.
-
-            * `authentication` - Authentication
-            * `authorization` - Authorization
-            * `invalidation` - Invalidation
-            * `enrollment` - Enrollment
-            * `unenrollment` - Unrenollment
-            * `recovery` - Recovery
-            * `stage_configuration` - Stage Configuration
+          description: Decides what this Flow is used for. For example, the Authentication
+            flow is redirect to when an un-authenticated user visits authentik.
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         compatibility_mode:
@@ -33886,23 +33155,13 @@ components:
         denied_action:
           allOf:
           - $ref: '#/components/schemas/DeniedActionEnum'
-          description: |-
-            Configure what should happen when a flow denies access to a user.
-
-            * `message_continue` - Message Continue
-            * `message` - Message
-            * `continue` - Continue
+          description: Configure what should happen when a flow denies access to a
+            user.
         authentication:
           allOf:
           - $ref: '#/components/schemas/AuthenticationEnum'
-          description: |-
-            Required level of authentication and authorization to access a flow.
-
-            * `none` - None
-            * `require_authenticated` - Require Authenticated
-            * `require_unauthenticated` - Require Unauthenticated
-            * `require_superuser` - Require Superuser
-            * `require_outpost` - Require Outpost
+          description: Required level of authentication and authorization to access
+            a flow.
       required:
       - designation
       - name
@@ -33934,16 +33193,8 @@ components:
         designation:
           allOf:
           - $ref: '#/components/schemas/FlowDesignationEnum'
-          description: |-
-            Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.
-
-            * `authentication` - Authentication
-            * `authorization` - Authorization
-            * `invalidation` - Invalidation
-            * `enrollment` - Enrollment
-            * `unenrollment` - Unrenollment
-            * `recovery` - Recovery
-            * `stage_configuration` - Stage Configuration
+          description: Decides what this Flow is used for. For example, the Authentication
+            flow is redirect to when an un-authenticated user visits authentik.
         background:
           type: string
           description: |-
@@ -33965,12 +33216,8 @@ components:
         denied_action:
           allOf:
           - $ref: '#/components/schemas/DeniedActionEnum'
-          description: |-
-            Configure what should happen when a flow denies access to a user.
-
-            * `message_continue` - Message Continue
-            * `message` - Message
-            * `continue` - Continue
+          description: Configure what should happen when a flow denies access to a
+            user.
       required:
       - background
       - designation
@@ -34000,16 +33247,8 @@ components:
         designation:
           allOf:
           - $ref: '#/components/schemas/FlowDesignationEnum'
-          description: |-
-            Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.
-
-            * `authentication` - Authentication
-            * `authorization` - Authorization
-            * `invalidation` - Invalidation
-            * `enrollment` - Enrollment
-            * `unenrollment` - Unrenollment
-            * `recovery` - Recovery
-            * `stage_configuration` - Stage Configuration
+          description: Decides what this Flow is used for. For example, the Authentication
+            flow is redirect to when an un-authenticated user visits authentik.
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         compatibility_mode:
@@ -34021,12 +33260,8 @@ components:
         denied_action:
           allOf:
           - $ref: '#/components/schemas/DeniedActionEnum'
-          description: |-
-            Configure what should happen when a flow denies access to a user.
-
-            * `message_continue` - Message Continue
-            * `message` - Message
-            * `continue` - Continue
+          description: Configure what should happen when a flow denies access to a
+            user.
       required:
       - designation
       - name
@@ -34070,12 +33305,10 @@ components:
         invalid_response_action:
           allOf:
           - $ref: '#/components/schemas/InvalidResponseActionEnum'
-          description: |-
-            Configure how the flow executor should handle an invalid response to a challenge. RETRY returns the error message and a similar challenge to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current context.
-
-            * `retry` - Retry
-            * `restart` - Restart
-            * `restart_with_context` - Restart With Context
+          description: Configure how the flow executor should handle an invalid response
+            to a challenge. RETRY returns the error message and a similar challenge
+            to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT
+            restarts the flow while keeping the current context.
       required:
       - order
       - pk
@@ -34108,12 +33341,10 @@ components:
         invalid_response_action:
           allOf:
           - $ref: '#/components/schemas/InvalidResponseActionEnum'
-          description: |-
-            Configure how the flow executor should handle an invalid response to a challenge. RETRY returns the error message and a similar challenge to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current context.
-
-            * `retry` - Retry
-            * `restart` - Restart
-            * `restart_with_context` - Restart With Context
+          description: Configure how the flow executor should handle an invalid response
+            to a challenge. RETRY returns the error message and a similar challenge
+            to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT
+            restarts the flow while keeping the current context.
       required:
       - order
       - stage
@@ -34148,11 +33379,6 @@ components:
       - bind_continent_country
       - bind_continent_country_city
       type: string
-      description: |-
-        * `no_binding` - No Binding
-        * `bind_continent` - Bind Continent
-        * `bind_continent_country` - Bind Continent Country
-        * `bind_continent_country_city` - Bind Continent Country City
     Group:
       type: object
       description: Group Serializer
@@ -34544,21 +33770,12 @@ components:
       - recovery
       - app_password
       type: string
-      description: |-
-        * `verification` - Intent Verification
-        * `api` - Intent Api
-        * `recovery` - Intent Recovery
-        * `app_password` - Intent App Password
     InvalidResponseActionEnum:
       enum:
       - retry
       - restart
       - restart_with_context
       type: string
-      description: |-
-        * `retry` - Retry
-        * `restart` - Restart
-        * `restart_with_context` - Restart With Context
     Invitation:
       type: object
       description: Invitation Serializer
@@ -34575,6 +33792,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
         fixed_data:
           type: object
           additionalProperties: {}
@@ -34611,6 +33829,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
         fixed_data:
           type: object
           additionalProperties: {}
@@ -34690,9 +33909,6 @@ components:
       - global
       - per_provider
       type: string
-      description: |-
-        * `global` - Same identifier is used for all providers
-        * `per_provider` - Each provider has a different issuer, based on the application slug.
     KubernetesServiceConnection:
       type: object
       description: KubernetesServiceConnection Serializer
@@ -34760,9 +33976,6 @@ components:
       - direct
       - cached
       type: string
-      description: |-
-        * `direct` - Direct
-        * `cached` - Cached
     LDAPDebug:
       type: object
       properties:
@@ -35157,14 +34370,8 @@ components:
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: |-
-            How the source determines if an existing user should be authenticated or a new user enrolled.
-
-            * `identifier` - Use the source-specific identifier
-            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
-            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
-            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
-            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
+          description: How the source determines if an existing user should be authenticated
+            or a new user enrolled.
         managed:
           type: string
           nullable: true
@@ -35308,14 +34515,8 @@ components:
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: |-
-            How the source determines if an existing user should be authenticated or a new user enrolled.
-
-            * `identifier` - Use the source-specific identifier
-            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
-            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
-            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
-            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
+          description: How the source determines if an existing user should be authenticated
+            or a new user enrolled.
         user_path_template:
           type: string
           minLength: 1
@@ -35547,15 +34748,6 @@ components:
       - debug
       - notset
       type: string
-      description: |-
-        * `critical` - critical
-        * `exception` - exception
-        * `error` - error
-        * `warn` - warn
-        * `warning` - warning
-        * `info` - info
-        * `debug` - debug
-        * `notset` - notset
     LoginChallengeTypes:
       oneOf:
       - $ref: '#/components/schemas/RedirectChallenge'
@@ -35659,7 +34851,7 @@ components:
       - authentik_stages_authenticator_totp.authenticatortotpstage
       - authentik_stages_authenticator_totp.totpdevice
       - authentik_stages_authenticator_validate.authenticatorvalidatestage
-      - authentik_stages_authenticator_webauthn.authenticatewebauthnstage
+      - authentik_stages_authenticator_webauthn.authenticatorwebauthnstage
       - authentik_stages_authenticator_webauthn.webauthndevice
       - authentik_stages_captcha.captchastage
       - authentik_stages_consent.consentstage
@@ -35694,82 +34886,6 @@ components:
       - authentik_events.notificationrule
       - authentik_events.notificationwebhookmapping
       type: string
-      description: |-
-        * `authentik_tenants.domain` - Domain
-        * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
-        * `authentik_flows.flow` - Flow
-        * `authentik_flows.flowstagebinding` - Flow Stage Binding
-        * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
-        * `authentik_outposts.kubernetesserviceconnection` - Kubernetes Service-Connection
-        * `authentik_outposts.outpost` - Outpost
-        * `authentik_policies_dummy.dummypolicy` - Dummy Policy
-        * `authentik_policies_event_matcher.eventmatcherpolicy` - Event Matcher Policy
-        * `authentik_policies_expiry.passwordexpirypolicy` - Password Expiry Policy
-        * `authentik_policies_expression.expressionpolicy` - Expression Policy
-        * `authentik_policies_password.passwordpolicy` - Password Policy
-        * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
-        * `authentik_policies.policybinding` - Policy Binding
-        * `authentik_providers_ldap.ldapprovider` - LDAP Provider
-        * `authentik_providers_oauth2.scopemapping` - Scope Mapping
-        * `authentik_providers_oauth2.oauth2provider` - OAuth2/OpenID Provider
-        * `authentik_providers_proxy.proxyprovider` - Proxy Provider
-        * `authentik_providers_radius.radiusprovider` - Radius Provider
-        * `authentik_providers_saml.samlprovider` - SAML Provider
-        * `authentik_providers_saml.samlpropertymapping` - SAML Property Mapping
-        * `authentik_providers_scim.scimprovider` - SCIM Provider
-        * `authentik_providers_scim.scimmapping` - SCIM Mapping
-        * `authentik_rbac.role` - Role
-        * `authentik_sources_ldap.ldapsource` - LDAP Source
-        * `authentik_sources_ldap.ldappropertymapping` - LDAP Property Mapping
-        * `authentik_sources_oauth.oauthsource` - OAuth Source
-        * `authentik_sources_oauth.useroauthsourceconnection` - User OAuth Source Connection
-        * `authentik_sources_plex.plexsource` - Plex Source
-        * `authentik_sources_plex.plexsourceconnection` - User Plex Source Connection
-        * `authentik_sources_saml.samlsource` - SAML Source
-        * `authentik_sources_saml.usersamlsourceconnection` - User SAML Source Connection
-        * `authentik_stages_authenticator_duo.authenticatorduostage` - Duo Authenticator Setup Stage
-        * `authentik_stages_authenticator_duo.duodevice` - Duo Device
-        * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
-        * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
-        * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Setup Stage
-        * `authentik_stages_authenticator_static.staticdevice` - Static Device
-        * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
-        * `authentik_stages_authenticator_totp.totpdevice` - TOTP Device
-        * `authentik_stages_authenticator_validate.authenticatorvalidatestage` - Authenticator Validation Stage
-        * `authentik_stages_authenticator_webauthn.authenticatewebauthnstage` - WebAuthn Authenticator Setup Stage
-        * `authentik_stages_authenticator_webauthn.webauthndevice` - WebAuthn Device
-        * `authentik_stages_captcha.captchastage` - Captcha Stage
-        * `authentik_stages_consent.consentstage` - Consent Stage
-        * `authentik_stages_consent.userconsent` - User Consent
-        * `authentik_stages_deny.denystage` - Deny Stage
-        * `authentik_stages_dummy.dummystage` - Dummy Stage
-        * `authentik_stages_email.emailstage` - Email Stage
-        * `authentik_stages_identification.identificationstage` - Identification Stage
-        * `authentik_stages_invitation.invitationstage` - Invitation Stage
-        * `authentik_stages_invitation.invitation` - Invitation
-        * `authentik_stages_password.passwordstage` - Password Stage
-        * `authentik_stages_prompt.prompt` - Prompt
-        * `authentik_stages_prompt.promptstage` - Prompt Stage
-        * `authentik_stages_user_delete.userdeletestage` - User Delete Stage
-        * `authentik_stages_user_login.userloginstage` - User Login Stage
-        * `authentik_stages_user_logout.userlogoutstage` - User Logout Stage
-        * `authentik_stages_user_write.userwritestage` - User Write Stage
-        * `authentik_brands.brand` - Brand
-        * `authentik_blueprints.blueprintinstance` - Blueprint Instance
-        * `authentik_core.group` - Group
-        * `authentik_core.user` - User
-        * `authentik_core.application` - Application
-        * `authentik_core.token` - Token
-        * `authentik_enterprise.license` - License
-        * `authentik_providers_rac.racprovider` - RAC Provider
-        * `authentik_providers_rac.endpoint` - RAC Endpoint
-        * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
-        * `authentik_stages_source.sourcestage` - Source Stage
-        * `authentik_events.event` - Event
-        * `authentik_events.notificationtransport` - Notification Transport
-        * `authentik_events.notification` - Notification
-        * `authentik_events.notificationrule` - Notification Rule
-        * `authentik_events.notificationwebhookmapping` - Webhook Mapping
     NameIdPolicyEnum:
       enum:
       - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
@@ -35778,12 +34894,6 @@ components:
       - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
       - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
       type: string
-      description: |-
-        * `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress` - Email
-        * `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent` - Persistent
-        * `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName` - X509
-        * `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName` - Windows
-        * `urn:oasis:names:tc:SAML:2.0:nameid-format:transient` - Transient
     NetworkBindingEnum:
       enum:
       - no_binding
@@ -35791,21 +34901,12 @@ components:
       - bind_asn_network
       - bind_asn_network_ip
       type: string
-      description: |-
-        * `no_binding` - No Binding
-        * `bind_asn` - Bind Asn
-        * `bind_asn_network` - Bind Asn Network
-        * `bind_asn_network_ip` - Bind Asn Network Ip
     NotConfiguredActionEnum:
       enum:
       - skip
       - deny
       - configure
       type: string
-      description: |-
-        * `skip` - Skip
-        * `deny` - Deny
-        * `configure` - Configure
     Notification:
       type: object
       description: Notification Serializer
@@ -35865,12 +34966,8 @@ components:
         severity:
           allOf:
           - $ref: '#/components/schemas/SeverityEnum'
-          description: |-
-            Controls which severity level the created notifications will have.
-
-            * `notice` - Notice
-            * `warning` - Warning
-            * `alert` - Alert
+          description: Controls which severity level the created notifications will
+            have.
         group:
           type: string
           format: uuid
@@ -35903,12 +35000,8 @@ components:
         severity:
           allOf:
           - $ref: '#/components/schemas/SeverityEnum'
-          description: |-
-            Controls which severity level the created notifications will have.
-
-            * `notice` - Notice
-            * `warning` - Warning
-            * `alert` - Alert
+          description: Controls which severity level the created notifications will
+            have.
         group:
           type: string
           format: uuid
@@ -35956,11 +35049,6 @@ components:
       - webhook_slack
       - email
       type: string
-      description: |-
-        * `local` - authentik inbuilt notifications
-        * `webhook` - Generic Webhook
-        * `webhook_slack` - Slack Webhook (Slack/Discord)
-        * `email` - Email
     NotificationTransportRequest:
       type: object
       description: NotificationTransport Serializer
@@ -36083,11 +35171,8 @@ components:
         client_type:
           allOf:
           - $ref: '#/components/schemas/ClientTypeEnum'
-          description: |-
-            Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable
-
-            * `confidential` - Confidential
-            * `public` - Public
+          description: Confidential clients are capable of maintaining the confidentiality
+            of their credentials. Public clients are incapable
         client_id:
           type: string
           maxLength: 255
@@ -36122,23 +35207,12 @@ components:
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
-          description: |-
-            Configure what data should be used as unique User Identifier. For most cases, the default should be fine.
-
-            * `hashed_user_id` - Based on the Hashed User ID
-            * `user_id` - Based on user ID
-            * `user_uuid` - Based on user UUID
-            * `user_username` - Based on the username
-            * `user_email` - Based on the User's Email. This is recommended over the UPN method.
-            * `user_upn` - Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains.
+          description: Configure what data should be used as unique User Identifier.
+            For most cases, the default should be fine.
         issuer_mode:
           allOf:
           - $ref: '#/components/schemas/IssuerModeEnum'
-          description: |-
-            Configure how the issuer field of the ID Token should be filled.
-
-            * `global` - Same identifier is used for all providers
-            * `per_provider` - Each provider has a different issuer, based on the application slug.
+          description: Configure how the issuer field of the ID Token should be filled.
         jwks_sources:
           type: array
           items:
@@ -36184,11 +35258,8 @@ components:
         client_type:
           allOf:
           - $ref: '#/components/schemas/ClientTypeEnum'
-          description: |-
-            Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable
-
-            * `confidential` - Confidential
-            * `public` - Public
+          description: Confidential clients are capable of maintaining the confidentiality
+            of their credentials. Public clients are incapable
         client_id:
           type: string
           minLength: 1
@@ -36227,23 +35298,12 @@ components:
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
-          description: |-
-            Configure what data should be used as unique User Identifier. For most cases, the default should be fine.
-
-            * `hashed_user_id` - Based on the Hashed User ID
-            * `user_id` - Based on user ID
-            * `user_uuid` - Based on user UUID
-            * `user_username` - Based on the username
-            * `user_email` - Based on the User's Email. This is recommended over the UPN method.
-            * `user_upn` - Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains.
+          description: Configure what data should be used as unique User Identifier.
+            For most cases, the default should be fine.
         issuer_mode:
           allOf:
           - $ref: '#/components/schemas/IssuerModeEnum'
-          description: |-
-            Configure how the issuer field of the ID Token should be filled.
-
-            * `global` - Same identifier is used for all providers
-            * `per_provider` - Each provider has a different issuer, based on the application slug.
+          description: Configure how the issuer field of the ID Token should be filled.
         jwks_sources:
           type: array
           items:
@@ -36396,14 +35456,8 @@ components:
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: |-
-            How the source determines if an existing user should be authenticated or a new user enrolled.
-
-            * `identifier` - Use the source-specific identifier
-            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
-            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
-            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
-            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
+          description: How the source determines if an existing user should be authenticated
+            or a new user enrolled.
         managed:
           type: string
           nullable: true
@@ -36507,14 +35561,8 @@ components:
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: |-
-            How the source determines if an existing user should be authenticated or a new user enrolled.
-
-            * `identifier` - Use the source-specific identifier
-            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
-            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
-            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
-            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
+          description: How the source determines if an existing user should be authenticated
+            or a new user enrolled.
         user_path_template:
           type: string
           minLength: 1
@@ -36523,26 +35571,22 @@ components:
         request_token_url:
           type: string
           nullable: true
-          minLength: 1
           description: URL used to request the initial token. This URL is only required
             for OAuth 1.
           maxLength: 255
         authorization_url:
           type: string
           nullable: true
-          minLength: 1
           description: URL the user is redirect to to conest the flow.
           maxLength: 255
         access_token_url:
           type: string
           nullable: true
-          minLength: 1
           description: URL used by authentik to retrieve tokens.
           maxLength: 255
         profile_url:
           type: string
           nullable: true
-          minLength: 1
           description: URL used by authentik to get user information.
           maxLength: 255
         consumer_key:
@@ -36758,11 +35802,6 @@ components:
       - radius
       - rac
       type: string
-      description: |-
-        * `proxy` - Proxy
-        * `ldap` - Ldap
-        * `radius` - Radius
-        * `rac` - Rac
     PaginatedApplicationList:
       type: object
       properties:
@@ -36772,18 +35811,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Application'
-      required:
-      - pagination
-      - results
-    PaginatedAuthenticateWebAuthnStageList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/AuthenticateWebAuthnStage'
       required:
       - pagination
       - results
@@ -36856,6 +35883,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AuthenticatorValidateStage'
+      required:
+      - pagination
+      - results
+    PaginatedAuthenticatorWebAuthnStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticatorWebAuthnStage'
       required:
       - pagination
       - results
@@ -37927,6 +36966,18 @@ components:
       required:
       - pagination
       - results
+    PaginatedWebAuthnDeviceTypeList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnDeviceType'
+      required:
+      - pagination
+      - results
     Pagination:
       type: object
       properties:
@@ -38332,35 +37383,6 @@ components:
           $ref: '#/components/schemas/PolicyEngineMode'
         group:
           type: string
-    PatchedAuthenticateWebAuthnStageRequest:
-      type: object
-      description: AuthenticateWebAuthnStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
-        configure_flow:
-          type: string
-          format: uuid
-          nullable: true
-          description: Flow used by an authenticated user to configure this Stage.
-            If empty, user will not be able to configure this stage.
-        friendly_name:
-          type: string
-          nullable: true
-          minLength: 1
-        user_verification:
-          $ref: '#/components/schemas/UserVerificationEnum'
-        authenticator_attachment:
-          allOf:
-          - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
-          nullable: true
-        resident_key_requirement:
-          $ref: '#/components/schemas/ResidentKeyRequirementEnum'
     PatchedAuthenticatorDuoStageRequest:
       type: object
       description: AuthenticatorDuoStage Serializer
@@ -38529,12 +37551,46 @@ components:
         webauthn_user_verification:
           allOf:
           - $ref: '#/components/schemas/UserVerificationEnum'
-          description: |-
-            Enforce user verification for WebAuthn devices.
-
-            * `required` - Required
-            * `preferred` - Preferred
-            * `discouraged` - Discouraged
+          description: Enforce user verification for WebAuthn devices.
+        webauthn_allowed_device_types:
+          type: array
+          items:
+            type: string
+            format: uuid
+    PatchedAuthenticatorWebAuthnStageRequest:
+      type: object
+      description: AuthenticatorWebAuthnStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSetRequest'
+        configure_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used by an authenticated user to configure this Stage.
+            If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+          nullable: true
+          minLength: 1
+        user_verification:
+          $ref: '#/components/schemas/UserVerificationEnum'
+        authenticator_attachment:
+          allOf:
+          - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
+          nullable: true
+        resident_key_requirement:
+          $ref: '#/components/schemas/ResidentKeyRequirementEnum'
+        device_type_restrictions:
+          type: array
+          items:
+            type: string
+            format: uuid
     PatchedBlueprintInstanceRequest:
       type: object
       description: Info about a single blueprint instance file
@@ -38867,36 +37923,8 @@ components:
           allOf:
           - $ref: '#/components/schemas/EventActions'
           nullable: true
-          description: |-
-            Match created events with this action type. When left empty, all action types will be matched.
-
-            * `login` - Login
-            * `login_failed` - Login Failed
-            * `logout` - Logout
-            * `user_write` - User Write
-            * `suspicious_request` - Suspicious Request
-            * `password_set` - Password Set
-            * `secret_view` - Secret View
-            * `secret_rotate` - Secret Rotate
-            * `invitation_used` - Invite Used
-            * `authorize_application` - Authorize Application
-            * `source_linked` - Source Linked
-            * `impersonation_started` - Impersonation Started
-            * `impersonation_ended` - Impersonation Ended
-            * `flow_execution` - Flow Execution
-            * `policy_execution` - Policy Execution
-            * `policy_exception` - Policy Exception
-            * `property_mapping_exception` - Property Mapping Exception
-            * `system_task_execution` - System Task Execution
-            * `system_task_exception` - System Task Exception
-            * `system_exception` - System Exception
-            * `configuration_error` - Configuration Error
-            * `model_created` - Model Created
-            * `model_updated` - Model Updated
-            * `model_deleted` - Model Deleted
-            * `email_sent` - Email Sent
-            * `update_available` - Update Available
-            * `custom_` - Custom Prefix
+          description: Match created events with this action type. When left empty,
+            all action types will be matched.
         client_ip:
           type: string
           nullable: true
@@ -38907,144 +37935,15 @@ components:
           allOf:
           - $ref: '#/components/schemas/AppEnum'
           nullable: true
-          description: |-
-            Match events created by selected application. When left empty, all applications are matched.
-
-            * `authentik.tenants` - authentik Tenants
-            * `authentik.admin` - authentik Admin
-            * `authentik.api` - authentik API
-            * `authentik.crypto` - authentik Crypto
-            * `authentik.flows` - authentik Flows
-            * `authentik.outposts` - authentik Outpost
-            * `authentik.policies.dummy` - authentik Policies.Dummy
-            * `authentik.policies.event_matcher` - authentik Policies.Event Matcher
-            * `authentik.policies.expiry` - authentik Policies.Expiry
-            * `authentik.policies.expression` - authentik Policies.Expression
-            * `authentik.policies.password` - authentik Policies.Password
-            * `authentik.policies.reputation` - authentik Policies.Reputation
-            * `authentik.policies` - authentik Policies
-            * `authentik.providers.ldap` - authentik Providers.LDAP
-            * `authentik.providers.oauth2` - authentik Providers.OAuth2
-            * `authentik.providers.proxy` - authentik Providers.Proxy
-            * `authentik.providers.radius` - authentik Providers.Radius
-            * `authentik.providers.saml` - authentik Providers.SAML
-            * `authentik.providers.scim` - authentik Providers.SCIM
-            * `authentik.rbac` - authentik RBAC
-            * `authentik.recovery` - authentik Recovery
-            * `authentik.sources.ldap` - authentik Sources.LDAP
-            * `authentik.sources.oauth` - authentik Sources.OAuth
-            * `authentik.sources.plex` - authentik Sources.Plex
-            * `authentik.sources.saml` - authentik Sources.SAML
-            * `authentik.stages.authenticator` - authentik Stages.Authenticator
-            * `authentik.stages.authenticator_duo` - authentik Stages.Authenticator.Duo
-            * `authentik.stages.authenticator_sms` - authentik Stages.Authenticator.SMS
-            * `authentik.stages.authenticator_static` - authentik Stages.Authenticator.Static
-            * `authentik.stages.authenticator_totp` - authentik Stages.Authenticator.TOTP
-            * `authentik.stages.authenticator_validate` - authentik Stages.Authenticator.Validate
-            * `authentik.stages.authenticator_webauthn` - authentik Stages.Authenticator.WebAuthn
-            * `authentik.stages.captcha` - authentik Stages.Captcha
-            * `authentik.stages.consent` - authentik Stages.Consent
-            * `authentik.stages.deny` - authentik Stages.Deny
-            * `authentik.stages.dummy` - authentik Stages.Dummy
-            * `authentik.stages.email` - authentik Stages.Email
-            * `authentik.stages.identification` - authentik Stages.Identification
-            * `authentik.stages.invitation` - authentik Stages.User Invitation
-            * `authentik.stages.password` - authentik Stages.Password
-            * `authentik.stages.prompt` - authentik Stages.Prompt
-            * `authentik.stages.user_delete` - authentik Stages.User Delete
-            * `authentik.stages.user_login` - authentik Stages.User Login
-            * `authentik.stages.user_logout` - authentik Stages.User Logout
-            * `authentik.stages.user_write` - authentik Stages.User Write
-            * `authentik.brands` - authentik Brands
-            * `authentik.blueprints` - authentik Blueprints
-            * `authentik.core` - authentik Core
-            * `authentik.enterprise` - authentik Enterprise
-            * `authentik.enterprise.audit` - authentik Enterprise.Audit
-            * `authentik.enterprise.providers.rac` - authentik Enterprise.Providers.RAC
-            * `authentik.enterprise.stages.source` - authentik Enterprise.Stages.Source
-            * `authentik.events` - authentik Events
+          description: Match events created by selected application. When left empty,
+            all applications are matched.
         model:
           allOf:
           - $ref: '#/components/schemas/ModelEnum'
           nullable: true
-          description: |-
-            Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
-
-            * `authentik_tenants.domain` - Domain
-            * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
-            * `authentik_flows.flow` - Flow
-            * `authentik_flows.flowstagebinding` - Flow Stage Binding
-            * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
-            * `authentik_outposts.kubernetesserviceconnection` - Kubernetes Service-Connection
-            * `authentik_outposts.outpost` - Outpost
-            * `authentik_policies_dummy.dummypolicy` - Dummy Policy
-            * `authentik_policies_event_matcher.eventmatcherpolicy` - Event Matcher Policy
-            * `authentik_policies_expiry.passwordexpirypolicy` - Password Expiry Policy
-            * `authentik_policies_expression.expressionpolicy` - Expression Policy
-            * `authentik_policies_password.passwordpolicy` - Password Policy
-            * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
-            * `authentik_policies.policybinding` - Policy Binding
-            * `authentik_providers_ldap.ldapprovider` - LDAP Provider
-            * `authentik_providers_oauth2.scopemapping` - Scope Mapping
-            * `authentik_providers_oauth2.oauth2provider` - OAuth2/OpenID Provider
-            * `authentik_providers_proxy.proxyprovider` - Proxy Provider
-            * `authentik_providers_radius.radiusprovider` - Radius Provider
-            * `authentik_providers_saml.samlprovider` - SAML Provider
-            * `authentik_providers_saml.samlpropertymapping` - SAML Property Mapping
-            * `authentik_providers_scim.scimprovider` - SCIM Provider
-            * `authentik_providers_scim.scimmapping` - SCIM Mapping
-            * `authentik_rbac.role` - Role
-            * `authentik_sources_ldap.ldapsource` - LDAP Source
-            * `authentik_sources_ldap.ldappropertymapping` - LDAP Property Mapping
-            * `authentik_sources_oauth.oauthsource` - OAuth Source
-            * `authentik_sources_oauth.useroauthsourceconnection` - User OAuth Source Connection
-            * `authentik_sources_plex.plexsource` - Plex Source
-            * `authentik_sources_plex.plexsourceconnection` - User Plex Source Connection
-            * `authentik_sources_saml.samlsource` - SAML Source
-            * `authentik_sources_saml.usersamlsourceconnection` - User SAML Source Connection
-            * `authentik_stages_authenticator_duo.authenticatorduostage` - Duo Authenticator Setup Stage
-            * `authentik_stages_authenticator_duo.duodevice` - Duo Device
-            * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
-            * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
-            * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Setup Stage
-            * `authentik_stages_authenticator_static.staticdevice` - Static Device
-            * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
-            * `authentik_stages_authenticator_totp.totpdevice` - TOTP Device
-            * `authentik_stages_authenticator_validate.authenticatorvalidatestage` - Authenticator Validation Stage
-            * `authentik_stages_authenticator_webauthn.authenticatewebauthnstage` - WebAuthn Authenticator Setup Stage
-            * `authentik_stages_authenticator_webauthn.webauthndevice` - WebAuthn Device
-            * `authentik_stages_captcha.captchastage` - Captcha Stage
-            * `authentik_stages_consent.consentstage` - Consent Stage
-            * `authentik_stages_consent.userconsent` - User Consent
-            * `authentik_stages_deny.denystage` - Deny Stage
-            * `authentik_stages_dummy.dummystage` - Dummy Stage
-            * `authentik_stages_email.emailstage` - Email Stage
-            * `authentik_stages_identification.identificationstage` - Identification Stage
-            * `authentik_stages_invitation.invitationstage` - Invitation Stage
-            * `authentik_stages_invitation.invitation` - Invitation
-            * `authentik_stages_password.passwordstage` - Password Stage
-            * `authentik_stages_prompt.prompt` - Prompt
-            * `authentik_stages_prompt.promptstage` - Prompt Stage
-            * `authentik_stages_user_delete.userdeletestage` - User Delete Stage
-            * `authentik_stages_user_login.userloginstage` - User Login Stage
-            * `authentik_stages_user_logout.userlogoutstage` - User Logout Stage
-            * `authentik_stages_user_write.userwritestage` - User Write Stage
-            * `authentik_brands.brand` - Brand
-            * `authentik_blueprints.blueprintinstance` - Blueprint Instance
-            * `authentik_core.group` - Group
-            * `authentik_core.user` - User
-            * `authentik_core.application` - Application
-            * `authentik_core.token` - Token
-            * `authentik_enterprise.license` - License
-            * `authentik_providers_rac.racprovider` - RAC Provider
-            * `authentik_providers_rac.endpoint` - RAC Endpoint
-            * `authentik_providers_rac.racpropertymapping` - RAC Property Mapping
-            * `authentik_stages_source.sourcestage` - Source Stage
-            * `authentik_events.event` - Event
-            * `authentik_events.notificationtransport` - Notification Transport
-            * `authentik_events.notification` - Notification
-            * `authentik_events.notificationrule` - Notification Rule
-            * `authentik_events.notificationwebhookmapping` - Webhook Mapping
+          description: Match events created by selected model. When left empty, all
+            models are matched. When an app is selected, all the application's models
+            are matched.
     PatchedEventRequest:
       type: object
       description: Event Serializer
@@ -39098,16 +37997,8 @@ components:
         designation:
           allOf:
           - $ref: '#/components/schemas/FlowDesignationEnum'
-          description: |-
-            Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.
-
-            * `authentication` - Authentication
-            * `authorization` - Authorization
-            * `invalidation` - Invalidation
-            * `enrollment` - Enrollment
-            * `unenrollment` - Unrenollment
-            * `recovery` - Recovery
-            * `stage_configuration` - Stage Configuration
+          description: Decides what this Flow is used for. For example, the Authentication
+            flow is redirect to when an un-authenticated user visits authentik.
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         compatibility_mode:
@@ -39119,23 +38010,13 @@ components:
         denied_action:
           allOf:
           - $ref: '#/components/schemas/DeniedActionEnum'
-          description: |-
-            Configure what should happen when a flow denies access to a user.
-
-            * `message_continue` - Message Continue
-            * `message` - Message
-            * `continue` - Continue
+          description: Configure what should happen when a flow denies access to a
+            user.
         authentication:
           allOf:
           - $ref: '#/components/schemas/AuthenticationEnum'
-          description: |-
-            Required level of authentication and authorization to access a flow.
-
-            * `none` - None
-            * `require_authenticated` - Require Authenticated
-            * `require_unauthenticated` - Require Unauthenticated
-            * `require_superuser` - Require Superuser
-            * `require_outpost` - Require Outpost
+          description: Required level of authentication and authorization to access
+            a flow.
     PatchedFlowStageBindingRequest:
       type: object
       description: FlowStageBinding Serializer
@@ -39161,12 +38042,10 @@ components:
         invalid_response_action:
           allOf:
           - $ref: '#/components/schemas/InvalidResponseActionEnum'
-          description: |-
-            Configure how the flow executor should handle an invalid response to a challenge. RETRY returns the error message and a similar challenge to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current context.
-
-            * `retry` - Retry
-            * `restart` - Restart
-            * `restart_with_context` - Restart With Context
+          description: Configure how the flow executor should handle an invalid response
+            to a challenge. RETRY returns the error message and a similar challenge
+            to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT
+            restarts the flow while keeping the current context.
     PatchedGroupRequest:
       type: object
       description: Group Serializer
@@ -39267,6 +38146,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
         fixed_data:
           type: object
           additionalProperties: {}
@@ -39428,14 +38308,8 @@ components:
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: |-
-            How the source determines if an existing user should be authenticated or a new user enrolled.
-
-            * `identifier` - Use the source-specific identifier
-            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
-            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
-            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
-            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
+          description: How the source determines if an existing user should be authenticated
+            or a new user enrolled.
         user_path_template:
           type: string
           minLength: 1
@@ -39553,12 +38427,8 @@ components:
         severity:
           allOf:
           - $ref: '#/components/schemas/SeverityEnum'
-          description: |-
-            Controls which severity level the created notifications will have.
-
-            * `notice` - Notice
-            * `warning` - Warning
-            * `alert` - Alert
+          description: Controls which severity level the created notifications will
+            have.
         group:
           type: string
           format: uuid
@@ -39620,11 +38490,8 @@ components:
         client_type:
           allOf:
           - $ref: '#/components/schemas/ClientTypeEnum'
-          description: |-
-            Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable
-
-            * `confidential` - Confidential
-            * `public` - Public
+          description: Confidential clients are capable of maintaining the confidentiality
+            of their credentials. Public clients are incapable
         client_id:
           type: string
           minLength: 1
@@ -39663,23 +38530,12 @@ components:
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
-          description: |-
-            Configure what data should be used as unique User Identifier. For most cases, the default should be fine.
-
-            * `hashed_user_id` - Based on the Hashed User ID
-            * `user_id` - Based on user ID
-            * `user_uuid` - Based on user UUID
-            * `user_username` - Based on the username
-            * `user_email` - Based on the User's Email. This is recommended over the UPN method.
-            * `user_upn` - Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains.
+          description: Configure what data should be used as unique User Identifier.
+            For most cases, the default should be fine.
         issuer_mode:
           allOf:
           - $ref: '#/components/schemas/IssuerModeEnum'
-          description: |-
-            Configure how the issuer field of the ID Token should be filled.
-
-            * `global` - Same identifier is used for all providers
-            * `per_provider` - Each provider has a different issuer, based on the application slug.
+          description: Configure how the issuer field of the ID Token should be filled.
         jwks_sources:
           type: array
           items:
@@ -39719,14 +38575,8 @@ components:
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: |-
-            How the source determines if an existing user should be authenticated or a new user enrolled.
-
-            * `identifier` - Use the source-specific identifier
-            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
-            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
-            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
-            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
+          description: How the source determines if an existing user should be authenticated
+            or a new user enrolled.
         user_path_template:
           type: string
           minLength: 1
@@ -39735,26 +38585,22 @@ components:
         request_token_url:
           type: string
           nullable: true
-          minLength: 1
           description: URL used to request the initial token. This URL is only required
             for OAuth 1.
           maxLength: 255
         authorization_url:
           type: string
           nullable: true
-          minLength: 1
           description: URL the user is redirect to to conest the flow.
           maxLength: 255
         access_token_url:
           type: string
           nullable: true
-          minLength: 1
           description: URL used by authentik to retrieve tokens.
           maxLength: 255
         profile_url:
           type: string
           nullable: true
-          minLength: 1
           description: URL used by authentik to get user information.
           maxLength: 255
         consumer_key:
@@ -39960,14 +38806,8 @@ components:
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: |-
-            How the source determines if an existing user should be authenticated or a new user enrolled.
-
-            * `identifier` - Use the source-specific identifier
-            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
-            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
-            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
-            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
+          description: How the source determines if an existing user should be authenticated
+            or a new user enrolled.
         user_path_template:
           type: string
           minLength: 1
@@ -40145,12 +38985,8 @@ components:
         mode:
           allOf:
           - $ref: '#/components/schemas/ProxyMode'
-          description: |-
-            Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with internal_host.
-
-            * `proxy` - Proxy
-            * `forward_single` - Forward Single
-            * `forward_domain` - Forward Domain
+          description: Enable support for forwardAuth in traefik and nginx auth_request.
+            Exclusive with internal_host.
         intercept_header_auth:
           type: boolean
           description: When enabled, this provider will intercept the authorization
@@ -40397,11 +39233,8 @@ components:
           allOf:
           - $ref: '#/components/schemas/SpBindingEnum'
           title: Service Provider Binding
-          description: |-
-            This determines how authentik sends the response back to the Service Provider.
-
-            * `redirect` - Redirect
-            * `post` - Post
+          description: This determines how authentik sends the response back to the
+            Service Provider.
         default_relay_state:
           type: string
           description: Default relay_state value for IDP-initiated logins
@@ -40436,14 +39269,8 @@ components:
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: |-
-            How the source determines if an existing user should be authenticated or a new user enrolled.
-
-            * `identifier` - Use the source-specific identifier
-            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
-            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
-            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
-            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
+          description: How the source determines if an existing user should be authenticated
+            or a new user enrolled.
         user_path_template:
           type: string
           minLength: 1
@@ -40473,14 +39300,8 @@ components:
         name_id_policy:
           allOf:
           - $ref: '#/components/schemas/NameIdPolicyEnum'
-          description: |-
-            NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
-
-            * `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress` - Email
-            * `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent` - Persistent
-            * `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName` - X509
-            * `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName` - Windows
-            * `urn:oasis:names:tc:SAML:2.0:nameid-format:transient` - Transient
+          description: NameID Policy sent to the IdP. Can be unset, in which case
+            no Policy is sent.
         binding_type:
           $ref: '#/components/schemas/BindingTypeEnum'
         verification_kp:
@@ -40626,6 +39447,15 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        default_token_duration:
+          type: string
+          minLength: 1
+          description: Default token duration
+        default_token_length:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Default token length
     PatchedSourceStageRequest:
       type: object
       description: SourceStage Serializer
@@ -40703,6 +39533,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
         expiring:
           type: boolean
     PatchedUserDeleteStageRequest:
@@ -40744,23 +39575,12 @@ components:
         network_binding:
           allOf:
           - $ref: '#/components/schemas/NetworkBindingEnum'
-          description: |-
-            Bind sessions created by this stage to the configured network
-
-            * `no_binding` - No Binding
-            * `bind_asn` - Bind Asn
-            * `bind_asn_network` - Bind Asn Network
-            * `bind_asn_network_ip` - Bind Asn Network Ip
+          description: Bind sessions created by this stage to the configured network
         geoip_binding:
           allOf:
           - $ref: '#/components/schemas/GeoipBindingEnum'
-          description: |-
-            Bind sessions created by this stage to the configured GeoIP location
-
-            * `no_binding` - No Binding
-            * `bind_continent` - Bind Continent
-            * `bind_continent_country` - Bind Continent Country
-            * `bind_continent_country_city` - Bind Continent Country City
+          description: Bind sessions created by this stage to the configured GeoIP
+            location
     PatchedUserLogoutStageRequest:
       type: object
       description: UserLogoutStage Serializer
@@ -41001,14 +39821,8 @@ components:
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: |-
-            How the source determines if an existing user should be authenticated or a new user enrolled.
-
-            * `identifier` - Use the source-specific identifier
-            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
-            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
-            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
-            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
+          description: How the source determines if an existing user should be authenticated
+            or a new user enrolled.
         managed:
           type: string
           nullable: true
@@ -41122,14 +39936,8 @@ components:
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: |-
-            How the source determines if an existing user should be authenticated or a new user enrolled.
-
-            * `identifier` - Use the source-specific identifier
-            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
-            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
-            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
-            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
+          description: How the source determines if an existing user should be authenticated
+            or a new user enrolled.
         user_path_template:
           type: string
           minLength: 1
@@ -41309,9 +40117,6 @@ components:
       - all
       - any
       type: string
-      description: |-
-        * `all` - all, all policies must pass
-        * `any` - any, any policy must pass
     PolicyRequest:
       type: object
       description: Policy Serializer
@@ -41582,25 +40387,6 @@ components:
       - static
       - ak-locale
       type: string
-      description: |-
-        * `text` - Text: Simple Text input
-        * `text_area` - Text area: Multiline Text Input.
-        * `text_read_only` - Text (read-only): Simple Text input, but cannot be edited.
-        * `text_area_read_only` - Text area (read-only): Multiline Text input, but cannot be edited.
-        * `username` - Username: Same as Text input, but checks for and prevents duplicate usernames.
-        * `email` - Email: Text field with Email type.
-        * `password` - Password: Masked input, multiple inputs of this type on the same prompt need to be identical.
-        * `number` - Number
-        * `checkbox` - Checkbox
-        * `radio-button-group` - Fixed choice field rendered as a group of radio buttons.
-        * `dropdown` - Fixed choice field rendered as a dropdown.
-        * `date` - Date
-        * `date-time` - Date Time
-        * `file` - File: File upload for arbitrary files. File content will be available in flow context as data-URI
-        * `separator` - Separator: Static Separator Line
-        * `hidden` - Hidden: Hidden field, can be used to insert data into form.
-        * `static` - Static: Static value, displayed as-is.
-        * `ak-locale` - authentik: Selection of locales authentik supports
     PropertyMapping:
       type: object
       description: PropertyMapping Serializer
@@ -41676,10 +40462,6 @@ components:
       - vnc
       - ssh
       type: string
-      description: |-
-        * `rdp` - Rdp
-        * `vnc` - Vnc
-        * `ssh` - Ssh
     Provider:
       type: object
       description: Provider Serializer
@@ -41754,9 +40536,6 @@ components:
       - twilio
       - generic
       type: string
-      description: |-
-        * `twilio` - Twilio
-        * `generic` - Generic
     ProviderModelEnum:
       enum:
       - authentik_providers_ldap.ldapprovider
@@ -41767,14 +40546,6 @@ components:
       - authentik_providers_saml.samlprovider
       - authentik_providers_scim.scimprovider
       type: string
-      description: |-
-        * `authentik_providers_ldap.ldapprovider` - authentik_providers_ldap.ldapprovider
-        * `authentik_providers_oauth2.oauth2provider` - authentik_providers_oauth2.oauth2provider
-        * `authentik_providers_proxy.proxyprovider` - authentik_providers_proxy.proxyprovider
-        * `authentik_providers_rac.racprovider` - authentik_providers_rac.racprovider
-        * `authentik_providers_radius.radiusprovider` - authentik_providers_radius.radiusprovider
-        * `authentik_providers_saml.samlprovider` - authentik_providers_saml.samlprovider
-        * `authentik_providers_scim.scimprovider` - authentik_providers_scim.scimprovider
     ProviderRequest:
       type: object
       description: Provider Serializer
@@ -41817,31 +40588,12 @@ components:
       - twitch
       - twitter
       type: string
-      description: |-
-        * `apple` - Apple
-        * `openidconnect` - OpenID Connect
-        * `azuread` - Azure AD
-        * `discord` - Discord
-        * `facebook` - Facebook
-        * `github` - GitHub
-        * `gitlab` - GitLab
-        * `google` - Google
-        * `mailcow` - Mailcow
-        * `okta` - Okta
-        * `patreon` - Patreon
-        * `reddit` - Reddit
-        * `twitch` - Twitch
-        * `twitter` - Twitter
     ProxyMode:
       enum:
       - proxy
       - forward_single
       - forward_domain
       type: string
-      description: |-
-        * `proxy` - Proxy
-        * `forward_single` - Forward Single
-        * `forward_domain` - Forward Domain
     ProxyOutpostConfig:
       type: object
       description: Proxy provider serializer for outposts
@@ -41899,12 +40651,8 @@ components:
         mode:
           allOf:
           - $ref: '#/components/schemas/ProxyMode'
-          description: |-
-            Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with internal_host.
-
-            * `proxy` - Proxy
-            * `forward_single` - Forward Single
-            * `forward_domain` - Forward Domain
+          description: Enable support for forwardAuth in traefik and nginx auth_request.
+            Exclusive with internal_host.
         cookie_domain:
           type: string
         access_token_validity:
@@ -42037,12 +40785,8 @@ components:
         mode:
           allOf:
           - $ref: '#/components/schemas/ProxyMode'
-          description: |-
-            Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with internal_host.
-
-            * `proxy` - Proxy
-            * `forward_single` - Forward Single
-            * `forward_domain` - Forward Domain
+          description: Enable support for forwardAuth in traefik and nginx auth_request.
+            Exclusive with internal_host.
         intercept_header_auth:
           type: boolean
           description: When enabled, this provider will intercept the authorization
@@ -42147,12 +40891,8 @@ components:
         mode:
           allOf:
           - $ref: '#/components/schemas/ProxyMode'
-          description: |-
-            Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with internal_host.
-
-            * `proxy` - Proxy
-            * `forward_single` - Forward Single
-            * `forward_domain` - Forward Domain
+          description: Enable support for forwardAuth in traefik and nginx auth_request.
+            Exclusive with internal_host.
         intercept_header_auth:
           type: boolean
           description: When enabled, this provider will intercept the authorization
@@ -42663,10 +41403,6 @@ components:
       - preferred
       - required
       type: string
-      description: |-
-        * `discouraged` - Discouraged
-        * `preferred` - Preferred
-        * `required` - Required
     Role:
       type: object
       description: Role serializer
@@ -42943,11 +41679,8 @@ components:
           allOf:
           - $ref: '#/components/schemas/SpBindingEnum'
           title: Service Provider Binding
-          description: |-
-            This determines how authentik sends the response back to the Service Provider.
-
-            * `redirect` - Redirect
-            * `post` - Post
+          description: This determines how authentik sends the response back to the
+            Service Provider.
         default_relay_state:
           type: string
           description: Default relay_state value for IDP-initiated logins
@@ -43090,11 +41823,8 @@ components:
           allOf:
           - $ref: '#/components/schemas/SpBindingEnum'
           title: Service Provider Binding
-          description: |-
-            This determines how authentik sends the response back to the Service Provider.
-
-            * `redirect` - Redirect
-            * `post` - Post
+          description: This determines how authentik sends the response back to the
+            Service Provider.
         default_relay_state:
           type: string
           description: Default relay_state value for IDP-initiated logins
@@ -43152,14 +41882,8 @@ components:
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: |-
-            How the source determines if an existing user should be authenticated or a new user enrolled.
-
-            * `identifier` - Use the source-specific identifier
-            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
-            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
-            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
-            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
+          description: How the source determines if an existing user should be authenticated
+            or a new user enrolled.
         managed:
           type: string
           nullable: true
@@ -43203,14 +41927,8 @@ components:
         name_id_policy:
           allOf:
           - $ref: '#/components/schemas/NameIdPolicyEnum'
-          description: |-
-            NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
-
-            * `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress` - Email
-            * `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent` - Persistent
-            * `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName` - X509
-            * `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName` - Windows
-            * `urn:oasis:names:tc:SAML:2.0:nameid-format:transient` - Transient
+          description: NameID Policy sent to the IdP. Can be unset, in which case
+            no Policy is sent.
         binding_type:
           $ref: '#/components/schemas/BindingTypeEnum'
         verification_kp:
@@ -43280,14 +41998,8 @@ components:
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: |-
-            How the source determines if an existing user should be authenticated or a new user enrolled.
-
-            * `identifier` - Use the source-specific identifier
-            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
-            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
-            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
-            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
+          description: How the source determines if an existing user should be authenticated
+            or a new user enrolled.
         user_path_template:
           type: string
           minLength: 1
@@ -43317,14 +42029,8 @@ components:
         name_id_policy:
           allOf:
           - $ref: '#/components/schemas/NameIdPolicyEnum'
-          description: |-
-            NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
-
-            * `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress` - Email
-            * `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent` - Persistent
-            * `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName` - X509
-            * `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName` - Windows
-            * `urn:oasis:names:tc:SAML:2.0:nameid-format:transient` - Transient
+          description: NameID Policy sent to the IdP. Can be unset, in which case
+            no Policy is sent.
         binding_type:
           $ref: '#/components/schemas/BindingTypeEnum'
         verification_kp:
@@ -43780,6 +42486,14 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        default_token_duration:
+          type: string
+          description: Default token duration
+        default_token_length:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Default token length
     SettingsRequest:
       type: object
       description: Settings Serializer
@@ -43811,16 +42525,21 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        default_token_duration:
+          type: string
+          minLength: 1
+          description: Default token duration
+        default_token_length:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Default token length
     SeverityEnum:
       enum:
       - notice
       - warning
       - alert
       type: string
-      description: |-
-        * `notice` - Notice
-        * `warning` - Warning
-        * `alert` - Alert
     ShellChallenge:
       type: object
       description: challenge type to render HTML as-is
@@ -43851,12 +42570,6 @@ components:
       - http://www.w3.org/2001/04/xmldsig-more#rsa-sha512
       - http://www.w3.org/2000/09/xmldsig#dsa-sha1
       type: string
-      description: |-
-        * `http://www.w3.org/2000/09/xmldsig#rsa-sha1` - RSA-SHA1
-        * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256` - RSA-SHA256
-        * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha384` - RSA-SHA384
-        * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha512` - RSA-SHA512
-        * `http://www.w3.org/2000/09/xmldsig#dsa-sha1` - DSA-SHA1
     Source:
       type: object
       description: Source Serializer
@@ -43907,14 +42620,8 @@ components:
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: |-
-            How the source determines if an existing user should be authenticated or a new user enrolled.
-
-            * `identifier` - Use the source-specific identifier
-            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
-            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
-            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
-            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
+          description: How the source determines if an existing user should be authenticated
+            or a new user enrolled.
         managed:
           type: string
           nullable: true
@@ -43974,14 +42681,8 @@ components:
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: |-
-            How the source determines if an existing user should be authenticated or a new user enrolled.
-
-            * `identifier` - Use the source-specific identifier
-            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
-            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
-            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
-            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
+          description: How the source determines if an existing user should be authenticated
+            or a new user enrolled.
         user_path_template:
           type: string
           minLength: 1
@@ -44105,9 +42806,6 @@ components:
       - redirect
       - post
       type: string
-      description: |-
-        * `redirect` - Redirect
-        * `post` - Post
     Stage:
       type: object
       description: Stage Serializer
@@ -44254,13 +42952,6 @@ components:
       - user_email
       - user_upn
       type: string
-      description: |-
-        * `hashed_user_id` - Based on the Hashed User ID
-        * `user_id` - Based on user ID
-        * `user_uuid` - Based on user UUID
-        * `user_username` - Based on the username
-        * `user_email` - Based on the User's Email. This is recommended over the UPN method.
-        * `user_upn` - Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains.
     SystemInfo:
       type: object
       description: Get system information.
@@ -44382,11 +43073,6 @@ components:
       - warning
       - error
       type: string
-      description: |-
-        * `unknown` - UNKNOWN
-        * `successful` - SUCCESSFUL
-        * `warning` - WARNING
-        * `error` - ERROR
     TOTPDevice:
       type: object
       description: Serializer for totp authenticator devices
@@ -44515,6 +43201,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
         expiring:
           type: boolean
       required:
@@ -44540,6 +43227,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
         scope:
           type: array
           items:
@@ -44584,6 +43272,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
         expiring:
           type: boolean
       required:
@@ -44658,10 +43347,6 @@ components:
       - light
       - dark
       type: string
-      description: |-
-        * `automatic` - Automatic
-        * `light` - Light
-        * `dark` - Dark
     UsedBy:
       type: object
       description: A list of all objects referencing the queried object
@@ -44689,11 +43374,6 @@ components:
       - set_null
       - set_default
       type: string
-      description: |-
-        * `cascade` - CASCADE
-        * `cascade_many` - CASCADE_MANY
-        * `set_null` - SET_NULL
-        * `set_default` - SET_DEFAULT
     User:
       type: object
       description: User Serializer
@@ -44831,6 +43511,7 @@ components:
         expires:
           type: string
           format: date-time
+          nullable: true
         expiring:
           type: boolean
         user:
@@ -44850,10 +43531,6 @@ components:
       - create_when_required
       - always_create
       type: string
-      description: |-
-        * `never_create` - Never Create
-        * `create_when_required` - Create When Required
-        * `always_create` - Always Create
     UserDeleteStage:
       type: object
       description: UserDeleteStage Serializer
@@ -44911,10 +43588,6 @@ components:
       - username
       - upn
       type: string
-      description: |-
-        * `email` - E Mail
-        * `username` - Username
-        * `upn` - Upn
     UserGroup:
       type: object
       description: Simplified Group Serializer for user's groups
@@ -44941,6 +43614,7 @@ components:
         parent_name:
           type: string
           readOnly: true
+          nullable: true
         attributes:
           type: object
           additionalProperties: {}
@@ -45052,23 +43726,12 @@ components:
         network_binding:
           allOf:
           - $ref: '#/components/schemas/NetworkBindingEnum'
-          description: |-
-            Bind sessions created by this stage to the configured network
-
-            * `no_binding` - No Binding
-            * `bind_asn` - Bind Asn
-            * `bind_asn_network` - Bind Asn Network
-            * `bind_asn_network_ip` - Bind Asn Network Ip
+          description: Bind sessions created by this stage to the configured network
         geoip_binding:
           allOf:
           - $ref: '#/components/schemas/GeoipBindingEnum'
-          description: |-
-            Bind sessions created by this stage to the configured GeoIP location
-
-            * `no_binding` - No Binding
-            * `bind_continent` - Bind Continent
-            * `bind_continent_country` - Bind Continent Country
-            * `bind_continent_country_city` - Bind Continent Country City
+          description: Bind sessions created by this stage to the configured GeoIP
+            location
       required:
       - component
       - meta_model_name
@@ -45104,23 +43767,12 @@ components:
         network_binding:
           allOf:
           - $ref: '#/components/schemas/NetworkBindingEnum'
-          description: |-
-            Bind sessions created by this stage to the configured network
-
-            * `no_binding` - No Binding
-            * `bind_asn` - Bind Asn
-            * `bind_asn_network` - Bind Asn Network
-            * `bind_asn_network_ip` - Bind Asn Network Ip
+          description: Bind sessions created by this stage to the configured network
         geoip_binding:
           allOf:
           - $ref: '#/components/schemas/GeoipBindingEnum'
-          description: |-
-            Bind sessions created by this stage to the configured GeoIP location
-
-            * `no_binding` - No Binding
-            * `bind_continent` - Bind Continent
-            * `bind_continent_country` - Bind Continent Country
-            * `bind_continent_country_city` - Bind Continent Country City
+          description: Bind sessions created by this stage to the configured GeoIP
+            location
       required:
       - name
     UserLogoutStage:
@@ -45182,12 +43834,6 @@ components:
       - username_link
       - username_deny
       type: string
-      description: |-
-        * `identifier` - Use the source-specific identifier
-        * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
-        * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
-        * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
-        * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
     UserMetrics:
       type: object
       description: User Metrics
@@ -45537,21 +44183,12 @@ components:
       - service_account
       - internal_service_account
       type: string
-      description: |-
-        * `internal` - Internal
-        * `external` - External
-        * `service_account` - Service Account
-        * `internal_service_account` - Internal Service Account
     UserVerificationEnum:
       enum:
       - required
       - preferred
       - discouraged
       type: string
-      description: |-
-        * `required` - Required
-        * `preferred` - Preferred
-        * `discouraged` - Discouraged
     UserWriteStage:
       type: object
       description: UserWriteStage Serializer
@@ -45687,8 +44324,14 @@ components:
           type: string
           format: date-time
           readOnly: true
+        device_type:
+          allOf:
+          - $ref: '#/components/schemas/WebAuthnDeviceType'
+          readOnly: true
+          nullable: true
       required:
       - created_on
+      - device_type
       - name
       - pk
     WebAuthnDeviceRequest:
@@ -45701,6 +44344,31 @@ components:
           maxLength: 200
       required:
       - name
+    WebAuthnDeviceType:
+      type: object
+      description: WebAuthnDeviceType Serializer
+      properties:
+        aaguid:
+          type: string
+          format: uuid
+        description:
+          type: string
+      required:
+      - aaguid
+      - description
+    WebAuthnDeviceTypeRequest:
+      type: object
+      description: WebAuthnDeviceType Serializer
+      properties:
+        aaguid:
+          type: string
+          format: uuid
+        description:
+          type: string
+          minLength: 1
+      required:
+      - aaguid
+      - description
     Workers:
       type: object
       properties:

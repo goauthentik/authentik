@@ -108,7 +108,6 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
             <div slot="body" class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Authorization URL")}
-                    ?required=${true}
                     name="authorizationUrl"
                 >
                     <input
@@ -119,17 +118,12 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                             "",
                         )}"
                         class="pf-c-form-control"
-                        required
                     />
                     <p class="pf-c-form__helper-text">
                         ${msg("URL the user is redirect to to consent the authorization.")}
                     </p>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Access token URL")}
-                    ?required=${true}
-                    name="accessTokenUrl"
-                >
+                <ak-form-element-horizontal label=${msg("Access token URL")} name="accessTokenUrl">
                     <input
                         type="text"
                         value="${first(
@@ -138,17 +132,12 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                             "",
                         )}"
                         class="pf-c-form-control"
-                        required
                     />
                     <p class="pf-c-form__helper-text">
                         ${msg("URL used by authentik to retrieve tokens.")}
                     </p>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Profile URL")}
-                    ?required=${true}
-                    name="profileUrl"
-                >
+                <ak-form-element-horizontal label=${msg("Profile URL")} name="profileUrl">
                     <input
                         type="text"
                         value="${first(
@@ -157,7 +146,6 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                             "",
                         )}"
                         class="pf-c-form-control"
-                        required
                     />
                     <p class="pf-c-form__helper-text">
                         ${msg("URL used by authentik to get user information.")}

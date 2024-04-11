@@ -39,8 +39,10 @@ def check_redis():
     if CONFIG.get_bool("redis.tls", False):
         REDIS_PROTOCOL_PREFIX = "rediss://"
     REDIS_URL = (
-        f"{REDIS_PROTOCOL_PREFIX}:"
-        f"{quote_plus(CONFIG.get('redis.password'))}@{quote_plus(CONFIG.get('redis.host'))}:"
+        f"{REDIS_PROTOCOL_PREFIX}"
+        f"{quote_plus(CONFIG.get('redis.username'))}:"
+        f"{quote_plus(CONFIG.get('redis.password'))}@"
+        f"{quote_plus(CONFIG.get('redis.host'))}:"
         f"{CONFIG.get_int('redis.port')}/{CONFIG.get('redis.db')}"
     )
     while True:
