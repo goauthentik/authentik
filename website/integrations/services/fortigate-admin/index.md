@@ -57,7 +57,7 @@ Then navigate to `https://fgt.company/fabric-connector/edit/security-fabric-conn
 
 -   Select `Service Provider (SP)` under Mode to enable SAML authentication.
 -   Set the `SP Address` to the FortiGate FQDN `fgt.company`. (This gives you the URLs to configure in authentik)
--   Set the `Default Login Page` to either `Normal` or `Single-Sign On`. (Normal allows both local and SAML authentication vs only SAML SSO)
+-   Set the `Default Login Page` to either `Normal` or `Single-Sign On`. (Normal allows both local and SAML authentication vs only SAML SSO.)
 
 FortiGate create a new user by default if one does not exist so you will need to set the Default Admin Profile to the permissions you want any new users to have. (I have created a `no_permissions` profile to assign by default)
 
