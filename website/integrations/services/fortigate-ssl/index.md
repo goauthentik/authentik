@@ -19,7 +19,7 @@ title: FortiGate SSLVPN
 ## Assumptions
 
 -   You know how to configure an SSLVPN in a FortiGate.
--   You have already a certificate for signing and encryption uploaded to both authentik and the FortiGate.
+-   You already have a certificate for signing and encryption uploaded to both authentik and the FortiGate.
 -   You already have a working SSLVPN (either portal or tunnel) and is just changing authentication from what you are using today to authentik SAML.
 
 The following placeholders will be used:
