@@ -150,7 +150,7 @@ This is the user group that you matched on in the FortiGate "firewall group" abo
 > [!NOTE]
 > The Launch URL = blank://blank will prevent authentik from displaying it on the user's login page in authentik.
 
--   Go to Applications -> Applications
+-   Go to **Applications -> Applications**.
 -   Name = What ever you fancy e.g. FGT-SSLVPN
 -   Slug = app.slug.name
 -   Group = empty (------)
