@@ -108,7 +108,7 @@ Lets setup the provider using the saml metadata from the FortiGate
     -   Name: Name it something appropriate e.g. FGT SSL SAML Provider
     -   Authorization flow: default-provider-authorization-implicit-consent (Authorize Application)
     -   Metadata: upload the fgt-metadata.xml you created previously
--   Finish
+-   Click **Finish**.
 
 ### Validate and change settings for provider
 
