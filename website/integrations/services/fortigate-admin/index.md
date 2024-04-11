@@ -74,7 +74,7 @@ Under `SP Details` set the **SP entity ID** to `https`. Note it for later use (t
 
 ## Troubleshooting
 
-These are just suggestions of what **could** be the cause of an issue and how to enable debug on the FortiGate
+These are just suggestions of what **could** be the cause of an issue and how to enable debug on the FortiGate.
 
 **Enabling debug on the FortiGate**
 You can use the following commands on the FortiGate to enable debugging
