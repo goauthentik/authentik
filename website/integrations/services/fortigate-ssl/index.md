@@ -25,7 +25,7 @@ title: FortiGate SSLVPN
 The following placeholders will be used:
 
 -   `saml.sp.name` = The name that will be the SAML SP configuration in the FortiGate
--   `fgt.cert` = Fortigate certificate for signig and encrypting
+-   `fgt.cert` = Fortigate certificate for signing and encrypting
 -   `service.company` = This is the FQDN of the firewall, if your sslvpn portal is not on TCP port 443, then add the port like: fortigate.mydomain.tld:10233
 -   `authentik.company` = This is the FQDN of your authentik installation
 -   `app.slug.name` = The application slug that you decided upon
