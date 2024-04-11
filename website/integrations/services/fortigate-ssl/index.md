@@ -168,7 +168,7 @@ This is the user group that you matched on in the FortiGate "firewall group" abo
 
 -   Open the application again
 -   Click on "Policy / Group / User Binding"
--   Click bind existing policy
+-   Click **Bind existing policy**.
 -   Click on the "TAB" Group at the top
 -   Click on Select an object next to Group
 -   Chose ak.user.group
