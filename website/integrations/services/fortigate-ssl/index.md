@@ -41,7 +41,7 @@ The following placeholders will be used:
 
 ### Setup SAML SP
 
-1.  ssh to the Fortigate (If you are using vdom change to the correct vdom)
+1.  SSH to the Fortigate (If you are using vdom change to the correct vdom).
 2.  copy the config below to your prefered editor and change the placeholders to your settings, then paste it into the Fortigate
 
 > [!NOTE]
