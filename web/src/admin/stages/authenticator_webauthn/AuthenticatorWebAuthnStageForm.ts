@@ -1,9 +1,7 @@
 import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import {
-    DataProvision,
-    DualSelectPair,
-} from "@goauthentik/authentik/elements/ak-dual-select/types";
+import { deviceTypeRestrictionPair } from "@goauthentik/admin/stages/authenticator_webauthn/utils";
+import { DataProvision } from "@goauthentik/authentik/elements/ak-dual-select/types";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider";
@@ -25,23 +23,12 @@ import {
     ResidentKeyRequirementEnum,
     StagesApi,
     UserVerificationEnum,
-    WebAuthnDeviceType,
 } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-webauthn-form")
 export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorWebAuthnStage> {
-    deviceTypeRestrictionPair(item: WebAuthnDeviceType): DualSelectPair {
-        const label = item.description ? item.description : item.aaguid;
-        return [
-            item.aaguid,
-            html`<div class="selection-main">${label}</div>
-                <div class="selection-desc">${item.aaguid}</div>`,
-            label,
-        ];
-    }
-
-    loadInstance(pk: string): Promise<AuthenticatorWebAuthnStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnRetrieve({
+    async loadInstance(pk: string): Promise<AuthenticatorWebAuthnStage> {
+        return await new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnRetrieve({
             stageUuid: pk,
         });
     }
@@ -194,14 +181,12 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                                     .then((results) => {
                                         return {
                                             pagination: results.pagination,
-                                            options: results.results.map(
-                                                this.deviceTypeRestrictionPair,
-                                            ),
+                                            options: results.results.map(deviceTypeRestrictionPair),
                                         };
                                     });
                             }}
                             .selected=${(this.instance?.deviceTypeRestrictionsObj ?? []).map(
-                                this.deviceTypeRestrictionPair,
+                                deviceTypeRestrictionPair,
                             )}
                             available-label="${msg("Available Device types")}"
                             selected-label="${msg("Selected Device types")}"

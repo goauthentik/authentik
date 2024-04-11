@@ -1,5 +1,9 @@
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
+import { deviceTypeRestrictionPair } from "@goauthentik/admin/stages/authenticator_webauthn/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/elements/Alert";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider";
+import { DataProvision } from "@goauthentik/elements/ak-dual-select/types";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
@@ -71,7 +75,8 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
             [DeviceClassesEnum.Sms, msg("SMS-based Authenticators")],
         ];
 
-        return html` <span>
+        return html`
+            <span>
                 ${msg(
                     "Stage used to validate any authenticator. This stage should be used during authentication or authorization flows.",
                 )}
@@ -119,7 +124,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "If any of the devices user of the types selected above have been used within this duration, this stage will be skipped.",
+                                "If the user has successfully authenticated with a device in the classes listed above within this configured duration, this stage will be skipped.",
                             )}
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
@@ -166,33 +171,6 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                             </option>
                         </select>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("WebAuthn User verification")}
-                        ?required=${true}
-                        name="webauthnUserVerification"
-                    >
-                        <ak-radio
-                            .options=${[
-                                {
-                                    label: msg("User verification must occur."),
-                                    value: UserVerificationEnum.Required,
-                                    default: true,
-                                },
-                                {
-                                    label: msg(
-                                        "User verification is preferred if available, but not required.",
-                                    ),
-                                    value: UserVerificationEnum.Preferred,
-                                },
-                                {
-                                    label: msg("User verification should not occur."),
-                                    value: UserVerificationEnum.Discouraged,
-                                },
-                            ]}
-                            .value=${this.instance?.webauthnUserVerification}
-                        >
-                        </ak-radio>
-                    </ak-form-element-horizontal>
                     ${this.showConfigurationStages
                         ? html`
                               <ak-form-element-horizontal
@@ -228,6 +206,77 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                           `
                         : html``}
                 </div>
-            </ak-form-group>`;
+            </ak-form-group>
+            <ak-form-group .expanded=${true}>
+                <span slot="header"> ${msg("WebAuthn-specific settings")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("WebAuthn User verification")}
+                        ?required=${true}
+                        name="webauthnUserVerification"
+                    >
+                        <ak-radio
+                            .options=${[
+                                {
+                                    label: msg("User verification must occur."),
+                                    value: UserVerificationEnum.Required,
+                                    default: true,
+                                },
+                                {
+                                    label: msg(
+                                        "User verification is preferred if available, but not required.",
+                                    ),
+                                    value: UserVerificationEnum.Preferred,
+                                },
+                                {
+                                    label: msg("User verification should not occur."),
+                                    value: UserVerificationEnum.Discouraged,
+                                },
+                            ]}
+                            .value=${this.instance?.webauthnUserVerification}
+                        >
+                        </ak-radio>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("WebAuthn Device type restrictions")}
+                        name="webauthnAllowedDeviceTypes"
+                    >
+                        <ak-dual-select-provider
+                            .provider=${(page: number, search?: string): Promise<DataProvision> => {
+                                return new StagesApi(DEFAULT_CONFIG)
+                                    .stagesAuthenticatorWebauthnDeviceTypesList({
+                                        page: page,
+                                        search: search,
+                                    })
+                                    .then((results) => {
+                                        return {
+                                            pagination: results.pagination,
+                                            options: results.results.map(deviceTypeRestrictionPair),
+                                        };
+                                    });
+                            }}
+                            .selected=${(this.instance?.webauthnAllowedDeviceTypesObj ?? []).map(
+                                deviceTypeRestrictionPair,
+                            )}
+                            available-label="${msg("Available Device types")}"
+                            selected-label="${msg("Selected Device types")}"
+                        ></ak-dual-select-provider>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Optionally restrict which WebAuthn device types may be used. When no device types are selected, all devices are allowed.",
+                            )}
+                        </p>
+                        <ak-alert ?inline=${true}>
+                            ${
+                                /* TODO: Remove this after 2024.6..or maybe later? */
+                                msg(
+                                    "This restriction only applies to devices created in authentik 2024.4 or later.",
+                                )
+                            }
+                        </ak-alert>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+        `;
     }
 }

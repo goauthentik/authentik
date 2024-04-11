@@ -5,6 +5,7 @@ from hashlib import sha256
 
 from django.conf import settings
 from django.http import HttpRequest, HttpResponse
+from django.utils.translation import gettext_lazy as _
 from jwt import PyJWTError, decode, encode
 from rest_framework.fields import CharField, IntegerField, ListField, UUIDField
 from rest_framework.serializers import ValidationError
@@ -176,15 +177,30 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         threshold = timedelta_from_string(stage.last_auth_threshold)
         allowed_devices = []
 
+        has_webauthn_filters_set = stage.webauthn_allowed_device_types.exists()
+
         for device in user_devices:
             device_class = device.__class__.__name__.lower().replace("device", "")
             if device_class not in stage.device_classes:
                 self.logger.debug("device class not allowed", device_class=device_class)
                 continue
             if isinstance(device, SMSDevice) and device.is_hashed:
-                self.logger.debug("Hashed SMS device, skipping")
+                self.logger.debug("Hashed SMS device, skipping", device=device)
                 continue
             allowed_devices.append(device)
+            # Ignore WebAuthn devices which are not in the allowed types
+            if (
+                isinstance(device, WebAuthnDevice)
+                and device.device_type
+                and has_webauthn_filters_set
+            ):
+                if not stage.webauthn_allowed_device_types.filter(
+                    pk=device.device_type.pk
+                ).exists():
+                    self.logger.debug(
+                        "WebAuthn device type not allowed", device=device, type=device.device_type
+                    )
+                    continue
             # Ensure only one challenge per device class
             # WebAuthn does another device loop to find all WebAuthn devices
             if device_class in seen_classes:
@@ -251,7 +267,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
                 return self.executor.stage_ok()
             if stage.not_configured_action == NotConfiguredAction.DENY:
                 self.logger.debug("Authenticator not configured, denying")
-                return self.executor.stage_invalid()
+                return self.executor.stage_invalid(_("No (allowed) MFA authenticator configured."))
             if stage.not_configured_action == NotConfiguredAction.CONFIGURE:
                 self.logger.debug("Authenticator not configured, forcing configure")
                 return self.prepare_stages(user)
