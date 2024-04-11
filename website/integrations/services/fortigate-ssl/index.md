@@ -140,7 +140,7 @@ Lets create the application and link it to the provider
 This is the user group that you matched on in the FortiGate "firewall group" above.
 
 -   Go to Directory -> Groups
--   Click Create
+-   Click **Create**.
 -   Name = `ak.user.group`.
 -   Open ak.user.group and add the users whom should have access to the sslvpn.
 -   Save the group.
