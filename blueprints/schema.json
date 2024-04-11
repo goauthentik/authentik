@@ -6025,7 +6025,10 @@
             "type": "object",
             "properties": {
                 "expires": {
-                    "type": "string",
+                    "type": [
+                        "string",
+                        "null"
+                    ],
                     "format": "date-time",
                     "title": "Expires"
                 },
@@ -6794,7 +6797,10 @@
                     "title": "Name"
                 },
                 "expires": {
-                    "type": "string",
+                    "type": [
+                        "string",
+                        "null"
+                    ],
                     "format": "date-time",
                     "title": "Expires"
                 },
@@ -7985,7 +7991,10 @@
                     "title": "Description"
                 },
                 "expires": {
-                    "type": "string",
+                    "type": [
+                        "string",
+                        "null"
+                    ],
                     "format": "date-time",
                     "title": "Expires"
                 },
