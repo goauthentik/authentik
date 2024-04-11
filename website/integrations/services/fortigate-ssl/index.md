@@ -185,7 +185,7 @@ You should now be able to login by selecting SSO login either on the portal or i
 
 ## Troubleshooting
 
-These are just suggestions of what **could** be the cause of an issue and how to enable debug on the FortiGate
+These are just suggestions of what **could** be the cause of an issue and how to enable debug on the FortiGate.
 
 > [!CAUTION]
 > Debugging can generate heavy load on a FortiGate firewall, so make sure your firewall is not already struggling with performance before you enable debugging, and remember to disabled it again when you are done.
