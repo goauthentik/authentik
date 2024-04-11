@@ -171,7 +171,6 @@ This is the user group that you matched on in the FortiGate "firewall group" abo
 -   Click **Bind existing policy**.
 -   Click on **Group** in the tabs at the top.
 -   In the **Group** drop-down menu, select `ak.user.group`.
--   Chose ak.user.group
 -   Make sure enabled is chosen
 -   Order = 10
 -   Timeout = 30
