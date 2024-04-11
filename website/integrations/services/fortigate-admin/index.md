@@ -87,7 +87,7 @@ You can use the following commands on the FortiGate to enable debugging:
    `diagnose debug console timestamp enable`
 
 3. Enabling debug output
-   Before you can see any output you need to enable the debug
+   Before you can see any output you need to enable the debug mode.
    `diagnose debug enable`
 
 4. If you used SSO Login only instead of Normal and you are not able to login again, you can try one of this
