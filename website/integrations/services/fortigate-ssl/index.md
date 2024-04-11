@@ -112,7 +112,7 @@ Lets setup the provider using the saml metadata from the FortiGate
 
 ### Validate and change settings for provider
 
--   Click on the action button to the right of the provider you just created to edit it
+-   Click the Edit icon to the right of the provider you just created, under the **Actions** column..
     -   Authentication flow = default-authentication-flow (Welcome to authentik!)
     -   ACS URL = https://service.company/remote/saml/login
     -   Issuer = https://authentik.company
