@@ -133,7 +133,7 @@ Lets setup the provider using the saml metadata from the FortiGate
 
 ## Application section
 
-Lets create the application and link it to the provider
+Lets create the application and link it to the provider.
 
 ### Create user group
 
