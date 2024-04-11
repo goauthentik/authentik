@@ -14,7 +14,10 @@ django.setup()
 
 from django.conf import settings
 
-from authentik.core.models import Group, User
+from authentik.core.models import Application, Group, User
+from authentik.crypto.models import CertificateKeyPair
+from authentik.flows.models import Flow
+from authentik.providers.oauth2.models import OAuth2Provider
 from authentik.stages.authenticator_static.models import StaticToken
 from authentik.tenants.models import Domain, Tenant
 
@@ -97,6 +100,43 @@ def login():
         )
 
 
+def provider_oauth2():
+    tenants = [
+        # Number of user policies, group policies, expression policies
+        (0, 0, 0),
+    ]
+
+    for tenant in tenants:
+        user_policies_count = tenant[0]
+        group_policies_count = tenant[1]
+        expression_policies_count = tenant[2]
+        tenant_name = f"provider-oauth2-{user_policies_count}-{group_policies_count}-{expression_policies_count}"
+
+        t = Tenant.objects.create(schema_name=f"t_{tenant_name.replace('-', '_')}", name=uuid4())
+        Domain.objects.create(tenant=t, domain=f"{tenant_name}.localhost")
+
+        with t:
+            user = User(username="test", name=uuid4())
+            user.set_password("verySecurePassword")
+            user.save()
+
+            provider = OAuth2Provider.objects.create(
+                name="test",
+                authorization_flow=Flow.objects.get(
+                    slug="default-provider-authorization-implicit-consent"
+                ),
+                signing_key=CertificateKeyPair.objects.get(
+                    name="authentik Self-signed Certificate"
+                ),
+                redirect_uris="http://test.localhost",
+                client_id="123456",
+                client_secret="123456",
+            )
+            application = Application.objects.create(slug="test", name="test", provider=provider)
+
+            # TODO: create policies
+
+
 def delete():
     Tenant.objects.exclude(schema_name="public").delete()
 
@@ -111,6 +151,7 @@ if __name__ == "__main__":
         case "create":
             user_list()
             login()
+            provider_oauth2()
         case "delete":
             delete()
         case _:

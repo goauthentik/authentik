@@ -64,14 +64,14 @@ export default function () {
     const groups_per_user = Number(__ENV.GROUPS_PER_USER);
     const parents_per_group = Number(__ENV.PARENTS_PER_GROUP);
     const with_groups = Number(__ENV.WITH_GROUPS);
-    const domain = `user-list-${user_count}-${groups_per_user}-${parents_per_group}`;
+    const domain = `user-list-${user_count}-${groups_per_user}-${parents_per_group}.localhost:9000`;
     const page_size = Number(__ENV.PAGE_SIZE);
     const pages = Math.round(user_count / page_size);
     let requests = [];
     for (let page = 1; page <= pages; page++) {
         requests.push([
             "GET",
-            `http://${domain}.localhost:9000/api/v3/core/users/?page=${page}&page_size=${page_size}&include_groups=${with_groups}`,
+            `http://${domain}/api/v3/core/users/?page=${page}&page_size=${page_size}&include_groups=${with_groups}`,
             null,
             {
                 headers: {
