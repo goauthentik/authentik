@@ -9,7 +9,7 @@ title: FortiGate SSLVPN
 > FortiGate is a firewall from FortiNet. It is a NGFW with layer7 inspection and able to become a part of a FortiNet security fabric.
 > -- https://www.fortinet.com/products/next-generation-firewall
 >
-> This guide explains how to setup a FortiGate to use authentik as SAML provider for SSLVPN authentication. It does not cover how to setup SAML for admin logins, that is a different configuration. If you need to setup SAML for admin logins see the FortiGate admin guide.
+> This guide explains how to setup a FortiGate to use authentik with a SAML provider for SSLVPN authentication. It does not cover how to setup SAML for admin logins, that is a different configuration. If you need to setup SAML for admin logins see the FortiGate admin guide.
 >
 > This guide has been created using the following software versions. Instructions may differ between versions.
 >
