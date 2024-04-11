@@ -162,7 +162,7 @@ This is the user group that you matched on in the FortiGate "firewall group" abo
 -   icon = None
 -   Publisher = None
 -   Description = None
--   Save
+-   Click **Save**.
 
 ### Limiting the access based on authentik group
 
