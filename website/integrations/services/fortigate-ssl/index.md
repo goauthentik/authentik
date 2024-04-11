@@ -65,7 +65,7 @@ config user saml
 end
 ```
 
-### Add the saml single signon to a use group
+### Add the SAML single sign-on to a user group
 
 This will limit who can login via authentik saml. It will match on ak.user.group which is the group you will setup in authentik later, and only allow users of that group to login. In essence it provides the same functionality as returning a user-group via radius, and matching on the user group.
 
