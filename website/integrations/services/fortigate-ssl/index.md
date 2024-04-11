@@ -180,7 +180,7 @@ This is the user group that you matched on in the FortiGate "firewall group" abo
 You should now be able to log in by selecting SSO login either on the portal or in FortiClient, depending on your portal configuration.
 
 > [!NOTE]
-> If you are using FortiClient remember to set the sslvpn profile to use single-signon either creating a manual profile or edit the profile in your EMS.
+> If you are using FortiClient remember to set the sslvpn profile to use single sign-on either creating a manual profile or editing the profile in your EMS.
 
 ## Troubleshooting
 
