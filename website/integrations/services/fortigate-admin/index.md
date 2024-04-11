@@ -59,7 +59,7 @@ Then navigate to `https://fgt.company/fabric-connector/edit/security-fabric-conn
 -   Set the `SP Address` to the FortiGate FQDN `fgt.company`. (This gives you the URLs to configure in authentik)
 -   Set the `Default Login Page` to either `Normal` or `Single-Sign On`. (Normal allows both local and SAML authentication vs only SAML SSO.)
 
-FortiGate create a new user by default if one does not exist so you will need to set the Default Admin Profile to the permissions you want any new users to have. (I have created a `no_permissions` profile to assign by default)
+FortiGate creates a new user by default if one does not exist, so you will need to set the Default Admin Profile to the permissions you want any new users to have. (I have created a `no_permissions` profile to assign by default.)
 
 Under `SP Details` you should find SP entity ID. Make sure it is `https` as well and note it for later use (this is your Audience value of the authentik SP-provider).
 
