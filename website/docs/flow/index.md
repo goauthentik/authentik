@@ -12,7 +12,7 @@ For example, a standard login flow would consist of the following stages:
 
 Upon flow execution, a plan containing all stages is generated. This means that all attached policies are evaluated upon execution. This behaviour can be altered by enabling the **Evaluate when stage is run** option on the binding.
 
-To determine which flow is linked, authentik searches all flows with the required designation and chooses the first instance the current user has access to.
+The determine which flow should be used, authentik will first check which default authentication flow is configured in the active [**Brand**](../core/brands.md). If no default is configured there, the policies in all flows with the matching designation are checked, and the first flow with matching policies sorted by `slug` will be used.
 
 ## Permissions
 
@@ -42,7 +42,7 @@ The authentication flow should always contain a [**User Login**](stages/user_log
 
 This designates a flow to be used to invalidate a session.
 
-This stage should always contain a [**User Logout**](stages/user_logout.md) stage, which resets the current session.
+This flow should always contain a [**User Logout**](stages/user_logout.md) stage, which resets the current session.
 
 #### Enrollment
 

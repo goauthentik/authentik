@@ -72,3 +72,15 @@ Logins which used Passwordless authentication have the _auth_method_ context var
     }
 }
 ```
+
+### `WebAuthn Device type restrictions`
+
+:::info
+Requires authentik 2024.4
+:::
+
+Optionally restrict which WebAuthn device types can be used to authenticate.
+
+When no restriction is set, all WebAuthn devices a user has registered are allowed.
+
+These restrictions only apply to WebAuthn devices created with authentik 2024.4 or later.
