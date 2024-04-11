@@ -94,7 +94,7 @@ diag vpn ssl saml-metadata saml.sp.name
 
 ## authentik setup
 
-It's time to login to authentik and setup the provider and application.
+It's time to log in to authentik and set up the provider and application.
 
 ## Provider section
 
