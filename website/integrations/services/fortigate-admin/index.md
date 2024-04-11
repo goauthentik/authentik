@@ -93,7 +93,7 @@ You can use the following commands on the FortiGate to enable debugging:
 4. If you used SSO Login only instead of Normal and you are not able to log in again, you can try one of the following methods:
 
 **Method 1**:
-Open this URL (`https://fgt.company/saml/?acs`) in a browser and choose `Login Locally`
+Open this URL (`https://fgt.company/saml/?acs`) in a browser and choose `Login Locally`.
 
 **Method 2**:
 Open the CLI and set the login page back to normal
