@@ -205,7 +205,7 @@ This will provide all possible output from the saml daemon.\
 
 ### Debug sslvpn (optional)
 
-This will provide insight into what happens when you use FortiClient, usually combined with salmd debug.\
+This will provide insight into what happens when you use FortiClient, usually combined with `salmd debug`.
 `diag debug application sslvpn -1`
 
 ### Debug https daemon (optional)
