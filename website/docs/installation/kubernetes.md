@@ -21,7 +21,7 @@ You can also [view a video walk-through](https://www.youtube.com/watch?v=O1qUbrk
 
 Start by generating passwords for the database and cache. You can use either of the following commands:
 
-```
+```shell
 pwgen -s 50 1
 openssl rand -base64 36
 ```
@@ -62,7 +62,7 @@ See all configurable values on [ArtifactHub](https://artifacthub.io/packages/hel
 
 Now, execute the following commands to install authentik:
 
-```
+```shell
 helm repo add authentik https://charts.goauthentik.io
 helm repo update
 helm upgrade --install authentik authentik/authentik -f values.yaml

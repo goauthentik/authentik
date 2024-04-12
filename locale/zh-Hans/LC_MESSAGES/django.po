@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-09 00:08+0000\n"
+"POT-Creation-Date: 2024-04-12 00:07+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2024\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/authentik/teams/119923/zh-Hans/)\n"
@@ -2222,6 +2222,12 @@ msgid ""
 "again."
 msgstr "无效的令牌。请确保设备上的时间准确并重试。"
 
+#: authentik/stages/authenticator_validate/challenge.py
+#: authentik/stages/authenticator_webauthn/stage.py
+#, python-brace-format
+msgid "Invalid device type. Contact your {brand} administrator for help."
+msgstr "无效的设备类型。请联系您的 {brand} 管理员获得帮助。"
+
 #: authentik/stages/authenticator_validate/models.py
 msgid "Static"
 msgstr "静态"
@@ -2271,6 +2277,10 @@ msgstr "身份验证器验证阶段"
 msgid "Authenticator Validation Stages"
 msgstr "身份验证器验证阶段"
 
+#: authentik/stages/authenticator_validate/stage.py
+msgid "No (allowed) MFA authenticator configured."
+msgstr "未配置（允许的）MFA 身份验证器。"
+
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Authenticator Setup Stage"
 msgstr "WebAuthn 身份验证器设置阶段"
@@ -2294,11 +2304,6 @@ msgstr "WebAuthn 设备类型"
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Device types"
 msgstr "WebAuthn 设备类型"
-
-#: authentik/stages/authenticator_webauthn/stage.py
-#, python-brace-format
-msgid "Invalid device type. Contact your {brand} administrator for help."
-msgstr "无效的设备类型。请联系您的 {brand} 管理员获得帮助。"
 
 #: authentik/stages/captcha/models.py
 msgid "Public key, acquired your captcha Provider."
@@ -2901,6 +2906,14 @@ msgstr "启用时，所有由用户造成的事件会在相应用户被删除时
 #: authentik/tenants/models.py
 msgid "Globally enable/disable impersonation."
 msgstr "全局启用/禁用模拟身份。"
+
+#: authentik/tenants/models.py
+msgid "Default token duration"
+msgstr "默认令牌持续时间"
+
+#: authentik/tenants/models.py
+msgid "Default token length"
+msgstr "默认令牌长度"
 
 #: authentik/tenants/models.py
 msgid "Tenant"

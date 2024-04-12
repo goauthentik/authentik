@@ -4,6 +4,7 @@ import os
 from argparse import ArgumentParser
 from unittest import TestCase
 
+import pytest
 from django.conf import settings
 from django.test.runner import DiscoverRunner
 
@@ -104,7 +105,5 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
                     f"is not supported. Use a dotted module name or "
                     f"path instead."
                 )
-
-        import pytest
 
         return pytest.main(self.args)

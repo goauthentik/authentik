@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-09 00:08+0000\n"
+"POT-Creation-Date: 2024-04-12 00:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2186,6 +2186,12 @@ msgid ""
 "again."
 msgstr ""
 
+#: authentik/stages/authenticator_validate/challenge.py
+#: authentik/stages/authenticator_webauthn/stage.py
+#, python-brace-format
+msgid "Invalid device type. Contact your {brand} administrator for help."
+msgstr ""
+
 #: authentik/stages/authenticator_validate/models.py
 msgid "Static"
 msgstr ""
@@ -2235,6 +2241,10 @@ msgstr ""
 msgid "Authenticator Validation Stages"
 msgstr ""
 
+#: authentik/stages/authenticator_validate/stage.py
+msgid "No (allowed) MFA authenticator configured."
+msgstr ""
+
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Authenticator Setup Stage"
 msgstr ""
@@ -2257,11 +2267,6 @@ msgstr ""
 
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Device types"
-msgstr ""
-
-#: authentik/stages/authenticator_webauthn/stage.py
-#, python-brace-format
-msgid "Invalid device type. Contact your {brand} administrator for help."
 msgstr ""
 
 #: authentik/stages/captcha/models.py
@@ -2844,6 +2849,14 @@ msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Globally enable/disable impersonation."
+msgstr ""
+
+#: authentik/tenants/models.py
+msgid "Default token duration"
+msgstr ""
+
+#: authentik/tenants/models.py
+msgid "Default token length"
 msgstr ""
 
 #: authentik/tenants/models.py

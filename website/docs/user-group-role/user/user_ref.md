@@ -93,11 +93,11 @@ underneath `additionalHeaders`:
 
 #### Example:
 
-```
+```yaml
 additionalHeaders:
-  REMOTE-USER: joe.smith
-  REMOTE-EMAIL: joe@jsmith.com
-  REMOTE-NAME: Joseph
+    REMOTE-USER: joe.smith
+    REMOTE-EMAIL: joe@jsmith.com
+    REMOTE-NAME: Joseph
 ```
 
 These headers will now be passed to the application when the user logs in. Most applications will need to be configured to accept these headers. Some examples of applications that can accept additional headers from an authentik Proxy Provider are [Grafana](https://grafana.com/docs/grafana/latest/auth/auth-proxy/) and [Tandoor Recipes](https://docs.tandoor.dev/features/authentication/).
