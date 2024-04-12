@@ -3,7 +3,21 @@ import exec from "k6/execution";
 import http from "k6/http";
 import { check, fail } from "k6";
 
-const testcases = [[0, 0, 0]];
+const testcases = [
+    [0, 0, 0],
+    [10, 0, 0],
+    [100, 0, 0],
+    [1000, 0, 0],
+    [0, 10, 0],
+    [0, 100, 0],
+    [0, 1000, 0],
+    [0, 0, 10],
+    [0, 0, 100],
+    [0, 0, 1000],
+    [10, 10, 10],
+    [100, 100, 100],
+    [1000, 1000, 1000],
+];
 const VUs = 12;
 
 export const options = {
@@ -33,7 +47,7 @@ export const options = {
 
 export function setup() {
     let cookies = {};
-    for (let vu = 1; vu <= VUs; vu++) {
+    for (let vu = 0; vu < VUs; vu++) {
         cookies[vu] = {};
         for (const testcase of testcases) {
             const user_policies_count = testcase[0];
@@ -95,7 +109,7 @@ export function setup() {
 export default function (data) {
     // Restore cookies
     let jar = http.cookieJar();
-    const vu = exec.vu.idInTest;
+    const vu = exec.vu.idInTest % VUs;
     Object.keys(data.cookies[vu]).forEach((domain) => {
         Object.keys(data.cookies[vu][domain]).forEach((key) => {
             jar.set(`http://${domain}`, key, data.cookies[vu][domain][key][0]);

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+import random
 import sys
 from os import environ
 from uuid import uuid4
@@ -17,6 +17,8 @@ from django.conf import settings
 from authentik.core.models import Application, Group, User
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
+from authentik.policies.expression.models import ExpressionPolicy
+from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import OAuth2Provider
 from authentik.stages.authenticator_static.models import StaticToken
 from authentik.tenants.models import Domain, Tenant
@@ -104,6 +106,18 @@ def provider_oauth2():
     tenants = [
         # Number of user policies, group policies, expression policies
         (0, 0, 0),
+        (10, 0, 0),
+        (100, 0, 0),
+        (1000, 0, 0),
+        (0, 10, 0),
+        (0, 100, 0),
+        (0, 1000, 0),
+        (0, 0, 10),
+        (0, 0, 100),
+        (0, 0, 1000),
+        (10, 10, 10),
+        (100, 100, 100),
+        (1000, 1000, 1000),
     ]
 
     for tenant in tenants:
@@ -134,7 +148,56 @@ def provider_oauth2():
             )
             application = Application.objects.create(slug="test", name="test", provider=provider)
 
-            # TODO: create policies
+            User.objects.bulk_create(
+                [
+                    User(
+                        username=uuid4(),
+                        name=uuid4(),
+                    )
+                    for _ in range(user_policies_count)
+                ]
+            )
+            PolicyBinding.objects.bulk_create(
+                [
+                    PolicyBinding(
+                        user=user,
+                        target=application,
+                        order=random.randint(1, 1_000_000),
+                    )
+                    for user in User.objects.exclude(username="akadmin").exclude_anonymous()
+                ]
+            )
+
+            Group.objects.bulk_create([Group(name=uuid4()) for _ in range(group_policies_count)])
+            PolicyBinding.objects.bulk_create(
+                [
+                    PolicyBinding(
+                        group=group,
+                        target=application,
+                        order=random.randint(1, 1_000_000),
+                    )
+                    for group in Group.objects.exclude(name="authentik Admins")
+                ]
+            )
+            user.ak_groups.set(Group.objects.exclude(name="authentik Admins").order_by("?")[:1])
+
+            [
+                ExpressionPolicy(
+                    name=f"test-{uuid4()}",
+                    expression="return True",
+                ).save()
+                for _ in range(expression_policies_count)
+            ]
+            PolicyBinding.objects.bulk_create(
+                [
+                    PolicyBinding(
+                        policy=policy,
+                        target=application,
+                        order=random.randint(1, 1_000_000),
+                    )
+                    for policy in ExpressionPolicy.objects.filter(name__startswith="test-")
+                ]
+            )
 
 
 def delete():
@@ -149,8 +212,8 @@ if __name__ == "__main__":
 
     match action:
         case "create":
-            user_list()
-            login()
+            # user_list()
+            # login()
             provider_oauth2()
         case "delete":
             delete()
