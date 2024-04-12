@@ -44397,9 +44397,7 @@ components:
           authentik_providers_scim.scimprovider: '#/components/schemas/SCIMProviderRequest'
   securitySchemes:
     authentik:
-      type: apiKey
-      in: header
-      name: Authorization
+      type: http
       scheme: bearer
 servers:
 - url: /api/v3/

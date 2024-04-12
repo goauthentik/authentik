@@ -4,6 +4,7 @@ from hmac import compare_digest
 from typing import Any
 
 from django.conf import settings
+from drf_spectacular.extensions import OpenApiAuthenticationExtension
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.request import Request
@@ -102,3 +103,14 @@ class TokenAuthentication(BaseAuthentication):
             return None
 
         return (user, None)  # pragma: no cover
+
+
+class TokenSchema(OpenApiAuthenticationExtension):
+    """Auth schema"""
+
+    target_class = TokenAuthentication
+    name = "authentik"
+
+    def get_security_definition(self, auto_schema):
+        """Auth schema"""
+        return {"type": "http", "scheme": "bearer"}
