@@ -42,7 +42,7 @@ You can also bind mount single files into the folder, as long as they fall under
 -   Files can be in any arbitrary file structure, and can have any extension.
 -   If the path contains `archive`, the files will be ignored (to better support certbot setups).
 
-```
+```shell
 certs/
 ├── baz
 │   └── bar.baz
