@@ -1,23 +1,22 @@
 import { EVENT_REFRESH } from "@goauthentik/authentik/common/constants";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { authentikConfigContext } from "@goauthentik/elements/AuthentikContexts";
+import type { ReactiveElementHost } from "@goauthentik/elements/types.js";
 
 import { ContextProvider } from "@lit/context";
-import { ReactiveController, ReactiveControllerHost } from "lit";
+import type { ReactiveController } from "lit";
 
 import type { Config } from "@goauthentik/api";
 import { RootApi } from "@goauthentik/api";
 
 import type { AkInterface } from "./Interface";
 
-type ReactiveElementHost = Partial<ReactiveControllerHost> & AkInterface;
-
 export class ConfigContextController implements ReactiveController {
-    host!: ReactiveElementHost;
+    host!: ReactiveElementHost<AkInterface>;
 
     context!: ContextProvider<{ __context__: Config | undefined }>;
 
-    constructor(host: ReactiveElementHost) {
+    constructor(host: ReactiveElementHost<AkInterface>) {
         this.host = host;
         this.context = new ContextProvider(this.host, {
             context: authentikConfigContext,
