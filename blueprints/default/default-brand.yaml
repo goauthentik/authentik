@@ -30,5 +30,5 @@ entries:
     state: created
     conditions:
       # Only create default brand if no other default brand exists
-      - !Condition [NOR, !Find [authentik_brands.brand, default, True]]
+      - !Condition [NOR, !Find [authentik_brands.brand, [default, True]]]
     model: authentik_brands.brand
