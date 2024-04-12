@@ -51,7 +51,7 @@ authentik already provides some default _scopes_ with _claims_ inside them, such
 
 ##### Custom profile scope
 
-If you do not need storage quota, group information or to manage already existing user in Nextcloud [skip to the next step](#provider-and-application).
+If you do not need storage quota, group information, or to manage already existing users in Nextcloud [skip to the next step](#provider-and-application).
 
 However, if you want to be able to control how much storage users in Nextcloud can use, as well as which users are recognized as Nextcloud administrators, you would need to make this information available in Nextcloud. To achieve this you would need to create a custom `profile` scope. To do so, go to _Customization_ -> _Property mappings_. Create a _Scope mapping_ with the following parameters:
 
@@ -88,9 +88,9 @@ If set to a value, for example `1 GB`, user(s) will have 1GB storage quota. If t
 :::
 
 :::note
-To connect to an already existing Nextcloud user, set the "nextcloud_user_id" property in the user's attributes. This must be set for individual users.
+To connect to an already existing Nextcloud user, set the "nextcloud_user_id" property in the user's attributes. This must be set for each individual user.
 
-The value must match the field `username` of the user on the Nextcloud instance. On Nextcloud, go to _Users_ -> check the username of the user you are trying to connect to (Under `Display name`).
+The value of `nextcloud_user_id` must match the field `username` of the user on the Nextcloud instance. On Nextcloud, go to _Users_ to see the username of the user you are trying to connect to (Under user's `Display name`).
 If set to a value, for example `goauthentik`, it will try to connect to the `goauthentik` user on the Nextcloud instance. Otherwise, the user's UUID will be used.
 :::
 
@@ -139,7 +139,7 @@ Add a new provider using the `+` button and set the following values:
     :::
 -   Scope: `email`, `profile` (you can safely omit `openid` if you prefer)
 -   Attribute mappings:
-    -   User ID mapping: sub (or `user_id` if you need to connect to already existing Nextcloud user)
+    -   User ID mapping: sub (or `user_id` if you need to connect to n already existing Nextcloud user)
     -   Display name mapping: name
     -   Email mapping: email
     -   Quota mapping: quota (leave empty if you have skipped the [custom profile scope](#custom-profile-scope) section)
@@ -147,7 +147,7 @@ Add a new provider using the `+` button and set the following values:
         :::tip
         You need to enable the "Use group provisioning" checkmark to be able to write to this field
         :::
--   Use unique user ID: If you only have one provider you can uncheck this if you prefer (This will affect your Federated Cloud ID, under _Personal settings_ -> _Sharing_ -> _Federated Cloud_).
+    -   Use unique user ID: If you only have one provider you can deselect this if you prefer. This will affect your Federated Cloud ID, which you can check under _Personal settings_ -> _Sharing_ -> _Federated Cloud_. If the box is selected, nextcloud will pick a random number here (`437218904321784903214789023@nextcloud.instance` for example). Otherwise, it will use the mapped user ID (`<authentik's sub or user_id>@nextcloud.instance`).
     :::tip
     To avoid your group assignment being a hash value, deselect **Use unique user ID**.
     :::
