@@ -139,7 +139,7 @@ Add a new provider using the `+` button and set the following values:
     :::
 -   Scope: `email`, `profile` (you can safely omit `openid` if you prefer)
 -   Attribute mappings:
-    -   User ID mapping: sub (or `user_id` if you need to connect to n already existing Nextcloud user)
+    -   User ID mapping: sub (or `user_id` if you need to connect to an already existing Nextcloud user)
     -   Display name mapping: name
     -   Email mapping: email
     -   Quota mapping: quota (leave empty if you have skipped the [custom profile scope](#custom-profile-scope) section)
