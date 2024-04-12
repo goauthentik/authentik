@@ -2909,7 +2909,7 @@ msgstr "全局启用/禁用模拟身份。"
 
 #: authentik/tenants/models.py
 msgid "Default token duration"
-msgstr "默认令牌时长"
+msgstr "默认令牌持续时间"
 
 #: authentik/tenants/models.py
 msgid "Default token length"
