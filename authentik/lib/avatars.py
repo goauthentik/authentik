@@ -11,7 +11,7 @@ from django.http import HttpRequest, HttpResponseNotFound
 from django.templatetags.static import static
 from lxml import etree  # nosec
 from lxml.etree import Element, SubElement  # nosec
-from requests.exceptions import RequestException
+from requests.exceptions import ConnectionError, HTTPError, RequestException, Timeout
 
 from authentik.lib.config import get_path_from_dict
 from authentik.lib.utils.http import get_http_session
@@ -23,6 +23,8 @@ if TYPE_CHECKING:
 GRAVATAR_URL = "https://secure.gravatar.com"
 DEFAULT_AVATAR = static("dist/assets/images/user_default.png")
 CACHE_KEY_GRAVATAR = "goauthentik.io/lib/avatars/"
+CACHE_KEY_GRAVATAR_AVAILABLE = "goauthentik.io/lib/avatars/gravatar_available"
+GRAVATAR_STATUS_TTL_SECONDS = 60 * 60 * 8  # 8 Hours
 
 SVG_XML_NS = "http://www.w3.org/2000/svg"
 SVG_NS_MAP = {None: SVG_XML_NS}
@@ -50,6 +52,9 @@ def avatar_mode_attribute(user: "User", mode: str) -> str | None:
 
 def avatar_mode_gravatar(user: "User", mode: str) -> str | None:
     """Gravatar avatars"""
+    if not cache.get(CACHE_KEY_GRAVATAR_AVAILABLE, True):
+        return None
+
     # gravatar uses md5 for their URLs, so md5 can't be avoided
     mail_hash = md5(user.email.lower().encode("utf-8")).hexdigest()  # nosec
     parameters = [("size", "158"), ("rating", "g"), ("default", "404")]
@@ -69,6 +74,8 @@ def avatar_mode_gravatar(user: "User", mode: str) -> str | None:
             cache.set(full_key, None)
             return None
         res.raise_for_status()
+    except (Timeout, ConnectionError, HTTPError):
+        cache.set(CACHE_KEY_GRAVATAR_AVAILABLE, False, timeout=GRAVATAR_STATUS_TTL_SECONDS)
     except RequestException:
         return gravatar_url
     cache.set(full_key, gravatar_url)
