@@ -5,7 +5,7 @@ from guardian.shortcuts import assign_perm
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Group, User
-from authentik.core.tests.utils import create_test_admin_user, create_test_user
+from authentik.core.tests.utils import create_test_user
 from authentik.lib.generators import generate_id
 
 
@@ -81,7 +81,8 @@ class TestGroupsAPI(APITestCase):
     def test_parent_self(self):
         """Test parent"""
         group = Group.objects.create(name=generate_id())
-        self.login_user = create_test_admin_user()
+        assign_perm("view_group", self.login_user, group)
+        assign_perm("change_group", self.login_user, group)
         self.client.force_login(self.login_user)
         res = self.client.patch(
             reverse("authentik_api:group-detail", kwargs={"pk": group.pk}),
