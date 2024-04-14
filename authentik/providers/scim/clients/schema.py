@@ -13,14 +13,18 @@ from pydanticscim.user import User as BaseUser
 class User(BaseUser):
     """Modified User schema with added externalId field"""
 
-    schemas: tuple[str] = ("urn:ietf:params:scim:schemas:core:2.0:User",)
+    schemas: list[str] = [
+        "urn:ietf:params:scim:schemas:core:2.0:User",
+    ]
     externalId: str | None = None
 
 
 class Group(BaseGroup):
     """Modified Group schema with added externalId field"""
 
-    schemas: tuple[str] = ("urn:ietf:params:scim:schemas:core:2.0:Group",)
+    schemas: list[str] = [
+        "urn:ietf:params:scim:schemas:core:2.0:Group",
+    ]
     externalId: str | None = None
 
 
