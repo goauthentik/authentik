@@ -188,6 +188,10 @@ class Group(SerializerModel):
         indexes = [models.Index(fields=["name"])]
         verbose_name = _("Group")
         verbose_name_plural = _("Groups")
+        permissions = [
+            ("add_user_to_group", _("Add user to group")),
+            ("remove_user_from_group", _("Remove user from group")),
+        ]
 
 
 class UserQuerySet(models.QuerySet):
