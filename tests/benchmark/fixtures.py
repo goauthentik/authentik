@@ -52,11 +52,14 @@ def user_list():
         parents_per_group = tenant[2]
         tenant_name = f"user-list-{user_count}-{groups_per_user}-{parents_per_group}"
 
-        t, created = Tenant.objects.get_or_create(
-            schema_name=f"t_{tenant_name.replace('-', '_')}", defaults={"name": uuid4()}
-        )
+        schema_name = f"t_{tenant_name.replace('-', '_')}"
+        created = False
+        t = Tenant.objects.filter(schema_name=schema_name).first()
+        if not t:
+            created = True
+            t = Tenant.objects.create(schema_name=schema_name, name=uuid4())
         Domain.objects.get_or_create(tenant=t, domain=f"{tenant_name}.{host}")
-        if created:
+        if not created:
             continue
 
         with t:
@@ -86,17 +89,27 @@ def user_list():
 
 
 def login():
-    t, created = Tenant.objects.create(schema_name=f"t_login_no_mfa", defaults={"name": uuid4()})
+    schema_name = f"t_login_no_mfa"
+    created = False
+    t = Tenant.objects.filter(schema_name=schema_name).first()
+    if not t:
+        created = True
+        t = Tenant.objects.create(schema_name=schema_name, name=uuid4())
     Domain.objects.get_or_create(tenant=t, domain=f"login-no-mfa.{host}")
-    if not created:
+    if created:
         with t:
             user = User(username="test", name=uuid4())
             user.set_password("verySecurePassword")
             user.save()
 
-    t, created = Tenant.objects.create(schema_name=f"t_login_with_mfa", defaults={"name": uuid4()})
+    schema_name = f"t_login_with_mfa"
+    created = False
+    t = Tenant.objects.filter(schema_name=schema_name).first()
+    if not t:
+        created = True
+        t = Tenant.objects.create(schema_name=schema_name, name=uuid4())
     Domain.objects.get_or_create(tenant=t, domain=f"login-with-mfa.{host}")
-    if not created:
+    if created:
         with t:
             user = User(username="test", name=uuid4())
             user.set_password("verySecurePassword")
@@ -132,11 +145,14 @@ def provider_oauth2():
         expression_policies_count = tenant[2]
         tenant_name = f"provider-oauth2-{user_policies_count}-{group_policies_count}-{expression_policies_count}"
 
-        t, created = Tenant.objects.get_or_create(
-            schema_name=f"t_{tenant_name.replace('-', '_')}", defaults={"name": uuid4()}
-        )
+        schema_name = f"t_{tenant_name.replace('-', '_')}"
+        created = False
+        t = Tenant.objects.filter(schema_name=schema_name).first()
+        if not t:
+            created = True
+            t = Tenant.objects.create(schema_name=schema_name, name=uuid4())
         Domain.objects.get_or_create(tenant=t, domain=f"{tenant_name}.{host}")
-        if created:
+        if not created:
             continue
 
         with t:
