@@ -134,6 +134,12 @@ export class DeleteBulkForm<T> extends ModalButton {
     @property()
     buttonLabel = msg("Delete");
 
+    /**
+     * Action shown in messages, for example `deleted` or `removed`
+     */
+    @property()
+    action = msg("deleted");
+
     @property({ attribute: false })
     metadata: (item: T) => BulkDeleteMetadata = (item: T) => {
         const rec = item as Record<string, unknown>;

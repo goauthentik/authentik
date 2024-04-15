@@ -85,6 +85,10 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
     }
 
     row(item: Permission): TemplateResult[] {
-        return [html`${item.modelVerbose}`, html`${item.name}`, html`✓`];
+        return [
+            html`${item.modelVerbose}`,
+            html`${item.name}`,
+            html`<i class="fas fa-check pf-m-success"></i>`,
+        ];
     }
 }

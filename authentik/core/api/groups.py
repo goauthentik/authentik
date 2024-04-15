@@ -146,14 +146,13 @@ class GroupFilter(FilterSet):
         fields = ["name", "is_superuser", "members_by_pk", "attributes", "members_by_username"]
 
 
-class UserAccountSerializer(PassiveSerializer):
-    """Account adding/removing operations"""
-
-    pk = IntegerField(required=True)
-
-
 class GroupViewSet(UsedByMixin, ModelViewSet):
     """Group Viewset"""
+
+    class UserAccountSerializer(PassiveSerializer):
+        """Account adding/removing operations"""
+
+        pk = IntegerField(required=True)
 
     queryset = Group.objects.all().select_related("parent").prefetch_related("users")
     serializer_class = GroupSerializer
@@ -169,7 +168,7 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
-    @permission_required(None, ["authentik_core.add_user"])
+    @permission_required("authentik_core.add_user_to_group")
     @extend_schema(
         request=UserAccountSerializer,
         responses={
@@ -177,7 +176,13 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
             404: OpenApiResponse(description="User not found"),
         },
     )
-    @action(detail=True, methods=["POST"], pagination_class=None, filter_backends=[])
+    @action(
+        detail=True,
+        methods=["POST"],
+        pagination_class=None,
+        filter_backends=[],
+        permission_classes=[],
+    )
     def add_user(self, request: Request, pk: str) -> Response:
         """Add user to group"""
         group: Group = self.get_object()
@@ -193,7 +198,7 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         group.users.add(user)
         return Response(status=204)
 
-    @permission_required(None, ["authentik_core.add_user"])
+    @permission_required("authentik_core.remove_user_from_group")
     @extend_schema(
         request=UserAccountSerializer,
         responses={
@@ -201,7 +206,13 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
             404: OpenApiResponse(description="User not found"),
         },
     )
-    @action(detail=True, methods=["POST"], pagination_class=None, filter_backends=[])
+    @action(
+        detail=True,
+        methods=["POST"],
+        pagination_class=None,
+        filter_backends=[],
+        permission_classes=[],
+    )
     def remove_user(self, request: Request, pk: str) -> Response:
         """Add user to group"""
         group: Group = self.get_object()
