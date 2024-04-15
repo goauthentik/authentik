@@ -44,14 +44,13 @@ You can assign a role to a group, and then all users in the group inherit the pe
 Requires authentik 2024.4
 :::
 
-To delegate user management of a group, the following permissions need to be granted on a specific _Group_ object:
+To give a specific Role or User the ability to manage group members, the following permissions need to be granted on the matching Group object:
 
--   Can view Group
--   Add user to group
--   Remove user from group
+-   Can view group
+-   Can add user to group
+-   Can remove user from group
+-   Can access admin interface (for managing a group's user within the authentik Admin interface)
 
-In addition to that, the permission to view a subset or all users needs to be assigned.
+In addition, the permission "Can view User" needs to be assigned, either globally or on specific users that should be manageable.
 
 These permissions can be assigned to a [Role](../roles/index.mdx) or directly to a [User](../user/index.mdx).
-
-In addition, to manage users of a group using the authentik Admin interface, the permissions **Can access admin interface** needs to be granted.
