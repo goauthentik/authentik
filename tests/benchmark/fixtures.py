@@ -204,19 +204,22 @@ def delete():
     Tenant.objects.exclude(schema_name="public").delete()
 
 
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        action = "create"
-    else:
-        action = sys.argv[1]
-
+def main(action: str):
     match action:
         case "create":
-            # user_list()
-            # login()
+            user_list()
+            login()
             provider_oauth2()
         case "delete":
             delete()
         case _:
             print("Unknown action. Should be create or delete")
             exit(1)
+
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        action = "create"
+    else:
+        action = sys.argv[1]
+    main(action)
