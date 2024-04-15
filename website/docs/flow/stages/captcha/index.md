@@ -21,3 +21,7 @@ See https://docs.hcaptcha.com/switch
 ### Turnstile
 
 See https://developers.cloudflare.com/turnstile/get-started/migrating-from-recaptcha
+
+:::warning
+To use Cloudflare Turnstile, the site must be configured to use the "Invisible" mode, otherwise the widget will be rendered incorrectly.
+:::
