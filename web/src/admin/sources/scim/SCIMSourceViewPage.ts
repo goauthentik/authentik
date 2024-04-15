@@ -78,7 +78,6 @@ export class SCIMSourceViewPage extends AKElement {
             <section
                 slot="page-overview"
                 data-tab-title="${msg("Overview")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div slot="header" class="pf-c-banner pf-m-info">
                     ${msg("SCIM Source is in preview.")}
@@ -86,7 +85,7 @@ export class SCIMSourceViewPage extends AKElement {
                         >${msg("Send us feedback!")}</a
                     >
                 </div>
-                <div class="pf-l-grid pf-m-gutter">
+                <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                         <div class="pf-c-card__body">
                             <dl class="pf-c-description-list pf-m-2-col-on-lg">
