@@ -129,6 +129,7 @@ class TestFlowsEnroll(SeleniumTestCase):
         prompt_stage.find_element(By.CSS_SELECTOR, ".pf-c-button").click()
 
         # Second prompt stage
+        sleep(1)
         flow_executor = self.get_shadow_root("ak-flow-executor")
         prompt_stage = self.get_shadow_root("ak-stage-prompt", flow_executor)
         wait = WebDriverWait(prompt_stage, self.wait_timeout)
