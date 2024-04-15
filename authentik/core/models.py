@@ -185,6 +185,7 @@ class Group(SerializerModel):
                 "parent",
             ),
         )
+        indexes = [models.Index(fields=["name"])]
         verbose_name = _("Group")
         verbose_name_plural = _("Groups")
 
@@ -322,6 +323,13 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
             ("unassign_user_permissions", _("Can unassign permissions from users")),
             ("preview_user", _("Can preview user data sent to providers")),
             ("view_user_applications", _("View applications the user has access to")),
+        ]
+        indexes = [
+            models.Index(fields=["last_login"]),
+            models.Index(fields=["password_change_date"]),
+            models.Index(fields=["uuid"]),
+            models.Index(fields=["path"]),
+            models.Index(fields=["type"]),
         ]
         authentik_signals_ignored_fields = [
             # Logged by the events `password_set`

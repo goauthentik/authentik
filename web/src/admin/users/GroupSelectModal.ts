@@ -38,6 +38,7 @@ export class GroupSelectModal extends TableModal<Group> {
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
+            includeUsers: false,
         });
     }
 

@@ -3612,6 +3612,11 @@ paths:
           type: string
         description: Attributes
       - in: query
+        name: include_users
+        schema:
+          type: boolean
+          default: true
+      - in: query
         name: is_superuser
         schema:
           type: boolean
@@ -4558,6 +4563,11 @@ paths:
             format: uuid
         explode: true
         style: form
+      - in: query
+        name: include_groups
+        schema:
+          type: boolean
+          default: true
       - in: query
         name: is_active
         schema:
@@ -43623,26 +43633,6 @@ components:
       - num_pk
       - parent_name
       - pk
-    UserGroupRequest:
-      type: object
-      description: Simplified Group Serializer for user's groups
-      properties:
-        name:
-          type: string
-          minLength: 1
-          maxLength: 80
-        is_superuser:
-          type: boolean
-          description: Users added to this group will be superusers.
-        parent:
-          type: string
-          format: uuid
-          nullable: true
-        attributes:
-          type: object
-          additionalProperties: {}
-      required:
-      - name
     UserLoginChallenge:
       type: object
       description: Empty challenge

@@ -145,6 +145,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
             type: this.hideServiceAccounts
                 ? [CoreUsersListTypeEnum.External, CoreUsersListTypeEnum.Internal]
                 : undefined,
+            includeGroups: false,
         });
         this.me = await me();
         return users;
