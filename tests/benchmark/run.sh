@@ -7,7 +7,7 @@ BASE_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
 function _k6 {
     local filename="${1}"
 
-    K6_PROMETHEUS_RW_SERVER_URL=http://localhost:9090/api/v1/write \
+    K6_PROMETHEUS_RW_SERVER_URL=${PROMETHEUS_REMOVE_WRITE_ENDPOINT:-http://localhost:9090/api/v1/write} \
     K6_PROMETHEUS_RW_TREND_AS_NATIVE_HISTOGRAM=true \
     K6_PROMETHEUS_RW_PUSH_INTERVAL=1s \
     k6 run \

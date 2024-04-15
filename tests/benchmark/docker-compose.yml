@@ -2,6 +2,7 @@
 services:
   prometheus:
     image: quay.io/prometheus/prometheus:latest
+    restart: unless-stopped
     command:
       - --enable-feature=native-histograms
       - --web.enable-remote-write-receiver
@@ -18,6 +19,7 @@ services:
 
   grafana:
     image: grafana/grafana:latest
+    restart: unless-stopped
     environment:
       GF_AUTH_ANONYMOUS_ENABLED: "true"
       GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
