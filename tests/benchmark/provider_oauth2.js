@@ -4,6 +4,7 @@ import http from "k6/http";
 import { check, fail } from "k6";
 
 const host = __ENV.BENCH_HOST ? __ENV.BENCH_HOST : "localhost";
+const VUs = __ENV.VUS ? __ENV.VUS : 8;
 
 const testcases = [
     [0, 0, 0],
@@ -20,7 +21,6 @@ const testcases = [
     [100, 100, 100],
     [1000, 1000, 1000],
 ];
-const VUs = 12;
 
 export const options = {
     scenarios: Object.fromEntries(

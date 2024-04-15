@@ -3,6 +3,7 @@ import http from "k6/http";
 import { check } from "k6";
 
 const host = __ENV.BENCH_HOST ? __ENV.BENCH_HOST : "localhost";
+const VUs = __ENV.VUS ? __ENV.VUS : 8;
 
 export const options = {
     discardResponseBodies: true,
@@ -38,7 +39,7 @@ export const options = {
             `${obj[0]}_${obj[1]}_${obj[2]}_${obj[3]}_${obj[4] ? "with_groups" : "without_groups"}`,
             {
                 executor: "constant-vus",
-                vus: 12,
+                vus: VUs,
                 duration: "300s",
                 startTime: `${315 * i}s`,
                 env: {

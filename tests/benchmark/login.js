@@ -2,6 +2,7 @@ import http from "k6/http";
 import { check, fail } from "k6";
 
 const host = __ENV.BENCH_HOST ? __ENV.BENCH_HOST : "localhost";
+const VUs = __ENV.VUS ? __ENV.VUS : 8;
 
 export const options = {
     scenarios: Object.fromEntries(
@@ -9,7 +10,7 @@ export const options = {
             obj,
             {
                 executor: "constant-vus",
-                vus: 12,
+                vus: VUs,
                 duration: "300s",
                 startTime: `${315 * i}s`,
                 env: {
