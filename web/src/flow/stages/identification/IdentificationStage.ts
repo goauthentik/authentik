@@ -194,14 +194,14 @@ export class IdentificationStage extends BaseStage<
                       ${msg("Need an account?")}
                       <a id="enroll" href="${this.challenge.enrollUrl}">${msg("Sign up.")}</a>
                   </p>`
-                : html``}
+                : nothing}
             ${this.challenge.recoveryUrl
                 ? html`<p class="pf-c-login__main-footer-band-item">
                       <a id="recovery" href="${this.challenge.recoveryUrl}"
                           >${msg("Forgot username or password?")}</a
                       >
                   </p>`
-                : html``}
+                : nothing}
         </div>`;
     }
 
@@ -265,26 +265,18 @@ export class IdentificationStage extends BaseStage<
                           />
                       </ak-form-element>
                   `
-                : html``}
+                : nothing}
             ${"non_field_errors" in (this.challenge?.responseErrors || {})
                 ? this.renderNonFieldErrors(this.challenge?.responseErrors?.non_field_errors || [])
-                : html``}
+                : nothing}
             <div class="pf-c-form__group pf-m-action">
                 <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                     ${this.challenge.primaryAction}
                 </button>
             </div>
             ${this.challenge.passwordlessUrl
-                ? html`<ak-divider>${msg("Or")}</ak-divider>
-                      <div>
-                          <a
-                              href=${this.challenge.passwordlessUrl}
-                              class="pf-c-button pf-m-secondary pf-m-block"
-                          >
-                              ${msg("Use a security key")}
-                          </a>
-                      </div>`
-                : html``}`;
+                ? html`<ak-divider>${msg("Or")}</ak-divider>`
+                : nothing}`;
     }
 
     render(): TemplateResult {
@@ -306,8 +298,20 @@ export class IdentificationStage extends BaseStage<
                         ? html`<p>
                               ${msg(str`Login to continue to ${this.challenge.applicationPre}.`)}
                           </p>`
-                        : html``}
+                        : nothing}
                     ${this.renderInput()}
+                    ${this.challenge.passwordlessUrl
+                        ? html`
+                              <div>
+                                  <a
+                                      href=${this.challenge.passwordlessUrl}
+                                      class="pf-c-button pf-m-secondary pf-m-block"
+                                  >
+                                      ${msg("Use a security key")}
+                                  </a>
+                              </div>
+                          `
+                        : nothing}
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">
