@@ -3567,6 +3567,23 @@ botocore = ">=1.33.2,<2.0a.0"
 crt = ["botocore[crt] (>=1.33.2,<2.0a.0)"]
 
 [[package]]
+name = "scim2-filter-parser"
+version = "0.5.0"
+description = "A customizable parser/transpiler for SCIM2.0 filters."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "scim2_filter_parser-0.5.0-py3-none-any.whl", hash = "sha256:4aca1b3b64655dc038a973a9659056a103a919fb0218614e36bf19d3b5de5b48"},
+    {file = "scim2_filter_parser-0.5.0.tar.gz", hash = "sha256:104c72e6faeb9a6b873950f66b0e3b69134fb19debf67e1d3714e91a6dafd8af"},
+]
+
+[package.dependencies]
+sly = "0.5"
+
+[package.extras]
+django-query = ["django (>=3.2)"]
+
+[[package]]
 name = "selenium"
 version = "4.19.0"
 description = ""
@@ -3780,6 +3797,17 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 files = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
     {file = "six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926"},
+]
+
+[[package]]
+name = "sly"
+version = "0.5"
+description = "\"SLY - Sly Lex Yacc\""
+optional = false
+python-versions = "*"
+files = [
+    {file = "sly-0.5-py3-none-any.whl", hash = "sha256:20485483259eec7f6ba85ff4d2e96a4e50c6621902667fc2695cc8bc2a3e5133"},
+    {file = "sly-0.5.tar.gz", hash = "sha256:251d42015e8507158aec2164f06035df4a82b0314ce6450f457d7125e7649024"},
 ]
 
 [[package]]
@@ -4654,4 +4682,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12"
-content-hash = "4544b2a0b0065aa9e13d9a3b5a951fb5212921fe72f0fe259069e2e9205e9830"
+content-hash = "a5774b4e09217805c887700b8a0f457a39c7af40ca59823f00c1f6e8678469e1"

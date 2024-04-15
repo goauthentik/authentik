@@ -112,6 +112,7 @@ fido2 = "*"
 flower = "*"
 geoip2 = "*"
 gunicorn = "*"
+jsonpatch = "*"
 kubernetes = "*"
 ldap3 = "*"
 lxml = [
@@ -120,7 +121,6 @@ lxml = [
     # 4.9.x works with previous libxml2 versions, which is what we get on linux
     { version = "4.9.4", platform = "linux" },
 ]
-jsonpatch = "*"
 opencontainers = { extras = ["reggie"], version = "*" }
 packaging = "*"
 paramiko = "*"
@@ -132,6 +132,7 @@ pyjwt = "*"
 python = "~3.12"
 pyyaml = "*"
 requests-oauthlib = "*"
+scim2-filter-parser = "*"
 sentry-sdk = "*"
 service_identity = "*"
 setproctitle = "*"
