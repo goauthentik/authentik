@@ -40,7 +40,7 @@ bind = f"unix://{str(_tmp.joinpath('authentik-core.sock'))}"
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
 os.environ.setdefault("PROMETHEUS_MULTIPROC_DIR", prometheus_tmp_dir)
 
-preload = True
+preload_app = True
 
 max_requests = 1000
 max_requests_jitter = 50
