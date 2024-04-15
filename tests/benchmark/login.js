@@ -25,7 +25,7 @@ export const options = {
 
 export default function () {
     const domain = __ENV.DOMAIN;
-    const url = `http://${domain}.${host}:9000/api/v3/flows/executor/default-authentication-flow/`;
+    const url = http.url`http://${domain}.${host}:9000/api/v3/flows/executor/default-authentication-flow/`;
     const cookieJar = new http.CookieJar();
     const params = {
         jar: cookieJar,

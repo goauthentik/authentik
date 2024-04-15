@@ -73,7 +73,7 @@ export default function () {
     for (let page = 1; page <= pages; page++) {
         requests.push([
             "GET",
-            `http://${domain}/api/v3/core/users/?page=${page}&page_size=${page_size}&include_groups=${with_groups}`,
+            http.url`http://${domain}/api/v3/core/users/?page=${page}&page_size=${page_size}&include_groups=${with_groups}`,
             null,
             {
                 headers: {

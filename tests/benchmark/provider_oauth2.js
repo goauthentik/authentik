@@ -56,7 +56,7 @@ export function setup() {
             const group_policies_count = testcase[1];
             const expression_policies_count = testcase[2];
             const domain = `provider-oauth2-${user_policies_count}-${group_policies_count}-${expression_policies_count}.${host}:9000`;
-            const url = `http://${domain}/api/v3/flows/executor/default-authentication-flow/`;
+            const url = http.url`http://${domain}/api/v3/flows/executor/default-authentication-flow/`;
             const params = {
                 headers: {
                     "Content-Type": "application/json",
@@ -154,7 +154,7 @@ export default function (data) {
         code_challenge_method: "S256",
     };
 
-    let url = `http://${domain}/application/o/authorize/?${Object.entries(
+    let url = http.url`http://${domain}/application/o/authorize/?${Object.entries(
         urlParams,
     )
         .map((kv) => kv.map(encodeURIComponent).join("="))
@@ -168,7 +168,7 @@ export default function (data) {
         return;
     }
 
-    url = `http://${domain}/api/v3/flows/executor/default-provider-authorization-implicit-consent/`;
+    url = http.url`http://${domain}/api/v3/flows/executor/default-provider-authorization-implicit-consent/`;
     res = http.get(url, params);
     check(res, {
         "status is 200": (res) => res.status === 200,
