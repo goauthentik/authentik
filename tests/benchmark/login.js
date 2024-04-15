@@ -1,6 +1,8 @@
 import http from "k6/http";
 import { check, fail } from "k6";
 
+const host = __ENV.BENCH_HOST ? __ENV.BENCH_HOST : "localhost";
+
 export const options = {
     scenarios: Object.fromEntries(
         ["no-mfa", "with-mfa"].map((obj, i) => [
@@ -23,7 +25,7 @@ export const options = {
 
 export default function () {
     const domain = __ENV.DOMAIN;
-    const url = `http://${domain}.localhost:9000/api/v3/flows/executor/default-authentication-flow/`;
+    const url = `http://${domain}.${host}:9000/api/v3/flows/executor/default-authentication-flow/`;
     const cookieJar = new http.CookieJar();
     const params = {
         jar: cookieJar,

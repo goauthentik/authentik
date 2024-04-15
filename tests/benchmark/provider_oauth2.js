@@ -3,6 +3,8 @@ import exec from "k6/execution";
 import http from "k6/http";
 import { check, fail } from "k6";
 
+const host = __ENV.BENCH_HOST ? __ENV.BENCH_HOST : "localhost";
+
 const testcases = [
     [0, 0, 0],
     [10, 0, 0],
@@ -53,7 +55,7 @@ export function setup() {
             const user_policies_count = testcase[0];
             const group_policies_count = testcase[1];
             const expression_policies_count = testcase[2];
-            const domain = `provider-oauth2-${user_policies_count}-${group_policies_count}-${expression_policies_count}.localhost:9000`;
+            const domain = `provider-oauth2-${user_policies_count}-${group_policies_count}-${expression_policies_count}.${host}:9000`;
             const url = `http://${domain}/api/v3/flows/executor/default-authentication-flow/`;
             const params = {
                 headers: {
@@ -119,7 +121,7 @@ export default function (data) {
     const user_policies_count = Number(__ENV.USER_POLICIES_COUNT);
     const group_policies_count = Number(__ENV.GROUP_POLICIES_COUNT);
     const expression_policies_count = Number(__ENV.EXPRESSION_POLICIES_COUNT);
-    const domain = `provider-oauth2-${user_policies_count}-${group_policies_count}-${expression_policies_count}.localhost:9000`;
+    const domain = `provider-oauth2-${user_policies_count}-${group_policies_count}-${expression_policies_count}.${host}:9000`;
     const params = {
         headers: {
             "Content-Type": "application/json",

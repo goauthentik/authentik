@@ -2,6 +2,8 @@ import exec from "k6/execution";
 import http from "k6/http";
 import { check } from "k6";
 
+const host = __ENV.BENCH_HOST ? __ENV.BENCH_HOST : "localhost";
+
 export const options = {
     discardResponseBodies: true,
     scenarios: Object.fromEntries(
@@ -64,7 +66,7 @@ export default function () {
     const groups_per_user = Number(__ENV.GROUPS_PER_USER);
     const parents_per_group = Number(__ENV.PARENTS_PER_GROUP);
     const with_groups = Number(__ENV.WITH_GROUPS);
-    const domain = `user-list-${user_count}-${groups_per_user}-${parents_per_group}.localhost:9000`;
+    const domain = `user-list-${user_count}-${groups_per_user}-${parents_per_group}.${host}:9000`;
     const page_size = Number(__ENV.PAGE_SIZE);
     const pages = Math.round(user_count / page_size);
     let requests = [];

@@ -25,6 +25,8 @@ from authentik.tenants.models import Domain, Tenant
 
 settings.CELERY["task_always_eager"] = True
 
+host = environ.get("BENCH_HOST", "localhost")
+
 
 def user_list():
     # Number of users, groups per user, parents per groups
@@ -51,7 +53,7 @@ def user_list():
         tenant_name = f"user-list-{user_count}-{groups_per_user}-{parents_per_group}"
 
         t = Tenant.objects.create(schema_name=f"t_{tenant_name.replace('-', '_')}", name=uuid4())
-        Domain.objects.create(tenant=t, domain=f"{tenant_name}.localhost")
+        Domain.objects.create(tenant=t, domain=f"{tenant_name}.{host}")
 
         with t:
             Group.objects.bulk_create([Group(name=uuid4()) for _ in range(groups_per_user * 5)])
@@ -81,7 +83,7 @@ def user_list():
 
 def login():
     t = Tenant.objects.create(schema_name=f"t_login_no_mfa", name=uuid4())
-    Domain.objects.create(tenant=t, domain=f"login-no-mfa.localhost")
+    Domain.objects.create(tenant=t, domain=f"login-no-mfa.{host}")
 
     with t:
         user = User(username="test", name=uuid4())
@@ -89,7 +91,7 @@ def login():
         user.save()
 
     t = Tenant.objects.create(schema_name=f"t_login_with_mfa", name=uuid4())
-    Domain.objects.create(tenant=t, domain=f"login-with-mfa.localhost")
+    Domain.objects.create(tenant=t, domain=f"login-with-mfa.{host}")
 
     with t:
         user = User(username="test", name=uuid4())
@@ -127,7 +129,7 @@ def provider_oauth2():
         tenant_name = f"provider-oauth2-{user_policies_count}-{group_policies_count}-{expression_policies_count}"
 
         t = Tenant.objects.create(schema_name=f"t_{tenant_name.replace('-', '_')}", name=uuid4())
-        Domain.objects.create(tenant=t, domain=f"{tenant_name}.localhost")
+        Domain.objects.create(tenant=t, domain=f"{tenant_name}.{host}")
 
         with t:
             user = User(username="test", name=uuid4())
