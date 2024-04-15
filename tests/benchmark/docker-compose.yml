@@ -7,11 +7,15 @@ services:
       - --web.enable-remote-write-receiver
       - --config.file=/etc/prometheus/prometheus.yml
       - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.min-block-duration=2h
+      - --storage.tsdb.max-block-duration=2h
+      - --web.enable-lifecycle
       - --web.console.libraries=/usr/share/prometheus/console_libraries
       - --web.console.templates=/usr/share/prometheus/consoles
     ports:
       - 127.0.0.1:9090:9090
     volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - ./prometheus:/prometheus
     user: root
 
