@@ -1,5 +1,6 @@
 import "@goauthentik/admin/events/EventVolumeChart";
-import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
+import "@goauthentik/admin/events/EventMap";
+import { EventGeoText, EventUser } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { actionToLabel } from "@goauthentik/common/labels";
@@ -66,14 +67,15 @@ export class EventListPage extends TablePage<Event> {
     }
 
     renderSectionBefore(): TemplateResult {
+        // <!--<ak-events-volume-chart
+        //     .query=${{
+        //         page: this.page,
+        //         search: this.search,
+        //     }}
+        // ></ak-events-volume-chart>-->
         return html`
             <div class="pf-c-page__main-section pf-m-no-padding-bottom">
-                <ak-events-volume-chart
-                    .query=${{
-                        page: this.page,
-                        search: this.search,
-                    }}
-                ></ak-events-volume-chart>
+                <ak-events-map .events=${this.data}></ak-events-map>
             </div>
         `;
     }
@@ -86,7 +88,7 @@ export class EventListPage extends TablePage<Event> {
             html`<div>${getRelativeTime(item.created)}</div>
                 <small>${item.created.toLocaleString()}</small>`,
             html`<div>${item.clientIp || msg("-")}</div>
-                <small>${EventGeo(item)}</small>`,
+                <small>${EventGeoText(item)}</small>`,
             html`<span>${item.brand?.name || msg("-")}</span>`,
             html`<a href="#/events/log/${item.pk}">
                 <pf-tooltip position="top" content=${msg("Show details")}>

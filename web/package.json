@@ -44,6 +44,8 @@
         "@lit/localize": "^0.12.1",
         "@lit/reactive-element": "^2.0.4",
         "@open-wc/lit-helpers": "^0.7.0",
+        "@openlayers-elements/core": "^0.3.0",
+        "@openlayers-elements/maps": "^0.3.0",
         "@patternfly/elements": "^3.0.0",
         "@patternfly/patternfly": "^4.224.2",
         "@sentry/browser": "^7.110.0",

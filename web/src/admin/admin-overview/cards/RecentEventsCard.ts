@@ -1,4 +1,4 @@
-import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
+import { EventGeoText, EventUser } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { actionToLabel } from "@goauthentik/common/labels";
@@ -78,7 +78,7 @@ export class RecentEventsCard extends Table<Event> {
             html`<div>${getRelativeTime(item.created)}</div>
                 <small>${item.created.toLocaleString()}</small>`,
             html` <div>${item.clientIp || msg("-")}</div>
-                <small>${EventGeo(item)}</small>`,
+                <small>${EventGeoText(item)}</small>`,
             html`<span>${item.brand?.name || msg("-")}</span>`,
         ];
     }
