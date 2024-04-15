@@ -73,7 +73,7 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
 FROM --platform=${BUILDPLATFORM} ghcr.io/maxmind/geoipupdate:v7.0 as geoip
 
 ENV GEOIPUPDATE_EDITION_IDS="GeoLite2-City GeoLite2-ASN"
-ENV GEOIPUPDATE_VERBOSE="true"
+ENV GEOIPUPDATE_VERBOSE="1"
 ENV GEOIPUPDATE_ACCOUNT_ID_FILE="/run/secrets/GEOIPUPDATE_ACCOUNT_ID"
 ENV GEOIPUPDATE_LICENSE_KEY_FILE="/run/secrets/GEOIPUPDATE_LICENSE_KEY"
 
