@@ -43217,12 +43217,17 @@ components:
         group:
           type: string
           format: uuid
+        group_obj:
+          allOf:
+          - $ref: '#/components/schemas/UserGroup'
+          readOnly: true
         source:
           type: string
           format: uuid
         attributes: {}
       required:
       - group
+      - group_obj
       - id
       - source
     SCIMSourceGroupRequest:
@@ -43278,6 +43283,10 @@ components:
           type: string
         user:
           type: integer
+        user_obj:
+          allOf:
+          - $ref: '#/components/schemas/GroupMember'
+          readOnly: true
         source:
           type: string
           format: uuid
@@ -43286,6 +43295,7 @@ components:
       - id
       - source
       - user
+      - user_obj
     SCIMSourceUserRequest:
       type: object
       description: SCIMSourceUser Serializer

@@ -1,4 +1,6 @@
 import "@goauthentik/admin/sources/scim/SCIMSourceForm";
+import "@goauthentik/admin/sources/scim/SCIMSourceGroups";
+import "@goauthentik/admin/sources/scim/SCIMSourceUsers";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
@@ -75,10 +77,7 @@ export class SCIMSourceViewPage extends AKElement {
             return html``;
         }
         return html`<ak-tabs>
-            <section
-                slot="page-overview"
-                data-tab-title="${msg("Overview")}"
-            >
+            <section slot="page-overview" data-tab-title="${msg("Overview")}">
                 <div slot="header" class="pf-c-banner pf-m-info">
                     ${msg("SCIM Source is in preview.")}
                     <a href="mailto:hello+feature/scim-source@goauthentik.io"
@@ -181,6 +180,28 @@ export class SCIMSourceViewPage extends AKElement {
                             </ak-object-changelog>
                         </div>
                     </div>
+                </div>
+            </section>
+            <section
+                slot="page-users"
+                data-tab-title="${msg("Provisioned Users")}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-l-grid pf-m-gutter">
+                    <ak-source-scim-users-list
+                        sourceSlug=${this.source.slug}
+                    ></ak-source-scim-users-list>
+                </div>
+            </section>
+            <section
+                slot="page-groups"
+                data-tab-title="${msg("Provisioned Groups")}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-l-grid pf-m-gutter">
+                    <ak-source-scim-groups-list
+                        sourceSlug=${this.source.slug}
+                    ></ak-source-scim-groups-list>
                 </div>
             </section>
             <ak-rbac-object-permission-page

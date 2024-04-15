@@ -4,11 +4,14 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
+from authentik.core.api.users import UserGroupSerializer
 from authentik.sources.scim.models import SCIMSourceGroup
 
 
 class SCIMSourceGroupSerializer(SourceSerializer):
     """SCIMSourceGroup Serializer"""
+
+    group_obj = UserGroupSerializer(source="group", read_only=True)
 
     class Meta:
 
@@ -16,6 +19,7 @@ class SCIMSourceGroupSerializer(SourceSerializer):
         fields = [
             "id",
             "group",
+            "group_obj",
             "source",
             "attributes",
         ]
