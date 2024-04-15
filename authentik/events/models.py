@@ -305,6 +305,16 @@ class Event(SerializerModel, ExpiringModel):
     class Meta:
         verbose_name = _("Event")
         verbose_name_plural = _("Events")
+        indexes = [
+            models.Index(fields=["action"]),
+            models.Index(fields=["user"]),
+            models.Index(fields=["app"]),
+            models.Index(fields=["created"]),
+            models.Index(fields=["client_ip"]),
+            models.Index(
+                models.F("context__authorized_application"), name="authentik_e_ctx_app__idx"
+            ),
+        ]
 
 
 class TransportMode(models.TextChoices):
