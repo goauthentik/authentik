@@ -52,8 +52,12 @@ def user_list():
         parents_per_group = tenant[2]
         tenant_name = f"user-list-{user_count}-{groups_per_user}-{parents_per_group}"
 
-        t = Tenant.objects.create(schema_name=f"t_{tenant_name.replace('-', '_')}", name=uuid4())
-        Domain.objects.create(tenant=t, domain=f"{tenant_name}.{host}")
+        t, created = Tenant.objects.get_or_create(
+            schema_name=f"t_{tenant_name.replace('-', '_')}", defaults={"name": uuid4()}
+        )
+        Domain.objects.get_or_create(tenant=t, domain=f"{tenant_name}.{host}")
+        if created:
+            continue
 
         with t:
             Group.objects.bulk_create([Group(name=uuid4()) for _ in range(groups_per_user * 5)])
@@ -82,26 +86,26 @@ def user_list():
 
 
 def login():
-    t = Tenant.objects.create(schema_name=f"t_login_no_mfa", name=uuid4())
-    Domain.objects.create(tenant=t, domain=f"login-no-mfa.{host}")
+    t, created = Tenant.objects.create(schema_name=f"t_login_no_mfa", defaults={"name": uuid4()})
+    Domain.objects.get_or_create(tenant=t, domain=f"login-no-mfa.{host}")
+    if not created:
+        with t:
+            user = User(username="test", name=uuid4())
+            user.set_password("verySecurePassword")
+            user.save()
 
-    with t:
-        user = User(username="test", name=uuid4())
-        user.set_password("verySecurePassword")
-        user.save()
-
-    t = Tenant.objects.create(schema_name=f"t_login_with_mfa", name=uuid4())
-    Domain.objects.create(tenant=t, domain=f"login-with-mfa.{host}")
-
-    with t:
-        user = User(username="test", name=uuid4())
-        user.set_password("verySecurePassword")
-        user.save()
-        device = user.staticdevice_set.create()
-        # Multiple token with same token for all the iterations in the test
-        device.token_set.bulk_create(
-            [StaticToken(device=device, token=f"staticToken") for _ in range(100000)]
-        )
+    t, created = Tenant.objects.create(schema_name=f"t_login_with_mfa", defaults={"name": uuid4()})
+    Domain.objects.get_or_create(tenant=t, domain=f"login-with-mfa.{host}")
+    if not created:
+        with t:
+            user = User(username="test", name=uuid4())
+            user.set_password("verySecurePassword")
+            user.save()
+            device = user.staticdevice_set.create()
+            # Multiple token with same token for all the iterations in the test
+            device.token_set.bulk_create(
+                [StaticToken(device=device, token=f"staticToken") for _ in range(1_000_000)]
+            )
 
 
 def provider_oauth2():
@@ -128,8 +132,12 @@ def provider_oauth2():
         expression_policies_count = tenant[2]
         tenant_name = f"provider-oauth2-{user_policies_count}-{group_policies_count}-{expression_policies_count}"
 
-        t = Tenant.objects.create(schema_name=f"t_{tenant_name.replace('-', '_')}", name=uuid4())
-        Domain.objects.create(tenant=t, domain=f"{tenant_name}.{host}")
+        t, created = Tenant.objects.get_or_create(
+            schema_name=f"t_{tenant_name.replace('-', '_')}", defaults={"name": uuid4()}
+        )
+        Domain.objects.get_or_create(tenant=t, domain=f"{tenant_name}.{host}")
+        if created:
+            continue
 
         with t:
             user = User(username="test", name=uuid4())
