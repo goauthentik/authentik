@@ -447,7 +447,7 @@ export class FlowExecutor extends Interface implements StageHost {
         }
         return html`
             ${this.loading ? html`<ak-loading-overlay></ak-loading-overlay>` : nothing} ${logo}
-            ${until(this.renderChallenge(), fallbackLoadSpinner)}
+            ${until(this.renderChallenge())}
         `;
     }
 
