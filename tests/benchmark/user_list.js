@@ -70,28 +70,39 @@ export default function () {
     const domain = `user-list-${user_count}-${groups_per_user}-${parents_per_group}.${host}:9000`;
     const page_size = Number(__ENV.PAGE_SIZE);
     const pages = Math.round(user_count / page_size);
-    let requests = [];
-    for (let page = 1; page <= pages; page++) {
-        requests.push([
-            "GET",
-            http.url`http://${domain}/api/v3/core/users/?page=${page}&page_size=${page_size}&include_groups=${with_groups}`,
-            null,
-            {
-                headers: {
-                    Authorization: "Bearer akadmin",
-                    "Content-Type": "application/json",
-                    Accept: "*/*",
-                },
-                tags: {
-                    name: "/core/users/",
-                },
-            },
-        ]);
-    }
-    const responses = http.batch(requests);
-    for (let page = 1; page <= pages; page++) {
-        check(responses[page - 1], {
-            "status is 200": (res) => res.status === 200,
-        });
+    const params = {
+        headers: {
+            Authorization: "Bearer akadmin",
+            "Content-Type": "application/json",
+            Accept: "*/*",
+        },
+    };
+
+    if (pages <= 10) {
+        for (let page = 1; page <= pages; page++) {
+            let res = requests.get(
+                http.url`http://${domain}/api/v3/core/users/?page=${page}&page_size=${page_size}&include_groups=${with_groups}`,
+                params,
+            );
+            check(res, {
+                "status is 100": (res) => res.status === 200,
+            });
+        }
+    } else {
+        let requests = [];
+        for (let page = 1; page <= pages; page++) {
+            requests.push([
+                "GET",
+                http.url`http://${domain}/api/v3/core/users/?page=${page}&page_size=${page_size}&include_groups=${with_groups}`,
+                null,
+                params,
+            ]);
+        }
+        const responses = http.batch(requests);
+        for (let page = 1; page <= pages; page++) {
+            check(responses[page - 1], {
+                "status is 200": (res) => res.status === 200,
+            });
+        }
     }
 }
