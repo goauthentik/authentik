@@ -518,8 +518,8 @@ msgid ""
 "Amount of time a user can take to return from the source to continue the "
 "flow (Format: hours=-1;minutes=-2;seconds=-3)"
 msgstr ""
-"Durée que l'utilisateur peut prendre pour revenir de la source pour continue"
-" le flux (Format: hours=-1;minutes=-2;seconds=-3)"
+"Durée que l'utilisateur peut prendre pour revenir de la source pour "
+"continuer le flux (Format: hours=-1;minutes=-2;seconds=-3)"
 
 #: authentik/enterprise/stages/source/models.py
 msgid "Source Stage"
