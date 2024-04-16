@@ -1,6 +1,7 @@
 ---
 title: System Settings
 ---
+
 These settings are similar to the configuration options listed [here](../installation/configuration.mdx), however they can only be adjusted through the authentik Admin interface or API.
 
 ### Avatars
