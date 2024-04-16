@@ -88,7 +88,7 @@ export class LocaleContext extends LitElement {
         }
         locale.locale().then(() => {
             console.debug(`authentik/locale: Loaded locale '${code}'`);
-            if (this.getLocale() === code) {
+            if (this.getLocale() === requestedLocale) {
                 return;
             }
             console.debug(`Setting Locale to ... ${locale.label()} (${locale.code})`);
