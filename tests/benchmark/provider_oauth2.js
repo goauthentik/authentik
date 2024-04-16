@@ -23,6 +23,7 @@ const testcases = [
 ];
 
 export const options = {
+    setupTimeout: "10m",
     scenarios: Object.fromEntries(
         testcases.map((obj, i) => [
             `${obj[0]}_${obj[1]}_${obj[2]}`,
