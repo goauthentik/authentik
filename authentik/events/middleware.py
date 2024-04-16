@@ -82,26 +82,29 @@ class AuditMiddleware:
 
         self.anonymous_user = get_anonymous_user()
 
+    def get_user(self, request: HttpRequest) -> User:
+        user = getattr(request, "user", self.anonymous_user)
+        if not user.is_authenticated:
+            return self.anonymous_user
+        return user
+
     def connect(self, request: HttpRequest):
         """Connect signal for automatic logging"""
         self._ensure_fallback_user()
-        user = getattr(request, "user", self.anonymous_user)
-        if not user.is_authenticated:
-            user = self.anonymous_user
         if not hasattr(request, "request_id"):
             return
         post_save.connect(
-            partial(self.post_save_handler, user=user, request=request),
+            partial(self.post_save_handler, request=request),
             dispatch_uid=request.request_id,
             weak=False,
         )
         pre_delete.connect(
-            partial(self.pre_delete_handler, user=user, request=request),
+            partial(self.pre_delete_handler, request=request),
             dispatch_uid=request.request_id,
             weak=False,
         )
         m2m_changed.connect(
-            partial(self.m2m_changed_handler, user=user, request=request),
+            partial(self.m2m_changed_handler, request=request),
             dispatch_uid=request.request_id,
             weak=False,
         )
@@ -147,7 +150,6 @@ class AuditMiddleware:
     # pylint: disable=too-many-arguments
     def post_save_handler(
         self,
-        user: User,
         request: HttpRequest,
         sender,
         instance: Model,
@@ -158,16 +160,18 @@ class AuditMiddleware:
         """Signal handler for all object's post_save"""
         if not should_log_model(instance):
             return
+        user = self.get_user(request)
 
         action = EventAction.MODEL_CREATED if created else EventAction.MODEL_UPDATED
         thread = EventNewThread(action, request, user=user, model=model_to_dict(instance))
         thread.kwargs.update(thread_kwargs or {})
         thread.run()
 
-    def pre_delete_handler(self, user: User, request: HttpRequest, sender, instance: Model, **_):
+    def pre_delete_handler(self, request: HttpRequest, sender, instance: Model, **_):
         """Signal handler for all object's pre_delete"""
         if not should_log_model(instance):  # pragma: no cover
             return
+        user = self.get_user(request)
 
         EventNewThread(
             EventAction.MODEL_DELETED,
@@ -176,14 +180,13 @@ class AuditMiddleware:
             model=model_to_dict(instance),
         ).run()
 
-    def m2m_changed_handler(
-        self, user: User, request: HttpRequest, sender, instance: Model, action: str, **_
-    ):
+    def m2m_changed_handler(self, request: HttpRequest, sender, instance: Model, action: str, **_):
         """Signal handler for all object's m2m_changed"""
         if action not in ["pre_add", "pre_remove", "post_clear"]:
             return
         if not should_log_m2m(instance):
             return
+        user = self.get_user(request)
 
         EventNewThread(
             EventAction.MODEL_UPDATED,
