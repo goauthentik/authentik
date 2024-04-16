@@ -113,7 +113,7 @@ class UserSerializer(ModelSerializer):
         queryset=Group.objects.all().order_by("name"),
         default=list,
     )
-    groups_obj = SerializerMethodField()
+    groups_obj = SerializerMethodField(allow_null=True)
     uid = CharField(read_only=True)
     username = CharField(
         max_length=150,
