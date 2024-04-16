@@ -102,9 +102,4 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
             new_state = self.serialize_simple(instance)
             diff = self.diff(prev_state, new_state)
             thread_kwargs["diff"] = diff
-            if not created:
-                ignored_field_sets = getattr(instance._meta, "authentik_signals_ignored_fields", [])
-                for field_set in ignored_field_sets:
-                    if set(diff.keys()) == set(field_set):
-                        return None
         return super().post_save_handler(request, sender, instance, created, thread_kwargs, **_)
