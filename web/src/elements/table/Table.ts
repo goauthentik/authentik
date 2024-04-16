@@ -131,7 +131,7 @@ export abstract class Table<T> extends AKElement implements TableLike {
     order?: string;
 
     @property({ type: String })
-    search: string = getURLParam("search", "");
+    search: string = "";
 
     @property({ type: Boolean })
     checkbox = false;
@@ -198,6 +198,9 @@ export abstract class Table<T> extends AKElement implements TableLike {
                 this.selectedElements = [];
             }
         });
+        if (this.searchEnabled()) {
+            this.search = getURLParam("search", "");
+        }
     }
 
     public groupBy(items: T[]): [string, T[]][] {

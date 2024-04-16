@@ -185,8 +185,13 @@ class Group(SerializerModel):
                 "parent",
             ),
         )
+        indexes = [models.Index(fields=["name"])]
         verbose_name = _("Group")
         verbose_name_plural = _("Groups")
+        permissions = [
+            ("add_user_to_group", _("Add user to group")),
+            ("remove_user_from_group", _("Remove user from group")),
+        ]
 
 
 class UserQuerySet(models.QuerySet):
@@ -322,6 +327,13 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
             ("unassign_user_permissions", _("Can unassign permissions from users")),
             ("preview_user", _("Can preview user data sent to providers")),
             ("view_user_applications", _("View applications the user has access to")),
+        ]
+        indexes = [
+            models.Index(fields=["last_login"]),
+            models.Index(fields=["password_change_date"]),
+            models.Index(fields=["uuid"]),
+            models.Index(fields=["path"]),
+            models.Index(fields=["type"]),
         ]
         authentik_signals_ignored_fields = [
             # Logged by the events `password_set`
@@ -659,7 +671,7 @@ class ExpiringModel(models.Model):
         return self.delete(*args, **kwargs)
 
     @classmethod
-    def filter_not_expired(cls, **kwargs) -> QuerySet:
+    def filter_not_expired(cls, **kwargs) -> QuerySet["Token"]:
         """Filer for tokens which are not expired yet or are not expiring,
         and match filters in `kwargs`"""
         for obj in cls.objects.filter(**kwargs).filter(Q(expires__lt=now(), expiring=True)):

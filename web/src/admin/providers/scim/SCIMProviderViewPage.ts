@@ -8,6 +8,7 @@ import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/ModalButton";
+import "@goauthentik/elements/events/LogViewer";
 import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 
 import { msg, str } from "@lit/localize";
@@ -155,9 +156,7 @@ export class SCIMProviderViewPage extends AKElement {
                         <p>${task.name}</p>
                         <ul class="pf-c-list">
                             <li>${header}</li>
-                            ${task.messages.map((m) => {
-                                return html`<li>${m}</li>`;
-                            })}
+                            <ak-log-viewer .logs=${task?.messages}></ak-log-viewer>
                         </ul>
                     </li> `;
                 })}

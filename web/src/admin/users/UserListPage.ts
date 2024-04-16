@@ -146,6 +146,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
             search: this.search || "",
             pathStartswith: getURLParam("path", ""),
             isActive: this.hideDeactivated ? true : undefined,
+            includeGroups: false,
         });
         this.userPaths = await new CoreApi(DEFAULT_CONFIG).coreUsersPathsRetrieve({
             search: this.search,

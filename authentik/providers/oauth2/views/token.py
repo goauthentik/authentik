@@ -651,7 +651,7 @@ class TokenView(View):
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
-            "id_token": id_token.to_jwt(self.provider),
+            "id_token": access_token.id_token.to_jwt(self.provider),
         }
 
     def create_client_credentials_response(self) -> dict[str, Any]:

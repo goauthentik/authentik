@@ -440,13 +440,14 @@ export class FlowExecutor extends Interface implements StageHost {
         const logo = html`<div class="pf-c-login__main-header pf-c-brand ak-brand">
             <img src="${first(this.brand?.brandingLogo, "")}" alt="authentik Logo" />
         </div>`;
+        const fallbackLoadSpinner = html`<ak-empty-state ?loading=${true} header=${msg("Loading")}>
+        </ak-empty-state>`;
         if (!this.challenge) {
-            return html`${logo}<ak-empty-state ?loading=${true} header=${msg("Loading")}>
-                </ak-empty-state>`;
+            return html`${logo}${fallbackLoadSpinner}`;
         }
         return html`
             ${this.loading ? html`<ak-loading-overlay></ak-loading-overlay>` : nothing} ${logo}
-            ${until(this.renderChallenge())}
+            ${until(this.renderChallenge(), fallbackLoadSpinner)}
         `;
     }
 

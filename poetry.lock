@@ -392,33 +392,33 @@ files = [
 
 [[package]]
 name = "black"
-version = "24.3.0"
+version = "24.4.0"
 description = "The uncompromising code formatter."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "black-24.3.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:7d5e026f8da0322b5662fa7a8e752b3fa2dac1c1cbc213c3d7ff9bdd0ab12395"},
-    {file = "black-24.3.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:9f50ea1132e2189d8dff0115ab75b65590a3e97de1e143795adb4ce317934995"},
-    {file = "black-24.3.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e2af80566f43c85f5797365077fb64a393861a3730bd110971ab7a0c94e873e7"},
-    {file = "black-24.3.0-cp310-cp310-win_amd64.whl", hash = "sha256:4be5bb28e090456adfc1255e03967fb67ca846a03be7aadf6249096100ee32d0"},
-    {file = "black-24.3.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:4f1373a7808a8f135b774039f61d59e4be7eb56b2513d3d2f02a8b9365b8a8a9"},
-    {file = "black-24.3.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:aadf7a02d947936ee418777e0247ea114f78aff0d0959461057cae8a04f20597"},
-    {file = "black-24.3.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:65c02e4ea2ae09d16314d30912a58ada9a5c4fdfedf9512d23326128ac08ac3d"},
-    {file = "black-24.3.0-cp311-cp311-win_amd64.whl", hash = "sha256:bf21b7b230718a5f08bd32d5e4f1db7fc8788345c8aea1d155fc17852b3410f5"},
-    {file = "black-24.3.0-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:2818cf72dfd5d289e48f37ccfa08b460bf469e67fb7c4abb07edc2e9f16fb63f"},
-    {file = "black-24.3.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:4acf672def7eb1725f41f38bf6bf425c8237248bb0804faa3965c036f7672d11"},
-    {file = "black-24.3.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c7ed6668cbbfcd231fa0dc1b137d3e40c04c7f786e626b405c62bcd5db5857e4"},
-    {file = "black-24.3.0-cp312-cp312-win_amd64.whl", hash = "sha256:56f52cfbd3dabe2798d76dbdd299faa046a901041faf2cf33288bc4e6dae57b5"},
-    {file = "black-24.3.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:79dcf34b33e38ed1b17434693763301d7ccbd1c5860674a8f871bd15139e7837"},
-    {file = "black-24.3.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:e19cb1c6365fd6dc38a6eae2dcb691d7d83935c10215aef8e6c38edee3f77abd"},
-    {file = "black-24.3.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:65b76c275e4c1c5ce6e9870911384bff5ca31ab63d19c76811cb1fb162678213"},
-    {file = "black-24.3.0-cp38-cp38-win_amd64.whl", hash = "sha256:b5991d523eee14756f3c8d5df5231550ae8993e2286b8014e2fdea7156ed0959"},
-    {file = "black-24.3.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:c45f8dff244b3c431b36e3224b6be4a127c6aca780853574c00faf99258041eb"},
-    {file = "black-24.3.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:6905238a754ceb7788a73f02b45637d820b2f5478b20fec82ea865e4f5d4d9f7"},
-    {file = "black-24.3.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d7de8d330763c66663661a1ffd432274a2f92f07feeddd89ffd085b5744f85e7"},
-    {file = "black-24.3.0-cp39-cp39-win_amd64.whl", hash = "sha256:7bb041dca0d784697af4646d3b62ba4a6b028276ae878e53f6b4f74ddd6db99f"},
-    {file = "black-24.3.0-py3-none-any.whl", hash = "sha256:41622020d7120e01d377f74249e677039d20e6344ff5851de8a10f11f513bf93"},
-    {file = "black-24.3.0.tar.gz", hash = "sha256:a0c9c4a0771afc6919578cec71ce82a3e31e054904e7197deacbc9382671c41f"},
+    {file = "black-24.4.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:6ad001a9ddd9b8dfd1b434d566be39b1cd502802c8d38bbb1ba612afda2ef436"},
+    {file = "black-24.4.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:e3a3a092b8b756c643fe45f4624dbd5a389f770a4ac294cf4d0fce6af86addaf"},
+    {file = "black-24.4.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:dae79397f367ac8d7adb6c779813328f6d690943f64b32983e896bcccd18cbad"},
+    {file = "black-24.4.0-cp310-cp310-win_amd64.whl", hash = "sha256:71d998b73c957444fb7c52096c3843875f4b6b47a54972598741fe9a7f737fcb"},
+    {file = "black-24.4.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:8e5537f456a22cf5cfcb2707803431d2feeb82ab3748ade280d6ccd0b40ed2e8"},
+    {file = "black-24.4.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:64e60a7edd71fd542a10a9643bf369bfd2644de95ec71e86790b063aa02ff745"},
+    {file = "black-24.4.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:5cd5b4f76056cecce3e69b0d4c228326d2595f506797f40b9233424e2524c070"},
+    {file = "black-24.4.0-cp311-cp311-win_amd64.whl", hash = "sha256:64578cf99b6b46a6301bc28bdb89f9d6f9b592b1c5837818a177c98525dbe397"},
+    {file = "black-24.4.0-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:f95cece33329dc4aa3b0e1a771c41075812e46cf3d6e3f1dfe3d91ff09826ed2"},
+    {file = "black-24.4.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:4396ca365a4310beef84d446ca5016f671b10f07abdba3e4e4304218d2c71d33"},
+    {file = "black-24.4.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:44d99dfdf37a2a00a6f7a8dcbd19edf361d056ee51093b2445de7ca09adac965"},
+    {file = "black-24.4.0-cp312-cp312-win_amd64.whl", hash = "sha256:21f9407063ec71c5580b8ad975653c66508d6a9f57bd008bb8691d273705adcd"},
+    {file = "black-24.4.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:652e55bb722ca026299eb74e53880ee2315b181dfdd44dca98e43448620ddec1"},
+    {file = "black-24.4.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:7f2966b9b2b3b7104fca9d75b2ee856fe3fdd7ed9e47c753a4bb1a675f2caab8"},
+    {file = "black-24.4.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1bb9ca06e556a09f7f7177bc7cb604e5ed2d2df1e9119e4f7d2f1f7071c32e5d"},
+    {file = "black-24.4.0-cp38-cp38-win_amd64.whl", hash = "sha256:d4e71cdebdc8efeb6deaf5f2deb28325f8614d48426bed118ecc2dcaefb9ebf3"},
+    {file = "black-24.4.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:6644f97a7ef6f401a150cca551a1ff97e03c25d8519ee0bbc9b0058772882665"},
+    {file = "black-24.4.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:75a2d0b4f5eb81f7eebc31f788f9830a6ce10a68c91fbe0fade34fff7a2836e6"},
+    {file = "black-24.4.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:eb949f56a63c5e134dfdca12091e98ffb5fd446293ebae123d10fc1abad00b9e"},
+    {file = "black-24.4.0-cp39-cp39-win_amd64.whl", hash = "sha256:7852b05d02b5b9a8c893ab95863ef8986e4dda29af80bbbda94d7aee1abf8702"},
+    {file = "black-24.4.0-py3-none-any.whl", hash = "sha256:74eb9b5420e26b42c00a3ff470dc0cd144b80a766128b1771d07643165e08d0e"},
+    {file = "black-24.4.0.tar.gz", hash = "sha256:f07b69fda20578367eaebbd670ff8fc653ab181e1ff95d84497f9fa20e7d0641"},
 ]
 
 [package.dependencies]
@@ -1289,22 +1289,23 @@ djangorestframework = "*"
 
 [[package]]
 name = "dnspython"
-version = "2.4.2"
+version = "2.6.1"
 description = "DNS toolkit"
 optional = false
-python-versions = ">=3.8,<4.0"
+python-versions = ">=3.8"
 files = [
-    {file = "dnspython-2.4.2-py3-none-any.whl", hash = "sha256:57c6fbaaeaaf39c891292012060beb141791735dbb4004798328fc2c467402d8"},
-    {file = "dnspython-2.4.2.tar.gz", hash = "sha256:8dcfae8c7460a2f84b4072e26f1c9f4101ca20c071649cb7c34e8b6a93d58984"},
+    {file = "dnspython-2.6.1-py3-none-any.whl", hash = "sha256:5ef3b9680161f6fa89daf8ad451b5f1a33b18ae8a1c6778cdf4b43f08c0a6e50"},
+    {file = "dnspython-2.6.1.tar.gz", hash = "sha256:e8f0f9c23a7b7cb99ded64e6c3a6f3e701d78f50c55e002b839dea7225cff7cc"},
 ]
 
 [package.extras]
-dnssec = ["cryptography (>=2.6,<42.0)"]
-doh = ["h2 (>=4.1.0)", "httpcore (>=0.17.3)", "httpx (>=0.24.1)"]
-doq = ["aioquic (>=0.9.20)"]
-idna = ["idna (>=2.1,<4.0)"]
-trio = ["trio (>=0.14,<0.23)"]
-wmi = ["wmi (>=1.5.1,<2.0.0)"]
+dev = ["black (>=23.1.0)", "coverage (>=7.0)", "flake8 (>=7)", "mypy (>=1.8)", "pylint (>=3)", "pytest (>=7.4)", "pytest-cov (>=4.1.0)", "sphinx (>=7.2.0)", "twine (>=4.0.0)", "wheel (>=0.42.0)"]
+dnssec = ["cryptography (>=41)"]
+doh = ["h2 (>=4.1.0)", "httpcore (>=1.0.0)", "httpx (>=0.26.0)"]
+doq = ["aioquic (>=0.9.25)"]
+idna = ["idna (>=3.6)"]
+trio = ["trio (>=0.23)"]
+wmi = ["wmi (>=1.5.1)"]
 
 [[package]]
 name = "docker"
@@ -3566,6 +3567,23 @@ botocore = ">=1.33.2,<2.0a.0"
 crt = ["botocore[crt] (>=1.33.2,<2.0a.0)"]
 
 [[package]]
+name = "scim2-filter-parser"
+version = "0.5.0"
+description = "A customizable parser/transpiler for SCIM2.0 filters."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "scim2_filter_parser-0.5.0-py3-none-any.whl", hash = "sha256:4aca1b3b64655dc038a973a9659056a103a919fb0218614e36bf19d3b5de5b48"},
+    {file = "scim2_filter_parser-0.5.0.tar.gz", hash = "sha256:104c72e6faeb9a6b873950f66b0e3b69134fb19debf67e1d3714e91a6dafd8af"},
+]
+
+[package.dependencies]
+sly = "0.5"
+
+[package.extras]
+django-query = ["django (>=3.2)"]
+
+[[package]]
 name = "selenium"
 version = "4.19.0"
 description = ""
@@ -3782,6 +3800,17 @@ files = [
 ]
 
 [[package]]
+name = "sly"
+version = "0.5"
+description = "\"SLY - Sly Lex Yacc\""
+optional = false
+python-versions = "*"
+files = [
+    {file = "sly-0.5-py3-none-any.whl", hash = "sha256:20485483259eec7f6ba85ff4d2e96a4e50c6621902667fc2695cc8bc2a3e5133"},
+    {file = "sly-0.5.tar.gz", hash = "sha256:251d42015e8507158aec2164f06035df4a82b0314ce6450f457d7125e7649024"},
+]
+
+[[package]]
 name = "sniffio"
 version = "1.3.0"
 description = "Sniff out which async library your code is running under"
@@ -3805,19 +3834,18 @@ files = [
 
 [[package]]
 name = "sqlparse"
-version = "0.4.4"
+version = "0.5.0"
 description = "A non-validating SQL parser."
 optional = false
-python-versions = ">=3.5"
+python-versions = ">=3.8"
 files = [
-    {file = "sqlparse-0.4.4-py3-none-any.whl", hash = "sha256:5430a4fe2ac7d0f93e66f1efc6e1338a41884b7ddf2a350cedd20ccc4d9d28f3"},
-    {file = "sqlparse-0.4.4.tar.gz", hash = "sha256:d446183e84b8349fa3061f0fe7f06ca94ba65b426946ffebe6e3e8295332420c"},
+    {file = "sqlparse-0.5.0-py3-none-any.whl", hash = "sha256:c204494cd97479d0e39f28c93d46c0b2d5959c7b9ab904762ea6c7af211c8663"},
+    {file = "sqlparse-0.5.0.tar.gz", hash = "sha256:714d0a4932c059d16189f58ef5411ec2287a4360f17cdd0edd2d09d4c5087c93"},
 ]
 
 [package.extras]
-dev = ["build", "flake8"]
+dev = ["build", "hatch"]
 doc = ["sphinx"]
-test = ["pytest", "pytest-cov"]
 
 [[package]]
 name = "stevedore"
@@ -4653,4 +4681,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12"
-content-hash = "4544b2a0b0065aa9e13d9a3b5a951fb5212921fe72f0fe259069e2e9205e9830"
+content-hash = "a5774b4e09217805c887700b8a0f457a39c7af40ca59823f00c1f6e8678469e1"

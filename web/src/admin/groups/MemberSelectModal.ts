@@ -33,6 +33,7 @@ export class MemberSelectTable extends TableModal<User> {
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
+            includeGroups: false,
         });
     }
 
