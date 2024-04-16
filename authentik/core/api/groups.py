@@ -50,7 +50,7 @@ class GroupSerializer(ModelSerializer):
     """Group Serializer"""
 
     attributes = JSONDictField(required=False)
-    users_obj = SerializerMethodField()
+    users_obj = SerializerMethodField(allow_null=True)
     roles_obj = ListSerializer(
         child=RoleSerializer(),
         read_only=True,

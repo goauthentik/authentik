@@ -34240,6 +34240,7 @@ components:
           items:
             $ref: '#/components/schemas/GroupMember'
           readOnly: true
+          nullable: true
         attributes:
           type: object
           additionalProperties: {}
@@ -44499,6 +44500,7 @@ components:
           items:
             $ref: '#/components/schemas/UserGroup'
           readOnly: true
+          nullable: true
         email:
           type: string
           format: email
