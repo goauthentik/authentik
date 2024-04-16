@@ -26,6 +26,9 @@ entries:
         !Find [authentik_flows.flow, [slug, default-user-settings-flow]]
     identifiers:
       domain: authentik-default
-      default: True
+      default: true
     state: created
+    conditions:
+      # Only create default brand if no other default brand exists
+      - !Condition [NOR, !Find [authentik_brands.brand, [default, True]]]
     model: authentik_brands.brand

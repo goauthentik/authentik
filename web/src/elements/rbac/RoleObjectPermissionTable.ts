@@ -113,9 +113,9 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
             baseRow.push(
                 html`${granted
                     ? html`<pf-tooltip position="top" content=${msg("Directly assigned")}
-                          >✓</pf-tooltip
-                      >`
-                    : html`X`} `,
+                          ><i class="fas fa-check pf-m-success"></i
+                      ></pf-tooltip>`
+                    : html`<i class="fas fa-times pf-m-danger"></i>`} `,
             );
         });
         return baseRow;

@@ -36,6 +36,7 @@ import {
     ChallengeChoices,
     ChallengeTypes,
     ContextualFlowInfo,
+    FetchError,
     FlowChallengeResponseRequest,
     FlowErrorChallenge,
     FlowLayoutEnum,
@@ -205,7 +206,7 @@ export class FlowExecutor extends Interface implements StageHost {
             }
             return !this.challenge.responseErrors;
         } catch (exc: unknown) {
-            this.errorMessage(exc as Error | ResponseError);
+            this.errorMessage(exc as Error | ResponseError | FetchError);
             return false;
         } finally {
             this.loading = false;
@@ -237,15 +238,17 @@ export class FlowExecutor extends Interface implements StageHost {
             }
         } catch (exc: unknown) {
             // Catch JSON or Update errors
-            this.errorMessage(exc as Error | ResponseError);
+            this.errorMessage(exc as Error | ResponseError | FetchError);
         } finally {
             this.loading = false;
         }
     }
 
-    async errorMessage(error: Error | ResponseError): Promise<void> {
+    async errorMessage(error: Error | ResponseError | FetchError): Promise<void> {
         let body = "";
-        if (error instanceof ResponseError) {
+        if (error instanceof FetchError) {
+            body = msg("Request failed. Please try again later.");
+        } else if (error instanceof ResponseError) {
             body = await error.response.text();
         } else if (error instanceof Error) {
             body = error.message;
@@ -415,7 +418,8 @@ export class FlowExecutor extends Interface implements StageHost {
 
     async renderChallenge(): Promise<TemplateResult> {
         if (!this.challenge) {
-            return html``;
+            return html`<ak-empty-state ?loading=${true} header=${msg("Loading")}>
+            </ak-empty-state>`;
         }
         switch (this.challenge.type) {
             case ChallengeChoices.Redirect:
@@ -431,9 +435,8 @@ export class FlowExecutor extends Interface implements StageHost {
                 return await this.renderChallengeNativeElement();
             default:
                 console.debug(`authentik/flows: unexpected data type ${this.challenge.type}`);
-                break;
+                return html``;
         }
-        return html``;
     }
 
     renderChallengeWrapper(): TemplateResult {

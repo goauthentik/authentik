@@ -86,7 +86,7 @@ export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPer
                   >
                       <pre>${item.objectPk}</pre>
                   </pf-tooltip>`}`,
-            html`✓`,
+            html`<i class="fas fa-check pf-m-success"></i>`,
         ];
     }
 }

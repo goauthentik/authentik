@@ -4919,11 +4919,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>上次验证阈值</target>
         
       </trans-unit>
-      <trans-unit id="s951281efc92b03fc">
-        <source>If any of the devices user of the types selected above have been used within this duration, this stage will be skipped.</source>
-        <target>如果上面所选类型的任意设备在此期限内被使用，此阶段会被跳过。</target>
-        
-      </trans-unit>
       <trans-unit id="s681074b6c1f19c08">
         <source>Not configured action</source>
         <target>未配置操作</target>
@@ -7582,10 +7577,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Editing is disabled for managed tokens</source>
   <target>托管令牌的编辑已被禁用</target>
 </trans-unit>
-<trans-unit id="s78ab26da7f067de8">
-  <source>Select permissions to grant</source>
-  <target>选择权限以授予</target>
-</trans-unit>
 <trans-unit id="sdeb90bfd8a80b86b">
   <source>Permissions to add</source>
   <target>要添加的权限</target>
@@ -8539,6 +8530,74 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s1f4df216b56de4ac">
   <source>Optionally restrict which WebAuthn device types may be used. When no device types are selected, all devices are allowed.</source>
   <target>可选的 WebAuthn 可用设备类型限制。如果未选择设备类型，则允许所有设备。</target>
+</trans-unit>
+<trans-unit id="s23ed998c51cbe38f">
+  <source>If the user has successfully authenticated with a device in the classes listed above within this configured duration, this stage will be skipped.</source>
+  <target>如果用户在配置的持续时间内通过上面列出类别中的设备验证身份成功，则跳过此阶段。</target>
+</trans-unit>
+<trans-unit id="s4d4f52ccfd9d6adf">
+  <source>WebAuthn-specific settings</source>
+  <target>WebAuthn 特定设置</target>
+</trans-unit>
+<trans-unit id="sb46d2e64f64c6284">
+  <source>WebAuthn Device type restrictions</source>
+  <target>WebAuthn 设备类型限制</target>
+</trans-unit>
+<trans-unit id="s11274960b13cf21a">
+  <source>This restriction only applies to devices created in authentik 2024.4 or later.</source>
+  <target>此限制仅适用于在 authentik 2024.4 或更新版本中创建的设备。</target>
+</trans-unit>
+<trans-unit id="s4888252cbd785175">
+  <source>Default token duration</source>
+  <target>默认令牌持续时间</target>
+</trans-unit>
+<trans-unit id="s25c80a16a07871ba">
+  <source>Default duration for generated tokens</source>
+  <target>生成令牌的默认持续时间</target>
+</trans-unit>
+<trans-unit id="se5c9ffc025fdf61d">
+  <source>Default token length</source>
+  <target>默认令牌长度</target>
+</trans-unit>
+<trans-unit id="sa6b2c110466d1754">
+  <source>Default length of generated tokens</source>
+  <target>生成令牌的默认长度</target>
+</trans-unit>
+<trans-unit id="s1f25e1e20469a9ea">
+  <source>deleted</source>
+  <target>已删除</target>
+</trans-unit>
+<trans-unit id="s0ca04e397298bc43">
+  <source>Select permissions to assign</source>
+  <target>选择权限以分配</target>
+</trans-unit>
+<trans-unit id="s676d94e7e31a8075">
+  <source>SCIM Source is in preview.</source>
+  <target>SCIM 源目前处于预览状态。</target>
+</trans-unit>
+<trans-unit id="s31f1afc0a81977c1">
+  <source>Update SCIM Source</source>
+  <target>更新 SCIM 源</target>
+</trans-unit>
+<trans-unit id="s4bb356adc8a7f85b">
+  <source>SCIM Base URL</source>
+  <target>SCIM Base URL</target>
+</trans-unit>
+<trans-unit id="sb23304fc42c5d6d9">
+  <source>Provisioned Users</source>
+  <target>预配用户</target>
+</trans-unit>
+<trans-unit id="s6a81ee82b2e5ecbb">
+  <source>Provisioned Groups</source>
+  <target>预配组</target>
+</trans-unit>
+<trans-unit id="s10154dbd4fbc697b">
+  <source>removed</source>
+  <target>已删除</target>
+</trans-unit>
+<trans-unit id="s30d6ff9e15e0a40a">
+  <source>Verifying...</source>
+  <target>正在验证...</target>
 </trans-unit>
     </body>
   </file>

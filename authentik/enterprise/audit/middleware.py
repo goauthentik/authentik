@@ -11,7 +11,6 @@ from django.db.models.expressions import BaseExpression, Combinable
 from django.db.models.signals import post_init
 from django.http import HttpRequest
 
-from authentik.core.models import User
 from authentik.events.middleware import AuditMiddleware, should_log_model
 from authentik.events.utils import cleanse_dict, sanitize_item
 
@@ -28,13 +27,10 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
         super().connect(request)
         if not self.enabled:
             return
-        user = getattr(request, "user", self.anonymous_user)
-        if not user.is_authenticated:
-            user = self.anonymous_user
         if not hasattr(request, "request_id"):
             return
         post_init.connect(
-            partial(self.post_init_handler, user=user, request=request),
+            partial(self.post_init_handler, request=request),
             dispatch_uid=request.request_id,
             weak=False,
         )
@@ -76,7 +72,7 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
                 diff[key] = {"previous_value": value, "new_value": after.get(key)}
         return sanitize_item(diff)
 
-    def post_init_handler(self, user: User, request: HttpRequest, sender, instance: Model, **_):
+    def post_init_handler(self, request: HttpRequest, sender, instance: Model, **_):
         """post_init django model handler"""
         if not should_log_model(instance):
             return
@@ -90,7 +86,6 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
 
     def post_save_handler(
         self,
-        user: User,
         request: HttpRequest,
         sender,
         instance: Model,
@@ -112,6 +107,4 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
                 for field_set in ignored_field_sets:
                     if set(diff.keys()) == set(field_set):
                         return None
-        return super().post_save_handler(
-            user, request, sender, instance, created, thread_kwargs, **_
-        )
+        return super().post_save_handler(request, sender, instance, created, thread_kwargs, **_)

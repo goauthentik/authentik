@@ -145,6 +145,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
             type: this.hideServiceAccounts
                 ? [CoreUsersListTypeEnum.External, CoreUsersListTypeEnum.Internal]
                 : undefined,
+            includeGroups: false,
         });
         this.me = await me();
         return users;
@@ -164,6 +165,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("User(s)")}
             actionLabel=${msg("Remove Users(s)")}
+            action=${msg("removed")}
             actionSubtext=${msg(
                 str`Are you sure you want to remove the selected users from the group ${this.targetGroup?.name}?`,
             )}

@@ -3,6 +3,12 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '30 1 1,15 * *'
+
+env:
+  POSTGRES_DB: authentik
+  POSTGRES_USER: authentik
+  POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+
 jobs:
   build:
     runs-on: ubuntu-latest

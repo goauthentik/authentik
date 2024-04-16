@@ -8,7 +8,16 @@ from rest_framework.request import Request
 class ObjectPermissions(DjangoObjectPermissions):
     """RBAC Permissions"""
 
-    def has_object_permission(self, request: Request, view, obj: Model):
+    def has_permission(self, request: Request, view) -> bool:
+        """Always grant permission for object-specific requests
+        as view permission checking is done by `ObjectFilter`,
+        and write permission checking is done by `has_object_permission`"""
+        lookup = getattr(view, "lookup_url_kwarg", None) or getattr(view, "lookup_field", None)
+        if lookup and lookup in view.kwargs:
+            return True
+        return super().has_permission(request, view)
+
+    def has_object_permission(self, request: Request, view, obj: Model) -> bool:
         queryset = self._queryset(view)
         model_cls = queryset.model
         perms = self.get_required_object_permissions(request.method, model_cls)
