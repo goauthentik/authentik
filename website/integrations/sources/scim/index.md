@@ -1,5 +1,5 @@
 ---
-title: SCIM source
+title: SCIM Source
 ---
 
 :::info
