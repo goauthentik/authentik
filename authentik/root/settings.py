@@ -125,6 +125,7 @@ TENANT_APPS = [
     "authentik.brands",
     "authentik.blueprints",
     "guardian",
+    "django_celery_beat",
 ]
 
 TENANT_MODEL = "authentik_tenants.Tenant"
