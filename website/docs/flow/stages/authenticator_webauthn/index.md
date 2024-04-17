@@ -4,19 +4,21 @@ title: WebAuthn authenticator setup stage
 
 This stage configures a WebAuthn-based Authenticator. This can either be a browser, biometrics or a Security stick like a YubiKey.
 
-### `User verification`
+### Options
+
+#### User verification
 
 Configure if authentik should require, prefer or discourage user verification for the authenticator. For example when using a virtual authenticator like Windows Hello, this setting controls if a PIN is required.
 
-### `Resident key requirement`
+#### Resident key requirement
 
 Configure if the created authenticator is stored in the encrypted memory on the device or in persistent memory. When configuring [passwordless login](../identification/index.md#passwordless-flow), this should be set to either _Preferred_ or _Required_, otherwise the authenticator cannot be used for passwordless authentication.
 
-### `Authenticator Attachment`
+#### Authenticator Attachment
 
 Configure if authentik will require either a removable device (like a YubiKey, Google Titan, etc) or a non-removable device (like Windows Hello, TouchID or password managers), or not send a requirement.
 
-### `Device type restrictions`
+#### Device type restrictions
 
 :::info
 Requires authentik 2024.4

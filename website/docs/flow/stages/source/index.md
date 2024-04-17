@@ -40,10 +40,10 @@ This is because the Source stage works by appending a [dynamic in-memory](../../
 
 ### Options
 
-#### `source`
+#### Source
 
 The source the user is redirected to. Must be a web-based source, such as [OAuth](../../../../integrations/sources/oauth/) or [SAML](../../../../integrations/sources/saml/). Sources like [LDAP](../../../../integrations/sources/ldap/) are _not_ compatible.
 
-#### `resume_timeout`
+#### Resume timeout
 
 Because the execution of the current flow is suspended before the user is redirected to the configured source, this option configures how long the suspended flow is saved. If this timeout is exceeded, upon return from the configured source, the suspended flow will restart from the beginning.
