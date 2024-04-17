@@ -8231,6 +8231,9 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="s30d6ff9e15e0a40a">
   <source>Verifying...</source>
 </trans-unit>
+<trans-unit id="sc1673c93148583ba">
+  <source>Request failed. Please try again later.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
