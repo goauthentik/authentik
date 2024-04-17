@@ -15,7 +15,7 @@ def scim_source_pre_save(sender: type[Model], instance: SCIMSource, **_):
     user = User.objects.create(
         username=identifier,
         name=f"SCIM Source {instance.name} Service-Account",
-        type=UserTypes.SERVICE_ACCOUNT,
+        type=UserTypes.INTERNAL_SERVICE_ACCOUNT,
     )
     token = Token.objects.create(
         user=user,
@@ -34,5 +34,5 @@ def scim_source_pre_delete(sender: type[Model], instance: SCIMSource, **_):
         identifier=instance.service_account_identifier, intent=TokenIntents.INTENT_API
     ).delete()
     User.objects.filter(
-        username=instance.service_account_identifier, type=UserTypes.SERVICE_ACCOUNT
+        username=instance.service_account_identifier, type=UserTypes.INTERNAL_SERVICE_ACCOUNT
     ).delete()
