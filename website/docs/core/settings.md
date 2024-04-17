@@ -58,3 +58,11 @@ When enabled, all the events caused by a user will be deleted upon the user's de
 ### Impersonation
 
 Globally enable/disable impersonation. Defaults to `true`.
+
+### Default token duration
+
+Default duration for generated tokens. Defaults to `minutes=30`.
+
+### Default token length
+
+Default length of generated tokens. Defaults to 60.

@@ -9,7 +9,7 @@ require (
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/getsentry/sentry-go v0.27.0
 	github.com/go-http-utils/etag v0.0.0-20161124023236-513ea8f21eb1
-	github.com/go-ldap/ldap/v3 v3.4.7
+	github.com/go-ldap/ldap/v3 v3.4.8
 	github.com/go-openapi/runtime v0.28.0
 	github.com/go-openapi/strfmt v0.23.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
@@ -30,7 +30,7 @@ require (
 	github.com/spf13/cobra v1.8.0
 	github.com/stretchr/testify v1.9.0
 	github.com/wwt/guac v1.3.2
-	goauthentik.io/api/v3 v3.2024022.11
+	goauthentik.io/api/v3 v3.2024022.12
 	golang.org/x/exp v0.0.0-20230210204819-062eb4c674ab
 	golang.org/x/oauth2 v0.19.0
 	golang.org/x/sync v0.7.0

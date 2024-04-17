@@ -6653,6 +6653,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s30d6ff9e15e0a40a">
   <source>Verifying...</source>
 </trans-unit>
+<trans-unit id="sc1673c93148583ba">
+  <source>Request failed. Please try again later.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
