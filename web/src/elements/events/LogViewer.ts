@@ -28,11 +28,11 @@ export class LogViewer extends Table<LogEvent> {
             pagination: {
                 next: 0,
                 previous: 0,
-                count: 1,
+                count: this.logs?.length || 0,
                 current: 1,
                 totalPages: 1,
                 startIndex: 1,
-                endIndex: 1,
+                endIndex: this.logs?.length || 0,
             },
             results: this.logs || [],
         };
