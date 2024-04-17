@@ -38,6 +38,14 @@ It is very important that the configured source's authentication and enrollment 
 
 This is because the Source stage works by appending a [dynamic in-memory](../../../core/terminology.md#dynamic-in-memory-stage) stage to the source's flow, so having a [User login stage](../user_login/index.md) bound will cause the source's flow to not resume the original flow it was started from, and instead directly authenticating the pending user.
 
+### Example use case
+
+This stage can be used to leverage an external OAuth/SAML identity provider.
+
+For example, you can authenticate users by routing them through a custom device-health solution.
+
+Another use case is to route users to authenticate with your legacy (Okta, etc) IdP and then use the returned identity and attributes within authentik as part of an authorization flow, for example as part of an IdP migration. For authentication/enrollment this is also possible with an [OAuth](../../../../integrations/sources/oauth/index.md)/[SAML](../../../../integrations/sources/saml/index.md) source by itself.
+
 ### Options
 
 #### Source
