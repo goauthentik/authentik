@@ -36,14 +36,18 @@ def check_postgres():
 
 def check_redis():
     REDIS_PROTOCOL_PREFIX = "redis://"
+    _redis_tls_requirements = ""
     if CONFIG.get_bool("redis.tls", False):
         REDIS_PROTOCOL_PREFIX = "rediss://"
+        _redis_tls_requirements = f"?ssl_cert_reqs={CONFIG.get('redis.tls_reqs')}"
+        if _redis_ca := CONFIG.get("redis.tls_ca_cert", None):
+            _redis_tls_requirements += f"&ssl_ca_certs={_redis_ca}"
     REDIS_URL = (
         f"{REDIS_PROTOCOL_PREFIX}"
         f"{quote_plus(CONFIG.get('redis.username'))}:"
         f"{quote_plus(CONFIG.get('redis.password'))}@"
         f"{quote_plus(CONFIG.get('redis.host'))}:"
-        f"{CONFIG.get_int('redis.port')}/{CONFIG.get('redis.db')}"
+        f"{CONFIG.get_int('redis.port')}/{CONFIG.get('redis.db')}{_redis_tls_requirements}"
     )
     while True:
         try:
