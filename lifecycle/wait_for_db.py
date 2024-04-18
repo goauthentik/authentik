@@ -9,7 +9,7 @@ from psycopg import OperationalError, connect
 from redis import Redis
 from redis.exceptions import RedisError
 
-from authentik.lib.config import CONFIG
+from authentik.lib.config import CONFIG, redis_url
 
 
 def check_postgres():
@@ -35,28 +35,15 @@ def check_postgres():
 
 
 def check_redis():
-    REDIS_PROTOCOL_PREFIX = "redis://"
-    _redis_tls_requirements = ""
-    if CONFIG.get_bool("redis.tls", False):
-        REDIS_PROTOCOL_PREFIX = "rediss://"
-        _redis_tls_requirements = f"?ssl_cert_reqs={CONFIG.get('redis.tls_reqs')}"
-        if _redis_ca := CONFIG.get("redis.tls_ca_cert", None):
-            _redis_tls_requirements += f"&ssl_ca_certs={_redis_ca}"
-    REDIS_URL = (
-        f"{REDIS_PROTOCOL_PREFIX}"
-        f"{quote_plus(CONFIG.get('redis.username'))}:"
-        f"{quote_plus(CONFIG.get('redis.password'))}@"
-        f"{quote_plus(CONFIG.get('redis.host'))}:"
-        f"{CONFIG.get_int('redis.port')}/{CONFIG.get('redis.db')}{_redis_tls_requirements}"
-    )
+    url = redis_url(CONFIG.get("redis.db"))
     while True:
         try:
-            redis = Redis.from_url(REDIS_URL)
+            redis = Redis.from_url(url)
             redis.ping()
             break
         except RedisError as exc:
             sleep(1)
-            sanitized_url = REDIS_URL.replace(quote_plus(CONFIG.get("redis.password")), "******")
+            sanitized_url = url.replace(quote_plus(CONFIG.get("redis.password")), "******")
             CONFIG.log(
                 "info", f"Redis Connection failed, retrying... ({exc})", redis_url=sanitized_url
             )
