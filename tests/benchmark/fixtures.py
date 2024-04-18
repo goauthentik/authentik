@@ -331,9 +331,9 @@ def delete():
 def main(action: str):
     match action:
         case "create":
-            # login()
-            # provider_oauth2()
-            # user_list()
+            login()
+            provider_oauth2()
+            user_list()
             group_list()
             event_list()
         case "delete":
