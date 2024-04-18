@@ -200,7 +200,7 @@ _redis_celery_tls_requirements = ""
 if CONFIG.get_bool("redis.tls", False):
     _redis_protocol_prefix = "rediss://"
     _redis_celery_tls_requirements = f"?ssl_cert_reqs={CONFIG.get('redis.tls_reqs')}"
-    if _redis_ca := CONFIG.get("redis.tls_ca_certs", None):
+    if _redis_ca := CONFIG.get("redis.tls_ca_cert", None):
         _redis_celery_tls_requirements += f"&ssl_ca_certs={_redis_ca}"
 _redis_url = (
     f"{_redis_protocol_prefix}"
@@ -219,7 +219,7 @@ CACHES = {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "CONNECTION_POOL_KWARGS": {
                 "ssl_cert_reqs": CONFIG.get("redis.tls_reqs"),
-                "ssl_ca_certs": CONFIG.get("redis.tls_ca_certs", None),
+                "ssl_ca_certs": CONFIG.get("redis.tls_ca_cert", None),
             },
         },
         "KEY_PREFIX": "authentik_cache",
