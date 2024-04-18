@@ -1,6 +1,5 @@
 from json import dumps
 
-from celery.schedules import crontab
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django_celery_beat.models import CrontabSchedule, PeriodicTask
@@ -10,7 +9,9 @@ from authentik.enterprise.reporting.models import Report
 
 @receiver(post_save, sender=Report)
 def report_post_save(sender, instance: Report, **_):
-    schedule = CrontabSchedule.from_schedule(crontab())
+    if instance.schedule == "":
+        return
+    schedule = CrontabSchedule.from_schedule(instance.get_celery_schedule())
     schedule.save()
     PeriodicTask.objects.update_or_create(
         name=str(instance.pk),
@@ -30,6 +31,8 @@ def report_post_save(sender, instance: Report, **_):
 
 @receiver(pre_delete, sender=Report)
 def report_pre_delete(sender, instance: Report, **_):
+    if instance.schedule == "":
+        return
     PeriodicTask.objects.filter(name=str(instance.pk)).delete()
     # Cleanup schedules without any tasks
     CrontabSchedule.objects.filter(periodictask__isnull=True).delete()
