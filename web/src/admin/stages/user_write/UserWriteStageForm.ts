@@ -110,10 +110,7 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
                             ${msg("Mark newly created users as inactive.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("User path template")}
-                        name="userPathTemplate"
-                    >
+                    <ak-form-element-horizontal label=${msg("User type")} name="userType">
                         <ak-radio
                             .options=${[
                                 {
