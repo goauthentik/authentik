@@ -44714,6 +44714,26 @@ components:
       - num_pk
       - parent_name
       - pk
+    UserGroupRequest:
+      type: object
+      description: Simplified Group Serializer for user's groups
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 80
+        is_superuser:
+          type: boolean
+          description: Users added to this group will be superusers.
+        parent:
+          type: string
+          format: uuid
+          nullable: true
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - name
     UserLoginChallenge:
       type: object
       description: Empty challenge
@@ -45400,7 +45420,11 @@ components:
           - $ref: '#/components/schemas/WebAuthnDeviceType'
           readOnly: true
           nullable: true
+        aaguid:
+          type: string
+          readOnly: true
       required:
+      - aaguid
       - created_on
       - device_type
       - name
