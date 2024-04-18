@@ -176,19 +176,16 @@ def login():
 def provider_oauth2():
     tenants = [
         # Number of user policies, group policies, expression policies
+        (2, 50, 2),
         (0, 0, 0),
         (10, 0, 0),
         (100, 0, 0),
-        (1000, 0, 0),
         (0, 10, 0),
         (0, 100, 0),
-        (0, 1000, 0),
         (0, 0, 10),
         (0, 0, 100),
-        (0, 0, 1000),
         (10, 10, 10),
         (100, 100, 100),
-        (1000, 1000, 1000),
     ]
 
     for tenant in tenants:

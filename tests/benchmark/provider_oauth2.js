@@ -7,19 +7,16 @@ const host = __ENV.BENCH_HOST ? __ENV.BENCH_HOST : "localhost";
 const VUs = __ENV.VUS ? __ENV.VUS : 8;
 
 const testcases = [
+    [2, 50, 2],
     [0, 0, 0],
     [10, 0, 0],
     [100, 0, 0],
-    [1000, 0, 0],
     [0, 10, 0],
     [0, 100, 0],
-    [0, 1000, 0],
     [0, 0, 10],
     [0, 0, 100],
-    [0, 0, 1000],
     [10, 10, 10],
     [100, 100, 100],
-    [1000, 1000, 1000],
 ];
 
 export const options = {
