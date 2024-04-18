@@ -56,7 +56,10 @@ def check_redis():
             break
         except RedisError as exc:
             sleep(1)
-            CONFIG.log("info", f"Redis Connection failed, retrying... ({exc})", redis_url=REDIS_URL)
+            sanitized_url = REDIS_URL.replace(quote_plus(CONFIG.get("redis.password")), "******")
+            CONFIG.log(
+                "info", f"Redis Connection failed, retrying... ({exc})", redis_url=sanitized_url
+            )
     CONFIG.log("info", "Redis Connection successful")
 
 
