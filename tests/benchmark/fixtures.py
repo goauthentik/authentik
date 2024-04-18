@@ -303,12 +303,13 @@ def main(action: str, selected_suite: str | None = None):
             for testcase in testcases:
                 if selected_suite and testcase.TEST_NAME != selected_suite:
                     continue
-                to_create.append(testcase)
-            processes = [Process(target=testcase.create) for testcase in to_create]
-            for p in processes:
-                p.start()
-            for p in processes:
-                p.join()
+                testcase.create()
+            #     to_create.append(testcase)
+            # processes = [Process(target=testcase.create) for testcase in to_create]
+            # for p in processes:
+            #     p.start()
+            # for p in processes:
+            #     p.join()
         case "list":
             print(*[testsuite.TEST_NAME for testsuite in testsuites], sep="\n")
         case "delete":
