@@ -200,6 +200,8 @@ _redis_celery_tls_requirements = ""
 if CONFIG.get_bool("redis.tls", False):
     _redis_protocol_prefix = "rediss://"
     _redis_celery_tls_requirements = f"?ssl_cert_reqs={CONFIG.get('redis.tls_reqs')}"
+    if _redis_ca := CONFIG.get("redis.tls_ca_certs", None):
+        _redis_celery_tls_requirements += f"&ssl_ca_certs={_redis_ca}"
 _redis_url = (
     f"{_redis_protocol_prefix}"
     f"{quote_plus(CONFIG.get('redis.username'))}:"
@@ -213,7 +215,13 @@ CACHES = {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": CONFIG.get("cache.url") or f"{_redis_url}/{CONFIG.get('redis.db')}",
         "TIMEOUT": CONFIG.get_int("cache.timeout", 300),
-        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "CONNECTION_POOL_KWARGS": {
+                "ssl_cert_reqs": CONFIG.get("redis.tls_reqs"),
+                "ssl_ca_certs": CONFIG.get("redis.tls_ca_certs", None),
+            },
+        },
         "KEY_PREFIX": "authentik_cache",
         "KEY_FUNCTION": "django_tenants.cache.make_key",
         "REVERSE_KEY_FUNCTION": "django_tenants.cache.reverse_key",
@@ -276,7 +284,12 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.pubsub.RedisPubSubChannelLayer",
         "CONFIG": {
-            "hosts": [CONFIG.get("channel.url", f"{_redis_url}/{CONFIG.get('redis.db')}")],
+            "hosts": [
+                CONFIG.get(
+                    "channel.url",
+                    f"{_redis_url}{_redis_celery_tls_requirements}/{CONFIG.get('redis.db')}",
+                )
+            ],
             "prefix": "authentik_channels_",
         },
     },

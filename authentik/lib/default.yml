@@ -35,6 +35,7 @@ redis:
   password: ""
   tls: false
   tls_reqs: "none"
+  tls_ca_certs: null
 
 # broker:
 #   url: ""
