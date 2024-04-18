@@ -126,10 +126,6 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
         if authenticator_attachment:
             authenticator_attachment = AuthenticatorAttachment(str(authenticator_attachment))
 
-        attestation = AttestationConveyancePreference.DIRECT
-        if stage.device_type_restrictions.exists():
-            attestation = AttestationConveyancePreference.ENTERPRISE
-
         registration_options: PublicKeyCredentialCreationOptions = generate_registration_options(
             rp_id=get_rp_id(self.request),
             rp_name=self.request.brand.branding_title,
@@ -141,7 +137,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
                 user_verification=UserVerificationRequirement(str(stage.user_verification)),
                 authenticator_attachment=authenticator_attachment,
             ),
-            attestation=attestation,
+            attestation=AttestationConveyancePreference.DIRECT,
         )
 
         self.request.session[SESSION_KEY_WEBAUTHN_CHALLENGE] = registration_options.challenge
