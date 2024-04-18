@@ -72,7 +72,7 @@ To check if your config has been applied correctly, you can run the following co
 -   `AUTHENTIK_POSTGRESQL__PASSWORD`: Database password, defaults to the environment variable `POSTGRES_PASSWORD`
 -   `AUTHENTIK_POSTGRESQL__USE_PGBOUNCER`: Adjust configuration to support connection to PgBouncer
 -   `AUTHENTIK_POSTGRESQL__USE_PGPOOL`: Adjust configuration to support connection to Pgpool
--   `AUTHENTIK_POSTGRESQL__SSLMODE`: Strictness of ssl verification. Defaults to `verify-ca`
+-   `AUTHENTIK_POSTGRESQL__SSLMODE`: Strictness of ssl verification. Defaults to `"verify-ca"`
 -   `AUTHENTIK_POSTGRESQL__SSLROOTCERT`: CA root for server ssl verification
 -   `AUTHENTIK_POSTGRESQL__SSLCERT`: Path to x509 client certificate to authenticate to server
 -   `AUTHENTIK_POSTGRESQL__SSLKEY`: Path to private key of `SSLCERT` certificate
@@ -85,7 +85,8 @@ To check if your config has been applied correctly, you can run the following co
 -   `AUTHENTIK_REDIS__USERNAME`: Redis server username when not using configuration URL
 -   `AUTHENTIK_REDIS__PASSWORD`: Redis server password when not using configuration URL
 -   `AUTHENTIK_REDIS__TLS`: Redis server connection using TLS when not using configuration URL
--   `AUTHENTIK_REDIS__TLS_REQS`: Redis server TLS connection requirements when not using configuration URL
+-   `AUTHENTIK_REDIS__TLS_REQS`: Redis server TLS connection requirements when not using configuration URL. Defaults to `"none"`. Allowed values are `"none"` and `"required"`.
+-   `AUTHENTIK_REDIS__TLS_CA_CERT`: Path to the Redis server TLS CA root when not using configuration URL. Defaults to `null`.
 
 ## Result Backend Settings
 
