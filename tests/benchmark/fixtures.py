@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import random
 import sys
+from collections.abc import Iterable
+from multiprocessing import Process
 from os import environ
 from uuid import uuid4
 
@@ -29,9 +31,53 @@ settings.CELERY["task_always_eager"] = True
 host = environ.get("BENCH_HOST", "localhost")
 
 
-def user_list():
-    # Number of users, groups per user, parents per groups
-    tenants = [
+class TestSuite:
+    TEST_NAME: str
+    TEST_CASES: Iterable[Iterable[int | str | bool]]
+
+    @classmethod
+    def get_testcases(cls):
+        return [cls(params) for params in cls.TEST_CASES]
+
+    def __init__(self, params: Iterable[int | str | bool]):
+        self.params = params
+
+    def __str__(self):
+        return (
+            "-".join([self.TEST_NAME] + [str(param) for param in self.params])
+            .replace("_", "-")
+            .lower()
+        )
+
+    @property
+    def schema_name(self):
+        return f"t_{str(self).replace('-', '_')}"
+
+    @property
+    def domain_name(self):
+        return f"{str(self)}.{host}"
+
+    def create(self):
+        created = False
+        t = Tenant.objects.filter(schema_name=self.schema_name).first()
+        if not t:
+            created = True
+            t = Tenant.objects.create(schema_name=self.schema_name, name=uuid4())
+        Domain.objects.get_or_create(tenant=t, domain=self.domain_name)
+        if created:
+            with t:
+                self.create_data(*self.params)
+
+    def create_data(self):
+        raise NotImplementedError
+
+    def delete(self):
+        Tenant.objects.filter(schema_name=self.schema_name).delete()
+
+
+class UserList(TestSuite):
+    TEST_NAME = "user-list"
+    TEST_CASES = [
         (1000, 0, 0),
         (10000, 0, 0),
         (1000, 3, 0),
@@ -42,51 +88,33 @@ def user_list():
         (10000, 20, 3),
     ]
 
-    for tenant in tenants:
-        user_count = tenant[0]
-        groups_per_user = tenant[1]
-        parents_per_group = tenant[2]
-        tenant_name = f"user-list-{user_count}-{groups_per_user}-{parents_per_group}"
-
-        schema_name = f"t_{tenant_name.replace('-', '_')}"
-        created = False
-        t = Tenant.objects.filter(schema_name=schema_name).first()
-        if not t:
-            created = True
-            t = Tenant.objects.create(schema_name=schema_name, name=uuid4())
-        Domain.objects.get_or_create(tenant=t, domain=f"{tenant_name}.{host}")
-        if not created:
-            continue
-
-        with t:
-            Group.objects.bulk_create([Group(name=uuid4()) for _ in range(groups_per_user * 5)])
-            for group in Group.objects.exclude(name="authentik Admins"):
-                for _ in range(parents_per_group):
-                    new_group = Group.objects.create(name=uuid4())
-                    group.parent = new_group
-                    group.save()
-                    group = new_group
-            User.objects.bulk_create(
-                [
-                    User(
-                        username=uuid4(),
-                        name=uuid4(),
-                    )
-                    for _ in range(user_count)
-                ]
-            )
-            if groups_per_user:
-                for user in User.objects.exclude_anonymous().exclude(username="akadmin"):
-                    user.ak_groups.set(
-                        Group.objects.exclude(name="authentik Admins").order_by("?")[
-                            :groups_per_user
-                        ]
-                    )
+    def create_data(self, user_count: int, groups_per_user: int, parents_per_group: int):
+        Group.objects.bulk_create([Group(name=uuid4()) for _ in range(groups_per_user * 5)])
+        for group in Group.objects.exclude(name="authentik Admins"):
+            for _ in range(parents_per_group):
+                new_group = Group.objects.create(name=uuid4())
+                group.parent = new_group
+                group.save()
+                group = new_group
+        User.objects.bulk_create(
+            [
+                User(
+                    username=uuid4(),
+                    name=uuid4(),
+                )
+                for _ in range(user_count)
+            ]
+        )
+        if groups_per_user:
+            for user in User.objects.exclude_anonymous().exclude(username="akadmin"):
+                user.ak_groups.set(
+                    Group.objects.exclude(name="authentik Admins").order_by("?")[:groups_per_user]
+                )
 
 
-def group_list():
-    # Number of groups, users per group, with_parent
-    tenants = [
+class GroupList(TestSuite):
+    TEST_NAME = "group-list"
+    TEST_CASES = [
         (1000, 0, False),
         (10000, 0, False),
         (1000, 1000, False),
@@ -95,77 +123,46 @@ def group_list():
         (10000, 0, True),
     ]
 
-    for tenant in tenants:
-        group_count = tenant[0]
-        users_per_group = tenant[1]
-        with_parent = tenant[2]
-        tenant_name = f"group-list-{group_count}-{users_per_group}-{str(with_parent).lower()}"
-
-        schema_name = f"t_{tenant_name.replace('-', '_')}"
-        created = False
-        t = Tenant.objects.filter(schema_name=schema_name).first()
-        if not t:
-            created = True
-            t = Tenant.objects.create(schema_name=schema_name, name=uuid4())
-        Domain.objects.get_or_create(tenant=t, domain=f"{tenant_name}.{host}")
-        if not created:
-            continue
-
-        with t:
-            User.objects.bulk_create(
-                [
-                    User(
-                        username=uuid4(),
-                        name=uuid4(),
-                    )
-                    for _ in range(users_per_group * 5)
-                ]
-            )
-            if with_parent:
-                parents = Group.objects.bulk_create(
-                    [Group(name=uuid4()) for _ in range(group_count)]
+    def create_data(self, group_count, users_per_group, with_parent):
+        User.objects.bulk_create(
+            [
+                User(
+                    username=uuid4(),
+                    name=uuid4(),
                 )
-            groups = Group.objects.bulk_create(
-                [
-                    Group(name=uuid4(), parent=(parents[i] if with_parent else None))
-                    for i in range(group_count)
-                ]
-            )
-            if users_per_group:
-                for group in groups:
-                    group.users.set(
-                        User.objects.exclude_anonymous()
-                        .exclude(username="akadmin")
-                        .order_by("?")[:users_per_group]
-                    )
+                for _ in range(users_per_group * 5)
+            ]
+        )
+        if with_parent:
+            parents = Group.objects.bulk_create([Group(name=uuid4()) for _ in range(group_count)])
+        groups = Group.objects.bulk_create(
+            [
+                Group(name=uuid4(), parent=(parents[i] if with_parent else None))
+                for i in range(group_count)
+            ]
+        )
+        if users_per_group:
+            for group in groups:
+                group.users.set(
+                    User.objects.exclude_anonymous()
+                    .exclude(username="akadmin")
+                    .order_by("?")[:users_per_group]
+                )
 
 
-def login():
-    schema_name = f"t_login_no_mfa"
-    created = False
-    t = Tenant.objects.filter(schema_name=schema_name).first()
-    if not t:
-        created = True
-        t = Tenant.objects.create(schema_name=schema_name, name=uuid4())
-    Domain.objects.get_or_create(tenant=t, domain=f"login-no-mfa.{host}")
-    if created:
-        with t:
-            user = User(username="test", name=uuid4())
-            user.set_password("verySecurePassword")
-            user.save()
+class Login(TestSuite):
+    TEST_NAME = "login"
+    TEST_CASES = [
+        ("no-mfa",),
+        ("with-mfa",),
+    ]
 
-    schema_name = f"t_login_with_mfa"
-    created = False
-    t = Tenant.objects.filter(schema_name=schema_name).first()
-    if not t:
-        created = True
-        t = Tenant.objects.create(schema_name=schema_name, name=uuid4())
-    Domain.objects.get_or_create(tenant=t, domain=f"login-with-mfa.{host}")
-    if created:
-        with t:
-            user = User(username="test", name=uuid4())
-            user.set_password("verySecurePassword")
-            user.save()
+    def create_data(self, mfa: str):
+        user = User(username="test", name=uuid4())
+        user.set_password("verySecurePassword")
+        user.save()
+
+        if mfa == "with-mfa":
             device = user.staticdevice_set.create()
             # Multiple token with same token for all the iterations in the test
             device.token_set.bulk_create(
@@ -173,9 +170,9 @@ def login():
             )
 
 
-def provider_oauth2():
-    tenants = [
-        # Number of user policies, group policies, expression policies
+class ProviderOauth2(TestSuite):
+    TEST_NAME = "provider-oauth2"
+    TEST_CASES = [
         (2, 50, 2),
         (0, 0, 0),
         (10, 0, 0),
@@ -188,158 +185,139 @@ def provider_oauth2():
         (100, 100, 100),
     ]
 
-    for tenant in tenants:
-        user_policies_count = tenant[0]
-        group_policies_count = tenant[1]
-        expression_policies_count = tenant[2]
-        tenant_name = f"provider-oauth2-{user_policies_count}-{group_policies_count}-{expression_policies_count}"
+    def create_data(
+        self, user_policies_count: int, group_policies_count: int, expression_policies_count: int
+    ):
+        user = User(username="test", name=uuid4())
+        user.set_password("verySecurePassword")
+        user.save()
 
-        schema_name = f"t_{tenant_name.replace('-', '_')}"
-        created = False
-        t = Tenant.objects.filter(schema_name=schema_name).first()
-        if not t:
-            created = True
-            t = Tenant.objects.create(schema_name=schema_name, name=uuid4())
-        Domain.objects.get_or_create(tenant=t, domain=f"{tenant_name}.{host}")
-        if not created:
-            continue
+        provider = OAuth2Provider.objects.create(
+            name="test",
+            authorization_flow=Flow.objects.get(
+                slug="default-provider-authorization-implicit-consent"
+            ),
+            signing_key=CertificateKeyPair.objects.get(name="authentik Self-signed Certificate"),
+            redirect_uris="http://test.localhost",
+            client_id="123456",
+            client_secret="123456",
+        )
+        application = Application.objects.create(slug="test", name="test", provider=provider)
 
-        with t:
-            user = User(username="test", name=uuid4())
-            user.set_password("verySecurePassword")
-            user.save()
-
-            provider = OAuth2Provider.objects.create(
-                name="test",
-                authorization_flow=Flow.objects.get(
-                    slug="default-provider-authorization-implicit-consent"
-                ),
-                signing_key=CertificateKeyPair.objects.get(
-                    name="authentik Self-signed Certificate"
-                ),
-                redirect_uris="http://test.localhost",
-                client_id="123456",
-                client_secret="123456",
-            )
-            application = Application.objects.create(slug="test", name="test", provider=provider)
-
-            User.objects.bulk_create(
-                [
-                    User(
-                        username=uuid4(),
-                        name=uuid4(),
-                    )
-                    for _ in range(user_policies_count)
-                ]
-            )
-            PolicyBinding.objects.bulk_create(
-                [
-                    PolicyBinding(
-                        user=user,
-                        target=application,
-                        order=random.randint(1, 1_000_000),
-                    )
-                    for user in User.objects.exclude(username="akadmin").exclude_anonymous()
-                ]
-            )
-
-            Group.objects.bulk_create([Group(name=uuid4()) for _ in range(group_policies_count)])
-            PolicyBinding.objects.bulk_create(
-                [
-                    PolicyBinding(
-                        group=group,
-                        target=application,
-                        order=random.randint(1, 1_000_000),
-                    )
-                    for group in Group.objects.exclude(name="authentik Admins")
-                ]
-            )
-            user.ak_groups.set(Group.objects.exclude(name="authentik Admins").order_by("?")[:1])
-
+        User.objects.bulk_create(
             [
-                ExpressionPolicy(
-                    name=f"test-{uuid4()}",
-                    expression="return True",
-                ).save()
-                for _ in range(expression_policies_count)
+                User(
+                    username=uuid4(),
+                    name=uuid4(),
+                )
+                for _ in range(user_policies_count)
             ]
-            PolicyBinding.objects.bulk_create(
-                [
-                    PolicyBinding(
-                        policy=policy,
-                        target=application,
-                        order=random.randint(1, 1_000_000),
-                    )
-                    for policy in ExpressionPolicy.objects.filter(name__startswith="test-")
-                ]
-            )
+        )
+        PolicyBinding.objects.bulk_create(
+            [
+                PolicyBinding(
+                    user=user,
+                    target=application,
+                    order=random.randint(1, 1_000_000),
+                )
+                for user in User.objects.exclude(username="akadmin").exclude_anonymous()
+            ]
+        )
+
+        Group.objects.bulk_create([Group(name=uuid4()) for _ in range(group_policies_count)])
+        PolicyBinding.objects.bulk_create(
+            [
+                PolicyBinding(
+                    group=group,
+                    target=application,
+                    order=random.randint(1, 1_000_000),
+                )
+                for group in Group.objects.exclude(name="authentik Admins")
+            ]
+        )
+        user.ak_groups.set(Group.objects.exclude(name="authentik Admins").order_by("?")[:1])
+
+        [
+            ExpressionPolicy(
+                name=f"test-{uuid4()}",
+                expression="return True",
+            ).save()
+            for _ in range(expression_policies_count)
+        ]
+        PolicyBinding.objects.bulk_create(
+            [
+                PolicyBinding(
+                    policy=policy,
+                    target=application,
+                    order=random.randint(1, 1_000_000),
+                )
+                for policy in ExpressionPolicy.objects.filter(name__startswith="test-")
+            ]
+        )
 
 
-def event_list():
-    tenants = [
-        # Number of events
-        1_000,
-        10_000,
-        100_000,
-        1_000_000,
+class EventList(TestSuite):
+    TEST_NAME = "event-list"
+    TEST_CASES = [
+        (1_000,),
+        (10_000,),
+        (100_000,),
+        (1_000_000,),
     ]
 
-    for tenant in tenants:
-        event_count = tenant
-        tenant_name = f"event-list-{event_count}"
-
-        schema_name = f"t_{tenant_name.replace('-', '_')}"
-        created = False
-        t = Tenant.objects.filter(schema_name=schema_name).first()
-        if not t:
-            created = True
-            t = Tenant.objects.create(schema_name=schema_name, name=uuid4())
-        Domain.objects.get_or_create(tenant=t, domain=f"{tenant_name}.{host}")
-        if not created:
-            continue
-
-        with t:
-            Event.objects.bulk_create(
-                [
-                    Event(
-                        user={
-                            "pk": str(uuid4()),
-                            "name": str(uuid4()),
-                            "username": str(uuid4()),
-                            "email": f"{uuid4()}@example.org",
-                        },
-                        action="custom_benchmark",
-                        app="tests_benchmarks",
-                        context={
-                            str(uuid4()): str(uuid4()),
-                            str(uuid4()): str(uuid4()),
-                            str(uuid4()): str(uuid4()),
-                            str(uuid4()): str(uuid4()),
-                            str(uuid4()): str(uuid4()),
-                        },
-                        client_ip="192.0.2.42",
-                    )
-                    for _ in range(event_count)
-                ]
-            )
+    def create_data(self, event_count: int):
+        Event.objects.bulk_create(
+            [
+                Event(
+                    user={
+                        "pk": str(uuid4()),
+                        "name": str(uuid4()),
+                        "username": str(uuid4()),
+                        "email": f"{uuid4()}@example.org",
+                    },
+                    action="custom_benchmark",
+                    app="tests_benchmarks",
+                    context={
+                        str(uuid4()): str(uuid4()),
+                        str(uuid4()): str(uuid4()),
+                        str(uuid4()): str(uuid4()),
+                        str(uuid4()): str(uuid4()),
+                        str(uuid4()): str(uuid4()),
+                    },
+                    client_ip="192.0.2.42",
+                )
+                for _ in range(event_count)
+            ]
+        )
 
 
-def delete():
-    Tenant.objects.exclude(schema_name="public").delete()
+def main(action: str, selected_suite: str | None = None):
+    testsuites = TestSuite.__subclasses__()
+    testcases = []
+    for testsuite in testsuites:
+        testcases += testsuite.get_testcases()
 
-
-def main(action: str):
     match action:
         case "create":
-            login()
-            provider_oauth2()
-            user_list()
-            group_list()
-            event_list()
+            to_create = []
+            for testcase in testcases:
+                if selected_suite and testcase.TEST_NAME != selected_suite:
+                    continue
+                to_create.append(testcase)
+            processes = [Process(target=testcase.create) for testcase in to_create]
+            for p in processes:
+                p.start()
+            for p in processes:
+                p.join()
+        case "list":
+            print(*[testsuite.TEST_NAME for testsuite in testsuites], sep="\n")
         case "delete":
-            delete()
+            for testcase in testcases:
+                if selected_suite and testcase.TEST_NAME != selected_suite:
+                    continue
+                testcase.delete()
         case _:
-            print("Unknown action. Should be create or delete")
+            print("Unknown action. Should be create, list or delete")
             exit(1)
 
 
@@ -348,4 +326,8 @@ if __name__ == "__main__":
         action = "create"
     else:
         action = sys.argv[1]
-    main(action)
+    if len(sys.argv) < 3:
+        testsuite = None
+    else:
+        testsuite = sys.argv[2]
+    main(action, testsuite)
