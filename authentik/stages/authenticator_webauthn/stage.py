@@ -176,6 +176,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
                 sign_count=webauthn_credential.sign_count,
                 rp_id=get_rp_id(self.request),
                 device_type=device_type,
+                aaguid=webauthn_credential.aaguid,
             )
         else:
             return self.executor.stage_invalid("Device with Credential ID already exists.")
