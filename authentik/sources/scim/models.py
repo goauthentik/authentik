@@ -1,5 +1,7 @@
 """SCIM Source"""
 
+from uuid import uuid4
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import BaseSerializer
@@ -13,6 +15,12 @@ class SCIMSource(Source):
     cross-system user provisioning"""
 
     token = models.ForeignKey(Token, on_delete=models.CASCADE, null=True, default=None)
+
+    @property
+    def service_account_identifier(self) -> str:
+        if not self.pk:
+            self.pk = uuid4()
+        return f"ak-source-scim-{self.pk}"
 
     @property
     def component(self) -> str:
