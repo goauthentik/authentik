@@ -1,12 +1,8 @@
-import { DEFAULT_CONFIG } from "@goauthentik/authentik/common/api/config";
-import { EVENT_LOCALE_CHANGE } from "@goauthentik/common/constants";
-import { EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants";
+import { EVENT_LOCALE_CHANGE, EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants";
 import { customEvent } from "@goauthentik/elements/utils/customEvents";
 
 import { LitElement, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import { CoreApi } from "@goauthentik/api";
 
 import { WithBrandConfig } from "../Interface/brandProvider";
 import { initializeLocalization } from "./configureLocale";
@@ -63,10 +59,14 @@ export class LocaleContext extends LocaleContextBase {
 
     connectedCallback() {
         super.connectedCallback();
-        new CoreApi(DEFAULT_CONFIG)
-            .coreUsersMeRetrieve()
-            .then((user) => (this.userLocale = user?.user?.settings?.locale ?? ""))
-            .catch(() => {});
+        // Commenting out until we can come up with a better way of separating the
+        // "request user identity" with the session expiration heartbeat.
+        /*
+            new CoreApi(DEFAULT_CONFIG)
+                .coreUsersMeRetrieve()
+                .then((user) => (this.userLocale = user?.user?.settings?.locale ?? ""))
+                .catch(() => {});
+        */
         this.updateLocale();
         window.addEventListener(EVENT_LOCALE_REQUEST, this.updateLocaleHandler);
     }
