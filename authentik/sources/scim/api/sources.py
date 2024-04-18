@@ -7,7 +7,6 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.tokens import TokenSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.models import Token, TokenIntents, User, UserTypes
 from authentik.sources.scim.models import SCIMSource
 
 
@@ -26,25 +25,6 @@ class SCIMSourceSerializer(SourceSerializer):
         if "request" not in self.context:
             return relative_url
         return self.context["request"].build_absolute_uri(relative_url)
-
-    def create(self, validated_data):
-        instance: SCIMSource = super().create(validated_data)
-        identifier = f"ak-source-scim-{instance.pk}"
-        user = User.objects.create(
-            username=identifier,
-            name=f"SCIM Source {instance.name} Service-Account",
-            type=UserTypes.SERVICE_ACCOUNT,
-        )
-        token = Token.objects.create(
-            user=user,
-            identifier=identifier,
-            intent=TokenIntents.INTENT_API,
-            expiring=False,
-            managed=f"goauthentik.io/sources/scim/{instance.pk}",
-        )
-        instance.token = token
-        instance.save()
-        return instance
 
     class Meta:
 

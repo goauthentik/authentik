@@ -6,7 +6,6 @@ from typing import Any
 
 from docker.types import Healthcheck
 
-from authentik.core.models import Token, TokenIntents, User
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.http import get_http_session
 from authentik.sources.scim.models import SCIMSource
@@ -40,18 +39,9 @@ class TestSourceSCIM(SeleniumTestCase):
 
     @retry()
     def test_scim_conformance(self):
-        user = User.objects.create(
-            username=generate_id(),
-        )
-        token = Token.objects.create(
-            user=user,
-            intent=TokenIntents.INTENT_API,
-            expiring=False,
-        )
         source = SCIMSource.objects.create(
             name=generate_id(),
             slug=generate_id(),
-            token=token,
         )
         session = get_http_session()
         test_launch = session.post(
@@ -59,7 +49,7 @@ class TestSourceSCIM(SeleniumTestCase):
             data={
                 "endPoint": self.live_server_url + f"/source/scim/{source.slug}/v2",
                 "username": "foo",
-                "password": token.key,
+                "password": source.token.key,
                 "jwtToken": None,
                 "usersCheck": 1,
                 "groupsCheck": 1,

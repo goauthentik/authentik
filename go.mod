@@ -1,8 +1,6 @@
 module goauthentik.io
 
-go 1.22
-
-toolchain go1.22.0
+go 1.22.2
 
 require (
 	beryju.io/ldap v0.1.0
@@ -30,7 +28,7 @@ require (
 	github.com/spf13/cobra v1.8.0
 	github.com/stretchr/testify v1.9.0
 	github.com/wwt/guac v1.3.2
-	goauthentik.io/api/v3 v3.2024022.12
+	goauthentik.io/api/v3 v3.2024023.1
 	golang.org/x/exp v0.0.0-20230210204819-062eb4c674ab
 	golang.org/x/oauth2 v0.19.0
 	golang.org/x/sync v0.7.0
