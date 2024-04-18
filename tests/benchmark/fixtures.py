@@ -16,6 +16,7 @@ from django.conf import settings
 
 from authentik.core.models import Application, Group, User
 from authentik.crypto.models import CertificateKeyPair
+from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
@@ -31,17 +32,12 @@ host = environ.get("BENCH_HOST", "localhost")
 def user_list():
     # Number of users, groups per user, parents per groups
     tenants = [
-        (10, 0, 0),
-        (100, 0, 0),
         (1000, 0, 0),
         (10000, 0, 0),
-        (100, 3, 0),
         (1000, 3, 0),
         (10000, 3, 0),
-        (100, 20, 0),
         (1000, 20, 0),
         (10000, 20, 0),
-        (100, 20, 3),
         (1000, 20, 3),
         (10000, 20, 3),
     ]
@@ -85,6 +81,62 @@ def user_list():
                         Group.objects.exclude(name="authentik Admins").order_by("?")[
                             :groups_per_user
                         ]
+                    )
+
+
+def group_list():
+    # Number of groups, users per group, with_parent
+    tenants = [
+        (1000, 0, False),
+        (10000, 0, False),
+        (1000, 1000, False),
+        (1000, 10000, False),
+        (1000, 0, True),
+        (10000, 0, True),
+    ]
+
+    for tenant in tenants:
+        group_count = tenant[0]
+        users_per_group = tenant[1]
+        with_parent = tenant[2]
+        tenant_name = f"group-list-{group_count}-{users_per_group}-{str(with_parent).lower()}"
+
+        schema_name = f"t_{tenant_name.replace('-', '_')}"
+        created = False
+        t = Tenant.objects.filter(schema_name=schema_name).first()
+        if not t:
+            created = True
+            t = Tenant.objects.create(schema_name=schema_name, name=uuid4())
+        Domain.objects.get_or_create(tenant=t, domain=f"{tenant_name}.{host}")
+        if not created:
+            continue
+
+        with t:
+            User.objects.bulk_create(
+                [
+                    User(
+                        username=uuid4(),
+                        name=uuid4(),
+                    )
+                    for _ in range(users_per_group * 5)
+                ]
+            )
+            if with_parent:
+                parents = Group.objects.bulk_create(
+                    [Group(name=uuid4()) for _ in range(group_count)]
+                )
+            groups = Group.objects.bulk_create(
+                [
+                    Group(name=uuid4(), parent=(parents[i] if with_parent else None))
+                    for i in range(group_count)
+                ]
+            )
+            if users_per_group:
+                for group in groups:
+                    group.users.set(
+                        User.objects.exclude_anonymous()
+                        .exclude(username="akadmin")
+                        .order_by("?")[:users_per_group]
                     )
 
 
@@ -226,6 +278,55 @@ def provider_oauth2():
             )
 
 
+def event_list():
+    tenants = [
+        # Number of events
+        1_000,
+        10_000,
+        100_000,
+        1_000_000,
+    ]
+
+    for tenant in tenants:
+        event_count = tenant
+        tenant_name = f"event-list-{event_count}"
+
+        schema_name = f"t_{tenant_name.replace('-', '_')}"
+        created = False
+        t = Tenant.objects.filter(schema_name=schema_name).first()
+        if not t:
+            created = True
+            t = Tenant.objects.create(schema_name=schema_name, name=uuid4())
+        Domain.objects.get_or_create(tenant=t, domain=f"{tenant_name}.{host}")
+        if not created:
+            continue
+
+        with t:
+            Event.objects.bulk_create(
+                [
+                    Event(
+                        user={
+                            "pk": str(uuid4()),
+                            "name": str(uuid4()),
+                            "username": str(uuid4()),
+                            "email": f"{uuid4()}@example.org",
+                        },
+                        action="custom_benchmark",
+                        app="tests_benchmarks",
+                        context={
+                            str(uuid4()): str(uuid4()),
+                            str(uuid4()): str(uuid4()),
+                            str(uuid4()): str(uuid4()),
+                            str(uuid4()): str(uuid4()),
+                            str(uuid4()): str(uuid4()),
+                        },
+                        client_ip="192.0.2.42",
+                    )
+                    for _ in range(event_count)
+                ]
+            )
+
+
 def delete():
     Tenant.objects.exclude(schema_name="public").delete()
 
@@ -233,9 +334,11 @@ def delete():
 def main(action: str):
     match action:
         case "create":
-            user_list()
-            login()
-            provider_oauth2()
+            # login()
+            # provider_oauth2()
+            # user_list()
+            group_list()
+            event_list()
         case "delete":
             delete()
         case _:

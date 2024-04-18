@@ -10,29 +10,20 @@ export const options = {
     scenarios: Object.fromEntries(
         [
             // Number of users, number of groups per user, number of parents per group, page size, with groups
-            [10, 0, 0, 20, true],
-            [100, 0, 0, 20, true],
             [1000, 0, 0, 20, true],
             [10000, 0, 0, 20, true],
             [1000, 0, 0, 20, false],
             [10000, 0, 0, 20, false],
-            [10, 0, 0, 100, true],
-            [100, 0, 0, 100, true],
             [1000, 0, 0, 100, true],
             [10000, 0, 0, 100, true],
-            [100, 3, 0, 20, true],
             [1000, 3, 0, 20, true],
             [10000, 3, 0, 20, true],
-            [100, 20, 0, 20, true],
             [1000, 20, 0, 20, true],
             [10000, 20, 0, 20, true],
-            [100, 20, 3, 20, true],
             [1000, 20, 3, 20, true],
             [10000, 20, 3, 20, true],
-            [100, 20, 0, 20, false],
             [1000, 20, 0, 20, false],
             [10000, 20, 0, 20, false],
-            [100, 20, 3, 20, false],
             [1000, 20, 3, 20, false],
             [10000, 20, 3, 20, false],
         ].map((obj, i) => [
@@ -80,7 +71,7 @@ export default function () {
 
     if (pages <= 10) {
         for (let page = 1; page <= pages; page++) {
-            let res = requests.get(
+            let res = http.get(
                 http.url`http://${domain}/api/v3/core/users/?page=${page}&page_size=${page_size}&include_groups=${with_groups}`,
                 params,
             );
