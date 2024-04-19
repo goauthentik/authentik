@@ -44,7 +44,7 @@ This stage can be used to leverage an external OAuth/SAML identity provider.
 
 For example, you can authenticate users by routing them through a custom device-health solution.
 
-Another use case is to route users to authenticate with your legacy (Okta, etc) IdP and then use the returned identity and attributes within authentik as part of an authorization flow, for example as part of an IdP migration. For authentication/enrollment this is also possible with an [OAuth](../../../../integrations/sources/oauth/index.md)/[SAML](../../../../integrations/sources/saml/index.md) source by itself.
+Another use case is to route users to authenticate with your legacy (Okta, etc) IdP and then use the returned identity and attributes within authentik as part of an authorization flow, for example as part of an IdP migration. For authentication/enrollment this is also possible with an [OAuth](../../../../integrations/sources/oauth/)/[SAML](../../../../integrations/sources/saml/) source by itself.
 
 ### Options
 
