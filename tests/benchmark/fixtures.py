@@ -266,29 +266,30 @@ class EventList(TestSuite):
     ]
 
     def create_data(self, event_count: int):
-        Event.objects.bulk_create(
-            [
-                Event(
-                    user={
-                        "pk": str(uuid4()),
-                        "name": str(uuid4()),
-                        "username": str(uuid4()),
-                        "email": f"{uuid4()}@example.org",
-                    },
-                    action="custom_benchmark",
-                    app="tests_benchmarks",
-                    context={
-                        str(uuid4()): str(uuid4()),
-                        str(uuid4()): str(uuid4()),
-                        str(uuid4()): str(uuid4()),
-                        str(uuid4()): str(uuid4()),
-                        str(uuid4()): str(uuid4()),
-                    },
-                    client_ip="192.0.2.42",
-                )
-                for _ in range(event_count)
-            ]
-        )
+        for _ in range(event_count // 1000):
+            Event.objects.bulk_create(
+                [
+                    Event(
+                        user={
+                            "pk": str(uuid4()),
+                            "name": str(uuid4()),
+                            "username": str(uuid4()),
+                            "email": f"{uuid4()}@example.org",
+                        },
+                        action="custom_benchmark",
+                        app="tests_benchmarks",
+                        context={
+                            str(uuid4()): str(uuid4()),
+                            str(uuid4()): str(uuid4()),
+                            str(uuid4()): str(uuid4()),
+                            str(uuid4()): str(uuid4()),
+                            str(uuid4()): str(uuid4()),
+                        },
+                        client_ip="192.0.2.42",
+                    )
+                    for _ in range(1000)
+                ]
+            )
 
 
 def main(action: str, selected_suite: str | None = None):
