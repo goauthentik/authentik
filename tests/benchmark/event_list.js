@@ -20,8 +20,8 @@ export const options = {
             {
                 executor: "constant-vus",
                 vus: VUs,
-                duration: "300s",
-                startTime: `${315 * i}s`,
+                duration: "150s",
+                startTime: `${165 * i}s`,
                 env: {
                     EVENT_COUNT: `${obj[0]}`,
                     PAGE_SIZE: `${obj[1]}`,
