@@ -25,14 +25,14 @@ export const options = {
             {
                 executor: "constant-vus",
                 vus: VUs,
-                duration: "300s",
-                startTime: `${315 * i}s`,
+                duration: "10s",
+                startTime: `${15 * i}s`,
                 env: {
                     GROUP_COUNT: `${obj[0]}`,
                     USERS_PER_GROUP: `${obj[1]}`,
                     WITH_PARENTS: `${obj[2]}`,
                     PAGE_SIZE: `${obj[3]}`,
-                    WITH_USERS: `${obj[4]}`,
+                    WITH_USERS: `${obj[4] ? "true" : "false"}`,
                 },
                 tags: {
                     testid: `group_list_${obj[0]}_${obj[1]}_${obj[2] ? "with_parents" : "without_parents"}_${obj[3]}_${obj[4] ? "with_users" : "without_users"}`,
@@ -40,7 +40,7 @@ export const options = {
                     users_per_group: `${obj[1]}`,
                     with_parents: `${obj[2]}`,
                     page_size: `${obj[3]}`,
-                    with_users: `${obj[4]}`,
+                    with_users: `${obj[4] ? "true" : "false"}`,
                 },
             },
         ]),
@@ -51,7 +51,7 @@ export default function () {
     const group_count = Number(__ENV.GROUP_COUNT);
     const users_per_group = Number(__ENV.USERS_PER_GROUP);
     const with_parents = __ENV.WITH_PARENTS;
-    const with_users = Number(__ENV.WITH_USERS);
+    const with_users = __ENV.WITH_USERS;
     const domain = `group-list-${group_count}-${users_per_group}-${with_parents}.${host}:9000`;
     const page_size = Number(__ENV.PAGE_SIZE);
     const pages = Math.round(group_count / page_size);
