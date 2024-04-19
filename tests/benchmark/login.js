@@ -11,8 +11,8 @@ export const options = {
             {
                 executor: "constant-vus",
                 vus: VUs,
-                duration: "300s",
-                startTime: `${315 * i}s`,
+                duration: "150s",
+                startTime: `${165 * i}s`,
                 env: {
                     DOMAIN: `login-${obj}`,
                 },
