@@ -15,9 +15,9 @@ export const options = {
             [1000, 0, false, 100, false],
             [10000, 0, false, 100, false],
             [1000, 1000, false, 100, false],
-            [10000, 10000, false, 100, false],
+            [1000, 10000, false, 100, false],
             [1000, 1000, false, 100, true],
-            [10000, 10000, false, 100, true],
+            [1000, 10000, false, 100, true],
             [1000, 0, true, 100, false],
             [10000, 0, true, 100, false],
         ].map((obj, i) => [
