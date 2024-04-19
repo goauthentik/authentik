@@ -25,8 +25,8 @@ export const options = {
             {
                 executor: "constant-vus",
                 vus: VUs,
-                duration: "10s",
-                startTime: `${15 * i}s`,
+                duration: "150s",
+                startTime: `${165 * i}s`,
                 env: {
                     GROUP_COUNT: `${obj[0]}`,
                     USERS_PER_GROUP: `${obj[1]}`,
