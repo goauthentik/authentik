@@ -47,13 +47,13 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
     searchDelay = 250;
 
     @state()
-    private options: DualSelectPair[] = [];
+    options: DualSelectPair[] = [];
 
-    private dualSelector: Ref<AkDualSelect> = createRef();
+    protected dualSelector: Ref<AkDualSelect> = createRef();
 
-    private isLoading = false;
+    protected isLoading = false;
 
-    private pagination?: Pagination;
+    protected pagination?: Pagination;
 
     constructor() {
         super();
