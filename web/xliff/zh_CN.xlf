@@ -8599,6 +8599,10 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Verifying...</source>
   <target>正在验证...</target>
 </trans-unit>
+<trans-unit id="sc1673c93148583ba">
+  <source>Request failed. Please try again later.</source>
+  <target>请求失败。请稍后重试。</target>
+</trans-unit>
     </body>
   </file>
 </xliff>
