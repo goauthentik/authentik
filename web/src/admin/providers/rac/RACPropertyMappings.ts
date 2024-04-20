@@ -16,7 +16,7 @@ export async function racPropertyMappingsProvider(page = 1, search = "") {
     };
 }
 
-export function makeRACPropertyMappingsSelector(instanceMappings: string[] | undefined) {
+export function makeRACPropertyMappingsSelector(instanceMappings?: string[]) {
     const localMappings = new Set(instanceMappings ?? []);
     return ([pk, _]: DualSelectPair) => localMappings.has(pk);
 }

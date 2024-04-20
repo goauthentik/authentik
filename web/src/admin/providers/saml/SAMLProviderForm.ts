@@ -42,7 +42,7 @@ export async function samlPropertyMappingsProvider(page = 1, search = "") {
     };
 }
 
-export function makeSAMLPropertyMappingsSelector(instanceMappings: string[] | undefined) {
+export function makeSAMLPropertyMappingsSelector(instanceMappings?: string[]) {
     const localMappings = instanceMappings ? new Set(instanceMappings) : undefined;
     return localMappings
         ? ([pk, _]: DualSelectPair) => localMappings.has(pk)

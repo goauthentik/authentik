@@ -324,7 +324,7 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
                         <ak-dual-select-dynamic-selected
                             .provider=${proxyPropertyMappingsProvider}
                             .selector=${makeProxyPropertyMappingsSelector(
-                                this.instance?.propertyMappings ?? [],
+                                this.instance?.propertyMappings,
                             )}
                             available-label="${msg("Available Scopes")}"
                             selected-label="${msg("Selected Scopes")}"

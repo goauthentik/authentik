@@ -20,7 +20,7 @@ export async function proxyPropertyMappingsProvider(page = 1, search = "") {
     };
 }
 
-export function makeProxyPropertyMappingsSelector(mappings: string[] | undefined = []) {
+export function makeProxyPropertyMappingsSelector(mappings?: string[]) {
     const localMappings = new Set(mappings ?? []);
     return ([pk, _]: DualSelectPair) => localMappings.has(pk);
 }

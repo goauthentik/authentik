@@ -40,8 +40,8 @@ async function propertyMappingsProvider(page = 1, search = "") {
     };
 }
 
-function makePropertyMappingsSelector(instanceMappings: string[] | undefined) {
-    const localMappings = instanceMappings ? new Set(instanceMappings ?? []) : undefined;
+function makePropertyMappingsSelector(instanceMappings?: string[]) {
+    const localMappings = instanceMappings ? new Set(instanceMappings) : undefined;
     return localMappings
         ? ([pk, _]: DualSelectPair) => localMappings.has(pk)
         : ([_0, _1, _2, mapping]: DualSelectPair<LDAPPropertyMapping>) =>
