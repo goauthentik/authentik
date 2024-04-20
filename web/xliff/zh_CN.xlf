@@ -8603,6 +8603,14 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Request failed. Please try again later.</source>
   <target>请求失败。请稍后重试。</target>
 </trans-unit>
+<trans-unit id="s85be1f5e7a0fa3b1">
+  <source>Available Roles</source>
+  <target>可用角色</target>
+</trans-unit>
+<trans-unit id="sa59d53ee922c08b5">
+  <source>Selected Roles</source>
+  <target>已选角色</target>
+</trans-unit>
     </body>
   </file>
 </xliff>
