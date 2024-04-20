@@ -13,7 +13,7 @@ import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -107,21 +107,23 @@ export class PageHeader extends WithBrandConfig(AKElement) {
         });
     }
 
-    setTitle(value: string) {
+    setTitle(header?: string) {
         const currentIf = currentInterface();
-        const title = this.brand?.brandingTitle || TITLE_DEFAULT;
-        document.title =
-            currentIf === "admin"
-                ? `${msg("Admin")} - ${title}`
-                : value !== ""
-                  ? `${value} - ${title}`
-                  : title;
+        let title = this.brand?.brandingTitle || TITLE_DEFAULT;
+        if (currentIf === "admin") {
+            title = `${msg("Admin")} - ${title}`;
+        }
+        // Prepend the header to the title
+        if (header !== undefined && header !== "") {
+            title = `${header} - ${title}`;
+        }
+        document.title = title;
     }
 
-    willUpdate(changedProperties: PropertyValues<this>) {
-        if (changedProperties.has("header") && this.header) {
-            this.setTitle(this.header);
-        }
+    willUpdate() {
+        // Always update title, even if there's no header value set,
+        // as in that case we still need to return to the generic title
+        this.setTitle(this.header);
     }
 
     renderIcon(): TemplateResult {
