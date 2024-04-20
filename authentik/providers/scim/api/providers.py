@@ -1,9 +1,11 @@
 """SCIM Provider API Views"""
 
 from django.utils.text import slugify
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -14,6 +16,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.events.api.tasks import SystemTaskSerializer
 from authentik.providers.scim.models import SCIMProvider
+from authentik.providers.scim.tasks import scim_sync_single_user
 
 
 class SCIMProviderSerializer(ProviderSerializer):
@@ -77,3 +80,29 @@ class SCIMProviderViewSet(UsedByMixin, ModelViewSet):
             "is_running": provider.sync_lock.locked(),
         }
         return Response(SCIMSyncStatusSerializer(status).data)
+
+    @extend_schema(
+        responses={
+            200: SystemTaskSerializer(),
+        },
+        parameters=[
+            OpenApiParameter(
+                name="user",
+                location=OpenApiParameter.QUERY,
+                type=OpenApiTypes.INT,
+            )
+        ],
+    )
+    @action(methods=["POST"], detail=True, pagination_class=None, filter_backends=[])
+    def sync_single(self, request: Request, pk: int) -> Response:
+        """Get provider's sync status"""
+        provider: SCIMProvider = self.get_object()
+        user = (
+            get_objects_for_user(request.user, "authentik_core.view_user")
+            .filter(pk=request.query_params["user"])
+            .first()
+        )
+        if not user:
+            raise ValidationError({"user": "Invalid user ID"})
+        messages = scim_sync_single_user.delay(provider.pk, user.pk).get()
+        return Response({"messages": messages})

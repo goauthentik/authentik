@@ -224,3 +224,42 @@ def scim_signal_m2m(group_pk: str, action: str, pk_set: list[int]):
             client.update_group(group, operation, pk_set)
         except (StopSync, SCIMRequestException) as exc:
             LOGGER.warning(exc)
+
+
+@CELERY_APP.task()
+def scim_sync_single_user(provider_pk: int, user_pk: int):
+    """Sync a single user only, mainly used for troubleshooting"""
+    messages = []
+    provider: SCIMProvider = SCIMProvider.objects.filter(pk=provider_pk).first()
+    if not provider:
+        return messages
+    user: User = User.objects.filter(pk=user_pk).first()
+    if not user:
+        return messages
+    try:
+        client = SCIMUserClient(provider)
+    except SCIMRequestException:
+        return messages
+    try:
+        client.write(user)
+        messages.append(_("Successfully synced user."))
+    except SCIMRequestException as exc:
+        messages.append(
+            _(
+                "Failed to sync user %(user_name)s due to remote error: %(error)s"
+                % {
+                    "user_name": user.username,
+                    "error": exc.detail(),
+                }
+            )
+        )
+    except StopSync as exc:
+        messages.append(
+            _(
+                "Stopping sync due to error: %(error)s"
+                % {
+                    "error": exc.detail(),
+                }
+            )
+        )
+    return messages
