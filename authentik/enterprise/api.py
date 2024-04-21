@@ -86,7 +86,7 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
             200: inline_serializer("InstallIDSerializer", {"install_id": CharField(required=True)}),
         },
     )
-    @action(detail=False, methods=["GET"])
+    @action(detail=False, methods=["GET"], url_path="install_id")
     def get_install_id(self, request: Request) -> Response:
         """Get install_id"""
         return Response(
