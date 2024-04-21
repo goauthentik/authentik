@@ -18,6 +18,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.admin.api.metrics import CoordinateSerializer
+from authentik.api.search import QLSearch
 from authentik.core.api.object_types import TypeCreateSerializer
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.events.models import Event, EventAction
@@ -116,8 +117,8 @@ class EventViewSet(ModelViewSet):
         "client_ip",
     ]
     filterset_class = EventsFilter
-    search_classes = [
-        "authentik.api.search.QLSearch",
+    filter_backends = [
+        QLSearch,
     ]
 
     @extend_schema(

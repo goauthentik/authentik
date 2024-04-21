@@ -461,6 +461,7 @@ export abstract class Table<T> extends AKElement implements TableLike {
             ? html``
             : html`<div class="pf-c-toolbar__group pf-m-search-filter">
                   <ak-table-search
+                      ?supportsQL=${true}
                       class="pf-c-toolbar__item pf-m-search-filter"
                       value=${ifDefined(this.search)}
                       .onSearch=${runSearch}

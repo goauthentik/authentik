@@ -1,4 +1,5 @@
 """DjangoQL search"""
+
 from django.db import models
 from django.db.models import QuerySet
 from djangoql.ast import Name
@@ -13,10 +14,7 @@ from structlog.stdlib import get_logger
 
 LOGGER = get_logger()
 AUTOCOMPLETE_COMPONENT_NAME = "Autocomplete"
-AUTOCOMPLETE_SCHEMA = {
-    "type": "object",
-    "additionalProperties": {}
-}
+AUTOCOMPLETE_SCHEMA = {"type": "object", "additionalProperties": {}}
 
 
 class JSONSearchField(StrField):
@@ -25,7 +23,7 @@ class JSONSearchField(StrField):
     def get_lookup(self, path, operator, value):
         search = "__".join(path)
         op, invert = self.get_operator(operator)
-        q = models.Q(**{"%s%s" % (search, op): self.get_lookup_value(value)})
+        q = models.Q(**{f"{search}{op}": self.get_lookup_value(value)})
         return ~q if invert else q
 
 

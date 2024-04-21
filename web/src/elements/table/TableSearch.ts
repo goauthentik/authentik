@@ -1,5 +1,5 @@
-import { PaginatedResponse } from "@goauthentik/app/elements/table/Table";
 import { AKElement } from "@goauthentik/elements/Base";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 // @ts-ignore
 import DjangoQL from "djangoql-completion";
 
@@ -20,9 +20,12 @@ export class TableSearch extends AKElement {
     @property()
     value?: string;
 
+    @property({ type: Boolean })
+    supportsQL: boolean = false;
+
     @property({ attribute: false })
-    set apiResponse(value: PaginatedResponse<unknown> | undefined)  {
-        if (!value) {
+    set apiResponse(value: PaginatedResponse<unknown> | undefined) {
+        if (!value || !this.supportsQL) {
             return;
         }
         new DjangoQL({
@@ -62,28 +65,17 @@ export class TableSearch extends AKElement {
                 ::-webkit-search-cancel-button {
                     display: none;
                 }
-                .pf-c-form-control {
+                .ql.pf-c-form-control {
                     font-family: monospace;
                 }
             `,
         ];
     }
 
-    render(): TemplateResult {
-        return html`<form
-            class="pf-c-input-group"
-            method="GET"
-            @submit=${(e: Event) => {
-                e.preventDefault();
-                if (!this.onSearch) return;
-                const el = this.shadowRoot?.querySelector<HTMLInputElement>("[name=search]");
-                if (!el) return;
-                if (el.value === "") return;
-                this.onSearch(el?.value);
-            }}
-        >
-            <textarea
-                class="pf-c-form-control"
+    renderInput(): TemplateResult {
+        if (this.supportsQL) {
+            return html`<textarea
+                class="pf-c-form-control ql"
                 name="search"
                 placeholder=${msg("Search...")}
                 spellcheck="false"
@@ -93,7 +85,37 @@ export class TableSearch extends AKElement {
                 }}
             >
 ${ifDefined(this.value)}</textarea
-            >
+            >`;
+        }
+        return html`<input
+            class="pf-c-form-control"
+            name="search"
+            type="search"
+            placeholder=${msg("Search...")}
+            value="${ifDefined(this.value)}"
+            @search=${(ev: Event) => {
+                if (!this.onSearch) return;
+                this.onSearch((ev.target as HTMLInputElement).value);
+            }}
+        />`;
+    }
+
+    render(): TemplateResult {
+        return html`<form
+            class="pf-c-input-group"
+            method="GET"
+            @submit=${(e: Event) => {
+                e.preventDefault();
+                if (!this.onSearch) return;
+                const el = this.shadowRoot?.querySelector<HTMLInputElement | HTMLTextAreaElement>(
+                    "[name=search]",
+                );
+                if (!el) return;
+                if (el.value === "") return;
+                this.onSearch(el?.value);
+            }}
+        >
+            ${this.renderInput()}
             <button
                 class="pf-c-button pf-m-control"
                 type="reset"
