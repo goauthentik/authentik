@@ -74,7 +74,7 @@ class ShellChallenge(Challenge):
     component = CharField(default="xak-flow-shell")
 
 
-class WithUserInfoChallenge(Challenge):
+class WithUserInfoMixin(PassiveSerializer):
     """Challenge base which shows some user info"""
 
     pending_user = CharField(allow_blank=True)
@@ -107,7 +107,7 @@ class FlowErrorChallenge(Challenge):
                 self.initial_data["traceback"] = exception_to_string(error)
 
 
-class AccessDeniedChallenge(WithUserInfoChallenge):
+class AccessDeniedChallenge(WithUserInfoMixin, Challenge):
     """Challenge when a flow's active stage calls `stage_invalid()`."""
 
     error_message = CharField(required=False)

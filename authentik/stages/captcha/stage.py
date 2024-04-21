@@ -9,7 +9,7 @@ from rest_framework.serializers import ValidationError
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
-    WithUserInfoChallenge,
+    WithUserInfoMixin,
 )
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.http import get_http_session
@@ -19,7 +19,7 @@ from authentik.stages.captcha.models import CaptchaStage
 PLAN_CONTEXT_CAPTCHA = "captcha"
 
 
-class CaptchaChallenge(WithUserInfoChallenge):
+class CaptchaChallenge(WithUserInfoMixin, Challenge):
     """Site public key"""
 
     site_key = CharField()

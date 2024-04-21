@@ -35017,6 +35017,10 @@ components:
       type: object
       description: Challenge when a flow's active stage calls `stage_invalid()`.
       properties:
+        pending_user:
+          type: string
+        pending_user_avatar:
+          type: string
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -35028,10 +35032,6 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
-        pending_user:
-          type: string
-        pending_user_avatar:
-          type: string
         error_message:
           type: string
       required:
@@ -35420,6 +35420,10 @@ components:
       type: object
       description: Duo Challenge
       properties:
+        pending_user:
+          type: string
+        pending_user_avatar:
+          type: string
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -35431,10 +35435,6 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
-        pending_user:
-          type: string
-        pending_user_avatar:
-          type: string
         activation_barcode:
           type: string
         activation_code:
@@ -35579,6 +35579,10 @@ components:
       type: object
       description: SMS Setup challenge
       properties:
+        pending_user:
+          type: string
+        pending_user_avatar:
+          type: string
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -35590,10 +35594,6 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
-        pending_user:
-          type: string
-        pending_user_avatar:
-          type: string
         phone_number_required:
           type: boolean
           default: true
@@ -35742,6 +35742,10 @@ components:
       type: object
       description: Static authenticator challenge
       properties:
+        pending_user:
+          type: string
+        pending_user_avatar:
+          type: string
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -35753,10 +35757,6 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
-        pending_user:
-          type: string
-        pending_user_avatar:
-          type: string
         codes:
           type: array
           items:
@@ -35863,6 +35863,10 @@ components:
       type: object
       description: TOTP Setup challenge
       properties:
+        pending_user:
+          type: string
+        pending_user_avatar:
+          type: string
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -35874,10 +35878,6 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
-        pending_user:
-          type: string
-        pending_user_avatar:
-          type: string
         config_url:
           type: string
       required:
@@ -36090,6 +36090,10 @@ components:
       type: object
       description: Authenticator challenge
       properties:
+        pending_user:
+          type: string
+        pending_user_avatar:
+          type: string
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -36101,10 +36105,6 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
-        pending_user:
-          type: string
-        pending_user_avatar:
-          type: string
         device_challenges:
           type: array
           items:
@@ -36143,6 +36143,10 @@ components:
       type: object
       description: WebAuthn Challenge
       properties:
+        pending_user:
+          type: string
+        pending_user_avatar:
+          type: string
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -36154,10 +36158,6 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
-        pending_user:
-          type: string
-        pending_user_avatar:
-          type: string
         registration:
           type: object
           additionalProperties: {}
@@ -36554,6 +36554,10 @@ components:
       type: object
       description: Site public key
       properties:
+        pending_user:
+          type: string
+        pending_user_avatar:
+          type: string
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -36565,10 +36569,6 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
-        pending_user:
-          type: string
-        pending_user_avatar:
-          type: string
         site_key:
           type: string
         js_url:
@@ -36940,6 +36940,10 @@ components:
       type: object
       description: Challenge info for consent screens
       properties:
+        pending_user:
+          type: string
+        pending_user_avatar:
+          type: string
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -36951,10 +36955,6 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
-        pending_user:
-          type: string
-        pending_user_avatar:
-          type: string
         header_text:
           type: string
         permissions:
@@ -43765,6 +43765,10 @@ components:
       type: object
       description: Password challenge UI fields
       properties:
+        pending_user:
+          type: string
+        pending_user_avatar:
+          type: string
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -43776,10 +43780,6 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
-        pending_user:
-          type: string
-        pending_user_avatar:
-          type: string
         recovery_url:
           type: string
         allow_show_password:
@@ -51343,6 +51343,10 @@ components:
       type: object
       description: Empty challenge
       properties:
+        pending_user:
+          type: string
+        pending_user_avatar:
+          type: string
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -51354,10 +51358,6 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
-        pending_user:
-          type: string
-        pending_user_avatar:
-          type: string
       required:
       - pending_user
       - pending_user_avatar

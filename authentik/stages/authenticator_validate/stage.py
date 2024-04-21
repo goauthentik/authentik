@@ -13,7 +13,11 @@ from rest_framework.serializers import ValidationError
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
-from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
+from authentik.flows.challenge import (
+    Challenge,
+    ChallengeResponse,
+    WithUserInfoMixin,
+)
 from authentik.flows.exceptions import FlowSkipStageException, StageInvalidException
 from authentik.flows.models import FlowDesignation, NotConfiguredAction, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
@@ -52,7 +56,7 @@ class SelectableStageSerializer(PassiveSerializer):
     meta_model_name = CharField()
 
 
-class AuthenticatorValidationChallenge(WithUserInfoChallenge):
+class AuthenticatorValidationChallenge(WithUserInfoMixin, Challenge):
     """Authenticator challenge"""
 
     device_challenges = ListField(child=DeviceChallenge())

@@ -21,7 +21,7 @@ from authentik.flows.challenge import (
     ContextualFlowInfo,
     HttpChallengeResponse,
     RedirectChallenge,
-    WithUserInfoChallenge,
+    WithUserInfoMixin,
 )
 from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.models import InvalidResponseAction
@@ -189,7 +189,7 @@ class ChallengeStageView(StageView):
                 )
                 flow_info.is_valid()
                 challenge.initial_data["flow_info"] = flow_info.data
-            if isinstance(challenge, WithUserInfoChallenge):
+            if isinstance(challenge, WithUserInfoMixin):
                 # If there's a pending user, update the `username` field
                 # this field is only used by password managers.
                 # If there's no user set, an error is raised later.
