@@ -116,6 +116,9 @@ class EventViewSet(ModelViewSet):
         "client_ip",
     ]
     filterset_class = EventsFilter
+    search_classes = [
+        "authentik.api.search.QLSearch",
+    ]
 
     @extend_schema(
         methods=["GET"],
