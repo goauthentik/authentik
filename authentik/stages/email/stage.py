@@ -11,11 +11,14 @@ from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
-from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
 
 from authentik.events.models import Event, EventAction
-from authentik.flows.challenge import Challenge, ChallengeResponse
+from authentik.flows.challenge import (
+    Challenge,
+    ChallengeResponse,
+    DiscriminatorField,
+)
 from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.models import FlowDesignation, FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_IS_RESTORED, PLAN_CONTEXT_PENDING_USER
@@ -33,14 +36,14 @@ PLAN_CONTEXT_EMAIL_OVERRIDE = "email"
 class EmailChallenge(Challenge):
     """Email challenge"""
 
-    component = CharField(default="ak-stage-email")
+    component = DiscriminatorField("ak-stage-email")
 
 
 class EmailChallengeResponse(ChallengeResponse):
     """Email challenge resposen. No fields. This challenge is
     always declared invalid to give the user a chance to retry"""
 
-    component = CharField(default="ak-stage-email")
+    component = DiscriminatorField("ak-stage-email")
 
     def validate(self, attrs):
         raise ValidationError(detail="email-sent", code="email-sent")

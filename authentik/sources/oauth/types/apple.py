@@ -9,7 +9,11 @@ from jwt import decode, encode
 from rest_framework.fields import CharField
 from structlog.stdlib import get_logger
 
-from authentik.flows.challenge import Challenge, ChallengeResponse
+from authentik.flows.challenge import (
+    Challenge,
+    ChallengeResponse,
+    DiscriminatorField,
+)
 from authentik.sources.oauth.clients.oauth2 import OAuth2Client
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.registry import SourceType, registry
@@ -24,7 +28,7 @@ class AppleLoginChallenge(Challenge):
     """Special challenge for apple-native authentication flow, which happens on the client."""
 
     client_id = CharField()
-    component = CharField(default="ak-source-oauth-apple")
+    component = DiscriminatorField("ak-source-oauth-apple")
     scope = CharField()
     redirect_uri = CharField()
     state = CharField()
@@ -33,7 +37,7 @@ class AppleLoginChallenge(Challenge):
 class AppleChallengeResponse(ChallengeResponse):
     """Pseudo class for apple response"""
 
-    component = CharField(default="ak-source-oauth-apple")
+    component = DiscriminatorField("ak-source-oauth-apple")
 
 
 class AppleOAuthClient(OAuth2Client):

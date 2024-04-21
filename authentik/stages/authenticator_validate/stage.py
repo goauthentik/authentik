@@ -16,6 +16,7 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
+    DiscriminatorField,
     WithUserInfoMixin,
 )
 from authentik.flows.exceptions import FlowSkipStageException, StageInvalidException
@@ -60,7 +61,7 @@ class AuthenticatorValidationChallenge(WithUserInfoMixin, Challenge):
     """Authenticator challenge"""
 
     device_challenges = ListField(child=DeviceChallenge())
-    component = CharField(default="ak-stage-authenticator-validate")
+    component = DiscriminatorField("ak-stage-authenticator-validate")
     configuration_stages = ListField(child=SelectableStageSerializer())
 
 
@@ -75,7 +76,7 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     code = CharField(required=False)
     webauthn = JSONDictField(required=False)
     duo = IntegerField(required=False)
-    component = CharField(default="ak-stage-authenticator-validate")
+    component = DiscriminatorField("ak-stage-authenticator-validate")
 
     def _challenge_allowed(self, classes: list):
         device_challenges: list[dict] = self.stage.executor.plan.context.get(

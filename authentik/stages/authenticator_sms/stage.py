@@ -10,6 +10,7 @@ from rest_framework.fields import BooleanField, CharField, IntegerField
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
+    DiscriminatorField,
     WithUserInfoMixin,
 )
 from authentik.flows.stage import ChallengeStageView
@@ -30,7 +31,7 @@ class AuthenticatorSMSChallenge(WithUserInfoMixin, Challenge):
     # Set to true if no previous prompt stage set the phone number
     # this stage will also check prompt_data.phone
     phone_number_required = BooleanField(default=True)
-    component = CharField(default="ak-stage-authenticator-sms")
+    component = DiscriminatorField("ak-stage-authenticator-sms")
 
 
 class AuthenticatorSMSChallengeResponse(ChallengeResponse):
@@ -41,7 +42,7 @@ class AuthenticatorSMSChallengeResponse(ChallengeResponse):
     code = IntegerField(required=False)
     phone_number = CharField(required=False)
 
-    component = CharField(default="ak-stage-authenticator-sms")
+    component = DiscriminatorField("ak-stage-authenticator-sms")
 
     def validate(self, attrs: dict) -> dict:
         """Check"""

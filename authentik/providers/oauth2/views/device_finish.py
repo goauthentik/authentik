@@ -1,9 +1,12 @@
 """Device flow finish stage"""
 
 from django.http import HttpResponse
-from rest_framework.fields import CharField
 
-from authentik.flows.challenge import Challenge, ChallengeResponse
+from authentik.flows.challenge import (
+    Challenge,
+    ChallengeResponse,
+    DiscriminatorField,
+)
 from authentik.flows.planner import FlowPlan
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_PLAN
@@ -15,13 +18,13 @@ PLAN_CONTEXT_DEVICE = "goauthentik.io/providers/oauth2/device"
 class OAuthDeviceCodeFinishChallenge(Challenge):
     """Final challenge after user enters their code"""
 
-    component = CharField(default="ak-provider-oauth2-device-code-finish")
+    component = DiscriminatorField("ak-provider-oauth2-device-code-finish")
 
 
 class OAuthDeviceCodeFinishChallengeResponse(ChallengeResponse):
     """Response that device has been authenticated and tab can be closed"""
 
-    component = CharField(default="ak-provider-oauth2-device-code-finish")
+    component = DiscriminatorField("ak-provider-oauth2-device-code-finish")
 
 
 class OAuthDeviceCodeFinishStage(ChallengeStageView):

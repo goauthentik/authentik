@@ -21,7 +21,11 @@ from rest_framework.serializers import ValidationError
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User
-from authentik.flows.challenge import Challenge, ChallengeResponse
+from authentik.flows.challenge import (
+    Challenge,
+    ChallengeResponse,
+    DiscriminatorField,
+)
 from authentik.flows.planner import FlowPlan
 from authentik.flows.stage import ChallengeStageView
 from authentik.policies.engine import PolicyEngine
@@ -50,7 +54,7 @@ class PromptChallenge(Challenge):
     """Initial challenge being sent, define fields"""
 
     fields = StagePromptSerializer(many=True)
-    component = CharField(default="ak-stage-prompt")
+    component = DiscriminatorField("ak-stage-prompt")
 
 
 class PromptChallengeResponse(ChallengeResponse):
@@ -59,7 +63,7 @@ class PromptChallengeResponse(ChallengeResponse):
 
     stage_instance: PromptStage
 
-    component = CharField(default="ak-stage-prompt")
+    component = DiscriminatorField("ak-stage-prompt")
 
     def __init__(self, *args, **kwargs):
         stage: PromptStage = kwargs.pop("stage_instance", None)

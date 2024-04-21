@@ -48,12 +48,25 @@ class ContextualFlowInfo(PassiveSerializer):
     layout = ChoiceField(choices=[(x.value, x.name) for x in FlowLayout])
 
 
+class DiscriminatorField(CharField):
+    """Static field for use as discriminator for oneOf API endpoints"""
+
+    def __init__(self, value, **kwargs):
+        super().__init__(**kwargs)
+        self.required = True
+        self.default = value
+        self.fixed_value = value
+
+    def to_representation(self):
+        return self.fixed_value
+
+
 class Challenge(PassiveSerializer):
     """Challenge that gets sent to the client based on which stage
     is currently active"""
 
     flow_info = ContextualFlowInfo(required=False)
-    component = CharField(default="")
+    component = DiscriminatorField("")
 
     response_errors = DictField(
         child=ErrorDetailSerializer(many=True), allow_empty=True, required=False
@@ -64,14 +77,14 @@ class RedirectChallenge(Challenge):
     """Challenge type to redirect the client"""
 
     to = CharField()
-    component = CharField(default="xak-flow-redirect")
+    component = DiscriminatorField("xak-flow-redirect")
 
 
 class ShellChallenge(Challenge):
     """challenge type to render HTML as-is"""
 
     body = CharField()
-    component = CharField(default="xak-flow-shell")
+    component = DiscriminatorField("xak-flow-shell")
 
 
 class WithUserInfoMixin(PassiveSerializer):
@@ -85,7 +98,7 @@ class FlowErrorChallenge(Challenge):
     """Challenge class when an unhandled error occurs during a stage. Normal users
     are shown an error message, superusers are shown a full stacktrace."""
 
-    component = CharField(default="ak-stage-flow-error")
+    component = DiscriminatorField("ak-stage-flow-error")
 
     request_id = CharField()
 
@@ -111,7 +124,7 @@ class AccessDeniedChallenge(WithUserInfoMixin, Challenge):
     """Challenge when a flow's active stage calls `stage_invalid()`."""
 
     error_message = CharField(required=False)
-    component = CharField(default="ak-stage-access-denied")
+    component = DiscriminatorField("ak-stage-access-denied")
 
 
 class PermissionDict(TypedDict):
@@ -125,7 +138,7 @@ class ChallengeResponse(PassiveSerializer):
     """Base class for all challenge responses"""
 
     stage: Optional["StageView"]
-    component = CharField(default="xak-flow-response-default")
+    component = DiscriminatorField("xak-flow-response-default")
 
     def __init__(self, instance=None, data=None, **kwargs):
         self.stage = kwargs.pop("stage", None)
@@ -138,13 +151,13 @@ class AutosubmitChallenge(Challenge):
     url = CharField()
     attrs = DictField(child=CharField(allow_blank=True), allow_empty=True)
     title = CharField(required=False)
-    component = CharField(default="ak-stage-autosubmit")
+    component = DiscriminatorField("ak-stage-autosubmit")
 
 
 class AutoSubmitChallengeResponse(ChallengeResponse):
     """Pseudo class for autosubmit response"""
 
-    component = CharField(default="ak-stage-autosubmit")
+    component = DiscriminatorField("ak-stage-autosubmit")
 
 
 class DataclassEncoder(DjangoJSONEncoder):

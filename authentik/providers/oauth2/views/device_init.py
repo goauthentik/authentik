@@ -5,12 +5,16 @@ from typing import Any
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, IntegerField
+from rest_framework.fields import IntegerField
 from structlog.stdlib import get_logger
 
 from authentik.brands.models import Brand
 from authentik.core.models import Application
-from authentik.flows.challenge import Challenge, ChallengeResponse
+from authentik.flows.challenge import (
+    Challenge,
+    ChallengeResponse,
+    DiscriminatorField,
+)
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
@@ -116,14 +120,14 @@ class DeviceEntryView(PolicyAccessView):
 class OAuthDeviceCodeChallenge(Challenge):
     """OAuth Device code challenge"""
 
-    component = CharField(default="ak-provider-oauth2-device-code")
+    component = DiscriminatorField("ak-provider-oauth2-device-code")
 
 
 class OAuthDeviceCodeChallengeResponse(ChallengeResponse):
     """Response that includes the user-entered device code"""
 
     code = IntegerField()
-    component = CharField(default="ak-provider-oauth2-device-code")
+    component = DiscriminatorField("ak-provider-oauth2-device-code")
 
     def validate_code(self, code: int) -> HttpResponse | None:
         """Validate code and save the returned http response"""
