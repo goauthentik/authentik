@@ -77,6 +77,7 @@ module.exports = {
                         "services/awx-tower/index",
                         "services/firezone/index",
                         "services/fortimanager/index",
+                        "services/globalprotect/index",
                         "services/harbor/index",
                         "services/hashicorp-vault/index",
                         "services/jenkins/index",
