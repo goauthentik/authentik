@@ -301,6 +301,9 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                             available-label="${msg("Available User Property Mappings")}"
                             selected-label="${msg("Selected User Property Mappings")}"
                         ></ak-dual-select-dynamic-selected>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Property mappings for user creation.")}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Group Property Mappings")}
@@ -315,7 +318,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                             selected-label="${msg("Selected Group Property Mappings")}"
                         ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
-                            ${msg("Property mappings used for group creation.")}
+                            ${msg("Property mappings for group creation.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
