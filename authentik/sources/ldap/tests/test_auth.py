@@ -55,7 +55,7 @@ class LDAPSyncTests(TestCase):
             )
             connection.assert_called_with(
                 connection_kwargs={
-                    "user": "cn=user0,ou=users,dc=goauthentik,dc=io",
+                    "user": "cn=user0,ou=foo,ou=users,dc=goauthentik,dc=io",
                     "password": LDAP_PASSWORD,
                 }
             )

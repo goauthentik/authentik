@@ -1,10 +1,8 @@
 ---
-title: LDAP
+title: LDAP Source
 ---
 
 Sources allow you to connect authentik to an existing user directory. They can also be used for social logins, using external providers such as Facebook, Twitter, etc.
-
-## LDAP Source
 
 This source allows you to import users and groups from an LDAP Server.
 
