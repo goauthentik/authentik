@@ -292,6 +292,16 @@ class EventList(TestSuite):
             )
 
 
+class UserGroupCreate(TestSuite):
+    TEST_NAME = "user-group-create"
+    TEST_CASES = [
+        (),
+    ]
+
+    def create_data(self):
+        pass
+
+
 def main(action: str, selected_suite: str | None = None):
     testsuites = TestSuite.__subclasses__()
     testcases = []
