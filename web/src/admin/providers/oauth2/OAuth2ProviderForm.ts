@@ -33,7 +33,11 @@ import {
 import {
     makeOAuth2PropertyMappingsSelector,
     oauth2PropertyMappingsProvider,
-} from "./Oauth2PropertyMappings.js";
+} from "./OAuth2PropertyMappings.js";
+
+import {
+    oauth2SourcesProvider
+} from "./OAuth2SourcesProvider.js";
 
 export const clientTypeOptions = [
     {
