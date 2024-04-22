@@ -6,6 +6,8 @@ import { ascii_letters, digits, first, randomString } from "@goauthentik/common/
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
@@ -111,6 +113,26 @@ export const redirectUriHelp = html`${redirectUriHelpMessages.map(
     (m) => html`<p class="pf-c-form__helper-text">${m}</p>`,
 )}`;
 
+async function oauth2SourcesProvider(page = 1, search = "") {
+    const oauthSources = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthList({
+        ordering: "name",
+        hasJwks: true,
+        pageSize: 20,
+        search: search.trim(),
+        page,
+    });
+
+    return {
+        pagination: oauthSources.pagination,
+        options: oauthSources.results.map((source) => [
+            source.pk,
+            `${source.name} (${source.slug})`,
+            source.name,
+            source,
+        ]),
+    };
+}
+
 /**
  * Form page for OAuth2 Authentication Method
  *
@@ -131,13 +153,6 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
         });
         this.showClientSecret = provider.clientType === ClientTypeEnum.Confidential;
         return provider;
-    }
-
-    async load(): Promise<void> {
-        this.oauthSources = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthList({
-            ordering: "name",
-            hasJwks: true,
-        });
     }
 
     async send(data: OAuth2Provider): Promise<OAuth2Provider> {
@@ -337,23 +352,16 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                         label=${msg("Trusted OIDC Sources")}
                         name="jwksSources"
                     >
-                        <select class="pf-c-form-control" multiple>
-                            ${this.oauthSources?.results.map((source) => {
-                                const selected = (provider?.jwksSources || []).some((su) => {
-                                    return su == source.pk;
-                                });
-                                return html`<option value=${source.pk} ?selected=${selected}>
-                                    ${source.name} (${source.slug})
-                                </option>`;
-                            })}
-                        </select>
+                        <ak-dual-select-provider
+                            .provider=${oauth2SourcesProvider}
+                            .selected=${provider?.jwksSources}
+                            available-label=${msg("Available Sources")}
+                            selected-label=${msg("Selected Sources")}
+                        ></ak-dual-select-provider>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.",
                             )}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
