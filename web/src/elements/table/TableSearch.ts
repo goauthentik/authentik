@@ -1,5 +1,6 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
+import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
 // @ts-ignore
 import DjangoQL from "djangoql-completion";
 
@@ -23,19 +24,24 @@ export class TableSearch extends AKElement {
     @property({ type: Boolean })
     supportsQL: boolean = false;
 
-    @property({ attribute: false })
+    ql?: DjangoQL;
+
     set apiResponse(value: PaginatedResponse<unknown> | undefined) {
         if (!value || !this.supportsQL) {
             return;
         }
-        new DjangoQL({
+        if (this.ql) {
+            this.ql.loadIntrospections(value.autocomplete);
+            return;
+        }
+        this.ql = new DjangoQL({
             // either JS object with a result of DjangoQLSchema(MyModel).as_dict(),
             // or an URL from which this information could be loaded asynchronously
-            introspections: value,
+            introspections: value.autocomplete,
 
             // css selector for query input or HTMLElement object.
             // It should be a textarea
-            selector: this.shadowRoot?.querySelector("textarea[name=search]"),
+            selector: this.shadowRoot?.querySelector("[name=search]"),
 
             // optional, you can provide URL for Syntax Help link here.
             // If not specified, Syntax Help link will be hidden.
@@ -46,8 +52,16 @@ export class TableSearch extends AKElement {
             // doesn't fit, and shrink back when text is removed. The purpose
             // of this is to see full search query without scrolling, could be
             // helpful for really long queries.
-            autoResize: true,
+            autoResize: false,
+            onSubmit: (value: string) => {
+                if (!this.onSearch) return;
+                this.onSearch(value);
+            },
         });
+        document.adoptedStyleSheets = [
+            ...document.adoptedStyleSheets,
+            ensureCSSStyleSheet(Completion),
+        ];
     }
 
     @property()
@@ -79,10 +93,6 @@ export class TableSearch extends AKElement {
                 name="search"
                 placeholder=${msg("Search...")}
                 spellcheck="false"
-                @submit=${(ev: Event) => {
-                    if (!this.onSearch) return;
-                    this.onSearch((ev.target as HTMLInputElement).value);
-                }}
             >
 ${ifDefined(this.value)}</textarea
             >`;

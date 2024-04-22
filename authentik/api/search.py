@@ -3,13 +3,12 @@
 from django.db import models
 from django.db.models import QuerySet
 from djangoql.ast import Name
+from djangoql.compat import text_type
 from djangoql.exceptions import DjangoQLError
 from djangoql.queryset import apply_search
 from djangoql.schema import DjangoQLSchema, StrField
-from rest_framework.fields import JSONField
 from rest_framework.filters import SearchFilter
 from rest_framework.request import Request
-from rest_framework.serializers import ModelSerializer
 from structlog.stdlib import get_logger
 
 LOGGER = get_logger()
@@ -25,6 +24,23 @@ class JSONSearchField(StrField):
         op, invert = self.get_operator(operator)
         q = models.Q(**{f"{search}{op}": self.get_lookup_value(value)})
         return ~q if invert else q
+
+
+class ChoiceSearchField(StrField):
+
+    def __init__(self, model=None, name=None, nullable=None):
+        super().__init__(model, name, nullable, suggest_options=True)
+
+    def get_options(self, search):
+        result = []
+        choices = self._field_choices()
+        if choices:
+            search = search.lower()
+            for c in choices:
+                choice = text_type(c[0])
+                if search in choice.lower():
+                    result.append(choice)
+        return result
 
 
 class BaseSchema(DjangoQLSchema):
@@ -60,7 +76,6 @@ class QLSearch(SearchFilter):
 
     def get_schema(self, request: Request, view) -> BaseSchema:
         search_fields = self.get_search_fields(view, request)
-        serializer: ModelSerializer = view.get_serializer()
 
         class InlineSchema(BaseSchema):
             def get_fields(self, model):
@@ -68,17 +83,7 @@ class QLSearch(SearchFilter):
                 if not search_fields:
                     return fields
                 for field in search_fields:
-                    field_name = field.split("__")[0]
-                    serializer_field = serializer.fields.get(field_name)
-                    if isinstance(serializer_field, JSONField):
-                        fields.append(
-                            JSONSearchField(
-                                model=model,
-                                name=field_name,
-                            )
-                        )
-                    else:
-                        fields.append(field)
+                    fields.append(field)
                 return fields
 
         return InlineSchema

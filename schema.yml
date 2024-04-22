@@ -6638,45 +6638,6 @@ paths:
       operationId: events_events_list
       description: Event Read-Only Viewset
       parameters:
-      - in: query
-        name: action
-        schema:
-          type: string
-      - in: query
-        name: brand_name
-        schema:
-          type: string
-        description: Brand name
-      - in: query
-        name: client_ip
-        schema:
-          type: string
-      - in: query
-        name: context_authorized_app
-        schema:
-          type: string
-        description: Context Authorized application
-      - in: query
-        name: context_model_app
-        schema:
-          type: string
-        description: Context Model App
-      - in: query
-        name: context_model_name
-        schema:
-          type: string
-        description: Context Model Name
-      - in: query
-        name: context_model_pk
-        schema:
-          type: string
-        description: Context Model Primary Key
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
       - name: page
         required: false
         in: query
@@ -6695,11 +6656,6 @@ paths:
         description: A search term.
         schema:
           type: string
-      - in: query
-        name: username
-        schema:
-          type: string
-        description: Username
       tags:
       - events
       security:
@@ -7009,56 +6965,12 @@ paths:
       operationId: events_events_volume_list
       description: Get event volume for specified filters and timeframe
       parameters:
-      - in: query
-        name: action
-        schema:
-          type: string
-      - in: query
-        name: brand_name
-        schema:
-          type: string
-        description: Brand name
-      - in: query
-        name: client_ip
-        schema:
-          type: string
-      - in: query
-        name: context_authorized_app
-        schema:
-          type: string
-        description: Context Authorized application
-      - in: query
-        name: context_model_app
-        schema:
-          type: string
-        description: Context Model App
-      - in: query
-        name: context_model_name
-        schema:
-          type: string
-        description: Context Model Name
-      - in: query
-        name: context_model_pk
-        schema:
-          type: string
-        description: Context Model Primary Key
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
       - name: search
         required: false
         in: query
         description: A search term.
         schema:
           type: string
-      - in: query
-        name: username
-        schema:
-          type: string
-        description: Username
       tags:
       - events
       security:
@@ -40014,6 +39926,9 @@ components:
           type: string
           minLength: 1
           default: ak-stage-autosubmit
+    Autocomplete:
+      type: object
+      additionalProperties: {}
     AutosubmitChallenge:
       type: object
       description: Autosubmit challenge used to send and navigate a POST request

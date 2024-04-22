@@ -89,15 +89,20 @@ class Pagination(pagination.PageNumberPagination):
         )
 
     def get_paginated_response_schema(self, schema):
-        return {
+        final_schema = {
             "type": "object",
             "properties": {
                 "pagination": {"$ref": f"#/components/schemas/{PAGINATION_COMPONENT_NAME}"},
                 "results": schema,
-                "autocomplete": {"$ref": f"#/components/schemas/{AUTOCOMPLETE_COMPONENT_NAME}"},
             },
-            "required": ["pagination", "results", "autocomplete"],
+            "required": ["pagination", "results"],
         }
+        if QLSearch in getattr(self.view, "filter_backends", []):
+            final_schema["properties"]["autocomplete"] = {
+                "$ref": f"#/components/schemas/{AUTOCOMPLETE_COMPONENT_NAME}"
+            }
+            final_schema["required"].append("autocomplete")
+        return final_schema
 
 
 class SmallerPagination(Pagination):

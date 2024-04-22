@@ -8,6 +8,7 @@ from django.db.models.aggregates import Count
 from django.db.models.fields.json import KeyTextTransform, KeyTransform
 from django.db.models.functions import ExtractDay, ExtractHour
 from django.db.models.query_utils import Q
+from djangoql.schema import StrField
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
@@ -18,7 +19,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.admin.api.metrics import CoordinateSerializer
-from authentik.api.search import QLSearch
+from authentik.api.search import ChoiceSearchField, JSONSearchField, QLSearch
 from authentik.core.api.object_types import TypeCreateSerializer
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.events.models import Event, EventAction
@@ -109,12 +110,11 @@ class EventViewSet(ModelViewSet):
     serializer_class = EventSerializer
     ordering = ["-created"]
     search_fields = [
-        "event_uuid",
-        "user",
-        "action",
-        "app",
-        "context",
-        "client_ip",
+        JSONSearchField(Event, "user"),
+        ChoiceSearchField(Event, "action"),
+        StrField(Event, "app", suggest_options=True),
+        JSONSearchField(Event, "context"),
+        StrField(Event, "client_ip", suggest_options=True),
     ]
     filterset_class = EventsFilter
     filter_backends = [
