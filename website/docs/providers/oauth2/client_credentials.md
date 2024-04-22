@@ -23,9 +23,9 @@ password=my-token
 
 This will return a JSON response with an `access_token`, which is a signed JWT token. This token can be sent along requests to other hosts, which can then validate the JWT based on the signing key configured in authentik.
 
-Starting with authentik 2024.next, it is also possible to encode the username and token of the user to authenticate with, separated with a colon, into a base64 string and pass it as `client_secret` value.
+Starting with authentik 2024.4, it is also possible to encode the username and token of the user to authenticate with, separated with a colon, into a base64 string and pass it as `client_secret` value.
 
-In addition to that, with authentik 2024.next it is also possible to pass the configured `client_secret` value, which will automatically generate a service account user for which the JWT token will be issued.
+In addition to that, with authentik 2024.4 it is also possible to pass the configured `client_secret` value, which will automatically generate a service account user for which the JWT token will be issued.
 
 ### JWT-authentication
 
