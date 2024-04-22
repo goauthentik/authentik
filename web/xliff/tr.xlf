@@ -6445,6 +6445,12 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sc1673c93148583ba">
   <source>Request failed. Please try again later.</source>
 </trans-unit>
+<trans-unit id="s85be1f5e7a0fa3b1">
+  <source>Available Roles</source>
+</trans-unit>
+<trans-unit id="sa59d53ee922c08b5">
+  <source>Selected Roles</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
