@@ -8,7 +8,7 @@ from django.db.models.aggregates import Count
 from django.db.models.fields.json import KeyTextTransform, KeyTransform
 from django.db.models.functions import ExtractDay, ExtractHour
 from django.db.models.query_utils import Q
-from djangoql.schema import StrField
+from djangoql.schema import DateTimeField, StrField
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
@@ -115,6 +115,7 @@ class EventViewSet(ModelViewSet):
         StrField(Event, "app", suggest_options=True),
         JSONSearchField(Event, "context"),
         StrField(Event, "client_ip", suggest_options=True),
+        DateTimeField(Event, "created", suggest_options=True),
     ]
     filterset_class = EventsFilter
     filter_backends = [
