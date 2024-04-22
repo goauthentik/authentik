@@ -27,22 +27,45 @@ import type { DataProvider, DualSelectPair } from "./types";
 
 @customElement("ak-dual-select-provider")
 export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
-    /** A function that takes a page and returns the DualSelectPair[] collection with which to update
+    /**
+     * A function that takes a page and returns the DualSelectPair[] collection with which to update
      * the "Available" pane.
+     *
+     * @attr
      */
     @property({ type: Object })
     provider!: DataProvider;
 
+    /**
+     * The list of selected items. This is the *complete* list, not paginated, as presented by a
+     * component with a multi-select list of items to track. 
+     *
+     * @attr
+     */
     @property({ type: Array })
     selected: DualSelectPair[] = [];
 
+    /**
+     * The label for the left ("available") pane
+     *
+     * @attr
+     */
     @property({ attribute: "available-label" })
     availableLabel = msg("Available options");
 
+    /**
+     * The label for the right ("selected") pane
+     *
+     * @attr
+     */
     @property({ attribute: "selected-label" })
     selectedLabel = msg("Selected options");
 
-    /** The remote lists are debounced by definition. This is the interval for the debounce. */
+    /**
+     * The debounce for the search as the user is typing in a request
+     *
+     * @attr
+     */
     @property({ attribute: "search-delay", type: Number })
     searchDelay = 250;
 
