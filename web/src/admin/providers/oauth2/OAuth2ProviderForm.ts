@@ -26,7 +26,6 @@ import {
     OAuth2Provider,
     PaginatedOAuthSourceList,
     ProvidersApi,
-    SourcesApi,
     SubModeEnum,
 } from "@goauthentik/api";
 
@@ -34,10 +33,7 @@ import {
     makeOAuth2PropertyMappingsSelector,
     oauth2PropertyMappingsProvider,
 } from "./OAuth2PropertyMappings.js";
-
-import {
-    oauth2SourcesProvider
-} from "./OAuth2Sources.js";
+import { oauth2SourcesProvider } from "./OAuth2Sources.js";
 
 export const clientTypeOptions = [
     {
@@ -116,26 +112,6 @@ const redirectUriHelpMessages = [
 export const redirectUriHelp = html`${redirectUriHelpMessages.map(
     (m) => html`<p class="pf-c-form__helper-text">${m}</p>`,
 )}`;
-
-async function oauth2SourcesProvider(page = 1, search = "") {
-    const oauthSources = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthList({
-        ordering: "name",
-        hasJwks: true,
-        pageSize: 20,
-        search: search.trim(),
-        page,
-    });
-
-    return {
-        pagination: oauthSources.pagination,
-        options: oauthSources.results.map((source) => [
-            source.pk,
-            `${source.name} (${source.slug})`,
-            source.name,
-            source,
-        ]),
-    };
-}
 
 /**
  * Form page for OAuth2 Authentication Method

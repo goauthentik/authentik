@@ -13,6 +13,9 @@ export async function oauth2SourcesProvider(page = 1, search = "") {
 
     return {
         pagination: oauthSources.pagination,
-        options: oauthSources.results.map((source) => [source.pk, `${source.name} (${source.slug})`])
+        options: oauthSources.results.map((source) => [
+            source.pk,
+            `${source.name} (${source.slug})`,
+        ]),
     };
 }
