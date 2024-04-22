@@ -1,7 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
 
-import { PropertymappingsApi } from "@goauthentik/api";
+import { PropertymappingsApi, ScopeMapping } from "@goauthentik/api";
 
 export async function proxyPropertyMappingsProvider(page = 1, search = "") {
     const propertyMappings = await new PropertymappingsApi(
@@ -14,13 +14,14 @@ export async function proxyPropertyMappingsProvider(page = 1, search = "") {
     });
     return {
         pagination: propertyMappings.pagination,
-        options: propertyMappings.results
-            .filter((scope) => !(scope?.managed ?? "").startsWith("goauthentik.io/providers"))
-            .map((scope) => [scope.pk, scope.name]),
+        options: propertyMappings.results.map((scope) => [scope.pk, scope.name, scope.name, scope]),
     };
 }
 
 export function makeProxyPropertyMappingsSelector(mappings?: string[]) {
-    const localMappings = new Set(mappings ?? []);
-    return ([pk, _]: DualSelectPair) => localMappings.has(pk);
+    const localMappings = mappings ? new Set(mappings) : undefined;
+    return localMappings
+        ? ([pk, _]: DualSelectPair) => localMappings.has(pk)
+        : ([_0, _1, _2, scope]: DualSelectPair<ScopeMapping>) =>
+              !(scope?.managed ?? "").startsWith("goauthentik.io/providers");
 }
