@@ -37,7 +37,7 @@ import {
 
 import {
     oauth2SourcesProvider
-} from "./OAuth2SourcesProvider.js";
+} from "./OAuth2Sources.js";
 
 export const clientTypeOptions = [
     {
