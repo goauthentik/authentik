@@ -15345,6 +15345,283 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /providers/google/:
+    get:
+      operationId: providers_google_list
+      description: GoogleProvider Viewset
+      parameters:
+      - in: query
+        name: delegated_subject
+        schema:
+          type: string
+      - in: query
+        name: exclude_users_service_account
+        schema:
+          type: boolean
+      - in: query
+        name: filter_group
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGoogleProviderList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: providers_google_create
+      description: GoogleProvider Viewset
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoogleProviderRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleProvider'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/google/{id}/:
+    get:
+      operationId: providers_google_retrieve
+      description: GoogleProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this google provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleProvider'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: providers_google_update
+      description: GoogleProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this google provider.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoogleProviderRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleProvider'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: providers_google_partial_update
+      description: GoogleProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this google provider.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGoogleProviderRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleProvider'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: providers_google_destroy
+      description: GoogleProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this google provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/google/{id}/used_by/:
+    get:
+      operationId: providers_google_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this google provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /providers/ldap/:
     get:
       operationId: providers_ldap_list
@@ -18389,6 +18666,7 @@ paths:
           - authentik_policies_expression.expressionpolicy
           - authentik_policies_password.passwordpolicy
           - authentik_policies_reputation.reputationpolicy
+          - authentik_providers_google.googleprovider
           - authentik_providers_ldap.ldapprovider
           - authentik_providers_oauth2.oauth2provider
           - authentik_providers_oauth2.scopemapping
@@ -18604,6 +18882,7 @@ paths:
           - authentik_policies_expression.expressionpolicy
           - authentik_policies_password.passwordpolicy
           - authentik_policies_reputation.reputationpolicy
+          - authentik_providers_google.googleprovider
           - authentik_providers_ldap.ldapprovider
           - authentik_providers_oauth2.oauth2provider
           - authentik_providers_oauth2.scopemapping
@@ -30527,6 +30806,7 @@ components:
       - authentik.core
       - authentik.enterprise
       - authentik.enterprise.audit
+      - authentik.enterprise.providers.google
       - authentik.enterprise.providers.rac
       - authentik.enterprise.stages.source
       - authentik.events
@@ -34222,6 +34502,100 @@ components:
       - bind_continent_country
       - bind_continent_country_city
       type: string
+    GoogleProvider:
+      type: object
+      description: GoogleProvider Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        assigned_backchannel_application_slug:
+          type: string
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_backchannel_application_name:
+          type: string
+          description: Application's display Name.
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        delegated_subject:
+          type: string
+          format: email
+          maxLength: 254
+        credentials: {}
+        scopes:
+          type: string
+        exclude_users_service_account:
+          type: boolean
+        filter_group:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - assigned_backchannel_application_name
+      - assigned_backchannel_application_slug
+      - component
+      - credentials
+      - delegated_subject
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    GoogleProviderRequest:
+      type: object
+      description: GoogleProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        delegated_subject:
+          type: string
+          format: email
+          minLength: 1
+          maxLength: 254
+        credentials: {}
+        scopes:
+          type: string
+          minLength: 1
+        exclude_users_service_account:
+          type: boolean
+        filter_group:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - credentials
+      - delegated_subject
+      - name
     Group:
       type: object
       description: Group Serializer
@@ -35721,6 +36095,7 @@ components:
       - authentik_core.application
       - authentik_core.token
       - authentik_enterprise.license
+      - authentik_providers_google.googleprovider
       - authentik_providers_rac.racprovider
       - authentik_providers_rac.endpoint
       - authentik_providers_rac.racpropertymapping
@@ -37004,6 +37379,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowStageBinding'
+      required:
+      - pagination
+      - results
+    PaginatedGoogleProviderList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleProvider'
       required:
       - pagination
       - results
@@ -38927,6 +39314,33 @@ components:
             to a challenge. RETRY returns the error message and a similar challenge
             to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT
             restarts the flow while keeping the current context.
+    PatchedGoogleProviderRequest:
+      type: object
+      description: GoogleProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        delegated_subject:
+          type: string
+          format: email
+          minLength: 1
+          maxLength: 254
+        credentials: {}
+        scopes:
+          type: string
+          minLength: 1
+        exclude_users_service_account:
+          type: boolean
+        filter_group:
+          type: string
+          format: uuid
+          nullable: true
     PatchedGroupRequest:
       type: object
       description: Group Serializer
@@ -41470,6 +41884,7 @@ components:
       type: string
     ProviderModelEnum:
       enum:
+      - authentik_providers_google.googleprovider
       - authentik_providers_ldap.ldapprovider
       - authentik_providers_oauth2.oauth2provider
       - authentik_providers_proxy.proxyprovider
@@ -45500,6 +45915,7 @@ components:
       - count
     modelRequest:
       oneOf:
+      - $ref: '#/components/schemas/GoogleProviderRequest'
       - $ref: '#/components/schemas/LDAPProviderRequest'
       - $ref: '#/components/schemas/OAuth2ProviderRequest'
       - $ref: '#/components/schemas/ProxyProviderRequest'
@@ -45510,6 +45926,7 @@ components:
       discriminator:
         propertyName: provider_model
         mapping:
+          authentik_providers_google.googleprovider: '#/components/schemas/GoogleProviderRequest'
           authentik_providers_ldap.ldapprovider: '#/components/schemas/LDAPProviderRequest'
           authentik_providers_oauth2.oauth2provider: '#/components/schemas/OAuth2ProviderRequest'
           authentik_providers_proxy.proxyprovider: '#/components/schemas/ProxyProviderRequest'

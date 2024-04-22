@@ -2528,6 +2528,43 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_providers_google.googleprovider"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_providers_google.googleprovider"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_providers_google.googleprovider"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_providers_rac.racprovider"
                             },
                             "id": {
@@ -3337,6 +3374,7 @@
                         "authentik.core",
                         "authentik.enterprise",
                         "authentik.enterprise.audit",
+                        "authentik.enterprise.providers.google",
                         "authentik.enterprise.providers.rac",
                         "authentik.enterprise.stages.source",
                         "authentik.events"
@@ -3418,6 +3456,7 @@
                         "authentik_core.application",
                         "authentik_core.token",
                         "authentik_enterprise.license",
+                        "authentik_providers_google.googleprovider",
                         "authentik_providers_rac.racprovider",
                         "authentik_providers_rac.endpoint",
                         "authentik_providers_rac.racpropertymapping",
@@ -8118,6 +8157,51 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Key"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_providers_google.googleprovider": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Property mappings"
+                },
+                "delegated_subject": {
+                    "type": "string",
+                    "format": "email",
+                    "maxLength": 254,
+                    "minLength": 1,
+                    "title": "Delegated subject"
+                },
+                "credentials": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Credentials"
+                },
+                "scopes": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Scopes"
+                },
+                "exclude_users_service_account": {
+                    "type": "boolean",
+                    "title": "Exclude users service account"
+                },
+                "filter_group": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Filter group"
                 }
             },
             "required": []

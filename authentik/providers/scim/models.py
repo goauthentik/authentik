@@ -84,7 +84,7 @@ class SCIMMapping(PropertyMapping):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.providers.scim.api.property_mapping import SCIMMappingSerializer
+        from authentik.providers.scim.api.property_mappings import SCIMMappingSerializer
 
         return SCIMMappingSerializer
 
