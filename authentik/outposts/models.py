@@ -33,7 +33,7 @@ from authentik.core.models import (
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
-from authentik.lib.models import InheritanceForeignKey, SerializerModel
+from authentik.lib.models import InheritanceForeignKey, SerializerModel, SoftDeleteModel
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.errors import exception_to_string
 from authentik.outposts.controllers.k8s.utils import get_namespace
@@ -131,7 +131,7 @@ class OutpostServiceConnection(models.Model):
         verbose_name = _("Outpost Service-Connection")
         verbose_name_plural = _("Outpost Service-Connections")
 
-    def __str__(self) -> __version__:
+    def __str__(self):
         return f"Outpost service connection {self.name}"
 
     @property
@@ -241,7 +241,7 @@ class KubernetesServiceConnection(SerializerModel, OutpostServiceConnection):
         return "ak-service-connection-kubernetes-form"
 
 
-class Outpost(SerializerModel, ManagedModel):
+class Outpost(SoftDeleteModel, SerializerModel, ManagedModel):
     """Outpost instance which manages a service user and token"""
 
     uuid = models.UUIDField(default=uuid4, editable=False, primary_key=True)

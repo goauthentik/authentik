@@ -3,10 +3,13 @@
 from typing import Any
 
 from django.db import models
-from django.db.models.signals import post_delete, pre_delete
+from django.dispatch import Signal
 from django.utils import timezone
 from model_utils.managers import InheritanceManager
 from rest_framework.serializers import BaseSerializer
+
+pre_soft_delete = Signal()
+post_soft_delete = Signal()
 
 
 class SerializerModel(models.Model):
@@ -83,7 +86,7 @@ class SoftDeleteModel(models.Model):
         return self.deleted_at is not None
 
     def delete(self, using: Any = ..., keep_parents: bool = ...) -> tuple[int, dict[str, int]]:
-        pre_delete.send(sender=self.__class__, instance=self)
+        pre_soft_delete.send(sender=self.__class__, instance=self)
         now = timezone.now()
         self.deleted_at = now
         self.save(
@@ -91,7 +94,7 @@ class SoftDeleteModel(models.Model):
                 "deleted_at",
             ]
         )
-        post_delete.send(sender=self.__class__, instance=self)
+        post_soft_delete.send(sender=self.__class__, instance=self)
         return tuple()
 
     def force_delete(self, using: Any = ...):

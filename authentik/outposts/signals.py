@@ -2,13 +2,14 @@
 
 from django.core.cache import cache
 from django.db.models import Model
-from django.db.models.signals import m2m_changed, post_save, pre_delete, pre_save
+from django.db.models.signals import m2m_changed, post_save, pre_save
 from django.dispatch import receiver
 from structlog.stdlib import get_logger
 
 from authentik.brands.models import Brand
 from authentik.core.models import Provider
 from authentik.crypto.models import CertificateKeyPair
+from authentik.lib.models import post_soft_delete
 from authentik.lib.utils.reflection import class_to_path
 from authentik.outposts.models import Outpost, OutpostServiceConnection
 from authentik.outposts.tasks import CACHE_KEY_OUTPOST_DOWN, outpost_controller, outpost_post_save
@@ -67,9 +68,7 @@ def post_save_update(sender, instance: Model, created: bool, **_):
     outpost_post_save.delay(class_to_path(instance.__class__), instance.pk)
 
 
-@receiver(pre_delete, sender=Outpost)
-def pre_delete_cleanup(sender, instance: Outpost, **_):
+@receiver(post_soft_delete, sender=Outpost)
+def outpost_cleanup(sender, instance: Outpost, **_):
     """Ensure that Outpost's user is deleted (which will delete the token through cascade)"""
-    instance.user.delete()
-    cache.set(CACHE_KEY_OUTPOST_DOWN % instance.pk.hex, instance)
-    outpost_controller.delay(instance.pk.hex, action="down", from_cache=True)
+    outpost_controller.delay(instance.pk.hex, action="down")
