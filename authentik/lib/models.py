@@ -54,7 +54,7 @@ class InheritanceForeignKey(models.ForeignKey):
     forward_related_accessor_class = InheritanceForwardManyToOneDescriptor
 
 
-class SoftDeleteQuerySet(models.query.QuerySet):
+class SoftDeleteQuerySet(models.QuerySet):
 
     def delete(self):
         for obj in self.all():
@@ -70,6 +70,12 @@ class SoftDeleteManager(models.Manager):
         return SoftDeleteQuerySet(self.model, using=self._db).filter(deleted_at__isnull=True)
 
 
+class DeletedSoftDeleteManager(models.Manager):
+
+    def get_queryset(self):
+        return super().get_queryset().exclude(deleted_at__isnull=True)
+
+
 class SoftDeleteModel(models.Model):
     """Model which doesn't fully delete itself, but rather saved the delete status
     so cleanup events can run."""
@@ -77,6 +83,7 @@ class SoftDeleteModel(models.Model):
     deleted_at = models.DateTimeField(blank=True, null=True)
 
     objects = SoftDeleteManager()
+    deleted = DeletedSoftDeleteManager()
 
     class Meta:
         abstract = True

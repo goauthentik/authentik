@@ -132,7 +132,11 @@ def outpost_controller_all():
 def outpost_controller(self: SystemTask, outpost_pk: str, action: str = "up"):
     """Create/update/monitor/delete the deployment of an Outpost"""
     logs = []
-    outpost: Outpost = Outpost.objects.filter(pk=outpost_pk).first()
+    outpost: Outpost = None
+    if action == "up":
+        outpost = Outpost.objects.filter(pk=outpost_pk).first()
+    elif action == "down":
+        outpost = Outpost.deleted.filter(pk=outpost_pk).first()
     if not outpost:
         LOGGER.warning("No outpost")
         return
@@ -150,7 +154,7 @@ def outpost_controller(self: SystemTask, outpost_pk: str, action: str = "up"):
     else:
         self.set_status(TaskStatus.SUCCESSFUL, *logs)
     finally:
-        if action == "down":
+        if outpost.deleted_at:
             outpost.force_delete()
 
 
