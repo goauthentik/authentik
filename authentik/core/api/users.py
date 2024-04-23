@@ -408,7 +408,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     filterset_class = UsersFilter
 
     def get_queryset(self):
-        base_qs = User.objects.all().exclude_anonymous()
+        base_qs = User.objects.all()
         if self.serializer_class(context={"request": self.request})._should_include_groups:
             base_qs = base_qs.prefetch_related("ak_groups")
         return base_qs

@@ -161,7 +161,6 @@ class TestSourceSAML(SeleniumTestCase):
         self.assert_user(
             User.objects.exclude(username="akadmin")
             .exclude(username__startswith="ak-outpost")
-            .exclude_anonymous()
             .exclude(pk=self.user.pk)
             .first()
         )
@@ -244,7 +243,6 @@ class TestSourceSAML(SeleniumTestCase):
         self.assert_user(
             User.objects.exclude(username="akadmin")
             .exclude(username__startswith="ak-outpost")
-            .exclude_anonymous()
             .exclude(pk=self.user.pk)
             .first()
         )
@@ -314,7 +312,6 @@ class TestSourceSAML(SeleniumTestCase):
         self.assert_user(
             User.objects.exclude(username="akadmin")
             .exclude(username__startswith="ak-outpost")
-            .exclude_anonymous()
             .exclude(pk=self.user.pk)
             .first()
         )

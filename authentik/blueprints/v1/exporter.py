@@ -4,7 +4,6 @@ from collections.abc import Iterable
 from uuid import UUID
 
 from django.apps import apps
-from django.contrib.auth import get_user_model
 from django.db.models import Model, Q, QuerySet
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
@@ -47,8 +46,6 @@ class Exporter:
     def get_model_instances(self, model: type[Model]) -> QuerySet:
         """Return a queryset for `model`. Can be used to filter some
         objects on some models"""
-        if model == get_user_model():
-            return model.objects.exclude_anonymous()
         return model.objects.all()
 
     def _pre_export(self, blueprint: Blueprint):
