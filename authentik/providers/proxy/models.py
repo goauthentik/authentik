@@ -10,7 +10,7 @@ from django.utils.translation import gettext as _
 from rest_framework.serializers import Serializer
 
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.models import DomainlessURLValidator
+from authentik.lib.validators import DomainlessURLValidator
 from authentik.outposts.models import OutpostModel
 from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ScopeMapping
 

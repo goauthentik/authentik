@@ -4,7 +4,7 @@ import django.db.models.deletion
 from django.apps.registry import Apps
 from django.db import migrations, models
 
-import authentik.lib.models
+import authentik.lib.validators
 
 
 def set_managed_flag(apps: Apps, schema_editor):
@@ -105,7 +105,9 @@ class Migration(migrations.Migration):
                     "server_uri",
                     models.TextField(
                         validators=[
-                            authentik.lib.models.DomainlessURLValidator(schemes=["ldap", "ldaps"])
+                            authentik.lib.validators.DomainlessURLValidator(
+                                schemes=["ldap", "ldaps"]
+                            )
                         ],
                         verbose_name="Server URI",
                     ),

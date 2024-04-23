@@ -1,10 +1,6 @@
 """Generic models"""
 
-import re
-
-from django.core.validators import URLValidator
 from django.db import models
-from django.utils.regex_helper import _lazy_re_compile
 from model_utils.managers import InheritanceManager
 from rest_framework.serializers import BaseSerializer
 
@@ -49,48 +45,3 @@ class InheritanceForeignKey(models.ForeignKey):
     """Custom ForeignKey that uses InheritanceForwardManyToOneDescriptor"""
 
     forward_related_accessor_class = InheritanceForwardManyToOneDescriptor
-
-
-class DomainlessURLValidator(URLValidator):
-    """Subclass of URLValidator which doesn't check the domain
-    (to allow hostnames without domain)"""
-
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.host_re = "(" + self.hostname_re + self.domain_re + "|localhost)"
-        self.regex = _lazy_re_compile(
-            r"^(?:[a-z0-9.+-]*)://"  # scheme is validated separately
-            r"(?:[^\s:@/]+(?::[^\s:@/]*)?@)?"  # user:pass authentication
-            r"(?:" + self.ipv4_re + "|" + self.ipv6_re + "|" + self.host_re + ")"
-            r"(?::\d{2,5})?"  # port
-            r"(?:[/?#][^\s]*)?"  # resource path
-            r"\Z",
-            re.IGNORECASE,
-        )
-        self.schemes = ["http", "https", "blank"] + list(self.schemes)
-
-    def __call__(self, value: str):
-        # Check if the scheme is valid.
-        scheme = value.split("://")[0].lower()
-        if scheme not in self.schemes:
-            value = "default" + value
-        super().__call__(value)
-
-
-class DomainlessFormattedURLValidator(DomainlessURLValidator):
-    """URL validator which allows for python format strings"""
-
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.formatter_re = r"([%\(\)a-zA-Z])*"
-        self.host_re = "(" + self.formatter_re + self.hostname_re + self.domain_re + "|localhost)"
-        self.regex = _lazy_re_compile(
-            r"^(?:[a-z0-9.+-]*)://"  # scheme is validated separately
-            r"(?:[^\s:@/]+(?::[^\s:@/]*)?@)?"  # user:pass authentication
-            r"(?:" + self.ipv4_re + "|" + self.ipv6_re + "|" + self.host_re + ")"
-            r"(?::\d{2,5})?"  # port
-            r"(?:[/?#][^\s]*)?"  # resource path
-            r"\Z",
-            re.IGNORECASE,
-        )
-        self.schemes = ["http", "https", "blank"] + list(self.schemes)

@@ -41,10 +41,11 @@ from authentik.events.utils import (
     sanitize_dict,
     sanitize_item,
 )
-from authentik.lib.models import DomainlessURLValidator, SerializerModel
+from authentik.lib.models import SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.lib.validators import DomainlessURLValidator
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.email.utils import TemplateEmailMessage

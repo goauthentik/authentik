@@ -28,10 +28,10 @@ from authentik.lib.avatars import get_avatar
 from authentik.lib.generators import generate_id
 from authentik.lib.models import (
     CreatedUpdatedModel,
-    DomainlessFormattedURLValidator,
     SerializerModel,
 )
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.lib.validators import DomainlessFormattedURLValidator
 from authentik.policies.models import PolicyBindingModel
 from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
 from authentik.tenants.utils import get_current_tenant, get_unique_identifier

@@ -17,7 +17,7 @@ from rest_framework.serializers import Serializer
 from authentik.core.models import Group, PropertyMapping, Source
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG
-from authentik.lib.models import DomainlessURLValidator
+from authentik.lib.validators import DomainlessURLValidator
 
 LDAP_TIMEOUT = 15
 
