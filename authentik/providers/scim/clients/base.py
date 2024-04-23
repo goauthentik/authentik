@@ -1,33 +1,35 @@
 """SCIM Client"""
 
-from typing import Generic, TypeVar
+from typing import TYPE_CHECKING
 
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from pydantic import ValidationError
 from requests import RequestException, Session
-from structlog.stdlib import get_logger
 
+from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.utils.http import get_http_session
 from authentik.providers.scim.clients.exceptions import ResourceMissing, SCIMRequestException
 from authentik.providers.scim.clients.schema import ServiceProviderConfiguration
 from authentik.providers.scim.models import SCIMProvider
 
-T = TypeVar("T")
+if TYPE_CHECKING:
+    from django.db.models import Model
+    from pydantic import BaseModel
 
-SchemaType = TypeVar("SchemaType")
 
-
-class SCIMClient(Generic[T, SchemaType]):
+class SCIMClient[TModel: "Model", TSchema: "BaseModel"](
+    BaseOutgoingSyncClient[TModel, TSchema, SCIMProvider]
+):
     """SCIM Client"""
 
     base_url: str
     token: str
-    provider: SCIMProvider
 
     _session: Session
     _config: ServiceProviderConfiguration
 
     def __init__(self, provider: SCIMProvider):
+        super().__init__(provider)
         self._session = get_http_session()
         self.provider = provider
         # Remove trailing slashes as we assume the URL doesn't have any
@@ -36,7 +38,6 @@ class SCIMClient(Generic[T, SchemaType]):
             base_url = base_url[:-1]
         self.base_url = base_url
         self.token = provider.token
-        self.logger = get_logger().bind(provider=provider.name)
         self._config = self.get_service_provider_config()
 
     def _request(self, method: str, path: str, **kwargs) -> dict:
@@ -76,15 +77,3 @@ class SCIMClient(Generic[T, SchemaType]):
         except (ValidationError, SCIMRequestException) as exc:
             self.logger.warning("failed to get ServiceProviderConfig", exc=exc)
             return default_config
-
-    def write(self, obj: T):
-        """Write object to SCIM"""
-        raise NotImplementedError()
-
-    def delete(self, obj: T):
-        """Delete object from SCIM"""
-        raise NotImplementedError()
-
-    def to_scim(self, obj: T) -> SchemaType:
-        """Convert object to scim"""
-        raise NotImplementedError()

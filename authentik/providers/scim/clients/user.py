@@ -38,7 +38,7 @@ class SCIMUserClient(SCIMClient[User, SCIMUserSchema]):
         scim_user.delete()
         return response
 
-    def to_scim(self, obj: User) -> SCIMUserSchema:
+    def to_schema(self, obj: User) -> SCIMUserSchema:
         """Convert authentik user into SCIM"""
         raw_scim_user = {
             "schemas": ("urn:ietf:params:scim:schemas:core:2.0:User",),
@@ -76,7 +76,7 @@ class SCIMUserClient(SCIMClient[User, SCIMUserSchema]):
 
     def _create(self, user: User):
         """Create user from scratch and create a connection object"""
-        scim_user = self.to_scim(user)
+        scim_user = self.to_schema(user)
         response = self._request(
             "POST",
             "/Users",
@@ -92,7 +92,7 @@ class SCIMUserClient(SCIMClient[User, SCIMUserSchema]):
 
     def _update(self, user: User, connection: SCIMUser):
         """Update existing user"""
-        scim_user = self.to_scim(user)
+        scim_user = self.to_schema(user)
         scim_user.id = connection.scim_id
         self._request(
             "PUT",

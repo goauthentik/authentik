@@ -45,7 +45,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
         scim_group.delete()
         return response
 
-    def to_scim(self, obj: Group) -> SCIMGroupSchema:
+    def to_schema(self, obj: Group) -> SCIMGroupSchema:
         """Convert authentik user into SCIM"""
         raw_scim_group = {
             "schemas": ("urn:ietf:params:scim:schemas:core:2.0:Group",),
@@ -98,7 +98,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
 
     def _create(self, group: Group):
         """Create group from scratch and create a connection object"""
-        scim_group = self.to_scim(group)
+        scim_group = self.to_schema(group)
         response = self._request(
             "POST",
             "/Groups",
@@ -114,7 +114,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
 
     def _update(self, group: Group, connection: SCIMGroup):
         """Update existing group"""
-        scim_group = self.to_scim(group)
+        scim_group = self.to_schema(group)
         scim_group.id = connection.scim_id
         try:
             return self._request(
