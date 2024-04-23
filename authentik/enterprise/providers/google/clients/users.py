@@ -1,15 +1,14 @@
 from typing import TYPE_CHECKING
 
-from googleapiclient._apis.admin.directory_v1.schemas import User
 from authentik.core.models import User
 from authentik.enterprise.providers.google.clients.base import GoogleSyncClient
-from authentik.enterprise.providers.google.models import GoogleProvider, GoogleProviderUser
+from authentik.enterprise.providers.google.models import GoogleProviderUser
 
 if TYPE_CHECKING:
-    from googleapiclient._apis.admin.directory_v1.resources import User as UserSchema
+    from googleapiclient._apis.admin.directory_v1.schemas import User as UserSchema
 
 
-class GoogleUserSync(GoogleSyncClient[User, "UserSchema", GoogleProvider]):
+class GoogleUserSync(GoogleSyncClient[User, "UserSchema"]):
 
     def to_schema(self, obj: User) -> "UserSchema":
         return super().to_schema(obj)

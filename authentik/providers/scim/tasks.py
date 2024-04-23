@@ -13,10 +13,11 @@ from structlog.stdlib import get_logger
 from authentik.core.models import Group, User
 from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask
+from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.lib.utils.reflection import path_to_class
 from authentik.providers.scim.clients import PAGE_SIZE, PAGE_TIMEOUT
 from authentik.providers.scim.clients.base import SCIMClient
-from authentik.providers.scim.clients.exceptions import SCIMRequestException, StopSync
+from authentik.providers.scim.clients.exceptions import SCIMRequestException
 from authentik.providers.scim.clients.group import SCIMGroupClient
 from authentik.providers.scim.clients.user import SCIMUserClient
 from authentik.providers.scim.models import SCIMProvider

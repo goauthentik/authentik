@@ -7,23 +7,6 @@ from authentik.lib.sentry import SentryIgnoredException
 from authentik.providers.scim.clients.schema import SCIMError
 
 
-class StopSync(SentryIgnoredException):
-    """Exception raised when a configuration error should stop the sync process"""
-
-    def __init__(self, exc: Exception, obj: object, mapping: object | None = None) -> None:
-        self.exc = exc
-        self.obj = obj
-        self.mapping = mapping
-
-    def detail(self) -> str:
-        """Get human readable details of this error"""
-        msg = f"Error {str(self.exc)}, caused by {self.obj}"
-
-        if self.mapping:
-            msg += f" (mapping {self.mapping})"
-        return msg
-
-
 class SCIMRequestException(SentryIgnoredException):
     """Exception raised when an SCIM request fails"""
 
@@ -39,7 +22,7 @@ class SCIMRequestException(SentryIgnoredException):
         if not self._response:
             return self._message
         try:
-            error = SCIMError.parse_raw(self._response.text)
+            error = SCIMError.model_validate_json(self._response.text)
             return error.detail
         except ValidationError:
             pass
