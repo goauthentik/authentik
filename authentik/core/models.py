@@ -29,6 +29,8 @@ from authentik.lib.generators import generate_id
 from authentik.lib.models import (
     CreatedUpdatedModel,
     SerializerModel,
+    SoftDeleteModel,
+    SoftDeleteQuerySet,
 )
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.lib.validators import DomainlessFormattedURLValidator
@@ -96,7 +98,7 @@ class UserTypes(models.TextChoices):
     INTERNAL_SERVICE_ACCOUNT = "internal_service_account"
 
 
-class Group(SerializerModel):
+class Group(SoftDeleteModel, SerializerModel):
     """Group model which supports a basic hierarchy and has attributes"""
 
     group_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -191,7 +193,7 @@ class UserManager(DjangoUserManager):
 
     def get_queryset(self):
         """Create special user queryset"""
-        return QuerySet(self.model, using=self._db).exclude(
+        return SoftDeleteQuerySet(self.model, using=self._db).exclude(
             **{User.USERNAME_FIELD: settings.ANONYMOUS_USER_NAME}
         )
 
@@ -200,7 +202,7 @@ class UserManager(DjangoUserManager):
         return self._create_user(username, email, password, **extra_fields)
 
 
-class User(SerializerModel, GuardianUserMixin, AbstractUser):
+class User(SoftDeleteModel, SerializerModel, GuardianUserMixin, AbstractUser):
     """authentik User model, based on django's contrib auth user model."""
 
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
