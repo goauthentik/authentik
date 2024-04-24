@@ -23,7 +23,7 @@
         "@docusaurus/theme-common": "^3.2.1",
         "@docusaurus/theme-mermaid": "^3.2.1",
         "@mdx-js/react": "^3.0.1",
-        "clsx": "^2.1.0",
+        "clsx": "^2.1.1",
         "disqus-react": "^1.1.5",
         "postcss": "^8.4.38",
         "prism-react-renderer": "^2.3.1",
