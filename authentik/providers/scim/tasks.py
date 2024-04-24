@@ -2,20 +2,14 @@
 
 from typing import Any
 
-from celery.result import allow_join_result
-from django.core.paginator import Paginator
 from django.db.models import Model, QuerySet
-from django.utils.text import slugify
-from django.utils.translation import gettext_lazy as _
 from pydanticscim.responses import PatchOp
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Group, User
-from authentik.events.models import TaskStatus
-from authentik.events.system_tasks import SystemTask
 from authentik.lib.sync.outgoing.exceptions import StopSync
+from authentik.lib.sync.outgoing.tasks import SyncAllTask, SyncSingleTask
 from authentik.lib.utils.reflection import path_to_class
-from authentik.providers.scim.clients import PAGE_SIZE, PAGE_TIMEOUT
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.clients.exceptions import SCIMRequestException
 from authentik.providers.scim.clients.group import SCIMGroupClient
@@ -23,7 +17,7 @@ from authentik.providers.scim.clients.user import SCIMUserClient
 from authentik.providers.scim.models import SCIMProvider
 from authentik.root.celery import CELERY_APP
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 
 def client_for_model(provider: SCIMProvider, model: Model) -> SCIMClient:
@@ -35,153 +29,8 @@ def client_for_model(provider: SCIMProvider, model: Model) -> SCIMClient:
     raise ValueError(f"Invalid model {model}")
 
 
-@CELERY_APP.task()
-def scim_sync_all():
-    """Run sync for all providers"""
-    for provider in SCIMProvider.objects.filter(backchannel_application__isnull=False):
-        scim_task_wrapper(provider.pk)
-
-
-def scim_task_wrapper(provider_pk: int):
-    """Wrap scim_sync to set the correct timeouts"""
-    provider: SCIMProvider = SCIMProvider.objects.filter(
-        pk=provider_pk, backchannel_application__isnull=False
-    ).first()
-    if not provider:
-        return
-    users_paginator = Paginator(provider.get_user_qs(), PAGE_SIZE)
-    groups_paginator = Paginator(provider.get_group_qs(), PAGE_SIZE)
-    soft_time_limit = (users_paginator.num_pages + groups_paginator.num_pages) * PAGE_TIMEOUT
-    time_limit = soft_time_limit * 1.5
-    return scim_sync.apply_async(
-        (provider.pk,), time_limit=int(time_limit), soft_time_limit=int(soft_time_limit)
-    )
-
-
-@CELERY_APP.task(bind=True, base=SystemTask)
-def scim_sync(self: SystemTask, provider_pk: int) -> None:
-    """Run SCIM full sync for provider"""
-    provider: SCIMProvider = SCIMProvider.objects.filter(
-        pk=provider_pk, backchannel_application__isnull=False
-    ).first()
-    if not provider:
-        return
-    lock = provider.sync_lock
-    if lock.locked():
-        LOGGER.debug("SCIM sync locked, skipping task", source=provider.name)
-        return
-    self.set_uid(slugify(provider.name))
-    messages = []
-    messages.append(_("Starting full SCIM sync"))
-    LOGGER.debug("Starting SCIM sync")
-    users_paginator = Paginator(provider.get_user_qs(), PAGE_SIZE)
-    groups_paginator = Paginator(provider.get_group_qs(), PAGE_SIZE)
-    self.soft_time_limit = self.time_limit = (
-        users_paginator.num_pages + groups_paginator.num_pages
-    ) * PAGE_TIMEOUT
-    with allow_join_result():
-        try:
-            for page in users_paginator.page_range:
-                messages.append(_("Syncing page %(page)d of users" % {"page": page}))
-                for msg in scim_sync_users.delay(page, provider_pk).get():
-                    messages.append(msg)
-            for page in groups_paginator.page_range:
-                messages.append(_("Syncing page %(page)d of groups" % {"page": page}))
-                for msg in scim_sync_group.delay(page, provider_pk).get():
-                    messages.append(msg)
-        except StopSync as exc:
-            self.set_error(exc)
-            return
-    self.set_status(TaskStatus.SUCCESSFUL, *messages)
-
-
-@CELERY_APP.task(
-    soft_time_limit=PAGE_TIMEOUT,
-    task_time_limit=PAGE_TIMEOUT,
-)
-def scim_sync_users(page: int, provider_pk: int):
-    """Sync single or multiple users to SCIM"""
-    messages = []
-    provider: SCIMProvider = SCIMProvider.objects.filter(pk=provider_pk).first()
-    if not provider:
-        return messages
-    try:
-        client = SCIMUserClient(provider)
-    except SCIMRequestException:
-        return messages
-    paginator = Paginator(provider.get_user_qs(), PAGE_SIZE)
-    LOGGER.debug("starting user sync for page", page=page)
-    for user in paginator.page(page).object_list:
-        try:
-            client.write(user)
-        except SCIMRequestException as exc:
-            LOGGER.warning("failed to sync user", exc=exc, user=user)
-            messages.append(
-                _(
-                    "Failed to sync user {user_name} due to remote error: {error}".format_map(
-                        {
-                            "user_name": user.username,
-                            "error": exc.detail(),
-                        }
-                    )
-                )
-            )
-        except StopSync as exc:
-            LOGGER.warning("Stopping sync", exc=exc)
-            messages.append(
-                _(
-                    "Stopping sync due to error: {error}".format_map(
-                        {
-                            "error": exc.detail(),
-                        }
-                    )
-                )
-            )
-            break
-    return messages
-
-
-@CELERY_APP.task()
-def scim_sync_group(page: int, provider_pk: int):
-    """Sync single or multiple groups to SCIM"""
-    messages = []
-    provider: SCIMProvider = SCIMProvider.objects.filter(pk=provider_pk).first()
-    if not provider:
-        return messages
-    try:
-        client = SCIMGroupClient(provider)
-    except SCIMRequestException:
-        return messages
-    paginator = Paginator(provider.get_group_qs(), PAGE_SIZE)
-    LOGGER.debug("starting group sync for page", page=page)
-    for group in paginator.page(page).object_list:
-        try:
-            client.write(group)
-        except SCIMRequestException as exc:
-            LOGGER.warning("failed to sync group", exc=exc, group=group)
-            messages.append(
-                _(
-                    "Failed to sync group {group_name} due to remote error: {error}".format_map(
-                        {
-                            "group_name": group.name,
-                            "error": exc.detail(),
-                        }
-                    )
-                )
-            )
-        except StopSync as exc:
-            LOGGER.warning("Stopping sync", exc=exc)
-            messages.append(
-                _(
-                    "Stopping sync due to error: {error}".format_map(
-                        {
-                            "error": exc.detail(),
-                        }
-                    )
-                )
-            )
-            break
-    return messages
+scim_sync = CELERY_APP.register_task(SyncSingleTask(SCIMProvider))
+scim_sync_all = CELERY_APP.register_task(SyncAllTask(SCIMProvider, scim_sync))
 
 
 @CELERY_APP.task()

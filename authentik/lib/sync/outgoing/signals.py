@@ -1,3 +1,5 @@
+from collections.abc import Callable
+
 from django.db.models import Model
 from django.db.models.signals import m2m_changed, post_save, pre_delete
 from django.dispatch import receiver
@@ -5,19 +7,21 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import BackchannelProvider, Group, User
 from authentik.lib.utils.reflection import class_to_path
-from authentik.providers.scim.tasks import scim_signal_direct, scim_signal_m2m, scim_sync
+from authentik.providers.scim.tasks import scim_signal_direct, scim_signal_m2m
 
 LOGGER = get_logger()
 
 
-def register_signals(provider_type: type[BackchannelProvider]):
+def register_signals(
+    provider_type: type[BackchannelProvider], task_sync_single: Callable[[int], None]
+):
     """Register sync signals"""
     uid = class_to_path(provider_type)
 
     @receiver(post_save, sender=provider_type, dispatch_uid=uid)
     def post_save_provider(sender: type[Model], instance, created: bool, **_):
         """Trigger sync when SCIM provider is saved"""
-        scim_sync.delay(instance.pk)
+        task_sync_single.delay(instance.pk)
 
     @receiver(post_save, sender=User, dispatch_uid=uid)
     @receiver(post_save, sender=Group, dispatch_uid=uid)
