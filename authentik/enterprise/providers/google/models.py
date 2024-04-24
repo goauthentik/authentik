@@ -17,12 +17,20 @@ from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 
 
+def default_scopes() -> list[str]:
+    return [
+        "https://www.googleapis.com/auth/admin.directory.user",
+        "https://www.googleapis.com/auth/admin.directory.group",
+        "https://www.googleapis.com/auth/admin.directory.group.member",
+    ]
+
+
 class GoogleProvider(OutgoingSyncProvider, BackchannelProvider):
     """Sync users from authentik into Google Workspace."""
 
     delegated_subject = models.EmailField()
     credentials = models.JSONField()
-    scopes = models.TextField(default="https://www.googleapis.com/auth/admin.directory.user")
+    scopes = models.TextField(default=",".join(default_scopes()))
 
     exclude_users_service_account = models.BooleanField(default=False)
 
@@ -44,6 +52,10 @@ class GoogleProvider(OutgoingSyncProvider, BackchannelProvider):
             from authentik.enterprise.providers.google.clients.users import GoogleUserClient
 
             return GoogleUserClient(self)
+        if issubclass(model, Group):
+            from authentik.enterprise.providers.google.clients.groups import GoogleGroupClient
+
+            return GoogleGroupClient(self)
         raise ValueError(f"Invalid model {model}")
 
     def get_object_qs(self, type: type[User | Group]) -> QuerySet[User | Group]:
@@ -117,7 +129,7 @@ class GoogleProviderUser(models.Model):
 
 
 class GoogleProviderGroup(models.Model):
-    """Mapping of a group and provider to a Google user ID"""
+    """Mapping of a group and provider to a Google group ID"""
 
     id = models.TextField(primary_key=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)

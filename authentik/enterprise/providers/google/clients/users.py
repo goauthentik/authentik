@@ -14,29 +14,6 @@ from authentik.policies.utils import delete_none_values
 class GoogleUserClient(GoogleSyncClient[User, dict]):
     """Sync authentik users into google workspace"""
 
-    def run(self):
-        for user in User.objects.all():
-            google_user = GoogleProviderUser.objects.filter(
-                user=user, provider=self.provider
-            ).first()
-            if google_user:
-                self.directory_service.users().update(userKey=google_user.id)
-                continue
-            created = (
-                self.directory_service.users()
-                .insert(
-                    body={
-                        "primaryEmail": user.email,
-                        "name": {"givenName": "Elizabeth", "familyName": "Smith"},
-                        "suspended": False,
-                    }
-                )
-                .execute()
-            )
-            GoogleProviderUser.objects.create(
-                user=user, provider=self.provider, id=created["primaryEmail"]
-            )
-
     def write(self, obj: User):
         """Write a user"""
         google_user = GoogleProviderUser.objects.filter(provider=self.provider, user=obj).first()
