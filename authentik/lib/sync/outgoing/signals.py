@@ -12,29 +12,30 @@ LOGGER = get_logger()
 
 def register_signals(provider_type: type[BackchannelProvider]):
     """Register sync signals"""
+    uid = class_to_path(provider_type)
 
-    @receiver(post_save, sender=provider_type)
+    @receiver(post_save, sender=provider_type, dispatch_uid=uid)
     def post_save_provider(sender: type[Model], instance, created: bool, **_):
         """Trigger sync when SCIM provider is saved"""
         scim_sync.delay(instance.pk)
 
-    @receiver(post_save, sender=User)
-    @receiver(post_save, sender=Group)
+    @receiver(post_save, sender=User, dispatch_uid=uid)
+    @receiver(post_save, sender=Group, dispatch_uid=uid)
     def post_save_scim(sender: type[Model], instance: User | Group, created: bool, **_):
         """Post save handler"""
         if not provider_type.objects.filter(backchannel_application__isnull=False).exists():
             return
         scim_signal_direct.delay(class_to_path(instance.__class__), instance.pk, "add")
 
-    @receiver(pre_delete, sender=User)
-    @receiver(pre_delete, sender=Group)
+    @receiver(pre_delete, sender=User, dispatch_uid=uid)
+    @receiver(pre_delete, sender=Group, dispatch_uid=uid)
     def pre_delete_scim(sender: type[Model], instance: User | Group, **_):
         """Pre-delete handler"""
         if not provider_type.objects.filter(backchannel_application__isnull=False).exists():
             return
         scim_signal_direct.delay(class_to_path(instance.__class__), instance.pk, "remove")
 
-    @receiver(m2m_changed, sender=User.ak_groups.through)
+    @receiver(m2m_changed, sender=User.ak_groups.through, dispatch_uid=uid)
     def m2m_changed_scim(
         sender: type[Model], instance, action: str, pk_set: set, reverse: bool, **kwargs
     ):
