@@ -39,13 +39,11 @@ class SyncSingleTask(SystemTask):
     def __init__(
         self,
         provider_model: type[OutgoingSyncProvider],
-        sync_users: Callable[[int, int], list[str]],
-        sync_groups: Callable[[int, int], list[str]],
+        sync_objects: Callable[[int, int], list[str]],
     ) -> None:
         super().__init__()
         self._provider_model = provider_model
-        self._sync_users = sync_users
-        self._sync_groups = sync_groups
+        self._sync_objects = sync_objects
 
     def run(self, provider_pk: int):
         provider = self._provider_model.objects.filter(
@@ -70,11 +68,15 @@ class SyncSingleTask(SystemTask):
             try:
                 for page in users_paginator.page_range:
                     messages.append(_("Syncing page %(page)d of users" % {"page": page}))
-                    for msg in self._sync_users.delay(page, provider_pk).get():
+                    for msg in self._sync_objects.delay(
+                        class_to_path(User), page, provider_pk
+                    ).get():
                         messages.append(msg)
                 for page in groups_paginator.page_range:
                     messages.append(_("Syncing page %(page)d of groups" % {"page": page}))
-                    for msg in self._sync_groups.delay(page, provider_pk).get():
+                    for msg in self._sync_objects.delay(
+                        class_to_path(Group), page, provider_pk
+                    ).get():
                         messages.append(msg)
             except StopSync as exc:
                 self.set_error(exc)
@@ -87,30 +89,28 @@ class SyncObjectTask(TenantTask):
 
     logger: BoundLogger
 
-    def __init__(
-        self, provider_model: type[OutgoingSyncProvider], object_type: type[User | Group]
-    ) -> None:
+    def __init__(self, provider_model: type[OutgoingSyncProvider]) -> None:
         super().__init__()
         self._provider_model = provider_model
-        self._object_type = object_type
         self.soft_time_limit = PAGE_TIMEOUT
         self.time_limit = PAGE_TIMEOUT
 
-    def run(self, page: int, provider_pk: int):
+    def run(self, object_type: str, page: int, provider_pk: int):
+        _object_type = path_to_class(object_type)
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
             provider_pk=provider_pk,
-            object_type=class_to_path(self._object_type),
+            object_type=object_type,
         )
         messages = []
         provider = self._provider_model.objects.filter(pk=provider_pk).first()
         if not provider:
             return messages
         try:
-            client = provider.client_for_model(self._object_type)
+            client = provider.client_for_model(_object_type)
         except TransientSyncException:
             return messages
-        paginator = Paginator(provider.get_object_qs(self._object_type), PAGE_SIZE)
+        paginator = Paginator(provider.get_object_qs(_object_type), PAGE_SIZE)
         self.logger.debug("starting sync for page", page=page)
         for obj in paginator.page(page).object_list:
             obj: Model
@@ -204,7 +204,7 @@ class SyncSignalM2MTask(TenantTask):
             return
         for provider in self._provider_model.objects.filter(backchannel_application__isnull=False):
             # Check if the object is allowed within the provider's restrictions
-            queryset: QuerySet = provider.get_group_qs()
+            queryset: QuerySet = provider.get_object_qs(Group)
             # The queryset we get from the provider must include the instance we've got given
             # otherwise ignore this provider
             if not queryset.filter(pk=group_pk).exists():

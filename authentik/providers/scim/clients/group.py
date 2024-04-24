@@ -8,6 +8,7 @@ from pydanticscim.responses import PatchOp, PatchOperation
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Group
 from authentik.events.models import Event, EventAction
+from authentik.lib.sync.outgoing.base import Direction
 from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.utils import delete_none_values
@@ -143,12 +144,12 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
                 ),
             )
 
-    def update_group(self, group: Group, action: PatchOp, users_set: set[int]):
+    def update_group(self, group: Group, action: Direction, users_set: set[int]):
         """Update a group, either using PUT to replace it or PATCH if supported"""
         if self._config.patch.supported:
-            if action == PatchOp.add:
+            if action == Direction.add:
                 return self._patch_add_users(group, users_set)
-            if action == PatchOp.remove:
+            if action == Direction.remove:
                 return self._patch_remove_users(group, users_set)
         try:
             return self.write(group)
@@ -156,9 +157,9 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
             if self._config.is_fallback:
                 # Assume that provider does not support PUT and also doesn't support
                 # ServiceProviderConfig, so try PATCH as a fallback
-                if action == PatchOp.add:
+                if action == Direction.add:
                     return self._patch_add_users(group, users_set)
-                if action == PatchOp.remove:
+                if action == Direction.remove:
                     return self._patch_remove_users(group, users_set)
             raise exc
 
