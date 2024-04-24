@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from googleapiclient._apis.admin.directory_v1.schemas import User as UserSchema
 
 
-class GoogleUserSync(GoogleSyncClient[User, "UserSchema"]):
+class GoogleUserClient(GoogleSyncClient[User, "UserSchema"]):
 
     def to_schema(self, obj: User) -> "UserSchema":
         return super().to_schema(obj)

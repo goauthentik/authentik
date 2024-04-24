@@ -1,9 +1,9 @@
-from django.core.cache import cache
+from typing import Any, Self
+
 from django.db import models
 from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
 from google.oauth2.service_account import Credentials
-from redis.lock import Lock
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import (
@@ -13,10 +13,11 @@ from authentik.core.models import (
     User,
     UserTypes,
 )
-from authentik.enterprise.providers.google.clients import PAGE_TIMEOUT
+from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
+from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 
 
-class GoogleProvider(BackchannelProvider):
+class GoogleProvider(OutgoingSyncProvider, BackchannelProvider):
     """Sync users from authentik into Google Workspace."""
 
     delegated_subject = models.EmailField()
@@ -36,31 +37,35 @@ class GoogleProvider(BackchannelProvider):
         help_text=_("Property mappings used for group creation/updating."),
     )
 
-    # Most of this can be deduplicated with the SCIM provider
-    @property
-    def sync_lock(self) -> Lock:
-        """Redis lock for syncing to Google to prevent multiple parallel syncs happening"""
-        return Lock(
-            cache.client.get_client(),
-            name=f"goauthentik.io/providers/google/sync-{str(self.pk)}",
-            timeout=(60 * 60 * PAGE_TIMEOUT) * 3,
-        )
+    def client_for_model(
+        self, model: type[User | Group]
+    ) -> BaseOutgoingSyncClient[User | Group, Any, Self]:
+        if issubclass(model, User):
+            from authentik.enterprise.providers.google.clients.users import GoogleUserClient
 
-    def get_user_qs(self) -> QuerySet[User]:
-        """Get queryset of all users with consistent ordering
-        according to the provider's settings"""
-        base = User.objects.all().exclude_anonymous()
-        if self.exclude_users_service_account:
-            base = base.exclude(type=UserTypes.SERVICE_ACCOUNT).exclude(
-                type=UserTypes.INTERNAL_SERVICE_ACCOUNT
-            )
-        if self.filter_group:
-            base = base.filter(ak_groups__in=[self.filter_group])
-        return base.order_by("pk")
+            return GoogleUserClient(self)
+        # if issubclass(model, Group):
+        #     from authentik.enterprise.providers.google.clients.groups import SCIMGroupClient
 
-    def get_group_qs(self) -> QuerySet[Group]:
-        """Get queryset of all groups with consistent ordering"""
-        return Group.objects.all().order_by("pk")
+        #     return SCIMGroupClient(self)
+        raise ValueError(f"Invalid model {model}")
+
+    def get_object_qs(self, type: type[User | Group]) -> QuerySet[User | Group]:
+        if type == User:
+            # Get queryset of all users with consistent ordering
+            # according to the provider's settings
+            base = User.objects.all().exclude_anonymous()
+            if self.exclude_users_service_account:
+                base = base.exclude(type=UserTypes.SERVICE_ACCOUNT).exclude(
+                    type=UserTypes.INTERNAL_SERVICE_ACCOUNT
+                )
+            if self.filter_group:
+                base = base.filter(ak_groups__in=[self.filter_group])
+            return base.order_by("pk")
+        if type == Group:
+            # Get queryset of all groups with consistent ordering
+            return Group.objects.all().order_by("pk")
+        raise ValueError(f"Invalid type {type}")
 
     def google_credentials(self):
         return Credentials.from_service_account_info(

@@ -36,11 +36,11 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
         self, model: type[User | Group]
     ) -> BaseOutgoingSyncClient[User | Group, Any, Self]:
         if issubclass(model, User):
-            from authentik.providers.scim.clients.user import SCIMUserClient
+            from authentik.providers.scim.clients.users import SCIMUserClient
 
             return SCIMUserClient(self)
         if issubclass(model, Group):
-            from authentik.providers.scim.clients.group import SCIMGroupClient
+            from authentik.providers.scim.clients.groups import SCIMGroupClient
 
             return SCIMGroupClient(self)
         raise ValueError(f"Invalid model {model}")
