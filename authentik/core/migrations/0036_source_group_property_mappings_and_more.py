@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_core", "0033_alter_user_options"),
+        ("authentik_core", "0035_alter_group_options_and_more"),
     ]
 
     operations = [

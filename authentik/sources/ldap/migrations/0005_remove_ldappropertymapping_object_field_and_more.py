@@ -53,7 +53,7 @@ def migrate_ldap_property_mappings_to_new_fields(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_sources_ldap", "0003_ldapsource_client_certificate_ldapsource_sni_and_more"),
+        ("authentik_sources_ldap", "0004_ldapsource_password_login_update_internal_password"),
         ("authentik_core", "0034_source_group_property_mappings_and_more"),
     ]
 
