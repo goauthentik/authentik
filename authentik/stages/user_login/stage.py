@@ -9,6 +9,7 @@ from django.utils.translation import gettext as _
 from rest_framework.fields import BooleanField, CharField
 
 from authentik.core.models import AuthenticatedSession, User
+from authentik.events.middleware import audit_ignore
 from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, WithUserInfoChallenge
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, PLAN_CONTEXT_SOURCE
 from authentik.flows.stage import ChallengeStageView
@@ -95,11 +96,14 @@ class UserLoginStageView(ChallengeStageView):
             self.logger.warning("User is not active, login will not work.")
         delta = self.set_session_duration(remember)
         self.set_session_ip()
-        login(
-            self.request,
-            user,
-            backend=backend,
-        )
+        # the `user_logged_in` signal will update the user to write the `last_login` field
+        # which we don't want to log as we already have a dedicated login event
+        with audit_ignore():
+            login(
+                self.request,
+                user,
+                backend=backend,
+            )
         self.logger.debug(
             "Logged in",
             backend=backend,

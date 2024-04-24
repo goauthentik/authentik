@@ -3724,9 +3724,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="se2e9f5a32c93e5f7">
         <source>Last validation threshold</source>
       </trans-unit>
-      <trans-unit id="s951281efc92b03fc">
-        <source>If any of the devices user of the types selected above have been used within this duration, this stage will be skipped.</source>
-      </trans-unit>
       <trans-unit id="s681074b6c1f19c08">
         <source>Not configured action</source>
         <target>未配置操作</target>
@@ -5425,9 +5422,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sd49099e9522635f4">
   <source>License(s)</source>
 </trans-unit>
-<trans-unit id="s3be1d90ffa46b7f1">
-  <source>Enterprise is in preview.</source>
-</trans-unit>
 <trans-unit id="sd22bd01bdf28c548">
   <source>Cumulative license expiry</source>
 </trans-unit>
@@ -5731,9 +5725,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="se9c07cf256774d81">
   <source>Editing is disabled for managed tokens</source>
-</trans-unit>
-<trans-unit id="s78ab26da7f067de8">
-  <source>Select permissions to grant</source>
 </trans-unit>
 <trans-unit id="sdeb90bfd8a80b86b">
   <source>Permissions to add</source>
@@ -6384,6 +6375,129 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s6ecfc18dbfeedd76">
   <source>Select one of the options below to continue.</source>
+</trans-unit>
+<trans-unit id="s00bcaadd620a11f8">
+  <source>Latest version unknown</source>
+</trans-unit>
+<trans-unit id="s10fedec3a779ea63">
+  <source>Timestamp</source>
+</trans-unit>
+<trans-unit id="s48e186fb300e5464">
+  <source>Time</source>
+</trans-unit>
+<trans-unit id="saa8aa81ad6f055fd">
+  <source>Level</source>
+</trans-unit>
+<trans-unit id="sd0ea7366ebc403ff">
+  <source>Event</source>
+</trans-unit>
+<trans-unit id="s225f3e57c6a0d635">
+  <source>Logger</source>
+</trans-unit>
+<trans-unit id="s39d6971531a270b6">
+  <source>Update internal password on login</source>
+</trans-unit>
+<trans-unit id="sefe04e319223a3d6">
+  <source>When the user logs in to authentik using this source password backend, update their credentials in authentik.</source>
+</trans-unit>
+<trans-unit id="s5f43af3669b1e098">
+  <source>Source</source>
+</trans-unit>
+<trans-unit id="sd9f752de8448bcc9">
+  <source>Resume timeout</source>
+</trans-unit>
+<trans-unit id="s517954806d7610f2">
+  <source>Amount of time a user can take to return from the source to continue the flow.</source>
+</trans-unit>
+<trans-unit id="s8c4bc6e515949112">
+  <source>Your Install ID</source>
+</trans-unit>
+<trans-unit id="s8cc0075913c67566">
+  <source>Enter the email associated with your account, and we'll send you a link to reset your password.</source>
+</trans-unit>
+<trans-unit id="s06bfe45ffef2cf60">
+  <source>Stage name: <x id="0" equiv-text="${this.challenge.name}"/></source>
+</trans-unit>
+<trans-unit id="s90064dd5c4dde2c6">
+  <source>Please scan the QR code above using the Microsoft Authenticator, Google Authenticator, or other authenticator apps on your device, and enter the code the device displays below to finish setting up the MFA device.</source>
+</trans-unit>
+<trans-unit id="s02160dc6adba3456">
+  <source>Inject an OAuth or SAML Source into the flow execution. This allows for additional user verification, or to dynamically access different sources for different user identifiers (username, email address, etc).</source>
+</trans-unit>
+<trans-unit id="sc7d071fb5cc1f6bf">
+  <source>A selection is required</source>
+</trans-unit>
+<trans-unit id="sa64fb483becc9c2c">
+  <source>Device type restrictions</source>
+</trans-unit>
+<trans-unit id="sbb928551c84cd63f">
+  <source>Available Device types</source>
+</trans-unit>
+<trans-unit id="s6446c35d6b411e53">
+  <source>Selected Device types</source>
+</trans-unit>
+<trans-unit id="s1f4df216b56de4ac">
+  <source>Optionally restrict which WebAuthn device types may be used. When no device types are selected, all devices are allowed.</source>
+</trans-unit>
+<trans-unit id="s23ed998c51cbe38f">
+  <source>If the user has successfully authenticated with a device in the classes listed above within this configured duration, this stage will be skipped.</source>
+</trans-unit>
+<trans-unit id="s4d4f52ccfd9d6adf">
+  <source>WebAuthn-specific settings</source>
+</trans-unit>
+<trans-unit id="sb46d2e64f64c6284">
+  <source>WebAuthn Device type restrictions</source>
+</trans-unit>
+<trans-unit id="s11274960b13cf21a">
+  <source>This restriction only applies to devices created in authentik 2024.4 or later.</source>
+</trans-unit>
+<trans-unit id="s4888252cbd785175">
+  <source>Default token duration</source>
+</trans-unit>
+<trans-unit id="s25c80a16a07871ba">
+  <source>Default duration for generated tokens</source>
+</trans-unit>
+<trans-unit id="se5c9ffc025fdf61d">
+  <source>Default token length</source>
+</trans-unit>
+<trans-unit id="sa6b2c110466d1754">
+  <source>Default length of generated tokens</source>
+</trans-unit>
+<trans-unit id="s1f25e1e20469a9ea">
+  <source>deleted</source>
+</trans-unit>
+<trans-unit id="s0ca04e397298bc43">
+  <source>Select permissions to assign</source>
+</trans-unit>
+<trans-unit id="s676d94e7e31a8075">
+  <source>SCIM Source is in preview.</source>
+</trans-unit>
+<trans-unit id="s31f1afc0a81977c1">
+  <source>Update SCIM Source</source>
+</trans-unit>
+<trans-unit id="s4bb356adc8a7f85b">
+  <source>SCIM Base URL</source>
+</trans-unit>
+<trans-unit id="sb23304fc42c5d6d9">
+  <source>Provisioned Users</source>
+</trans-unit>
+<trans-unit id="s6a81ee82b2e5ecbb">
+  <source>Provisioned Groups</source>
+</trans-unit>
+<trans-unit id="s10154dbd4fbc697b">
+  <source>removed</source>
+</trans-unit>
+<trans-unit id="s30d6ff9e15e0a40a">
+  <source>Verifying...</source>
+</trans-unit>
+<trans-unit id="sc1673c93148583ba">
+  <source>Request failed. Please try again later.</source>
+</trans-unit>
+<trans-unit id="s85be1f5e7a0fa3b1">
+  <source>Available Roles</source>
+</trans-unit>
+<trans-unit id="sa59d53ee922c08b5">
+  <source>Selected Roles</source>
 </trans-unit>
     </body>
   </file>

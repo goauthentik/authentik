@@ -1,6 +1,6 @@
-const fs = require("fs").promises;
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
+import { themes as prismThemes } from "prism-react-renderer";
 
 module.exports = async function (): Promise<Config> {
     const remarkGithub = (await import("remark-github")).default;
@@ -11,6 +11,7 @@ module.exports = async function (): Promise<Config> {
         url: "https://docs.goauthentik.io",
         baseUrl: "/",
         onBrokenLinks: "throw",
+        onBrokenAnchors: "throw",
         favicon: "img/icon.png",
         organizationName: "Authentik Security Inc.",
         projectName: "authentik",
@@ -81,6 +82,8 @@ module.exports = async function (): Promise<Config> {
                 indexName: "goauthentik",
             },
             prism: {
+                theme: prismThemes.oneLight,
+                darkTheme: prismThemes.oneDark,
                 additionalLanguages: ["python", "diff", "json"],
             },
         },

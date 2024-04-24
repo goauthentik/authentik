@@ -40,6 +40,7 @@ const docsSidebar = {
                 "core/certificates",
                 "core/geoip",
                 "core/architecture",
+                "core/settings",
             ],
         },
         {
@@ -68,6 +69,10 @@ const docsSidebar = {
         {
             type: "category",
             label: "Providers",
+            link: {
+                type: "doc",
+                id: "providers/index",
+            },
             items: [
                 {
                     type: "category",
@@ -119,7 +124,15 @@ const docsSidebar = {
                     items: ["providers/ldap/generic_setup"],
                 },
                 "providers/scim/index",
-                "providers/rac/index",
+                {
+                    type: "category",
+                    label: "RAC (Remote Access Control) Provider",
+                    link: {
+                        type: "doc",
+                        id: "providers/rac/index",
+                    },
+                    items: ["providers/rac/how-to-rac"],
+                },
             ],
         },
         {
@@ -200,6 +213,7 @@ const docsSidebar = {
                 "flow/stages/invitation/index",
                 "flow/stages/password/index",
                 "flow/stages/prompt/index",
+                "flow/stages/source/index",
                 "flow/stages/user_delete",
                 "flow/stages/user_login/index",
                 "flow/stages/user_logout",
@@ -217,13 +231,16 @@ const docsSidebar = {
                 {
                     type: "category",
                     label: "Working with policies",
-                    items: ["policies/working_with_policies/whitelist_email"],
                     link: {
                         type: "generated-index",
                         title: "Working with policies",
                         slug: "policies/working_with_policies",
                         description: "Overview of policies configuration",
                     },
+                    items: [
+                        "policies/working_with_policies/whitelist_email",
+                        "policies/working_with_policies/unique_email",
+                    ],
                 },
                 "policies/expression",
             ],
@@ -326,13 +343,14 @@ const docsSidebar = {
                 description: "Release notes for recent authentik versions",
             },
             items: [
+                "releases/2024/v2024.4",
                 "releases/2024/v2024.2",
                 "releases/2023/v2023.10",
-                "releases/2023/v2023.8",
                 {
                     type: "category",
                     label: "Previous versions",
                     items: [
+                        "releases/2023/v2023.8",
                         "releases/2023/v2023.6",
                         "releases/2023/v2023.5",
                         "releases/2023/v2023.4",

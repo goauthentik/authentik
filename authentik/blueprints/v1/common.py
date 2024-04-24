@@ -556,7 +556,11 @@ class BlueprintDumper(SafeDumper):
 
             def factory(items):
                 final_dict = dict(items)
+                # Remove internal state variables
                 final_dict.pop("_state", None)
+                # Future-proof to only remove the ID if we don't set a value
+                if "id" in final_dict and final_dict.get("id") is None:
+                    final_dict.pop("id")
                 return final_dict
 
             data = asdict(data, dict_factory=factory)

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "authentik"
-version = "2024.2.1"
+version = "2024.2.3"
 description = ""
 authors = ["authentik Team <hello@goauthentik.io>"]
 
@@ -76,7 +76,7 @@ show_missing = true
 DJANGO_SETTINGS_MODULE = "authentik.root.settings"
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
 junit_family = "xunit2"
-addopts = "-p no:celery --junitxml=unittest.xml -vv --full-trace --doctest-modules"
+addopts = "-p no:celery -p authentik.root.test_plugin --junitxml=unittest.xml -vv --full-trace --doctest-modules"
 filterwarnings = [
     "ignore:defusedxml.lxml is no longer supported and will be removed in a future release.:DeprecationWarning",
     "ignore:SelectableGroups dict interface is deprecated. Use select.:DeprecationWarning",
@@ -108,9 +108,11 @@ drf-spectacular = "*"
 dumb-init = "*"
 duo-client = "*"
 facebook-sdk = "*"
+fido2 = "*"
 flower = "*"
 geoip2 = "*"
 gunicorn = "*"
+jsonpatch = "*"
 kubernetes = "*"
 ldap3 = "*"
 lxml = [
@@ -119,7 +121,6 @@ lxml = [
     # 4.9.x works with previous libxml2 versions, which is what we get on linux
     { version = "4.9.4", platform = "linux" },
 ]
-jsonpatch = "*"
 opencontainers = { extras = ["reggie"], version = "*" }
 packaging = "*"
 paramiko = "*"
@@ -131,8 +132,10 @@ pyjwt = "*"
 python = "~3.12"
 pyyaml = "*"
 requests-oauthlib = "*"
+scim2-filter-parser = "*"
 sentry-sdk = "*"
 service_identity = "*"
+setproctitle = "*"
 structlog = "*"
 swagger-spec-validator = "*"
 tenant-schemas-celery = "*"
@@ -140,7 +143,7 @@ twilio = "*"
 twisted = "*"
 ua-parser = "*"
 # Pinned because of botocore https://github.com/orgs/python-poetry/discussions/7937
-urllib3 = { extras = ["secure"], version = "<2" }
+urllib3 = { extras = ["secure"], version = "<3" }
 uvicorn = { extras = ["standard"], version = "*" }
 watchdog = "*"
 webauthn = "*"

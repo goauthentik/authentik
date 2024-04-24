@@ -23,6 +23,8 @@ class SettingsSerializer(ModelSerializer):
             "footer_links",
             "gdpr_compliance",
             "impersonation",
+            "default_token_duration",
+            "default_token_length",
         ]
 
 

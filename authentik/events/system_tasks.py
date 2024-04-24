@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from structlog.stdlib import get_logger
 from tenant_schemas_celery.task import TenantTask
 
+from authentik.events.logs import LogEvent
 from authentik.events.models import Event, EventAction, TaskStatus
 from authentik.events.models import SystemTask as DBSystemTask
 from authentik.events.utils import sanitize_item
@@ -24,7 +25,7 @@ class SystemTask(TenantTask):
     save_on_success: bool
 
     _status: TaskStatus
-    _messages: list[str]
+    _messages: list[LogEvent]
 
     _uid: str | None
     # Precise start time from perf_counter
@@ -44,15 +45,20 @@ class SystemTask(TenantTask):
         """Set UID, so in the case of an unexpected error its saved correctly"""
         self._uid = uid
 
-    def set_status(self, status: TaskStatus, *messages: str):
+    def set_status(self, status: TaskStatus, *messages: LogEvent):
         """Set result for current run, will overwrite previous result."""
         self._status = status
-        self._messages = messages
+        self._messages = list(messages)
+        for idx, msg in enumerate(self._messages):
+            if not isinstance(msg, LogEvent):
+                self._messages[idx] = LogEvent(msg, logger=self.__name__, log_level="info")
 
     def set_error(self, exception: Exception):
         """Set result to error and save exception"""
         self._status = TaskStatus.ERROR
-        self._messages = [exception_to_string(exception)]
+        self._messages = [
+            LogEvent(exception_to_string(exception), logger=self.__name__, log_level="error")
+        ]
 
     def before_start(self, task_id, args, kwargs):
         self._start_precise = perf_counter()
@@ -98,8 +104,7 @@ class SystemTask(TenantTask):
     def on_failure(self, exc, task_id, args, kwargs, einfo):
         super().on_failure(exc, task_id, args, kwargs, einfo=einfo)
         if not self._status:
-            self._status = TaskStatus.ERROR
-            self._messages = exception_to_string(exc)
+            self.set_error(exc)
         DBSystemTask.objects.update_or_create(
             name=self.__name__,
             uid=self._uid,

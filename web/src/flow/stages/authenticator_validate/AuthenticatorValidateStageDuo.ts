@@ -1,6 +1,6 @@
-import { BaseDeviceStage } from "@goauthentik/app/flow/stages/authenticator_validate/base";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
+import { BaseDeviceStage } from "@goauthentik/flow/stages/authenticator_validate/base";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";

@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-19 23:33+0000\n"
+"POT-Creation-Date: 2024-04-16 00:07+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2024\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/authentik/teams/119923/zh-Hans/)\n"
@@ -126,6 +126,14 @@ msgstr "组"
 #: authentik/core/models.py
 msgid "Groups"
 msgstr "组"
+
+#: authentik/core/models.py
+msgid "Add user to group"
+msgstr "添加用户到组"
+
+#: authentik/core/models.py
+msgid "Remove user from group"
+msgstr "从组中删除用户"
 
 #: authentik/core/models.py
 msgid "User's display name."
@@ -468,6 +476,20 @@ msgstr "已达到最大连接数。"
 msgid "(You are already connected in another tab/window)"
 msgstr "（您已经在另一个标签页/窗口连接了）"
 
+#: authentik/enterprise/stages/source/models.py
+msgid ""
+"Amount of time a user can take to return from the source to continue the "
+"flow (Format: hours=-1;minutes=-2;seconds=-3)"
+msgstr "用户从源返回并继续流程可以消耗的时间（格式：hours=-1;minutes=-2;seconds=-3）"
+
+#: authentik/enterprise/stages/source/models.py
+msgid "Source Stage"
+msgstr "源阶段"
+
+#: authentik/enterprise/stages/source/models.py
+msgid "Source Stages"
+msgstr "源阶段"
+
 #: authentik/events/api/tasks.py
 #, python-brace-format
 msgid "Successfully started task {name}."
@@ -743,6 +765,10 @@ msgstr "流程令牌"
 #: authentik/flows/models.py
 msgid "Flow Tokens"
 msgstr "流程令牌"
+
+#: authentik/flows/views/executor.py
+msgid "Invalid next URL"
+msgstr "无效的 next URL"
 
 #: authentik/lib/utils/time.py
 #, python-format
@@ -1769,6 +1795,10 @@ msgid "Field which contains a unique Identifier."
 msgstr "包含唯一标识符的字段。"
 
 #: authentik/sources/ldap/models.py
+msgid "Update internal authentik password when login succeeds with LDAP"
+msgstr "使用 LDAP 登录成功时更新内部 authentik 密码"
+
+#: authentik/sources/ldap/models.py
 msgid ""
 "When a user changes their password, sync it back to LDAP. This can only be "
 "enabled on a single LDAP source."
@@ -1851,6 +1881,14 @@ msgstr "GitHub OAuth 源"
 #: authentik/sources/oauth/models.py
 msgid "GitHub OAuth Sources"
 msgstr "GitHub OAuth 源"
+
+#: authentik/sources/oauth/models.py
+msgid "GitLab OAuth Source"
+msgstr "GitLab OAuth 源"
+
+#: authentik/sources/oauth/models.py
+msgid "GitLab OAuth Sources"
+msgstr "GitLab OAuth 源"
 
 #: authentik/sources/oauth/models.py
 msgid "Twitch OAuth Source"
@@ -2081,6 +2119,14 @@ msgstr "用户 SAML 源连接"
 msgid "User SAML Source Connections"
 msgstr "用户 SAML 源连接"
 
+#: authentik/sources/scim/models.py
+msgid "SCIM Source"
+msgstr "SCIM 源"
+
+#: authentik/sources/scim/models.py
+msgid "SCIM Sources"
+msgstr "SCIM 源"
+
 #: authentik/stages/authenticator_duo/models.py
 msgid "Duo Authenticator Setup Stage"
 msgstr "Duo 身份验证器设置阶段"
@@ -2187,8 +2233,16 @@ msgid "TOTP Devices"
 msgstr "TOTP 设备"
 
 #: authentik/stages/authenticator_validate/challenge.py
-msgid "Invalid Token"
-msgstr "无效令牌"
+msgid ""
+"Invalid Token. Please ensure the time on your device is accurate and try "
+"again."
+msgstr "无效的令牌。请确保设备上的时间准确并重试。"
+
+#: authentik/stages/authenticator_validate/challenge.py
+#: authentik/stages/authenticator_webauthn/stage.py
+#, python-brace-format
+msgid "Invalid device type. Contact your {brand} administrator for help."
+msgstr "无效的设备类型。请联系您的 {brand} 管理员获得帮助。"
 
 #: authentik/stages/authenticator_validate/models.py
 msgid "Static"
@@ -2239,6 +2293,10 @@ msgstr "身份验证器验证阶段"
 msgid "Authenticator Validation Stages"
 msgstr "身份验证器验证阶段"
 
+#: authentik/stages/authenticator_validate/stage.py
+msgid "No (allowed) MFA authenticator configured."
+msgstr "未配置（允许的）MFA 身份验证器。"
+
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Authenticator Setup Stage"
 msgstr "WebAuthn 身份验证器设置阶段"
@@ -2254,6 +2312,14 @@ msgstr "WebAuthn 设备"
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Devices"
 msgstr "WebAuthn 设备"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Device type"
+msgstr "WebAuthn 设备类型"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Device types"
+msgstr "WebAuthn 设备类型"
 
 #: authentik/stages/captcha/models.py
 msgid "Public key, acquired your captcha Provider."
@@ -2856,6 +2922,14 @@ msgstr "启用时，所有由用户造成的事件会在相应用户被删除时
 #: authentik/tenants/models.py
 msgid "Globally enable/disable impersonation."
 msgstr "全局启用/禁用模拟身份。"
+
+#: authentik/tenants/models.py
+msgid "Default token duration"
+msgstr "默认令牌持续时间"
+
+#: authentik/tenants/models.py
+msgid "Default token length"
+msgstr "默认令牌长度"
 
 #: authentik/tenants/models.py
 msgid "Tenant"

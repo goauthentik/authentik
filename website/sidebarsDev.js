@@ -47,6 +47,7 @@ module.exports = {
                 "api/making-schema-changes",
                 "api/websocket",
                 "api/browser",
+                "api/clients",
             ],
         },
         {

@@ -1,7 +1,7 @@
 import { AkWizard } from "@goauthentik/components/ak-wizard-main/AkWizard";
 import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 
-import { ContextProvider } from "@lit-labs/context";
+import { ContextProvider } from "@lit/context";
 import { msg } from "@lit/localize";
 import { customElement, state } from "lit/decorators.js";
 

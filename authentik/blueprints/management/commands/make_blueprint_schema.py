@@ -4,18 +4,37 @@ from json import dumps
 from typing import Any
 
 from django.core.management.base import BaseCommand, no_translations
-from django.db.models import Model
-from drf_jsonschema_serializer.convert import field_to_converter
+from django.db.models import Model, fields
+from drf_jsonschema_serializer.convert import converter, field_to_converter
 from rest_framework.fields import Field, JSONField, UUIDField
+from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
+from authentik import __version__
 from authentik.blueprints.v1.common import BlueprintEntryDesiredState
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT, is_model_allowed
 from authentik.blueprints.v1.meta.registry import BaseMetaModel, registry
 from authentik.lib.models import SerializerModel
 
 LOGGER = get_logger()
+
+
+@converter
+class PrimaryKeyRelatedFieldConverter:
+    """Custom primary key field converter which is aware of non-integer based PKs
+
+    This is not an exhaustive fix for other non-int PKs, however in authentik we either
+    use UUIDs or ints"""
+
+    field_class = PrimaryKeyRelatedField
+
+    def convert(self, field: PrimaryKeyRelatedField):
+        model: Model = field.queryset.model
+        pk_field = model._meta.pk
+        if isinstance(pk_field, fields.UUIDField):
+            return {"type": "string", "format": "uuid"}
+        return {"type": "integer"}
 
 
 class Command(BaseCommand):
@@ -29,7 +48,7 @@ class Command(BaseCommand):
             "$schema": "http://json-schema.org/draft-07/schema",
             "$id": "https://goauthentik.io/blueprints/schema.json",
             "type": "object",
-            "title": "authentik Blueprint schema",
+            "title": f"authentik {__version__} Blueprint schema",
             "required": ["version", "entries"],
             "properties": {
                 "version": {

@@ -71,7 +71,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
         "Get certificate expiry"
         if not self._should_include_details:
             return None
-        return DateTimeField().to_representation(instance.certificate.not_valid_after)
+        return DateTimeField().to_representation(instance.certificate.not_valid_after_utc)
 
     def get_cert_subject(self, instance: CertificateKeyPair) -> str | None:
         """Get certificate subject as full rfc4514"""

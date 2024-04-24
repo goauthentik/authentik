@@ -105,6 +105,11 @@ class LDAPSource(Source):
         default="objectSid", help_text=_("Field which contains a unique Identifier.")
     )
 
+    password_login_update_internal_password = models.BooleanField(
+        default=False,
+        help_text=_("Update internal authentik password when login succeeds with LDAP"),
+    )
+
     sync_users = models.BooleanField(default=True)
     sync_users_password = models.BooleanField(
         default=True,

@@ -1,8 +1,8 @@
-import { DEFAULT_CONFIG } from "@goauthentik/app/common/api/config";
-import { PaginatedResponse, Table, TableColumn } from "@goauthentik/app/elements/table/Table";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/rbac/RoleObjectPermissionForm";
+import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
@@ -110,20 +110,13 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         this.modelPermissions?.results.forEach((perm) => {
             const granted =
                 item.permissions.filter((uperm) => uperm.codename === perm.codename).length > 0;
-            baseRow.push(html`
-                <ak-action-button
-                    .apiRequest=${async () => {
-                        console.log(granted);
-                    }}
-                    class="pf-m-link"
-                >
-                    ${granted
-                        ? html`<pf-tooltip position="top" content=${msg("Directly assigned")}
-                              >✓</pf-tooltip
-                          >`
-                        : html`X`}
-                </ak-action-button>
-            `);
+            baseRow.push(
+                html`${granted
+                    ? html`<pf-tooltip position="top" content=${msg("Directly assigned")}
+                          ><i class="fas fa-check pf-m-success"></i
+                      ></pf-tooltip>`
+                    : html`<i class="fas fa-times pf-m-danger"></i>`} `,
+            );
         });
         return baseRow;
     }

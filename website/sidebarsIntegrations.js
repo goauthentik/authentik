@@ -29,6 +29,7 @@ module.exports = {
                         "services/mobilizon/index",
                         "services/nextcloud/index",
                         "services/onlyoffice/index",
+                        "services/outline/index",
                         "services/paperless-ng/index",
                         "services/paperless-ngx/index",
                         "services/rocketchat/index",
@@ -63,6 +64,7 @@ module.exports = {
                         "services/portainer/index",
                         "services/proxmox-ve/index",
                         "services/rancher/index",
+                        "services/xen-orchestra/index",
                         "services/vmware-vcenter/index",
                     ],
                 },
@@ -172,6 +174,7 @@ module.exports = {
                         "sources/ldap/index",
                         "sources/oauth/index",
                         "sources/saml/index",
+                        "sources/scim/index",
                     ],
                 },
                 {

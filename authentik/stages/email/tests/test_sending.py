@@ -39,6 +39,7 @@ class TestEmailStageSending(FlowTestCase):
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
+        Event.objects.filter(action=EventAction.EMAIL_SENT).delete()
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         with patch(

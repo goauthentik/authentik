@@ -98,8 +98,8 @@ Templates are rendered using Django's templating engine. The following variables
 {% block content %}
 <tr>
     <td class="alert alert-success">
-        {% blocktrans with username=user.username %} Hi {{ username }}, {%
-        endblocktrans %}
+        {% blocktrans with username=user.username %} Hi {{ username }}, 
+        {% endblocktrans %}
     </td>
 </tr>
 <tr>
@@ -107,9 +107,7 @@ Templates are rendered using Django's templating engine. The following variables
         <table width="100%" cellpadding="0" cellspacing="0">
             <tr>
                 <td class="content-block">
-                    {% blocktrans %}
-                    You recently requested to change your password for you authentik account. Use the button below to set a new password.
-                    {% endblocktrans %}
+                    {% trans 'You recently requested to change your password for you authentik account. Use the button below to set a new password.' %}                    
                 </td>
             </tr>
             <tr>

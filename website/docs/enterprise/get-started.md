@@ -4,13 +4,11 @@ title: Get started
 
 Installing authentik is exactly the same process for both Enterprise version and our free [open source](https://github.com/goauthentik/authentik) version.
 
-> This **_Preview_** version of Enterprise authentik is available with our 2023.8.x release. Send us feedback through the Customer portal or to hello@goauthentik.io.
-
 ## Install Enterprise
 
 To get started working with Enterprise authentik, upgrade to the [2023.8.x](../releases) version or later. For installation steps, refer to our [technical documentation](../installation/index.mdx) for instructions to install and configure authentik.
 
--   [Docker Compose installation](../installation/docker-compose.md)
+-   [Docker Compose installation](../installation/docker-compose.mdx)
 -   [Kubernetes installation](../installation/kubernetes.md)
 
 ## Access Enterprise

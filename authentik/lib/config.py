@@ -14,7 +14,7 @@ from pathlib import Path
 from sys import argv, stderr
 from time import time
 from typing import Any
-from urllib.parse import urlparse
+from urllib.parse import quote_plus, urlparse
 
 import yaml
 from django.conf import ImproperlyConfigured
@@ -329,6 +329,26 @@ class ConfigLoader:
 
 
 CONFIG = ConfigLoader()
+
+
+def redis_url(db: int) -> str:
+    """Helper to create a Redis URL for a specific database"""
+    _redis_protocol_prefix = "redis://"
+    _redis_tls_requirements = ""
+    if CONFIG.get_bool("redis.tls", False):
+        _redis_protocol_prefix = "rediss://"
+        _redis_tls_requirements = f"?ssl_cert_reqs={CONFIG.get('redis.tls_reqs')}"
+        if _redis_ca := CONFIG.get("redis.tls_ca_cert", None):
+            _redis_tls_requirements += f"&ssl_ca_certs={_redis_ca}"
+    _redis_url = (
+        f"{_redis_protocol_prefix}"
+        f"{quote_plus(CONFIG.get('redis.username'))}:"
+        f"{quote_plus(CONFIG.get('redis.password'))}@"
+        f"{quote_plus(CONFIG.get('redis.host'))}:"
+        f"{CONFIG.get_int('redis.port')}"
+        f"/{db}{_redis_tls_requirements}"
+    )
+    return _redis_url
 
 
 if __name__ == "__main__":

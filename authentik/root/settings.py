@@ -5,13 +5,13 @@ import os
 from collections import OrderedDict
 from hashlib import sha512
 from pathlib import Path
-from urllib.parse import quote_plus
 
 from celery.schedules import crontab
+from django.conf import ImproperlyConfigured
 from sentry_sdk import set_tag
 
 from authentik import ENV_GIT_HASH_KEY, __version__
-from authentik.lib.config import CONFIG
+from authentik.lib.config import CONFIG, redis_url
 from authentik.lib.logging import get_logger_config, structlog_configure
 from authentik.lib.sentry import sentry_init
 from authentik.lib.utils.reflection import get_env
@@ -90,6 +90,7 @@ TENANT_APPS = [
     "authentik.sources.oauth",
     "authentik.sources.plex",
     "authentik.sources.saml",
+    "authentik.sources.scim",
     "authentik.stages.authenticator",
     "authentik.stages.authenticator_duo",
     "authentik.stages.authenticator_sms",
@@ -156,6 +157,10 @@ SPECTACULAR_SETTINGS = {
         "UserTypeEnum": "authentik.core.models.UserTypes",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
+    "ENUM_GENERATE_CHOICE_DESCRIPTION": False,
+    "PREPROCESSING_HOOKS": [
+        "authentik.api.schema.preprocess_schema_exclude_non_api",
+    ],
     "POSTPROCESSING_HOOKS": [
         "authentik.api.schema.postprocess_schema_responses",
         "drf_spectacular.hooks.postprocess_schema_enums",
@@ -190,23 +195,15 @@ REST_FRAMEWORK = {
     },
 }
 
-_redis_protocol_prefix = "redis://"
-_redis_celery_tls_requirements = ""
-if CONFIG.get_bool("redis.tls", False):
-    _redis_protocol_prefix = "rediss://"
-    _redis_celery_tls_requirements = f"?ssl_cert_reqs={CONFIG.get('redis.tls_reqs')}"
-_redis_url = (
-    f"{_redis_protocol_prefix}:"
-    f"{quote_plus(CONFIG.get('redis.password'))}@{quote_plus(CONFIG.get('redis.host'))}:"
-    f"{CONFIG.get_int('redis.port')}"
-)
 
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": CONFIG.get("cache.url") or f"{_redis_url}/{CONFIG.get('redis.db')}",
+        "LOCATION": CONFIG.get("cache.url") or redis_url(CONFIG.get("redis.db")),
         "TIMEOUT": CONFIG.get_int("cache.timeout", 300),
-        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
         "KEY_PREFIX": "authentik_cache",
         "KEY_FUNCTION": "django_tenants.cache.make_key",
         "REVERSE_KEY_FUNCTION": "django_tenants.cache.reverse_key",
@@ -215,7 +212,15 @@ CACHES = {
 DJANGO_REDIS_SCAN_ITERSIZE = 1000
 DJANGO_REDIS_IGNORE_EXCEPTIONS = True
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+match CONFIG.get("session_storage", "cache"):
+    case "cache":
+        SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+    case "db":
+        SESSION_ENGINE = "django.contrib.sessions.backends.db"
+    case _:
+        raise ImproperlyConfigured(
+            "Invalid session_storage setting, allowed values are db and cache"
+        )
 SESSION_SERIALIZER = "authentik.root.sessions.pickle.PickleSerializer"
 SESSION_CACHE_ALIAS = "default"
 # Configured via custom SessionMiddleware
@@ -269,7 +274,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.pubsub.RedisPubSubChannelLayer",
         "CONFIG": {
-            "hosts": [CONFIG.get("channel.url", f"{_redis_url}/{CONFIG.get('redis.db')}")],
+            "hosts": [CONFIG.get("channel.url") or redis_url(CONFIG.get("redis.db"))],
             "prefix": "authentik_channels_",
         },
     },
@@ -369,11 +374,9 @@ CELERY = {
     "beat_scheduler": "authentik.tenants.scheduler:TenantAwarePersistentScheduler",
     "task_create_missing_queues": True,
     "task_default_queue": "authentik",
-    "broker_url": CONFIG.get("broker.url")
-    or f"{_redis_url}/{CONFIG.get('redis.db')}{_redis_celery_tls_requirements}",
+    "broker_url": CONFIG.get("broker.url") or redis_url(CONFIG.get("redis.db")),
+    "result_backend": CONFIG.get("result_backend.url") or redis_url(CONFIG.get("redis.db")),
     "broker_transport_options": CONFIG.get_dict_from_b64_json("broker.transport_options"),
-    "result_backend": CONFIG.get("result_backend.url")
-    or f"{_redis_url}/{CONFIG.get('redis.db')}{_redis_celery_tls_requirements}",
 }
 
 # Sentry integration

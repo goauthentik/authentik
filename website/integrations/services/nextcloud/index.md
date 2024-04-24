@@ -98,14 +98,14 @@ Create a provider for Nextcloud. In the Admin Interface, go to _Applications_ ->
         -   `Nextcloud Profile` (or `authentik default Oauth Mapping profile` if you skipped the [custom profile scope](#custom-profile-scope) section)
     -   Subject mode: Based on the User's UUID
         :::danger
-        Nextcloud will use the UUID as username. However, mapping the subject mode to authentik usernames is **not recommended** due to their mutable nature. This can lead to security issues such as user impersonation. If you still wish to map the subject mode to an username, [disable username changing](../../../docs/installation/configuration#authentik_default_user_change_username) in authentik and set this to `Based on the User's username`.
+        Nextcloud will use the UUID as username. However, mapping the subject mode to authentik usernames is **not recommended** due to their mutable nature. This can lead to security issues such as user impersonation. If you still wish to map the subject mode to an username, [disable username changing](../../../docs/core/settings#allow-users-to-change-username) in authentik and set this to `Based on the User's username`.
         :::
     -   Include claims in ID token: ✔️
 
 Before continuing, make sure to take note of your `client ID` and `secret ID`. Don't worry you can go back to see/change them at any time.
 
-:::warning
-Currently there is a bug in the Nextcloud OIDC app, that is [limiting the size of the secret ID](https://github.com/nextcloud/user_oidc/issues/405) token to 64 characters. Since authentik uses 128 characters for a secret ID by default, you will need to trim it down to 64 characters in order to be able to set it in Nextcloud. Don't worry, 64 characters is still sufficiently long and should not compromise security.
+:::note
+There were an issue in the Nextcloud OIDC app that was [limiting the size of the secret ID](https://github.com/nextcloud/user_oidc/issues/405) token to 64 characters. This issue was fixed in December 2023, so make sure you update to the latest version of the [OpenID Connect user backend](https://apps.nextcloud.com/apps/user_oidc) application.
 :::
 
 :::note
@@ -138,6 +138,9 @@ Add a new provider using the `+` button and set the following values:
         You need to enable the "Use group provisioning" checkmark to be able to write to this field
         :::
 -   Use unique user ID: If you only have one provider you can uncheck this if you prefer.
+    :::tip
+    To avoid your group assignment being a hash value, deselect **Use unique user ID**.
+    :::
 
 At this stage you should be able to login with SSO.
 
@@ -233,7 +236,7 @@ Set the following values:
 
 -   Attribute to map the UID to: `http://schemas.goauthentik.io/2021/02/saml/uid`
     :::danger
-    Nextcloud uses the UID attribute as username. However, mapping it to authentik usernames is **not recommended** due to their mutable nature. This can lead to security issues such as user impersonation. If you still wish to map the UID to an username, [disable username changing](../../../docs/installation/configuration#authentik_default_user_change_username) in authentik and set the UID attribute to "http://schemas.goauthentik.io/2021/02/saml/username".
+    Nextcloud uses the UID attribute as username. However, mapping it to authentik usernames is **not recommended** due to their mutable nature. This can lead to security issues such as user impersonation. If you still wish to map the UID to an username, [disable username changing](../../../docs/core/settings#allow-users-to-change-username) in authentik and set the UID attribute to "http://schemas.goauthentik.io/2021/02/saml/username".
     :::
 -   Optional display name of the identity provider (default: "SSO & SAML log in"): `authentik`
 -   Identifier of the IdP entity (must be a URI): `https://authentik.company`
@@ -286,7 +289,7 @@ Create a custom SAML Property Mapping:
 -   Set the _Expression_ to:
 
 ```python
-for group in user.ak_groups.all():
+for group in request.user.all_groups():
     yield group.name
 if ak_is_group_member(request.user, name="<authentik nextcloud admin group's name>"):
     yield "admin"

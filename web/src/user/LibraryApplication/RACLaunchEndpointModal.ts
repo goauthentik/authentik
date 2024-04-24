@@ -1,6 +1,6 @@
-import { DEFAULT_CONFIG } from "@goauthentik/app/common/api/config";
-import { PaginatedResponse, TableColumn } from "@goauthentik/app/elements/table/Table";
-import { TableModal } from "@goauthentik/app/elements/table/TableModal";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { PaginatedResponse, TableColumn } from "@goauthentik/elements/table/Table";
+import { TableModal } from "@goauthentik/elements/table/TableModal";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";

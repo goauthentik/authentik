@@ -4919,11 +4919,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>上次验证阈值</target>
         
       </trans-unit>
-      <trans-unit id="s951281efc92b03fc">
-        <source>If any of the devices user of the types selected above have been used within this duration, this stage will be skipped.</source>
-        <target>如果上面所选类型的任意设备在此期限内被使用，此阶段会被跳过。</target>
-        
-      </trans-unit>
       <trans-unit id="s681074b6c1f19c08">
         <source>Not configured action</source>
         <target>未配置操作</target>
@@ -7175,10 +7170,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>License(s)</source>
   <target>许可证</target>
 </trans-unit>
-<trans-unit id="s3be1d90ffa46b7f1">
-  <source>Enterprise is in preview.</source>
-  <target>企业版目前处于预览状态。</target>
-</trans-unit>
 <trans-unit id="sd22bd01bdf28c548">
   <source>Cumulative license expiry</source>
   <target>累计许可证过期时间</target>
@@ -7585,10 +7576,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="se9c07cf256774d81">
   <source>Editing is disabled for managed tokens</source>
   <target>托管令牌的编辑已被禁用</target>
-</trans-unit>
-<trans-unit id="s78ab26da7f067de8">
-  <source>Select permissions to grant</source>
-  <target>选择权限以授予</target>
 </trans-unit>
 <trans-unit id="sdeb90bfd8a80b86b">
   <source>Permissions to add</source>
@@ -8459,6 +8446,170 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s6ecfc18dbfeedd76">
   <source>Select one of the options below to continue.</source>
   <target>选择以下选项之一以继续。</target>
+</trans-unit>
+<trans-unit id="s00bcaadd620a11f8">
+  <source>Latest version unknown</source>
+  <target>最新版本未知</target>
+</trans-unit>
+<trans-unit id="s10fedec3a779ea63">
+  <source>Timestamp</source>
+  <target>时间戳</target>
+</trans-unit>
+<trans-unit id="s48e186fb300e5464">
+  <source>Time</source>
+  <target>时间</target>
+</trans-unit>
+<trans-unit id="saa8aa81ad6f055fd">
+  <source>Level</source>
+  <target>等级</target>
+</trans-unit>
+<trans-unit id="sd0ea7366ebc403ff">
+  <source>Event</source>
+  <target>事件</target>
+</trans-unit>
+<trans-unit id="s225f3e57c6a0d635">
+  <source>Logger</source>
+  <target>日志记录器</target>
+</trans-unit>
+<trans-unit id="s39d6971531a270b6">
+  <source>Update internal password on login</source>
+  <target>登录时更新内部密码</target>
+</trans-unit>
+<trans-unit id="sefe04e319223a3d6">
+  <source>When the user logs in to authentik using this source password backend, update their credentials in authentik.</source>
+  <target>当用户使用此源密码后端登录 authentik 时，在 authentik 内更新他们的凭据。</target>
+</trans-unit>
+<trans-unit id="s5f43af3669b1e098">
+  <source>Source</source>
+  <target>源</target>
+</trans-unit>
+<trans-unit id="sd9f752de8448bcc9">
+  <source>Resume timeout</source>
+  <target>恢复超时</target>
+</trans-unit>
+<trans-unit id="s517954806d7610f2">
+  <source>Amount of time a user can take to return from the source to continue the flow.</source>
+  <target>用户从源返回并继续流程可以消耗的时间。</target>
+</trans-unit>
+<trans-unit id="s8c4bc6e515949112">
+  <source>Your Install ID</source>
+  <target>您的安装 ID</target>
+</trans-unit>
+<trans-unit id="s8cc0075913c67566">
+  <source>Enter the email associated with your account, and we'll send you a link to reset your password.</source>
+  <target>输入与您的账户关联的电子邮件地址，我们将会向您发送重置密码链接。</target>
+</trans-unit>
+<trans-unit id="s06bfe45ffef2cf60">
+  <source>Stage name: <x id="0" equiv-text="${this.challenge.name}"/></source>
+  <target>阶段名称：<x id="0" equiv-text="${this.challenge.name}"/></target>
+</trans-unit>
+<trans-unit id="s90064dd5c4dde2c6">
+  <source>Please scan the QR code above using the Microsoft Authenticator, Google Authenticator, or other authenticator apps on your device, and enter the code the device displays below to finish setting up the MFA device.</source>
+  <target>请用 Microsoft 身份验证器、Google 身份验证器或您设备上的其他身份验证器应用扫描上面的二维码，然后在下方输入设备上显示的代码，以完成 MFA 设备设置。</target>
+</trans-unit>
+<trans-unit id="s02160dc6adba3456">
+  <source>Inject an OAuth or SAML Source into the flow execution. This allows for additional user verification, or to dynamically access different sources for different user identifiers (username, email address, etc).</source>
+  <target>将 OAuth 或 SAML 源注入到流程执行过程中。这允许额外的用户验证，或者基于不同的用户标识符（用户名、电子邮件地址等）动态访问不同的源。</target>
+</trans-unit>
+<trans-unit id="sc7d071fb5cc1f6bf">
+  <source>A selection is required</source>
+  <target>需要进行选择</target>
+</trans-unit>
+<trans-unit id="sa64fb483becc9c2c">
+  <source>Device type restrictions</source>
+  <target>设备类型限制</target>
+</trans-unit>
+<trans-unit id="sbb928551c84cd63f">
+  <source>Available Device types</source>
+  <target>可用设备类型</target>
+</trans-unit>
+<trans-unit id="s6446c35d6b411e53">
+  <source>Selected Device types</source>
+  <target>已选设备类型</target>
+</trans-unit>
+<trans-unit id="s1f4df216b56de4ac">
+  <source>Optionally restrict which WebAuthn device types may be used. When no device types are selected, all devices are allowed.</source>
+  <target>可选的 WebAuthn 可用设备类型限制。如果未选择设备类型，则允许所有设备。</target>
+</trans-unit>
+<trans-unit id="s23ed998c51cbe38f">
+  <source>If the user has successfully authenticated with a device in the classes listed above within this configured duration, this stage will be skipped.</source>
+  <target>如果用户在配置的持续时间内通过上面列出类别中的设备验证身份成功，则跳过此阶段。</target>
+</trans-unit>
+<trans-unit id="s4d4f52ccfd9d6adf">
+  <source>WebAuthn-specific settings</source>
+  <target>WebAuthn 特定设置</target>
+</trans-unit>
+<trans-unit id="sb46d2e64f64c6284">
+  <source>WebAuthn Device type restrictions</source>
+  <target>WebAuthn 设备类型限制</target>
+</trans-unit>
+<trans-unit id="s11274960b13cf21a">
+  <source>This restriction only applies to devices created in authentik 2024.4 or later.</source>
+  <target>此限制仅适用于在 authentik 2024.4 或更新版本中创建的设备。</target>
+</trans-unit>
+<trans-unit id="s4888252cbd785175">
+  <source>Default token duration</source>
+  <target>默认令牌持续时间</target>
+</trans-unit>
+<trans-unit id="s25c80a16a07871ba">
+  <source>Default duration for generated tokens</source>
+  <target>生成令牌的默认持续时间</target>
+</trans-unit>
+<trans-unit id="se5c9ffc025fdf61d">
+  <source>Default token length</source>
+  <target>默认令牌长度</target>
+</trans-unit>
+<trans-unit id="sa6b2c110466d1754">
+  <source>Default length of generated tokens</source>
+  <target>生成令牌的默认长度</target>
+</trans-unit>
+<trans-unit id="s1f25e1e20469a9ea">
+  <source>deleted</source>
+  <target>已删除</target>
+</trans-unit>
+<trans-unit id="s0ca04e397298bc43">
+  <source>Select permissions to assign</source>
+  <target>选择权限以分配</target>
+</trans-unit>
+<trans-unit id="s676d94e7e31a8075">
+  <source>SCIM Source is in preview.</source>
+  <target>SCIM 源目前处于预览状态。</target>
+</trans-unit>
+<trans-unit id="s31f1afc0a81977c1">
+  <source>Update SCIM Source</source>
+  <target>更新 SCIM 源</target>
+</trans-unit>
+<trans-unit id="s4bb356adc8a7f85b">
+  <source>SCIM Base URL</source>
+  <target>SCIM Base URL</target>
+</trans-unit>
+<trans-unit id="sb23304fc42c5d6d9">
+  <source>Provisioned Users</source>
+  <target>预配用户</target>
+</trans-unit>
+<trans-unit id="s6a81ee82b2e5ecbb">
+  <source>Provisioned Groups</source>
+  <target>预配组</target>
+</trans-unit>
+<trans-unit id="s10154dbd4fbc697b">
+  <source>removed</source>
+  <target>已删除</target>
+</trans-unit>
+<trans-unit id="s30d6ff9e15e0a40a">
+  <source>Verifying...</source>
+  <target>正在验证...</target>
+</trans-unit>
+<trans-unit id="sc1673c93148583ba">
+  <source>Request failed. Please try again later.</source>
+  <target>请求失败。请稍后重试。</target>
+</trans-unit>
+<trans-unit id="s85be1f5e7a0fa3b1">
+  <source>Available Roles</source>
+  <target>可用角色</target>
+</trans-unit>
+<trans-unit id="sa59d53ee922c08b5">
+  <source>Selected Roles</source>
+  <target>已选角色</target>
 </trans-unit>
     </body>
   </file>

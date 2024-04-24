@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-01 00:07+0000\n"
+"POT-Creation-Date: 2024-04-16 00:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -117,6 +117,14 @@ msgstr ""
 
 #: authentik/core/models.py
 msgid "Groups"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Add user to group"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Remove user from group"
 msgstr ""
 
 #: authentik/core/models.py
@@ -452,6 +460,20 @@ msgstr ""
 msgid "(You are already connected in another tab/window)"
 msgstr ""
 
+#: authentik/enterprise/stages/source/models.py
+msgid ""
+"Amount of time a user can take to return from the source to continue the "
+"flow (Format: hours=-1;minutes=-2;seconds=-3)"
+msgstr ""
+
+#: authentik/enterprise/stages/source/models.py
+msgid "Source Stage"
+msgstr ""
+
+#: authentik/enterprise/stages/source/models.py
+msgid "Source Stages"
+msgstr ""
+
 #: authentik/events/api/tasks.py
 #, python-brace-format
 msgid "Successfully started task {name}."
@@ -724,6 +746,10 @@ msgstr ""
 
 #: authentik/flows/models.py
 msgid "Flow Tokens"
+msgstr ""
+
+#: authentik/flows/views/executor.py
+msgid "Invalid next URL"
 msgstr ""
 
 #: authentik/lib/utils/time.py
@@ -1738,6 +1764,10 @@ msgid "Field which contains a unique Identifier."
 msgstr ""
 
 #: authentik/sources/ldap/models.py
+msgid "Update internal authentik password when login succeeds with LDAP"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
 msgid ""
 "When a user changes their password, sync it back to LDAP. This can only be "
 "enabled on a single LDAP source."
@@ -2053,6 +2083,14 @@ msgstr ""
 msgid "User SAML Source Connections"
 msgstr ""
 
+#: authentik/sources/scim/models.py
+msgid "SCIM Source"
+msgstr ""
+
+#: authentik/sources/scim/models.py
+msgid "SCIM Sources"
+msgstr ""
+
 #: authentik/stages/authenticator_duo/models.py
 msgid "Duo Authenticator Setup Stage"
 msgstr ""
@@ -2159,7 +2197,15 @@ msgid "TOTP Devices"
 msgstr ""
 
 #: authentik/stages/authenticator_validate/challenge.py
-msgid "Invalid Token"
+msgid ""
+"Invalid Token. Please ensure the time on your device is accurate and try "
+"again."
+msgstr ""
+
+#: authentik/stages/authenticator_validate/challenge.py
+#: authentik/stages/authenticator_webauthn/stage.py
+#, python-brace-format
+msgid "Invalid device type. Contact your {brand} administrator for help."
 msgstr ""
 
 #: authentik/stages/authenticator_validate/models.py
@@ -2211,6 +2257,10 @@ msgstr ""
 msgid "Authenticator Validation Stages"
 msgstr ""
 
+#: authentik/stages/authenticator_validate/stage.py
+msgid "No (allowed) MFA authenticator configured."
+msgstr ""
+
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Authenticator Setup Stage"
 msgstr ""
@@ -2225,6 +2275,14 @@ msgstr ""
 
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Devices"
+msgstr ""
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Device type"
+msgstr ""
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Device types"
 msgstr ""
 
 #: authentik/stages/captcha/models.py
@@ -2807,6 +2865,14 @@ msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Globally enable/disable impersonation."
+msgstr ""
+
+#: authentik/tenants/models.py
+msgid "Default token duration"
+msgstr ""
+
+#: authentik/tenants/models.py
+msgid "Default token length"
 msgstr ""
 
 #: authentik/tenants/models.py

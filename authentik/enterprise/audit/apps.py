@@ -13,9 +13,9 @@ class AuthentikEnterpriseAuditConfig(EnterpriseConfig):
     verbose_name = "authentik Enterprise.Audit"
     default = True
 
-    @EnterpriseConfig.reconcile_global
-    def install_middleware(self):
+    def ready(self):
         """Install enterprise audit middleware"""
         orig_import = "authentik.events.middleware.AuditMiddleware"
         new_import = "authentik.enterprise.audit.middleware.EnterpriseAuditMiddleware"
         settings.MIDDLEWARE = [new_import if x == orig_import else x for x in settings.MIDDLEWARE]
+        return super().ready()

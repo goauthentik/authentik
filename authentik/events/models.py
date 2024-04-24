@@ -305,6 +305,16 @@ class Event(SerializerModel, ExpiringModel):
     class Meta:
         verbose_name = _("Event")
         verbose_name_plural = _("Events")
+        indexes = [
+            models.Index(fields=["action"]),
+            models.Index(fields=["user"]),
+            models.Index(fields=["app"]),
+            models.Index(fields=["created"]),
+            models.Index(fields=["client_ip"]),
+            models.Index(
+                models.F("context__authorized_application"), name="authentik_e_ctx_app__idx"
+            ),
+        ]
 
 
 class TransportMode(models.TextChoices):
@@ -452,6 +462,13 @@ class NotificationTransport(SerializerModel):
 
     def send_email(self, notification: "Notification") -> list[str]:
         """Send notification via global email configuration"""
+        if notification.user.email.strip() == "":
+            LOGGER.info(
+                "Discarding notification as user has no email address",
+                user=notification.user,
+                notification=notification,
+            )
+            return None
         subject_prefix = "authentik Notification: "
         context = {
             "key_value": {
@@ -481,7 +498,7 @@ class NotificationTransport(SerializerModel):
             }
         mail = TemplateEmailMessage(
             subject=subject_prefix + context["title"],
-            to=[f"{notification.user.name} <{notification.user.email}>"],
+            to=[(notification.user.name, notification.user.email)],
             language=notification.user.locale(),
             template_name="email/event_notification.html",
             template_context=context,

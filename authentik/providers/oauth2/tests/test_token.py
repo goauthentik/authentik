@@ -208,7 +208,7 @@ class TestToken(OAuthTestCase):
                 "token_type": TOKEN_TYPE,
                 "expires_in": 3600,
                 "id_token": provider.encode(
-                    refresh.id_token.to_dict(),
+                    access.id_token.to_dict(),
                 ),
             },
         )
@@ -267,7 +267,7 @@ class TestToken(OAuthTestCase):
                 "token_type": TOKEN_TYPE,
                 "expires_in": 3600,
                 "id_token": provider.encode(
-                    refresh.id_token.to_dict(),
+                    access.id_token.to_dict(),
                 ),
             },
         )
