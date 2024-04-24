@@ -21,6 +21,7 @@ def register_signals(
     def post_save_provider(sender: type[Model], instance, created: bool, **_):
         """Trigger sync when Provider is saved"""
         task_sync_single.delay(instance.pk)
+
     post_save.connect(post_save_provider, provider_type, dispatch_uid=uid)
 
     def model_post_save(sender: type[Model], instance: User | Group, created: bool, **_):
@@ -28,6 +29,7 @@ def register_signals(
         if not provider_type.objects.filter(backchannel_application__isnull=False).exists():
             return
         task_sync_direct.delay(class_to_path(instance.__class__), instance.pk, Direction.add.value)
+
     post_save.connect(model_post_save, User, dispatch_uid=uid)
     post_save.connect(model_post_save, Group, dispatch_uid=uid)
 
@@ -38,6 +40,7 @@ def register_signals(
         task_sync_direct.delay(
             class_to_path(instance.__class__), instance.pk, Direction.remove.value
         )
+
     pre_delete.connect(model_pre_delete, User, dispatch_uid=uid)
     pre_delete.connect(model_pre_delete, Group, dispatch_uid=uid)
 
@@ -56,4 +59,5 @@ def register_signals(
         else:
             for group_pk in pk_set:
                 task_sync_m2m.delay(group_pk, action, [instance.pk])
+
     m2m_changed.connect(model_m2m_changed, User.ak_groups.through, dispatch_uid=uid)

@@ -27,8 +27,3 @@ class SCIMRequestException(TransientSyncException):
         except ValidationError:
             pass
         return self._message
-
-
-class ResourceMissing(SCIMRequestException):
-    """Error raised when the provider raises a 404, meaning that we
-    should delete our internal ID and re-create the object"""

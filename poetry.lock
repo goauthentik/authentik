@@ -1630,22 +1630,6 @@ httplib2 = ">=0.19.0,<1.dev0"
 uritemplate = ">=3.0.1,<5"
 
 [[package]]
-name = "google-api-python-client-stubs"
-version = "1.25.0"
-description = "Type stubs for google-api-python-client"
-optional = false
-python-versions = ">=3.7,<4.0"
-files = [
-    {file = "google_api_python_client_stubs-1.25.0-py3-none-any.whl", hash = "sha256:2eff1e27b0b2980843f0ed242e430e29a2f7a2808d7b90e971f23e4ea73827a7"},
-    {file = "google_api_python_client_stubs-1.25.0.tar.gz", hash = "sha256:f4d219012afb35e3dfbdcfffcb0b347179045f9f48a8d59ef9d45cc743f300d4"},
-]
-
-[package.dependencies]
-google-api-python-client = ">=2.122.0"
-types-httplib2 = ">=0.22.0.2"
-typing-extensions = ">=3.10.0"
-
-[[package]]
 name = "google-auth"
 version = "2.29.0"
 description = "Google Authentication Library"
@@ -4081,17 +4065,6 @@ dev = ["pep8 (>=1.6.2)", "pyenchant (>=1.6.6)", "pytest (>=2.6.4)", "pytest-cov 
 twisted = ["twisted (>=20.3.0)", "zope.interface (>=5.2.0)"]
 
 [[package]]
-name = "types-httplib2"
-version = "0.22.0.20240310"
-description = "Typing stubs for httplib2"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "types-httplib2-0.22.0.20240310.tar.gz", hash = "sha256:1eda99fea18ec8a1dc1a725ead35b889d0836fec1b11ae6f1fe05440724c1d15"},
-    {file = "types_httplib2-0.22.0.20240310-py3-none-any.whl", hash = "sha256:8cd706fc81f0da32789a4373a28df6f39e9d5657d1281db4d2fd22ee29e83661"},
-]
-
-[[package]]
 name = "typing-extensions"
 version = "4.11.0"
 description = "Backported and Experimental Type Hints for Python 3.8+"
@@ -4756,4 +4729,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12"
-content-hash = "5501d60bb7750029e69579d9d4ca673adc7b1cfa765ee572d8c320589bac447d"
+content-hash = "1ef87ed82de9c403cc569f4858d874e85da73924a610190379f7db3a76458d5b"

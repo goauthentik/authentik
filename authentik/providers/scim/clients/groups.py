@@ -9,12 +9,11 @@ from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Group
 from authentik.events.models import Event, EventAction
 from authentik.lib.sync.outgoing.base import Direction
-from authentik.lib.sync.outgoing.exceptions import StopSync
+from authentik.lib.sync.outgoing.exceptions import NotFoundSyncException, StopSync
 from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.utils import delete_none_values
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.clients.exceptions import (
-    ResourceMissing,
     SCIMRequestException,
 )
 from authentik.providers.scim.clients.schema import Group as SCIMGroupSchema
@@ -32,7 +31,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
             return self._create(obj)
         try:
             return self._update(obj, scim_group)
-        except ResourceMissing:
+        except NotFoundSyncException:
             scim_group.delete()
             return self._create(obj)
 
@@ -126,7 +125,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
                     exclude_unset=True,
                 ),
             )
-        except ResourceMissing:
+        except NotFoundSyncException:
             # Resource missing is handled by self.write, which will re-create the group
             raise
         except SCIMRequestException:

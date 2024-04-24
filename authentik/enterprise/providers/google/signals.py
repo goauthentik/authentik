@@ -1,4 +1,4 @@
-"""SCIM provider signals"""
+"""Google provider signals"""
 
 from authentik.enterprise.providers.google.models import GoogleProvider
 from authentik.enterprise.providers.google.tasks import (

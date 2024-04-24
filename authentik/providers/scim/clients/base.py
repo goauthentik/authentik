@@ -7,8 +7,9 @@ from pydantic import ValidationError
 from requests import RequestException, Session
 
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
+from authentik.lib.sync.outgoing.exceptions import NotFoundSyncException
 from authentik.lib.utils.http import get_http_session
-from authentik.providers.scim.clients.exceptions import ResourceMissing, SCIMRequestException
+from authentik.providers.scim.clients.exceptions import SCIMRequestException
 from authentik.providers.scim.clients.schema import ServiceProviderConfiguration
 from authentik.providers.scim.models import SCIMProvider
 
@@ -58,7 +59,7 @@ class SCIMClient[TModel: "Model", TSchema: "BaseModel"](
         self.logger.debug("scim request", path=path, method=method, **kwargs)
         if response.status_code >= HttpResponseBadRequest.status_code:
             if response.status_code == HttpResponseNotFound.status_code:
-                raise ResourceMissing(response)
+                raise NotFoundSyncException(response)
             self.logger.warning(
                 "Failed to send SCIM request", path=path, method=method, response=response.text
             )

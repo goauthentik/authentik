@@ -46,25 +46,3 @@ class GoogleProviderViewSet(UsedByMixin, ModelViewSet):
     ]
     search_fields = ["name"]
     ordering = ["name"]
-
-    # @extend_schema(
-    #     responses={
-    #         200: SCIMSyncStatusSerializer(),
-    #         404: OpenApiResponse(description="Task not found"),
-    #     }
-    # )
-    # @action(methods=["GET"], detail=True, pagination_class=None, filter_backends=[])
-    # def sync_status(self, request: Request, pk: int) -> Response:
-    #     """Get provider's sync status"""
-    #     provider: GoogleProvider = self.get_object()
-    #     tasks = list(
-    #         get_objects_for_user(request.user, "authentik_events.view_systemtask").filter(
-    #             name="scim_sync",
-    #             uid=slugify(provider.name),
-    #         )
-    #     )
-    #     status = {
-    #         "tasks": tasks,
-    #         "is_running": provider.sync_lock.locked(),
-    #     }
-    #     return Response(SCIMSyncStatusSerializer(status).data)

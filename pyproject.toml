@@ -156,7 +156,6 @@ coverage = { extras = ["toml"], version = "*" }
 debugpy = "*"
 drf-jsonschema-serializer = "*"
 freezegun = "*"
-google-api-python-client-stubs = "*"
 importlib-metadata = "*"
 pdoc = "*"
 pyrad = "*"

@@ -44,10 +44,6 @@ class GoogleProvider(OutgoingSyncProvider, BackchannelProvider):
             from authentik.enterprise.providers.google.clients.users import GoogleUserClient
 
             return GoogleUserClient(self)
-        # if issubclass(model, Group):
-        #     from authentik.enterprise.providers.google.clients.groups import SCIMGroupClient
-
-        #     return SCIMGroupClient(self)
         raise ValueError(f"Invalid model {model}")
 
     def get_object_qs(self, type: type[User | Group]) -> QuerySet[User | Group]:
