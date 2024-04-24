@@ -125,7 +125,7 @@ class AppleType(SourceType):
         )
         args = apple_client.get_redirect_args()
         return AppleLoginChallenge(
-            instance={
+            data={
                 "client_id": apple_client.get_client_id(),
                 "scope": "name email",
                 "redirect_uri": args["redirect_uri"],
