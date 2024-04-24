@@ -1,19 +1,19 @@
 """SCIM Provider models"""
 
+from typing import Any, Self
 from uuid import uuid4
 
-from django.core.cache import cache
 from django.db import models
 from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
-from redis.lock import Lock
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import BackchannelProvider, Group, PropertyMapping, User, UserTypes
-from authentik.providers.scim.clients import PAGE_TIMEOUT
+from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
+from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 
 
-class SCIMProvider(BackchannelProvider):
+class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
     """SCIM 2.0 provider to create users and groups in external applications"""
 
     exclude_users_service_account = models.BooleanField(default=False)
@@ -32,30 +32,35 @@ class SCIMProvider(BackchannelProvider):
         help_text=_("Property mappings used for group creation/updating."),
     )
 
-    @property
-    def sync_lock(self) -> Lock:
-        """Redis lock for syncing SCIM to prevent multiple parallel syncs happening"""
-        return Lock(
-            cache.client.get_client(),
-            name=f"goauthentik.io/providers/scim/sync-{str(self.pk)}",
-            timeout=(60 * 60 * PAGE_TIMEOUT) * 3,
-        )
+    def client_for_model(
+        self, model: type[User | Group]
+    ) -> BaseOutgoingSyncClient[User | Group, Any, Self]:
+        if issubclass(model, User):
+            from authentik.providers.scim.clients.user import SCIMUserClient
 
-    def get_user_qs(self) -> QuerySet[User]:
-        """Get queryset of all users with consistent ordering
-        according to the provider's settings"""
-        base = User.objects.all().exclude_anonymous()
-        if self.exclude_users_service_account:
-            base = base.exclude(type=UserTypes.SERVICE_ACCOUNT).exclude(
-                type=UserTypes.INTERNAL_SERVICE_ACCOUNT
-            )
-        if self.filter_group:
-            base = base.filter(ak_groups__in=[self.filter_group])
-        return base.order_by("pk")
+            return SCIMUserClient(self)
+        if issubclass(model, Group):
+            from authentik.providers.scim.clients.group import SCIMGroupClient
 
-    def get_group_qs(self) -> QuerySet[Group]:
-        """Get queryset of all groups with consistent ordering"""
-        return Group.objects.all().order_by("pk")
+            return SCIMGroupClient(self)
+        raise ValueError(f"Invalid model {model}")
+
+    def get_object_qs(self, type: type[User | Group]) -> QuerySet[User | Group]:
+        if type == User:
+            # Get queryset of all users with consistent ordering
+            # according to the provider's settings
+            base = User.objects.all().exclude_anonymous()
+            if self.exclude_users_service_account:
+                base = base.exclude(type=UserTypes.SERVICE_ACCOUNT).exclude(
+                    type=UserTypes.INTERNAL_SERVICE_ACCOUNT
+                )
+            if self.filter_group:
+                base = base.filter(ak_groups__in=[self.filter_group])
+            return base.order_by("pk")
+        if type == Group:
+            # Get queryset of all groups with consistent ordering
+            return Group.objects.all().order_by("pk")
+        raise ValueError(f"Invalid type {type}")
 
     @property
     def component(self) -> str:

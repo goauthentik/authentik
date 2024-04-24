@@ -5,42 +5,48 @@ from django.db.models.signals import m2m_changed, post_save, pre_delete
 from django.dispatch import receiver
 from structlog.stdlib import get_logger
 
-from authentik.core.models import BackchannelProvider, Group, User
+from authentik.core.models import Group, User
+from authentik.lib.sync.outgoing.base import Direction
+from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.utils.reflection import class_to_path
-from authentik.providers.scim.tasks import scim_signal_direct, scim_signal_m2m
 
 LOGGER = get_logger()
 
 
 def register_signals(
-    provider_type: type[BackchannelProvider], task_sync_single: Callable[[int], None]
+    provider_type: type[OutgoingSyncProvider],
+    task_sync_single: Callable[[int], None],
+    task_sync_direct: Callable[[int], None],
+    task_sync_m2m: Callable[[int], None],
 ):
     """Register sync signals"""
     uid = class_to_path(provider_type)
 
     @receiver(post_save, sender=provider_type, dispatch_uid=uid)
     def post_save_provider(sender: type[Model], instance, created: bool, **_):
-        """Trigger sync when SCIM provider is saved"""
+        """Trigger sync when Provider is saved"""
         task_sync_single.delay(instance.pk)
 
     @receiver(post_save, sender=User, dispatch_uid=uid)
     @receiver(post_save, sender=Group, dispatch_uid=uid)
-    def post_save_scim(sender: type[Model], instance: User | Group, created: bool, **_):
+    def model_post_save(sender: type[Model], instance: User | Group, created: bool, **_):
         """Post save handler"""
         if not provider_type.objects.filter(backchannel_application__isnull=False).exists():
             return
-        scim_signal_direct.delay(class_to_path(instance.__class__), instance.pk, "add")
+        task_sync_direct.delay(class_to_path(instance.__class__), instance.pk, Direction.add.value)
 
     @receiver(pre_delete, sender=User, dispatch_uid=uid)
     @receiver(pre_delete, sender=Group, dispatch_uid=uid)
-    def pre_delete_scim(sender: type[Model], instance: User | Group, **_):
+    def model_pre_delete(sender: type[Model], instance: User | Group, **_):
         """Pre-delete handler"""
         if not provider_type.objects.filter(backchannel_application__isnull=False).exists():
             return
-        scim_signal_direct.delay(class_to_path(instance.__class__), instance.pk, "remove")
+        task_sync_direct.delay(
+            class_to_path(instance.__class__), instance.pk, Direction.remove.value
+        )
 
     @receiver(m2m_changed, sender=User.ak_groups.through, dispatch_uid=uid)
-    def m2m_changed_scim(
+    def model_m2m_changed(
         sender: type[Model], instance, action: str, pk_set: set, reverse: bool, **kwargs
     ):
         """Sync group membership"""
@@ -51,7 +57,7 @@ def register_signals(
         # reverse: instance is a Group, pk_set is a list of user pks
         # non-reverse: instance is a User, pk_set is a list of groups
         if reverse:
-            scim_signal_m2m.delay(str(instance.pk), action, list(pk_set))
+            task_sync_m2m.delay(str(instance.pk), action, list(pk_set))
         else:
             for group_pk in pk_set:
-                scim_signal_m2m.delay(group_pk, action, [instance.pk])
+                task_sync_m2m.delay(group_pk, action, [instance.pk])

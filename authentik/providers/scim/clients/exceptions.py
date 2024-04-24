@@ -3,11 +3,11 @@
 from pydantic import ValidationError
 from requests import Response
 
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.sync.outgoing.exceptions import TransientSyncException
 from authentik.providers.scim.clients.schema import SCIMError
 
 
-class SCIMRequestException(SentryIgnoredException):
+class SCIMRequestException(TransientSyncException):
     """Exception raised when an SCIM request fails"""
 
     _response: Response | None

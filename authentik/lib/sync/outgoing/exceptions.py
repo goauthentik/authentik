@@ -1,7 +1,15 @@
 from authentik.lib.sentry import SentryIgnoredException
 
 
-class StopSync(SentryIgnoredException):
+class BaseSyncException(SentryIgnoredException):
+    """Base class for all sync exceptions"""
+
+
+class TransientSyncException(BaseSyncException):
+    """Transient sync exception which may be caused by network blips, etc"""
+
+
+class StopSync(BaseSyncException):
     """Exception raised when a configuration error should stop the sync process"""
 
     def __init__(self, exc: Exception, obj: object, mapping: object | None = None) -> None:

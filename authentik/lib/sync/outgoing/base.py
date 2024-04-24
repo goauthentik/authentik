@@ -1,5 +1,6 @@
 """Basic outgoing sync Client"""
 
+from enum import StrEnum
 from typing import TYPE_CHECKING
 
 from structlog.stdlib import get_logger
@@ -7,10 +8,16 @@ from structlog.stdlib import get_logger
 if TYPE_CHECKING:
     from django.db.models import Model
 
-    from authentik.core.models import BackchannelProvider
+    from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 
 
-class BaseOutgoingSyncClient[TModel: "Model", TSchema: dict, TProvider: "BackchannelProvider"]:
+class Direction(StrEnum):
+
+    add = "add"
+    remove = "remove"
+
+
+class BaseOutgoingSyncClient[TModel: "Model", TSchema: dict, TProvider: "OutgoingSyncProvider"]:
     """Basic Outgoing sync client Client"""
 
     provider: TProvider
