@@ -2,6 +2,7 @@
 
 from typing import Any
 
+from django.utils.timezone import now
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from guardian.shortcuts import assign_perm, get_anonymous_user
@@ -67,7 +68,7 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
             max_token_lifetime_dt = default_token_duration()
             if max_token_lifetime is not None:
                 try:
-                    max_token_lifetime_dt = timedelta_from_string(max_token_lifetime)
+                    max_token_lifetime_dt = now() + timedelta_from_string(max_token_lifetime)
                 except ValueError:
                     pass
 
