@@ -43,7 +43,10 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 continue
             attributes = user.get("attributes", {})
             user_dn = flatten(user.get("entryDN", user.get("dn")))
-            if self._source.object_uniqueness_field not in attributes:
+            if (
+                self._source.object_uniqueness_field not in attributes
+                and self._source.object_uniqueness_field
+            ):
                 self.message(
                     f"Cannot find uniqueness field in attributes: '{user_dn}'",
                     attributes=attributes.keys(),
