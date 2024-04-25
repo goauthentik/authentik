@@ -153,7 +153,7 @@ class Migration(migrations.Migration):
                 (
                     "object_uniqueness_field",
                     models.TextField(
-                        default="objectSid", help_text="Field which contains a unique Identifier."
+                        default="entryDN", help_text="Field which contains a unique Identifier."
                     ),
                 ),
                 ("sync_groups", models.BooleanField(default=True)),

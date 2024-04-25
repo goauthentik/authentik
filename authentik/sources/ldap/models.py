@@ -88,7 +88,7 @@ class LDAPSource(Source):
         help_text=_("Consider Objects matching this filter to be Groups."),
     )
     object_uniqueness_field = models.TextField(
-        default="objectSid", help_text=_("Field which contains a unique Identifier.")
+        default="entryDN", help_text=_("Field which contains a unique Identifier.")
     )
 
     property_mappings_group = models.ManyToManyField(
