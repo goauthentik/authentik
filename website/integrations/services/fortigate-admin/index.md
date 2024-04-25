@@ -23,7 +23,7 @@ The following placeholders will be used:
 > [!IMPORTANT]
 > If you have changed the port of the admin login from 443 to anything else you have to append it behind `fgt.company`. So f.e. `fgt.company:10443`.
 
-## Custom Propery Mapping
+## Custom Property Mapping
 
 Create a new SAML Property Mapping under the Customization settings.
 
