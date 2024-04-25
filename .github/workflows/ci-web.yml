@@ -34,6 +34,12 @@ jobs:
       - name: Eslint
         working-directory: ${{ matrix.project }}/
         run: npm run lint
+  lint-lockfile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - working-directory: web/
+        run: [ -z "$(jq -r '.packages | to_entries[] | select((.key | startswith("node_modules")) and (.value | has("resolved") | not)) | .key' < package-lock.json)" ]
   lint-build:
     runs-on: ubuntu-latest
     steps:
