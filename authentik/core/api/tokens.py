@@ -27,7 +27,6 @@ from authentik.core.models import (
     TokenIntents,
     User,
     default_token_duration,
-    token_expires_from_timedelta,
 )
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import model_to_dict
@@ -70,13 +69,15 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
                 try:
                     max_token_lifetime_dt = timedelta_from_string(max_token_lifetime)
                 except ValueError:
-                    max_token_lifetime_dt = default_token_duration()
+                    pass
 
-            if "expires" in attrs and attrs.get("expires") > token_expires_from_timedelta(
-                max_token_lifetime_dt
-            ):
+            if "expires" in attrs and attrs.get("expires") > max_token_lifetime_dt:
                 raise ValidationError(
-                    {"expires": f"Token expires exceeds maximum lifetime ({max_token_lifetime})."}
+                    {
+                        "expires": (
+                            f"Token expires exceeds maximum lifetime ({max_token_lifetime_dt} UTC)."
+                        )
+                    }
                 )
         elif attrs.get("intent") == TokenIntents.INTENT_API:
             # For API tokens, expires cannot be overridden

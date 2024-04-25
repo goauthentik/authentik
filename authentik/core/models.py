@@ -1,6 +1,6 @@
 """authentik core models"""
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from hashlib import sha256
 from typing import Any, Optional, Self
 from uuid import uuid4
@@ -66,11 +66,6 @@ def default_token_duration() -> datetime:
         else DEFAULT_TOKEN_DURATION
     )
     return now() + timedelta_from_string(token_duration)
-
-
-def token_expires_from_timedelta(dt: timedelta) -> datetime:
-    """Return a `datetime.datetime` object with the duration of the Token"""
-    return now() + dt
 
 
 def default_token_key() -> str:
