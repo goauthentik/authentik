@@ -50,7 +50,11 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                     dn=user_dn,
                 )
                 continue
-            uniq = flatten(attributes[self._source.object_uniqueness_field])
+            uniq = flatten(
+                attributes[self._source.object_uniqueness_field]
+                if self._source.object_uniqueness_field in attributes
+                else user.get(self._source.object_uniqueness_field)
+            )
             try:
                 defaults = self.build_user_properties(user_dn, **attributes)
                 self._logger.debug("Writing user with attributes", **defaults)

@@ -48,7 +48,11 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                     dn=group_dn,
                 )
                 continue
-            uniq = flatten(attributes[self._source.object_uniqueness_field])
+            uniq = flatten(
+                attributes[self._source.object_uniqueness_field]
+                if self._source.object_uniqueness_field in attributes
+                else group.get(self._source.object_uniqueness_field)
+            )
             try:
                 defaults = self.build_group_properties(group_dn, **attributes)
                 defaults["parent"] = self._source.sync_parent_group
