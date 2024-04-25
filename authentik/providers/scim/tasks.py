@@ -1,17 +1,33 @@
 """SCIM Provider tasks"""
 
-from authentik.lib.sync.outgoing.tasks import (
-    SyncAllTask,
-    SyncObjectTask,
-    SyncSignalDirectTask,
-    SyncSignalM2MTask,
-    SyncSingleTask,
-)
+from authentik.events.system_tasks import SystemTask
+from authentik.lib.sync.outgoing.tasks import SyncTasks
 from authentik.providers.scim.models import SCIMProvider
 from authentik.root.celery import CELERY_APP
 
-scim_sync_objects = CELERY_APP.register_task(SyncObjectTask(SCIMProvider))
-scim_sync = CELERY_APP.register_task(SyncSingleTask(SCIMProvider, scim_sync_objects))
-scim_sync_all = CELERY_APP.register_task(SyncAllTask(SCIMProvider, scim_sync))
-scim_sync_direct = CELERY_APP.register_task(SyncSignalDirectTask(SCIMProvider))
-scim_sync_m2m = CELERY_APP.register_task(SyncSignalM2MTask(SCIMProvider))
+sync_tasks = SyncTasks(SCIMProvider)
+
+
+@CELERY_APP.task()
+def scim_sync_objects(*args, **kwargs):
+    return sync_tasks.sync_objects(*args, **kwargs)
+
+
+@CELERY_APP.task(base=SystemTask, bind=True)
+def scim_sync(self, provider_pk: int, *args, **kwargs):
+    return sync_tasks.sync_single(self, provider_pk, scim_sync_objects)
+
+
+@CELERY_APP.task()
+def scim_sync_all():
+    return sync_tasks.sync_all(scim_sync)
+
+
+@CELERY_APP.task()
+def scim_sync_direct(*args, **kwargs):
+    return sync_tasks.sync_signal_direct(*args, **kwargs)
+
+
+@CELERY_APP.task()
+def scim_sync_m2m(*args, **kwargs):
+    return sync_tasks.sync_signal_m2m(*args, **kwargs)

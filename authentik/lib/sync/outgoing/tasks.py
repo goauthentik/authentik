@@ -6,7 +6,6 @@ from django.db.models import Model, QuerySet
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from structlog.stdlib import BoundLogger, get_logger
-from tenant_schemas_celery.task import TenantTask
 
 from authentik.core.models import Group, User
 from authentik.events.models import TaskStatus
@@ -18,34 +17,24 @@ from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.utils.reflection import class_to_path, path_to_class
 
 
-class SyncAllTask(TenantTask):
-    """Task to trigger a sync in all providers, usually scheduled"""
+class SyncTasks:
 
-    def __init__(
-        self, provider_model: type[OutgoingSyncProvider], single_sync: Callable[[int], None]
-    ) -> None:
+    logger: BoundLogger
+
+    def __init__(self, provider_model: type[OutgoingSyncProvider]) -> None:
         super().__init__()
         self._provider_model = provider_model
-        self._single_sync = single_sync
 
-    def run(self):
+    def sync_all(self, single_sync: Callable[[int], None]):
         for provider in self._provider_model.objects.filter(backchannel_application__isnull=False):
-            self._single_sync.delay(provider.pk)
+            single_sync.delay(provider.pk)
 
-
-class SyncSingleTask(SystemTask):
-    """Task to trigger sync of all providers, triggered by SyncAllTask or on signal"""
-
-    def __init__(
+    def sync_single(
         self,
-        provider_model: type[OutgoingSyncProvider],
+        task: SystemTask,
+        provider_pk: int,
         sync_objects: Callable[[int, int], list[str]],
-    ) -> None:
-        super().__init__()
-        self._provider_model = provider_model
-        self._sync_objects = sync_objects
-
-    def run(self, provider_pk: int):
+    ):
         provider = self._provider_model.objects.filter(
             pk=provider_pk, backchannel_application__isnull=False
         ).first()
@@ -55,47 +44,39 @@ class SyncSingleTask(SystemTask):
         if lock.locked():
             self.logger.debug("Sync locked, skipping task", source=provider.name)
             return
-        self.set_uid(slugify(provider.name))
+        task.set_uid(slugify(provider.name))
         messages = []
         messages.append(_("Starting full provider sync"))
         self.logger.debug("Starting provider sync")
         users_paginator = Paginator(provider.get_object_qs(User), PAGE_SIZE)
         groups_paginator = Paginator(provider.get_object_qs(Group), PAGE_SIZE)
-        self.soft_time_limit = self.time_limit = (
+        task.soft_time_limit = task.time_limit = (
             users_paginator.count + groups_paginator.count
         ) * PAGE_TIMEOUT
         with allow_join_result():
             try:
                 for page in users_paginator.page_range:
                     messages.append(_("Syncing page %(page)d of users" % {"page": page}))
-                    for msg in self._sync_objects.delay(
-                        class_to_path(User), page, provider_pk
+                    for msg in sync_objects.apply_async(
+                        args=(class_to_path(User), page, provider_pk),
+                        time_limit=PAGE_TIMEOUT,
+                        soft_time_limit=PAGE_TIMEOUT,
                     ).get():
                         messages.append(msg)
                 for page in groups_paginator.page_range:
                     messages.append(_("Syncing page %(page)d of groups" % {"page": page}))
-                    for msg in self._sync_objects.delay(
-                        class_to_path(Group), page, provider_pk
+                    for msg in sync_objects.apply_async(
+                        args=(class_to_path(Group), page, provider_pk),
+                        time_limit=PAGE_TIMEOUT,
+                        soft_time_limit=PAGE_TIMEOUT,
                     ).get():
                         messages.append(msg)
             except StopSync as exc:
-                self.set_error(exc)
+                task.set_error(exc)
                 return
-        self.set_status(TaskStatus.SUCCESSFUL, *messages)
+        task.set_status(TaskStatus.SUCCESSFUL, *messages)
 
-
-class SyncObjectTask(TenantTask):
-    """Sync a specified object (user/group)"""
-
-    logger: BoundLogger
-
-    def __init__(self, provider_model: type[OutgoingSyncProvider]) -> None:
-        super().__init__()
-        self._provider_model = provider_model
-        self.soft_time_limit = PAGE_TIMEOUT
-        self.time_limit = PAGE_TIMEOUT
-
-    def run(self, object_type: str, page: int, provider_pk: int):
+    def sync_objects(self, object_type: str, page: int, provider_pk: int):
         _object_type = path_to_class(object_type)
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
@@ -146,17 +127,7 @@ class SyncObjectTask(TenantTask):
                 break
         return messages
 
-
-class SyncSignalDirectTask(TenantTask):
-    """Handler for post_save and pre_delete signal"""
-
-    logger: BoundLogger
-
-    def __init__(self, provider_model: type[OutgoingSyncProvider]) -> None:
-        super().__init__()
-        self._provider_model = provider_model
-
-    def run(self, model: str, pk: str | int, raw_op: str):
+    def sync_signal_direct(self, model: str, pk: str | int, raw_op: str):
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
         )
@@ -185,17 +156,7 @@ class SyncSignalDirectTask(TenantTask):
             except (StopSync, TransientSyncException) as exc:
                 self.logger.warning(exc, provider_pk=provider.pk)
 
-
-class SyncSignalM2MTask(TenantTask):
-    """Update m2m (group membership)"""
-
-    logger: BoundLogger
-
-    def __init__(self, provider_model: type[OutgoingSyncProvider]) -> None:
-        super().__init__()
-        self._provider_model = provider_model
-
-    def run(self, group_pk: str, action: str, pk_set: list[int]):
+    def sync_signal_m2m(self, group_pk: str, action: str, pk_set: list[int]):
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
         )
