@@ -1,14 +1,12 @@
 import { authentikBrandContext } from "@goauthentik/elements/AuthentikContexts";
+import type { AbstractConstructor } from "@goauthentik/elements/types.js";
 
 import { consume } from "@lit/context";
 import type { LitElement } from "lit";
 
 import type { CurrentBrand } from "@goauthentik/api";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Constructor<T = object> = abstract new (...args: any[]) => T;
-
-export function WithBrandConfig<T extends Constructor<LitElement>>(
+export function WithBrandConfig<T extends AbstractConstructor<LitElement>>(
     superclass: T,
     subscribe = true,
 ) {
