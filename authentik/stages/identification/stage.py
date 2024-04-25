@@ -237,7 +237,7 @@ class IdentificationStageView(ChallengeStageView):
         )
         for source in sources:
             ui_login_button = source.ui_login_button(self.request)
-            if source.component == "":
+            if source.slug != "authentik-built-in" and source.component == "":
                 continue
             if ui_login_button:
                 button = asdict(ui_login_button)
