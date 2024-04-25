@@ -4,7 +4,7 @@ from collections.abc import Generator
 from typing import Any
 
 from django.db.models import Q
-from ldap3 import SUBTREE
+from ldap3 import ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE
 
 from authentik.core.models import Group, User
 from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME
@@ -33,11 +33,7 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
             search_base=self.base_dn_groups,
             search_filter=self._source.group_object_filter,
             search_scope=SUBTREE,
-            attributes=[
-                self._source.group_membership_field,
-                self._source.object_uniqueness_field,
-                LDAP_DISTINGUISHED_NAME,
-            ],
+            attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES],
             **kwargs,
         )
 
@@ -80,7 +76,7 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
     def get_group(self, group_dict: dict[str, Any]) -> Group | None:
         """Check if we fetched the group already, and if not cache it for later"""
         group_dn = group_dict.get("attributes", {}).get(LDAP_DISTINGUISHED_NAME, [])
-        group_uniq = group_dict.get("attributes", {}).get(self._source.object_uniqueness_field, [])
+        group_uniq = self.get_unique_identifier(group_dict)
         # group_uniq might be a single string or an array with (hopefully) a single string
         if isinstance(group_uniq, list):
             if len(group_uniq) < 1:

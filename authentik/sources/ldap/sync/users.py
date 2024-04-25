@@ -43,23 +43,16 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 continue
             attributes = user.get("attributes", {})
             user_dn = flatten(user.get("entryDN", user.get("dn")))
-            if (
-                self._source.object_uniqueness_field not in attributes
-                and self._source.object_uniqueness_field
-            ):
+            uniq = self.get_unique_identifier(user)
+            if not uniq:
                 self.message(
                     f"Cannot find uniqueness field in attributes: '{user_dn}'",
                     attributes=attributes.keys(),
                     dn=user_dn,
                 )
                 continue
-            uniq = flatten(
-                attributes[self._source.object_uniqueness_field]
-                if self._source.object_uniqueness_field in attributes
-                else user.get(self._source.object_uniqueness_field)
-            )
             try:
-                defaults = self.build_user_properties(user_dn, **attributes)
+                defaults = self.build_user_properties(user_dn, uniq, **attributes)
                 self._logger.debug("Writing user with attributes", **defaults)
                 if "username" not in defaults:
                     raise IntegrityError("Username was not set by propertymappings")

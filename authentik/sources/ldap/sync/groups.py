@@ -41,23 +41,16 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                 continue
             attributes = group.get("attributes", {})
             group_dn = flatten(flatten(group.get("entryDN", group.get("dn"))))
-            if (
-                self._source.object_uniqueness_field not in attributes
-                and self._source.object_uniqueness_field
-            ):
+            uniq = self.get_unique_identifier(group)
+            if not uniq:
                 self.message(
                     f"Cannot find uniqueness field in attributes: '{group_dn}'",
                     attributes=attributes.keys(),
                     dn=group_dn,
                 )
                 continue
-            uniq = flatten(
-                attributes[self._source.object_uniqueness_field]
-                if self._source.object_uniqueness_field in attributes
-                else group.get(self._source.object_uniqueness_field)
-            )
             try:
-                defaults = self.build_group_properties(group_dn, **attributes)
+                defaults = self.build_group_properties(group_dn, uniq, **attributes)
                 defaults["parent"] = self._source.sync_parent_group
                 if "name" not in defaults:
                     raise IntegrityError("Name was not set by propertymappings")

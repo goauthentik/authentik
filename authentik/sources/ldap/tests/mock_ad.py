@@ -41,7 +41,7 @@ def mock_ad_connection(password: str) -> Connection:
     connection.strategy.add_entry(
         "cn=group2,ou=groups,dc=goauthentik,dc=io",
         {
-            "name": "test-group",
+            "name": "test-group2",
             "objectClass": "group",
             "distinguishedName": "cn=group2,ou=groups,dc=goauthentik,dc=io",
         },
@@ -61,18 +61,6 @@ def mock_ad_connection(password: str) -> Connection:
             ),
         },
     )
-    # User without SID
-    connection.strategy.add_entry(
-        "cn=user1,ou=users,dc=goauthentik,dc=io",
-        {
-            "userPassword": "test1111",
-            "sAMAccountName": "user2_sn",
-            "name": "user1_sn",
-            "revision": 0,
-            "objectClass": "person",
-            "distinguishedName": "cn=user1,ou=users,dc=goauthentik,dc=io",
-        },
-    )
     # Duplicate users
     connection.strategy.add_entry(
         "cn=user2,ou=users,dc=goauthentik,dc=io",
@@ -87,7 +75,7 @@ def mock_ad_connection(password: str) -> Connection:
         },
     )
     connection.strategy.add_entry(
-        "cn=user3,ou=users,dc=goauthentik,dc=io",
+        "cn=user2,ou=users,dc=goauthentik,dc=io",
         {
             "userPassword": "test2222",
             "sAMAccountName": "user2_sn",
@@ -95,7 +83,7 @@ def mock_ad_connection(password: str) -> Connection:
             "revision": 0,
             "objectSid": "unique-test2222",
             "objectClass": "person",
-            "distinguishedName": "cn=user3,ou=users,dc=goauthentik,dc=io",
+            "distinguishedName": "cn=user2,ou=users,dc=goauthentik,dc=io",
         },
     )
     connection.bind()
