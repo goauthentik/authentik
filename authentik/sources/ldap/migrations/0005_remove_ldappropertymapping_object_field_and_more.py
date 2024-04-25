@@ -54,7 +54,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("authentik_sources_ldap", "0004_ldapsource_password_login_update_internal_password"),
-        ("authentik_core", "0034_source_group_property_mappings_and_more"),
+        ("authentik_core", "0036_source_group_property_mappings_and_more"),
     ]
 
     operations = [
