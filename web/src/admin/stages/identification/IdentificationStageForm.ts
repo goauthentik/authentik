@@ -214,28 +214,23 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                         name="sources"
                     >
                         <select class="pf-c-form-control" multiple>
-                            ${this.sources?.results.map((source) => {
-                                let selected = Array.from(this.instance?.sources || []).some(
-                                    (su) => {
-                                        return su == source.pk;
-                                    },
-                                );
-                                // Creating a new instance, auto-select built-in source
-                                // Only when no other sources exist
-                                if (
-                                    !this.instance &&
-                                    source.component === "" &&
-                                    (this.sources?.results || []).length < 2
-                                ) {
-                                    selected = true;
-                                }
-                                return html`<option
-                                    value=${ifDefined(source.pk)}
-                                    ?selected=${selected}
-                                >
-                                    ${source.name}
-                                </option>`;
-                            })}
+                            ${this.sources?.results
+                                .filter((source) => {
+                                    return source.component !== "";
+                                })
+                                .map((source) => {
+                                    const selected = Array.from(this.instance?.sources || []).some(
+                                        (su) => {
+                                            return su == source.pk;
+                                        },
+                                    );
+                                    return html`<option
+                                        value=${ifDefined(source.pk)}
+                                        ?selected=${selected}
+                                    >
+                                        ${source.name}
+                                    </option>`;
+                                })}
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${msg(
