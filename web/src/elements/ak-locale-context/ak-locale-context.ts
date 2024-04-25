@@ -2,7 +2,7 @@ import { EVENT_LOCALE_CHANGE, EVENT_LOCALE_REQUEST } from "@goauthentik/common/c
 import { customEvent } from "@goauthentik/elements/utils/customEvents";
 
 import { LitElement, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
 import { WithBrandConfig } from "../Interface/brandProvider";
 import { initializeLocalization } from "./configureLocale";
@@ -38,9 +38,6 @@ export class LocaleContext extends LocaleContextBase {
 
     setLocale: LocaleSetter;
 
-    @state()
-    userLocale = "";
-
     constructor(code = DEFAULT_LOCALE) {
         super();
         this.notifyApplication = this.notifyApplication.bind(this);
@@ -59,30 +56,22 @@ export class LocaleContext extends LocaleContextBase {
 
     connectedCallback() {
         super.connectedCallback();
-        // Commenting out until we can come up with a better way of separating the
-        // "request user identity" with the session expiration heartbeat.
-        /*
-            new CoreApi(DEFAULT_CONFIG)
-                .coreUsersMeRetrieve()
-                .then((user) => (this.userLocale = user?.user?.settings?.locale ?? ""))
-                .catch(() => {});
-        */
         this.updateLocale();
-        window.addEventListener(EVENT_LOCALE_REQUEST, this.updateLocaleHandler);
+        window.addEventListener(EVENT_LOCALE_REQUEST, this.updateLocaleHandler as EventListener);
     }
 
     disconnectedCallback() {
-        window.removeEventListener(EVENT_LOCALE_REQUEST, this.updateLocaleHandler);
+        window.removeEventListener(EVENT_LOCALE_REQUEST, this.updateLocaleHandler as EventListener);
         super.disconnectedCallback();
     }
 
-    updateLocaleHandler(_ev: Event) {
+    updateLocaleHandler(ev: CustomEvent<{ locale: string }>) {
         console.debug("authentik/locale: Locale update request received.");
-        this.updateLocale();
+        this.updateLocale(ev.detail.locale);
     }
 
-    updateLocale() {
-        const localeRequest = autoDetectLanguage(this.userLocale, this.brand?.defaultLocale);
+    updateLocale(requestedLocale: string | undefined = undefined) {
+        const localeRequest = autoDetectLanguage(requestedLocale, this.brand?.defaultLocale);
         const locale = getBestMatchLocale(localeRequest);
         if (!locale) {
             console.warn(`authentik/locale: failed to find locale for code ${localeRequest}`);
