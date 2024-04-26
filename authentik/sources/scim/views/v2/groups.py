@@ -50,21 +50,18 @@ class GroupsView(SCIMView):
 
     def get(self, request: Request, group_id: str | None = None, **kwargs) -> Response:
         """List Group handler"""
+        base_query = (
+            SCIMSourceGroup.objects.select_related("group")
+            .prefetch_related("group__users")
+        )
         if group_id:
-            connection = (
-                SCIMSourceGroup.objects.filter(source=self.source, group__group_uuid=group_id)
-                .select_related("group")
-                .first()
-            )
+            connection = base_query.filter(source=self.source, group__group_uuid=group_id).first()
             if not connection:
                 raise Http404
             return Response(self.group_to_scim(connection))
         connections = (
-            SCIMSourceGroup.objects.filter(source=self.source)
-            .select_related("group")
-            .order_by("pk")
+            base_query.filter(source=self.source).order_by("pk").filter(self.filter_parse(request))
         )
-        connections = connections.filter(self.filter_parse(request))
         page = self.paginate_query(connections)
         return Response(
             {
