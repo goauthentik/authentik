@@ -13,6 +13,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from authentik.core.models import Group, User
+from authentik.providers.scim.clients.schema import SCIM_USER_SCHEMA
 from authentik.providers.scim.clients.schema import Group as SCIMGroupModel
 from authentik.sources.scim.models import SCIMSourceGroup
 from authentik.sources.scim.views.v2.base import SCIMView
@@ -26,6 +27,7 @@ class GroupsView(SCIMView):
     def group_to_scim(self, scim_group: SCIMSourceGroup) -> dict:
         """Convert Group to SCIM data"""
         payload = SCIMGroupModel(
+            schemas=[SCIM_USER_SCHEMA],
             id=str(scim_group.group.pk),
             externalId=scim_group.id,
             displayName=scim_group.group.name,
@@ -46,13 +48,12 @@ class GroupsView(SCIMView):
         for member in scim_group.group.users.order_by("pk"):
             member: User
             payload.members.append(GroupMember(value=str(member.uuid)))
-        return payload.model_dump(mode="json")
+        return payload.model_dump(mode="json", exclude_unset=True)
 
     def get(self, request: Request, group_id: str | None = None, **kwargs) -> Response:
         """List Group handler"""
-        base_query = (
-            SCIMSourceGroup.objects.select_related("group")
-            .prefetch_related("group__users")
+        base_query = SCIMSourceGroup.objects.select_related("group").prefetch_related(
+            "group__users"
         )
         if group_id:
             connection = base_query.filter(source=self.source, group__group_uuid=group_id).first()
