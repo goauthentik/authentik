@@ -29,6 +29,7 @@ class GroupsView(SCIMView):
             id=str(scim_group.group.pk),
             externalId=scim_group.id,
             displayName=scim_group.group.name,
+            members=[],
             meta={
                 "resourceType": "Group",
                 "location": self.request.build_absolute_uri(
@@ -42,6 +43,9 @@ class GroupsView(SCIMView):
                 ),
             },
         )
+        for member in scim_group.group.users.order_by("pk"):
+            member: User
+            payload.members.append(GroupMember(value=str(member.uuid)))
         return payload.model_dump(mode="json")
 
     def get(self, request: Request, group_id: str | None = None, **kwargs) -> Response:
