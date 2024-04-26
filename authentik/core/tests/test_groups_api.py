@@ -22,7 +22,7 @@ class TestGroupsAPI(APITestCase):
         self.client.force_login(admin)
         # Since we're capturing the entire request, this includes things like tenant,
         # session auth, etc
-        with self.assertNumQueries(14):
+        with self.assertNumQueries(13):
             response = self.client.get(reverse("authentik_api:group-list"))
             self.assertEqual(response.status_code, 200)
 

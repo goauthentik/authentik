@@ -46,7 +46,7 @@ class TestUsersAPI(APITestCase):
         self.client.force_login(self.admin)
         # Since we're capturing the entire request, this includes things like tenant,
         # session auth, etc
-        with self.assertNumQueries(16):
+        with self.assertNumQueries(15):
             response = self.client.get(reverse("authentik_api:user-list"))
             self.assertEqual(response.status_code, 200)
 
