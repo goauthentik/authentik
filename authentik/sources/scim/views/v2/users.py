@@ -62,10 +62,7 @@ class UsersView(SCIMView):
                 ),
             },
         )
-        final_payload = payload.model_dump(
-            mode="json",
-            exclude_unset=True,
-        )
+        final_payload = payload.model_dump(mode="json")
         final_payload.update(scim_user.attributes)
         return final_payload
 

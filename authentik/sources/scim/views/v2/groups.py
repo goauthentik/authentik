@@ -42,10 +42,7 @@ class GroupsView(SCIMView):
                 ),
             },
         )
-        return payload.model_dump(
-            mode="json",
-            exclude_unset=True,
-        )
+        return payload.model_dump(mode="json")
 
     def get(self, request: Request, group_id: str | None = None, **kwargs) -> Response:
         """List Group handler"""
