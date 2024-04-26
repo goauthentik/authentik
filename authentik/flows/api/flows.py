@@ -278,7 +278,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
-    def execute(self, request: Request, _slug: str):
+    def execute(self, request: Request, slug: str):
         """Execute flow for current user"""
         # Because we pre-plan the flow here, and not in the planner, we need to manually clear
         # the history of the inspector
