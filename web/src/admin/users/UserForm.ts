@@ -128,6 +128,14 @@ export class UserForm extends ModelForm<User, number> {
                                 "Service accounts should be used for machine-to-machine authentication or other automations.",
                             )}`,
                         },
+                        {
+                            label: "Internal Service account",
+                            value: UserTypeEnum.InternalServiceAccount,
+                            disabled: true,
+                            description: html`${msg(
+                                "Internal Service accounts are created and managed by authentik and cannot be created manually.",
+                            )}`,
+                        },
                     ]}
                     .value=${this.instance?.type}
                 >
