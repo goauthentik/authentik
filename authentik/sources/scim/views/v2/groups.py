@@ -79,6 +79,8 @@ class GroupsView(SCIMView):
     def update_group(self, connection: SCIMSourceGroup | None, data: QueryDict):
         """Partial update a group"""
         group = connection.group if connection else Group()
+        if _group := Group.objects.filter(name=data.get("displayName")).first():
+            group = _group
         if "displayName" in data:
             group.name = data.get("displayName")
         if group.name == "":

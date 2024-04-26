@@ -99,6 +99,8 @@ class UsersView(SCIMView):
     def update_user(self, connection: SCIMSourceUser | None, data: QueryDict):
         """Partial update a user"""
         user = connection.user if connection else User()
+        if _user := User.objects.filter(username=data.get("userName")).first():
+            user = _user
         user.path = self.source.get_user_path()
         if "userName" in data:
             user.username = data.get("userName")
