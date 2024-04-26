@@ -154,11 +154,17 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
 
         pk = IntegerField(required=True)
 
-    queryset = Group.objects.all().select_related("parent").prefetch_related("users")
+    queryset = Group.objects.none()
     serializer_class = GroupSerializer
     search_fields = ["name", "is_superuser"]
     filterset_class = GroupFilter
     ordering = ["name"]
+
+    def get_queryset(self):
+        base_qs = Group.objects.all()
+        if self.serializer_class(context={"request": self.request})._should_include_users:
+            base_qs = base_qs.select_related("parent").prefetch_related("users")
+        return base_qs
 
     @extend_schema(
         parameters=[

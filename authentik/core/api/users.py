@@ -407,8 +407,11 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     search_fields = ["username", "name", "is_active", "email", "uuid"]
     filterset_class = UsersFilter
 
-    def get_queryset(self):  # pragma: no cover
-        return User.objects.all().exclude_anonymous().prefetch_related("ak_groups")
+    def get_queryset(self):
+        base_qs = User.objects.all().exclude_anonymous()
+        if self.serializer_class(context={"request": self.request})._should_include_groups:
+            base_qs = base_qs.prefetch_related("ak_groups")
+        return base_qs
 
     @extend_schema(
         parameters=[
