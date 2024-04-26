@@ -56,7 +56,7 @@ export class AkKeyboardController implements ReactiveController {
     }
 
     get current() {
-        return this.items[index];
+        return this.items[this.index];
     }
 
     get value() {
@@ -68,7 +68,6 @@ export class AkKeyboardController implements ReactiveController {
         if (index !== undefined) {
             this.index = index;
             this.performUpdate();
-            this.host.dispatchEvent(new KeyboardControllerSelectEvent(v));
         }
     }
 

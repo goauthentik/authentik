@@ -15,7 +15,11 @@ import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css"
 import PFSelect from "@patternfly/patternfly/components/Select/select.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { AkKeyboardController } from "./SearchKeyboardController";
+import {
+    AkKeyboardController,
+    KeyboardControllerCloseEvent,
+    KeyboardControllerSelectEvent,
+} from "./SearchKeyboardController";
 
 type SearchPair = [string, string, undefined | string | TemplateResult];
 type SearchGroup = { name: string; options: SearchPair[] };
@@ -39,6 +43,13 @@ export class SearchSelectClickEvent extends Event {
     }
 }
 
+export class SearchSelectCloseEvent extends Event {
+    static EVENT_NAME = "ak-search-select-close";
+    constructor(value: string | undefined) {
+        super(SearchSelectCloseEvent.EVENT_NAME, { composed: true, bubbles: true });
+    }
+}
+
 /**
  * @class SearchSelectMenu
  * @element ak-search-select-menu
@@ -57,8 +68,6 @@ export class SearchSelectMenu extends AKElement {
             css`
                 :host {
                     overflow: visible;
-                    position: absolute;
-                    inset: 0px auto auto 0px;
                     z-index: 9999;
                 }
 
@@ -91,6 +100,8 @@ export class SearchSelectMenu extends AKElement {
     constructor() {
         super();
         this.keyboardController = new AkKeyboardController(this);
+        this.addEventListener(KeyboardControllerSelectEvent.EVENT_NAME, this.onKeySelect);
+        this.addEventListener(KeyboardControllerCloseEvent.EVENT_NAME, this.onKeyClose);
     }
 
     @bound
@@ -104,6 +115,19 @@ export class SearchSelectMenu extends AKElement {
     onEmptyClick(ev: Event) {
         ev.stopPropagation();
         this.host.dispatchEvent(new SearchSelectClickEvent(undefined));
+    }
+
+    @bound
+    onKeySelect(ev: KeyboardControllerSelectEvent) {
+        ev.stopPropagation();
+        this.value = ev.value;
+        this.host.dispatchEvent(new SearchSelectClickEvent(this.value));
+    }
+
+    @bound
+    onKeyClose(ev: KeyboardControllerSelectEvent) {
+        ev.stopPropagation();
+        this.host.dispatchEvent(new SearchSelectCloseEvent());
     }
 
     renderEmptyMenuItem() {
@@ -124,6 +148,9 @@ export class SearchSelectMenu extends AKElement {
                         value=${value}
                         @click=${(ev) => {
                             this.onClick(ev, value);
+                        }}
+                        @keypress=${(ev) => {
+                            /* noop */
                         }}
                     >
                         <div class="pf-c-dropdown__menu-item-main">${label}</div>
@@ -164,6 +191,7 @@ export class SearchSelectMenu extends AKElement {
 declare global {
     interface GlobalEventHandlersEventMap {
         "ak-search-select-click": SearchSelectClickEvent;
+        "ak-search-select-close": SearchSelectCloseEvent;
     }
 
     interface HTMLElementTagNameMap {

@@ -42,7 +42,7 @@ const container = (testItem: TemplateResult) =>
                 margin-top: 1em;
             }
             #the-answer-block {
-                padding-top: calc(50vh + 3em);
+                padding-top: 3em;
             }
         </style>
         <ak-message-container></ak-message-container>

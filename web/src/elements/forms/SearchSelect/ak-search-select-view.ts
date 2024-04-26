@@ -1,3 +1,4 @@
+import { autoUpdate, computePosition, flip, hide, size } from "@floating-ui/dom";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { APIErrorTypes, parseAPIError } from "@goauthentik/common/errors";
 import { ascii_letters, digits, groupBy, randomString } from "@goauthentik/common/utils";
@@ -10,6 +11,7 @@ import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html, render } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { Ref, createRef, ref } from "lit/directives/ref.js";
 import { styleMap } from "lit/directives/style-map.js";
 
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
@@ -53,10 +55,14 @@ export class SearchSelectView extends CustomEmitterElement(AKElement) {
     // Handle the behavior of the drop-down when the :host scrolls off the page.
     scrollHandler?: () => void;
     observer: IntersectionObserver;
+    inputRef: Ref<HTMLInputElement> = createRef();
 
     // Handle communication between the :host and the portal
     dropdownUID: string;
     dropdownContainer: HTMLDivElement;
+
+    // Function to clean up positioned element when we're done.
+    public cleanup: () => void;
 
     static get styles() {
         return [
@@ -151,48 +157,7 @@ export class SearchSelectView extends CustomEmitterElement(AKElement) {
         this.renderMenu();
     }
 
-    @bound
-    renderMenuGroup(items: T[], tabIndexStart: number) {
-        const renderedItems = items.map((obj, index) => {
-            const desc = this.renderDescription ? this.renderDescription(obj) : null;
-            const tabIndex = index + tabIndexStart;
-            return desc
-                ? this.renderMenuItemWithDescription(obj, desc, tabIndex)
-                : this.renderMenuItemWithoutDescription(obj, tabIndex);
-        });
-        return html`${renderedItems}`;
-    }
-
-    renderWithMenuGroupTitle([group, items]: Group<T>, idx: number) {
-        return html`
-            <section class="pf-c-dropdown__group">
-                <h1 class="pf-c-dropdown__group-title">${group}</h1>
-                <ul>
-                    ${this.renderMenuGroup(items, idx)}
-                </ul>
-            </section>
-        `;
-    }
-
-    /*
-     * This is a little bit hacky. Because we mainly want to use this field in modal-based forms,
-     * rendering this menu inline makes the menu not overlay over top of the modal, and cause
-     * the modal to scroll.
-     * Hence, we render the menu into the document root, hide it when this menu isn't open
-     * and remove it on disconnect
-     * Also to move it to the correct position we're getting this elements's position and use that
-     * to position the menu
-     * The other downside this has is that, since we're rendering outside of a shadow root,
-     * the pf-c-dropdown CSS needs to be loaded on the body.
-     */
-
     renderMenu(): void {
-        const pos = this.getBoundingClientRect();
-        const position = {
-            transform: `translate(${pos.x}px, ${pos.y + this.offsetHeight}px)`,
-            width: `${pos.width}px`,
-        };
-
         render(
             html`<ak-search-select-menu
                 .options=${this.options}
@@ -200,10 +165,33 @@ export class SearchSelectView extends CustomEmitterElement(AKElement) {
                 .host=${this}
                 .emptyOption=${(this.blankable && this.emptyOption) || undefined}
                 ?hidden=${!this.open}
-                style=${stylemap(position)}
             ></ak-search-select-menu> `,
             this.dropdownContainer,
         );
+
+        this.cleanup = autoUpdate(this.inputRef.value, this.dropdownContainer, async () => {
+            const { middlewateData, x, y } = await computePosition(
+                this.inputRef.value,
+                this.dropdownContainer,
+                {
+                    placement: "bottom",
+                    strategy: "fixed",
+                    middleware: [flip(), hide()],
+                },
+            );
+
+            if (middlewareData.hide?.referenceHidden) {
+                this.open = false;
+                return;
+            }
+
+            Object.assign(this.dropdownContainer.style, {
+                position: "fixed",
+                top: "0",
+                left: "0",
+                transform: `translate(${x}px, ${y}px)`,
+            });
+        });
     }
 
     render(): TemplateResult {
@@ -215,6 +203,7 @@ export class SearchSelectView extends CustomEmitterElement(AKElement) {
                     <input
                         class="pf-c-form-control pf-c-select__toggle-typeahead"
                         type="text"
+                        ${this.inputRef}
                         placeholder=${this.placeholder}
                         spellcheck="false"
                         @input=${onInput}
