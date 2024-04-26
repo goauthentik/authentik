@@ -8,7 +8,6 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.lib.config import CONFIG
 from authentik.tenants.utils import get_current_tenant
 
 
@@ -25,7 +24,6 @@ class TestUsersAvatars(APITestCase):
         tenant.avatars = mode
         tenant.save()
 
-    @CONFIG.patch("avatars", "none")
     def test_avatars_none(self):
         """Test avatars none"""
         self.set_avatar_mode("none")
