@@ -1,12 +1,21 @@
 import { AKElement } from "@goauthentik/elements/Base.js";
 import { bound } from "@goauthentik/elements/decorators/bound.js";
 
-import { TemplateResult, css, html, nothing } from "lit";
+import {
+    ReactiveController,
+    ReactiveControllerHost,
+    TemplateResult,
+    css,
+    html,
+    nothing,
+} from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFSelect from "@patternfly/patternfly/components/Select/select.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+import { AkKeyboardController } from "./SearchKeyboardController";
 
 type SearchPair = [string, string, undefined | string | TemplateResult];
 type SearchGroup = { name: string; options: SearchPair[] };
@@ -77,11 +86,18 @@ export class SearchSelectMenu extends AKElement {
     @property()
     emptyOption?: string;
 
+    private keyboardController: AkKeyboardController;
+
+    constructor() {
+        super();
+        this.keyboardController = new AkKeyboardController(this);
+    }
+
     @bound
     onClick(ev: Event, item: string) {
-        console.log(ev, this.host, item);
         ev.stopPropagation();
         this.host.dispatchEvent(new SearchSelectClickEvent(item));
+        this.keyboardController.value = item;
     }
 
     @bound
@@ -103,7 +119,7 @@ export class SearchSelectMenu extends AKElement {
             ([value, label, desc]: SearchPair) => html`
                 <li>
                     <button
-                        class="pf-c-dropdown__menu-item pf-m-description"
+                        class="pf-c-dropdown__menu-item pf-m-description ak-select-item"
                         role="option"
                         value=${value}
                         @click=${(ev) => {
