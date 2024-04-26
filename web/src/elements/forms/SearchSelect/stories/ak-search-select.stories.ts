@@ -6,57 +6,17 @@ import { Meta } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
 
+import { sampleData } from "./sampleData.js";
+
 type RawSample = [string, string[]];
+
 type Sample = { name: string; pk: string; season: string[] };
 
-// prettier-ignore
-const groupedSamples: RawSample[] = [
-    ["Spring", [
-        "Apples", "Apricots", "Asparagus", "Avocados", "Bananas", "Broccoli",
-        "Cabbage", "Carrots", "Celery", "Collard Greens", "Garlic", "Herbs", "Kale", "Kiwifruit", "Lemons",
-        "Lettuce", "Limes", "Mushrooms", "Onions", "Peas", "Pineapples", "Radishes", "Rhubarb", "Spinach",
-        "Strawberries", "Swiss Chard", "Turnips"]],
-    ["Summer", [
-        "Apples", "Apricots", "Avocados", "Bananas", "Beets", "Bell Peppers", "Blackberries", "Blueberries",
-        "Cantaloupe", "Carrots", "Celery", "Cherries", "Corn", "Cucumbers", "Eggplant", "Garlic",
-        "Green Beans", "Herbs", "Honeydew Melon", "Lemons", "Lima Beans", "Limes", "Mangos", "Okra", "Peaches",
-        "Plums", "Raspberries", "Strawberries", "Summer Squash", "Tomatillos", "Tomatoes", "Watermelon",
-        "Zucchini"]],
-    ["Fall", [
-        "Apples", "Bananas", "Beets", "Bell Peppers", "Broccoli", "Brussels Sprouts", "Cabbage", "Carrots",
-        "Cauliflower", "Celery", "Collard Greens", "Cranberries", "Garlic", "Ginger", "Grapes", "Green Beans",
-        "Herbs", "Kale", "Kiwifruit", "Lemons", "Lettuce", "Limes", "Mangos", "Mushrooms", "Onions",
-        "Parsnips", "Pears", "Peas", "Pineapples", "Potatoes", "Pumpkin", "Radishes", "Raspberries",
-        "Rutabagas", "Spinach", "Sweet Potatoes", "Swiss Chard", "Turnips", "Winter Squash"]],
-    ["Winter", [
-        "Apples", "Avocados", "Bananas", "Beets", "Brussels Sprouts", "Cabbage", "Carrots", "Celery",
-        "Collard Greens", "Grapefruit", "Herbs", "Kale", "Kiwifruit", "Leeks", "Lemons", "Limes", "Onions",
-        "Oranges", "Parsnips", "Pears", "Pineapples", "Potatoes", "Pumpkin", "Rutabagas",
-        "Sweet Potatoes", "Swiss Chard", "Turnips", "Winter Squash"]]
-];
-
-// WAAAAY too many lines to turn the arrays above into a Sample of
-// { name: "Apricots", pk: "apple", season: ["Spring", "Summer"] }
-// but it does the job.
-
-const samples = Array.from(
-    groupedSamples
-        .reduce((acc, sample) => {
-            sample[1].forEach((item) => {
-                const update = (thing: Sample) => ({
-                    ...thing,
-                    season: [...thing.season, sample[0]],
-                });
-                acc.set(
-                    item,
-                    update(acc.get(item) || { name: item, pk: slugify(item), season: [] }),
-                );
-                return acc;
-            }, acc);
-            return acc;
-        }, new Map<string, Sample>())
-        .values(),
-);
+const samples = sampleData.map(({ produce, seasons, desc }) => ({
+    name: produce,
+    pk: produce.replace(/\s+/, "").toLowerCase(),
+    season: seasons,
+}));
 samples.sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
 
 // All we need is a promise to return our dataset. It doesn't have to be a class-based method a'la
