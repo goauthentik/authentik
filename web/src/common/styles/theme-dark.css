@@ -187,6 +187,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .pf-c-select__menu-item.pf-m-focus {
     --pf-c-select__menu-item--focus--BackgroundColor: var(--ak-dark-background-light-ish);
 }
+.pf-c-button:disabled {
+    color: var(--ak-dark-background-lighter);
+}
 .pf-c-button.pf-m-plain:hover {
     color: var(--ak-dark-foreground);
 }
