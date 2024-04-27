@@ -632,7 +632,7 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
         raise NotImplementedError
 
     def __str__(self) -> str:
-        return f"User-source connection (user={self.user.username}, source={self.source.slug})"
+        return f"User-source connection (user={self.user_id}, source={self.source_id})"
 
     class Meta:
         unique_together = (("user", "source"),)
