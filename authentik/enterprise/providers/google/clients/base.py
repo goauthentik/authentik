@@ -1,7 +1,8 @@
 from django.db.models import Model
 from django.http import HttpResponseNotFound
+from google.auth.exceptions import GoogleAuthError, TransportError
 from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
+from googleapiclient.errors import Error
 from googleapiclient.http import HttpRequest
 from httplib2 import HttpLib2Error, HttpLib2ErrorWithResponse
 
@@ -11,6 +12,7 @@ from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.exceptions import (
     NotFoundSyncException,
     ObjectExistsException,
+    StopSync,
     TransientSyncException,
 )
 
@@ -32,6 +34,10 @@ class GoogleSyncClient[TModel: Model, TSchema: dict](
     def _request(self, request: HttpRequest):
         try:
             response = request.execute()
+        except GoogleAuthError as exc:
+            if isinstance(exc, TransportError):
+                raise TransientSyncException(f"Failed to send request: {str(exc)}") from exc
+            raise StopSync(exc) from exc
         except HttpLib2Error as exc:
             if (
                 isinstance(exc, HttpLib2ErrorWithResponse)
@@ -40,7 +46,7 @@ class GoogleSyncClient[TModel: Model, TSchema: dict](
                 raise NotFoundSyncException("Object not found") from exc
             if isinstance(exc, HttpLib2ErrorWithResponse) and exc.response.status == HTTP_CONFLICT:
                 raise ObjectExistsException("Object exists") from exc
-            raise TransientSyncException("Failed to send request") from exc
-        except HttpError:
-            pass
+            raise TransientSyncException(f"Failed to send request: {str(exc)}") from exc
+        except Error as exc:
+            raise TransientSyncException(f"Failed to send request: {str(exc)}") from exc
         return response

@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import Group, User
+from authentik.events.logs import LogEvent
 from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask
 from authentik.lib.sync.outgoing import PAGE_SIZE, PAGE_TIMEOUT
@@ -107,28 +108,34 @@ class SyncTasks:
             except TransientSyncException as exc:
                 self.logger.warning("failed to sync object", exc=exc, user=obj)
                 messages.append(
-                    _(
-                        (
-                            "Failed to sync {object_type} {object_name} "
-                            "due to remote error: {error}"
-                        ).format_map(
-                            {
-                                "object_type": obj._meta.verbose_name,
-                                "object_name": str(obj),
-                                "error": exc.detail(),
-                            }
-                        )
+                    LogEvent(
+                        _(
+                            (
+                                "Failed to sync {object_type} {object_name} "
+                                "due to remote error: {error}"
+                            ).format_map(
+                                {
+                                    "object_type": obj._meta.verbose_name,
+                                    "object_name": str(obj),
+                                    "error": str(exc),
+                                }
+                            )
+                        ),
+                        log_level="warning",
                     )
                 )
             except StopSync as exc:
                 self.logger.warning("Stopping sync", exc=exc)
                 messages.append(
-                    _(
-                        "Stopping sync due to error: {error}".format_map(
-                            {
-                                "error": exc.detail(),
-                            }
-                        )
+                    LogEvent(
+                        _(
+                            "Stopping sync due to error: {error}".format_map(
+                                {
+                                    "error": exc.detail(),
+                                }
+                            )
+                        ),
+                        log_level="warning",
                     )
                 )
                 break

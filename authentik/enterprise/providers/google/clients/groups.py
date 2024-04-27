@@ -103,7 +103,7 @@ class GoogleGroupClient(GoogleSyncClient[Group, dict]):
             return self._create(obj), True
 
     def write(self, obj: Group):
-        google_group, created = super().write(obj)
+        google_group, created = self._write(obj)
         if created:
             self.create_sync_members(obj, google_group)
         return google_group
