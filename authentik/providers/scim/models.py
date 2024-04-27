@@ -105,7 +105,7 @@ class SCIMUser(models.Model):
         unique_together = (("id", "user", "provider"),)
 
     def __str__(self) -> str:
-        return f"SCIM User {self.user.username} to {self.provider.name}"
+        return f"SCIM User {self.user_id} to {self.provider_id}"
 
 
 class SCIMGroup(models.Model):
@@ -119,4 +119,4 @@ class SCIMGroup(models.Model):
         unique_together = (("id", "group", "provider"),)
 
     def __str__(self) -> str:
-        return f"SCIM Group {self.group.name} to {self.provider.name}"
+        return f"SCIM Group {self.group_id} to {self.provider_id}"
