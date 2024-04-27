@@ -31,7 +31,7 @@ import {
     GoogleProvider,
     ProvidersApi,
     RbacPermissionsAssignedByUsersListModelEnum,
-    SCIMSyncStatus,
+    SyncStatus,
     SystemTaskStatusEnum,
 } from "@goauthentik/api";
 
@@ -44,7 +44,7 @@ export class GoogleProviderViewPage extends AKElement {
     provider?: GoogleProvider;
 
     @state()
-    syncState?: SCIMSyncStatus;
+    syncState?: SyncStatus;
 
     static get styles(): CSSResult[] {
         return [
@@ -93,7 +93,7 @@ export class GoogleProviderViewPage extends AKElement {
                 data-tab-title="${msg("Overview")}"
                 @activate=${() => {
                     new ProvidersApi(DEFAULT_CONFIG)
-                        .providersScimSyncStatusRetrieve({
+                        .providersGoogleSyncStatusRetrieve({
                             id: this.provider?.pk || 0,
                         })
                         .then((state) => {

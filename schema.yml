@@ -15741,7 +15741,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this google provider.
+        description: A unique integer value identifying this Google Provider.
         required: true
       tags:
       - providers
@@ -15774,7 +15774,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this google provider.
+        description: A unique integer value identifying this Google Provider.
         required: true
       tags:
       - providers
@@ -15813,7 +15813,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this google provider.
+        description: A unique integer value identifying this Google Provider.
         required: true
       tags:
       - providers
@@ -15851,7 +15851,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this google provider.
+        description: A unique integer value identifying this Google Provider.
         required: true
       tags:
       - providers
@@ -15860,6 +15860,42 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/google/{id}/sync_status/:
+    get:
+      operationId: providers_google_sync_status_retrieve
+      description: Get provider's sync status
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Google Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncStatus'
+          description: ''
+        '404':
+          description: Task not found
         '400':
           content:
             application/json:
@@ -15881,7 +15917,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this google provider.
+        description: A unique integer value identifying this Google Provider.
         required: true
       tags:
       - providers
@@ -18242,7 +18278,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SCIMSyncStatus'
+                $ref: '#/components/schemas/SyncStatus'
           description: ''
         '404':
           description: Task not found
@@ -20583,7 +20619,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LDAPSyncStatus'
+                $ref: '#/components/schemas/SyncStatus'
           description: ''
         '400':
           content:
@@ -36191,21 +36227,6 @@ components:
       - name
       - server_uri
       - slug
-    LDAPSyncStatus:
-      type: object
-      description: LDAP Source sync status
-      properties:
-        is_running:
-          type: boolean
-          readOnly: true
-        tasks:
-          type: array
-          items:
-            $ref: '#/components/schemas/SystemTask'
-          readOnly: true
-      required:
-      - is_running
-      - tasks
     License:
       type: object
       description: License Serializer
@@ -44161,21 +44182,6 @@ components:
       - id
       - source
       - user
-    SCIMSyncStatus:
-      type: object
-      description: SCIM Provider sync status
-      properties:
-        is_running:
-          type: boolean
-          readOnly: true
-        tasks:
-          type: array
-          items:
-            $ref: '#/components/schemas/SystemTask'
-          readOnly: true
-      required:
-      - is_running
-      - tasks
     SMSDevice:
       type: object
       description: Serializer for sms authenticator devices
@@ -44883,6 +44889,21 @@ components:
       - user_email
       - user_upn
       type: string
+    SyncStatus:
+      type: object
+      description: Provider sync status
+      properties:
+        is_running:
+          type: boolean
+          readOnly: true
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/SystemTask'
+          readOnly: true
+      required:
+      - is_running
+      - tasks
     SystemInfo:
       type: object
       description: Get system information.

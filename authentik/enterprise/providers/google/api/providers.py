@@ -6,6 +6,7 @@ from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.providers.google.models import GoogleProvider
+from authentik.lib.sync.outgoing.api import OutgoingSyncProviderStatusMixin
 
 
 class GoogleProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
@@ -33,7 +34,7 @@ class GoogleProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
         extra_kwargs = {}
 
 
-class GoogleProviderViewSet(UsedByMixin, ModelViewSet):
+class GoogleProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin, ModelViewSet):
     """GoogleProvider Viewset"""
 
     queryset = GoogleProvider.objects.all()
