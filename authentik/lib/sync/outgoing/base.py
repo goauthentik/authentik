@@ -24,6 +24,7 @@ class BaseOutgoingSyncClient[TModel: "Model", TSchema: dict, TProvider: "Outgoin
 
     def __init__(self, provider: TProvider):
         self.logger = get_logger().bind(provider=provider.name)
+        self.provider = provider
 
     def write(self, obj: TModel):
         """Write object to destination"""

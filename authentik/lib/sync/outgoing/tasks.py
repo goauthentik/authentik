@@ -35,6 +35,10 @@ class SyncTasks:
         provider_pk: int,
         sync_objects: Callable[[int, int], list[str]],
     ):
+        self.logger = get_logger().bind(
+            provider_type=class_to_path(self._provider_model),
+            provider_pk=provider_pk,
+        )
         provider = self._provider_model.objects.filter(
             pk=provider_pk, backchannel_application__isnull=False
         ).first()

@@ -23,7 +23,10 @@ class GoogleSyncClient[TModel: Model, TSchema: dict](
     def __init__(self, provider: GoogleProvider) -> None:
         super().__init__(provider)
         self.directory_service = build(
-            "admin", "directory_v1", credentials=provider.google_credentials()
+            "admin",
+            "directory_v1",
+            credentials=provider.google_credentials(),
+            cache_discovery=False,
         )
 
     def _request(self, request: HttpRequest):

@@ -90,6 +90,10 @@ class GoogleProvider(OutgoingSyncProvider, BackchannelProvider):
 
         return GoogleProviderSerializer
 
+    class Meta:
+        verbose_name = _("Google Provider")
+        verbose_name_plural = _("Google Providers")
+
 
 class GoogleProviderMapping(PropertyMapping):
     """Map authentik data to outgoing Google requests"""
