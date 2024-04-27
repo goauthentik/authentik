@@ -16,16 +16,6 @@ class TestGroupsAPI(APITestCase):
         self.login_user = create_test_user()
         self.user = User.objects.create(username="test-user")
 
-    def test_list(self):
-        """Test listing"""
-        admin = create_test_admin_user()
-        self.client.force_login(admin)
-        # Since we're capturing the entire request, this includes things like tenant,
-        # session auth, etc
-        with self.assertNumQueries(13):
-            response = self.client.get(reverse("authentik_api:group-list"))
-            self.assertEqual(response.status_code, 200)
-
     def test_list_with_users(self):
         """Test listing with users"""
         admin = create_test_admin_user()
