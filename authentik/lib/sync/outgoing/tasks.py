@@ -122,6 +122,7 @@ class SyncTasks:
                             )
                         ),
                         log_level="warning",
+                        logger="",
                     )
                 )
             except StopSync as exc:
@@ -136,6 +137,7 @@ class SyncTasks:
                             )
                         ),
                         log_level="warning",
+                        logger="",
                     )
                 )
                 break
