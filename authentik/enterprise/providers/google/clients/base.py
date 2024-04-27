@@ -6,8 +6,13 @@ from googleapiclient.http import HttpRequest
 from httplib2 import HttpLib2Error, HttpLib2ErrorWithResponse
 
 from authentik.enterprise.providers.google.models import GoogleProvider
+from authentik.lib.sync.outgoing import HTTP_CONFLICT
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
-from authentik.lib.sync.outgoing.exceptions import NotFoundSyncException, TransientSyncException
+from authentik.lib.sync.outgoing.exceptions import (
+    NotFoundSyncException,
+    ObjectExistsException,
+    TransientSyncException,
+)
 
 
 class GoogleSyncClient[TModel: Model, TSchema: dict](
@@ -30,6 +35,8 @@ class GoogleSyncClient[TModel: Model, TSchema: dict](
                 and exc.response.status == HttpResponseNotFound.status_code
             ):
                 raise NotFoundSyncException("Object not found") from exc
+            if isinstance(exc, HttpLib2ErrorWithResponse) and exc.response.status == HTTP_CONFLICT:
+                raise ObjectExistsException("Object exists") from exc
             raise TransientSyncException("Failed to send request") from exc
         except HttpError:
             pass

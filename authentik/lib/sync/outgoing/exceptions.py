@@ -9,8 +9,12 @@ class TransientSyncException(BaseSyncException):
     """Transient sync exception which may be caused by network blips, etc"""
 
 
-class NotFoundSyncException(BaseSyncException):
+class NotFoundSyncException(TransientSyncException):
     """Exception when an object was not found in the remote system"""
+
+
+class ObjectExistsException(BaseSyncException):
+    """Exception when an object already exists in the remote system"""
 
 
 class StopSync(BaseSyncException):

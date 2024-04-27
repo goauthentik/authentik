@@ -71,6 +71,9 @@ class SyncTasks:
                         soft_time_limit=PAGE_TIMEOUT,
                     ).get():
                         messages.append(msg)
+            except TransientSyncException as exc:
+                self.logger.warning("transient sync exception", exc=exc)
+                raise task.retry(exc=exc) from exc
             except StopSync as exc:
                 task.set_error(exc)
                 return

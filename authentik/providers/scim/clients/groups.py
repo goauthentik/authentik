@@ -9,7 +9,7 @@ from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Group
 from authentik.events.models import Event, EventAction
 from authentik.lib.sync.outgoing.base import Direction
-from authentik.lib.sync.outgoing.exceptions import NotFoundSyncException, StopSync
+from authentik.lib.sync.outgoing.exceptions import NotFoundSyncException, ObjectExistsException, StopSync
 from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.utils import delete_none_values
 from authentik.providers.scim.clients.base import SCIMClient
@@ -128,7 +128,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
         except NotFoundSyncException:
             # Resource missing is handled by self.write, which will re-create the group
             raise
-        except SCIMRequestException:
+        except (SCIMRequestException, ObjectExistsException):
             # Some providers don't support PUT on groups, so this is mainly a fix for the initial
             # sync, send patch add requests for all the users the group currently has
             users = list(group.users.order_by("id").values_list("id", flat=True))
