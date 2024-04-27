@@ -14019,6 +14019,292 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /propertymappings/provider/google/:
+    get:
+      operationId: propertymappings_provider_google_list
+      description: GoogleProviderMapping Viewset
+      parameters:
+      - in: query
+        name: expression
+        schema:
+          type: string
+      - in: query
+        name: managed
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGoogleProviderMappingList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: propertymappings_provider_google_create
+      description: GoogleProviderMapping Viewset
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoogleProviderMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleProviderMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/provider/google/{pm_uuid}/:
+    get:
+      operationId: propertymappings_provider_google_retrieve
+      description: GoogleProviderMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Google Provider Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleProviderMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: propertymappings_provider_google_update
+      description: GoogleProviderMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Google Provider Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoogleProviderMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleProviderMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: propertymappings_provider_google_partial_update
+      description: GoogleProviderMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Google Provider Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGoogleProviderMappingRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleProviderMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: propertymappings_provider_google_destroy
+      description: GoogleProviderMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Google Provider Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/provider/google/{pm_uuid}/used_by/:
+    get:
+      operationId: propertymappings_provider_google_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Google Provider Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /propertymappings/rac/:
     get:
       operationId: propertymappings_rac_list
@@ -18667,6 +18953,7 @@ paths:
           - authentik_policies_password.passwordpolicy
           - authentik_policies_reputation.reputationpolicy
           - authentik_providers_google.googleprovider
+          - authentik_providers_google.googleprovidermapping
           - authentik_providers_ldap.ldapprovider
           - authentik_providers_oauth2.oauth2provider
           - authentik_providers_oauth2.scopemapping
@@ -18883,6 +19170,7 @@ paths:
           - authentik_policies_password.passwordpolicy
           - authentik_policies_reputation.reputationpolicy
           - authentik_providers_google.googleprovider
+          - authentik_providers_google.googleprovidermapping
           - authentik_providers_ldap.ldapprovider
           - authentik_providers_oauth2.oauth2provider
           - authentik_providers_oauth2.scopemapping
@@ -34517,6 +34805,12 @@ components:
           items:
             type: string
             format: uuid
+        property_mappings_group:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Property mappings used for group creation/updating.
         component:
           type: string
           description: Get object component so that we know how to edit the object
@@ -34565,6 +34859,73 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+    GoogleProviderMapping:
+      type: object
+      description: GoogleProviderMapping Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pm uuid
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+        expression:
+          type: string
+        component:
+          type: string
+          description: Get object's component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - component
+      - expression
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    GoogleProviderMappingRequest:
+      type: object
+      description: GoogleProviderMapping Serializer
+      properties:
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+      required:
+      - expression
+      - name
     GoogleProviderRequest:
       type: object
       description: GoogleProvider Serializer
@@ -34577,6 +34938,12 @@ components:
           items:
             type: string
             format: uuid
+        property_mappings_group:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Property mappings used for group creation/updating.
         delegated_subject:
           type: string
           format: email
@@ -36096,6 +36463,7 @@ components:
       - authentik_core.token
       - authentik_enterprise.license
       - authentik_providers_google.googleprovider
+      - authentik_providers_google.googleprovidermapping
       - authentik_providers_rac.racprovider
       - authentik_providers_rac.endpoint
       - authentik_providers_rac.racpropertymapping
@@ -37391,6 +37759,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GoogleProvider'
+      required:
+      - pagination
+      - results
+    PaginatedGoogleProviderMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleProviderMapping'
       required:
       - pagination
       - results
@@ -39314,6 +39694,25 @@ components:
             to a challenge. RETRY returns the error message and a similar challenge
             to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT
             restarts the flow while keeping the current context.
+    PatchedGoogleProviderMappingRequest:
+      type: object
+      description: GoogleProviderMapping Serializer
+      properties:
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
     PatchedGoogleProviderRequest:
       type: object
       description: GoogleProvider Serializer
@@ -39326,6 +39725,12 @@ components:
           items:
             type: string
             format: uuid
+        property_mappings_group:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Property mappings used for group creation/updating.
         delegated_subject:
           type: string
           format: email

@@ -3,6 +3,7 @@ import "@goauthentik/admin/providers/oauth2/OAuth2ProviderViewPage";
 import "@goauthentik/admin/providers/proxy/ProxyProviderViewPage";
 import "@goauthentik/admin/providers/rac/RACProviderViewPage";
 import "@goauthentik/admin/providers/radius/RadiusProviderViewPage";
+import "@goauthentik/admin/providers/google/GoogleProviderViewPage";
 import "@goauthentik/admin/providers/saml/SAMLProviderViewPage";
 import "@goauthentik/admin/providers/scim/SCIMProviderViewPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
@@ -70,6 +71,10 @@ export class ProviderViewPage extends AKElement {
                 return html`<ak-provider-rac-view
                     providerID=${ifDefined(this.provider.pk)}
                 ></ak-provider-rac-view>`;
+            case "ak-provider-google-form":
+                return html`<ak-provider-google-view
+                    providerID=${ifDefined(this.provider.pk)}
+                ></ak-provider-google-view>`;
             default:
                 return html`<p>Invalid provider type ${this.provider?.component}</p>`;
         }

@@ -1,5 +1,6 @@
 import "@goauthentik/admin/applications/ApplicationWizardHint";
 import "@goauthentik/admin/providers/ProviderWizard";
+import "@goauthentik/admin/providers/google/GoogleProviderForm";
 import "@goauthentik/admin/providers/ldap/LDAPProviderForm";
 import "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
 import "@goauthentik/admin/providers/proxy/ProxyProviderForm";

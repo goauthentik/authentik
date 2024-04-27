@@ -2565,6 +2565,43 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_providers_google.googleprovidermapping"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_providers_google.googleprovidermapping"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_providers_google.googleprovidermapping"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_providers_rac.racprovider"
                             },
                             "id": {
@@ -3457,6 +3494,7 @@
                         "authentik_core.token",
                         "authentik_enterprise.license",
                         "authentik_providers_google.googleprovider",
+                        "authentik_providers_google.googleprovidermapping",
                         "authentik_providers_rac.racprovider",
                         "authentik_providers_rac.endpoint",
                         "authentik_providers_rac.racpropertymapping",
@@ -8177,6 +8215,16 @@
                     },
                     "title": "Property mappings"
                 },
+                "property_mappings_group": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Property mappings used for group creation/updating."
+                    },
+                    "title": "Property mappings group",
+                    "description": "Property mappings used for group creation/updating."
+                },
                 "delegated_subject": {
                     "type": "string",
                     "format": "email",
@@ -8202,6 +8250,31 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Filter group"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_providers_google.googleprovidermapping": {
+            "type": "object",
+            "properties": {
+                "managed": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Managed by authentik",
+                    "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "expression": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Expression"
                 }
             },
             "required": []

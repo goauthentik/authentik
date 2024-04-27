@@ -17,7 +17,7 @@ class GoogleProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
             "pk",
             "name",
             "property_mappings",
-            # "property_mappings_group",
+            "property_mappings_group",
             "component",
             "assigned_backchannel_application_slug",
             "assigned_backchannel_application_name",
