@@ -79,7 +79,6 @@ class GoogleUserClient(GoogleSyncClient[User, dict]):
     def _update(self, user: User, connection: GoogleProviderUser):
         """Update existing user"""
         google_user = self.to_schema(user)
-        google_user[""] = connection.id
         self._request(
             self.directory_service.users().update(userKey=connection.id, body=google_user)
         )

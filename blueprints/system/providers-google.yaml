@@ -1,0 +1,44 @@
+version: 1
+metadata:
+  labels:
+    blueprints.goauthentik.io/system: "true"
+  name: System - Google Provider - Mappings
+entries:
+  - identifiers:
+      managed: goauthentik.io/providers/google/user
+    model: authentik_providers_google.googleprovidermapping
+    attrs:
+      name: "authentik default Google Mapping: User"
+      # https://developers.google.com/admin-sdk/directory/reference/rest/v1/users#User
+      expression: |
+        # Google require givenName and familyName to be set
+        givenName, familyName = request.user.name, " "
+        formatted = request.user.name + " "
+        # This default sets givenName to the name before the first space
+        # and the remainder as family name
+        # if the user's name has no space the givenName is the entire name
+        if " " in request.user.name:
+            givenName, _, familyName = request.user.name.partition(" ")
+            formatted = request.user.name
+        return {
+            "primaryEmail": request.user.email,
+            "name": {
+                "fullName": formatted,
+                "familyName": familyName.strip(),
+                "givenName": givenName.strip(),
+                "displayName": formatted,
+            },
+            "password": request.user.password,
+        }
+  - identifiers:
+      managed: goauthentik.io/providers/google/group
+    model: authentik_providers_google.googleprovidermapping
+    attrs:
+      name: "authentik default Google Mapping: Group"
+      # https://developers.google.com/admin-sdk/directory/reference/rest/v1/groups#Group
+      expression: |
+        return {
+            "name": group.name,
+            # TODO
+            "email": f"{slugify(group.name)}@beryju.org",
+        }
