@@ -556,7 +556,7 @@ class Notification(SerializerModel):
             if len(self.body) > NOTIFICATION_SUMMARY_LENGTH
             else self.body
         )
-        return f"Notification for user {self.user}: {body_trunc}"
+        return f"Notification for user {self.user_id}: {body_trunc}"
 
     class Meta:
         verbose_name = _("Notification")
