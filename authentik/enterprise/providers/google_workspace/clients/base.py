@@ -2,7 +2,7 @@ from django.db.models import Model
 from django.http import HttpResponseNotFound
 from google.auth.exceptions import GoogleAuthError, TransportError
 from googleapiclient.discovery import build
-from googleapiclient.errors import Error
+from googleapiclient.errors import Error, HttpError
 from googleapiclient.http import HttpRequest
 from httplib2 import HttpLib2Error, HttpLib2ErrorWithResponse
 
@@ -39,14 +39,18 @@ class GoogleWorkspaceSyncClient[TModel: Model, TSchema: dict](
                 raise TransientSyncException(f"Failed to send request: {str(exc)}") from exc
             raise StopSync(exc) from exc
         except HttpLib2Error as exc:
-            if (
-                isinstance(exc, HttpLib2ErrorWithResponse)
-                and exc.response.status == HttpResponseNotFound.status_code
-            ):
-                raise NotFoundSyncException("Object not found") from exc
-            if isinstance(exc, HttpLib2ErrorWithResponse) and exc.response.status == HTTP_CONFLICT:
-                raise ObjectExistsException("Object exists") from exc
+            if isinstance(exc, HttpLib2ErrorWithResponse):
+                self._response_handle_status_code(exc.response.status, exc)
+            raise TransientSyncException(f"Failed to send request: {str(exc)}") from exc
+        except HttpError as exc:
+            self._response_handle_status_code(exc.status_code, exc)
             raise TransientSyncException(f"Failed to send request: {str(exc)}") from exc
         except Error as exc:
             raise TransientSyncException(f"Failed to send request: {str(exc)}") from exc
         return response
+
+    def _response_handle_status_code(self, status_code: int, root_exc: Exception):
+        if status_code == HttpResponseNotFound.status_code:
+            raise NotFoundSyncException("Object not found") from root_exc
+        if status_code == HTTP_CONFLICT:
+            raise ObjectExistsException("Object exists") from root_exc

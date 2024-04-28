@@ -8,7 +8,7 @@ from requests import RequestException, Session
 
 from authentik.lib.sync.outgoing import HTTP_CONFLICT
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
-from authentik.lib.sync.outgoing.exceptions import NotFoundSyncException, ObjectExistsException
+from authentik.lib.sync.outgoing.exceptions import NotFoundSyncException, ObjectExistsSyncException
 from authentik.lib.utils.http import get_http_session
 from authentik.providers.scim.clients.exceptions import SCIMRequestException
 from authentik.providers.scim.clients.schema import ServiceProviderConfiguration
@@ -62,7 +62,7 @@ class SCIMClient[TModel: "Model", TSchema: "BaseModel"](
             if response.status_code == HttpResponseNotFound.status_code:
                 raise NotFoundSyncException(response)
             if response.status_code == HTTP_CONFLICT:
-                raise ObjectExistsException(response)
+                raise ObjectExistsSyncException(response)
             self.logger.warning(
                 "Failed to send SCIM request", path=path, method=method, response=response.text
             )

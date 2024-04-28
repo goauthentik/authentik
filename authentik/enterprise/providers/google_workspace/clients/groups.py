@@ -74,10 +74,22 @@ class GoogleWorkspaceGroupClient(GoogleWorkspaceSyncClient[Group, dict]):
         """Create group from scratch and create a connection object"""
         google_group = self.to_schema(group)
         with transaction.atomic():
-            response = self._request(self.directory_service.groups().insert(body=google_group))
-            GoogleWorkspaceProviderGroup.objects.create(
-                provider=self.provider, group=group, id=response["id"]
-            )
+            try:
+                response = self._request(self.directory_service.groups().insert(body=google_group))
+            except ObjectExistsException:
+                # group already exists in google workspace, so we can connect them manually
+                # for groups we need to fetch the group from google as we connect on
+                # ID and not group email
+                group_data = self._request(
+                    self.directory_service.groups().get(groupKey=google_group["email"])
+                )
+                GoogleWorkspaceProviderGroup.objects.create(
+                    provider=self.provider, group=group, id=group_data["id"]
+                )
+            else:
+                GoogleWorkspaceProviderGroup.objects.create(
+                    provider=self.provider, group=group, id=response["id"]
+                )
 
     def _update(self, group: Group, connection: GoogleWorkspaceProviderGroup):
         """Update existing group"""

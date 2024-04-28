@@ -9,7 +9,11 @@ from authentik.enterprise.providers.google_workspace.models import (
     GoogleWorkspaceProviderUser,
 )
 from authentik.events.models import Event, EventAction
-from authentik.lib.sync.outgoing.exceptions import NotFoundSyncException, StopSync
+from authentik.lib.sync.outgoing.exceptions import (
+    NotFoundSyncException,
+    ObjectExistsException,
+    StopSync,
+)
 from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.utils import delete_none_values
 
@@ -78,10 +82,17 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, dict]):
         """Create user from scratch and create a connection object"""
         google_user = self.to_schema(user)
         with transaction.atomic():
-            response = self._request(self.directory_service.users().insert(body=google_user))
-            GoogleWorkspaceProviderUser.objects.create(
-                provider=self.provider, user=user, id=response["primaryEmail"]
-            )
+            try:
+                response = self._request(self.directory_service.users().insert(body=google_user))
+            except ObjectExistsException:
+                # user already exists in google workspace, so we can connect them manually
+                GoogleWorkspaceProviderUser.objects.create(
+                    provider=self.provider, user=user, id=user.email
+                )
+            else:
+                GoogleWorkspaceProviderUser.objects.create(
+                    provider=self.provider, user=user, id=response["primaryEmail"]
+                )
 
     def _update(self, user: User, connection: GoogleWorkspaceProviderUser):
         """Update existing user"""
