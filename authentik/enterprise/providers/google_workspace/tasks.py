@@ -15,6 +15,7 @@ def google_workspace_sync_objects(*args, **kwargs):
 
 @CELERY_APP.task(base=SystemTask, bind=True)
 def google_workspace_sync(self, provider_pk: int, *args, **kwargs):
+    """Run full sync for Google Workspace provider"""
     return sync_tasks.sync_single(self, provider_pk, google_workspace_sync_objects)
 
 
