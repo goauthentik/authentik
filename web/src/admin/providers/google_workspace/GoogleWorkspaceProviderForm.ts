@@ -1,6 +1,8 @@
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
+import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
@@ -69,12 +71,10 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleProv
                         ?required=${true}
                         name="credentials"
                     >
-                        <input
-                            type="text"
-                            value="${first(this.instance?.credentials, "")}"
-                            class="pf-c-form-control"
-                            required
-                        />
+                        <ak-codemirror
+                            mode=${CodeMirrorMode.JavaScript}
+                            .value="${first(this.instance?.credentials, {})}"
+                        ></ak-codemirror>
                         <p class="pf-c-form__helper-text">${msg("TODO")}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
