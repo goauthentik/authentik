@@ -64,7 +64,6 @@ func (a *Application) stateFromRequest(r *http.Request) *OAuthState {
 	}
 	claims := &OAuthState{}
 	err = mapstructure.Decode(token.Claims, &claims)
-	fmt.Printf("%+v\n", token.Claims)
 	if err != nil {
 		a.log.WithError(err).Warning("failed to mapdecode")
 		return nil
