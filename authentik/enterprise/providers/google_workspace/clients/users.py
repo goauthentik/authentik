@@ -11,8 +11,9 @@ from authentik.enterprise.providers.google_workspace.models import (
 from authentik.events.models import Event, EventAction
 from authentik.lib.sync.outgoing.exceptions import (
     NotFoundSyncException,
-    ObjectExistsException,
+    ObjectExistsSyncException,
     StopSync,
+    TransientSyncException,
 )
 from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.utils import delete_none_values
@@ -81,14 +82,19 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, dict]):
     def _create(self, user: User):
         """Create user from scratch and create a connection object"""
         google_user = self.to_schema(user)
+        self.check_email_valid(
+            google_user["primaryEmail"], *[x["address"] for x in google_user.get("emails", [])]
+        )
         with transaction.atomic():
             try:
                 response = self._request(self.directory_service.users().insert(body=google_user))
-            except ObjectExistsException:
+            except ObjectExistsSyncException:
                 # user already exists in google workspace, so we can connect them manually
                 GoogleWorkspaceProviderUser.objects.create(
                     provider=self.provider, user=user, id=user.email
                 )
+            except TransientSyncException as exc:
+                raise exc
             else:
                 GoogleWorkspaceProviderUser.objects.create(
                     provider=self.provider, user=user, id=response["primaryEmail"]
@@ -97,6 +103,9 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, dict]):
     def _update(self, user: User, connection: GoogleWorkspaceProviderUser):
         """Update existing user"""
         google_user = self.to_schema(user)
+        self.check_email_valid(
+            google_user["primaryEmail"], *[x["address"] for x in google_user.get("emails", [])]
+        )
         self._request(
             self.directory_service.users().update(userKey=connection.id, body=google_user)
         )

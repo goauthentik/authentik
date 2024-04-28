@@ -13,7 +13,7 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.sync.outgoing.base import Direction
 from authentik.lib.sync.outgoing.exceptions import (
     NotFoundSyncException,
-    ObjectExistsException,
+    ObjectExistsSyncException,
     StopSync,
     TransientSyncException,
 )
@@ -73,10 +73,11 @@ class GoogleWorkspaceGroupClient(GoogleWorkspaceSyncClient[Group, dict]):
     def _create(self, group: Group):
         """Create group from scratch and create a connection object"""
         google_group = self.to_schema(group)
+        self.check_email_valid(google_group["email"])
         with transaction.atomic():
             try:
                 response = self._request(self.directory_service.groups().insert(body=google_group))
-            except ObjectExistsException:
+            except ObjectExistsSyncException:
                 # group already exists in google workspace, so we can connect them manually
                 # for groups we need to fetch the group from google as we connect on
                 # ID and not group email
@@ -94,6 +95,7 @@ class GoogleWorkspaceGroupClient(GoogleWorkspaceSyncClient[Group, dict]):
     def _update(self, group: Group, connection: GoogleWorkspaceProviderGroup):
         """Update existing group"""
         google_group = self.to_schema(group)
+        self.check_email_valid(google_group["email"])
         try:
             return self._request(
                 self.directory_service.groups().update(
@@ -165,7 +167,7 @@ class GoogleWorkspaceGroupClient(GoogleWorkspaceSyncClient[Group, dict]):
                             groupKey=google_group_id, memberKey=user
                         )
                     )
-            except ObjectExistsException:
+            except ObjectExistsSyncException:
                 pass
             except TransientSyncException:
                 raise

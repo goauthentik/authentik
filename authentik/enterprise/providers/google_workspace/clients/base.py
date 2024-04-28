@@ -11,7 +11,7 @@ from authentik.lib.sync.outgoing import HTTP_CONFLICT
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.exceptions import (
     NotFoundSyncException,
-    ObjectExistsException,
+    ObjectExistsSyncException,
     StopSync,
     TransientSyncException,
 )
@@ -22,6 +22,8 @@ class GoogleWorkspaceSyncClient[TModel: Model, TSchema: dict](
 ):
     """Base client for syncing to google workspace"""
 
+    domains: list
+
     def __init__(self, provider: GoogleWorkspaceProvider) -> None:
         super().__init__(provider)
         self.directory_service = build(
@@ -30,6 +32,14 @@ class GoogleWorkspaceSyncClient[TModel: Model, TSchema: dict](
             credentials=provider.google_credentials(),
             cache_discovery=False,
         )
+        self.__prefetch_domains()
+
+    def __prefetch_domains(self):
+        self.domains = []
+        domains = self._request(self.directory_service.domains().list(customer="my_customer"))
+        for domain in domains.get("domains", []):
+            domain_name = domain.get("domainName")
+            self.domains.append(domain_name)
 
     def _request(self, request: HttpRequest):
         try:
@@ -53,4 +63,9 @@ class GoogleWorkspaceSyncClient[TModel: Model, TSchema: dict](
         if status_code == HttpResponseNotFound.status_code:
             raise NotFoundSyncException("Object not found") from root_exc
         if status_code == HTTP_CONFLICT:
-            raise ObjectExistsException("Object exists") from root_exc
+            raise ObjectExistsSyncException("Object exists") from root_exc
+
+    def check_email_valid(self, *emails: str):
+        for email in emails:
+            if not any(email.endswith(f"@{domain_name}") for domain_name in self.domains):
+                raise TransientSyncException(f"Invalid email domain: {email}")

@@ -112,7 +112,7 @@ class SyncTasks:
                         _(
                             (
                                 "Failed to sync {object_type} {object_name} "
-                                "due to remote error: {error}"
+                                "due to transient error: {error}"
                             ).format_map(
                                 {
                                     "object_type": obj._meta.verbose_name,
