@@ -208,7 +208,7 @@ In netbox, there are two special user roles `superuser` and `staff`. To set them
 To use custom group names, the following scope mapping example can be used. In the example, the group `netbox_admins` is used for the `superusers` and the group `netbox_staff` for the `staff` users.
 
 Name: `Netbox roles`
-Scope name: `roles`
+Scope name: `profile`
 
 Expression:
 
