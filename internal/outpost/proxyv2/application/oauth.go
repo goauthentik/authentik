@@ -50,5 +50,10 @@ func (a *Application) handleAuthStart(rw http.ResponseWriter, r *http.Request) {
 		a.log.WithError(err).Warning("failed to create state")
 		return
 	}
+	s, _ := a.sessions.Get(r, a.SessionName())
+	err = s.Save(r, rw)
+	if err != nil {
+		a.log.WithError(err).Warning("failed to save session")
+	}
 	http.Redirect(rw, r, a.oauthConfig.AuthCodeURL(state), http.StatusFound)
 }
