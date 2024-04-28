@@ -14019,9 +14019,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/provider/google/:
+  /propertymappings/provider/google_workspace/:
     get:
-      operationId: propertymappings_provider_google_list
+      operationId: propertymappings_provider_google_workspace_list
       description: GoogleProviderMapping Viewset
       parameters:
       - in: query
@@ -14093,7 +14093,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     post:
-      operationId: propertymappings_provider_google_create
+      operationId: propertymappings_provider_google_workspace_create
       description: GoogleProviderMapping Viewset
       tags:
       - propertymappings
@@ -14124,9 +14124,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/provider/google/{pm_uuid}/:
+  /propertymappings/provider/google_workspace/{pm_uuid}/:
     get:
-      operationId: propertymappings_provider_google_retrieve
+      operationId: propertymappings_provider_google_workspace_retrieve
       description: GoogleProviderMapping Viewset
       parameters:
       - in: path
@@ -14160,7 +14160,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     put:
-      operationId: propertymappings_provider_google_update
+      operationId: propertymappings_provider_google_workspace_update
       description: GoogleProviderMapping Viewset
       parameters:
       - in: path
@@ -14200,7 +14200,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     patch:
-      operationId: propertymappings_provider_google_partial_update
+      operationId: propertymappings_provider_google_workspace_partial_update
       description: GoogleProviderMapping Viewset
       parameters:
       - in: path
@@ -14239,7 +14239,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     delete:
-      operationId: propertymappings_provider_google_destroy
+      operationId: propertymappings_provider_google_workspace_destroy
       description: GoogleProviderMapping Viewset
       parameters:
       - in: path
@@ -14268,9 +14268,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/provider/google/{pm_uuid}/used_by/:
+  /propertymappings/provider/google_workspace/{pm_uuid}/used_by/:
     get:
-      operationId: propertymappings_provider_google_used_by_list
+      operationId: propertymappings_provider_google_workspace_used_by_list
       description: Get a list of all objects that use this object
       parameters:
       - in: path
@@ -15631,9 +15631,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /providers/google/:
+  /providers/google_workspace/:
     get:
-      operationId: providers_google_list
+      operationId: providers_google_workspace_list
       description: GoogleProvider Viewset
       parameters:
       - in: query
@@ -15701,7 +15701,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     post:
-      operationId: providers_google_create
+      operationId: providers_google_workspace_create
       description: GoogleProvider Viewset
       tags:
       - providers
@@ -15732,9 +15732,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /providers/google/{id}/:
+  /providers/google_workspace/{id}/:
     get:
-      operationId: providers_google_retrieve
+      operationId: providers_google_workspace_retrieve
       description: GoogleProvider Viewset
       parameters:
       - in: path
@@ -15767,7 +15767,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     put:
-      operationId: providers_google_update
+      operationId: providers_google_workspace_update
       description: GoogleProvider Viewset
       parameters:
       - in: path
@@ -15806,7 +15806,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     patch:
-      operationId: providers_google_partial_update
+      operationId: providers_google_workspace_partial_update
       description: GoogleProvider Viewset
       parameters:
       - in: path
@@ -15844,7 +15844,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     delete:
-      operationId: providers_google_destroy
+      operationId: providers_google_workspace_destroy
       description: GoogleProvider Viewset
       parameters:
       - in: path
@@ -15872,9 +15872,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /providers/google/{id}/sync_status/:
+  /providers/google_workspace/{id}/sync_status/:
     get:
-      operationId: providers_google_sync_status_retrieve
+      operationId: providers_google_workspace_sync_status_retrieve
       description: Get provider's sync status
       parameters:
       - in: path
@@ -15908,9 +15908,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /providers/google/{id}/used_by/:
+  /providers/google_workspace/{id}/used_by/:
     get:
-      operationId: providers_google_used_by_list
+      operationId: providers_google_workspace_used_by_list
       description: Get a list of all objects that use this object
       parameters:
       - in: path
@@ -18988,8 +18988,8 @@ paths:
           - authentik_policies_expression.expressionpolicy
           - authentik_policies_password.passwordpolicy
           - authentik_policies_reputation.reputationpolicy
-          - authentik_providers_google.googleprovider
-          - authentik_providers_google.googleprovidermapping
+          - authentik_providers_google_workspace.googleworkspaceprovider
+          - authentik_providers_google_workspace.googleworkspaceprovidermapping
           - authentik_providers_ldap.ldapprovider
           - authentik_providers_oauth2.oauth2provider
           - authentik_providers_oauth2.scopemapping
@@ -19205,8 +19205,8 @@ paths:
           - authentik_policies_expression.expressionpolicy
           - authentik_policies_password.passwordpolicy
           - authentik_policies_reputation.reputationpolicy
-          - authentik_providers_google.googleprovider
-          - authentik_providers_google.googleprovidermapping
+          - authentik_providers_google_workspace.googleworkspaceprovider
+          - authentik_providers_google_workspace.googleworkspaceprovidermapping
           - authentik_providers_ldap.ldapprovider
           - authentik_providers_oauth2.oauth2provider
           - authentik_providers_oauth2.scopemapping
@@ -31130,7 +31130,7 @@ components:
       - authentik.core
       - authentik.enterprise
       - authentik.enterprise.audit
-      - authentik.enterprise.providers.google
+      - authentik.enterprise.providers.google_workspace
       - authentik.enterprise.providers.rac
       - authentik.enterprise.stages.source
       - authentik.events
@@ -36483,8 +36483,8 @@ components:
       - authentik_core.application
       - authentik_core.token
       - authentik_enterprise.license
-      - authentik_providers_google.googleprovider
-      - authentik_providers_google.googleprovidermapping
+      - authentik_providers_google_workspace.googleworkspaceprovider
+      - authentik_providers_google_workspace.googleworkspaceprovidermapping
       - authentik_providers_rac.racprovider
       - authentik_providers_rac.endpoint
       - authentik_providers_rac.racpropertymapping
@@ -42310,7 +42310,7 @@ components:
       type: string
     ProviderModelEnum:
       enum:
-      - authentik_providers_google.googleprovider
+      - authentik_providers_google_workspace.googleworkspaceprovider
       - authentik_providers_ldap.ldapprovider
       - authentik_providers_oauth2.oauth2provider
       - authentik_providers_proxy.proxyprovider
@@ -46352,7 +46352,7 @@ components:
       discriminator:
         propertyName: provider_model
         mapping:
-          authentik_providers_google.googleprovider: '#/components/schemas/GoogleProviderRequest'
+          authentik_providers_google_workspace.googleworkspaceprovider: '#/components/schemas/GoogleProviderRequest'
           authentik_providers_ldap.ldapprovider: '#/components/schemas/LDAPProviderRequest'
           authentik_providers_oauth2.oauth2provider: '#/components/schemas/OAuth2ProviderRequest'
           authentik_providers_proxy.proxyprovider: '#/components/schemas/ProxyProviderRequest'

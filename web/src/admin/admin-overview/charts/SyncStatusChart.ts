@@ -91,14 +91,16 @@ export class LDAPSyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
             ),
             await this.fetchStatus(
                 () => {
-                    return new ProvidersApi(DEFAULT_CONFIG).providersGoogleList();
+                    return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceList();
                 },
                 (element) => {
-                    return new ProvidersApi(DEFAULT_CONFIG).providersGoogleSyncStatusRetrieve({
+                    return new ProvidersApi(
+                        DEFAULT_CONFIG,
+                    ).providersGoogleWorkspaceSyncStatusRetrieve({
                         id: element.pk,
                     });
                 },
-                msg("Google Provider"),
+                msg("Google Workspace Provider"),
             ),
             await this.fetchStatus(
                 () => {

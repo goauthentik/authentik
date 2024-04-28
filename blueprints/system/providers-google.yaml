@@ -5,10 +5,10 @@ metadata:
   name: System - Google Provider - Mappings
 entries:
   - identifiers:
-      managed: goauthentik.io/providers/google/user
-    model: authentik_providers_google.googleprovidermapping
+      managed: goauthentik.io/providers/google_workspace/user
+    model: authentik_providers_google_workspace.googleworkspaceprovidermapping
     attrs:
-      name: "authentik default Google Mapping: User"
+      name: "authentik default Google Workspace Mapping: User"
       # https://developers.google.com/admin-sdk/directory/reference/rest/v1/users#User
       expression: |
         # Google require givenName and familyName to be set
@@ -31,10 +31,10 @@ entries:
             "password": request.user.password,
         }
   - identifiers:
-      managed: goauthentik.io/providers/google/group
-    model: authentik_providers_google.googleprovidermapping
+      managed: goauthentik.io/providers/google_workspace/group
+    model: authentik_providers_google_workspace.googleworkspaceprovidermapping
     attrs:
-      name: "authentik default Google Mapping: Group"
+      name: "authentik default Google Workspace Mapping: Group"
       # https://developers.google.com/admin-sdk/directory/reference/rest/v1/groups#Group
       expression: |
         return {

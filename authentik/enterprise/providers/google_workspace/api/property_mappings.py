@@ -8,14 +8,14 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.propertymappings import PropertyMappingSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.enterprise.providers.google.models import GoogleProviderMapping
+from authentik.enterprise.providers.google_workspace.models import GoogleWorkspaceProviderMapping
 
 
 class GoogleProviderMappingSerializer(PropertyMappingSerializer):
     """GoogleProviderMapping Serializer"""
 
     class Meta:
-        model = GoogleProviderMapping
+        model = GoogleWorkspaceProviderMapping
         fields = PropertyMappingSerializer.Meta.fields
 
 
@@ -25,14 +25,14 @@ class GoogleProviderMappingFilter(FilterSet):
     managed = extend_schema_field(OpenApiTypes.STR)(AllValuesMultipleFilter(field_name="managed"))
 
     class Meta:
-        model = GoogleProviderMapping
+        model = GoogleWorkspaceProviderMapping
         fields = "__all__"
 
 
 class GoogleProviderMappingViewSet(UsedByMixin, ModelViewSet):
     """GoogleProviderMapping Viewset"""
 
-    queryset = GoogleProviderMapping.objects.all()
+    queryset = GoogleWorkspaceProviderMapping.objects.all()
     serializer_class = GoogleProviderMappingSerializer
     filterset_class = GoogleProviderMappingFilter
     search_fields = ["name"]

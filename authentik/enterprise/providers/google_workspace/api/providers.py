@@ -5,7 +5,7 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.enterprise.api import EnterpriseRequiredMixin
-from authentik.enterprise.providers.google.models import GoogleProvider
+from authentik.enterprise.providers.google_workspace.models import GoogleWorkspaceProvider
 from authentik.lib.sync.outgoing.api import OutgoingSyncProviderStatusMixin
 
 
@@ -13,7 +13,7 @@ class GoogleProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
     """GoogleProvider Serializer"""
 
     class Meta:
-        model = GoogleProvider
+        model = GoogleWorkspaceProvider
         fields = [
             "pk",
             "name",
@@ -37,7 +37,7 @@ class GoogleProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
 class GoogleProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin, ModelViewSet):
     """GoogleProvider Viewset"""
 
-    queryset = GoogleProvider.objects.all()
+    queryset = GoogleWorkspaceProvider.objects.all()
     serializer_class = GoogleProviderSerializer
     filterset_fields = [
         "name",

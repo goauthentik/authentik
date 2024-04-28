@@ -21,10 +21,10 @@ import {
     ProvidersApi,
 } from "@goauthentik/api";
 
-@customElement("ak-provider-google-form")
-export class GoogleProviderFormPage extends BaseProviderForm<GoogleProvider> {
+@customElement("ak-provider-google-workspace-form")
+export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleProvider> {
     loadInstance(pk: number): Promise<GoogleProvider> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersGoogleRetrieve({
+        return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceRetrieve({
             id: pk,
         });
     }
@@ -32,7 +32,7 @@ export class GoogleProviderFormPage extends BaseProviderForm<GoogleProvider> {
     async load(): Promise<void> {
         this.propertyMappings = await new PropertymappingsApi(
             DEFAULT_CONFIG,
-        ).propertymappingsProviderGoogleList({
+        ).propertymappingsProviderGoogleWorkspaceList({
             ordering: "managed",
         });
     }
@@ -41,12 +41,12 @@ export class GoogleProviderFormPage extends BaseProviderForm<GoogleProvider> {
 
     async send(data: GoogleProvider): Promise<GoogleProvider> {
         if (this.instance) {
-            return new ProvidersApi(DEFAULT_CONFIG).providersGoogleUpdate({
+            return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceUpdate({
                 id: this.instance.pk || 0,
                 googleProviderRequest: data,
             });
         } else {
-            return new ProvidersApi(DEFAULT_CONFIG).providersGoogleCreate({
+            return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceCreate({
                 googleProviderRequest: data,
             });
         }
@@ -156,7 +156,8 @@ export class GoogleProviderFormPage extends BaseProviderForm<GoogleProvider> {
                                 let selected = false;
                                 if (!this.instance?.propertyMappings) {
                                     selected =
-                                        mapping.managed === "goauthentik.io/providers/google/user" ||
+                                        mapping.managed ===
+                                            "goauthentik.io/providers/google_workspace/user" ||
                                         false;
                                 } else {
                                     selected = Array.from(this.instance?.propertyMappings).some(
@@ -189,7 +190,8 @@ export class GoogleProviderFormPage extends BaseProviderForm<GoogleProvider> {
                                 let selected = false;
                                 if (!this.instance?.propertyMappingsGroup) {
                                     selected =
-                                        mapping.managed === "goauthentik.io/providers/google/group";
+                                        mapping.managed ===
+                                        "goauthentik.io/providers/google_workspace/group";
                                 } else {
                                     selected = Array.from(
                                         this.instance?.propertyMappingsGroup,

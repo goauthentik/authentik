@@ -36,11 +36,14 @@ export class Wizard extends ModalButton {
     isValid = false;
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(PFWizard, css`
-            .pf-c-modal-box {
-                height: 75%;
-            }
-        `);
+        return super.styles.concat(
+            PFWizard,
+            css`
+                .pf-c-modal-box {
+                    height: 75%;
+                }
+            `,
+        );
     }
 
     @state()

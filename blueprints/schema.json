@@ -2528,7 +2528,7 @@
                         ],
                         "properties": {
                             "model": {
-                                "const": "authentik_providers_google.googleprovider"
+                                "const": "authentik_providers_google_workspace.googleworkspaceprovider"
                             },
                             "id": {
                                 "type": "string"
@@ -2550,10 +2550,10 @@
                                 }
                             },
                             "attrs": {
-                                "$ref": "#/$defs/model_authentik_providers_google.googleprovider"
+                                "$ref": "#/$defs/model_authentik_providers_google_workspace.googleworkspaceprovider"
                             },
                             "identifiers": {
-                                "$ref": "#/$defs/model_authentik_providers_google.googleprovider"
+                                "$ref": "#/$defs/model_authentik_providers_google_workspace.googleworkspaceprovider"
                             }
                         }
                     },
@@ -2565,7 +2565,7 @@
                         ],
                         "properties": {
                             "model": {
-                                "const": "authentik_providers_google.googleprovidermapping"
+                                "const": "authentik_providers_google_workspace.googleworkspaceprovidermapping"
                             },
                             "id": {
                                 "type": "string"
@@ -2587,10 +2587,10 @@
                                 }
                             },
                             "attrs": {
-                                "$ref": "#/$defs/model_authentik_providers_google.googleprovidermapping"
+                                "$ref": "#/$defs/model_authentik_providers_google_workspace.googleworkspaceprovidermapping"
                             },
                             "identifiers": {
-                                "$ref": "#/$defs/model_authentik_providers_google.googleprovidermapping"
+                                "$ref": "#/$defs/model_authentik_providers_google_workspace.googleworkspaceprovidermapping"
                             }
                         }
                     },
@@ -3411,7 +3411,7 @@
                         "authentik.core",
                         "authentik.enterprise",
                         "authentik.enterprise.audit",
-                        "authentik.enterprise.providers.google",
+                        "authentik.enterprise.providers.google_workspace",
                         "authentik.enterprise.providers.rac",
                         "authentik.enterprise.stages.source",
                         "authentik.events"
@@ -3493,8 +3493,8 @@
                         "authentik_core.application",
                         "authentik_core.token",
                         "authentik_enterprise.license",
-                        "authentik_providers_google.googleprovider",
-                        "authentik_providers_google.googleprovidermapping",
+                        "authentik_providers_google_workspace.googleworkspaceprovider",
+                        "authentik_providers_google_workspace.googleworkspaceprovidermapping",
                         "authentik_providers_rac.racprovider",
                         "authentik_providers_rac.endpoint",
                         "authentik_providers_rac.racpropertymapping",
@@ -8199,7 +8199,7 @@
             },
             "required": []
         },
-        "model_authentik_providers_google.googleprovider": {
+        "model_authentik_providers_google_workspace.googleworkspaceprovider": {
             "type": "object",
             "properties": {
                 "name": {
@@ -8254,7 +8254,7 @@
             },
             "required": []
         },
-        "model_authentik_providers_google.googleprovidermapping": {
+        "model_authentik_providers_google_workspace.googleworkspaceprovidermapping": {
             "type": "object",
             "properties": {
                 "managed": {

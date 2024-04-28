@@ -3,20 +3,25 @@ from django.db import transaction
 
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.models import User
-from authentik.enterprise.providers.google.clients.base import GoogleSyncClient
-from authentik.enterprise.providers.google.models import GoogleProviderMapping, GoogleProviderUser
+from authentik.enterprise.providers.google_workspace.clients.base import GoogleWorkspaceSyncClient
+from authentik.enterprise.providers.google_workspace.models import (
+    GoogleWorkspaceProviderMapping,
+    GoogleWorkspaceProviderUser,
+)
 from authentik.events.models import Event, EventAction
 from authentik.lib.sync.outgoing.exceptions import NotFoundSyncException, StopSync
 from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.utils import delete_none_values
 
 
-class GoogleUserClient(GoogleSyncClient[User, dict]):
+class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, dict]):
     """Sync authentik users into google workspace"""
 
     def write(self, obj: User):
         """Write a user"""
-        google_user = GoogleProviderUser.objects.filter(provider=self.provider, user=obj).first()
+        google_user = GoogleWorkspaceProviderUser.objects.filter(
+            provider=self.provider, user=obj
+        ).first()
         if not google_user:
             return self._create(obj)
         try:
@@ -27,7 +32,9 @@ class GoogleUserClient(GoogleSyncClient[User, dict]):
 
     def delete(self, obj: User):
         """Delete user"""
-        google_user = GoogleProviderUser.objects.filter(provider=self.provider, user=obj).first()
+        google_user = GoogleWorkspaceProviderUser.objects.filter(
+            provider=self.provider, user=obj
+        ).first()
         if not google_user:
             self.logger.debug("User does not exist in Google, skipping")
             return None
@@ -41,10 +48,10 @@ class GoogleUserClient(GoogleSyncClient[User, dict]):
         """Convert authentik user"""
         raw_google_user = {}
         for mapping in self.provider.property_mappings.all().order_by("name").select_subclasses():
-            if not isinstance(mapping, GoogleProviderMapping):
+            if not isinstance(mapping, GoogleWorkspaceProviderMapping):
                 continue
             try:
-                mapping: GoogleProviderMapping
+                mapping: GoogleWorkspaceProviderMapping
                 value = mapping.evaluate(
                     user=obj,
                     request=None,
@@ -72,11 +79,11 @@ class GoogleUserClient(GoogleSyncClient[User, dict]):
         google_user = self.to_schema(user)
         with transaction.atomic():
             response = self._request(self.directory_service.users().insert(body=google_user))
-            GoogleProviderUser.objects.create(
+            GoogleWorkspaceProviderUser.objects.create(
                 provider=self.provider, user=user, id=response["primaryEmail"]
             )
 
-    def _update(self, user: User, connection: GoogleProviderUser):
+    def _update(self, user: User, connection: GoogleWorkspaceProviderUser):
         """Update existing user"""
         google_user = self.to_schema(user)
         self._request(

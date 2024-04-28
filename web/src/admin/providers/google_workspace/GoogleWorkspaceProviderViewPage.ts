@@ -1,4 +1,4 @@
-import "@goauthentik/admin/providers/google/GoogleProviderForm";
+import "@goauthentik/authentik/admin/providers/google_workspace/GoogleWorkspaceProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
@@ -35,8 +35,8 @@ import {
     SystemTaskStatusEnum,
 } from "@goauthentik/api";
 
-@customElement("ak-provider-google-view")
-export class GoogleProviderViewPage extends AKElement {
+@customElement("ak-provider-google-workspace-view")
+export class GoogleWorkspaceProviderViewPage extends AKElement {
     @property({ type: Number })
     providerID?: number;
 
@@ -73,7 +73,7 @@ export class GoogleProviderViewPage extends AKElement {
 
     fetchProvider(id: number) {
         new ProvidersApi(DEFAULT_CONFIG)
-            .providersGoogleRetrieve({ id })
+            .providersGoogleWorkspaceRetrieve({ id })
             .then((prov) => (this.provider = prov));
     }
 
@@ -93,7 +93,7 @@ export class GoogleProviderViewPage extends AKElement {
                 data-tab-title="${msg("Overview")}"
                 @activate=${() => {
                     new ProvidersApi(DEFAULT_CONFIG)
-                        .providersGoogleSyncStatusRetrieve({
+                        .providersGoogleWorkspaceSyncStatusRetrieve({
                             id: this.provider?.pk || 0,
                         })
                         .then((state) => {
@@ -124,7 +124,7 @@ export class GoogleProviderViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersGoogleGoogleprovider}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersGoogleWorkspaceGoogleworkspaceprovider}
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;
@@ -197,7 +197,10 @@ export class GoogleProviderViewPage extends AKElement {
                             <ak-forms-modal>
                                 <span slot="submit"> ${msg("Update")} </span>
                                 <span slot="header"> ${msg("Update Google Provider")} </span>
-                                <ak-provider-google-form slot="form" .instancePk=${this.provider.pk}>
+                                <ak-provider-google-form
+                                    slot="form"
+                                    .instancePk=${this.provider.pk}
+                                >
                                 </ak-provider-google-form>
                                 <button slot="trigger" class="pf-c-button pf-m-primary">
                                     ${msg("Edit")}
@@ -215,7 +218,7 @@ export class GoogleProviderViewPage extends AKElement {
                                 class="pf-m-secondary"
                                 .apiRequest=${() => {
                                     return new ProvidersApi(DEFAULT_CONFIG)
-                                        .providersGooglePartialUpdate({
+                                        .providersGoogleWorkspacePartialUpdate({
                                             id: this.provider?.pk || 0,
                                             patchedGoogleProviderRequest: this.provider,
                                         })

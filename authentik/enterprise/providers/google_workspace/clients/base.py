@@ -6,7 +6,7 @@ from googleapiclient.errors import Error
 from googleapiclient.http import HttpRequest
 from httplib2 import HttpLib2Error, HttpLib2ErrorWithResponse
 
-from authentik.enterprise.providers.google.models import GoogleProvider
+from authentik.enterprise.providers.google_workspace.models import GoogleWorkspaceProvider
 from authentik.lib.sync.outgoing import HTTP_CONFLICT
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.exceptions import (
@@ -17,12 +17,12 @@ from authentik.lib.sync.outgoing.exceptions import (
 )
 
 
-class GoogleSyncClient[TModel: Model, TSchema: dict](
-    BaseOutgoingSyncClient[TModel, TSchema, GoogleProvider]
+class GoogleWorkspaceSyncClient[TModel: Model, TSchema: dict](
+    BaseOutgoingSyncClient[TModel, TSchema, GoogleWorkspaceProvider]
 ):
     """Base client for syncing to google workspace"""
 
-    def __init__(self, provider: GoogleProvider) -> None:
+    def __init__(self, provider: GoogleWorkspaceProvider) -> None:
         super().__init__(provider)
         self.directory_service = build(
             "admin",

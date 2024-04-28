@@ -3,9 +3,9 @@ import "@goauthentik/admin/providers/oauth2/OAuth2ProviderViewPage";
 import "@goauthentik/admin/providers/proxy/ProxyProviderViewPage";
 import "@goauthentik/admin/providers/rac/RACProviderViewPage";
 import "@goauthentik/admin/providers/radius/RadiusProviderViewPage";
-import "@goauthentik/admin/providers/google/GoogleProviderViewPage";
 import "@goauthentik/admin/providers/saml/SAMLProviderViewPage";
 import "@goauthentik/admin/providers/scim/SCIMProviderViewPage";
+import "@goauthentik/authentik/admin/providers/google_workspace/GoogleWorkspaceProviderViewPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
@@ -71,10 +71,10 @@ export class ProviderViewPage extends AKElement {
                 return html`<ak-provider-rac-view
                     providerID=${ifDefined(this.provider.pk)}
                 ></ak-provider-rac-view>`;
-            case "ak-provider-google-form":
-                return html`<ak-provider-google-view
+            case "ak-provider-google-workspace-form":
+                return html`<ak-provider-google-workspace-view
                     providerID=${ifDefined(this.provider.pk)}
-                ></ak-provider-google-view>`;
+                ></ak-provider-google-workspace-view>`;
             default:
                 return html`<p>Invalid provider type ${this.provider?.component}</p>`;
         }

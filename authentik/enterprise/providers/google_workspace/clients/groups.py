@@ -3,11 +3,11 @@ from django.db import transaction
 
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Group
-from authentik.enterprise.providers.google.clients.base import GoogleSyncClient
-from authentik.enterprise.providers.google.models import (
-    GoogleProviderGroup,
-    GoogleProviderMapping,
-    GoogleProviderUser,
+from authentik.enterprise.providers.google_workspace.clients.base import GoogleWorkspaceSyncClient
+from authentik.enterprise.providers.google_workspace.models import (
+    GoogleWorkspaceProviderGroup,
+    GoogleWorkspaceProviderMapping,
+    GoogleWorkspaceProviderUser,
 )
 from authentik.events.models import Event, EventAction
 from authentik.lib.sync.outgoing.base import Direction
@@ -20,12 +20,14 @@ from authentik.lib.sync.outgoing.exceptions import (
 from authentik.lib.utils.errors import exception_to_string
 
 
-class GoogleGroupClient(GoogleSyncClient[Group, dict]):
+class GoogleWorkspaceGroupClient(GoogleWorkspaceSyncClient[Group, dict]):
     """Google client for groups"""
 
     def delete(self, obj: Group):
         """Delete group"""
-        google_group = GoogleProviderGroup.objects.filter(provider=self.provider, group=obj).first()
+        google_group = GoogleWorkspaceProviderGroup.objects.filter(
+            provider=self.provider, group=obj
+        ).first()
         if not google_group:
             self.logger.debug("Group does not exist in Google, skipping")
             return None
@@ -42,10 +44,10 @@ class GoogleGroupClient(GoogleSyncClient[Group, dict]):
         for mapping in (
             self.provider.property_mappings_group.all().order_by("name").select_subclasses()
         ):
-            if not isinstance(mapping, GoogleProviderMapping):
+            if not isinstance(mapping, GoogleWorkspaceProviderMapping):
                 continue
             try:
-                mapping: GoogleProviderMapping
+                mapping: GoogleWorkspaceProviderMapping
                 value = mapping.evaluate(
                     user=None,
                     request=None,
@@ -73,11 +75,11 @@ class GoogleGroupClient(GoogleSyncClient[Group, dict]):
         google_group = self.to_schema(group)
         with transaction.atomic():
             response = self._request(self.directory_service.groups().insert(body=google_group))
-            GoogleProviderGroup.objects.create(
+            GoogleWorkspaceProviderGroup.objects.create(
                 provider=self.provider, group=group, id=response["id"]
             )
 
-    def _update(self, group: Group, connection: GoogleProviderGroup):
+    def _update(self, group: Group, connection: GoogleWorkspaceProviderGroup):
         """Update existing group"""
         google_group = self.to_schema(group)
         try:
@@ -93,7 +95,9 @@ class GoogleGroupClient(GoogleSyncClient[Group, dict]):
 
     def _write(self, obj: Group):
         """Write a group"""
-        google_group = GoogleProviderGroup.objects.filter(provider=self.provider, group=obj).first()
+        google_group = GoogleWorkspaceProviderGroup.objects.filter(
+            provider=self.provider, group=obj
+        ).first()
         if not google_group:
             return self._create(obj), True
         try:
@@ -111,7 +115,9 @@ class GoogleGroupClient(GoogleSyncClient[Group, dict]):
     def create_sync_members(self, obj: Group, google_group: dict):
         """Sync all members after a group was created"""
         users = list(obj.users.order_by("id").values_list("id", flat=True))
-        connections = GoogleProviderUser.objects.filter(provider=self.provider, user__pk__in=users)
+        connections = GoogleWorkspaceProviderUser.objects.filter(
+            provider=self.provider, user__pk__in=users
+        )
         for user in connections:
             try:
                 self._request(
@@ -156,7 +162,7 @@ class GoogleGroupClient(GoogleSyncClient[Group, dict]):
         """Add users in users_set to group"""
         if len(users_set) < 1:
             return
-        google_group = GoogleProviderGroup.objects.filter(
+        google_group = GoogleWorkspaceProviderGroup.objects.filter(
             provider=self.provider, group=group
         ).first()
         if not google_group:
@@ -165,7 +171,7 @@ class GoogleGroupClient(GoogleSyncClient[Group, dict]):
             )
             return
         user_ids = list(
-            GoogleProviderUser.objects.filter(
+            GoogleWorkspaceProviderUser.objects.filter(
                 user__pk__in=users_set, provider=self.provider
             ).values_list("id", flat=True)
         )
@@ -177,7 +183,7 @@ class GoogleGroupClient(GoogleSyncClient[Group, dict]):
         """Remove users in users_set from group"""
         if len(users_set) < 1:
             return
-        google_group = GoogleProviderGroup.objects.filter(
+        google_group = GoogleWorkspaceProviderGroup.objects.filter(
             provider=self.provider, group=group
         ).first()
         if not google_group:
@@ -186,7 +192,7 @@ class GoogleGroupClient(GoogleSyncClient[Group, dict]):
             )
             return
         user_ids = list(
-            GoogleProviderUser.objects.filter(
+            GoogleWorkspaceProviderUser.objects.filter(
                 user__pk__in=users_set, provider=self.provider
             ).values_list("id", flat=True)
         )

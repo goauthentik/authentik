@@ -1,4 +1,5 @@
 """SCIM Provider API Views"""
+
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
