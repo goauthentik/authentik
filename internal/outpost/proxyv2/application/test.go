@@ -71,7 +71,7 @@ func newTestApplication() *Application {
 	return a
 }
 
-func (a *Application) assertState(t *testing.T, req *http.Request, response *httptest.ResponseRecorder) *url.URL {
+func (a *Application) assertState(t *testing.T, req *http.Request, response *httptest.ResponseRecorder) (*url.URL, *OAuthState) {
 	loc, _ := response.Result().Location()
 	q := loc.Query()
 	state := q.Get("state")
@@ -90,5 +90,5 @@ func (a *Application) assertState(t *testing.T, req *http.Request, response *htt
 	// Remove state from URL
 	q.Del("state")
 	loc.RawQuery = q.Encode()
-	return loc
+	return loc, parsed
 }

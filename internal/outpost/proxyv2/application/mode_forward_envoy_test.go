@@ -32,15 +32,14 @@ func TestForwardHandleEnvoy_Single_Headers(t *testing.T) {
 	a.forwardHandleEnvoy(rr, req)
 
 	assert.Equal(t, http.StatusFound, rr.Code)
-	loc := a.assertState(t, req, rr)
-	s, _ := a.sessions.Get(req, a.SessionName())
+	loc, st := a.assertState(t, req, rr)
 	shouldUrl := url.Values{
 		"client_id":     []string{*a.proxyConfig.ClientId},
 		"redirect_uri":  []string{"https://ext.t.goauthentik.io/outpost.goauthentik.io/callback?X-authentik-auth-callback=true"},
 		"response_type": []string{"code"},
 	}
 	assert.Equal(t, fmt.Sprintf("http://fake-auth.t.goauthentik.io/auth?%s", shouldUrl.Encode()), loc.String())
-	assert.Equal(t, "http://ext.t.goauthentik.io/app", s.Values[constants.SessionRedirect])
+	assert.Equal(t, "http://ext.t.goauthentik.io/app", st.Redirect)
 }
 
 func TestForwardHandleEnvoy_Single_Claims(t *testing.T) {
@@ -101,8 +100,7 @@ func TestForwardHandleEnvoy_Domain_Header(t *testing.T) {
 	a.forwardHandleEnvoy(rr, req)
 
 	assert.Equal(t, http.StatusFound, rr.Code)
-	loc := a.assertState(t, req, rr)
-	s, _ := a.sessions.Get(req, a.SessionName())
+	loc, st := a.assertState(t, req, rr)
 
 	shouldUrl := url.Values{
 		"client_id":     []string{*a.proxyConfig.ClientId},
@@ -110,5 +108,5 @@ func TestForwardHandleEnvoy_Domain_Header(t *testing.T) {
 		"response_type": []string{"code"},
 	}
 	assert.Equal(t, fmt.Sprintf("http://fake-auth.t.goauthentik.io/auth?%s", shouldUrl.Encode()), loc.String())
-	assert.Equal(t, "http://test.goauthentik.io/app", s.Values[constants.SessionRedirect])
+	assert.Equal(t, "http://test.goauthentik.io/app", st.Redirect)
 }
