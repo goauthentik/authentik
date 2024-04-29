@@ -63,6 +63,7 @@ export class PasswordStage extends BaseStage<
                         <button
                             @click=${(e: Event) => {
                                 this.submitForm(e, {
+                                    component: this.challenge.component,
                                     rememberMe: true,
                                 });
                             }}
@@ -73,6 +74,7 @@ export class PasswordStage extends BaseStage<
                         <button
                             @click=${(e: Event) => {
                                 this.submitForm(e, {
+                                    component: this.challenge.component,
                                     rememberMe: false,
                                 });
                             }}

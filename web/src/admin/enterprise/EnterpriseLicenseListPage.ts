@@ -85,7 +85,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         this.forecast = await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseForecastRetrieve();
         this.summary = await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseSummaryRetrieve();
         this.installID = (
-            await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseGetInstallIdRetrieve()
+            await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseInstallIdRetrieve()
         ).installId;
         return new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseList(
             await this.defaultEndpointConfig(),

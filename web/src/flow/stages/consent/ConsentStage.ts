@@ -106,6 +106,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                     class="pf-c-form"
                     @submit=${(e: Event) => {
                         this.submitForm(e, {
+                            component: this.challenge.component,
                             token: this.challenge.token,
                         });
                     }}

@@ -57,7 +57,7 @@ class DiscriminatorField(CharField):
         self.default = value
         self.fixed_value = value
 
-    def to_representation(self):
+    def to_representation(self, *_, **__):
         return self.fixed_value
 
 
