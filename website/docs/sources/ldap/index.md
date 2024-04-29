@@ -2,9 +2,7 @@
 title: LDAP Source
 ---
 
-Sources allow you to connect authentik to an existing user directory. They can also be used for social logins, using external providers such as Facebook, Twitter, etc.
-
-This source allows you to import users and groups from an LDAP Server.
+Sources allow you to connect authentik to an existing user directory. This source allows you to import users and groups from an LDAP Server.
 
 :::info
 For Active Directory, follow the [Active Directory Integration](../active-directory/)
@@ -12,25 +10,60 @@ For Active Directory, follow the [Active Directory Integration](../active-direct
 For FreeIPA, follow the [FreeIPA Integration](../freeipa/)
 :::
 
--   **Server URI**: URI to your LDAP server/Domain Controller.
+## Configuration options for LDAP sources
 
-    You can specify multiple servers by separating URIs with a comma, like `ldap://ldap1.company,ldap://ldap2.company`.
+To create or edit a source in authentik, open the Admin interface and navigate to **Directory -> Ferderation and Social login**. There you can create a new LDAP source, or edit an existing one, using the  following settings.
 
-    When using a DNS entry with multiple Records, authentik will select a random entry when first connecting.
+-   **Enabled**:
+
+-   **Update internal password on login**: When the user logs in to authentik using the LDAP password backend, the password is stored as a hashed value in authentik.
+
+-   **Synch User**:
+
+-   **User password writeback**: Enable this option if you want to write password changes that are made in authentik back to LDAP.
+
+-   **Synch groups**: Enable/disable group synchronization. Groups are synced in the background every 5 minutes.
+
+-   **Sync parent group**: Optionally set this group as the parent group for all synced groups. An example use case of this would be to import Active Directory groups under a root `imported-from-ad` group.
+
+#### Connection settings
+
+-   **Server URI**: URI to your LDAP server/Domain Controller. You can specify multiple servers by separating URIs with a comma, like `ldap://ldap1.company,ldap://ldap2.company`. When using a DNS entry with multiple Records, authentik will select a random entry when first connecting.
+
+    -   **Enable StartTLS**: Enables StartTLS functionality. To use LDAPS instead, use port `636`.
+    -   **Use Server URI for SNI verification**: this setting is required for servers using TLS 1.3+
+
+-   **TLS Verification Certificate**: Specify a keypair to validate the remote certificate.
+
+-   **TLS Client authentication**: Client certificate keypair to authenticate against the LDAP Server's Certificate.
 
 -   **Bind CN**: CN of the bind user. This can also be a UPN in the format of `user@domain.tld`.
+
 -   **Bind password**: Password used during the bind process.
--   **Enable StartTLS**: Enables StartTLS functionality. To use LDAPS instead, use port `636`.
--   **Base DN**: Base DN used for all LDAP queries.
+
+-   **Base DN**: Base DN (distinguished name) used for all LDAP queries.
+
+#### LDAP Attribute mapping
+
+-   **User Property mappings** and **Group Property Mappings**: Define which LDAP properties map to which authentik properties. The default set of property mappings is generated for Active Directory. See also [LDAP Property Mappings](../../../docs/property-mappings/#ldap-property-mapping).
+
+#### Additional Settings
+
+-   **Group**:
+
+-   **User path**:
+
 -   **Addition User DN**: Prepended to the base DN for user queries.
+
 -   **Addition Group DN**: Prepended to the base DN for group queries.
+
 -   **User object filter**: Consider objects matching this filter to be users.
+
 -   **Group object filter**: Consider objects matching this filter to be groups.
--   **User group membership field**: This field contains the user's group memberships.
+
+-   **Group membership field**: This field contains the user's group memberships.
+
 -   **Object uniqueness field**: This field contains a unique identifier.
--   **Sync groups**: Enable/disable group synchronization. Groups are synced in the background every 5 minutes.
--   **Sync parent group**: Optionally set this group as the parent group for all synced groups. An example use case of this would be to import Active Directory groups under a root `imported-from-ad` group.
--   **Property mappings** and **Group Property Mappings**: Define which LDAP properties map to which authentik properties. The default set of property mappings is generated for Active Directory. See also [LDAP Property Mappings](../../../docs/property-mappings/#ldap-property-mapping)
 
 ## Property mappings
 
