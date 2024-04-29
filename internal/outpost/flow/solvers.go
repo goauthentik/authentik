@@ -8,25 +8,28 @@ import (
 )
 
 func (fe *FlowExecutor) solveChallenge_Identification(challenge *api.ChallengeTypes, req api.ApiFlowsExecutorSolveRequest) (api.FlowChallengeResponseRequest, error) {
-	r := api.NewIdentificationChallengeResponseRequest(fe.getAnswer(StageIdentification))
+	r := api.NewIdentificationChallengeResponseRequestWithDefaults()
+	r.SetUidField(fe.getAnswer(StageIdentification))
 	r.SetPassword(fe.getAnswer(StagePassword))
 	return api.IdentificationChallengeResponseRequestAsFlowChallengeResponseRequest(r), nil
 }
 
 func (fe *FlowExecutor) solveChallenge_Password(challenge *api.ChallengeTypes, req api.ApiFlowsExecutorSolveRequest) (api.FlowChallengeResponseRequest, error) {
-	r := api.NewPasswordChallengeResponseRequest(fe.getAnswer(StagePassword))
+	r := api.NewPasswordChallengeResponseRequestWithDefaults()
+	r.Password = fe.getAnswer(StagePassword)
 	return api.PasswordChallengeResponseRequestAsFlowChallengeResponseRequest(r), nil
 }
 
 func (fe *FlowExecutor) solveChallenge_UserLogin(challenge *api.ChallengeTypes, req api.ApiFlowsExecutorSolveRequest) (api.FlowChallengeResponseRequest, error) {
-	r := api.NewUserLoginChallengeResponseRequest(true)
+	r := api.NewUserLoginChallengeResponseRequestWithDefaults()
+	r.RememberMe = true
 	return api.UserLoginChallengeResponseRequestAsFlowChallengeResponseRequest(r), nil
 }
 
 func (fe *FlowExecutor) solveChallenge_AuthenticatorValidate(challenge *api.ChallengeTypes, req api.ApiFlowsExecutorSolveRequest) (api.FlowChallengeResponseRequest, error) {
 	// We only support duo and code-based authenticators, check if that's allowed
 	var deviceChallenge *api.DeviceChallenge
-	inner := api.NewAuthenticatorValidationChallengeResponseRequest()
+	inner := api.NewAuthenticatorValidationChallengeResponseRequestWithDefaults()
 	for _, devCh := range challenge.AuthenticatorValidationChallenge.DeviceChallenges {
 		if devCh.DeviceClass == string(api.DEVICECLASSESENUM_DUO) {
 			deviceChallenge = &devCh
