@@ -4,8 +4,8 @@ from uuid import uuid4
 
 from celery import chain, group
 from django.core.cache import cache
+from django.db.utils import OperationalError
 from ldap3.core.exceptions import LDAPException
-from redis.exceptions import LockError
 from structlog.stdlib import get_logger
 
 from authentik.events.models import SystemTask as DBSystemTask
@@ -63,12 +63,12 @@ def ldap_sync_single(source_pk: str):
     source: LDAPSource = LDAPSource.objects.filter(pk=source_pk).first()
     if not source:
         return
-    lock = source.sync_lock
-    if lock.locked():
+    pg_lock, redis_lock = source.sync_lock
+    if redis_lock.locked():
         LOGGER.debug("LDAP sync locked, skipping task", source=source.slug)
         return
     try:
-        with lock:
+        with pg_lock:
             # Delete all sync tasks from the cache
             DBSystemTask.objects.filter(name="ldap_sync", uid__startswith=source.slug).delete()
             task = chain(
@@ -83,10 +83,8 @@ def ldap_sync_single(source_pk: str):
                 ),
             )
             task()
-    except LockError:
-        # This should never happen, we check if the lock is locked above so this
-        # would only happen if there was some other timeout
-        LOGGER.debug("Failed to acquire lock for LDAP sync", source=source.slug)
+    except OperationalError:
+        LOGGER.debug("Failed to acquire lock for LDAP sync, skipping task", source=source.slug)
 
 
 def ldap_sync_paginator(source: LDAPSource, sync: type[BaseLDAPSynchronizer]) -> list:

@@ -1,7 +1,8 @@
 """SCIM Provider models"""
 
+import pglock
 from django.core.cache import cache
-from django.db import models
+from django.db import connection, models
 from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
 from redis.lock import Lock
@@ -31,9 +32,14 @@ class SCIMProvider(BackchannelProvider):
     )
 
     @property
-    def sync_lock(self) -> Lock:
-        """Redis lock for syncing SCIM to prevent multiple parallel syncs happening"""
-        return Lock(
+    def sync_lock(self) -> tuple[pglock.advisory, Lock]:
+        """Postgres lock for syncing SCIM to prevent multiple parallel syncs happening"""
+        return pglock.advisory(
+            lock_id=f"goauthentik.io/providers/scim/sync/{connection.schema_name}-{str(self.pk)}",
+            timeout=(60 * 60 * PAGE_TIMEOUT) * 3,
+            using=connection.alias,
+            side_effect=pglock.Raise,
+        ), Lock(
             cache.client.get_client(),
             name=f"goauthentik.io/providers/scim/sync-{str(self.pk)}",
             timeout=(60 * 60 * PAGE_TIMEOUT) * 3,

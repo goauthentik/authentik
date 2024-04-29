@@ -5,6 +5,7 @@ from typing import Any
 from celery.result import allow_join_result
 from django.core.paginator import Paginator
 from django.db.models import Model, QuerySet
+from django.db.utils import OperationalError
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from pydanticscim.responses import PatchOp
@@ -49,9 +50,9 @@ def scim_sync(self: SystemTask, provider_pk: int) -> None:
     ).first()
     if not provider:
         return
-    lock = provider.sync_lock
-    if lock.locked():
-        LOGGER.debug("SCIM sync locked, skipping task", source=provider.name)
+    pg_lock, redis_lock = provider.sync_lock
+    if redis_lock.locked():
+        LOGGER.debug("SCIM sync locked in redis, skipping task", provider=provider.name)
         return
     self.set_uid(slugify(provider.name))
     messages = []
@@ -62,19 +63,23 @@ def scim_sync(self: SystemTask, provider_pk: int) -> None:
     self.soft_time_limit = self.time_limit = (
         users_paginator.count + groups_paginator.count
     ) * PAGE_TIMEOUT
-    with allow_join_result():
-        try:
-            for page in users_paginator.page_range:
-                messages.append(_("Syncing page %(page)d of users" % {"page": page}))
-                for msg in scim_sync_users.delay(page, provider_pk).get():
-                    messages.append(msg)
-            for page in groups_paginator.page_range:
-                messages.append(_("Syncing page %(page)d of groups" % {"page": page}))
-                for msg in scim_sync_group.delay(page, provider_pk).get():
-                    messages.append(msg)
-        except StopSync as exc:
-            self.set_error(exc)
-            return
+    try:
+        with allow_join_result(), pg_lock:
+            try:
+                for page in users_paginator.page_range:
+                    messages.append(_("Syncing page %(page)d of users" % {"page": page}))
+                    for msg in scim_sync_users.delay(page, provider_pk).get():
+                        messages.append(msg)
+                for page in groups_paginator.page_range:
+                    messages.append(_("Syncing page %(page)d of groups" % {"page": page}))
+                    for msg in scim_sync_group.delay(page, provider_pk).get():
+                        messages.append(msg)
+            except StopSync as exc:
+                self.set_error(exc)
+                return
+    except OperationalError:
+        LOGGER.debug("Failed to acquire SCIM sync lock, skipping", provider=provider.name)
+        return
     self.set_status(TaskStatus.SUCCESSFUL, *messages)
 
 
