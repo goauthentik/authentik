@@ -313,9 +313,13 @@ if CONFIG.get_bool("postgresql.use_pgbouncer", False):
     DATABASES["default"]["CONN_MAX_AGE"] = None  # persistent
 
 for idx, _replica in enumerate(CONFIG.get("postgresql.read_replicas", [])):
-    host = _replica.get("host")
     _database = DATABASES["default"].copy()
-    _database["HOST"] = host
+    for setting in DATABASES["default"].keys():
+        if setting in ("TEST",):
+            continue
+        override = _replica.get(setting.lower())
+        if override is not None:
+            _database[setting] = override
     DATABASES[f"replica_{idx}"] = _database
 
 DATABASE_ROUTERS = (
