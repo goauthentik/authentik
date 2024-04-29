@@ -1,54 +1,20 @@
 import { AKElement } from "@goauthentik/elements/Base.js";
 import { bound } from "@goauthentik/elements/decorators/bound.js";
 
-import {
-    ReactiveController,
-    ReactiveControllerHost,
-    TemplateResult,
-    css,
-    html,
-    nothing,
-} from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { css, html, nothing } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFSelect from "@patternfly/patternfly/components/Select/select.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+import { AkKeyboardController } from "./SearchKeyboardController.js";
 import {
-    AkKeyboardController,
     KeyboardControllerCloseEvent,
     KeyboardControllerSelectEvent,
-} from "./SearchKeyboardController";
-
-type SearchPair = [string, string, undefined | string | TemplateResult];
-type SearchGroup = { name: string; options: SearchPair[] };
-
-type SearchOptions =
-    | {
-          grouped: false;
-          options: SearchPair[];
-      }
-    | {
-          grouped: true;
-          options: SearchGroup[];
-      };
-
-export class SearchSelectClickEvent extends Event {
-    static EVENT_NAME = "ak-search-select-click";
-    value: string | undefined;
-    constructor(value: string | undefined) {
-        super(SearchSelectClickEvent.EVENT_NAME, { composed: true, bubbles: true });
-        this.value = value;
-    }
-}
-
-export class SearchSelectCloseEvent extends Event {
-    static EVENT_NAME = "ak-search-select-close";
-    constructor(value: string | undefined) {
-        super(SearchSelectCloseEvent.EVENT_NAME, { composed: true, bubbles: true });
-    }
-}
+} from "./SearchKeyboardControllerEvents.js";
+import { SearchSelectClickEvent, SearchSelectCloseEvent } from "./SearchSelectMenuEvents.js";
+import type { GroupedOptions, SearchGroup, SearchOptions, SearchTuple } from "./types.js";
 
 /**
  * @class SearchSelectMenu
@@ -56,6 +22,12 @@ export class SearchSelectCloseEvent extends Event {
  *
  * The actual renderer of our components. Intended to be positioned and controlled automatically
  * from the outside.
+ *
+ * @fires ak-search-select-select - An element has been selected. Contains the `value` of the
+ * selected item.
+ *
+ * @fires ak-search-select-close - The user has triggered the `close` event. Clients can do with this
+ * as they wish.
  */
 
 @customElement("ak-search-select-menu")
@@ -83,11 +55,18 @@ export class SearchSelectMenu extends AKElement {
         ];
     }
 
+    /**
+     * The host to which all relevant events will be routed.  Useful for managing floating / portaled
+     * components.
+     */
     @property({ type: Object, attribute: false })
-    host: HTMLElement;
+    host!: HTMLElement;
 
+    /**
+     * See the search options type, described above, for the relevant types.
+     */
     @property({ type: Array, attribute: false })
-    options: SearchOptions;
+    options: SearchOptions = [];
 
     @property()
     value?: string;
@@ -100,33 +79,40 @@ export class SearchSelectMenu extends AKElement {
     constructor() {
         super();
         this.keyboardController = new AkKeyboardController(this);
-        this.addEventListener(KeyboardControllerSelectEvent.EVENT_NAME, this.onKeySelect);
-        this.addEventListener(KeyboardControllerCloseEvent.EVENT_NAME, this.onKeyClose);
+        this.addEventListener("ak-keyboard-controller-select", this.onKeySelect);
+        this.addEventListener("ak-keyboard-controller-close", this.onKeyClose);
+    }
+
+    // Handles the "easy mode" of just passing an array of tuples.
+    fixedOptions(): GroupedOptions {
+        return Array.isArray(this.options)
+            ? { grouped: false, options: this.options }
+            : this.options;
     }
 
     @bound
-    onClick(ev: Event, item: string) {
-        ev.stopPropagation();
+    onClick(event: Event, item: string) {
+        event.stopPropagation();
         this.host.dispatchEvent(new SearchSelectClickEvent(item));
         this.keyboardController.value = item;
     }
 
     @bound
-    onEmptyClick(ev: Event) {
-        ev.stopPropagation();
+    onEmptyClick(event: Event) {
+        event.stopPropagation();
         this.host.dispatchEvent(new SearchSelectClickEvent(undefined));
     }
 
     @bound
-    onKeySelect(ev: KeyboardControllerSelectEvent) {
-        ev.stopPropagation();
-        this.value = ev.value;
+    onKeySelect(event: KeyboardControllerSelectEvent) {
+        event.stopPropagation();
+        this.value = event.value;
         this.host.dispatchEvent(new SearchSelectClickEvent(this.value));
     }
 
     @bound
-    onKeyClose(ev: KeyboardControllerSelectEvent) {
-        ev.stopPropagation();
+    onKeyClose(event: KeyboardControllerCloseEvent) {
+        event.stopPropagation();
         this.host.dispatchEvent(new SearchSelectCloseEvent());
     }
 
@@ -138,18 +124,18 @@ export class SearchSelectMenu extends AKElement {
         </li>`;
     }
 
-    renderMenuItems(options: SearchPair[]) {
+    renderMenuItems(options: SearchTuple[]) {
         return options.map(
-            ([value, label, desc]: SearchPair) => html`
+            ([value, label, desc]: SearchTuple) => html`
                 <li>
                     <button
                         class="pf-c-dropdown__menu-item pf-m-description ak-select-item"
                         role="option"
                         value=${value}
-                        @click=${(ev) => {
+                        @click=${(ev: Event) => {
                             this.onClick(ev, value);
                         }}
-                        @keypress=${(ev) => {
+                        @keypress=${() => {
                             /* noop */
                         }}
                     >
@@ -177,23 +163,19 @@ export class SearchSelectMenu extends AKElement {
     }
 
     render() {
+        const options = this.fixedOptions();
         return html`<div class="pf-c-dropdown pf-m-expanded">
             <ul class="pf-c-dropdown__menu pf-m-static" role="listbox" tabindex="0">
-                ${this.emptyOption !== undefined ? this.renderEmptyOption() : nothing}
-                ${this.options.grouped
-                    ? this.renderMenuGroups(this.options.options)
-                    : this.renderMenuItems(this.options.options)}
+                ${this.emptyOption !== undefined ? this.renderEmptyMenuItem() : nothing}
+                ${options.grouped
+                    ? this.renderMenuGroups(options.options)
+                    : this.renderMenuItems(options.options)}
             </ul>
         </div> `;
     }
 }
 
 declare global {
-    interface GlobalEventHandlersEventMap {
-        "ak-search-select-click": SearchSelectClickEvent;
-        "ak-search-select-close": SearchSelectCloseEvent;
-    }
-
     interface HTMLElementTagNameMap {
         "ak-search-select-menu": SearchSelectMenu;
     }

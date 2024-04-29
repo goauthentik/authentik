@@ -1,220 +1,261 @@
-import { autoUpdate, computePosition, flip, hide, size } from "@floating-ui/dom";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { APIErrorTypes, parseAPIError } from "@goauthentik/common/errors";
-import { ascii_letters, digits, groupBy, randomString } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import { bound } from "@goauthentik/elements/decorators/bound.js";
-import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers";
-import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
+import "@goauthentik/elements/forms/SearchSelect/ak-search-select-menu-position.js";
+import type { SearchSelectMenuPosition } from "@goauthentik/elements/forms/SearchSelect/ak-search-select-menu-position.js";
 
-import { msg, str } from "@lit/localize";
-import { TemplateResult, html, render } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { msg } from "@lit/localize";
+import { PropertyValues, TemplateResult, html } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 import { Ref, createRef, ref } from "lit/directives/ref.js";
-import { styleMap } from "lit/directives/style-map.js";
 
-import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFSelect from "@patternfly/patternfly/components/Select/select.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { ResponseError } from "@goauthentik/api";
+import { SearchSelectClickEvent, SearchSelectCloseEvent } from "./SearchSelectMenuEvents.js";
+import type { SearchOptions, SearchTuple } from "./types.js";
 
-@customElement("ak-search-select")
-export class SearchSelectView extends CustomEmitterElement(AKElement) {
+/**
+ * @class SearchSelectView
+ * @element ak-search-select-view
+ *
+ * Main component of ak-search-select, renders the <input> object and controls interaction with the
+ * portaled menu list.
+ *
+ * @fires ak-search-select-input - When the user selects an item from the list. A derivative Event
+ * with the `value` as its payload.
+ *
+ */
+
+@customElement("ak-search-select-view")
+export class SearchSelectView extends AKElement {
+    /**
+     * The options collection. The simplest variant is just [key, label, optional<description>]. See
+     * the `./types.ts` file for variants and how to use them.
+     *
+     * @prop
+     */
     @property({ type: Array, attribute: false })
-    options: [boolean, Group<T>[]] = [];
+    options: SearchOptions = [];
 
+    /**
+     * The current value.  Must be one of the keys in the options group above.
+     *
+     * @prop
+     */
     @property()
     value?: string;
 
-    // Whether or not the dropdown component can be left blank
+    /**
+     * If set to true, this object MAY return undefined in no value is passed in and none is set during interaction.
+     *
+     * @attr
+     */
     @property({ type: Boolean })
     blankable = false;
 
-    // The name of this component as sent to a form
+    /**
+     * The name of the input, for forms
+     *
+     * @attr
+     */
     @property()
     name?: string;
 
-    // Whether or not the dropdown component is visible.
-    @property({ type: Boolean })
+    /**
+     * Whether or not the portal is open
+     *
+     * @attr
+     */
+    @property({ type: Boolean, reflect: true })
     open = false;
 
-    // The textual placeholder for the search's <input> object, if currently empty. Used as the
-    // native <input> object's `placeholder` field.
+    /**
+     * The textual placeholder for the search's <input> object, if currently empty. Used as the
+     * native <input> object's `placeholder` field.
+     *
+     * @attr
+     */
     @property()
     placeholder: string = msg("Select an object.");
 
-    // A textual string representing "The user has affirmed they want to leave the selection blank."
-    // Only used if `blankable` above is true.
+    /**
+     * A textual string representing "The user has affirmed they want to leave the selection blank."
+     * Only used if `blankable` above is true.
+     *
+     * @attr
+     */
     @property()
     emptyOption = "---------";
 
     // Handle the behavior of the drop-down when the :host scrolls off the page.
     scrollHandler?: () => void;
     observer: IntersectionObserver;
+
+    /**
+     * Permanent identify for the input object, so the floating portal can find where to anchor
+     * itself.
+     */
     inputRef: Ref<HTMLInputElement> = createRef();
 
-    // Handle communication between the :host and the portal
-    dropdownUID: string;
-    dropdownContainer: HTMLDivElement;
+    /**
+     * Permanent identity with the portal so focus events can be checked.
+     */
+    menuRef: Ref<SearchSelectMenuPosition> = createRef();
 
-    // Function to clean up positioned element when we're done.
-    public cleanup: () => void;
+    /**
+     *  Maps a value from the portal to labels to be put into the <input> field>
+     */
+    optionsMap: Map<string, string> = new Map();
 
     static get styles() {
-        return [
-            PFBase,
-            PFForm,
-            PFFormControl,
-            PFSelect,
-            css`
-                :host {
-                    overflow: visible;
-                }
-            `,
-        ];
+        return [PFBase, PFForm, PFFormControl, PFSelect];
     }
 
     constructor() {
         super();
-        if (!document.adoptedStyleSheets.includes(PFDropdown)) {
-            document.adoptedStyleSheets = [
-                ...document.adoptedStyleSheets,
-                ensureCSSStyleSheet(PFDropdown),
-            ];
-        }
         this.observer = new IntersectionObserver(() => {
             this.open = false;
-            this.shadowRoot
-                ?.querySelectorAll<HTMLInputElement>(
-                    ".pf-c-form-control.pf-c-select__toggle-typeahead",
-                )
-                .forEach((input) => {
-                    input.blur();
-                });
         });
         this.observer.observe(this);
-    }
-
-    connectedCallback(): void {
-        super.connectedCallback();
-        this.dropdownContainer = document.createElement("div");
-        this.dropdownContainer.dataset["managedBy"] = "ak-search-select";
-        this.name && (this.dropdownContainer.dataset["managedFor"] = this.name);
-        document.body.append(this.dropdownContainer);
+        this.addEventListener("ak-search-select-click", this.onInput);
+        this.addEventListener("ak-search-select-close", this.onClose);
     }
 
     disconnectedCallback(): void {
-        this.dropdownContainer.remove();
         this.observer.disconnect();
         super.disconnectedCallback();
     }
 
-    @bound
-    onMenuItemClick(obj: T | undefined) {
-        return () => {
-            this.selectedObject = obj;
-            this.dispatchCustomEvent("ak-change", { value: this.selectedObject });
-            this.open = false;
-        };
-    }
-
-    @bound
-    onFocus(ev: FocusEvent) {
+    onOpenEvent(event: Event) {
         this.open = true;
-        this.renderMenu();
-        if (this.blankable && this.renderedValue === this.emptyOption) {
-            if (ev.target && ev.target instanceof HTMLInputElement) {
-                ev.target.value = "";
-            }
+        if (
+            this.blankable &&
+            this.value === this.emptyOption &&
+            event.target &&
+            event.target instanceof HTMLInputElement
+        ) {
+            event.target.value = "";
         }
     }
 
-    @bound
-    onInput(ev: InputEvent) {
-        ev.stopPropagation();
-        this.dispatchEvent(new SearchSelectQueryEvent((ev.target as HTMLInputElement).value ?? ""));
-    }
-
-    @bound
-    onBlur(ev: FocusEvent) {
-        // For Safari, we get the <ul> element itself here when clicking on one of
-        // it's buttons, as the container has tabindex set
-        if (ev.relatedTarget && (ev.relatedTarget as HTMLElement).id === this.dropdownUID) {
-            return;
-        }
-        // Check if we're losing focus to one of our dropdown items, and if such don't blur
-        if (ev.relatedTarget instanceof HTMLButtonElement) {
-            const parentMenu = ev.relatedTarget.closest("ul.pf-c-dropdown__menu.pf-m-static");
-            if (parentMenu && parentMenu.id === this.dropdownUID) {
-                return;
-            }
-        }
+    onCloseEvent(event: Event) {
+        event.stopPropagation();
         this.open = false;
-        this.renderMenu();
     }
 
-    renderMenu(): void {
-        render(
-            html`<ak-search-select-menu
-                .options=${this.options}
-                .value=${this.value}
-                .host=${this}
-                .emptyOption=${(this.blankable && this.emptyOption) || undefined}
-                ?hidden=${!this.open}
-            ></ak-search-select-menu> `,
-            this.dropdownContainer,
-        );
+    @bound
+    onFocus(event: FocusEvent) {
+        this.onOpenEvent(event);
+    }
 
-        this.cleanup = autoUpdate(this.inputRef.value, this.dropdownContainer, async () => {
-            const { middlewateData, x, y } = await computePosition(
-                this.inputRef.value,
-                this.dropdownContainer,
-                {
-                    placement: "bottom",
-                    strategy: "fixed",
-                    middleware: [flip(), hide()],
-                },
-            );
+    @bound
+    onClick(event: Event) {
+        this.onOpenEvent(event);
+    }
 
-            if (middlewareData.hide?.referenceHidden) {
-                this.open = false;
-                return;
+    @bound
+    onInput(event: SearchSelectClickEvent) {
+        this.onCloseEvent(event);
+        this.value = event.value;
+        this.dispatchEvent(new SearchSelectInputEvent(event.value));
+    }
+
+    @bound
+    onClose(event: SearchSelectCloseEvent) {
+        this.onCloseEvent(event);
+    }
+
+    @bound
+    onKeydown(event: KeyboardEvent) {
+        if (event.key === "Escape") {
+            this.onCloseEvent(event);
+        }
+    }
+
+    @bound
+    onFocusOut(event: FocusEvent) {
+        event.stopPropagation();
+        window.setTimeout(() => {
+            if (!this.menuRef.value?.hasFocus()) {
+                this.onCloseEvent(event);
             }
+        }, 80);
+    }
 
-            Object.assign(this.dropdownContainer.style, {
-                position: "fixed",
-                top: "0",
-                left: "0",
-                transform: `translate(${x}px, ${y}px)`,
-            });
-        });
+    willUpdate(changed: PropertyValues<this>) {
+        if (changed.has("options")) {
+            this.optionsMap = optionsToOptionsMap(this.options);
+        }
     }
 
     render(): TemplateResult {
-        this.renderMenu();
-
+        const displayValue = this.value
+            ? this.optionsMap.get(this.value) ?? this.emptyOption ?? ""
+            : this.emptyOption ?? "";
         return html`<div class="pf-c-select">
-            <div class="pf-c-select__toggle pf-m-typeahead">
-                <div class="pf-c-select__toggle-wrapper">
-                    <input
-                        class="pf-c-form-control pf-c-select__toggle-typeahead"
-                        type="text"
-                        ${this.inputRef}
-                        placeholder=${this.placeholder}
-                        spellcheck="false"
-                        @input=${onInput}
-                        @focus=${onFocus}
-                        @blur=${onBlur}
-                        .value=${this.value ?? ""}
-                    />
+                <div class="pf-c-select__toggle pf-m-typeahead">
+                    <div class="pf-c-select__toggle-wrapper">
+                        <input
+                            class="pf-c-form-control pf-c-select__toggle-typeahead"
+                            type="text"
+                            ${ref(this.inputRef)}
+                            placeholder=${this.placeholder}
+                            spellcheck="false"
+                            @input=${this.onInput}
+                            @focus=${this.onFocus}
+                            @click=${this.onClick}
+                            @keydown=${this.onKeydown}
+                            @focusout=${this.onFocusOut}
+                            value=${displayValue ?? ""}
+                        />
+                    </div>
                 </div>
             </div>
-        </div>`;
+            <ak-search-select-menu-position
+                name=${ifDefined(this.name)}
+                .options=${this.options}
+                .value=${this.value}
+                .host=${this}
+                .anchor=${this.inputRef.value}
+                .emptyOption=${(this.blankable && this.emptyOption) || undefined}
+                ${ref(this.menuRef)}
+                ?hidden=${!this.open}
+            ></ak-search-select-menu-position> `;
     }
 }
 
-export default SearchSelect;
+type Pair = [string, string];
+const justThePair = ([key, label]: SearchTuple): Pair => [key, label];
+
+function optionsToOptionsMap(options: SearchOptions): Map<string, string> {
+    const pairs: Pair[] = Array.isArray(options)
+        ? options.map(justThePair)
+        : options.grouped
+          ? options.options.reduce(
+                (acc: Pair[], { options }): Pair[] => [...acc, ...options.map(justThePair)],
+                [] as Pair[],
+            )
+          : options.options.map(justThePair);
+    return new Map(pairs);
+}
+
+export class SearchSelectInputEvent extends Event {
+    value: string | undefined;
+    constructor(value: string | undefined) {
+        super("ak-search-select-input", { composed: true, bubbles: true });
+        this.value = value;
+    }
+}
+
+declare global {
+    interface GlobalEventHandlersEventMap {
+        "ak-search-select-input": SearchSelectInputEvent;
+    }
+
+    interface HTMLElementTagNameMap {
+        "ak-search-select-view": SearchSelectView;
+    }
+}

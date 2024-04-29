@@ -3,25 +3,32 @@ import { match } from "ts-pattern";
 
 import { LitElement, ReactiveController, ReactiveControllerHost } from "lit";
 
+import {
+    KeyboardControllerCloseEvent,
+    KeyboardControllerSelectEvent,
+} from "./SearchKeyboardControllerEvents.js";
+
 type ReactiveElementHost = Partial<ReactiveControllerHost> & LitElement;
 type ValuedHtmlElement = HTMLElement & { value: string };
 
-export class KeyboardControllerSelectEvent extends Event {
-    static EVENT_NAME = "ak-keyboard-controller-select";
-    value: string | undefined;
-    constructor(value: string | undefined) {
-        super(KeyboardControllerSelectEvent.EVENT_NAME, { composed: true, bubbles: true });
-        this.value = value;
-    }
-}
-
-export class KeyboardControllerCloseEvent extends Event {
-    static EVENT_NAME = "ak-keyboard-controller-close";
-    constructor(value) {
-        super(KeyboardControllerCloseEvent.EVENT_NAME, { composed: true, bubbles: true });
-    }
-}
-
+/**
+ * @class AkKeyboardController
+ *
+ * This reactive controller connects to the host and sets up listeners for keyboard events to manage
+ * a list of elements.  Navigational controls (up, down, home, end) do what you'd expect.  Enter and Space
+ * "select" the current item, which means:
+ *
+ * - All other items lose focus and tabIndex
+ * - The selected item gains focus and tabIndex
+ * - The value of the selected item is sent to the host as an event
+ *
+ * @fires ak-keyboard-controller-select - When an element is selected. Contains the `value` of the
+ * selected item.
+ *
+ * @fires ak-keyboard-controller-close - When `Escape` is pressed. Clients can do with this as they
+ * wish.
+ *
+ */
 export class AkKeyboardController implements ReactiveController {
     private host: ReactiveElementHost;
 
@@ -31,9 +38,24 @@ export class AkKeyboardController implements ReactiveController {
 
     private highlighter: string;
 
-    private items: ValuedHtmlElement[];
+    private items: ValuedHtmlElement[] = [];
 
-    constructor(host, selector = ".ak-select-item", highlighter = ".ak-highlight-item") {
+    /**
+     * @arg selector: The class identifier (it *must* be a class identifier) of the DOM objects
+     * that this controller will be working with.
+     *
+     * NOTE: The objects identified by the selector *must* have a `value` associated with them, and
+     * as in all things HTML, that value must be a string.
+     *
+     * @arg highlighter: The class identifier that clients *may* use to set an alternative focus
+     * on the object.  Note that the object will always receive focus.
+     *
+     */
+    constructor(
+        host: ReactiveElementHost,
+        selector = ".ak-select-item",
+        highlighter = ".ak-highlight-item",
+    ) {
         this.host = host;
         host.addController(this);
         this.selector = selector[0] === "." ? selector : `.${selector}`;
@@ -111,12 +133,5 @@ export class AkKeyboardController implements ReactiveController {
             .with({ key: "Escape" }, () => {
                 this.host.dispatchEvent(new KeyboardControllerCloseEvent());
             });
-    }
-}
-
-declare global {
-    interface GlobalEventHandlersEventMap {
-        "ak-keyboard-controller-select": KeyboardControllerSelectEvent;
-        "ak-keyboard-controller-close": KeyboardControllerCloseEvent;
     }
 }

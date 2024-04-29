@@ -4,11 +4,12 @@ import { slug } from "github-slugger";
 
 import { TemplateResult, html } from "lit";
 
+import { SearchSelectClickEvent } from "../SearchSelectMenuEvents.js";
 import "../ak-search-select-menu.js";
-import { SearchSelectClickEvent, SearchSelectMenu } from "../ak-search-select-menu.js";
-import { sampleData } from "./sampleData.js";
+import { SearchSelectMenu } from "../ak-search-select-menu.js";
+import { groupedSampleData, sampleData } from "./sampleData.js";
 
-const metadata: Meta<AkDualSelectAvailablePane> = {
+const metadata: Meta<SearchSelectMenu> = {
     title: "Elements / Search Select / Items Menu",
     component: "ak-search-select-menu",
     parameters: {
@@ -23,17 +24,34 @@ const metadata: Meta<AkDualSelectAvailablePane> = {
             type: "string",
             description: "An array of [key, label, desc] pairs of what to show",
         },
-        selected: {
-            type: "string",
-            description: "The key of a default selected item",
-        },
     },
 };
 
 export default metadata;
 
-const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em; position: relative">
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const onClick = (event: SearchSelectClickEvent) => {
+    const target = document.querySelector("#action-button-message-pad");
+    target!.innerHTML = "";
+    target!.append(
+        new DOMParser().parseFromString(`<li>${event.value}</li>`, "text/xml").firstChild!,
+    );
+};
+
+const container = (testItem: TemplateResult) => {
+    window.setTimeout(() => {
+        const menu = document.getElementById("ak-search-select-menu");
+        const container = document.getElementById("the-main-event");
+        if (menu && container) {
+            container.addEventListener("ak-search-select-click", onClick);
+            (menu as SearchSelectMenu).host = container;
+        }
+    }, 250);
+
+    return html` <div
+        style="background: #fff; padding: 2em; position: relative"
+        id="the-main-event"
+    >
         <style>
             li {
                 display: block;
@@ -52,17 +70,7 @@ const container = (testItem: TemplateResult) =>
             <ul id="action-button-message-pad" style="margin-top: 1em"></ul>
         </div>
     </div>`;
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const onClick = (event: SearchSelectClickEvent) => {
-    const target = document.querySelector("#action-button-message-pad");
-    target!.innerHTML = "";
-    target!.append(
-        new DOMParser().parseFromString(`<li>${event.value}</li>`, "text/xml").firstChild!,
-    );
 };
-
-window.addEventListener(SearchSelectClickEvent.EVENT_NAME, onClick);
 
 type Story = StoryObj;
 
@@ -75,9 +83,9 @@ export const Default: Story = {
     render: () =>
         container(
             html` <ak-search-select-menu
+                id="ak-search-select-menu"
                 style="top: 1em; left: 1em"
                 .options=${goodForYouPairs}
-                .host=${document}
             ></ak-search-select-menu>`,
         ),
 };
@@ -91,6 +99,7 @@ export const Scrolling: Story = {
     render: () =>
         container(
             html` <ak-search-select-menu
+                id="ak-search-select-menu"
                 style="top: 1em; left: 1em"
                 .options=${longGoodForYouPairs}
                 .host=${document}
@@ -98,28 +107,11 @@ export const Scrolling: Story = {
         ),
 };
 
-const groupedSampleData = (() => {
-    const seasoned = sampleData.reduce(
-        (acc, { produce, seasons, desc }) => [
-            ...acc,
-            ...seasons.map((season) => [season, produce, desc]),
-        ],
-        [],
-    );
-    const grouped = Object.groupBy(seasoned, ([season]) => season);
-    return {
-        grouped: true,
-        options: ["Spring", "Summer", "Fall", "Winter"].map((season) => ({
-            name: season,
-            options: grouped[season],
-        })),
-    };
-})();
-
 export const Grouped: Story = {
     render: () =>
         container(
             html` <ak-search-select-menu
+                id="ak-search-select-menu"
                 style="top: 1em; left: 1em"
                 .options=${groupedSampleData}
                 .host=${document}

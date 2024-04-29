@@ -1,5 +1,4 @@
 import { groupBy } from "@goauthentik/common/utils";
-import { convertToSlug as slugify } from "@goauthentik/common/utils.js";
 import "@goauthentik/elements/forms/SearchSelect/ak-search-select";
 import { SearchSelect } from "@goauthentik/elements/forms/SearchSelect/ak-search-select";
 import { Meta } from "@storybook/web-components";
@@ -8,11 +7,9 @@ import { TemplateResult, html } from "lit";
 
 import { sampleData } from "./sampleData.js";
 
-type RawSample = [string, string[]];
-
 type Sample = { name: string; pk: string; season: string[] };
 
-const samples = sampleData.map(({ produce, seasons, desc }) => ({
+const samples = sampleData.map(({ produce, seasons, _desc }) => ({
     name: produce,
     pk: produce.replace(/\s+/, "").toLowerCase(),
     season: seasons,

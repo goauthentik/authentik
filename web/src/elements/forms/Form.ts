@@ -3,7 +3,6 @@ import { MessageLevel } from "@goauthentik/common/messages";
 import { camelToSnake, convertToSlug, dateToUTC } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
-import { SearchSelect } from "@goauthentik/elements/forms/SearchSelect";
 import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
@@ -120,17 +119,6 @@ export function serializeForm<T extends KeyUnknown>(
             assignValue(inputElement, inputElement.checked, json);
         } else if ("selectedFlow" in inputElement) {
             assignValue(inputElement, inputElement.value, json);
-        } else if (inputElement.tagName.toLowerCase() === "ak-search-select") {
-            const select = inputElement as unknown as SearchSelect<unknown>;
-            try {
-                const value = select.toForm();
-                assignValue(inputElement, value, json);
-            } catch (exc) {
-                if (exc instanceof PreventFormSubmit) {
-                    throw new PreventFormSubmit(exc.message, element);
-                }
-                throw exc;
-            }
         } else {
             assignValue(inputElement, inputElement.value, json);
         }
