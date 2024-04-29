@@ -23,6 +23,12 @@ app.company {
 
 If you're trying to proxy to an upstream over HTTPS, you need to set the `Host` header to the value they expect for it to work correctly.
 
+```
+reverse_proxy /outpost.goauthentik.io/* https://outpost.company {
+    header_up Host {http.reverse_proxy.upstream.hostport}
+}
+```
+
 ## Additional Configuration for Reverse Proxies
 
 When configuring reverse proxies, it may be necessary to forward additional custom headers or include basic authentication details depending on your security requirements and the specific setup of your upstream services. 
