@@ -15,8 +15,7 @@ from authentik.lib.config import CONFIG, redis_url
 from authentik.lib.logging import get_logger_config, structlog_configure
 from authentik.lib.sentry import sentry_init
 from authentik.lib.utils.reflection import get_env
-from authentik.stages.password import (BACKEND_APP_PASSWORD, BACKEND_INBUILT,
-                                       BACKEND_LDAP)
+from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BACKEND_LDAP
 
 BASE_DIR = Path(__file__).absolute().parent.parent.parent
 
