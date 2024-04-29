@@ -1,5 +1,5 @@
 ---
-title: General
+title: Overview of sources
 slug: general
 ---
 

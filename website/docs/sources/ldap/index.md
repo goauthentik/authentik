@@ -12,7 +12,7 @@ For FreeIPA, follow the [FreeIPA Integration](../freeipa/)
 
 ## Configuration options for LDAP sources
 
-To create or edit a source in authentik, open the Admin interface and navigate to **Directory -> Ferderation and Social login**. There you can create a new LDAP source, or edit an existing one, using the  following settings.
+To create or edit a source in authentik, open the Admin interface and navigate to **Directory -> Ferderation and Social login**. There you can create a new LDAP source, or edit an existing one, using the following settings.
 
 -   **Enabled**:
 
