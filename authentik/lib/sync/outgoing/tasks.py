@@ -58,7 +58,7 @@ class SyncTasks:
         task.soft_time_limit = task.time_limit = (
             users_paginator.count + groups_paginator.count
         ) * PAGE_TIMEOUT
-        with allow_join_result():
+        with allow_join_result(), lock:
             try:
                 for page in users_paginator.page_range:
                     messages.append(_("Syncing page %(page)d of users" % {"page": page}))
