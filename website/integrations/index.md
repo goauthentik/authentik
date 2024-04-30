@@ -2,12 +2,14 @@
 title: Integrations overview
 ---
 
-this will be the landing page for inegrations.
+There are two main types of integrations with authentik: Applications and Sources.
 
-add a link to the Applications index page, and a link to the new Sources info, OR... link to an empty page that then imports the Sources docs.  Let's test that here:
+## Applications
+
+authentik integrates with over a hundred applications. For a full list, and to learn more about adding documentation for a new application, refer to [Integrations](../services/index.mdx).
 
 ## Sources
 
-import Sources from "../docs/sources/general.md";
+Sources allow you to connect authentik to an existing user directory. To learn more, refer to [Sources](../docs/sources/index).
 
-<Sources />
+
