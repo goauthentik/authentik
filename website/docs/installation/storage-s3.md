@@ -79,7 +79,7 @@ AUTHENTIK_STORAGE__MEDIA__S3__ENDPOINT=https://s3.provider
 AUTHENTIK_STORAGE__MEDIA__S3__CUSTOM_DOMAIN=s3.provider/authentik-media
 ```
 
-If you are using Backblaze B2 as your S3 provider, add the following:
+If you are using Backblaze B2 as your S3 provider and the bucket is set to `Public`, add the following:
 
 ```env
 AUTHENTIK_STORAGE__MEDIA__S3__DEFAULT_ACL=public-read
