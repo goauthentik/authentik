@@ -27,15 +27,15 @@ These are configured with most common LDAP setups.
 
 If the default source mapping is not enough, you can set your own custom property mapping. 
 
-For example the setting `ldap-displayName-mapping:name`  means that the ldap source field `displayName` will be mapped to the `name` field in authentik. 
+For example the setting `ldap-displayName-mapping:name`  means that the LDAP source field `displayName` will be mapped to the `name` field in authentik. 
 
 Here are the steps:
 
 1. In authentik, open the Admin interface, and then navigate to **Customization -> Property Mappings**.
 2. Click **Create**, select **LDAP Property Mapping**, and then click **Next**.
-3. Type a unique and meaningful `Name`, such as `ldap-displayName-mapping:name`.
-4. In the`Object field` field, type the name of an existing authentik field, such as `name`. If you want to add more extended attributes, you can type `attributes.mobile` for example.
-5. In the **Expression**  field enter Pythin expressions to retrieve the value from LDAP source. For example `return list_flatten(ldap.get("displayName"))`.
+3. Type a unique and meaningful **Name**, such as `ldap-displayName-mapping:name`.
+4. In the**Object field** field, type the name of an existing authentik field, such as `name`. If you want to add more extended attributes, you can type `attributes.mobile` for example.
+5. In the **Expression**  field enter Python expressions to retrieve the value from LDAP source. For example `return list_flatten(ldap.get("displayName"))`.
 
 `list_flatten(["input string array"])` will convert a string array to a single string. If you are not sure whether the LDAP field is an array or not, you can map the field to any `attributes.xxx` and then check the sync result in authentik UI.
 
