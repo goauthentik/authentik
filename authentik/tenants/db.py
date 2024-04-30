@@ -16,7 +16,7 @@ class FailoverRouter:
     def db_for_read(self, model, **hints):
         if not self.replica_enabled:
             return "default"
-        return choice(self.read_replica_aliases)
+        return choice(self.read_replica_aliases)  # nosec
 
     def db_for_write(self, model, **hints):
         return "default"
