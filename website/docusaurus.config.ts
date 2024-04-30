@@ -37,7 +37,7 @@ module.exports = async function (): Promise<Config> {
                         position: "left",
                     },
                     {
-                        to: "integrations/",
+                        to: "integrations/services/",
                         label: "Integrations",
                         position: "left",
                     },
