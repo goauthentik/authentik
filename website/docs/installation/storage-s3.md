@@ -79,9 +79,17 @@ AUTHENTIK_STORAGE__MEDIA__S3__ENDPOINT=https://s3.provider
 AUTHENTIK_STORAGE__MEDIA__S3__CUSTOM_DOMAIN=s3.provider/authentik-media
 ```
 
+If you are using Backblaze B2 as your S3 provider, add the following:
+
+```env
+AUTHENTIK_STORAGE__MEDIA__S3__DEFAULT_ACL=public-read
+```
+
 The `ENDPOINT` setting specifies how authentik talks to the S3 provider.
 
 The `CUSTOM_DOMAIN` setting specifies how URLs are constructed to be shown on the web interface. For example, an object stored at `application-icons/application.png` with a `CUSTOM__DOMAIN` setting of `s3.provider/authentik-media` will result in a URL of `https://s3.provider/authentik-media/application-icons/application.png`. You can also use subdomains for your buckets depending on what your S3 provider offers: `authentik-media.s3.provider`. Whether HTTPS is used is controlled by `AUTHENTIK_STORAGE__MEDIA__S3__SECURE_URLS`, which defaults to true.
+
+The `DEFAULT_ACL` setting specifies what ACL will be used by authentik to write files.
 
 For more control over settings, refer to the [configuration reference](./configuration.mdx#media-storage-settings)
 
