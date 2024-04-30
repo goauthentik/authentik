@@ -35,7 +35,7 @@ Here are the steps:
 2. Click **Create**, select **LDAP Property Mapping**, and then click **Next**.
 3. Type a unique and meaningful `Name`, such as `ldap-displayName-mapping:name`.
 4. In the`Object field` field, type the name of an existing authentik field, such as `name`. If you want to add more extended attributes, you can type `attributes.mobile` for example.
-5. Type `Expression` which will get value from LDAP source. e.g. `return list_flatten(ldap.get("displayName"))`.
+5. In the **Expression**  field enter Pythin expressions to retrieve the value from LDAP source. For example `return list_flatten(ldap.get("displayName"))`.
 
 `list_flatten(["input string array"])` will convert string array to single string. If you are not sure whether the ldap field is an array or not, you may map the field to any `attributes.xxx` and then check the sync result in authentik UI.
 
