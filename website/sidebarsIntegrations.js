@@ -9,6 +9,10 @@ module.exports = {
             value: generateVersionDropdown(docsSidebar),
         },
         {
+            type: "doc",
+            id: "index",
+        },
+        {
             type: "category",
             label: "Applications",
             link: {
