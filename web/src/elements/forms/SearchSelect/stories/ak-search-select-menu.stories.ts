@@ -4,18 +4,18 @@ import { slug } from "github-slugger";
 
 import { TemplateResult, html } from "lit";
 
-import { SearchSelectClickEvent } from "../SearchSelectMenuEvents.js";
+import { SearchSelectSelectMenuEvent } from "../SearchSelectEvents.js";
 import "../ak-search-select-menu.js";
 import { SearchSelectMenu } from "../ak-search-select-menu.js";
 import { groupedSampleData, sampleData } from "./sampleData.js";
 
 const metadata: Meta<SearchSelectMenu> = {
-    title: "Elements / Search Select / Items Menu",
+    title: "Elements / Search Select / Tethered Menu",
     component: "ak-search-select-menu",
     parameters: {
         docs: {
             description: {
-                component: "The panel containing the scrollable list of selectable items",
+                component: "The tethered panel containing the scrollable list of selectable items",
             },
         },
     },
@@ -30,7 +30,7 @@ const metadata: Meta<SearchSelectMenu> = {
 export default metadata;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const onClick = (event: SearchSelectClickEvent) => {
+const onClick = (event: SearchSelectSelectMenuEvent) => {
     const target = document.querySelector("#action-button-message-pad");
     target!.innerHTML = "";
     target!.append(
@@ -43,7 +43,7 @@ const container = (testItem: TemplateResult) => {
         const menu = document.getElementById("ak-search-select-menu");
         const container = document.getElementById("the-main-event");
         if (menu && container) {
-            container.addEventListener("ak-search-select-click", onClick);
+            container.addEventListener("ak-search-select-select-menu", onClick);
             (menu as SearchSelectMenu).host = container;
         }
     }, 250);

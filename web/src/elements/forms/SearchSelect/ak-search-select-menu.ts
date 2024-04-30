@@ -13,7 +13,7 @@ import {
     KeyboardControllerCloseEvent,
     KeyboardControllerSelectEvent,
 } from "./SearchKeyboardControllerEvents.js";
-import { SearchSelectClickEvent, SearchSelectCloseEvent } from "./SearchSelectMenuEvents.js";
+import { SearchSelectCloseEvent, SearchSelectSelectMenuEvent } from "./SearchSelectEvents.js";
 import type { GroupedOptions, SearchGroup, SearchOptions, SearchTuple } from "./types.js";
 
 /**
@@ -56,7 +56,7 @@ export class SearchSelectMenu extends AKElement {
     }
 
     /**
-     * The host to which all relevant events will be routed.  Useful for managing floating / portaled
+     * The host to which all relevant events will be routed.  Useful for managing floating / tethered
      * components.
      */
     @property({ type: Object, attribute: false })
@@ -91,23 +91,23 @@ export class SearchSelectMenu extends AKElement {
     }
 
     @bound
-    onClick(event: Event, item: string) {
+    onClick(event: Event, value: string) {
         event.stopPropagation();
-        this.host.dispatchEvent(new SearchSelectClickEvent(item));
-        this.keyboardController.value = item;
+        this.host.dispatchEvent(new SearchSelectSelectMenuEvent(value));
+        this.keyboardController.value = value;
     }
 
     @bound
     onEmptyClick(event: Event) {
         event.stopPropagation();
-        this.host.dispatchEvent(new SearchSelectClickEvent(undefined));
+        this.host.dispatchEvent(new SearchSelectSelectMenuEvent(undefined));
     }
 
     @bound
     onKeySelect(event: KeyboardControllerSelectEvent) {
         event.stopPropagation();
         this.value = event.value;
-        this.host.dispatchEvent(new SearchSelectClickEvent(this.value));
+        this.host.dispatchEvent(new SearchSelectSelectMenuEvent(this.value));
     }
 
     @bound

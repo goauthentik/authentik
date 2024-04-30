@@ -4,8 +4,8 @@ import "@goauthentik/elements/forms/SearchSelect/ak-search-select-menu-position.
 import type { SearchSelectMenuPosition } from "@goauthentik/elements/forms/SearchSelect/ak-search-select-menu-position.js";
 
 import { msg } from "@lit/localize";
-import { PropertyValues, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { PropertyValues, html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { Ref, createRef, ref } from "lit/directives/ref.js";
 
@@ -14,7 +14,12 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFSelect from "@patternfly/patternfly/components/Select/select.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { SearchSelectClickEvent, SearchSelectCloseEvent } from "./SearchSelectMenuEvents.js";
+import {
+    SearchSelectCloseEvent,
+    SearchSelectInputEvent,
+    SearchSelectSelectEvent,
+    SearchSelectSelectMenuEvent,
+} from "./SearchSelectEvents.js";
 import type { SearchOptions, SearchTuple } from "./types.js";
 
 /**
@@ -49,7 +54,8 @@ export class SearchSelectView extends AKElement {
     value?: string;
 
     /**
-     * If set to true, this object MAY return undefined in no value is passed in and none is set during interaction.
+     * If set to true, this object MAY return undefined in no value is passed in and none is set
+     * during interaction.
      *
      * @attr
      */
@@ -94,6 +100,8 @@ export class SearchSelectView extends AKElement {
     scrollHandler?: () => void;
     observer: IntersectionObserver;
 
+    @state()
+    displayValue = "";
     /**
      * Permanent identify for the input object, so the floating portal can find where to anchor
      * itself.
@@ -120,7 +128,7 @@ export class SearchSelectView extends AKElement {
             this.open = false;
         });
         this.observer.observe(this);
-        this.addEventListener("ak-search-select-click", this.onInput);
+        this.addEventListener("ak-search-select-select-menu", this.onSelect);
         this.addEventListener("ak-search-select-close", this.onClose);
     }
 
@@ -147,6 +155,20 @@ export class SearchSelectView extends AKElement {
     }
 
     @bound
+    onSelect(event: SearchSelectSelectMenuEvent) {
+        this.open = false;
+        this.value = event.value;
+        this.displayValue = this.value ? this.optionsMap.get(this.value) ?? this.value ?? "" : "";
+        this.dispatchEvent(new SearchSelectSelectEvent(this.value));
+    }
+
+    @bound
+    onClose(event: SearchSelectCloseEvent) {
+        event.stopPropagation();
+        this.open = false;
+    }
+
+    @bound
     onFocus(event: FocusEvent) {
         this.onOpenEvent(event);
     }
@@ -157,21 +179,17 @@ export class SearchSelectView extends AKElement {
     }
 
     @bound
-    onInput(event: SearchSelectClickEvent) {
-        this.onCloseEvent(event);
-        this.value = event.value;
-        this.dispatchEvent(new SearchSelectInputEvent(event.value));
-    }
-
-    @bound
-    onClose(event: SearchSelectCloseEvent) {
-        this.onCloseEvent(event);
+    onInput(event: InputEvent) {
+        this.value = this.inputRef?.value?.value ?? "";
+        this.displayValue = this.value ? this.optionsMap.get(this.value) ?? this.value ?? "" : "";
+        this.dispatchEvent(new SearchSelectInputEvent(this.value));
     }
 
     @bound
     onKeydown(event: KeyboardEvent) {
         if (event.key === "Escape") {
-            this.onCloseEvent(event);
+            event.stopPropagation();
+            this.open = false;
         }
     }
 
@@ -180,9 +198,9 @@ export class SearchSelectView extends AKElement {
         event.stopPropagation();
         window.setTimeout(() => {
             if (!this.menuRef.value?.hasFocus()) {
-                this.onCloseEvent(event);
+                this.open = false;
             }
-        }, 80);
+        }, 100);
     }
 
     willUpdate(changed: PropertyValues<this>) {
@@ -191,14 +209,18 @@ export class SearchSelectView extends AKElement {
         }
     }
 
-    render(): TemplateResult {
-        const displayValue = this.value
-            ? this.optionsMap.get(this.value) ?? this.emptyOption ?? ""
-            : this.emptyOption ?? "";
+    updated() {
+        if (!(this.inputRef?.value && this.inputRef?.value?.value === this.displayValue)) {
+            this.inputRef.value && (this.inputRef.value.value = this.displayValue);
+        }
+    }
+
+    render() {
         return html`<div class="pf-c-select">
                 <div class="pf-c-select__toggle pf-m-typeahead">
                     <div class="pf-c-select__toggle-wrapper">
                         <input
+                            autocomplete="off"
                             class="pf-c-form-control pf-c-select__toggle-typeahead"
                             type="text"
                             ${ref(this.inputRef)}
@@ -209,7 +231,7 @@ export class SearchSelectView extends AKElement {
                             @click=${this.onClick}
                             @keydown=${this.onKeydown}
                             @focusout=${this.onFocusOut}
-                            value=${displayValue ?? ""}
+                            value=${this.displayValue}
                         />
                     </div>
                 </div>
@@ -242,19 +264,7 @@ function optionsToOptionsMap(options: SearchOptions): Map<string, string> {
     return new Map(pairs);
 }
 
-export class SearchSelectInputEvent extends Event {
-    value: string | undefined;
-    constructor(value: string | undefined) {
-        super("ak-search-select-input", { composed: true, bubbles: true });
-        this.value = value;
-    }
-}
-
 declare global {
-    interface GlobalEventHandlersEventMap {
-        "ak-search-select-input": SearchSelectInputEvent;
-    }
-
     interface HTMLElementTagNameMap {
         "ak-search-select-view": SearchSelectView;
     }

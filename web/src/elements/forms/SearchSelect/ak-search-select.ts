@@ -1,32 +1,29 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { APIErrorTypes, parseAPIError } from "@goauthentik/common/errors";
-import { ascii_letters, digits, groupBy, randomString } from "@goauthentik/common/utils";
+import { groupBy } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers";
-import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
-import { msg, str } from "@lit/localize";
-import { TemplateResult, css, html, render } from "lit";
+import { msg } from "@lit/localize";
+import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { styleMap } from "lit/directives/style-map.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { ResponseError } from "@goauthentik/api";
 
+import { SearchSelectInputEvent, SearchSelectSelectEvent } from "./SearchSelectEvents.js";
+import "./ak-search-select-view.js";
+import type { GroupedOptions, SearchGroup, SearchTuple } from "./types.js";
+
 type Group<T> = [string, T[]];
 
-type ElementRenderer<T> = ((element: T) => string) | keyof T;
-type DescriptionRenderer<T> = ((element: T) => TemplateResult | string) | keyof T;
-type ValueExtractor<T> = ((element: T) => keyof T) | ((element: undefined) => undefined) | keyof T;
-
 @customElement("ak-search-select")
-export class SearchSelect<T extends {}> extends CustomEmitterElement(AKElement) {
+export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
     static get styles() {
-        return css`
-            :host {
-                overflow: visible;
-            }
-        `;
+        return [PFBase];
     }
 
     // A function which takes the query state object (accepting that it may be empty) and returns a
@@ -34,22 +31,20 @@ export class SearchSelect<T extends {}> extends CustomEmitterElement(AKElement) 
     @property({ attribute: false })
     fetchObjects!: (query?: string) => Promise<T[]>;
 
-    // An expression passed to this object that extracts a string representation of items of the
-    // collection under search. If the expression is a string, it must be a key of the item and will
-    // just be rendered as a string.
+    // A function passed to this object that extracts a string representation of items of the
+    // collection under search.
     @property({ attribute: false })
-    renderElement!: ElementRenderer<T>;
+    renderElement!: (element: T) => string;
 
-    // An expression passed to this object that extracts an HTML representation of additional
-    // information for items of the collection under search.  If the expression is a string,
-    // it must be a key of the item and will just be rendered as a string.
+    // A function passed to this object that extracts an HTML representation of additional
+    // information for items of the collection under search.
     @property({ attribute: false })
-    renderDescription?: DescriptionRenderer<T>;
+    renderDescription?: (element: T) => TemplateResult;
 
     // A function which returns the currently selected object's primary key, used for serialization
     // into forms.
     @property({ attribute: false })
-    value!: ValueExtractor<T>;
+    value!: (element: T | undefined) => unknown;
 
     // A function passed to this object that determines an object in the collection under search
     // should be automatically selected. Only used when the search itself is responsible for
@@ -83,7 +78,7 @@ export class SearchSelect<T extends {}> extends CustomEmitterElement(AKElement) 
     @property({ attribute: false })
     selectedObject?: T;
 
-    // The name used by ak-form-element-horizontal to identify this component
+    // Used to inform the form of the name of the object
     @property()
     name?: string;
 
@@ -102,6 +97,11 @@ export class SearchSelect<T extends {}> extends CustomEmitterElement(AKElement) 
     @state()
     error?: APIErrorTypes;
 
+    constructor() {
+        super();
+        this.dataset.akControl = "true";
+    }
+
     toForm(): unknown {
         if (!this.objects) {
             throw new PreventFormSubmit(msg("Loading options..."));
@@ -113,27 +113,17 @@ export class SearchSelect<T extends {}> extends CustomEmitterElement(AKElement) 
         return this.toForm();
     }
 
-    firstUpdated(): void {
-        this.updateData();
-    }
-
-    constructor() {
-        super();
-        this.dataset.akControl = "true";
-        this.updateData();
-    }
-
-    updateData(): void {
+    updateData() {
         if (this.isFetchingData) {
             return;
         }
         this.isFetchingData = true;
-        this.fetchObjects(this.query)
+        return this.fetchObjects(this.query)
             .then((objects) => {
                 objects.forEach((obj) => {
                     if (this.selected && this.selected(obj, objects || [])) {
                         this.selectedObject = obj;
-                        this.dispatchEvent(new InputEvent("input"));
+                        this.dispatchCustomEvent("ak-change", { value: this.selectedObject });
                     }
                 });
                 this.objects = objects;
@@ -148,58 +138,98 @@ export class SearchSelect<T extends {}> extends CustomEmitterElement(AKElement) 
             });
     }
 
-    @bound
-    onScroll() {
-        this.requestUpdate();
-    }
-
     connectedCallback(): void {
         super.connectedCallback();
-        window.addEventListener("scroll", this.onScroll);
+        this.updateData();
+        this.addEventListener(EVENT_REFRESH, this.updateData);
     }
 
     disconnectedCallback(): void {
-        this.removeEventListener(EVENT_REFRESH, this.updateData);
-        window.removeEventListener("scroll", this.onScroll);
-        this.dropdownContainer.remove();
-        this.observer.disconnect();
         super.disconnectedCallback();
+        this.removeEventListener(EVENT_REFRESH, this.updateData);
     }
 
-    get groupedItems(): [boolean, Group<T>[]] {
+    onSearch(event: SearchSelectInputEvent) {
+        if (event.value === undefined) {
+            this.selectedObject = undefined;
+            return;
+        }
+
+        this.query = event.value;
+        this.updateData()?.then(() => {
+            this.dispatchCustomEvent("ak-change", { value: this.selectedObject });
+        });
+    }
+
+    onSelect(event: SearchSelectSelectEvent) {
+        if (event.value === undefined) {
+            this.selectedObject = undefined;
+            this.dispatchCustomEvent("ak-change", { value: undefined });
+            return;
+        }
+        const selected = (this.objects ?? []).find((obj) => `${this.value(obj)}` === event.value);
+        if (!selected) {
+            console.warn(
+                `ak-search-select: No corresponding object found for value (${event.value}`,
+            );
+        }
+        this.selectedObject = selected;
+        this.dispatchCustomEvent("ak-change", { value: this.selectedObject });
+    }
+
+    getGroupedItems(): GroupedOptions {
         const items = this.groupBy(this.objects || []);
+        const makeSearchTuples = (items: T[]): SearchTuple[] =>
+            items.map((item) => [
+                `${this.value(item)}`,
+                this.renderElement(item),
+                this.renderDescription ? this.renderDescription(item) : undefined,
+            ]);
+
+        const makeSearchGroups = (items: Group<T>[]): SearchGroup[] =>
+            items.map((group) => ({
+                name: group[0],
+                options: makeSearchTuples(group[1]),
+            }));
+
         if (items.length === 0) {
-            return [false, [["", []]]];
+            return { grouped: false, options: [] };
         }
+
         if (items.length === 1 && (items[0].length < 1 || items[0][0] === "")) {
-            return [false, items];
+            return {
+                grouped: false,
+                options: makeSearchTuples(items[0][1]),
+            };
         }
-        return [true, items];
+
+        return {
+            grouped: true,
+            options: makeSearchGroups(items),
+        };
     }
 
-    onSearch(e: SearchSelectSearchEvent) {
-        e.preventDefault();
-        this.query = e.query;
-        this.updateData();
-    }
-
-    render(): TemplateResult {
+    render() {
         if (this.error) {
-            return html`<em>${msg(str(`Failed to fetch objects: ${this.error.detail}`))}</em>`;
+            return html`<em>${msg("Failed to fetch objects: ")} ${this.error.detail}</em>`;
         }
 
         if (!this.objects) {
-            return msg("Loading...");
+            return html`${msg("Loading...")}`;
         }
 
+        const options = this.getGroupedItems();
+        const value = this.selectedObject ? `${this.value(this.selectedObject) ?? ""}` : undefined;
+
         return html`<ak-search-select-view
-            .options=${this.options}
-            .value=${this.currentValue}
+            .options=${options}
+            .value=${value}
             ?blankable=${this.blankable}
-            name=${this.name}
+            name=${ifDefined(this.name)}
             placeholder=${this.placeholder}
-            emptyOption=${this.emptyOption}
-            @ak-search-query=${this.onSearch}
+            emptyOption=${ifDefined(this.blankable ? this.emptyOption : undefined)}
+            @ak-search-select-input=${this.onSearch}
+            @ak-search-select-select=${this.onSelect}
         ></ak-search-select-view> `;
     }
 }

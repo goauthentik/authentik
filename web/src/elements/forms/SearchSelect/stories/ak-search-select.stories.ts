@@ -9,7 +9,7 @@ import { sampleData } from "./sampleData.js";
 
 type Sample = { name: string; pk: string; season: string[] };
 
-const samples = sampleData.map(({ produce, seasons, _desc }) => ({
+const samples = sampleData.map(({ produce, seasons }) => ({
     name: produce,
     pk: produce.replace(/\s+/, "").toLowerCase(),
     season: seasons,
@@ -19,15 +19,16 @@ samples.sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
 // All we need is a promise to return our dataset. It doesn't have to be a class-based method a'la
 // the authentik API.
 
-const getSamples = (query = "") =>
-    Promise.resolve(
-        samples.filter((s) =>
-            query !== "" ? s.name.toLowerCase().includes(query.toLowerCase()) : true,
-        ),
-    );
+const getSamples = (query = "") => {
+    if (query === "") {
+        return Promise.resolve(samples);
+    }
+    const check = new RegExp(query);
+    return Promise.resolve(samples.filter((s) => check.test(s.name)));
+};
 
 const metadata: Meta<SearchSelect<Sample>> = {
-    title: "Elements / Search Select ",
+    title: "Elements / Search Select / API Interface",
     component: "ak-search-select",
     parameters: {
         docs: {
@@ -65,8 +66,8 @@ const displayChange = (ev: any) => {
     )}`;
 };
 
-export const Default = () => {
-    return container(
+export const Default = () =>
+    container(
         html`<ak-search-select
             .fetchObjects=${getSamples}
             .renderElement=${(sample: Sample) => sample.name}
@@ -74,7 +75,6 @@ export const Default = () => {
             @ak-change=${displayChange}
         ></ak-search-select>`,
     );
-};
 
 export const Grouped = () => {
     return container(
@@ -89,9 +89,10 @@ export const Grouped = () => {
     );
 };
 
-export const Selected = () => {
+export const SelectedAndBlankable = () => {
     return container(
         html`<ak-search-select
+            blankable
             .fetchObjects=${getSamples}
             .renderElement=${(sample: Sample) => sample.name}
             .value=${(sample: Sample) => sample.pk}

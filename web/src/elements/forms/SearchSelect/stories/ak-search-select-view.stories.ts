@@ -45,7 +45,7 @@ const longGoodForYouPairs = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const displayChange = (ev: any) => {
     document.getElementById("message-pad")!.innerText = `Value selected: ${JSON.stringify(
-        ev.detail.value,
+        ev.value,
         null,
         2,
     )}`;
@@ -56,7 +56,7 @@ export const Default = () => {
         html`<ak-search-select-view
             .options=${longGoodForYouPairs}
             blankable
-            @ak-change=${displayChange}
+            @ak-search-select-select=${displayChange}
         ></ak-search-select-view>`,
     );
 };
@@ -66,7 +66,7 @@ export const DescribedGroups = () => {
         html`<ak-search-select-view
             .options=${groupedSampleData}
             blankable
-            @ak-change=${displayChange}
+            @ak-search-select-select=${displayChange}
         ></ak-search-select-view>`,
     );
 };

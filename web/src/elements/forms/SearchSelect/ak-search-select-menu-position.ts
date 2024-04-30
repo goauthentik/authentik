@@ -1,11 +1,10 @@
 import { autoUpdate, computePosition, flip, hide } from "@floating-ui/dom";
 
-import { LitElement, PropertyValues, html, nothing, render } from "lit";
+import { LitElement, html, nothing, render } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 import { Ref, createRef, ref } from "lit/directives/ref.js";
 
-import { SearchSelectCloseEvent } from "./SearchSelectMenuEvents.js";
+import { SearchSelectCloseEvent } from "./SearchSelectEvents.js";
 import "./ak-search-select-menu.js";
 import { type SearchSelectMenu } from "./ak-search-select-menu.js";
 import type { SearchOptions } from "./types.js";
@@ -17,14 +16,14 @@ import type { SearchOptions } from "./types.js";
  * DOTADIW: it tracks the top-of-DOM object into which we render our menu, guaranteeing that it
  * appears above everything else, and operates the positioning control for it.
  *
- * @fires ak-search-select-close - Fired when the portal loses focus. Clients can do with this
+ * @fires ak-search-select-close - Fired when the tethered end loses focus. Clients can do with this
  * information as they wish.
  */
 
 @customElement("ak-search-select-menu-position")
 export class SearchSelectMenuPosition extends LitElement {
     /**
-     * The host to which all relevant events will be routed.  Useful for managing floating / portaled
+     * The host to which all relevant events will be routed.  Useful for managing floating / tethered
      * components.
      *
      * @prop
@@ -81,7 +80,7 @@ export class SearchSelectMenuPosition extends LitElement {
     name?: string;
 
     /**
-     * The portal object.
+     * The tether object.
      */
     dropdownContainer!: HTMLDivElement;
     public cleanup?: () => void;
@@ -89,7 +88,7 @@ export class SearchSelectMenuPosition extends LitElement {
     connected = false;
 
     /**
-     *Communicates forward with the menu to detect when the portal has lost focus
+     *Communicates forward with the menu to detect when the tether has lost focus
      */
     menuRef: Ref<SearchSelectMenu> = createRef();
 
@@ -102,7 +101,7 @@ export class SearchSelectMenuPosition extends LitElement {
         }
         document.body.append(this.dropdownContainer);
         if (!this.host) {
-            throw new Error("Portal entrance initialized incorrectly: missing host");
+            throw new Error("Tether entrance initialized incorrectly: missing host");
         }
         this.connected = true;
     }
@@ -117,7 +116,7 @@ export class SearchSelectMenuPosition extends LitElement {
     setPosition() {
         if (!(this.anchor && this.dropdownContainer)) {
             throw new Error(
-                "Portal entrance initialized incorrectly: missing anchor or portal destination",
+                "Tether entrance initialized incorrectly: missing anchor or tether destination",
             );
         }
 
@@ -170,7 +169,7 @@ export class SearchSelectMenuPosition extends LitElement {
                 .options=${this.options}
                 .value=${this.value}
                 .host=${this.host}
-                .emptyOption=${ifDefined(this.emptyOption)}
+                .emptyOption=${this.emptyOption}
                 @focusout=${this.onFocusOut}
                 ?hidden=${this.hidden}
                 ${ref(this.menuRef)}
@@ -178,7 +177,7 @@ export class SearchSelectMenuPosition extends LitElement {
             this.dropdownContainer,
         );
         // This is a dummy object that just has to exist to be the communications channel between
-        // the portaled object and its entrance.
+        // the tethered object and its anchor.
         return nothing;
     }
 }
