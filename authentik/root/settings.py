@@ -415,7 +415,7 @@ if CONFIG.get("storage.media.backend", "file") == "s3":
             "use_ssl": CONFIG.get_bool("storage.media.s3.use_ssl", True),
             "endpoint_url": CONFIG.get("storage.media.s3.endpoint", None),
             "bucket_name": CONFIG.get("storage.media.s3.bucket_name"),
-            "default_acl": "private",
+            "default_acl": CONFIG.get("storage.media.s3.default_acl", "private"),
             "querystring_auth": True,
             "signature_version": "s3v4",
             "file_overwrite": False,
