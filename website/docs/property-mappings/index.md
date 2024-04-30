@@ -32,7 +32,7 @@ For example the setting `ldap-displayName-mapping:name`  means that the ldap sou
 Here are the steps:
 
 1. In authentik, open the Admin interface, and then navigate to **Customization -> Property Mappings**.
-2. Click `Create`, select `LDAP Property Mapping` and then click `Next`.
+2. Click **Create**, select **LDAP Property Mapping**, and then click **Next**.
 3. Type a unique and meaningful `Name`, such as `ldap-displayName-mapping:name`.
 4. Type authentik inner field in `Object field`. such as `name`. If you want to add more extend attributes, you can type `attributes.mobile` for example.
 5. Type `Expression` which will get value from LDAP source. e.g. `return list_flatten(ldap.get("displayName"))`.
