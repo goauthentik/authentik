@@ -6,7 +6,6 @@ module.exports = {
     integrations: [
         {
             type: "html",
-            value: generateVersionDropdown(docsSidebar),
         },
         {
             type: "doc",

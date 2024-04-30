@@ -37,7 +37,7 @@ module.exports = async function (): Promise<Config> {
                         position: "left",
                     },
                     {
-                        to: "integrations/index/",
+                        to: "integrations/",
                         label: "Integrations",
                         position: "left",
                     },
@@ -134,8 +134,8 @@ module.exports = async function (): Promise<Config> {
                 "@docusaurus/plugin-content-docs",
                 {
                     id: "docsIntegrations",
-                    path: "integrations/index.md",
-                    routeBasePath: "integrations/index.md",
+                    path: "integrations",
+                    routeBasePath: "integrations",
                     sidebarPath: require.resolve("./sidebarsIntegrations.js"),
                     editUrl:
                         "https://github.com/goauthentik/authentik/edit/main/website/",
