@@ -33,7 +33,7 @@ Here are the steps:
 
 1. Open admin UI, navigate to `Customization` -> `Property Mappings`.
 2. Click `Create`, select `LDAP Property Mapping` and then click `Next`.
-3. Type a unique and meaningful `Name`, such as `ldap-displayName-mapping:name`
+3. Type a unique and meaningful `Name`, such as `ldap-displayName-mapping:name`.
 4. Type authentik inner field in `Object field`. such as `name`. If you want to add more extend attributes, you can type `attributes.mobile` for example.
 5. Type `Expression` which will get value from LDAP source. e.g. `return list_flatten(ldap.get("displayName"))`.
 
