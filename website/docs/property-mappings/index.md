@@ -23,6 +23,20 @@ LDAP Property Mappings are used when you define a LDAP Source. These mappings de
 
 These are configured with most common LDAP setups.
 
+### Custom LDAP Property Mapping 
+
+If the default source mapping is not enough, you can set your own custom property mapping. 
+
+For example `ldap-displayName-mapping:name`, which means ldap source field `displayName` will be mapped to `name` field in authentik. Here's the steps:
+
+1. Open admin UI, navigate to `Customization` -> `Property Mappings`.
+2. Click `Create`, select `LDAP Property Mapping` and then click `Next`.
+3. Type a unique and meaningful `Name`, such as `ldap-displayName-mapping:name`
+4. Type authentik inner field in `Object field`. such as `name`. If you want to add more extend attributes, you can type `attributes.mobile` for example.
+5. Type `Expression` which will get value from LDAP source. e.g. `return list_flatten(ldap.get("displayName"))`.
+
+`list_flatten(["input string array"])` will convert string array to single string. If you are not sure whether the ldap field is an array or not, you may map the field to any `attributes.xxx` and then check the sync result in authentik UI.
+
 ## Scope Mapping
 
 Scope Mappings are used by the OAuth2 Provider to map information from authentik to OAuth2/OpenID Claims. Values returned by a Scope Mapping are added as custom claims to Access and ID tokens.
