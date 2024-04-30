@@ -2,8 +2,10 @@ from django.db.models import Model
 from django.db.models.signals import pre_delete, pre_save
 from django.dispatch import receiver
 
-from authentik.core.models import Token, TokenIntents, User, UserTypes
+from authentik.core.models import USER_PATH_SYSTEM_PREFIX, Token, TokenIntents, User, UserTypes
 from authentik.sources.scim.models import SCIMSource
+
+USER_PATH_SOURCE_SCIM = USER_PATH_SYSTEM_PREFIX + "/sources/scim"
 
 
 @receiver(pre_save, sender=SCIMSource)
@@ -16,6 +18,7 @@ def scim_source_pre_save(sender: type[Model], instance: SCIMSource, **_):
         username=identifier,
         name=f"SCIM Source {instance.name} Service-Account",
         type=UserTypes.INTERNAL_SERVICE_ACCOUNT,
+        path=USER_PATH_SOURCE_SCIM,
     )
     token = Token.objects.create(
         user=user,

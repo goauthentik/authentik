@@ -39,7 +39,7 @@
         "@floating-ui/dom": "^1.6.3",
         "@formatjs/intl-listformat": "^7.5.5",
         "@fortawesome/fontawesome-free": "^6.5.2",
-        "@goauthentik/api": "^2024.4.0-1713978791",
+        "@goauthentik/api": "^2024.4.1-1714149838",
         "@lit-labs/task": "^3.1.0",
         "@lit/context": "^1.1.1",
         "@lit/localize": "^0.12.1",
@@ -66,7 +66,7 @@
         "style-mod": "^4.1.2",
         "ts-pattern": "^5.1.1",
         "webcomponent-qr-code": "^1.2.0",
-        "yaml": "^2.4.1"
+        "yaml": "^2.4.2"
     },
     "devDependencies": {
         "@babel/core": "^7.24.4",
@@ -115,7 +115,7 @@
         "prettier": "^3.2.5",
         "pseudolocale": "^2.0.0",
         "react": "^18.2.0",
-        "react-dom": "^18.2.0",
+        "react-dom": "^18.3.1",
         "rollup-plugin-modify": "^3.0.0",
         "rollup-plugin-postcss-lit": "^2.1.0",
         "storybook": "^8.0.9",
@@ -130,9 +130,9 @@
         "@esbuild/darwin-arm64": "^0.20.1",
         "@esbuild/linux-amd64": "^0.18.11",
         "@esbuild/linux-arm64": "^0.20.1",
-        "@rollup/rollup-darwin-arm64": "4.16.4",
-        "@rollup/rollup-linux-arm64-gnu": "4.16.4",
-        "@rollup/rollup-linux-x64-gnu": "4.16.4"
+        "@rollup/rollup-darwin-arm64": "4.17.0",
+        "@rollup/rollup-linux-arm64-gnu": "4.17.0",
+        "@rollup/rollup-linux-x64-gnu": "4.17.0"
     },
     "engines": {
         "node": ">=20"
