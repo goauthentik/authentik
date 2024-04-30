@@ -27,7 +27,9 @@ These are configured with most common LDAP setups.
 
 If the default source mapping is not enough, you can set your own custom property mapping. 
 
-For example `ldap-displayName-mapping:name`, which means ldap source field `displayName` will be mapped to `name` field in authentik. Here's the steps:
+For example the setting `ldap-displayName-mapping:name`  means that the ldap source field `displayName` will be mapped to the `name` field in authentik. 
+
+Here are the steps:
 
 1. Open admin UI, navigate to `Customization` -> `Property Mappings`.
 2. Click `Create`, select `LDAP Property Mapping` and then click `Next`.
