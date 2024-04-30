@@ -19,8 +19,8 @@ if TYPE_CHECKING:
     from pydantic import BaseModel
 
 
-class SCIMClient[TModel: "Model", TSchema: "BaseModel"](
-    BaseOutgoingSyncClient[TModel, TSchema, SCIMProvider]
+class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
+    BaseOutgoingSyncClient[TModel, TConnection, TSchema, SCIMProvider]
 ):
     """SCIM Client"""
 

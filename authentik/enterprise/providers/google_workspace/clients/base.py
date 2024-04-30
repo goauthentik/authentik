@@ -17,8 +17,8 @@ from authentik.lib.sync.outgoing.exceptions import (
 )
 
 
-class GoogleWorkspaceSyncClient[TModel: Model, TSchema: dict](
-    BaseOutgoingSyncClient[TModel, TSchema, GoogleWorkspaceProvider]
+class GoogleWorkspaceSyncClient[TModel: Model, TConnection: Model, TSchema: dict](
+    BaseOutgoingSyncClient[TModel, TConnection, TSchema, GoogleWorkspaceProvider]
 ):
     """Base client for syncing to google workspace"""
 

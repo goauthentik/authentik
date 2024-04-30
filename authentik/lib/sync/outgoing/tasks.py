@@ -19,6 +19,8 @@ from authentik.lib.utils.reflection import class_to_path, path_to_class
 
 
 class SyncTasks:
+    """Container for all sync 'tasks' (this class doesn't actually contain celery
+    tasks due to celery's magic, however exposes a number of functions to be called from tasks)"""
 
     logger: BoundLogger
 

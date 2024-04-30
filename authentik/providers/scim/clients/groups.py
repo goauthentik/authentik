@@ -25,29 +25,11 @@ from authentik.providers.scim.clients.schema import PatchRequest
 from authentik.providers.scim.models import SCIMGroup, SCIMMapping, SCIMUser
 
 
-class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
+class SCIMGroupClient(SCIMClient[Group, SCIMGroup, SCIMGroupSchema]):
     """SCIM client for groups"""
 
-    def write(self, obj: Group):
-        """Write a group"""
-        scim_group = SCIMGroup.objects.filter(provider=self.provider, group=obj).first()
-        if not scim_group:
-            return self._create(obj)
-        try:
-            return self._update(obj, scim_group)
-        except NotFoundSyncException:
-            scim_group.delete()
-            return self._create(obj)
-
-    def delete(self, obj: Group):
-        """Delete group"""
-        scim_group = SCIMGroup.objects.filter(provider=self.provider, group=obj).first()
-        if not scim_group:
-            self.logger.debug("Group does not exist in SCIM, skipping")
-            return None
-        response = self._request("DELETE", f"/Groups/{scim_group.scim_id}")
-        scim_group.delete()
-        return response
+    connection_type = SCIMGroup
+    connection_type_query = "group"
 
     def to_schema(self, obj: Group) -> SCIMGroupSchema:
         """Convert authentik user into SCIM"""
@@ -100,7 +82,17 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
             scim_group.members = members
         return scim_group
 
-    def _create(self, group: Group):
+    def delete(self, obj: Group):
+        """Delete group"""
+        scim_group = SCIMGroup.objects.filter(provider=self.provider, group=obj).first()
+        if not scim_group:
+            self.logger.debug("Group does not exist in SCIM, skipping")
+            return None
+        response = self._request("DELETE", f"/Groups/{scim_group.scim_id}")
+        scim_group.delete()
+        return response
+
+    def create(self, group: Group):
         """Create group from scratch and create a connection object"""
         scim_group = self.to_schema(group)
         response = self._request(
@@ -116,7 +108,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
             raise StopSync("SCIM Response with missing or invalid `id`")
         SCIMGroup.objects.create(provider=self.provider, group=group, scim_id=scim_id)
 
-    def _update(self, group: Group, connection: SCIMGroup):
+    def update(self, group: Group, connection: SCIMGroup):
         """Update existing group"""
         scim_group = self.to_schema(group)
         scim_group.id = connection.scim_id

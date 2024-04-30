@@ -34,7 +34,7 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
 
     def client_for_model(
         self, model: type[User | Group]
-    ) -> BaseOutgoingSyncClient[User | Group, Any, Self]:
+    ) -> BaseOutgoingSyncClient[User | Group, Any, Any, Self]:
         if issubclass(model, User):
             from authentik.providers.scim.clients.users import SCIMUserClient
 

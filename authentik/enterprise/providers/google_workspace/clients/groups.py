@@ -20,23 +20,13 @@ from authentik.lib.sync.outgoing.exceptions import (
 from authentik.lib.utils.errors import exception_to_string
 
 
-class GoogleWorkspaceGroupClient(GoogleWorkspaceSyncClient[Group, dict]):
+class GoogleWorkspaceGroupClient(
+    GoogleWorkspaceSyncClient[Group, GoogleWorkspaceProviderGroup, dict]
+):
     """Google client for groups"""
 
-    def delete(self, obj: Group):
-        """Delete group"""
-        google_group = GoogleWorkspaceProviderGroup.objects.filter(
-            provider=self.provider, group=obj
-        ).first()
-        if not google_group:
-            self.logger.debug("Group does not exist in Google, skipping")
-            return None
-        with transaction.atomic():
-            response = self._request(
-                self.directory_service.groups().delete(groupKey=google_group.id)
-            )
-            google_group.delete()
-            return response
+    connection_type = GoogleWorkspaceProviderGroup
+    connection_type_query = "group"
 
     def to_schema(self, obj: Group) -> dict:
         """Convert authentik group"""
@@ -70,7 +60,22 @@ class GoogleWorkspaceGroupClient(GoogleWorkspaceSyncClient[Group, dict]):
 
         return raw_google_group
 
-    def _create(self, group: Group):
+    def delete(self, obj: Group):
+        """Delete group"""
+        google_group = GoogleWorkspaceProviderGroup.objects.filter(
+            provider=self.provider, group=obj
+        ).first()
+        if not google_group:
+            self.logger.debug("Group does not exist in Google, skipping")
+            return None
+        with transaction.atomic():
+            response = self._request(
+                self.directory_service.groups().delete(groupKey=google_group.id)
+            )
+            google_group.delete()
+            return response
+
+    def create(self, group: Group):
         """Create group from scratch and create a connection object"""
         google_group = self.to_schema(group)
         self.check_email_valid(google_group["email"])
@@ -92,7 +97,7 @@ class GoogleWorkspaceGroupClient(GoogleWorkspaceSyncClient[Group, dict]):
                     provider=self.provider, group=group, id=response["id"]
                 )
 
-    def _update(self, group: Group, connection: GoogleWorkspaceProviderGroup):
+    def update(self, group: Group, connection: GoogleWorkspaceProviderGroup):
         """Update existing group"""
         google_group = self.to_schema(group)
         self.check_email_valid(google_group["email"])
@@ -107,21 +112,8 @@ class GoogleWorkspaceGroupClient(GoogleWorkspaceSyncClient[Group, dict]):
             # Resource missing is handled by self.write, which will re-create the group
             raise
 
-    def _write(self, obj: Group):
-        """Write a group"""
-        google_group = GoogleWorkspaceProviderGroup.objects.filter(
-            provider=self.provider, group=obj
-        ).first()
-        if not google_group:
-            return self._create(obj), True
-        try:
-            return self._update(obj, google_group), False
-        except NotFoundSyncException:
-            google_group.delete()
-            return self._create(obj), True
-
     def write(self, obj: Group):
-        google_group, created = self._write(obj)
+        google_group, created = super().write(obj)
         if created:
             self.create_sync_members(obj, google_group)
         return google_group
