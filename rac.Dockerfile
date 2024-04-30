@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build
-FROM docker.io/golang:1.22.3-bookworm AS builder
+FROM mcr.microsoft.com/oss/go/microsoft/golang:1.22-fips-bookworm AS builder
 
 WORKDIR /go/src/goauthentik.io
 
