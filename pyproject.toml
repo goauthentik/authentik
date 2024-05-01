@@ -83,6 +83,7 @@ filterwarnings = [
 ]
 
 [tool.poetry.dependencies]
+authentik_client = "2024.4.1.post1714149882"
 argon2-cffi = "*"
 celery = "*"
 channels = { version = "*", extras = ["daphne"] }
@@ -132,6 +133,7 @@ pyjwt = "*"
 python = "~3.12"
 pyyaml = "*"
 requests-oauthlib = "*"
+restrictedpython = "*"
 scim2-filter-parser = "*"
 sentry-sdk = "*"
 service_identity = "*"

@@ -11853,6 +11853,10 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: execution_user
+        schema:
+          type: integer
+      - in: query
         name: expression
         schema:
           type: string
@@ -33565,6 +33569,9 @@ components:
           readOnly: true
         expression:
           type: string
+        execution_user:
+          type: integer
+          nullable: true
       required:
       - bound_to
       - component
@@ -33588,6 +33595,9 @@ components:
         expression:
           type: string
           minLength: 1
+        execution_user:
+          type: integer
+          nullable: true
       required:
       - expression
       - name
@@ -38841,6 +38851,9 @@ components:
         expression:
           type: string
           minLength: 1
+        execution_user:
+          type: integer
+          nullable: true
     PatchedFlowRequest:
       type: object
       description: Flow Serializer

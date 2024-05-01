@@ -12,6 +12,9 @@ from authentik.policies.types import PolicyRequest, PolicyResult
 class ExpressionPolicy(Policy):
     """Execute arbitrary Python code to implement custom checks and validation."""
 
+    execution_user = models.ForeignKey(
+        "authentik_core.User", default=None, null=True, on_delete=models.SET_DEFAULT
+    )
     expression = models.TextField()
 
     @property
@@ -26,16 +29,10 @@ class ExpressionPolicy(Policy):
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """Evaluate and render expression. Returns PolicyResult(false) on error."""
-        evaluator = PolicyEvaluator(self.name)
+        evaluator = PolicyEvaluator(self.execution_user, self.name)
         evaluator.policy = self
         evaluator.set_policy_request(request)
         return evaluator.evaluate(self.expression)
-
-    def save(self, *args, **kwargs):
-        evaluator = PolicyEvaluator(self.name)
-        evaluator.policy = self
-        evaluator.validate(self.expression)
-        return super().save(*args, **kwargs)
 
     class Meta(Policy.PolicyMeta):
         verbose_name = _("Expression Policy")

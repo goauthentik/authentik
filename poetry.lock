@@ -270,6 +270,23 @@ tests-mypy = ["mypy (>=1.6)", "pytest-mypy-plugins"]
 tests-no-zope = ["attrs[tests-mypy]", "cloudpickle", "hypothesis", "pympler", "pytest (>=4.3.0)", "pytest-xdist[psutil]"]
 
 [[package]]
+name = "authentik-client"
+version = "2024.4.1.post1714149882"
+description = "authentik"
+optional = false
+python-versions = "<4.0,>=3.7"
+files = [
+    {file = "authentik_client-2024.4.1.post1714149882-py3-none-any.whl", hash = "sha256:867b66b6a0fd59fac5a96d2098889fca1fa17409d042c00923d06ba21db27622"},
+    {file = "authentik_client-2024.4.1.post1714149882.tar.gz", hash = "sha256:2917c6f531dcbe44392d6f758fe10065399972de0c324d5431ea183e4b11ed7b"},
+]
+
+[package.dependencies]
+pydantic = ">=2"
+python-dateutil = ">=2.8.2"
+typing-extensions = ">=4.7.1"
+urllib3 = ">=1.25.3"
+
+[[package]]
 name = "autobahn"
 version = "23.6.2"
 description = "WebSocket client & server library, WAMP real-time framework"
@@ -3386,6 +3403,21 @@ requests = ">=2.0.0"
 rsa = ["oauthlib[signedtoken] (>=3.0.0)"]
 
 [[package]]
+name = "restrictedpython"
+version = "7.1"
+description = "RestrictedPython is a defined subset of the Python language which allows to provide a program input into a trusted environment."
+optional = false
+python-versions = ">=3.7, <3.13"
+files = [
+    {file = "RestrictedPython-7.1-py3-none-any.whl", hash = "sha256:56d0c73e5de1757702053383601b0fcd3fb2e428039ee1df860409ad67b17d2b"},
+    {file = "RestrictedPython-7.1.tar.gz", hash = "sha256:875aeb51c139d78e34cef8605dc65309b449168060dd08551a1fe9edb47cb9a5"},
+]
+
+[package.extras]
+docs = ["Sphinx", "sphinx-rtd-theme"]
+test = ["pytest", "pytest-mock"]
+
+[[package]]
 name = "rich"
 version = "13.7.0"
 description = "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal"
@@ -4683,4 +4715,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12"
-content-hash = "a5774b4e09217805c887700b8a0f457a39c7af40ca59823f00c1f6e8678469e1"
+content-hash = "647a426ecb06caf2b8f3165c4e85ed0439568e692b6ade8c7933683985c90b18"
