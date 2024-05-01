@@ -3,7 +3,7 @@ title: Overview of sources
 slug: general
 ---
 
-Sources allow you to connect authentik to an existing user directory. They can also be used for social logins, using external providers such as Facebook, Twitter, etc.
+Sources allow you to connect authentik to an external user directory. They can also be used for social logins, using external providers such as Facebook, Twitter, etc.
 
 ### Add Sources to Default Login Page
 

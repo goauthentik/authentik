@@ -14,11 +14,11 @@ For FreeIPA, follow the [FreeIPA Integration](../freeipa/)
 
 To create or edit a source in authentik, open the Admin interface and navigate to **Directory -> Ferderation and Social login**. There you can create a new LDAP source, or edit an existing one, using the following settings.
 
--   **Enabled**:
+-   **Enabled**: Toggle this option on to allow authentik to use the defined LDAP source.
 
--   **Update internal password on login**: When the user logs in to authentik using the LDAP password backend, the password is stored as a hashed value in authentik.
+-   **Update internal password on login**: When the user logs in to authentik using the LDAP password backend, the password is stored as a hashed value in authentik. Toggle off (default setting) if you do not want to store the hashed passwords in authentik.
 
--   **Synch User**:
+-   **Synch User**: Enable or disable user synchronization between authentik and the LDAP source.
 
 -   **User password writeback**: Enable this option if you want to write password changes that are made in authentik back to LDAP.
 
@@ -49,9 +49,9 @@ To create or edit a source in authentik, open the Admin interface and navigate t
 
 #### Additional Settings
 
--   **Group**:
+-   **Group**: Parent group for all the groups imported from LDAP.
 
--   **User path**:
+-   **User path**: Path template for all new users created.
 
 -   **Addition User DN**: Prepended to the base DN for user queries.
 
@@ -69,7 +69,7 @@ To create or edit a source in authentik, open the Admin interface and navigate t
 
 LDAP property mappings can be used to convert the raw LDAP response into an authentik user/group.
 
-By default, authentik ships with some pre-configured mappings for the most common LDAP setups.
+By default, authentik ships with some [pre-configured mappings](../../property-mappings/index.md#ldap-property-mapping) for the most common LDAP setups.
 
 You can assign the value of a mapping to any user attribute, or save it as a custom attribute by prefixing the object field with `attribute.` Keep in mind though, data types from the LDAP server will be carried over. This means that with some implementations, where fields are stored as array in LDAP, they will be saved as array in authentik. To prevent this, use the built-in `list_flatten` function.
 
@@ -89,4 +89,4 @@ Be aware of the following security considerations when turning on this functiona
 
 ## Troubleshooting
 
-To troubleshoot LDAP sources and their synchronization, see [LDAP Troubleshooting](../../../docs/troubleshooting/ldap_source)
+To troubleshoot LDAP sources and their synchronization, see [LDAP Troubleshooting](../../../docs/troubleshooting/ldap_source).
