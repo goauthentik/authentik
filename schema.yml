@@ -30450,6 +30450,11 @@ components:
       - pending_user
       - pending_user_avatar
       - type
+    AlgEnum:
+      enum:
+      - rsa
+      - ecdsa
+      type: string
     App:
       type: object
       description: Serialize Application info
@@ -32107,6 +32112,10 @@ components:
           type: string
         validity_days:
           type: integer
+        alg:
+          allOf:
+          - $ref: '#/components/schemas/AlgEnum'
+          default: rsa
       required:
       - common_name
       - validity_days
