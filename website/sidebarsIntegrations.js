@@ -6,6 +6,7 @@ module.exports = {
     integrations: [
         {
             type: "html",
+            value: generateVersionDropdown(docsSidebar),
         },
         {
             type: "doc",
@@ -14,6 +15,7 @@ module.exports = {
         {
             type: "category",
             label: "Applications",
+            collapsed: false,
             link: {
                 type: "doc",
                 id: "services/index",

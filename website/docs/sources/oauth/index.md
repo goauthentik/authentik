@@ -2,10 +2,6 @@
 title: OAuth Source
 ---
 
-:::note
-All Integration-specific Sources are documented in the Integrations Section
-:::
-
 This source allows users to enroll themselves with an external OAuth-based Identity Provider. The generic provider expects the endpoint to return OpenID-Connect compatible information. Vendor-specific implementations have their own OAuth Source.
 
 -   Policies: Allow/Forbid users from linking their accounts with this provider.
