@@ -179,7 +179,7 @@ export class SearchSelectView extends AKElement {
     }
 
     @bound
-    onInput(event: InputEvent) {
+    onInput(_event: InputEvent) {
         this.value = this.inputRef?.value?.value ?? "";
         this.displayValue = this.value ? this.optionsMap.get(this.value) ?? this.value ?? "" : "";
         this.dispatchEvent(new SearchSelectInputEvent(this.value));

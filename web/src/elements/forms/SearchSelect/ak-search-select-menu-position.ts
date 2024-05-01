@@ -115,32 +115,22 @@ export class SearchSelectMenuPosition extends LitElement {
 
     setPosition() {
         if (!(this.anchor && this.dropdownContainer)) {
-            throw new Error(
-                "Tether entrance initialized incorrectly: missing anchor or tether destination",
-            );
+            throw new Error("Tether initialized incorrectly: missing anchor or tether destination");
         }
 
         this.cleanup = autoUpdate(this.anchor, this.dropdownContainer, async () => {
-            const { middlewareData, x, y } = await computePosition(
-                this.anchor,
-                this.dropdownContainer,
-                {
-                    placement: "bottom-start",
-                    strategy: "fixed",
-                    middleware: [flip(), hide()],
-                },
-            );
-
-            if (middlewareData.hide?.referenceHidden) {
-                this.hidden = true;
-                return;
-            }
+            const { x, y } = await computePosition(this.anchor, this.dropdownContainer, {
+                placement: "bottom-start",
+                strategy: "fixed",
+                middleware: [flip(), hide()],
+            });
 
             Object.assign(this.dropdownContainer.style, {
-                position: "fixed",
-                top: 0,
-                left: 0,
-                transform: `translate(${x}px, ${y}px)`,
+                "position": "fixed",
+                "z-index": "9999",
+                "top": 0,
+                "left": 0,
+                "transform": `translate(${x}px, ${y}px)`,
             });
         });
     }
