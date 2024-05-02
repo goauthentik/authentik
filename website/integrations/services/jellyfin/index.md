@@ -113,9 +113,9 @@ To use the role claim within Jellyfin we will have to add a custom property. Thi
 
 In authentik under _Providers_, create an _OAuth2/OpenID Provider_ with these settings:
 
-- Name: `jellyfin`
-- Redirect URI: `https://jellyfin.company.com/sso/OID/redirect/authentik`
-- Signing Key: Select any available key
+-   Name: `jellyfin`
+-   Redirect URI: `https://jellyfin.company.com/sso/OID/redirect/authentik`
+-   Signing Key: Select any available key
 
 For the Group Membership we just created go into _Advanced Protocol Settings_ and add that Group Membership to the selected.
 
@@ -148,6 +148,7 @@ https://raw.githubusercontent.com/9p4/jellyfin-plugin-sso/manifest-release/manif
 6. Go back to the plugin tab.
 7. Click the SSO-Auth plugin.
 8. Fill out the Add / Update Provider Configuration:
+
     - Name of OID Provider: `authentik`
     - OID Endpoint: `https://authentik.company.com/application/o/jellyfin/.well-known/openid-configuration`
     - OpenID Client ID: ClientID from provider
@@ -156,6 +157,7 @@ https://raw.githubusercontent.com/9p4/jellyfin-plugin-sso/manifest-release/manif
     - Enable Authorization by Plugin: **CHECKED**
 
 9. If you want to use the role claim then also fill out these:
+
     - Roles: roles to look for when authorizing access (should be done through authentik instead)
     - Admin Roles: roles to look for when giving admin privilege
     - Role Claim: `groups`
@@ -173,6 +175,7 @@ https://raw.githubusercontent.com/9p4/jellyfin-plugin-sso/manifest-release/manif
 ```
 
 13. In the Custom CSS code also add this:
+
 ```
 a.raised.emby-button {
     padding:0.9em 1em;
@@ -183,6 +186,7 @@ a.raised.emby-button {
     display: block;
 }
 ```
+
 14. Click save at the bottom & restart the server.
 15. When you are signed out you should now see a "Sign in with SSO" button.
 
