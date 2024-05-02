@@ -2,7 +2,7 @@
 title: Inspector
 ---
 
-The flow inspector, introduced in 2021.10, allows administrators to easily figure out how custom flows work, inspect the current context and debug issues.
+The flow inspector, introduced in 2021.10, allows administrators to visually determine out how custom flows work, inspect the current [flow context](../flow/context/index.md) and debug issues.
 
 :::info
 When running a flow with the inspector enabled, the flow is still executed normally. This means that for example, a [User write](../flow/stages/user_write.md) stage will _actually_ write user data.
