@@ -63,7 +63,7 @@ export class SearchSelectMenu extends AKElement {
     host!: HTMLElement;
 
     /**
-     * See the search options type, described above, for the relevant types.
+     * See the search options type, described in the `./types` file, for the relevant types.
      */
     @property({ type: Array, attribute: false })
     options: SearchOptions = [];
