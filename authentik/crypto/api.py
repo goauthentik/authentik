@@ -14,7 +14,13 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, DateTimeField, IntegerField, SerializerMethodField
+from rest_framework.fields import (
+    CharField,
+    ChoiceField,
+    DateTimeField,
+    IntegerField,
+    SerializerMethodField,
+)
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -26,7 +32,7 @@ from authentik.api.authorization import SecretKeyFilter
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.crypto.apps import MANAGED_KEY
-from authentik.crypto.builder import CertificateBuilder
+from authentik.crypto.builder import CertificateBuilder, PrivateKeyAlg
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.rbac.decorators import permission_required
@@ -178,6 +184,7 @@ class CertificateGenerationSerializer(PassiveSerializer):
     common_name = CharField()
     subject_alt_name = CharField(required=False, allow_blank=True, label=_("Subject-alt name"))
     validity_days = IntegerField(initial=365)
+    alg = ChoiceField(default=PrivateKeyAlg.RSA, choices=PrivateKeyAlg.choices)
 
 
 class CertificateKeyPairFilter(FilterSet):
@@ -240,6 +247,7 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
         raw_san = data.validated_data.get("subject_alt_name", "")
         sans = raw_san.split(",") if raw_san != "" else []
         builder = CertificateBuilder(data.validated_data["common_name"])
+        builder.alg = data.validated_data["alg"]
         builder.build(
             subject_alt_names=sans,
             validity_days=int(data.validated_data["validity_days"]),

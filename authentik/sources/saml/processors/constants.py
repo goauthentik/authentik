@@ -26,9 +26,16 @@ SAML_BINDING_REDIRECT = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
 
 DSA_SHA1 = "http://www.w3.org/2000/09/xmldsig#dsa-sha1"
 RSA_SHA1 = "http://www.w3.org/2000/09/xmldsig#rsa-sha1"
+# https://datatracker.ietf.org/doc/html/rfc4051#section-2.3.2
 RSA_SHA256 = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
 RSA_SHA384 = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha384"
 RSA_SHA512 = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha512"
+# https://datatracker.ietf.org/doc/html/rfc4051#section-2.3.6
+ECDSA_SHA1 = "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1"
+ECDSA_SHA224 = "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha224"
+ECDSA_SHA256 = "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256"
+ECDSA_SHA384 = "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384"
+ECDSA_SHA512 = "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512"
 
 SHA1 = "http://www.w3.org/2000/09/xmldsig#sha1"
 SHA256 = "http://www.w3.org/2001/04/xmlenc#sha256"
@@ -41,6 +48,11 @@ SIGN_ALGORITHM_TRANSFORM_MAP = {
     RSA_SHA256: xmlsec.constants.TransformRsaSha256,
     RSA_SHA384: xmlsec.constants.TransformRsaSha384,
     RSA_SHA512: xmlsec.constants.TransformRsaSha512,
+    ECDSA_SHA1: xmlsec.constants.TransformEcdsaSha1,
+    ECDSA_SHA224: xmlsec.constants.TransformEcdsaSha224,
+    ECDSA_SHA256: xmlsec.constants.TransformEcdsaSha256,
+    ECDSA_SHA384: xmlsec.constants.TransformEcdsaSha384,
+    ECDSA_SHA512: xmlsec.constants.TransformEcdsaSha512,
 }
 
 DIGEST_ALGORITHM_TRANSLATION_MAP = {
