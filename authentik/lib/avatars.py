@@ -56,7 +56,7 @@ def avatar_mode_gravatar(user: "User", mode: str) -> str | None:
         return None
 
     # gravatar uses md5 for their URLs, so md5 can't be avoided
-    mail_hash = md5(user.email.lower().encode("utf-8")).hexdigest()  # nosec
+    mail_hash = md5(user.email.lower().encode("utf-8"), usedforsecurity=False).hexdigest()  # nosec
     parameters = [("size", "158"), ("rating", "g"), ("default", "404")]
     gravatar_url = f"{GRAVATAR_URL}/avatar/{mail_hash}?{urlencode(parameters, doseq=True)}"
 
@@ -84,7 +84,9 @@ def avatar_mode_gravatar(user: "User", mode: str) -> str | None:
 
 def generate_colors(text: str) -> tuple[str, str]:
     """Generate colours based on `text`"""
-    color = int(md5(text.lower().encode("utf-8")).hexdigest(), 16) % 0xFFFFFF  # nosec
+    color = (
+        int(md5(text.lower().encode("utf-8"), usedforsecurity=False).hexdigest(), 16) % 0xFFFFFF
+    )  # nosec
 
     # Get a (somewhat arbitrarily) reduced scope of colors
     # to avoid too dark or light backgrounds
@@ -179,7 +181,7 @@ def avatar_mode_generated(user: "User", mode: str) -> str | None:
 
 def avatar_mode_url(user: "User", mode: str) -> str | None:
     """Format url"""
-    mail_hash = md5(user.email.lower().encode("utf-8")).hexdigest()  # nosec
+    mail_hash = md5(user.email.lower().encode("utf-8"), usedforsecurity=False).hexdigest()  # nosec
     return mode % {
         "username": user.username,
         "mail_hash": mail_hash,

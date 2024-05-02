@@ -1,10 +1,10 @@
 from os import environ
+from ssl import OPENSSL_VERSION
 
 import pytest
+from cryptography.hazmat.backends.openssl.backend import backend
 
 from authentik import get_full_version
-from ssl import OPENSSL_VERSION
-from cryptography.hazmat.backends.openssl.backend import backend
 
 IS_CI = "CI" in environ
 
