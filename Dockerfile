@@ -63,8 +63,6 @@ COPY ./internal /go/src/goauthentik.io/internal
 COPY ./go.mod /go/src/goauthentik.io/go.mod
 COPY ./go.sum /go/src/goauthentik.io/go.sum
 
-ENV CGO_ENABLED=0
-
 RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
     GOARM="${TARGETVARIANT#v}" go build -o /go/authentik ./cmd/server
@@ -107,7 +105,8 @@ RUN --mount=type=bind,target=./pyproject.toml,src=./pyproject.toml \
     bash -c "source ${VENV_PATH}/bin/activate && \
         pip3 install --upgrade pip && \
         pip3 install poetry && \
-        poetry install --only=main --no-ansi --no-interaction --no-root"
+        poetry install --only=main --no-ansi --no-interaction --no-root && \
+        pip install --force-reinstall /wheels/*"
 
 # Stage 6: Run
 FROM ghcr.io/beryju/fips-python:3.12.3-slim-bookworm-fips-full AS final-image
@@ -127,7 +126,7 @@ WORKDIR /
 # We cannot cache this layer otherwise we'll end up with a bigger image
 RUN apt-get update && \
     # Required for runtime
-    apt-get install -y --no-install-recommends libpq5 libmaxminddb0 ca-certificates && \
+    apt-get install -y --no-install-recommends libpq5 libmaxminddb0 ca-certificates libxslt1.1 && \
     # Required for bootstrap & healtcheck
     apt-get install -y --no-install-recommends runit && \
     apt-get clean && \
