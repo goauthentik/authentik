@@ -79,11 +79,6 @@ export function serializeForm<T extends KeyUnknown>(
         }
 
         if ("akControl" in inputElement.dataset) {
-            console.log(
-                "Thinking",
-                [element.name, inputElement.tagName, inputElement.name],
-                inputElement.json(),
-            );
             assignValue(inputElement, inputElement.json(), json);
             return;
         }
