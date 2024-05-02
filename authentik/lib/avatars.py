@@ -2,7 +2,7 @@
 
 from base64 import b64encode
 from functools import cache as funccache
-from hashlib import md5
+from hashlib import md5, sha256
 from typing import TYPE_CHECKING
 from urllib.parse import urlencode
 
@@ -20,7 +20,7 @@ from authentik.tenants.utils import get_current_tenant
 if TYPE_CHECKING:
     from authentik.core.models import User
 
-GRAVATAR_URL = "https://secure.gravatar.com"
+GRAVATAR_URL = "https://www.gravatar.com"
 DEFAULT_AVATAR = static("dist/assets/images/user_default.png")
 CACHE_KEY_GRAVATAR = "goauthentik.io/lib/avatars/"
 CACHE_KEY_GRAVATAR_AVAILABLE = "goauthentik.io/lib/avatars/gravatar_available"
@@ -55,10 +55,9 @@ def avatar_mode_gravatar(user: "User", mode: str) -> str | None:
     if not cache.get(CACHE_KEY_GRAVATAR_AVAILABLE, True):
         return None
 
-    # gravatar uses md5 for their URLs, so md5 can't be avoided
-    mail_hash = md5(user.email.lower().encode("utf-8"), usedforsecurity=False).hexdigest()  # nosec
-    parameters = [("size", "158"), ("rating", "g"), ("default", "404")]
-    gravatar_url = f"{GRAVATAR_URL}/avatar/{mail_hash}?{urlencode(parameters, doseq=True)}"
+    mail_hash = sha256(user.email.lower().encode("utf-8")).hexdigest()  # nosec
+    parameters = {"size": "158", "rating": "g", "default": "404"}
+    gravatar_url = f"{GRAVATAR_URL}/avatar/{mail_hash}?{urlencode(parameters)}"
 
     full_key = CACHE_KEY_GRAVATAR + mail_hash
     if cache.has_key(full_key):

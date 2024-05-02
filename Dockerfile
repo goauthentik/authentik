@@ -126,7 +126,7 @@ WORKDIR /
 # We cannot cache this layer otherwise we'll end up with a bigger image
 RUN apt-get update && \
     # Required for runtime
-    apt-get install -y --no-install-recommends libpq5 libmaxminddb0 ca-certificates libxslt1.1 && \
+    apt-get install -y --no-install-recommends libpq5 libmaxminddb0 ca-certificates && \
     # Required for bootstrap & healtcheck
     apt-get install -y --no-install-recommends runit && \
     apt-get clean && \
