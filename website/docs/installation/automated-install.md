@@ -23,3 +23,20 @@ Requires authentik 2023.3
 :::
 
 Set the email address for the default `akadmin` user.
+
+## Kubernetes
+
+Set the `akadmin`user password and token:
+```
+authentik:
+  bootstrap_token: test
+  bootstrap_password: test
+```
+
+To store it in a secret, use:
+```
+envFrom
+ - secretRef:
+     name: some-secret
+```
+where some-secret would contain the environment variables as in the documentation.
