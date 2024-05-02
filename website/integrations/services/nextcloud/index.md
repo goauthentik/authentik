@@ -148,9 +148,6 @@ Add a new provider using the `+` button and set the following values:
         You need to enable the "Use group provisioning" checkmark to be able to write to this field
         :::
     -   Use unique user ID: If you only have one provider you can deselect this if you prefer. This will affect your Federated Cloud ID, which you can check under _Personal settings_ -> _Sharing_ -> _Federated Cloud_. If the box is selected, nextcloud will pick a random number here (`437218904321784903214789023@nextcloud.instance` for example). Otherwise, it will use the mapped user ID (`<authentik's sub or user_id>@nextcloud.instance`).
-        :::tip
-        To avoid your group assignment being a hash value, deselect **Use unique user ID**.
-        :::
 
 At this stage you should be able to login with SSO.
 
