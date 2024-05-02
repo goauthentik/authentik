@@ -135,6 +135,13 @@ export class SearchSelectView extends AKElement {
             this.open = false;
         });
         this.observer.observe(this);
+
+        /* These can't be attached with the `@` syntax because they're not passed through to the
+         * menu; the positioner is in the way, and it deliberately renders objects *outside* of the
+         * path from `document` to this object. That's why we pass the positioner (and its target)
+         * the `this` (host) object; so they can send messages to this object despite being outside
+         * the event's bubble path.
+         */
         this.addEventListener("ak-search-select-select-menu", this.onSelect);
         this.addEventListener("ak-search-select-close", this.onClose);
     }
