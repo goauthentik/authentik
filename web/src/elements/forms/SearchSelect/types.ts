@@ -1,22 +1,51 @@
 import type { TemplateResult } from "lit";
 
-/* key, label, description */
-export type SearchTuple = [string, string, undefined | string | TemplateResult];
-export type SearchGroup = { name: string; options: SearchTuple[] };
-export type SearchGrouped = {
-    grouped: true;
-    options: SearchGroup[];
-};
+/**
+ * A search tuple consists of a [key, label, description]
+ * The description is optional.  The key must always be a string.
+ *
+ */
+export type SearchTuple = [
+    key: string,
+    label: string,
+    description: undefined | string | TemplateResult,
+];
 
+/**
+ * A search list without groups will always just consist of an array of SearchTuples and the
+ * `grouped: false` flag. Note that it *is* possible to pass to any of the rendering components an
+ * array of SearchTuples; they will be automatically mapped to a SearchFlat object.
+ *
+ */
 export type SearchFlat = {
     grouped: false;
     options: SearchTuple[];
 };
 
-export type GroupedOptions = SearchGrouped | SearchFlat;
+/**
+ * A search group consists of a group name and a collection of SearchTuples.
+ *
+ */
+export type SearchGroup = { name: string; options: SearchTuple[] };
 
+/**
+ * A grouped search is an array of SearchGroups, of course!
+ *
+ */
+export type SearchGrouped = {
+    grouped: true;
+    options: SearchGroup[];
+};
+
+/**
+ * Internally, we only work with these two, but we have the `SearchOptions` variant
+ * below to support the case where you just want to pass in an array of SearchTuples.
+ *
+ */
+export type GroupedOptions = SearchGrouped | SearchFlat;
 export type SearchOptions = SearchTuple[] | GroupedOptions;
 
+// These can safely be ignored for now.
 export type Group<T> = [string, T[]];
 
 export type ElementRendererBase<T> = (element: T) => string;

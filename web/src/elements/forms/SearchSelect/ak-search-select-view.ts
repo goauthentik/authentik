@@ -32,6 +32,13 @@ import type { SearchOptions, SearchTuple } from "./types.js";
  * @fires ak-search-select-input - When the user selects an item from the list. A derivative Event
  * with the `value` as its payload.
  *
+ * Note that this is more on the HTML / Web Component side of the operational line: the keys which
+ * represent the values we pass back to clients are always strings here. This component is strictly
+ * for *rendering* and *interacting* with the items as the user sees them.  If the host client is
+ * not using strings for the values it ultimately keeps inside, it must map them forward to the
+ * string-based keys we use here (along with the label and description), and map them *back* to
+ * the object that key references when extracting the value for use.
+ *
  */
 
 @customElement("ak-search-select-view")
