@@ -326,7 +326,7 @@ class AuthorizationCode(SerializerModel, ExpiringModel, BaseGrantModel):
         verbose_name_plural = _("Authorization Codes")
 
     def __str__(self):
-        return f"Authorization code for {self.provider} for user {self.user}"
+        return f"Authorization code for {self.provider_id} for user {self.user_id}"
 
     @property
     def serializer(self) -> Serializer:
@@ -356,7 +356,7 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
         verbose_name_plural = _("OAuth2 Access Tokens")
 
     def __str__(self):
-        return f"Access Token for {self.provider} for user {self.user}"
+        return f"Access Token for {self.provider_id} for user {self.user_id}"
 
     @property
     def id_token(self) -> IDToken:
@@ -399,7 +399,7 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
         verbose_name_plural = _("OAuth2 Refresh Tokens")
 
     def __str__(self):
-        return f"Refresh Token for {self.provider} for user {self.user}"
+        return f"Refresh Token for {self.provider_id} for user {self.user_id}"
 
     @property
     def id_token(self) -> IDToken:
@@ -443,4 +443,4 @@ class DeviceToken(ExpiringModel):
         verbose_name_plural = _("Device Tokens")
 
     def __str__(self):
-        return f"Device Token for {self.provider}"
+        return f"Device Token for {self.provider_id}"
