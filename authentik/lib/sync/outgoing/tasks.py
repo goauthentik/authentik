@@ -30,7 +30,15 @@ class SyncTasks:
 
     def sync_all(self, single_sync: Callable[[int], None]):
         for provider in self._provider_model.objects.filter(backchannel_application__isnull=False):
-            single_sync.delay(provider.pk)
+            users_paginator = Paginator(provider.get_object_qs(User), PAGE_SIZE)
+            groups_paginator = Paginator(provider.get_object_qs(Group), PAGE_SIZE)
+            soft_time_limit = (
+                users_paginator.num_pages + groups_paginator.num_pages
+            ) * PAGE_TIMEOUT
+            time_limit = soft_time_limit * 1.5
+            single_sync.apply_async(
+                (provider.pk,), time_limit=int(time_limit), soft_time_limit=int(soft_time_limit)
+            )
 
     def sync_single(
         self,
@@ -57,9 +65,6 @@ class SyncTasks:
         self.logger.debug("Starting provider sync")
         users_paginator = Paginator(provider.get_object_qs(User), PAGE_SIZE)
         groups_paginator = Paginator(provider.get_object_qs(Group), PAGE_SIZE)
-        task.soft_time_limit = task.time_limit = (
-            users_paginator.count + groups_paginator.count
-        ) * PAGE_TIMEOUT
         with allow_join_result(), lock:
             try:
                 for page in users_paginator.page_range:
