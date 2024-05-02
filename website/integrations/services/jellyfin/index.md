@@ -15,7 +15,7 @@ Jellyfin does not have any native external authentication support as of the writ
 :::
 
 :::note
-Currently, there are two plugins for Jellyfin that provide external authentication, an OIDC plugin and an LDAP plugin. This guide focuses on the use of the LDAP plugin.
+Currently, there are two plugins for Jellyfin that provide external authentication, an OIDC plugin and an LDAP plugin.
 :::
 
 :::caution
@@ -32,7 +32,9 @@ The following placeholders will be used:
 -   `dc=company,dc=com` the Base DN of the LDAP outpost.
 -   `ldap_bind_user` the username of the desired LDAP Bind User
 
-## Jellyfin configuration
+## LDAP Configuration
+
+### Jellyfin configuration
 
 1. If you don't have one already, create an LDAP bind user before starting these steps.
     - Ideally, this user doesn't have any permissions other than the ability to view other users. However, some functions do require an account with permissions.
@@ -87,6 +89,103 @@ At this point, enter a username and click "Save Search Attribute Settings and Qu
 1. Click "Save"
 2. Logout, and login with a LDAP user. Username **must** be used, logging in with email will not work.
 
-## authentik Configuration
+### Authentik Configuration
 
 No additional authentik configuration needs to be configured. Follow the LDAP outpost instructions to create an LDAP outpost and configure access via the outpost
+
+## OIDC Configuration
+
+### Authentik Configuration
+
+To use the role claim within Jellyfin we will have to add a custom property. This is not needed but does allow admins to be set for SSO users automatically. It can also deny access if they don't have a role, but this should be done though Authentik instead.
+
+1. Go to _Customization_ then _Property Mappings_
+2. Create a _Scope Mapping_
+3. Assign these values:
+    - name: `Group Membership`
+    - scope name: `groups`
+    - description: `See which groups you belong to`
+    - expression: `return [group.name for group in user.ak_groups.all()]`
+
+![](./jellyfin_mapping.png)
+
+**Provider Settings**
+
+In authentik under _Providers_, create an _OAuth2/OpenID Provider_ with these settings:
+
+- Name: `jellyfin`
+- Redirect URI: `https://jellyfin.company.com/sso/OID/redirect/authentik`
+- Signing Key: Select any available key
+
+For the Group Membership we just created go into _Advanced Protocol Settings_ and add that Group Membership to the selected.
+
+![](./jellyfin_scopes.png)
+
+Make sure to grab the Client ID and the Client Secret!
+
+:::note
+The last part of the URI is the name you use when making the provider in Jellyfin so make sure they are the same
+:::
+
+**Application Settings**
+
+Create an application which uses `jellyfin`. Optionally apply access restrictions to the application.
+
+Set the launch URL to `https://jellyfin.company.com/sso/OID/start/authentik`
+
+### Jellyfin Configuration
+
+1. Navigate to your Jellyfin installation and log in with the admin account or currently configured local admin.
+2. Open the administrator dashboard and go to the "Plugins" section.
+3. Then click the "Repositories" section at the top and add the below repository with the name of SSO-Auth
+
+```
+https://raw.githubusercontent.com/9p4/jellyfin-plugin-sso/manifest-release/manifest.json
+```
+
+4. Click the "Catalog" tab on top and install the SSO-Auth with the most recent version.
+5. Restart the Jellyfin server.
+6. Go back to the plugin tab.
+7. Click the SSO-Auth plugin.
+8. Fill out the Add / Update Provider Configuration:
+    - Name of OID Provider: `authentik`
+    - OID Endpoint: `https://authentik.company.com/application/o/jellyfin/.well-known/openid-configuration`
+    - OpenID Client ID: ClientID from provider
+    - OID Secret: Client Secret from provider
+    - Enabled: **CHECKED**
+    - Enable Authorization by Plugin: **CHECKED**
+
+9. If you want to use the role claim then also fill out these:
+    - Roles: roles to look for when authorizing access (should be done through authentik instead)
+    - Admin Roles: roles to look for when giving admin privilege
+    - Role Claim: `groups`
+
+10. Hit save at the bottom.
+11. On the left side now click the "General" under dashboard and goto "Branding".
+12. In the login disclaimer put this code and making sure to change the url at the top:
+
+```
+<form action="https://jellyfin.company.com/sso/OID/start/authentik">
+  <button class="raised block emby-button button-submit">
+    Sign in with SSO
+  </button>
+</form>
+```
+
+13. In the Custom CSS code also add this:
+```
+a.raised.emby-button {
+    padding:0.9em 1em;
+    color: inherit !important;
+}
+
+.disclaimerContainer{
+    display: block;
+}
+```
+14. Click save at the bottom & restart the server.
+15. When you are signed out you should now see a "Sign in with SSO" button.
+
+:::note
+If you have problems check your logs which are under the Administration -> Dashboard then "logs" and will be near the bottom (most likely) with `Jellyfin.Plugin.SSO_Auth.` as the start of the lines you are looking for.
+:::
