@@ -1,7 +1,7 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { APIErrorTypes, parseAPIError } from "@goauthentik/common/errors";
 import { groupBy } from "@goauthentik/common/utils";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AkControlElement } from "@goauthentik/elements/AkControlElement.js";
 import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
@@ -21,7 +21,7 @@ import type { GroupedOptions, SearchGroup, SearchTuple } from "./types.js";
 type Group<T> = [string, T[]];
 
 @customElement("ak-search-select")
-export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
+export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) {
     static get styles() {
         return [PFBase];
     }

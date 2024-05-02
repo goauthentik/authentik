@@ -1,4 +1,4 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AkControlElement } from "@goauthentik/elements/AkControlElement.js";
 import { debounce } from "@goauthentik/elements/utils/debounce";
 import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 
@@ -26,7 +26,7 @@ import type { DataProvider, DualSelectPair } from "./types";
  */
 
 @customElement("ak-dual-select-provider")
-export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
+export class AkDualSelectProvider extends CustomListenerElement(AkControlElement) {
     /** A function that takes a page and returns the DualSelectPair[] collection with which to update
      * the "Available" pane.
      */
@@ -41,6 +41,9 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
 
     @property({ attribute: "selected-label" })
     selectedLabel = msg("Selected options");
+
+    @property()
+    name = "";
 
     /** The remote lists are debounced by definition. This is the interval for the debounce. */
     @property({ attribute: "search-delay", type: Number })
@@ -58,8 +61,6 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
     constructor() {
         super();
         setTimeout(() => this.fetch(1), 0);
-        // Notify AkForElementHorizontal how to handle this thing.
-        this.dataset.akControl = "true";
         this.onNav = this.onNav.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onSearch = this.onSearch.bind(this);
@@ -122,6 +123,10 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
 
     get value() {
         return this.dualSelector.value!.selected.map(([k, _]) => k);
+    }
+
+    json() {
+        return this.value;
     }
 
     render() {

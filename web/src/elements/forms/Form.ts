@@ -73,20 +73,21 @@ export function serializeForm<T extends KeyUnknown>(
             return;
         }
 
-        const inputElement = element.querySelector<HTMLInputElement>("[name]");
-        if (element.hidden || !inputElement) {
+        const inputElement = element.querySelector<AkControlElement>("[name]");
+        if (element.hidden || !inputElement || (element.writeOnly && !element.writeOnlyActivated)) {
             return;
         }
 
         if ("akControl" in inputElement.dataset) {
-            assignValue(element, inputElement.value, json);
+            console.log(
+                "Thinking",
+                [element.name, inputElement.tagName, inputElement.name],
+                inputElement.json(),
+            );
+            assignValue(inputElement, inputElement.json(), json);
             return;
         }
 
-        // Skip elements that are writeOnly where the user hasn't clicked on the value
-        if (element.writeOnly && !element.writeOnlyActivated) {
-            return;
-        }
         if (
             inputElement.tagName.toLowerCase() === "select" &&
             "multiple" in inputElement.attributes

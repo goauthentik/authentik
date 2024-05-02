@@ -128,6 +128,7 @@ export class HorizontalFormElement extends AKElement {
             });
         }
         this.querySelectorAll("*").forEach((input) => {
+            console.log(input, isAkControl(input));
             if (isAkControl(input) && !input.getAttribute("name")) {
                 input.setAttribute("name", this.name);
                 // This is fine; writeOnly won't apply to anything built this way.

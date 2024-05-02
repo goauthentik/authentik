@@ -1,4 +1,4 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AkControlElement } from "@goauthentik/elements/AkControlElement";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
@@ -22,7 +22,7 @@ function* kvToPairs(items: CheckboxPair[]): Iterable<CheckboxPr> {
     }
 }
 
-const AkElementWithCustomEvents = CustomEmitterElement(AKElement);
+const AkElementWithCustomEvents = CustomEmitterElement(AkControlElement);
 
 /**
  * @element ak-checkbox-group
@@ -114,7 +114,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
 
     internals?: ElementInternals;
 
-    get json() {
+    json() {
         return this.value;
     }
 
