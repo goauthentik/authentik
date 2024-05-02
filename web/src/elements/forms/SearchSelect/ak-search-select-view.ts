@@ -207,6 +207,11 @@ export class SearchSelectView extends AKElement {
         if (changed.has("options")) {
             this.optionsMap = optionsToOptionsMap(this.options);
         }
+        if (changed.has("value")) {
+            this.displayValue = this.value
+                ? this.optionsMap.get(this.value) ?? this.value ?? ""
+                : "";
+        }
     }
 
     updated() {
