@@ -1171,13 +1171,13 @@ Django = ">=2.2"
 
 [[package]]
 name = "django-model-utils"
-version = "4.5.0"
+version = "4.5.1"
 description = "Django model mixins and utilities"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "django-model-utils-4.5.0.tar.gz", hash = "sha256:08715a87fe114d1038c889c1c9eadade5f400f16230a9988e6ee36ace589240b"},
-    {file = "django_model_utils-4.5.0-py3-none-any.whl", hash = "sha256:745bf343f44e4c95216dd1c0b8307ad50906caadb9b8b4c337d768452840c252"},
+    {file = "django_model_utils-4.5.1-py3-none-any.whl", hash = "sha256:f1141fc71796242edeffed5ad53a8cc57f00d345eb5a3a63e3f69401cd562ee2"},
+    {file = "django_model_utils-4.5.1.tar.gz", hash = "sha256:1220f22d9a467d53a1e0f4cda4857df0b2f757edf9a29955c42461988caa648a"},
 ]
 
 [package.dependencies]
