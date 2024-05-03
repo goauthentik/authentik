@@ -65,4 +65,12 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(model_name="scimuser", name="scim_id", field=models.TextField()),
         migrations.AlterField(model_name="scimgroup", name="scim_id", field=models.TextField()),
+        migrations.AlterUniqueTogether(
+            name="scimgroup",
+            unique_together={("scim_id", "group", "provider")},
+        ),
+        migrations.AlterUniqueTogether(
+            name="scimuser",
+            unique_together={("scim_id", "user", "provider")},
+        ),
     ]

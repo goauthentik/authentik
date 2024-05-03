@@ -105,7 +105,7 @@ class SCIMUser(models.Model):
     provider = models.ForeignKey(SCIMProvider, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = (("id", "user", "provider"),)
+        unique_together = (("scim_id", "user", "provider"),)
 
     def __str__(self) -> str:
         return f"SCIM User {self.user_id} to {self.provider_id}"
@@ -120,7 +120,7 @@ class SCIMGroup(models.Model):
     provider = models.ForeignKey(SCIMProvider, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = (("id", "group", "provider"),)
+        unique_together = (("scim_id", "group", "provider"),)
 
     def __str__(self) -> str:
         return f"SCIM Group {self.group_id} to {self.provider_id}"
