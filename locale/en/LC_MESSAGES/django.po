@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-16 00:07+0000\n"
+"POT-Creation-Date: 2024-05-03 00:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -361,6 +361,14 @@ msgstr ""
 
 #: authentik/crypto/api.py
 msgid "Subject-alt name"
+msgstr ""
+
+#: authentik/crypto/builder.py
+msgid "rsa"
+msgstr ""
+
+#: authentik/crypto/builder.py
+msgid "ecdsa"
 msgstr ""
 
 #: authentik/crypto/models.py
@@ -1547,6 +1555,22 @@ msgstr ""
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "RSA-SHA512"
+msgstr ""
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA1"
+msgstr ""
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA256"
+msgstr ""
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA384"
+msgstr ""
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA512"
 msgstr ""
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
