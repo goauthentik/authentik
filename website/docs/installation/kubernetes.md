@@ -23,7 +23,7 @@ Start by generating passwords for the database and cache. You can use either of 
 
 ```shell
 pwgen -s 50 1
-openssl rand -base64 36
+openssl rand 60 | base64
 ```
 
 ### Set Values
