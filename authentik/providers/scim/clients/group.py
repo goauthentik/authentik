@@ -41,7 +41,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
         if not scim_group:
             self.logger.debug("Group does not exist in SCIM, skipping")
             return None
-        response = self._request("DELETE", f"/Groups/{scim_group.id}")
+        response = self._request("DELETE", f"/Groups/{scim_group.scim_id}")
         scim_group.delete()
         return response
 
@@ -89,7 +89,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
         for user in connections:
             members.append(
                 GroupMember(
-                    value=user.id,
+                    value=user.scim_id,
                 )
             )
         if members:
@@ -107,16 +107,16 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
                 exclude_unset=True,
             ),
         )
-        SCIMGroup.objects.create(provider=self.provider, group=group, id=response["id"])
+        SCIMGroup.objects.create(provider=self.provider, group=group, scim_id=response["id"])
 
     def _update(self, group: Group, connection: SCIMGroup):
         """Update existing group"""
         scim_group = self.to_scim(group)
-        scim_group.id = connection.id
+        scim_group.id = connection.scim_id
         try:
             return self._request(
                 "PUT",
-                f"/Groups/{scim_group.id}",
+                f"/Groups/{connection.scim_id}",
                 json=scim_group.model_dump(
                     mode="json",
                     exclude_unset=True,
@@ -185,13 +185,13 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
             return
         user_ids = list(
             SCIMUser.objects.filter(user__pk__in=users_set, provider=self.provider).values_list(
-                "id", flat=True
+                "scim_id", flat=True
             )
         )
         if len(user_ids) < 1:
             return
         self._patch(
-            scim_group.id,
+            scim_group.scim_id,
             PatchOperation(
                 op=PatchOp.add,
                 path="members",
@@ -211,13 +211,13 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
             return
         user_ids = list(
             SCIMUser.objects.filter(user__pk__in=users_set, provider=self.provider).values_list(
-                "id", flat=True
+                "scim_id", flat=True
             )
         )
         if len(user_ids) < 1:
             return
         self._patch(
-            scim_group.id,
+            scim_group.scim_id,
             PatchOperation(
                 op=PatchOp.remove,
                 path="members",
