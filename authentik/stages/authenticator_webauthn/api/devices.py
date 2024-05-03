@@ -20,7 +20,10 @@ class WebAuthnDeviceSerializer(ModelSerializer):
 
     class Meta:
         model = WebAuthnDevice
-        fields = ["pk", "name", "created_on", "device_type"]
+        fields = ["pk", "name", "created_on", "device_type", "aaguid"]
+        extra_kwargs = {
+            "aaguid": {"read_only": True},
+        }
 
 
 class WebAuthnDeviceViewSet(

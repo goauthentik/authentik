@@ -29,5 +29,9 @@ export const signatureAlgorithmOptions = toOptions([
     ["RSA-SHA256", SignatureAlgorithmEnum._200104XmldsigMorersaSha256, true],
     ["RSA-SHA384", SignatureAlgorithmEnum._200104XmldsigMorersaSha384],
     ["RSA-SHA512", SignatureAlgorithmEnum._200104XmldsigMorersaSha512],
+    ["ECDSA-SHA1", SignatureAlgorithmEnum._200104XmldsigMoreecdsaSha1],
+    ["ECDSA-SHA256", SignatureAlgorithmEnum._200104XmldsigMoreecdsaSha256],
+    ["ECDSA-SHA384", SignatureAlgorithmEnum._200104XmldsigMoreecdsaSha384],
+    ["ECDSA-SHA512", SignatureAlgorithmEnum._200104XmldsigMoreecdsaSha512],
     ["DSA-SHA1", SignatureAlgorithmEnum._200009XmldsigdsaSha1],
 ]);

@@ -98,8 +98,8 @@ Templates are rendered using Django's templating engine. The following variables
 {% block content %}
 <tr>
     <td class="alert alert-success">
-        {% blocktrans with username=user.username %} Hi {{ username }}, {%
-        endblocktrans %}
+        {% blocktrans with username=user.username %} Hi {{ username }}, 
+        {% endblocktrans %}
     </td>
 </tr>
 <tr>

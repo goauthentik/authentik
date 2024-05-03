@@ -132,6 +132,7 @@ class WebAuthnDevice(SerializerModel, Device):
     created_on = models.DateTimeField(auto_now_add=True)
     last_t = models.DateTimeField(default=now)
 
+    aaguid = models.TextField(default=UNKNOWN_DEVICE_TYPE_AAGUID)
     device_type = models.ForeignKey(
         "WebAuthnDeviceType", on_delete=models.SET_DEFAULT, null=True, default=None
     )
@@ -154,7 +155,7 @@ class WebAuthnDevice(SerializerModel, Device):
         return WebAuthnDeviceSerializer
 
     def __str__(self):
-        return str(self.name) or str(self.user)
+        return str(self.name) or str(self.user_id)
 
     class Meta:
         verbose_name = _("WebAuthn Device")

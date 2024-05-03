@@ -9,20 +9,28 @@ from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from cryptography.x509.oid import NameOID
+from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from authentik import __version__
 from authentik.crypto.models import CertificateKeyPair
+
+
+class PrivateKeyAlg(models.TextChoices):
+    """Algorithm to create private key with"""
+
+    RSA = "rsa", _("rsa")
+    ECDSA = "ecdsa", _("ecdsa")
 
 
 class CertificateBuilder:
     """Build self-signed certificates"""
 
     common_name: str
+    alg: PrivateKeyAlg
 
-    _use_ec_private_key: bool
-
-    def __init__(self, name: str, use_ec_private_key=False):
-        self._use_ec_private_key = use_ec_private_key
+    def __init__(self, name: str):
+        self.alg = PrivateKeyAlg.RSA
         self.__public_key = None
         self.__private_key = None
         self.__builder = None
@@ -42,11 +50,13 @@ class CertificateBuilder:
 
     def generate_private_key(self) -> PrivateKeyTypes:
         """Generate private key"""
-        if self._use_ec_private_key:
+        if self.alg == PrivateKeyAlg.ECDSA:
             return ec.generate_private_key(curve=ec.SECP256R1())
-        return rsa.generate_private_key(
-            public_exponent=65537, key_size=4096, backend=default_backend()
-        )
+        if self.alg == PrivateKeyAlg.RSA:
+            return rsa.generate_private_key(
+                public_exponent=65537, key_size=4096, backend=default_backend()
+            )
+        raise ValueError(f"Invalid alg: {self.alg}")
 
     def build(
         self,

@@ -80,7 +80,7 @@ class OAuth2Client(BaseOAuthClient):
             access_token_url = self.source.source_type.access_token_url or ""
             if self.source.source_type.urls_customizable and self.source.access_token_url:
                 access_token_url = self.source.access_token_url
-            response = self.session.request(
+            response = self.do_request(
                 "post", access_token_url, data=args, headers=self._default_headers, **request_kwargs
             )
             response.raise_for_status()

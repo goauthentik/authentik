@@ -1,6 +1,6 @@
 """authentik core models"""
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from hashlib import sha256
 from typing import Any, Optional, Self
 from uuid import uuid4
@@ -54,9 +54,6 @@ options.DEFAULT_NAMES = options.DEFAULT_NAMES + (
     # used_by API that allows models to specify if they shadow an object
     # for example the proxy provider which is built on top of an oauth provider
     "authentik_used_by_shadows",
-    # List fields for which changes are not logged (due to them having dedicated objects)
-    # for example user's password and last_login
-    "authentik_signals_ignored_fields",
 )
 
 
@@ -69,11 +66,6 @@ def default_token_duration() -> datetime:
         else DEFAULT_TOKEN_DURATION
     )
     return now() + timedelta_from_string(token_duration)
-
-
-def token_expires_from_timedelta(dt: timedelta) -> datetime:
-    """Return a `datetime.datetime` object with the duration of the Token"""
-    return now() + dt
 
 
 def default_token_key() -> str:
@@ -334,14 +326,6 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
             models.Index(fields=["uuid"]),
             models.Index(fields=["path"]),
             models.Index(fields=["type"]),
-        ]
-        authentik_signals_ignored_fields = [
-            # Logged by the events `password_set`
-            # the `password_set` action/signal doesn't currently convey which user
-            # initiated the password change, so for now we'll log two actions
-            # ("password", "password_change_date"),
-            # Logged by `login`
-            ("last_login",),
         ]
 
 
@@ -648,7 +632,7 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
         raise NotImplementedError
 
     def __str__(self) -> str:
-        return f"User-source connection (user={self.user.username}, source={self.source.slug})"
+        return f"User-source connection (user={self.user_id}, source={self.source_id})"
 
     class Meta:
         unique_together = (("user", "source"),)

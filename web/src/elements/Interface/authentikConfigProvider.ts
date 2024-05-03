@@ -1,12 +1,10 @@
 import { authentikConfigContext } from "@goauthentik/elements/AuthentikContexts";
+import type { Constructor } from "@goauthentik/elements/types.js";
 
 import { consume } from "@lit/context";
 import type { LitElement } from "lit";
 
 import type { Config } from "@goauthentik/api";
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Constructor<T = object> = new (...args: any[]) => T;
 
 export function WithAuthentikConfig<T extends Constructor<LitElement>>(
     superclass: T,

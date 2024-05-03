@@ -1,10 +1,8 @@
 ---
-title: LDAP
+title: LDAP Source
 ---
 
 Sources allow you to connect authentik to an existing user directory. They can also be used for social logins, using external providers such as Facebook, Twitter, etc.
-
-## LDAP Source
 
 This source allows you to import users and groups from an LDAP Server.
 
@@ -54,7 +52,7 @@ Be aware of the following security considerations when turning on this functiona
 
 -   Updating the LDAP password does not invalid the password stored in authentik, however for LDAP Servers like FreeIPA and Active Directory, authentik will lock its internal password during the next LDAP sync. For other LDAP servers, the old passwords will still be valid indefinitely.
 -   Logging in via LDAP credentials overwrites the password stored in authentik if users have different passwords in LDAP and authentik.
--   Custom security measures used to secure the password in LDAP may differ from the ones used in authentik. Depending on thread model and security requirements this could lead to unknowingly being non-compliant.
+-   Custom security measures used to secure the password in LDAP may differ from the ones used in authentik. Depending on threat model and security requirements this could lead to unknowingly being non-compliant.
 
 ## Troubleshooting
 

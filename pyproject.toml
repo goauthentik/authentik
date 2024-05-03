@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "authentik"
-version = "2024.2.2"
+version = "2024.4.1"
 description = ""
 authors = ["authentik Team <hello@goauthentik.io>"]
 
@@ -89,6 +89,7 @@ channels = { version = "*", extras = ["daphne"] }
 channels-redis = "*"
 codespell = "*"
 colorama = "*"
+cryptography = "*"
 dacite = "*"
 deepmerge = "*"
 defusedxml = "*"
@@ -101,7 +102,7 @@ django-redis = "*"
 django-storages = { extras = ["s3"], version = "*" }
 # See https://github.com/django-tenants/django-tenants/pull/997
 django-tenants = { git = "https://github.com/rissson/django-tenants.git", branch="authentik-fixes" }
-djangorestframework = "*"
+djangorestframework = "3.14.0"
 djangorestframework-guardian = "*"
 docker = "*"
 drf-spectacular = "*"
@@ -115,17 +116,11 @@ gunicorn = "*"
 jsonpatch = "*"
 kubernetes = "*"
 ldap3 = "*"
-lxml = [
-    # 5.0.0 works with libxml2 2.11.x, which is standard on brew
-    { version = "5.0.0", platform = "darwin" },
-    # 4.9.x works with previous libxml2 versions, which is what we get on linux
-    { version = "4.9.4", platform = "linux" },
-]
+lxml = "*"
 opencontainers = { extras = ["reggie"], version = "*" }
 packaging = "*"
 paramiko = "*"
 psycopg = { extras = ["c"], version = "*" }
-pycryptodome = "*"
 pydantic = "*"
 pydantic-scim = "*"
 pyjwt = "*"

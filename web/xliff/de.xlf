@@ -5768,9 +5768,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="se9c07cf256774d81">
   <source>Editing is disabled for managed tokens</source>
 </trans-unit>
-<trans-unit id="s78ab26da7f067de8">
-  <source>Select permissions to grant</source>
-</trans-unit>
 <trans-unit id="sdeb90bfd8a80b86b">
   <source>Permissions to add</source>
 </trans-unit>
@@ -6507,6 +6504,57 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sa6b2c110466d1754">
   <source>Default length of generated tokens</source>
+</trans-unit>
+<trans-unit id="s1f25e1e20469a9ea">
+  <source>deleted</source>
+</trans-unit>
+<trans-unit id="s0ca04e397298bc43">
+  <source>Select permissions to assign</source>
+</trans-unit>
+<trans-unit id="s676d94e7e31a8075">
+  <source>SCIM Source is in preview.</source>
+</trans-unit>
+<trans-unit id="s31f1afc0a81977c1">
+  <source>Update SCIM Source</source>
+</trans-unit>
+<trans-unit id="s4bb356adc8a7f85b">
+  <source>SCIM Base URL</source>
+</trans-unit>
+<trans-unit id="sb23304fc42c5d6d9">
+  <source>Provisioned Users</source>
+</trans-unit>
+<trans-unit id="s6a81ee82b2e5ecbb">
+  <source>Provisioned Groups</source>
+</trans-unit>
+<trans-unit id="s10154dbd4fbc697b">
+  <source>removed</source>
+</trans-unit>
+<trans-unit id="s30d6ff9e15e0a40a">
+  <source>Verifying...</source>
+</trans-unit>
+<trans-unit id="sc1673c93148583ba">
+  <source>Request failed. Please try again later.</source>
+</trans-unit>
+<trans-unit id="s85be1f5e7a0fa3b1">
+  <source>Available Roles</source>
+</trans-unit>
+<trans-unit id="sa59d53ee922c08b5">
+  <source>Selected Roles</source>
+</trans-unit>
+<trans-unit id="s7bfbf84a8ad5883f">
+  <source>Internal Service accounts are created and managed by authentik and cannot be created manually.</source>
+</trans-unit>
+<trans-unit id="sb0680e5f8782db1e">
+  <source>Private key Algorithm</source>
+</trans-unit>
+<trans-unit id="sa03cbf19feebd249">
+  <source>RSA</source>
+</trans-unit>
+<trans-unit id="sfbfccbd3e395c147">
+  <source>ECDSA</source>
+</trans-unit>
+<trans-unit id="sebea299e52db4242">
+  <source>Algorithm used to generate the private key.</source>
 </trans-unit>
     </body>
   </file>

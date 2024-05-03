@@ -69,7 +69,7 @@ const interfaces = [
 const baseArgs = {
     bundle: true,
     write: true,
-    sourcemap: !isProdBuild,
+    sourcemap: true,
     minify: isProdBuild,
     splitting: true,
     treeShaking: true,
