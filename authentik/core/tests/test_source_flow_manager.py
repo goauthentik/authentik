@@ -48,15 +48,21 @@ class TestSourceFlowManager(TestCase):
 
     def test_authenticated_link(self):
         """Test authenticated user linking"""
-        UserOAuthSourceConnection.objects.create(
-            user=get_anonymous_user(), source=self.source, identifier=self.identifier
-        )
         user = User.objects.create(username="foo", email="foo@bar.baz")
         flow_manager = OAuthSourceFlowManager(
             self.source, get_request("/", user=user), self.identifier, {}
         )
-        action, _ = flow_manager.get_action()
+        action, connection = flow_manager.get_action()
         self.assertEqual(action, Action.LINK)
+        self.assertIsNone(connection.pk)
+        flow_manager.get_flow()
+
+    def test_unauthenticated_link(self):
+        """Test un-authenticated user linking"""
+        flow_manager = OAuthSourceFlowManager(self.source, get_request("/"), self.identifier, {})
+        action, connection = flow_manager.get_action()
+        self.assertEqual(action, Action.LINK)
+        self.assertIsNone(connection.pk)
         flow_manager.get_flow()
 
     def test_unauthenticated_enroll_email(self):
