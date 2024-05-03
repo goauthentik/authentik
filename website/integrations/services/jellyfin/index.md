@@ -99,7 +99,7 @@ No additional authentik configuration needs to be configured. Follow the LDAP ou
 
 To use the role claim within Jellyfin we will have to add a custom property. This is not needed but does allow admins to be set for SSO users automatically. It can also deny access if they don't have a role, but this should be done though authentik instead.
 
-1. Go to **Customization** -> **Property Mappings**.
+1. In the Admin interface, go to **Customization** -> **Property Mappings**.
 2. Create a **Scope Mapping**.
 3. Assign these values:
     - name: `Group Membership`
@@ -188,7 +188,7 @@ a.raised.emby-button {
 ```
 
 14. Click **Save** at the bottom & restart the server.
-15. When you are signed out you should now see a "Sign in with SSO" button.
+15. When you are signed out you should now see a **Sign in with SSO** button.
 
 :::note
 If you have problems check your logs which are under the **Administration** -> **Dashboard** then "logs" and will be near the bottom (most likely) with `Jellyfin.Plugin.SSO_Auth.` as the start of the lines you are looking for.
