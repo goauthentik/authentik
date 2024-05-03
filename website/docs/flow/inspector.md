@@ -14,7 +14,7 @@ Be aware that when running a flow with the inspector enabled, the flow is still 
 
 ### Permissions and debug mode
 
-By default, the inspector is only enabled when the currently authenticated user is a superuser, OR if a user has been granted the [permission](../user-group-role/access-control/permissions.md) **Can inspect a Flow's execution** (or a user assigned to role with the permisson).
+By default, the inspector is only enabled when the currently authenticated user is a superuser, OR if a user has been granted the [permission](../user-group-role/access-control/permissions.md) **Can inspect a Flow's execution** (or is a user assigned to role with the permission).
 
 When developing authentik with the debug mode enabled, the inspector is enabled by default and can be accessed by both unauthenticated users and standard users. However the debug mode should only be used for the development of authentik. So unless you are a developer and need the more verbose error information, the best practice for using the flow inspector is to assign the permission, not use debug mode.
 
@@ -26,14 +26,16 @@ When developing authentik with the debug mode enabled, the inspector is enabled 
 
 3. On the Flow's detail page, on the left side under **Execute Flow**, click **with inspector**.
 
-4. The selected flow will launch in a new browser window, with the Inspector deislayed to the right side.
+4. The selected flow will launch in a new browser window, with the Inspector displayed to the right.
 
 Alternatively, to launch the inspector a user with the correct permission can add the query parameter `?inspector` to the URL when a flow is designated in the URL; that is when you have a flow open.
 
 :::info
 Troubleshooting:
-*   If the flow inspector does not launch and a "Bad request" error displays, this is likely because you selected a flow that is not defined in your instance or the flow has a policy bound directly to it that prevents access, so the inspector won't open because the flow can't run results.
-*   If the flow inspector launches but is empty, you can refresh the browser or advance the flow to load the inspector. This can occur when a race condition happens (the inspector tries to fetch the data before the flow plan is fully planned and as such the panel just shows blank).
+
+-   If the flow inspector does not launch and a "Bad request" error displays, this is likely either because you selected a flow that is not defined in your instance or the flow has a policy bound directly to it that prevents access, so the inspector won't open because the flow can't run results.
+-   If the flow inspector launches but is empty, you can refresh the browser or advance the flow to load the inspector. This can occur when a race condition happens (the inspector tries to fetch the data before the flow plan is fully planned and as such the panel just shows blank).
+
 :::
 
 ### Flow Inspector Details
@@ -42,7 +44,7 @@ The following information is shown in the inspector:
 
 #### Next stage
 
-This is the currently planned next stage. If you have stage bindings configured to `Evaluate when flow is planned`_`, then you will see the result here. If, however, you have them configured to re-evaluate (`Evaluate when stage is run`), then this will not show up here, since the results will vary based on your input.
+This is the currently planned next stage. If you have stage bindings configured to `Evaluate when flow is planned`\_`, then you will see the result here. If, however, you have them configured to re-evaluate (`Evaluate when stage is run`), then this will not show up here, since the results will vary based on your input.
 
 Shown is the name and kind of the stage, as well as the unique ID.
 
