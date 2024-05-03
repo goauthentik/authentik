@@ -1,5 +1,5 @@
-{% load static %}
 {% load i18n %}
+{% load authentik_core %}
 
 <!DOCTYPE html>
 
@@ -14,8 +14,8 @@
         {% endblock %}
         <link rel="stylesheet" type="text/css" href="{% static 'dist/authentik.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'dist/custom.css' %}" data-inject>
-        <script src="{% static 'dist/poly.js' %}?version={{ version }}" type="module"></script>
-        <script src="{% static 'dist/standalone/loading/index.js' %}?version={{ version }}" type="module"></script>
+        <script src="{% static 'dist/poly-%v.js' %}" type="module"></script>
+        <script src="{% static 'dist/standalone/loading/index-%v.js' %}" type="module"></script>
         {% block head %}
         {% endblock %}
         <meta name="sentry-trace" content="{{ sentry_trace }}" />

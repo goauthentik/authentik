@@ -6,6 +6,7 @@ import path from "path";
 import { cwd } from "process";
 import process from "process";
 import { fileURLToPath } from "url";
+import rootPackage from "../package.json" assert { type: 'json' };
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
@@ -89,6 +90,7 @@ async function buildOneSource(source, dest) {
         await esbuild.build({
             ...baseArgs,
             entryPoints: [`./src/${source}`],
+            entryNames: `[dir]/[name]-${rootPackage.version}`,
             outdir: DIST,
         });
         const end = Date.now();

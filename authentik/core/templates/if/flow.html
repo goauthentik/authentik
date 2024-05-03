@@ -1,6 +1,6 @@
 {% extends "base/skeleton.html" %}
 
-{% load static %}
+{% load authentik_core %}
 
 {% block head_before %}
 {{ block.super }}
@@ -17,7 +17,7 @@ window.authentik.flow = {
 {% endblock %}
 
 {% block head %}
-<script src="{% static 'dist/flow/FlowInterface.js' %}?version={{ version }}" type="module"></script>
+<script src="{% static 'dist/flow/FlowInterface-%v.js' %}" type="module"></script>
 <style>
 :root {
     --ak-flow-background: url("{{ flow.background_url }}");
