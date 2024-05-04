@@ -94,7 +94,7 @@ module.exports = async function (): Promise<Config> {
                 {
                     docs: {
                         id: "docs",
-                        sidebarPath: "./sidebars.ts",
+                        sidebarPath: "./sidebars.js",
                         editUrl:
                             "https://github.com/goauthentik/authentik/edit/main/website/",
                         remarkPlugins: [
@@ -126,7 +126,7 @@ module.exports = async function (): Promise<Config> {
                     id: "docsIntegrations",
                     path: "integrations",
                     routeBasePath: "integrations",
-                    sidebarPath: "./sidebarsIntegrations.ts",
+                    sidebarPath: "./sidebarsIntegrations.js",
                     editUrl:
                         "https://github.com/goauthentik/authentik/edit/main/website/",
                 },
@@ -137,7 +137,7 @@ module.exports = async function (): Promise<Config> {
                     id: "docsDevelopers",
                     path: "developer-docs",
                     routeBasePath: "developer-docs",
-                    sidebarPath: "./sidebarsDev.ts",
+                    sidebarPath: "./sidebarsDev.js",
                     docItemComponent: "@theme/ApiItem",
                     editUrl:
                         "https://github.com/goauthentik/authentik/edit/main/website/",

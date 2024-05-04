@@ -1,9 +1,9 @@
-import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
-import * as docsSidebar from "./sidebars";
-import { generateVersionDropdown } from "./src/utils";
-import apiReference from "./developer-docs/api/reference/sidebar";
+const docsSidebar = require("./sidebars.js");
+const generateVersionDropdown =
+    require("./src/utils.js").generateVersionDropdown;
+const apiReference = require("./developer-docs/api/reference/sidebar");
 
-const sidebar: SidebarsConfig = {
+module.exports = {
     docs: [
         {
             type: "html",
@@ -47,12 +47,12 @@ const sidebar: SidebarsConfig = {
                 "api/flow-executor",
                 "api/making-schema-changes",
                 "api/websocket",
-                "api/clients",
                 {
                     type: "category",
                     label: "Reference",
-                    items: apiReference
+                    items: apiReference,
                 },
+                "api/clients",
             ],
         },
         {
@@ -102,4 +102,3 @@ const sidebar: SidebarsConfig = {
         },
     ],
 };
-export default sidebar;
