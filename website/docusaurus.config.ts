@@ -1,6 +1,7 @@
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
 import { themes as prismThemes } from "prism-react-renderer";
+import type * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
 
 module.exports = async function (): Promise<Config> {
     const remarkGithub = (await import("remark-github")).default;
@@ -93,7 +94,7 @@ module.exports = async function (): Promise<Config> {
                 {
                     docs: {
                         id: "docs",
-                        sidebarPath: require.resolve("./sidebars.js"),
+                        sidebarPath: "./sidebars.ts",
                         editUrl:
                             "https://github.com/goauthentik/authentik/edit/main/website/",
                         remarkPlugins: [
@@ -117,17 +118,6 @@ module.exports = async function (): Promise<Config> {
                     },
                 } satisfies Preset.Options,
             ],
-            [
-                "redocusaurus",
-                {
-                    specs: [
-                        {
-                            id: "main",
-                            spec: "static/schema.yaml",
-                        },
-                    ],
-                },
-            ],
         ],
         plugins: [
             [
@@ -136,7 +126,7 @@ module.exports = async function (): Promise<Config> {
                     id: "docsIntegrations",
                     path: "integrations",
                     routeBasePath: "integrations",
-                    sidebarPath: require.resolve("./sidebarsIntegrations.js"),
+                    sidebarPath: "./sidebarsIntegrations.ts",
                     editUrl:
                         "https://github.com/goauthentik/authentik/edit/main/website/",
                 },
@@ -147,15 +137,33 @@ module.exports = async function (): Promise<Config> {
                     id: "docsDevelopers",
                     path: "developer-docs",
                     routeBasePath: "developer-docs",
-                    sidebarPath: require.resolve("./sidebarsDev.js"),
+                    sidebarPath: "./sidebarsDev.ts",
+                    docItemComponent: "@theme/ApiItem",
                     editUrl:
                         "https://github.com/goauthentik/authentik/edit/main/website/",
+                },
+            ],
+            [
+                "docusaurus-plugin-openapi-docs",
+                {
+                    id: "api",
+                    docsPluginId: "docsDevelopers",
+                    config: {
+                        authentik: {
+                            specPath: "static/schema.yaml",
+                            outputDir: "developer-docs/api/reference/",
+                            hideSendButton: true,
+                            sidebarOptions: {
+                                groupPathsBy: "tag",
+                            },
+                        } satisfies OpenApiPlugin.Options,
+                    },
                 },
             ],
         ],
         markdown: {
             mermaid: true,
         },
-        themes: ["@docusaurus/theme-mermaid"],
+        themes: ["docusaurus-theme-openapi-docs"],
     };
 };

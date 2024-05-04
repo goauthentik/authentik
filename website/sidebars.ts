@@ -1,10 +1,11 @@
-const generateVersionDropdown =
-    require("./src/utils.js").generateVersionDropdown;
+import { generateVersionDropdown } from "./src/utils";
+import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
 
-const docsSidebar = {
+const docsSidebar: SidebarsConfig = {
     docs: [
         {
             type: "html",
+            value: "",
         },
         {
             type: "doc",
@@ -453,4 +454,4 @@ const docsSidebar = {
 };
 
 docsSidebar.docs[0].value = generateVersionDropdown(docsSidebar);
-module.exports = docsSidebar;
+export default docsSidebar;

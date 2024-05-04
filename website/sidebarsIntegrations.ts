@@ -1,8 +1,8 @@
-const docsSidebar = require("./sidebars.js");
-const generateVersionDropdown =
-    require("./src/utils.js").generateVersionDropdown;
+import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
+import * as docsSidebar from "./sidebars";
+import { generateVersionDropdown } from "./src/utils";
 
-module.exports = {
+const sidebar: SidebarsConfig = {
     integrations: [
         {
             type: "html",
@@ -205,3 +205,4 @@ module.exports = {
         },
     ],
 };
+export default sidebar;
