@@ -214,7 +214,15 @@ class AuditMiddleware:
             model=model_to_dict(instance),
         ).run()
 
-    def m2m_changed_handler(self, request: HttpRequest, sender, instance: Model, action: str, **_):
+    def m2m_changed_handler(
+        self,
+        request: HttpRequest,
+        sender,
+        instance: Model,
+        action: str,
+        thread_kwargs: dict | None = None,
+        **_,
+    ):
         """Signal handler for all object's m2m_changed"""
         if action not in ["pre_add", "pre_remove", "post_clear"]:
             return
@@ -229,4 +237,5 @@ class AuditMiddleware:
             request,
             user=user,
             model=model_to_dict(instance),
+            **thread_kwargs,
         ).run()
