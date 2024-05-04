@@ -48,12 +48,12 @@ const sidebar: SidebarsConfig = {
                 "api/making-schema-changes",
                 "api/websocket",
                 "api/clients",
+                {
+                    type: "category",
+                    label: "Reference",
+                    items: apiReference
+                },
             ],
-        },
-        {
-            type: "category",
-            label: "API Reference",
-            items: apiReference,
         },
         {
             type: "category",
