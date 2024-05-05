@@ -85,7 +85,10 @@ class SCIMUserClient(SCIMClient[User, SCIMUserSchema]):
                 exclude_unset=True,
             ),
         )
-        SCIMUser.objects.create(provider=self.provider, user=user, scim_id=response["id"])
+        scim_id = response.get("id")
+        if not scim_id or scim_id == "":
+            raise StopSync("SCIM Response with missing or invalid `id`")
+        SCIMUser.objects.create(provider=self.provider, user=user, scim_id=scim_id)
 
     def _update(self, user: User, connection: SCIMUser):
         """Update existing user"""
