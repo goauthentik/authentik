@@ -62,8 +62,18 @@ export class IdentificationStage extends BaseStage<
             }
         `);
     }
-
+    checkSourceParameter(url: string): string | null {
+        const decodedUrl = decodeURIComponent(decodeURIComponent(url));
+        const urlSearchParams = new URLSearchParams(decodedUrl);
+        const sourceParam = urlSearchParams.get('source');
+        if (sourceParam) {
+            const source = this.challenge.sources.find((item: { challenge: { to: string; }; }) => item.challenge.to.endsWith(sourceParam+"/"));
+            this.host.challenge = source.challenge;
+        }
+        return null;
+    }
     firstUpdated(): void {
+        this.checkSourceParameter(window.location.href);
         this.autoRedirect();
         this.createHelperForm();
     }
