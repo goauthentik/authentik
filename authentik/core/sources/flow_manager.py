@@ -100,8 +100,6 @@ class SourceFlowManager:
         if self.request.user.is_authenticated:
             new_connection.user = self.request.user
             new_connection = self.update_connection(new_connection, **kwargs)
-
-            new_connection.save()
             return Action.LINK, new_connection
 
         existing_connections = self.connection_type.objects.filter(
@@ -148,7 +146,6 @@ class SourceFlowManager:
         ]:
             new_connection.user = user
             new_connection = self.update_connection(new_connection, **kwargs)
-            new_connection.save()
             return Action.LINK, new_connection
         if self.source.user_matching_mode in [
             SourceUserMatchingModes.EMAIL_DENY,
