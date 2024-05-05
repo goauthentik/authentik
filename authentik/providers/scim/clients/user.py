@@ -34,7 +34,7 @@ class SCIMUserClient(SCIMClient[User, SCIMUserSchema]):
         if not scim_user:
             self.logger.debug("User does not exist in SCIM, skipping")
             return None
-        response = self._request("DELETE", f"/Users/{scim_user.id}")
+        response = self._request("DELETE", f"/Users/{scim_user.scim_id}")
         scim_user.delete()
         return response
 
@@ -85,15 +85,18 @@ class SCIMUserClient(SCIMClient[User, SCIMUserSchema]):
                 exclude_unset=True,
             ),
         )
-        SCIMUser.objects.create(provider=self.provider, user=user, id=response["id"])
+        scim_id = response.get("id")
+        if not scim_id or scim_id == "":
+            raise StopSync("SCIM Response with missing or invalid `id`")
+        SCIMUser.objects.create(provider=self.provider, user=user, scim_id=scim_id)
 
     def _update(self, user: User, connection: SCIMUser):
         """Update existing user"""
         scim_user = self.to_scim(user)
-        scim_user.id = connection.id
+        scim_user.id = connection.scim_id
         self._request(
             "PUT",
-            f"/Users/{connection.id}",
+            f"/Users/{connection.scim_id}",
             json=scim_user.model_dump(
                 mode="json",
                 exclude_unset=True,
