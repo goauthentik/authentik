@@ -12,7 +12,7 @@ should_build = str(os.environ.get("DOCKER_USERNAME", None) is not None).lower()
 branch_name = os.environ["GITHUB_REF"]
 if os.environ.get("GITHUB_HEAD_REF", "") != "":
     branch_name = os.environ["GITHUB_HEAD_REF"]
-safe_branch_name = branch_name.replace("refs/heads/", "").replace("/", "-")
+safe_branch_name = branch_name.replace("refs/heads/", "").replace("/", "-").replace("'", "-")
 
 image_names = os.getenv("IMAGE_NAME").split(",")
 image_arch = os.getenv("IMAGE_ARCH") or None
