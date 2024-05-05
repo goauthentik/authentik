@@ -18,6 +18,7 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
+import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { EventActions, FlowsApi } from "@goauthentik/api";
@@ -81,6 +82,7 @@ export class EventInfo extends AKElement {
             PFCard,
             PFTable,
             PFList,
+            PFSplit,
             PFDescriptionList,
             css`
                 code {
@@ -246,11 +248,17 @@ export class EventInfo extends AKElement {
 
     renderModelChanged() {
         const diff = this.event.context.diff as unknown as {
-            [key: string]: { new_value: unknown; previous_value: unknown };
+            [key: string]: {
+                new_value: unknown;
+                previous_value: unknown;
+                add?: unknown[];
+                remove?: unknown[];
+                clear?: boolean;
+            };
         };
         let diffBody = html``;
         if (diff) {
-            diffBody = html`<div class="pf-l-flex__item">
+            diffBody = html`<div class="pf-l-split__item pf-m-fill">
                     <div class="pf-c-card__title">${msg("Changes made:")}</div>
                     <table class="pf-c-table pf-m-compact pf-m-grid-md" role="grid">
                         <thead>
@@ -262,16 +270,36 @@ export class EventInfo extends AKElement {
                         </thead>
                         <tbody role="rowgroup">
                             ${Object.keys(diff).map((key) => {
+                                const value = diff[key];
+                                const previousCol = value.previous_value
+                                    ? JSON.stringify(value.previous_value, null, 4)
+                                    : msg("-");
+                                let newCol = html``;
+                                if (value.add || value.remove) {
+                                    newCol = html`<ul class="pf-c-list">
+                                        ${(value.add || value.remove)?.map((item) => {
+                                            let itemLabel = "";
+                                            if (value.add) {
+                                                itemLabel = msg(str`Added ID ${item}`);
+                                            } else if (value.remove) {
+                                                itemLabel = msg(str`Removed ID ${item}`);
+                                            }
+                                            return html`<li>${itemLabel}</li>`;
+                                        })}
+                                    </ul>`;
+                                } else if (value.clear) {
+                                    newCol = html`${msg("Cleared")}`;
+                                } else {
+                                    newCol = html`<pre>
+${JSON.stringify(value.new_value, null, 4)}</pre
+                                    >`;
+                                }
                                 return html` <tr role="row">
                                     <td role="cell"><pre>${key}</pre></td>
                                     <td role="cell">
-                                        <pre>
-${JSON.stringify(diff[key].previous_value, null, 4)}</pre
-                                        >
+                                        <pre>${previousCol}</pre>
                                     </td>
-                                    <td role="cell">
-                                        <pre>${JSON.stringify(diff[key].new_value, null, 4)}</pre>
-                                    </td>
+                                    <td role="cell">${newCol}</td>
                                 </tr>`;
                             })}
                         </tbody>
@@ -280,8 +308,8 @@ ${JSON.stringify(diff[key].previous_value, null, 4)}</pre
                 </div>`;
         }
         return html`
-            <div class="pf-l-flex">
-                <div class="pf-l-flex__item">
+            <div class="pf-l-split">
+                <div class="pf-l-split__item pf-m-fill">
                     <div class="pf-c-card__title">${msg("Affected model:")}</div>
                     <div class="pf-c-card__body">
                         ${this.getModelInfo(this.event.context?.model as EventModel)}
