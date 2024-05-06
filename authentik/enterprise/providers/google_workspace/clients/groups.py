@@ -70,7 +70,7 @@ class GoogleWorkspaceGroupClient(
             return None
         with transaction.atomic():
             response = self._request(
-                self.directory_service.groups().delete(groupKey=google_group.id)
+                self.directory_service.groups().delete(groupKey=google_group.google_id)
             )
             google_group.delete()
             return response
@@ -90,11 +90,11 @@ class GoogleWorkspaceGroupClient(
                     self.directory_service.groups().get(groupKey=google_group["email"])
                 )
                 GoogleWorkspaceProviderGroup.objects.create(
-                    provider=self.provider, group=group, id=group_data["id"]
+                    provider=self.provider, group=group, google_id=group_data["id"]
                 )
             else:
                 GoogleWorkspaceProviderGroup.objects.create(
-                    provider=self.provider, group=group, id=response["id"]
+                    provider=self.provider, group=group, google_id=response["id"]
                 )
 
     def update(self, group: Group, connection: GoogleWorkspaceProviderGroup):
@@ -104,7 +104,7 @@ class GoogleWorkspaceGroupClient(
         try:
             return self._request(
                 self.directory_service.groups().update(
-                    groupKey=connection.id,
+                    groupKey=connection.google_id,
                     body=google_group,
                 )
             )
@@ -130,7 +130,7 @@ class GoogleWorkspaceGroupClient(
                     self.directory_service.members().insert(
                         groupKey=google_group["id"],
                         body={
-                            "email": user.id,
+                            "email": user.google_id,
                         },
                     )
                 )
@@ -179,11 +179,11 @@ class GoogleWorkspaceGroupClient(
         user_ids = list(
             GoogleWorkspaceProviderUser.objects.filter(
                 user__pk__in=users_set, provider=self.provider
-            ).values_list("id", flat=True)
+            ).values_list("google_id", flat=True)
         )
         if len(user_ids) < 1:
             return
-        self._patch(google_group.id, Direction.add, user_ids)
+        self._patch(google_group.google_id, Direction.add, user_ids)
 
     def _patch_remove_users(self, group: Group, users_set: set[int]):
         """Remove users in users_set from group"""
@@ -200,11 +200,11 @@ class GoogleWorkspaceGroupClient(
         user_ids = list(
             GoogleWorkspaceProviderUser.objects.filter(
                 user__pk__in=users_set, provider=self.provider
-            ).values_list("id", flat=True)
+            ).values_list("google_id", flat=True)
         )
         if len(user_ids) < 1:
             return
-        self._patch(google_group.id, Direction.remove, user_ids)
+        self._patch(google_group.google_id, Direction.remove, user_ids)
 
     def discover(self):
         """Iterate through all groups and connect them with authentik groups if possible"""
@@ -229,5 +229,5 @@ class GoogleWorkspaceGroupClient(
         GoogleWorkspaceProviderGroup.objects.get_or_create(
             provider=self.provider,
             group=matching_authentik_group,
-            id=google_id,
+            google_id=google_id,
         )

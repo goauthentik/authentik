@@ -64,7 +64,9 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
             return None
         with transaction.atomic():
             # TODO: Delete vs suspend
-            response = self._request(self.directory_service.users().delete(userKey=google_user.id))
+            response = self._request(
+                self.directory_service.users().delete(userKey=google_user.google_id)
+            )
             google_user.delete()
         return response
 
@@ -80,13 +82,13 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
             except ObjectExistsSyncException:
                 # user already exists in google workspace, so we can connect them manually
                 GoogleWorkspaceProviderUser.objects.create(
-                    provider=self.provider, user=user, id=user.email
+                    provider=self.provider, user=user, google_id=user.email
                 )
             except TransientSyncException as exc:
                 raise exc
             else:
                 GoogleWorkspaceProviderUser.objects.create(
-                    provider=self.provider, user=user, id=response["primaryEmail"]
+                    provider=self.provider, user=user, google_id=response["primaryEmail"]
                 )
 
     def update(self, user: User, connection: GoogleWorkspaceProviderUser):
@@ -96,7 +98,7 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
             google_user["primaryEmail"], *[x["address"] for x in google_user.get("emails", [])]
         )
         self._request(
-            self.directory_service.users().update(userKey=connection.id, body=google_user)
+            self.directory_service.users().update(userKey=connection.google_id, body=google_user)
         )
 
     def discover(self):
@@ -121,5 +123,5 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
         GoogleWorkspaceProviderUser.objects.get_or_create(
             provider=self.provider,
             user=matching_authentik_user,
-            id=email,
+            google_id=email,
         )

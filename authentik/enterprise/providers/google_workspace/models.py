@@ -1,4 +1,7 @@
+"""Google workspace sync provider"""
+
 from typing import Any, Self
+from uuid import uuid4
 
 from django.db import models
 from django.db.models import QuerySet
@@ -131,12 +134,13 @@ class GoogleWorkspaceProviderMapping(PropertyMapping):
 class GoogleWorkspaceProviderUser(models.Model):
     """Mapping of a user and provider to a Google user ID"""
 
-    id = models.TextField(primary_key=True)
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+    google_id = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     provider = models.ForeignKey(GoogleWorkspaceProvider, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = (("id", "user", "provider"),)
+        unique_together = (("google_id", "user", "provider"),)
 
     def __str__(self) -> str:
         return f"Google Workspace User {self.user_id} to {self.provider_id}"
@@ -145,12 +149,13 @@ class GoogleWorkspaceProviderUser(models.Model):
 class GoogleWorkspaceProviderGroup(models.Model):
     """Mapping of a group and provider to a Google group ID"""
 
-    id = models.TextField(primary_key=True)
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+    google_id = models.TextField()
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     provider = models.ForeignKey(GoogleWorkspaceProvider, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = (("id", "group", "provider"),)
+        unique_together = (("google_id", "group", "provider"),)
 
     def __str__(self) -> str:
         return f"Google Workspace Group {self.group_id} to {self.provider_id}"
