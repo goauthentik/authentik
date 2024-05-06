@@ -7,13 +7,14 @@ from lxml import etree  # nosec
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert, create_test_flow
+from authentik.crypto.builder import PrivateKeyAlg
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
 from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.metadata import MetadataProcessor
 from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
-from authentik.sources.saml.processors.constants import NS_MAP, NS_SAML_METADATA
+from authentik.sources.saml.processors.constants import ECDSA_SHA256, NS_MAP, NS_SAML_METADATA
 
 
 class TestServiceProviderMetadataParser(TestCase):
@@ -107,12 +108,41 @@ class TestServiceProviderMetadataParser(TestCase):
                 load_fixture("fixtures/cert.xml").replace("/apps/user_saml", "")
             )
 
-    def test_signature(self):
-        """Test signature validation"""
+    def test_signature_rsa(self):
+        """Test signature validation (RSA)"""
         provider = SAMLProvider.objects.create(
             name=generate_id(),
             authorization_flow=self.flow,
-            signing_kp=create_test_cert(),
+            signing_kp=create_test_cert(PrivateKeyAlg.RSA),
+        )
+        Application.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+            provider=provider,
+        )
+        request = self.factory.get("/")
+        metadata = MetadataProcessor(provider, request).build_entity_descriptor()
+
+        root = fromstring(metadata.encode())
+        xmlsec.tree.add_ids(root, ["ID"])
+        signature_nodes = root.xpath("/md:EntityDescriptor/ds:Signature", namespaces=NS_MAP)
+        signature_node = signature_nodes[0]
+        ctx = xmlsec.SignatureContext()
+        key = xmlsec.Key.from_memory(
+            provider.signing_kp.certificate_data,
+            xmlsec.constants.KeyDataFormatCertPem,
+            None,
+        )
+        ctx.key = key
+        ctx.verify(signature_node)
+
+    def test_signature_ecdsa(self):
+        """Test signature validation (ECDSA)"""
+        provider = SAMLProvider.objects.create(
+            name=generate_id(),
+            authorization_flow=self.flow,
+            signing_kp=create_test_cert(PrivateKeyAlg.ECDSA),
+            signature_algorithm=ECDSA_SHA256,
         )
         Application.objects.create(
             name=generate_id(),

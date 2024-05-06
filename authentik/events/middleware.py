@@ -116,12 +116,12 @@ class AuditMiddleware:
             return user
         user = getattr(request, "user", self.anonymous_user)
         if not user.is_authenticated:
+            self._ensure_fallback_user()
             return self.anonymous_user
         return user
 
     def connect(self, request: HttpRequest):
         """Connect signal for automatic logging"""
-        self._ensure_fallback_user()
         if not hasattr(request, "request_id"):
             return
         post_save.connect(

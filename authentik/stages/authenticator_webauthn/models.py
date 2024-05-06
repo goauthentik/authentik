@@ -155,7 +155,7 @@ class WebAuthnDevice(SerializerModel, Device):
         return WebAuthnDeviceSerializer
 
     def __str__(self):
-        return str(self.name) or str(self.user)
+        return str(self.name) or str(self.user_id)
 
     class Meta:
         verbose_name = _("WebAuthn Device")
