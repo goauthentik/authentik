@@ -119,7 +119,7 @@ class SystemTask(TenantTask):
                 "task_call_kwargs": sanitize_item(kwargs),
                 "status": self._status,
                 "messages": sanitize_item(self._messages),
-                "expires": now() + timedelta(hours=self.result_timeout_hours),
+                "expires": now() + timedelta(hours=self.result_timeout_hours + 3),
                 "expiring": True,
             },
         )
