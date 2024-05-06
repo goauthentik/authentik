@@ -31,6 +31,8 @@ class GoogleProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
             "scopes",
             "exclude_users_service_account",
             "filter_group",
+            "user_delete_action",
+            "group_delete_action",
         ]
         extra_kwargs = {}
 

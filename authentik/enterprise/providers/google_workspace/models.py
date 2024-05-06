@@ -29,6 +29,15 @@ def default_scopes() -> list[str]:
     ]
 
 
+class GoogleWorkspaceDeleteAction(models.TextChoices):
+    """Action taken when a user/group is deleted in authentik. Suspend is not available for groups,
+    and will be treated as `do_nothing`"""
+
+    DO_NOTHING = "do_nothing"
+    DELETE = "delete"
+    SUSPEND = "suspend"
+
+
 class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
     """Sync users from authentik into Google Workspace."""
 
@@ -37,6 +46,12 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
     scopes = models.TextField(default=",".join(default_scopes()))
 
     exclude_users_service_account = models.BooleanField(default=False)
+    user_delete_action = models.TextField(
+        choices=GoogleWorkspaceDeleteAction.choices, default=GoogleWorkspaceDeleteAction.DELETE
+    )
+    group_delete_action = models.TextField(
+        choices=GoogleWorkspaceDeleteAction.choices, default=GoogleWorkspaceDeleteAction.DELETE
+    )
 
     filter_group = models.ForeignKey(
         "authentik_core.group", on_delete=models.SET_DEFAULT, default=None, null=True

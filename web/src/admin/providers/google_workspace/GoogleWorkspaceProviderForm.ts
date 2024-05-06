@@ -17,6 +17,7 @@ import {
     CoreApi,
     CoreGroupsListRequest,
     GoogleProvider,
+    GoogleWorkspaceDeleteAction,
     Group,
     PaginatedGoogleProviderMappingList,
     PropertymappingsApi,
@@ -90,6 +91,59 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleProv
                         />
                         <p class="pf-c-form__helper-text">${msg("TODO")}</p>
                     </ak-form-element-horizontal>
+                    <ak-radio-input
+                        name="userDeleteAction"
+                        label=${msg("User deletion action")}
+                        required
+                        .options=${[
+                            {
+                                label: msg("Delete"),
+                                value: GoogleWorkspaceDeleteAction.Delete,
+                                default: true,
+                                description: html`${msg("User is deleted")}`,
+                            },
+                            {
+                                label: msg("Suspend"),
+                                value: GoogleWorkspaceDeleteAction.Suspend,
+                                description: html`${msg(
+                                    "User is suspended, and connection to user in authentik is removed.",
+                                )}`,
+                            },
+                            {
+                                label: msg("Do Nothing"),
+                                value: GoogleWorkspaceDeleteAction.DoNothing,
+                                description: html`${msg(
+                                    "The connection is removed but the user is not modified",
+                                )}`,
+                            },
+                        ]}
+                        .value=${this.instance?.userDeleteAction}
+                        help=${msg("Determines what authentik will do when a User is deleted.")}
+                    >
+                    </ak-radio-input>
+                    <ak-radio-input
+                        name="groupDeleteAction"
+                        label=${msg("Group deletion action")}
+                        required
+                        .options=${[
+                            {
+                                label: msg("Delete"),
+                                value: GoogleWorkspaceDeleteAction.Delete,
+                                default: true,
+                                description: html`${msg("Group is deleted")}`,
+                            },
+                            {
+                                label: msg("Do Nothing"),
+                                value: GoogleWorkspaceDeleteAction.DoNothing,
+                                description: html`${msg(
+                                    "The connection is removed but the group is not modified",
+                                )}`,
+                            },
+                        ]}
+                        .value=${this.instance?.groupDeleteAction}
+                        help=${msg("Determines what authentik will do when a Group is deleted.")}
+                    >
+                    </ak-radio-input>
                 </div>
             </ak-form-group>
             <ak-form-group ?expanded=${true}>

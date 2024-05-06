@@ -21,7 +21,6 @@ entries:
             givenName, _, familyName = request.user.name.partition(" ")
             formatted = request.user.name
         return {
-            "primaryEmail": request.user.email,
             "name": {
                 "fullName": formatted,
                 "familyName": familyName.strip(),
@@ -29,6 +28,7 @@ entries:
                 "displayName": formatted,
             },
             "password": request.user.password,
+            "suspended": not request.user.is_active,
         }
   - identifiers:
       managed: goauthentik.io/providers/google_workspace/group

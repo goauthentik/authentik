@@ -8,6 +8,7 @@ from authentik.core.expression.exceptions import (
 from authentik.core.models import User
 from authentik.enterprise.providers.google_workspace.clients.base import GoogleWorkspaceSyncClient
 from authentik.enterprise.providers.google_workspace.models import (
+    GoogleWorkspaceDeleteAction,
     GoogleWorkspaceProviderMapping,
     GoogleWorkspaceProviderUser,
 )
@@ -68,10 +69,16 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
             self.logger.debug("User does not exist in Google, skipping")
             return None
         with transaction.atomic():
-            # TODO: Delete vs suspend
-            response = self._request(
-                self.directory_service.users().delete(userKey=google_user.google_id)
-            )
+            if self.provider.user_delete_action == GoogleWorkspaceDeleteAction.DELETE:
+                response = self._request(
+                    self.directory_service.users().delete(userKey=google_user.google_id)
+                )
+            elif self.provider.user_delete_action == GoogleWorkspaceDeleteAction.SUSPEND:
+                response = self._request(
+                    self.directory_service.users().update(userKey=google_user.google_id, body={
+                        "suspended": True
+                    })
+                )
             google_user.delete()
         return response
 

@@ -8,6 +8,7 @@ from authentik.core.expression.exceptions import (
 from authentik.core.models import Group
 from authentik.enterprise.providers.google_workspace.clients.base import GoogleWorkspaceSyncClient
 from authentik.enterprise.providers.google_workspace.models import (
+    GoogleWorkspaceDeleteAction,
     GoogleWorkspaceProviderGroup,
     GoogleWorkspaceProviderMapping,
     GoogleWorkspaceProviderUser,
@@ -74,11 +75,11 @@ class GoogleWorkspaceGroupClient(
             self.logger.debug("Group does not exist in Google, skipping")
             return None
         with transaction.atomic():
-            response = self._request(
-                self.directory_service.groups().delete(groupKey=google_group.google_id)
-            )
+            if self.provider.group_delete_action == GoogleWorkspaceDeleteAction.DELETE:
+                self._request(
+                    self.directory_service.groups().delete(groupKey=google_group.google_id)
+                )
             google_group.delete()
-            return response
 
     def create(self, group: Group):
         """Create group from scratch and create a connection object"""

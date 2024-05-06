@@ -34884,6 +34884,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        user_delete_action:
+          $ref: '#/components/schemas/GoogleWorkspaceDeleteAction'
+        group_delete_action:
+          $ref: '#/components/schemas/GoogleWorkspaceDeleteAction'
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
@@ -34995,10 +34999,20 @@ components:
           type: string
           format: uuid
           nullable: true
+        user_delete_action:
+          $ref: '#/components/schemas/GoogleWorkspaceDeleteAction'
+        group_delete_action:
+          $ref: '#/components/schemas/GoogleWorkspaceDeleteAction'
       required:
       - credentials
       - delegated_subject
       - name
+    GoogleWorkspaceDeleteAction:
+      enum:
+      - do_nothing
+      - delete
+      - suspend
+      type: string
     Group:
       type: object
       description: Group Serializer
@@ -39767,6 +39781,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        user_delete_action:
+          $ref: '#/components/schemas/GoogleWorkspaceDeleteAction'
+        group_delete_action:
+          $ref: '#/components/schemas/GoogleWorkspaceDeleteAction'
     PatchedGroupRequest:
       type: object
       description: Group Serializer

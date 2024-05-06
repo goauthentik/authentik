@@ -8250,6 +8250,24 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Filter group"
+                },
+                "user_delete_action": {
+                    "type": "string",
+                    "enum": [
+                        "do_nothing",
+                        "delete",
+                        "suspend"
+                    ],
+                    "title": "User delete action"
+                },
+                "group_delete_action": {
+                    "type": "string",
+                    "enum": [
+                        "do_nothing",
+                        "delete",
+                        "suspend"
+                    ],
+                    "title": "Group delete action"
                 }
             },
             "required": []
