@@ -3,7 +3,7 @@
 from django.test import RequestFactory, TestCase
 from guardian.shortcuts import get_anonymous_user
 
-from authentik.core.exceptions import PropertyMappingExpressionException
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import PropertyMapping
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.events.models import Event, EventAction

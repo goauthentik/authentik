@@ -6,6 +6,7 @@ from django.db.models import Model
 from django.http import HttpRequest
 from prometheus_client import Histogram
 
+from authentik.core.expression.exceptions import SkipObjectException
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
 from authentik.lib.expression.evaluator import BaseEvaluator
@@ -47,6 +48,7 @@ class PropertyMappingEvaluator(BaseEvaluator):
         self._context["request"] = req
         req.context.update(**kwargs)
         self._context.update(**kwargs)
+        self._globals["SkipObject"] = SkipObjectException
         self.dry_run = dry_run
 
     def handle_error(self, exc: Exception, expression_source: str):

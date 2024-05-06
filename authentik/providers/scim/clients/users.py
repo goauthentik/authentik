@@ -3,7 +3,10 @@
 from deepmerge import always_merger
 from pydantic import ValidationError
 
-from authentik.core.exceptions import PropertyMappingExpressionException
+from authentik.core.expression.exceptions import (
+    PropertyMappingExpressionException,
+    SkipObjectException,
+)
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
 from authentik.lib.sync.outgoing.exceptions import StopSync
@@ -38,6 +41,8 @@ class SCIMUserClient(SCIMClient[User, SCIMUser, SCIMUserSchema]):
                 if value is None:
                     continue
                 always_merger.merge(raw_scim_user, value)
+            except SkipObjectException as exc:
+                raise exc from exc
             except (PropertyMappingExpressionException, ValueError) as exc:
                 # Value error can be raised when assigning invalid data to an attribute
                 Event.new(

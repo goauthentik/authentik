@@ -7,6 +7,7 @@ from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from structlog.stdlib import BoundLogger, get_logger
 
+from authentik.core.expression.exceptions import SkipObjectException
 from authentik.core.models import Group, User
 from authentik.events.logs import LogEvent
 from authentik.events.models import TaskStatus
@@ -115,6 +116,8 @@ class SyncTasks:
             obj: Model
             try:
                 client.write(obj)
+            except SkipObjectException:
+                continue
             except TransientSyncException as exc:
                 self.logger.warning("failed to sync object", exc=exc, user=obj)
                 messages.append(

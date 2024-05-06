@@ -1,7 +1,10 @@
 from deepmerge import always_merger
 from django.db import transaction
 
-from authentik.core.exceptions import PropertyMappingExpressionException
+from authentik.core.expression.exceptions import (
+    PropertyMappingExpressionException,
+    SkipObjectException,
+)
 from authentik.core.models import Group
 from authentik.enterprise.providers.google_workspace.clients.base import GoogleWorkspaceSyncClient
 from authentik.enterprise.providers.google_workspace.models import (
@@ -47,6 +50,8 @@ class GoogleWorkspaceGroupClient(
                 if value is None:
                     continue
                 always_merger.merge(raw_google_group, value)
+            except SkipObjectException as exc:
+                raise exc from exc
             except (PropertyMappingExpressionException, ValueError) as exc:
                 # Value error can be raised when assigning invalid data to an attribute
                 Event.new(

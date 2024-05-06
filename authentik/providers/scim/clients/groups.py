@@ -5,7 +5,10 @@ from pydantic import ValidationError
 from pydanticscim.group import GroupMember
 from pydanticscim.responses import PatchOp, PatchOperation
 
-from authentik.core.exceptions import PropertyMappingExpressionException
+from authentik.core.expression.exceptions import (
+    PropertyMappingExpressionException,
+    SkipObjectException,
+)
 from authentik.core.models import Group
 from authentik.events.models import Event, EventAction
 from authentik.lib.sync.outgoing.base import Direction
@@ -52,6 +55,8 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroup, SCIMGroupSchema]):
                 if value is None:
                     continue
                 always_merger.merge(raw_scim_group, value)
+            except SkipObjectException as exc:
+                raise exc from exc
             except (PropertyMappingExpressionException, ValueError) as exc:
                 # Value error can be raised when assigning invalid data to an attribute
                 Event.new(
