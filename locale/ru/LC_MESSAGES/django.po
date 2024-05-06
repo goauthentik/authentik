@@ -2947,7 +2947,7 @@ msgstr "Неверный пароль"
 
 #: authentik/stages/prompt/models.py
 msgid "Text: Simple Text input"
-msgstr "Текст: простой ввод текста"
+msgstr "Текст: простой текстовый ввод"
 
 #: authentik/stages/prompt/models.py
 msgid "Text area: Multiline Text Input."
