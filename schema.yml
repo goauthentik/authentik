@@ -44167,6 +44167,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LogEvent'
+        expires:
+          type: string
+          format: date-time
+          nullable: true
+        expiring:
+          type: boolean
       required:
       - description
       - duration
