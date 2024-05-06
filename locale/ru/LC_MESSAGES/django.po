@@ -2029,7 +2029,8 @@ msgstr "Ссылка авторизации"
 
 #: authentik/sources/oauth/models.py
 msgid "URL the user is redirect to to conest the flow."
-msgstr "URL, на который перенаправляется пользователь для авторизации."
+msgstr ""
+"URL, на который пользователь перенаправляется для согласования потока."
 
 #: authentik/sources/oauth/models.py
 msgid "Access Token URL"
