@@ -84,9 +84,11 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
         raise ValueError(f"Invalid type {type}")
 
     def google_credentials(self):
-        return Credentials.from_service_account_info(
-            self.credentials, scopes=self.scopes.split(",")
-        ).with_subject(self.delegated_subject)
+        return {
+            "credentials": Credentials.from_service_account_info(
+                self.credentials, scopes=self.scopes.split(",")
+            ).with_subject(self.delegated_subject)
+        }
 
     @property
     def component(self) -> str:

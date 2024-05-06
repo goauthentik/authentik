@@ -29,8 +29,8 @@ class GoogleWorkspaceSyncClient[TModel: Model, TConnection: Model, TSchema: dict
         self.directory_service = build(
             "admin",
             "directory_v1",
-            credentials=provider.google_credentials(),
             cache_discovery=False,
+            **provider.google_credentials(),
         )
         self.__prefetch_domains()
 
