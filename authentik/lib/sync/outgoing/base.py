@@ -34,13 +34,16 @@ class BaseOutgoingSyncClient[
         self.provider = provider
 
     def create(self, obj: TModel) -> TConnection:
+        """Create object in remote destination"""
         raise NotImplementedError()
 
     def update(self, obj: TModel, connection: object):
+        """Update object in remote destination"""
         raise NotImplementedError()
 
     def write(self, obj: TModel) -> tuple[TConnection, bool]:
-        """Write object to destination"""
+        """Write object to destination. Uses self.create and self.update, but
+        can be overwritten for further logic"""
         remote_obj = self.connection_type.objects.filter(
             provider=self.provider, **{self.connection_type_query: obj}
         ).first()
@@ -68,4 +71,11 @@ class BaseOutgoingSyncClient[
 
     def to_schema(self, obj: TModel) -> TSchema:
         """Convert object to destination schema"""
+        raise NotImplementedError()
+
+    def discover(self):
+        """Optional method. Can be used to implement a "discovery" where
+        upon creation of this provider, this function will be called and can
+        pre-link any users/groups in the remote system with the respective
+        object in authentik based on a common identifier"""
         raise NotImplementedError()
