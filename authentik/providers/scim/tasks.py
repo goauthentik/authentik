@@ -38,7 +38,23 @@ def client_for_model(provider: SCIMProvider, model: Model) -> SCIMClient:
 def scim_sync_all():
     """Run sync for all providers"""
     for provider in SCIMProvider.objects.filter(backchannel_application__isnull=False):
-        scim_sync.delay(provider.pk)
+        scim_task_wrapper(provider.pk)
+
+
+def scim_task_wrapper(provider_pk: int):
+    """Wrap scim_sync to set the correct timeouts"""
+    provider: SCIMProvider = SCIMProvider.objects.filter(
+        pk=provider_pk, backchannel_application__isnull=False
+    ).first()
+    if not provider:
+        return
+    users_paginator = Paginator(provider.get_user_qs(), PAGE_SIZE)
+    groups_paginator = Paginator(provider.get_group_qs(), PAGE_SIZE)
+    soft_time_limit = (users_paginator.num_pages + groups_paginator.num_pages) * PAGE_TIMEOUT
+    time_limit = soft_time_limit * 1.5
+    return scim_sync.apply_async(
+        (provider.pk,), time_limit=int(time_limit), soft_time_limit=int(soft_time_limit)
+    )
 
 
 @CELERY_APP.task(bind=True, base=SystemTask)
@@ -60,7 +76,7 @@ def scim_sync(self: SystemTask, provider_pk: int) -> None:
     users_paginator = Paginator(provider.get_user_qs(), PAGE_SIZE)
     groups_paginator = Paginator(provider.get_group_qs(), PAGE_SIZE)
     self.soft_time_limit = self.time_limit = (
-        users_paginator.count + groups_paginator.count
+        users_paginator.num_pages + groups_paginator.num_pages
     ) * PAGE_TIMEOUT
     with allow_join_result():
         try:

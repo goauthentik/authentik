@@ -10,7 +10,7 @@ from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
-from authentik.providers.scim.tasks import scim_sync
+from authentik.providers.scim.tasks import scim_task_wrapper
 from authentik.tenants.models import Tenant
 
 
@@ -236,7 +236,7 @@ class SCIMUserTests(TestCase):
             email=f"{uid}@goauthentik.io",
         )
 
-        scim_sync.delay(self.provider.pk).get()
+        scim_task_wrapper(self.provider.pk).get()
 
         self.assertEqual(mock.call_count, 5)
         self.assertEqual(mock.request_history[0].method, "GET")
