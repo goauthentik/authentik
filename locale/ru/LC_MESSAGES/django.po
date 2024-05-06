@@ -3177,7 +3177,7 @@ msgstr ""
 #: authentik/tenants/models.py
 msgid "Enable the ability for users to change their username."
 msgstr ""
-"Включить возможность изменения пользователями своего имени пользователя"
+"Включение возможности изменения пользователями своего имени пользователя"
 
 #: authentik/tenants/models.py
 msgid ""
