@@ -9,8 +9,13 @@ module.exports = {
             value: generateVersionDropdown(docsSidebar),
         },
         {
+            type: "doc",
+            id: "index",
+        },
+        {
             type: "category",
             label: "Applications",
+            collapsed: false,
             link: {
                 type: "doc",
                 id: "services/index",
@@ -152,53 +157,6 @@ module.exports = {
                         "services/github-enterprise-server/index",
                         "services/github-organization/index",
                         "services/gitlab/index",
-                    ],
-                },
-            ],
-        },
-        {
-            type: "category",
-            label: "Federation & Social login",
-            link: {
-                type: "generated-index",
-                title: "Sources",
-                slug: "sources",
-                description:
-                    "Sources of users which can be federated with authentik",
-            },
-            items: [
-                {
-                    type: "category",
-                    label: "Directory synchronization",
-                    items: [
-                        "sources/active-directory/index",
-                        "sources/freeipa/index",
-                    ],
-                },
-                "sources/general",
-                {
-                    type: "category",
-                    label: "Protocols",
-                    items: [
-                        "sources/ldap/index",
-                        "sources/oauth/index",
-                        "sources/saml/index",
-                        "sources/scim/index",
-                    ],
-                },
-                {
-                    type: "category",
-                    label: "Social Logins",
-                    items: [
-                        "sources/apple/index",
-                        "sources/azure-ad/index",
-                        "sources/discord/index",
-                        "sources/github/index",
-                        "sources/google/index",
-                        "sources/mailcow/index",
-                        "sources/twitch/index",
-                        "sources/plex/index",
-                        "sources/twitter/index",
                     ],
                 },
             ],
