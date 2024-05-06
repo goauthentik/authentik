@@ -1,14 +1,13 @@
 """Google Workspace Group tests"""
 
-from json import dumps
 from unittest.mock import MagicMock, patch
 
 from django.test import TestCase
-from googleapiclient.http import HttpMockSequence
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
 from authentik.core.tests.utils import create_test_user
+from authentik.enterprise.providers.google_workspace.clients.test_http import MockHTTP
 from authentik.enterprise.providers.google_workspace.models import (
     GoogleWorkspaceProvider,
     GoogleWorkspaceProviderGroup,
@@ -53,19 +52,24 @@ class GoogleWorkspaceGroupTests(TestCase):
                 managed="goauthentik.io/providers/google_workspace/group"
             )
         )
+        self.api_key = generate_id()
 
     def test_group_create(self):
         """Test group creation"""
         uid = generate_id()
-        http = HttpMockSequence(
-            [
-                ({"status": "200"}, domains_list_v1_mock),
-                ({"status": "200"}, dumps({"id": generate_id()})),
-            ]
+        http = MockHTTP()
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
+            domains_list_v1_mock,
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/groups?key={self.api_key}&alt=json",
+            method="POST",
+            body={"id": generate_id()},
         )
         with patch(
             "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
-            MagicMock(return_value={"developerKey": generate_id(), "http": http}),
+            MagicMock(return_value={"developerKey": self.api_key, "http": http}),
         ):
             group = Group.objects.create(name=uid)
             google_group = GoogleWorkspaceProviderGroup.objects.filter(
@@ -73,22 +77,30 @@ class GoogleWorkspaceGroupTests(TestCase):
             ).first()
             self.assertIsNotNone(google_group)
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
+            self.assertEqual(len(http.requests()), 2)
 
     def test_group_create_update(self):
         """Test group updating"""
         uid = generate_id()
         ext_id = generate_id()
-        http = HttpMockSequence(
-            [
-                ({"status": "200"}, domains_list_v1_mock),
-                ({"status": "200"}, dumps({"id": ext_id})),
-                ({"status": "200"}, domains_list_v1_mock),
-                ({"status": "200"}, dumps({"id": ext_id})),
-            ]
+        http = MockHTTP()
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
+            domains_list_v1_mock,
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/groups?key={self.api_key}&alt=json",
+            method="POST",
+            body={"id": ext_id},
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/groups/{ext_id}?key={self.api_key}&alt=json",
+            method="PUT",
+            body={"id": ext_id},
         )
         with patch(
             "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
-            MagicMock(return_value={"developerKey": generate_id(), "http": http}),
+            MagicMock(return_value={"developerKey": self.api_key, "http": http}),
         ):
             group = Group.objects.create(name=uid)
             google_group = GoogleWorkspaceProviderGroup.objects.filter(
@@ -99,22 +111,29 @@ class GoogleWorkspaceGroupTests(TestCase):
             group.name = "new name"
             group.save()
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
+            self.assertEqual(len(http.requests()), 4)
 
     def test_group_create_delete(self):
         """Test group deletion"""
         uid = generate_id()
         ext_id = generate_id()
-        http = HttpMockSequence(
-            [
-                ({"status": "200"}, domains_list_v1_mock),
-                ({"status": "200"}, dumps({"id": ext_id})),
-                ({"status": "200"}, domains_list_v1_mock),
-                ({"status": "200"}, dumps({"id": ext_id})),
-            ]
+        http = MockHTTP()
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
+            domains_list_v1_mock,
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/groups?key={self.api_key}&alt=json",
+            method="POST",
+            body={"id": ext_id},
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/groups/{ext_id}?key={self.api_key}",
+            method="DELETE",
         )
         with patch(
             "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
-            MagicMock(return_value={"developerKey": generate_id(), "http": http}),
+            MagicMock(return_value={"developerKey": self.api_key, "http": http}),
         ):
             group = Group.objects.create(name=uid)
             google_group = GoogleWorkspaceProviderGroup.objects.filter(
@@ -124,25 +143,39 @@ class GoogleWorkspaceGroupTests(TestCase):
 
             group.delete()
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
+            self.assertEqual(len(http.requests()), 4)
 
     def test_group_create_member_add(self):
         """Test group creation"""
         uid = generate_id()
-        http = HttpMockSequence(
-            [
-                ({"status": "200"}, domains_list_v1_mock),
-                ({"status": "200"}, dumps({"primaryEmail": f"{uid}@goauthentik.io"})),
-                ({"status": "200"}, domains_list_v1_mock),
-                ({"status": "200"}, dumps({"primaryEmail": f"{uid}@goauthentik.io"})),
-                ({"status": "200"}, domains_list_v1_mock),
-                ({"status": "200"}, dumps({"id": generate_id()})),
-                ({"status": "200"}, domains_list_v1_mock),
-                ({"status": "200"}, dumps({})),
-            ]
+        ext_id = generate_id()
+        http = MockHTTP()
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
+            domains_list_v1_mock,
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/groups?key={self.api_key}&alt=json",
+            method="POST",
+            body={"id": ext_id},
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/users?key={self.api_key}&alt=json",
+            method="POST",
+            body={"primaryEmail": f"{uid}@goauthentik.io"},
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/users/{uid}%40goauthentik.io?key={self.api_key}&alt=json",
+            method="PUT",
+            body={"primaryEmail": f"{uid}@goauthentik.io"},
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/groups/{ext_id}/members?key={self.api_key}&alt=json",
+            method="POST",
         )
         with patch(
             "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
-            MagicMock(return_value={"developerKey": generate_id(), "http": http}),
+            MagicMock(return_value={"developerKey": self.api_key, "http": http}),
         ):
             user = create_test_user(uid)
             group = Group.objects.create(name=uid)
@@ -152,27 +185,43 @@ class GoogleWorkspaceGroupTests(TestCase):
             ).first()
             self.assertIsNotNone(google_group)
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
+            self.assertEqual(len(http.requests()), 8)
 
     def test_group_create_member_remove(self):
         """Test group creation"""
         uid = generate_id()
-        http = HttpMockSequence(
-            [
-                ({"status": "200"}, domains_list_v1_mock),
-                ({"status": "200"}, dumps({"primaryEmail": f"{uid}@goauthentik.io"})),
-                ({"status": "200"}, domains_list_v1_mock),
-                ({"status": "200"}, dumps({"primaryEmail": f"{uid}@goauthentik.io"})),
-                ({"status": "200"}, domains_list_v1_mock),
-                ({"status": "200"}, dumps({"id": generate_id()})),
-                ({"status": "200"}, domains_list_v1_mock),
-                ({"status": "200"}, dumps({})),
-                ({"status": "200"}, domains_list_v1_mock),
-                ({"status": "200"}, dumps({})),
-            ]
+        ext_id = generate_id()
+        http = MockHTTP()
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
+            domains_list_v1_mock,
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/groups?key={self.api_key}&alt=json",
+            method="POST",
+            body={"id": ext_id},
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/users?key={self.api_key}&alt=json",
+            method="POST",
+            body={"primaryEmail": f"{uid}@goauthentik.io"},
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/users/{uid}%40goauthentik.io?key={self.api_key}&alt=json",
+            method="PUT",
+            body={"primaryEmail": f"{uid}@goauthentik.io"},
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/groups/{ext_id}/members/{uid}%40goauthentik.io?key={self.api_key}",
+            method="DELETE",
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/groups/{ext_id}/members?key={self.api_key}&alt=json",
+            method="POST",
         )
         with patch(
             "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
-            MagicMock(return_value={"developerKey": generate_id(), "http": http}),
+            MagicMock(return_value={"developerKey": self.api_key, "http": http}),
         ):
             user = create_test_user(uid)
             group = Group.objects.create(name=uid)
@@ -183,4 +232,5 @@ class GoogleWorkspaceGroupTests(TestCase):
             self.assertIsNotNone(google_group)
             group.users.remove(user)
 
-        self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
+            self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
+            self.assertEqual(len(http.requests()), 10)

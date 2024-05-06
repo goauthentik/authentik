@@ -75,9 +75,9 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
                 )
             elif self.provider.user_delete_action == GoogleWorkspaceDeleteAction.SUSPEND:
                 response = self._request(
-                    self.directory_service.users().update(userKey=google_user.google_id, body={
-                        "suspended": True
-                    })
+                    self.directory_service.users().update(
+                        userKey=google_user.google_id, body={"suspended": True}
+                    )
                 )
             google_user.delete()
         return response
