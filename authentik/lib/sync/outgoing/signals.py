@@ -30,7 +30,7 @@ def register_signals(
             (instance.pk,), time_limit=int(time_limit), soft_time_limit=int(soft_time_limit)
         )
 
-    post_save.connect(post_save_provider, provider_type, dispatch_uid=uid)
+    post_save.connect(post_save_provider, provider_type, dispatch_uid=uid, weak=False)
 
     def model_post_save(sender: type[Model], instance: User | Group, created: bool, **_):
         """Post save handler"""
@@ -38,8 +38,8 @@ def register_signals(
             return
         task_sync_direct.delay(class_to_path(instance.__class__), instance.pk, Direction.add.value)
 
-    post_save.connect(model_post_save, User, dispatch_uid=uid)
-    post_save.connect(model_post_save, Group, dispatch_uid=uid)
+    post_save.connect(model_post_save, User, dispatch_uid=uid, weak=False)
+    post_save.connect(model_post_save, Group, dispatch_uid=uid, weak=False)
 
     def model_pre_delete(sender: type[Model], instance: User | Group, **_):
         """Pre-delete handler"""
@@ -49,8 +49,8 @@ def register_signals(
             class_to_path(instance.__class__), instance.pk, Direction.remove.value
         )
 
-    pre_delete.connect(model_pre_delete, User, dispatch_uid=uid)
-    pre_delete.connect(model_pre_delete, Group, dispatch_uid=uid)
+    pre_delete.connect(model_pre_delete, User, dispatch_uid=uid, weak=False)
+    pre_delete.connect(model_pre_delete, Group, dispatch_uid=uid, weak=False)
 
     def model_m2m_changed(
         sender: type[Model], instance, action: str, pk_set: set, reverse: bool, **kwargs
@@ -68,4 +68,4 @@ def register_signals(
             for group_pk in pk_set:
                 task_sync_m2m.delay(group_pk, action, [instance.pk])
 
-    m2m_changed.connect(model_m2m_changed, User.ak_groups.through, dispatch_uid=uid)
+    m2m_changed.connect(model_m2m_changed, User.ak_groups.through, dispatch_uid=uid, weak=False)
