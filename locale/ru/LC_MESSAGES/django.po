@@ -2033,7 +2033,7 @@ msgstr "URL, на который перенаправляется пользов
 
 #: authentik/sources/oauth/models.py
 msgid "Access Token URL"
-msgstr "Ссылка ключа доступа"
+msgstr "Ссылка Access токена"
 
 #: authentik/sources/oauth/models.py
 msgid "URL used by authentik to retrieve tokens."
