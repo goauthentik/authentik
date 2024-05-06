@@ -116,12 +116,12 @@ class AuditMiddleware:
             return user
         user = getattr(request, "user", self.anonymous_user)
         if not user.is_authenticated:
+            self._ensure_fallback_user()
             return self.anonymous_user
         return user
 
     def connect(self, request: HttpRequest):
         """Connect signal for automatic logging"""
-        self._ensure_fallback_user()
         if not hasattr(request, "request_id"):
             return
         post_save.connect(
@@ -214,7 +214,15 @@ class AuditMiddleware:
             model=model_to_dict(instance),
         ).run()
 
-    def m2m_changed_handler(self, request: HttpRequest, sender, instance: Model, action: str, **_):
+    def m2m_changed_handler(
+        self,
+        request: HttpRequest,
+        sender,
+        instance: Model,
+        action: str,
+        thread_kwargs: dict | None = None,
+        **_,
+    ):
         """Signal handler for all object's m2m_changed"""
         if action not in ["pre_add", "pre_remove", "post_clear"]:
             return
@@ -229,4 +237,5 @@ class AuditMiddleware:
             request,
             user=user,
             model=model_to_dict(instance),
+            **thread_kwargs,
         ).run()
