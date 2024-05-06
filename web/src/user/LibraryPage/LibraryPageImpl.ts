@@ -76,11 +76,8 @@ export class LibraryPage extends AKElement {
         this.viewPreference =
             this.viewPreference ??
             tryCatch(
-                () => window.localStorage.getItem(VIEW_KEY),
-                (e) => {
-                    console.log(e);
-                    return "card";
-                },
+                () => window.localStorage.getItem(VIEW_KEY) ?? undefined,
+                (e) => "card",
             );
         if (this.filteredApps === undefined) {
             throw new Error(
@@ -128,7 +125,9 @@ export class LibraryPage extends AKElement {
 
     setView(view: string) {
         this.viewPreference = view;
-        tryCatch(() => window.localStorage.setItem(VIEW_KEY, view));
+        tryCatch(() => {
+            window.localStorage.setItem(VIEW_KEY, view);
+        });
     }
 
     renderEmptyState() {

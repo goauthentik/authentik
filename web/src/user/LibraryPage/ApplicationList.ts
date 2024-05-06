@@ -1,6 +1,7 @@
 import { PFSize } from "@goauthentik/common/enums.js";
 import { LayoutType } from "@goauthentik/common/ui/config";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";
+import { UserInterface } from "@goauthentik/user/UserInterface";
 
 import { msg } from "@lit/localize";
 import { css, html, nothing } from "lit";
@@ -9,32 +10,13 @@ import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import type { Application } from "@goauthentik/api";
 
 import type { AppGroupEntry, AppGroupList } from "./types";
-
-type Pair = [string, string];
-
-// prettier-ignore
-const LAYOUTS = new Map<string, [string, string]>([
-    [
-        "row",
-        ["pf-m-12-col", "pf-m-all-6-col-on-sm pf-m-all-4-col-on-md pf-m-all-5-col-on-lg pf-m-all-2-col-on-xl"]],
-    [
-        "2-column",
-        ["pf-m-6-col", "pf-m-all-12-col-on-sm pf-m-all-12-col-on-md pf-m-all-4-col-on-lg pf-m-all-4-col-on-xl"],
-    ],
-    [
-        "3-column",
-        ["pf-m-4-col", "pf-m-all-12-col-on-sm pf-m-all-12-col-on-md pf-m-all-6-col-on-lg pf-m-all-6-col-on-xl"],
-    ],
-]);
 
 @customElement("ak-library-application-list")
 export class LibraryPageApplicationList extends AKElement {
@@ -66,19 +48,10 @@ export class LibraryPageApplicationList extends AKElement {
 
     expanded = new Set<string>();
 
-    get currentLayout(): Pair {
-        const layout = LAYOUTS.get(this.layout);
-        if (!layout) {
-            console.warn(`Unrecognized layout: ${this.layout || "-undefined-"}`);
-            return LAYOUTS.get("row") as Pair;
-        }
-        return layout;
-    }
-
     render() {
+        const me = rootInterface<UserInterface>()?.me;
         const canEdit =
-            rootInterface()?.uiConfig?.enabledFeatures.applicationEdit &&
-            rootInterface()?.me?.user.isSuperuser;
+            rootInterface()?.uiConfig?.enabledFeatures.applicationEdit && me?.user.isSuperuser;
 
         const toggleExpansion = (pk: string) => {
             if (this.expanded.has(pk)) {
@@ -88,8 +61,6 @@ export class LibraryPageApplicationList extends AKElement {
             }
             this.requestUpdate();
         };
-
-        const [groupClass, groupGrid] = this.currentLayout;
 
         const expandedClass = (pk: string) => ({
             "pf-m-expanded": this.expanded.has(pk),
