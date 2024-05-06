@@ -1,47 +1,44 @@
-import collections
-import shelve
-import threading
+from time import sleep
 
 from celery.events import EventReceiver
 from celery.events.state import State
 from prometheus_client import Counter, Gauge, Histogram
+from structlog import get_logger
+
+from authentik.root.celery import CELERY_APP
+
+LOGGER = get_logger()
 
 COUNTER_CELERY_EVENTS = Counter(
-    "authentik_celery_events_total", "Number of Celery events", ["worker", "type", "task"]
+    "authentik_system_celery_events_total", "Number of Celery events", ["worker", "type", "task"]
 )
 HISTOGRAM_TASKS_RUNTIME = Histogram(
-    "authentik_tasks_runtime_seconds", "Task runtime", ["worker", "task"]
+    "authentik_system_tasks_runtime_seconds", "Task runtime", ["worker", "task"]
 )
 GAUGE_TASKS_PREFETCH_TIME = Gauge(
-    "authentik_tasks_prefetch_time_seconds",
+    "authentik_system_tasks_prefetch_time_seconds",
     "Time the task spent waiting at the celery worker to be executed",
     ["worker", "task"],
 )
 GAUGE_TASKS_WORKER_PREFETCHED = Gauge(
-    "authentik_tasks_worker_prefetched_tasks",
+    "authentik_system_tasks_worker_prefetched_tasks",
     "Number of tasks of a given type prefetched at a worker",
     ["worker", "task"],
 )
-GAUGE_WORKER_ONLINE = Gauge("authentik_worker_online", "Worker online status", ["worker"])
+GAUGE_WORKER_ONLINE = Gauge("authentik_system_worker_online", "Worker online status", ["worker"])
 GAUGE_WORKER_CURRENTLY_EXECUTING_TASKS = Gauge(
-    "authentik_worker_currently_executing_tasks",
+    "authentik_system_worker_currently_executing_tasks",
     "Number of tasks currently executng at a worker",
     ["worker"],
 )
 
 
 class EventsState(State):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.counter = collections.defaultdict(collections.Counter)
-
     def event(self, event):
         super().event(event)
 
         worker_name = event["hostname"]
         event_type = event["type"]
-
-        self.counter[worker_name][event_type] += 1
 
         if event_type.startswith("task-"):
             task_id = event["uuid"]
@@ -86,30 +83,26 @@ class EventsState(State):
             GAUGE_WORKER_ONLINE.labels(worker=worker_name).set(0)
 
 
-class Events(threading.Thread):
+class EventsWatcher:
     events_enable_interval = 5000
 
-    def __init__(
-        self,
-        capp,
-        io_loop,
-        db=None,
-        persistent=False,
-        enable_events=True,
-        state_save_interval=0,
-        **kwargs,
-    ):
-        threading.Thread.__init__(self)
-        self.daemon = True
+    def __init__(self):
+        self.state = EventsState()
 
-        self.io_loop = io_loop
-        self.capp = capp
+    def run(self):
+        try_interval = 1
+        while True:
+            CELERY_APP.control.enable_events()
+            try:
+                try_interval *= 2
+                with CELERY_APP.connection() as connection:
+                    recv = EventReceiver(connection, handlers={"*": self.on_event}, app=CELERY_APP)
+                    try_interval = 1
+                    # Every 100 events, start the loop again
+                    recv.capture(limit=100, timeout=None, wakeup=True)
+            except Exception as exc:
+                LOGGER.debug("Failed to receive events", exc=exc)
+                sleep(try_interval)
 
-        self.db = db
-        self.persistent = persistent
-        self.enable_events = enable_events
-        self.state = None
-        self.state_save_time = None
-
-        if self.persistent:
-            state = shelve.open(self.db)
+    def on_event(self, event):
+        self.state.event(event)
