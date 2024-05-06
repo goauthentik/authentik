@@ -2962,8 +2962,8 @@ msgstr ""
 #: authentik/stages/prompt/models.py
 msgid "Text area (read-only): Multiline Text input, but cannot be edited."
 msgstr ""
-"Текстовая область (только для чтения): Многострочный ввод текста, но не "
-"может быть отредактирован."
+"Текстовая область (только для чтения): Многострочный текстовый ввод, который"
+" нельзя редактировать."
 
 #: authentik/stages/prompt/models.py
 msgid ""
