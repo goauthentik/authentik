@@ -98,3 +98,28 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
         self._request(
             self.directory_service.users().update(userKey=connection.id, body=google_user)
         )
+
+    def discover(self):
+        """Iterate through all users and connect them with authentik users if possible"""
+        request = self.directory_service.users().list(
+            customer="my_customer", maxResults=500, orderBy="email"
+        )
+        while request:
+            response = request.execute()
+            for user in response.get("users", []):
+                self._discover_single_user(user)
+            request = self.directory_service.users().list_next(
+                previous_request=request, previous_response=response
+            )
+
+    def _discover_single_user(self, user: dict):
+        """handle discovery of a single user"""
+        email = user["primaryEmail"]
+        matching_authentik_user = User.objects.filter(email=email).first()
+        if not matching_authentik_user:
+            return
+        GoogleWorkspaceProviderUser.objects.get_or_create(
+            provider=self.provider,
+            user=matching_authentik_user,
+            id=email,
+        )

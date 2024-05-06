@@ -205,3 +205,29 @@ class GoogleWorkspaceGroupClient(
         if len(user_ids) < 1:
             return
         self._patch(google_group.id, Direction.remove, user_ids)
+
+    def discover(self):
+        """Iterate through all groups and connect them with authentik groups if possible"""
+        request = self.directory_service.groups().list(
+            customer="my_customer", maxResults=500, orderBy="email"
+        )
+        while request:
+            response = request.execute()
+            for group in response.get("groups", []):
+                self._discover_single_group(group)
+            request = self.directory_service.groups().list_next(
+                previous_request=request, previous_response=response
+            )
+
+    def _discover_single_group(self, group: dict):
+        """handle discovery of a single group"""
+        google_name = group["name"]
+        google_id = group["id"]
+        matching_authentik_group = Group.objects.filter(name=google_name).first()
+        if not matching_authentik_group:
+            return
+        GoogleWorkspaceProviderGroup.objects.get_or_create(
+            provider=self.provider,
+            group=matching_authentik_group,
+            id=google_id,
+        )
