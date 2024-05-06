@@ -55,7 +55,7 @@ def clean_expired_models(self: SystemTask):
                     session.delete()
                     amount += 1
             case "db":
-                if (
+                if not (
                     DBSessionStore.get_model_class()
                     .objects.filter(session_key=session.session_key, expire_date__gt=now())
                     .exists()
