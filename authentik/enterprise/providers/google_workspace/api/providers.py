@@ -6,6 +6,7 @@ from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.providers.google_workspace.models import GoogleWorkspaceProvider
+from authentik.enterprise.providers.google_workspace.tasks import google_workspace_sync
 from authentik.lib.sync.outgoing.api import OutgoingSyncProviderStatusMixin
 
 
@@ -47,3 +48,4 @@ class GoogleProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin, ModelV
     ]
     search_fields = ["name"]
     ordering = ["name"]
+    sync_single_task = google_workspace_sync

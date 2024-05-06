@@ -1,3 +1,5 @@
+from collections.abc import Callable
+
 from django.utils.text import slugify
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
@@ -19,6 +21,9 @@ class SyncStatusSerializer(PassiveSerializer):
 
 
 class OutgoingSyncProviderStatusMixin:
+    """Common API Endpoints for Outgoing sync providers"""
+
+    sync_single_task: Callable = None
 
     @extend_schema(
         responses={
@@ -26,14 +31,19 @@ class OutgoingSyncProviderStatusMixin:
             404: OpenApiResponse(description="Task not found"),
         }
     )
-    @action(methods=["GET"], detail=True, pagination_class=None, filter_backends=[])
+    @action(
+        methods=["GET"],
+        detail=True,
+        pagination_class=None,
+        url_path="sync/status",
+        filter_backends=[],
+    )
     def sync_status(self, request: Request, pk: int) -> Response:
         """Get provider's sync status"""
         provider: OutgoingSyncProvider = self.get_object()
         tasks = list(
             get_objects_for_user(request.user, "authentik_events.view_systemtask").filter(
-                # TODO: lookup correct task somehow
-                name="scim_sync",
+                name=self.sync_single_task.__name__,
                 uid=slugify(provider.name),
             )
         )

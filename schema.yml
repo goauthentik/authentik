@@ -14134,7 +14134,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Google Provider Mapping.
+        description: A UUID string identifying this Google Workspace Provider Mapping.
         required: true
       tags:
       - propertymappings
@@ -14168,7 +14168,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Google Provider Mapping.
+        description: A UUID string identifying this Google Workspace Provider Mapping.
         required: true
       tags:
       - propertymappings
@@ -14208,7 +14208,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Google Provider Mapping.
+        description: A UUID string identifying this Google Workspace Provider Mapping.
         required: true
       tags:
       - propertymappings
@@ -14247,7 +14247,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Google Provider Mapping.
+        description: A UUID string identifying this Google Workspace Provider Mapping.
         required: true
       tags:
       - propertymappings
@@ -14278,7 +14278,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Google Provider Mapping.
+        description: A UUID string identifying this Google Workspace Provider Mapping.
         required: true
       tags:
       - propertymappings
@@ -15741,7 +15741,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this Google Provider.
+        description: A unique integer value identifying this Google Workspace Provider.
         required: true
       tags:
       - providers
@@ -15774,7 +15774,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this Google Provider.
+        description: A unique integer value identifying this Google Workspace Provider.
         required: true
       tags:
       - providers
@@ -15813,7 +15813,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this Google Provider.
+        description: A unique integer value identifying this Google Workspace Provider.
         required: true
       tags:
       - providers
@@ -15851,7 +15851,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this Google Provider.
+        description: A unique integer value identifying this Google Workspace Provider.
         required: true
       tags:
       - providers
@@ -15872,7 +15872,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /providers/google_workspace/{id}/sync_status/:
+  /providers/google_workspace/{id}/sync/status/:
     get:
       operationId: providers_google_workspace_sync_status_retrieve
       description: Get provider's sync status
@@ -15881,7 +15881,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this Google Provider.
+        description: A unique integer value identifying this Google Workspace Provider.
         required: true
       tags:
       - providers
@@ -15917,7 +15917,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this Google Provider.
+        description: A unique integer value identifying this Google Workspace Provider.
         required: true
       tags:
       - providers
@@ -18258,7 +18258,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /providers/scim/{id}/sync_status/:
+  /providers/scim/{id}/sync/status/:
     get:
       operationId: providers_scim_sync_status_retrieve
       description: Get provider's sync status
