@@ -6541,6 +6541,21 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sa59d53ee922c08b5">
   <source>Selected Roles</source>
 </trans-unit>
+<trans-unit id="s7bfbf84a8ad5883f">
+  <source>Internal Service accounts are created and managed by authentik and cannot be created manually.</source>
+</trans-unit>
+<trans-unit id="sb0680e5f8782db1e">
+  <source>Private key Algorithm</source>
+</trans-unit>
+<trans-unit id="sa03cbf19feebd249">
+  <source>RSA</source>
+</trans-unit>
+<trans-unit id="sfbfccbd3e395c147">
+  <source>ECDSA</source>
+</trans-unit>
+<trans-unit id="sebea299e52db4242">
+  <source>Algorithm used to generate the private key.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>

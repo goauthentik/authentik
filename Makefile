@@ -46,8 +46,8 @@ test-go:
 	go test -timeout 0 -v -race -cover ./...
 
 test-docker:  ## Run all tests in a docker-compose
-	echo "PG_PASS=$(openssl rand -base64 32)" >> .env
-	echo "AUTHENTIK_SECRET_KEY=$(openssl rand -base64 32)" >> .env
+	echo "PG_PASS=$(shell openssl rand 32 | base64)" >> .env
+	echo "AUTHENTIK_SECRET_KEY=$(shell openssl rand 32 | base64)" >> .env
 	docker compose pull -q
 	docker compose up --no-start
 	docker compose start postgresql redis
