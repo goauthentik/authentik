@@ -127,7 +127,13 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
             200: SyncStatusSerializer(),
         }
     )
-    @action(methods=["GET"], detail=True, pagination_class=None, filter_backends=[])
+    @action(
+        methods=["GET"],
+        detail=True,
+        pagination_class=None,
+        url_path="sync/status",
+        filter_backends=[],
+    )
     def sync_status(self, request: Request, slug: str) -> Response:
         """Get source's sync status"""
         source: LDAPSource = self.get_object()

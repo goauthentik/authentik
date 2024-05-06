@@ -20599,7 +20599,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /sources/ldap/{slug}/sync_status/:
+  /sources/ldap/{slug}/sync/status/:
     get:
       operationId: sources_ldap_sync_status_retrieve
       description: Get source's sync status

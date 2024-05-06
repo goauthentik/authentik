@@ -75,6 +75,7 @@ class GoogleWorkspaceUserTests(TestCase):
                 provider=self.provider, user=user
             ).first()
             self.assertIsNotNone(google_user)
+            self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
 
     def test_user_create_update(self):
         """Test user updating"""
