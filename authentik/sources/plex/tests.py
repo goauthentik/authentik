@@ -40,6 +40,11 @@ class TestPlexSource(TestCase):
             slug="test",
         )
 
+    def test_login_challenge(self):
+        """Test login_challenge"""
+        ui_login_button = self.source.ui_login_button(None)
+        self.assertTrue(ui_login_button.challenge.is_valid(raise_exception=True))
+
     def test_get_user_info(self):
         """Test get_user_info"""
         token = generate_key()

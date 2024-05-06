@@ -201,10 +201,7 @@ class ConnectionToken(ExpiringModel):
         return settings
 
     def __str__(self):
-        return (
-            f"RAC Connection token {self.session.user} to "
-            f"{self.endpoint.provider.name}/{self.endpoint.name}"
-        )
+        return f"RAC Connection token {self.session_id} to {self.provider_id}/{self.endpoint_id}"
 
     class Meta:
         verbose_name = _("RAC Connection token")

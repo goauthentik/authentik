@@ -1,5 +1,26 @@
 # YAML Tags
 
+To use the custom tags with your preferred editor, you must make the editor aware of the custom tags.
+
+For VS Code, for example, add these entries to your `settings.json`:
+
+```
+{
+    "yaml.customTags": [
+        "!KeyOf scalar",
+        "!Env scalar",
+        "!Find sequence",
+        "!Context scalar",
+        "!Format sequence",
+        "!If sequence",
+        "!Condition sequence",
+        "!Enumerate sequence",
+        "!Index scalar",
+        "!Value scalar"
+    ]
+}
+```
+
 #### `!KeyOf`
 
 Example:

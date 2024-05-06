@@ -10,6 +10,7 @@ from jwt import PyJWKSet
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert, create_test_flow
+from authentik.crypto.builder import PrivateKeyAlg
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import OAuth2Provider
@@ -82,7 +83,7 @@ class TestJWKS(OAuthTestCase):
             client_id="test",
             authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
-            signing_key=create_test_cert(use_ec_private_key=True),
+            signing_key=create_test_cert(PrivateKeyAlg.ECDSA),
         )
         app = Application.objects.create(name="test", slug="test", provider=provider)
         response = self.client.get(

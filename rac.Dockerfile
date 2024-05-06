@@ -18,7 +18,7 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     go build -o /go/rac ./cmd/rac
 
 # Stage 2: Run
-FROM ghcr.io/beryju/guacd:1.5.3
+FROM ghcr.io/beryju/guacd:1.5.5
 
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH

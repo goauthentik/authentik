@@ -66,7 +66,7 @@ class PlexSource(Source):
             icon = static("authentik/sources/plex.svg")
         return UILoginButton(
             challenge=PlexAuthenticationChallenge(
-                {
+                data={
                     "type": ChallengeTypes.NATIVE.value,
                     "component": "ak-source-plex",
                     "client_id": self.client_id,

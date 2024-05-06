@@ -35,12 +35,15 @@ async function sourcesProvider(page = 1, search = "") {
 
     return {
         pagination: sources.pagination,
-        options: sources.results.map((source) => [source.pk, source.name, source.name, source]),
+        options: sources.results
+            .filter((source) => source.component !== "")
+            .map((source) => [source.pk, source.name, source.name, source]),
     };
 }
 
 async function makeSourcesSelector(instanceSources: string[] | undefined) {
     const localSources = instanceSources ? new Set(instanceSources) : undefined;
+
     return localSources
         ? ([pk, _]: DualSelectPair) => localSources.has(pk)
         : ([_0, _1, _2, source]: DualSelectPair<Source>) =>

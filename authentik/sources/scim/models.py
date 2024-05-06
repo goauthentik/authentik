@@ -60,7 +60,7 @@ class SCIMSourceUser(SerializerModel):
         unique_together = (("id", "user", "source"),)
 
     def __str__(self) -> str:
-        return f"SCIM User {self.user.username} to {self.source.name}"
+        return f"SCIM User {self.user_id} to {self.source_id}"
 
 
 class SCIMSourceGroup(SerializerModel):
@@ -81,4 +81,4 @@ class SCIMSourceGroup(SerializerModel):
         unique_together = (("id", "group", "source"),)
 
     def __str__(self) -> str:
-        return f"SCIM Group {self.group.name} to {self.source.name}"
+        return f"SCIM Group {self.group_id} to {self.source_id}"
