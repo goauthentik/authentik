@@ -101,7 +101,7 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
         raise ValueError(f"Invalid type {type}")
 
     def google_credentials(self):
-        http = set_user_agent(build_http, authentik_user_agent())
+        http = set_user_agent(build_http(), authentik_user_agent())
         return {
             "credentials": Credentials.from_service_account_info(
                 self.credentials, scopes=self.scopes.split(",")

@@ -9,6 +9,7 @@ from authentik.core.models import Application, Group, User
 from authentik.core.tests.utils import create_test_user
 from authentik.enterprise.providers.google_workspace.clients.test_http import MockHTTP
 from authentik.enterprise.providers.google_workspace.models import (
+    GoogleWorkspaceDeleteAction,
     GoogleWorkspaceProvider,
     GoogleWorkspaceProviderGroup,
     GoogleWorkspaceProviderMapping,
@@ -234,3 +235,36 @@ class GoogleWorkspaceGroupTests(TestCase):
 
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
             self.assertEqual(len(http.requests()), 10)
+
+    def test_group_create_delete_do_nothing(self):
+        """Test group deletion (delete action = do nothing)"""
+        self.provider.group_delete_action = GoogleWorkspaceDeleteAction.DO_NOTHING
+        self.provider.save()
+        uid = generate_id()
+        http = MockHTTP()
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
+            domains_list_v1_mock,
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/groups?key={self.api_key}&alt=json",
+            method="POST",
+            body={"id": uid},
+        )
+        with patch(
+            "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
+            MagicMock(return_value={"developerKey": self.api_key, "http": http}),
+        ):
+            group = Group.objects.create(name=uid)
+            google_group = GoogleWorkspaceProviderGroup.objects.filter(
+                provider=self.provider, group=group
+            ).first()
+            self.assertIsNotNone(google_group)
+
+            group.delete()
+            self.assertEqual(len(http.requests()), 3)
+            self.assertFalse(
+                GoogleWorkspaceProviderGroup.objects.filter(
+                    provider=self.provider, group__name=uid
+                ).exists()
+            )

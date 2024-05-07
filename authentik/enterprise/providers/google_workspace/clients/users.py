@@ -69,6 +69,7 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
             self.logger.debug("User does not exist in Google, skipping")
             return None
         with transaction.atomic():
+            response = None
             if self.provider.user_delete_action == GoogleWorkspaceDeleteAction.DELETE:
                 response = self._request(
                     self.directory_service.users().delete(userKey=google_user.google_id)
