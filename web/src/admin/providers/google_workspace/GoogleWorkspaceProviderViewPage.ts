@@ -167,7 +167,11 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
         if (!this.provider) {
             return html``;
         }
-        return html` ${!this.provider?.assignedBackchannelApplicationName
+        return html`<div slot="header" class="pf-c-banner pf-m-info">
+                ${msg("Google Workspace Provider is in preview.")}
+                <a href="mailto:hello+feature/gws@goauthentik.io">${msg("Send us feedback!")}</a>
+            </div>
+            ${!this.provider?.assignedBackchannelApplicationName
                 ? html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg(
                           "Warning: Provider is not assigned to an application as backchannel provider.",
