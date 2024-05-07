@@ -479,6 +479,7 @@ const docsSidebar = {
                 slug: "security",
             },
             items: [
+                "security/security-hardening",
                 "security/policy",
                 "security/CVE-2024-23647",
                 "security/CVE-2024-21637",
