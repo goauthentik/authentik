@@ -1,10 +1,8 @@
 ---
-title: Hardening your authentik deployment
+title: Hardening authentik
 ---
 
-authentik is secure out of the box; however as everyone knows there is a consequential tradeoff between security and convenience.
-
-With that in mind, you can take steps to further increase the security of an authentik instance by applying the steps below. All of these steps have an impact on the user experience and should only be applied knowing this tradeoff.
+While authentik is secure out of the box, you can take steps to further increase the security of an authentik instance. As everyone knows, there is a consequential tradeoff between security and convenience. All of these hardening practices have an impact on the user experience and should only be applied knowing this tradeoff.
 
 ### Expressions
 
