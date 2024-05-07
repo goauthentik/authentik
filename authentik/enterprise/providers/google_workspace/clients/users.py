@@ -131,7 +131,9 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
     def _discover_single_user(self, user: dict):
         """handle discovery of a single user"""
         email = user["primaryEmail"]
-        matching_authentik_user = User.objects.filter(email=email).first()
+        matching_authentik_user = (
+            self.provider.get_object_qs(User).filter(email=email).first()
+        )
         if not matching_authentik_user:
             return
         GoogleWorkspaceProviderUser.objects.get_or_create(

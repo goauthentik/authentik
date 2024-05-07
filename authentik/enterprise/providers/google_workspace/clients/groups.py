@@ -230,7 +230,9 @@ class GoogleWorkspaceGroupClient(
         """handle discovery of a single group"""
         google_name = group["name"]
         google_id = group["id"]
-        matching_authentik_group = Group.objects.filter(name=google_name).first()
+        matching_authentik_group = (
+            self.provider.get_object_qs(Group).filter(name=google_name).first()
+        )
         if not matching_authentik_group:
             return
         GoogleWorkspaceProviderGroup.objects.get_or_create(
