@@ -8599,27 +8599,47 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="sc1673c93148583ba">
   <source>Request failed. Please try again later.</source>
+  <target>La requête a échoué. Veuillez réessayer plus tard. </target>
 </trans-unit>
 <trans-unit id="s85be1f5e7a0fa3b1">
   <source>Available Roles</source>
+  <target>Rôles disponibles</target>
 </trans-unit>
 <trans-unit id="sa59d53ee922c08b5">
   <source>Selected Roles</source>
+  <target>Rôles sélectionnés</target>
 </trans-unit>
 <trans-unit id="s7bfbf84a8ad5883f">
   <source>Internal Service accounts are created and managed by authentik and cannot be created manually.</source>
+  <target>Les comptes de service internes sont créés et gérés par authentik et ne peuvent pas être créés manuellement.</target>
 </trans-unit>
 <trans-unit id="sb0680e5f8782db1e">
   <source>Private key Algorithm</source>
+  <target>Algorithme de clé privée</target>
 </trans-unit>
 <trans-unit id="sa03cbf19feebd249">
   <source>RSA</source>
+  <target>RSA</target>
 </trans-unit>
 <trans-unit id="sfbfccbd3e395c147">
   <source>ECDSA</source>
+  <target>ECDSA</target>
 </trans-unit>
 <trans-unit id="sebea299e52db4242">
   <source>Algorithm used to generate the private key.</source>
+  <target>Algorithme utilisé pour générer la clé privée.</target>
+</trans-unit>
+<trans-unit id="s21e38ec6ffa2b918">
+  <source>Added ID <x id="0" equiv-text="${item}"/></source>
+  <target>ID <x id="0" equiv-text="${item}"/> ajouté</target>
+</trans-unit>
+<trans-unit id="s74918a09ef39ed26">
+  <source>Removed ID <x id="0" equiv-text="${item}"/></source>
+  <target>ID <x id="0" equiv-text="${item}"/> supprimé</target>
+</trans-unit>
+<trans-unit id="s3a20e5d7dd70dcd3">
+  <source>Cleared</source>
+  <target>Effacé</target>
 </trans-unit>
     </body>
   </file>

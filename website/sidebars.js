@@ -32,7 +32,7 @@ const docsSidebar = {
         },
         {
             type: "category",
-            label: "Core Concepts",
+            label: "Core Concepts & Tasks",
             collapsed: true,
             items: [
                 "core/terminology",
@@ -132,6 +132,50 @@ const docsSidebar = {
                         id: "providers/rac/index",
                     },
                     items: ["providers/rac/how-to-rac"],
+                },
+            ],
+        },
+        {
+            type: "category",
+            label: "Sources",
+            collapsed: true,
+            link: {
+                type: "doc",
+                id: "sources/general",
+            },
+            items: [
+                {
+                    type: "category",
+                    label: "Directory synchronization",
+                    items: [
+                        "sources/active-directory/index",
+                        "sources/freeipa/index",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Protocols",
+                    items: [
+                        "sources/ldap/index",
+                        "sources/oauth/index",
+                        "sources/saml/index",
+                        "sources/scim/index",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Social Logins",
+                    items: [
+                        "sources/apple/index",
+                        "sources/azure-ad/index",
+                        "sources/discord/index",
+                        "sources/github/index",
+                        "sources/google/index",
+                        "sources/mailcow/index",
+                        "sources/twitch/index",
+                        "sources/plex/index",
+                        "sources/twitter/index",
+                    ],
                 },
             ],
         },

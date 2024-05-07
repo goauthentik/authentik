@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-16 00:07+0000\n"
+"POT-Creation-Date: 2024-05-03 00:08+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Anton Babenko, 2024\n"
 "Language-Team: Russian (https://app.transifex.com/authentik/teams/119923/ru/)\n"
@@ -404,6 +404,14 @@ msgstr "Вы собираетесь войти в %(application)s."
 #: authentik/crypto/api.py
 msgid "Subject-alt name"
 msgstr "Альтернативное имя субъекта"
+
+#: authentik/crypto/builder.py
+msgid "rsa"
+msgstr "rsa"
+
+#: authentik/crypto/builder.py
+msgid "ecdsa"
+msgstr "ecdsa"
 
 #: authentik/crypto/models.py
 msgid "PEM-encoded Certificate data"
@@ -1722,6 +1730,22 @@ msgid "RSA-SHA512"
 msgstr "RSA-SHA512"
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA1"
+msgstr "ECDSA-SHA1"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA256"
+msgstr "ECDSA-SHA256"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA384"
+msgstr "ECDSA-SHA384"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA512"
+msgstr "ECDSA-SHA512"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "DSA-SHA1"
 msgstr "DSA-SHA1"
 
@@ -2005,11 +2029,12 @@ msgstr "Ссылка авторизации"
 
 #: authentik/sources/oauth/models.py
 msgid "URL the user is redirect to to conest the flow."
-msgstr "URL, на который перенаправляется пользователь для авторизации."
+msgstr ""
+"URL, на который пользователь перенаправляется для согласования потока."
 
 #: authentik/sources/oauth/models.py
 msgid "Access Token URL"
-msgstr "Ссылка ключа доступа"
+msgstr "Ссылка Access токена"
 
 #: authentik/sources/oauth/models.py
 msgid "URL used by authentik to retrieve tokens."
@@ -2922,7 +2947,7 @@ msgstr "Неверный пароль"
 
 #: authentik/stages/prompt/models.py
 msgid "Text: Simple Text input"
-msgstr "Текст: простой ввод текста"
+msgstr "Текст: простой текстовый ввод"
 
 #: authentik/stages/prompt/models.py
 msgid "Text area: Multiline Text Input."
@@ -2931,14 +2956,14 @@ msgstr "Текстовая область: Многострочный текст
 #: authentik/stages/prompt/models.py
 msgid "Text (read-only): Simple Text input, but cannot be edited."
 msgstr ""
-"Текст (только для чтения): Простой ввод текста, который нельзя "
+"Текст (только для чтения): Простой текстовый ввод, который нельзя "
 "редактировать."
 
 #: authentik/stages/prompt/models.py
 msgid "Text area (read-only): Multiline Text input, but cannot be edited."
 msgstr ""
-"Текстовая область (только для чтения): Многострочный ввод текста, но не "
-"может быть отредактирован."
+"Текстовая область (только для чтения): Многострочный текстовый ввод, который"
+" нельзя редактировать."
 
 #: authentik/stages/prompt/models.py
 msgid ""
@@ -3152,7 +3177,7 @@ msgstr ""
 #: authentik/tenants/models.py
 msgid "Enable the ability for users to change their username."
 msgstr ""
-"Включить возможность изменения пользователями своего имени пользователя"
+"Включение возможности изменения пользователями своего имени пользователя"
 
 #: authentik/tenants/models.py
 msgid ""

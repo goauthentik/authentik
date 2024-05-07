@@ -11,6 +11,7 @@ import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+import { map } from "lit/directives/map.js";
 
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
@@ -121,120 +122,35 @@ export class PromptForm extends ModelForm<Prompt, string> {
     }
 
     renderTypes(): TemplateResult {
-        return html`
-            <option
-                value=${PromptTypeEnum.Text}
-                ?selected=${this.instance?.type === PromptTypeEnum.Text}
-            >
-                ${msg("Text: Simple Text input")}
-            </option>
-            <option
-                value=${PromptTypeEnum.TextArea}
-                ?selected=${this.instance?.type === PromptTypeEnum.TextArea}
-            >
-                ${msg("Text Area: Multiline text input")}
-            </option>
-            <option
-                value=${PromptTypeEnum.TextReadOnly}
-                ?selected=${this.instance?.type === PromptTypeEnum.TextReadOnly}
-            >
-                ${msg("Text (read-only): Simple Text input, but cannot be edited.")}
-            </option>
-            <option
-                value=${PromptTypeEnum.TextAreaReadOnly}
-                ?selected=${this.instance?.type === PromptTypeEnum.TextAreaReadOnly}
-            >
-                ${msg("Text Area (read-only): Multiline text input, but cannot be edited.")}
-            </option>
-            <option
-                value=${PromptTypeEnum.Username}
-                ?selected=${this.instance?.type === PromptTypeEnum.Username}
-            >
-                ${msg(
-                    "Username: Same as Text input, but checks for and prevents duplicate usernames.",
-                )}
-            </option>
-            <option
-                value=${PromptTypeEnum.Email}
-                ?selected=${this.instance?.type === PromptTypeEnum.Email}
-            >
-                ${msg("Email: Text field with Email type.")}
-            </option>
-            <option
-                value=${PromptTypeEnum.Password}
-                ?selected=${this.instance?.type === PromptTypeEnum.Password}
-            >
-                ${msg(
-                    "Password: Masked input, multiple inputs of this type on the same prompt need to be identical.",
-                )}
-            </option>
-            <option
-                value=${PromptTypeEnum.Number}
-                ?selected=${this.instance?.type === PromptTypeEnum.Number}
-            >
-                ${msg("Number")}
-            </option>
-            <option
-                value=${PromptTypeEnum.Checkbox}
-                ?selected=${this.instance?.type === PromptTypeEnum.Checkbox}
-            >
-                ${msg("Checkbox")}
-            </option>
-            <option
-                value=${PromptTypeEnum.RadioButtonGroup}
-                ?selected=${this.instance?.type === PromptTypeEnum.RadioButtonGroup}
-            >
-                ${msg("Radio Button Group (fixed choice)")}
-            </option>
-            <option
-                value=${PromptTypeEnum.Dropdown}
-                ?selected=${this.instance?.type === PromptTypeEnum.Dropdown}
-            >
-                ${msg("Dropdown (fixed choice)")}
-            </option>
-            <option
-                value=${PromptTypeEnum.Date}
-                ?selected=${this.instance?.type === PromptTypeEnum.Date}
-            >
-                ${msg("Date")}
-            </option>
-            <option
-                value=${PromptTypeEnum.DateTime}
-                ?selected=${this.instance?.type === PromptTypeEnum.DateTime}
-            >
-                ${msg("Date Time")}
-            </option>
-            <option
-                value=${PromptTypeEnum.File}
-                ?selected=${this.instance?.type === PromptTypeEnum.File}
-            >
-                ${msg("File")}
-            </option>
-            <option
-                value=${PromptTypeEnum.Separator}
-                ?selected=${this.instance?.type === PromptTypeEnum.Separator}
-            >
-                ${msg("Separator: Static Separator Line")}
-            </option>
-            <option
-                value=${PromptTypeEnum.Hidden}
-                ?selected=${this.instance?.type === PromptTypeEnum.Hidden}
-            >
-                ${msg("Hidden: Hidden field, can be used to insert data into form.")}
-            </option>
-            <option
-                value=${PromptTypeEnum.Static}
-                ?selected=${this.instance?.type === PromptTypeEnum.Static}
-            >
-                ${msg("Static: Static value, displayed as-is.")}
-            </option>
-            <option
-                value=${PromptTypeEnum.AkLocale}
-                ?selected=${this.instance?.type === PromptTypeEnum.AkLocale}
-            >
-                ${msg("authentik: Locale: Displays a list of locales authentik supports.")}
-            </option>
-        `;
+        // prettier-ignore
+        const promptTypesWithLabels = [
+            [PromptTypeEnum.Text, msg("Text: Simple Text input")],
+            [PromptTypeEnum.TextArea, msg("Text Area: Multiline text input")],
+            [PromptTypeEnum.TextReadOnly, msg("Text (read-only): Simple Text input, but cannot be edited.")],
+            [PromptTypeEnum.TextAreaReadOnly, msg("Text Area (read-only): Multiline text input, but cannot be edited.")],
+            [PromptTypeEnum.Username, msg("Username: Same as Text input, but checks for and prevents duplicate usernames.")],
+            [PromptTypeEnum.Email, msg("Email: Text field with Email type.")],
+            [PromptTypeEnum.Password, msg("Password: Masked input, multiple inputs of this type on the same prompt need to be identical.")],
+            [PromptTypeEnum.Number, msg("Number")],
+            [PromptTypeEnum.Checkbox, msg("Checkbox")],
+            [PromptTypeEnum.RadioButtonGroup, msg("Radio Button Group (fixed choice)")],
+            [PromptTypeEnum.Dropdown, msg("Dropdown (fixed choice)")],
+            [PromptTypeEnum.Date, msg("Date")],
+            [PromptTypeEnum.DateTime, msg("Date Time")],
+            [PromptTypeEnum.File, msg("File")],
+            [PromptTypeEnum.Separator, msg("Separator: Static Separator Line")],
+            [PromptTypeEnum.Hidden, msg("Hidden: Hidden field, can be used to insert data into form.")],
+            [PromptTypeEnum.Static, msg("Static: Static value, displayed as-is.")],
+            [PromptTypeEnum.AkLocale, msg("authentik: Locale: Displays a list of locales authentik supports.")],
+        ];
+        const currentType = this.instance?.type;
+        return html` ${map(
+            promptTypesWithLabels,
+            ([promptType, label]) =>
+                html`<option value=${promptType} ?selected=${promptType === currentType}>
+                    ${label}
+                </option>`,
+        )}`;
     }
 
     renderForm(): TemplateResult {
