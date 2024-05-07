@@ -141,7 +141,7 @@ const docsSidebar = {
             collapsed: true,
             link: {
                 type: "doc",
-                id: "sources/general",
+                id: "sources/index",
             },
             items: [
                 {

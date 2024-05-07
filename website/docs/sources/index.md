@@ -1,6 +1,6 @@
 ---
-title: Overview of sources
-slug: general
+title: Sources
+slug: /sources
 ---
 
 Sources allow you to connect authentik to an external user directory. Sources can also be used with social login providers such as Facebook, Twitter, or GitHub.
