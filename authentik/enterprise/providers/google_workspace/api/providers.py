@@ -33,6 +33,7 @@ class GoogleProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
             "filter_group",
             "user_delete_action",
             "group_delete_action",
+            "default_group_email_domain",
         ]
         extra_kwargs = {}
 

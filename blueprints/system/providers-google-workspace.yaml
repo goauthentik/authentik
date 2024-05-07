@@ -37,10 +37,6 @@ entries:
       name: "authentik default Google Workspace Mapping: Group"
       # https://developers.google.com/admin-sdk/directory/reference/rest/v1/groups#Group
       expression: |
-        email = group.attributes.get("google_workspace_email")
-        if not email:
-            email = f"{slugify(group.name)}@goauthentik.io"
         return {
             "name": group.name,
-            "email": email,
         }

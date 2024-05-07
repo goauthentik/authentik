@@ -1,5 +1,6 @@
 from deepmerge import always_merger
 from django.db import transaction
+from django.utils.text import slugify
 
 from authentik.core.expression.exceptions import (
     PropertyMappingExpressionException,
@@ -35,7 +36,9 @@ class GoogleWorkspaceGroupClient(
 
     def to_schema(self, obj: Group) -> dict:
         """Convert authentik group"""
-        raw_google_group = {}
+        raw_google_group = {
+            "email": f"{slugify(obj.name)}@{self.provider.default_group_email_domain}"
+        }
         for mapping in (
             self.provider.property_mappings_group.all().order_by("name").select_subclasses()
         ):

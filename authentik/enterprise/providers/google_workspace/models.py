@@ -45,6 +45,7 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
     credentials = models.JSONField()
     scopes = models.TextField(default=",".join(default_scopes()))
 
+    default_group_email_domain = models.TextField()
     exclude_users_service_account = models.BooleanField(default=False)
     user_delete_action = models.TextField(
         choices=GoogleWorkspaceDeleteAction.choices, default=GoogleWorkspaceDeleteAction.DELETE

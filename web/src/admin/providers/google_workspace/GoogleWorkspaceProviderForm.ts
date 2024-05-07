@@ -91,6 +91,23 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleProv
                         />
                         <p class="pf-c-form__helper-text">${msg("TODO")}</p>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Default group email domain")}
+                        ?required=${true}
+                        name="defaultGroupEmailDomain"
+                    >
+                        <input
+                            type="text"
+                            value="${first(this.instance?.defaultGroupEmailDomain, "")}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Default domain that is used to generate a group's email address. Can be customized using property mappings.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
                     <ak-radio-input
                         name="userDeleteAction"
                         label=${msg("User deletion action")}

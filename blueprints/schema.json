@@ -8268,6 +8268,11 @@
                         "suspend"
                     ],
                     "title": "Group delete action"
+                },
+                "default_group_email_domain": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Default group email domain"
                 }
             },
             "required": []

@@ -38,6 +38,7 @@ class GoogleWorkspaceUserTests(TestCase):
             credentials={},
             delegated_subject="",
             exclude_users_service_account=True,
+            default_group_email_domain="goauthentik.io",
         )
         self.app: Application = Application.objects.create(
             name=generate_id(),

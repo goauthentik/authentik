@@ -34888,11 +34888,14 @@ components:
           $ref: '#/components/schemas/GoogleWorkspaceDeleteAction'
         group_delete_action:
           $ref: '#/components/schemas/GoogleWorkspaceDeleteAction'
+        default_group_email_domain:
+          type: string
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
       - component
       - credentials
+      - default_group_email_domain
       - delegated_subject
       - meta_model_name
       - name
@@ -35003,8 +35006,12 @@ components:
           $ref: '#/components/schemas/GoogleWorkspaceDeleteAction'
         group_delete_action:
           $ref: '#/components/schemas/GoogleWorkspaceDeleteAction'
+        default_group_email_domain:
+          type: string
+          minLength: 1
       required:
       - credentials
+      - default_group_email_domain
       - delegated_subject
       - name
     GoogleWorkspaceDeleteAction:
@@ -39785,6 +39792,9 @@ components:
           $ref: '#/components/schemas/GoogleWorkspaceDeleteAction'
         group_delete_action:
           $ref: '#/components/schemas/GoogleWorkspaceDeleteAction'
+        default_group_email_domain:
+          type: string
+          minLength: 1
     PatchedGroupRequest:
       type: object
       description: Group Serializer
