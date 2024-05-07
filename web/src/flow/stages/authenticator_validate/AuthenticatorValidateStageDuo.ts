@@ -3,7 +3,7 @@ import "@goauthentik/elements/forms/FormElement";
 import { BaseDeviceStage } from "@goauthentik/flow/stages/authenticator_validate/base";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { PropertyValues, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import {
@@ -26,21 +26,23 @@ export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<
     @state()
     authenticating = false;
 
-    firstUpdated(): void {
-        this.authenticating = true;
-        this.host
-            ?.submit(
-                {
-                    duo: this.deviceChallenge?.deviceUid,
-                },
-                { invisible: true },
-            )
-            .then(() => {
-                this.authenticating = false;
-            })
-            .catch(() => {
-                this.authenticating = false;
-            });
+    updated(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("challenge") && this.challenge !== undefined) {
+            this.authenticating = true;
+            this.host
+                ?.submit(
+                    {
+                        duo: this.deviceChallenge?.deviceUid,
+                    },
+                    { invisible: true },
+                )
+                .then(() => {
+                    this.authenticating = false;
+                })
+                .catch(() => {
+                    this.authenticating = false;
+                });
+        }
     }
 
     render(): TemplateResult {
