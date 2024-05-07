@@ -8,7 +8,6 @@ from authentik.core.expression.exceptions import (
 from authentik.core.models import User
 from authentik.enterprise.providers.google_workspace.clients.base import GoogleWorkspaceSyncClient
 from authentik.enterprise.providers.google_workspace.models import (
-    GoogleWorkspaceDeleteAction,
     GoogleWorkspaceProviderMapping,
     GoogleWorkspaceProviderUser,
 )
@@ -18,6 +17,7 @@ from authentik.lib.sync.outgoing.exceptions import (
     StopSync,
     TransientSyncException,
 )
+from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
 from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.utils import delete_none_values
 
@@ -36,7 +36,6 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
             if not isinstance(mapping, GoogleWorkspaceProviderMapping):
                 continue
             try:
-                mapping: GoogleWorkspaceProviderMapping
                 value = mapping.evaluate(
                     user=obj,
                     request=None,
@@ -71,11 +70,11 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
             return None
         with transaction.atomic():
             response = None
-            if self.provider.user_delete_action == GoogleWorkspaceDeleteAction.DELETE:
+            if self.provider.user_delete_action == OutgoingSyncDeleteAction.DELETE:
                 response = self._request(
                     self.directory_service.users().delete(userKey=google_user.google_id)
                 )
-            elif self.provider.user_delete_action == GoogleWorkspaceDeleteAction.SUSPEND:
+            elif self.provider.user_delete_action == OutgoingSyncDeleteAction.SUSPEND:
                 response = self._request(
                     self.directory_service.users().update(
                         userKey=google_user.google_id, body={"suspended": True}

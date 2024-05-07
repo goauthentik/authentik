@@ -1,8 +1,6 @@
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
-import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
@@ -16,18 +14,18 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import {
     CoreApi,
     CoreGroupsListRequest,
-    GoogleProvider,
     Group,
+    MicrosoftProvider,
     OutgoingSyncDeleteAction,
-    PaginatedGoogleProviderMappingList,
+    PaginatedMicrosoftProviderMappingList,
     PropertymappingsApi,
     ProvidersApi,
 } from "@goauthentik/api";
 
-@customElement("ak-provider-google-workspace-form")
-export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleProvider> {
-    loadInstance(pk: number): Promise<GoogleProvider> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceRetrieve({
+@customElement("ak-provider-microsoft-entra-form")
+export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftProvider> {
+    loadInstance(pk: number): Promise<MicrosoftProvider> {
+        return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraRetrieve({
             id: pk,
         });
     }
@@ -35,22 +33,22 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleProv
     async load(): Promise<void> {
         this.propertyMappings = await new PropertymappingsApi(
             DEFAULT_CONFIG,
-        ).propertymappingsProviderGoogleWorkspaceList({
+        ).propertymappingsProviderMicrosoftEntraList({
             ordering: "managed",
         });
     }
 
-    propertyMappings?: PaginatedGoogleProviderMappingList;
+    propertyMappings?: PaginatedMicrosoftProviderMappingList;
 
-    async send(data: GoogleProvider): Promise<GoogleProvider> {
+    async send(data: MicrosoftProvider): Promise<MicrosoftProvider> {
         if (this.instance) {
-            return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceUpdate({
+            return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraUpdate({
                 id: this.instance.pk || 0,
-                googleProviderRequest: data,
+                microsoftProviderRequest: data,
             });
         } else {
-            return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceCreate({
-                googleProviderRequest: data,
+            return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraCreate({
+                microsoftProviderRequest: data,
             });
         }
     }
@@ -68,45 +66,43 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleProv
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${msg("Credentials")}
+                        label=${msg("Client ID")}
                         ?required=${true}
-                        name="credentials"
-                    >
-                        <ak-codemirror
-                            mode=${CodeMirrorMode.JavaScript}
-                            .value="${first(this.instance?.credentials, {})}"
-                        ></ak-codemirror>
-                        <p class="pf-c-form__helper-text">${msg("TODO")}</p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Delegated Subject")}
-                        ?required=${true}
-                        name="delegatedSubject"
-                    >
-                        <input
-                            type="email"
-                            value="${first(this.instance?.delegatedSubject, "")}"
-                            class="pf-c-form-control"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">${msg("TODO")}</p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Default group email domain")}
-                        ?required=${true}
-                        name="defaultGroupEmailDomain"
+                        name="clientId"
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.defaultGroupEmailDomain, "")}"
+                            value="${first(this.instance?.clientId, "")}"
                             class="pf-c-form-control"
                             required
                         />
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Default domain that is used to generate a group's email address. Can be customized using property mappings.",
-                            )}
-                        </p>
+                        <p class="pf-c-form__helper-text">${msg("TODO")}</p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Client Secret")}
+                        ?required=${true}
+                        name="clientSecret"
+                    >
+                        <input
+                            type="text"
+                            value="${first(this.instance?.clientSecret, "")}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">${msg("TODO")}</p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Tenant ID")}
+                        ?required=${true}
+                        name="tenantId"
+                    >
+                        <input
+                            type="text"
+                            value="${first(this.instance?.tenantId, "")}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">${msg("TODO")}</p>
                     </ak-form-element-horizontal>
                     <ak-radio-input
                         name="userDeleteAction"
@@ -118,13 +114,6 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleProv
                                 value: OutgoingSyncDeleteAction.Delete,
                                 default: true,
                                 description: html`${msg("User is deleted")}`,
-                            },
-                            {
-                                label: msg("Suspend"),
-                                value: OutgoingSyncDeleteAction.Suspend,
-                                description: html`${msg(
-                                    "User is suspended, and connection to user in authentik is removed.",
-                                )}`,
                             },
                             {
                                 label: msg("Do Nothing"),
@@ -228,7 +217,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleProv
                                 if (!this.instance?.propertyMappings) {
                                     selected =
                                         mapping.managed ===
-                                            "goauthentik.io/providers/google_workspace/user" ||
+                                            "goauthentik.io/providers/microsoft_entra/user" ||
                                         false;
                                 } else {
                                     selected = Array.from(this.instance?.propertyMappings).some(
@@ -262,7 +251,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleProv
                                 if (!this.instance?.propertyMappingsGroup) {
                                     selected =
                                         mapping.managed ===
-                                        "goauthentik.io/providers/google_workspace/group";
+                                        "goauthentik.io/providers/microsoft_entra/group";
                                 } else {
                                     selected = Array.from(
                                         this.instance?.propertyMappingsGroup,

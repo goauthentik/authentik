@@ -1,4 +1,4 @@
-import "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderForm";
+import "@goauthentik/admin/providers/google_workspace/MicrosoftEntraProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
@@ -28,20 +28,20 @@ import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
-    GoogleProvider,
+    MicrosoftProvider,
     ProvidersApi,
     RbacPermissionsAssignedByUsersListModelEnum,
     SyncStatus,
     SystemTaskStatusEnum,
 } from "@goauthentik/api";
 
-@customElement("ak-provider-google-workspace-view")
-export class GoogleWorkspaceProviderViewPage extends AKElement {
+@customElement("ak-provider-microsoft-entra-view")
+export class MicrosoftEntraProviderViewPage extends AKElement {
     @property({ type: Number })
     providerID?: number;
 
     @state()
-    provider?: GoogleProvider;
+    provider?: MicrosoftProvider;
 
     @state()
     syncState?: SyncStatus;
@@ -73,7 +73,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
 
     fetchProvider(id: number) {
         new ProvidersApi(DEFAULT_CONFIG)
-            .providersGoogleWorkspaceRetrieve({ id })
+            .providersMicrosoftEntraRetrieve({ id })
             .then((prov) => (this.provider = prov));
     }
 
@@ -93,7 +93,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                 data-tab-title="${msg("Overview")}"
                 @activate=${() => {
                     new ProvidersApi(DEFAULT_CONFIG)
-                        .providersGoogleWorkspaceSyncStatusRetrieve({
+                        .providersMicrosoftEntraSyncStatusRetrieve({
                             id: this.provider?.pk || 0,
                         })
                         .then((state) => {
@@ -124,7 +124,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersGoogleWorkspaceGoogleworkspaceprovider}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersMicrosoftEntraMicrosoftentraprovider}
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;
@@ -168,8 +168,8 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
             return html``;
         }
         return html`<div slot="header" class="pf-c-banner pf-m-info">
-                ${msg("Google Workspace Provider is in preview.")}
-                <a href="mailto:hello+feature/gws@goauthentik.io">${msg("Send us feedback!")}</a>
+                ${msg("Microsoft Entra Provider is in preview.")}
+                <a href="mailto:hello+feature/mse@goauthentik.io">${msg("Send us feedback!")}</a>
             </div>
             ${!this.provider?.assignedBackchannelApplicationName
                 ? html`<div slot="header" class="pf-c-banner pf-m-warning">
@@ -198,11 +198,11 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                         <ak-forms-modal>
                             <span slot="submit"> ${msg("Update")} </span>
                             <span slot="header"> ${msg("Update Google Provider")} </span>
-                            <ak-provider-google-workspace-form
+                            <ak-provider-microsoft-entra-form
                                 slot="form"
                                 .instancePk=${this.provider.pk}
                             >
-                            </ak-provider-google-workspace-form>
+                            </ak-provider-microsoft-entra-form>
                             <button slot="trigger" class="pf-c-button pf-m-primary">
                                 ${msg("Edit")}
                             </button>
@@ -219,9 +219,9 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                             class="pf-m-secondary"
                             .apiRequest=${() => {
                                 return new ProvidersApi(DEFAULT_CONFIG)
-                                    .providersGoogleWorkspacePartialUpdate({
+                                    .providersMicrosoftEntraPartialUpdate({
                                         id: this.provider?.pk || 0,
-                                        patchedGoogleProviderRequest: this.provider,
+                                        patchedMicrosoftProviderRequest: this.provider,
                                     })
                                     .then(() => {
                                         this.dispatchEvent(

@@ -118,6 +118,7 @@ jsonpatch = "*"
 kubernetes = "*"
 ldap3 = "*"
 lxml = "*"
+msgraph-sdk = "*"
 opencontainers = { extras = ["reggie"], version = "*" }
 packaging = "*"
 paramiko = "*"

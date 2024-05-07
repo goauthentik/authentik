@@ -17,7 +17,7 @@ from authentik.core.models import (
     UserTypes,
 )
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
-from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
+from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction, OutgoingSyncProvider
 
 
 def default_scopes() -> list[str]:
@@ -27,15 +27,6 @@ def default_scopes() -> list[str]:
         "https://www.googleapis.com/auth/admin.directory.group.member",
         "https://www.googleapis.com/auth/admin.directory.domain.readonly",
     ]
-
-
-class GoogleWorkspaceDeleteAction(models.TextChoices):
-    """Action taken when a user/group is deleted in authentik. Suspend is not available for groups,
-    and will be treated as `do_nothing`"""
-
-    DO_NOTHING = "do_nothing"
-    DELETE = "delete"
-    SUSPEND = "suspend"
 
 
 class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
@@ -48,10 +39,10 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
     default_group_email_domain = models.TextField()
     exclude_users_service_account = models.BooleanField(default=False)
     user_delete_action = models.TextField(
-        choices=GoogleWorkspaceDeleteAction.choices, default=GoogleWorkspaceDeleteAction.DELETE
+        choices=OutgoingSyncDeleteAction.choices, default=OutgoingSyncDeleteAction.DELETE
     )
     group_delete_action = models.TextField(
-        choices=GoogleWorkspaceDeleteAction.choices, default=GoogleWorkspaceDeleteAction.DELETE
+        choices=OutgoingSyncDeleteAction.choices, default=OutgoingSyncDeleteAction.DELETE
     )
 
     filter_group = models.ForeignKey(

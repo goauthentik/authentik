@@ -1,4 +1,4 @@
-"""Google Workspace User tests"""
+"""Microsoft Entra User tests"""
 
 from json import loads
 from unittest.mock import MagicMock, patch
@@ -7,33 +7,33 @@ from django.test import TestCase
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
-from authentik.enterprise.providers.google_workspace.clients.test_http import MockHTTP
-from authentik.enterprise.providers.google_workspace.models import (
-    GoogleWorkspaceProvider,
-    GoogleWorkspaceProviderMapping,
-    GoogleWorkspaceProviderUser,
+from authentik.enterprise.providers.microsoft_entra.clients.test_http import MockHTTP
+from authentik.enterprise.providers.microsoft_entra.models import (
+    MicrosoftEntraDeleteAction,
+    MicrosoftEntraProvider,
+    MicrosoftEntraProviderMapping,
+    MicrosoftEntraProviderUser,
 )
-from authentik.enterprise.providers.google_workspace.tasks import google_workspace_sync
+from authentik.enterprise.providers.microsoft_entra.tasks import microsoft_entra_sync
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
-from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
 from authentik.lib.tests.utils import load_fixture
 from authentik.tenants.models import Tenant
 
 domains_list_v1_mock = load_fixture("fixtures/domains_list_v1.json")
 
 
-class GoogleWorkspaceUserTests(TestCase):
-    """Google workspace User tests"""
+class MicrosoftEntraUserTests(TestCase):
+    """Microsoft Entra User tests"""
 
-    @apply_blueprint("system/providers-google-workspace.yaml")
+    @apply_blueprint("system/providers-microsoft-entra.yaml")
     def setUp(self) -> None:
         # Delete all users and groups as the mocked HTTP responses only return one ID
         # which will cause errors with multiple users
         Tenant.objects.update(avatars="none")
         User.objects.all().exclude_anonymous().delete()
         Group.objects.all().delete()
-        self.provider: GoogleWorkspaceProvider = GoogleWorkspaceProvider.objects.create(
+        self.provider: MicrosoftEntraProvider = MicrosoftEntraProvider.objects.create(
             name=generate_id(),
             credentials={},
             delegated_subject="",
@@ -46,13 +46,13 @@ class GoogleWorkspaceUserTests(TestCase):
         )
         self.app.backchannel_providers.add(self.provider)
         self.provider.property_mappings.add(
-            GoogleWorkspaceProviderMapping.objects.get(
-                managed="goauthentik.io/providers/google_workspace/user"
+            MicrosoftEntraProviderMapping.objects.get(
+                managed="goauthentik.io/providers/microsoft_entra/user"
             )
         )
         self.provider.property_mappings_group.add(
-            GoogleWorkspaceProviderMapping.objects.get(
-                managed="goauthentik.io/providers/google_workspace/group"
+            MicrosoftEntraProviderMapping.objects.get(
+                managed="goauthentik.io/providers/microsoft_entra/group"
             )
         )
         self.api_key = generate_id()
@@ -62,16 +62,16 @@ class GoogleWorkspaceUserTests(TestCase):
         uid = generate_id()
         http = MockHTTP()
         http.add_response(
-            f"https://admin.googleapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
+            f"https://admin.microsoftapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
             domains_list_v1_mock,
         )
         http.add_response(
-            f"https://admin.googleapis.com/admin/directory/v1/users?key={self.api_key}&alt=json",
+            f"https://admin.microsoftapis.com/admin/directory/v1/users?key={self.api_key}&alt=json",
             method="POST",
             body={"primaryEmail": f"{uid}@goauthentik.io"},
         )
         with patch(
-            "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
+            "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
             MagicMock(return_value={"developerKey": self.api_key, "http": http}),
         ):
             user = User.objects.create(
@@ -79,10 +79,10 @@ class GoogleWorkspaceUserTests(TestCase):
                 name=f"{uid} {uid}",
                 email=f"{uid}@goauthentik.io",
             )
-            google_user = GoogleWorkspaceProviderUser.objects.filter(
+            microsoft_user = MicrosoftEntraProviderUser.objects.filter(
                 provider=self.provider, user=user
             ).first()
-            self.assertIsNotNone(google_user)
+            self.assertIsNotNone(microsoft_user)
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
             self.assertEqual(len(http.requests()), 2)
 
@@ -91,21 +91,21 @@ class GoogleWorkspaceUserTests(TestCase):
         uid = generate_id()
         http = MockHTTP()
         http.add_response(
-            f"https://admin.googleapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
+            f"https://admin.microsoftapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
             domains_list_v1_mock,
         )
         http.add_response(
-            f"https://admin.googleapis.com/admin/directory/v1/users?key={self.api_key}&alt=json",
+            f"https://admin.microsoftapis.com/admin/directory/v1/users?key={self.api_key}&alt=json",
             method="POST",
             body={"primaryEmail": f"{uid}@goauthentik.io"},
         )
         http.add_response(
-            f"https://admin.googleapis.com/admin/directory/v1/users/{uid}%40goauthentik.io?key={self.api_key}&alt=json",
+            f"https://admin.microsoftapis.com/admin/directory/v1/users/{uid}%40goauthentik.io?key={self.api_key}&alt=json",
             method="PUT",
             body={"primaryEmail": f"{uid}@goauthentik.io"},
         )
         with patch(
-            "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
+            "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
             MagicMock(return_value={"developerKey": self.api_key, "http": http}),
         ):
             user = User.objects.create(
@@ -113,10 +113,10 @@ class GoogleWorkspaceUserTests(TestCase):
                 name=f"{uid} {uid}",
                 email=f"{uid}@goauthentik.io",
             )
-            google_user = GoogleWorkspaceProviderUser.objects.filter(
+            microsoft_user = MicrosoftEntraProviderUser.objects.filter(
                 provider=self.provider, user=user
             ).first()
-            self.assertIsNotNone(google_user)
+            self.assertIsNotNone(microsoft_user)
 
             user.name = "new name"
             user.save()
@@ -128,20 +128,20 @@ class GoogleWorkspaceUserTests(TestCase):
         uid = generate_id()
         http = MockHTTP()
         http.add_response(
-            f"https://admin.googleapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
+            f"https://admin.microsoftapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
             domains_list_v1_mock,
         )
         http.add_response(
-            f"https://admin.googleapis.com/admin/directory/v1/users?key={self.api_key}&alt=json",
+            f"https://admin.microsoftapis.com/admin/directory/v1/users?key={self.api_key}&alt=json",
             method="POST",
             body={"primaryEmail": f"{uid}@goauthentik.io"},
         )
         http.add_response(
-            f"https://admin.googleapis.com/admin/directory/v1/users/{uid}%40goauthentik.io?key={self.api_key}",
+            f"https://admin.microsoftapis.com/admin/directory/v1/users/{uid}%40goauthentik.io?key={self.api_key}",
             method="DELETE",
         )
         with patch(
-            "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
+            "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
             MagicMock(return_value={"developerKey": self.api_key, "http": http}),
         ):
             user = User.objects.create(
@@ -149,10 +149,10 @@ class GoogleWorkspaceUserTests(TestCase):
                 name=f"{uid} {uid}",
                 email=f"{uid}@goauthentik.io",
             )
-            google_user = GoogleWorkspaceProviderUser.objects.filter(
+            microsoft_user = MicrosoftEntraProviderUser.objects.filter(
                 provider=self.provider, user=user
             ).first()
-            self.assertIsNotNone(google_user)
+            self.assertIsNotNone(microsoft_user)
 
             user.delete()
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
@@ -160,26 +160,26 @@ class GoogleWorkspaceUserTests(TestCase):
 
     def test_user_create_delete_suspend(self):
         """Test user deletion (delete action = Suspend)"""
-        self.provider.user_delete_action = OutgoingSyncDeleteAction.SUSPEND
+        self.provider.user_delete_action = MicrosoftEntraDeleteAction.SUSPEND
         self.provider.save()
         uid = generate_id()
         http = MockHTTP()
         http.add_response(
-            f"https://admin.googleapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
+            f"https://admin.microsoftapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
             domains_list_v1_mock,
         )
         http.add_response(
-            f"https://admin.googleapis.com/admin/directory/v1/users?key={self.api_key}&alt=json",
+            f"https://admin.microsoftapis.com/admin/directory/v1/users?key={self.api_key}&alt=json",
             method="POST",
             body={"primaryEmail": f"{uid}@goauthentik.io"},
         )
         http.add_response(
-            f"https://admin.googleapis.com/admin/directory/v1/users/{uid}%40goauthentik.io?key={self.api_key}&alt=json",
+            f"https://admin.microsoftapis.com/admin/directory/v1/users/{uid}%40goauthentik.io?key={self.api_key}&alt=json",
             method="PUT",
             body={"primaryEmail": f"{uid}@goauthentik.io"},
         )
         with patch(
-            "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
+            "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
             MagicMock(return_value={"developerKey": self.api_key, "http": http}),
         ):
             user = User.objects.create(
@@ -187,10 +187,10 @@ class GoogleWorkspaceUserTests(TestCase):
                 name=f"{uid} {uid}",
                 email=f"{uid}@goauthentik.io",
             )
-            google_user = GoogleWorkspaceProviderUser.objects.filter(
+            microsoft_user = MicrosoftEntraProviderUser.objects.filter(
                 provider=self.provider, user=user
             ).first()
-            self.assertIsNotNone(google_user)
+            self.assertIsNotNone(microsoft_user)
 
             user.delete()
             self.assertEqual(len(http.requests()), 4)
@@ -202,28 +202,28 @@ class GoogleWorkspaceUserTests(TestCase):
                 },
             )
             self.assertFalse(
-                GoogleWorkspaceProviderUser.objects.filter(
+                MicrosoftEntraProviderUser.objects.filter(
                     provider=self.provider, user__username=uid
                 ).exists()
             )
 
     def test_user_create_delete_do_nothing(self):
         """Test user deletion (delete action = do nothing)"""
-        self.provider.user_delete_action = OutgoingSyncDeleteAction.DO_NOTHING
+        self.provider.user_delete_action = MicrosoftEntraDeleteAction.DO_NOTHING
         self.provider.save()
         uid = generate_id()
         http = MockHTTP()
         http.add_response(
-            f"https://admin.googleapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
+            f"https://admin.microsoftapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
             domains_list_v1_mock,
         )
         http.add_response(
-            f"https://admin.googleapis.com/admin/directory/v1/users?key={self.api_key}&alt=json",
+            f"https://admin.microsoftapis.com/admin/directory/v1/users?key={self.api_key}&alt=json",
             method="POST",
             body={"primaryEmail": f"{uid}@goauthentik.io"},
         )
         with patch(
-            "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
+            "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
             MagicMock(return_value={"developerKey": self.api_key, "http": http}),
         ):
             user = User.objects.create(
@@ -231,15 +231,15 @@ class GoogleWorkspaceUserTests(TestCase):
                 name=f"{uid} {uid}",
                 email=f"{uid}@goauthentik.io",
             )
-            google_user = GoogleWorkspaceProviderUser.objects.filter(
+            microsoft_user = MicrosoftEntraProviderUser.objects.filter(
                 provider=self.provider, user=user
             ).first()
-            self.assertIsNotNone(google_user)
+            self.assertIsNotNone(microsoft_user)
 
             user.delete()
             self.assertEqual(len(http.requests()), 3)
             self.assertFalse(
-                GoogleWorkspaceProviderUser.objects.filter(
+                MicrosoftEntraProviderUser.objects.filter(
                     provider=self.provider, user__username=uid
                 ).exists()
             )
@@ -249,21 +249,21 @@ class GoogleWorkspaceUserTests(TestCase):
         uid = generate_id()
         http = MockHTTP()
         http.add_response(
-            f"https://admin.googleapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
+            f"https://admin.microsoftapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
             domains_list_v1_mock,
         )
         http.add_response(
-            f"https://admin.googleapis.com/admin/directory/v1/users?customer=my_customer&maxResults=500&orderBy=email&key={self.api_key}&alt=json",
+            f"https://admin.microsoftapis.com/admin/directory/v1/users?customer=my_customer&maxResults=500&orderBy=email&key={self.api_key}&alt=json",
             method="GET",
             body={"users": [{"primaryEmail": f"{uid}@goauthentik.io"}]},
         )
         http.add_response(
-            f"https://admin.googleapis.com/admin/directory/v1/groups?customer=my_customer&maxResults=500&orderBy=email&key={self.api_key}&alt=json",
+            f"https://admin.microsoftapis.com/admin/directory/v1/groups?customer=my_customer&maxResults=500&orderBy=email&key={self.api_key}&alt=json",
             method="GET",
             body={"groups": []},
         )
         http.add_response(
-            f"https://admin.googleapis.com/admin/directory/v1/users/{uid}%40goauthentik.io?key={self.api_key}&alt=json",
+            f"https://admin.microsoftapis.com/admin/directory/v1/users/{uid}%40goauthentik.io?key={self.api_key}&alt=json",
             method="PUT",
             body={"primaryEmail": f"{uid}@goauthentik.io"},
         )
@@ -274,12 +274,12 @@ class GoogleWorkspaceUserTests(TestCase):
         )
         self.app.backchannel_providers.add(self.provider)
         with patch(
-            "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
+            "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
             MagicMock(return_value={"developerKey": self.api_key, "http": http}),
         ):
-            google_workspace_sync.delay(self.provider.pk).get()
+            microsoft_entra_sync.delay(self.provider.pk).get()
             self.assertTrue(
-                GoogleWorkspaceProviderUser.objects.filter(
+                MicrosoftEntraProviderUser.objects.filter(
                     user=different_user, provider=self.provider
                 ).exists()
             )
