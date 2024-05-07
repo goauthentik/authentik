@@ -179,66 +179,62 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                   </div>`
                 : html``}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
-                <div class="pf-l-grid__item pf-m-7-col pf-l-stack pf-m-gutter">
-                    <div class="pf-c-card pf-m-12-col pf-l-stack__item">
-                        <div class="pf-c-card__body">
-                            <dl class="pf-c-description-list pf-m-3-col-on-lg">
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
-                                            >${msg("Name")}</span
-                                        >
-                                    </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
-                                            ${this.provider.name}
-                                        </div>
-                                    </dd>
-                                </div>
-                            </dl>
-                        </div>
-                        <div class="pf-c-card__footer">
-                            <ak-forms-modal>
-                                <span slot="submit"> ${msg("Update")} </span>
-                                <span slot="header"> ${msg("Update Google Provider")} </span>
-                                <ak-provider-google-form
-                                    slot="form"
-                                    .instancePk=${this.provider.pk}
-                                >
-                                </ak-provider-google-form>
-                                <button slot="trigger" class="pf-c-button pf-m-primary">
-                                    ${msg("Edit")}
-                                </button>
-                            </ak-forms-modal>
-                        </div>
+                <div class="pf-c-card pf-m-12-col pf-l-stack__item">
+                    <div class="pf-c-card__body">
+                        <dl class="pf-c-description-list pf-m-3-col-on-lg">
+                            <div class="pf-c-description-list__group">
+                                <dt class="pf-c-description-list__term">
+                                    <span class="pf-c-description-list__text">${msg("Name")}</span>
+                                </dt>
+                                <dd class="pf-c-description-list__description">
+                                    <div class="pf-c-description-list__text">
+                                        ${this.provider.name}
+                                    </div>
+                                </dd>
+                            </div>
+                        </dl>
                     </div>
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-l-stack__item">
-                        <div class="pf-c-card__title">
-                            <p>${msg("Sync status")}</p>
-                        </div>
-                        <div class="pf-c-card__body">${this.renderSyncStatus()}</div>
-                        <div class="pf-c-card__footer">
-                            <ak-action-button
-                                class="pf-m-secondary"
-                                .apiRequest=${() => {
-                                    return new ProvidersApi(DEFAULT_CONFIG)
-                                        .providersGoogleWorkspacePartialUpdate({
-                                            id: this.provider?.pk || 0,
-                                            patchedGoogleProviderRequest: this.provider,
-                                        })
-                                        .then(() => {
-                                            this.dispatchEvent(
-                                                new CustomEvent(EVENT_REFRESH, {
-                                                    bubbles: true,
-                                                    composed: true,
-                                                }),
-                                            );
-                                        });
-                                }}
+                    <div class="pf-c-card__footer">
+                        <ak-forms-modal>
+                            <span slot="submit"> ${msg("Update")} </span>
+                            <span slot="header"> ${msg("Update Google Provider")} </span>
+                            <ak-provider-google-workspace-form
+                                slot="form"
+                                .instancePk=${this.provider.pk}
                             >
-                                ${msg("Run sync again")}
-                            </ak-action-button>
-                        </div>
+                            </ak-provider-google-workspace-form>
+                            <button slot="trigger" class="pf-c-button pf-m-primary">
+                                ${msg("Edit")}
+                            </button>
+                        </ak-forms-modal>
+                    </div>
+                </div>
+                <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-l-stack__item">
+                    <div class="pf-c-card__title">
+                        <p>${msg("Sync status")}</p>
+                    </div>
+                    <div class="pf-c-card__body">${this.renderSyncStatus()}</div>
+                    <div class="pf-c-card__footer">
+                        <ak-action-button
+                            class="pf-m-secondary"
+                            .apiRequest=${() => {
+                                return new ProvidersApi(DEFAULT_CONFIG)
+                                    .providersGoogleWorkspacePartialUpdate({
+                                        id: this.provider?.pk || 0,
+                                        patchedGoogleProviderRequest: this.provider,
+                                    })
+                                    .then(() => {
+                                        this.dispatchEvent(
+                                            new CustomEvent(EVENT_REFRESH, {
+                                                bubbles: true,
+                                                composed: true,
+                                            }),
+                                        );
+                                    });
+                            }}
+                        >
+                            ${msg("Run sync again")}
+                        </ak-action-button>
                     </div>
                 </div>
             </div>`;
