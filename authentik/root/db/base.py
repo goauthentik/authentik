@@ -18,5 +18,7 @@ class DatabaseWrapper(BaseDatabaseWrapper):
 
         for setting in ("host", "port", "user", "password"):
             conn_params[setting] = CONFIG.refresh(f"{prefix}.{setting}")
+            if conn_params[setting] is None and self.alias.startswith("replica_"):
+                conn_params[setting] = CONFIG.refresh(f"postgresql.{setting}")
 
         return conn_params
