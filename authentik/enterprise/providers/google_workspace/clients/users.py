@@ -27,6 +27,7 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
 
     connection_type = GoogleWorkspaceProviderUser
     connection_type_query = "user"
+    can_discover = True
 
     def to_schema(self, obj: User) -> dict:
         """Convert authentik user"""

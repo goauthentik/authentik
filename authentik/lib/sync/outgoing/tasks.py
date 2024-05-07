@@ -111,6 +111,9 @@ class SyncTasks:
         except TransientSyncException:
             return messages
         paginator = Paginator(provider.get_object_qs(_object_type), PAGE_SIZE)
+        if client.can_discover:
+            self.logger.debug("starting discover")
+            client.discover()
         self.logger.debug("starting sync for page", page=page)
         for obj in paginator.page(page).object_list:
             obj: Model

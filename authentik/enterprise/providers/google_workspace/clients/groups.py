@@ -31,6 +31,7 @@ class GoogleWorkspaceGroupClient(
 
     connection_type = GoogleWorkspaceProviderGroup
     connection_type_query = "group"
+    can_discover = True
 
     def to_schema(self, obj: Group) -> dict:
         """Convert authentik group"""

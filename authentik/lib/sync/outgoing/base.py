@@ -29,6 +29,8 @@ class BaseOutgoingSyncClient[
     connection_type: type[TConnection]
     connection_type_query: str
 
+    can_discover = False
+
     def __init__(self, provider: TProvider):
         self.logger = get_logger().bind(provider=provider.name)
         self.provider = provider

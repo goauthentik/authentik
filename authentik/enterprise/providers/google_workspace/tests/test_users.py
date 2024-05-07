@@ -14,6 +14,7 @@ from authentik.enterprise.providers.google_workspace.models import (
     GoogleWorkspaceProviderMapping,
     GoogleWorkspaceProviderUser,
 )
+from authentik.enterprise.providers.google_workspace.tasks import google_workspace_sync
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
@@ -241,3 +242,45 @@ class GoogleWorkspaceUserTests(TestCase):
                     provider=self.provider, user__username=uid
                 ).exists()
             )
+
+    def test_sync_task(self):
+        """Test user discovery"""
+        uid = generate_id()
+        http = MockHTTP()
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
+            domains_list_v1_mock,
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/users?customer=my_customer&maxResults=500&orderBy=email&key={self.api_key}&alt=json",
+            method="GET",
+            body={"users": [{"primaryEmail": f"{uid}@goauthentik.io"}]},
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/groups?customer=my_customer&maxResults=500&orderBy=email&key={self.api_key}&alt=json",
+            method="GET",
+            body={"groups": []},
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/users/{uid}%40goauthentik.io?key={self.api_key}&alt=json",
+            method="PUT",
+            body={"primaryEmail": f"{uid}@goauthentik.io"},
+        )
+        self.app.backchannel_providers.remove(self.provider)
+        different_user = User.objects.create(
+            username=uid,
+            email=f"{uid}@goauthentik.io",
+        )
+        self.app.backchannel_providers.add(self.provider)
+        with patch(
+            "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
+            MagicMock(return_value={"developerKey": self.api_key, "http": http}),
+        ):
+            google_workspace_sync.delay(self.provider.pk).get()
+            self.assertTrue(
+                GoogleWorkspaceProviderUser.objects.filter(
+                    user=different_user, provider=self.provider
+                ).exists()
+            )
+            self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
+            self.assertEqual(len(http.requests()), 5)
