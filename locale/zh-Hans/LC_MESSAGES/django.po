@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-16 00:07+0000\n"
+"POT-Creation-Date: 2024-05-03 00:08+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2024\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/authentik/teams/119923/zh-Hans/)\n"
@@ -378,6 +378,14 @@ msgstr "您即将登录 %(application)s。"
 #: authentik/crypto/api.py
 msgid "Subject-alt name"
 msgstr "替代名称"
+
+#: authentik/crypto/builder.py
+msgid "rsa"
+msgstr "rsa"
+
+#: authentik/crypto/builder.py
+msgid "ecdsa"
+msgstr "ecdsa"
 
 #: authentik/crypto/models.py
 msgid "PEM-encoded Certificate data"
@@ -1579,6 +1587,22 @@ msgstr "RSA-SHA384"
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "RSA-SHA512"
 msgstr "RSA-SHA512"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA1"
+msgstr "ECDSA-SHA1"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA256"
+msgstr "ECDSA-SHA256"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA384"
+msgstr "ECDSA-SHA384"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA512"
+msgstr "ECDSA-SHA512"
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "DSA-SHA1"
