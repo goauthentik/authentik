@@ -10,7 +10,7 @@ class FailoverRouter:
     def __init__(self) -> None:
         super().__init__()
         self.database_aliases = set(settings.DATABASES.keys())
-        self.read_replica_aliases = self.database_aliases - {"default"}
+        self.read_replica_aliases = list(self.database_aliases - {"default"})
         self.replica_enabled = len(self.read_replica_aliases) > 0
 
     def db_for_read(self, model, **hints):
