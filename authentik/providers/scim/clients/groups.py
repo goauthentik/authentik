@@ -5,47 +5,36 @@ from pydantic import ValidationError
 from pydanticscim.group import GroupMember
 from pydanticscim.responses import PatchOp, PatchOperation
 
-from authentik.core.exceptions import PropertyMappingExpressionException
+from authentik.core.expression.exceptions import (
+    PropertyMappingExpressionException,
+    SkipObjectException,
+)
 from authentik.core.models import Group
 from authentik.events.models import Event, EventAction
+from authentik.lib.sync.outgoing.base import Direction
+from authentik.lib.sync.outgoing.exceptions import (
+    NotFoundSyncException,
+    ObjectExistsSyncException,
+    StopSync,
+)
 from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.utils import delete_none_values
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.clients.exceptions import (
-    ResourceMissing,
     SCIMRequestException,
-    StopSync,
 )
 from authentik.providers.scim.clients.schema import Group as SCIMGroupSchema
 from authentik.providers.scim.clients.schema import PatchRequest
 from authentik.providers.scim.models import SCIMGroup, SCIMMapping, SCIMUser
 
 
-class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
+class SCIMGroupClient(SCIMClient[Group, SCIMGroup, SCIMGroupSchema]):
     """SCIM client for groups"""
 
-    def write(self, obj: Group):
-        """Write a group"""
-        scim_group = SCIMGroup.objects.filter(provider=self.provider, group=obj).first()
-        if not scim_group:
-            return self._create(obj)
-        try:
-            return self._update(obj, scim_group)
-        except ResourceMissing:
-            scim_group.delete()
-            return self._create(obj)
+    connection_type = SCIMGroup
+    connection_type_query = "group"
 
-    def delete(self, obj: Group):
-        """Delete group"""
-        scim_group = SCIMGroup.objects.filter(provider=self.provider, group=obj).first()
-        if not scim_group:
-            self.logger.debug("Group does not exist in SCIM, skipping")
-            return None
-        response = self._request("DELETE", f"/Groups/{scim_group.scim_id}")
-        scim_group.delete()
-        return response
-
-    def to_scim(self, obj: Group) -> SCIMGroupSchema:
+    def to_schema(self, obj: Group) -> SCIMGroupSchema:
         """Convert authentik user into SCIM"""
         raw_scim_group = {
             "schemas": ("urn:ietf:params:scim:schemas:core:2.0:Group",),
@@ -66,6 +55,8 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
                 if value is None:
                     continue
                 always_merger.merge(raw_scim_group, value)
+            except SkipObjectException as exc:
+                raise exc from exc
             except (PropertyMappingExpressionException, ValueError) as exc:
                 # Value error can be raised when assigning invalid data to an attribute
                 Event.new(
@@ -96,9 +87,19 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
             scim_group.members = members
         return scim_group
 
-    def _create(self, group: Group):
+    def delete(self, obj: Group):
+        """Delete group"""
+        scim_group = SCIMGroup.objects.filter(provider=self.provider, group=obj).first()
+        if not scim_group:
+            self.logger.debug("Group does not exist in SCIM, skipping")
+            return None
+        response = self._request("DELETE", f"/Groups/{scim_group.scim_id}")
+        scim_group.delete()
+        return response
+
+    def create(self, group: Group):
         """Create group from scratch and create a connection object"""
-        scim_group = self.to_scim(group)
+        scim_group = self.to_schema(group)
         response = self._request(
             "POST",
             "/Groups",
@@ -112,9 +113,9 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
             raise StopSync("SCIM Response with missing or invalid `id`")
         SCIMGroup.objects.create(provider=self.provider, group=group, scim_id=scim_id)
 
-    def _update(self, group: Group, connection: SCIMGroup):
+    def update(self, group: Group, connection: SCIMGroup):
         """Update existing group"""
-        scim_group = self.to_scim(group)
+        scim_group = self.to_schema(group)
         scim_group.id = connection.scim_id
         try:
             return self._request(
@@ -125,10 +126,10 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
                     exclude_unset=True,
                 ),
             )
-        except ResourceMissing:
+        except NotFoundSyncException:
             # Resource missing is handled by self.write, which will re-create the group
             raise
-        except SCIMRequestException:
+        except (SCIMRequestException, ObjectExistsSyncException):
             # Some providers don't support PUT on groups, so this is mainly a fix for the initial
             # sync, send patch add requests for all the users the group currently has
             users = list(group.users.order_by("id").values_list("id", flat=True))
@@ -143,12 +144,12 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
                 ),
             )
 
-    def update_group(self, group: Group, action: PatchOp, users_set: set[int]):
+    def update_group(self, group: Group, action: Direction, users_set: set[int]):
         """Update a group, either using PUT to replace it or PATCH if supported"""
         if self._config.patch.supported:
-            if action == PatchOp.add:
+            if action == Direction.add:
                 return self._patch_add_users(group, users_set)
-            if action == PatchOp.remove:
+            if action == Direction.remove:
                 return self._patch_remove_users(group, users_set)
         try:
             return self.write(group)
@@ -156,9 +157,9 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
             if self._config.is_fallback:
                 # Assume that provider does not support PUT and also doesn't support
                 # ServiceProviderConfig, so try PATCH as a fallback
-                if action == PatchOp.add:
+                if action == Direction.add:
                     return self._patch_add_users(group, users_set)
-                if action == PatchOp.remove:
+                if action == Direction.remove:
                     return self._patch_remove_users(group, users_set)
             raise exc
 

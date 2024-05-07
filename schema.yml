@@ -14019,6 +14019,292 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /propertymappings/provider/google_workspace/:
+    get:
+      operationId: propertymappings_provider_google_workspace_list
+      description: GoogleProviderMapping Viewset
+      parameters:
+      - in: query
+        name: expression
+        schema:
+          type: string
+      - in: query
+        name: managed
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGoogleProviderMappingList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: propertymappings_provider_google_workspace_create
+      description: GoogleProviderMapping Viewset
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoogleProviderMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleProviderMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/provider/google_workspace/{pm_uuid}/:
+    get:
+      operationId: propertymappings_provider_google_workspace_retrieve
+      description: GoogleProviderMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Google Workspace Provider Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleProviderMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: propertymappings_provider_google_workspace_update
+      description: GoogleProviderMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Google Workspace Provider Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoogleProviderMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleProviderMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: propertymappings_provider_google_workspace_partial_update
+      description: GoogleProviderMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Google Workspace Provider Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGoogleProviderMappingRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleProviderMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: propertymappings_provider_google_workspace_destroy
+      description: GoogleProviderMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Google Workspace Provider Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/provider/google_workspace/{pm_uuid}/used_by/:
+    get:
+      operationId: propertymappings_provider_google_workspace_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Google Workspace Provider Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /propertymappings/rac/:
     get:
       operationId: propertymappings_rac_list
@@ -15332,6 +15618,319 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/TypeCreate'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/google_workspace/:
+    get:
+      operationId: providers_google_workspace_list
+      description: GoogleProvider Viewset
+      parameters:
+      - in: query
+        name: delegated_subject
+        schema:
+          type: string
+      - in: query
+        name: exclude_users_service_account
+        schema:
+          type: boolean
+      - in: query
+        name: filter_group
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGoogleProviderList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: providers_google_workspace_create
+      description: GoogleProvider Viewset
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoogleProviderRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleProvider'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/google_workspace/{id}/:
+    get:
+      operationId: providers_google_workspace_retrieve
+      description: GoogleProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Google Workspace Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleProvider'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: providers_google_workspace_update
+      description: GoogleProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Google Workspace Provider.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoogleProviderRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleProvider'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: providers_google_workspace_partial_update
+      description: GoogleProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Google Workspace Provider.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGoogleProviderRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleProvider'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: providers_google_workspace_destroy
+      description: GoogleProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Google Workspace Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/google_workspace/{id}/sync/status/:
+    get:
+      operationId: providers_google_workspace_sync_status_retrieve
+      description: Get provider's sync status
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Google Workspace Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncStatus'
+          description: ''
+        '404':
+          description: Task not found
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/google_workspace/{id}/used_by/:
+    get:
+      operationId: providers_google_workspace_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Google Workspace Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
           description: ''
         '400':
           content:
@@ -17659,7 +18258,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /providers/scim/{id}/sync_status/:
+  /providers/scim/{id}/sync/status/:
     get:
       operationId: providers_scim_sync_status_retrieve
       description: Get provider's sync status
@@ -17679,7 +18278,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SCIMSyncStatus'
+                $ref: '#/components/schemas/SyncStatus'
           description: ''
         '404':
           description: Task not found
@@ -18389,6 +18988,8 @@ paths:
           - authentik_policies_expression.expressionpolicy
           - authentik_policies_password.passwordpolicy
           - authentik_policies_reputation.reputationpolicy
+          - authentik_providers_google_workspace.googleworkspaceprovider
+          - authentik_providers_google_workspace.googleworkspaceprovidermapping
           - authentik_providers_ldap.ldapprovider
           - authentik_providers_oauth2.oauth2provider
           - authentik_providers_oauth2.scopemapping
@@ -18604,6 +19205,8 @@ paths:
           - authentik_policies_expression.expressionpolicy
           - authentik_policies_password.passwordpolicy
           - authentik_policies_reputation.reputationpolicy
+          - authentik_providers_google_workspace.googleworkspaceprovider
+          - authentik_providers_google_workspace.googleworkspaceprovidermapping
           - authentik_providers_ldap.ldapprovider
           - authentik_providers_oauth2.oauth2provider
           - authentik_providers_oauth2.scopemapping
@@ -19996,7 +20599,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /sources/ldap/{slug}/sync_status/:
+  /sources/ldap/{slug}/sync/status/:
     get:
       operationId: sources_ldap_sync_status_retrieve
       description: Get source's sync status
@@ -20016,7 +20619,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LDAPSyncStatus'
+                $ref: '#/components/schemas/SyncStatus'
           description: ''
         '400':
           content:
@@ -30527,6 +31130,7 @@ components:
       - authentik.core
       - authentik.enterprise
       - authentik.enterprise.audit
+      - authentik.enterprise.providers.google_workspace
       - authentik.enterprise.providers.rac
       - authentik.enterprise.stages.source
       - authentik.events
@@ -34222,6 +34826,200 @@ components:
       - bind_continent_country
       - bind_continent_country_city
       type: string
+    GoogleProvider:
+      type: object
+      description: GoogleProvider Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        property_mappings_group:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Property mappings used for group creation/updating.
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        assigned_backchannel_application_slug:
+          type: string
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_backchannel_application_name:
+          type: string
+          description: Application's display Name.
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        delegated_subject:
+          type: string
+          format: email
+          maxLength: 254
+        credentials: {}
+        scopes:
+          type: string
+        exclude_users_service_account:
+          type: boolean
+        filter_group:
+          type: string
+          format: uuid
+          nullable: true
+        user_delete_action:
+          $ref: '#/components/schemas/GoogleWorkspaceDeleteAction'
+        group_delete_action:
+          $ref: '#/components/schemas/GoogleWorkspaceDeleteAction'
+        default_group_email_domain:
+          type: string
+      required:
+      - assigned_backchannel_application_name
+      - assigned_backchannel_application_slug
+      - component
+      - credentials
+      - default_group_email_domain
+      - delegated_subject
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    GoogleProviderMapping:
+      type: object
+      description: GoogleProviderMapping Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pm uuid
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+        expression:
+          type: string
+        component:
+          type: string
+          description: Get object's component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - component
+      - expression
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    GoogleProviderMappingRequest:
+      type: object
+      description: GoogleProviderMapping Serializer
+      properties:
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+      required:
+      - expression
+      - name
+    GoogleProviderRequest:
+      type: object
+      description: GoogleProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        property_mappings_group:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Property mappings used for group creation/updating.
+        delegated_subject:
+          type: string
+          format: email
+          minLength: 1
+          maxLength: 254
+        credentials: {}
+        scopes:
+          type: string
+          minLength: 1
+        exclude_users_service_account:
+          type: boolean
+        filter_group:
+          type: string
+          format: uuid
+          nullable: true
+        user_delete_action:
+          $ref: '#/components/schemas/GoogleWorkspaceDeleteAction'
+        group_delete_action:
+          $ref: '#/components/schemas/GoogleWorkspaceDeleteAction'
+        default_group_email_domain:
+          type: string
+          minLength: 1
+      required:
+      - credentials
+      - default_group_email_domain
+      - delegated_subject
+      - name
+    GoogleWorkspaceDeleteAction:
+      enum:
+      - do_nothing
+      - delete
+      - suspend
+      type: string
     Group:
       type: object
       description: Group Serializer
@@ -35450,21 +36248,6 @@ components:
       - name
       - server_uri
       - slug
-    LDAPSyncStatus:
-      type: object
-      description: LDAP Source sync status
-      properties:
-        is_running:
-          type: boolean
-          readOnly: true
-        tasks:
-          type: array
-          items:
-            $ref: '#/components/schemas/SystemTask'
-          readOnly: true
-      required:
-      - is_running
-      - tasks
     License:
       type: object
       description: License Serializer
@@ -35721,6 +36504,8 @@ components:
       - authentik_core.application
       - authentik_core.token
       - authentik_enterprise.license
+      - authentik_providers_google_workspace.googleworkspaceprovider
+      - authentik_providers_google_workspace.googleworkspaceprovidermapping
       - authentik_providers_rac.racprovider
       - authentik_providers_rac.endpoint
       - authentik_providers_rac.racpropertymapping
@@ -37004,6 +37789,30 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowStageBinding'
+      required:
+      - pagination
+      - results
+    PaginatedGoogleProviderList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleProvider'
+      required:
+      - pagination
+      - results
+    PaginatedGoogleProviderMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleProviderMapping'
       required:
       - pagination
       - results
@@ -38927,6 +39736,65 @@ components:
             to a challenge. RETRY returns the error message and a similar challenge
             to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT
             restarts the flow while keeping the current context.
+    PatchedGoogleProviderMappingRequest:
+      type: object
+      description: GoogleProviderMapping Serializer
+      properties:
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+    PatchedGoogleProviderRequest:
+      type: object
+      description: GoogleProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        property_mappings_group:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Property mappings used for group creation/updating.
+        delegated_subject:
+          type: string
+          format: email
+          minLength: 1
+          maxLength: 254
+        credentials: {}
+        scopes:
+          type: string
+          minLength: 1
+        exclude_users_service_account:
+          type: boolean
+        filter_group:
+          type: string
+          format: uuid
+          nullable: true
+        user_delete_action:
+          $ref: '#/components/schemas/GoogleWorkspaceDeleteAction'
+        group_delete_action:
+          $ref: '#/components/schemas/GoogleWorkspaceDeleteAction'
+        default_group_email_domain:
+          type: string
+          minLength: 1
     PatchedGroupRequest:
       type: object
       description: Group Serializer
@@ -41470,6 +42338,7 @@ components:
       type: string
     ProviderModelEnum:
       enum:
+      - authentik_providers_google_workspace.googleworkspaceprovider
       - authentik_providers_ldap.ldapprovider
       - authentik_providers_oauth2.oauth2provider
       - authentik_providers_proxy.proxyprovider
@@ -43341,21 +44210,6 @@ components:
       - id
       - source
       - user
-    SCIMSyncStatus:
-      type: object
-      description: SCIM Provider sync status
-      properties:
-        is_running:
-          type: boolean
-          readOnly: true
-        tasks:
-          type: array
-          items:
-            $ref: '#/components/schemas/SystemTask'
-          readOnly: true
-      required:
-      - is_running
-      - tasks
     SMSDevice:
       type: object
       description: Serializer for sms authenticator devices
@@ -44063,6 +44917,21 @@ components:
       - user_email
       - user_upn
       type: string
+    SyncStatus:
+      type: object
+      description: Provider sync status
+      properties:
+        is_running:
+          type: boolean
+          readOnly: true
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/SystemTask'
+          readOnly: true
+      required:
+      - is_running
+      - tasks
     SystemInfo:
       type: object
       description: Get system information.
@@ -45500,6 +46369,7 @@ components:
       - count
     modelRequest:
       oneOf:
+      - $ref: '#/components/schemas/GoogleProviderRequest'
       - $ref: '#/components/schemas/LDAPProviderRequest'
       - $ref: '#/components/schemas/OAuth2ProviderRequest'
       - $ref: '#/components/schemas/ProxyProviderRequest'
@@ -45510,6 +46380,7 @@ components:
       discriminator:
         propertyName: provider_model
         mapping:
+          authentik_providers_google_workspace.googleworkspaceprovider: '#/components/schemas/GoogleProviderRequest'
           authentik_providers_ldap.ldapprovider: '#/components/schemas/LDAPProviderRequest'
           authentik_providers_oauth2.oauth2provider: '#/components/schemas/OAuth2ProviderRequest'
           authentik_providers_proxy.proxyprovider: '#/components/schemas/ProxyProviderRequest'
