@@ -26,9 +26,9 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
     LDAPSource,
-    LDAPSyncStatus,
     RbacPermissionsAssignedByUsersListModelEnum,
     SourcesApi,
+    SyncStatus,
     SystemTaskStatusEnum,
 } from "@goauthentik/api";
 
@@ -49,7 +49,7 @@ export class LDAPSourceViewPage extends AKElement {
     source!: LDAPSource;
 
     @state()
-    syncState?: LDAPSyncStatus;
+    syncState?: SyncStatus;
 
     static get styles(): CSSResult[] {
         return [PFBase, PFPage, PFButton, PFGrid, PFContent, PFCard, PFDescriptionList, PFList];

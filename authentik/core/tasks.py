@@ -2,7 +2,9 @@
 
 from datetime import datetime, timedelta
 
+from django.conf import ImproperlyConfigured
 from django.contrib.sessions.backends.cache import KEY_PREFIX
+from django.contrib.sessions.backends.db import SessionStore as DBSessionStore
 from django.core.cache import cache
 from django.utils.timezone import now
 from structlog.stdlib import get_logger
@@ -15,6 +17,7 @@ from authentik.core.models import (
     User,
 )
 from authentik.events.system_tasks import SystemTask, TaskStatus, prefill_task
+from authentik.lib.config import CONFIG
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()
@@ -39,16 +42,31 @@ def clean_expired_models(self: SystemTask):
     amount = 0
 
     for session in AuthenticatedSession.objects.all():
-        cache_key = f"{KEY_PREFIX}{session.session_key}"
-        value = None
-        try:
-            value = cache.get(cache_key)
+        match CONFIG.get("session_storage", "cache"):
+            case "cache":
+                cache_key = f"{KEY_PREFIX}{session.session_key}"
+                value = None
+                try:
+                    value = cache.get(cache_key)
 
-        except Exception as exc:
-            LOGGER.debug("Failed to get session from cache", exc=exc)
-        if not value:
-            session.delete()
-            amount += 1
+                except Exception as exc:
+                    LOGGER.debug("Failed to get session from cache", exc=exc)
+                if not value:
+                    session.delete()
+                    amount += 1
+            case "db":
+                if not (
+                    DBSessionStore.get_model_class()
+                    .objects.filter(session_key=session.session_key, expire_date__gt=now())
+                    .exists()
+                ):
+                    session.delete()
+                    amount += 1
+            case _:
+                # Should never happen, as we check for other values in authentik/root/settings.py
+                raise ImproperlyConfigured(
+                    "Invalid session_storage setting, allowed values are db and cache"
+                )
     LOGGER.debug("Expired sessions", model=AuthenticatedSession, amount=amount)
 
     messages.append(f"Expired {amount} {AuthenticatedSession._meta.verbose_name_plural}")

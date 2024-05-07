@@ -8,7 +8,7 @@ from authentik.core.models import Application, Group, User
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.clients.schema import ServiceProviderConfiguration
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
-from authentik.providers.scim.tasks import scim_sync
+from authentik.providers.scim.tasks import scim_sync, sync_tasks
 from authentik.tenants.models import Tenant
 
 
@@ -79,7 +79,7 @@ class SCIMMembershipTests(TestCase):
             )
 
             self.configure()
-            scim_sync.delay(self.provider.pk).get()
+            sync_tasks.trigger_single_task(self.provider, scim_sync).get()
 
             self.assertEqual(mocker.call_count, 6)
             self.assertEqual(mocker.request_history[0].method, "GET")
@@ -169,7 +169,7 @@ class SCIMMembershipTests(TestCase):
             )
 
             self.configure()
-            scim_sync.delay(self.provider.pk).get()
+            sync_tasks.trigger_single_task(self.provider, scim_sync).get()
 
             self.assertEqual(mocker.call_count, 6)
             self.assertEqual(mocker.request_history[0].method, "GET")

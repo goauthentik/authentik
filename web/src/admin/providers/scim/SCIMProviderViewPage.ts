@@ -32,7 +32,7 @@ import {
     ProvidersApi,
     RbacPermissionsAssignedByUsersListModelEnum,
     SCIMProvider,
-    SCIMSyncStatus,
+    SyncStatus,
     SystemTaskStatusEnum,
 } from "@goauthentik/api";
 
@@ -45,7 +45,7 @@ export class SCIMProviderViewPage extends AKElement {
     provider?: SCIMProvider;
 
     @state()
-    syncState?: SCIMSyncStatus;
+    syncState?: SyncStatus;
 
     static get styles(): CSSResult[] {
         return [
