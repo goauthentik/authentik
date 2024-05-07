@@ -14,6 +14,7 @@ from authentik.enterprise.providers.google_workspace.models import (
     GoogleWorkspaceProviderGroup,
     GoogleWorkspaceProviderMapping,
 )
+from authentik.enterprise.providers.google_workspace.tasks import google_workspace_sync
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
@@ -268,3 +269,44 @@ class GoogleWorkspaceGroupTests(TestCase):
                     provider=self.provider, group__name=uid
                 ).exists()
             )
+
+    def test_sync_task(self):
+        """Test group discovery"""
+        uid = generate_id()
+        http = MockHTTP()
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
+            domains_list_v1_mock,
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/users?customer=my_customer&maxResults=500&orderBy=email&key={self.api_key}&alt=json",
+            method="GET",
+            body={"users": []},
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/groups?customer=my_customer&maxResults=500&orderBy=email&key={self.api_key}&alt=json",
+            method="GET",
+            body={"groups": [{"id": uid, "name": uid}]},
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/groups/{uid}?key={self.api_key}&alt=json",
+            method="PUT",
+            body={"id": uid},
+        )
+        self.app.backchannel_providers.remove(self.provider)
+        different_group = Group.objects.create(
+            name=uid,
+        )
+        self.app.backchannel_providers.add(self.provider)
+        with patch(
+            "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
+            MagicMock(return_value={"developerKey": self.api_key, "http": http}),
+        ):
+            google_workspace_sync.delay(self.provider.pk).get()
+            self.assertTrue(
+                GoogleWorkspaceProviderGroup.objects.filter(
+                    group=different_group, provider=self.provider
+                ).exists()
+            )
+            self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
+            self.assertEqual(len(http.requests()), 5)
