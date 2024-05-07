@@ -7,7 +7,6 @@ from django.db import models
 from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
 from google.oauth2.service_account import Credentials
-from googleapiclient.http import build_http, set_user_agent
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import (
@@ -19,7 +18,6 @@ from authentik.core.models import (
 )
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
-from authentik.lib.utils.http import authentik_user_agent
 
 
 def default_scopes() -> list[str]:
@@ -101,12 +99,10 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
         raise ValueError(f"Invalid type {type}")
 
     def google_credentials(self):
-        http = set_user_agent(build_http(), authentik_user_agent())
         return {
             "credentials": Credentials.from_service_account_info(
                 self.credentials, scopes=self.scopes.split(",")
             ).with_subject(self.delegated_subject),
-            "http": http,
         }
 
     @property
