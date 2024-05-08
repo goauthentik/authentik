@@ -18,7 +18,7 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
     }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<MicrosoftEntraProviderUser>> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceUsersList({
+        return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraUsersList({
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,
             ordering: this.order,
