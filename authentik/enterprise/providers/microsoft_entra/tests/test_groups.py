@@ -11,6 +11,7 @@ from msgraph.generated.models.user_collection_response import UserCollectionResp
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
+from authentik.core.tests.utils import create_test_user
 from authentik.enterprise.providers.microsoft_entra.models import (
     MicrosoftEntraProvider,
     MicrosoftEntraProviderGroup,
@@ -137,95 +138,86 @@ class MicrosoftEntraGroupTests(TestCase):
             group_create.assert_called_once()
             group_delete.assert_called_once()
 
-    # def test_group_create_member_add(self):
-    #     """Test group creation"""
-    #     uid = generate_id()
-    #     ext_id = generate_id()
-    #     http = MockHTTP()
-    #     http.add_response(
-    #         f"https://admin.microsoftapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
-    #         domains_list_v1_mock,
-    #     )
-    #     http.add_response(
-    #         f"https://admin.microsoftapis.com/admin/directory/v1/groups?key={self.api_key}&alt=json",
-    #         method="POST",
-    #         body={"id": ext_id},
-    #     )
-    #     http.add_response(
-    #         f"https://admin.microsoftapis.com/admin/directory/v1/users?key={self.api_key}&alt=json",
-    #         method="POST",
-    #         body={"primaryEmail": f"{uid}@goauthentik.io"},
-    #     )
-    #     http.add_response(
-    #         f"https://admin.microsoftapis.com/admin/directory/v1/users/{uid}%40goauthentik.io?key={self.api_key}&alt=json",
-    #         method="PUT",
-    #         body={"primaryEmail": f"{uid}@goauthentik.io"},
-    #     )
-    #     http.add_response(
-    #         f"https://admin.microsoftapis.com/admin/directory/v1/groups/{ext_id}/members?key={self.api_key}&alt=json",
-    #         method="POST",
-    #     )
-    #     with patch(
-    #         "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
-    #         MagicMock(return_value={"developerKey": self.api_key, "http": http}),
-    #     ):
-    #         user = create_test_user(uid)
-    #         group = Group.objects.create(name=uid)
-    #         group.users.add(user)
-    #         microsoft_group = MicrosoftEntraProviderGroup.objects.filter(
-    #             provider=self.provider, group=group
-    #         ).first()
-    #         self.assertIsNotNone(microsoft_group)
-    #         self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
-    #         self.assertEqual(len(http.requests()), 8)
+    def test_group_create_member_add(self):
+        """Test group creation"""
+        uid = generate_id()
+        with (
+            patch(
+                "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
+                MagicMock(return_value={"credentials": self.creds}),
+            ),
+            patch(
+                "msgraph.generated.users.users_request_builder.UsersRequestBuilder.post",
+                AsyncMock(return_value=MSUser(id=generate_id())),
+            ) as user_create,
+            patch(
+                "msgraph.generated.users.item.user_item_request_builder.UserItemRequestBuilder.patch",
+                AsyncMock(return_value=MSUser(id=generate_id())),
+            ),
+            patch(
+                "msgraph.generated.groups.groups_request_builder.GroupsRequestBuilder.post",
+                AsyncMock(return_value=MSGroup(id=uid)),
+            ) as group_create,
+            patch(
+                "msgraph.generated.groups.item.members.ref.ref_request_builder.RefRequestBuilder.post",
+                AsyncMock(),
+            ) as member_add,
+        ):
+            user = create_test_user(uid)
+            group = Group.objects.create(name=uid)
+            group.users.add(user)
+            microsoft_group = MicrosoftEntraProviderGroup.objects.filter(
+                provider=self.provider, group=group
+            ).first()
+            self.assertIsNotNone(microsoft_group)
+            self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
+            user_create.assert_called_once()
+            group_create.assert_called_once()
+            member_add.assert_called_once()
 
-    # def test_group_create_member_remove(self):
-    #     """Test group creation"""
-    #     uid = generate_id()
-    #     ext_id = generate_id()
-    #     http = MockHTTP()
-    #     http.add_response(
-    #         f"https://admin.microsoftapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
-    #         domains_list_v1_mock,
-    #     )
-    #     http.add_response(
-    #         f"https://admin.microsoftapis.com/admin/directory/v1/groups?key={self.api_key}&alt=json",
-    #         method="POST",
-    #         body={"id": ext_id},
-    #     )
-    #     http.add_response(
-    #         f"https://admin.microsoftapis.com/admin/directory/v1/users?key={self.api_key}&alt=json",
-    #         method="POST",
-    #         body={"primaryEmail": f"{uid}@goauthentik.io"},
-    #     )
-    #     http.add_response(
-    #         f"https://admin.microsoftapis.com/admin/directory/v1/users/{uid}%40goauthentik.io?key={self.api_key}&alt=json",
-    #         method="PUT",
-    #         body={"primaryEmail": f"{uid}@goauthentik.io"},
-    #     )
-    #     http.add_response(
-    #         f"https://admin.microsoftapis.com/admin/directory/v1/groups/{ext_id}/members/{uid}%40goauthentik.io?key={self.api_key}",
-    #         method="DELETE",
-    #     )
-    #     http.add_response(
-    #         f"https://admin.microsoftapis.com/admin/directory/v1/groups/{ext_id}/members?key={self.api_key}&alt=json",
-    #         method="POST",
-    #     )
-    #     with patch(
-    #         "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
-    #         MagicMock(return_value={"developerKey": self.api_key, "http": http}),
-    #     ):
-    #         user = create_test_user(uid)
-    #         group = Group.objects.create(name=uid)
-    #         group.users.add(user)
-    #         microsoft_group = MicrosoftEntraProviderGroup.objects.filter(
-    #             provider=self.provider, group=group
-    #         ).first()
-    #         self.assertIsNotNone(microsoft_group)
-    #         group.users.remove(user)
+    def test_group_create_member_remove(self):
+        """Test group creation"""
+        uid = generate_id()
+        with (
+            patch(
+                "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
+                MagicMock(return_value={"credentials": self.creds}),
+            ),
+            patch(
+                "msgraph.generated.users.users_request_builder.UsersRequestBuilder.post",
+                AsyncMock(return_value=MSUser(id=generate_id())),
+            ) as user_create,
+            patch(
+                "msgraph.generated.users.item.user_item_request_builder.UserItemRequestBuilder.patch",
+                AsyncMock(return_value=MSUser(id=generate_id())),
+            ),
+            patch(
+                "msgraph.generated.groups.groups_request_builder.GroupsRequestBuilder.post",
+                AsyncMock(return_value=MSGroup(id=uid)),
+            ) as group_create,
+            patch(
+                "msgraph.generated.groups.item.members.ref.ref_request_builder.RefRequestBuilder.post",
+                AsyncMock(),
+            ) as member_add,
+            patch(
+                "msgraph.generated.groups.item.members.item.ref.ref_request_builder.RefRequestBuilder.delete",
+                AsyncMock(),
+            ) as member_remove,
+        ):
+            user = create_test_user(uid)
+            group = Group.objects.create(name=uid)
+            group.users.add(user)
+            microsoft_group = MicrosoftEntraProviderGroup.objects.filter(
+                provider=self.provider, group=group
+            ).first()
+            self.assertIsNotNone(microsoft_group)
+            group.users.remove(user)
 
-    #         self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
-    #         self.assertEqual(len(http.requests()), 10)
+            self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
+            user_create.assert_called_once()
+            group_create.assert_called_once()
+            member_add.assert_called_once()
+            member_remove.assert_called_once()
 
     def test_group_create_delete_do_nothing(self):
         """Test group deletion (delete action = do nothing)"""

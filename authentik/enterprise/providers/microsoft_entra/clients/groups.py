@@ -173,7 +173,7 @@ class MicrosoftEntraGroupClient(
                 if direction == Direction.remove:
                     self._request(
                         self.client.groups.by_group_id(microsoft_group_id)
-                        .by_directory_object_id(user)
+                        .members.by_directory_object_id(user)
                         .ref.delete()
                     )
             except ObjectExistsSyncException:

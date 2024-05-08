@@ -261,11 +261,7 @@ class MicrosoftEntraUserTests(TestCase):
             ) as user_list,
             patch(
                 "msgraph.generated.groups.groups_request_builder.GroupsRequestBuilder.get",
-                AsyncMock(
-                    return_value=GroupCollectionResponse(
-                        value=[]
-                    )
-                ),
+                AsyncMock(return_value=GroupCollectionResponse(value=[])),
             ),
         ):
             microsoft_entra_sync.delay(self.provider.pk).get()

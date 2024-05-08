@@ -76,7 +76,9 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
                 )
             elif self.provider.user_delete_action == OutgoingSyncDeleteAction.SUSPEND:
                 response = self._request(
-                    self.client.users.by_user_id(microsoft_user.microsoft_id).patch(MSUser(account_enabled=False))
+                    self.client.users.by_user_id(microsoft_user.microsoft_id).patch(
+                        MSUser(account_enabled=False)
+                    )
                 )
             microsoft_user.delete()
         return response
