@@ -8649,7 +8649,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sa817aa9f6f88a991">
   <source>Credentials</source>
-  <target>机密</target>
+  <target>证书</target>
 </trans-unit>
 <trans-unit id="s44b0d2fa9c97719d">
   <source>TODO</source>
