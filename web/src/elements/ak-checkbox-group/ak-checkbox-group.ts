@@ -2,6 +2,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
+import { PropertyValues } from "@lit/reactive-element/reactive-element";
 import { TemplateResult, css, html } from "lit";
 import { customElement, property, queryAll, state } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
@@ -161,7 +162,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
         this.value = this.values;
     }
 
-    willUpdate(changed: PropertyValue<this>) {
+    willUpdate(changed: PropertyValues<this>) {
         if (changed.has("value") && !this.doneFirstUpdate) {
             this.doneFirstUpdate = true;
             this.values = this.value;
