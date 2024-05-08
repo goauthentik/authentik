@@ -10,11 +10,11 @@ import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { MicrosoftProviderMapping, PropertymappingsApi } from "@goauthentik/api";
+import { MicrosoftEntraProviderMapping, PropertymappingsApi } from "@goauthentik/api";
 
 @customElement("ak-property-mapping-microsoft-entra-form")
-export class PropertyMappingMicrosoftEntraForm extends BasePropertyMappingForm<MicrosoftProviderMapping> {
-    loadInstance(pk: string): Promise<MicrosoftProviderMapping> {
+export class PropertyMappingMicrosoftEntraForm extends BasePropertyMappingForm<MicrosoftEntraProviderMapping> {
+    loadInstance(pk: string): Promise<MicrosoftEntraProviderMapping> {
         return new PropertymappingsApi(
             DEFAULT_CONFIG,
         ).propertymappingsProviderGoogleWorkspaceRetrieve({
@@ -22,19 +22,19 @@ export class PropertyMappingMicrosoftEntraForm extends BasePropertyMappingForm<M
         });
     }
 
-    async send(data: MicrosoftProviderMapping): Promise<MicrosoftProviderMapping> {
+    async send(data: MicrosoftEntraProviderMapping): Promise<MicrosoftEntraProviderMapping> {
         if (this.instance) {
             return new PropertymappingsApi(
                 DEFAULT_CONFIG,
             ).propertymappingsProviderMicrosoftEntraUpdate({
-                pmUuid: this.instance.pk || "",
-                microsoftProviderMappingRequest: data,
+                pmUuid: this.instance.pk,
+                microsoftEntraProviderMappingRequest: data,
             });
         } else {
             return new PropertymappingsApi(
                 DEFAULT_CONFIG,
             ).propertymappingsProviderMicrosoftEntraCreate({
-                microsoftProviderMappingRequest: data,
+                microsoftEntraProviderMappingRequest: data,
             });
         }
     }

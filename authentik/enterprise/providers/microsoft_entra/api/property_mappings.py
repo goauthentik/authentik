@@ -11,16 +11,16 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.enterprise.providers.microsoft_entra.models import MicrosoftEntraProviderMapping
 
 
-class MicrosoftProviderMappingSerializer(PropertyMappingSerializer):
-    """MicrosoftProviderMapping Serializer"""
+class MicrosoftEntraProviderMappingSerializer(PropertyMappingSerializer):
+    """MicrosoftEntraProviderMapping Serializer"""
 
     class Meta:
         model = MicrosoftEntraProviderMapping
         fields = PropertyMappingSerializer.Meta.fields
 
 
-class MicrosoftProviderMappingFilter(FilterSet):
-    """Filter for MicrosoftProviderMapping"""
+class MicrosoftEntraProviderMappingFilter(FilterSet):
+    """Filter for MicrosoftEntraProviderMapping"""
 
     managed = extend_schema_field(OpenApiTypes.STR)(AllValuesMultipleFilter(field_name="managed"))
 
@@ -29,11 +29,11 @@ class MicrosoftProviderMappingFilter(FilterSet):
         fields = "__all__"
 
 
-class MicrosoftProviderMappingViewSet(UsedByMixin, ModelViewSet):
-    """MicrosoftProviderMapping Viewset"""
+class MicrosoftEntraProviderMappingViewSet(UsedByMixin, ModelViewSet):
+    """MicrosoftEntraProviderMapping Viewset"""
 
     queryset = MicrosoftEntraProviderMapping.objects.all()
-    serializer_class = MicrosoftProviderMappingSerializer
-    filterset_class = MicrosoftProviderMappingFilter
+    serializer_class = MicrosoftEntraProviderMappingSerializer
+    filterset_class = MicrosoftEntraProviderMappingFilter
     search_fields = ["name"]
     ordering = ["name"]

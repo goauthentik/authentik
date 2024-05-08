@@ -15,16 +15,16 @@ import {
     CoreApi,
     CoreGroupsListRequest,
     Group,
-    MicrosoftProvider,
+    MicrosoftEntraProvider,
     OutgoingSyncDeleteAction,
-    PaginatedMicrosoftProviderMappingList,
+    PaginatedMicrosoftEntraProviderMappingList,
     PropertymappingsApi,
     ProvidersApi,
 } from "@goauthentik/api";
 
 @customElement("ak-provider-microsoft-entra-form")
-export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftProvider> {
-    loadInstance(pk: number): Promise<MicrosoftProvider> {
+export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEntraProvider> {
+    loadInstance(pk: number): Promise<MicrosoftEntraProvider> {
         return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraRetrieve({
             id: pk,
         });
@@ -38,17 +38,17 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftPr
         });
     }
 
-    propertyMappings?: PaginatedMicrosoftProviderMappingList;
+    propertyMappings?: PaginatedMicrosoftEntraProviderMappingList;
 
-    async send(data: MicrosoftProvider): Promise<MicrosoftProvider> {
+    async send(data: MicrosoftEntraProvider): Promise<MicrosoftEntraProvider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraUpdate({
-                id: this.instance.pk || 0,
-                microsoftProviderRequest: data,
+                id: this.instance.pk,
+                microsoftEntraProviderRequest: data,
             });
         } else {
             return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraCreate({
-                microsoftProviderRequest: data,
+                microsoftEntraProviderRequest: data,
             });
         }
     }
@@ -76,7 +76,9 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftPr
                             class="pf-c-form-control"
                             required
                         />
-                        <p class="pf-c-form__helper-text">${msg("Client ID for the app registration.")}</p>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Client ID for the app registration.")}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Client Secret")}
@@ -89,7 +91,9 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftPr
                             class="pf-c-form-control"
                             required
                         />
-                        <p class="pf-c-form__helper-text">${msg("Client secret for the app registration.")}</p>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Client secret for the app registration.")}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Tenant ID")}
@@ -102,7 +106,9 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftPr
                             class="pf-c-form-control"
                             required
                         />
-                        <p class="pf-c-form__helper-text">${msg("ID of the tenant accounts will be synced into.")}</p>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("ID of the tenant accounts will be synced into.")}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-radio-input
                         name="userDeleteAction"

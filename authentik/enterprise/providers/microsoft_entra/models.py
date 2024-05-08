@@ -89,10 +89,10 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
     @property
     def serializer(self) -> type[Serializer]:
         from authentik.enterprise.providers.microsoft_entra.api.providers import (
-            MicrosoftProviderSerializer,
+            MicrosoftEntraProviderSerializer,
         )
 
-        return MicrosoftProviderSerializer
+        return MicrosoftEntraProviderSerializer
 
     def __str__(self):
         return f"Microsoft Entra Provider {self.name}"
@@ -112,10 +112,10 @@ class MicrosoftEntraProviderMapping(PropertyMapping):
     @property
     def serializer(self) -> type[Serializer]:
         from authentik.enterprise.providers.microsoft_entra.api.property_mappings import (
-            MicrosoftProviderMappingSerializer,
+            MicrosoftEntraProviderMappingSerializer,
         )
 
-        return MicrosoftProviderMappingSerializer
+        return MicrosoftEntraProviderMappingSerializer
 
     def __str__(self):
         return f"Microsoft Entra Provider Mapping {self.name}"

@@ -28,7 +28,7 @@ import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
-    MicrosoftProvider,
+    MicrosoftEntraProvider,
     ProvidersApi,
     RbacPermissionsAssignedByUsersListModelEnum,
     SyncStatus,
@@ -41,7 +41,7 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
     providerID?: number;
 
     @state()
-    provider?: MicrosoftProvider;
+    provider?: MicrosoftEntraProvider;
 
     @state()
     syncState?: SyncStatus;
@@ -221,7 +221,7 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
                                 return new ProvidersApi(DEFAULT_CONFIG)
                                     .providersMicrosoftEntraPartialUpdate({
                                         id: this.provider?.pk || 0,
-                                        patchedMicrosoftProviderRequest: this.provider,
+                                        patchedMicrosoftEntraProviderRequest: this.provider,
                                     })
                                     .then(() => {
                                         this.dispatchEvent(

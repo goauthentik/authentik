@@ -14022,7 +14022,7 @@ paths:
   /propertymappings/provider/google_workspace/:
     get:
       operationId: propertymappings_provider_google_workspace_list
-      description: GoogleProviderMapping Viewset
+      description: GoogleWorkspaceProviderMapping Viewset
       parameters:
       - in: query
         name: expression
@@ -14078,7 +14078,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedGoogleProviderMappingList'
+                $ref: '#/components/schemas/PaginatedGoogleWorkspaceProviderMappingList'
           description: ''
         '400':
           content:
@@ -14094,14 +14094,14 @@ paths:
           description: ''
     post:
       operationId: propertymappings_provider_google_workspace_create
-      description: GoogleProviderMapping Viewset
+      description: GoogleWorkspaceProviderMapping Viewset
       tags:
       - propertymappings
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/GoogleProviderMappingRequest'
+              $ref: '#/components/schemas/GoogleWorkspaceProviderMappingRequest'
         required: true
       security:
       - authentik: []
@@ -14110,7 +14110,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GoogleProviderMapping'
+                $ref: '#/components/schemas/GoogleWorkspaceProviderMapping'
           description: ''
         '400':
           content:
@@ -14127,7 +14127,7 @@ paths:
   /propertymappings/provider/google_workspace/{pm_uuid}/:
     get:
       operationId: propertymappings_provider_google_workspace_retrieve
-      description: GoogleProviderMapping Viewset
+      description: GoogleWorkspaceProviderMapping Viewset
       parameters:
       - in: path
         name: pm_uuid
@@ -14145,7 +14145,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GoogleProviderMapping'
+                $ref: '#/components/schemas/GoogleWorkspaceProviderMapping'
           description: ''
         '400':
           content:
@@ -14161,7 +14161,7 @@ paths:
           description: ''
     put:
       operationId: propertymappings_provider_google_workspace_update
-      description: GoogleProviderMapping Viewset
+      description: GoogleWorkspaceProviderMapping Viewset
       parameters:
       - in: path
         name: pm_uuid
@@ -14176,7 +14176,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/GoogleProviderMappingRequest'
+              $ref: '#/components/schemas/GoogleWorkspaceProviderMappingRequest'
         required: true
       security:
       - authentik: []
@@ -14185,7 +14185,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GoogleProviderMapping'
+                $ref: '#/components/schemas/GoogleWorkspaceProviderMapping'
           description: ''
         '400':
           content:
@@ -14201,7 +14201,7 @@ paths:
           description: ''
     patch:
       operationId: propertymappings_provider_google_workspace_partial_update
-      description: GoogleProviderMapping Viewset
+      description: GoogleWorkspaceProviderMapping Viewset
       parameters:
       - in: path
         name: pm_uuid
@@ -14216,7 +14216,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedGoogleProviderMappingRequest'
+              $ref: '#/components/schemas/PatchedGoogleWorkspaceProviderMappingRequest'
       security:
       - authentik: []
       responses:
@@ -14224,7 +14224,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GoogleProviderMapping'
+                $ref: '#/components/schemas/GoogleWorkspaceProviderMapping'
           description: ''
         '400':
           content:
@@ -14240,7 +14240,7 @@ paths:
           description: ''
     delete:
       operationId: propertymappings_provider_google_workspace_destroy
-      description: GoogleProviderMapping Viewset
+      description: GoogleWorkspaceProviderMapping Viewset
       parameters:
       - in: path
         name: pm_uuid
@@ -14308,7 +14308,7 @@ paths:
   /propertymappings/provider/microsoft_entra/:
     get:
       operationId: propertymappings_provider_microsoft_entra_list
-      description: MicrosoftProviderMapping Viewset
+      description: MicrosoftEntraProviderMapping Viewset
       parameters:
       - in: query
         name: expression
@@ -14364,7 +14364,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedMicrosoftProviderMappingList'
+                $ref: '#/components/schemas/PaginatedMicrosoftEntraProviderMappingList'
           description: ''
         '400':
           content:
@@ -14380,14 +14380,14 @@ paths:
           description: ''
     post:
       operationId: propertymappings_provider_microsoft_entra_create
-      description: MicrosoftProviderMapping Viewset
+      description: MicrosoftEntraProviderMapping Viewset
       tags:
       - propertymappings
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MicrosoftProviderMappingRequest'
+              $ref: '#/components/schemas/MicrosoftEntraProviderMappingRequest'
         required: true
       security:
       - authentik: []
@@ -14396,7 +14396,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MicrosoftProviderMapping'
+                $ref: '#/components/schemas/MicrosoftEntraProviderMapping'
           description: ''
         '400':
           content:
@@ -14413,7 +14413,7 @@ paths:
   /propertymappings/provider/microsoft_entra/{pm_uuid}/:
     get:
       operationId: propertymappings_provider_microsoft_entra_retrieve
-      description: MicrosoftProviderMapping Viewset
+      description: MicrosoftEntraProviderMapping Viewset
       parameters:
       - in: path
         name: pm_uuid
@@ -14431,7 +14431,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MicrosoftProviderMapping'
+                $ref: '#/components/schemas/MicrosoftEntraProviderMapping'
           description: ''
         '400':
           content:
@@ -14447,7 +14447,7 @@ paths:
           description: ''
     put:
       operationId: propertymappings_provider_microsoft_entra_update
-      description: MicrosoftProviderMapping Viewset
+      description: MicrosoftEntraProviderMapping Viewset
       parameters:
       - in: path
         name: pm_uuid
@@ -14462,7 +14462,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MicrosoftProviderMappingRequest'
+              $ref: '#/components/schemas/MicrosoftEntraProviderMappingRequest'
         required: true
       security:
       - authentik: []
@@ -14471,7 +14471,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MicrosoftProviderMapping'
+                $ref: '#/components/schemas/MicrosoftEntraProviderMapping'
           description: ''
         '400':
           content:
@@ -14487,7 +14487,7 @@ paths:
           description: ''
     patch:
       operationId: propertymappings_provider_microsoft_entra_partial_update
-      description: MicrosoftProviderMapping Viewset
+      description: MicrosoftEntraProviderMapping Viewset
       parameters:
       - in: path
         name: pm_uuid
@@ -14502,7 +14502,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedMicrosoftProviderMappingRequest'
+              $ref: '#/components/schemas/PatchedMicrosoftEntraProviderMappingRequest'
       security:
       - authentik: []
       responses:
@@ -14510,7 +14510,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MicrosoftProviderMapping'
+                $ref: '#/components/schemas/MicrosoftEntraProviderMapping'
           description: ''
         '400':
           content:
@@ -14526,7 +14526,7 @@ paths:
           description: ''
     delete:
       operationId: propertymappings_provider_microsoft_entra_destroy
-      description: MicrosoftProviderMapping Viewset
+      description: MicrosoftEntraProviderMapping Viewset
       parameters:
       - in: path
         name: pm_uuid
@@ -15920,7 +15920,7 @@ paths:
   /providers/google_workspace/:
     get:
       operationId: providers_google_workspace_list
-      description: GoogleProvider Viewset
+      description: GoogleWorkspaceProvider Viewset
       parameters:
       - in: query
         name: delegated_subject
@@ -15972,7 +15972,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedGoogleProviderList'
+                $ref: '#/components/schemas/PaginatedGoogleWorkspaceProviderList'
           description: ''
         '400':
           content:
@@ -15988,14 +15988,14 @@ paths:
           description: ''
     post:
       operationId: providers_google_workspace_create
-      description: GoogleProvider Viewset
+      description: GoogleWorkspaceProvider Viewset
       tags:
       - providers
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/GoogleProviderRequest'
+              $ref: '#/components/schemas/GoogleWorkspaceProviderRequest'
         required: true
       security:
       - authentik: []
@@ -16004,7 +16004,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GoogleProvider'
+                $ref: '#/components/schemas/GoogleWorkspaceProvider'
           description: ''
         '400':
           content:
@@ -16021,7 +16021,7 @@ paths:
   /providers/google_workspace/{id}/:
     get:
       operationId: providers_google_workspace_retrieve
-      description: GoogleProvider Viewset
+      description: GoogleWorkspaceProvider Viewset
       parameters:
       - in: path
         name: id
@@ -16038,7 +16038,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GoogleProvider'
+                $ref: '#/components/schemas/GoogleWorkspaceProvider'
           description: ''
         '400':
           content:
@@ -16054,7 +16054,7 @@ paths:
           description: ''
     put:
       operationId: providers_google_workspace_update
-      description: GoogleProvider Viewset
+      description: GoogleWorkspaceProvider Viewset
       parameters:
       - in: path
         name: id
@@ -16068,7 +16068,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/GoogleProviderRequest'
+              $ref: '#/components/schemas/GoogleWorkspaceProviderRequest'
         required: true
       security:
       - authentik: []
@@ -16077,7 +16077,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GoogleProvider'
+                $ref: '#/components/schemas/GoogleWorkspaceProvider'
           description: ''
         '400':
           content:
@@ -16093,7 +16093,7 @@ paths:
           description: ''
     patch:
       operationId: providers_google_workspace_partial_update
-      description: GoogleProvider Viewset
+      description: GoogleWorkspaceProvider Viewset
       parameters:
       - in: path
         name: id
@@ -16107,7 +16107,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedGoogleProviderRequest'
+              $ref: '#/components/schemas/PatchedGoogleWorkspaceProviderRequest'
       security:
       - authentik: []
       responses:
@@ -16115,7 +16115,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GoogleProvider'
+                $ref: '#/components/schemas/GoogleWorkspaceProvider'
           description: ''
         '400':
           content:
@@ -16131,7 +16131,7 @@ paths:
           description: ''
     delete:
       operationId: providers_google_workspace_destroy
-      description: GoogleProvider Viewset
+      description: GoogleWorkspaceProvider Viewset
       parameters:
       - in: path
         name: id
@@ -16539,7 +16539,7 @@ paths:
   /providers/microsoft_entra/:
     get:
       operationId: providers_microsoft_entra_list
-      description: MicrosoftProvider Viewset
+      description: MicrosoftEntraProvider Viewset
       parameters:
       - in: query
         name: exclude_users_service_account
@@ -16587,7 +16587,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedMicrosoftProviderList'
+                $ref: '#/components/schemas/PaginatedMicrosoftEntraProviderList'
           description: ''
         '400':
           content:
@@ -16603,14 +16603,14 @@ paths:
           description: ''
     post:
       operationId: providers_microsoft_entra_create
-      description: MicrosoftProvider Viewset
+      description: MicrosoftEntraProvider Viewset
       tags:
       - providers
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MicrosoftProviderRequest'
+              $ref: '#/components/schemas/MicrosoftEntraProviderRequest'
         required: true
       security:
       - authentik: []
@@ -16619,7 +16619,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MicrosoftProvider'
+                $ref: '#/components/schemas/MicrosoftEntraProvider'
           description: ''
         '400':
           content:
@@ -16636,7 +16636,7 @@ paths:
   /providers/microsoft_entra/{id}/:
     get:
       operationId: providers_microsoft_entra_retrieve
-      description: MicrosoftProvider Viewset
+      description: MicrosoftEntraProvider Viewset
       parameters:
       - in: path
         name: id
@@ -16653,7 +16653,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MicrosoftProvider'
+                $ref: '#/components/schemas/MicrosoftEntraProvider'
           description: ''
         '400':
           content:
@@ -16669,7 +16669,7 @@ paths:
           description: ''
     put:
       operationId: providers_microsoft_entra_update
-      description: MicrosoftProvider Viewset
+      description: MicrosoftEntraProvider Viewset
       parameters:
       - in: path
         name: id
@@ -16683,7 +16683,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MicrosoftProviderRequest'
+              $ref: '#/components/schemas/MicrosoftEntraProviderRequest'
         required: true
       security:
       - authentik: []
@@ -16692,7 +16692,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MicrosoftProvider'
+                $ref: '#/components/schemas/MicrosoftEntraProvider'
           description: ''
         '400':
           content:
@@ -16708,7 +16708,7 @@ paths:
           description: ''
     patch:
       operationId: providers_microsoft_entra_partial_update
-      description: MicrosoftProvider Viewset
+      description: MicrosoftEntraProvider Viewset
       parameters:
       - in: path
         name: id
@@ -16722,7 +16722,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedMicrosoftProviderRequest'
+              $ref: '#/components/schemas/PatchedMicrosoftEntraProviderRequest'
       security:
       - authentik: []
       responses:
@@ -16730,7 +16730,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MicrosoftProvider'
+                $ref: '#/components/schemas/MicrosoftEntraProvider'
           description: ''
         '400':
           content:
@@ -16746,7 +16746,7 @@ paths:
           description: ''
     delete:
       operationId: providers_microsoft_entra_destroy
-      description: MicrosoftProvider Viewset
+      description: MicrosoftEntraProvider Viewset
       parameters:
       - in: path
         name: id
@@ -35426,9 +35426,9 @@ components:
       - bind_continent_country
       - bind_continent_country_city
       type: string
-    GoogleProvider:
+    GoogleWorkspaceProvider:
       type: object
-      description: GoogleProvider Serializer
+      description: GoogleWorkspaceProvider Serializer
       properties:
         pk:
           type: integer
@@ -35502,9 +35502,9 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
-    GoogleProviderMapping:
+    GoogleWorkspaceProviderMapping:
       type: object
-      description: GoogleProviderMapping Serializer
+      description: GoogleWorkspaceProviderMapping Serializer
       properties:
         pk:
           type: string
@@ -35547,9 +35547,9 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
-    GoogleProviderMappingRequest:
+    GoogleWorkspaceProviderMappingRequest:
       type: object
-      description: GoogleProviderMapping Serializer
+      description: GoogleWorkspaceProviderMapping Serializer
       properties:
         managed:
           type: string
@@ -35569,9 +35569,9 @@ components:
       required:
       - expression
       - name
-    GoogleProviderRequest:
+    GoogleWorkspaceProviderRequest:
       type: object
-      description: GoogleProvider Serializer
+      description: GoogleWorkspaceProvider Serializer
       properties:
         name:
           type: string
@@ -37029,9 +37029,9 @@ components:
       required:
       - labels
       - name
-    MicrosoftProvider:
+    MicrosoftEntraProvider:
       type: object
-      description: MicrosoftProvider Serializer
+      description: MicrosoftEntraProvider Serializer
       properties:
         pk:
           type: integer
@@ -37102,9 +37102,9 @@ components:
       - tenant_id
       - verbose_name
       - verbose_name_plural
-    MicrosoftProviderMapping:
+    MicrosoftEntraProviderMapping:
       type: object
-      description: MicrosoftProviderMapping Serializer
+      description: MicrosoftEntraProviderMapping Serializer
       properties:
         pk:
           type: string
@@ -37147,9 +37147,9 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
-    MicrosoftProviderMappingRequest:
+    MicrosoftEntraProviderMappingRequest:
       type: object
-      description: MicrosoftProviderMapping Serializer
+      description: MicrosoftEntraProviderMapping Serializer
       properties:
         managed:
           type: string
@@ -37169,9 +37169,9 @@ components:
       required:
       - expression
       - name
-    MicrosoftProviderRequest:
+    MicrosoftEntraProviderRequest:
       type: object
-      description: MicrosoftProvider Serializer
+      description: MicrosoftEntraProvider Serializer
       properties:
         name:
           type: string
@@ -38576,7 +38576,7 @@ components:
       required:
       - pagination
       - results
-    PaginatedGoogleProviderList:
+    PaginatedGoogleWorkspaceProviderList:
       type: object
       properties:
         pagination:
@@ -38584,11 +38584,11 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/GoogleProvider'
+            $ref: '#/components/schemas/GoogleWorkspaceProvider'
       required:
       - pagination
       - results
-    PaginatedGoogleProviderMappingList:
+    PaginatedGoogleWorkspaceProviderMappingList:
       type: object
       properties:
         pagination:
@@ -38596,7 +38596,7 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/GoogleProviderMapping'
+            $ref: '#/components/schemas/GoogleWorkspaceProviderMapping'
       required:
       - pagination
       - results
@@ -38720,7 +38720,7 @@ components:
       required:
       - pagination
       - results
-    PaginatedMicrosoftProviderList:
+    PaginatedMicrosoftEntraProviderList:
       type: object
       properties:
         pagination:
@@ -38728,11 +38728,11 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/MicrosoftProvider'
+            $ref: '#/components/schemas/MicrosoftEntraProvider'
       required:
       - pagination
       - results
-    PaginatedMicrosoftProviderMappingList:
+    PaginatedMicrosoftEntraProviderMappingList:
       type: object
       properties:
         pagination:
@@ -38740,7 +38740,7 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/MicrosoftProviderMapping'
+            $ref: '#/components/schemas/MicrosoftEntraProviderMapping'
       required:
       - pagination
       - results
@@ -40544,9 +40544,9 @@ components:
             to a challenge. RETRY returns the error message and a similar challenge
             to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT
             restarts the flow while keeping the current context.
-    PatchedGoogleProviderMappingRequest:
+    PatchedGoogleWorkspaceProviderMappingRequest:
       type: object
-      description: GoogleProviderMapping Serializer
+      description: GoogleWorkspaceProviderMapping Serializer
       properties:
         managed:
           type: string
@@ -40563,9 +40563,9 @@ components:
         expression:
           type: string
           minLength: 1
-    PatchedGoogleProviderRequest:
+    PatchedGoogleWorkspaceProviderRequest:
       type: object
-      description: GoogleProvider Serializer
+      description: GoogleWorkspaceProvider Serializer
       properties:
         name:
           type: string
@@ -40958,9 +40958,9 @@ components:
         key:
           type: string
           minLength: 1
-    PatchedMicrosoftProviderMappingRequest:
+    PatchedMicrosoftEntraProviderMappingRequest:
       type: object
-      description: MicrosoftProviderMapping Serializer
+      description: MicrosoftEntraProviderMapping Serializer
       properties:
         managed:
           type: string
@@ -40977,9 +40977,9 @@ components:
         expression:
           type: string
           minLength: 1
-    PatchedMicrosoftProviderRequest:
+    PatchedMicrosoftEntraProviderRequest:
       type: object
-      description: MicrosoftProvider Serializer
+      description: MicrosoftEntraProvider Serializer
       properties:
         name:
           type: string
@@ -47234,9 +47234,9 @@ components:
       - count
     modelRequest:
       oneOf:
-      - $ref: '#/components/schemas/GoogleProviderRequest'
+      - $ref: '#/components/schemas/GoogleWorkspaceProviderRequest'
       - $ref: '#/components/schemas/LDAPProviderRequest'
-      - $ref: '#/components/schemas/MicrosoftProviderRequest'
+      - $ref: '#/components/schemas/MicrosoftEntraProviderRequest'
       - $ref: '#/components/schemas/OAuth2ProviderRequest'
       - $ref: '#/components/schemas/ProxyProviderRequest'
       - $ref: '#/components/schemas/RACProviderRequest'
@@ -47246,9 +47246,9 @@ components:
       discriminator:
         propertyName: provider_model
         mapping:
-          authentik_providers_google_workspace.googleworkspaceprovider: '#/components/schemas/GoogleProviderRequest'
+          authentik_providers_google_workspace.googleworkspaceprovider: '#/components/schemas/GoogleWorkspaceProviderRequest'
           authentik_providers_ldap.ldapprovider: '#/components/schemas/LDAPProviderRequest'
-          authentik_providers_microsoft_entra.microsoftentraprovider: '#/components/schemas/MicrosoftProviderRequest'
+          authentik_providers_microsoft_entra.microsoftentraprovider: '#/components/schemas/MicrosoftEntraProviderRequest'
           authentik_providers_oauth2.oauth2provider: '#/components/schemas/OAuth2ProviderRequest'
           authentik_providers_proxy.proxyprovider: '#/components/schemas/ProxyProviderRequest'
           authentik_providers_rac.racprovider: '#/components/schemas/RACProviderRequest'

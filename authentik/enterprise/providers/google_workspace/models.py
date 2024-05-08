@@ -104,10 +104,10 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
     @property
     def serializer(self) -> type[Serializer]:
         from authentik.enterprise.providers.google_workspace.api.providers import (
-            GoogleProviderSerializer,
+            GoogleWorkspaceProviderSerializer,
         )
 
-        return GoogleProviderSerializer
+        return GoogleWorkspaceProviderSerializer
 
     def __str__(self):
         return f"Google Workspace Provider {self.name}"
@@ -127,10 +127,10 @@ class GoogleWorkspaceProviderMapping(PropertyMapping):
     @property
     def serializer(self) -> type[Serializer]:
         from authentik.enterprise.providers.google_workspace.api.property_mappings import (
-            GoogleProviderMappingSerializer,
+            GoogleWorkspaceProviderMappingSerializer,
         )
 
-        return GoogleProviderMappingSerializer
+        return GoogleWorkspaceProviderMappingSerializer
 
     def __str__(self):
         return f"Google Workspace Provider Mapping {self.name}"

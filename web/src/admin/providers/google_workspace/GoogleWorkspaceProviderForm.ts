@@ -16,17 +16,17 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import {
     CoreApi,
     CoreGroupsListRequest,
-    GoogleProvider,
+    GoogleWorkspaceProvider,
     Group,
     OutgoingSyncDeleteAction,
-    PaginatedGoogleProviderMappingList,
+    PaginatedGoogleWorkspaceProviderMappingList,
     PropertymappingsApi,
     ProvidersApi,
 } from "@goauthentik/api";
 
 @customElement("ak-provider-google-workspace-form")
-export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleProvider> {
-    loadInstance(pk: number): Promise<GoogleProvider> {
+export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWorkspaceProvider> {
+    loadInstance(pk: number): Promise<GoogleWorkspaceProvider> {
         return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceRetrieve({
             id: pk,
         });
@@ -40,17 +40,17 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleProv
         });
     }
 
-    propertyMappings?: PaginatedGoogleProviderMappingList;
+    propertyMappings?: PaginatedGoogleWorkspaceProviderMappingList;
 
-    async send(data: GoogleProvider): Promise<GoogleProvider> {
+    async send(data: GoogleWorkspaceProvider): Promise<GoogleWorkspaceProvider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceUpdate({
-                id: this.instance.pk || 0,
-                googleProviderRequest: data,
+                id: this.instance.pk,
+                googleWorkspaceProviderRequest: data,
             });
         } else {
             return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceCreate({
-                googleProviderRequest: data,
+                googleWorkspaceProviderRequest: data,
             });
         }
     }

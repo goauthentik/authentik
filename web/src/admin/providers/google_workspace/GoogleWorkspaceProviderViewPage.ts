@@ -28,7 +28,7 @@ import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
-    GoogleProvider,
+    GoogleWorkspaceProvider,
     ProvidersApi,
     RbacPermissionsAssignedByUsersListModelEnum,
     SyncStatus,
@@ -41,7 +41,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
     providerID?: number;
 
     @state()
-    provider?: GoogleProvider;
+    provider?: GoogleWorkspaceProvider;
 
     @state()
     syncState?: SyncStatus;
@@ -221,7 +221,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                                 return new ProvidersApi(DEFAULT_CONFIG)
                                     .providersGoogleWorkspacePartialUpdate({
                                         id: this.provider?.pk || 0,
-                                        patchedGoogleProviderRequest: this.provider,
+                                        patchedGoogleWorkspaceProviderRequest: this.provider,
                                     })
                                     .then(() => {
                                         this.dispatchEvent(

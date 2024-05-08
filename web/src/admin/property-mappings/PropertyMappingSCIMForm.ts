@@ -23,7 +23,7 @@ export class PropertyMappingSCIMForm extends BasePropertyMappingForm<SCIMMapping
     async send(data: SCIMMapping): Promise<SCIMMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsScimUpdate({
-                pmUuid: this.instance.pk || "",
+                pmUuid: this.instance.pk,
                 sCIMMappingRequest: data,
             });
         } else {

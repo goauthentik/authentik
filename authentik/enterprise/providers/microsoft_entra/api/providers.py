@@ -10,8 +10,8 @@ from authentik.enterprise.providers.microsoft_entra.tasks import microsoft_entra
 from authentik.lib.sync.outgoing.api import OutgoingSyncProviderStatusMixin
 
 
-class MicrosoftProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
-    """MicrosoftProvider Serializer"""
+class MicrosoftEntraProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
+    """MicrosoftEntraProvider Serializer"""
 
     class Meta:
         model = MicrosoftEntraProvider
@@ -37,11 +37,11 @@ class MicrosoftProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
         extra_kwargs = {}
 
 
-class MicrosoftProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin, ModelViewSet):
-    """MicrosoftProvider Viewset"""
+class MicrosoftEntraProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin, ModelViewSet):
+    """MicrosoftEntraProvider Viewset"""
 
     queryset = MicrosoftEntraProvider.objects.all()
-    serializer_class = MicrosoftProviderSerializer
+    serializer_class = MicrosoftEntraProviderSerializer
     filterset_fields = [
         "name",
         "exclude_users_service_account",
