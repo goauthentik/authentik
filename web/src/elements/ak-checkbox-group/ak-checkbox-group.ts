@@ -3,7 +3,7 @@ import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, css, html } from "lit";
-import { customElement, property, queryAll } from "lit/decorators.js";
+import { customElement, property, queryAll, state } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 
 import PFCheck from "@patternfly/patternfly/components/Check/check.css";
@@ -112,10 +112,14 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
     @queryAll('input[type="checkbox"]')
     checkboxes!: NodeListOf<HTMLInputElement>;
 
-    internals?: ElementInternals;
+    @state()
+    values: string[] = [];
 
-    get json() {
-        return this.value;
+    internals?: ElementInternals;
+    doneFirstUpdate = false;
+
+    json() {
+        return this.values;
     }
 
     private get formValue() {
@@ -124,7 +128,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
         }
         const name = this.name;
         const entries = new FormData();
-        this.value.forEach((v) => entries.append(name, v));
+        this.values.forEach((v) => entries.append(name, v));
         return entries;
     }
 
@@ -136,14 +140,14 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
 
     onClick(ev: Event) {
         ev.stopPropagation();
-        this.value = Array.from(this.checkboxes)
+        this.values = Array.from(this.checkboxes)
             .filter((checkbox) => checkbox.checked)
             .map((checkbox) => checkbox.name);
-        this.dispatchCustomEvent("change", this.value);
-        this.dispatchCustomEvent("input", this.value);
+        this.dispatchCustomEvent("change", this.values);
+        this.dispatchCustomEvent("input", this.values);
         if (this.internals) {
             this.internals.setValidity({});
-            if (this.required && this.value.length === 0) {
+            if (this.required && this.values.length === 0) {
                 this.internals.setValidity(
                     {
                         valueMissing: true,
@@ -153,6 +157,14 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
                 );
             }
             this.internals.setFormValue(this.formValue);
+        }
+        this.value = this.values;
+    }
+
+    willUpdate(changed: PropertyValue<this>) {
+        if (changed.has("value") && !this.doneFirstUpdate) {
+            this.doneFirstUpdate = true;
+            this.values = this.value;
         }
     }
 
@@ -183,7 +195,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
 
     render() {
         const renderOne = ([name, label]: CheckboxPr) => {
-            const selected = this.value.includes(name);
+            const selected = this.values.includes(name);
             const blockFwd = (e: Event) => {
                 e.stopImmediatePropagation();
             };
