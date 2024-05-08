@@ -9,6 +9,7 @@ from typing import Any
 
 from cachetools import TLRUCache, cached
 from django.core.exceptions import FieldError
+from django.utils.text import slugify
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.serializers import ValidationError
 from sentry_sdk.hub import Hub
@@ -56,6 +57,7 @@ class BaseEvaluator:
             "requests": get_http_session(),
             "resolve_dns": BaseEvaluator.expr_resolve_dns,
             "reverse_dns": BaseEvaluator.expr_reverse_dns,
+            "slugify": slugify,
         }
         self._context = {}
 

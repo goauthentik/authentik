@@ -38,7 +38,7 @@
         "@codemirror/theme-one-dark": "^6.1.2",
         "@formatjs/intl-listformat": "^7.5.5",
         "@fortawesome/fontawesome-free": "^6.5.2",
-        "@goauthentik/api": "^2024.4.1-1714957644",
+        "@goauthentik/api": "^2024.4.2-1715104360",
         "@lit-labs/task": "^3.1.0",
         "@lit/context": "^1.1.1",
         "@lit/localize": "^0.12.1",
@@ -100,7 +100,7 @@
         "babel-plugin-tsconfig-paths": "^1.0.3",
         "chokidar": "^3.6.0",
         "cross-env": "^7.0.3",
-        "esbuild": "^0.21.0",
+        "esbuild": "^0.21.1",
         "eslint": "^8.57.0",
         "eslint-config-google": "^0.14.0",
         "eslint-plugin-custom-elements": "0.0.8",
@@ -126,9 +126,9 @@
         "vite-tsconfig-paths": "^4.3.2"
     },
     "optionalDependencies": {
-        "@esbuild/darwin-arm64": "^0.21.0",
+        "@esbuild/darwin-arm64": "^0.21.1",
         "@esbuild/linux-amd64": "^0.18.11",
-        "@esbuild/linux-arm64": "^0.21.0",
+        "@esbuild/linux-arm64": "^0.21.1",
         "@rollup/rollup-darwin-arm64": "4.17.2",
         "@rollup/rollup-linux-arm64-gnu": "4.17.2",
         "@rollup/rollup-linux-x64-gnu": "4.17.2"

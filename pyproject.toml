@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "authentik"
-version = "2024.4.1"
+version = "2024.4.2"
 description = ""
 authors = ["authentik Team <hello@goauthentik.io>"]
 
@@ -112,6 +112,7 @@ facebook-sdk = "*"
 fido2 = "*"
 flower = "*"
 geoip2 = "*"
+google-api-python-client = "*"
 gunicorn = "*"
 jsonpatch = "*"
 kubernetes = "*"
