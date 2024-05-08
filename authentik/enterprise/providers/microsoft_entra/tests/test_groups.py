@@ -19,6 +19,7 @@ from authentik.enterprise.providers.microsoft_entra.models import (
     MicrosoftEntraProvider,
     MicrosoftEntraProviderGroup,
     MicrosoftEntraProviderMapping,
+    MicrosoftEntraProviderUser,
 )
 from authentik.enterprise.providers.microsoft_entra.tasks import microsoft_entra_sync
 from authentik.events.models import Event, EventAction
@@ -217,6 +218,12 @@ class MicrosoftEntraGroupTests(TestCase):
             user_create.assert_called_once()
             group_create.assert_called_once()
             member_add.assert_called_once()
+            self.assertEqual(
+                member_add.call_args[0][0].odata_id,
+                f"https://graph.microsoft.com/v1.0/directoryObjects/{MicrosoftEntraProviderUser.objects.filter(
+                        provider=self.provider,
+                    ).first().microsoft_id}",
+            )
 
     def test_group_create_member_remove(self):
         """Test group creation"""
@@ -270,6 +277,12 @@ class MicrosoftEntraGroupTests(TestCase):
             user_create.assert_called_once()
             group_create.assert_called_once()
             member_add.assert_called_once()
+            self.assertEqual(
+                member_add.call_args[0][0].odata_id,
+                f"https://graph.microsoft.com/v1.0/directoryObjects/{MicrosoftEntraProviderUser.objects.filter(
+                        provider=self.provider,
+                    ).first().microsoft_id}",
+            )
             member_remove.assert_called_once()
 
     def test_group_create_delete_do_nothing(self):
