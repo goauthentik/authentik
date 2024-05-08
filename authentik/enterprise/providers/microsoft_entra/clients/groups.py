@@ -70,7 +70,7 @@ class MicrosoftEntraGroupClient(
         try:
             return MSGroup(**raw_microsoft_group)
         except TypeError as exc:
-            raise StopSync("Invalid parameters returned from property mappings") from exc
+            raise StopSync(exc, obj) from exc
 
     def delete(self, obj: Group):
         """Delete group"""

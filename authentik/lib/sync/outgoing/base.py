@@ -39,7 +39,7 @@ class BaseOutgoingSyncClient[
         """Create object in remote destination"""
         raise NotImplementedError()
 
-    def update(self, obj: TModel, connection: object):
+    def update(self, obj: TModel, connection: TConnection):
         """Update object in remote destination"""
         raise NotImplementedError()
 
