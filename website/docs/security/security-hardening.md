@@ -8,7 +8,7 @@ While authentik is secure out of the box, you can take steps to further increase
 
 [Expressions](../property-mappings/expression.mdx) allow super-users and other highly privileged users to create custom logic within authentik to modify its behaviour. Editing/creating these expressions is, by default, limited to super-users and any related events are fully logged.
 
-For further hardening, it is possible to prevent any user (even super-users) from using expressions to create or edit any objects. To do so, configure your deployment to block API requests to these endpoints:
+However, for further hardening, it is possible to prevent any user (even super-users) from using expressions to create or edit any objects. To do so, configure your deployment to block API requests to these endpoints:
 
 -   `/api/v3/policies/expression*`
 -   `/api/v3/propertymappings*`
