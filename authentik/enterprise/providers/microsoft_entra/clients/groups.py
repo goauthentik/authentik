@@ -66,7 +66,10 @@ class MicrosoftEntraGroupClient(
                 raise StopSync(exc, obj, mapping) from exc
         if not raw_microsoft_group:
             raise StopSync(ValueError("No group mappings configured"), obj)
-        return MSGroup(**raw_microsoft_group)
+        try:
+            return MSGroup(**raw_microsoft_group)
+        except TypeError as exc:
+            raise StopSync("Invalid parameters returned from property mappings") from exc
 
     def delete(self, obj: Group):
         """Delete group"""

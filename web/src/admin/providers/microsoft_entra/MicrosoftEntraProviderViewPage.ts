@@ -1,4 +1,6 @@
 import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderFormPage";
+import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderGroupList";
+import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderUserList";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
@@ -119,6 +121,28 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
                         >
                         </ak-object-changelog>
                     </div>
+                </div>
+            </section>
+            <section
+                slot="page-users"
+                data-tab-title="${msg("Provisioned Users")}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-l-grid pf-m-gutter">
+                    <ak-provider-microsoft-entra-users-list
+                        providerId=${this.provider.pk}
+                    ></ak-provider-microsoft-entra-users-list>
+                </div>
+            </section>
+            <section
+                slot="page-groups"
+                data-tab-title="${msg("Provisioned Groups")}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-l-grid pf-m-gutter">
+                    <ak-provider-microsoft-entra-groups-list
+                        providerId=${this.provider.pk}
+                    ></ak-provider-microsoft-entra-groups-list>
                 </div>
             </section>
             <ak-rbac-object-permission-page

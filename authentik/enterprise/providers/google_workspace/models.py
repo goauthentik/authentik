@@ -16,6 +16,7 @@ from authentik.core.models import (
     User,
     UserTypes,
 )
+from authentik.lib.models import SerializerModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction, OutgoingSyncProvider
 
@@ -140,7 +141,7 @@ class GoogleWorkspaceProviderMapping(PropertyMapping):
         verbose_name_plural = _("Google Workspace Provider Mappings")
 
 
-class GoogleWorkspaceProviderUser(models.Model):
+class GoogleWorkspaceProviderUser(SerializerModel):
     """Mapping of a user and provider to a Google user ID"""
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -148,14 +149,24 @@ class GoogleWorkspaceProviderUser(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     provider = models.ForeignKey(GoogleWorkspaceProvider, on_delete=models.CASCADE)
 
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.enterprise.providers.google_workspace.api.users import (
+            GoogleWorkspaceProviderUserSerializer,
+        )
+
+        return GoogleWorkspaceProviderUserSerializer
+
     class Meta:
+        verbose_name = _("Google Workspace Provider User")
+        verbose_name_plural = _("Google Workspace Provider Users")
         unique_together = (("google_id", "user", "provider"),)
 
     def __str__(self) -> str:
-        return f"Google Workspace User {self.user_id} to {self.provider_id}"
+        return f"Google Workspace Provider User {self.user_id} to {self.provider_id}"
 
 
-class GoogleWorkspaceProviderGroup(models.Model):
+class GoogleWorkspaceProviderGroup(SerializerModel):
     """Mapping of a group and provider to a Google group ID"""
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -163,8 +174,18 @@ class GoogleWorkspaceProviderGroup(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     provider = models.ForeignKey(GoogleWorkspaceProvider, on_delete=models.CASCADE)
 
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.enterprise.providers.google_workspace.api.groups import (
+            GoogleWorkspaceProviderGroupSerializer,
+        )
+
+        return GoogleWorkspaceProviderGroupSerializer
+
     class Meta:
+        verbose_name = _("Google Workspace Provider Group")
+        verbose_name_plural = _("Google Workspace Provider Groups")
         unique_together = (("google_id", "group", "provider"),)
 
     def __str__(self) -> str:
-        return f"Google Workspace Group {self.group_id} to {self.provider_id}"
+        return f"Google Workspace Provider Group {self.group_id} to {self.provider_id}"

@@ -58,7 +58,10 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
                 raise StopSync(exc, obj, mapping) from exc
         if not raw_microsoft_user:
             raise StopSync(ValueError("No user mappings configured"), obj)
-        return MSUser(**delete_none_values(raw_microsoft_user))
+        try:
+            return MSUser(**delete_none_values(raw_microsoft_user))
+        except TypeError as exc:
+            raise StopSync("Invalid parameters returned from property mappings") from exc
 
     def delete(self, obj: User):
         """Delete user"""
