@@ -95,13 +95,13 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
                 response = self._request(self.directory_service.users().insert(body=google_user))
             except ObjectExistsSyncException:
                 # user already exists in google workspace, so we can connect them manually
-                GoogleWorkspaceProviderUser.objects.create(
+                return GoogleWorkspaceProviderUser.objects.create(
                     provider=self.provider, user=user, google_id=user.email
                 )
             except TransientSyncException as exc:
                 raise exc
             else:
-                GoogleWorkspaceProviderUser.objects.create(
+                return GoogleWorkspaceProviderUser.objects.create(
                     provider=self.provider, user=user, google_id=response["primaryEmail"]
                 )
 

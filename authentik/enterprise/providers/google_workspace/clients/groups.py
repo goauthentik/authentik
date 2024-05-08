@@ -99,11 +99,11 @@ class GoogleWorkspaceGroupClient(
                 group_data = self._request(
                     self.directory_service.groups().get(groupKey=google_group["email"])
                 )
-                GoogleWorkspaceProviderGroup.objects.create(
+                return GoogleWorkspaceProviderGroup.objects.create(
                     provider=self.provider, group=group, google_id=group_data["id"]
                 )
             else:
-                GoogleWorkspaceProviderGroup.objects.create(
+                return GoogleWorkspaceProviderGroup.objects.create(
                     provider=self.provider, group=group, google_id=response["id"]
                 )
 
@@ -132,19 +132,8 @@ class GoogleWorkspaceGroupClient(
         users = list(obj.users.order_by("id").values_list("id", flat=True))
         connections = GoogleWorkspaceProviderUser.objects.filter(
             provider=self.provider, user__pk__in=users
-        )
-        for user in connections:
-            try:
-                self._request(
-                    self.directory_service.members().insert(
-                        groupKey=google_group["id"],
-                        body={
-                            "email": user.google_id,
-                        },
-                    )
-                )
-            except TransientSyncException:
-                continue
+        ).values_list("google_id", flat=True)
+        self._patch(google_group["id"], Direction.add, connections)
 
     def update_group(self, group: Group, action: Direction, users_set: set[int]):
         """Update a groups members"""

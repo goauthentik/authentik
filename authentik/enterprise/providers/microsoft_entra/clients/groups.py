@@ -109,11 +109,11 @@ class MicrosoftEntraGroupClient(
                         "Group which could not be created also does not exist", group=group
                     )
                     return
-                MicrosoftEntraProviderGroup.objects.create(
+                return MicrosoftEntraProviderGroup.objects.create(
                     provider=self.provider, group=group, microsoft_id=group_data.value[0].id
                 )
             else:
-                MicrosoftEntraProviderGroup.objects.create(
+                return MicrosoftEntraProviderGroup.objects.create(
                     provider=self.provider, group=group, microsoft_id=response.id
                 )
 
@@ -139,19 +139,8 @@ class MicrosoftEntraGroupClient(
         users = list(obj.users.order_by("id").values_list("id", flat=True))
         connections = MicrosoftEntraProviderUser.objects.filter(
             provider=self.provider, user__pk__in=users
-        )
-        for user in connections:
-            try:
-                request_body = ReferenceCreate(
-                    odata_id=f"https://graph.microsoft.com/v1.0/directoryObjects/{user.microsoft_id}",
-                )
-                self._request(
-                    self.client.groups.by_group_id(microsoft_group.microsoft_id).members.ref.post(
-                        request_body
-                    )
-                )
-            except TransientSyncException:
-                continue
+        ).values_list("microsoft_id", flat=True)
+        self._patch(microsoft_group.microsoft_id, Direction.add, connections)
 
     def update_group(self, group: Group, action: Direction, users_set: set[int]):
         """Update a groups members"""

@@ -112,7 +112,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroup, SCIMGroupSchema]):
         scim_id = response.get("id")
         if not scim_id or scim_id == "":
             raise StopSync("SCIM Response with missing or invalid `id`")
-        SCIMGroup.objects.create(provider=self.provider, group=group, scim_id=scim_id)
+        return SCIMGroup.objects.create(provider=self.provider, group=group, scim_id=scim_id)
 
     def update(self, group: Group, connection: SCIMGroup):
         """Update existing group"""

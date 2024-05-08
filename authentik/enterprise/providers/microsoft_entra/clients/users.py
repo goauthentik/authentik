@@ -110,13 +110,13 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
                         "User which could not be created also does not exist", user=user
                     )
                     return
-                MicrosoftEntraProviderUser.objects.create(
+                return MicrosoftEntraProviderUser.objects.create(
                     provider=self.provider, user=user, microsoft_id=user_data.value[0].id
                 )
             except TransientSyncException as exc:
                 raise exc
             else:
-                MicrosoftEntraProviderUser.objects.create(
+                return MicrosoftEntraProviderUser.objects.create(
                     provider=self.provider, user=user, microsoft_id=response.id
                 )
 

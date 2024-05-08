@@ -46,19 +46,18 @@ class BaseOutgoingSyncClient[
     def write(self, obj: TModel) -> tuple[TConnection, bool]:
         """Write object to destination. Uses self.create and self.update, but
         can be overwritten for further logic"""
-        remote_obj = self.connection_type.objects.filter(
+        connection = self.connection_type.objects.filter(
             provider=self.provider, **{self.connection_type_query: obj}
         ).first()
-        connection: TConnection | None = None
         try:
-            if not remote_obj:
+            if not connection:
                 connection = self.create(obj)
                 return connection, True
             try:
-                self.update(obj, remote_obj)
-                return remote_obj, False
+                self.update(obj, connection)
+                return connection, False
             except NotFoundSyncException:
-                remote_obj.delete()
+                connection.delete()
                 connection = self.create(obj)
                 return connection, True
         except DatabaseError as exc:
