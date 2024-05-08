@@ -34,7 +34,7 @@ class GoogleWorkspaceGroupClient(
     connection_type_query = "group"
     can_discover = True
 
-    def to_schema(self, obj: Group) -> dict:
+    def to_schema(self, obj: Group, creating: bool) -> dict:
         """Convert authentik group"""
         raw_google_group = {
             "email": f"{slugify(obj.name)}@{self.provider.default_group_email_domain}"
@@ -50,6 +50,7 @@ class GoogleWorkspaceGroupClient(
                     request=None,
                     group=obj,
                     provider=self.provider,
+                    creating=creating,
                 )
                 if value is None:
                     continue
@@ -86,7 +87,7 @@ class GoogleWorkspaceGroupClient(
 
     def create(self, group: Group):
         """Create group from scratch and create a connection object"""
-        google_group = self.to_schema(group)
+        google_group = self.to_schema(group, True)
         self.check_email_valid(google_group["email"])
         with transaction.atomic():
             try:
@@ -108,7 +109,7 @@ class GoogleWorkspaceGroupClient(
 
     def update(self, group: Group, connection: GoogleWorkspaceProviderGroup):
         """Update existing group"""
-        google_group = self.to_schema(group)
+        google_group = self.to_schema(group, False)
         self.check_email_valid(google_group["email"])
         try:
             return self._request(

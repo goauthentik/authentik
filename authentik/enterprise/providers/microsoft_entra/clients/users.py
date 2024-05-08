@@ -31,7 +31,7 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
     connection_type_query = "user"
     can_discover = True
 
-    def to_schema(self, obj: User) -> MSUser:
+    def to_schema(self, obj: User, creating: bool) -> MSUser:
         """Convert authentik user"""
         raw_microsoft_user = {}
         for mapping in self.provider.property_mappings.all().order_by("name").select_subclasses():
@@ -42,6 +42,7 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
                     user=obj,
                     request=None,
                     provider=self.provider,
+                    creating=creating,
                 )
                 if value is None:
                     continue
@@ -88,7 +89,7 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
 
     def create(self, user: User):
         """Create user from scratch and create a connection object"""
-        microsoft_user = self.to_schema(user)
+        microsoft_user = self.to_schema(user, True)
         self.check_email_valid(microsoft_user.user_principal_name)
         with transaction.atomic():
             try:
@@ -121,7 +122,7 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
 
     def update(self, user: User, connection: MicrosoftEntraProviderUser):
         """Update existing user"""
-        microsoft_user = self.to_schema(user)
+        microsoft_user = self.to_schema(user, False)
         self.check_email_valid(microsoft_user.user_principal_name)
         self._request(self.client.users.by_user_id(connection.microsoft_id).patch(microsoft_user))
 

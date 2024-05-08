@@ -36,7 +36,7 @@ class MicrosoftEntraGroupClient(
     connection_type_query = "group"
     can_discover = True
 
-    def to_schema(self, obj: Group) -> MSGroup:
+    def to_schema(self, obj: Group, creating: bool) -> MSGroup:
         """Convert authentik group"""
         raw_microsoft_group = {}
         for mapping in (
@@ -50,6 +50,7 @@ class MicrosoftEntraGroupClient(
                     request=None,
                     group=obj,
                     provider=self.provider,
+                    creating=creating,
                 )
                 if value is None:
                     continue
@@ -86,7 +87,7 @@ class MicrosoftEntraGroupClient(
 
     def create(self, group: Group):
         """Create group from scratch and create a connection object"""
-        microsoft_group = self.to_schema(group)
+        microsoft_group = self.to_schema(group, True)
         # self.check_email_valid(microsoft_group["email"])
         with transaction.atomic():
             try:
@@ -119,7 +120,7 @@ class MicrosoftEntraGroupClient(
 
     def update(self, group: Group, connection: MicrosoftEntraProviderGroup):
         """Update existing group"""
-        microsoft_group = self.to_schema(group)
+        microsoft_group = self.to_schema(group, False)
         # self.check_email_valid(microsoft_group["email"])
         try:
             return self._request(

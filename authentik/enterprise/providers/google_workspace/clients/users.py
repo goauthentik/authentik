@@ -29,7 +29,7 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
     connection_type_query = "user"
     can_discover = True
 
-    def to_schema(self, obj: User) -> dict:
+    def to_schema(self, obj: User, creating: bool) -> dict:
         """Convert authentik user"""
         raw_google_user = {}
         for mapping in self.provider.property_mappings.all().order_by("name").select_subclasses():
@@ -40,6 +40,7 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
                     user=obj,
                     request=None,
                     provider=self.provider,
+                    creating=creating,
                 )
                 if value is None:
                     continue
@@ -85,7 +86,7 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
 
     def create(self, user: User):
         """Create user from scratch and create a connection object"""
-        google_user = self.to_schema(user)
+        google_user = self.to_schema(user, True)
         self.check_email_valid(
             google_user["primaryEmail"], *[x["address"] for x in google_user.get("emails", [])]
         )
@@ -106,7 +107,7 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
 
     def update(self, user: User, connection: GoogleWorkspaceProviderUser):
         """Update existing user"""
-        google_user = self.to_schema(user)
+        google_user = self.to_schema(user, False)
         self.check_email_valid(
             google_user["primaryEmail"], *[x["address"] for x in google_user.get("emails", [])]
         )

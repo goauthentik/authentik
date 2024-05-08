@@ -71,7 +71,7 @@ class BaseOutgoingSyncClient[
         """Delete object from destination"""
         raise NotImplementedError()
 
-    def to_schema(self, obj: TModel) -> TSchema:
+    def to_schema(self, obj: TModel, creating: bool) -> TSchema:
         """Convert object to destination schema"""
         raise NotImplementedError()
 
