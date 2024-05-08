@@ -3,6 +3,7 @@ title: Configure Google Workspace
 ---
 
 
+
 - note about backchannel provider
 - create google cloud project
 - enable Admin SDK API
@@ -15,4 +16,4 @@ title: Configure Google Workspace
     - `"https://www.googleapis.com/auth/admin.directory.group"`
     - `"https://www.googleapis.com/auth/admin.directory.group.member"`
 - need to get email of an admin user to delegate as?
-    - Not sure which permissions are requiredj
+    - Not sure which permissions are required
