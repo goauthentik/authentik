@@ -132,9 +132,8 @@ class MicrosoftEntraGroupClient(
 
     def write(self, obj: Group):
         microsoft_group, created = super().write(obj)
-        if created:
-            self.create_sync_members(obj, microsoft_group)
-        return microsoft_group
+        self.create_sync_members(obj, microsoft_group)
+        return microsoft_group, created
 
     def create_sync_members(self, obj: Group, microsoft_group: MSGroup):
         """Sync all members after a group was created"""

@@ -124,9 +124,8 @@ class GoogleWorkspaceGroupClient(
 
     def write(self, obj: Group):
         google_group, created = super().write(obj)
-        if created:
-            self.create_sync_members(obj, google_group)
-        return google_group
+        self.create_sync_members(obj, google_group)
+        return google_group, created
 
     def create_sync_members(self, obj: Group, google_group: dict):
         """Sync all members after a group was created"""
