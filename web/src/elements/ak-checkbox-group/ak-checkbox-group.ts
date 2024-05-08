@@ -159,6 +159,8 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
             }
             this.internals.setFormValue(this.formValue);
         }
+        // Doing a write-back so anyone examining the checkbox.value field will get something
+        // meaningful. Doesn't do anything for anyone, usually, but it's nice to have.
         this.value = this.values;
     }
 
