@@ -203,18 +203,19 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
                 <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
                     <ak-sync-status-card
                         .fetch=${() => {
-                            return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraSyncStatusRetrieve(
-                                {
-                                    id: this.provider?.pk || 0,
-                                },
-                            );
+                            return new ProvidersApi(
+                                DEFAULT_CONFIG,
+                            ).providersMicrosoftEntraSyncStatusRetrieve({
+                                id: this.provider?.pk || 0,
+                            });
                         }}
                         .triggerSync=${() => {
-                            return new ProvidersApi(DEFAULT_CONFIG)
-                                .providersMicrosoftEntraPartialUpdate({
-                                    id: this.provider?.pk || 0,
-                                    patchedMicrosoftEntraProviderRequest: {},
-                                });
+                            return new ProvidersApi(
+                                DEFAULT_CONFIG,
+                            ).providersMicrosoftEntraPartialUpdate({
+                                id: this.provider?.pk || 0,
+                                patchedMicrosoftEntraProviderRequest: {},
+                            });
                         }}
                     ></ak-sync-status-card>
                 </div>

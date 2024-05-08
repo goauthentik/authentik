@@ -6,10 +6,10 @@ import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Markdown";
+import "@goauthentik/elements/SyncStatusCard";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/SyncStatusCard";
 import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 
 import { msg } from "@lit/localize";
@@ -202,18 +202,19 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                 <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
                     <ak-sync-status-card
                         .fetch=${() => {
-                            return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceSyncStatusRetrieve(
-                                {
-                                    id: this.provider?.pk || 0,
-                                },
-                            );
+                            return new ProvidersApi(
+                                DEFAULT_CONFIG,
+                            ).providersGoogleWorkspaceSyncStatusRetrieve({
+                                id: this.provider?.pk || 0,
+                            });
                         }}
                         .triggerSync=${() => {
-                            return new ProvidersApi(DEFAULT_CONFIG)
-                                .providersGoogleWorkspacePartialUpdate({
-                                    id: this.provider?.pk || 0,
-                                    patchedGoogleWorkspaceProviderRequest: {},
-                                });
+                            return new ProvidersApi(
+                                DEFAULT_CONFIG,
+                            ).providersGoogleWorkspacePartialUpdate({
+                                id: this.provider?.pk || 0,
+                                patchedGoogleWorkspaceProviderRequest: {},
+                            });
                         }}
                     ></ak-sync-status-card>
                 </div>

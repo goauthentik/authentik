@@ -1,18 +1,18 @@
 import { EVENT_REFRESH } from "@goauthentik/authentik/common/constants";
+import { getRelativeTime } from "@goauthentik/authentik/common/utils";
 import { AKElement } from "@goauthentik/authentik/elements/Base";
-import "@goauthentik/elements/events/LogViewer";
+import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/EmptyState";
+import "@goauthentik/elements/events/LogViewer";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import "@goauthentik/components/ak-status-label";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { SyncStatus, SystemTask, SystemTaskStatusEnum } from "@goauthentik/api";
-import { getRelativeTime } from "@goauthentik/authentik/common/utils";
 
 @customElement("ak-sync-status-card")
 export class SyncStatusCard extends AKElement {
@@ -43,8 +43,18 @@ export class SyncStatusCard extends AKElement {
     renderSyncTask(task: SystemTask): TemplateResult {
         return html`<li>
             ${(this.syncState?.tasks || []).length > 1 ? html`<span>${task.name}</span>` : nothing}
-            <span><ak-status-label ?good=${task.status === SystemTaskStatusEnum.Successful} good-label=${msg("Finished successfully")} bad-label=${msg("Finished with errors")}></ak-status-label></span>
-            <span>${msg(str`Finished ${getRelativeTime(task.finishTimestamp)} (${task.finishTimestamp.toLocaleString()})`)}</span>
+            <span
+                ><ak-status-label
+                    ?good=${task.status === SystemTaskStatusEnum.Successful}
+                    good-label=${msg("Finished successfully")}
+                    bad-label=${msg("Finished with errors")}
+                ></ak-status-label
+            ></span>
+            <span
+                >${msg(
+                    str`Finished ${getRelativeTime(task.finishTimestamp)} (${task.finishTimestamp.toLocaleString()})`,
+                )}</span
+            >
             <ak-log-viewer .logs=${task?.messages}></ak-log-viewer>
         </li> `;
     }
