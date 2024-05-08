@@ -2,7 +2,7 @@ version: 1
 metadata:
   labels:
     blueprints.goauthentik.io/system: "true"
-  name: System - Google Provider - Mappings
+  name: System - Google Workspace Provider - Mappings
 entries:
   - identifiers:
       managed: goauthentik.io/providers/google_workspace/user
