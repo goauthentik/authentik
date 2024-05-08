@@ -88,7 +88,6 @@ class MicrosoftEntraGroupClient(
     def create(self, group: Group):
         """Create group from scratch and create a connection object"""
         microsoft_group = self.to_schema(group, True)
-        # self.check_email_valid(microsoft_group["email"])
         with transaction.atomic():
             try:
                 response = self._request(self.client.groups.post(microsoft_group))
@@ -121,7 +120,7 @@ class MicrosoftEntraGroupClient(
     def update(self, group: Group, connection: MicrosoftEntraProviderGroup):
         """Update existing group"""
         microsoft_group = self.to_schema(group, False)
-        # self.check_email_valid(microsoft_group["email"])
+        microsoft_group.id = connection.microsoft_id
         try:
             return self._request(
                 self.client.groups.by_group_id(connection.microsoft_id).patch(microsoft_group)
@@ -135,7 +134,7 @@ class MicrosoftEntraGroupClient(
         self.create_sync_members(obj, microsoft_group)
         return microsoft_group, created
 
-    def create_sync_members(self, obj: Group, microsoft_group: MSGroup):
+    def create_sync_members(self, obj: Group, microsoft_group: MicrosoftEntraProviderGroup):
         """Sync all members after a group was created"""
         users = list(obj.users.order_by("id").values_list("id", flat=True))
         connections = MicrosoftEntraProviderUser.objects.filter(
@@ -147,7 +146,7 @@ class MicrosoftEntraGroupClient(
                     odata_id=f"https://graph.microsoft.com/v1.0/directoryObjects/{user.microsoft_id}",
                 )
                 self._request(
-                    self.client.groups.by_group_id(microsoft_group.id).members.ref.post(
+                    self.client.groups.by_group_id(microsoft_group.microsoft_id).members.ref.post(
                         request_body
                     )
                 )
