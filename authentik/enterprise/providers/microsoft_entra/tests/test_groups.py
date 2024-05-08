@@ -361,6 +361,10 @@ class MicrosoftEntraGroupTests(TestCase):
                 AsyncMock(return_value=MSGroup(id=generate_id())),
             ),
             patch(
+                "msgraph.generated.groups.item.group_item_request_builder.GroupItemRequestBuilder.patch",
+                AsyncMock(return_value=MSGroup(id=uid)),
+            ),
+            patch(
                 "msgraph.generated.users.users_request_builder.UsersRequestBuilder.get",
                 AsyncMock(
                     return_value=UserCollectionResponse(
@@ -370,7 +374,11 @@ class MicrosoftEntraGroupTests(TestCase):
             ) as user_list,
             patch(
                 "msgraph.generated.groups.groups_request_builder.GroupsRequestBuilder.get",
-                AsyncMock(return_value=GroupCollectionResponse(value=[MSGroup(display_name=uid)])),
+                AsyncMock(
+                    return_value=GroupCollectionResponse(
+                        value=[MSGroup(display_name=uid, unique_name=uid, id=uid)]
+                    )
+                ),
             ) as group_list,
         ):
             microsoft_entra_sync.delay(self.provider.pk).get()
