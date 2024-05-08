@@ -2,6 +2,11 @@ from asyncio import run
 from collections.abc import Coroutine
 from typing import Any
 
+from azure.core.exceptions import (
+    ClientAuthenticationError,
+    ServiceRequestError,
+    ServiceResponseError,
+)
 from azure.identity.aio import ClientSecretCredential
 from django.db.models import Model
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
@@ -23,6 +28,7 @@ from authentik.lib.sync.outgoing.exceptions import (
     NotFoundSyncException,
     ObjectExistsSyncException,
     StopSync,
+    TransientSyncException,
 )
 
 
@@ -61,12 +67,13 @@ class MicrosoftEntraSyncClient[TModel: Model, TConnection: Model, TSchema: dict]
     def _request[T](self, request: Coroutine[Any, Any, T]) -> T:
         try:
             return run(request)
+        except ClientAuthenticationError as exc:
+            raise StopSync(exc, None, None) from exc
         except ODataError as exc:
             raise StopSync(exc, None, None) from exc
+        except (ServiceRequestError, ServiceResponseError) as exc:
+            raise TransientSyncException("Failed to sent request") from exc
         except APIError as exc:
-            print(exc, type(exc))
-            # TODO: Catch transient exceptions -> TransientSyncException
-            # TODO: Catch auth errors -> SyncStop
             if exc.response_status_code == HttpResponseNotFound.status_code:
                 raise NotFoundSyncException("Object not found") from exc
             if exc.response_status_code == HttpResponseBadRequest.status_code:
