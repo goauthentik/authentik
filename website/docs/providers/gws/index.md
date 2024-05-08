@@ -2,8 +2,6 @@
 title: GWS provider
 ---
 
-
-
 ## Common use cases
 
 With the Google Workspace provider, authentik can be the single source of truth for all users and groups, even when using Google products like Gmail.
@@ -16,7 +14,7 @@ The following sections discuss how Google Workspace operates with authentik.
 
 When first creating the provider and setting it up correctly, the provider will run a discovery and query your google workspace for all users and groups, and attempt to match them with their respective counterparts in authentik. This matching is done by email address for users as google uses that as their primary identifier, and using group names for groups. This discovery also takes into consideration any **User filtering** options configured in the provider, such as only linking to authentik users in a specific group or excluding service accounts.
 
-This discovery happens every time the provider is saved (***this might change later to a separate action***)
+This discovery happens every time the provider is saved (**_this might change later to a separate action_**)
 
 ### Syncing
 
@@ -45,5 +43,6 @@ For Groups, as Google groups require an email address, the provider has a config
 By default, authentik maps a user’s email, a user’s name, and their active status. For groups, the name is synced.
 
 Refer to Google documentation for further details:
-*   https://developers.google.com/admin-sdk/directory/reference/rest/v1/users#User
-*   https://developers.google.com/admin-sdk/directory/reference/rest/v1/groups#Group
+
+-   https://developers.google.com/admin-sdk/directory/reference/rest/v1/users#User
+-   https://developers.google.com/admin-sdk/directory/reference/rest/v1/groups#Group

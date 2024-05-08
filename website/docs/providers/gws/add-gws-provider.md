@@ -32,12 +32,12 @@ The first step is to create the GWS app and provider.
 
 words here
 
-1. ---
+1. ***
 
-2. ---
+2. ***
 
-3. ---
+3. ***
 
-4. ----
+4. ***
 
 ### Step 3. descriptive title
