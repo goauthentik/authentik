@@ -36,9 +36,9 @@ class MicrosoftEntraGroupTests(TestCase):
         Group.objects.all().delete()
         self.provider: MicrosoftEntraProvider = MicrosoftEntraProvider.objects.create(
             name=generate_id(),
-            client_id="",
-            client_secret="",
-            tenant_id="",
+            client_id=generate_id(),
+            client_secret=generate_id(),
+            tenant_id=generate_id(),
             exclude_users_service_account=True,
         )
         self.app: Application = Application.objects.create(
