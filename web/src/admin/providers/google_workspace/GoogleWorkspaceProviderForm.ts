@@ -76,7 +76,9 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleProv
                             mode=${CodeMirrorMode.JavaScript}
                             .value="${first(this.instance?.credentials, {})}"
                         ></ak-codemirror>
-                        <p class="pf-c-form__helper-text">${msg("TODO")}</p>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Google Cloud credentials file.")}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Delegated Subject")}
@@ -89,7 +91,11 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleProv
                             class="pf-c-form-control"
                             required
                         />
-                        <p class="pf-c-form__helper-text">${msg("TODO")}</p>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Email address of the user the actions of authentik will be delegated to.",
+                            )}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Default group email domain")}

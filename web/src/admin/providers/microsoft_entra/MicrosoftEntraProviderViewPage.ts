@@ -1,4 +1,4 @@
-import "@goauthentik/admin/providers/google_workspace/MicrosoftEntraProviderForm";
+import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderFormPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";

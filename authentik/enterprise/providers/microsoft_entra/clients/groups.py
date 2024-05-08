@@ -220,10 +220,12 @@ class MicrosoftEntraGroupClient(
         groups = self._request(self.client.groups.get())
         next_link = True
         while next_link:
-            groups = self._request(self.client.groups.with_url(next_link).get())
             for group in groups.value:
                 self._discover_single_group(group)
             next_link = groups.odata_next_link
+            if not next_link:
+                break
+            groups = self._request(self.client.groups.with_url(next_link).get())
 
     def _discover_single_group(self, group: MSGroup):
         """handle discovery of a single group"""

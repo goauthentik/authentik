@@ -115,10 +115,12 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
         users = self._request(self.client.users.get())
         next_link = True
         while next_link:
-            users = self._request(self.client.users.with_url(next_link).get())
             for user in users.value:
                 self._discover_single_user(user)
             next_link = users.odata_next_link
+            if not next_link:
+                break
+            users = self._request(self.client.users.with_url(next_link).get())
 
     def _discover_single_user(self, user: MSUser):
         """handle discovery of a single user"""
