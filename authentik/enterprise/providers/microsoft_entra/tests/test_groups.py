@@ -6,8 +6,11 @@ from azure.identity.aio import ClientSecretCredential
 from django.test import TestCase
 from msgraph.generated.models.group import Group as MSGroup
 from msgraph.generated.models.group_collection_response import GroupCollectionResponse
+from msgraph.generated.models.organization import Organization
+from msgraph.generated.models.organization_collection_response import OrganizationCollectionResponse
 from msgraph.generated.models.user import User as MSUser
 from msgraph.generated.models.user_collection_response import UserCollectionResponse
+from msgraph.generated.models.verified_domain import VerifiedDomain
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
@@ -67,6 +70,16 @@ class MicrosoftEntraGroupTests(TestCase):
                 MagicMock(return_value={"credentials": self.creds}),
             ),
             patch(
+                "msgraph.generated.organization.organization_request_builder.OrganizationRequestBuilder.get",
+                AsyncMock(
+                    return_value=OrganizationCollectionResponse(
+                        value=[
+                            Organization(verified_domains=[VerifiedDomain(name="goauthentik.io")])
+                        ]
+                    )
+                ),
+            ),
+            patch(
                 "msgraph.generated.groups.groups_request_builder.GroupsRequestBuilder.post",
                 AsyncMock(return_value=MSGroup(id=generate_id())),
             ) as group_create,
@@ -87,6 +100,16 @@ class MicrosoftEntraGroupTests(TestCase):
             patch(
                 "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
                 MagicMock(return_value={"credentials": self.creds}),
+            ),
+            patch(
+                "msgraph.generated.organization.organization_request_builder.OrganizationRequestBuilder.get",
+                AsyncMock(
+                    return_value=OrganizationCollectionResponse(
+                        value=[
+                            Organization(verified_domains=[VerifiedDomain(name="goauthentik.io")])
+                        ]
+                    )
+                ),
             ),
             patch(
                 "msgraph.generated.groups.groups_request_builder.GroupsRequestBuilder.post",
@@ -114,6 +137,16 @@ class MicrosoftEntraGroupTests(TestCase):
         uid = generate_id()
         ext_id = generate_id()
         with (
+            patch(
+                "msgraph.generated.organization.organization_request_builder.OrganizationRequestBuilder.get",
+                AsyncMock(
+                    return_value=OrganizationCollectionResponse(
+                        value=[
+                            Organization(verified_domains=[VerifiedDomain(name="goauthentik.io")])
+                        ]
+                    )
+                ),
+            ),
             patch(
                 "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
                 MagicMock(return_value={"credentials": self.creds}),
@@ -145,6 +178,16 @@ class MicrosoftEntraGroupTests(TestCase):
             patch(
                 "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
                 MagicMock(return_value={"credentials": self.creds}),
+            ),
+            patch(
+                "msgraph.generated.organization.organization_request_builder.OrganizationRequestBuilder.get",
+                AsyncMock(
+                    return_value=OrganizationCollectionResponse(
+                        value=[
+                            Organization(verified_domains=[VerifiedDomain(name="goauthentik.io")])
+                        ]
+                    )
+                ),
             ),
             patch(
                 "msgraph.generated.users.users_request_builder.UsersRequestBuilder.post",
@@ -182,6 +225,16 @@ class MicrosoftEntraGroupTests(TestCase):
             patch(
                 "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
                 MagicMock(return_value={"credentials": self.creds}),
+            ),
+            patch(
+                "msgraph.generated.organization.organization_request_builder.OrganizationRequestBuilder.get",
+                AsyncMock(
+                    return_value=OrganizationCollectionResponse(
+                        value=[
+                            Organization(verified_domains=[VerifiedDomain(name="goauthentik.io")])
+                        ]
+                    )
+                ),
             ),
             patch(
                 "msgraph.generated.users.users_request_builder.UsersRequestBuilder.post",
@@ -230,6 +283,16 @@ class MicrosoftEntraGroupTests(TestCase):
                 MagicMock(return_value={"credentials": self.creds}),
             ),
             patch(
+                "msgraph.generated.organization.organization_request_builder.OrganizationRequestBuilder.get",
+                AsyncMock(
+                    return_value=OrganizationCollectionResponse(
+                        value=[
+                            Organization(verified_domains=[VerifiedDomain(name="goauthentik.io")])
+                        ]
+                    )
+                ),
+            ),
+            patch(
                 "msgraph.generated.groups.groups_request_builder.GroupsRequestBuilder.post",
                 AsyncMock(return_value=MSGroup(id=uid)),
             ) as group_create,
@@ -265,6 +328,16 @@ class MicrosoftEntraGroupTests(TestCase):
             patch(
                 "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
                 MagicMock(return_value={"credentials": self.creds}),
+            ),
+            patch(
+                "msgraph.generated.organization.organization_request_builder.OrganizationRequestBuilder.get",
+                AsyncMock(
+                    return_value=OrganizationCollectionResponse(
+                        value=[
+                            Organization(verified_domains=[VerifiedDomain(name="goauthentik.io")])
+                        ]
+                    )
+                ),
             ),
             patch(
                 "msgraph.generated.users.item.user_item_request_builder.UserItemRequestBuilder.patch",
