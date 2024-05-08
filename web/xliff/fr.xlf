@@ -8641,6 +8641,63 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Cleared</source>
   <target>Effacé</target>
 </trans-unit>
+<trans-unit id="s8cfd29891b2c93f0">
+  <source>Google Workspace Provider</source>
+</trans-unit>
+<trans-unit id="sa817aa9f6f88a991">
+  <source>Credentials</source>
+</trans-unit>
+<trans-unit id="s44b0d2fa9c97719d">
+  <source>TODO</source>
+</trans-unit>
+<trans-unit id="sc668815044e218c2">
+  <source>Delegated Subject</source>
+</trans-unit>
+<trans-unit id="se89a9ecf275e4343">
+  <source>Default group email domain</source>
+</trans-unit>
+<trans-unit id="s64a0a6da6ed6d680">
+  <source>Default domain that is used to generate a group's email address. Can be customized using property mappings.</source>
+</trans-unit>
+<trans-unit id="sd061e65955e036ca">
+  <source>User deletion action</source>
+</trans-unit>
+<trans-unit id="s87f86f65b5e19ea7">
+  <source>User is deleted</source>
+</trans-unit>
+<trans-unit id="s3906cd4a102867a3">
+  <source>Suspend</source>
+</trans-unit>
+<trans-unit id="s0bf5b364e2c79392">
+  <source>User is suspended, and connection to user in authentik is removed.</source>
+</trans-unit>
+<trans-unit id="s4acb0250d735c2a9">
+  <source>Do Nothing</source>
+</trans-unit>
+<trans-unit id="s5fe525d19499ed47">
+  <source>The connection is removed but the user is not modified</source>
+</trans-unit>
+<trans-unit id="s676a0127c35d240a">
+  <source>Determines what authentik will do when a User is deleted.</source>
+</trans-unit>
+<trans-unit id="sd1aa04cc32caf2b0">
+  <source>Group deletion action</source>
+</trans-unit>
+<trans-unit id="s874c788479481131">
+  <source>Group is deleted</source>
+</trans-unit>
+<trans-unit id="s0983fa9b84e4a9f7">
+  <source>The connection is removed but the group is not modified</source>
+</trans-unit>
+<trans-unit id="sdb872a9f425937fa">
+  <source>Determines what authentik will do when a Group is deleted.</source>
+</trans-unit>
+<trans-unit id="sa5f28f1ad0bee45b">
+  <source>Google Workspace Provider is in preview.</source>
+</trans-unit>
+<trans-unit id="sfcf7bc2ef234d938">
+  <source>Update Google Provider</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
