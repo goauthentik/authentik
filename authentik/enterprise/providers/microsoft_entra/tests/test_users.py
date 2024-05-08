@@ -1,15 +1,16 @@
 """Microsoft Entra User tests"""
 
-from json import loads
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
+from azure.identity.aio import ClientSecretCredential
 from django.test import TestCase
+from msgraph.generated.models.group_collection_response import GroupCollectionResponse
+from msgraph.generated.models.user import User as MSUser
+from msgraph.generated.models.user_collection_response import UserCollectionResponse
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
-from authentik.enterprise.providers.microsoft_entra.clients.test_http import MockHTTP
 from authentik.enterprise.providers.microsoft_entra.models import (
-    MicrosoftEntraDeleteAction,
     MicrosoftEntraProvider,
     MicrosoftEntraProviderMapping,
     MicrosoftEntraProviderUser,
@@ -17,10 +18,8 @@ from authentik.enterprise.providers.microsoft_entra.models import (
 from authentik.enterprise.providers.microsoft_entra.tasks import microsoft_entra_sync
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
-from authentik.lib.tests.utils import load_fixture
+from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
 from authentik.tenants.models import Tenant
-
-domains_list_v1_mock = load_fixture("fixtures/domains_list_v1.json")
 
 
 class MicrosoftEntraUserTests(TestCase):
@@ -35,10 +34,10 @@ class MicrosoftEntraUserTests(TestCase):
         Group.objects.all().delete()
         self.provider: MicrosoftEntraProvider = MicrosoftEntraProvider.objects.create(
             name=generate_id(),
-            credentials={},
-            delegated_subject="",
+            client_id="",
+            client_secret="",
+            tenant_id="",
             exclude_users_service_account=True,
-            default_group_email_domain="goauthentik.io",
         )
         self.app: Application = Application.objects.create(
             name=generate_id(),
@@ -55,24 +54,20 @@ class MicrosoftEntraUserTests(TestCase):
                 managed="goauthentik.io/providers/microsoft_entra/group"
             )
         )
-        self.api_key = generate_id()
+        self.creds = ClientSecretCredential(generate_id(), generate_id(), generate_id())
 
     def test_user_create(self):
         """Test user creation"""
         uid = generate_id()
-        http = MockHTTP()
-        http.add_response(
-            f"https://admin.microsoftapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
-            domains_list_v1_mock,
-        )
-        http.add_response(
-            f"https://admin.microsoftapis.com/admin/directory/v1/users?key={self.api_key}&alt=json",
-            method="POST",
-            body={"primaryEmail": f"{uid}@goauthentik.io"},
-        )
-        with patch(
-            "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
-            MagicMock(return_value={"developerKey": self.api_key, "http": http}),
+        with (
+            patch(
+                "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
+                MagicMock(return_value={"credentials": self.creds}),
+            ),
+            patch(
+                "msgraph.generated.users.users_request_builder.UsersRequestBuilder.post",
+                AsyncMock(return_value=MSUser(id=generate_id())),
+            ) as user_create,
         ):
             user = User.objects.create(
                 username=uid,
@@ -84,29 +79,24 @@ class MicrosoftEntraUserTests(TestCase):
             ).first()
             self.assertIsNotNone(microsoft_user)
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
-            self.assertEqual(len(http.requests()), 2)
+            user_create.assert_called_once()
 
     def test_user_create_update(self):
         """Test user updating"""
         uid = generate_id()
-        http = MockHTTP()
-        http.add_response(
-            f"https://admin.microsoftapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
-            domains_list_v1_mock,
-        )
-        http.add_response(
-            f"https://admin.microsoftapis.com/admin/directory/v1/users?key={self.api_key}&alt=json",
-            method="POST",
-            body={"primaryEmail": f"{uid}@goauthentik.io"},
-        )
-        http.add_response(
-            f"https://admin.microsoftapis.com/admin/directory/v1/users/{uid}%40goauthentik.io?key={self.api_key}&alt=json",
-            method="PUT",
-            body={"primaryEmail": f"{uid}@goauthentik.io"},
-        )
-        with patch(
-            "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
-            MagicMock(return_value={"developerKey": self.api_key, "http": http}),
+        with (
+            patch(
+                "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
+                MagicMock(return_value={"credentials": self.creds}),
+            ),
+            patch(
+                "msgraph.generated.users.users_request_builder.UsersRequestBuilder.post",
+                AsyncMock(return_value=MSUser(id=generate_id())),
+            ) as user_create,
+            patch(
+                "msgraph.generated.users.item.user_item_request_builder.UserItemRequestBuilder.patch",
+                AsyncMock(return_value=MSUser(id=generate_id())),
+            ) as user_patch,
         ):
             user = User.objects.create(
                 username=uid,
@@ -121,28 +111,25 @@ class MicrosoftEntraUserTests(TestCase):
             user.name = "new name"
             user.save()
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
-            self.assertEqual(len(http.requests()), 4)
+            user_create.assert_called_once()
+            user_patch.assert_called_once()
 
     def test_user_create_delete(self):
         """Test user deletion"""
         uid = generate_id()
-        http = MockHTTP()
-        http.add_response(
-            f"https://admin.microsoftapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
-            domains_list_v1_mock,
-        )
-        http.add_response(
-            f"https://admin.microsoftapis.com/admin/directory/v1/users?key={self.api_key}&alt=json",
-            method="POST",
-            body={"primaryEmail": f"{uid}@goauthentik.io"},
-        )
-        http.add_response(
-            f"https://admin.microsoftapis.com/admin/directory/v1/users/{uid}%40goauthentik.io?key={self.api_key}",
-            method="DELETE",
-        )
-        with patch(
-            "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
-            MagicMock(return_value={"developerKey": self.api_key, "http": http}),
+        with (
+            patch(
+                "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
+                MagicMock(return_value={"credentials": self.creds}),
+            ),
+            patch(
+                "msgraph.generated.users.users_request_builder.UsersRequestBuilder.post",
+                AsyncMock(return_value=MSUser(id=generate_id())),
+            ) as user_create,
+            patch(
+                "msgraph.generated.users.item.user_item_request_builder.UserItemRequestBuilder.delete",
+                AsyncMock(),
+            ) as user_delete,
         ):
             user = User.objects.create(
                 username=uid,
@@ -156,31 +143,31 @@ class MicrosoftEntraUserTests(TestCase):
 
             user.delete()
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
-            self.assertEqual(len(http.requests()), 4)
+            user_create.assert_called_once()
+            user_delete.assert_called_once()
 
     def test_user_create_delete_suspend(self):
         """Test user deletion (delete action = Suspend)"""
-        self.provider.user_delete_action = MicrosoftEntraDeleteAction.SUSPEND
+        self.provider.user_delete_action = OutgoingSyncDeleteAction.SUSPEND
         self.provider.save()
         uid = generate_id()
-        http = MockHTTP()
-        http.add_response(
-            f"https://admin.microsoftapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
-            domains_list_v1_mock,
-        )
-        http.add_response(
-            f"https://admin.microsoftapis.com/admin/directory/v1/users?key={self.api_key}&alt=json",
-            method="POST",
-            body={"primaryEmail": f"{uid}@goauthentik.io"},
-        )
-        http.add_response(
-            f"https://admin.microsoftapis.com/admin/directory/v1/users/{uid}%40goauthentik.io?key={self.api_key}&alt=json",
-            method="PUT",
-            body={"primaryEmail": f"{uid}@goauthentik.io"},
-        )
-        with patch(
-            "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
-            MagicMock(return_value={"developerKey": self.api_key, "http": http}),
+        with (
+            patch(
+                "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
+                MagicMock(return_value={"credentials": self.creds}),
+            ),
+            patch(
+                "msgraph.generated.users.users_request_builder.UsersRequestBuilder.post",
+                AsyncMock(return_value=MSUser(id=generate_id())),
+            ) as user_create,
+            patch(
+                "msgraph.generated.users.item.user_item_request_builder.UserItemRequestBuilder.patch",
+                AsyncMock(return_value=MSUser(id=generate_id())),
+            ) as user_patch,
+            patch(
+                "msgraph.generated.users.item.user_item_request_builder.UserItemRequestBuilder.delete",
+                AsyncMock(),
+            ) as user_delete,
         ):
             user = User.objects.create(
                 username=uid,
@@ -193,38 +180,38 @@ class MicrosoftEntraUserTests(TestCase):
             self.assertIsNotNone(microsoft_user)
 
             user.delete()
-            self.assertEqual(len(http.requests()), 4)
-            _, _, body, _ = http.requests()[3]
-            self.assertEqual(
-                loads(body),
-                {
-                    "suspended": True,
-                },
-            )
             self.assertFalse(
                 MicrosoftEntraProviderUser.objects.filter(
                     provider=self.provider, user__username=uid
                 ).exists()
             )
+            user_create.assert_called_once()
+            user_patch.assert_called_once()
+            self.assertFalse(user_patch.call_args[0][0].account_enabled)
+            user_delete.assert_not_called()
 
     def test_user_create_delete_do_nothing(self):
         """Test user deletion (delete action = do nothing)"""
-        self.provider.user_delete_action = MicrosoftEntraDeleteAction.DO_NOTHING
+        self.provider.user_delete_action = OutgoingSyncDeleteAction.DO_NOTHING
         self.provider.save()
         uid = generate_id()
-        http = MockHTTP()
-        http.add_response(
-            f"https://admin.microsoftapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
-            domains_list_v1_mock,
-        )
-        http.add_response(
-            f"https://admin.microsoftapis.com/admin/directory/v1/users?key={self.api_key}&alt=json",
-            method="POST",
-            body={"primaryEmail": f"{uid}@goauthentik.io"},
-        )
-        with patch(
-            "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
-            MagicMock(return_value={"developerKey": self.api_key, "http": http}),
+        with (
+            patch(
+                "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
+                MagicMock(return_value={"credentials": self.creds}),
+            ),
+            patch(
+                "msgraph.generated.users.users_request_builder.UsersRequestBuilder.post",
+                AsyncMock(return_value=MSUser(id=generate_id())),
+            ) as user_create,
+            patch(
+                "msgraph.generated.users.item.user_item_request_builder.UserItemRequestBuilder.patch",
+                AsyncMock(return_value=MSUser(id=generate_id())),
+            ) as user_patch,
+            patch(
+                "msgraph.generated.users.item.user_item_request_builder.UserItemRequestBuilder.delete",
+                AsyncMock(),
+            ) as user_delete,
         ):
             user = User.objects.create(
                 username=uid,
@@ -237,45 +224,49 @@ class MicrosoftEntraUserTests(TestCase):
             self.assertIsNotNone(microsoft_user)
 
             user.delete()
-            self.assertEqual(len(http.requests()), 3)
             self.assertFalse(
                 MicrosoftEntraProviderUser.objects.filter(
                     provider=self.provider, user__username=uid
                 ).exists()
             )
+            user_create.assert_called_once()
+            user_patch.assert_not_called()
+            user_delete.assert_not_called()
 
     def test_sync_task(self):
         """Test user discovery"""
         uid = generate_id()
-        http = MockHTTP()
-        http.add_response(
-            f"https://admin.microsoftapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
-            domains_list_v1_mock,
-        )
-        http.add_response(
-            f"https://admin.microsoftapis.com/admin/directory/v1/users?customer=my_customer&maxResults=500&orderBy=email&key={self.api_key}&alt=json",
-            method="GET",
-            body={"users": [{"primaryEmail": f"{uid}@goauthentik.io"}]},
-        )
-        http.add_response(
-            f"https://admin.microsoftapis.com/admin/directory/v1/groups?customer=my_customer&maxResults=500&orderBy=email&key={self.api_key}&alt=json",
-            method="GET",
-            body={"groups": []},
-        )
-        http.add_response(
-            f"https://admin.microsoftapis.com/admin/directory/v1/users/{uid}%40goauthentik.io?key={self.api_key}&alt=json",
-            method="PUT",
-            body={"primaryEmail": f"{uid}@goauthentik.io"},
-        )
         self.app.backchannel_providers.remove(self.provider)
         different_user = User.objects.create(
             username=uid,
             email=f"{uid}@goauthentik.io",
         )
         self.app.backchannel_providers.add(self.provider)
-        with patch(
-            "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
-            MagicMock(return_value={"developerKey": self.api_key, "http": http}),
+        with (
+            patch(
+                "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
+                MagicMock(return_value={"credentials": self.creds}),
+            ),
+            patch(
+                "msgraph.generated.users.item.user_item_request_builder.UserItemRequestBuilder.patch",
+                AsyncMock(return_value=MSUser(id=generate_id())),
+            ),
+            patch(
+                "msgraph.generated.users.users_request_builder.UsersRequestBuilder.get",
+                AsyncMock(
+                    return_value=UserCollectionResponse(
+                        value=[MSUser(mail=f"{uid}@goauthentik.io", id=uid)]
+                    )
+                ),
+            ) as user_list,
+            patch(
+                "msgraph.generated.groups.groups_request_builder.GroupsRequestBuilder.get",
+                AsyncMock(
+                    return_value=GroupCollectionResponse(
+                        value=[]
+                    )
+                ),
+            ),
         ):
             microsoft_entra_sync.delay(self.provider.pk).get()
             self.assertTrue(
@@ -284,4 +275,4 @@ class MicrosoftEntraUserTests(TestCase):
                 ).exists()
             )
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
-            self.assertEqual(len(http.requests()), 5)
+            user_list.assert_called_once()

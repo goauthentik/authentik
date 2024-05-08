@@ -1,4 +1,3 @@
-from dacite.core import from_dict
 from deepmerge import always_merger
 from django.db import transaction
 from msgraph.generated.models.user import User as MSUser
@@ -59,7 +58,7 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
                 raise StopSync(exc, obj, mapping) from exc
         if not raw_microsoft_user:
             raise StopSync(ValueError("No user mappings configured"), obj)
-        return from_dict(MSUser, delete_none_values(raw_microsoft_user))
+        return MSUser(**delete_none_values(raw_microsoft_user))
 
     def delete(self, obj: User):
         """Delete user"""
@@ -74,6 +73,10 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
             if self.provider.user_delete_action == OutgoingSyncDeleteAction.DELETE:
                 response = self._request(
                     self.client.users.by_user_id(microsoft_user.microsoft_id).delete()
+                )
+            elif self.provider.user_delete_action == OutgoingSyncDeleteAction.SUSPEND:
+                response = self._request(
+                    self.client.users.by_user_id(microsoft_user.microsoft_id).patch(MSUser(account_enabled=False))
                 )
             microsoft_user.delete()
         return response

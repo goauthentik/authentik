@@ -1,6 +1,6 @@
-from dacite import from_dict
 from deepmerge import always_merger
 from django.db import transaction
+from msgraph.generated.groups.groups_request_builder import GroupsRequestBuilder
 from msgraph.generated.models.group import Group as MSGroup
 from msgraph.generated.models.reference_create import ReferenceCreate
 
@@ -25,7 +25,6 @@ from authentik.lib.sync.outgoing.exceptions import (
 )
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
 from authentik.lib.utils.errors import exception_to_string
-from msgraph.generated.groups.groups_request_builder import GroupsRequestBuilder
 
 
 class MicrosoftEntraGroupClient(
@@ -67,8 +66,7 @@ class MicrosoftEntraGroupClient(
                 raise StopSync(exc, obj, mapping) from exc
         if not raw_microsoft_group:
             raise StopSync(ValueError("No group mappings configured"), obj)
-
-        return from_dict(MSGroup, raw_microsoft_group)
+        return MSGroup(**raw_microsoft_group)
 
     def delete(self, obj: Group):
         """Delete group"""

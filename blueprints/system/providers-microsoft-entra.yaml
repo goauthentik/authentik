@@ -12,8 +12,8 @@ entries:
       # https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0
       expression: |
         return {
-            "displayName": request.user.name,
-            "accountEnabled": request.user.is_active,
+            "display_name": request.user.name,
+            "account_enabled": request.user.is_active,
         }
   - identifiers:
       managed: goauthentik.io/providers/microsoft_entra/group
@@ -23,7 +23,7 @@ entries:
       # https://learn.microsoft.com/en-us/graph/api/group-post-groups?view=graph-rest-1.0&tabs=http#request-body
       expression: |
         return {
-            "displayName": group.name,
-            "mailEnabled": False,
-            "securityEnabled": True,
+            "display_name": group.name,
+            "mail_enabled": False,
+            "security_enabled": True,
         }
