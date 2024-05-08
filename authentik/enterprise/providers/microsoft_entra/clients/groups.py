@@ -120,7 +120,7 @@ class MicrosoftEntraGroupClient(
         # self.check_email_valid(microsoft_group["email"])
         try:
             return self._request(
-                self.client.groups.by_group_id(connection.microsoft_id).update(microsoft_group)
+                self.client.groups.by_group_id(connection.microsoft_id).patch(microsoft_group)
             )
         except NotFoundSyncException:
             # Resource missing is handled by self.write, which will re-create the group
