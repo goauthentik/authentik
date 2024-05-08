@@ -10,7 +10,7 @@ The GWS provider ...
 
 Fow more information about using a GWS provider, see the [Overview](./index.md) documentation.
 
-## Prereqisites
+## Prerequisites
 
 The GWS provider requires...
 

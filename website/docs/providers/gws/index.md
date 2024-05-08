@@ -1,5 +1,5 @@
 ---
-title: GWS provider
+title: Google Workspace provider
 ---
 
 ## Common use cases
