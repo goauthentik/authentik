@@ -22,10 +22,7 @@ class MicrosoftEntraSyncClient[TModel: Model, TConnection: Model, TSchema: dict]
 
     def __init__(self, provider: MicrosoftEntraProvider) -> None:
         super().__init__(provider)
-        self.client = GraphServiceClient(
-            credentials=provider.microsoft_credentials(),
-            scopes=["https://graph.microsoft.com/.default"],
-        )
+        self.client = GraphServiceClient(**provider.microsoft_credentials())
 
     def _request[T](self, request: Coroutine[Any, Any, T]) -> T:
         try:

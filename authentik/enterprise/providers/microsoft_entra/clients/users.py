@@ -2,6 +2,7 @@ from dacite.core import from_dict
 from deepmerge import always_merger
 from django.db import transaction
 from msgraph.generated.models.user import User as MSUser
+from msgraph.generated.users.users_request_builder import UsersRequestBuilder
 
 from authentik.core.expression.exceptions import (
     PropertyMappingExpressionException,
@@ -89,11 +90,23 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
                 response = self._request(self.client.users.post(microsoft_user))
             except ObjectExistsSyncException:
                 # user already exists in microsoft entra, so we can connect them manually
-                # TODO
-                # MicrosoftEntraProviderUser.objects.create(
-                #     provider=self.provider, user=user, microsoft_id=response.id
-                # )
-                pass
+                query_params = UsersRequestBuilder.UsersRequestBuilderGetQueryParameters()(
+                    filter=f"mail eq '{microsoft_user.mail}'",
+                )
+                request_configuration = (
+                    UsersRequestBuilder.UsersRequestBuilderGetRequestConfiguration(
+                        query_parameters=query_params,
+                    )
+                )
+                user_data = self._request(self.client.users.get(request_configuration))
+                if user_data.odata_count < 1:
+                    self.logger.warning(
+                        "User which could not be created also does not exist", user=user
+                    )
+                    return
+                MicrosoftEntraProviderUser.objects.create(
+                    provider=self.provider, user=user, microsoft_id=user_data.value[0].id
+                )
             except TransientSyncException as exc:
                 raise exc
             else:

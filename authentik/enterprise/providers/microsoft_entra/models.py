@@ -80,7 +80,11 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
         raise ValueError(f"Invalid type {type}")
 
     def microsoft_credentials(self):
-        return ClientSecretCredential(self.tenant_id, self.client_id, self.client_secret)
+        return {
+            "credentials": ClientSecretCredential(
+                self.tenant_id, self.client_id, self.client_secret
+            )
+        }
 
     @property
     def component(self) -> str:

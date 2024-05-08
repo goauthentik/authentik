@@ -25,6 +25,7 @@ from authentik.lib.sync.outgoing.exceptions import (
 )
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
 from authentik.lib.utils.errors import exception_to_string
+from msgraph.generated.groups.groups_request_builder import GroupsRequestBuilder
 
 
 class MicrosoftEntraGroupClient(
@@ -93,14 +94,23 @@ class MicrosoftEntraGroupClient(
                 # group already exists in microsoft entra, so we can connect them manually
                 # for groups we need to fetch the group from microsoft as we connect on
                 # ID and not group email
-                # group_data = self._request(
-                #     self.directory_service.groups().get(groupKey=microsoft_group["email"])
-                # )
-                # MicrosoftEntraProviderGroup.objects.create(
-                #     provider=self.provider, group=group, microsoft_id=group_data["id"]
-                # )
-                # TODO
-                pass
+                query_params = GroupsRequestBuilder.GroupsRequestBuilderGetQueryParameters(
+                    filter=f"displayName eq '{microsoft_group.display_name}'",
+                )
+                request_configuration = (
+                    GroupsRequestBuilder.GroupsRequestBuilderGetRequestConfiguration(
+                        query_parameters=query_params,
+                    )
+                )
+                group_data = self._request(self.client.groups.get(request_configuration))
+                if group_data.odata_count < 1:
+                    self.logger.warning(
+                        "Group which could not be created also does not exist", group=group
+                    )
+                    return
+                MicrosoftEntraProviderGroup.objects.create(
+                    provider=self.provider, group=group, microsoft_id=group_data.value[0].id
+                )
             else:
                 MicrosoftEntraProviderGroup.objects.create(
                     provider=self.provider, group=group, microsoft_id=response.id
