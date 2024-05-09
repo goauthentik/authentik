@@ -9,9 +9,8 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/ProxyForm";
 import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
 import "@goauthentik/elements/wizard/FormWizardPage";
-import "@goauthentik/elements/wizard/TypeCreatePicker";
+import { TypeCreateWizardPage } from "@goauthentik/elements/wizard/TypeCreateWizardPage";
 import "@goauthentik/elements/wizard/Wizard";
-import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
 import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
@@ -19,22 +18,16 @@ import { CSSResult, TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFHint from "@patternfly/patternfly/components/Hint/hint.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { ProvidersApi, TypeCreate } from "@goauthentik/api";
 
 @customElement("ak-provider-wizard-initial")
-export class InitialProviderWizardPage extends WizardPage {
-    @property({ attribute: false })
-    providerTypes: TypeCreate[] = [];
-
-    static get styles(): CSSResult[] {
-        return [PFBase, PFForm, PFHint, PFButton];
+export class InitialProviderWizardPage extends TypeCreateWizardPage {
+    onSelect(type: TypeCreate): void {
+        this.host.steps = ["initial", `type-${type.component}`];
+        this.host.isValid = true;
     }
-    sidebarLabel = () => msg("Select type");
-
     renderHint(): TemplateResult {
         return html`<div class="pf-c-hint">
                 <div class="pf-c-hint__title">${msg("Try the new application wizard")}</div>
@@ -54,16 +47,6 @@ export class InitialProviderWizardPage extends WizardPage {
                 </div>
             </div>
             <br />`;
-    }
-
-    render(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <p class="pf-c-form__helper-text">${msg("Select a provider type")}</p>
-            <ak-wizard-type-create-picker
-                .types=${this.providerTypes}
-                .host=${this.host}
-            ></ak-wizard-type-create-picker>
-        </form>`;
     }
 }
 
@@ -98,7 +81,7 @@ export class ProviderWizard extends AKElement {
                     return this.finalHandler();
                 }}
             >
-                <ak-provider-wizard-initial slot="initial" .providerTypes=${this.providerTypes}>
+                <ak-provider-wizard-initial slot="initial" .types=${this.providerTypes}>
                 </ak-provider-wizard-initial>
                 ${this.providerTypes.map((type) => {
                     return html`
