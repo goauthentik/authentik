@@ -18,7 +18,7 @@ export interface SummarizedSyncStatus {
 }
 
 @customElement("ak-admin-status-chart-sync")
-export class LDAPSyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
+export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
     getChartType(): string {
         return "doughnut";
     }
@@ -101,6 +101,19 @@ export class LDAPSyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
                     });
                 },
                 msg("Google Workspace Provider"),
+            ),
+            await this.fetchStatus(
+                () => {
+                    return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraList();
+                },
+                (element) => {
+                    return new ProvidersApi(
+                        DEFAULT_CONFIG,
+                    ).providersMicrosoftEntraSyncStatusRetrieve({
+                        id: element.pk,
+                    });
+                },
+                msg("Microsoft Entra Provider"),
             ),
             await this.fetchStatus(
                 () => {

@@ -15739,9 +15739,12 @@ paths:
         schema:
           type: boolean
       - in: query
-        name: backchannel_only
+        name: backchannel
         schema:
           type: boolean
+        description: When not set all providers are returned. When set to true, only
+          backchannel providers are returned. When set to false, backchannel providers
+          are excluded
       - name: ordering
         required: false
         in: query
