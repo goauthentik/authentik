@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-03 00:08+0000\n"
+"POT-Creation-Date: 2024-05-08 00:07+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/authentik/teams/119923/zh_CN/)\n"
@@ -433,6 +433,27 @@ msgstr "访问此功能需要企业版。"
 msgid "Feature only accessible for internal users."
 msgstr "仅内部用户能访问此功能。"
 
+#: authentik/enterprise/providers/google_workspace/models.py
+#: authentik/providers/scim/models.py authentik/sources/ldap/models.py
+msgid "Property mappings used for group creation/updating."
+msgstr "用于创建/更新组的属性映射。"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider"
+msgstr "Google Workspace 提供程序"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Providers"
+msgstr "Google Workspace 提供程序"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Mapping"
+msgstr "Google Workspace 提供程序映射"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Mappings"
+msgstr "Google Workspace 提供程序映射"
+
 #: authentik/enterprise/providers/rac/models.py
 #: authentik/stages/user_login/models.py
 msgid ""
@@ -777,6 +798,25 @@ msgstr "流程令牌"
 #: authentik/flows/views/executor.py
 msgid "Invalid next URL"
 msgstr "无效的 next URL"
+
+#: authentik/lib/sync/outgoing/tasks.py
+msgid "Starting full provider sync"
+msgstr "开始全量提供程序同步"
+
+#: authentik/lib/sync/outgoing/tasks.py
+#, python-format
+msgid "Syncing page %(page)d of users"
+msgstr "正在同步用户页面 %(page)d"
+
+#: authentik/lib/sync/outgoing/tasks.py
+#, python-format
+msgid "Syncing page %(page)d of groups"
+msgstr "正在同步群组页面 %(page)d"
+
+#: authentik/lib/sync/outgoing/tasks.py
+#, python-brace-format
+msgid "Stopping sync due to error: {error}"
+msgstr "由于以下错误，同步停止：{error}"
 
 #: authentik/lib/utils/time.py
 #, python-format
@@ -1654,10 +1694,6 @@ msgstr "SCIM 请求的基础 URL，通常以 /v2 结尾"
 msgid "Authentication token"
 msgstr "身份验证令牌"
 
-#: authentik/providers/scim/models.py authentik/sources/ldap/models.py
-msgid "Property mappings used for group creation/updating."
-msgstr "用于创建/更新组的属性映射。"
-
 #: authentik/providers/scim/models.py
 msgid "SCIM Provider"
 msgstr "SCIM 提供程序"
@@ -1673,35 +1709,6 @@ msgstr "SCIM 映射"
 #: authentik/providers/scim/models.py
 msgid "SCIM Mappings"
 msgstr "SCIM 映射"
-
-#: authentik/providers/scim/tasks.py
-msgid "Starting full SCIM sync"
-msgstr "开始全量 SCIM 同步"
-
-#: authentik/providers/scim/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of users"
-msgstr "正在同步用户页面 %(page)d"
-
-#: authentik/providers/scim/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of groups"
-msgstr "正在同步群组页面 %(page)d"
-
-#: authentik/providers/scim/tasks.py
-#, python-brace-format
-msgid "Failed to sync user {user_name} due to remote error: {error}"
-msgstr "由于远端错误，同步用户 {user_name} 失败：{error}"
-
-#: authentik/providers/scim/tasks.py
-#, python-brace-format
-msgid "Stopping sync due to error: {error}"
-msgstr "由于以下错误，同步停止：{error}"
-
-#: authentik/providers/scim/tasks.py
-#, python-brace-format
-msgid "Failed to sync group {group_name} due to remote error: {error}"
-msgstr "由于远端错误，同步组 {group_name} 失败：{error}"
 
 #: authentik/rbac/models.py
 msgid "Role"

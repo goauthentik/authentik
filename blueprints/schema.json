@@ -2602,6 +2602,80 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_providers_microsoft_entra.microsoftentraprovider"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_providers_microsoft_entra.microsoftentraprovider"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_providers_microsoft_entra.microsoftentraprovider"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_providers_microsoft_entra.microsoftentraprovidermapping"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_providers_microsoft_entra.microsoftentraprovidermapping"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_providers_microsoft_entra.microsoftentraprovidermapping"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_providers_rac.racprovider"
                             },
                             "id": {
@@ -3412,6 +3486,7 @@
                         "authentik.enterprise",
                         "authentik.enterprise.audit",
                         "authentik.enterprise.providers.google_workspace",
+                        "authentik.enterprise.providers.microsoft_entra",
                         "authentik.enterprise.providers.rac",
                         "authentik.enterprise.stages.source",
                         "authentik.events"
@@ -3495,6 +3570,8 @@
                         "authentik_enterprise.license",
                         "authentik_providers_google_workspace.googleworkspaceprovider",
                         "authentik_providers_google_workspace.googleworkspaceprovidermapping",
+                        "authentik_providers_microsoft_entra.microsoftentraprovider",
+                        "authentik_providers_microsoft_entra.microsoftentraprovidermapping",
                         "authentik_providers_rac.racprovider",
                         "authentik_providers_rac.endpoint",
                         "authentik_providers_rac.racpropertymapping",
@@ -8278,6 +8355,102 @@
             "required": []
         },
         "model_authentik_providers_google_workspace.googleworkspaceprovidermapping": {
+            "type": "object",
+            "properties": {
+                "managed": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Managed by authentik",
+                    "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "expression": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Expression"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_providers_microsoft_entra.microsoftentraprovider": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Property mappings"
+                },
+                "property_mappings_group": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Property mappings used for group creation/updating."
+                    },
+                    "title": "Property mappings group",
+                    "description": "Property mappings used for group creation/updating."
+                },
+                "client_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Client id"
+                },
+                "client_secret": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Client secret"
+                },
+                "tenant_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Tenant id"
+                },
+                "exclude_users_service_account": {
+                    "type": "boolean",
+                    "title": "Exclude users service account"
+                },
+                "filter_group": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Filter group"
+                },
+                "user_delete_action": {
+                    "type": "string",
+                    "enum": [
+                        "do_nothing",
+                        "delete",
+                        "suspend"
+                    ],
+                    "title": "User delete action"
+                },
+                "group_delete_action": {
+                    "type": "string",
+                    "enum": [
+                        "do_nothing",
+                        "delete",
+                        "suspend"
+                    ],
+                    "title": "Group delete action"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_providers_microsoft_entra.microsoftentraprovidermapping": {
             "type": "object",
             "properties": {
                 "managed": {

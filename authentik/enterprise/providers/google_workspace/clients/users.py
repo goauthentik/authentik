@@ -8,7 +8,6 @@ from authentik.core.expression.exceptions import (
 from authentik.core.models import User
 from authentik.enterprise.providers.google_workspace.clients.base import GoogleWorkspaceSyncClient
 from authentik.enterprise.providers.google_workspace.models import (
-    GoogleWorkspaceDeleteAction,
     GoogleWorkspaceProviderMapping,
     GoogleWorkspaceProviderUser,
 )
@@ -18,6 +17,7 @@ from authentik.lib.sync.outgoing.exceptions import (
     StopSync,
     TransientSyncException,
 )
+from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
 from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.utils import delete_none_values
 
@@ -29,18 +29,18 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
     connection_type_query = "user"
     can_discover = True
 
-    def to_schema(self, obj: User) -> dict:
+    def to_schema(self, obj: User, creating: bool) -> dict:
         """Convert authentik user"""
         raw_google_user = {}
         for mapping in self.provider.property_mappings.all().order_by("name").select_subclasses():
             if not isinstance(mapping, GoogleWorkspaceProviderMapping):
                 continue
             try:
-                mapping: GoogleWorkspaceProviderMapping
                 value = mapping.evaluate(
                     user=obj,
                     request=None,
                     provider=self.provider,
+                    creating=creating,
                 )
                 if value is None:
                     continue
@@ -71,11 +71,11 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
             return None
         with transaction.atomic():
             response = None
-            if self.provider.user_delete_action == GoogleWorkspaceDeleteAction.DELETE:
+            if self.provider.user_delete_action == OutgoingSyncDeleteAction.DELETE:
                 response = self._request(
                     self.directory_service.users().delete(userKey=google_user.google_id)
                 )
-            elif self.provider.user_delete_action == GoogleWorkspaceDeleteAction.SUSPEND:
+            elif self.provider.user_delete_action == OutgoingSyncDeleteAction.SUSPEND:
                 response = self._request(
                     self.directory_service.users().update(
                         userKey=google_user.google_id, body={"suspended": True}
@@ -86,7 +86,7 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
 
     def create(self, user: User):
         """Create user from scratch and create a connection object"""
-        google_user = self.to_schema(user)
+        google_user = self.to_schema(user, True)
         self.check_email_valid(
             google_user["primaryEmail"], *[x["address"] for x in google_user.get("emails", [])]
         )
@@ -95,19 +95,19 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
                 response = self._request(self.directory_service.users().insert(body=google_user))
             except ObjectExistsSyncException:
                 # user already exists in google workspace, so we can connect them manually
-                GoogleWorkspaceProviderUser.objects.create(
+                return GoogleWorkspaceProviderUser.objects.create(
                     provider=self.provider, user=user, google_id=user.email
                 )
             except TransientSyncException as exc:
                 raise exc
             else:
-                GoogleWorkspaceProviderUser.objects.create(
+                return GoogleWorkspaceProviderUser.objects.create(
                     provider=self.provider, user=user, google_id=response["primaryEmail"]
                 )
 
     def update(self, user: User, connection: GoogleWorkspaceProviderUser):
         """Update existing user"""
-        google_user = self.to_schema(user)
+        google_user = self.to_schema(user, False)
         self.check_email_valid(
             google_user["primaryEmail"], *[x["address"] for x in google_user.get("emails", [])]
         )

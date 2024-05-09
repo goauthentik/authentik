@@ -54,7 +54,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
     async send(data: RACProvider): Promise<RACProvider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersRacUpdate({
-                id: this.instance.pk || 0,
+                id: this.instance.pk,
                 rACProviderRequest: data,
             });
         } else {

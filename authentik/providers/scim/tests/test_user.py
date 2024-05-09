@@ -230,7 +230,7 @@ class SCIMUserTests(TestCase):
                 "id": scim_id,
             },
         )
-        mock.delete("https://localhost/Users", status_code=204)
+        mock.delete(f"https://localhost/Users/{scim_id}", status_code=204)
         uid = generate_id()
         user = User.objects.create(
             username=uid,

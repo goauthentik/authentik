@@ -9,7 +9,6 @@ from authentik.core.models import Application, Group, User
 from authentik.core.tests.utils import create_test_user
 from authentik.enterprise.providers.google_workspace.clients.test_http import MockHTTP
 from authentik.enterprise.providers.google_workspace.models import (
-    GoogleWorkspaceDeleteAction,
     GoogleWorkspaceProvider,
     GoogleWorkspaceProviderGroup,
     GoogleWorkspaceProviderMapping,
@@ -17,6 +16,7 @@ from authentik.enterprise.providers.google_workspace.models import (
 from authentik.enterprise.providers.google_workspace.tasks import google_workspace_sync
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
+from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
 from authentik.lib.tests.utils import load_fixture
 from authentik.tenants.models import Tenant
 
@@ -240,7 +240,7 @@ class GoogleWorkspaceGroupTests(TestCase):
 
     def test_group_create_delete_do_nothing(self):
         """Test group deletion (delete action = do nothing)"""
-        self.provider.group_delete_action = GoogleWorkspaceDeleteAction.DO_NOTHING
+        self.provider.group_delete_action = OutgoingSyncDeleteAction.DO_NOTHING
         self.provider.save()
         uid = generate_id()
         http = MockHTTP()

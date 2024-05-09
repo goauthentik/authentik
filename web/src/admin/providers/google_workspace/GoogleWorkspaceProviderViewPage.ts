@@ -1,16 +1,18 @@
-import "@goauthentik/authentik/admin/providers/google_workspace/GoogleWorkspaceProviderForm";
+import "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderForm";
+import "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderGroupList";
+import "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderUserList";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Markdown";
+import "@goauthentik/elements/SyncStatusCard";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/events/LogViewer";
 import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 
-import { msg, str } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
@@ -28,11 +30,10 @@ import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
-    GoogleProvider,
+    GoogleWorkspaceProvider,
     ProvidersApi,
     RbacPermissionsAssignedByUsersListModelEnum,
     SyncStatus,
-    SystemTaskStatusEnum,
 } from "@goauthentik/api";
 
 @customElement("ak-provider-google-workspace-view")
@@ -41,7 +42,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
     providerID?: number;
 
     @state()
-    provider?: GoogleProvider;
+    provider?: GoogleWorkspaceProvider;
 
     @state()
     syncState?: SyncStatus;
@@ -121,6 +122,28 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                     </div>
                 </div>
             </section>
+            <section
+                slot="page-users"
+                data-tab-title="${msg("Provisioned Users")}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-l-grid pf-m-gutter">
+                    <ak-provider-google-workspace-users-list
+                        providerId=${this.provider.pk}
+                    ></ak-provider-google-workspace-users-list>
+                </div>
+            </section>
+            <section
+                slot="page-groups"
+                data-tab-title="${msg("Provisioned Groups")}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-l-grid pf-m-gutter">
+                    <ak-provider-google-workspace-groups-list
+                        providerId=${this.provider.pk}
+                    ></ak-provider-google-workspace-groups-list>
+                </div>
+            </section>
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
@@ -128,39 +151,6 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;
-    }
-
-    renderSyncStatus(): TemplateResult {
-        if (!this.syncState) {
-            return html`${msg("No sync status.")}`;
-        }
-        if (this.syncState.isRunning) {
-            return html`${msg("Sync currently running.")}`;
-        }
-        if (this.syncState.tasks.length < 1) {
-            return html`${msg("Not synced yet.")}`;
-        }
-        return html`
-            <ul class="pf-c-list">
-                ${this.syncState.tasks.map((task) => {
-                    let header = "";
-                    if (task.status === SystemTaskStatusEnum.Warning) {
-                        header = msg("Task finished with warnings");
-                    } else if (task.status === SystemTaskStatusEnum.Error) {
-                        header = msg("Task finished with errors");
-                    } else {
-                        header = msg(str`Last sync: ${task.finishTimestamp.toLocaleString()}`);
-                    }
-                    return html`<li>
-                        <p>${task.name}</p>
-                        <ul class="pf-c-list">
-                            <li>${header}</li>
-                            <ak-log-viewer .logs=${task?.messages}></ak-log-viewer>
-                        </ul>
-                    </li> `;
-                })}
-            </ul>
-        `;
     }
 
     renderTabOverview(): TemplateResult {
@@ -197,7 +187,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
                             <span slot="submit"> ${msg("Update")} </span>
-                            <span slot="header"> ${msg("Update Google Provider")} </span>
+                            <span slot="header"> ${msg("Update Google Workspace Provider")} </span>
                             <ak-provider-google-workspace-form
                                 slot="form"
                                 .instancePk=${this.provider.pk}
@@ -209,33 +199,24 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                         </ak-forms-modal>
                     </div>
                 </div>
-                <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-l-stack__item">
-                    <div class="pf-c-card__title">
-                        <p>${msg("Sync status")}</p>
-                    </div>
-                    <div class="pf-c-card__body">${this.renderSyncStatus()}</div>
-                    <div class="pf-c-card__footer">
-                        <ak-action-button
-                            class="pf-m-secondary"
-                            .apiRequest=${() => {
-                                return new ProvidersApi(DEFAULT_CONFIG)
-                                    .providersGoogleWorkspacePartialUpdate({
-                                        id: this.provider?.pk || 0,
-                                        patchedGoogleProviderRequest: this.provider,
-                                    })
-                                    .then(() => {
-                                        this.dispatchEvent(
-                                            new CustomEvent(EVENT_REFRESH, {
-                                                bubbles: true,
-                                                composed: true,
-                                            }),
-                                        );
-                                    });
-                            }}
-                        >
-                            ${msg("Run sync again")}
-                        </ak-action-button>
-                    </div>
+                <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
+                    <ak-sync-status-card
+                        .fetch=${() => {
+                            return new ProvidersApi(
+                                DEFAULT_CONFIG,
+                            ).providersGoogleWorkspaceSyncStatusRetrieve({
+                                id: this.provider?.pk || 0,
+                            });
+                        }}
+                        .triggerSync=${() => {
+                            return new ProvidersApi(
+                                DEFAULT_CONFIG,
+                            ).providersGoogleWorkspacePartialUpdate({
+                                id: this.provider?.pk || 0,
+                                patchedGoogleWorkspaceProviderRequest: {},
+                            });
+                        }}
+                    ></ak-sync-status-card>
                 </div>
             </div>`;
     }
