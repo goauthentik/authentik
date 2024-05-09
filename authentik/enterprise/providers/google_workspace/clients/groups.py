@@ -127,13 +127,13 @@ class GoogleWorkspaceGroupClient(
         self.create_sync_members(obj, google_group)
         return google_group, created
 
-    def create_sync_members(self, obj: Group, google_group: dict):
+    def create_sync_members(self, obj: Group, google_group: GoogleWorkspaceProviderGroup):
         """Sync all members after a group was created"""
         users = list(obj.users.order_by("id").values_list("id", flat=True))
         connections = GoogleWorkspaceProviderUser.objects.filter(
             provider=self.provider, user__pk__in=users
         ).values_list("google_id", flat=True)
-        self._patch(google_group["id"], Direction.add, connections)
+        self._patch(google_group.google_id, Direction.add, connections)
 
     def update_group(self, group: Group, action: Direction, users_set: set[int]):
         """Update a groups members"""
