@@ -11,16 +11,16 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.enterprise.providers.google_workspace.models import GoogleWorkspaceProviderMapping
 
 
-class GoogleProviderMappingSerializer(PropertyMappingSerializer):
-    """GoogleProviderMapping Serializer"""
+class GoogleWorkspaceProviderMappingSerializer(PropertyMappingSerializer):
+    """GoogleWorkspaceProviderMapping Serializer"""
 
     class Meta:
         model = GoogleWorkspaceProviderMapping
         fields = PropertyMappingSerializer.Meta.fields
 
 
-class GoogleProviderMappingFilter(FilterSet):
-    """Filter for GoogleProviderMapping"""
+class GoogleWorkspaceProviderMappingFilter(FilterSet):
+    """Filter for GoogleWorkspaceProviderMapping"""
 
     managed = extend_schema_field(OpenApiTypes.STR)(AllValuesMultipleFilter(field_name="managed"))
 
@@ -29,11 +29,11 @@ class GoogleProviderMappingFilter(FilterSet):
         fields = "__all__"
 
 
-class GoogleProviderMappingViewSet(UsedByMixin, ModelViewSet):
-    """GoogleProviderMapping Viewset"""
+class GoogleWorkspaceProviderMappingViewSet(UsedByMixin, ModelViewSet):
+    """GoogleWorkspaceProviderMapping Viewset"""
 
     queryset = GoogleWorkspaceProviderMapping.objects.all()
-    serializer_class = GoogleProviderMappingSerializer
-    filterset_class = GoogleProviderMappingFilter
+    serializer_class = GoogleWorkspaceProviderMappingSerializer
+    filterset_class = GoogleWorkspaceProviderMappingFilter
     search_fields = ["name"]
     ordering = ["name"]

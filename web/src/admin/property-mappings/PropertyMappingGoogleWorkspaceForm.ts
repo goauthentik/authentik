@@ -10,11 +10,11 @@ import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { GoogleProviderMapping, PropertymappingsApi } from "@goauthentik/api";
+import { GoogleWorkspaceProviderMapping, PropertymappingsApi } from "@goauthentik/api";
 
 @customElement("ak-property-mapping-google-workspace-form")
-export class PropertyMappingGoogleWorkspaceForm extends BasePropertyMappingForm<GoogleProviderMapping> {
-    loadInstance(pk: string): Promise<GoogleProviderMapping> {
+export class PropertyMappingGoogleWorkspaceForm extends BasePropertyMappingForm<GoogleWorkspaceProviderMapping> {
+    loadInstance(pk: string): Promise<GoogleWorkspaceProviderMapping> {
         return new PropertymappingsApi(
             DEFAULT_CONFIG,
         ).propertymappingsProviderGoogleWorkspaceRetrieve({
@@ -22,19 +22,19 @@ export class PropertyMappingGoogleWorkspaceForm extends BasePropertyMappingForm<
         });
     }
 
-    async send(data: GoogleProviderMapping): Promise<GoogleProviderMapping> {
+    async send(data: GoogleWorkspaceProviderMapping): Promise<GoogleWorkspaceProviderMapping> {
         if (this.instance) {
             return new PropertymappingsApi(
                 DEFAULT_CONFIG,
             ).propertymappingsProviderGoogleWorkspaceUpdate({
-                pmUuid: this.instance.pk || "",
-                googleProviderMappingRequest: data,
+                pmUuid: this.instance.pk,
+                googleWorkspaceProviderMappingRequest: data,
             });
         } else {
             return new PropertymappingsApi(
                 DEFAULT_CONFIG,
             ).propertymappingsProviderGoogleWorkspaceCreate({
-                googleProviderMappingRequest: data,
+                googleWorkspaceProviderMappingRequest: data,
             });
         }
     }

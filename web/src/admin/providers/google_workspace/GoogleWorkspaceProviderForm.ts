@@ -16,17 +16,17 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import {
     CoreApi,
     CoreGroupsListRequest,
-    GoogleProvider,
-    GoogleWorkspaceDeleteAction,
+    GoogleWorkspaceProvider,
     Group,
-    PaginatedGoogleProviderMappingList,
+    OutgoingSyncDeleteAction,
+    PaginatedGoogleWorkspaceProviderMappingList,
     PropertymappingsApi,
     ProvidersApi,
 } from "@goauthentik/api";
 
 @customElement("ak-provider-google-workspace-form")
-export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleProvider> {
-    loadInstance(pk: number): Promise<GoogleProvider> {
+export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWorkspaceProvider> {
+    loadInstance(pk: number): Promise<GoogleWorkspaceProvider> {
         return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceRetrieve({
             id: pk,
         });
@@ -40,17 +40,17 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleProv
         });
     }
 
-    propertyMappings?: PaginatedGoogleProviderMappingList;
+    propertyMappings?: PaginatedGoogleWorkspaceProviderMappingList;
 
-    async send(data: GoogleProvider): Promise<GoogleProvider> {
+    async send(data: GoogleWorkspaceProvider): Promise<GoogleWorkspaceProvider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceUpdate({
-                id: this.instance.pk || 0,
-                googleProviderRequest: data,
+                id: this.instance.pk,
+                googleWorkspaceProviderRequest: data,
             });
         } else {
             return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceCreate({
-                googleProviderRequest: data,
+                googleWorkspaceProviderRequest: data,
             });
         }
     }
@@ -76,7 +76,9 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleProv
                             mode=${CodeMirrorMode.JavaScript}
                             .value="${first(this.instance?.credentials, {})}"
                         ></ak-codemirror>
-                        <p class="pf-c-form__helper-text">${msg("TODO")}</p>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Google Cloud credentials file.")}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Delegated Subject")}
@@ -84,12 +86,16 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleProv
                         name="delegatedSubject"
                     >
                         <input
-                            type="text"
+                            type="email"
                             value="${first(this.instance?.delegatedSubject, "")}"
                             class="pf-c-form-control"
                             required
                         />
-                        <p class="pf-c-form__helper-text">${msg("TODO")}</p>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Email address of the user the actions of authentik will be delegated to.",
+                            )}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Default group email domain")}
@@ -115,20 +121,20 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleProv
                         .options=${[
                             {
                                 label: msg("Delete"),
-                                value: GoogleWorkspaceDeleteAction.Delete,
+                                value: OutgoingSyncDeleteAction.Delete,
                                 default: true,
                                 description: html`${msg("User is deleted")}`,
                             },
                             {
                                 label: msg("Suspend"),
-                                value: GoogleWorkspaceDeleteAction.Suspend,
+                                value: OutgoingSyncDeleteAction.Suspend,
                                 description: html`${msg(
                                     "User is suspended, and connection to user in authentik is removed.",
                                 )}`,
                             },
                             {
                                 label: msg("Do Nothing"),
-                                value: GoogleWorkspaceDeleteAction.DoNothing,
+                                value: OutgoingSyncDeleteAction.DoNothing,
                                 description: html`${msg(
                                     "The connection is removed but the user is not modified",
                                 )}`,
@@ -145,13 +151,13 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleProv
                         .options=${[
                             {
                                 label: msg("Delete"),
-                                value: GoogleWorkspaceDeleteAction.Delete,
+                                value: OutgoingSyncDeleteAction.Delete,
                                 default: true,
                                 description: html`${msg("Group is deleted")}`,
                             },
                             {
                                 label: msg("Do Nothing"),
-                                value: GoogleWorkspaceDeleteAction.DoNothing,
+                                value: OutgoingSyncDeleteAction.DoNothing,
                                 description: html`${msg(
                                     "The connection is removed but the group is not modified",
                                 )}`,

@@ -1,12 +1,21 @@
 from typing import Any, Self
 
 from django.core.cache import cache
-from django.db.models import Model, QuerySet
+from django.db.models import Model, QuerySet, TextChoices
 from redis.lock import Lock
 
 from authentik.core.models import Group, User
 from authentik.lib.sync.outgoing import PAGE_TIMEOUT
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
+
+
+class OutgoingSyncDeleteAction(TextChoices):
+    """Action taken when a user/group is deleted in authentik. Suspend is not available for groups,
+    and will be treated as `do_nothing`"""
+
+    DO_NOTHING = "do_nothing"
+    DELETE = "delete"
+    SUSPEND = "suspend"
 
 
 class OutgoingSyncProvider(Model):

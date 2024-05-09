@@ -5,13 +5,13 @@ import "@goauthentik/components/events/ObjectChangelog";
 import MDSCIMProvider from "@goauthentik/docs/providers/scim/index.md";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Markdown";
+import "@goauthentik/elements/SyncStatusCard";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/events/LogViewer";
 import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 
-import { msg, str } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
@@ -32,8 +32,6 @@ import {
     ProvidersApi,
     RbacPermissionsAssignedByUsersListModelEnum,
     SCIMProvider,
-    SyncStatus,
-    SystemTaskStatusEnum,
 } from "@goauthentik/api";
 
 @customElement("ak-provider-scim-view")
@@ -43,9 +41,6 @@ export class SCIMProviderViewPage extends AKElement {
 
     @state()
     provider?: SCIMProvider;
-
-    @state()
-    syncState?: SyncStatus;
 
     static get styles(): CSSResult[] {
         return [
@@ -89,22 +84,7 @@ export class SCIMProviderViewPage extends AKElement {
             return html``;
         }
         return html` <ak-tabs>
-            <section
-                slot="page-overview"
-                data-tab-title="${msg("Overview")}"
-                @activate=${() => {
-                    new ProvidersApi(DEFAULT_CONFIG)
-                        .providersScimSyncStatusRetrieve({
-                            id: this.provider?.pk || 0,
-                        })
-                        .then((state) => {
-                            this.syncState = state;
-                        })
-                        .catch(() => {
-                            this.syncState = undefined;
-                        });
-                }}
-            >
+            <section slot="page-overview" data-tab-title="${msg("Overview")}">
                 ${this.renderTabOverview()}
             </section>
             <section
@@ -129,39 +109,6 @@ export class SCIMProviderViewPage extends AKElement {
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;
-    }
-
-    renderSyncStatus(): TemplateResult {
-        if (!this.syncState) {
-            return html`${msg("No sync status.")}`;
-        }
-        if (this.syncState.isRunning) {
-            return html`${msg("Sync currently running.")}`;
-        }
-        if (this.syncState.tasks.length < 1) {
-            return html`${msg("Not synced yet.")}`;
-        }
-        return html`
-            <ul class="pf-c-list">
-                ${this.syncState.tasks.map((task) => {
-                    let header = "";
-                    if (task.status === SystemTaskStatusEnum.Warning) {
-                        header = msg("Task finished with warnings");
-                    } else if (task.status === SystemTaskStatusEnum.Error) {
-                        header = msg("Task finished with errors");
-                    } else {
-                        header = msg(str`Last sync: ${task.finishTimestamp.toLocaleString()}`);
-                    }
-                    return html`<li>
-                        <p>${task.name}</p>
-                        <ul class="pf-c-list">
-                            <li>${header}</li>
-                            <ak-log-viewer .logs=${task?.messages}></ak-log-viewer>
-                        </ul>
-                    </li> `;
-                })}
-            </ul>
-        `;
     }
 
     renderTabOverview(): TemplateResult {
@@ -218,33 +165,22 @@ export class SCIMProviderViewPage extends AKElement {
                             </ak-forms-modal>
                         </div>
                     </div>
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-l-stack__item">
-                        <div class="pf-c-card__title">
-                            <p>${msg("Sync status")}</p>
-                        </div>
-                        <div class="pf-c-card__body">${this.renderSyncStatus()}</div>
-                        <div class="pf-c-card__footer">
-                            <ak-action-button
-                                class="pf-m-secondary"
-                                .apiRequest=${() => {
-                                    return new ProvidersApi(DEFAULT_CONFIG)
-                                        .providersScimPartialUpdate({
-                                            id: this.provider?.pk || 0,
-                                            patchedSCIMProviderRequest: this.provider,
-                                        })
-                                        .then(() => {
-                                            this.dispatchEvent(
-                                                new CustomEvent(EVENT_REFRESH, {
-                                                    bubbles: true,
-                                                    composed: true,
-                                                }),
-                                            );
-                                        });
-                                }}
-                            >
-                                ${msg("Run sync again")}
-                            </ak-action-button>
-                        </div>
+                    <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
+                        <ak-sync-status-card
+                            .fetch=${() => {
+                                return new ProvidersApi(
+                                    DEFAULT_CONFIG,
+                                ).providersScimSyncStatusRetrieve({
+                                    id: this.provider?.pk || 0,
+                                });
+                            }}
+                            .triggerSync=${() => {
+                                return new ProvidersApi(DEFAULT_CONFIG).providersScimPartialUpdate({
+                                    id: this.provider?.pk || 0,
+                                    patchedSCIMProviderRequest: {},
+                                });
+                            }}
+                        ></ak-sync-status-card>
                     </div>
                 </div>
                 <div class="pf-c-card pf-l-grid__item pf-m-5-col">

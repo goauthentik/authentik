@@ -10,8 +10,8 @@ from authentik.enterprise.providers.google_workspace.tasks import google_workspa
 from authentik.lib.sync.outgoing.api import OutgoingSyncProviderStatusMixin
 
 
-class GoogleProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
-    """GoogleProvider Serializer"""
+class GoogleWorkspaceProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
+    """GoogleWorkspaceProvider Serializer"""
 
     class Meta:
         model = GoogleWorkspaceProvider
@@ -38,11 +38,11 @@ class GoogleProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
         extra_kwargs = {}
 
 
-class GoogleProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin, ModelViewSet):
-    """GoogleProvider Viewset"""
+class GoogleWorkspaceProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin, ModelViewSet):
+    """GoogleWorkspaceProvider Viewset"""
 
     queryset = GoogleWorkspaceProvider.objects.all()
-    serializer_class = GoogleProviderSerializer
+    serializer_class = GoogleWorkspaceProviderSerializer
     filterset_fields = [
         "name",
         "exclude_users_service_account",
