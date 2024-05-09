@@ -6,48 +6,34 @@ import "@goauthentik/admin/providers/saml/SAMLProviderForm";
 import "@goauthentik/admin/providers/saml/SAMLProviderImportForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKElement } from "@goauthentik/elements/Base";
-import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
 import "@goauthentik/elements/forms/ProxyForm";
 import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
 import "@goauthentik/elements/wizard/FormWizardPage";
+import "@goauthentik/elements/wizard/TypeCreatePicker";
 import "@goauthentik/elements/wizard/Wizard";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
 import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
-import { CSSResult, TemplateResult, html, nothing } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFHint from "@patternfly/patternfly/components/Hint/hint.css";
-import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { ProvidersApi, TypeCreate } from "@goauthentik/api";
 
 @customElement("ak-provider-wizard-initial")
-export class InitialProviderWizardPage extends WithLicenseSummary(WizardPage) {
+export class InitialProviderWizardPage extends WizardPage {
     @property({ attribute: false })
     providerTypes: TypeCreate[] = [];
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFForm, PFGrid, PFCard, PFHint, PFButton, PFRadio];
+        return [PFBase, PFForm, PFHint, PFButton];
     }
     sidebarLabel = () => msg("Select type");
-
-    activeCallback: () => Promise<void> = async () => {
-        this.host.isValid = false;
-        this.shadowRoot
-            ?.querySelectorAll<HTMLInputElement>("input[type=radio]")
-            .forEach((radio) => {
-                if (radio.checked) {
-                    radio.dispatchEvent(new CustomEvent("change"));
-                }
-            });
-    };
 
     renderHint(): TemplateResult {
         return html`<div class="pf-c-hint">
@@ -71,45 +57,12 @@ export class InitialProviderWizardPage extends WithLicenseSummary(WizardPage) {
     }
 
     render(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal pf-l-grid pf-m-gutter">
+        return html`<form class="pf-c-form pf-m-horizontal">
             <p class="pf-c-form__helper-text">${msg("Select a provider type")}</p>
-            ${this.providerTypes.map((type, idx) => {
-                const requiresEnterprise = type.requiresEnterprise && !this.hasEnterpriseLicense;
-                return html`<div
-                    class="pf-l-grid__item pf-m-3-col pf-c-card ${requiresEnterprise
-                        ? "pf-m-non-selectable-raised"
-                        : "pf-m-selectable-raised"}"
-                    id=${`card-${type.component}`}
-                    tabindex=${idx}
-                    @click=${() => {
-                        if (requiresEnterprise) {
-                            return;
-                        }
-                        this.host.steps = ["initial", `type-${type.component}`];
-                        this.host.isValid = true;
-                        // Unselect other cards
-                        this.shadowRoot
-                            ?.querySelectorAll<HTMLDivElement>(".pf-c-card")
-                            .forEach((card) => {
-                                card.classList.remove("pf-m-selected-raised");
-                            });
-                        const card = this.shadowRoot?.querySelector<HTMLDivElement>(
-                            `#card-${type.component}`,
-                        );
-                        if (card) {
-                            card.classList.add("pf-m-selected-raised");
-                        }
-                    }}
-                >
-                    <div class="pf-c-card__title">${type.name}</div>
-                    <div class="pf-c-card__body">${type.description}</div>
-                    ${requiresEnterprise
-                        ? html`<div class="pf-c-card__footer">
-                              <ak-license-notice></ak-license-notice>
-                          </div> `
-                        : nothing}
-                </div>`;
-            })}
+            <ak-wizard-type-create-picker
+                .types=${this.providerTypes}
+                .host=${this.host}
+            ></ak-wizard-type-create-picker>
         </form>`;
     }
 }
@@ -117,7 +70,7 @@ export class InitialProviderWizardPage extends WithLicenseSummary(WizardPage) {
 @customElement("ak-provider-wizard")
 export class ProviderWizard extends AKElement {
     static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFRadio];
+        return [PFBase, PFButton];
     }
 
     @property()
