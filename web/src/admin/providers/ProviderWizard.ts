@@ -9,7 +9,10 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/ProxyForm";
 import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
 import "@goauthentik/elements/wizard/FormWizardPage";
-import { TypeCreateWizardPage } from "@goauthentik/elements/wizard/TypeCreateWizardPage";
+import {
+    TypeCreateWizardPage,
+    TypeCreateWizardPageLayouts,
+} from "@goauthentik/elements/wizard/TypeCreateWizardPage";
 import "@goauthentik/elements/wizard/Wizard";
 
 import { msg, str } from "@lit/localize";
@@ -24,6 +27,7 @@ import { ProvidersApi, TypeCreate } from "@goauthentik/api";
 
 @customElement("ak-provider-wizard-initial")
 export class InitialProviderWizardPage extends TypeCreateWizardPage {
+    layout = TypeCreateWizardPageLayouts.grid;
     onSelect(type: TypeCreate): void {
         this.host.steps = ["initial", `type-${type.component}`];
         this.host.isValid = true;
