@@ -29,15 +29,22 @@ export abstract class TypeCreateWizardPage extends WithLicenseSummary(WizardPage
     layout: TypeCreateWizardPageLayouts = TypeCreateWizardPageLayouts.list;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFForm, PFGrid, PFRadio, PFCard, css`
-            .pf-c-card__header-main img {
-                max-height: 2em;
-                min-height: 2em;
-            }
-            :host([theme="dark"]) .pf-c-card__header-main img {
-                filter: invert(1);
-            }
-        `];
+        return [
+            PFBase,
+            PFForm,
+            PFGrid,
+            PFRadio,
+            PFCard,
+            css`
+                .pf-c-card__header-main img {
+                    max-height: 2em;
+                    min-height: 2em;
+                }
+                :host([theme="dark"]) .pf-c-card__header-main img {
+                    filter: invert(1);
+                }
+            `,
+        ];
     }
 
     sidebarLabel = () => msg("Select type");
