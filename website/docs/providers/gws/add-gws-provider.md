@@ -6,38 +6,24 @@ title: Create a Google Workspace provider
 This feature is in technical preview, so please report any bugs on [GitHub](https://github.com/goauthentik/authentik/issues).
 :::
 
-The GWS provider ...
+The GWS provider ... words here
 
-Fow more information about using a GWS provider, see the [Overview](./index.md) documentation.
+For more information about using a Google Workspace provider, see the [Overview](./index.md) documentation.
 
 ## Prerequisites
 
-The GWS provider requires...
+To create a Google Worksapce provider provider in authentik, you must have already [configured Google Workspace](./setup-gws.md) to integrate with authentik.
 
-## Overview workflow to create a GWS provider
+:::info
+When adding the Google Workspace provider in authentik, you must define the **Backchannel provider* using the name of the Google Workspace provider that you created in authentik. Do NOT add any value in the **Provider** field (doing so will cause the provider to display as an application on the user interface, under **My apps**, which is not supported for Google Workspace).
+:::
 
-The typical workflow to create and configure a GWS provider is....
-
-### Step 1. Create an application and GWS provider
-
-The first step is to create the GWS app and provider.
+### Create the Google Workspace provider in authentik
 
 1. Log in as an admin to authentik, and go to the Admin interface.
 
-2. In the Admin interface, navigate to **Applications -> Applications**.
+2. In the Admin interface, navigate to **Applications -> Providers**.
 
-3. Click **Create with Wizard**. Follow the [instructions](../../applications/manage_apps.md#instructions) to create your RAC application and provider.
+3. Click **Create**. Follow the [instructions](../../applications/manage_apps.md#instructions) to create your Google Workspace  provider.
 
-### Step 2. descriptive title
 
-words here
-
-1. ***
-
-2. ***
-
-3. ***
-
-4. ***
-
-### Step 3. descriptive title
