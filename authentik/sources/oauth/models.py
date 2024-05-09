@@ -72,23 +72,35 @@ class OAuthSource(Source):
 
         return OAuthSourceSerializer
 
+    @property
+    def icon_url(self) -> str | None:
+        # When listing source types, this property might be retrieved from an abstract
+        # model. In that case we can't check self.provider_type or self.icon_url
+        # and as such we attempt to find the correct provider type based on the mode name
+        if self.Meta.abstract:
+            from authentik.sources.oauth.types.registry import registry
+
+            provider_type = registry.find_type(
+                self._meta.model_name.replace(OAuthSource._meta.model_name, "")
+            )
+            return provider_type().icon_url()
+        icon = super().icon_url
+        if not icon:
+            provider_type = self.source_type
+            provider = provider_type()
+            icon = provider.icon_url()
+        return icon
+
     def ui_login_button(self, request: HttpRequest) -> UILoginButton:
         provider_type = self.source_type
         provider = provider_type()
-        icon = self.icon_url
-        if not icon:
-            icon = provider.icon_url()
         return UILoginButton(
             name=self.name,
             challenge=provider.login_challenge(self, request),
-            icon_url=icon,
+            icon_url=self.icon_url,
         )
 
     def ui_user_settings(self) -> UserSettingSerializer | None:
-        provider_type = self.source_type
-        icon = self.icon_url
-        if not icon:
-            icon = provider_type().icon_url()
         return UserSettingSerializer(
             data={
                 "title": self.name,
@@ -97,7 +109,7 @@ class OAuthSource(Source):
                     "authentik_sources_oauth:oauth-client-login",
                     kwargs={"source_slug": self.slug},
                 ),
-                "icon_url": icon,
+                "icon_url": self.icon_url,
             }
         )
 

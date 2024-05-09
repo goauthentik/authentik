@@ -2,8 +2,8 @@ import "@goauthentik/admin/common/ak-license-notice";
 import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
-import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html, nothing } from "lit";
+import { msg, str } from "@lit/localize";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { property, state } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -29,7 +29,12 @@ export abstract class TypeCreateWizardPage extends WithLicenseSummary(WizardPage
     layout: TypeCreateWizardPageLayouts = TypeCreateWizardPageLayouts.list;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFForm, PFGrid, PFRadio, PFCard];
+        return [PFBase, PFForm, PFGrid, PFRadio, PFCard, css`
+            .pf-c-card__header-main img {
+                max-height: 2em;
+                min-height: 2em;
+            }
+        `];
     }
 
     sidebarLabel = () => msg("Select type");
@@ -62,6 +67,13 @@ export abstract class TypeCreateWizardPage extends WithLicenseSummary(WizardPage
                         this.selectedType = type;
                     }}
                 >
+                    ${type.iconUrl
+                        ? html`<div class="pf-c-card__header">
+                              <div class="pf-c-card__header-main">
+                                  <img src=${type.iconUrl} alt=${msg(str`${type.name} Icon`)} />
+                              </div>
+                          </div>`
+                        : nothing}
                     <div class="pf-c-card__title">${type.name}</div>
                     <div class="pf-c-card__body">${type.description}</div>
                     ${requiresEnterprise

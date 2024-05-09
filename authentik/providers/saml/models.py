@@ -200,3 +200,16 @@ class SAMLPropertyMapping(PropertyMapping):
     class Meta:
         verbose_name = _("SAML Property Mapping")
         verbose_name_plural = _("SAML Property Mappings")
+
+
+class SAMLProviderImportModel(Provider):
+    """Create a SAML Provider by importing its Metadata."""
+
+    @property
+    def component(self):
+        return "ak-provider-saml-import-form"
+
+    class Meta:
+        abstract = True
+        verbose_name = _("SAML Provider from Metadata")
+        verbose_name_plural = _("SAML Providers from Metadata")
