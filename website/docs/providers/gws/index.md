@@ -2,9 +2,11 @@
 title: Google Workspace provider
 ---
 
-## Common use cases
-
 With the Google Workspace provider, authentik can be the single source of truth for all users and groups, even when using Google products like Gmail.
+
+For instructions to configure your Google Workspace to integrate with authentik, refer to [Configure Google Workspace](./setup-gws).
+
+For instructions to add Google Workspce as a provider, refer to [Create a Google Workspace provider](./add-gws-provider).
 
 ## About using Google Workspace with authentik
 
@@ -32,17 +34,18 @@ When a property mapping has an invalid expression, it will cause the sync to sto
 
 To handle any kind of network interruptions, authentik will detect transient request failures and retry any sync tasks.
 
-### Customization / Mapping of data
+### Customization for data mapping
 
 There are a couple of considerations in regard to how authentik data is mapped to google workspace user/group data by default.
 
-For Users, as authentik only saves the full display name, while Google requires given/family name separately, and as such authentik tries to separate the full name automatically with the default User property mapping.
+*   For users, authentik only saves the full display name, while Google requires given/family name separately, and as such authentik tries to separate the full name automatically with the default User property mapping.
 
-For Groups, as Google groups require an email address, the provider has a configuration option **Default group email domain** which will be used in conjunction with the group’s name to generate an email address. This can be customized with a property mapping.
+*   For groups, Google groups require an email address. Thus in authentik the provider configuration has an option **Default group email domain**, which will be used in conjunction with the group’s name to generate an email address. This can be customized with a property mapping.
 
-By default, authentik maps a user’s email, a user’s name, and their active status. For groups, the name is synced.
+*   By default, authentik maps a user’s email, a user’s name, and their active status. For groups, the name is synced.
 
 Refer to Google documentation for further details:
 
 -   https://developers.google.com/admin-sdk/directory/reference/rest/v1/users#User
 -   https://developers.google.com/admin-sdk/directory/reference/rest/v1/groups#Group
+
