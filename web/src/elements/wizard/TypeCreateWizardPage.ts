@@ -34,6 +34,9 @@ export abstract class TypeCreateWizardPage extends WithLicenseSummary(WizardPage
                 max-height: 2em;
                 min-height: 2em;
             }
+            :host([theme="dark"]) .pf-c-card__header-main img {
+                filter: invert(1);
+            }
         `];
     }
 
