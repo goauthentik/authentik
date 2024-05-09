@@ -24,7 +24,7 @@ To prevent any user from creating/editing blueprints, block API requests to this
 
 -   `/api/v3/managed/blueprints*`
 
-With these restrictions in place, expressions can only be edited using [Blueprints on the file system](https://docs.goauthentik.io/developer-docs/blueprints/#storage---file).
+With these restrictions in place, Blueprints can only be edited via [the file system](https://docs.goauthentik.io/developer-docs/blueprints/#storage---file).
 
 ### CAPTCHA Stage
 
