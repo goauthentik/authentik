@@ -1,5 +1,6 @@
 from collections.abc import Callable
 
+from celery.exceptions import Retry
 from celery.result import allow_join_result
 from django.core.paginator import Paginator
 from django.db.models import Model, QuerySet
@@ -210,7 +211,9 @@ class SyncTasks:
                     client.write(instance)
                 if operation == Direction.remove:
                     client.delete(instance)
-            except (StopSync, TransientSyncException) as exc:
+            except TransientSyncException as exc:
+                raise Retry() from exc
+            except StopSync as exc:
                 self.logger.warning(exc, provider_pk=provider.pk)
 
     def sync_signal_m2m(self, group_pk: str, action: str, pk_set: list[int]):
@@ -236,5 +239,7 @@ class SyncTasks:
                 if action == "post_remove":
                     operation = Direction.remove
                 client.update_group(group, operation, pk_set)
-            except (StopSync, TransientSyncException) as exc:
+            except TransientSyncException as exc:
+                raise Retry() from exc
+            except StopSync as exc:
                 self.logger.warning(exc, provider_pk=provider.pk)
