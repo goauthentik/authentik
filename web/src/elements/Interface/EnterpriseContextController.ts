@@ -1,4 +1,4 @@
-import { EVENT_REFRESH_ENTERPRISE } from "@goauthentik/authentik/common/constants";
+import { EVENT_REFRESH_ENTERPRISE } from "@goauthentik/common/constants";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { authentikEnterpriseContext } from "@goauthentik/elements/AuthentikContexts";
 import type { ReactiveElementHost } from "@goauthentik/elements/types.js";

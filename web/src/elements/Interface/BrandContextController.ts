@@ -1,4 +1,4 @@
-import { EVENT_REFRESH } from "@goauthentik/authentik/common/constants";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { authentikBrandContext } from "@goauthentik/elements/AuthentikContexts";
 import type { ReactiveElementHost } from "@goauthentik/elements/types.js";

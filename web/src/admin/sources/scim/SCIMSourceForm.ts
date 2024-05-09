@@ -1,5 +1,5 @@
 import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
-import { placeholderHelperText } from "@goauthentik/authentik/admin/helperText";
+import { placeholderHelperText } from "@goauthentik/admin/helperText";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";

@@ -1,6 +1,6 @@
-import { EVENT_REFRESH } from "@goauthentik/authentik/common/constants";
-import { getRelativeTime } from "@goauthentik/authentik/common/utils";
-import { AKElement } from "@goauthentik/authentik/elements/Base";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { getRelativeTime } from "@goauthentik/common/utils";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/events/LogViewer";

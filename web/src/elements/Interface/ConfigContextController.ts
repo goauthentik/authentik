@@ -1,4 +1,4 @@
-import { EVENT_REFRESH } from "@goauthentik/authentik/common/constants";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { globalAK } from "@goauthentik/common/global";
 import { authentikConfigContext } from "@goauthentik/elements/AuthentikContexts";

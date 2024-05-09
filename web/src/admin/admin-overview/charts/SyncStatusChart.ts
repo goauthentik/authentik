@@ -1,4 +1,4 @@
-import { PaginatedResponse } from "@goauthentik/authentik/elements/table/Table";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKChart } from "@goauthentik/elements/charts/Chart";
 import "@goauthentik/elements/forms/ConfirmationForm";
