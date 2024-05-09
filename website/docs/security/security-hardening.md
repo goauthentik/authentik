@@ -14,7 +14,7 @@ However, for further hardening, it is possible to prevent any user (even super-u
 -   `/api/v3/propertymappings*`
 -   `/api/v3/managed/blueprints*`
 
-With these restrictions in place, expressions can only be edited using [Blueprints on the file system](https://docs.goauthentik.io/developer-docs/blueprints/#storage---file). And of course, implement restricted access to the file system itself.
+With these restrictions in place, expressions can only be edited using [Blueprints on the file system](https://docs.goauthentik.io/developer-docs/blueprints/#storage---file). Take care to restrict access to the file system itself.
 
 ### Blueprints
 
