@@ -1,4 +1,4 @@
-import { sourceLocale, targetLocales } from "@goauthentik/locale-codes";
+import { sourceLocale, targetLocales } from "../../locale-codes";
 
 import { configureLocalization } from "@lit/localize";
 
