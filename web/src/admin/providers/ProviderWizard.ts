@@ -5,7 +5,6 @@ import "@goauthentik/admin/providers/proxy/ProxyProviderForm";
 import "@goauthentik/admin/providers/saml/SAMLProviderForm";
 import "@goauthentik/admin/providers/saml/SAMLProviderImportForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/Alert";
 import { AKElement } from "@goauthentik/elements/Base";
 import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
 import "@goauthentik/elements/forms/ProxyForm";
@@ -20,9 +19,11 @@ import { CSSResult, TemplateResult, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFHint from "@patternfly/patternfly/components/Hint/hint.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { ProvidersApi, TypeCreate } from "@goauthentik/api";
@@ -33,7 +34,7 @@ export class InitialProviderWizardPage extends WithLicenseSummary(WizardPage) {
     providerTypes: TypeCreate[] = [];
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFForm, PFHint, PFButton, PFRadio];
+        return [PFBase, PFForm, PFGrid, PFCard, PFHint, PFButton, PFRadio];
     }
     sidebarLabel = () => msg("Select type");
 
@@ -70,28 +71,43 @@ export class InitialProviderWizardPage extends WithLicenseSummary(WizardPage) {
     }
 
     render(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            ${this.providerTypes.map((type) => {
+        return html`<form class="pf-c-form pf-m-horizontal pf-l-grid pf-m-gutter">
+            <p class="pf-c-form__helper-text">${msg("Select a provider type")}</p>
+            ${this.providerTypes.map((type, idx) => {
                 const requiresEnterprise = type.requiresEnterprise && !this.hasEnterpriseLicense;
-                return html`<div class="pf-c-radio">
-                    <input
-                        class="pf-c-radio__input"
-                        type="radio"
-                        name="type"
-                        id=${type.component}
-                        @change=${() => {
-                            this.host.steps = ["initial", `type-${type.component}`];
-                            this.host.isValid = true;
-                        }}
-                        ?disabled=${requiresEnterprise}
-                    />
-                    <label class="pf-c-radio__label" for=${type.component}>${type.name}</label>
-                    <span class="pf-c-radio__description"
-                        >${type.description}
-                        ${requiresEnterprise
-                            ? html`<ak-license-notice></ak-license-notice>`
-                            : nothing}
-                    </span>
+                return html`<div
+                    class="pf-l-grid__item pf-m-3-col pf-c-card ${requiresEnterprise
+                        ? "pf-m-non-selectable-raised"
+                        : "pf-m-selectable-raised"}"
+                    id=${`card-${type.component}`}
+                    tabindex=${idx}
+                    @click=${() => {
+                        if (requiresEnterprise) {
+                            return;
+                        }
+                        this.host.steps = ["initial", `type-${type.component}`];
+                        this.host.isValid = true;
+                        // Unselect other cards
+                        this.shadowRoot
+                            ?.querySelectorAll<HTMLDivElement>(".pf-c-card")
+                            .forEach((card) => {
+                                card.classList.remove("pf-m-selected-raised");
+                            });
+                        const card = this.shadowRoot?.querySelector<HTMLDivElement>(
+                            `#card-${type.component}`,
+                        );
+                        if (card) {
+                            card.classList.add("pf-m-selected-raised");
+                        }
+                    }}
+                >
+                    <div class="pf-c-card__title">${type.name}</div>
+                    <div class="pf-c-card__body">${type.description}</div>
+                    ${requiresEnterprise
+                        ? html`<div class="pf-c-card__footer">
+                              <ak-license-notice></ak-license-notice>
+                          </div> `
+                        : nothing}
                 </div>`;
             })}
         </form>`;
