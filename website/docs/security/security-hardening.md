@@ -35,4 +35,4 @@ To prevent any user from creating/editing CAPTCHA stages block API requests to t
 -   `/api/v3/stages/captcha*`
 -   `/api/v3/managed/blueprints*`
 
-With these restrictions in place, captcha stages can only be edited using [Blueprints on the file system](https://docs.goauthentik.io/developer-docs/blueprints/#storage---file).
+With these restrictions in place, CAPTCHA stages can only be edited using [Blueprints on the file system](https://docs.goauthentik.io/developer-docs/blueprints/#storage---file).
