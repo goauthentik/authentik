@@ -3,9 +3,9 @@
 from uuid import uuid4
 
 from django.db import models
+from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import BaseSerializer
-from django.templatetags.static import static
 
 from authentik.core.models import Group, Source, Token, User
 from authentik.lib.models import SerializerModel
