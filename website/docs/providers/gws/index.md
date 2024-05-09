@@ -4,9 +4,9 @@ title: Google Workspace provider
 
 With the Google Workspace provider, authentik can be the single source of truth for all users and groups, even when using Google products like Gmail.
 
-*   For instructions to configure your Google Workspace to integrate with authentik, refer to [Configure Google Workspace](./setup-gws).
+-   For instructions to configure your Google Workspace to integrate with authentik, refer to [Configure Google Workspace](./setup-gws).
 
-*   For instructions to add Google Workspace as a provider, refer to [Create a Google Workspace provider](./add-gws-provider).
+-   For instructions to add Google Workspace as a provider, refer to [Create a Google Workspace provider](./add-gws-provider).
 
 ## About using Google Workspace with authentik
 
