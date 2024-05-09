@@ -33,6 +33,7 @@ type RedisConfig struct {
 	Password               string `yaml:"password" env:"AUTHENTIK_REDIS__PASSWORD"` // Deprecated: Use URL instead
 	TLS                    bool   `yaml:"tls" env:"AUTHENTIK_REDIS__TLS"` // Deprecated: Use URL instead
 	TLSReqs                string `yaml:"tls_reqs" env:"AUTHENTIK_REDIS__TLS_REQS"` // Deprecated: Use URL instead
+    TLSCaCert *string `yaml:"tls_ca_certs" env:"TLS_CA_CERT, overwrite"` // Deprecated: Use URL instead
 }
 
 type ListenConfig struct {

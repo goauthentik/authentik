@@ -14,6 +14,8 @@ from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.models import SerializerModel
 from authentik.stages.authenticator.models import Device
 
+UNKNOWN_DEVICE_TYPE_AAGUID = "00000000-0000-0000-0000-000000000000"
+
 
 class UserVerification(models.TextChoices):
     """The degree to which the Relying Party wishes to verify a user's identity.
@@ -65,7 +67,7 @@ class AuthenticatorAttachment(models.TextChoices):
     CROSS_PLATFORM = "cross-platform"
 
 
-class AuthenticateWebAuthnStage(ConfigurableStage, FriendlyNamedStage, Stage):
+class AuthenticatorWebAuthnStage(ConfigurableStage, FriendlyNamedStage, Stage):
     """WebAuthn stage"""
 
     user_verification = models.TextField(
@@ -80,11 +82,15 @@ class AuthenticateWebAuthnStage(ConfigurableStage, FriendlyNamedStage, Stage):
         choices=AuthenticatorAttachment.choices, default=None, null=True
     )
 
+    device_type_restrictions = models.ManyToManyField("WebAuthnDeviceType", blank=True)
+
     @property
     def serializer(self) -> type[BaseSerializer]:
-        from authentik.stages.authenticator_webauthn.api import AuthenticateWebAuthnStageSerializer
+        from authentik.stages.authenticator_webauthn.api.stages import (
+            AuthenticatorWebAuthnStageSerializer,
+        )
 
-        return AuthenticateWebAuthnStageSerializer
+        return AuthenticatorWebAuthnStageSerializer
 
     @property
     def view(self) -> type[View]:
@@ -126,6 +132,11 @@ class WebAuthnDevice(SerializerModel, Device):
     created_on = models.DateTimeField(auto_now_add=True)
     last_t = models.DateTimeField(default=now)
 
+    aaguid = models.TextField(default=UNKNOWN_DEVICE_TYPE_AAGUID)
+    device_type = models.ForeignKey(
+        "WebAuthnDeviceType", on_delete=models.SET_DEFAULT, null=True, default=None
+    )
+
     @property
     def descriptor(self) -> PublicKeyCredentialDescriptor:
         """Get a publickeydescriptor for this device"""
@@ -139,13 +150,37 @@ class WebAuthnDevice(SerializerModel, Device):
 
     @property
     def serializer(self) -> Serializer:
-        from authentik.stages.authenticator_webauthn.api import WebAuthnDeviceSerializer
+        from authentik.stages.authenticator_webauthn.api.devices import WebAuthnDeviceSerializer
 
         return WebAuthnDeviceSerializer
 
     def __str__(self):
-        return str(self.name) or str(self.user)
+        return str(self.name) or str(self.user_id)
 
     class Meta:
         verbose_name = _("WebAuthn Device")
         verbose_name_plural = _("WebAuthn Devices")
+
+
+class WebAuthnDeviceType(SerializerModel):
+    """WebAuthn device type, used to restrict which device types are allowed"""
+
+    aaguid = models.UUIDField(primary_key=True, unique=True)
+
+    description = models.TextField()
+    icon = models.TextField(null=True)
+
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.stages.authenticator_webauthn.api.device_types import (
+            WebAuthnDeviceTypeSerializer,
+        )
+
+        return WebAuthnDeviceTypeSerializer
+
+    class Meta:
+        verbose_name = _("WebAuthn Device type")
+        verbose_name_plural = _("WebAuthn Device types")
+
+    def __str__(self) -> str:
+        return f"WebAuthn device type {self.description} ({self.aaguid})"

@@ -32,7 +32,7 @@ const docsSidebar = {
         },
         {
             type: "category",
-            label: "Core Concepts",
+            label: "Core Concepts & Tasks",
             collapsed: true,
             items: [
                 "core/terminology",
@@ -132,6 +132,50 @@ const docsSidebar = {
                         id: "providers/rac/index",
                     },
                     items: ["providers/rac/how-to-rac"],
+                },
+            ],
+        },
+        {
+            type: "category",
+            label: "Sources",
+            collapsed: true,
+            link: {
+                type: "doc",
+                id: "sources/index",
+            },
+            items: [
+                {
+                    type: "category",
+                    label: "Directory synchronization",
+                    items: [
+                        "sources/active-directory/index",
+                        "sources/freeipa/index",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Protocols",
+                    items: [
+                        "sources/ldap/index",
+                        "sources/oauth/index",
+                        "sources/saml/index",
+                        "sources/scim/index",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Social Logins",
+                    items: [
+                        "sources/apple/index",
+                        "sources/azure-ad/index",
+                        "sources/discord/index",
+                        "sources/github/index",
+                        "sources/google/index",
+                        "sources/mailcow/index",
+                        "sources/twitch/index",
+                        "sources/plex/index",
+                        "sources/twitter/index",
+                    ],
                 },
             ],
         },
@@ -343,13 +387,14 @@ const docsSidebar = {
                 description: "Release notes for recent authentik versions",
             },
             items: [
+                "releases/2024/v2024.4",
                 "releases/2024/v2024.2",
                 "releases/2023/v2023.10",
-                "releases/2023/v2023.8",
                 {
                     type: "category",
                     label: "Previous versions",
                     items: [
+                        "releases/2023/v2023.8",
                         "releases/2023/v2023.6",
                         "releases/2023/v2023.5",
                         "releases/2023/v2023.4",
@@ -434,6 +479,7 @@ const docsSidebar = {
                 slug: "security",
             },
             items: [
+                "security/security-hardening",
                 "security/policy",
                 "security/CVE-2024-23647",
                 "security/CVE-2024-21637",

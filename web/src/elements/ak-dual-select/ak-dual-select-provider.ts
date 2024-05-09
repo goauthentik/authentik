@@ -55,8 +55,6 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
 
     private pagination?: Pagination;
 
-    selectedMap: WeakMap<DataProvider, DualSelectPair[]> = new WeakMap();
-
     constructor() {
         super();
         setTimeout(() => this.fetch(1), 0);
@@ -72,16 +70,14 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
 
     willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("searchDelay")) {
-            this.doSearch = debounce(this.doSearch.bind(this), this.searchDelay);
+            this.doSearch = debounce(
+                AkDualSelectProvider.prototype.doSearch.bind(this),
+                this.searchDelay,
+            );
         }
 
         if (changedProperties.has("provider")) {
             this.pagination = undefined;
-            const previousProvider = changedProperties.get("provider");
-            if (previousProvider) {
-                this.selectedMap.set(previousProvider, this.selected);
-                this.selected = this.selectedMap.get(this.provider) ?? [];
-            }
             this.fetch();
         }
     }

@@ -36,6 +36,7 @@ redis:
   # password: ""
   # tls: false
   # tls_reqs: "required"
+  # tls_ca_cert: null
 
 # broker:
 #   url: ""
@@ -53,11 +54,14 @@ cache:
 
 # result_backend:
 #   url: ""
+#   transport_options: ""
 
 debug: false
 remote_debug: false
 
 log_level: info
+
+session_storage: cache
 
 error_reporting:
   enabled: false
@@ -111,7 +115,6 @@ events:
     asn: "/geoip/GeoLite2-ASN.mmdb"
 
 cert_discovery_dir: /certs
-default_token_length: 60
 
 tenants:
   enabled: false

@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2024.2.2 Blueprint schema",
+    "title": "authentik 2024.4.2 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -1233,6 +1233,43 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_sources_scim.scimsource"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_sources_scim.scimsource"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_sources_scim.scimsource"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_stages_authenticator_duo.authenticatorduostage"
                             },
                             "id": {
@@ -1566,7 +1603,7 @@
                         ],
                         "properties": {
                             "model": {
-                                "const": "authentik_stages_authenticator_webauthn.authenticatewebauthnstage"
+                                "const": "authentik_stages_authenticator_webauthn.authenticatorwebauthnstage"
                             },
                             "id": {
                                 "type": "string"
@@ -1588,10 +1625,10 @@
                                 }
                             },
                             "attrs": {
-                                "$ref": "#/$defs/model_authentik_stages_authenticator_webauthn.authenticatewebauthnstage"
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_webauthn.authenticatorwebauthnstage"
                             },
                             "identifiers": {
-                                "$ref": "#/$defs/model_authentik_stages_authenticator_webauthn.authenticatewebauthnstage"
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_webauthn.authenticatorwebauthnstage"
                             }
                         }
                     },
@@ -2491,6 +2528,154 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_providers_google_workspace.googleworkspaceprovider"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_providers_google_workspace.googleworkspaceprovider"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_providers_google_workspace.googleworkspaceprovider"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_providers_google_workspace.googleworkspaceprovidermapping"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_providers_google_workspace.googleworkspaceprovidermapping"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_providers_google_workspace.googleworkspaceprovidermapping"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_providers_microsoft_entra.microsoftentraprovider"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_providers_microsoft_entra.microsoftentraprovider"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_providers_microsoft_entra.microsoftentraprovider"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_providers_microsoft_entra.microsoftentraprovidermapping"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_providers_microsoft_entra.microsoftentraprovidermapping"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_providers_microsoft_entra.microsoftentraprovidermapping"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_providers_rac.racprovider"
                             },
                             "id": {
@@ -3274,6 +3459,7 @@
                         "authentik.sources.oauth",
                         "authentik.sources.plex",
                         "authentik.sources.saml",
+                        "authentik.sources.scim",
                         "authentik.stages.authenticator",
                         "authentik.stages.authenticator_duo",
                         "authentik.stages.authenticator_sms",
@@ -3299,6 +3485,8 @@
                         "authentik.core",
                         "authentik.enterprise",
                         "authentik.enterprise.audit",
+                        "authentik.enterprise.providers.google_workspace",
+                        "authentik.enterprise.providers.microsoft_entra",
                         "authentik.enterprise.providers.rac",
                         "authentik.enterprise.stages.source",
                         "authentik.events"
@@ -3345,6 +3533,7 @@
                         "authentik_sources_plex.plexsourceconnection",
                         "authentik_sources_saml.samlsource",
                         "authentik_sources_saml.usersamlsourceconnection",
+                        "authentik_sources_scim.scimsource",
                         "authentik_stages_authenticator_duo.authenticatorduostage",
                         "authentik_stages_authenticator_duo.duodevice",
                         "authentik_stages_authenticator_sms.authenticatorsmsstage",
@@ -3354,7 +3543,7 @@
                         "authentik_stages_authenticator_totp.authenticatortotpstage",
                         "authentik_stages_authenticator_totp.totpdevice",
                         "authentik_stages_authenticator_validate.authenticatorvalidatestage",
-                        "authentik_stages_authenticator_webauthn.authenticatewebauthnstage",
+                        "authentik_stages_authenticator_webauthn.authenticatorwebauthnstage",
                         "authentik_stages_authenticator_webauthn.webauthndevice",
                         "authentik_stages_captcha.captchastage",
                         "authentik_stages_consent.consentstage",
@@ -3379,6 +3568,10 @@
                         "authentik_core.application",
                         "authentik_core.token",
                         "authentik_enterprise.license",
+                        "authentik_providers_google_workspace.googleworkspaceprovider",
+                        "authentik_providers_google_workspace.googleworkspaceprovidermapping",
+                        "authentik_providers_microsoft_entra.microsoftentraprovider",
+                        "authentik_providers_microsoft_entra.microsoftentraprovidermapping",
                         "authentik_providers_rac.racprovider",
                         "authentik_providers_rac.endpoint",
                         "authentik_providers_rac.racpropertymapping",
@@ -4092,6 +4285,10 @@
                         "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256",
                         "http://www.w3.org/2001/04/xmldsig-more#rsa-sha384",
                         "http://www.w3.org/2001/04/xmldsig-more#rsa-sha512",
+                        "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1",
+                        "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256",
+                        "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384",
+                        "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512",
                         "http://www.w3.org/2000/09/xmldsig#dsa-sha1"
                     ],
                     "title": "Signature algorithm"
@@ -4547,7 +4744,6 @@
                         "null"
                     ],
                     "maxLength": 255,
-                    "minLength": 1,
                     "title": "Request Token URL",
                     "description": "URL used to request the initial token. This URL is only required for OAuth 1."
                 },
@@ -4557,7 +4753,6 @@
                         "null"
                     ],
                     "maxLength": 255,
-                    "minLength": 1,
                     "title": "Authorization URL",
                     "description": "URL the user is redirect to to conest the flow."
                 },
@@ -4567,7 +4762,6 @@
                         "null"
                     ],
                     "maxLength": 255,
-                    "minLength": 1,
                     "title": "Access Token URL",
                     "description": "URL used by authentik to retrieve tokens."
                 },
@@ -4577,7 +4771,6 @@
                         "null"
                     ],
                     "maxLength": 255,
-                    "minLength": 1,
                     "title": "Profile URL",
                     "description": "URL used by authentik to get user information."
                 },
@@ -4900,6 +5093,10 @@
                         "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256",
                         "http://www.w3.org/2001/04/xmldsig-more#rsa-sha384",
                         "http://www.w3.org/2001/04/xmldsig-more#rsa-sha512",
+                        "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1",
+                        "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256",
+                        "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384",
+                        "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512",
                         "http://www.w3.org/2000/09/xmldsig#dsa-sha1"
                     ],
                     "title": "Signature algorithm"
@@ -4924,6 +5121,52 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
+                },
+                "icon": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Icon"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_scim.scimsource": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name",
+                    "description": "Source's display Name."
+                },
+                "slug": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 1,
+                    "pattern": "^[-a-zA-Z0-9_]+$",
+                    "title": "Slug",
+                    "description": "Internal source name, used in URLs."
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "title": "Enabled"
+                },
+                "user_matching_mode": {
+                    "type": "string",
+                    "enum": [
+                        "identifier",
+                        "email_link",
+                        "email_deny",
+                        "username_link",
+                        "username_deny"
+                    ],
+                    "title": "User matching mode",
+                    "description": "How the source determines if an existing user should be authenticated or a new user enrolled."
+                },
+                "user_path_template": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "User path template"
                 },
                 "icon": {
                     "type": "string",
@@ -5641,11 +5884,19 @@
                     ],
                     "title": "Webauthn user verification",
                     "description": "Enforce user verification for WebAuthn devices."
+                },
+                "webauthn_allowed_device_types": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Webauthn allowed device types"
                 }
             },
             "required": []
         },
-        "model_authentik_stages_authenticator_webauthn.authenticatewebauthnstage": {
+        "model_authentik_stages_authenticator_webauthn.authenticatorwebauthnstage": {
             "type": "object",
             "properties": {
                 "name": {
@@ -5778,6 +6029,14 @@
                         "required"
                     ],
                     "title": "Resident key requirement"
+                },
+                "device_type_restrictions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Device type restrictions"
                 }
             },
             "required": []
@@ -6021,7 +6280,10 @@
             "type": "object",
             "properties": {
                 "expires": {
-                    "type": "string",
+                    "type": [
+                        "string",
+                        "null"
+                    ],
                     "format": "date-time",
                     "title": "Expires"
                 },
@@ -6790,7 +7052,10 @@
                     "title": "Name"
                 },
                 "expires": {
-                    "type": "string",
+                    "type": [
+                        "string",
+                        "null"
+                    ],
                     "format": "date-time",
                     "title": "Expires"
                 },
@@ -7981,7 +8246,10 @@
                     "title": "Description"
                 },
                 "expires": {
-                    "type": "string",
+                    "type": [
+                        "string",
+                        "null"
+                    ],
                     "format": "date-time",
                     "title": "Expires"
                 },
@@ -8004,6 +8272,205 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Key"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_providers_google_workspace.googleworkspaceprovider": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Property mappings"
+                },
+                "property_mappings_group": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Property mappings used for group creation/updating."
+                    },
+                    "title": "Property mappings group",
+                    "description": "Property mappings used for group creation/updating."
+                },
+                "delegated_subject": {
+                    "type": "string",
+                    "format": "email",
+                    "maxLength": 254,
+                    "minLength": 1,
+                    "title": "Delegated subject"
+                },
+                "credentials": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Credentials"
+                },
+                "scopes": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Scopes"
+                },
+                "exclude_users_service_account": {
+                    "type": "boolean",
+                    "title": "Exclude users service account"
+                },
+                "filter_group": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Filter group"
+                },
+                "user_delete_action": {
+                    "type": "string",
+                    "enum": [
+                        "do_nothing",
+                        "delete",
+                        "suspend"
+                    ],
+                    "title": "User delete action"
+                },
+                "group_delete_action": {
+                    "type": "string",
+                    "enum": [
+                        "do_nothing",
+                        "delete",
+                        "suspend"
+                    ],
+                    "title": "Group delete action"
+                },
+                "default_group_email_domain": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Default group email domain"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_providers_google_workspace.googleworkspaceprovidermapping": {
+            "type": "object",
+            "properties": {
+                "managed": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Managed by authentik",
+                    "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "expression": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Expression"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_providers_microsoft_entra.microsoftentraprovider": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Property mappings"
+                },
+                "property_mappings_group": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Property mappings used for group creation/updating."
+                    },
+                    "title": "Property mappings group",
+                    "description": "Property mappings used for group creation/updating."
+                },
+                "client_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Client id"
+                },
+                "client_secret": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Client secret"
+                },
+                "tenant_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Tenant id"
+                },
+                "exclude_users_service_account": {
+                    "type": "boolean",
+                    "title": "Exclude users service account"
+                },
+                "filter_group": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Filter group"
+                },
+                "user_delete_action": {
+                    "type": "string",
+                    "enum": [
+                        "do_nothing",
+                        "delete",
+                        "suspend"
+                    ],
+                    "title": "User delete action"
+                },
+                "group_delete_action": {
+                    "type": "string",
+                    "enum": [
+                        "do_nothing",
+                        "delete",
+                        "suspend"
+                    ],
+                    "title": "Group delete action"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_providers_microsoft_entra.microsoftentraprovidermapping": {
+            "type": "object",
+            "properties": {
+                "managed": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Managed by authentik",
+                    "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "expression": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Expression"
                 }
             },
             "required": []

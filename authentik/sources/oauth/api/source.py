@@ -130,7 +130,13 @@ class OAuthSourceSerializer(SourceSerializer):
             "oidc_jwks_url",
             "oidc_jwks",
         ]
-        extra_kwargs = {"consumer_secret": {"write_only": True}}
+        extra_kwargs = {
+            "consumer_secret": {"write_only": True},
+            "request_token_url": {"allow_blank": True},
+            "authorization_url": {"allow_blank": True},
+            "access_token_url": {"allow_blank": True},
+            "profile_url": {"allow_blank": True},
+        }
 
 
 class OAuthSourceFilter(FilterSet):

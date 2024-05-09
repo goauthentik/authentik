@@ -7,10 +7,11 @@ from hashlib import sha512
 from pathlib import Path
 
 from celery.schedules import crontab
+from django.conf import ImproperlyConfigured
 from sentry_sdk import set_tag
 
 from authentik import ENV_GIT_HASH_KEY, __version__
-from authentik.lib.config import CONFIG
+from authentik.lib.config import CONFIG, redis_url
 from authentik.lib.logging import get_logger_config, structlog_configure
 from authentik.lib.sentry import sentry_init
 from authentik.lib.utils.reflection import get_env
@@ -89,6 +90,7 @@ TENANT_APPS = [
     "authentik.sources.oauth",
     "authentik.sources.plex",
     "authentik.sources.saml",
+    "authentik.sources.scim",
     "authentik.stages.authenticator",
     "authentik.stages.authenticator_duo",
     "authentik.stages.authenticator_sms",
@@ -153,9 +155,13 @@ SPECTACULAR_SETTINGS = {
         "LDAPAPIAccessMode": "authentik.providers.ldap.models.APIAccessMode",
         "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
         "UserTypeEnum": "authentik.core.models.UserTypes",
+        "OutgoingSyncDeleteAction": "authentik.lib.sync.outgoing.models.OutgoingSyncDeleteAction",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "ENUM_GENERATE_CHOICE_DESCRIPTION": False,
+    "PREPROCESSING_HOOKS": [
+        "authentik.api.schema.preprocess_schema_exclude_non_api",
+    ],
     "POSTPROCESSING_HOOKS": [
         "authentik.api.schema.postprocess_schema_responses",
         "drf_spectacular.hooks.postprocess_schema_enums",
@@ -207,7 +213,15 @@ DJANGO_REDIS_CONNECTION_FACTORY = "authentik.root.redis_middleware_django.Custom
 DJANGO_REDIS_SCAN_ITERSIZE = 1000
 DJANGO_REDIS_IGNORE_EXCEPTIONS = True
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+match CONFIG.get("session_storage", "cache"):
+    case "cache":
+        SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+    case "db":
+        SESSION_ENGINE = "django.contrib.sessions.backends.db"
+    case _:
+        raise ImproperlyConfigured(
+            "Invalid session_storage setting, allowed values are db and cache"
+        )
 SESSION_SERIALIZER = "authentik.root.sessions.pickle.PickleSerializer"
 SESSION_CACHE_ALIAS = "default"
 # Configured via custom SessionMiddleware
@@ -363,9 +377,14 @@ CELERY = {
     "task_create_missing_queues": True,
     "task_default_queue": "authentik",
     "broker_url": CONFIG.get("broker.url") or CONFIG.get("redis.url"),
-    "broker_connection_retry_on_startup": True,
-    "broker_transport_options": CONFIG.get_dict_from_b64_json("broker.transport_options"),
-    "result_backend": CONFIG.get("result_backend.url") or CONFIG.get("redis.url"),
+	"result_backend": CONFIG.get("result_backend.url") or CONFIG.get("redis.url"),
+    "broker_transport_options": CONFIG.get_dict_from_b64_json(
+        "broker.transport_options", {"retry_policy": {"timeout": 5.0}}
+    ),
+	"result_backend_transport_options": CONFIG.get_dict_from_b64_json(
+        "result_backend.transport_options", {"retry_policy": {"timeout": 5.0}}
+    ),
+	"redis_retry_on_timeout": True,
 }
 
 # Sentry integration

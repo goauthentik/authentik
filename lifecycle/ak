@@ -54,7 +54,7 @@ function cleanup {
 }
 
 function prepare_debug {
-    poetry install --no-ansi --no-interaction
+    VIRTUAL_ENV=/ak-root/venv poetry install --no-ansi --no-interaction
     touch /unittest.xml
     chown authentik:authentik /unittest.xml
 }

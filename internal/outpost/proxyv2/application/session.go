@@ -16,6 +16,7 @@ import (
 	"goauthentik.io/internal/outpost/proxyv2/codecs"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 	"goauthentik.io/internal/outpost/proxyv2/redisstore"
+	"goauthentik.io/internal/utils"
 )
 
 const RedisKeyPrefix = "authentik_proxy_session_"

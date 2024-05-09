@@ -4885,11 +4885,6 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
         <target>Laatste validatiedrempel</target>
 
       </trans-unit>
-      <trans-unit id="s951281efc92b03fc">
-        <source>If any of the devices user of the types selected above have been used within this duration, this stage will be skipped.</source>
-        <target>Als een van de geselecteerde apparaattypen in deze periode is gebruikt, wordt deze fase overgeslagen.</target>
-
-      </trans-unit>
       <trans-unit id="s681074b6c1f19c08">
         <source>Not configured action</source>
         <target>Niet geconfigureerde actie</target>
@@ -7682,9 +7677,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="s895514dda9cb9c94">
   <source>Create recovery link</source>
 </trans-unit>
-<trans-unit id="s78ab26da7f067de8">
-  <source>Select permissions to grant</source>
-</trans-unit>
 <trans-unit id="sdeb90bfd8a80b86b">
   <source>Permissions to add</source>
 </trans-unit>
@@ -8172,6 +8164,162 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 </trans-unit>
 <trans-unit id="s02160dc6adba3456">
   <source>Inject an OAuth or SAML Source into the flow execution. This allows for additional user verification, or to dynamically access different sources for different user identifiers (username, email address, etc).</source>
+</trans-unit>
+<trans-unit id="sc7d071fb5cc1f6bf">
+  <source>A selection is required</source>
+</trans-unit>
+<trans-unit id="sa64fb483becc9c2c">
+  <source>Device type restrictions</source>
+</trans-unit>
+<trans-unit id="sbb928551c84cd63f">
+  <source>Available Device types</source>
+</trans-unit>
+<trans-unit id="s6446c35d6b411e53">
+  <source>Selected Device types</source>
+</trans-unit>
+<trans-unit id="s1f4df216b56de4ac">
+  <source>Optionally restrict which WebAuthn device types may be used. When no device types are selected, all devices are allowed.</source>
+</trans-unit>
+<trans-unit id="s23ed998c51cbe38f">
+  <source>If the user has successfully authenticated with a device in the classes listed above within this configured duration, this stage will be skipped.</source>
+</trans-unit>
+<trans-unit id="s4d4f52ccfd9d6adf">
+  <source>WebAuthn-specific settings</source>
+</trans-unit>
+<trans-unit id="sb46d2e64f64c6284">
+  <source>WebAuthn Device type restrictions</source>
+</trans-unit>
+<trans-unit id="s11274960b13cf21a">
+  <source>This restriction only applies to devices created in authentik 2024.4 or later.</source>
+</trans-unit>
+<trans-unit id="s4888252cbd785175">
+  <source>Default token duration</source>
+</trans-unit>
+<trans-unit id="s25c80a16a07871ba">
+  <source>Default duration for generated tokens</source>
+</trans-unit>
+<trans-unit id="se5c9ffc025fdf61d">
+  <source>Default token length</source>
+</trans-unit>
+<trans-unit id="sa6b2c110466d1754">
+  <source>Default length of generated tokens</source>
+</trans-unit>
+<trans-unit id="s1f25e1e20469a9ea">
+  <source>deleted</source>
+</trans-unit>
+<trans-unit id="s0ca04e397298bc43">
+  <source>Select permissions to assign</source>
+</trans-unit>
+<trans-unit id="s676d94e7e31a8075">
+  <source>SCIM Source is in preview.</source>
+</trans-unit>
+<trans-unit id="s31f1afc0a81977c1">
+  <source>Update SCIM Source</source>
+</trans-unit>
+<trans-unit id="s4bb356adc8a7f85b">
+  <source>SCIM Base URL</source>
+</trans-unit>
+<trans-unit id="sb23304fc42c5d6d9">
+  <source>Provisioned Users</source>
+</trans-unit>
+<trans-unit id="s6a81ee82b2e5ecbb">
+  <source>Provisioned Groups</source>
+</trans-unit>
+<trans-unit id="s10154dbd4fbc697b">
+  <source>removed</source>
+</trans-unit>
+<trans-unit id="s30d6ff9e15e0a40a">
+  <source>Verifying...</source>
+</trans-unit>
+<trans-unit id="sc1673c93148583ba">
+  <source>Request failed. Please try again later.</source>
+</trans-unit>
+<trans-unit id="s85be1f5e7a0fa3b1">
+  <source>Available Roles</source>
+</trans-unit>
+<trans-unit id="sa59d53ee922c08b5">
+  <source>Selected Roles</source>
+</trans-unit>
+<trans-unit id="s7bfbf84a8ad5883f">
+  <source>Internal Service accounts are created and managed by authentik and cannot be created manually.</source>
+</trans-unit>
+<trans-unit id="sb0680e5f8782db1e">
+  <source>Private key Algorithm</source>
+</trans-unit>
+<trans-unit id="sa03cbf19feebd249">
+  <source>RSA</source>
+</trans-unit>
+<trans-unit id="sfbfccbd3e395c147">
+  <source>ECDSA</source>
+</trans-unit>
+<trans-unit id="sebea299e52db4242">
+  <source>Algorithm used to generate the private key.</source>
+</trans-unit>
+<trans-unit id="s21e38ec6ffa2b918">
+  <source>Added ID <x id="0" equiv-text="${item}"/></source>
+</trans-unit>
+<trans-unit id="s74918a09ef39ed26">
+  <source>Removed ID <x id="0" equiv-text="${item}"/></source>
+</trans-unit>
+<trans-unit id="s3a20e5d7dd70dcd3">
+  <source>Cleared</source>
+</trans-unit>
+<trans-unit id="s8cfd29891b2c93f0">
+  <source>Google Workspace Provider</source>
+</trans-unit>
+<trans-unit id="sa817aa9f6f88a991">
+  <source>Credentials</source>
+</trans-unit>
+<trans-unit id="s44b0d2fa9c97719d">
+  <source>TODO</source>
+</trans-unit>
+<trans-unit id="sc668815044e218c2">
+  <source>Delegated Subject</source>
+</trans-unit>
+<trans-unit id="se89a9ecf275e4343">
+  <source>Default group email domain</source>
+</trans-unit>
+<trans-unit id="s64a0a6da6ed6d680">
+  <source>Default domain that is used to generate a group's email address. Can be customized using property mappings.</source>
+</trans-unit>
+<trans-unit id="sd061e65955e036ca">
+  <source>User deletion action</source>
+</trans-unit>
+<trans-unit id="s87f86f65b5e19ea7">
+  <source>User is deleted</source>
+</trans-unit>
+<trans-unit id="s3906cd4a102867a3">
+  <source>Suspend</source>
+</trans-unit>
+<trans-unit id="s0bf5b364e2c79392">
+  <source>User is suspended, and connection to user in authentik is removed.</source>
+</trans-unit>
+<trans-unit id="s4acb0250d735c2a9">
+  <source>Do Nothing</source>
+</trans-unit>
+<trans-unit id="s5fe525d19499ed47">
+  <source>The connection is removed but the user is not modified</source>
+</trans-unit>
+<trans-unit id="s676a0127c35d240a">
+  <source>Determines what authentik will do when a User is deleted.</source>
+</trans-unit>
+<trans-unit id="sd1aa04cc32caf2b0">
+  <source>Group deletion action</source>
+</trans-unit>
+<trans-unit id="s874c788479481131">
+  <source>Group is deleted</source>
+</trans-unit>
+<trans-unit id="s0983fa9b84e4a9f7">
+  <source>The connection is removed but the group is not modified</source>
+</trans-unit>
+<trans-unit id="sdb872a9f425937fa">
+  <source>Determines what authentik will do when a Group is deleted.</source>
+</trans-unit>
+<trans-unit id="sa5f28f1ad0bee45b">
+  <source>Google Workspace Provider is in preview.</source>
+</trans-unit>
+<trans-unit id="sfcf7bc2ef234d938">
+  <source>Update Google Provider</source>
 </trans-unit>
     </body>
   </file>

@@ -84,3 +84,7 @@ class Brand(SerializerModel):
     class Meta:
         verbose_name = _("Brand")
         verbose_name_plural = _("Brands")
+        indexes = [
+            models.Index(fields=["domain"]),
+            models.Index(fields=["default"]),
+        ]

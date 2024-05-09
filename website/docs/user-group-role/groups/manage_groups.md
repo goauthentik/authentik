@@ -34,12 +34,23 @@ To delete a group, follow these steps:
 2. Select the checkbox beside the name of the group that you want to delete.
 3. Click **Delete**.
 
-## Assign, modify, or remove permissions for a group
-
-You can grant a group specific global or object-level permissions. Any user who is a member of a group inherits all of the group's permissions.
-
-For more information, review ["Permissions"](../access-control/permissions.md).
-
 ## Assign a role to a group
 
 You can assign a role to a group, and then all users in the group inherit the permissions assigned to that role. For instructions and more information, see ["Assign a role to a group"](../roles/manage_roles.md#assign-a-role-to-a-group).
+
+## Delegating group member management
+
+:::info
+Requires authentik 2024.4
+:::
+
+To give a specific Role or User the ability to manage group members, the following permissions need to be granted on the matching Group object:
+
+-   Can view group
+-   Can add user to group
+-   Can remove user from group
+-   Can access admin interface (for managing a group's user within the authentik Admin interface)
+
+In addition, the permission "Can view User" needs to be assigned, either globally or on specific users that should be manageable.
+
+These permissions can be assigned to a [Role](../roles/index.mdx) or directly to a [User](../user/index.mdx).

@@ -1,6 +1,6 @@
 """authentik core models"""
 
-from datetime import timedelta
+from datetime import datetime
 from hashlib import sha256
 from typing import Any, Optional, Self
 from uuid import uuid4
@@ -22,18 +22,19 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.models import ManagedModel
-from authentik.core.exceptions import PropertyMappingExpressionException
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
-from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
 from authentik.lib.models import (
     CreatedUpdatedModel,
     DomainlessFormattedURLValidator,
     SerializerModel,
 )
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
-from authentik.tenants.utils import get_unique_identifier
+from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
+from authentik.tenants.utils import get_current_tenant, get_unique_identifier
 
 LOGGER = get_logger()
 USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
@@ -42,33 +43,42 @@ USER_ATTRIBUTE_EXPIRES = "goauthentik.io/user/expires"
 USER_ATTRIBUTE_DELETE_ON_LOGOUT = "goauthentik.io/user/delete-on-logout"
 USER_ATTRIBUTE_SOURCES = "goauthentik.io/user/sources"
 USER_ATTRIBUTE_TOKEN_EXPIRING = "goauthentik.io/user/token-expires"  # nosec
+USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME = "goauthentik.io/user/token-maximum-lifetime"  # nosec
 USER_ATTRIBUTE_CHANGE_USERNAME = "goauthentik.io/user/can-change-username"
 USER_ATTRIBUTE_CHANGE_NAME = "goauthentik.io/user/can-change-name"
 USER_ATTRIBUTE_CHANGE_EMAIL = "goauthentik.io/user/can-change-email"
 USER_PATH_SYSTEM_PREFIX = "goauthentik.io"
 USER_PATH_SERVICE_ACCOUNT = USER_PATH_SYSTEM_PREFIX + "/service-accounts"
 
-
 options.DEFAULT_NAMES = options.DEFAULT_NAMES + (
     # used_by API that allows models to specify if they shadow an object
     # for example the proxy provider which is built on top of an oauth provider
     "authentik_used_by_shadows",
-    # List fields for which changes are not logged (due to them having dedicated objects)
-    # for example user's password and last_login
-    "authentik_signals_ignored_fields",
 )
 
 
-def default_token_duration():
+def default_token_duration() -> datetime:
     """Default duration a Token is valid"""
-    return now() + timedelta(minutes=30)
+    current_tenant = get_current_tenant()
+    token_duration = (
+        current_tenant.default_token_duration
+        if hasattr(current_tenant, "default_token_duration")
+        else DEFAULT_TOKEN_DURATION
+    )
+    return now() + timedelta_from_string(token_duration)
 
 
-def default_token_key():
+def default_token_key() -> str:
     """Default token key"""
+    current_tenant = get_current_tenant()
+    token_length = (
+        current_tenant.default_token_length
+        if hasattr(current_tenant, "default_token_length")
+        else DEFAULT_TOKEN_LENGTH
+    )
     # We use generate_id since the chars in the key should be easy
     # to use in Emails (for verification) and URLs (for recovery)
-    return generate_id(CONFIG.get_int("default_token_length"))
+    return generate_id(token_length)
 
 
 class UserTypes(models.TextChoices):
@@ -167,8 +177,13 @@ class Group(SerializerModel):
                 "parent",
             ),
         )
+        indexes = [models.Index(fields=["name"])]
         verbose_name = _("Group")
         verbose_name_plural = _("Groups")
+        permissions = [
+            ("add_user_to_group", _("Add user to group")),
+            ("remove_user_from_group", _("Remove user from group")),
+        ]
 
 
 class UserQuerySet(models.QuerySet):
@@ -305,13 +320,12 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
             ("preview_user", _("Can preview user data sent to providers")),
             ("view_user_applications", _("View applications the user has access to")),
         ]
-        authentik_signals_ignored_fields = [
-            # Logged by the events `password_set`
-            # the `password_set` action/signal doesn't currently convey which user
-            # initiated the password change, so for now we'll log two actions
-            # ("password", "password_change_date"),
-            # Logged by `login`
-            ("last_login",),
+        indexes = [
+            models.Index(fields=["last_login"]),
+            models.Index(fields=["password_change_date"]),
+            models.Index(fields=["uuid"]),
+            models.Index(fields=["path"]),
+            models.Index(fields=["type"]),
         ]
 
 
@@ -618,7 +632,7 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
         raise NotImplementedError
 
     def __str__(self) -> str:
-        return f"User-source connection (user={self.user.username}, source={self.source.slug})"
+        return f"User-source connection (user={self.user_id}, source={self.source_id})"
 
     class Meta:
         unique_together = (("user", "source"),)
@@ -627,7 +641,7 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
 class ExpiringModel(models.Model):
     """Base Model which can expire, and is automatically cleaned up."""
 
-    expires = models.DateTimeField(default=default_token_duration)
+    expires = models.DateTimeField(default=None, null=True)
     expiring = models.BooleanField(default=True)
 
     class Meta:
@@ -641,7 +655,7 @@ class ExpiringModel(models.Model):
         return self.delete(*args, **kwargs)
 
     @classmethod
-    def filter_not_expired(cls, **kwargs) -> QuerySet:
+    def filter_not_expired(cls, **kwargs) -> QuerySet["Token"]:
         """Filer for tokens which are not expired yet or are not expiring,
         and match filters in `kwargs`"""
         for obj in cls.objects.filter(**kwargs).filter(Q(expires__lt=now(), expiring=True)):

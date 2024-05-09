@@ -4919,11 +4919,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>上次验证阈值</target>
         
       </trans-unit>
-      <trans-unit id="s951281efc92b03fc">
-        <source>If any of the devices user of the types selected above have been used within this duration, this stage will be skipped.</source>
-        <target>如果上面所选类型的任意设备在此期限内被使用，此阶段会被跳过。</target>
-        
-      </trans-unit>
       <trans-unit id="s681074b6c1f19c08">
         <source>Not configured action</source>
         <target>未配置操作</target>
@@ -7582,10 +7577,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Editing is disabled for managed tokens</source>
   <target>托管令牌的编辑已被禁用</target>
 </trans-unit>
-<trans-unit id="s78ab26da7f067de8">
-  <source>Select permissions to grant</source>
-  <target>选择权限以授予</target>
-</trans-unit>
 <trans-unit id="sdeb90bfd8a80b86b">
   <source>Permissions to add</source>
   <target>要添加的权限</target>
@@ -8519,6 +8510,214 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s02160dc6adba3456">
   <source>Inject an OAuth or SAML Source into the flow execution. This allows for additional user verification, or to dynamically access different sources for different user identifiers (username, email address, etc).</source>
   <target>将 OAuth 或 SAML 源注入到流程执行过程中。这允许额外的用户验证，或者基于不同的用户标识符（用户名、电子邮件地址等）动态访问不同的源。</target>
+</trans-unit>
+<trans-unit id="sc7d071fb5cc1f6bf">
+  <source>A selection is required</source>
+  <target>需要进行选择</target>
+</trans-unit>
+<trans-unit id="sa64fb483becc9c2c">
+  <source>Device type restrictions</source>
+  <target>设备类型限制</target>
+</trans-unit>
+<trans-unit id="sbb928551c84cd63f">
+  <source>Available Device types</source>
+  <target>可用设备类型</target>
+</trans-unit>
+<trans-unit id="s6446c35d6b411e53">
+  <source>Selected Device types</source>
+  <target>已选设备类型</target>
+</trans-unit>
+<trans-unit id="s1f4df216b56de4ac">
+  <source>Optionally restrict which WebAuthn device types may be used. When no device types are selected, all devices are allowed.</source>
+  <target>可选的 WebAuthn 可用设备类型限制。如果未选择设备类型，则允许所有设备。</target>
+</trans-unit>
+<trans-unit id="s23ed998c51cbe38f">
+  <source>If the user has successfully authenticated with a device in the classes listed above within this configured duration, this stage will be skipped.</source>
+  <target>如果用户在配置的持续时间内通过上面列出类别中的设备验证身份成功，则跳过此阶段。</target>
+</trans-unit>
+<trans-unit id="s4d4f52ccfd9d6adf">
+  <source>WebAuthn-specific settings</source>
+  <target>WebAuthn 特定设置</target>
+</trans-unit>
+<trans-unit id="sb46d2e64f64c6284">
+  <source>WebAuthn Device type restrictions</source>
+  <target>WebAuthn 设备类型限制</target>
+</trans-unit>
+<trans-unit id="s11274960b13cf21a">
+  <source>This restriction only applies to devices created in authentik 2024.4 or later.</source>
+  <target>此限制仅适用于在 authentik 2024.4 或更新版本中创建的设备。</target>
+</trans-unit>
+<trans-unit id="s4888252cbd785175">
+  <source>Default token duration</source>
+  <target>默认令牌持续时间</target>
+</trans-unit>
+<trans-unit id="s25c80a16a07871ba">
+  <source>Default duration for generated tokens</source>
+  <target>生成令牌的默认持续时间</target>
+</trans-unit>
+<trans-unit id="se5c9ffc025fdf61d">
+  <source>Default token length</source>
+  <target>默认令牌长度</target>
+</trans-unit>
+<trans-unit id="sa6b2c110466d1754">
+  <source>Default length of generated tokens</source>
+  <target>生成令牌的默认长度</target>
+</trans-unit>
+<trans-unit id="s1f25e1e20469a9ea">
+  <source>deleted</source>
+  <target>已删除</target>
+</trans-unit>
+<trans-unit id="s0ca04e397298bc43">
+  <source>Select permissions to assign</source>
+  <target>选择权限以分配</target>
+</trans-unit>
+<trans-unit id="s676d94e7e31a8075">
+  <source>SCIM Source is in preview.</source>
+  <target>SCIM 源目前处于预览状态。</target>
+</trans-unit>
+<trans-unit id="s31f1afc0a81977c1">
+  <source>Update SCIM Source</source>
+  <target>更新 SCIM 源</target>
+</trans-unit>
+<trans-unit id="s4bb356adc8a7f85b">
+  <source>SCIM Base URL</source>
+  <target>SCIM Base URL</target>
+</trans-unit>
+<trans-unit id="sb23304fc42c5d6d9">
+  <source>Provisioned Users</source>
+  <target>预配用户</target>
+</trans-unit>
+<trans-unit id="s6a81ee82b2e5ecbb">
+  <source>Provisioned Groups</source>
+  <target>预配组</target>
+</trans-unit>
+<trans-unit id="s10154dbd4fbc697b">
+  <source>removed</source>
+  <target>已删除</target>
+</trans-unit>
+<trans-unit id="s30d6ff9e15e0a40a">
+  <source>Verifying...</source>
+  <target>正在验证...</target>
+</trans-unit>
+<trans-unit id="sc1673c93148583ba">
+  <source>Request failed. Please try again later.</source>
+  <target>请求失败。请稍后重试。</target>
+</trans-unit>
+<trans-unit id="s85be1f5e7a0fa3b1">
+  <source>Available Roles</source>
+  <target>可用角色</target>
+</trans-unit>
+<trans-unit id="sa59d53ee922c08b5">
+  <source>Selected Roles</source>
+  <target>已选角色</target>
+</trans-unit>
+<trans-unit id="s7bfbf84a8ad5883f">
+  <source>Internal Service accounts are created and managed by authentik and cannot be created manually.</source>
+  <target>内部服务账户由 authentik 创建和管理，无法手动创建。</target>
+</trans-unit>
+<trans-unit id="sb0680e5f8782db1e">
+  <source>Private key Algorithm</source>
+  <target>私钥算法</target>
+</trans-unit>
+<trans-unit id="sa03cbf19feebd249">
+  <source>RSA</source>
+  <target>RSA</target>
+</trans-unit>
+<trans-unit id="sfbfccbd3e395c147">
+  <source>ECDSA</source>
+  <target>ECDSA</target>
+</trans-unit>
+<trans-unit id="sebea299e52db4242">
+  <source>Algorithm used to generate the private key.</source>
+  <target>用于生成私钥的算法。</target>
+</trans-unit>
+<trans-unit id="s21e38ec6ffa2b918">
+  <source>Added ID <x id="0" equiv-text="${item}"/></source>
+  <target>已添加 ID <x id="0" equiv-text="${item}"/></target>
+</trans-unit>
+<trans-unit id="s74918a09ef39ed26">
+  <source>Removed ID <x id="0" equiv-text="${item}"/></source>
+  <target>已删除 ID <x id="0" equiv-text="${item}"/></target>
+</trans-unit>
+<trans-unit id="s3a20e5d7dd70dcd3">
+  <source>Cleared</source>
+  <target>已清除</target>
+</trans-unit>
+<trans-unit id="s8cfd29891b2c93f0">
+  <source>Google Workspace Provider</source>
+  <target>Google Workspace 提供程序</target>
+</trans-unit>
+<trans-unit id="sa817aa9f6f88a991">
+  <source>Credentials</source>
+  <target>证书</target>
+</trans-unit>
+<trans-unit id="s44b0d2fa9c97719d">
+  <source>TODO</source>
+  <target>待定</target>
+</trans-unit>
+<trans-unit id="sc668815044e218c2">
+  <source>Delegated Subject</source>
+  <target>委托主题</target>
+</trans-unit>
+<trans-unit id="se89a9ecf275e4343">
+  <source>Default group email domain</source>
+  <target>默认组电子邮件域</target>
+</trans-unit>
+<trans-unit id="s64a0a6da6ed6d680">
+  <source>Default domain that is used to generate a group's email address. Can be customized using property mappings.</source>
+  <target>用于生成组内电子邮件的默认域。可以通过属性映射进行自定义。</target>
+</trans-unit>
+<trans-unit id="sd061e65955e036ca">
+  <source>User deletion action</source>
+  <target>用户删除动作</target>
+</trans-unit>
+<trans-unit id="s87f86f65b5e19ea7">
+  <source>User is deleted</source>
+  <target>用户被删除</target>
+</trans-unit>
+<trans-unit id="s3906cd4a102867a3">
+  <source>Suspend</source>
+  <target>停用</target>
+</trans-unit>
+<trans-unit id="s0bf5b364e2c79392">
+  <source>User is suspended, and connection to user in authentik is removed.</source>
+  <target>用户被停用，authentik 与此用户的连接被删除。</target>
+</trans-unit>
+<trans-unit id="s4acb0250d735c2a9">
+  <source>Do Nothing</source>
+  <target>什么也不做</target>
+</trans-unit>
+<trans-unit id="s5fe525d19499ed47">
+  <source>The connection is removed but the user is not modified</source>
+  <target>连接被删除，但用户未被修改</target>
+</trans-unit>
+<trans-unit id="s676a0127c35d240a">
+  <source>Determines what authentik will do when a User is deleted.</source>
+  <target>决定当用户被删除时，authentik 应该做什么。</target>
+</trans-unit>
+<trans-unit id="sd1aa04cc32caf2b0">
+  <source>Group deletion action</source>
+  <target>组删除动作</target>
+</trans-unit>
+<trans-unit id="s874c788479481131">
+  <source>Group is deleted</source>
+  <target>组被删除</target>
+</trans-unit>
+<trans-unit id="s0983fa9b84e4a9f7">
+  <source>The connection is removed but the group is not modified</source>
+  <target>连接被删除，但组未被修改</target>
+</trans-unit>
+<trans-unit id="sdb872a9f425937fa">
+  <source>Determines what authentik will do when a Group is deleted.</source>
+  <target>决定当组被删除时，authentik 应该做什么。</target>
+</trans-unit>
+<trans-unit id="sa5f28f1ad0bee45b">
+  <source>Google Workspace Provider is in preview.</source>
+  <target>Google Workspace 提供程序处于预览状态。</target>
+</trans-unit>
+<trans-unit id="sfcf7bc2ef234d938">
+  <source>Update Google Provider</source>
+  <target>更新 Google 提供程序</target>
 </trans-unit>
     </body>
   </file>

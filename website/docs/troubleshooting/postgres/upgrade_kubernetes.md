@@ -27,7 +27,7 @@ cd /bitnami/postgresql/
 # Set the postgres password based on the `POSTGRES_POSTGRES_PASSWORD` environment variable
 export PGPASSWORD=$POSTGRES_POSTGRES_PASSWORD
 # Dump the authentik database into an sql file
-pg_dump -U postgres $POSTGRES_DB > dump-11.sql
+pg_dump -U $POSTGRES_USER $POSTGRES_DB > dump-11.sql
 ```
 
 ### Stop PostgreSQL and start the upgrade
@@ -88,7 +88,7 @@ Run the following commands to restore the data:
 cd /bitnami/postgresql/
 # Set the Postgres password based on the `POSTGRES_POSTGRES_PASSWORD` environment variable.
 export PGPASSWORD=$POSTGRES_POSTGRES_PASSWORD
-psql -U postgres $POSTGRES_DB < dump-11.sql
+psql -U $POSTGRES_USER $POSTGRES_DB < dump-11.sql
 ```
 
 After the last command finishes, all of the data is restored, and you can restart authentik.

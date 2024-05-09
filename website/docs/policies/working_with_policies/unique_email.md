@@ -4,7 +4,7 @@ title: Ensure unique email addresses
 
 Due to the database design of authentik, email addresses are by default not required to be unique. This behavior can however be changed by policies.
 
-The snippet below can as the expression in policies both with enrollment flows, where the policy should be bound to any stage before the [User write](../../flow/stages/user_write.md) stage, or it can be used with the [Prompt stage](../../flow/stages/prompt/index.md).
+The snippet below can be used as the expression in policies both with enrollment flows, where the policy should be bound to any stage before the [User write](../../flow/stages/user_write.md) stage, or with the [Prompt stage](../../flow/stages/prompt/index.md).
 
 ```python
 from authentik.core.models import User

@@ -34,16 +34,16 @@ def check_postgres():
 
 
 def check_redis():
-    REDIS_URL = CONFIG.get("redis.url")
+    url = CONFIG.get("redis.url")
     while True:
         try:
-            redis = parse_url(REDIS_URL)
+            redis = parse_url(url)
             redis.ping()
             break
         # Catch index error for Redis cluster that is still initializing
         except (RedisError, IndexError) as exc:
             sleep(1)
-            CONFIG.log("info", f"Redis Connection failed, retrying... ({exc})", redis_url=REDIS_URL)
+            CONFIG.log("info", f"Redis Connection failed, retrying... ({exc})")
     CONFIG.log("info", "Redis Connection successful")
 
 

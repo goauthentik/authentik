@@ -6,7 +6,7 @@ from typing import Any
 
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from structlog.stdlib import get_logger
+from structlog.stdlib import BoundLogger, get_logger
 from tenant_schemas_celery.task import TenantTask
 
 from authentik.events.logs import LogEvent
@@ -15,11 +15,11 @@ from authentik.events.models import SystemTask as DBSystemTask
 from authentik.events.utils import sanitize_item
 from authentik.lib.utils.errors import exception_to_string
 
-LOGGER = get_logger()
-
 
 class SystemTask(TenantTask):
     """Task which can save its state to the cache"""
+
+    logger: BoundLogger
 
     # For tasks that should only be listed if they failed, set this to False
     save_on_success: bool
@@ -63,6 +63,7 @@ class SystemTask(TenantTask):
     def before_start(self, task_id, args, kwargs):
         self._start_precise = perf_counter()
         self._start = now()
+        self.logger = get_logger().bind(task_id=task_id)
         return super().before_start(task_id, args, kwargs)
 
     def db(self) -> DBSystemTask | None:
@@ -119,7 +120,7 @@ class SystemTask(TenantTask):
                 "task_call_kwargs": sanitize_item(kwargs),
                 "status": self._status,
                 "messages": sanitize_item(self._messages),
-                "expires": now() + timedelta(hours=self.result_timeout_hours),
+                "expires": now() + timedelta(hours=self.result_timeout_hours + 3),
                 "expiring": True,
             },
         )

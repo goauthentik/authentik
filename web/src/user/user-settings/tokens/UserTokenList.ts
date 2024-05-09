@@ -160,7 +160,11 @@ export class UserTokenList extends Table<Token> {
                 <ak-forms-modal>
                     <span slot="submit"> ${msg("Update")} </span>
                     <span slot="header"> ${msg("Update Token")} </span>
-                    <ak-user-token-form slot="form" .instancePk=${item.identifier}>
+                    <ak-user-token-form
+                        intent=${item.intent ?? IntentEnum.Api}
+                        slot="form"
+                        .instancePk=${item.identifier}
+                    >
                     </ak-user-token-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>

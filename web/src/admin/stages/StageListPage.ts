@@ -5,7 +5,7 @@ import "@goauthentik/admin/stages/authenticator_sms/AuthenticatorSMSStageForm";
 import "@goauthentik/admin/stages/authenticator_static/AuthenticatorStaticStageForm";
 import "@goauthentik/admin/stages/authenticator_totp/AuthenticatorTOTPStageForm";
 import "@goauthentik/admin/stages/authenticator_validate/AuthenticatorValidateStageForm";
-import "@goauthentik/admin/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm";
+import "@goauthentik/admin/stages/authenticator_webauthn/AuthenticatorWebAuthnStageForm";
 import "@goauthentik/admin/stages/captcha/CaptchaStageForm";
 import "@goauthentik/admin/stages/consent/ConsentStageForm";
 import "@goauthentik/admin/stages/deny/DenyStageForm";

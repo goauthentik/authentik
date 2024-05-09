@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build website
-FROM --platform=${BUILDPLATFORM} docker.io/node:21 as website-builder
+FROM --platform=${BUILDPLATFORM} docker.io/node:22 as website-builder
 
 ENV NODE_ENV=production
 
@@ -41,7 +41,7 @@ RUN NPM_VERSION=$(cat ./NPM_VERSION) && \
     --additional-properties=npmVersion=${NPM_VERSION} --git-repo-id authentik --git-user-id goauthentik
 
 # Stage 3: Build webui
-FROM --platform=${BUILDPLATFORM} docker.io/node:21 as web-builder
+FROM --platform=${BUILDPLATFORM} docker.io/node:22 as web-builder
 
 ENV NODE_ENV=production
 
@@ -78,7 +78,7 @@ RUN /usr/local/bin/docker-entrypoint.sh generate \
     rm -rf /local/config.yaml /local/templates
 
 # Stage 5: Build go proxy
-FROM --platform=${BUILDPLATFORM} docker.io/golang:1.22.2-bookworm AS go-builder
+FROM --platform=${BUILDPLATFORM} docker.io/golang:1.22.3-bookworm AS go-builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -112,10 +112,10 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     GOARM="${TARGETVARIANT#v}" go build -o /go/authentik ./cmd/server
 
 # Stage 6: MaxMind GeoIP
-FROM --platform=${BUILDPLATFORM} ghcr.io/maxmind/geoipupdate:v6.1 as geoip
+FROM --platform=${BUILDPLATFORM} ghcr.io/maxmind/geoipupdate:v7.0.1 as geoip
 
 ENV GEOIPUPDATE_EDITION_IDS="GeoLite2-City GeoLite2-ASN"
-ENV GEOIPUPDATE_VERBOSE="true"
+ENV GEOIPUPDATE_VERBOSE="1"
 ENV GEOIPUPDATE_ACCOUNT_ID_FILE="/run/secrets/GEOIPUPDATE_ACCOUNT_ID"
 ENV GEOIPUPDATE_LICENSE_KEY_FILE="/run/secrets/GEOIPUPDATE_LICENSE_KEY"
 
@@ -126,7 +126,7 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "/usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage 7: Python dependencies
-FROM docker.io/python:3.12.2-slim-bookworm AS python-deps
+FROM docker.io/python:3.12.3-slim-bookworm AS python-deps
 
 WORKDIR /ak-root/poetry
 
@@ -157,7 +157,7 @@ RUN --mount=type=bind,target=./pyproject.toml,src=./pyproject.toml \
         poetry install --only=main --no-ansi --no-interaction --no-root"
 
 # Stage 8: Run
-FROM docker.io/python:3.12.2-slim-bookworm AS final-image
+FROM docker.io/python:3.12.3-slim-bookworm AS final-image
 
 ARG GIT_BUILD_HASH
 ARG VERSION

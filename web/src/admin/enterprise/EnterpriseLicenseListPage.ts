@@ -75,6 +75,9 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                 .pf-m-no-padding-bottom {
                     padding-bottom: 0;
                 }
+                .install-id {
+                    word-break: break-all;
+                }
             `,
         );
     }
@@ -255,7 +258,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                 >
             </div>
             <div class="pf-c-card__title">${msg("Your Install ID")}</div>
-            <div class="pf-c-card__body">${installID}</div>
+            <div class="pf-c-card__body install-id">${installID}</div>
         `;
 
         return html`<div class="pf-l-grid__item pf-c-card">
