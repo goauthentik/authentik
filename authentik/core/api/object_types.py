@@ -26,6 +26,15 @@ class TypeCreateSerializer(PassiveSerializer):
     requires_enterprise = BooleanField(default=False)
 
 
+class CreatableType:
+    """Class to inherit from to mark a model as creatable, even if the model itself is marked
+    as abstract"""
+
+
+class NonCreatableType:
+    """Class to inherit from to mark a model as non-creatable even if it is not abstract"""
+
+
 class TypesMixin:
     """Mixin which adds an API endpoint to list all possible types that can be created"""
 
@@ -35,10 +44,10 @@ class TypesMixin:
         """Get all creatable types"""
         data = []
         for subclass in all_subclasses(self.queryset.model):
-            if len(subclass.__subclasses__()) > 0:
-                continue
             instance = None
             if subclass._meta.abstract:
+                if not issubclass(subclass, CreatableType):
+                    continue
                 # Circumvent the django protection for not being able to instantiate
                 # abstract models. We need a model instance to access .component
                 # and further down .icon_url
@@ -46,17 +55,24 @@ class TypesMixin:
                 # Django re-sets abstract = False so we need to override that
                 instance.Meta.abstract = True
             else:
+                if issubclass(subclass, NonCreatableType):
+                    continue
                 instance = subclass()
-            data.append(
-                {
-                    "name": subclass._meta.verbose_name,
-                    "description": subclass.__doc__,
-                    "component": instance.component,
-                    "model_name": subclass._meta.model_name,
-                    "icon_url": getattr(instance, "icon_url", None),
-                    "requires_enterprise": isinstance(subclass._meta.app_config, EnterpriseConfig),
-                }
-            )
+            try:
+                data.append(
+                    {
+                        "name": subclass._meta.verbose_name,
+                        "description": subclass.__doc__,
+                        "component": instance.component,
+                        "model_name": subclass._meta.model_name,
+                        "icon_url": getattr(instance, "icon_url", None),
+                        "requires_enterprise": isinstance(
+                            subclass._meta.app_config, EnterpriseConfig
+                        ),
+                    }
+                )
+            except NotImplementedError:
+                continue
         if additional:
             data.extend(additional)
         data = sorted(data, key=lambda x: x["name"])

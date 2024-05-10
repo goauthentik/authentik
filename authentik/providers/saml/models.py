@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
+from authentik.core.api.object_types import CreatableType
 from authentik.core.models import PropertyMapping, Provider
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.utils.time import timedelta_string_validator
@@ -202,7 +203,7 @@ class SAMLPropertyMapping(PropertyMapping):
         verbose_name_plural = _("SAML Property Mappings")
 
 
-class SAMLProviderImportModel(Provider):
+class SAMLProviderImportModel(CreatableType, Provider):
     """Create a SAML Provider by importing its Metadata."""
 
     @property
