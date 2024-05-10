@@ -192,7 +192,9 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server) (*A
 		})
 	})
 
-	mux.HandleFunc("/outpost.goauthentik.io/start", a.handleAuthStart)
+	mux.HandleFunc("/outpost.goauthentik.io/start", func(w http.ResponseWriter, r *http.Request) {
+		a.handleAuthStart(w, r, "")
+	})
 	mux.HandleFunc("/outpost.goauthentik.io/callback", a.handleAuthCallback)
 	mux.HandleFunc("/outpost.goauthentik.io/sign_out", a.handleSignOut)
 	switch *p.Mode {

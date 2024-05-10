@@ -12,7 +12,7 @@ Select which fields the user can use to identify themselves. Multiple fields can
 -   Email
 -   UPN
 
-    UPN will attempt to identify the user based on the `upn` attribute, which can be imported with an [LDAP Source](/integrations/sources/ldap/)
+    UPN will attempt to identify the user based on the `upn` attribute, which can be imported with an [LDAP Source](/docs/sources/ldap/)
 
 ## Password stage
 
@@ -32,7 +32,7 @@ When enabled, any user identifier will be accepted as valid (as long as they mat
 
 ## Source settings
 
-Some sources (like the [OAuth Source](../../../../integrations/sources/oauth/) and [SAML Source](../../../../integrations/sources/saml/)) require user interaction. To make these sources available to users, they can be selected in the Identification stage settings, which will show them below the selected [user field](#user-fields).
+Some sources (like the [OAuth Source](../../../../docs/sources/oauth/) and [SAML Source](../../../../docs/sources/saml/)) require user interaction. To make these sources available to users, they can be selected in the Identification stage settings, which will show them below the selected [user field](#user-fields).
 
 By default, sources are only shown with their icon, which can be changed with the _Show sources' labels_ option.
 

@@ -5,7 +5,7 @@ import "@goauthentik/elements/forms/FormElement";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
@@ -63,9 +63,11 @@ export class IdentificationStage extends BaseStage<
         `);
     }
 
-    firstUpdated(): void {
-        this.autoRedirect();
-        this.createHelperForm();
+    updated(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("challenge") && this.challenge !== undefined) {
+            this.autoRedirect();
+            this.createHelperForm();
+        }
     }
 
     autoRedirect(): void {

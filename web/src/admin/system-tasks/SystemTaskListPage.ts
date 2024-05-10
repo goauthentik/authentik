@@ -92,6 +92,27 @@ export class SystemTaskListPage extends TablePage<SystemTask> {
                         </div>
                         <div class="pf-c-description-list__group">
                             <dt class="pf-c-description-list__term">
+                                <span class="pf-c-description-list__text">${msg("Expiry")}</span>
+                            </dt>
+                            <dd class="pf-c-description-list__description">
+                                <div class="pf-c-description-list__text">
+                                    ${item.expiring
+                                        ? html`
+                                              <pf-tooltip
+                                                  position="top"
+                                                  content=${(
+                                                      item.expires || new Date()
+                                                  ).toLocaleString()}
+                                              >
+                                                  ${getRelativeTime(item.expires || new Date())}
+                                              </pf-tooltip>
+                                          `
+                                        : msg("-")}
+                                </div>
+                            </dd>
+                        </div>
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">
                                 <span class="pf-c-description-list__text">${msg("Messages")}</span>
                             </dt>
                             <dd class="pf-c-description-list__description">

@@ -23,8 +23,8 @@ from rest_framework.fields import (
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
-from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.expression.evaluator import PropertyMappingEvaluator
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import User
 from authentik.flows.models import Stage
 from authentik.lib.models import SerializerModel

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-03 00:08+0000\n"
+"POT-Creation-Date: 2024-05-08 00:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -417,6 +417,27 @@ msgstr ""
 msgid "Feature only accessible for internal users."
 msgstr ""
 
+#: authentik/enterprise/providers/google_workspace/models.py
+#: authentik/providers/scim/models.py authentik/sources/ldap/models.py
+msgid "Property mappings used for group creation/updating."
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider"
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Providers"
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Mapping"
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Mappings"
+msgstr ""
+
 #: authentik/enterprise/providers/rac/models.py
 #: authentik/stages/user_login/models.py
 msgid ""
@@ -758,6 +779,25 @@ msgstr ""
 
 #: authentik/flows/views/executor.py
 msgid "Invalid next URL"
+msgstr ""
+
+#: authentik/lib/sync/outgoing/tasks.py
+msgid "Starting full provider sync"
+msgstr ""
+
+#: authentik/lib/sync/outgoing/tasks.py
+#, python-format
+msgid "Syncing page %(page)d of users"
+msgstr ""
+
+#: authentik/lib/sync/outgoing/tasks.py
+#, python-format
+msgid "Syncing page %(page)d of groups"
+msgstr ""
+
+#: authentik/lib/sync/outgoing/tasks.py
+#, python-brace-format
+msgid "Stopping sync due to error: {error}"
 msgstr ""
 
 #: authentik/lib/utils/time.py
@@ -1623,10 +1663,6 @@ msgstr ""
 msgid "Authentication token"
 msgstr ""
 
-#: authentik/providers/scim/models.py authentik/sources/ldap/models.py
-msgid "Property mappings used for group creation/updating."
-msgstr ""
-
 #: authentik/providers/scim/models.py
 msgid "SCIM Provider"
 msgstr ""
@@ -1641,35 +1677,6 @@ msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "SCIM Mappings"
-msgstr ""
-
-#: authentik/providers/scim/tasks.py
-msgid "Starting full SCIM sync"
-msgstr ""
-
-#: authentik/providers/scim/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of users"
-msgstr ""
-
-#: authentik/providers/scim/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of groups"
-msgstr ""
-
-#: authentik/providers/scim/tasks.py
-#, python-brace-format
-msgid "Failed to sync user {user_name} due to remote error: {error}"
-msgstr ""
-
-#: authentik/providers/scim/tasks.py
-#, python-brace-format
-msgid "Stopping sync due to error: {error}"
-msgstr ""
-
-#: authentik/providers/scim/tasks.py
-#, python-brace-format
-msgid "Failed to sync group {group_name} due to remote error: {error}"
 msgstr ""
 
 #: authentik/rbac/models.py

@@ -6,8 +6,10 @@ description: "Learn about global and object permissions in authentik."
 Permissions are the central components in all access control systems, the lowest-level components, the controlling pieces of access data. Permissions are assigned to (or removed from!) to define exactly WHO can do WHAT to WHICH part of the overall software system.
 
 :::info
-Note that global and object permissions only apply to objects within authentik, and not to who can access certain applications (which are access-controlled using [policies](../../policies/index.md).
+Note that global and object permissions only apply to objects within authentik, and not to who can access certain applications (which are access-controlled using [policies](../../policies/index.md)).
 :::
+
+For instructions to add, remove, and manage permissions, refer to [Manage Permissions](../access-control/manage_permissions.md).
 
 ## Fundamentals of authentik permissions
 
