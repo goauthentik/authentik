@@ -6,13 +6,11 @@ title: Add an Entra ID provider
 
 ---
 
-The Entra ID provider ... words here... s
+For more information about using a Entra ID provider, see the [Overview](./index.md) documentation.
 
 :::info
 This feature is in technical preview, so please report any bugs on [GitHub](https://github.com/goauthentik/authentik/issues).
 :::
-
-For more information about using a Entra ID provider, see the [Overview](./index.md) documentation.
 
 ## Prerequisites
 
@@ -57,8 +55,8 @@ As detailed in the steps below, when you add an Entra ID provider in authentik y
 3. Click **Create**, and in the **New provider** modal box, and define the following fields:
 
     - **Slug**: enter the name of the app as you want it to appear in the URL.
-    - ** Group**: Optionally, enter a group name, of you want this new application to be grouped with other similar apps.
-    - ** Provider**: Leave this field empty. For certain types of providers (Entra ID, Google Workspace, and SCIM, for example), a paired application is not needed.
+    - **Group**: Optionally, enter a group name, of you want this new application to be grouped with other similar apps.
+    - **Provider**: Leave this field empty. For certain types of providers (Entra ID, Google Workspace, and SCIM, for example), a paired application is not needed.
     - **Backchannel Providers**: This field is required for Entra ID. Select the name of the Entra ID provider that you created in the steps above.
     - **Policy engine mode**: select **any** or \*_All_ to set your policy mode.
     - **UI settings**: leave these fields empty for Entra ID.

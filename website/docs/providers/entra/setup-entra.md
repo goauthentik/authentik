@@ -6,7 +6,7 @@ title: Configure Entra ID
 
 ---
 
-The configuration and set up of your Microsoft Entra ID environment must be completed before you [add the new provider](./add-entra-provider.md) in authentik.
+The configuration of your Microsoft Entra ID environment must be completed before you [add the new provider](./add-entra-provider.md) in authentik.
 
 For detailed instructions, refer to Microsoft Entra ID documentation.
 
