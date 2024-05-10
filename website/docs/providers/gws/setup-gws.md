@@ -2,6 +2,10 @@
 title: Configure Google Workspace
 ---
 
+<span class="badge badge--primary">Enterprise</span>
+
+---
+
 The configuration and set up of your Google Workspace must be completed before you [add the new provider](./add-gws-provider.md) in authentik.
 
 ## Overview of steps
