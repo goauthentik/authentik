@@ -23,19 +23,15 @@ This discovery happens every time the provider is saved (**_this might change la
 
 ### Synchronization
 
-There are two types of sync; a direct sync and a full sync.
+There are two types of synchronization: a direct sync and a full sync.
 
-The full sync happens when the provider is initially created and when it is saved. The full sync goes through all users and groups matching the **User filtering** options set and will create/update them in Google Workspace. In addition to that, the full sync is also run on a schedule every 4 hours.
+A _direct sync_ happens when a user or group is created, updated or deleted in authentik, or when a user is added to or removed from a group. When one of these events happens, direct sync automatically forwards those changes to Entra ID.
 
-The direct sync happens when a user/group is created/updated/deleted in authentik, or a member is added/removed to/from a group. The direct sync will only forward those changes to Google Workspace
+The _full sync_ happens when the provider is initially created and when it is saved. The full sync goes through all users and groups matching the **User filtering** options set and will create/update them in Entra ID. After the initial sync, authentik will run a full sync every four hours to ensure the consistency of users and groups.
 
-During either sync, if a user/group was created in authentik and a matching user/group exists in Google Workspace, authentik will link them together as the discovery would do above.
+During either sync, if a user or group was created in authentik and a matching user/group exists in Entra ID, authentik will automatically link them together. Furthermore, users present in authentik but not in Entra ID will be re-created and and re-linked.
 
-If the user has been deleted in google workspace outside of authentik, authentik will notice this and re-create and re-link the user
-
-When a property mapping has an invalid expression, it will cause the sync to stop to prevent errors from being spammed.
-
-To handle any kind of network interruptions, authentik will detect transient request failures and retry any sync tasks.
+When a property mapping has an invalid expression, it will cause the sync to stop to prevent errors from being spammed. To handle any kind of network interruptions, authentik will detect transient request failures and retry any sync tasks.
 
 ### Customization for data mapping
 

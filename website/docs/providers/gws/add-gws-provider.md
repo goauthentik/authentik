@@ -10,8 +10,6 @@ title: Create a Google Workspace provider
 This feature is in technical preview, so please report any bugs on [GitHub](https://github.com/goauthentik/authentik/issues).
 :::
 
-
-
 For more information about using a Google Workspace provider, see the [Overview](./index.md) documentation.
 
 ## Prerequisites
@@ -62,7 +60,7 @@ When adding the Google Workspace provider in authentik, you must define the **Ba
     - **Group**: optionally, enter a group name, of you want this new application to be grouped with other similar apps.
     - **Provider**: _leave this field empty_. For certain types of providers (Google Workspace, Entra ID, and SCIM, for example), a paired application is not needed.
     - **Backchannel Providers**: this field is required for Google Workspace. Select the name of the Google Workspace provider that you created in the steps above.
-    - **Policy engine mode**: select **any** or **a*ll** to set your policy mode.
+    - **Policy engine mode**: select **any** or **a\*ll** to set your policy mode.
     - **UI settings**: leave these fields empty for Google Workspace.
 
 4. Click **Finish**.
