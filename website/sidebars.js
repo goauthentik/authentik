@@ -85,7 +85,7 @@ const docsSidebar = {
                 },
                 {
                     type: "category",
-                    label: "Microsoft Entra ID",
+                    label: "Microsoft Entra ID Provider",
                     link: {
                         type: "doc",
                         id: "providers/entra/index",
