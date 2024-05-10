@@ -29,7 +29,7 @@ The full sync happens when the provider is initially created and when it is save
 
 A direct sync happens when a user or group is created, updated or deleted in authentik, or when a user is added to or removed from a group. When one of these events happens, direct sync automatically forwards those changes to Entra ID.
 
-During either sync, if a user or group was created in authentik and a matching user/group exists in Entra ID, authentik will link them together as the discovery would do above.
+During either sync, if a user or group was created in authentik and a matching user/group exists in Entra ID, authentik will automatically link them together.
 
 During a sync, users present in authentik but not in Entra ID will be re-created in Entra ID and re-linked to their identity within authentik.
 
@@ -43,6 +43,6 @@ There are a couple of considerations in regard to how authentik data is mapped t
 
 -   For users, authentik only saves the full display name, not separate first and family names.
 
--   By default, authentik maps a user’s email, a user’s name, and their active status. For groups, the name is synced.
+-   By default, authentik synchs a user’s email, a user’s name, and their active status between Entra ID and authetnik. For groups, the name is synced.
 
 Refer to Microsoft documentation for further details.
