@@ -1,6 +1,23 @@
 {
-    "extends": "./tsconfig.base.json",
     "compilerOptions": {
+        "baseUrl": ".",
+        "types": ["node", "webdriverio/async", "@wdio/cucumber-framework", "expect-webdriverio"],
+        "target": "esnext",
+        "forceConsistentCasingInFileNames": true,
+        "experimentalDecorators": true,
+        "lib": [
+            "ES5",
+            "ES2015",
+            "ES2016",
+            "ES2017",
+            "ES2018",
+            "ES2019",
+            "ES2020",
+            "ESNext",
+            "DOM",
+            "DOM.Iterable",
+            "WebWorker"
+        ],
         "paths": {
             "@goauthentik/authentik/*": ["src/*"],
             "@goauthentik/admin/*": ["src/admin/*"],
@@ -13,7 +30,6 @@
             "@goauthentik/polyfill/*": ["src/polyfill/*"],
             "@goauthentik/standalone/*": ["src/standalone/*"],
             "@goauthentik/user/*": ["src/user/*"]
-        },
-    },
-    "exclude": ["src/**/*.test.ts", "src/**/*.stories.ts", "src/**/tests", "src/**/stories"]
+        }
+    }
 }
