@@ -40,7 +40,7 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     GOARM="${TARGETVARIANT#v}" go build -o /go/proxy ./cmd/proxy
 
 # Stage 3: Run
-FROM gcr.io/distroless/static-debian11:debug
+FROM ghcr.io/beryju/fips-debian:bookworm-slim-fips
 
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
