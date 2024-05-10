@@ -88,6 +88,15 @@ const docsSidebar = {
                 },
                 {
                     type: "category",
+                    label: "LDAP Provider",
+                    link: {
+                        type: "doc",
+                        id: "providers/ldap/index",
+                    },
+                    items: ["providers/ldap/generic_setup"],
+                },
+                {
+                    type: "category",
                     label: "OAuth2 Provider",
                     link: {
                         type: "doc",
@@ -125,15 +134,6 @@ const docsSidebar = {
                             ],
                         },
                     ],
-                },
-                {
-                    type: "category",
-                    label: "LDAP Provider",
-                    link: {
-                        type: "doc",
-                        id: "providers/ldap/index",
-                    },
-                    items: ["providers/ldap/generic_setup"],
                 },
                 "providers/scim/index",
                 {
