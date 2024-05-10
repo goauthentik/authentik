@@ -1,6 +1,7 @@
 """authentik saml_idp Models"""
 
 from django.db import models
+from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
@@ -161,6 +162,10 @@ class SAMLProvider(Provider):
             return None
 
     @property
+    def icon_url(self) -> str | None:
+        return static("authentik/sources/saml.png")
+
+    @property
     def serializer(self) -> type[Serializer]:
         from authentik.providers.saml.api.providers import SAMLProviderSerializer
 
@@ -209,6 +214,10 @@ class SAMLProviderImportModel(CreatableType, Provider):
     @property
     def component(self):
         return "ak-provider-saml-import-form"
+
+    @property
+    def icon_url(self) -> str | None:
+        return static("authentik/sources/saml.png")
 
     class Meta:
         abstract = True
