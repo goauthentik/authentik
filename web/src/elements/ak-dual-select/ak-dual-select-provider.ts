@@ -53,6 +53,9 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
 
     private isLoading = false;
 
+    private doneFirstUpdate = false;
+    private internalSelected: DualSelectPair[] = [];
+
     private pagination?: Pagination;
 
     constructor() {
@@ -69,6 +72,11 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
     }
 
     willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("selected") && !this.doneFirstUpdate) {
+            this.doneFirstUpdate = true;
+            this.internalSelected = this.selected;
+        }
+
         if (changedProperties.has("searchDelay")) {
             this.doSearch = debounce(
                 AkDualSelectProvider.prototype.doSearch.bind(this),
@@ -105,7 +113,8 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
         if (!(event instanceof CustomEvent)) {
             throw new Error(`Expecting a CustomEvent for change, received ${event} instead`);
         }
-        this.selected = event.detail.value;
+        this.internalSelected = event.detail.value;
+        this.selected = this.internalSelected;
     }
 
     onSearch(event: Event) {
@@ -124,12 +133,16 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
         return this.dualSelector.value!.selected.map(([k, _]) => k);
     }
 
+    json() {
+        return this.value;
+    }
+
     render() {
         return html`<ak-dual-select
             ${ref(this.dualSelector)}
             .options=${this.options}
             .pages=${this.pagination}
-            .selected=${this.selected}
+            .selected=${this.internalSelected}
             available-label=${this.availableLabel}
             selected-label=${this.selectedLabel}
         ></ak-dual-select>`;
