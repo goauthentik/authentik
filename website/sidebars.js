@@ -93,7 +93,7 @@ const docsSidebar = {
                     items: [
                         "providers/entra/setup-entra",
                         "providers/entra/add-entra-provider",
-                    ]
+                    ],
                 },
                 {
                     type: "category",

@@ -16,24 +16,46 @@ For more information about using a Entra ID provider, see the [Overview](./index
 
 ## Prerequisites
 
-To create a Google Worksapce provider provider in authentik, you must have already [configured Entra ID](./setup-entra.md) to integrate with authentik.
+To create a Entra ID provider provider in authentik, you must have already [configured Entra ID](./setup-entra.md) to integrate with authentik.
 
 :::info
-When adding the Entra ID provider in authentik, you must define the **Backchannel provider** using the name of the Entra ID provider that you created in authentik. Do NOT add any value in the **Provider** field (doing so will cause the provider to display as an application on the user interface, under **My apps**, which is not supported for Entra ID).
+As detailed in the steps below, when you add an Entra ID provider in authentik you must define the **Backchannel provider** using the name of the Entra ID provider that you created in authentik. Do NOT add any value in the **Provider** field (doing so will cause the provider to display as an application on the user interface, under **My apps**, which is not supported for Entra ID).
 :::
 
 ### Create the Entra ID provider in authentik
 
 1. Log in as an admin to authentik, and go to the Admin interface.
-
 2. In the Admin interface, navigate to **Applications -> Providers**.
-
 3. Click **Create**, and in the **New provider** modal box, define the following fields:
 
--   **Name**: define a descriptive name, such as "Entra provider".
-    ** Protocol settings**:
--   **Client ID**: enter the Client ID that you [copied from your Entra app](./setup-entra.md).
--   **Client Secret**: Enter the secret from Entra.
--   **Tenant ID**: enter the Tenat ID from Entra.
+     *  **Name**: define a descriptive name, such as "Entra provider".
 
-### Create an Entra ID app in authentik
+        **Protocol settings**
+        -   **Client ID**: enter the Client ID that you [copied from your Entra app](./setup-entra.md).
+        -   **Client Secret**: enter the secret from Entra.
+        -   **Tenant ID**: enter the Tenant ID from Entra.
+        -   **User deletion action**: Determines what authentik will do when a user is deleted from the Entra ID system.
+        -   **Group deletion action**: Determines what authentik will do when a group is deleted from the Entra ID system.
+
+        **User filtering**
+        -   **Exclude service accounts**: set whether to include or exclude service accounts.
+        -   **Group**: select any specific groups to enforce that filtering (for all actions) is done only for the selected groups.
+
+        **Attribute mapping**
+        -   **User Property Mapping**:
+        -   **Group Property Mappings**:
+
+4. Click **Finish**.
+
+### Create an Entra ID application in authentik
+
+1. Log in as an admin to authentik, and go to the Admin interface.
+2. In the Admin interface, navigate to **Applications -> Applications**.
+3. Click **Create**, and in the **New provider** modal box, and define the following fields:
+
+    *   **Slug**: enter the name of the app as you want it to appear in the URL.
+    *   ** Group**: Optionally, enter a group name, of you want this new application to be grouped with other similar apps.
+    *   ** Provider**: Leave this field empty. For certain types of providers (Entra ID, Google Workspace, and SCIM, for example), a paired application is not needed.
+    *   **Backchannel Providers**: This field is required for Entra ID. Select the name of the Entra ID provider that you created in the steps above.
+    *   **Policy engine mode**: select **any** or **All* to set your policy mode.
+    *   **UI settings**: leave these fields empty for Entra ID.
