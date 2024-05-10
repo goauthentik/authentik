@@ -11,7 +11,7 @@ from django.conf import ImproperlyConfigured
 from sentry_sdk import set_tag
 
 from authentik import ENV_GIT_HASH_KEY, __version__
-from authentik.lib.config import CONFIG, redis_url
+from authentik.lib.config import CONFIG
 from authentik.lib.logging import get_logger_config, structlog_configure
 from authentik.lib.sentry import sentry_init
 from authentik.lib.utils.reflection import get_env
@@ -377,14 +377,14 @@ CELERY = {
     "task_create_missing_queues": True,
     "task_default_queue": "authentik",
     "broker_url": CONFIG.get("broker.url") or CONFIG.get("redis.url"),
-	"result_backend": CONFIG.get("result_backend.url") or CONFIG.get("redis.url"),
+    "result_backend": CONFIG.get("result_backend.url") or CONFIG.get("redis.url"),
     "broker_transport_options": CONFIG.get_dict_from_b64_json(
         "broker.transport_options", {"retry_policy": {"timeout": 5.0}}
     ),
-	"result_backend_transport_options": CONFIG.get_dict_from_b64_json(
+    "result_backend_transport_options": CONFIG.get_dict_from_b64_json(
         "result_backend.transport_options", {"retry_policy": {"timeout": 5.0}}
     ),
-	"redis_retry_on_timeout": True,
+    "redis_retry_on_timeout": True,
 }
 
 # Sentry integration

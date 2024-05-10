@@ -99,7 +99,7 @@ def parse_hostport(addr_str, default_port=6379):
         try:
             port = int(out[1])
         except ValueError as err:
-            raise ValueError("Invalid host:port '%s'" % addr_str) from err
+            raise ValueError(f"Invalid host:port '{addr_str}'") from err
 
     return out[0], port
 

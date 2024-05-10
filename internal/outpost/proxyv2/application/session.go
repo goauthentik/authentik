@@ -16,7 +16,6 @@ import (
 	"goauthentik.io/internal/outpost/proxyv2/codecs"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 	"goauthentik.io/internal/outpost/proxyv2/redisstore"
-	"goauthentik.io/internal/utils"
 )
 
 const RedisKeyPrefix = "authentik_proxy_session_"
@@ -38,12 +37,12 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 			rs, err := redisstore.NewStore(
 				client,
 				redisstore.WithOptions(&sessions.Options{
-					Path: "/",
-					Domain: *p.CookieDomain,
+					Path:     "/",
+					Domain:   *p.CookieDomain,
 					HttpOnly: true,
-					MaxAge: maxAge,
+					MaxAge:   maxAge,
 					SameSite: http.SameSiteLaxMode,
-					Secure: strings.ToLower(externalHost.Scheme) == "https",
+					Secure:   strings.ToLower(externalHost.Scheme) == "https",
 				}),
 				redisstore.WithKeyPrefix(RedisKeyPrefix),
 				redisstore.WithMaxLength(math.MaxInt),
