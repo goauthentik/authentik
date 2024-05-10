@@ -6,6 +6,10 @@ title: Microsoft Entra ID provider
 
 ---
 
+:::info
+This feature is in technical preview, so please report any bugs on [GitHub](https://github.com/goauthentik/authentik/issues).
+:::
+
 With the Microsoft Entra ID provider, authentik serves as the single source of truth for all users and groups. Configuring Entra ID as a provider allows for auto-discovery of user and group accounts, on-going synchronization of user data such as email address, name, and status, and integrated data mapping of field names and values.
 
 -   For instructions to configure your Entra ID system to integrate with authentik, refer to [Configure Entra ID](./setup-entra).
@@ -21,28 +25,23 @@ When first creating and configuring the provider, authentik will run a discovery
 
 This discovery happens every time the provider is saved.
 
-### Syncing
+### Synchronization
 
-There are two types of sync: a direct sync and a full sync.
+There are two types of synchronization: a direct sync and a full sync.
 
-The full sync happens when the provider is initially created and when it is saved. The full sync goes through all users and groups matching the **User filtering** options set and will create/update them in Entra ID. After the initial sync, authentik will run a full sync every four hours to ensure the consistency of users and groups.
+A _direct sync_ happens when a user or group is created, updated or deleted in authentik, or when a user is added to or removed from a group. When one of these events happens, direct sync automatically forwards those changes to Entra ID.
 
-A direct sync happens when a user or group is created, updated or deleted in authentik, or when a user is added to or removed from a group. When one of these events happens, direct sync automatically forwards those changes to Entra ID.
+The _full sync_ happens when the provider is initially created and when it is saved. The full sync goes through all users and groups matching the **User filtering** options set and will create/update them in Entra ID. After the initial sync, authentik will run a full sync every four hours to ensure the consistency of users and groups.
 
-During either sync, if a user or group was created in authentik and a matching user/group exists in Entra ID, authentik will automatically link them together.
+During either sync, if a user or group was created in authentik and a matching user/group exists in Entra ID, authentik will automatically link them together. Furthermore, users present in authentik but not in Entra ID will be re-created and and re-linked.
 
-During a sync, users present in authentik but not in Entra ID will be re-created in Entra ID and re-linked to their identity within authentik.
-
-When a property mapping has an invalid expression, it will cause the sync to stop to prevent errors from being spammed.
-
-To handle any kind of network interruptions, authentik will detect transient request failures and retry any sync tasks.
+When a property mapping has an invalid expression, it will cause the sync to stop to prevent errors from being spammed. To handle any kind of network interruptions, authentik will detect transient request failures and retry any sync tasks.
 
 ### Customization for data mapping
 
 There are a couple of considerations in regard to how authentik data is mapped to Entra ID user/group data by default.
 
 -   For users, authentik only saves the full display name, not separate first and family names.
-
 -   By default, authentik synchs a user’s email, a user’s name, and their active status between Entra ID and authetnik. For groups, the name is synced.
 
 Refer to Microsoft documentation for further details.

@@ -33,8 +33,8 @@ As detailed in the steps below, when you add an Entra ID provider in authentik y
         - **Client ID**: enter the Client ID that you [copied from your Entra app](./setup-entra.md).
         - **Client Secret**: enter the secret from Entra.
         - **Tenant ID**: enter the Tenant ID from Entra.
-        - **User deletion action**: Determines what authentik will do when a user is deleted from the Entra ID system.
-        - **Group deletion action**: Determines what authentik will do when a group is deleted from the Entra ID system.
+        - **User deletion action**: determines what authentik will do when a user is deleted from the Entra ID system.
+        - **Group deletion action**: determines what authentik will do when a group is deleted from the Entra ID system.
 
         **User filtering**
 
@@ -43,8 +43,8 @@ As detailed in the steps below, when you add an Entra ID provider in authentik y
 
         **Attribute mapping**
 
-        - **User Property Mapping**:
-        - **Group Property Mappings**:
+        - **User Property Mappings**: select any applicable mappings, or use the default.
+        - **Group Property Mappings**: select any applicable mappings, or use the default.
 
 4. Click **Finish**.
 
@@ -55,8 +55,10 @@ As detailed in the steps below, when you add an Entra ID provider in authentik y
 3. Click **Create**, and in the **New provider** modal box, and define the following fields:
 
     - **Slug**: enter the name of the app as you want it to appear in the URL.
-    - **Group**: Optionally, enter a group name, of you want this new application to be grouped with other similar apps.
-    - **Provider**: Leave this field empty. For certain types of providers (Entra ID, Google Workspace, and SCIM, for example), a paired application is not needed.
-    - **Backchannel Providers**: This field is required for Entra ID. Select the name of the Entra ID provider that you created in the steps above.
+    - **Group**: optionally, enter a group name, of you want this new application to be grouped with other similar apps.
+    - **Provider**: _leave this field empty_. For certain types of providers (Entra ID, Google Workspace, and SCIM, for example), a paired application is not needed.
+    - **Backchannel Providers**: this field is required for Entra ID. Select the name of the Entra ID provider that you created in the steps above.
     - **Policy engine mode**: select **any** or \*_All_ to set your policy mode.
     - **UI settings**: leave these fields empty for Entra ID.
+
+4. Click **Finish**.
