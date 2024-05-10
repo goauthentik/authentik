@@ -6,6 +6,10 @@ title: Google Workspace provider
 
 ---
 
+:::info
+This feature is in technical preview, so please report any bugs on [GitHub](https://github.com/goauthentik/authentik/issues).
+:::
+
 With the Google Workspace provider, authentik serves as the single source of truth for all users and groups, even when using Google products like Gmail.
 
 -   For instructions to configure your Google Workspace to integrate with authentik, refer to [Configure Google Workspace](./setup-gws).
@@ -17,19 +21,19 @@ The following sections discuss how Google Workspace operates with authentik.
 
 ### Discovery
 
-When first creating the provider and setting it up correctly, the provider will run a discovery and query your google workspace for all users and groups, and attempt to match them with their respective counterparts in authentik. This matching is done by email address for users as google uses that as their primary identifier, and using group names for groups. This discovery also takes into consideration any **User filtering** options configured in the provider, such as only linking to authentik users in a specific group or excluding service accounts.
+When first creating the provider and setting it up correctly, the provider will run a discovery and query your google workspace for all users and groups, and attempt to match them with their respective counterparts in authentik.
 
-This discovery happens every time the provider is saved (**_this might change later to a separate action_**)
+This matching is done by email address for users as google uses that as their primary identifier, and using group names for groups. This discovery also takes into consideration any **User filtering** options configured in the provider, such as only linking to authentik users in a specific group or excluding service accounts. This discovery happens every time the provider is saved.
 
 ### Synchronization
 
 There are two types of synchronization: a direct sync and a full sync.
 
-A _direct sync_ happens when a user or group is created, updated or deleted in authentik, or when a user is added to or removed from a group. When one of these events happens, direct sync automatically forwards those changes to Entra ID.
+A _direct sync_ happens when a user or group is created, updated or deleted in authentik, or when a user is added to or removed from a group. When one of these events happens, direct sync automatically forwards those changes to Google Workspace.
 
-The _full sync_ happens when the provider is initially created and when it is saved. The full sync goes through all users and groups matching the **User filtering** options set and will create/update them in Entra ID. After the initial sync, authentik will run a full sync every four hours to ensure the consistency of users and groups.
+The _full sync_ happens when the provider is initially created and when it is saved. The full sync goes through all users and groups matching the **User filtering** options set and will create/update them in Google Workspace. After the initial sync, authentik will run a full sync every four hours to ensure the consistency of users and groups.
 
-During either sync, if a user or group was created in authentik and a matching user/group exists in Entra ID, authentik will automatically link them together. Furthermore, users present in authentik but not in Entra ID will be re-created and and re-linked.
+During either sync, if a user or group was created in authentik and a matching user/group exists in Google Workspace, authentik will automatically link them together. Furthermore, users present in authentik but not in Google Workspace will be re-created and and re-linked.
 
 When a property mapping has an invalid expression, it will cause the sync to stop to prevent errors from being spammed. To handle any kind of network interruptions, authentik will detect transient request failures and retry any sync tasks.
 
