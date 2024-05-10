@@ -10,7 +10,7 @@ With the Microsoft Entra ID provider, authentik can be the single source of trut
 
 -   For instructions to configure your Entra ID system to integrate with authentik, refer to [Configure Entra ID](./setup-entra).
 
--   For instructions to add Entra ID as a provider, refer to [Create a Entra ID provider](./add-gws-entra).
+-   For instructions to add Entra ID as a provider, refer to [Create a Entra ID provider](./add-entra-provider).
 
 ## About using Entra ID with authentik
 
@@ -51,4 +51,3 @@ There are a couple of considerations in regard to how authentik data is mapped t
 Refer to Microsoft documentation for further details:
 
 -   jjj
-

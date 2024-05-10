@@ -76,6 +76,27 @@ const docsSidebar = {
             items: [
                 {
                     type: "category",
+                    label: "LDAP Provider",
+                    link: {
+                        type: "doc",
+                        id: "providers/ldap/index",
+                    },
+                    items: ["providers/ldap/generic_setup"],
+                },
+                {
+                    type: "category",
+                    label: "MS Entra ID",
+                    link: {
+                        type: "doc",
+                        id: "providers/entra/index",
+                    },
+                    items: [
+                        "providers/entra/setup-entra",
+                        "providers/entra/add-entra-provider",
+                    ]
+                },
+                {
+                    type: "category",
                     label: "OAuth2 Provider",
                     link: {
                         type: "doc",
@@ -113,15 +134,6 @@ const docsSidebar = {
                             ],
                         },
                     ],
-                },
-                {
-                    type: "category",
-                    label: "LDAP Provider",
-                    link: {
-                        type: "doc",
-                        id: "providers/ldap/index",
-                    },
-                    items: ["providers/ldap/generic_setup"],
                 },
                 "providers/scim/index",
                 {

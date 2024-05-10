@@ -29,11 +29,11 @@ When adding the Entra ID provider in authentik, you must define the **Backchanne
 2. In the Admin interface, navigate to **Applications -> Providers**.
 
 3. Click **Create**, and in the **New provider** modal box, define the following fields:
-*   **Name**: define a descriptive name, such as "Entra provider".
-** Protocol settings**:
-*   **Client ID**: enter the Client ID that you [copied from your Entra app](./setup-entra.md).
-*   **Client Secret**: Enter the secret from Entra.
-*   **Tenant ID**: enter the Tenat ID from Entra.
 
+-   **Name**: define a descriptive name, such as "Entra provider".
+    ** Protocol settings**:
+-   **Client ID**: enter the Client ID that you [copied from your Entra app](./setup-entra.md).
+-   **Client Secret**: Enter the secret from Entra.
+-   **Tenant ID**: enter the Tenat ID from Entra.
 
 ### Create an Entra ID app in authentik
