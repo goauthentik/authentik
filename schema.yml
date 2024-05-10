@@ -46930,9 +46930,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Event'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedEventMatcherPolicyList:
       type: object
       properties:
