@@ -1,21 +1,16 @@
-from deepmerge import always_merger
 from django.db import transaction
 from msgraph.generated.groups.groups_request_builder import GroupsRequestBuilder
 from msgraph.generated.models.group import Group as MSGroup
 from msgraph.generated.models.reference_create import ReferenceCreate
 
-from authentik.core.expression.exceptions import (
-    PropertyMappingExpressionException,
-    SkipObjectException,
-)
 from authentik.core.models import Group
 from authentik.enterprise.providers.microsoft_entra.clients.base import MicrosoftEntraSyncClient
 from authentik.enterprise.providers.microsoft_entra.models import (
+    MicrosoftEntraProvider,
     MicrosoftEntraProviderGroup,
     MicrosoftEntraProviderMapping,
     MicrosoftEntraProviderUser,
 )
-from authentik.events.models import Event, EventAction
 from authentik.lib.sync.outgoing.base import Direction
 from authentik.lib.sync.outgoing.exceptions import (
     NotFoundSyncException,
@@ -23,8 +18,8 @@ from authentik.lib.sync.outgoing.exceptions import (
     StopSync,
     TransientSyncException,
 )
+from authentik.lib.sync.outgoing.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
-from authentik.lib.utils.errors import exception_to_string
 
 
 class MicrosoftEntraGroupClient(
@@ -36,37 +31,17 @@ class MicrosoftEntraGroupClient(
     connection_type_query = "group"
     can_discover = True
 
+    def __init__(self, provider: MicrosoftEntraProvider) -> None:
+        super().__init__(provider)
+        self.mapper = PropertyMappingManager(
+            self.provider.property_mappings_group.all().order_by("name").select_subclasses(),
+            MicrosoftEntraProviderMapping,
+            ["group", "provider", "creating"],
+        )
+
     def to_schema(self, obj: Group, creating: bool) -> MSGroup:
         """Convert authentik group"""
-        raw_microsoft_group = {}
-        for mapping in (
-            self.provider.property_mappings_group.all().order_by("name").select_subclasses()
-        ):
-            if not isinstance(mapping, MicrosoftEntraProviderMapping):
-                continue
-            try:
-                value = mapping.evaluate(
-                    user=None,
-                    request=None,
-                    group=obj,
-                    provider=self.provider,
-                    creating=creating,
-                )
-                if value is None:
-                    continue
-                always_merger.merge(raw_microsoft_group, value)
-            except SkipObjectException as exc:
-                raise exc from exc
-            except (PropertyMappingExpressionException, ValueError) as exc:
-                # Value error can be raised when assigning invalid data to an attribute
-                Event.new(
-                    EventAction.CONFIGURATION_ERROR,
-                    message=f"Failed to evaluate property-mapping {exception_to_string(exc)}",
-                    mapping=mapping,
-                ).save()
-                raise StopSync(exc, obj, mapping) from exc
-        if not raw_microsoft_group:
-            raise StopSync(ValueError("No group mappings configured"), obj)
+        raw_microsoft_group = super().to_schema(obj, creating)
         try:
             return MSGroup(**raw_microsoft_group)
         except TypeError as exc:
