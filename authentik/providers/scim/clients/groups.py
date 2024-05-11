@@ -1,16 +1,10 @@
 """Group client"""
 
-from deepmerge import always_merger
 from pydantic import ValidationError
 from pydanticscim.group import GroupMember
 from pydanticscim.responses import PatchOp, PatchOperation
 
-from authentik.core.expression.exceptions import (
-    PropertyMappingExpressionException,
-    SkipObjectException,
-)
 from authentik.core.models import Group
-from authentik.events.models import Event, EventAction
 from authentik.lib.sync.outgoing.base import Direction
 from authentik.lib.sync.outgoing.exceptions import (
     NotFoundSyncException,
@@ -18,7 +12,6 @@ from authentik.lib.sync.outgoing.exceptions import (
     StopSync,
 )
 from authentik.lib.sync.outgoing.mapper import PropertyMappingManager
-from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.utils import delete_none_values
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.clients.exceptions import (
@@ -46,31 +39,11 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroup, SCIMGroupSchema]):
 
     def to_schema(self, obj: Group, creating: bool) -> SCIMGroupSchema:
         """Convert authentik user into SCIM"""
-        raw_scim_group = {
-            "schemas": (SCIM_GROUP_SCHEMA,),
-        }
-        try:
-            for value in self.mapper.iter_eval(
-                user=None,
-                request=None,
-                group=obj,
-                provider=self.provider,
-                creating=creating,
-            ):
-                try:
-                    always_merger.merge(raw_scim_group, value)
-                except SkipObjectException as exc:
-                    raise exc from exc
-        except PropertyMappingExpressionException as exc:
-            # Value error can be raised when assigning invalid data to an attribute
-            Event.new(
-                EventAction.CONFIGURATION_ERROR,
-                message=f"Failed to evaluate property-mapping {exception_to_string(exc)}",
-                mapping=exc.mapping,
-            ).save()
-            raise StopSync(exc, obj, exc.mapping) from exc
-        if not raw_scim_group:
-            raise StopSync(ValueError("No group mappings configured"), obj)
+        raw_scim_group = super().to_schema(
+            obj,
+            creating,
+            schemas=(SCIM_GROUP_SCHEMA,),
+        )
         try:
             scim_group = SCIMGroupSchema.model_validate(delete_none_values(raw_scim_group))
         except ValidationError as exc:

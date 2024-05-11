@@ -1,17 +1,10 @@
 """User client"""
 
-from deepmerge import always_merger
 from pydantic import ValidationError
 
-from authentik.core.expression.exceptions import (
-    PropertyMappingExpressionException,
-    SkipObjectException,
-)
 from authentik.core.models import User
-from authentik.events.models import Event, EventAction
 from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.lib.sync.outgoing.mapper import PropertyMappingManager
-from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.utils import delete_none_values
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.clients.schema import SCIM_USER_SCHEMA
@@ -36,30 +29,11 @@ class SCIMUserClient(SCIMClient[User, SCIMUser, SCIMUserSchema]):
 
     def to_schema(self, obj: User, creating: bool) -> SCIMUserSchema:
         """Convert authentik user into SCIM"""
-        raw_scim_user = {
-            "schemas": (SCIM_USER_SCHEMA,),
-        }
-        try:
-            for value in self.mapper.iter_eval(
-                user=obj,
-                request=None,
-                provider=self.provider,
-                creating=creating,
-            ):
-                try:
-                    always_merger.merge(raw_scim_user, value)
-                except SkipObjectException as exc:
-                    raise exc from exc
-        except PropertyMappingExpressionException as exc:
-            # Value error can be raised when assigning invalid data to an attribute
-            Event.new(
-                EventAction.CONFIGURATION_ERROR,
-                message=f"Failed to evaluate property-mapping {exception_to_string(exc)}",
-                mapping=exc.mapping,
-            ).save()
-            raise StopSync(exc, obj, exc.mapping) from exc
-        if not raw_scim_user:
-            raise StopSync(ValueError("No user mappings configured"), obj)
+        raw_scim_user = super().to_schema(
+            obj,
+            creating,
+            schemas=(SCIM_USER_SCHEMA,),
+        )
         try:
             scim_user = SCIMUserSchema.model_validate(delete_none_values(raw_scim_user))
         except ValidationError as exc:
