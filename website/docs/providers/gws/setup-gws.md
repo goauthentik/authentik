@@ -24,9 +24,10 @@ For detailed instructions, refer to Google documentation.
 
 1. Open the Google Cloud Console (https://cloud.google.com/cloud-console).
 2. In upper left, click the drop-down box to open the **Select a project** modal box, and then select **New Project**.
-3. Use the search bar at the top of your new project page to search for "API Library".
-4. On the **API Library** page, use the search bar again to find "Admin SDK API".
-5. On the **Admin SDK API** page, click **Enable**.
+3. Create a new project and give it a name like "authentik GWS"
+4. Use the search bar at the top of your new project page to search for "API Library".
+5. On the **API Library** page, use the search bar again to find "Admin SDK API".
+6. On the **Admin SDK API** page, click **Enable**.
 
 ### Create a service account
 
@@ -46,7 +47,7 @@ For detailed instructions, refer to Google documentation.
 3. In the Create modal box, select JSON as the key type, and then click **Create**.
    A pop-up displays with the private key, and the key is saved to your computer as a JSON file.
    Later, when you create your authentik provider for Google Workspace, you will add this key in the **Credentials** field.
-4. On the service account page, click the **Details** tab, and expand the **Advanced serttings** area.
+4. On the service account page, click the **Details** tab, and expand the **Advanced settings** area.
 5. Copy the **Client ID** (under **Domain-wide delegation**), and then click **View Google Workspace Admin Console**.
 6. Log in to the Admin Console, and then navigate to **Security -> Access and data control -> API controls**.
 7. On the **API controls** page, click **Manage Domain Wide Delegation**.
@@ -55,6 +56,7 @@ For detailed instructions, refer to Google documentation.
     - `https://www.googleapis.com/auth/admin.directory.user`
     - `https://www.googleapis.com/auth/admin.directory.group`
     - `https://www.googleapis.com/auth/admin.directory.group.member`
+    - `https://www.googleapis.com/auth/admin.directory.domain.readonly`
 
 ### Select email address for the Delegated Subject
 

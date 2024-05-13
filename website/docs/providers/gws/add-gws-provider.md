@@ -17,7 +17,7 @@ For more information about using a Google Workspace provider, see the [Overview]
 To create a Google Workspace provider in authentik, you must have already [configured Google Workspace](./setup-gws.md) to integrate with authentik.
 
 :::info
-When adding the Google Workspace provider in authentik, you must define the **Backchannel provider** using the name of the Google Workspace provider that you created in authentik. Do NOT add any value in the **Provider** field (doing so will cause the provider to display as an application on the user interface, under **My apps**, which is not supported for Google Workspace).
+When adding the Google Workspace provider in authentik, you must define the **Backchannel provider** using the name of the Google Workspace provider that you created in authentik. If you have also configured Google Workspace to log in using authentik following [these](../../../integrations/services/google/), then this configuration can be done on the same app.
 :::
 
 ### Create the Google Workspace provider in authentik
@@ -26,24 +26,24 @@ When adding the Google Workspace provider in authentik, you must define the **Ba
 
 2. In the Admin interface, navigate to **Applications -> Providers**.
 
-3. Click **Create**, and in the **New provider** modal box, define the following fields:
+3. Click **Create**, and select **Google Workspace Provider**, and in the **New provider** modal box, define the following fields:
 
     - **Name**: define a descriptive name, such as "GWS provider".
 
-        **Protocol settings**
+    - **Protocol settings**
 
-        - **Client ID**: enter the Client ID that you [copied from your Google Workspace](./setup-gws.md).
-        - **Client Secret**: enter the secret from Google Workspace.
-        - **Tenant ID**: enter the Tenant ID from Google Workspace.
-        - **User deletion action**: determines what authentik will do when a user is deleted from the Google Workspace system.
-        - **Group deletion action**: determines what authentik will do when a group is deleted from the Google Workspace system.
+        - **Credentials**: paste the contents of the JSON file you downloaded earlier.
+        - **Delegated Subject**: enter the email address of the user all of authentik's actions should be delegated to
+        - **Default group email domain**: enter a default domain which will be used to generate the domain for groups synced from authentik.
+        - **User deletion action**: determines what authentik will do when a user is deleted from authentik.
+        - **Group deletion action**: determines what authentik will do when a group is deleted from authentik.
 
-        **User filtering**
+    - **User filtering**
 
         - **Exclude service accounts**: set whether to include or exclude service accounts.
         - **Group**: select any specific groups to enforce that filtering (for all actions) is done only for the selected groups.
 
-        **Attribute mapping**
+    - **Attribute mapping**
 
         - **User Property Mappings**: select any applicable mappings, or use the default.
         - **Group Property Mappings**: select any applicable mappings, or use the default.
@@ -54,13 +54,14 @@ When adding the Google Workspace provider in authentik, you must define the **Ba
 
 1. Log in as an admin to authentik, and go to the Admin interface.
 2. In the Admin interface, navigate to **Applications -> Applications**.
+   :::info
+   If you have also configured Google Workspace to log in using authentik following [these](../../../integrations/services/google/), then this configuration can be done on the same app by adding this new provider as a backchannel provider on the existing app instead of creating a new app.
+   :::
 3. Click **Create**, and in the **New provider** modal box, and define the following fields:
 
     - **Slug**: enter the name of the app as you want it to appear in the URL.
-    - **Group**: optionally, enter a group name, of you want this new application to be grouped with other similar apps.
-    - **Provider**: _leave this field empty_. For certain types of providers (Google Workspace, Entra ID, and SCIM, for example), a paired application is not needed.
+    - **Provider**: when not used in conjunction with the Google SAML configuration should be left empty.
     - **Backchannel Providers**: this field is required for Google Workspace. Select the name of the Google Workspace provider that you created in the steps above.
-    - **Policy engine mode**: select **any** or **a\*ll** to set your policy mode.
     - **UI settings**: leave these fields empty for Google Workspace.
 
 4. Click **Finish**.
