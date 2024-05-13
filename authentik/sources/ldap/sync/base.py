@@ -154,7 +154,12 @@ class BaseLDAPSynchronizer:
         properties = {"attributes": {}}
         try:
             for value, mapping in self.mapper.iter_eval(
-                user=None, request=None, ldap=kwargs, dn=object_dn, source=self._source
+                user=None,
+                request=None,
+                return_mapping=True,
+                ldap=kwargs,
+                dn=object_dn,
+                source=self._source,
             ):
                 try:
                     if isinstance(value, (bytes)):

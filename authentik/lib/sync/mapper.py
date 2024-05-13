@@ -48,6 +48,7 @@ class PropertyMappingManager:
         self,
         user: User | None,
         request: HttpRequest | None,
+        return_mapping: bool = False,
         **kwargs,
     ) -> Generator[tuple[dict, PropertyMapping], None]:
         """Iterate over all mappings that were pre-compiled and
@@ -60,4 +61,7 @@ class PropertyMappingManager:
                 raise PropertyMappingExpressionException(exc, mapping.model) from exc
             if value is None:
                 continue
-            yield value, mapping.model
+            if return_mapping:
+                yield value, mapping.model
+            else:
+                yield value
