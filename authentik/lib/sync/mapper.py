@@ -49,7 +49,7 @@ class PropertyMappingManager:
         user: User | None,
         request: HttpRequest | None,
         **kwargs,
-    ) -> Generator[dict, None]:
+    ) -> Generator[tuple[dict, PropertyMapping], None]:
         """Iterate over all mappings that were pre-compiled and
         execute all of them with the given context"""
         for mapping in self._evaluators:
@@ -60,4 +60,4 @@ class PropertyMappingManager:
                 raise PropertyMappingExpressionException(mapping.model, exc) from exc
             if value is None:
                 continue
-            yield value
+            yield value, mapping

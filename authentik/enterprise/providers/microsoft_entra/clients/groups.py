@@ -11,6 +11,7 @@ from authentik.enterprise.providers.microsoft_entra.models import (
     MicrosoftEntraProviderMapping,
     MicrosoftEntraProviderUser,
 )
+from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.base import Direction
 from authentik.lib.sync.outgoing.exceptions import (
     NotFoundSyncException,
@@ -18,7 +19,6 @@ from authentik.lib.sync.outgoing.exceptions import (
     StopSync,
     TransientSyncException,
 )
-from authentik.lib.sync.outgoing.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
 
 

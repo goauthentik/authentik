@@ -7,11 +7,11 @@ from authentik.enterprise.providers.google_workspace.models import (
     GoogleWorkspaceProviderMapping,
     GoogleWorkspaceProviderUser,
 )
+from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.exceptions import (
     ObjectExistsSyncException,
     TransientSyncException,
 )
-from authentik.lib.sync.outgoing.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
 from authentik.policies.utils import delete_none_values
 

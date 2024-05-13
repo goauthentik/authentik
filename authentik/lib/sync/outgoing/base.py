@@ -12,8 +12,8 @@ from authentik.core.expression.exceptions import (
     SkipObjectException,
 )
 from authentik.events.models import Event, EventAction
+from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.exceptions import NotFoundSyncException, StopSync
-from authentik.lib.sync.outgoing.mapper import PropertyMappingManager
 from authentik.lib.utils.errors import exception_to_string
 
 if TYPE_CHECKING:
