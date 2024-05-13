@@ -89,7 +89,7 @@ Additionally, databases used only for read operations can be configured. Increas
 -   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLCERT`: same as above
 -   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLKEY`: same as above
 
-Note that `USE_PGBOUNCER` and `USE_PGPOOL` are inherited from the main database configuration and are not overridable per read replica.
+Note that `USE_PGBOUNCER` and `USE_PGPOOL` are inherited from the main database configuration and are not overridable per read replica. By default, if read replicas are configured, the main database is not used for reads. If you'd like it to be included for reads, add it as a read replica.
 
 ## Redis Settings
 
