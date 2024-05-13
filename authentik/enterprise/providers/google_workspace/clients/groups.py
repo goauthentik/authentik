@@ -9,7 +9,6 @@ from authentik.core.expression.exceptions import (
 from authentik.core.models import Group
 from authentik.enterprise.providers.google_workspace.clients.base import GoogleWorkspaceSyncClient
 from authentik.enterprise.providers.google_workspace.models import (
-    GoogleWorkspaceDeleteAction,
     GoogleWorkspaceProviderGroup,
     GoogleWorkspaceProviderMapping,
     GoogleWorkspaceProviderUser,
@@ -22,6 +21,7 @@ from authentik.lib.sync.outgoing.exceptions import (
     StopSync,
     TransientSyncException,
 )
+from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
 from authentik.lib.utils.errors import exception_to_string
 
 
@@ -34,7 +34,7 @@ class GoogleWorkspaceGroupClient(
     connection_type_query = "group"
     can_discover = True
 
-    def to_schema(self, obj: Group) -> dict:
+    def to_schema(self, obj: Group, creating: bool) -> dict:
         """Convert authentik group"""
         raw_google_group = {
             "email": f"{slugify(obj.name)}@{self.provider.default_group_email_domain}"
@@ -45,12 +45,12 @@ class GoogleWorkspaceGroupClient(
             if not isinstance(mapping, GoogleWorkspaceProviderMapping):
                 continue
             try:
-                mapping: GoogleWorkspaceProviderMapping
                 value = mapping.evaluate(
                     user=None,
                     request=None,
                     group=obj,
                     provider=self.provider,
+                    creating=creating,
                 )
                 if value is None:
                     continue
@@ -79,7 +79,7 @@ class GoogleWorkspaceGroupClient(
             self.logger.debug("Group does not exist in Google, skipping")
             return None
         with transaction.atomic():
-            if self.provider.group_delete_action == GoogleWorkspaceDeleteAction.DELETE:
+            if self.provider.group_delete_action == OutgoingSyncDeleteAction.DELETE:
                 self._request(
                     self.directory_service.groups().delete(groupKey=google_group.google_id)
                 )
@@ -87,7 +87,7 @@ class GoogleWorkspaceGroupClient(
 
     def create(self, group: Group):
         """Create group from scratch and create a connection object"""
-        google_group = self.to_schema(group)
+        google_group = self.to_schema(group, True)
         self.check_email_valid(google_group["email"])
         with transaction.atomic():
             try:
@@ -99,17 +99,17 @@ class GoogleWorkspaceGroupClient(
                 group_data = self._request(
                     self.directory_service.groups().get(groupKey=google_group["email"])
                 )
-                GoogleWorkspaceProviderGroup.objects.create(
+                return GoogleWorkspaceProviderGroup.objects.create(
                     provider=self.provider, group=group, google_id=group_data["id"]
                 )
             else:
-                GoogleWorkspaceProviderGroup.objects.create(
+                return GoogleWorkspaceProviderGroup.objects.create(
                     provider=self.provider, group=group, google_id=response["id"]
                 )
 
     def update(self, group: Group, connection: GoogleWorkspaceProviderGroup):
         """Update existing group"""
-        google_group = self.to_schema(group)
+        google_group = self.to_schema(group, False)
         self.check_email_valid(google_group["email"])
         try:
             return self._request(
@@ -124,28 +124,16 @@ class GoogleWorkspaceGroupClient(
 
     def write(self, obj: Group):
         google_group, created = super().write(obj)
-        if created:
-            self.create_sync_members(obj, google_group)
-        return google_group
+        self.create_sync_members(obj, google_group)
+        return google_group, created
 
-    def create_sync_members(self, obj: Group, google_group: dict):
+    def create_sync_members(self, obj: Group, google_group: GoogleWorkspaceProviderGroup):
         """Sync all members after a group was created"""
         users = list(obj.users.order_by("id").values_list("id", flat=True))
         connections = GoogleWorkspaceProviderUser.objects.filter(
             provider=self.provider, user__pk__in=users
-        )
-        for user in connections:
-            try:
-                self._request(
-                    self.directory_service.members().insert(
-                        groupKey=google_group["id"],
-                        body={
-                            "email": user.google_id,
-                        },
-                    )
-                )
-            except TransientSyncException:
-                continue
+        ).values_list("google_id", flat=True)
+        self._patch(google_group.google_id, Direction.add, connections)
 
     def update_group(self, group: Group, action: Direction, users_set: set[int]):
         """Update a groups members"""

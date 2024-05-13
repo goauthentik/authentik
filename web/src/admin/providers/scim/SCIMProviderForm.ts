@@ -42,7 +42,7 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
     async send(data: SCIMProvider): Promise<SCIMProvider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersScimUpdate({
-                id: this.instance.pk || 0,
+                id: this.instance.pk,
                 sCIMProviderRequest: data,
             });
         } else {

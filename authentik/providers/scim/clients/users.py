@@ -23,7 +23,7 @@ class SCIMUserClient(SCIMClient[User, SCIMUser, SCIMUserSchema]):
     connection_type = SCIMUser
     connection_type_query = "user"
 
-    def to_schema(self, obj: User) -> SCIMUserSchema:
+    def to_schema(self, obj: User, creating: bool) -> SCIMUserSchema:
         """Convert authentik user into SCIM"""
         raw_scim_user = {
             "schemas": ("urn:ietf:params:scim:schemas:core:2.0:User",),
@@ -37,6 +37,7 @@ class SCIMUserClient(SCIMClient[User, SCIMUser, SCIMUserSchema]):
                     user=obj,
                     request=None,
                     provider=self.provider,
+                    creating=creating,
                 )
                 if value is None:
                     continue
@@ -73,7 +74,7 @@ class SCIMUserClient(SCIMClient[User, SCIMUser, SCIMUserSchema]):
 
     def create(self, user: User):
         """Create user from scratch and create a connection object"""
-        scim_user = self.to_schema(user)
+        scim_user = self.to_schema(user, True)
         response = self._request(
             "POST",
             "/Users",
@@ -85,11 +86,11 @@ class SCIMUserClient(SCIMClient[User, SCIMUser, SCIMUserSchema]):
         scim_id = response.get("id")
         if not scim_id or scim_id == "":
             raise StopSync("SCIM Response with missing or invalid `id`")
-        SCIMUser.objects.create(provider=self.provider, user=user, scim_id=scim_id)
+        return SCIMUser.objects.create(provider=self.provider, user=user, scim_id=scim_id)
 
     def update(self, user: User, connection: SCIMUser):
         """Update existing user"""
-        scim_user = self.to_schema(user)
+        scim_user = self.to_schema(user, False)
         scim_user.id = connection.scim_id
         self._request(
             "PUT",

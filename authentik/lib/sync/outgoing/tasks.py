@@ -1,5 +1,6 @@
 from collections.abc import Callable
 
+from celery.exceptions import Retry
 from celery.result import allow_join_result
 from django.core.paginator import Paginator
 from django.db.models import Model, QuerySet
@@ -14,7 +15,11 @@ from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask
 from authentik.lib.sync.outgoing import PAGE_SIZE, PAGE_TIMEOUT
 from authentik.lib.sync.outgoing.base import Direction
-from authentik.lib.sync.outgoing.exceptions import StopSync, TransientSyncException
+from authentik.lib.sync.outgoing.exceptions import (
+    BadRequestSyncException,
+    StopSync,
+    TransientSyncException,
+)
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.utils.reflection import class_to_path, path_to_class
 
@@ -121,6 +126,27 @@ class SyncTasks:
                 client.write(obj)
             except SkipObjectException:
                 continue
+            except BadRequestSyncException as exc:
+                self.logger.warning("failed to sync object", exc=exc, obj=obj)
+                messages.append(
+                    LogEvent(
+                        _(
+                            (
+                                "Failed to sync {object_type} {object_name} "
+                                "due to error: {error}"
+                            ).format_map(
+                                {
+                                    "object_type": obj._meta.verbose_name,
+                                    "object_name": str(obj),
+                                    "error": str(exc),
+                                }
+                            )
+                        ),
+                        log_level="warning",
+                        logger="",
+                        attributes={"arguments": exc.args[1:]},
+                    )
+                )
             except TransientSyncException as exc:
                 self.logger.warning("failed to sync object", exc=exc, user=obj)
                 messages.append(
@@ -185,7 +211,9 @@ class SyncTasks:
                     client.write(instance)
                 if operation == Direction.remove:
                     client.delete(instance)
-            except (StopSync, TransientSyncException) as exc:
+            except TransientSyncException as exc:
+                raise Retry() from exc
+            except StopSync as exc:
                 self.logger.warning(exc, provider_pk=provider.pk)
 
     def sync_signal_m2m(self, group_pk: str, action: str, pk_set: list[int]):
@@ -211,5 +239,7 @@ class SyncTasks:
                 if action == "post_remove":
                     operation = Direction.remove
                 client.update_group(group, operation, pk_set)
-            except (StopSync, TransientSyncException) as exc:
+            except TransientSyncException as exc:
+                raise Retry() from exc
+            except StopSync as exc:
                 self.logger.warning(exc, provider_pk=provider.pk)

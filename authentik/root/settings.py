@@ -155,9 +155,7 @@ SPECTACULAR_SETTINGS = {
         "LDAPAPIAccessMode": "authentik.providers.ldap.models.APIAccessMode",
         "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
         "UserTypeEnum": "authentik.core.models.UserTypes",
-        "GoogleWorkspaceDeleteAction": (
-            "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceDeleteAction"
-        ),
+        "OutgoingSyncDeleteAction": "authentik.lib.sync.outgoing.models.OutgoingSyncDeleteAction",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "ENUM_GENERATE_CHOICE_DESCRIPTION": False,

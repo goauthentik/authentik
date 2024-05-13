@@ -17,6 +17,10 @@ class ObjectExistsSyncException(BaseSyncException):
     """Exception when an object already exists in the remote system"""
 
 
+class BadRequestSyncException(BaseSyncException):
+    """Exception when invalid data was sent to the remote system"""
+
+
 class StopSync(BaseSyncException):
     """Exception raised when a configuration error should stop the sync process"""
 

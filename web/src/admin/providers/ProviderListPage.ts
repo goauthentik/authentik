@@ -1,13 +1,14 @@
 import "@goauthentik/admin/applications/ApplicationWizardHint";
 import "@goauthentik/admin/providers/ProviderWizard";
+import "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderForm";
 import "@goauthentik/admin/providers/ldap/LDAPProviderForm";
+import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderViewPage";
 import "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
 import "@goauthentik/admin/providers/proxy/ProxyProviderForm";
 import "@goauthentik/admin/providers/rac/RACProviderForm";
 import "@goauthentik/admin/providers/radius/RadiusProviderForm";
 import "@goauthentik/admin/providers/saml/SAMLProviderForm";
 import "@goauthentik/admin/providers/scim/SCIMProviderForm";
-import "@goauthentik/authentik/admin/providers/google_workspace/GoogleWorkspaceProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/buttons/SpinnerButton";
