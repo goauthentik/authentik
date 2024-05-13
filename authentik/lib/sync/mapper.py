@@ -57,7 +57,7 @@ class PropertyMappingManager:
             try:
                 value = mapping.evaluate(mapping.model.expression)
             except Exception as exc:
-                raise PropertyMappingExpressionException(mapping.model, exc) from exc
+                raise PropertyMappingExpressionException(exc, mapping.model) from exc
             if value is None:
                 continue
-            yield value, mapping
+            yield value, mapping.model

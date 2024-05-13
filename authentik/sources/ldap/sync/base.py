@@ -176,7 +176,7 @@ class BaseLDAPSynchronizer:
                 message=f"Failed to evaluate property-mapping {exception_to_string(exc)}",
                 mapping=exc.mapping,
             ).save()
-            self._logger.warning("Mapping failed to evaluate", exc=exc, mapping=mapping)
+            self._logger.warning("Mapping failed to evaluate", exc=exc, mapping=exc.mapping)
             raise StopSync(exc, None, exc.mapping) from exc
         if self._source.object_uniqueness_field in kwargs:
             properties["attributes"][LDAP_UNIQUENESS] = flatten(
