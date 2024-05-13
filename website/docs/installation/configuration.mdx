@@ -77,6 +77,20 @@ To check if your config has been applied correctly, you can run the following co
 -   `AUTHENTIK_POSTGRESQL__SSLCERT`: Path to x509 client certificate to authenticate to server
 -   `AUTHENTIK_POSTGRESQL__SSLKEY`: Path to private key of `SSLCERT` certificate
 
+Additionally, databases used only for read operations can be configured. Increase the number in the following configuration variables for each read replica.
+
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__HOST`: same as above
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__NAME`: same as above
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__USER`: same as above
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__PORT`: same as above
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__PASSWORD`: same as above
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLMODE`: same as above
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLROOTCERT`: same as above
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLCERT`: same as above
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLKEY`: same as above
+
+Note that `USE_PGBOUNCER` and `USE_PGPOOL` are inherited from the main database configuration and are not overridable per read replica.
+
 ## Redis Settings
 
 -   `AUTHENTIK_REDIS__HOST`: Redis server host when not using configuration URL
