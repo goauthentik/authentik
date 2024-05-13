@@ -40,7 +40,7 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     GOEXPERIMENT="systemcrypto" GOARM="${TARGETVARIANT#v}" go build -o /go/proxy ./cmd/proxy
 
 # Stage 3: Run
-FROM ghcr.io/beryju/fips-debian:bookworm-slim-fips
+FROM ghcr.io/goauthentik/fips-debian:bookworm-slim-fips
 
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
