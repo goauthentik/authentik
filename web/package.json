@@ -126,9 +126,9 @@
         "vite-tsconfig-paths": "^4.3.2"
     },
     "optionalDependencies": {
-        "@esbuild/darwin-arm64": "^0.21.1",
+        "@esbuild/darwin-arm64": "^0.21.2",
         "@esbuild/linux-amd64": "^0.18.11",
-        "@esbuild/linux-arm64": "^0.21.1",
+        "@esbuild/linux-arm64": "^0.21.2",
         "@rollup/rollup-darwin-arm64": "4.17.2",
         "@rollup/rollup-linux-arm64-gnu": "4.17.2",
         "@rollup/rollup-linux-x64-gnu": "4.17.2"
