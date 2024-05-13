@@ -65,7 +65,7 @@ COPY ./go.sum /go/src/goauthentik.io/go.sum
 
 RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
-    GOARM="${TARGETVARIANT#v}" go build -o /go/authentik ./cmd/server
+    GOEXPERIMENT="systemcrypto" GOARM="${TARGETVARIANT#v}" go build -o /go/authentik ./cmd/server
 
 # Stage 4: MaxMind GeoIP
 FROM --platform=${BUILDPLATFORM} ghcr.io/maxmind/geoipupdate:v7.0.1 as geoip

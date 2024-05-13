@@ -21,7 +21,7 @@ RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
 COPY . .
 RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
-    GOARM="${TARGETVARIANT#v}" go build -o /go/ldap ./cmd/ldap
+    GOEXPERIMENT="systemcrypto" GOARM="${TARGETVARIANT#v}" go build -o /go/ldap ./cmd/ldap
 
 # Stage 2: Run
 FROM ghcr.io/beryju/fips-debian:bookworm-slim-fips

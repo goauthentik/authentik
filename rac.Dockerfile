@@ -1,7 +1,14 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build
-FROM mcr.microsoft.com/oss/go/microsoft/golang:1.22-fips-bookworm AS builder
+FROM --platform=${BUILDPLATFORM} mcr.microsoft.com/oss/go/microsoft/golang:1.22-fips-bookworm AS builder
+
+ARG TARGETOS
+ARG TARGETARCH
+ARG TARGETVARIANT
+
+ARG GOOS=$TARGETOS
+ARG GOARCH=$TARGETARCH
 
 WORKDIR /go/src/goauthentik.io
 
@@ -14,7 +21,7 @@ RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
 COPY . .
 RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
-    go build -o /go/rac ./cmd/rac
+    GOEXPERIMENT="systemcrypto" GOARM="${TARGETVARIANT#v}" go build -o /go/rac ./cmd/rac
 
 # Stage 2: Run
 FROM ghcr.io/beryju/guacd:1.5.5
