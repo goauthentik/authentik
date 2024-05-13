@@ -1,10 +1,11 @@
 """authentik core models tests"""
 
 from collections.abc import Callable
-from time import sleep
+from datetime import timedelta
 
 from django.test import RequestFactory, TestCase
 from django.utils.timezone import now
+from freezegun import freeze_time
 from guardian.shortcuts import get_anonymous_user
 
 from authentik.core.models import Provider, Source, Token
@@ -17,15 +18,17 @@ class TestModels(TestCase):
 
     def test_token_expire(self):
         """Test token expiring"""
-        token = Token.objects.create(expires=now(), user=get_anonymous_user())
-        sleep(0.5)
-        self.assertTrue(token.is_expired)
+        with freeze_time() as freeze:
+            token = Token.objects.create(expires=now(), user=get_anonymous_user())
+            freeze.tick(timedelta(seconds=1))
+            self.assertTrue(token.is_expired)
 
     def test_token_expire_no_expire(self):
         """Test token expiring with "expiring" set"""
-        token = Token.objects.create(expires=now(), user=get_anonymous_user(), expiring=False)
-        sleep(0.5)
-        self.assertFalse(token.is_expired)
+        with freeze_time() as freeze:
+            token = Token.objects.create(expires=now(), user=get_anonymous_user(), expiring=False)
+            freeze.tick(timedelta(seconds=1))
+            self.assertFalse(token.is_expired)
 
 
 def source_tester_factory(test_model: type[Stage]) -> Callable:

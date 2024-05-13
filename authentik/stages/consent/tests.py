@@ -1,8 +1,10 @@
 """consent tests"""
 
+from datetime import timedelta
 from time import sleep
 
 from django.urls import reverse
+from freezegun import freeze_time
 
 from authentik.core.models import Application
 from authentik.core.tasks import clean_expired_models
@@ -136,11 +138,13 @@ class TestConsentStage(FlowTestCase):
         self.assertTrue(
             UserConsent.objects.filter(user=self.user, application=self.application).exists()
         )
-        sleep(1)
-        clean_expired_models.delay().get()
-        self.assertFalse(
-            UserConsent.objects.filter(user=self.user, application=self.application).exists()
-        )
+        with freeze_time() as frozen_time:
+            frozen_time.tick(timedelta(seconds=3))
+            sleep(1)
+            clean_expired_models.delay().get()
+            self.assertFalse(
+                UserConsent.objects.filter(user=self.user, application=self.application).exists()
+            )
 
     def test_permanent_more_perms(self):
         """Test permanent consent from user"""
