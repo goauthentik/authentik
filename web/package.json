@@ -108,7 +108,7 @@
         "babel-plugin-tsconfig-paths": "^1.0.3",
         "chokidar": "^3.6.0",
         "cross-env": "^7.0.3",
-        "esbuild": "^0.21.1",
+        "esbuild": "^0.21.2",
         "eslint": "^8.57.0",
         "eslint-config-google": "^0.14.0",
         "eslint-plugin-custom-elements": "0.0.8",
@@ -116,7 +116,7 @@
         "eslint-plugin-sonarjs": "^0.25.1",
         "eslint-plugin-storybook": "^0.8.0",
         "github-slugger": "^2.0.0",
-        "glob": "^10.3.14",
+        "glob": "^10.3.15",
         "lit-analyzer": "^2.0.3",
         "npm-run-all": "^4.1.5",
         "prettier": "^3.2.5",
@@ -136,9 +136,9 @@
         "wdio-wait-for": "^3.0.11"
     },
     "optionalDependencies": {
-        "@esbuild/darwin-arm64": "^0.21.1",
+        "@esbuild/darwin-arm64": "^0.21.2",
         "@esbuild/linux-amd64": "^0.18.11",
-        "@esbuild/linux-arm64": "^0.21.1",
+        "@esbuild/linux-arm64": "^0.21.2",
         "@rollup/rollup-darwin-arm64": "4.17.2",
         "@rollup/rollup-linux-arm64-gnu": "4.17.2",
         "@rollup/rollup-linux-x64-gnu": "4.17.2"
