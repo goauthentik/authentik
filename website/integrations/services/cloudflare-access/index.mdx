@@ -4,18 +4,39 @@ title: Cloudflare Access
 
 <span class="badge badge--secondary">Support level: Community</span>
 
-## What is Service-Name
+## What is Cloudflare Access
 
-> Insert a quick overview of what Service Name is and what it does
+> Cloudflare Access is a secure, cloud-based zero-trust solution for managing and authenticating user access to internal applications and resources.
 >
-> -- https://service.xyz
+> -- https://www.cloudflare.com/zero-trust/products/access/
 
 ## Preparation
 
 The following placeholders will be used:
 
--   `service.company` is the FQDN of the Service install. (Remove this for SaaS)
+-   `cloudflareaccess.company` is the FQDN of your Cloudflare Access subdomain.
 -   `authentik.company` is the FQDN of the authentik install.
+
+You must have a free account on Cloudflare and a publicly available Authentik instance with a trusted SSL certificate.
+
+## authentik configuration
+
+1. Log in to your Authentik instance.
+2. Go to Admin interface and create a new authentication provider.
+
+### Provider configuration
+3. Choose the OAuth2/OpenID Provider and click next.
+4. Set the authorization flow is set to Authorize Application (`default-provider-authorization-explicit-consent`).
+5. Set the client type to confidential.
+6. Set the redirect URI to `https://cloudflareaccess.company/cdn-cgi/access/callback`.
+7. Ensure the signing key is set to authentik Self-signed Certificate.
+8. Click the finish button and create a new application.
+
+### Application configuration
+9. Create a new application and choose a name.
+10. Set the provider to the one you created a few seconds ago.
+11. Make sure that Policy engine mode is set to "ANY, any policy must match to grant access".
+12. Click the create button and navigate to your [Cloudflare Access dashboard](https://one.dash.cloudflare.com)
 
 ## Service configuration
 
@@ -25,10 +46,3 @@ Insert Service configuration
 
 2. Continue with steps....
 
-## authentik configuration
-
-Insert authentik configuration
-
-1. Write first step here...
-
-2. Continue with steps....
