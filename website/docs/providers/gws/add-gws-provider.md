@@ -60,7 +60,7 @@ When adding the Google Workspace provider in authentik, you must define the **Ba
 3. Click **Create**, and in the **New provider** modal box, and define the following fields:
 
     - **Slug**: enter the name of the app as you want it to appear in the URL.
-    - **Provider**: when not used in conjunction with the Google SAML configuration should be left empty.
+    - **Provider**: when _not_ used in conjunction with the Google SAML configuration should be left empty.
     - **Backchannel Providers**: this field is required for Google Workspace. Select the name of the Google Workspace provider that you created in the steps above.
     - **UI settings**: leave these fields empty for Google Workspace.
 
