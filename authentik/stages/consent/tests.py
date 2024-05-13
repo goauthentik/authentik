@@ -1,7 +1,6 @@
 """consent tests"""
 
 from datetime import timedelta
-from time import sleep
 
 from django.urls import reverse
 from freezegun import freeze_time
@@ -140,7 +139,6 @@ class TestConsentStage(FlowTestCase):
         )
         with freeze_time() as frozen_time:
             frozen_time.tick(timedelta(seconds=3))
-            sleep(1)
             clean_expired_models.delay().get()
             self.assertFalse(
                 UserConsent.objects.filter(user=self.user, application=self.application).exists()
