@@ -8633,7 +8633,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sa817aa9f6f88a991">
   <source>Credentials</source>
-  <target>证书</target>
+  <target>凭据</target>
 </trans-unit>
 <trans-unit id="sc668815044e218c2">
   <source>Delegated Subject</source>
@@ -8701,7 +8701,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sc7d6bc4aebb58fe9">
   <source>Google Cloud credentials file.</source>
-  <target>Google Cloud 证书文件。</target>
+  <target>Google Cloud 凭据文件。</target>
 </trans-unit>
 <trans-unit id="s2e707072d5a9615d">
   <source>Email address of the user the actions of authentik will be delegated to.</source>
