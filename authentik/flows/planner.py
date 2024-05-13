@@ -203,7 +203,8 @@ class FlowPlanner:
                 "f(plan): building plan",
             )
             plan = self._build_plan(user, request, default_context)
-            cache.set(cache_key(self.flow, user), plan, CACHE_TIMEOUT)
+            if self.use_cache:
+                cache.set(cache_key(self.flow, user), plan, CACHE_TIMEOUT)
             if not plan.bindings and not self.allow_empty_flows:
                 raise EmptyFlowException()
             return plan
