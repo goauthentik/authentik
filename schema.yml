@@ -3733,6 +3733,11 @@ paths:
           format: uuid
         description: A UUID string identifying this Group.
         required: true
+      - in: query
+        name: include_users
+        schema:
+          type: boolean
+          default: true
       tags:
       - core
       security:
