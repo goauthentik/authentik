@@ -8,8 +8,16 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+export interface IAggregateCard {
+    icon?: string;
+    header?: string;
+    headerLink?: string;
+    subtext?: string;
+    leftJustified?: boolean;
+}
+
 @customElement("ak-aggregate-card")
-export class AggregateCard extends AKElement {
+export class AggregateCard extends AKElement implements IAggregateCard {
     @property()
     icon?: string;
 
@@ -22,8 +30,8 @@ export class AggregateCard extends AKElement {
     @property()
     subtext?: string;
 
-    @property({ type: Boolean })
-    isCenter = true;
+    @property({ type: Boolean, attribute: "left-justified" })
+    leftJustified = false;
 
     static get styles(): CSSResult[] {
         return [PFBase, PFCard, PFFlex].concat([
@@ -80,11 +88,17 @@ export class AggregateCard extends AKElement {
                 </div>
                 ${this.renderHeaderLink()}
             </div>
-            <div class="pf-c-card__body ${this.isCenter ? "center-value" : ""}">
+            <div class="pf-c-card__body ${this.leftJustified ? "" : "center-value"}">
                 ${this.renderInner()}
                 ${this.subtext ? html`<p class="subtext">${this.subtext}</p>` : html``}
             </div>
             <div class="pf-c-card__footer">&nbsp;</div>
         </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-aggregate-card": AggregateCard;
     }
 }

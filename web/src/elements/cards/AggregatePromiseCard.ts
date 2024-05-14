@@ -1,27 +1,45 @@
 import { PFSize } from "@goauthentik/common/enums.js";
 import "@goauthentik/elements/Spinner";
-import { AggregateCard } from "@goauthentik/elements/cards/AggregateCard";
+import { AggregateCard, type IAggregateCard } from "@goauthentik/elements/cards/AggregateCard";
 
-import { TemplateResult, html } from "lit";
+import { msg } from "@lit/localize";
+import { TemplateResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
+export interface IAggregatePromiseCard extends IAggregateCard {
+    promise?: Promise<Record<string, unknown>>;
+}
+
 @customElement("ak-aggregate-card-promise")
-export class AggregatePromiseCard extends AggregateCard {
+export class AggregatePromiseCard extends AggregateCard implements IAggregatePromiseCard {
     @property({ attribute: false })
     promise?: Promise<Record<string, unknown>>;
 
-    async promiseProxy(): Promise<TemplateResult> {
-        if (!this.promise) {
-            return html``;
+    async promiseProxy(): Promise<TemplateResult | typeof nothing> {
+        try {
+            if (!this.promise) {
+                return nothing;
+            }
+            const value = await this.promise;
+            return html`<i class="fa fa-check-circle"></i>&nbsp;${value.toString()}`;
+        } catch (error: unknown) {
+            console.warn(error);
+            return html`<i class="fa fa-exclamation-circle"></i>&nbsp;${msg(
+                    "Operation failed to complete",
+                )}`;
         }
-        const value = await this.promise;
-        return html`<i class="fa fa-check-circle"></i>&nbsp;${value.toString()}`;
     }
 
     renderInner(): TemplateResult {
         return html`<p class="center-value">
             ${until(this.promiseProxy(), html`<ak-spinner size="${PFSize.Large}"></ak-spinner>`)}
         </p>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-aggregate-card-promise": AggregatePromiseCard;
     }
 }

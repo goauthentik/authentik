@@ -12,6 +12,8 @@ import { me } from "@goauthentik/common/users";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/cards/AggregatePromiseCard";
+import "@goauthentik/elements/cards/QuickActionsCard.js";
+import type { QuickAction } from "@goauthentik/elements/cards/QuickActionsCard.js";
 import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
 
 import { msg, str } from "@lit/localize";
@@ -20,7 +22,6 @@ import { customElement, state } from "lit/decorators.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -33,6 +34,11 @@ export function versionFamily(): string {
     return parts.join(".");
 }
 
+const RELEASE = `${VERSION.split(".").slice(0, -1).join(".")}#fixed-in-${VERSION.replaceAll(
+    ".",
+    "",
+)}`;
+
 @customElement("ak-admin-overview")
 export class AdminOverviewPage extends AKElement {
     static get styles(): CSSResult[] {
@@ -41,7 +47,6 @@ export class AdminOverviewPage extends AKElement {
             PFGrid,
             PFPage,
             PFContent,
-            PFList,
             PFDivider,
             css`
                 .pf-l-grid__item {
@@ -64,6 +69,14 @@ export class AdminOverviewPage extends AKElement {
         ];
     }
 
+    quickActions: QuickAction[] = [
+        [msg("Create a new application"), paramURL("/core/applications", { createForm: true })],
+        [msg("Check the logs"), paramURL("/events/log")],
+        [msg("Explore integrations"), "https://goauthentik.io/integrations/", true],
+        [msg("Manage users"), paramURL("/identity/users")],
+        [msg("Check the release notes"), `https://goauthentik.io/docs/releases/${RELEASE}`, true],
+    ];
+
     @state()
     user?: SessionUser;
 
@@ -83,56 +96,8 @@ export class AdminOverviewPage extends AKElement {
                         class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl pf-l-grid pf-m-gutter"
                     >
                         <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl">
-                            <ak-aggregate-card
-                                icon="fa fa-share"
-                                header=${msg("Quick actions")}
-                                .isCenter=${false}
-                            >
-                                <ul class="pf-c-list">
-                                    <li>
-                                        <a
-                                            class="pf-u-mb-xl"
-                                            href=${paramURL("/core/applications", {
-                                                createForm: true,
-                                            })}
-                                            >${msg("Create a new application")}</a
-                                        >
-                                    </li>
-                                    <li>
-                                        <a class="pf-u-mb-xl" href=${paramURL("/events/log")}
-                                            >${msg("Check the logs")}</a
-                                        >
-                                    </li>
-                                    <li>
-                                        <a
-                                            class="pf-u-mb-xl"
-                                            target="_blank"
-                                            href="https://goauthentik.io/integrations/"
-                                            >${msg("Explore integrations")}<i
-                                                class="fas fa-external-link-alt ak-external-link"
-                                            ></i
-                                        ></a>
-                                    </li>
-                                    <li>
-                                        <a class="pf-u-mb-xl" href=${paramURL("/identity/users")}
-                                            >${msg("Manage users")}</a
-                                        >
-                                    </li>
-                                    <li>
-                                        <a
-                                            class="pf-u-mb-xl"
-                                            target="_blank"
-                                            href="https://goauthentik.io/docs/releases/${versionFamily()}#fixed-in-${VERSION.replaceAll(
-                                                ".",
-                                                "",
-                                            )}"
-                                            >${msg("Check the release notes")}<i
-                                                class="fas fa-external-link-alt ak-external-link"
-                                            ></i
-                                        ></a>
-                                    </li>
-                                </ul>
-                            </ak-aggregate-card>
+                            <ak-quick-actions-card .actions=${this.quickActions}>
+                            </ak-quick-actions-card>
                         </div>
                         <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl">
                             <ak-aggregate-card
