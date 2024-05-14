@@ -65,7 +65,7 @@ COPY ./go.sum /go/src/goauthentik.io/go.sum
 
 RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
-    GOEXPERIMENT="systemcrypto" GOARM="${TARGETVARIANT#v}" go build -o /go/authentik ./cmd/server
+    CGO_ENABLED=1 GOEXPERIMENT="systemcrypto" GOARM="${TARGETVARIANT#v}" go build -o /go/authentik ./cmd/server
 
 # Stage 4: MaxMind GeoIP
 FROM --platform=${BUILDPLATFORM} ghcr.io/maxmind/geoipupdate:v7.0.1 as geoip
@@ -103,10 +103,10 @@ RUN --mount=type=bind,target=./pyproject.toml,src=./pyproject.toml \
     --mount=type=cache,target=/root/.cache/pypoetry \
     python -m venv /ak-root/venv/ && \
     bash -c "source ${VENV_PATH}/bin/activate && \
-        pip3 install --upgrade pip && \
-        pip3 install poetry && \
-        poetry install --only=main --no-ansi --no-interaction --no-root && \
-        pip install --force-reinstall /wheels/*"
+    pip3 install --upgrade pip && \
+    pip3 install poetry && \
+    poetry install --only=main --no-ansi --no-interaction --no-root && \
+    pip install --force-reinstall /wheels/*"
 
 # Stage 6: Run
 FROM ghcr.io/goauthentik/fips-python:3.12.3-slim-bookworm-fips-full AS final-image

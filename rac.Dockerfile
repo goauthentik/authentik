@@ -21,7 +21,7 @@ RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
 COPY . .
 RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
-    GOEXPERIMENT="systemcrypto" GOARM="${TARGETVARIANT#v}" go build -o /go/rac ./cmd/rac
+    CGO_ENABLED=1 GOEXPERIMENT="systemcrypto" GOARM="${TARGETVARIANT#v}" go build -o /go/rac ./cmd/rac
 
 # Stage 2: Run
 FROM ghcr.io/beryju/guacd:1.5.5
