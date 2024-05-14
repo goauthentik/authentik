@@ -17,10 +17,10 @@ export class AggregatePromiseCard extends AggregateCard implements IAggregatePro
     promise?: Promise<Record<string, unknown>>;
 
     async promiseProxy(): Promise<TemplateResult | typeof nothing> {
+        if (!this.promise) {
+            return nothing;
+        }
         try {
-            if (!this.promise) {
-                return nothing;
-            }
             const value = await this.promise;
             return html`<i class="fa fa-check-circle"></i>&nbsp;${value.toString()}`;
         } catch (error: unknown) {
