@@ -16,20 +16,55 @@ export interface IAggregateCard {
     leftJustified?: boolean;
 }
 
+/**
+ * class AggregateCard
+ * element ak-aggregate-card
+ *
+ * @slot - The main content of the card
+ *
+ * Card component with a specific layout for quick informational blurbs
+ */
 @customElement("ak-aggregate-card")
 export class AggregateCard extends AKElement implements IAggregateCard {
+    /**
+     * If this contains an `fa-` style string, the FontAwesome icon specified will be shown next to
+     * the header.
+     *
+     * @attr
+     */ 
     @property()
     icon?: string;
 
+    /**
+     * The title of the card.
+     *
+     * @attr
+     */ 
     @property()
     header?: string;
 
+    /**
+     * If this is non-empty, a link icon will be shown in the upper-right corner of the card.
+     *
+     * @attr
+     */ 
     @property()
     headerLink?: string;
 
+    /**
+     * If this is non-empty, a small-text footer will be shown at the bottom of the card
+     *
+     * @attr
+     */ 
     @property()
     subtext?: string;
 
+    /**
+     * If this is set, the contents of the card will be left-justified; otherwise they will be
+     * centered by default.
+     *
+     * @attr
+     */ 
     @property({ type: Boolean, attribute: "left-justified" })
     leftJustified = false;
 

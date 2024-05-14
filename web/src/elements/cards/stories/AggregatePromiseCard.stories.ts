@@ -20,6 +20,7 @@ const metadata: Meta<AggregatePromiseCard> = {
         headerLink: { control: "text" },
         subtext: { control: "text" },
         leftJustified: { control: "boolean" },
+        failureMessage: { control: "text" },
     },
 };
 
@@ -68,8 +69,9 @@ export const PromiseRejected: StoryObj = {
         headerLink: undefined,
         subtext: "Demo has an eight second delay until rejection",
         leftJustified: false,
+        failureMessage: undefined,
     },
-    render: ({ icon, header, headerLink, subtext, leftJustified }: IAggregatePromiseCard) => {
+    render: ({ icon, header, headerLink, subtext, leftJustified, failureMessage }: IAggregatePromiseCard) => {
         const runThis = (timeout: number, value: string) =>
             new Promise((_resolve, reject) => setTimeout(reject, timeout, value));
 
@@ -85,7 +87,8 @@ export const PromiseRejected: StoryObj = {
                 header=${ifDefined(header)}
                 headerLink=${ifDefined(headerLink)}
                 subtext=${ifDefined(subtext)}
-                icon=${ifDefined(icon)}
+icon=${ifDefined(icon)}
+failureMessage=${ifDefined(failureMessage)}
                 ?left-justified=${leftJustified}
                 .promise=${runThis(8000, text)}
             >
