@@ -24,11 +24,12 @@ As detailed in the steps below, when you add an Entra ID provider in authentik y
 
 1. Log in as an admin to authentik, and go to the Admin interface.
 2. In the Admin interface, navigate to **Applications -> Providers**.
-3. Click **Create**, and in the **New provider** modal box, define the following fields:
+3. Click **Create**, and in the **New provider** modal box select **Microsoft Entra Provider** as the type and click **Next**.
+4. Define the following fields:
 
     - **Name**: define a descriptive name, such as "Entra provider".
 
-        **Protocol settings**
+    - **Protocol settings**
 
         - **Client ID**: enter the Client ID that you [copied from your Entra ID app](./setup-entra.md).
         - **Client Secret**: enter the secret from Entra ID.
@@ -36,12 +37,12 @@ As detailed in the steps below, when you add an Entra ID provider in authentik y
         - **User deletion action**: determines what authentik will do when a user is deleted from the Entra ID system.
         - **Group deletion action**: determines what authentik will do when a group is deleted from the Entra ID system.
 
-        **User filtering**
+    **User filtering**
 
         - **Exclude service accounts**: set whether to include or exclude service accounts.
         - **Group**: select any specific groups to enforce that filtering (for all actions) is done only for the selected groups.
 
-        **Attribute mapping**
+    **Attribute mapping**
 
         - **User Property Mappings**: select any applicable mappings, or use the default.
         - **Group Property Mappings**: select any applicable mappings, or use the default.
@@ -52,11 +53,13 @@ As detailed in the steps below, when you add an Entra ID provider in authentik y
 
 1. Log in as an admin to authentik, and go to the Admin interface.
 2. In the Admin interface, navigate to **Applications -> Applications**.
-3. Click **Create**, and in the **New provider** modal box, and define the following fields:
+3. Click **Create**, and in the **Create Application** modal box define the following fields:
 
+    - **Name**: provide a descriptive name.
     - **Slug**: enter the name of the app as you want it to appear in the URL.
     - **Provider**: when _not_ used in conjunction with the Entra ID SAML configuration should be left empty.
     - **Backchannel Providers**: this field is required for Entra ID. Select the name of the Entra ID provider that you created in the steps above.
+    - **Policy engine mode**: select **any** or \*_All_ to set your policy mode.
     - **UI settings**: leave these fields empty for Entra ID.
 
-4. Click **Finish**.
+4. Click **Create**.
