@@ -37,7 +37,7 @@ RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
 COPY . .
 RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
-    CGO_ENABLED=1 GOEXPERIMENT="systemcrypto" GOARM="${TARGETVARIANT#v}" go build -o /go/proxy ./cmd/proxy
+    CGO_ENABLED=1 GOEXPERIMENT="systemcrypto" GOFLAGS="-tags=requirefips" GOARM="${TARGETVARIANT#v}" go build -o /go/proxy ./cmd/proxy
 
 # Stage 3: Run
 FROM ghcr.io/goauthentik/fips-debian:bookworm-slim-fips
@@ -62,5 +62,7 @@ HEALTHCHECK --interval=5s --retries=20 --start-period=3s CMD [ "/proxy", "health
 EXPOSE 9000 9300 9443
 
 USER 1000
+
+ENV GOFIPS=1
 
 ENTRYPOINT ["/proxy"]

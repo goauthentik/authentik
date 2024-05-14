@@ -21,7 +21,7 @@ RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
 COPY . .
 RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
-    CGO_ENABLED=1 GOEXPERIMENT="systemcrypto" GOARM="${TARGETVARIANT#v}" go build -o /go/rac ./cmd/rac
+    CGO_ENABLED=1 GOEXPERIMENT="systemcrypto" GOFLAGS="-tags=requirefips" GOARM="${TARGETVARIANT#v}" go build -o /go/rac ./cmd/rac
 
 # Stage 2: Run
 FROM ghcr.io/beryju/guacd:1.5.5
@@ -40,5 +40,7 @@ COPY --from=builder /go/rac /
 HEALTHCHECK --interval=5s --retries=20 --start-period=3s CMD [ "/rac", "healthcheck" ]
 
 USER 1000
+
+ENV GOFIPS=1
 
 ENTRYPOINT ["/rac"]

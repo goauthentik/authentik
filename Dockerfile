@@ -65,7 +65,7 @@ COPY ./go.sum /go/src/goauthentik.io/go.sum
 
 RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
-    CGO_ENABLED=1 GOEXPERIMENT="systemcrypto" GOARM="${TARGETVARIANT#v}" go build -o /go/authentik ./cmd/server
+    CGO_ENABLED=1 GOEXPERIMENT="systemcrypto" GOFLAGS="-tags=requirefips" GOARM="${TARGETVARIANT#v}" go build -o /go/authentik ./cmd/server
 
 # Stage 4: MaxMind GeoIP
 FROM --platform=${BUILDPLATFORM} ghcr.io/maxmind/geoipupdate:v7.0.1 as geoip
@@ -161,6 +161,8 @@ ENV TMPDIR=/dev/shm/ \
     PATH="/ak-root/venv/bin:/lifecycle:$PATH" \
     VENV_PATH="/ak-root/venv" \
     POETRY_VIRTUALENVS_CREATE=false
+
+ENV GOFIPS=1
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 CMD [ "ak", "healthcheck" ]
 
