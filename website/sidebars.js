@@ -76,6 +76,21 @@ const docsSidebar = {
             items: [
                 {
                     type: "category",
+<<<<<<< HEAD
+=======
+                    label: "Google Workspace Provider",
+                    link: {
+                        type: "doc",
+                        id: "providers/gws/index",
+                    },
+                    items: [
+                        "providers/gws/setup-gws",
+                        "providers/gws/add-gws-provider",
+                    ],
+                },
+                {
+                    type: "category",
+>>>>>>> 5d54f696d (website/docs: add docs about Google Workspace (#9669))
                     label: "LDAP Provider",
                     link: {
                         type: "doc",
