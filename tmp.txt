@@ -1,0 +1,18 @@
+== TMP DOCS FOR PG UPGRADE ==
+
+1. Dump your database using `docker exec -it authentik-postgresql pg_dumpall -U authentik > upgrade_backup_12.sql`
+2. Stop your containers by running docker compose stop
+3. Take a backup of your existing database just to be safe
+    - If you are using Docker volumes:
+    docker volume create database-backup
+    docker run --rm -v database:/from -v database-backup:/to alpine ash -c "cd /from && cp -a . /to"
+
+    - If you are using directories on your host:
+    cp /path/v12/db /path/v12/db-backup
+
+4. Add a new Postgresql service to your docker-compose. Take the one you are using for version 12 and rename it. For example: authentik-postgresql -> authentik-postgresql-v16. Don't forget to change your volume name/location. Also update depends on.
+5. Pull the new image with  docker compose pull
+6. run with dc up --build -database
+7. you must modify password type 
+    - docker exec -it authentik-postgresql-v16 /bin/bash
+    - vi /var/lib/postgresql/data/postgresql.conf
