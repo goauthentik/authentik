@@ -23,7 +23,6 @@ and paste the sql
 8. run cat upgrade_backup_12.sql | docker exec -i authentik-postgresql-v16 psql -U authentik to import your previous db
 
 9. you must modify password type 
-todo: make this better or find a way to resolve ```authentik-postgresql-v16  | 2024-05-14 21:50:40.000 UTC [208] FATAL:  password authentication failed for user "authentik"```
     - docker exec -it authentik-postgresql-v16 /bin/bash
     - vi /var/lib/postgresql/data/postgresql.conf
     - "i" to enter insert mode and uncomment `password_encryption = scram-sha-256` under Authentication
@@ -36,4 +35,8 @@ todo: make this better or find a way to resolve ```authentik-postgresql-v16  | 2
     FROM pg_authid
     WHERE rolcanlogin;
 
-    - "\password authentik" and enter the password you set your .env
+    - "\password authentik" and enter the password you set your .env under PG_PASS
+
+todo: fix err  psycopg.errors.DuplicateTable: relation "X" already exists 
+todo: docker compose cleanup
+todo: move this to markdown when ready
