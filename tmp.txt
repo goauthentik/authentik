@@ -22,7 +22,7 @@
     - vi /var/lib/postgresql/data/postgresql.conf
     - "i" to enter insert mode and uncomment `password_encryption = scram-sha-256` under Authentication
     - "escape", ":wq" to save and quit
-    - psql into your db "psql -U authentik"
+    - psql "psql -U authentik"
 
     you can run this sql if you wish for users which need upgrade:
     SELECT
@@ -32,6 +32,6 @@
 
     - "\password authentik" and enter the password you set your .env under PG_PASS
 
-todo: fix err  psycopg.errors.DuplicateTable: relation "X" already exists 
-todo: docker compose cleanup
-todo: move this to markdown when ready
+10. Uncomment the changes you made in num. 5
+11. rebuild
+12. tada
