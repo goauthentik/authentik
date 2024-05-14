@@ -22,10 +22,10 @@ As detailed in the steps below, when you add an Entra ID provider in authentik y
 
 ### Create the Entra ID provider in authentik
 
-1. Log in as an admin to authentik, and go to the Admin interface.
-2. In the Admin interface, navigate to **Applications -> Providers**.
-3. Click **Create**, and in the **New provider** modal box select **Microsoft Entra Provider** as the type and click **Next**.
-4. Define the following fields:
+1.  Log in as an admin to authentik, and go to the Admin interface.
+2.  In the Admin interface, navigate to **Applications -> Providers**.
+3.  Click **Create**, and in the **New provider** modal box select **Microsoft Entra Provider** as the type and click **Next**.
+4.  Define the following fields:
 
     - **Name**: define a descriptive name, such as "Entra provider".
 
@@ -47,7 +47,7 @@ As detailed in the steps below, when you add an Entra ID provider in authentik y
         - **User Property Mappings**: select any applicable mappings, or use the default.
         - **Group Property Mappings**: select any applicable mappings, or use the default.
 
-4. Click **Finish**.
+5.  Click **Finish**.
 
 ### Create an Entra ID application in authentik
 

@@ -76,8 +76,6 @@ const docsSidebar = {
             items: [
                 {
                     type: "category",
-<<<<<<< HEAD
-=======
                     label: "Google Workspace Provider",
                     link: {
                         type: "doc",
@@ -90,7 +88,6 @@ const docsSidebar = {
                 },
                 {
                     type: "category",
->>>>>>> 5d54f696d (website/docs: add docs about Google Workspace (#9669))
                     label: "LDAP Provider",
                     link: {
                         type: "doc",
