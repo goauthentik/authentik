@@ -10,7 +10,7 @@
     - If you are using directories on your host:
     cp /path/v12/db /path/v12/db-backup
 
-4. Add a new Postgresql service to your docker-compose. Take the one you are using for version 12 and rename it. For example: authentik-postgresql -> authentik-postgresql-v16. Don't forget to change your volume name/location. Also update depends on.
+4. Add the Postgres v16 docker compose service and comment out the old v12 one. Make sure to change volume name/path and image version. Why: no need to update pg hostname in env / depends on + v12 will be removed later
 5. Pull the new image with  docker compose pull
 6. run with dc up --build -d
 
