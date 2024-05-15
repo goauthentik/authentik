@@ -14,7 +14,7 @@ This feature is in technical preview, so please report any bugs on [GitHub](http
 
 ## Prerequisites
 
-To create a Entra ID provider provider in authentik, you must have already [configured Entra ID](./setup-entra.md) to integrate with authentik.
+To create a Entra ID provider provider in authentik, you must have already [configured Entra ID](./setup-entra.md) to integrate with authentik. You will need to obtain from Entra the Application (client) ID, the Directory (tenant) ID, and the Client secret values, to enter into authentik when adding an Entra ID provider.
 
 :::info
 As detailed in the steps below, when you add an Entra ID provider in authentik you must define the **Backchannel provider** using the name of the Entra ID provider that you created in authentik. If you have also configured Entra ID to log in using authentik, then this configuration can be done on the same app.
@@ -57,8 +57,8 @@ As detailed in the steps below, when you add an Entra ID provider in authentik y
 
     - **Name**: provide a descriptive name.
     - **Slug**: enter the name of the app as you want it to appear in the URL.
-    - **Group**: optionally, chose a group; apps in the same gruop are displayed together on the **My applications** page.
-    - **Provider**: when _not_ used in conjunction with the Entra ID SAML configuration should be left empty.
+    - **Group**: optionally, chose a group; apps in the same group are displayed together on the **My applications** page.
+    - **Provider**: when _not_ used in conjunction with the Entra ID SAML configuration this field should be left empty.
     - **Backchannel Providers**: this field is required for Entra ID. Select the name of the Entra ID provider that you created in the steps above.
     - **Policy engine mode**: select **any** or **all** to set your policy mode.
     - **UI settings**: leave these fields empty for Entra ID.
