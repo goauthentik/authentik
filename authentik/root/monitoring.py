@@ -47,7 +47,7 @@ class ReadyView(View):
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
         try:
-            for db_conn in connections.values():
+            for db_conn in connections.all():
                 _ = db_conn.cursor()
         except OperationalError:  # pragma: no cover
             return HttpResponse(status=503)
