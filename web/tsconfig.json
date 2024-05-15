@@ -2,18 +2,17 @@
     "extends": "./tsconfig.base.json",
     "compilerOptions": {
         "paths": {
-            "@goauthentik/authentik/*": ["src/*"],
-            "@goauthentik/admin/*": ["src/admin/*"],
-            "@goauthentik/common/*": ["src/common/*"],
-            "@goauthentik/components/*": ["src/components/*"],
+            "@goauthentik/authentik/*": ["./src/*"],
+            "@goauthentik/admin/*": ["./src/admin/*"],
+            "@goauthentik/common/*": ["./src/common/*"],
+            "@goauthentik/components/*": ["./src/components/*"],
             "@goauthentik/docs/*": ["../website/docs/*"],
-            "@goauthentik/elements/*": ["src/elements/*"],
-            "@goauthentik/flow/*": ["src/flow/*"],
-            "@goauthentik/locales/*": ["src/locales/*"],
-            "@goauthentik/polyfill/*": ["src/polyfill/*"],
-            "@goauthentik/standalone/*": ["src/standalone/*"],
-            "@goauthentik/user/*": ["src/user/*"]
-        },
-    },
-    "exclude": ["src/**/*.test.ts", "src/**/*.stories.ts", "src/**/tests", "src/**/stories"]
+            "@goauthentik/elements/*": ["./src/elements/*"],
+            "@goauthentik/flow/*": ["./src/flow/*"],
+            "@goauthentik/locales/*": ["./src/locales/*"],
+            "@goauthentik/polyfill/*": ["./src/polyfill/*"],
+            "@goauthentik/standalone/*": ["./src/standalone/*"],
+            "@goauthentik/user/*": ["./src/user/*"]
+        }
+    }
 }
