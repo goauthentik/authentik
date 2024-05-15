@@ -1,6 +1,6 @@
 import { AKElement } from "@goauthentik/elements/Base";
 
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -31,7 +31,7 @@ export class AggregateCard extends AKElement implements IAggregateCard {
      * the header.
      *
      * @attr
-     */ 
+     */
     @property()
     icon?: string;
 
@@ -39,7 +39,7 @@ export class AggregateCard extends AKElement implements IAggregateCard {
      * The title of the card.
      *
      * @attr
-     */ 
+     */
     @property()
     header?: string;
 
@@ -47,7 +47,7 @@ export class AggregateCard extends AKElement implements IAggregateCard {
      * If this is non-empty, a link icon will be shown in the upper-right corner of the card.
      *
      * @attr
-     */ 
+     */
     @property()
     headerLink?: string;
 
@@ -55,7 +55,7 @@ export class AggregateCard extends AKElement implements IAggregateCard {
      * If this is non-empty, a small-text footer will be shown at the bottom of the card
      *
      * @attr
-     */ 
+     */
     @property()
     subtext?: string;
 
@@ -64,7 +64,7 @@ export class AggregateCard extends AKElement implements IAggregateCard {
      * centered by default.
      *
      * @attr
-     */ 
+     */
     @property({ type: Boolean, attribute: "left-justified" })
     leftJustified = false;
 
@@ -82,6 +82,7 @@ export class AggregateCard extends AKElement implements IAggregateCard {
                     text-align: center;
                 }
                 .subtext {
+                    margin-top: var(--pf-global--spacer--sm);
                     font-size: var(--pf-global--FontSize--sm);
                 }
                 .pf-c-card__body {
@@ -119,13 +120,15 @@ export class AggregateCard extends AKElement implements IAggregateCard {
         return html`<div class="pf-c-card pf-c-card-aggregate">
             <div class="pf-c-card__header pf-l-flex pf-m-justify-content-space-between">
                 <div class="pf-c-card__title">
-                    <i class="${ifDefined(this.icon)}"></i>&nbsp;${this.renderHeader()}
+                    ${this.icon
+                        ? html`<i class="${ifDefined(this.icon)}"></i>&nbsp;`
+                        : nothing}${this.renderHeader()}
                 </div>
                 ${this.renderHeaderLink()}
             </div>
             <div class="pf-c-card__body ${this.leftJustified ? "" : "center-value"}">
                 ${this.renderInner()}
-                ${this.subtext ? html`<p class="subtext">${this.subtext}</p>` : html``}
+                ${this.subtext ? html`<p class="subtext">${this.subtext}</p>` : nothing}
             </div>
             <div class="pf-c-card__footer">&nbsp;</div>
         </div>`;

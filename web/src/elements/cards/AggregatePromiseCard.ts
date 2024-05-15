@@ -23,21 +23,20 @@ export interface IAggregatePromiseCard extends IAggregateCard {
 
 @customElement("ak-aggregate-card-promise")
 export class AggregatePromiseCard extends AggregateCard implements IAggregatePromiseCard {
-
     /**
      * If this contains an `fa-` style string, the FontAwesome icon specified will be shown next to
      * the header.
      *
      * @attr
-     */ 
+     */
     @property({ attribute: false })
     promise?: Promise<Record<string, unknown>>;
 
     /**
-     * The error message if the promise is rejected or throws an exception. 
+     * The error message if the promise is rejected or throws an exception.
      *
      * @attr
-     */ 
+     */
     @property()
     failureMessage = msg("Operation failed to complete");
 
