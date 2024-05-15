@@ -86,6 +86,7 @@ export class AdminOverviewPage extends AKElement {
 
     render(): TemplateResult {
         const name = this.user?.user.name ?? this.user?.user.username;
+
         return html`<ak-page-header icon="" header="" description=${msg("General system status")}>
                 <span slot="header"> ${msg(str`Welcome, ${name}.`)} </span>
             </ak-page-header>

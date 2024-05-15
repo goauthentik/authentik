@@ -27,7 +27,7 @@ const metadata: Meta<AggregatePromiseCard> = {
 export default metadata;
 
 const text =
-    "Curl up and sleep on the freshly laundered towels mew, but make meme, make cute face growl at dogs in my sleep. Scratch me there, elevator butt humans,humans, humans oh how much they love us felines we are the center of attention they feed, they clean hopped up on catnip mice. Kitty time flop over, for see owner, run in terror";
+    "Curl up and sleep on the freshly laundered towels mew, but make meme, make cute face growl at dogs in my sleep. Scratch me there, elevator butt humans, humans, humans oh how much they love us felines we are the center of attention they feed, they clean hopped up on catnip mice. Kitty time flop over, for see owner, run in terror";
 
 export const DefaultStory: StoryObj = {
     args: {
@@ -71,7 +71,9 @@ export const PromiseRejected: StoryObj = {
         leftJustified: false,
         failureMessage: undefined,
     },
-    render: ({ icon, header, headerLink, subtext, leftJustified, failureMessage }: IAggregatePromiseCard) => {
+    render: (
+        { icon, header, headerLink, subtext, leftJustified, failureMessage }: IAggregatePromiseCard,
+    ) => {
         const runThis = (timeout: number, value: string) =>
             new Promise((_resolve, reject) => setTimeout(reject, timeout, value));
 
@@ -87,8 +89,8 @@ export const PromiseRejected: StoryObj = {
                 header=${ifDefined(header)}
                 headerLink=${ifDefined(headerLink)}
                 subtext=${ifDefined(subtext)}
-icon=${ifDefined(icon)}
-failureMessage=${ifDefined(failureMessage)}
+                icon=${ifDefined(icon)}
+                failureMessage=${ifDefined(failureMessage)}
                 ?left-justified=${leftJustified}
                 .promise=${runThis(8000, text)}
             >
