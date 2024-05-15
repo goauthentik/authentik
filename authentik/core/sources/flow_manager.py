@@ -262,7 +262,10 @@ class SourceFlowManager:
         connection: UserSourceConnection,
     ) -> HttpResponse:
         """Login user and redirect."""
-        flow_kwargs = {PLAN_CONTEXT_PENDING_USER: connection.user}
+        flow_kwargs = {
+            PLAN_CONTEXT_PROMPT: delete_none_values(self.enroll_info),
+            PLAN_CONTEXT_PENDING_USER: connection.user,
+        }
         return self._prepare_flow(
             self.source.authentication_flow,
             connection,
