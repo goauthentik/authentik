@@ -52,43 +52,43 @@ jobs:
         run: |
           DOCKER_BUILDKIT=1 docker build -t ${{ steps.login-ecr.outputs.registry }}/authentik:${{ github.sha }} .
           docker push ${{ steps.login-ecr.outputs.registry }}/authentik:${{ github.sha }}
-  Commit-New-Image:
-    if: ${{ always() && (needs.Build-Authentik.result == 'success') }}
-    name: Commit new image versions
-    runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
-    needs: [Build-Authentik]
-    env:
-      ENVIRONMENT: ${{ inputs.environment }}
-    steps:
-      - name: Checkout Private Tools
-        uses: actions/checkout@v4
-        with:
-          ref: main
-          fetch-depth: 1
-          sparse-checkout: |
-            k8s/helm/authentik/${{ env.ENVIRONMENT }}-custom-values.yaml
-          repository: scribe-security/scribe2
-          token: ${{ secrets.K8S_GH_TOKEN }}
-          sparse-checkout-cone-mode: true
+  # Commit-New-Image:
+  #   if: ${{ always() && (needs.Build-Authentik.result == 'success') }}
+  #   name: Commit new image versions
+  #   runs-on: ubuntu-latest
+  #   environment: ${{ inputs.environment }}
+  #   needs: [Build-Authentik]
+  #   env:
+  #     ENVIRONMENT: ${{ inputs.environment }}
+  #   steps:
+  #     - name: Checkout Private Tools
+  #       uses: actions/checkout@v4
+  #       with:
+  #         ref: main
+  #         fetch-depth: 1
+  #         sparse-checkout: |
+  #           k8s/helm/authentik/${{ env.ENVIRONMENT }}-custom-values.yaml
+  #         repository: scribe-security/scribe2
+  #         token: ${{ secrets.K8S_GH_TOKEN }}
+  #         sparse-checkout-cone-mode: true
 
-      - name: Get version
-        id: get-versions
-        # we take the current commit sha for a particular component if it was build
-        # otherwise we take currently set value from ${{ env.ENVIRONMENT }}-custom-values.yaml
-        run: |
-          echo "authentik_version=${{ github.sha }}" >> $GITHUB_OUTPUT
-      - name: Update Image Versions in the HelmChart
-        uses: fjogeleit/yaml-update-action@main
-        with:
-          repository: scribe-security/scribe2
-          branch: ${{ github.ref_name }}
-          commitChange: true
-          message: 'Update images versions'
-          token: ${{ secrets.K8S_GH_TOKEN }}
-          changes: |
-            {
-              "k8s/helm/authentik/${{ env.ENVIRONMENT }}-custom-values.yaml": {
-                "global.image.tag": "${{steps.get-versions.outputs.authentik_version}}"
-              }
-            }
+  #     - name: Get version
+  #       id: get-versions
+  #       # we take the current commit sha for a particular component if it was build
+  #       # otherwise we take currently set value from ${{ env.ENVIRONMENT }}-custom-values.yaml
+  #       run: |
+  #         echo "authentik_version=${{ github.sha }}" >> $GITHUB_OUTPUT
+  #     - name: Update Image Versions in the HelmChart
+  #       uses: fjogeleit/yaml-update-action@main
+  #       with:
+  #         repository: scribe-security/scribe2
+  #         branch: ${{ github.ref_name }}
+  #         commitChange: true
+  #         message: 'Update images versions'
+  #         token: ${{ secrets.K8S_GH_TOKEN }}
+  #         changes: |
+  #           {
+  #             "k8s/helm/authentik/${{ env.ENVIRONMENT }}-custom-values.yaml": {
+  #               "global.image.tag": "${{steps.get-versions.outputs.authentik_version}}"
+  #             }
+  #           }
