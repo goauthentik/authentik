@@ -10,7 +10,6 @@ title: GitLab
 >
 > -- https://about.gitlab.com/what-is-gitlab/
 
-
 :::info
 In case something goes wrong with the configuration or you need to login as admin, you can use the URL `https://gitlab.company/users/sign_in?auto_sign_in=false` to log in using the built-in authentication.
 :::
@@ -77,7 +76,6 @@ gitlab_rails['omniauth_providers'] = [
 
 Afterwards, either run `gitlab-ctl reconfigure` if you're running GitLab Omnibus, or restart the container if you're using the container.
 
-
 ### OpenID Connect auth
 
 #### Preparation
@@ -135,5 +133,3 @@ gitlab_rails['omniauth_providers'] = [
 ```
 
 For further GitLab provider args have a look at the specific GitLab docs at https://docs.gitlab.com/ee/integration/openid_connect_provider.html
-
-
