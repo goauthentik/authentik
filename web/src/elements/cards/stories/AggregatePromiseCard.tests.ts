@@ -1,7 +1,6 @@
 import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet.js";
 import { $, expect } from "@wdio/globals";
 
-import { msg } from "@lit/localize";
 import { TemplateResult, html, render as litRender } from "lit";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -27,6 +26,7 @@ describe("ak-aggregate-card-promise", () => {
         render(html`<ak-aggregate-card-promise .promise=${promise}></ak-aggregate-card-promise>`);
 
         const component = await $("ak-aggregate-card-promise");
+        // Assert we're in pre-resolve mode
         await expect(await component.$(">>>.pf-c-card__header a")).not.toExist();
         await expect(await component.$(">>>ak-spinner")).toExist();
         await promise;
@@ -47,6 +47,7 @@ describe("ak-aggregate-card-promise", () => {
         );
 
         const component = await $("ak-aggregate-card-promise");
+        // Assert we're in pre-resolve mode
         await expect(await component.$(">>>.pf-c-card__header a")).not.toExist();
         await expect(await component.$(">>>ak-spinner")).toExist();
         try {

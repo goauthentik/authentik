@@ -1,7 +1,6 @@
 import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet.js";
 import { $, expect } from "@wdio/globals";
 
-import { msg } from "@lit/localize";
 import { TemplateResult, html, render as litRender } from "lit";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
