@@ -22,7 +22,7 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.models import ManagedModel
-from authentik.core.exceptions import PropertyMappingExpressionException
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
 from authentik.lib.generators import generate_id

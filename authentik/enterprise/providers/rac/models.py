@@ -11,7 +11,7 @@ from django.utils.translation import gettext as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
-from authentik.core.exceptions import PropertyMappingExpressionException
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import ExpiringModel, PropertyMapping, Provider, User, default_token_key
 from authentik.events.models import Event, EventAction
 from authentik.lib.models import SerializerModel

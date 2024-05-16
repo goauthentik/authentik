@@ -10,7 +10,7 @@ require (
 	github.com/go-ldap/ldap/v3 v3.4.8
 	github.com/go-openapi/runtime v0.28.0
 	github.com/go-openapi/strfmt v0.23.0
-	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/handlers v1.5.2
 	github.com/gorilla/mux v1.8.1
@@ -21,16 +21,16 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/nmcclain/asn1-ber v0.0.0-20170104154839-2661553a0484
 	github.com/pires/go-proxyproto v0.7.0
-	github.com/prometheus/client_golang v1.19.0
+	github.com/prometheus/client_golang v1.19.1
 	github.com/redis/go-redis/v9 v9.5.1
 	github.com/sethvargo/go-envconfig v1.0.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.8.0
 	github.com/stretchr/testify v1.9.0
 	github.com/wwt/guac v1.3.2
-	goauthentik.io/api/v3 v3.2024040.1
+	goauthentik.io/api/v3 v3.2024042.4
 	golang.org/x/exp v0.0.0-20230210204819-062eb4c674ab
-	golang.org/x/oauth2 v0.19.0
+	golang.org/x/oauth2 v0.20.0
 	golang.org/x/sync v0.7.0
 	gopkg.in/yaml.v2 v2.4.0
 	layeh.com/radius v0.0.0-20210819152912-ad72663a72ab

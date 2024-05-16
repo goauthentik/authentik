@@ -155,6 +155,7 @@ SPECTACULAR_SETTINGS = {
         "LDAPAPIAccessMode": "authentik.providers.ldap.models.APIAccessMode",
         "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
         "UserTypeEnum": "authentik.core.models.UserTypes",
+        "OutgoingSyncDeleteAction": "authentik.lib.sync.outgoing.models.OutgoingSyncDeleteAction",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "ENUM_GENERATE_CHOICE_DESCRIPTION": False,
@@ -376,7 +377,13 @@ CELERY = {
     "task_default_queue": "authentik",
     "broker_url": CONFIG.get("broker.url") or redis_url(CONFIG.get("redis.db")),
     "result_backend": CONFIG.get("result_backend.url") or redis_url(CONFIG.get("redis.db")),
-    "broker_transport_options": CONFIG.get_dict_from_b64_json("broker.transport_options"),
+    "broker_transport_options": CONFIG.get_dict_from_b64_json(
+        "broker.transport_options", {"retry_policy": {"timeout": 5.0}}
+    ),
+    "result_backend_transport_options": CONFIG.get_dict_from_b64_json(
+        "result_backend.transport_options", {"retry_policy": {"timeout": 5.0}}
+    ),
+    "redis_retry_on_timeout": True,
 }
 
 # Sentry integration

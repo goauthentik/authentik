@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build website
-FROM --platform=${BUILDPLATFORM} docker.io/node:21 as web-builder
+FROM --platform=${BUILDPLATFORM} docker.io/node:22 as web-builder
 
 ENV NODE_ENV=production
 WORKDIR /static
@@ -17,7 +17,7 @@ COPY web .
 RUN npm run build-proxy
 
 # Stage 2: Build
-FROM --platform=${BUILDPLATFORM} docker.io/golang:1.22.2-bookworm AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/golang:1.22.3-bookworm AS builder
 
 ARG TARGETOS
 ARG TARGETARCH

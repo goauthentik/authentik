@@ -117,6 +117,8 @@ def run_migrations():
         )
     finally:
         release_lock(curr)
+        curr.close()
+        conn.close()
 
 
 if __name__ == "__main__":
