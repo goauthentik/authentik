@@ -1,8 +1,13 @@
 import { MessageLevel } from "@goauthentik/common/messages";
-import { BaseTaskButton } from "@goauthentik/elements/buttons/SpinnerButton/BaseTaskButton";
+import {
+    BaseTaskButton,
+    type IBaseTaskButton,
+} from "@goauthentik/elements/buttons/SpinnerButton/BaseTaskButton";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
 import { customElement, property } from "lit/decorators.js";
+
+type IActionButton = IBaseTaskButton & { apiRequest: () => Promise<unknown> };
 
 /**
  * A button associated with an event handler for loading data. Takes an asynchronous function as its
@@ -19,7 +24,7 @@ import { customElement, property } from "lit/decorators.js";
  */
 
 @customElement("ak-action-button")
-export class ActionButton extends BaseTaskButton {
+export class ActionButton extends BaseTaskButton implements IActionButton {
     /**
      * The command to run when the button is pressed. Must return a promise. If the promise is a
      * reject or throw, we process the content of the promise and deliver it to the Notification
@@ -27,7 +32,6 @@ export class ActionButton extends BaseTaskButton {
      *
      * @attr
      */
-
     @property({ attribute: false })
     apiRequest: () => Promise<unknown> = () => {
         throw new Error();
@@ -49,6 +53,12 @@ export class ActionButton extends BaseTaskButton {
             level: MessageLevel.error,
             message,
         });
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-action-button": ActionButton;
     }
 }
 

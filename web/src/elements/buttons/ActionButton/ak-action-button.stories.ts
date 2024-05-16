@@ -4,9 +4,9 @@ import { Meta } from "@storybook/web-components";
 import { TemplateResult, html } from "lit";
 
 import "./ak-action-button";
-import AKActionButton from "./ak-action-button";
+import { ActionButton } from "./ak-action-button";
 
-const metadata: Meta<AKActionButton> = {
+const metadata: Meta<ActionButton> = {
     title: "Elements / Action Button",
     component: "ak-action-button",
     parameters: {

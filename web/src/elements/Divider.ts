@@ -5,6 +5,14 @@ import { customElement } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+/**
+ * @class Divider
+ * @element ak-divider
+ *
+ * Divider is a horizontal rule, an in-page element to separate displayed items.
+ *
+ * @slot - HTML to display in-line in the middle of the horizontal rule.
+ */
 @customElement("ak-divider")
 export class Divider extends AKElement {
     static get styles(): CSSResult[] {
@@ -37,5 +45,11 @@ export class Divider extends AKElement {
 
     render(): TemplateResult {
         return html`<div class="separator"><slot></slot></div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-divider": Divider;
     }
 }
