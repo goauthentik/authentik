@@ -58,6 +58,6 @@ describe("ak-empty-state", () => {
         );
 
         const message = await $("ak-empty-state").$(">>>.pf-c-empty-state__body").$(">>>p");
-        await expect(message).toHaveText("Try again with a fucked filter");
+        await expect(message).toHaveText("Try again with a different filter");
     });
 });
