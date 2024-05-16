@@ -132,7 +132,7 @@ In the `argocd-secret` Secret, add the following value to the `data` field:
 dex.authentik.clientSecret: <base 64 encoded value of the Client Secret from the Provider above>
 ```
 
-If using helm, the above can be added to `configs.secret.extra` like so, securely substituting the string however you see fit:
+If using Helm, the above can be added to `configs.secret.extra` in your ArgoCD Helm `values.yaml` file as shown below, securely substituting the string however you see fit:
 
 ```yaml
 configs:
