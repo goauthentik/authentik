@@ -1,24 +1,53 @@
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFExpandableSection from "@patternfly/patternfly/components/ExpandableSection/expandable-section.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+export interface IExpand {
+    expanded?: boolean;
+    textOpen?: string;
+    textClosed?: string;
+}
+/**
+ * @class Expand
+ * @element ak-expand
+ *
+ * An `ak-expand` is used to hide cluttering details that a user may wish to reveal, such as the raw
+ * details of an alert or event.
+ *
+ * slot - The contents to be hidden or displayed.
+ */
 @customElement("ak-expand")
 export class Expand extends AKElement {
-    @property({ type: Boolean })
+    /**
+     * The state of the expanded content
+     *
+     * @attr
+     */
+    @property({ type: Boolean, reflect: true })
     expanded = false;
 
+    /**
+     * The text to display next to the open/close control when the accordion is closed.
+     *
+     * @attr
+     */
     @property()
     textOpen = msg("Show less");
 
+    /**
+     * The text to display next to the open/close control when the accordion is .
+     *
+     * @attr
+     */
     @property()
     textClosed = msg("Show more");
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [
             PFBase,
             PFExpandableSection,
@@ -30,7 +59,7 @@ export class Expand extends AKElement {
         ];
     }
 
-    render(): TemplateResult {
+    render() {
         return html`<div
             class="pf-c-expandable-section pf-m-display-lg pf-m-indented ${this.expanded
                 ? "pf-m-expanded"
@@ -55,5 +84,11 @@ export class Expand extends AKElement {
                 <slot></slot>
             </div>
         </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-expand": Expand;
     }
 }

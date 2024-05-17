@@ -97,6 +97,18 @@ const docsSidebar = {
                 },
                 {
                     type: "category",
+                    label: "Microsoft Entra ID Provider",
+                    link: {
+                        type: "doc",
+                        id: "providers/entra/index",
+                    },
+                    items: [
+                        "providers/entra/setup-entra",
+                        "providers/entra/add-entra-provider",
+                    ],
+                },
+                {
+                    type: "category",
                     label: "OAuth2 Provider",
                     link: {
                         type: "doc",

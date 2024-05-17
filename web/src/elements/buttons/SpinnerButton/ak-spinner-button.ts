@@ -1,7 +1,7 @@
 import { customElement } from "lit/decorators.js";
 import { property } from "lit/decorators.js";
 
-import { BaseTaskButton } from "./BaseTaskButton";
+import { BaseTaskButton, type IBaseTaskButton } from "./BaseTaskButton";
 
 /**
  * A button associated with an event handler for loading data. Takes an asynchronous function as its
@@ -17,8 +17,10 @@ import { BaseTaskButton } from "./BaseTaskButton";
  * @fires ak-button-reset - When the button is reset after the async process completes
  */
 
+type ISpinnerButton = IBaseTaskButton & { callAction: () => Promise<unknown> };
+
 @customElement("ak-spinner-button")
-export class SpinnerButton extends BaseTaskButton {
+export class SpinnerButton extends BaseTaskButton implements ISpinnerButton {
     /**
      * The command to run when the button is pressed. Must return a promise. We don't do anything
      * with that promise other than check if it's a resolve or reject, and rethrow the event after.
@@ -27,6 +29,12 @@ export class SpinnerButton extends BaseTaskButton {
      */
     @property({ type: Object, attribute: false })
     callAction!: () => Promise<unknown>;
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-spinner-button": SpinnerButton;
+    }
 }
 
 export default SpinnerButton;

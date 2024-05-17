@@ -7,7 +7,7 @@ import { TemplateResult, html, render as litRender } from "lit";
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import "./EmptyState.js";
+import "../EmptyState.js";
 
 const render = (body: TemplateResult) => {
     document.adoptedStyleSheets = [
