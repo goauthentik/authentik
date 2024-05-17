@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/web-components";
 
 import { html } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import { Alert, type IAlert } from "../Alert.js";
 import "../Alert.js";
@@ -17,10 +18,8 @@ const metadata: Meta<Alert> = {
     },
     argTypes: {
         inline: { control: "boolean" },
-        warning: { control: "boolean" },
-        info: { control: "boolean" },
-        success: { control: "boolean" },
-        danger: { control: "boolean" },
+        level: { control: "text" },
+        icon: { control: "text" },
         // @ts-ignore
         message: { control: "text" },
     },
@@ -31,15 +30,11 @@ export default metadata;
 export const DefaultStory: StoryObj = {
     args: {
         inline: false,
-        warning: false,
-        info: false,
-        success: false,
-        danger: false,
         message: "You should be alarmed.",
     },
 
     // @ts-ignore
-    render: ({ inline, warning, info, success, danger, message }: IAlertForTesting) => {
+    render: ({ inline, level, icon, message }: IAlertForTesting) => {
         return html` <div style="background-color: #f0f0f0; padding: 1rem;">
             <style>
                 ak-alert {
@@ -48,13 +43,7 @@ export const DefaultStory: StoryObj = {
                     max-width: 32rem;
                 }
             </style>
-            <ak-alert
-                ?inline=${inline}
-                ?warning=${warning}
-                ?info=${info}
-                ?success=${success}
-                ?danger=${danger}
-            >
+            <ak-alert level=${ifDefined(level)} ?inline=${inline} icon=${ifDefined(icon)}>
                 <p>${message}</p>
             </ak-alert>
         </div>`;
@@ -63,15 +52,18 @@ export const DefaultStory: StoryObj = {
 
 export const SuccessAlert = {
     ...DefaultStory,
-    args: { ...DefaultStory, ...{ success: true, message: "He's a tribute to your genius!" } },
+    args: { ...DefaultStory, ...{ level: "success", message: "He's a tribute to your genius!" } },
 };
 
 export const InfoAlert = {
     ...DefaultStory,
-    args: { ...DefaultStory, ...{ info: true, message: "An octopus has tastebuds on its arms." } },
+    args: {
+        ...DefaultStory,
+        ...{ level: "info", icon: "fa-coffee", message: "It is time for coffee." },
+    },
 };
 
 export const DangerAlert = {
     ...DefaultStory,
-    args: { ...DefaultStory, ...{ danger: true, message: "Danger, Will Robinson!  Danger!" } },
+    args: { ...DefaultStory, ...{ level: "danger", message: "Danger, Will Robinson!  Danger!" } },
 };

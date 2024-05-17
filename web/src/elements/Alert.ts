@@ -7,19 +7,20 @@ import { classMap } from "lit/directives/class-map.js";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-export interface IAlert {
-    inline?: boolean;
-    warning?: boolean;
-    info?: boolean;
-    success?: boolean;
-    danger?: boolean;
-}
-
 export enum Level {
     Warning = "pf-m-warning",
     Info = "pf-m-info",
     Success = "pf-m-success",
     Danger = "pf-m-danger",
+}
+
+export const levelNames = ["warning", "info", "success", "danger"];
+export type Levels = (typeof levelNames)[number];
+
+export interface IAlert {
+    inline?: boolean;
+    icon?: string;
+    level?: string;
 }
 
 /**
@@ -41,60 +42,29 @@ export class Alert extends AKElement implements IAlert {
     inline = false;
 
     /**
-     * Fallback method of determining severity
+     * Method of determining severity
      *
      * @attr
      */
     @property()
-    level: Level = Level.Warning;
+    level: Level | Levels = Level.Warning;
 
     /**
-     * Highest severity level.
+     * Icon to display
      *
      * @attr
      */
-    @property({ type: Boolean })
-    danger = false;
-
-    /**
-     * Next severity level.
-     *
-     * @attr
-     */
-    @property({ type: Boolean })
-    warning = false;
-
-    /**
-     * Next severity level. The default severity level.
-     *
-     * @attr
-     */
-    @property({ type: Boolean })
-    success = false;
-
-    /**
-     * Lowest severity level.
-     *
-     * @attr
-     */
-    @property({ type: Boolean })
-    info = false;
+    @property()
+    icon = "fa-exclamation-circle";
 
     static get styles() {
         return [PFBase, PFAlert];
     }
 
     get classmap() {
-        const leveltags = ["danger", "warning", "success", "info"].filter(
-            // @ts-ignore
-            (level) => this[level] && this[level] === true,
-        );
-
-        if (leveltags.length > 1) {
-            console.warn("ak-alert has multiple levels defined");
-        }
-        const level = leveltags.length > 0 ? `pf-m-${leveltags[0]}` : this.level;
-
+        const level = levelNames.includes(this.level)
+            ? `pf-m-${this.level}`
+            : (this.level as string);
         return {
             "pf-c-alert": true,
             "pf-m-inline": this.inline,
@@ -105,7 +75,7 @@ export class Alert extends AKElement implements IAlert {
     render() {
         return html`<div class="${classMap(this.classmap)}">
             <div class="pf-c-alert__icon">
-                <i class="fas fa-exclamation-circle"></i>
+                <i class="fas ${this.icon}"></i>
             </div>
             <h4 class="pf-c-alert__title">
                 <slot></slot>

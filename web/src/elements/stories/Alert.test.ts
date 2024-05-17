@@ -16,14 +16,8 @@ describe("ak-alert", () => {
     });
 
     it("should render an alert with the attribute", async () => {
-        render(html`<ak-alert info>This is an alert</ak-alert>`, document.body);
+        render(html`<ak-alert level="info">This is an alert</ak-alert>`, document.body);
         await expect(await $("ak-alert").$(">>>div")).toHaveElementClass("pf-m-info");
-        await expect(await $("ak-alert").$(">>>.pf-c-alert__title")).toHaveText("This is an alert");
-    });
-
-    it("should render an alert with conflicting attributes in priority order", async () => {
-        render(html`<ak-alert danger warning>This is an alert</ak-alert>`, document.body);
-        await expect(await $("ak-alert").$(">>>div")).toHaveElementClass("pf-m-danger");
         await expect(await $("ak-alert").$(">>>.pf-c-alert__title")).toHaveText("This is an alert");
     });
 
