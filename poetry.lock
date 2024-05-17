@@ -2756,13 +2756,13 @@ dev = ["bumpver", "isort", "mypy", "pylint", "pytest", "yapf"]
 
 [[package]]
 name = "msgraph-sdk"
-version = "1.2.0"
+version = "1.4.0"
 description = "The Microsoft Graph Python SDK"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "msgraph-sdk-1.2.0.tar.gz", hash = "sha256:689eec74fcb5cb29446947e4761fa57edeeb3ec1dccd7975c44d12d8d9db9c4f"},
-    {file = "msgraph_sdk-1.2.0-py3-none-any.whl", hash = "sha256:4a9f706413c0a497cdfffd0b741122a5e73206333d566d115089cef9f4adadb7"},
+    {file = "msgraph_sdk-1.4.0-py3-none-any.whl", hash = "sha256:24f99082475ea129c3d45e44269bd64a7c6bfef8dda4f8ea692bbc9e47b71b78"},
+    {file = "msgraph_sdk-1.4.0.tar.gz", hash = "sha256:715907272c240e579d7669a690504488e25ae15fec904e2918c49ca328dc4a14"},
 ]
 
 [package.dependencies]
@@ -4080,13 +4080,13 @@ django-query = ["django (>=3.2)"]
 
 [[package]]
 name = "selenium"
-version = "4.20.0"
+version = "4.21.0"
 description = ""
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "selenium-4.20.0-py3-none-any.whl", hash = "sha256:b1d0c33b38ca27d0499183e48e1dd09ff26973481f5d3ef2983073813ae6588d"},
-    {file = "selenium-4.20.0.tar.gz", hash = "sha256:0bd564ee166980d419a8aaf4ac00289bc152afcf2eadca5efe8c8e36711853fd"},
+    {file = "selenium-4.21.0-py3-none-any.whl", hash = "sha256:4770ffe5a5264e609de7dc914be6b89987512040d5a8efb2abb181330d097993"},
+    {file = "selenium-4.21.0.tar.gz", hash = "sha256:650dbfa5159895ff00ad16e5ddb6ceecb86b90c7ed2012b3f041f64e6e4904fe"},
 ]
 
 [package.dependencies]
@@ -4098,13 +4098,13 @@ urllib3 = {version = ">=1.26,<3", extras = ["socks"]}
 
 [[package]]
 name = "sentry-sdk"
-version = "2.1.1"
+version = "2.2.0"
 description = "Python client for Sentry (https://sentry.io)"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "sentry_sdk-2.1.1-py2.py3-none-any.whl", hash = "sha256:99aeb78fb76771513bd3b2829d12613130152620768d00cd3e45ac00cb17950f"},
-    {file = "sentry_sdk-2.1.1.tar.gz", hash = "sha256:95d8c0bb41c8b0bc37ab202c2c4a295bb84398ee05f4cdce55051cd75b926ec1"},
+    {file = "sentry_sdk-2.2.0-py2.py3-none-any.whl", hash = "sha256:674f58da37835ea7447fe0e34c57b4a4277fad558b0a7cb4a6c83bcb263086be"},
+    {file = "sentry_sdk-2.2.0.tar.gz", hash = "sha256:70eca103cf4c6302365a9d7cf522e7ed7720828910eb23d43ada8e50d1ecda9d"},
 ]
 
 [package.dependencies]
