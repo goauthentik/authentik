@@ -94,45 +94,6 @@ At this point, enter a username and click **Save Search Attribute Settings and Q
 No additional authentik configuration needs to be configured. Follow the LDAP outpost instructions to create an LDAP outpost and configure access via the outpost
 
 ## OIDC Configuration
-
-### authentik Configuration
-
-To use the role claim within Jellyfin we will have to add a custom property. This is not needed but does allow admins to be set for SSO users automatically. It can also deny access if they don't have a role, but this should be done though authentik instead.
-
-1. In the Admin interface, go to **Customization** -> **Property Mappings**.
-2. Create a **Scope Mapping**.
-3. Assign these values:
-    - name: `Group Membership`
-    - scope name: `groups`
-    - description: `See which groups you belong to`
-    - expression: `return [group.name for group in user.ak_groups.all()]`
-
-![](./jellyfin_mapping.png)
-
-**Provider Settings**
-
-In authentik under **Providers**, create an OAuth2/OpenID Provider with these settings:
-
--   Name: `jellyfin`
--   Redirect URI: `https://jellyfin.company.com/sso/OID/redirect/authentik`
--   Signing Key: Select any available key
-
-For the Group Membership scope we just created go into **Advanced Protocol Settings** and add "Group Membership" to the **Scopes**.
-
-![](./jellyfin_scopes.png)
-
-Make sure to grab the Client ID and the Client Secret!
-
-:::note
-The last part of the URI is the name you use when making the provider in Jellyfin so make sure they are the same.
-:::
-
-**Application Settings**
-
-Create an application that uses `jellyfin`. Optionally apply access restrictions to the application.
-
-Set the launch URL to `https://jellyfin.company.com/sso/OID/start/authentik`
-
 ### Jellyfin Configuration
 
 1. Navigate to your Jellyfin installation and log in with the admin account or currently configured local admin.
@@ -193,3 +154,41 @@ a.raised.emby-button {
 :::note
 If you have problems check your logs which are under the **Administration** -> **Dashboard** then "logs" and will be near the bottom (most likely) with `Jellyfin.Plugin.SSO_Auth.` as the start of the lines you are looking for.
 :::
+
+### authentik Configuration
+
+To use the role claim within Jellyfin we will have to add a custom property. This is not needed but does allow admins to be set for SSO users automatically. It can also deny access if they don't have a role, but this should be done though authentik instead.
+
+1. In the Admin interface, go to **Customization** -> **Property Mappings**.
+2. Create a **Scope Mapping**.
+3. Assign these values:
+    - name: `Group Membership`
+    - scope name: `groups`
+    - description: `See which groups you belong to`
+    - expression: `return [group.name for group in user.ak_groups.all()]`
+
+![](./jellyfin_mapping.png)
+
+**Provider Settings**
+
+In authentik under **Providers**, create an OAuth2/OpenID Provider with these settings:
+
+-   Name: `jellyfin`
+-   Redirect URI: `https://jellyfin.company.com/sso/OID/redirect/authentik`
+-   Signing Key: Select any available key
+
+For the Group Membership scope we just created go into **Advanced Protocol Settings** and add "Group Membership" to the **Scopes**.
+
+![](./jellyfin_scopes.png)
+
+Make sure to grab the Client ID and the Client Secret!
+
+:::note
+The last part of the URI is the name you use when making the provider in Jellyfin so make sure they are the same.
+:::
+
+**Application Settings**
+
+Create an application that uses `jellyfin`. Optionally apply access restrictions to the application.
+
+Set the launch URL to `https://jellyfin.company.com/sso/OID/start/authentik`
