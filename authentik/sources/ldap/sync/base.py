@@ -50,6 +50,15 @@ class BaseLDAPSynchronizer:
         """UI name for the type of object this class synchronizes"""
         raise NotImplementedError
 
+    def get_unique_identifier(self, ldap_object: dict) -> str | None:
+        """Get unique identifier"""
+        attributes = ldap_object.get("attributes", {})
+        if self._source.object_uniqueness_field in attributes:
+            return flatten(attributes[self._source.object_uniqueness_field])
+        if self._source.object_uniqueness_field in ldap_object:
+            return flatten(ldap_object.get(self._source.object_uniqueness_field))
+        return None
+
     def sync_full(self):
         """Run full sync, this function should only be used in tests"""
         if not settings.TEST:  # noqa
@@ -137,20 +146,22 @@ class BaseLDAPSynchronizer:
                 cookie = None
             yield self._connection.response
 
-    def build_user_properties(self, user_dn: str, **kwargs) -> dict[str, Any]:
+    def build_user_properties(self, user_dn: str, uniq: str, **kwargs) -> dict[str, Any]:
         """Build attributes for User object based on property mappings."""
-        props = self._build_object_properties(user_dn, self._source.property_mappings, **kwargs)
+        props = self._build_object_properties(
+            user_dn, self._source.property_mappings, uniq, **kwargs
+        )
         props.setdefault("path", self._source.get_user_path())
         return props
 
-    def build_group_properties(self, group_dn: str, **kwargs) -> dict[str, Any]:
+    def build_group_properties(self, group_dn: str, uniq: str, **kwargs) -> dict[str, Any]:
         """Build attributes for Group object based on property mappings."""
         return self._build_object_properties(
-            group_dn, self._source.property_mappings_group, **kwargs
+            group_dn, self._source.property_mappings_group, uniq, **kwargs
         )
 
     def _build_object_properties(
-        self, object_dn: str, mappings: QuerySet, **kwargs
+        self, object_dn: str, mappings: QuerySet, uniq: str, **kwargs
     ) -> dict[str, dict[Any, Any]]:
         properties = {"attributes": {}}
         for mapping in mappings.all().select_subclasses():
@@ -185,10 +196,7 @@ class BaseLDAPSynchronizer:
                 ).save()
                 self._logger.warning("Mapping failed to evaluate", exc=exc, mapping=mapping)
                 continue
-        if self._source.object_uniqueness_field in kwargs:
-            properties["attributes"][LDAP_UNIQUENESS] = flatten(
-                kwargs.get(self._source.object_uniqueness_field)
-            )
+        properties["attributes"][LDAP_UNIQUENESS] = uniq
         properties["attributes"][LDAP_DISTINGUISHED_NAME] = object_dn
         return properties
 

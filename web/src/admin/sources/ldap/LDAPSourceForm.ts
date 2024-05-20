@@ -470,7 +470,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     >
                         <input
                             type="text"
-                            value="${this.instance?.objectUniquenessField || "objectSid"}"
+                            value="${this.instance?.objectUniquenessField || "entryDN"}"
                             class="pf-c-form-control"
                             required
                         />
