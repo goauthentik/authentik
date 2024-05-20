@@ -155,13 +155,13 @@ return user_matched
 
 Now bind this policy to the chosen enrollment and authentication flows for the Discord OAuth source.
 
-### Syncing discord roles to authentik groups
+### Syncing Discord roles to authentik groups
 
 :::info
 Ensure that the Discord OAuth source in 'Federation & Social login' has the additional `guilds.members.read` scopes added under the 'Protocol settings'.
 :::
 
-Create a new 'Expression Policy' with the content below, adjusting the variables where required:
+Create a new 'Expression Policy' with the content below, adjusting the variables where required.
 
 #### Sync on enrollment
 
@@ -286,7 +286,7 @@ return True
 
 Now bind this policy to the chosen authentication flows for the Discord OAuth source.
 
-### Store oauth info in attribute and create avatar attribute from discord avatar
+### Store OAuth info in attribute and create avatar attribute from Discord avatar
 
 :::info
 Ensure that the Discord OAuth source in 'Federation & Social login' has the additional `guilds.members.read` scopes added under the 'Protocol settings'.
