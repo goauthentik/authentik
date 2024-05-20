@@ -57,8 +57,7 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
                 raise StopSync(exc, obj, mapping) from exc
         if not raw_google_user:
             raise StopSync(ValueError("No user mappings configured"), obj)
-        if "primaryEmail" not in raw_google_user:
-            raw_google_user["primaryEmail"] = str(obj.email)
+        raw_google_user.setdefault("primaryEmail", str(obj.email))
         return delete_none_values(raw_google_user)
 
     def delete(self, obj: User):
