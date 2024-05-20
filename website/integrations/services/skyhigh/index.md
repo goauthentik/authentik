@@ -10,7 +10,6 @@ title: Skyhigh Security
 >
 > -- https://www.skyhighsecurity.com/en-us/about.html
 
-
 ## Multiple Integration Points
 
 Skyhigh has multiple points for SAML integration:
