@@ -176,7 +176,9 @@ from authentik.core.models import Group
 
 GUILD_ID = "<YOUR GUILD ID>"
 MAPPED_ROLES = {
-    "<Discord Role Id>": Group.objects.get_or_create(name="<Authentik Role Name>")[0],
+    "<Discord Role Id 1>": Group.objects.get_or_create(name="<Authentik Role Name 1>")[0],
+    "<Discord Role Id 2>": Group.objects.get_or_create(name="<Authentik Role Name 2>")[0],
+    # You can add mapped roles by copying the above line and adjusting to your needs
 }
 
 # Only change below here if you know what you are doing.
@@ -234,7 +236,9 @@ from authentik.core.models import Group
 
 GUILD_ID = "<YOUR GUILD ID>"
 MAPPED_ROLES = {
-    "<Discord Role Id>": Group.objects.get_or_create(name="<Authentik Role Name>")[0],
+    "<Discord Role Id 1>": Group.objects.get_or_create(name="<Authentik Role Name 1>")[0],
+    "<Discord Role Id 2>": Group.objects.get_or_create(name="<Authentik Role Name 2>")[0],
+    # You can add mapped roles by copying the above line and adjusting to your needs
 }
 
 # Only change below here if you know what you are doing.
@@ -293,7 +297,7 @@ Ensure that the Discord OAuth source in 'Federation & Social login' has the addi
 :::
 
 :::info
-In order to use the created attribute in authentik you will have to set authentik configuration arguments found at: https://goauthentik.io/docs/installation/configuration#authentik_avatars
+In order to use the created attribute in authentik you will have to set authentik configuration arguments found at: https://docs.goauthentik.io/docs/core/settings#avatars
 :::
 
 Create a new 'Expression Policy' with the content below, adjusting the variables where required:
