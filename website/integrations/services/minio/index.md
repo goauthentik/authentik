@@ -6,11 +6,9 @@ title: MinIO
 
 ## What is MinIO
 
-From https://en.wikipedia.org/wiki/MinIO
-
-:::note
-MinIO is an Amazon S3 compatible object storage suite capable of handling structured and unstructured data including log files, artifacts, backups, container images, photos and videos. The current maximum supported object size is 5TB.
-:::
+> MinIO is an Amazon S3 compatible object storage suite capable of handling structured and unstructured data including log files, artifacts, backups, container images, photos and videos. The current maximum supported object size is 5TB.
+>
+> -- https://en.wikipedia.org/wiki/MinIO
 
 ## Preparation
 
@@ -45,7 +43,7 @@ elif ak_is_group_member(request.user, name="Minio users"):
 return None
 ```
 
-Note that you can assign multiple policies to a user by returning a list, and returning `None` will map no policies to the user, resulting in no access to the MinIO instance. For more information on writing expressions, see [Expressions](../../../docs/property-mappings/expression) and [User](../../../docs/user-group/user#object-attributes) docs.
+Note that you can assign multiple policies to a user by returning a list, and returning `None` will map no policies to the user, resulting in no access to the MinIO instance. For more information on writing expressions, see [Expressions](../../../docs/property-mappings/expression) and [User](../../../docs/user-group-role/user/user_ref#object-properties) docs.
 
 ### Creating application and provider
 

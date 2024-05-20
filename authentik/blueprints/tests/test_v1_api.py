@@ -1,4 +1,5 @@
 """Test blueprints v1 api"""
+
 from json import loads
 from tempfile import NamedTemporaryFile, mkdtemp
 
@@ -43,6 +44,14 @@ class TestBlueprintsV1API(APITestCase):
                     "6871c0003f5c07be5c3316d9d4a08444bd8fed1b3f03294e51e44522"
                 ),
             )
+
+    def test_api_oci(self):
+        """Test validation with OCI path"""
+        res = self.client.post(
+            reverse("authentik_api:blueprintinstance-list"),
+            data={"name": "foo", "path": "oci://foo/bar"},
+        )
+        self.assertEqual(res.status_code, 201)
 
     def test_api_blank(self):
         """Test blank"""

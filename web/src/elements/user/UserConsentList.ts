@@ -1,11 +1,11 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -26,20 +26,21 @@ export class UserConsentList extends Table<UserConsent> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
     order = "-expires";
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Application`, "application"),
-            new TableColumn(t`Expires`, "expires"),
-            new TableColumn(t`Permissions`, "permissions"),
+            new TableColumn(msg("Application"), "application"),
+            new TableColumn(msg("Expires"), "expires"),
+            new TableColumn(msg("Permissions"), "permissions"),
         ];
     }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${t`Consent(s)`}
+            objectLabel=${msg("Consent(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: UserConsent) => {
                 return new CoreApi(DEFAULT_CONFIG).coreUserConsentUsedByList({
@@ -53,7 +54,7 @@ export class UserConsentList extends Table<UserConsent> {
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete`}
+                ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
     }
@@ -61,7 +62,10 @@ export class UserConsentList extends Table<UserConsent> {
     row(item: UserConsent): TemplateResult[] {
         return [
             html`${item.application.name}`,
-            html`${item.expires?.toLocaleString()}`,
+            html`${item.expires && item.expiring
+                ? html`<div>${getRelativeTime(item.expires)}</div>
+                      <small>${item.expires.toLocaleString()}</small>`
+                : msg("-")}`,
             html`${item.permissions || "-"}`,
         ];
     }

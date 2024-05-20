@@ -1,5 +1,7 @@
 import { AKElement } from "@goauthentik/elements/Base";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -38,7 +40,9 @@ export class Chip extends AKElement {
                               );
                           }}
                       >
-                          <i class="fas fa-times" aria-hidden="true"></i>
+                          <pf-tooltip position="top" content=${msg("Remove item")}>
+                              <i class="fas fa-times" aria-hidden="true"></i>
+                          </pf-tooltip>
                       </button>`
                     : html``}
             </div>

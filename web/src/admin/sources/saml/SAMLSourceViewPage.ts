@@ -2,15 +2,16 @@ import "@goauthentik/admin/policies/BoundPoliciesList";
 import "@goauthentik/admin/sources/saml/SAMLSourceForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/events/ObjectChangelog";
 import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -23,7 +24,12 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { SAMLMetadata, SAMLSource, SourcesApi } from "@goauthentik/api";
+import {
+    RbacPermissionsAssignedByUsersListModelEnum,
+    SAMLMetadata,
+    SAMLSource,
+    SourcesApi,
+} from "@goauthentik/api";
 
 @customElement("ak-source-saml-view")
 export class SAMLSourceViewPage extends AKElement {
@@ -63,7 +69,7 @@ export class SAMLSourceViewPage extends AKElement {
         return html`<ak-tabs>
             <section
                 slot="page-overview"
-                data-tab-title="${t`Overview`}"
+                data-tab-title="${msg("Overview")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
@@ -72,7 +78,9 @@ export class SAMLSourceViewPage extends AKElement {
                             <dl class="pf-c-description-list pf-m-3-col-on-lg">
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text">${t`Name`}</span>
+                                        <span class="pf-c-description-list__text"
+                                            >${msg("Name")}</span
+                                        >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
@@ -83,7 +91,7 @@ export class SAMLSourceViewPage extends AKElement {
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
-                                            >${t`SSO URL`}</span
+                                            >${msg("SSO URL")}</span
                                         >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
@@ -95,7 +103,7 @@ export class SAMLSourceViewPage extends AKElement {
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
-                                            >${t`SLO URL`}</span
+                                            >${msg("SLO URL")}</span
                                         >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
@@ -107,7 +115,7 @@ export class SAMLSourceViewPage extends AKElement {
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
-                                            >${t`Issuer`}</span
+                                            >${msg("Issuer")}</span
                                         >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
@@ -120,12 +128,12 @@ export class SAMLSourceViewPage extends AKElement {
                         </div>
                         <div class="pf-c-card__footer">
                             <ak-forms-modal>
-                                <span slot="submit"> ${t`Update`} </span>
-                                <span slot="header"> ${t`Update SAML Source`} </span>
+                                <span slot="submit"> ${msg("Update")} </span>
+                                <span slot="header"> ${msg("Update SAML Source")} </span>
                                 <ak-source-saml-form slot="form" .instancePk=${this.source.slug}>
                                 </ak-source-saml-form>
                                 <button slot="trigger" class="pf-c-button pf-m-primary">
-                                    ${t`Edit`}
+                                    ${msg("Edit")}
                                 </button>
                             </ak-forms-modal>
                         </div>
@@ -134,7 +142,7 @@ export class SAMLSourceViewPage extends AKElement {
             </section>
             <section
                 slot="page-changelog"
-                data-tab-title="${t`Changelog`}"
+                data-tab-title="${msg("Changelog")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
@@ -152,7 +160,7 @@ export class SAMLSourceViewPage extends AKElement {
             </section>
             <section
                 slot="page-metadata"
-                data-tab-title="${t`Metadata`}"
+                data-tab-title="${msg("Metadata")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
                 @activate=${() => {
                     new SourcesApi(DEFAULT_CONFIG)
@@ -168,7 +176,7 @@ export class SAMLSourceViewPage extends AKElement {
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                         <div class="pf-c-card__body">
                             <ak-codemirror
-                                mode="xml"
+                                mode=${CodeMirrorMode.XML}
                                 ?readOnly=${true}
                                 value="${ifDefined(this.metadata?.metadata)}"
                             ></ak-codemirror>
@@ -179,7 +187,7 @@ export class SAMLSourceViewPage extends AKElement {
                                 target="_blank"
                                 href=${ifDefined(this.metadata?.downloadUrl)}
                             >
-                                ${t`Download`}
+                                ${msg("Download")}
                             </a>
                         </div>
                     </div>
@@ -187,14 +195,16 @@ export class SAMLSourceViewPage extends AKElement {
             </section>
             <div
                 slot="page-policy-bindings"
-                data-tab-title="${t`Policy Bindings`}"
+                data-tab-title="${msg("Policy Bindings")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                         <div class="pf-c-card__title">
-                            ${t`These bindings control which users can access this source.
-                        You can only use policies here as access is checked before the user is authenticated.`}
+                            ${msg(
+                                `These bindings control which users can access this source.
+            You can only use policies here as access is checked before the user is authenticated.`,
+                            )}
                         </div>
                         <div class="pf-c-card__body">
                             <ak-bound-policies-list .target=${this.source.pk} ?policyOnly=${true}>
@@ -203,6 +213,12 @@ export class SAMLSourceViewPage extends AKElement {
                     </div>
                 </div>
             </div>
+            <ak-rbac-object-permission-page
+                slot="page-permissions"
+                data-tab-title="${msg("Permissions")}"
+                model=${RbacPermissionsAssignedByUsersListModelEnum.SourcesSamlSamlsource}
+                objectPk=${this.source.pk}
+            ></ak-rbac-object-permission-page>
         </ak-tabs>`;
     }
 }

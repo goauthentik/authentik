@@ -1,9 +1,7 @@
 import { globalAK } from "@goauthentik/common/global";
-import { autoDetectLanguage } from "@goauthentik/common/ui/locale";
-import { Interface } from "@goauthentik/elements/Base";
+import { Interface } from "@goauthentik/elements/Interface";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -13,8 +11,6 @@ import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { UiThemeEnum } from "@goauthentik/api";
-
-autoDetectLanguage();
 
 @customElement("ak-loading")
 export class Loading extends Interface {
@@ -33,7 +29,7 @@ export class Loading extends Interface {
     }
 
     async getTheme(): Promise<UiThemeEnum> {
-        return globalAK()?.tenant.uiTheme || UiThemeEnum.Automatic;
+        return globalAK()?.brand.uiTheme || UiThemeEnum.Automatic;
     }
 
     render(): TemplateResult {
@@ -45,13 +41,13 @@ export class Loading extends Interface {
                     <span
                         class="pf-c-spinner pf-m-xl"
                         role="progressbar"
-                        aria-valuetext="${t`Loading...`}"
+                        aria-valuetext="${msg("Loading...")}"
                     >
                         <span class="pf-c-spinner__clipper"></span>
                         <span class="pf-c-spinner__lead-ball"></span>
                         <span class="pf-c-spinner__tail-ball"></span>
                     </span>
-                    <h1 class="pf-c-title pf-m-lg">${t`Loading...`}</h1>
+                    <h1 class="pf-c-title pf-m-lg">${msg("Loading...")}</h1>
                 </div>
             </div>
         </section>`;

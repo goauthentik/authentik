@@ -14,5 +14,3 @@ const (
 	HeaderAuthentikRemoteIP     = "X-authentik-remote-ip"
 	HeaderAuthentikOutpostToken = "X-authentik-outpost-token"
 )
-
-const CodePasswordSeparator = ";"

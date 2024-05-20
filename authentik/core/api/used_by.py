@@ -1,4 +1,5 @@
 """used_by mixin"""
+
 from enum import Enum
 from inspect import getmembers
 
@@ -31,7 +32,7 @@ class UsedBySerializer(PassiveSerializer):
     model_name = CharField()
     pk = CharField()
     name = CharField()
-    action = ChoiceField(choices=[(x.name, x.name) for x in DeleteAction])
+    action = ChoiceField(choices=[(x.value, x.name) for x in DeleteAction])
 
 
 def get_delete_action(manager: Manager) -> str:
@@ -53,7 +54,6 @@ class UsedByMixin:
         responses={200: UsedBySerializer(many=True)},
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
-    # pylint: disable=too-many-locals
     def used_by(self, request: Request, *args, **kwargs) -> Response:
         """Get a list of all objects that use this object"""
         model: Model = self.get_object()
@@ -73,6 +73,11 @@ class UsedByMixin:
             # but so we only apply them once, have a simple flag for the first object
             first_object = True
 
+            # TODO: This will only return the used-by references that the user can see
+            # Either we have to leak model information here to not make the list
+            # useless if the user doesn't have all permissions, or we need to double
+            # query and check if there is a difference between modes the user can see
+            # and can't see and add a warning
             for obj in get_objects_for_user(
                 request.user, f"{app}.view_{model_name}", manager
             ).all():

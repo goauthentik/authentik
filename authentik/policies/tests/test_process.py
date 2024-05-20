@@ -1,4 +1,5 @@
 """policy process tests"""
+
 from django.contrib.auth.models import AnonymousUser
 from django.core.cache import cache
 from django.test import RequestFactory, TestCase
@@ -132,10 +133,11 @@ class TestPolicyProcess(TestCase):
         )
         binding = PolicyBinding(policy=policy, target=Application.objects.create(name="test"))
 
-        http_request = self.factory.get(reverse("authentik_core:impersonate-end"))
+        http_request = self.factory.get(reverse("authentik_api:user-impersonate-end"))
         http_request.user = self.user
-        http_request.resolver_match = resolve(reverse("authentik_core:impersonate-end"))
+        http_request.resolver_match = resolve(reverse("authentik_api:user-impersonate-end"))
 
+        password = generate_id()
         request = PolicyRequest(self.user)
         request.set_http_request(http_request)
         request.context = {
@@ -144,7 +146,7 @@ class TestPolicyProcess(TestCase):
                 "list": ["foo", "bar"],
                 "tuple": ("foo", "bar"),
                 "set": {"foo", "bar"},
-                "password": generate_id(),
+                "password": password,
             }
         }
         response = PolicyProcess(binding, request, None).execute()

@@ -1,6 +1,7 @@
 """Stage Markers"""
+
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from django.http.request import HttpRequest
 from structlog.stdlib import get_logger
@@ -24,13 +25,13 @@ class StageMarker:
         plan: "FlowPlan",
         binding: FlowStageBinding,
         http_request: HttpRequest,
-    ) -> Optional[FlowStageBinding]:
+    ) -> FlowStageBinding | None:
         """Process callback for this marker. This should be overridden by sub-classes.
         If a stage should be removed, return None."""
         return binding
 
 
-@dataclass
+@dataclass(slots=True)
 class ReevaluateMarker(StageMarker):
     """Reevaluate Marker, forces stage's policies to be evaluated again."""
 
@@ -41,7 +42,7 @@ class ReevaluateMarker(StageMarker):
         plan: "FlowPlan",
         binding: FlowStageBinding,
         http_request: HttpRequest,
-    ) -> Optional[FlowStageBinding]:
+    ) -> FlowStageBinding | None:
         """Re-evaluate policies bound to stage, and if they fail, remove from plan"""
         from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 

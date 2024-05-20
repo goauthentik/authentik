@@ -1,5 +1,6 @@
 """authentik OAuth2 OpenID Userinfo views"""
-from typing import Any, Optional
+
+from typing import Any
 
 from deepmerge import always_merger
 from django.http import HttpRequest, HttpResponse
@@ -10,7 +11,7 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
-from authentik.core.exceptions import PropertyMappingExpressionException
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import PermissionDict
 from authentik.providers.oauth2.constants import (
@@ -38,12 +39,16 @@ class UserInfoView(View):
     """Create a dictionary with all the requested claims about the End-User.
     See: http://openid.net/specs/openid-connect-core-1_0.html#UserInfoResponse"""
 
-    token: Optional[RefreshToken]
+    token: RefreshToken | None
 
-    def get_scope_descriptions(self, scopes: list[str]) -> list[PermissionDict]:
+    def get_scope_descriptions(
+        self, scopes: list[str], provider: OAuth2Provider
+    ) -> list[PermissionDict]:
         """Get a list of all Scopes's descriptions"""
         scope_descriptions = []
-        for scope in ScopeMapping.objects.filter(scope_name__in=scopes).order_by("scope_name"):
+        for scope in ScopeMapping.objects.filter(scope_name__in=scopes, provider=provider).order_by(
+            "scope_name"
+        ):
             scope_descriptions.append(PermissionDict(id=scope.scope_name, name=scope.description))
         # GitHub Compatibility Scopes are handled differently, since they required custom paths
         # Hence they don't exist as Scope objects
@@ -96,8 +101,8 @@ class UserInfoView(View):
                     value=value,
                 )
                 continue
-            LOGGER.debug("updated scope", scope=scope)
             always_merger.merge(final_claims, value)
+            LOGGER.debug("updated scope", scope=scope)
         return final_claims
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
@@ -116,8 +121,9 @@ class UserInfoView(View):
         """Handle GET Requests for UserInfo"""
         if not self.token:
             return HttpResponseBadRequest()
-        claims = self.get_claims(self.token.provider, self.token)
-        claims["sub"] = self.token.id_token.sub
+        claims = {}
+        claims.setdefault("sub", self.token.id_token.sub)
+        claims.update(self.get_claims(self.token.provider, self.token))
         if self.token.id_token.nonce:
             claims["nonce"] = self.token.id_token.nonce
         response = TokenResponse(claims)

@@ -1,15 +1,14 @@
 package ldap
 
 import (
-	"errors"
 	"net"
-	"strings"
+	"time"
 
+	"beryju.io/ldap"
 	"github.com/getsentry/sentry-go"
-	goldap "github.com/go-ldap/ldap/v3"
-	"github.com/nmcclain/ldap"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/metrics"
 	"goauthentik.io/internal/outpost/ldap/search"
 )
@@ -23,8 +22,8 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 			"outpost_name": ls.ac.Outpost.Name,
 			"type":         "search",
 			"app":          selectedApp,
-		}).Observe(float64(span.EndTime.Sub(span.StartTime)))
-		req.Log().WithField("took-ms", span.EndTime.Sub(span.StartTime).Milliseconds()).Info("Search request")
+		}).Observe(float64(span.EndTime.Sub(span.StartTime)) / float64(time.Second))
+		req.Log().WithField("attributes", searchReq.Attributes).WithField("took-ms", span.EndTime.Sub(span.StartTime).Milliseconds()).Info("Search request")
 	}()
 
 	defer func() {
@@ -36,50 +35,43 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 		sentry.CaptureException(err.(error))
 	}()
 
-	if searchReq.BaseDN == "" {
-        return ldap.ServerSearchResult{
-            Entries: []*ldap.Entry{
-                {
-                    DN: "",
-                    Attributes: []*ldap.EntryAttribute{
-                        {
-                            Name:   "objectClass",
-                            Values: []string{"top", "OpenLDAProotDSE"},
-                        },
-                        {
-                            Name:   "subschemaSubentry",
-                            Values: []string{"cn=subschema"},
-                        },
-                    },
-                },
-            },
-            Referrals: []string{}, Controls: []ldap.Control{}, ResultCode: ldap.LDAPResultSuccess,
-        }, nil
+	selectedProvider := ls.providerForRequest(req)
+	if selectedProvider == nil {
+		return ls.fallbackRootDSE(req)
 	}
-	bd, err := goldap.ParseDN(strings.ToLower(searchReq.BaseDN))
-	if err != nil {
-		req.Log().WithError(err).Info("failed to parse basedn")
-		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, errors.New("invalid DN")
-	}
-	for _, provider := range ls.providers {
-		providerBase, _ := goldap.ParseDN(strings.ToLower(provider.BaseDN))
-		if providerBase.AncestorOf(bd) || providerBase.Equal(bd) {
-			selectedApp = provider.GetAppSlug()
-			return provider.searcher.Search(req)
-		}
-	}
-    return ldap.ServerSearchResult{
+	selectedApp = selectedProvider.GetAppSlug()
+	result, err := ls.searchRoute(req, selectedProvider)
+	return result, err
+}
+
+func (ls *LDAPServer) fallbackRootDSE(req *search.Request) (ldap.ServerSearchResult, error) {
+	req.Log().Trace("returning fallback Root DSE")
+	return ldap.ServerSearchResult{
 		Entries: []*ldap.Entry{
 			{
 				DN: "",
 				Attributes: []*ldap.EntryAttribute{
 					{
 						Name:   "objectClass",
-						Values: []string{"top", "OpenLDAProotDSE"},
+						Values: []string{constants.OCTop},
+					},
+					{
+						Name:   "entryDN",
+						Values: []string{""},
 					},
 					{
 						Name:   "subschemaSubentry",
 						Values: []string{"cn=subschema"},
+					},
+					{
+						Name:   "namingContexts",
+						Values: []string{},
+					},
+					{
+						Name: "description",
+						Values: []string{
+							"This LDAP server requires an authenticated session.",
+						},
 					},
 				},
 			},

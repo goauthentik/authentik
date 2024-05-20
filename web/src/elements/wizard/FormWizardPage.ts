@@ -1,8 +1,7 @@
 import { Form } from "@goauthentik/elements/forms/Form";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { customElement } from "lit/decorators.js";
 
 /**
@@ -23,11 +22,11 @@ export class FormWizardPage extends WizardPage {
     nextCallback = async () => {
         const form = this.querySelector<Form<unknown>>("*");
         if (!form) {
-            return Promise.reject(t`No form found`);
+            return Promise.reject(msg("No form found"));
         }
         const formPromise = form.submit(new Event("submit"));
         if (!formPromise) {
-            return Promise.reject(t`Form didn't return a promise for submitting`);
+            return Promise.reject(msg("Form didn't return a promise for submitting"));
         }
         return formPromise
             .then((data) => {

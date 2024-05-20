@@ -1,19 +1,19 @@
 import "@goauthentik/admin/groups/GroupForm";
-import "@goauthentik/admin/users/RelatedUserList";
+import "@goauthentik/admin/groups/RelatedUserList";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import "@goauthentik/components/ak-status-label";
+import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
-import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/events/ObjectChangelog";
 import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -21,13 +21,14 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
-import { CoreApi, Group } from "@goauthentik/api";
+import { CoreApi, Group, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
 @customElement("ak-group-view")
 export class GroupViewPage extends AKElement {
@@ -36,6 +37,7 @@ export class GroupViewPage extends AKElement {
         new CoreApi(DEFAULT_CONFIG)
             .coreGroupsRetrieve({
                 groupUuid: id,
+                includeUsers: false,
             })
             .then((group) => {
                 this.group = group;
@@ -52,6 +54,7 @@ export class GroupViewPage extends AKElement {
             PFButton,
             PFDisplay,
             PFGrid,
+            PFList,
             PFContent,
             PFCard,
             PFDescriptionList,
@@ -70,7 +73,7 @@ export class GroupViewPage extends AKElement {
     render(): TemplateResult {
         return html`<ak-page-header
                 icon="pf-icon pf-icon-users"
-                header=${t`Group ${this.group?.name || ""}`}
+                header=${msg(str`Group ${this.group?.name || ""}`)}
                 description=${this.group?.name || ""}
             >
             </ak-page-header>
@@ -84,19 +87,21 @@ export class GroupViewPage extends AKElement {
         return html`<ak-tabs>
             <section
                 slot="page-overview"
-                data-tab-title="${t`Overview`}"
+                data-tab-title="${msg("Overview")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
                     <div
                         class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
                     >
-                        <div class="pf-c-card__title">${t`Group Info`}</div>
+                        <div class="pf-c-card__title">${msg("Group Info")}</div>
                         <div class="pf-c-card__body">
-                            <dl class="pf-c-description-list pf-m-2-col">
+                            <dl class="pf-c-description-list">
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text">${t`Name`}</span>
+                                        <span class="pf-c-description-list__text"
+                                            >${msg("Name")}</span
+                                        >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
@@ -107,16 +112,35 @@ export class GroupViewPage extends AKElement {
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
-                                            >${t`Superuser`}</span
+                                            >${msg("Superuser")}</span
                                         >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
-                                            <ak-label
-                                                color=${this.group.isSuperuser
-                                                    ? PFColor.Green
-                                                    : PFColor.Orange}
-                                            ></ak-label>
+                                            <ak-status-label
+                                                type="info"
+                                                ?good=${this.group.isSuperuser}
+                                            ></ak-status-label>
+                                        </div>
+                                    </dd>
+                                </div>
+                                <div class="pf-c-description-list__group">
+                                    <dt class="pf-c-description-list__term">
+                                        <span class="pf-c-description-list__text"
+                                            >${msg("Roles")}</span
+                                        >
+                                    </dt>
+                                    <dd class="pf-c-description-list__description">
+                                        <div class="pf-c-description-list__text">
+                                            <ul class="pf-c-list">
+                                                ${this.group.rolesObj.map((role) => {
+                                                    return html`<li>
+                                                        <a href=${`#/identity/roles/${role.pk}`}
+                                                            >${role.name}
+                                                        </a>
+                                                    </li>`;
+                                                })}
+                                            </ul>
                                         </div>
                                     </dd>
                                 </div>
@@ -124,12 +148,12 @@ export class GroupViewPage extends AKElement {
                         </div>
                         <div class="pf-c-card__footer">
                             <ak-forms-modal>
-                                <span slot="submit"> ${t`Update`} </span>
-                                <span slot="header"> ${t`Update Group`} </span>
+                                <span slot="submit"> ${msg("Update")} </span>
+                                <span slot="header"> ${msg("Update Group")} </span>
                                 <ak-group-form slot="form" .instancePk=${this.group.pk}>
                                 </ak-group-form>
                                 <button slot="trigger" class="pf-m-primary pf-c-button">
-                                    ${t`Edit`}
+                                    ${msg("Edit")}
                                 </button>
                             </ak-forms-modal>
                         </div>
@@ -137,13 +161,15 @@ export class GroupViewPage extends AKElement {
                     <div
                         class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
                     >
-                        <div class="pf-c-card__title">${t`Notes`}</div>
+                        <div class="pf-c-card__title">${msg("Notes")}</div>
                         <div class="pf-c-card__body">
                             ${Object.hasOwn(this.group?.attributes || {}, "notes")
                                 ? html`${this.group.attributes?.notes}`
                                 : html`
                                       <p>
-                                          ${t`Edit the notes attribute of this group to add notes here.`}
+                                          ${msg(
+                                              "Edit the notes attribute of this group to add notes here.",
+                                          )}
                                       </p>
                                   `}
                         </div>
@@ -151,7 +177,7 @@ export class GroupViewPage extends AKElement {
                     <div
                         class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
                     >
-                        <div class="pf-c-card__title">${t`Changelog`}</div>
+                        <div class="pf-c-card__title">${msg("Changelog")}</div>
                         <div class="pf-c-card__body">
                             <ak-object-changelog
                                 targetModelPk=${this.group.pk}
@@ -165,7 +191,7 @@ export class GroupViewPage extends AKElement {
             </section>
             <section
                 slot="page-users"
-                data-tab-title="${t`Users`}"
+                data-tab-title="${msg("Users")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
@@ -174,6 +200,12 @@ export class GroupViewPage extends AKElement {
                     </div>
                 </div>
             </section>
+            <ak-rbac-object-permission-page
+                slot="page-permissions"
+                data-tab-title="${msg("Permissions")}"
+                model=${RbacPermissionsAssignedByUsersListModelEnum.CoreGroup}
+                objectPk=${this.group.pk}
+            ></ak-rbac-object-permission-page>
         </ak-tabs>`;
     }
 }

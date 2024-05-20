@@ -6,11 +6,9 @@ title: pgAdmin
 
 ## What is pgAdmin
 
-From https://www.pgadmin.org/
-
-:::note
-pgAdmin is a management tool for PostgreSQL and derivative relational databases such as EnterpriseDB's EDB Advanced Server. It may be run either as a web or desktop application.
-:::
+> pgAdmin is a management tool for PostgreSQL and derivative relational databases such as EnterpriseDB's EDB Advanced Server. It may be run either as a web or desktop application.
+>
+> -- https://www.pgadmin.org/
 
 :::note
 This is based on authentik 2022.3.3 and pgAdmin4 6.19

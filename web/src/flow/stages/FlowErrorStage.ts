@@ -2,8 +2,7 @@ import "@goauthentik/elements/EmptyState";
 import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -28,8 +27,9 @@ export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeR
                 pre {
                     overflow-x: scroll;
                     max-width: calc(
-                        35rem - var(--pf-c-login__main-body--PaddingRight) -
-                            var(--pf-c-login__main-body--PaddingRight)
+                        35rem - var(--pf-c-login__main-body--PaddingRight) - var(
+                                --pf-c-login__main-body--PaddingRight
+                            )
                     );
                 }
             `,
@@ -38,29 +38,34 @@ export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeR
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
+            </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
             </header>
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form">
-                    <h3 class="pf-c-title pf-m-3xl">
-                        ${this.challenge?.error
-                            ? this.challenge.error
-                            : t`Something went wrong! Please try again later.`}
-                    </h3>
-                    ${this.challenge?.traceback
-                        ? html`<div class="pf-c-form__group">
-                              <pre class="ak-exception">${this.challenge.traceback}</pre>
-                          </div>`
-                        : html``}
-                    ${this.challenge?.requestId
-                        ? html`<div class="pf-c-form__group">
-                              <p>${t`Request ID`}</p>
-                              <code>${this.challenge.requestId}</code>
-                          </div>`
-                        : html``}
+                    <ak-empty-state
+                        icon="fa-times"
+                        header=${this.challenge.error
+                            ? html`${this.challenge.error}`
+                            : msg("Something went wrong! Please try again later.")}
+                    >
+                        <div slot="body">
+                            ${this.challenge?.traceback
+                                ? html`<div class="pf-c-form__group">
+                                      <pre class="ak-exception">${this.challenge.traceback}</pre>
+                                  </div>`
+                                : html``}
+                            ${this.challenge?.requestId
+                                ? html`<div class="pf-c-form__group">
+                                      <p>${msg("Request ID")}</p>
+                                      <code>${this.challenge.requestId}</code>
+                                  </div>`
+                                : html``}
+                        </div>
+                    </ak-empty-state>
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">

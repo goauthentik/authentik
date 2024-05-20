@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   postgresql:
-    image: docker.io/library/postgres:${PSQL_TAG:-12}
+    image: docker.io/library/postgres:${PSQL_TAG:-16}
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:

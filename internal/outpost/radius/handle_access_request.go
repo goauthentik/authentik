@@ -15,16 +15,15 @@ func (rs *RadiusServer) Handle_AccessRequest(w radius.ResponseWriter, r *RadiusR
 	fe := flow.NewFlowExecutor(r.Context(), r.pi.flowSlug, r.pi.s.ac.Client.GetConfig(), log.Fields{
 		"username":  username,
 		"client":    r.RemoteAddr(),
-		"requestId": r.ID,
+		"requestId": r.ID(),
 	})
 	fe.DelegateClientIP(r.RemoteAddr())
 	fe.Params.Add("goauthentik.io/outpost/radius", "true")
 
 	fe.Answers[flow.StageIdentification] = username
-	fe.Answers[flow.StagePassword] = rfc2865.UserPassword_GetString(r.Packet)
+	fe.SetSecrets(rfc2865.UserPassword_GetString(r.Packet), r.pi.MFASupport)
 
 	passed, err := fe.Execute()
-
 	if err != nil {
 		r.Log().WithField("username", username).WithError(err).Warning("failed to execute flow")
 		metrics.RequestsRejected.With(prometheus.Labels{

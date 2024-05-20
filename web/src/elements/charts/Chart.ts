@@ -1,4 +1,5 @@
 import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import {
@@ -18,12 +19,11 @@ import { ArcElement, BarElement } from "chart.js";
 import { LinearScale, TimeScale } from "chart.js";
 import "chartjs-adapter-moment";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
 
-import { UiThemeEnum } from "@goauthentik/api";
+import { ResponseError, UiThemeEnum } from "@goauthentik/api";
 
 Chart.register(Legend, Tooltip);
 Chart.register(LineController, BarController, DoughnutController);
@@ -34,7 +34,12 @@ export const FONT_COLOUR_DARK_MODE = "#fafafa";
 export const FONT_COLOUR_LIGHT_MODE = "#151515";
 
 export class RGBAColor {
-    constructor(public r: number, public g: number, public b: number, public a: number = 1) {}
+    constructor(
+        public r: number,
+        public g: number,
+        public b: number,
+        public a: number = 1,
+    ) {}
     toString(): string {
         return `rgba(${this.r}, ${this.g}, ${this.b}, ${this.a})`;
     }
@@ -60,6 +65,9 @@ export abstract class AKChart<T> extends AKElement {
 
     @state()
     chart?: Chart;
+
+    @state()
+    error?: ResponseError;
 
     @property()
     centerText?: string;
@@ -125,19 +133,23 @@ export abstract class AKChart<T> extends AKElement {
     }
 
     firstUpdated(): void {
-        this.apiRequest().then((r) => {
-            const canvas = this.shadowRoot?.querySelector<HTMLCanvasElement>("canvas");
-            if (!canvas) {
-                console.warn("Failed to get canvas element");
-                return;
-            }
-            const ctx = canvas.getContext("2d");
-            if (!ctx) {
-                console.warn("failed to get 2d context");
-                return;
-            }
-            this.chart = this.configureChart(r, ctx);
-        });
+        this.apiRequest()
+            .then((r) => {
+                const canvas = this.shadowRoot?.querySelector<HTMLCanvasElement>("canvas");
+                if (!canvas) {
+                    console.warn("Failed to get canvas element");
+                    return;
+                }
+                const ctx = canvas.getContext("2d");
+                if (!ctx) {
+                    console.warn("failed to get 2d context");
+                    return;
+                }
+                this.chart = this.configureChart(r, ctx);
+            })
+            .catch((exc: ResponseError) => {
+                this.error = exc;
+            });
     }
 
     getChartType(): string {
@@ -150,14 +162,13 @@ export abstract class AKChart<T> extends AKElement {
 
     timeTickCallback(tickValue: string | number, index: number, ticks: Tick[]): string {
         const valueStamp = ticks[index];
-        const delta = Date.now() - valueStamp.value;
-        const ago = Math.round(delta / 1000 / 3600);
-        return t`${ago} hour(s) ago`;
+        return getRelativeTime(new Date(valueStamp.value));
     }
 
     getOptions(): ChartOptions {
         return {
             maintainAspectRatio: false,
+            responsive: true,
             scales: {
                 x: {
                     type: "time",
@@ -200,7 +211,15 @@ export abstract class AKChart<T> extends AKElement {
     render(): TemplateResult {
         return html`
             <div class="container">
-                ${this.chart ? html`` : html`<ak-empty-state ?loading="${true}"></ak-empty-state>`}
+                ${this.error
+                    ? html`
+                          <ak-empty-state header="${msg("Failed to fetch data.")}" icon="fa-times">
+                              <p slot="body">${this.error.response.statusText}</p>
+                          </ak-empty-state>
+                      `
+                    : html`${this.chart
+                          ? html``
+                          : html`<ak-empty-state ?loading="${true}"></ak-empty-state>`}`}
                 ${this.centerText ? html` <span>${this.centerText}</span> ` : html``}
                 <canvas style="${this.chart === undefined ? "display: none;" : ""}"></canvas>
             </div>

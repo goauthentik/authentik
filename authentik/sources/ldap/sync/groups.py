@@ -1,20 +1,39 @@
 """Sync LDAP Users and groups into authentik"""
-from typing import Generator
+
+from collections.abc import Generator
 
 from django.core.exceptions import FieldError
 from django.db.utils import IntegrityError
 from ldap3 import ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE
 
+from authentik.core.expression.exceptions import SkipObjectException
 from authentik.core.models import Group
 from authentik.events.models import Event, EventAction
-from authentik.sources.ldap.sync.base import LDAP_UNIQUENESS, BaseLDAPSynchronizer
+from authentik.lib.sync.mapper import PropertyMappingManager
+from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
+from authentik.sources.ldap.sync.base import LDAP_UNIQUENESS, BaseLDAPSynchronizer, flatten
 
 
 class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
     """Sync LDAP Users and groups into authentik"""
 
+    def __init__(self, source: LDAPSource):
+        super().__init__(source)
+        self.mapper = PropertyMappingManager(
+            self._source.property_mappings_group.all().order_by("name").select_subclasses(),
+            LDAPPropertyMapping,
+            ["ldap", "dn", "source"],
+        )
+
+    @staticmethod
+    def name() -> str:
+        return "groups"
+
     def get_objects(self, **kwargs) -> Generator:
-        return self._connection.extend.standard.paged_search(
+        if not self._source.sync_groups:
+            self.message("Group syncing is disabled for this Source")
+            return iter(())
+        return self.search_paginator(
             search_base=self.base_dn_groups,
             search_filter=self._source.group_object_filter,
             search_scope=SUBTREE,
@@ -22,17 +41,17 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
             **kwargs,
         )
 
-    def sync(self) -> int:
+    def sync(self, page_data: list) -> int:
         """Iterate over all LDAP Groups and create authentik_core.Group instances"""
         if not self._source.sync_groups:
             self.message("Group syncing is disabled for this Source")
             return -1
         group_count = 0
-        for group in self.get_objects():
+        for group in page_data:
             if "attributes" not in group:
                 continue
             attributes = group.get("attributes", {})
-            group_dn = self._flatten(self._flatten(group.get("entryDN", group.get("dn"))))
+            group_dn = flatten(flatten(group.get("entryDN", group.get("dn"))))
             if self._source.object_uniqueness_field not in attributes:
                 self.message(
                     f"Cannot find uniqueness field in attributes: '{group_dn}'",
@@ -40,7 +59,7 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                     dn=group_dn,
                 )
                 continue
-            uniq = self._flatten(attributes[self._source.object_uniqueness_field])
+            uniq = flatten(attributes[self._source.object_uniqueness_field])
             try:
                 defaults = self.build_group_properties(group_dn, **attributes)
                 defaults["parent"] = self._source.sync_parent_group
@@ -57,6 +76,8 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                     defaults,
                 )
                 self._logger.debug("Created group with attributes", **defaults)
+            except SkipObjectException:
+                continue
             except (IntegrityError, FieldError, TypeError, AttributeError) as exc:
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,

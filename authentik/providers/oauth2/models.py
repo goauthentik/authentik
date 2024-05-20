@@ -1,15 +1,17 @@
 """OAuth Provider Models"""
+
 import base64
 import binascii
 import json
+from dataclasses import asdict
 from functools import cached_property
 from hashlib import sha256
-from typing import Any, Optional
+from typing import Any
 from urllib.parse import urlparse, urlunparse
 
 from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
-from cryptography.hazmat.primitives.asymmetric.types import PRIVATE_KEY_TYPES
+from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from dacite.core import from_dict
 from django.db import models
 from django.http import HttpRequest
@@ -17,6 +19,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from jwt import encode
 from rest_framework.serializers import Serializer
+from structlog.stdlib import get_logger
 
 from authentik.core.models import ExpiringModel, PropertyMapping, Provider, User
 from authentik.crypto.models import CertificateKeyPair
@@ -25,6 +28,8 @@ from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.providers.oauth2.id_token import IDToken, SubModes
 from authentik.sources.oauth.models import OAuthSource
+
+LOGGER = get_logger()
 
 
 def generate_client_secret() -> str:
@@ -215,7 +220,7 @@ class OAuth2Provider(Provider):
     )
 
     @cached_property
-    def jwt_key(self) -> tuple[str | PRIVATE_KEY_TYPES, str]:
+    def jwt_key(self) -> tuple[str | PrivateKeyTypes, str]:
         """Get either the configured certificate or the client secret"""
         if not self.signing_key:
             # No Certificate at all, assume HS256
@@ -228,7 +233,7 @@ class OAuth2Provider(Provider):
             return private_key, JWTAlgorithms.ES256
         raise ValueError(f"Invalid private key type: {type(private_key)}")
 
-    def get_issuer(self, request: HttpRequest) -> Optional[str]:
+    def get_issuer(self, request: HttpRequest) -> str | None:
         """Get issuer, based on request"""
         if self.issuer_mode == IssuerMode.GLOBAL:
             return request.build_absolute_uri(reverse("authentik_core:root-redirect"))
@@ -236,23 +241,26 @@ class OAuth2Provider(Provider):
             url = reverse(
                 "authentik_providers_oauth2:provider-root",
                 kwargs={
-                    # pylint: disable=no-member
                     "application_slug": self.application.slug,
                 },
             )
             return request.build_absolute_uri(url)
-        # pylint: disable=no-member
+
         except Provider.application.RelatedObjectDoesNotExist:
             return None
 
     @property
-    def launch_url(self) -> Optional[str]:
+    def launch_url(self) -> str | None:
         """Guess launch_url based on first redirect_uri"""
         if self.redirect_uris == "":
             return None
         main_url = self.redirect_uris.split("\n", maxsplit=1)[0]
-        launch_url = urlparse(main_url)._replace(path="")
-        return urlunparse(launch_url)
+        try:
+            launch_url = urlparse(main_url)._replace(path="")
+            return urlunparse(launch_url)
+        except ValueError as exc:
+            LOGGER.warning("Failed to format launch url", exc=exc)
+            return None
 
     @property
     def component(self) -> str:
@@ -288,6 +296,10 @@ class BaseGrantModel(models.Model):
     revoked = models.BooleanField(default=False)
     _scope = models.TextField(default="", verbose_name=_("Scopes"))
     auth_time = models.DateTimeField(verbose_name="Authentication time")
+    session_id = models.CharField(default="", blank=True)
+
+    class Meta:
+        abstract = True
 
     @property
     def scope(self) -> list[str]:
@@ -297,9 +309,6 @@ class BaseGrantModel(models.Model):
     @scope.setter
     def scope(self, value):
         self._scope = " ".join(value)
-
-    class Meta:
-        abstract = True
 
 
 class AuthorizationCode(SerializerModel, ExpiringModel, BaseGrantModel):
@@ -311,6 +320,13 @@ class AuthorizationCode(SerializerModel, ExpiringModel, BaseGrantModel):
     code_challenge_method = models.CharField(
         max_length=255, null=True, verbose_name=_("Code Challenge Method")
     )
+
+    class Meta:
+        verbose_name = _("Authorization Code")
+        verbose_name_plural = _("Authorization Codes")
+
+    def __str__(self):
+        return f"Authorization code for {self.provider_id} for user {self.user_id}"
 
     @property
     def serializer(self) -> Serializer:
@@ -328,19 +344,19 @@ class AuthorizationCode(SerializerModel, ExpiringModel, BaseGrantModel):
             .decode("ascii")
         )
 
-    class Meta:
-        verbose_name = _("Authorization Code")
-        verbose_name_plural = _("Authorization Codes")
-
-    def __str__(self):
-        return f"Authorization code for {self.provider} for user {self.user}"
-
 
 class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
     """OAuth2 access token, non-opaque using a JWT as identifier"""
 
     token = models.TextField()
     _id_token = models.TextField()
+
+    class Meta:
+        verbose_name = _("OAuth2 Access Token")
+        verbose_name_plural = _("OAuth2 Access Tokens")
+
+    def __str__(self):
+        return f"Access Token for {self.provider_id} for user {self.user_id}"
 
     @property
     def id_token(self) -> IDToken:
@@ -351,7 +367,7 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
     @id_token.setter
     def id_token(self, value: IDToken):
         self.token = value.to_access_token(self.provider)
-        self._id_token = json.dumps(value.to_dict())
+        self._id_token = json.dumps(asdict(value))
 
     @property
     def at_hash(self):
@@ -371,19 +387,19 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
 
         return TokenModelSerializer
 
-    class Meta:
-        verbose_name = _("OAuth2 Access Token")
-        verbose_name_plural = _("OAuth2 Access Tokens")
-
-    def __str__(self):
-        return f"Access Token for {self.provider} for user {self.user}"
-
 
 class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
     """OAuth2 Refresh Token, opaque"""
 
     token = models.TextField(default=generate_client_secret)
     _id_token = models.TextField(verbose_name=_("ID Token"))
+
+    class Meta:
+        verbose_name = _("OAuth2 Refresh Token")
+        verbose_name_plural = _("OAuth2 Refresh Tokens")
+
+    def __str__(self):
+        return f"Refresh Token for {self.provider_id} for user {self.user_id}"
 
     @property
     def id_token(self) -> IDToken:
@@ -393,20 +409,13 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
 
     @id_token.setter
     def id_token(self, value: IDToken):
-        self._id_token = json.dumps(value.to_dict())
+        self._id_token = json.dumps(asdict(value))
 
     @property
     def serializer(self) -> Serializer:
         from authentik.providers.oauth2.api.tokens import TokenModelSerializer
 
         return TokenModelSerializer
-
-    class Meta:
-        verbose_name = _("OAuth2 Refresh Token")
-        verbose_name_plural = _("OAuth2 Refresh Tokens")
-
-    def __str__(self):
-        return f"Refresh Token for {self.provider} for user {self.user}"
 
 
 class DeviceToken(ExpiringModel):
@@ -434,4 +443,4 @@ class DeviceToken(ExpiringModel):
         verbose_name_plural = _("Device Tokens")
 
     def __str__(self):
-        return f"Device Token for {self.provider}"
+        return f"Device Token for {self.provider_id}"

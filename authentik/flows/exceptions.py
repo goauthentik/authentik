@@ -1,5 +1,4 @@
 """flow exceptions"""
-from typing import Optional
 
 from django.utils.translation import gettext_lazy as _
 
@@ -10,7 +9,7 @@ from authentik.policies.types import PolicyResult
 class FlowNonApplicableException(SentryIgnoredException):
     """Flow does not apply to current user (denied by policy, or otherwise)."""
 
-    policy_result: Optional[PolicyResult] = None
+    policy_result: PolicyResult | None = None
 
     @property
     def messages(self) -> str:
@@ -26,3 +25,8 @@ class EmptyFlowException(SentryIgnoredException):
 
 class FlowSkipStageException(SentryIgnoredException):
     """Exception to skip a stage"""
+
+
+class StageInvalidException(SentryIgnoredException):
+    """Exception can be thrown in a `Challenge` or `ChallengeResponse` serializer's
+    validation to trigger a `executor.stage_invalid()` response"""

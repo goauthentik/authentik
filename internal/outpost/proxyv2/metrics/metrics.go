@@ -15,12 +15,12 @@ import (
 
 var (
 	Requests = promauto.NewHistogramVec(prometheus.HistogramOpts{
-		Name: "authentik_outpost_proxy_requests",
-		Help: "The total number of configured providers",
+		Name: "authentik_outpost_proxy_request_duration_seconds",
+		Help: "Proxy request latencies in seconds",
 	}, []string{"outpost_name", "method", "host", "type"})
 	UpstreamTiming = promauto.NewHistogramVec(prometheus.HistogramOpts{
-		Name: "authentik_outpost_proxy_upstream_time",
-		Help: "A summary of the duration we wait for the upstream reply",
+		Name: "authentik_outpost_proxy_upstream_response_duration_seconds",
+		Help: "Proxy upstream response latencies in seconds",
 	}, []string{"outpost_name", "method", "scheme", "host", "upstream_host"})
 )
 

@@ -1,8 +1,7 @@
 import { AndNext } from "@goauthentik/common/api/config";
 import { AKElement } from "@goauthentik/elements/Base";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { CSSResult } from "lit";
 import { customElement } from "lit/decorators.js";
@@ -28,7 +27,7 @@ export class UserSettingsPassword extends AKElement {
         // For this stage we don't need to check for a configureFlow,
         // as the stage won't return any UI Elements if no configureFlow is set.
         return html`<div class="pf-c-card">
-            <div class="pf-c-card__title">${t`Change your password`}</div>
+            <div class="pf-c-card__title">${msg("Change your password")}</div>
             <div class="pf-c-card__body">
                 <a
                     href="${ifDefined(this.configureUrl)}${AndNext(
@@ -36,7 +35,7 @@ export class UserSettingsPassword extends AKElement {
                     )}"
                     class="pf-c-button pf-m-primary"
                 >
-                    ${t`Change password`}
+                    ${msg("Change password")}
                 </a>
             </div>
         </div>`;

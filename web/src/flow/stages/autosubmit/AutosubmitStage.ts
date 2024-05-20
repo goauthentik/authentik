@@ -1,8 +1,7 @@
 import "@goauthentik/elements/EmptyState";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -32,7 +31,8 @@ export class AutosubmitStage extends BaseStage<
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
+            </ak-empty-state>`;
         }
         let title = this.challenge.flowInfo?.title;
         if (this.challenge.title && this.challenge.title !== "") {
@@ -53,7 +53,7 @@ export class AutosubmitStage extends BaseStage<
                     <ak-empty-state ?loading="${true}"> </ak-empty-state>
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${t`Continue`}
+                            ${msg("Continue")}
                         </button>
                     </div>
                 </form>

@@ -1,4 +1,5 @@
 """root Websocket URLS"""
+
 from importlib import import_module
 
 from structlog.stdlib import get_logger
@@ -15,7 +16,7 @@ for _authentik_app in get_apps():
         continue
     if not hasattr(api_urls, "websocket_urlpatterns"):
         continue
-    urls: list = getattr(api_urls, "websocket_urlpatterns")
+    urls: list = api_urls.websocket_urlpatterns
     websocket_urlpatterns.extend(urls)
     LOGGER.debug(
         "Mounted Websocket URLs",

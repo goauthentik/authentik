@@ -1,4 +1,5 @@
 """Identification Stage API Views"""
+
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 from rest_framework.viewsets import ModelViewSet
@@ -33,6 +34,7 @@ class IdentificationStageSerializer(StageSerializer):
             "passwordless_flow",
             "sources",
             "show_source_labels",
+            "pretend_user_exists",
         ]
 
 

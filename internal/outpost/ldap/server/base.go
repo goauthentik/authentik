@@ -1,8 +1,9 @@
 package server
 
 import (
+	"beryju.io/ldap"
 	"github.com/go-openapi/strfmt"
-	"github.com/nmcclain/ldap"
+
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ldap/flags"
 )
@@ -22,19 +23,20 @@ type LDAPServerInstance interface {
 	GetBaseGroupDN() string
 	GetBaseVirtualGroupDN() string
 	GetBaseUserDN() string
+	GetMFASupport() bool
 
 	GetUserDN(string) string
 	GetGroupDN(string) string
 	GetVirtualGroupDN(string) string
 
-	GetUidNumber(api.User) string
-	GetGidNumber(api.Group) string
+	GetUserUidNumber(api.User) string
+	GetUserGidNumber(api.User) string
+	GetGroupGidNumber(api.Group) string
 
 	UsersForGroup(api.Group) []string
 
 	GetFlags(dn string) *flags.UserFlags
 	SetFlags(dn string, flags *flags.UserFlags)
 
-	GetBaseEntry() *ldap.Entry
-	GetNeededObjects(int, string, string) (bool, bool)
+	GetNeededObjects(scope int, baseDN string, filterOC string) (bool, bool)
 }

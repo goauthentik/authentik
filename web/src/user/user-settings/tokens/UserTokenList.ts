@@ -1,8 +1,9 @@
-import { IntentToLabel } from "@goauthentik/admin/tokens/TokenListPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { intentToLabel } from "@goauthentik/common/labels";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
-import { PFColor } from "@goauthentik/elements/Label";
+import { getRelativeTime } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/TokenCopyButton";
@@ -11,9 +12,9 @@ import "@goauthentik/elements/forms/ModalForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 import "@goauthentik/user/user-settings/tokens/UserTokenForm";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -29,6 +30,7 @@ export class UserTokenList extends Table<Token> {
 
     expandable = true;
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "expires";
@@ -47,7 +49,7 @@ export class UserTokenList extends Table<Token> {
     }
 
     columns(): TableColumn[] {
-        return [new TableColumn(t`Identifier`, "identifier"), new TableColumn("")];
+        return [new TableColumn(msg("Identifier"), "identifier"), new TableColumn("")];
     }
 
     static get styles(): CSSResult[] {
@@ -57,20 +59,20 @@ export class UserTokenList extends Table<Token> {
     renderToolbar(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${t`Create`} </span>
-                <span slot="header"> ${t`Create Token`} </span>
+                <span slot="submit"> ${msg("Create")} </span>
+                <span slot="header"> ${msg("Create Token")} </span>
                 <ak-user-token-form intent=${IntentEnum.Api} slot="form"> </ak-user-token-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${t`Create Token`}
+                    ${msg("Create Token")}
                 </button>
             </ak-forms-modal>
             <ak-forms-modal>
-                <span slot="submit"> ${t`Create`} </span>
-                <span slot="header"> ${t`Create App password`} </span>
+                <span slot="submit"> ${msg("Create")} </span>
+                <span slot="header"> ${msg("Create App password")} </span>
                 <ak-user-token-form intent=${IntentEnum.AppPassword} slot="form">
                 </ak-user-token-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${t`Create App password`}
+                    ${msg("Create App password")}
                 </button>
             </ak-forms-modal>
             ${super.renderToolbar()}
@@ -83,7 +85,7 @@ export class UserTokenList extends Table<Token> {
                     <dl class="pf-c-description-list pf-m-horizontal">
                         <div class="pf-c-description-list__group">
                             <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text">${t`User`}</span>
+                                <span class="pf-c-description-list__text">${msg("User")}</span>
                             </dt>
                             <dd class="pf-c-description-list__description">
                                 <div class="pf-c-description-list__text">
@@ -93,33 +95,38 @@ export class UserTokenList extends Table<Token> {
                         </div>
                         <div class="pf-c-description-list__group">
                             <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text">${t`Expiring`}</span>
+                                <span class="pf-c-description-list__text">${msg("Expiring")}</span>
                             </dt>
                             <dd class="pf-c-description-list__description">
                                 <div class="pf-c-description-list__text">
-                                    <ak-label color=${item.expiring ? PFColor.Green : PFColor.Red}>
-                                        ${item.expiring ? t`Yes` : t`No`}
-                                    </ak-label>
+                                    <ak-status-label ?good=${item.expiring}></ak-status-label>
                                 </div>
                             </dd>
                         </div>
                         <div class="pf-c-description-list__group">
                             <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text">${t`Expiring`}</span>
+                                <span class="pf-c-description-list__text">${msg("Expiring")}</span>
                             </dt>
                             <dd class="pf-c-description-list__description">
                                 <div class="pf-c-description-list__text">
-                                    ${item.expiring ? item.expires?.toLocaleString() : t`-`}
+                                    ${item.expiring
+                                        ? html`<pf-tooltip
+                                              position="top"
+                                              .content=${item.expires?.toLocaleString()}
+                                          >
+                                              ${getRelativeTime(item.expires!)}
+                                          </pf-tooltip>`
+                                        : msg("-")}
                                 </div>
                             </dd>
                         </div>
                         <div class="pf-c-description-list__group">
                             <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text">${t`Intent`}</span>
+                                <span class="pf-c-description-list__text">${msg("Intent")}</span>
                             </dt>
                             <dd class="pf-c-description-list__description">
                                 <div class="pf-c-description-list__text">
-                                    ${IntentToLabel(item.intent || IntentEnum.Api)}
+                                    ${intentToLabel(item.intent ?? IntentEnum.Api)}
                                 </div>
                             </dd>
                         </div>
@@ -132,19 +139,16 @@ export class UserTokenList extends Table<Token> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${t`Token(s)`}
+            objectLabel=${msg("Token(s)")}
             .objects=${this.selectedElements}
-            .metadata=${(item: Token) => {
-                return [{ key: t`Identifier`, value: item.identifier }];
-            }}
-            .delete=${(item: Token) => {
-                return new CoreApi(DEFAULT_CONFIG).coreTokensDestroy({
+            .metadata=${(item: Token) => [{ key: msg("Identifier"), value: item.identifier }]}
+            .delete=${(item: Token) =>
+                new CoreApi(DEFAULT_CONFIG).coreTokensDestroy({
                     identifier: item.identifier,
-                });
-            }}
+                })}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete`}
+                ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
     }
@@ -154,19 +158,27 @@ export class UserTokenList extends Table<Token> {
             html`${item.identifier}`,
             html`
                 <ak-forms-modal>
-                    <span slot="submit"> ${t`Update`} </span>
-                    <span slot="header"> ${t`Update Token`} </span>
-                    <ak-user-token-form slot="form" .instancePk=${item.identifier}>
+                    <span slot="submit"> ${msg("Update")} </span>
+                    <span slot="header"> ${msg("Update Token")} </span>
+                    <ak-user-token-form
+                        intent=${item.intent ?? IntentEnum.Api}
+                        slot="form"
+                        .instancePk=${item.identifier}
+                    >
                     </ak-user-token-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <i class="fas fa-edit"></i>
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit"></i>
+                        </pf-tooltip>
                     </button>
                 </ak-forms-modal>
                 <ak-token-copy-button
                     class="pf-c-button pf-m-plain"
                     identifier="${item.identifier}"
                 >
-                    <i class="fas fa-copy"></i>
+                    <pf-tooltip position="top" content=${msg("Copy token")}>
+                        <i class="fas fa-copy"></i>
+                    </pf-tooltip>
                 </ak-token-copy-button>
             `,
         ];

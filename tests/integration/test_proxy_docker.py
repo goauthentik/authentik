@@ -1,8 +1,9 @@
 """outpost tests"""
+
 from shutil import rmtree
 from tempfile import mkdtemp
-from time import sleep
 
+import pytest
 import yaml
 from channels.testing.live import ChannelsLiveServerTestCase
 from docker import DockerClient, from_env
@@ -20,10 +21,10 @@ from authentik.outposts.models import (
 from authentik.outposts.tasks import outpost_connection_discovery
 from authentik.providers.proxy.controllers.docker import DockerController
 from authentik.providers.proxy.models import ProxyProvider
-from tests.e2e.utils import get_docker_tag
+from tests.e2e.utils import DockerTestCase, get_docker_tag
 
 
-class TestProxyDocker(ChannelsLiveServerTestCase):
+class TestProxyDocker(DockerTestCase, ChannelsLiveServerTestCase):
     """Test Docker Controllers"""
 
     def _start_container(self, ssl_folder: str) -> Container:
@@ -35,8 +36,8 @@ class TestProxyDocker(ChannelsLiveServerTestCase):
             privileged=True,
             healthcheck=Healthcheck(
                 test=["CMD", "docker", "info"],
-                interval=5 * 100 * 1000000,
-                start_period=5 * 100 * 1000000,
+                interval=5 * 1_000 * 1_000_000,
+                start_period=5 * 1_000 * 1_000_000,
             ),
             environment={"DOCKER_TLS_CERTDIR": "/ssl"},
             volumes={
@@ -45,19 +46,15 @@ class TestProxyDocker(ChannelsLiveServerTestCase):
                 }
             },
         )
-        while True:
-            container.reload()
-            status = container.attrs.get("State", {}).get("Health", {}).get("Status")
-            if status == "healthy":
-                return container
-            sleep(1)
+        self.wait_for_container(container)
+        return container
 
     def setUp(self):
         super().setUp()
         self.ssl_folder = mkdtemp()
         self.container = self._start_container(self.ssl_folder)
         # Ensure that local connection have been created
-        outpost_connection_discovery()  # pylint: disable=no-value-for-parameter
+        outpost_connection_discovery()
         self.provider: ProxyProvider = ProxyProvider.objects.create(
             name="test",
             internal_host="http://localhost",
@@ -100,12 +97,14 @@ class TestProxyDocker(ChannelsLiveServerTestCase):
         except PermissionError:
             pass
 
+    @pytest.mark.timeout(120)
     def test_docker_controller(self):
         """test that deployment requires update"""
         controller = DockerController(self.outpost, self.service_connection)
         controller.up()
         controller.down()
 
+    @pytest.mark.timeout(120)
     def test_docker_static(self):
         """test that deployment requires update"""
         controller = DockerController(self.outpost, self.service_connection)

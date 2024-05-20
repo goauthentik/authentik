@@ -52,8 +52,8 @@ Be sure to run the formatter before committing changes.
 -   When referring to UI text or UI components in authentik, use **bold** text.
 -   When referring to other objects in authentik code or functionality, use _cursive_ text, and link to the corresponding documentation if possible.
 -   When referring to external tools, give an example how to use the tools or explain how the user can use them.
--   Make sure to add the documentation to add to the sidebar, if adding a new page.
--   Test how the documentation renders using the Netlify Deploy Preview, especially when using Docusaurus-specific features.
+-   Make sure to add the documentation to the sidebar, if adding a new page.
+-   Test how the documentation renders using the Netlify Deploy Preview, especially when using Docusaurus-specific features. Or build it locally and test, using the `make website-watch` command.
 
 If you find any documentation that doesn't match these guidelines, feel free to either open an [Issue](https://github.com/goauthentik/authentik/issues) or a [PR](https://github.com/goauthentik/authentik/pulls) so they can be fixed.
 

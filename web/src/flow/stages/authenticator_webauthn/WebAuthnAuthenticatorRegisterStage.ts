@@ -1,15 +1,16 @@
 import {
     Assertion,
+    checkWebAuthnSupport,
     transformCredentialCreateOptions,
     transformNewAssertionForServer,
 } from "@goauthentik/common/helpers/webauthn";
-import { PFSize } from "@goauthentik/elements/Spinner";
+import "@goauthentik/elements/EmptyState";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
-import { t } from "@lingui/macro";
-
-import { CSSResult, TemplateResult, html } from "lit";
+import { msg, str } from "@lit/localize";
+import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -41,13 +42,31 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
     publicKeyCredentialCreateOptions?: PublicKeyCredentialCreationOptions;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFFormControl, PFForm, PFTitle, PFButton];
+        return [
+            PFBase,
+            PFLogin,
+            PFFormControl,
+            PFForm,
+            PFTitle,
+            PFButton,
+            // FIXME: this is technically duplicate with ../authenticator_validate/base.ts
+            css`
+                .pf-c-form__group.pf-m-action {
+                    display: flex;
+                    gap: 16px;
+                    margin-top: 0;
+                    margin-bottom: calc(var(--pf-c-form__group--m-action--MarginTop) / 2);
+                    flex-direction: column;
+                }
+            `,
+        ];
     }
 
     async register(): Promise<void> {
         if (!this.challenge) {
             return;
         }
+        checkWebAuthnSupport();
         // request the authenticator(s) to create a new credential keypair.
         let credential;
         try {
@@ -58,7 +77,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
                 throw new Error("Credential is empty");
             }
         } catch (err) {
-            throw new Error(t`Error creating credential: ${err}`);
+            throw new Error(msg(str`Error creating credential: ${err}`));
         }
 
         // we now have a new credential! We now need to encode the byte arrays
@@ -68,11 +87,16 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
         // post the transformed credential data to the server for validation
         // and storing the public key
         try {
-            await this.host?.submit({
-                response: newAssertionForServer,
-            });
+            await this.host?.submit(
+                {
+                    response: newAssertionForServer,
+                },
+                {
+                    invisible: true,
+                },
+            );
         } catch (err) {
-            throw new Error(t`Server validation of credential failed: ${err}`);
+            throw new Error(msg(str`Server validation of credential failed: ${err}`));
         }
     }
 
@@ -83,62 +107,70 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
         this.registerRunning = true;
         this.register()
             .catch((e) => {
-                console.error(e);
-                this.registerMessage = e.toString();
+                console.warn("authentik/flows/authenticator_webauthn: failed to register", e);
+                this.registerMessage = msg("Failed to register. Please try again.");
             })
             .finally(() => {
                 this.registerRunning = false;
             });
     }
 
-    firstUpdated(): void {
-        // convert certain members of the PublicKeyCredentialCreateOptions into
-        // byte arrays as expected by the spec.
-        this.publicKeyCredentialCreateOptions = transformCredentialCreateOptions(
-            this.challenge?.registration as PublicKeyCredentialCreationOptions,
-            this.challenge?.registration.user.id,
-        );
-        this.registerWrapper();
+    updated(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("challenge") && this.challenge !== undefined) {
+            // convert certain members of the PublicKeyCredentialCreateOptions into
+            // byte arrays as expected by the spec.
+            this.publicKeyCredentialCreateOptions = transformCredentialCreateOptions(
+                this.challenge?.registration as PublicKeyCredentialCreationOptions,
+                this.challenge?.registration.user.id,
+            );
+            this.registerWrapper();
+        }
     }
 
     render(): TemplateResult {
         return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">
-                    ${this.challenge?.flowInfo?.title}
-                </h1>
+                <h1 class="pf-c-title pf-m-3xl">${this.challenge?.flowInfo?.title}</h1>
             </header>
             <div class="pf-c-login__main-body">
-                ${
-                    this.registerRunning
-                        ? html`<div class="pf-c-empty-state__content">
-                              <div class="pf-l-bullseye">
-                                  <div class="pf-l-bullseye__item">
-                                      <ak-spinner size="${PFSize.XLarge}"></ak-spinner>
-                                  </div>
-                              </div>
-                          </div>`
-                        : html` <div class="pf-c-form__group pf-m-action">
-                              ${this.challenge?.responseErrors
-                                  ? html`<p class="pf-m-block">
-                                        ${this.challenge.responseErrors["response"][0].string}
-                                    </p>`
-                                  : html``}
-                              <p class="pf-m-block">${this.registerMessage}</p>
-                              <button
+                <form class="pf-c-form">
+                    <ak-form-static
+                        class="pf-c-form__group"
+                        userAvatar="${this.challenge.pendingUserAvatar}"
+                        user=${this.challenge.pendingUser}
+                    >
+                        <div slot="link">
+                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
+                                >${msg("Not you?")}</a
+                            >
+                        </div>
+                    </ak-form-static>
+                    <ak-empty-state
+                        ?loading="${this.registerRunning}"
+                        header=${this.registerRunning
+                            ? msg("Registering...")
+                            : this.registerMessage || msg("Failed to register")}
+                        icon="fa-times"
+                    >
+                    </ak-empty-state>
+                    ${this.challenge?.responseErrors
+                        ? html`<p class="pf-m-block">
+                              ${this.challenge.responseErrors["response"][0].string}
+                          </p>`
+                        : html``}
+                    <div class="pf-c-form__group pf-m-action">
+                        ${!this.registerRunning
+                            ? html` <button
                                   class="pf-c-button pf-m-primary pf-m-block"
                                   @click=${() => {
                                       this.registerWrapper();
                                   }}
+                                  type="button"
                               >
-                                  ${t`Register device`}
-                              </button>
-                          </div>`
-                }
-            </div>
-        </div>
-        <footer class="pf-c-login__main-footer">
-            <ul class="pf-c-login__main-footer-links">
-            </ul>
-        </footer>`;
+                                  ${msg("Retry registration")}
+                              </button>`
+                            : nothing}
+                    </div>
+                </form>
+            </div>`;
     }
 }

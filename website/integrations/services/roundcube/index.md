@@ -6,12 +6,10 @@ title: Roundcube
 
 ## What is Roundcube
 
-From https://roundcube.net
-
-:::note
-**Roundcube** is a browser-based multilingual IMAP client with an application-like user interface.
-It provides full functionality you expect from an email client, including MIME support, address book, folder manipulation, message searching and spell checking
-:::
+> **Roundcube** is a browser-based multilingual IMAP client with an application-like user interface.
+> It provides full functionality you expect from an email client, including MIME support, address book, folder manipulation, message searching and spell checking
+>
+> -- https://roundcube.net
 
 This integration describes how to use Roundcube's oauth support with authentik to automatically sign into an email account.
 The mail server must support XOAUTH2 for both SMTPD and IMAP/POP. Postfix SMTP server can also use Dovecot for authentication which provides Postfix with xoauth2 capability without configuring it separately.

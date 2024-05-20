@@ -3,8 +3,7 @@ import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -20,11 +19,9 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
     }
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return t`Successfully updated certificate-key pair.`;
-        } else {
-            return t`Successfully created certificate-key pair.`;
-        }
+        return this.instance
+            ? msg("Successfully updated certificate-key pair.")
+            : msg("Successfully created certificate-key pair.");
     }
 
     async send(data: CertificateKeyPair): Promise<CertificateKeyPair> {
@@ -41,8 +38,7 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} name="name" ?required=${true}>
+        return html` <ak-form-element-horizontal label=${msg("Name")} name="name" ?required=${true}>
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -51,24 +47,25 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`Certificate`}
+                label=${msg("Certificate")}
                 name="certificateData"
                 ?writeOnly=${this.instance !== undefined}
                 ?required=${true}
             >
                 <textarea class="pf-c-form-control" required></textarea>
-                <p class="pf-c-form__helper-text">${t`PEM-encoded Certificate data.`}</p>
+                <p class="pf-c-form__helper-text">${msg("PEM-encoded Certificate data.")}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 name="keyData"
                 ?writeOnly=${this.instance !== undefined}
-                label=${t`Private Key`}
+                label=${msg("Private Key")}
             >
                 <textarea class="pf-c-form-control"></textarea>
                 <p class="pf-c-form__helper-text">
-                    ${t`Optional Private Key. If this is set, you can use this keypair for encryption.`}
+                    ${msg(
+                        "Optional Private Key. If this is set, you can use this keypair for encryption.",
+                    )}
                 </p>
-            </ak-form-element-horizontal>
-        </form>`;
+            </ak-form-element-horizontal>`;
     }
 }

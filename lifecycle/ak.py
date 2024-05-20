@@ -1,4 +1,5 @@
 """Wrapper for lifecycle/ak, to be installed by poetry"""
+
 from os import system
 from pathlib import Path
 from sys import argv

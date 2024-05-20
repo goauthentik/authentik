@@ -1,8 +1,9 @@
 import "@goauthentik/admin/applications/ApplicationForm";
-import "@goauthentik/admin/applications/wizard/ApplicationWizard";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { PFSize } from "@goauthentik/common/enums.js";
 import { uiConfig } from "@goauthentik/common/ui/config";
-import MDApplication from "@goauthentik/docs/core/applications.md";
+import "@goauthentik/components/ak-app-icon";
+import MDApplication from "@goauthentik/docs/applications/index.md";
 import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -11,17 +12,33 @@ import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
-import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 import { Application, CoreApi } from "@goauthentik/api";
+
+import "./ApplicationWizardHint";
+
+export const applicationListStyle = css`
+    /* Fix alignment issues with images in tables */
+    .pf-c-table tbody > tr > * {
+        vertical-align: middle;
+    }
+    tr td:first-child {
+        width: auto;
+        min-width: 0px;
+        text-align: center;
+        vertical-align: middle;
+    }
+    .pf-c-sidebar.pf-m-gutter > .pf-c-sidebar__main > * + * {
+        margin-left: calc(var(--pf-c-sidebar__main--child--MarginLeft) / 2);
+    }
+`;
 
 @customElement("ak-application-list")
 export class ApplicationListPage extends TablePage<Application> {
@@ -29,16 +46,19 @@ export class ApplicationListPage extends TablePage<Application> {
         return true;
     }
     pageTitle(): string {
-        return t`Applications`;
+        return msg("Applications");
     }
     pageDescription(): string {
-        return t`External Applications which use authentik as Identity-Provider, utilizing protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.`;
+        return msg(
+            "External applications that use authentik as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.",
+        );
     }
     pageIcon(): string {
         return "pf-icon pf-icon-applications";
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "name";
@@ -54,58 +74,38 @@ export class ApplicationListPage extends TablePage<Application> {
     }
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(
-            PFAvatar,
-            PFCard,
-            css`
-                /* Fix alignment issues with images in tables */
-                .pf-c-table tbody > tr > * {
-                    vertical-align: middle;
-                }
-                tr td:first-child {
-                    width: auto;
-                    min-width: 0px;
-                    text-align: center;
-                    vertical-align: middle;
-                }
-                .pf-c-sidebar.pf-m-gutter > .pf-c-sidebar__main > * + * {
-                    margin-left: calc(var(--pf-c-sidebar__main--child--MarginLeft) / 2);
-                }
-            `,
-        );
+        return super.styles.concat(PFCard, applicationListStyle);
     }
 
     columns(): TableColumn[] {
         return [
             new TableColumn(""),
-            new TableColumn(t`Name`, "name"),
-            new TableColumn(t`Group`, "group"),
-            new TableColumn(t`Provider`),
-            new TableColumn(t`Provider Type`),
-            new TableColumn(t`Actions`),
+            new TableColumn(msg("Name"), "name"),
+            new TableColumn(msg("Group"), "group"),
+            new TableColumn(msg("Provider")),
+            new TableColumn(msg("Provider Type")),
+            new TableColumn(msg("Actions")),
         ];
     }
 
+    renderSectionBefore(): TemplateResult {
+        return html`<ak-application-wizard-hint></ak-application-wizard-hint>`;
+    }
+
     renderSidebarAfter(): TemplateResult {
-        // Rendering the wizard with .open here, as if we set the attribute in
-        // renderObjectCreate() it'll open two wizards, since that function gets called twice
-        return html`<ak-application-wizard
-                .open=${getURLParam("createWizard", false)}
-                .showButton=${false}
-            ></ak-application-wizard>
-            <div class="pf-c-sidebar__panel pf-m-width-25">
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-markdown .md=${MDApplication}></ak-markdown>
-                    </div>
+        return html`<div class="pf-c-sidebar__panel pf-m-width-25">
+            <div class="pf-c-card">
+                <div class="pf-c-card__body">
+                    <ak-markdown .md=${MDApplication} meta="applications/index.md"></ak-markdown>
                 </div>
-            </div>`;
+            </div>
+        </div>`;
     }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${t`Application(s)`}
+            objectLabel=${msg("Application(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Application) => {
                 return new CoreApi(DEFAULT_CONFIG).coreApplicationsUsedByList({
@@ -119,52 +119,41 @@ export class ApplicationListPage extends TablePage<Application> {
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete`}
+                ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
     }
 
-    renderIcon(item: Application): TemplateResult {
-        if (item?.metaIcon) {
-            if (item.metaIcon.startsWith("fa://")) {
-                const icon = item.metaIcon.replaceAll("fa://", "");
-                return html`<i class="fas ${icon}"></i>`;
-            }
-            return html`<img
-                class="app-icon pf-c-avatar"
-                src="${ifDefined(item.metaIcon)}"
-                alt="${t`Application Icon`}"
-            />`;
-        }
-        return html`<i class="fas fa-share-square"></i>`;
-    }
-
     row(item: Application): TemplateResult[] {
         return [
-            this.renderIcon(item),
+            html`<ak-app-icon size=${PFSize.Medium} .app=${item}></ak-app-icon>`,
             html`<a href="#/core/applications/${item.slug}">
                 <div>${item.name}</div>
                 ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : html``}
             </a>`,
-            html`${item.group || t`-`}`,
+            html`${item.group || msg("-")}`,
             item.provider
                 ? html`<a href="#/core/providers/${item.providerObj?.pk}">
                       ${item.providerObj?.name}
                   </a>`
                 : html`-`,
-            html`${item.providerObj?.verboseName || t`-`}`,
+            html`${item.providerObj?.verboseName || msg("-")}`,
             html`<ak-forms-modal>
-                    <span slot="submit"> ${t`Update`} </span>
-                    <span slot="header"> ${t`Update Application`} </span>
+                    <span slot="submit"> ${msg("Update")} </span>
+                    <span slot="header"> ${msg("Update Application")} </span>
                     <ak-application-form slot="form" .instancePk=${item.slug}>
                     </ak-application-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <i class="fas fa-edit"></i>
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit"></i>
+                        </pf-tooltip>
                     </button>
                 </ak-forms-modal>
                 ${item.launchUrl
                     ? html`<a href=${item.launchUrl} target="_blank" class="pf-c-button pf-m-plain">
-                          <i class="fas fa-share-square"></i>
+                          <pf-tooltip position="top" content=${msg("Open")}>
+                              <i class="fas fa-share-square"></i>
+                          </pf-tooltip>
                       </a>`
                     : html``}`,
         ];
@@ -172,10 +161,10 @@ export class ApplicationListPage extends TablePage<Application> {
 
     renderObjectCreate(): TemplateResult {
         return html`<ak-forms-modal .open=${getURLParam("createForm", false)}>
-            <span slot="submit"> ${t`Create`} </span>
-            <span slot="header"> ${t`Create Application`} </span>
+            <span slot="submit"> ${msg("Create")} </span>
+            <span slot="header"> ${msg("Create Application")} </span>
             <ak-application-form slot="form"> </ak-application-form>
-            <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+            <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
         </ak-forms-modal>`;
     }
 }

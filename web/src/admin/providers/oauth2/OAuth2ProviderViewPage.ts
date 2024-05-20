@@ -2,7 +2,8 @@ import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { convertToTitle } from "@goauthentik/common/utils";
+import renderDescriptionList from "@goauthentik/components/DescriptionList";
+import "@goauthentik/components/events/ObjectChangelog";
 import MDProviderOAuth2 from "@goauthentik/docs/providers/oauth2/index.md";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
@@ -11,10 +12,8 @@ import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/events/ObjectChangelog";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
@@ -23,6 +22,7 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -30,11 +30,28 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
+    ClientTypeEnum,
+    CoreApi,
+    CoreUsersListRequest,
     OAuth2Provider,
     OAuth2ProviderSetupURLs,
     PropertyMappingPreview,
     ProvidersApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    User,
 } from "@goauthentik/api";
+
+export function TypeToLabel(type?: ClientTypeEnum): string {
+    if (!type) return "";
+    switch (type) {
+        case ClientTypeEnum.Confidential:
+            return msg("Confidential");
+        case ClientTypeEnum.Public:
+            return msg("Public");
+        case ClientTypeEnum.UnknownDefaultOpenApi:
+            return msg("Unknown type");
+    }
+}
 
 @customElement("ak-provider-oauth2-view")
 export class OAuth2ProviderViewPage extends AKElement {
@@ -58,6 +75,9 @@ export class OAuth2ProviderViewPage extends AKElement {
     @state()
     preview?: PropertyMappingPreview;
 
+    @state()
+    previewUser?: User;
+
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -70,6 +90,7 @@ export class OAuth2ProviderViewPage extends AKElement {
             PFForm,
             PFFormControl,
             PFBanner,
+            PFDivider,
         ];
     }
 
@@ -81,6 +102,15 @@ export class OAuth2ProviderViewPage extends AKElement {
         });
     }
 
+    fetchPreview(): void {
+        new ProvidersApi(DEFAULT_CONFIG)
+            .providersOauth2PreviewUserRetrieve({
+                id: this.provider?.pk || 0,
+                forUser: this.previewUser?.pk,
+            })
+            .then((preview) => (this.preview = preview));
+    }
+
     render(): TemplateResult {
         if (!this.provider) {
             return html``;
@@ -88,7 +118,7 @@ export class OAuth2ProviderViewPage extends AKElement {
         return html` <ak-tabs>
             <section
                 slot="page-overview"
-                data-tab-title="${t`Overview`}"
+                data-tab-title="${msg("Overview")}"
                 @activate=${() => {
                     new ProvidersApi(DEFAULT_CONFIG)
                         .providersOauth2SetupUrlsRetrieve({
@@ -103,20 +133,16 @@ export class OAuth2ProviderViewPage extends AKElement {
             </section>
             <section
                 slot="page-preview"
-                data-tab-title="${t`Preview`}"
+                data-tab-title="${msg("Preview")}"
                 @activate=${() => {
-                    new ProvidersApi(DEFAULT_CONFIG)
-                        .providersOauth2PreviewUserRetrieve({
-                            id: this.provider?.pk || 0,
-                        })
-                        .then((preview) => (this.preview = preview));
+                    this.fetchPreview();
                 }}
             >
                 ${this.renderTabPreview()}
             </section>
             <section
                 slot="page-changelog"
-                data-tab-title="${t`Changelog`}"
+                data-tab-title="${msg("Changelog")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
@@ -129,6 +155,12 @@ export class OAuth2ProviderViewPage extends AKElement {
                     </div>
                 </div>
             </section>
+            <ak-rbac-object-permission-page
+                slot="page-permissions"
+                data-tab-title="${msg("Permissions")}"
+                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersOauth2Oauth2provider}
+                objectPk=${this.provider.pk}
+            ></ak-rbac-object-permission-page>
         </ak-tabs>`;
     }
 
@@ -139,17 +171,17 @@ export class OAuth2ProviderViewPage extends AKElement {
         return html` ${this.provider?.assignedApplicationName
                 ? html``
                 : html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${t`Warning: Provider is not used by an Application.`}
+                      ${msg("Warning: Provider is not used by an Application.")}
                   </div>`}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div
-                    class="pf-c-card pf-l-grid__item pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
+                    class="pf-c-card pf-l-grid__item pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl"
                 >
                     <div class="pf-c-card__body">
                         <dl class="pf-c-description-list">
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${t`Name`}</span>
+                                    <span class="pf-c-description-list__text">${msg("Name")}</span>
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
@@ -160,7 +192,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
                                     <span class="pf-c-description-list__text"
-                                        >${t`Assigned to application`}</span
+                                        >${msg("Assigned to application")}</span
                                     >
                                 </dt>
                                 <dd class="pf-c-description-list__description">
@@ -173,18 +205,20 @@ export class OAuth2ProviderViewPage extends AKElement {
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
                                     <span class="pf-c-description-list__text"
-                                        >${t`Client type`}</span
+                                        >${msg("Client type")}</span
                                     >
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
-                                        ${convertToTitle(this.provider.clientType || "")}
+                                        ${TypeToLabel(this.provider.clientType)}
                                     </div>
                                 </dd>
                             </div>
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${t`Client ID`}</span>
+                                    <span class="pf-c-description-list__text"
+                                        >${msg("Client ID")}</span
+                                    >
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
@@ -195,7 +229,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
                                     <span class="pf-c-description-list__text"
-                                        >${t`Redirect URIs`}</span
+                                        >${msg("Redirect URIs")}</span
                                     >
                                 </dt>
                                 <dd class="pf-c-description-list__description">
@@ -208,102 +242,106 @@ export class OAuth2ProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit"> ${t`Update`} </span>
-                            <span slot="header"> ${t`Update OAuth2 Provider`} </span>
+                            <span slot="submit"> ${msg("Update")} </span>
+                            <span slot="header"> ${msg("Update OAuth2 Provider")} </span>
                             <ak-provider-oauth2-form
                                 slot="form"
                                 .instancePk=${this.provider.pk || 0}
                             >
                             </ak-provider-oauth2-form>
                             <button slot="trigger" class="pf-c-button pf-m-primary">
-                                ${t`Edit`}
+                                ${msg("Edit")}
                             </button>
                         </ak-forms-modal>
                     </div>
                 </div>
-                <div class="pf-c-card pf-l-grid__item pf-m-7-col">
+                <div class="pf-c-card pf-l-grid__item pf-m-8-col">
                     <div class="pf-c-card__body">
                         <form class="pf-c-form">
                             <div class="pf-c-form__group">
                                 <label class="pf-c-form__label">
                                     <span class="pf-c-form__label-text"
-                                        >${t`OpenID Configuration URL`}</span
+                                        >${msg("OpenID Configuration URL")}</span
                                     >
                                 </label>
                                 <input
                                     class="pf-c-form-control"
                                     readonly
                                     type="text"
-                                    value="${this.providerUrls?.providerInfo || t`-`}"
+                                    value="${this.providerUrls?.providerInfo || msg("-")}"
                                 />
                             </div>
                             <div class="pf-c-form__group">
                                 <label class="pf-c-form__label">
                                     <span class="pf-c-form__label-text"
-                                        >${t`OpenID Configuration Issuer`}</span
+                                        >${msg("OpenID Configuration Issuer")}</span
                                     >
                                 </label>
                                 <input
                                     class="pf-c-form-control"
                                     readonly
                                     type="text"
-                                    value="${this.providerUrls?.issuer || t`-`}"
+                                    value="${this.providerUrls?.issuer || msg("-")}"
                                 />
                             </div>
-                            <hr />
+                            <hr class="pf-c-divider" />
                             <div class="pf-c-form__group">
                                 <label class="pf-c-form__label">
-                                    <span class="pf-c-form__label-text">${t`Authorize URL`}</span>
+                                    <span class="pf-c-form__label-text"
+                                        >${msg("Authorize URL")}</span
+                                    >
                                 </label>
                                 <input
                                     class="pf-c-form-control"
                                     readonly
                                     type="text"
-                                    value="${this.providerUrls?.authorize || t`-`}"
+                                    value="${this.providerUrls?.authorize || msg("-")}"
                                 />
                             </div>
                             <div class="pf-c-form__group">
                                 <label class="pf-c-form__label">
-                                    <span class="pf-c-form__label-text">${t`Token URL`}</span>
+                                    <span class="pf-c-form__label-text">${msg("Token URL")}</span>
                                 </label>
                                 <input
                                     class="pf-c-form-control"
                                     readonly
                                     type="text"
-                                    value="${this.providerUrls?.token || t`-`}"
+                                    value="${this.providerUrls?.token || msg("-")}"
                                 />
                             </div>
                             <div class="pf-c-form__group">
                                 <label class="pf-c-form__label">
-                                    <span class="pf-c-form__label-text">${t`Userinfo URL`}</span>
+                                    <span class="pf-c-form__label-text"
+                                        >${msg("Userinfo URL")}</span
+                                    >
                                 </label>
                                 <input
                                     class="pf-c-form-control"
                                     readonly
                                     type="text"
-                                    value="${this.providerUrls?.userInfo || t`-`}"
+                                    value="${this.providerUrls?.userInfo || msg("-")}"
                                 />
                             </div>
                             <div class="pf-c-form__group">
                                 <label class="pf-c-form__label">
-                                    <span class="pf-c-form__label-text">${t`Logout URL`}</span>
+                                    <span class="pf-c-form__label-text">${msg("Logout URL")}</span>
                                 </label>
                                 <input
                                     class="pf-c-form-control"
                                     readonly
                                     type="text"
-                                    value="${this.providerUrls?.logout || t`-`}"
+                                    value="${this.providerUrls?.logout || msg("-")}"
                                 />
                             </div>
                             <div class="pf-c-form__group">
                                 <label class="pf-c-form__label">
-                                    <span class="pf-c-form__label-text">${t`JWKS URL`}</span>
+                                    <span class="pf-c-form__label-text">${msg("JWKS URL")}</span>
                                 </label>
                                 <input
                                     class="pf-c-form-control"
                                     readonly
                                     type="text"
-                                    value="${this.providerUrls?.jwks || t`-`}"
+                                    value="${this.providerUrls?.jwks || msg("-")}"
                                 />
                             </div>
                         </form>
@@ -326,6 +364,8 @@ export class OAuth2ProviderViewPage extends AKElement {
                                 },
                             ]}
                             .md=${MDProviderOAuth2}
+                            meta="providers/oauth2/index.md"
+                            ;
                         ></ak-markdown>
                     </div>
                 </div>
@@ -340,8 +380,50 @@ export class OAuth2ProviderViewPage extends AKElement {
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
         >
             <div class="pf-c-card">
-                <div class="pf-c-card__title">
-                    ${t`Example JWT payload (for currently authenticated user)`}
+                <div class="pf-c-card__title">${msg("JWT payload")}</div>
+                <div class="pf-c-card__body">
+                    ${renderDescriptionList(
+                        [
+                            [
+                                msg("Preview for user"),
+                                html`
+                                    <ak-search-select
+                                        .fetchObjects=${async (query?: string): Promise<User[]> => {
+                                            const args: CoreUsersListRequest = {
+                                                ordering: "username",
+                                            };
+                                            if (query !== undefined) {
+                                                args.search = query;
+                                            }
+                                            const users = await new CoreApi(
+                                                DEFAULT_CONFIG,
+                                            ).coreUsersList(args);
+                                            return users.results;
+                                        }}
+                                        .renderElement=${(user: User): string => {
+                                            return user.username;
+                                        }}
+                                        .renderDescription=${(user: User): TemplateResult => {
+                                            return html`${user.name}`;
+                                        }}
+                                        .value=${(user: User | undefined): number | undefined => {
+                                            return user?.pk;
+                                        }}
+                                        .selected=${(user: User): boolean => {
+                                            return user.pk === this.previewUser?.pk;
+                                        }}
+                                        ?blankable=${true}
+                                        @ak-change=${(ev: CustomEvent) => {
+                                            this.previewUser = ev.detail.value;
+                                            this.fetchPreview();
+                                        }}
+                                    >
+                                    </ak-search-select>
+                                `,
+                            ],
+                        ],
+                        { horizontal: true },
+                    )}
                 </div>
                 <div class="pf-c-card__body">
                     ${this.preview

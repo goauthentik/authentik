@@ -1,11 +1,9 @@
 import { groupBy } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import "@goauthentik/user/LibraryApplication";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -36,15 +34,17 @@ import type { AppGroupList, PageUIConfig } from "./types";
 
 @customElement("ak-library-impl")
 export class LibraryPage extends AKElement {
-    static styles = styles;
-
-    @property()
-    apps!: PaginatedResponse<Application>;
+    static get styles() {
+        return styles;
+    }
 
     @property({ attribute: "isadmin", type: Boolean })
     isAdmin = false;
 
-    @property()
+    @property({ attribute: false, type: Array })
+    apps!: Application[];
+
+    @property({ attribute: false })
     uiConfig!: PageUIConfig;
 
     @state()
@@ -60,12 +60,12 @@ export class LibraryPage extends AKElement {
     }
 
     pageTitle(): string {
-        return t`My Applications`;
+        return msg("My Applications");
     }
 
     connectedCallback() {
         super.connectedCallback();
-        this.filteredApps = this.apps?.results;
+        this.filteredApps = this.apps;
         if (this.filteredApps === undefined) {
             throw new Error(
                 "Application.results should never be undefined when passed to the Library Page.",
@@ -88,7 +88,7 @@ export class LibraryPage extends AKElement {
         event.stopPropagation();
         const apps = event.detail.apps;
         this.selectedApp = undefined;
-        this.filteredApps = this.apps.results;
+        this.filteredApps = this.apps;
         if (apps.length > 0) {
             this.selectedApp = apps[0];
             this.filteredApps = event.detail.apps;
@@ -131,13 +131,15 @@ export class LibraryPage extends AKElement {
     }
 
     renderSearch() {
-        return html`<ak-library-list-search .apps=${this.apps.results}></ak-library-list-search>`;
+        return html`<ak-library-list-search .apps=${this.apps}></ak-library-list-search>`;
     }
 
     render() {
         return html`<main role="main" class="pf-c-page__main" tabindex="-1" id="main-content">
             <div class="pf-c-content header">
-                <h1>${t`My applications`}</h1>
+                <h1 role="heading" aria-level="1" id="library-page-title">
+                    ${msg("My applications")}
+                </h1>
                 ${this.uiConfig.searchEnabled ? this.renderSearch() : html``}
             </div>
             <section class="pf-c-page__main-section">

@@ -1,5 +1,4 @@
 """authentik saml_idp Models"""
-from typing import Optional
 
 from django.db import models
 from django.urls import reverse
@@ -12,6 +11,10 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.sources.saml.processors.constants import (
     DSA_SHA1,
+    ECDSA_SHA1,
+    ECDSA_SHA256,
+    ECDSA_SHA384,
+    ECDSA_SHA512,
     RSA_SHA1,
     RSA_SHA256,
     RSA_SHA384,
@@ -93,8 +96,7 @@ class SAMLProvider(Provider):
         ),
     )
 
-    digest_algorithm = models.CharField(
-        max_length=50,
+    digest_algorithm = models.TextField(
         choices=(
             (SHA1, _("SHA1")),
             (SHA256, _("SHA256")),
@@ -103,13 +105,16 @@ class SAMLProvider(Provider):
         ),
         default=SHA256,
     )
-    signature_algorithm = models.CharField(
-        max_length=50,
+    signature_algorithm = models.TextField(
         choices=(
             (RSA_SHA1, _("RSA-SHA1")),
             (RSA_SHA256, _("RSA-SHA256")),
             (RSA_SHA384, _("RSA-SHA384")),
             (RSA_SHA512, _("RSA-SHA512")),
+            (ECDSA_SHA1, _("ECDSA-SHA1")),
+            (ECDSA_SHA256, _("ECDSA-SHA256")),
+            (ECDSA_SHA384, _("ECDSA-SHA384")),
+            (ECDSA_SHA512, _("ECDSA-SHA512")),
             (DSA_SHA1, _("DSA-SHA1")),
         ),
         default=RSA_SHA256,
@@ -138,11 +143,15 @@ class SAMLProvider(Provider):
         verbose_name=_("Signing Keypair"),
     )
 
+    default_relay_state = models.TextField(
+        default="", blank=True, help_text=_("Default relay_state value for IDP-initiated logins")
+    )
+
     @property
-    def launch_url(self) -> Optional[str]:
+    def launch_url(self) -> str | None:
         """Use IDP-Initiated SAML flow as launch URL"""
         try:
-            # pylint: disable=no-member
+
             return reverse(
                 "authentik_providers_saml:sso-init",
                 kwargs={"application_slug": self.application.slug},

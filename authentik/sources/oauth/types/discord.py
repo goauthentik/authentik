@@ -1,4 +1,5 @@
 """Discord OAuth Views"""
+
 from typing import Any
 
 from authentik.sources.oauth.types.registry import SourceType, registry
@@ -36,8 +37,8 @@ class DiscordType(SourceType):
 
     callback_view = DiscordOAuth2Callback
     redirect_view = DiscordOAuthRedirect
-    name = "Discord"
-    slug = "discord"
+    verbose_name = "Discord"
+    name = "discord"
 
     authorization_url = "https://discord.com/api/oauth2/authorize"
     access_token_url = "https://discord.com/api/oauth2/token"  # nosec

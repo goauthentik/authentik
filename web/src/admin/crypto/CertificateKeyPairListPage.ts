@@ -2,36 +2,45 @@ import "@goauthentik/admin/crypto/CertificateGenerateForm";
 import "@goauthentik/admin/crypto/CertificateKeyPairForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
+import "@goauthentik/components/ak-status-label";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/rbac/ObjectPermissionModal";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { CertificateKeyPair, CryptoApi } from "@goauthentik/api";
+import {
+    CertificateKeyPair,
+    CryptoApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+} from "@goauthentik/api";
 
 @customElement("ak-crypto-certificate-list")
 export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     expandable = true;
     checkbox = true;
+    clearOnRefresh = true;
 
     searchEnabled(): boolean {
         return true;
     }
     pageTitle(): string {
-        return t`Certificate-Key Pairs`;
+        return msg("Certificate-Key Pairs");
     }
     pageDescription(): string {
-        return t`Import certificates of external providers or create certificates to sign requests with.`;
+        return msg(
+            "Import certificates of external providers or create certificates to sign requests with.",
+        );
     }
     pageIcon(): string {
         return "pf-icon pf-icon-key";
@@ -55,22 +64,22 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Name`, "name"),
-            new TableColumn(t`Private key available?`),
-            new TableColumn(t`Expiry date`),
-            new TableColumn(t`Actions`),
+            new TableColumn(msg("Name"), "name"),
+            new TableColumn(msg("Private key available?")),
+            new TableColumn(msg("Expiry date")),
+            new TableColumn(msg("Actions")),
         ];
     }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${t`Certificate-Key Pair(s)`}
+            objectLabel=${msg("Certificate-Key Pair(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: CertificateKeyPair) => {
                 return [
-                    { key: t`Name`, value: item.name },
-                    { key: t`Expiry`, value: item.certExpiry?.toLocaleString() },
+                    { key: msg("Name"), value: item.name },
+                    { key: msg("Expiry"), value: item.certExpiry?.toLocaleString() },
                 ];
             }}
             .usedBy=${(item: CertificateKeyPair) => {
@@ -85,15 +94,15 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete`}
+                ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
     }
 
     row(item: CertificateKeyPair): TemplateResult[] {
-        let managedSubText = t`Managed by authentik`;
+        let managedSubText = msg("Managed by authentik");
         if (item.managed && item.managed.startsWith("goauthentik.io/crypto/discovered")) {
-            managedSubText = t`Managed by authentik (Discovered)`;
+            managedSubText = msg("Managed by authentik (Discovered)");
         }
         let color = PFColor.Green;
         if (item.certExpiry) {
@@ -110,19 +119,29 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
         return [
             html`<div>${item.name}</div>
                 ${item.managed ? html`<small>${managedSubText}</small>` : html``}`,
-            html`<ak-label color=${item.privateKeyAvailable ? PFColor.Green : PFColor.Grey}>
-                ${item.privateKeyAvailable ? t`Yes (${item.privateKeyType?.toUpperCase()})` : t`No`}
-            </ak-label>`,
+            html`<ak-status-label
+                type="info"
+                ?good=${item.privateKeyAvailable}
+                good-label=${msg(str`Yes (${item.privateKeyType?.toUpperCase()})`)}
+            >
+            </ak-status-label>`,
             html`<ak-label color=${color}> ${item.certExpiry?.toLocaleString()} </ak-label>`,
             html`<ak-forms-modal>
-                <span slot="submit"> ${t`Update`} </span>
-                <span slot="header"> ${t`Update Certificate-Key Pair`} </span>
-                <ak-crypto-certificate-form slot="form" .instancePk=${item.pk}>
-                </ak-crypto-certificate-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <i class="fas fa-edit"></i>
-                </button>
-            </ak-forms-modal>`,
+                    <span slot="submit"> ${msg("Update")} </span>
+                    <span slot="header"> ${msg("Update Certificate-Key Pair")} </span>
+                    <ak-crypto-certificate-form slot="form" .instancePk=${item.pk}>
+                    </ak-crypto-certificate-form>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit"></i>
+                        </pf-tooltip>
+                    </button>
+                </ak-forms-modal>
+                <ak-rbac-object-permission-modal
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.CryptoCertificatekeypair}
+                    objectPk=${item.pk}
+                >
+                </ak-rbac-object-permission-modal>`,
         ];
     }
 
@@ -133,7 +152,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                         <div class="pf-c-description-list__group">
                             <dt class="pf-c-description-list__term">
                                 <span class="pf-c-description-list__text"
-                                    >${t`Certificate Fingerprint (SHA1)`}</span
+                                    >${msg("Certificate Fingerprint (SHA1)")}</span
                                 >
                             </dt>
                             <dd class="pf-c-description-list__description">
@@ -145,7 +164,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                         <div class="pf-c-description-list__group">
                             <dt class="pf-c-description-list__term">
                                 <span class="pf-c-description-list__text"
-                                    >${t`Certificate Fingerprint (SHA256)`}</span
+                                    >${msg("Certificate Fingerprint (SHA256)")}</span
                                 >
                             </dt>
                             <dd class="pf-c-description-list__description">
@@ -157,7 +176,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                         <div class="pf-c-description-list__group">
                             <dt class="pf-c-description-list__term">
                                 <span class="pf-c-description-list__text"
-                                    >${t`Certificate Subject`}</span
+                                    >${msg("Certificate Subject")}</span
                                 >
                             </dt>
                             <dd class="pf-c-description-list__description">
@@ -166,7 +185,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                         </div>
                         <div class="pf-c-description-list__group">
                             <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text">${t`Download`}</span>
+                                <span class="pf-c-description-list__text">${msg("Download")}</span>
                             </dt>
                             <dd class="pf-c-description-list__description">
                                 <div class="pf-c-description-list__text">
@@ -175,7 +194,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                                         target="_blank"
                                         href=${item.certificateDownloadUrl}
                                     >
-                                        ${t`Download Certificate`}
+                                        ${msg("Download Certificate")}
                                     </a>
                                     ${item.privateKeyAvailable
                                         ? html`<a
@@ -183,7 +202,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                                               target="_blank"
                                               href=${item.privateKeyDownloadUrl}
                                           >
-                                              ${t`Download Private key`}
+                                              ${msg("Download Private key")}
                                           </a>`
                                         : html``}
                                 </div>
@@ -199,17 +218,19 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${t`Create`} </span>
-                <span slot="header"> ${t`Create Certificate-Key Pair`} </span>
+                <span slot="submit"> ${msg("Create")} </span>
+                <span slot="header"> ${msg("Create Certificate-Key Pair")} </span>
                 <ak-crypto-certificate-form slot="form"> </ak-crypto-certificate-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
             <ak-forms-modal>
-                <span slot="submit"> ${t`Generate`} </span>
-                <span slot="header"> ${t`Generate Certificate-Key Pair`} </span>
+                <span slot="submit"> ${msg("Generate")} </span>
+                <span slot="header"> ${msg("Generate Certificate-Key Pair")} </span>
                 <ak-crypto-certificate-generate-form slot="form">
                 </ak-crypto-certificate-generate-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">${t`Generate`}</button>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
+                    ${msg("Generate")}
+                </button>
             </ak-forms-modal>
         `;
     }

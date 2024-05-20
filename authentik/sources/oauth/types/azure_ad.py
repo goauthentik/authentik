@@ -1,11 +1,12 @@
 """AzureAD OAuth2 Views"""
+
 from typing import Any
 
 from structlog.stdlib import get_logger
 
 from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
+from authentik.sources.oauth.types.oidc import OpenIDConnectOAuth2Callback
 from authentik.sources.oauth.types.registry import SourceType, registry
-from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 LOGGER = get_logger()
@@ -20,10 +21,15 @@ class AzureADOAuthRedirect(OAuthRedirect):
         }
 
 
-class AzureADOAuthCallback(OAuthCallback):
+class AzureADOAuthCallback(OpenIDConnectOAuth2Callback):
     """AzureAD OAuth2 Callback"""
 
     client_class = UserprofileHeaderAuthClient
+
+    def get_user_id(self, info: dict[str, str]) -> str:
+        # Default try to get `id` for the Graph API endpoint
+        # fallback to OpenID logic in case the profile URL was changed
+        return info.get("id", super().get_user_id(info))
 
     def get_user_enroll_context(
         self,
@@ -43,11 +49,15 @@ class AzureADType(SourceType):
 
     callback_view = AzureADOAuthCallback
     redirect_view = AzureADOAuthRedirect
-    name = "Azure AD"
-    slug = "azuread"
+    verbose_name = "Azure AD"
+    name = "azuread"
 
     urls_customizable = True
 
     authorization_url = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize"
     access_token_url = "https://login.microsoftonline.com/common/oauth2/v2.0/token"  # nosec
     profile_url = "https://graph.microsoft.com/v1.0/me"
+    oidc_well_known_url = (
+        "https://login.microsoftonline.com/common/.well-known/openid-configuration"
+    )
+    oidc_jwks_url = "https://login.microsoftonline.com/common/discovery/keys"

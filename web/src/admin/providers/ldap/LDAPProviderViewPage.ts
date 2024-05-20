@@ -3,16 +3,16 @@ import "@goauthentik/admin/providers/ldap/LDAPProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { me } from "@goauthentik/common/users";
+import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/events/ObjectChangelog";
+import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 
-import { t } from "@lingui/macro";
-
-import { CSSResult, TemplateResult, html } from "lit";
+import { msg } from "@lit/localize";
+import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -28,25 +28,19 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { LDAPProvider, ProvidersApi, SessionUser } from "@goauthentik/api";
+import {
+    LDAPProvider,
+    ProvidersApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    SessionUser,
+} from "@goauthentik/api";
 
 @customElement("ak-provider-ldap-view")
 export class LDAPProviderViewPage extends AKElement {
-    @property()
-    set args(value: { [key: string]: number }) {
-        this.providerID = value.id;
-    }
-
     @property({ type: Number })
-    set providerID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
-            .providersLdapRetrieve({
-                id: value,
-            })
-            .then((prov) => (this.provider = prov));
-    }
+    providerID?: number;
 
-    @property({ attribute: false })
+    @state()
     provider?: LDAPProvider;
 
     @state()
@@ -79,17 +73,29 @@ export class LDAPProviderViewPage extends AKElement {
         });
     }
 
+    fetchProvider(id: number) {
+        new ProvidersApi(DEFAULT_CONFIG)
+            .providersLdapRetrieve({ id })
+            .then((prov) => (this.provider = prov));
+    }
+
+    willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("providerID") && this.providerID) {
+            this.fetchProvider(this.providerID);
+        }
+    }
+
     render(): TemplateResult {
         if (!this.provider) {
             return html``;
         }
         return html` <ak-tabs>
-            <section slot="page-overview" data-tab-title="${t`Overview`}">
+            <section slot="page-overview" data-tab-title="${msg("Overview")}">
                 ${this.renderTabOverview()}
             </section>
             <section
                 slot="page-changelog"
-                data-tab-title="${t`Changelog`}"
+                data-tab-title="${msg("Changelog")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
@@ -102,6 +108,12 @@ export class LDAPProviderViewPage extends AKElement {
                     </div>
                 </div>
             </section>
+            <ak-rbac-object-permission-page
+                slot="page-permissions"
+                data-tab-title="${msg("Permissions")}"
+                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersLdapLdapprovider}
+                objectPk=${this.provider.pk}
+            ></ak-rbac-object-permission-page>
         </ak-tabs>`;
     }
 
@@ -113,7 +125,7 @@ export class LDAPProviderViewPage extends AKElement {
             ${
                 this.provider?.outpostSet.length < 1
                     ? html`<div slot="header" class="pf-c-banner pf-m-warning">
-                          ${t`Warning: Provider is not used by any Outpost.`}
+                          ${msg("Warning: Provider is not used by any Outpost.")}
                       </div>`
                     : html``
             }
@@ -123,7 +135,7 @@ export class LDAPProviderViewPage extends AKElement {
                         <dl class="pf-c-description-list pf-m-3-col-on-lg">
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${t`Name`}</span>
+                                    <span class="pf-c-description-list__text">${msg("Name")}</span>
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
@@ -134,7 +146,7 @@ export class LDAPProviderViewPage extends AKElement {
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
                                     <span class="pf-c-description-list__text"
-                                        >${t`Assigned to application`}</span
+                                        >${msg("Assigned to application")}</span
                                     >
                                 </dt>
                                 <dd class="pf-c-description-list__description">
@@ -148,7 +160,7 @@ export class LDAPProviderViewPage extends AKElement {
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
                                     <span class="pf-c-description-list__text"
-                                        >${t`Base DN`}</span
+                                        >${msg("Base DN")}</span
                                     >
                                 </dt>
                                 <dd class="pf-c-description-list__description">
@@ -161,32 +173,32 @@ export class LDAPProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit"> ${t`Update`} </span>
-                            <span slot="header"> ${t`Update LDAP Provider`} </span>
+                            <span slot="submit"> ${msg("Update")} </span>
+                            <span slot="header"> ${msg("Update LDAP Provider")} </span>
                             <ak-provider-ldap-form slot="form" .instancePk=${this.provider.pk}>
                             </ak-provider-ldap-form>
                             <button slot="trigger" class="pf-c-button pf-m-primary">
-                                ${t`Edit`}
+                                ${msg("Edit")}
                             </button>
                         </ak-forms-modal>
                     </div>
                 </div>
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                     <div class="pf-c-card__title">
-                        ${t`How to connect`}
+                        ${msg("How to connect")}
                     </div>
                     <div class="pf-c-card__body">
                         <p>
-                            ${t`Connect to the LDAP Server on port 389:`}
+                            ${msg("Connect to the LDAP Server on port 389:")}
                         </p>
                         <ul class="pf-c-list">
-                            <li>${t`Check the IP of the Kubernetes service, or`}</li>
-                            <li>${t`The Host IP of the docker host`}</li>
+                            <li>${msg("Check the IP of the Kubernetes service, or")}</li>
+                            <li>${msg("The Host IP of the docker host")}</li>
                         </ul>
                         <form class="pf-c-form">
                             <div class="pf-c-form__group">
                                 <label class="pf-c-form__label">
-                                    <span class="pf-c-form__label-text">${t`Bind DN`}</span>
+                                    <span class="pf-c-form__label-text">${msg("Bind DN")}</span>
                                 </label>
                                 <input
                                     class="pf-c-form-control"
@@ -199,7 +211,9 @@ export class LDAPProviderViewPage extends AKElement {
                             </div>
                             <div class="pf-c-form__group">
                                 <label class="pf-c-form__label">
-                                    <span class="pf-c-form__label-text">${t`Bind Password`}</span>
+                                    <span class="pf-c-form__label-text">${msg(
+                                        "Bind Password",
+                                    )}</span>
                                 </label>
                                 <input
                                     class="pf-c-form-control"
@@ -210,7 +224,7 @@ export class LDAPProviderViewPage extends AKElement {
                             </div>
                             <div class="pf-c-form__group">
                                 <label class="pf-c-form__label">
-                                    <span class="pf-c-form__label-text">${t`Search base`}</span>
+                                    <span class="pf-c-form__label-text">${msg("Search base")}</span>
                                 </label>
                                 <input
                                     class="pf-c-form-control"

@@ -1,7 +1,8 @@
 """authentik core models"""
-from datetime import timedelta
+
+from datetime import datetime
 from hashlib import sha256
-from typing import Any, Optional
+from typing import Any, Optional, Self
 from uuid import uuid4
 
 from deepmerge import always_merger
@@ -14,60 +15,89 @@ from django.http import HttpRequest
 from django.utils.functional import SimpleLazyObject, cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from guardian.conf import settings
 from guardian.mixins import GuardianUserMixin
 from model_utils.managers import InheritanceManager
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.models import ManagedModel
-from authentik.core.exceptions import PropertyMappingExpressionException
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
-from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
 from authentik.lib.models import (
     CreatedUpdatedModel,
     DomainlessFormattedURLValidator,
     SerializerModel,
 )
-from authentik.lib.utils.http import get_client_ip
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
-from authentik.root.install_id import get_install_id
+from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
+from authentik.tenants.utils import get_current_tenant, get_unique_identifier
 
 LOGGER = get_logger()
 USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
-USER_ATTRIBUTE_SA = "goauthentik.io/user/service-account"
 USER_ATTRIBUTE_GENERATED = "goauthentik.io/user/generated"
 USER_ATTRIBUTE_EXPIRES = "goauthentik.io/user/expires"
 USER_ATTRIBUTE_DELETE_ON_LOGOUT = "goauthentik.io/user/delete-on-logout"
 USER_ATTRIBUTE_SOURCES = "goauthentik.io/user/sources"
 USER_ATTRIBUTE_TOKEN_EXPIRING = "goauthentik.io/user/token-expires"  # nosec
+USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME = "goauthentik.io/user/token-maximum-lifetime"  # nosec
 USER_ATTRIBUTE_CHANGE_USERNAME = "goauthentik.io/user/can-change-username"
 USER_ATTRIBUTE_CHANGE_NAME = "goauthentik.io/user/can-change-name"
 USER_ATTRIBUTE_CHANGE_EMAIL = "goauthentik.io/user/can-change-email"
-USER_ATTRIBUTE_CAN_OVERRIDE_IP = "goauthentik.io/user/override-ips"
-
 USER_PATH_SYSTEM_PREFIX = "goauthentik.io"
 USER_PATH_SERVICE_ACCOUNT = USER_PATH_SYSTEM_PREFIX + "/service-accounts"
 
+options.DEFAULT_NAMES = options.DEFAULT_NAMES + (
+    # used_by API that allows models to specify if they shadow an object
+    # for example the proxy provider which is built on top of an oauth provider
+    "authentik_used_by_shadows",
+)
 
-options.DEFAULT_NAMES = options.DEFAULT_NAMES + ("authentik_used_by_shadows",)
 
-
-def default_token_duration():
+def default_token_duration() -> datetime:
     """Default duration a Token is valid"""
-    return now() + timedelta(minutes=30)
+    current_tenant = get_current_tenant()
+    token_duration = (
+        current_tenant.default_token_duration
+        if hasattr(current_tenant, "default_token_duration")
+        else DEFAULT_TOKEN_DURATION
+    )
+    return now() + timedelta_from_string(token_duration)
 
 
-def default_token_key():
+def default_token_key() -> str:
     """Default token key"""
+    current_tenant = get_current_tenant()
+    token_length = (
+        current_tenant.default_token_length
+        if hasattr(current_tenant, "default_token_length")
+        else DEFAULT_TOKEN_LENGTH
+    )
     # We use generate_id since the chars in the key should be easy
     # to use in Emails (for verification) and URLs (for recovery)
-    return generate_id(int(CONFIG.y("default_token_length")))
+    return generate_id(token_length)
+
+
+class UserTypes(models.TextChoices):
+    """User types, both for grouping, licensing and permissions in the case
+    of the internal_service_account"""
+
+    INTERNAL = "internal"
+    EXTERNAL = "external"
+
+    # User-created service accounts
+    SERVICE_ACCOUNT = "service_account"
+
+    # Special user type for internally managed and created service
+    # accounts, such as outpost users
+    INTERNAL_SERVICE_ACCOUNT = "internal_service_account"
 
 
 class Group(SerializerModel):
-    """Custom Group model which supports a basic hierarchy"""
+    """Group model which supports a basic hierarchy and has attributes"""
 
     group_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
@@ -75,6 +105,8 @@ class Group(SerializerModel):
     is_superuser = models.BooleanField(
         default=False, help_text=_("Users added to this group will be superusers.")
     )
+
+    roles = models.ManyToManyField("authentik_rbac.Role", related_name="ak_groups", blank=True)
 
     parent = models.ForeignKey(
         "Group",
@@ -101,27 +133,39 @@ class Group(SerializerModel):
 
     def is_member(self, user: "User") -> bool:
         """Recursively check if `user` is member of us, or any parent."""
+        return user.all_groups().filter(group_uuid=self.group_uuid).exists()
+
+    def children_recursive(self: Self | QuerySet["Group"]) -> QuerySet["Group"]:
+        """Recursively get all groups that have this as parent or are indirectly related"""
+        direct_groups = []
+        if isinstance(self, QuerySet):
+            direct_groups = list(x for x in self.all().values_list("pk", flat=True).iterator())
+        else:
+            direct_groups = [self.pk]
+        if len(direct_groups) < 1:
+            return Group.objects.none()
         query = """
         WITH RECURSIVE parents AS (
             SELECT authentik_core_group.*, 0 AS relative_depth
             FROM authentik_core_group
-            WHERE authentik_core_group.group_uuid = %s
+            WHERE authentik_core_group.group_uuid = ANY(%s)
 
             UNION ALL
 
-            SELECT authentik_core_group.*, parents.relative_depth - 1
-            FROM authentik_core_group,parents
+            SELECT authentik_core_group.*, parents.relative_depth + 1
+            FROM authentik_core_group, parents
             WHERE (
-                authentik_core_group.parent_id = parents.group_uuid and
-                parents.relative_depth > -20
+                authentik_core_group.group_uuid = parents.parent_id and
+                parents.relative_depth < 20
             )
         )
         SELECT group_uuid
         FROM parents
-        GROUP BY group_uuid;
+        GROUP BY group_uuid, name
+        ORDER BY name;
         """
-        groups = Group.objects.raw(query, [self.group_uuid])
-        return user.ak_groups.filter(pk__in=[group.pk for group in groups]).exists()
+        group_pks = [group.pk for group in Group.objects.raw(query, [direct_groups]).iterator()]
+        return Group.objects.filter(pk__in=group_pks)
 
     def __str__(self):
         return f"Group {self.name}"
@@ -133,22 +177,46 @@ class Group(SerializerModel):
                 "parent",
             ),
         )
+        indexes = [models.Index(fields=["name"])]
+        verbose_name = _("Group")
+        verbose_name_plural = _("Groups")
+        permissions = [
+            ("add_user_to_group", _("Add user to group")),
+            ("remove_user_from_group", _("Remove user from group")),
+        ]
+
+
+class UserQuerySet(models.QuerySet):
+    """User queryset"""
+
+    def exclude_anonymous(self):
+        """Exclude anonymous user"""
+        return self.exclude(**{User.USERNAME_FIELD: settings.ANONYMOUS_USER_NAME})
 
 
 class UserManager(DjangoUserManager):
-    """Custom user manager that doesn't assign is_superuser and is_staff"""
+    """User manager that doesn't assign is_superuser and is_staff"""
+
+    def get_queryset(self):
+        """Create special user queryset"""
+        return UserQuerySet(self.model, using=self._db)
 
     def create_user(self, username, email=None, password=None, **extra_fields):
-        """Custom user manager that doesn't assign is_superuser and is_staff"""
+        """User manager that doesn't assign is_superuser and is_staff"""
         return self._create_user(username, email, password, **extra_fields)
+
+    def exclude_anonymous(self) -> QuerySet:
+        """Exclude anonymous user"""
+        return self.get_queryset().exclude_anonymous()
 
 
 class User(SerializerModel, GuardianUserMixin, AbstractUser):
-    """Custom User model to allow easier adding of user-based settings"""
+    """authentik User model, based on django's contrib auth user model."""
 
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
     name = models.TextField(help_text=_("User's display name."))
     path = models.TextField(default="users")
+    type = models.TextField(choices=UserTypes.choices, default=UserTypes.INTERNAL)
 
     sources = models.ManyToManyField("Source", through="UserSourceConnection")
     ak_groups = models.ManyToManyField("Group", related_name="users")
@@ -163,13 +231,19 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         """Get the default user path"""
         return User._meta.get_field("path").default
 
-    def group_attributes(self, request: Optional[HttpRequest] = None) -> dict[str, Any]:
+    def all_groups(self) -> QuerySet[Group]:
+        """Recursively get all groups this user is a member of.
+        At least one query is done to get the direct groups of the user, with groups
+        there are at most 3 queries done"""
+        return Group.children_recursive(self.ak_groups.all())
+
+    def group_attributes(self, request: HttpRequest | None = None) -> dict[str, Any]:
         """Get a dictionary containing the attributes from all groups the user belongs to,
         including the users attributes"""
         final_attributes = {}
-        if request and hasattr(request, "tenant"):
-            always_merger.merge(final_attributes, request.tenant.attributes)
-        for group in self.ak_groups.all().order_by("name"):
+        if request and hasattr(request, "brand"):
+            always_merger.merge(final_attributes, request.brand.attributes)
+        for group in self.all_groups().order_by("name"):
             always_merger.merge(final_attributes, group.attributes)
         always_merger.merge(final_attributes, self.attributes)
         return final_attributes
@@ -183,7 +257,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
     @cached_property
     def is_superuser(self) -> bool:
         """Get supseruser status based on membership in a group with superuser status"""
-        return self.ak_groups.filter(is_superuser=True).exists()
+        return self.all_groups().filter(is_superuser=True).exists()
 
     @property
     def is_staff(self) -> bool:
@@ -217,17 +291,17 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
     @property
     def uid(self) -> str:
         """Generate a globally unique UID, based on the user ID and the hashed secret key"""
-        return sha256(f"{self.id}-{get_install_id()}".encode("ascii")).hexdigest()
+        return sha256(f"{self.id}-{get_unique_identifier()}".encode("ascii")).hexdigest()
 
-    def locale(self, request: Optional[HttpRequest] = None) -> str:
+    def locale(self, request: HttpRequest | None = None) -> str:
         """Get the locale the user has configured"""
         try:
             return self.attributes.get("settings", {}).get("locale", "")
-        # pylint: disable=broad-except
+
         except Exception as exc:
             LOGGER.warning("Failed to get default locale", exc=exc)
         if request:
-            return request.tenant.locale
+            return request.brand.locale
         return ""
 
     @property
@@ -236,12 +310,23 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         return get_avatar(self)
 
     class Meta:
-        permissions = (
-            ("reset_user_password", "Reset Password"),
-            ("impersonate", "Can impersonate other users"),
-        )
         verbose_name = _("User")
         verbose_name_plural = _("Users")
+        permissions = [
+            ("reset_user_password", _("Reset Password")),
+            ("impersonate", _("Can impersonate other users")),
+            ("assign_user_permissions", _("Can assign permissions to users")),
+            ("unassign_user_permissions", _("Can unassign permissions from users")),
+            ("preview_user", _("Can preview user data sent to providers")),
+            ("view_user_applications", _("View applications the user has access to")),
+        ]
+        indexes = [
+            models.Index(fields=["last_login"]),
+            models.Index(fields=["password_change_date"]),
+            models.Index(fields=["uuid"]),
+            models.Index(fields=["path"]),
+            models.Index(fields=["type"]),
+        ]
 
 
 class Provider(SerializerModel):
@@ -287,7 +372,7 @@ class Provider(SerializerModel):
     objects = InheritanceManager()
 
     @property
-    def launch_url(self) -> Optional[str]:
+    def launch_url(self) -> str | None:
         """URL to this provider and initiate authorization for the user.
         Can return None for providers that are not URL-based"""
         return None
@@ -364,7 +449,7 @@ class Application(SerializerModel, PolicyBindingModel):
         return ApplicationSerializer
 
     @property
-    def get_meta_icon(self) -> Optional[str]:
+    def get_meta_icon(self) -> str | None:
         """Get the URL to the App Icon image. If the name is /static or starts with http
         it is returned as-is"""
         if not self.meta_icon:
@@ -373,26 +458,26 @@ class Application(SerializerModel, PolicyBindingModel):
             return self.meta_icon.name
         return self.meta_icon.url
 
-    def get_launch_url(self, user: Optional["User"] = None) -> Optional[str]:
+    def get_launch_url(self, user: Optional["User"] = None) -> str | None:
         """Get launch URL if set, otherwise attempt to get launch URL based on provider."""
         url = None
-        if provider := self.get_provider():
-            url = provider.launch_url
         if self.meta_launch_url:
             url = self.meta_launch_url
+        elif provider := self.get_provider():
+            url = provider.launch_url
         if user and url:
             if isinstance(user, SimpleLazyObject):
                 user._setup()
                 user = user._wrapped
             try:
                 return url % user.__dict__
-            # pylint: disable=broad-except
+
             except Exception as exc:
                 LOGGER.warning("Failed to format launch url", exc=exc)
                 return url
         return url
 
-    def get_provider(self) -> Optional[Provider]:
+    def get_provider(self) -> Provider | None:
         """Get casted provider instance"""
         if not self.provider:
             return None
@@ -480,7 +565,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     objects = InheritanceManager()
 
     @property
-    def get_icon(self) -> Optional[str]:
+    def icon_url(self) -> str | None:
         """Get the URL to the Icon. If the name is /static or
         starts with http it is returned as-is"""
         if not self.icon:
@@ -495,7 +580,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
             return self.user_path_template % {
                 "slug": self.slug,
             }
-        # pylint: disable=broad-except
+
         except Exception as exc:
             LOGGER.warning("Failed to template user path", exc=exc, source=self)
             return User.default_path()
@@ -505,12 +590,12 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         """Return component used to edit this object"""
         raise NotImplementedError
 
-    def ui_login_button(self, request: HttpRequest) -> Optional[UILoginButton]:
+    def ui_login_button(self, request: HttpRequest) -> UILoginButton | None:
         """If source uses a http-based flow, return UI Information about the login
         button. If source doesn't use http-based flow, return None."""
         return None
 
-    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+    def ui_user_settings(self) -> UserSettingSerializer | None:
         """Entrypoint to integrate with User settings. Can either return None if no
         user settings are available, or UserSettingSerializer."""
         return None
@@ -546,6 +631,9 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
         """Get serializer for this model"""
         raise NotImplementedError
 
+    def __str__(self) -> str:
+        return f"User-source connection (user={self.user_id}, source={self.source_id})"
+
     class Meta:
         unique_together = (("user", "source"),)
 
@@ -553,8 +641,11 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
 class ExpiringModel(models.Model):
     """Base Model which can expire, and is automatically cleaned up."""
 
-    expires = models.DateTimeField(default=default_token_duration)
+    expires = models.DateTimeField(default=None, null=True)
     expiring = models.BooleanField(default=True)
+
+    class Meta:
+        abstract = True
 
     def expire_action(self, *args, **kwargs):
         """Handler which is called when this object is expired. By
@@ -564,7 +655,7 @@ class ExpiringModel(models.Model):
         return self.delete(*args, **kwargs)
 
     @classmethod
-    def filter_not_expired(cls, **kwargs) -> QuerySet:
+    def filter_not_expired(cls, **kwargs) -> QuerySet["Token"]:
         """Filer for tokens which are not expired yet or are not expiring,
         and match filters in `kwargs`"""
         for obj in cls.objects.filter(**kwargs).filter(Q(expires__lt=now(), expiring=True)):
@@ -577,9 +668,6 @@ class ExpiringModel(models.Model):
         if not self.expiring:
             return False
         return now() > self.expires
-
-    class Meta:
-        abstract = True
 
 
 class TokenIntents(models.TextChoices):
@@ -610,6 +698,21 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="+")
     description = models.TextField(default="", blank=True)
 
+    class Meta:
+        verbose_name = _("Token")
+        verbose_name_plural = _("Tokens")
+        indexes = [
+            models.Index(fields=["identifier"]),
+            models.Index(fields=["key"]),
+        ]
+        permissions = [("view_token_key", _("View token's key"))]
+
+    def __str__(self):
+        description = f"{self.identifier}"
+        if self.expiring:
+            description += f" (expires={self.expires})"
+        return description
+
     @property
     def serializer(self) -> type[Serializer]:
         from authentik.core.api.tokens import TokenSerializer
@@ -637,21 +740,6 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
             message=f"Token {self.identifier}'s secret was rotated.",
         ).save()
 
-    def __str__(self):
-        description = f"{self.identifier}"
-        if self.expiring:
-            description += f" (expires={self.expires})"
-        return description
-
-    class Meta:
-        verbose_name = _("Token")
-        verbose_name_plural = _("Tokens")
-        indexes = [
-            models.Index(fields=["identifier"]),
-            models.Index(fields=["key"]),
-        ]
-        permissions = (("view_token_key", "View token's key"),)
-
 
 class PropertyMapping(SerializerModel, ManagedModel):
     """User-defined key -> x mapping which can be used by providers to expose extra data."""
@@ -672,7 +760,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
         """Get serializer for this model"""
         raise NotImplementedError
 
-    def evaluate(self, user: Optional[User], request: Optional[HttpRequest], **kwargs) -> Any:
+    def evaluate(self, user: User | None, request: HttpRequest | None, **kwargs) -> Any:
         """Evaluate `self.expression` using `**kwargs` as Context."""
         from authentik.core.expression.evaluator import PropertyMappingEvaluator
 
@@ -680,7 +768,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
         try:
             return evaluator.evaluate(self.expression)
         except Exception as exc:
-            raise PropertyMappingExpressionException(exc) from exc
+            raise PropertyMappingExpressionException(self, exc) from exc
 
     def __str__(self):
         return f"Property Mapping {self.name}"
@@ -708,19 +796,24 @@ class AuthenticatedSession(ExpiringModel):
     last_user_agent = models.TextField(blank=True)
     last_used = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        verbose_name = _("Authenticated Session")
+        verbose_name_plural = _("Authenticated Sessions")
+
+    def __str__(self) -> str:
+        return f"Authenticated Session {self.session_key[:10]}"
+
     @staticmethod
     def from_request(request: HttpRequest, user: User) -> Optional["AuthenticatedSession"]:
         """Create a new session from a http request"""
+        from authentik.root.middleware import ClientIPMiddleware
+
         if not hasattr(request, "session") or not request.session.session_key:
             return None
         return AuthenticatedSession(
             session_key=request.session.session_key,
             user=user,
-            last_ip=get_client_ip(request),
+            last_ip=ClientIPMiddleware.get_client_ip(request),
             last_user_agent=request.META.get("HTTP_USER_AGENT", ""),
             expires=request.session.get_expiry_date(),
         )
-
-    class Meta:
-        verbose_name = _("Authenticated Session")
-        verbose_name_plural = _("Authenticated Sessions")

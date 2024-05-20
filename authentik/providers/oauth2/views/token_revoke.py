@@ -1,4 +1,5 @@
 """Token revocation endpoint"""
+
 from dataclasses import dataclass
 
 from django.http import Http404, HttpRequest, HttpResponse
@@ -14,7 +15,7 @@ from authentik.providers.oauth2.utils import TokenResponse, authenticate_provide
 LOGGER = get_logger()
 
 
-@dataclass
+@dataclass(slots=True)
 class TokenRevocationParams:
     """Parameters for Token Revocation"""
 

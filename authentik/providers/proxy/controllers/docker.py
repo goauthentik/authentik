@@ -1,4 +1,5 @@
 """Proxy Provider Docker Controller"""
+
 from urllib.parse import urlparse
 
 from authentik.outposts.controllers.base import DeploymentPort
@@ -26,16 +27,16 @@ class ProxyDockerController(DockerController):
         traefik_name = self.name
         labels = super()._get_labels()
         labels["traefik.enable"] = "true"
-        labels[
-            f"traefik.http.routers.{traefik_name}-router.rule"
-        ] = f"Host({','.join(hosts)}) && PathPrefix(`/outpost.goauthentik.io`)"
+        labels[f"traefik.http.routers.{traefik_name}-router.rule"] = (
+            f"Host({','.join(hosts)}) && PathPrefix(`/outpost.goauthentik.io`)"
+        )
         labels[f"traefik.http.routers.{traefik_name}-router.tls"] = "true"
         labels[f"traefik.http.routers.{traefik_name}-router.service"] = f"{traefik_name}-service"
-        labels[
-            f"traefik.http.services.{traefik_name}-service.loadbalancer.healthcheck.path"
-        ] = "/outpost.goauthentik.io/ping"
-        labels[
-            f"traefik.http.services.{traefik_name}-service.loadbalancer.healthcheck.port"
-        ] = "9300"
+        labels[f"traefik.http.services.{traefik_name}-service.loadbalancer.healthcheck.path"] = (
+            "/outpost.goauthentik.io/ping"
+        )
+        labels[f"traefik.http.services.{traefik_name}-service.loadbalancer.healthcheck.port"] = (
+            "9300"
+        )
         labels[f"traefik.http.services.{traefik_name}-service.loadbalancer.server.port"] = "9000"
         return labels

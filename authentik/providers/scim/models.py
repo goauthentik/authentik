@@ -1,20 +1,19 @@
 """SCIM Provider models"""
+
+from typing import Any, Self
+from uuid import uuid4
+
 from django.db import models
-from django.db.models import Q, QuerySet
+from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
-from guardian.shortcuts import get_anonymous_user
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import (
-    USER_ATTRIBUTE_SA,
-    BackchannelProvider,
-    Group,
-    PropertyMapping,
-    User,
-)
+from authentik.core.models import BackchannelProvider, Group, PropertyMapping, User, UserTypes
+from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
+from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 
 
-class SCIMProvider(BackchannelProvider):
+class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
     """SCIM 2.0 provider to create users and groups in external applications"""
 
     exclude_users_service_account = models.BooleanField(default=False)
@@ -33,30 +32,35 @@ class SCIMProvider(BackchannelProvider):
         help_text=_("Property mappings used for group creation/updating."),
     )
 
-    def get_user_qs(self) -> QuerySet[User]:
-        """Get queryset of all users with consistent ordering
-        according to the provider's settings"""
-        base = User.objects.all().exclude(pk=get_anonymous_user().pk)
-        if self.exclude_users_service_account:
-            base = base.filter(
-                Q(
-                    **{
-                        f"attributes__{USER_ATTRIBUTE_SA}__isnull": True,
-                    }
-                )
-                | Q(
-                    **{
-                        f"attributes__{USER_ATTRIBUTE_SA}": False,
-                    }
-                )
-            )
-        if self.filter_group:
-            base = base.filter(ak_groups__in=[self.filter_group])
-        return base.order_by("pk")
+    def client_for_model(
+        self, model: type[User | Group]
+    ) -> BaseOutgoingSyncClient[User | Group, Any, Any, Self]:
+        if issubclass(model, User):
+            from authentik.providers.scim.clients.users import SCIMUserClient
 
-    def get_group_qs(self) -> QuerySet[Group]:
-        """Get queryset of all groups with consistent ordering"""
-        return Group.objects.all().order_by("pk")
+            return SCIMUserClient(self)
+        if issubclass(model, Group):
+            from authentik.providers.scim.clients.groups import SCIMGroupClient
+
+            return SCIMGroupClient(self)
+        raise ValueError(f"Invalid model {model}")
+
+    def get_object_qs(self, type: type[User | Group]) -> QuerySet[User | Group]:
+        if type == User:
+            # Get queryset of all users with consistent ordering
+            # according to the provider's settings
+            base = User.objects.all().exclude_anonymous()
+            if self.exclude_users_service_account:
+                base = base.exclude(type=UserTypes.SERVICE_ACCOUNT).exclude(
+                    type=UserTypes.INTERNAL_SERVICE_ACCOUNT
+                )
+            if self.filter_group:
+                base = base.filter(ak_groups__in=[self.filter_group])
+            return base.order_by("pk")
+        if type == Group:
+            # Get queryset of all groups with consistent ordering
+            return Group.objects.all().order_by("pk")
+        raise ValueError(f"Invalid type {type}")
 
     @property
     def component(self) -> str:
@@ -85,7 +89,7 @@ class SCIMMapping(PropertyMapping):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.providers.scim.api.property_mapping import SCIMMappingSerializer
+        from authentik.providers.scim.api.property_mappings import SCIMMappingSerializer
 
         return SCIMMappingSerializer
 
@@ -100,20 +104,28 @@ class SCIMMapping(PropertyMapping):
 class SCIMUser(models.Model):
     """Mapping of a user and provider to a SCIM user ID"""
 
-    id = models.TextField(primary_key=True)
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+    scim_id = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     provider = models.ForeignKey(SCIMProvider, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = (("id", "user", "provider"),)
+        unique_together = (("scim_id", "user", "provider"),)
+
+    def __str__(self) -> str:
+        return f"SCIM User {self.user_id} to {self.provider_id}"
 
 
 class SCIMGroup(models.Model):
     """Mapping of a group and provider to a SCIM user ID"""
 
-    id = models.TextField(primary_key=True)
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+    scim_id = models.TextField()
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     provider = models.ForeignKey(SCIMProvider, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = (("id", "group", "provider"),)
+        unique_together = (("scim_id", "group", "provider"),)
+
+    def __str__(self) -> str:
+        return f"SCIM Group {self.group_id} to {self.provider_id}"

@@ -40,11 +40,10 @@ func (rs *RadiusServer) Refresh() error {
 	providers := make([]*ProviderInstance, len(outposts.Results))
 	for idx, provider := range outposts.Results {
 		logger := log.WithField("logger", "authentik.outpost.radius").WithField("provider", provider.Name)
-		s := *provider.SharedSecret
-		c := *provider.ClientNetworks
 		providers[idx] = &ProviderInstance{
-			SharedSecret:   []byte(s),
-			ClientNetworks: parseCIDRs(c),
+			SharedSecret:   []byte(provider.GetSharedSecret()),
+			ClientNetworks: parseCIDRs(provider.GetClientNetworks()),
+			MFASupport:     provider.GetMfaSupport(),
 			appSlug:        provider.ApplicationSlug,
 			flowSlug:       provider.AuthFlowSlug,
 			s:              rs,

@@ -1,5 +1,7 @@
 """Sync LDAP Users and groups into authentik"""
-from typing import Any, Generator, Optional
+
+from collections.abc import Generator
+from typing import Any
 
 from django.db.models import Q
 from ldap3 import SUBTREE
@@ -19,8 +21,15 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
         super().__init__(source)
         self.group_cache: dict[str, Group] = {}
 
+    @staticmethod
+    def name() -> str:
+        return "membership"
+
     def get_objects(self, **kwargs) -> Generator:
-        return self._connection.extend.standard.paged_search(
+        if not self._source.sync_groups:
+            self.message("Group syncing is disabled for this Source")
+            return iter(())
+        return self.search_paginator(
             search_base=self.base_dn_groups,
             search_filter=self._source.group_object_filter,
             search_scope=SUBTREE,
@@ -32,13 +41,13 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
             **kwargs,
         )
 
-    def sync(self) -> int:
+    def sync(self, page_data: list) -> int:
         """Iterate over all Users and assign Groups using memberOf Field"""
         if not self._source.sync_groups:
             self.message("Group syncing is disabled for this Source")
             return -1
         membership_count = 0
-        for group in self.get_objects():
+        for group in page_data:
             if "attributes" not in group:
                 continue
             members = group.get("attributes", {}).get(self._source.group_membership_field, [])
@@ -68,7 +77,7 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
         self._logger.debug("Successfully updated group membership")
         return membership_count
 
-    def get_group(self, group_dict: dict[str, Any]) -> Optional[Group]:
+    def get_group(self, group_dict: dict[str, Any]) -> Group | None:
         """Check if we fetched the group already, and if not cache it for later"""
         group_dn = group_dict.get("attributes", {}).get(LDAP_DISTINGUISHED_NAME, [])
         group_uniq = group_dict.get("attributes", {}).get(self._source.object_uniqueness_field, [])

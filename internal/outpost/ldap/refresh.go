@@ -9,6 +9,7 @@ import (
 
 	"github.com/go-openapi/strfmt"
 	log "github.com/sirupsen/logrus"
+
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ldap/bind"
 	directbind "goauthentik.io/internal/outpost/ldap/bind/direct"
@@ -29,9 +30,9 @@ func (ls *LDAPServer) getCurrentProvider(pk int32) *ProviderInstance {
 }
 
 func (ls *LDAPServer) getInvalidationFlow() string {
-	req, _, err := ls.ac.Client.CoreApi.CoreTenantsCurrentRetrieve(context.Background()).Execute()
+	req, _, err := ls.ac.Client.CoreApi.CoreBrandsCurrentRetrieve(context.Background()).Execute()
 	if err != nil {
-		ls.log.WithError(err).Warning("failed to fetch tenant config")
+		ls.log.WithError(err).Warning("failed to fetch brand config")
 		return ""
 	}
 	flow := req.GetFlowInvalidation()
@@ -56,15 +57,16 @@ func (ls *LDAPServer) Refresh() error {
 
 		// Get existing instance so we can transfer boundUsers
 		existing := ls.getCurrentProvider(provider.Pk)
+		usersMutex := &sync.RWMutex{}
 		users := make(map[string]*flags.UserFlags)
 		if existing != nil {
-			existing.boundUsersMutex.RLock()
+			usersMutex = existing.boundUsersMutex
+			// Shallow copy, no need to lock
 			users = existing.boundUsers
-			existing.boundUsersMutex.RUnlock()
 		}
 
 		providers[idx] = &ProviderInstance{
-			BaseDN:                 *provider.BaseDn,
+			BaseDN:                 provider.GetBaseDn(),
 			VirtualGroupDN:         virtualGroupDN,
 			GroupDN:                groupDN,
 			UserDN:                 userDN,
@@ -72,13 +74,14 @@ func (ls *LDAPServer) Refresh() error {
 			authenticationFlowSlug: provider.BindFlowSlug,
 			invalidationFlowSlug:   invalidationFlow,
 			searchAllowedGroups:    []*strfmt.UUID{(*strfmt.UUID)(provider.SearchGroup.Get())},
-			boundUsersMutex:        sync.RWMutex{},
+			boundUsersMutex:        usersMutex,
 			boundUsers:             users,
 			s:                      ls,
 			log:                    logger,
 			tlsServerName:          provider.TlsServerName,
-			uidStartNumber:         *provider.UidStartNumber,
-			gidStartNumber:         *provider.GidStartNumber,
+			uidStartNumber:         provider.GetUidStartNumber(),
+			gidStartNumber:         provider.GetGidStartNumber(),
+			mfaSupport:             provider.GetMfaSupport(),
 			outpostName:            ls.ac.Outpost.Name,
 			outpostPk:              provider.Pk,
 		}

@@ -18,9 +18,18 @@ import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
 import YAML from "yaml";
 
+import { CSSResult, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { UiThemeEnum } from "@goauthentik/api";
+
+export enum CodeMirrorMode {
+    XML = "xml",
+    JavaScript = "javascript",
+    HTML = "html",
+    Python = "python",
+    YAML = "yaml",
+}
 
 @customElement("ak-codemirror")
 export class CodeMirrorTextarea<T> extends AKElement {
@@ -28,7 +37,7 @@ export class CodeMirrorTextarea<T> extends AKElement {
     readOnly = false;
 
     @property()
-    mode = "yaml";
+    mode: CodeMirrorMode = CodeMirrorMode.YAML;
 
     @property()
     name?: string;
@@ -44,6 +53,24 @@ export class CodeMirrorTextarea<T> extends AKElement {
 
     themeLight: Extension;
     themeDark: Extension;
+
+    static get styles(): CSSResult[] {
+        return [
+            // Better alignment with patternfly components
+            css`
+                .cm-editor {
+                    padding-top: calc(
+                        var(--pf-global--spacer--form-element) - var(--pf-global--BorderWidth--sm)
+                    );
+                    padding-bottom: calc(
+                        var(--pf-global--spacer--form-element) - var(--pf-global--BorderWidth--sm)
+                    );
+                    padding-right: var(--pf-c-form-control--inset--base);
+                    padding-left: var(--pf-c-form-control--inset--base);
+                }
+            `,
+        ];
+    }
 
     @property()
     // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
@@ -79,10 +106,10 @@ export class CodeMirrorTextarea<T> extends AKElement {
             return this.getInnerValue();
         }
         try {
-            switch (this.mode.toLowerCase()) {
-                case "yaml":
+            switch (this.mode) {
+                case CodeMirrorMode.YAML:
                     return YAML.parse(this.getInnerValue());
-                case "javascript":
+                case CodeMirrorMode.JavaScript:
                     return JSON.parse(this.getInnerValue());
                 default:
                     return this.getInnerValue();
@@ -115,15 +142,15 @@ export class CodeMirrorTextarea<T> extends AKElement {
 
     getLanguageExtension(): LanguageSupport | undefined {
         switch (this.mode.toLowerCase()) {
-            case "xml":
+            case CodeMirrorMode.XML:
                 return xml();
-            case "javascript":
+            case CodeMirrorMode.JavaScript:
                 return javascript();
-            case "html":
+            case CodeMirrorMode.HTML:
                 return htmlLang();
-            case "python":
+            case CodeMirrorMode.Python:
                 return python();
-            case "yaml":
+            case CodeMirrorMode.YAML:
                 return new LanguageSupport(StreamLanguage.define(yamlMode.yaml));
         }
         return undefined;

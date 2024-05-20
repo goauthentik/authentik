@@ -1,4 +1,5 @@
 """policy API Views"""
+
 from django.core.cache import cache
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
@@ -10,18 +11,17 @@ from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
-from structlog.testing import capture_logs
 
-from authentik.api.decorators import permission_required
 from authentik.core.api.applications import user_app_cache_key
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import CacheSerializer, MetaNameSerializer, TypeCreateSerializer
-from authentik.events.utils import sanitize_dict
+from authentik.events.logs import LogEventSerializer, capture_logs
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.policies.api.exec import PolicyTestResultSerializer, PolicyTestSerializer
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.policies.process import PolicyProcess
 from authentik.policies.types import CACHE_PREFIX, PolicyRequest
+from authentik.rbac.decorators import permission_required
 
 LOGGER = get_logger()
 
@@ -165,9 +165,9 @@ class PolicyViewSet(
             result = proc.execute()
         log_messages = []
         for log in logs:
-            if log.get("process", "") == "PolicyProcess":
+            if log.attributes.get("process", "") == "PolicyProcess":
                 continue
-            log_messages.append(sanitize_dict(log))
+            log_messages.append(LogEventSerializer(log).data)
         result.log_messages = log_messages
         response = PolicyTestResultSerializer(result)
         return Response(response.data)

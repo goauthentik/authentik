@@ -1,5 +1,6 @@
 """OAuth Client models"""
-from typing import TYPE_CHECKING, Optional, Type
+
+from typing import TYPE_CHECKING
 
 from django.db import models
 from django.http.request import HttpRequest
@@ -55,7 +56,7 @@ class OAuthSource(Source):
     oidc_jwks = models.JSONField(default=dict, blank=True)
 
     @property
-    def type(self) -> type["SourceType"]:
+    def source_type(self) -> type["SourceType"]:
         """Return the provider instance for this source"""
         from authentik.sources.oauth.types.registry import registry
 
@@ -65,17 +66,16 @@ class OAuthSource(Source):
     def component(self) -> str:
         return "ak-source-oauth-form"
 
-    # we're using Type[] instead of type[] here since type[] interferes with the property above
     @property
-    def serializer(self) -> Type[Serializer]:
+    def serializer(self) -> type[Serializer]:
         from authentik.sources.oauth.api.source import OAuthSourceSerializer
 
         return OAuthSourceSerializer
 
     def ui_login_button(self, request: HttpRequest) -> UILoginButton:
-        provider_type = self.type
+        provider_type = self.source_type
         provider = provider_type()
-        icon = self.get_icon
+        icon = self.icon_url
         if not icon:
             icon = provider.icon_url()
         return UILoginButton(
@@ -84,9 +84,9 @@ class OAuthSource(Source):
             icon_url=icon,
         )
 
-    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
-        provider_type = self.type
-        icon = self.get_icon
+    def ui_user_settings(self) -> UserSettingSerializer | None:
+        provider_type = self.source_type
+        icon = self.icon_url
         if not icon:
             icon = provider_type().icon_url()
         return UserSettingSerializer(
@@ -116,6 +116,15 @@ class GitHubOAuthSource(OAuthSource):
         abstract = True
         verbose_name = _("GitHub OAuth Source")
         verbose_name_plural = _("GitHub OAuth Sources")
+
+
+class GitLabOAuthSource(OAuthSource):
+    """Social Login using GitLab.com or a GitLab Instance."""
+
+    class Meta:
+        abstract = True
+        verbose_name = _("GitLab OAuth Source")
+        verbose_name_plural = _("GitLab OAuth Sources")
 
 
 class TwitchOAuthSource(OAuthSource):
@@ -233,7 +242,7 @@ class UserOAuthSourceConnection(UserSourceConnection):
     access_token = models.TextField(blank=True, null=True, default=None)
 
     @property
-    def serializer(self) -> Serializer:
+    def serializer(self) -> type[Serializer]:
         from authentik.sources.oauth.api.source_connection import (
             UserOAuthSourceConnectionSerializer,
         )

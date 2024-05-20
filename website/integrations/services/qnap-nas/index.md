@@ -4,14 +4,11 @@ title: QNAP NAS
 
 ## What is QNAP NAS
 
-From <https://en.wikipedia.org/wiki/QNAP_Systems>
+> QNAP Systems, Inc. is a Taiwanese corporation that specializes in network-attached storage appliances used for file sharing, virtualization, storage management and surveillance applications.
+>
+> -- https://en.wikipedia.org/wiki/QNAP_Systems
 
-:::note
-QNAP Systems, Inc. is a Taiwanese corporation that specializes in network-attached storage appliances used for file sharing, virtualization, storage management and surveillance applications.
-:::
-
-Connecting a QNAP NAS to an LDAP Directory is a little bit special
-as it is **not** (well) documented what really is done behind the scenes of QNAP.
+Connecting a QNAP NAS to an LDAP Directory is a little bit special as it is **not** (well) documented what really is done behind the scenes of QNAP.
 
 ## Preparation
 
@@ -40,7 +37,7 @@ to `ldap.searchGroup`.
 
 :::caution
 It seems that QNAP LDAP client configuration has issues with too long password.
-Max password length <= 66 characters.
+Max password length \<= 66 characters.
 :::
 
 ## Deployment

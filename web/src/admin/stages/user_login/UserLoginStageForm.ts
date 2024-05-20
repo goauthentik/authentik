@@ -1,32 +1,23 @@
+import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/Alert";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import { StagesApi, UserLoginStage } from "@goauthentik/api";
+import { GeoipBindingEnum, NetworkBindingEnum, StagesApi, UserLoginStage } from "@goauthentik/api";
 
 @customElement("ak-stage-user-login-form")
-export class UserLoginStageForm extends ModelForm<UserLoginStage, string> {
+export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
     loadInstance(pk: string): Promise<UserLoginStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesUserLoginRetrieve({
             stageUuid: pk,
         });
-    }
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return t`Successfully updated stage.`;
-        } else {
-            return t`Successfully created stage.`;
-        }
     }
 
     async send(data: UserLoginStage): Promise<UserLoginStage> {
@@ -43,9 +34,8 @@ export class UserLoginStageForm extends ModelForm<UserLoginStage, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">${t`Log the currently pending user in.`}</div>
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+        return html` <span>${msg("Log the currently pending user in.")}</span>
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${first(this.instance?.name, "")}"
@@ -54,10 +44,10 @@ export class UserLoginStageForm extends ModelForm<UserLoginStage, string> {
                 />
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Stage-specific settings`} </span>
+                <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`Session duration`}
+                        label=${msg("Session duration")}
                         ?required=${true}
                         name="sessionDuration"
                     >
@@ -68,21 +58,25 @@ export class UserLoginStageForm extends ModelForm<UserLoginStage, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed.`}
+                            ${msg(
+                                "Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed.",
+                            )}
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
                         <ak-alert ?inline=${true}>
-                            ${t`Different browsers handle session cookies differently, and might not remove them even when the browser is closed.`}
+                            ${msg(
+                                "Different browsers handle session cookies differently, and might not remove them even when the browser is closed.",
+                            )}
                             <a
                                 href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#expiresdate"
                                 target="_blank"
                             >
-                                ${t`See here.`}
+                                ${msg("See here.")}
                             </a>
                         </ak-alert>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Stay signed in offset`}
+                        label=${msg("Stay signed in offset")}
                         ?required=${true}
                         name="rememberMeOffset"
                     >
@@ -93,9 +87,79 @@ export class UserLoginStageForm extends ModelForm<UserLoginStage, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.`}
+                            ${msg(
+                                'If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.',
+                            )}
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Network binding")}
+                        ?required=${true}
+                        name="networkBinding"
+                    >
+                        <ak-radio
+                            .options=${[
+                                {
+                                    label: msg("No binding"),
+                                    value: NetworkBindingEnum.NoBinding,
+                                },
+                                {
+                                    label: msg("Bind ASN"),
+                                    value: NetworkBindingEnum.BindAsn,
+                                    default: true,
+                                },
+                                {
+                                    label: msg("Bind ASN and Network"),
+                                    value: NetworkBindingEnum.BindAsnNetwork,
+                                },
+                                {
+                                    label: msg("Bind ASN, Network and IP"),
+                                    value: NetworkBindingEnum.BindAsnNetworkIp,
+                                },
+                            ]}
+                            .value=${this.instance?.networkBinding}
+                        >
+                        </ak-radio>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Configure if sessions created by this stage should be bound to the Networks they were created in.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("GeoIP binding")}
+                        ?required=${true}
+                        name="geoipBinding"
+                    >
+                        <ak-radio
+                            .options=${[
+                                {
+                                    label: msg("No binding"),
+                                    value: GeoipBindingEnum.NoBinding,
+                                },
+                                {
+                                    label: msg("Bind Continent"),
+                                    value: GeoipBindingEnum.BindContinent,
+                                    default: true,
+                                },
+                                {
+                                    label: msg("Bind Continent and Country"),
+                                    value: GeoipBindingEnum.BindContinentCountry,
+                                },
+                                {
+                                    label: msg("Bind Continent, Country and City"),
+                                    value: GeoipBindingEnum.BindContinentCountryCity,
+                                },
+                            ]}
+                            .value=${this.instance?.geoipBinding}
+                        >
+                        </ak-radio>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Configure if sessions created by this stage should be bound to their GeoIP-based location",
+                            )}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="terminateOtherSessions">
                         <label class="pf-c-switch">
@@ -109,14 +173,17 @@ export class UserLoginStageForm extends ModelForm<UserLoginStage, string> {
                                     <i class="fas fa-check" aria-hidden="true"></i>
                                 </span>
                             </span>
-                            <span class="pf-c-switch__label">${t`Terminate other sessions`}</span>
+                            <span class="pf-c-switch__label"
+                                >${msg("Terminate other sessions")}</span
+                            >
                         </label>
                         <p class="pf-c-form__helper-text">
-                            ${t`When enabled, all previous sessions of the user will be terminated.`}
+                            ${msg(
+                                "When enabled, all previous sessions of the user will be terminated.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

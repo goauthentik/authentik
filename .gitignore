@@ -166,6 +166,7 @@ dmypy.json
 # SageMath parsed files
 
 # Environments
+**/.DS_Store
 
 # Spyder project settings
 
@@ -203,3 +204,8 @@ data/
 
 # Local Netlify folder
 .netlify
+.ruff_cache
+source_docs/
+
+### Golang ###
+/vendor/

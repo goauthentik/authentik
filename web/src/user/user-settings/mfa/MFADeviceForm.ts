@@ -2,8 +2,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -23,7 +22,7 @@ export class MFADeviceForm extends ModelForm<Device, number> {
     }
 
     getSuccessMessage(): string {
-        return t`Successfully updated device.`;
+        return msg("Successfully updated device.");
     }
 
     async send(device: Device): Promise<Device> {
@@ -40,13 +39,13 @@ export class MFADeviceForm extends ModelForm<Device, number> {
                     sMSDeviceRequest: device,
                 });
                 break;
-            case "otp_totp.TOTPDevice":
+            case "authentik_stages_authenticator_totp.TOTPDevice":
                 await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsTotpUpdate({
                     id: this.instance?.pk,
                     tOTPDeviceRequest: device,
                 });
                 break;
-            case "otp_static.StaticDevice":
+            case "authentik_stages_authenticator_static.StaticDevice":
                 await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsStaticUpdate({
                     id: this.instance?.pk,
                     staticDeviceRequest: device,
@@ -65,15 +64,13 @@ export class MFADeviceForm extends ModelForm<Device, number> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
-        </form>`;
+        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <input
+                type="text"
+                value="${ifDefined(this.instance?.name)}"
+                class="pf-c-form-control"
+                required
+            />
+        </ak-form-element-horizontal>`;
     }
 }

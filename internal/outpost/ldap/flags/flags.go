@@ -6,6 +6,8 @@ import (
 	"goauthentik.io/api/v3"
 )
 
+const InvalidUserPK = -1
+
 type UserFlags struct {
 	UserInfo  *api.User
 	UserPk    int32

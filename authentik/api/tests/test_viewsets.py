@@ -1,5 +1,6 @@
 """authentik API Modelviewset tests"""
-from typing import Callable
+
+from collections.abc import Callable
 
 from django.test import TestCase
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
@@ -16,6 +17,7 @@ def viewset_tester_factory(test_viewset: type[ModelViewSet]) -> Callable:
 
     def tester(self: TestModelViewSets):
         self.assertIsNotNone(getattr(test_viewset, "search_fields", None))
+        self.assertIsNotNone(getattr(test_viewset, "ordering", None))
         filterset_class = getattr(test_viewset, "filterset_class", None)
         if not filterset_class:
             self.assertIsNotNone(getattr(test_viewset, "filterset_fields", None))
@@ -24,6 +26,6 @@ def viewset_tester_factory(test_viewset: type[ModelViewSet]) -> Callable:
 
 
 for _, viewset, _ in router.registry:
-    if not issubclass(viewset, (ModelViewSet, ReadOnlyModelViewSet)):
+    if not issubclass(viewset, ModelViewSet | ReadOnlyModelViewSet):
         continue
     setattr(TestModelViewSets, f"test_viewset_{viewset.__name__}", viewset_tester_factory(viewset))

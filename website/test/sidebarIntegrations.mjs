@@ -6,6 +6,9 @@ import glob from "glob";
 const getSidebarItems = () => {
     const allItems = [];
     const mapper = (category) => {
+        if (!category.items) {
+            return;
+        }
         category.items.forEach((item) => {
             if (item.constructor === String) {
                 allItems.push(item);

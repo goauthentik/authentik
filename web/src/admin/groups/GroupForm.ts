@@ -2,6 +2,9 @@ import "@goauthentik/admin/groups/MemberSelectModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider";
+import { DataProvision, DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
 import "@goauthentik/elements/chips/Chip";
 import "@goauthentik/elements/chips/ChipGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -9,13 +12,16 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 import YAML from "yaml";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { CoreApi, CoreGroupsListRequest, Group } from "@goauthentik/api";
+import { CoreApi, CoreGroupsListRequest, Group, RbacApi, Role } from "@goauthentik/api";
+
+export function rbacRolePair(item: Role): DualSelectPair {
+    return [item.pk, html`<div class="selection-main">${item.name}</div>`, item.name];
+}
 
 @customElement("ak-group-form")
 export class GroupForm extends ModelForm<Group, string> {
@@ -33,15 +39,14 @@ export class GroupForm extends ModelForm<Group, string> {
     loadInstance(pk: string): Promise<Group> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsRetrieve({
             groupUuid: pk,
+            includeUsers: false,
         });
     }
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return t`Successfully updated group.`;
-        } else {
-            return t`Successfully created group.`;
-        }
+        return this.instance
+            ? msg("Successfully updated group.")
+            : msg("Successfully created group.");
     }
 
     async send(data: Group): Promise<Group> {
@@ -59,8 +64,7 @@ export class GroupForm extends ModelForm<Group, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -80,13 +84,13 @@ export class GroupForm extends ModelForm<Group, string> {
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${t`Is superuser`}</span>
+                    <span class="pf-c-switch__label">${msg("Is superuser")}</span>
                 </label>
                 <p class="pf-c-form__helper-text">
-                    ${t`Users added to this group will be superusers.`}
+                    ${msg("Users added to this group will be superusers.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Parent`} name="parent">
+            <ak-form-element-horizontal label=${msg("Parent")} name="parent">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<Group[]> => {
                         const args: CoreGroupsListRequest = {
@@ -96,6 +100,9 @@ export class GroupForm extends ModelForm<Group, string> {
                             args.search = query;
                         }
                         const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(args);
+                        if (this.instance) {
+                            return groups.results.filter((g) => g.pk !== this.instance?.pk);
+                        }
                         return groups.results;
                     }}
                     .renderElement=${(group: Group): string => {
@@ -111,16 +118,44 @@ export class GroupForm extends ModelForm<Group, string> {
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Attributes`} ?required=${true} name="attributes">
+            <ak-form-element-horizontal label=${msg("Roles")} name="roles">
+                <ak-dual-select-provider
+                    .provider=${(page: number, search?: string): Promise<DataProvision> => {
+                        return new RbacApi(DEFAULT_CONFIG)
+                            .rbacRolesList({
+                                page: page,
+                                search: search,
+                            })
+                            .then((results) => {
+                                return {
+                                    pagination: results.pagination,
+                                    options: results.results.map(rbacRolePair),
+                                };
+                            });
+                    }}
+                    .selected=${(this.instance?.rolesObj ?? []).map(rbacRolePair)}
+                    available-label="${msg("Available Roles")}"
+                    selected-label="${msg("Selected Roles")}"
+                ></ak-dual-select-provider>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "Select roles to grant this groups' users' permissions from the selected roles.",
+                    )}
+                </p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${msg("Attributes")}
+                ?required=${true}
+                name="attributes"
+            >
                 <ak-codemirror
-                    mode="yaml"
+                    mode=${CodeMirrorMode.YAML}
                     value="${YAML.stringify(first(this.instance?.attributes, {}))}"
                 >
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
-                    ${t`Set custom attributes using YAML or JSON.`}
+                    ${msg("Set custom attributes using YAML or JSON.")}
                 </p>
-            </ak-form-element-horizontal>
-        </form>`;
+            </ak-form-element-horizontal>`;
     }
 }

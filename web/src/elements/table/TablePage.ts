@@ -2,8 +2,7 @@ import "@goauthentik/elements/PageHeader";
 import { updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import { Table } from "@goauthentik/elements/table/Table";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -29,11 +28,21 @@ export abstract class TablePage<T> extends Table<T> {
         return html``;
     }
 
+    // Optionally render section above the table
+    renderSectionBefore(): TemplateResult {
+        return html``;
+    }
+
+    // Optionally render section below the table
+    renderSectionAfter(): TemplateResult {
+        return html``;
+    }
+
     renderEmpty(inner?: TemplateResult): TemplateResult {
         return super.renderEmpty(html`
             ${inner
                 ? inner
-                : html`<ak-empty-state icon=${this.pageIcon()} header="${t`No objects found.`}">
+                : html`<ak-empty-state icon=${this.pageIcon()} header="${msg("No objects found.")}">
                       <div slot="body">
                           ${this.searchEnabled() ? this.renderEmptyClearSearch() : html``}
                       </div>
@@ -57,16 +66,8 @@ export abstract class TablePage<T> extends Table<T> {
             }}
             class="pf-c-button pf-m-link"
         >
-            ${t`Clear search`}
+            ${msg("Clear search")}
         </button>`;
-    }
-
-    renderObjectCreate(): TemplateResult {
-        return html``;
-    }
-
-    renderToolbar(): TemplateResult {
-        return html`${this.renderObjectCreate()}${super.renderToolbar()}`;
     }
 
     render(): TemplateResult {
@@ -76,6 +77,7 @@ export abstract class TablePage<T> extends Table<T> {
                 description=${ifDefined(this.pageDescription())}
             >
             </ak-page-header>
+            ${this.renderSectionBefore()}
             <section class="pf-c-page__main-section pf-m-no-padding-mobile">
                 <div class="pf-c-sidebar pf-m-gutter">
                     <div class="pf-c-sidebar__main">
@@ -86,6 +88,7 @@ export abstract class TablePage<T> extends Table<T> {
                         ${this.renderSidebarAfter()}
                     </div>
                 </div>
-            </section>`;
+            </section>
+            ${this.renderSectionAfter()}`;
     }
 }

@@ -6,3 +6,9 @@ dist
 coverage
 # Import order matters
 poly.ts
+src/locale-codes.ts
+src/locales/
+storybook-static/
+# Prettier breaks the tsconfig file
+tsconfig.json
+.storybook/css-import-maps*

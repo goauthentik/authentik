@@ -1,12 +1,11 @@
-import { renderSourceIcon } from "@goauthentik/admin/sources/SourceViewPage";
+import { renderSourceIcon } from "@goauthentik/admin/sources/utils";
 import "@goauthentik/elements/Divider";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
-import { t } from "@lingui/macro";
-
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { msg, str } from "@lit/localize";
+import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
@@ -18,6 +17,7 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
+    FlowDesignationEnum,
     IdentificationChallenge,
     IdentificationChallengeResponseRequest,
     LoginSource,
@@ -45,29 +45,29 @@ export class IdentificationStage extends BaseStage<
     form?: HTMLFormElement;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFAlert, PFLogin, PFForm, PFFormControl, PFTitle, PFButton].concat(
-            css`
-                /* login page's icons */
-                .pf-c-login__main-footer-links-item button {
-                    background-color: transparent;
-                    border: 0;
-                    display: flex;
-                    align-items: stretch;
-                }
-                .pf-c-login__main-footer-links-item img {
-                    fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
-                    width: 100px;
-                    max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
-                    height: 100%;
-                    max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
-                }
-            `,
-        );
+        return [PFBase, PFAlert, PFLogin, PFForm, PFFormControl, PFTitle, PFButton].concat(css`
+            /* login page's icons */
+            .pf-c-login__main-footer-links-item button {
+                background-color: transparent;
+                border: 0;
+                display: flex;
+                align-items: stretch;
+            }
+            .pf-c-login__main-footer-links-item img {
+                fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
+                width: 100px;
+                max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
+                height: 100%;
+                max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
+            }
+        `);
     }
 
-    firstUpdated(): void {
-        this.autoRedirect();
-        this.createHelperForm();
+    updated(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("challenge") && this.challenge !== undefined) {
+            this.autoRedirect();
+            this.createHelperForm();
+        }
     }
 
     autoRedirect(): void {
@@ -78,16 +78,19 @@ export class IdentificationStage extends BaseStage<
         // meaning that without the auto-redirect the user would only have the option
         // to manually click on the source button
         if ((this.challenge.userFields || []).length !== 0) return;
+        // we also don't want to auto-redirect if there's a passwordless URL configured
+        if (this.challenge.passwordlessUrl) return;
         const source = this.challenge.sources[0];
         this.host.challenge = source.challenge;
     }
 
     createHelperForm(): void {
+        const compatMode = "ShadyDOM" in window;
         this.form = document.createElement("form");
         document.documentElement.appendChild(this.form);
         // Only add the additional username input if we're in a shadow dom
         // otherwise it just confuses browsers
-        if (!("ShadyDOM" in window)) {
+        if (!compatMode) {
             // This is a workaround for the fact that we're in a shadow dom
             // adapted from https://github.com/home-assistant/frontend/issues/3133
             const username = document.createElement("input");
@@ -107,30 +110,33 @@ export class IdentificationStage extends BaseStage<
             };
             this.form.appendChild(username);
         }
-        const password = document.createElement("input");
-        password.setAttribute("type", "password");
-        password.setAttribute("name", "password");
-        password.setAttribute("autocomplete", "current-password");
-        password.onkeyup = (ev: KeyboardEvent) => {
-            if (ev.key == "Enter") {
-                this.submitForm(ev);
-            }
-            const el = ev.target as HTMLInputElement;
-            // Because the password field is not actually on this page,
-            // and we want to 'prefill' the password for the user,
-            // save it globally
-            PasswordManagerPrefill.password = el.value;
-            // Because password managers fill username, then password,
-            // we need to re-focus the uid_field here too
-            (this.shadowRoot || this)
-                .querySelectorAll<HTMLInputElement>("input[name=uidField]")
-                .forEach((input) => {
-                    // Because we assume only one input field exists that matches this
-                    // call focus so the user can press enter
-                    input.focus();
-                });
-        };
-        this.form.appendChild(password);
+        // Only add the password field when we don't already show a password field
+        if (!compatMode && !this.challenge.passwordFields) {
+            const password = document.createElement("input");
+            password.setAttribute("type", "password");
+            password.setAttribute("name", "password");
+            password.setAttribute("autocomplete", "current-password");
+            password.onkeyup = (ev: KeyboardEvent) => {
+                if (ev.key == "Enter") {
+                    this.submitForm(ev);
+                }
+                const el = ev.target as HTMLInputElement;
+                // Because the password field is not actually on this page,
+                // and we want to 'prefill' the password for the user,
+                // save it globally
+                PasswordManagerPrefill.password = el.value;
+                // Because password managers fill username, then password,
+                // we need to re-focus the uid_field here too
+                (this.shadowRoot || this)
+                    .querySelectorAll<HTMLInputElement>("input[name=uidField]")
+                    .forEach((input) => {
+                        // Because we assume only one input field exists that matches this
+                        // call focus so the user can press enter
+                        input.focus();
+                    });
+            };
+            this.form.appendChild(password);
+        }
         const totp = document.createElement("input");
         totp.setAttribute("type", "text");
         totp.setAttribute("name", "code");
@@ -187,24 +193,24 @@ export class IdentificationStage extends BaseStage<
         return html`<div class="pf-c-login__main-footer-band">
             ${this.challenge.enrollUrl
                 ? html`<p class="pf-c-login__main-footer-band-item">
-                      ${t`Need an account?`}
-                      <a id="enroll" href="${this.challenge.enrollUrl}">${t`Sign up.`}</a>
+                      ${msg("Need an account?")}
+                      <a id="enroll" href="${this.challenge.enrollUrl}">${msg("Sign up.")}</a>
                   </p>`
-                : html``}
+                : nothing}
             ${this.challenge.recoveryUrl
                 ? html`<p class="pf-c-login__main-footer-band-item">
                       <a id="recovery" href="${this.challenge.recoveryUrl}"
-                          >${t`Forgot username or password?`}</a
+                          >${msg("Forgot username or password?")}</a
                       >
                   </p>`
-                : html``}
+                : nothing}
         </div>`;
     }
 
     renderInput(): TemplateResult {
         let type: "text" | "email" = "text";
         if (!this.challenge?.userFields || this.challenge.userFields.length === 0) {
-            return html`<p>${t`Select one of the sources below to login.`}</p>`;
+            return html`<p>${msg("Select one of the options below to continue.")}</p>`;
         }
         const fields = (this.challenge?.userFields || []).sort();
         // Check if the field should be *only* email to set the input type
@@ -212,12 +218,21 @@ export class IdentificationStage extends BaseStage<
             type = "email";
         }
         const uiFields: { [key: string]: string } = {
-            [UserFieldsEnum.Username]: t`Username`,
-            [UserFieldsEnum.Email]: t`Email`,
-            [UserFieldsEnum.Upn]: t`UPN`,
+            [UserFieldsEnum.Username]: msg("Username"),
+            [UserFieldsEnum.Email]: msg("Email"),
+            [UserFieldsEnum.Upn]: msg("UPN"),
         };
         const label = OR_LIST_FORMATTERS.format(fields.map((f) => uiFields[f]));
-        return html`<ak-form-element
+        return html`${this.challenge.flowDesignation === FlowDesignationEnum.Recovery
+                ? html`
+                      <p>
+                          ${msg(
+                              "Enter the email associated with your account, and we'll send you a link to reset your password.",
+                          )}
+                      </p>
+                  `
+                : nothing}
+            <ak-form-element
                 label=${label}
                 ?required="${true}"
                 class="pf-c-form__group"
@@ -236,7 +251,7 @@ export class IdentificationStage extends BaseStage<
             ${this.challenge.passwordFields
                 ? html`
                       <ak-form-element
-                          label="${t`Password`}"
+                          label="${msg("Password")}"
                           ?required="${true}"
                           class="pf-c-form__group"
                           .errors=${(this.challenge.responseErrors || {})["password"]}
@@ -244,7 +259,7 @@ export class IdentificationStage extends BaseStage<
                           <input
                               type="password"
                               name="password"
-                              placeholder="${t`Password`}"
+                              placeholder="${msg("Password")}"
                               autocomplete="current-password"
                               class="pf-c-form-control"
                               required
@@ -252,31 +267,24 @@ export class IdentificationStage extends BaseStage<
                           />
                       </ak-form-element>
                   `
-                : html``}
+                : nothing}
             ${"non_field_errors" in (this.challenge?.responseErrors || {})
                 ? this.renderNonFieldErrors(this.challenge?.responseErrors?.non_field_errors || [])
-                : html``}
+                : nothing}
             <div class="pf-c-form__group pf-m-action">
                 <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                     ${this.challenge.primaryAction}
                 </button>
             </div>
             ${this.challenge.passwordlessUrl
-                ? html`<ak-divider>${t`Or`}</ak-divider>
-                      <div>
-                          <a
-                              href=${this.challenge.passwordlessUrl}
-                              class="pf-c-button pf-m-secondary pf-m-block"
-                          >
-                              ${t`Use a security key`}
-                          </a>
-                      </div>`
-                : html``}`;
+                ? html`<ak-divider>${msg("Or")}</ak-divider>`
+                : nothing}`;
     }
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
+            </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
@@ -289,9 +297,23 @@ export class IdentificationStage extends BaseStage<
                     }}
                 >
                     ${this.challenge.applicationPre
-                        ? html`<p>${t`Login to continue to ${this.challenge.applicationPre}.`}</p>`
-                        : html``}
+                        ? html`<p>
+                              ${msg(str`Login to continue to ${this.challenge.applicationPre}.`)}
+                          </p>`
+                        : nothing}
                     ${this.renderInput()}
+                    ${this.challenge.passwordlessUrl
+                        ? html`
+                              <div>
+                                  <a
+                                      href=${this.challenge.passwordlessUrl}
+                                      class="pf-c-button pf-m-secondary pf-m-block"
+                                  >
+                                      ${msg("Use a security key")}
+                                  </a>
+                              </div>
+                          `
+                        : nothing}
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">

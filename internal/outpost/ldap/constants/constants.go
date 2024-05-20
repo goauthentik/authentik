@@ -1,9 +1,18 @@
 package constants
 
+const OC = "objectClass"
+
 const (
 	OCTop         = "top"
 	OCDomain      = "domain"
 	OCNSContainer = "nsContainer"
+	OCSubSchema   = "subschema"
+)
+
+const (
+	SearchAttributeNone           = "1.1"
+	SearchAttributeAllUser        = "*"
+	SearchAttributeAllOperational = "+"
 )
 
 const (
@@ -16,11 +25,12 @@ const (
 )
 
 const (
+	OCPerson        = "person"
 	OCUser          = "user"
 	OCOrgPerson     = "organizationalPerson"
 	OCInetOrgPerson = "inetOrgPerson"
 	OCAKUser        = "goauthentik.io/ldap/user"
-	OCPosixAccount        = "posixAccount"
+	OCPosixAccount  = "posixAccount"
 )
 
 const (
@@ -45,6 +55,8 @@ func GetContainerOCs() map[string]bool {
 
 func GetUserOCs() map[string]bool {
 	return map[string]bool{
+		OCTop:           true,
+		OCPerson:        true,
 		OCUser:          true,
 		OCOrgPerson:     true,
 		OCInetOrgPerson: true,

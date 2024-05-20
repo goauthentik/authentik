@@ -2,8 +2,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/Spinner";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -43,7 +42,7 @@ export class OutpostHealthElement extends AKElement {
         return html`<dl class="pf-c-description-list pf-m-compact">
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${t`Last seen`}</span>
+                    <span class="pf-c-description-list__text">${msg("Last seen")}</span>
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
@@ -55,13 +54,15 @@ export class OutpostHealthElement extends AKElement {
             </div>
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${t`Version`}</span>
+                    <span class="pf-c-description-list__text">${msg("Version")}</span>
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
                         ${this.outpostHealth.versionOutdated
                             ? html`<ak-label color=${PFColor.Red} ?compact=${true}
-                                  >${t`${this.outpostHealth.version}, should be ${this.outpostHealth.versionShould}`}
+                                  >${msg(
+                                      str`${this.outpostHealth.version}, should be ${this.outpostHealth.versionShould}`,
+                                  )}
                               </ak-label>`
                             : html`<ak-label color=${PFColor.Green} ?compact=${true}
                                   >${versionString}
@@ -71,7 +72,7 @@ export class OutpostHealthElement extends AKElement {
             </div>
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${t`Hostname`}</span>
+                    <span class="pf-c-description-list__text">${msg("Hostname")}</span>
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">${this.outpostHealth.hostname}</div>

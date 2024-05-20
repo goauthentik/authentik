@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nmcclain/ldap"
+	"beryju.io/ldap"
 	ldapConstants "goauthentik.io/internal/outpost/ldap/constants"
 )
 

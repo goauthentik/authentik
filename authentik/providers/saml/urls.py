@@ -1,4 +1,5 @@
 """authentik SAML IDP URLs"""
+
 from django.urls import path
 
 from authentik.providers.saml.api.property_mapping import SAMLPropertyMappingViewSet

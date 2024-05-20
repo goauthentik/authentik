@@ -1,4 +1,5 @@
 """authentik saml source exceptions"""
+
 from authentik.lib.sentry import SentryIgnoredException
 
 

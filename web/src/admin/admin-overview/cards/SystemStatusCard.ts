@@ -4,15 +4,14 @@ import {
 } from "@goauthentik/admin/admin-overview/cards/AdminStatusCard";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-import { AdminApi, OutpostsApi, System } from "@goauthentik/api";
+import { AdminApi, OutpostsApi, SystemInfo } from "@goauthentik/api";
 
 @customElement("ak-admin-status-system")
-export class SystemStatusCard extends AdminStatusCard<System> {
+export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
     now?: Date;
 
     icon = "pf-icon pf-icon-server";
@@ -20,13 +19,17 @@ export class SystemStatusCard extends AdminStatusCard<System> {
     @state()
     statusSummary?: string;
 
-    async getPrimaryValue(): Promise<System> {
+    async getPrimaryValue(): Promise<SystemInfo> {
         this.now = new Date();
         let status = await new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
-        if (status.embeddedOutpostHost === "" || !status.embeddedOutpostHost.includes("http")) {
+        if (
+            !status.embeddedOutpostDisabled &&
+            (status.embeddedOutpostHost === "" || !status.embeddedOutpostHost.includes("http"))
+        ) {
             // First install, ensure the embedded outpost host is set
             // also run when outpost host does not contain http
             // (yes it's called host and requires a URL, i know)
+            // TODO: Improve this in OOB flow
             await this.setOutpostHost();
             status = await new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
         }
@@ -50,39 +53,39 @@ export class SystemStatusCard extends AdminStatusCard<System> {
         });
     }
 
-    getStatus(value: System): Promise<AdminStatus> {
-        if (value.embeddedOutpostHost === "") {
-            this.statusSummary = t`Warning`;
+    getStatus(value: SystemInfo): Promise<AdminStatus> {
+        if (!value.embeddedOutpostDisabled && value.embeddedOutpostHost === "") {
+            this.statusSummary = msg("Warning");
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
-                message: html`${t`Embedded outpost is not configured correctly.`}
-                    <a href="#/outpost/outposts">${t`Check outposts.`}</a>`,
+                message: html`${msg("Embedded outpost is not configured correctly.")}
+                    <a href="#/outpost/outposts">${msg("Check outposts.")}</a>`,
             });
         }
         if (!value.httpIsSecure && document.location.protocol === "https:") {
-            this.statusSummary = t`Warning`;
+            this.statusSummary = msg("Warning");
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
-                message: html`${t`HTTPS is not detected correctly`}`,
+                message: html`${msg("HTTPS is not detected correctly")}`,
             });
         }
         const timeDiff = value.serverTime.getTime() - (this.now || new Date()).getTime();
         if (timeDiff > 5000 || timeDiff < -5000) {
-            this.statusSummary = t`Warning`;
+            this.statusSummary = msg("Warning");
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
-                message: html`${t`Server and client are further than 5 seconds apart.`}`,
+                message: html`${msg("Server and client are further than 5 seconds apart.")}`,
             });
         }
-        this.statusSummary = t`OK`;
+        this.statusSummary = msg("OK");
         return Promise.resolve<AdminStatus>({
             icon: "fa fa-check-circle pf-m-success",
-            message: html`${t`Everything is ok.`}`,
+            message: html`${msg("Everything is ok.")}`,
         });
     }
 
     renderHeader(): TemplateResult {
-        return html`${t`System status`}`;
+        return html`${msg("System status")}`;
     }
 
     renderValue(): TemplateResult {

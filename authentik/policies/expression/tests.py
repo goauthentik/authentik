@@ -1,4 +1,5 @@
 """evaluator tests"""
+
 from django.test import RequestFactory, TestCase
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.serializers import ValidationError
@@ -95,16 +96,13 @@ class TestEvaluator(TestCase):
             execution_logging=True,
             expression="ak_message(request.http_request.path)\nreturn True",
         )
-        tmpl = (
-            """
+        tmpl = f"""
         ak_message(request.http_request.path)
-        res = ak_call_policy('%s')
+        res = ak_call_policy('{expr.name}')
         ak_message(request.http_request.path)
         for msg in res.messages:
             ak_message(msg)
         """
-            % expr.name
-        )
         evaluator = PolicyEvaluator("test")
         evaluator.set_policy_request(self.request)
         res = evaluator.evaluate(tmpl)

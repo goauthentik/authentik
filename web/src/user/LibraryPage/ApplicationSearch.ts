@@ -1,9 +1,9 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import Fuse from "fuse.js";
+import { FuseResult } from "fuse.js";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { css, html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -18,27 +18,31 @@ import { customEvent } from "./helpers";
 
 @customElement("ak-library-list-search")
 export class LibraryPageApplicationList extends AKElement {
-    static styles = [
-        PFBase,
-        PFDisplay,
-        css`
-            input {
-                width: 30ch;
-                box-sizing: border-box;
-                border: 0;
-                border-bottom: 1px solid;
-                border-bottom-color: var(--ak-accent);
-                background-color: transparent;
-                font-size: 1.5rem;
-            }
-            input:focus {
-                outline: 0;
-            }
-        `,
-    ];
+    static get styles() {
+        return [
+            PFBase,
+            PFDisplay,
+            css`
+                input {
+                    width: 30ch;
+                    box-sizing: border-box;
+                    border: 0;
+                    border-bottom: 1px solid;
+                    border-bottom-color: var(--ak-accent);
+                    background-color: transparent;
+                    font-size: 1.5rem;
+                }
+                input:focus {
+                    outline: 0;
+                }
+            `,
+        ];
+    }
 
-    @property()
-    apps: Application[] = [];
+    @property({ attribute: false })
+    set apps(value: Application[]) {
+        this.fuse.setCollection(value);
+    }
 
     @property()
     query = getURLParam<string | undefined>("search", undefined);
@@ -63,11 +67,11 @@ export class LibraryPageApplicationList extends AKElement {
             shouldSort: true,
             ignoreFieldNorm: true,
             useExtendedSearch: true,
-            threshold: 0.5,
+            threshold: 0.3,
         });
     }
 
-    onSelected(apps: Fuse.FuseResult<Application>[]) {
+    onSelected(apps: FuseResult<Application>[]) {
         this.dispatchEvent(
             customEvent(SEARCH_UPDATED, {
                 apps: apps.map((app) => app.item),
@@ -77,7 +81,6 @@ export class LibraryPageApplicationList extends AKElement {
 
     connectedCallback() {
         super.connectedCallback();
-        this.fuse.setCollection(this.apps);
         if (!this.query) {
             return;
         }
@@ -132,7 +135,7 @@ export class LibraryPageApplicationList extends AKElement {
             type="text"
             class="pf-u-display-none pf-u-display-block-on-md"
             autofocus
-            placeholder=${t`Search...`}
+            placeholder=${msg("Search...")}
             value=${ifDefined(this.query)}
         />`;
     }

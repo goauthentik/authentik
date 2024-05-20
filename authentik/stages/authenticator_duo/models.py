@@ -1,11 +1,9 @@
 """Duo stage"""
-from typing import Optional
 
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from django_otp.models import Device
 from duo_client.admin import Admin
 from duo_client.auth import Auth
 from rest_framework.serializers import BaseSerializer, Serializer
@@ -14,6 +12,7 @@ from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.http import authentik_user_agent
+from authentik.stages.authenticator.models import Device
 
 
 class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
@@ -34,7 +33,7 @@ class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
         return AuthenticatorDuoStageSerializer
 
     @property
-    def type(self) -> type[View]:
+    def view(self) -> type[View]:
         from authentik.stages.authenticator_duo.stage import AuthenticatorDuoStageView
 
         return AuthenticatorDuoStageView
@@ -64,7 +63,7 @@ class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
     def component(self) -> str:
         return "ak-stage-authenticator-duo-form"
 
-    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+    def ui_user_settings(self) -> UserSettingSerializer | None:
         return UserSettingSerializer(
             data={
                 "title": self.friendly_name or str(self._meta.verbose_name),
@@ -97,7 +96,7 @@ class DuoDevice(SerializerModel, Device):
         return DuoDeviceSerializer
 
     def __str__(self):
-        return str(self.name) or str(self.user)
+        return str(self.name) or str(self.user_id)
 
     class Meta:
         verbose_name = _("Duo Device")

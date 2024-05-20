@@ -6,11 +6,9 @@ title: VMware vCenter
 
 ## What is vCenter
 
-From https://en.wikipedia.org/wiki/VCenter
-
-:::note
-vCenter Server is the centralized management utility for VMware, and is used to manage virtual machines, multiple ESXi hosts, and all dependent components from a single centralized location. VMware vMotion and svMotion require the use of vCenter and ESXi hosts.
-:::
+> vCenter Server is the centralized management utility for VMware, and is used to manage virtual machines, multiple ESXi hosts, and all dependent components from a single centralized location. VMware vMotion and svMotion require the use of vCenter and ESXi hosts.
+>
+> -- https://en.wikipedia.org/wiki/VCenter
 
 :::caution
 This requires authentik 0.10.3 or newer.

@@ -9,15 +9,23 @@ on:
   pull_request:
     branches:
       - main
+      - version-*
 
 jobs:
+  lint-lockfile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - working-directory: website/
+        run: |
+          [ -z "$(jq -r '.packages | to_entries[] | select((.key | startswith("node_modules")) and (.value | has("resolved") | not)) | .key' < package-lock.json)" ]
   lint-prettier:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3.6.0
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version-file: website/package.json
           cache: "npm"
           cache-dependency-path: website/package-lock.json
       - working-directory: website/
@@ -28,10 +36,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3.6.0
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version-file: website/package.json
           cache: "npm"
           cache-dependency-path: website/package-lock.json
       - working-directory: website/
@@ -47,12 +55,11 @@ jobs:
       matrix:
         job:
           - build
-          - build-docs-only
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3.6.0
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version-file: website/package.json
           cache: "npm"
           cache-dependency-path: website/package-lock.json
       - working-directory: website/
@@ -62,6 +69,7 @@ jobs:
         run: npm run ${{ matrix.job }}
   ci-website-mark:
     needs:
+      - lint-lockfile
       - lint-prettier
       - test
       - build

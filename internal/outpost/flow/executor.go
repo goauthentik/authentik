@@ -8,6 +8,7 @@ import (
 	"net/http/cookiejar"
 	"net/url"
 	"strings"
+	"time"
 
 	"github.com/getsentry/sentry-go"
 	"github.com/prometheus/client_golang/prometheus"
@@ -21,12 +22,12 @@ import (
 
 var (
 	FlowTimingGet = promauto.NewHistogramVec(prometheus.HistogramOpts{
-		Name: "authentik_outpost_flow_timing_get",
-		Help: "Duration it took to get a challenge",
+		Name: "authentik_outpost_flow_timing_get_seconds",
+		Help: "Duration it took to get a challenge in seconds",
 	}, []string{"stage", "flow"})
 	FlowTimingPost = promauto.NewHistogramVec(prometheus.HistogramOpts{
-		Name: "authentik_outpost_flow_timing_post",
-		Help: "Duration it took to send a challenge",
+		Name: "authentik_outpost_flow_timing_post_seconds",
+		Help: "Duration it took to send a challenge in seconds",
 	}, []string{"stage", "flow"})
 )
 
@@ -85,7 +86,9 @@ func NewFlowExecutor(ctx context.Context, flowSlug string, refConfig *api.Config
 		Jar:       jar,
 		Transport: fe,
 	}
-	fe.token = strings.Split(refConfig.DefaultHeader["Authorization"], " ")[1]
+	if authz, ok := refConfig.DefaultHeader["Authorization"]; ok {
+		fe.token = strings.Split(authz, " ")[1]
+	}
 	config.AddDefaultHeader(HeaderAuthentikOutpostToken, fe.token)
 	fe.api = api.NewAPIClient(config)
 	return fe
@@ -186,7 +189,7 @@ func (fe *FlowExecutor) getInitialChallenge() (*api.ChallengeTypes, error) {
 	FlowTimingGet.With(prometheus.Labels{
 		"stage": ch.GetComponent(),
 		"flow":  fe.flowSlug,
-	}).Observe(float64(gcsp.EndTime.Sub(gcsp.StartTime)))
+	}).Observe(float64(gcsp.EndTime.Sub(gcsp.StartTime)) / float64(time.Second))
 	return challenge, nil
 }
 
@@ -243,7 +246,7 @@ func (fe *FlowExecutor) solveFlowChallenge(challenge *api.ChallengeTypes, depth 
 	FlowTimingPost.With(prometheus.Labels{
 		"stage": ch.GetComponent(),
 		"flow":  fe.flowSlug,
-	}).Observe(float64(scsp.EndTime.Sub(scsp.StartTime)))
+	}).Observe(float64(scsp.EndTime.Sub(scsp.StartTime)) / float64(time.Second))
 
 	if depth >= 10 {
 		return false, errors.New("exceeded stage recursion depth")

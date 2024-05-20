@@ -2,11 +2,10 @@ import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/wizard/ActionWizardPage";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { property } from "@lit/reactive-element/decorators/property.js";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { state } from "lit/decorators.js";
 
 import PFWizard from "@patternfly/patternfly/components/Wizard/wizard.css";
@@ -37,7 +36,14 @@ export class Wizard extends ModalButton {
     isValid = false;
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(PFWizard);
+        return super.styles.concat(
+            PFWizard,
+            css`
+                .pf-c-modal-box {
+                    height: 75%;
+                }
+            `,
+        );
     }
 
     @state()
@@ -134,7 +140,7 @@ export class Wizard extends ModalButton {
                     ? html`<button
                           class="pf-c-button pf-m-plain pf-c-wizard__close"
                           type="button"
-                          aria-label="${t`Close`}"
+                          aria-label="${msg("Close")}"
                           @click=${() => {
                               this.reset();
                           }}
@@ -207,7 +213,7 @@ export class Wizard extends ModalButton {
                             }
                         }}
                     >
-                        ${lastPage ? t`Finish` : t`Next`}
+                        ${lastPage ? msg("Finish") : msg("Next")}
                     </button>
                     ${(this.currentStep ? this.steps.indexOf(this.currentStep.slot) : 0) > 0 &&
                     this.canBack
@@ -224,7 +230,7 @@ export class Wizard extends ModalButton {
                                       }
                                   }}
                               >
-                                  ${t`Back`}
+                                  ${msg("Back")}
                               </button>
                           `
                         : html``}
@@ -237,7 +243,7 @@ export class Wizard extends ModalButton {
                                       this.reset();
                                   }}
                               >
-                                  ${t`Cancel`}
+                                  ${msg("Cancel")}
                               </button>
                           </div>`
                         : html``}

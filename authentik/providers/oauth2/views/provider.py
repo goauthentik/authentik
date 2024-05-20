@@ -1,4 +1,5 @@
 """authentik OAuth2 OpenID well-known views"""
+
 from typing import Any
 
 from django.http import HttpRequest, HttpResponse, JsonResponse
@@ -7,7 +8,7 @@ from django.views import View
 from guardian.shortcuts import get_anonymous_user
 from structlog.stdlib import get_logger
 
-from authentik.core.exceptions import PropertyMappingExpressionException
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Application
 from authentik.providers.oauth2.constants import (
     ACR_AUTHENTIK_DEFAULT,
@@ -17,6 +18,8 @@ from authentik.providers.oauth2.constants import (
     GRANT_TYPE_IMPLICIT,
     GRANT_TYPE_PASSWORD,
     GRANT_TYPE_REFRESH_TOKEN,
+    PKCE_METHOD_PLAIN,
+    PKCE_METHOD_S256,
     SCOPE_OPENID,
 )
 from authentik.providers.oauth2.models import (
@@ -109,6 +112,7 @@ class ProviderInfoView(View):
             "request_parameter_supported": False,
             "claims_supported": self.get_claims(provider),
             "claims_parameter_supported": False,
+            "code_challenge_methods_supported": [PKCE_METHOD_PLAIN, PKCE_METHOD_S256],
         }
 
     def get_claims(self, provider: OAuth2Provider) -> list[str]:

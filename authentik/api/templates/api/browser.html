@@ -3,15 +3,13 @@
 {% load static %}
 
 {% block title %}
-API Browser - {{ tenant.branding_title }}
+API Browser - {{ brand.branding_title }}
 {% endblock %}
 
 {% block head %}
 <script src="{% static 'dist/standalone/api-browser/index.js' %}?version={{ version }}" type="module"></script>
 <meta name="theme-color" content="#151515" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#151515" media="(prefers-color-scheme: dark)">
-<link rel="icon" href="{{ tenant.branding_favicon }}">
-<link rel="shortcut icon" href="{{ tenant.branding_favicon }}">
 {% endblock %}
 
 {% block body %}

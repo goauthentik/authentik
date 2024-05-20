@@ -1,5 +1,5 @@
 ---
-title: Developer documentation
+title: Contributing to authentik
 slug: /
 ---
 
@@ -33,8 +33,6 @@ authentik consists of a few larger components:
 authentik is at it's very core a Django project. It consists of many individual django applications. These applications are intended to separate concerns, and they may share code between each other.
 
 These are the current packages:
-
-<a id="authentik-packages" />
 
 ```
 authentik
@@ -145,22 +143,22 @@ While the prerequisites above must be satisfied prior to having your pull reques
 ### PR naming
 
 -   Use the format of `<package>: <verb> <description>`
-    -   See [here](#authentik-packages) for `package`
+    -   See [here](#authentiks-structure) for `package`
     -   Example: `providers/saml2: fix parsing of requests`
 
 ### Git Commit Messages
 
 -   Use the format of `<package>: <verb> <description>`
-    -   See [here](#authentik-packages) for `package`
+    -   See [here](#authentiks-structure) for `package`
     -   Example: `providers/saml2: fix parsing of requests`
 -   Reference issues and pull requests liberally after the first line
 -   Naming of commits within a PR does not need to adhere to the guidelines as we squash merge PRs
 
 ### Python Styleguide
 
-All Python code is linted with [black](https://black.readthedocs.io/en/stable/), [PyLint](https://www.pylint.org/) and [isort](https://pycqa.github.io/isort/).
+All Python code is linted with [black](https://black.readthedocs.io/en/stable/) and [Ruff](https://docs.astral.sh/ruff).
 
-authentik runs on Python 3.11 at the time of writing this.
+authentik runs on Python 3.12 at the time of writing this.
 
 -   Use native type-annotations wherever possible.
 -   Add meaningful docstrings when possible.

@@ -2,8 +2,7 @@ import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
 import { setURLParams } from "@goauthentik/elements/router/RouteMatch";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
@@ -51,7 +50,7 @@ export class TreeViewNode extends AKElement {
         return pathItems.reverse().join(this.separator);
     }
 
-    protected createRenderRoot(): Element {
+    protected createRenderRoot() {
         return this;
     }
 
@@ -172,15 +171,14 @@ export class TreeView extends AKElement {
             }
             return item;
         } else {
-            const child = this.createNode(path, parentItem.childItems[idx], level + 1);
-            return child;
+            return this.createNode(path, parentItem.childItems[idx], level + 1);
         }
     }
 
     parse(data: string[]): TreeViewItem {
         const rootItem: TreeViewItem = {
             id: undefined,
-            label: t`Root`,
+            label: msg("Root"),
             childItems: [],
             level: -1,
         };

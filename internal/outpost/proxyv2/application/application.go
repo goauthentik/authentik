@@ -55,6 +55,8 @@ type Application struct {
 
 	errorTemplates  *template.Template
 	authHeaderCache *ttlcache.Cache[string, Claims]
+
+	isEmbedded bool
 }
 
 type Server interface {
@@ -86,15 +88,15 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server) (*A
 		CallbackSignature: []string{"true"},
 	}.Encode()
 
-	managed := false
+	isEmbedded := false
 	if m := server.API().Outpost.Managed.Get(); m != nil {
-		managed = *m == "goauthentik.io/outposts/embedded"
+		isEmbedded = *m == "goauthentik.io/outposts/embedded"
 	}
 	// Configure an OpenID Connect aware OAuth2 client.
 	endpoint := GetOIDCEndpoint(
 		p,
 		server.API().Outpost.Config["authentik_host"].(string),
-		managed,
+		isEmbedded,
 	)
 
 	verifier := oidc.NewVerifier(endpoint.Issuer, ks, &oidc.Config{
@@ -132,6 +134,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server) (*A
 		ak:                   server.API(),
 		authHeaderCache:      ttlcache.New(ttlcache.WithDisableTouchOnHit[string, Claims]()),
 		srv:                  server,
+		isEmbedded:           isEmbedded,
 	}
 	go a.authHeaderCache.Start()
 	a.sessions = a.getStore(p, externalHost)
@@ -163,13 +166,13 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server) (*A
 			}
 			before := time.Now()
 			inner.ServeHTTP(rw, r)
-			after := time.Since(before)
+			elapsed := time.Since(before)
 			metrics.Requests.With(prometheus.Labels{
 				"outpost_name": a.outpostName,
 				"type":         "app",
 				"method":       r.Method,
 				"host":         web.GetHost(r),
-			}).Observe(float64(after))
+			}).Observe(float64(elapsed) / float64(time.Second))
 		})
 	})
 	if server.API().GlobalConfig.ErrorReporting.Enabled {
@@ -189,7 +192,9 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server) (*A
 		})
 	})
 
-	mux.HandleFunc("/outpost.goauthentik.io/start", a.handleAuthStart)
+	mux.HandleFunc("/outpost.goauthentik.io/start", func(w http.ResponseWriter, r *http.Request) {
+		a.handleAuthStart(w, r, "")
+	})
 	mux.HandleFunc("/outpost.goauthentik.io/callback", a.handleAuthCallback)
 	mux.HandleFunc("/outpost.goauthentik.io/sign_out", a.handleSignOut)
 	switch *p.Mode {
@@ -217,7 +222,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server) (*A
 		for _, regex := range strings.Split(*p.SkipPathRegex, "\n") {
 			re, err := regexp.Compile(regex)
 			if err != nil {
-				//TODO: maybe create event for this?
+				// TODO: maybe create event for this?
 				a.log.WithError(err).Warning("failed to compile SkipPathRegex")
 				continue
 			} else {
@@ -232,7 +237,10 @@ func (a *Application) Mode() api.ProxyMode {
 	return *a.proxyConfig.Mode
 }
 
-func (a *Application) HasQuerySignature(r *http.Request) bool {
+func (a *Application) ShouldHandleURL(r *http.Request) bool {
+	if strings.HasPrefix(r.URL.Path, "/outpost.goauthentik.io") {
+		return true
+	}
 	if strings.EqualFold(r.URL.Query().Get(CallbackSignature), "true") {
 		return true
 	}
@@ -271,7 +279,9 @@ func (a *Application) handleSignOut(rw http.ResponseWriter, r *http.Request) {
 		"id_token_hint": []string{cc.RawToken},
 	}
 	redirect += "?" + uv.Encode()
-	err = a.Logout(cc.Sub)
+	err = a.Logout(r.Context(), func(c Claims) bool {
+		return c.Sub == cc.Sub
+	})
 	if err != nil {
 		a.log.WithError(err).Warning("failed to logout of other sessions")
 	}

@@ -3,8 +3,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/forms/ModalForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -29,10 +28,10 @@ export class RelatedApplicationButton extends AKElement {
             </a>`;
         }
         return html`<ak-forms-modal>
-            <span slot="submit"> ${t`Create`} </span>
-            <span slot="header"> ${t`Create Application`} </span>
+            <span slot="submit"> ${msg("Create")} </span>
+            <span slot="header"> ${msg("Create Application")} </span>
             <ak-application-form slot="form" .provider=${this.provider?.pk}> </ak-application-form>
-            <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+            <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
         </ak-forms-modal>`;
     }
 }

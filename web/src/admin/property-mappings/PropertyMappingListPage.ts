@@ -1,5 +1,8 @@
+import "@goauthentik/admin/property-mappings/PropertyMappingGoogleWorkspaceForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingLDAPForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingMicrosoftEntraForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingNotification";
+import "@goauthentik/admin/property-mappings/PropertyMappingRACForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingSAMLForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingSCIMForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingScopeForm";
@@ -10,13 +13,14 @@ import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/forms/ProxyForm";
+import "@goauthentik/elements/rbac/ObjectPermissionModal";
 import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -29,16 +33,17 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
         return true;
     }
     pageTitle(): string {
-        return t`Property Mappings`;
+        return msg("Property Mappings");
     }
     pageDescription(): string {
-        return t`Control how authentik exposes and interprets information.`;
+        return msg("Control how authentik exposes and interprets information.");
     }
     pageIcon(): string {
         return "pf-icon pf-icon-blueprint";
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "name";
@@ -58,16 +63,16 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Name`, "name"),
-            new TableColumn(t`Type`, "type"),
-            new TableColumn(t`Actions`),
+            new TableColumn(msg("Name"), "name"),
+            new TableColumn(msg("Type"), "type"),
+            new TableColumn(msg("Actions")),
         ];
     }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${t`Property Mapping(s)`}
+            objectLabel=${msg("Property Mapping(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: PropertyMapping) => {
                 return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllUsedByList({
@@ -81,7 +86,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete`}
+                ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
     }
@@ -91,8 +96,8 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
             html`${item.name}`,
             html`${item.verboseName}`,
             html` <ak-forms-modal>
-                    <span slot="submit"> ${t`Update`} </span>
-                    <span slot="header"> ${t`Update ${item.verboseName}`} </span>
+                    <span slot="submit"> ${msg("Update")} </span>
+                    <span slot="header"> ${msg(str`Update ${item.verboseName}`)} </span>
                     <ak-proxy-form
                         slot="form"
                         .args=${{
@@ -102,16 +107,22 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                     >
                     </ak-proxy-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <i class="fas fa-edit"></i>
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit"></i>
+                        </pf-tooltip>
                     </button>
                 </ak-forms-modal>
+                <ak-rbac-object-permission-modal model=${item.metaModelName} objectPk=${item.pk}>
+                </ak-rbac-object-permission-modal>
                 <ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
-                    <span slot="submit"> ${t`Test`} </span>
-                    <span slot="header"> ${t`Test Property Mapping`} </span>
+                    <span slot="submit"> ${msg("Test")} </span>
+                    <span slot="header"> ${msg("Test Property Mapping")} </span>
                     <ak-property-mapping-test-form slot="form" .mapping=${item}>
                     </ak-property-mapping-test-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <i class="fas fa-vial" aria-hidden="true"></i>
+                        <pf-tooltip position="top" content=${msg("Test")}>
+                            <i class="fas fa-vial" aria-hidden="true"></i>
+                        </pf-tooltip>
                     </button>
                 </ak-forms-modal>`,
         ];
@@ -145,7 +156,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                                     <i class="fas fa-check" aria-hidden="true"></i>
                                 </span>
                             </span>
-                            <span class="pf-c-switch__label">${t`Hide managed mappings`}</span>
+                            <span class="pf-c-switch__label">${msg("Hide managed mappings")}</span>
                         </label>
                     </div>
                 </div>

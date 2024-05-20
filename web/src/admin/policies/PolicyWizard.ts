@@ -13,8 +13,7 @@ import { FormWizardPage } from "@goauthentik/elements/wizard/FormWizardPage";
 import "@goauthentik/elements/wizard/Wizard";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { CSSResult, TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
@@ -34,7 +33,7 @@ export class InitialPolicyWizardPage extends WizardPage {
     static get styles(): CSSResult[] {
         return [PFBase, PFForm, PFButton, PFRadio];
     }
-    sidebarLabel = () => t`Select type`;
+    sidebarLabel = () => msg("Select type");
 
     activeCallback: () => Promise<void> = async () => {
         this.host.isValid = false;
@@ -88,7 +87,7 @@ export class PolicyWizard extends AKElement {
     }
 
     @property()
-    createText = t`Create`;
+    createText = msg("Create");
 
     @property({ type: Boolean })
     showBindingPage = false;
@@ -109,8 +108,8 @@ export class PolicyWizard extends AKElement {
         return html`
             <ak-wizard
                 .steps=${this.showBindingPage ? ["initial", "create-binding"] : ["initial"]}
-                header=${t`New policy`}
-                description=${t`Create a new policy.`}
+                header=${msg("New policy")}
+                description=${msg("Create a new policy.")}
             >
                 <ak-policy-wizard-initial slot="initial" .policyTypes=${this.policyTypes}>
                 </ak-policy-wizard-initial>
@@ -118,7 +117,7 @@ export class PolicyWizard extends AKElement {
                     return html`
                         <ak-wizard-page-form
                             slot=${`type-${type.component}-${type.modelName}`}
-                            .sidebarLabel=${() => t`Create ${type.name}`}
+                            .sidebarLabel=${() => msg(str`Create ${type.name}`)}
                         >
                             <ak-proxy-form type=${type.component}></ak-proxy-form>
                         </ak-wizard-page-form>
@@ -127,7 +126,7 @@ export class PolicyWizard extends AKElement {
                 ${this.showBindingPage
                     ? html`<ak-wizard-page-form
                           slot="create-binding"
-                          .sidebarLabel=${() => t`Create Binding`}
+                          .sidebarLabel=${() => msg("Create Binding")}
                           .activePageCallback=${async (context: FormWizardPage) => {
                               const createSlot = context.host.steps[1];
                               const bindingForm =

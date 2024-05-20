@@ -1,7 +1,7 @@
 """SAML AuthNRequest Parser and dataclass"""
+
 from base64 import b64decode
 from dataclasses import dataclass
-from typing import Optional
 from urllib.parse import quote_plus
 from xml.etree.ElementTree import ParseError  # nosec
 
@@ -31,13 +31,13 @@ ERROR_SIGNATURE_REQUIRED_BUT_ABSENT = (
 ERROR_FAILED_TO_VERIFY = "Failed to verify signature"
 
 
-@dataclass
+@dataclass(slots=True)
 class AuthNRequest:
     """AuthNRequest Dataclass"""
 
-    id: Optional[str] = None
+    id: str | None = None
 
-    relay_state: Optional[str] = None
+    relay_state: str | None = None
 
     name_id_policy: str = SAML_NAME_ID_FORMAT_UNSPECIFIED
 
@@ -51,7 +51,7 @@ class AuthNRequestParser:
         self.provider = provider
         self.logger = get_logger().bind(provider=self.provider)
 
-    def _parse_xml(self, decoded_xml: str | bytes, relay_state: Optional[str]) -> AuthNRequest:
+    def _parse_xml(self, decoded_xml: str | bytes, relay_state: str | None) -> AuthNRequest:
         root = ElementTree.fromstring(decoded_xml)
 
         # http://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf
@@ -82,12 +82,12 @@ class AuthNRequestParser:
 
         return auth_n_request
 
-    def parse(self, saml_request: str, relay_state: Optional[str] = None) -> AuthNRequest:
+    def parse(self, saml_request: str, relay_state: str | None = None) -> AuthNRequest:
         """Validate and parse raw request with enveloped signautre."""
         try:
             decoded_xml = b64decode(saml_request.encode())
         except UnicodeDecodeError:
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST)
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST) from None
 
         verifier = self.provider.verification_kp
         if not verifier:
@@ -120,15 +120,15 @@ class AuthNRequestParser:
     def parse_detached(
         self,
         saml_request: str,
-        relay_state: Optional[str],
-        signature: Optional[str] = None,
-        sig_alg: Optional[str] = None,
+        relay_state: str | None,
+        signature: str | None = None,
+        sig_alg: str | None = None,
     ) -> AuthNRequest:
         """Validate and parse raw request with detached signature"""
         try:
             decoded_xml = decode_base64_and_inflate(saml_request)
         except UnicodeDecodeError:
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST)
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST) from None
 
         verifier = self.provider.verification_kp
         if not verifier:
@@ -175,4 +175,7 @@ class AuthNRequestParser:
 
     def idp_initiated(self) -> AuthNRequest:
         """Create IdP Initiated AuthNRequest"""
-        return AuthNRequest()
+        relay_state = None
+        if self.provider.default_relay_state != "":
+            relay_state = self.provider.default_relay_state
+        return AuthNRequest(relay_state=relay_state)

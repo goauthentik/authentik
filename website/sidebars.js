@@ -1,5 +1,11 @@
-module.exports = {
+const generateVersionDropdown =
+    require("./src/utils.js").generateVersionDropdown;
+
+const docsSidebar = {
     docs: [
+        {
+            type: "html",
+        },
         {
             type: "doc",
             id: "index",
@@ -7,7 +13,7 @@ module.exports = {
         {
             type: "category",
             label: "Installation",
-            collapsed: false,
+            collapsed: true,
             link: {
                 type: "doc",
                 id: "installation/index",
@@ -21,24 +27,86 @@ module.exports = {
                 "installation/automated-install",
                 "installation/air-gapped",
                 "installation/monitoring",
+                "installation/storage-s3",
             ],
         },
         {
             type: "category",
-            label: "Core Concepts",
-            collapsed: false,
+            label: "Core Concepts & Tasks",
+            collapsed: true,
             items: [
                 "core/terminology",
-                "core/applications",
-                "core/tenants",
+                "core/brands",
                 "core/certificates",
                 "core/geoip",
+                "core/architecture",
+                "core/settings",
             ],
+        },
+        {
+            type: "category",
+            label: "Enterprise",
+            collapsed: true,
+            link: {
+                type: "doc",
+                id: "enterprise/index",
+            },
+            items: [
+                "enterprise/get-started",
+                "enterprise/manage-enterprise",
+                "enterprise/entsupport",
+            ],
+        },
+        {
+            type: "category",
+            label: "Applications",
+            link: {
+                type: "doc",
+                id: "applications/index",
+            },
+            items: ["applications/manage_apps"],
         },
         {
             type: "category",
             label: "Providers",
+            link: {
+                type: "doc",
+                id: "providers/index",
+            },
             items: [
+                {
+                    type: "category",
+                    label: "Google Workspace Provider",
+                    link: {
+                        type: "doc",
+                        id: "providers/gws/index",
+                    },
+                    items: [
+                        "providers/gws/setup-gws",
+                        "providers/gws/add-gws-provider",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "LDAP Provider",
+                    link: {
+                        type: "doc",
+                        id: "providers/ldap/index",
+                    },
+                    items: ["providers/ldap/generic_setup"],
+                },
+                {
+                    type: "category",
+                    label: "Microsoft Entra ID Provider",
+                    link: {
+                        type: "doc",
+                        id: "providers/entra/index",
+                    },
+                    items: [
+                        "providers/entra/setup-entra",
+                        "providers/entra/add-entra-provider",
+                    ],
+                },
                 {
                     type: "category",
                     label: "OAuth2 Provider",
@@ -79,16 +147,60 @@ module.exports = {
                         },
                     ],
                 },
+                "providers/scim/index",
                 {
                     type: "category",
-                    label: "LDAP Provider",
+                    label: "RAC (Remote Access Control) Provider",
                     link: {
                         type: "doc",
-                        id: "providers/ldap/index",
+                        id: "providers/rac/index",
                     },
-                    items: ["providers/ldap/generic_setup"],
+                    items: ["providers/rac/how-to-rac"],
                 },
-                "providers/scim/index",
+            ],
+        },
+        {
+            type: "category",
+            label: "Sources",
+            collapsed: true,
+            link: {
+                type: "doc",
+                id: "sources/index",
+            },
+            items: [
+                {
+                    type: "category",
+                    label: "Directory synchronization",
+                    items: [
+                        "sources/active-directory/index",
+                        "sources/freeipa/index",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Protocols",
+                    items: [
+                        "sources/ldap/index",
+                        "sources/oauth/index",
+                        "sources/saml/index",
+                        "sources/scim/index",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Social Logins",
+                    items: [
+                        "sources/apple/index",
+                        "sources/azure-ad/index",
+                        "sources/discord/index",
+                        "sources/github/index",
+                        "sources/google/index",
+                        "sources/mailcow/index",
+                        "sources/twitch/index",
+                        "sources/plex/index",
+                        "sources/twitter/index",
+                    ],
+                },
             ],
         },
         {
@@ -169,6 +281,7 @@ module.exports = {
                 "flow/stages/invitation/index",
                 "flow/stages/password/index",
                 "flow/stages/prompt/index",
+                "flow/stages/source/index",
                 "flow/stages/user_delete",
                 "flow/stages/user_login/index",
                 "flow/stages/user_logout",
@@ -182,7 +295,23 @@ module.exports = {
                 type: "doc",
                 id: "policies/index",
             },
-            items: ["policies/expression"],
+            items: [
+                {
+                    type: "category",
+                    label: "Working with policies",
+                    link: {
+                        type: "generated-index",
+                        title: "Working with policies",
+                        slug: "policies/working_with_policies",
+                        description: "Overview of policies configuration",
+                    },
+                    items: [
+                        "policies/working_with_policies/whitelist_email",
+                        "policies/working_with_policies/unique_email",
+                    ],
+                },
+                "policies/expression",
+            ],
         },
         {
             type: "category",
@@ -225,8 +354,52 @@ module.exports = {
         },
         {
             type: "category",
-            label: "Users & Groups",
-            items: ["user-group/user", "user-group/group"],
+            label: "Users, Groups, & Roles",
+            items: [
+                {
+                    type: "category",
+                    label: "Users",
+                    link: {
+                        type: "doc",
+                        id: "user-group-role/user/index",
+                    },
+                    items: [
+                        "user-group-role/user/user_basic_operations",
+                        "user-group-role/user/user_ref",
+                        "user-group-role/user/invitations",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Groups",
+                    link: {
+                        type: "doc",
+                        id: "user-group-role/groups/index",
+                    },
+                    items: ["user-group-role/groups/manage_groups"],
+                },
+                {
+                    type: "category",
+                    label: "Roles",
+                    link: {
+                        type: "doc",
+                        id: "user-group-role/roles/index",
+                    },
+                    items: ["user-group-role/roles/manage_roles"],
+                },
+                {
+                    type: "category",
+                    label: "Access control",
+                    link: {
+                        type: "doc",
+                        id: "user-group-role/access-control/index",
+                    },
+                    items: [
+                        "user-group-role/access-control/permissions",
+                        "user-group-role/access-control/manage_permissions",
+                    ],
+                },
+            ],
         },
         {
             type: "category",
@@ -238,13 +411,18 @@ module.exports = {
                 description: "Release notes for recent authentik versions",
             },
             items: [
-                "releases/2023/v2023.5",
-                "releases/2023/v2023.4",
-                "releases/2023/v2023.3",
+                "releases/2024/v2024.4",
+                "releases/2024/v2024.2",
+                "releases/2023/v2023.10",
                 {
                     type: "category",
                     label: "Previous versions",
                     items: [
+                        "releases/2023/v2023.8",
+                        "releases/2023/v2023.6",
+                        "releases/2023/v2023.5",
+                        "releases/2023/v2023.4",
+                        "releases/2023/v2023.3",
                         "releases/2023/v2023.2",
                         "releases/2023/v2023.1",
                         "releases/2022/v2022.12",
@@ -301,6 +479,11 @@ module.exports = {
                             "Steps to help debug forward auth setups with various reverse proxies.",
                     },
                 },
+                {
+                    type: "category",
+                    label: "PostgreSQL",
+                    items: ["troubleshooting/postgres/upgrade_kubernetes"],
+                },
                 "troubleshooting/access",
                 "troubleshooting/login",
                 "troubleshooting/image_upload",
@@ -320,12 +503,23 @@ module.exports = {
                 slug: "security",
             },
             items: [
+                "security/security-hardening",
                 "security/policy",
+                "security/CVE-2024-23647",
+                "security/CVE-2024-21637",
+                "security/CVE-2023-48228",
+                "security/GHSA-rjvp-29xq-f62w",
+                "security/CVE-2023-39522",
+                "security/CVE-2023-36456",
+                "security/2023-06-cure53",
+                "security/CVE-2023-26481",
                 "security/CVE-2022-23555",
                 "security/CVE-2022-46145",
                 "security/CVE-2022-46172",
-                "security/CVE-2023-26481",
             ],
         },
     ],
 };
+
+docsSidebar.docs[0].value = generateVersionDropdown(docsSidebar);
+module.exports = docsSidebar;

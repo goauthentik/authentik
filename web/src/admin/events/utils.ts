@@ -1,11 +1,9 @@
 import { EventWithContext } from "@goauthentik/common/events";
+import { truncate } from "@goauthentik/common/utils";
 import { KeyUnknown } from "@goauthentik/elements/forms/Form";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
-
-import { EventActions, SeverityEnum } from "@goauthentik/api";
 
 export function EventGeo(event: EventWithContext): TemplateResult {
     let geo: KeyUnknown | undefined = undefined;
@@ -19,75 +17,28 @@ export function EventGeo(event: EventWithContext): TemplateResult {
     return html``;
 }
 
-export function ActionToLabel(action?: EventActions): string {
-    if (!action) return "";
-    switch (action) {
-        case EventActions.Login:
-            return t`Login`;
-        case EventActions.LoginFailed:
-            return t`Failed login`;
-        case EventActions.Logout:
-            return t`Logout`;
-        case EventActions.UserWrite:
-            return t`User was written to`;
-        case EventActions.SuspiciousRequest:
-            return t`Suspicious request`;
-        case EventActions.PasswordSet:
-            return t`Password set`;
-        case EventActions.SecretView:
-            return t`Secret was viewed`;
-        case EventActions.SecretRotate:
-            return t`Secret was rotated`;
-        case EventActions.InvitationUsed:
-            return t`Invitation used`;
-        case EventActions.AuthorizeApplication:
-            return t`Application authorized`;
-        case EventActions.SourceLinked:
-            return t`Source linked`;
-        case EventActions.ImpersonationStarted:
-            return t`Impersonation started`;
-        case EventActions.ImpersonationEnded:
-            return t`Impersonation ended`;
-        case EventActions.FlowExecution:
-            return t`Flow execution`;
-        case EventActions.PolicyExecution:
-            return t`Policy execution`;
-        case EventActions.PolicyException:
-            return t`Policy exception`;
-        case EventActions.PropertyMappingException:
-            return t`Property Mapping exception`;
-        case EventActions.SystemTaskExecution:
-            return t`System task execution`;
-        case EventActions.SystemTaskException:
-            return t`System task exception`;
-        case EventActions.SystemException:
-            return t`General system exception`;
-        case EventActions.ConfigurationError:
-            return t`Configuration error`;
-        case EventActions.ModelCreated:
-            return t`Model created`;
-        case EventActions.ModelUpdated:
-            return t`Model updated`;
-        case EventActions.ModelDeleted:
-            return t`Model deleted`;
-        case EventActions.EmailSent:
-            return t`Email sent`;
-        case EventActions.UpdateAvailable:
-            return t`Update available`;
-        default:
-            return action;
+export function EventUser(event: EventWithContext, truncateUsername?: number): TemplateResult {
+    if (!event.user.username) {
+        return html`-`;
     }
-}
-
-export function SeverityToLabel(severity: SeverityEnum | null | undefined): string {
-    if (!severity) return t`Unknown severity`;
-    switch (severity) {
-        case SeverityEnum.Alert:
-            return t`Alert`;
-        case SeverityEnum.Notice:
-            return t`Notice`;
-        case SeverityEnum.Warning:
-            return t`Warning`;
+    let body = html``;
+    if (event.user.is_anonymous) {
+        body = html`<div>${msg("Anonymous user")}</div>`;
+    } else {
+        body = html`<div>
+            <a href="#/identity/users/${event.user.pk}"
+                >${truncateUsername
+                    ? truncate(event.user?.username, truncateUsername)
+                    : event.user?.username}</a
+            >
+        </div>`;
     }
-    return t`Unknown severity`;
+    if (event.user.on_behalf_of) {
+        body = html`${body}<small>
+                <a href="#/identity/users/${event.user.on_behalf_of.pk}"
+                    >${msg(str`On behalf of ${event.user.on_behalf_of.username}`)}</a
+                >
+            </small>`;
+    }
+    return body;
 }

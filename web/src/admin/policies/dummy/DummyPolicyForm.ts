@@ -1,11 +1,10 @@
+import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -13,19 +12,11 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { DummyPolicy, PoliciesApi } from "@goauthentik/api";
 
 @customElement("ak-policy-dummy-form")
-export class DummyPolicyForm extends ModelForm<DummyPolicy, string> {
+export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
     loadInstance(pk: string): Promise<DummyPolicy> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesDummyRetrieve({
             policyUuid: pk,
         });
-    }
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return t`Successfully updated policy.`;
-        } else {
-            return t`Successfully created policy.`;
-        }
     }
 
     async send(data: DummyPolicy): Promise<DummyPolicy> {
@@ -42,11 +33,12 @@ export class DummyPolicyForm extends ModelForm<DummyPolicy, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
-                ${t`A policy used for testing. Always returns the same result as specified below after waiting a random duration.`}
-            </div>
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+        return html` <span>
+                ${msg(
+                    "A policy used for testing. Always returns the same result as specified below after waiting a random duration.",
+                )}
+            </span>
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -66,14 +58,16 @@ export class DummyPolicyForm extends ModelForm<DummyPolicy, string> {
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${t`Execution logging`}</span>
+                    <span class="pf-c-switch__label">${msg("Execution logging")}</span>
                 </label>
                 <p class="pf-c-form__helper-text">
-                    ${t`When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.`}
+                    ${msg(
+                        "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Policy-specific settings`} </span>
+                <span slot="header"> ${msg("Policy-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="result">
                         <label class="pf-c-switch">
@@ -87,11 +81,11 @@ export class DummyPolicyForm extends ModelForm<DummyPolicy, string> {
                                     <i class="fas fa-check" aria-hidden="true"></i>
                                 </span>
                             </span>
-                            <span class="pf-c-switch__label">${t`Pass policy?`}</span>
+                            <span class="pf-c-switch__label">${msg("Pass policy?")}</span>
                         </label>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Wait (min)`}
+                        label=${msg("Wait (min)")}
                         ?required=${true}
                         name="waitMin"
                     >
@@ -102,11 +96,13 @@ export class DummyPolicyForm extends ModelForm<DummyPolicy, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`The policy takes a random time to execute. This controls the minimum time it will take.`}
+                            ${msg(
+                                "The policy takes a random time to execute. This controls the minimum time it will take.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Wait (max)`}
+                        label=${msg("Wait (max)")}
                         ?required=${true}
                         name="waitMax"
                     >
@@ -118,7 +114,6 @@ export class DummyPolicyForm extends ModelForm<DummyPolicy, string> {
                         />
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

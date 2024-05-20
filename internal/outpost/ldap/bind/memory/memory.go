@@ -3,8 +3,8 @@ package memory
 import (
 	"time"
 
+	"beryju.io/ldap"
 	ttlcache "github.com/jellydator/ttlcache/v3"
-	"github.com/nmcclain/ldap"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/ldap/bind"
 	"goauthentik.io/internal/outpost/ldap/bind/direct"

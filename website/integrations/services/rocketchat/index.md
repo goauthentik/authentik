@@ -6,11 +6,9 @@ title: Rocket.chat
 
 ## What is Rocket.chat
 
-From https://github.com/RocketChat/Rocket.Chat
-
-:::note
-Rocket.Chat is an open-source fully customizable communications platform developed in JavaScript for organizations with high standards of data protection. It is licensed under the MIT License with some other licenses mixed in. See [Rocket.chat Git Hub](https://github.com/RocketChat/Rocket.Chat/blob/develop/LICENSE) for licensing information.
-:::
+> Rocket.Chat is an open-source fully customizable communications platform developed in JavaScript for organizations with high standards of data protection. It is licensed under the MIT License with some other licenses mixed in. See [Rocket.chat GitHub](https://github.com/RocketChat/Rocket.Chat/blob/develop/LICENSE) for licensing information.
+>
+> -- https://github.com/RocketChat/Rocket.Chat
 
 :::note
 This is based on authentik 2022.3.1 and Rocket.chat 4.5.1 using the [Docker-Compose install](https://docs.rocket.chat/quick-start/installing-and-updating/rapid-deployment-methods/docker-and-docker-compose/docker-containers). Instructions may differ between versions.
@@ -78,7 +76,7 @@ In Rocket.chat, follow the procedure below:
 
 3. In the top right corner, click _Add custom oauth_
 
-4. Give your new oauth the name of _Authenik_, then click _Send_
+4. Give your new oauth the name of _Authentik_, then click _Send_
 
 ![](./rocketchat6.png)
 

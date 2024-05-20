@@ -1,4 +1,5 @@
 """identification tests"""
+
 from django.urls import reverse
 from rest_framework.exceptions import ValidationError
 
@@ -28,6 +29,7 @@ class TestIdentificationStage(FlowTestCase):
         self.stage = IdentificationStage.objects.create(
             name="identification",
             user_fields=[UserFields.E_MAIL],
+            pretend_user_exists=False,
         )
         self.stage.sources.set([source])
         self.stage.save()
@@ -98,6 +100,42 @@ class TestIdentificationStage(FlowTestCase):
             user_fields=["email"],
         )
 
+    def test_invalid_with_password_pretend(self):
+        """Test with invalid email and invalid password in single step (with pretend_user_exists)"""
+        self.stage.pretend_user_exists = True
+        pw_stage = PasswordStage.objects.create(name="password", backends=[BACKEND_INBUILT])
+        self.stage.password_stage = pw_stage
+        self.stage.save()
+        form_data = {
+            "uid_field": self.user.email + "test",
+            "password": self.user.username + "test",
+        }
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        response = self.client.post(url, form_data)
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-identification",
+            password_fields=True,
+            primary_action="Log in",
+            response_errors={
+                "non_field_errors": [{"code": "invalid", "string": "Failed to authenticate."}]
+            },
+            sources=[
+                {
+                    "challenge": {
+                        "component": "xak-flow-redirect",
+                        "to": "/source/oauth/login/test/",
+                        "type": ChallengeTypes.REDIRECT.value,
+                    },
+                    "icon_url": "/static/authentik/sources/default.svg",
+                    "name": "test",
+                }
+            ],
+            show_source_labels=False,
+            user_fields=["email"],
+        )
+
     def test_invalid_with_username(self):
         """Test invalid with username (user exists but stage only allows email)"""
         form_data = {"uid_field": self.user.username}
@@ -106,6 +144,26 @@ class TestIdentificationStage(FlowTestCase):
             form_data,
         )
         self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-identification",
+            response_errors={
+                "non_field_errors": [{"string": "Failed to authenticate.", "code": "invalid"}]
+            },
+        )
+
+    def test_invalid_with_username_pretend(self):
+        """Test invalid with username (user exists but stage only allows email)"""
+        self.stage.pretend_user_exists = True
+        self.stage.save()
+        form_data = {"uid_field": self.user.username}
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            form_data,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
     def test_invalid_no_fields(self):
         """Test invalid with username (no user fields are enabled)"""
@@ -188,7 +246,7 @@ class TestIdentificationStage(FlowTestCase):
             ],
         )
 
-    def test_recovery_flow(self):
+    def test_link_recovery_flow(self):
         """Test that recovery flow is linked correctly"""
         flow = create_test_flow()
         self.stage.recovery_flow = flow
@@ -225,6 +283,38 @@ class TestIdentificationStage(FlowTestCase):
                 }
             ],
         )
+
+    def test_recovery_flow_invalid_user(self):
+        """Test that an invalid user can proceed in a recovery flow"""
+        self.flow.designation = FlowDesignation.RECOVERY
+        self.flow.save()
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-identification",
+            user_fields=["email"],
+            password_fields=False,
+            show_source_labels=False,
+            primary_action="Continue",
+            sources=[
+                {
+                    "challenge": {
+                        "component": "xak-flow-redirect",
+                        "to": "/source/oauth/login/test/",
+                        "type": ChallengeTypes.REDIRECT.value,
+                    },
+                    "icon_url": "/static/authentik/sources/default.svg",
+                    "name": "test",
+                }
+            ],
+        )
+        form_data = {"uid_field": generate_id()}
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        response = self.client.post(url, form_data)
+        self.assertEqual(response.status_code, 200)
 
     def test_api_validate(self):
         """Test API validation"""

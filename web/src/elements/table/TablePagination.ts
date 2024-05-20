@@ -1,7 +1,6 @@
 import { AKElement } from "@goauthentik/elements/Base";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -9,17 +8,7 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-export interface Pagination {
-    next?: number;
-    previous?: number;
-
-    count: number;
-    current: number;
-    totalPages: number;
-
-    startIndex: number;
-    endIndex: number;
-}
+import { Pagination } from "@goauthentik/api";
 
 @customElement("ak-table-pagination")
 export class TablePagination extends AKElement {
@@ -49,12 +38,17 @@ export class TablePagination extends AKElement {
     }
 
     render(): TemplateResult {
+        if (!this.pages) {
+            return html``;
+        }
         return html` <div class="pf-c-pagination pf-m-compact pf-m-hidden pf-m-visible-on-md">
             <div class="pf-c-pagination pf-m-compact pf-m-compact pf-m-hidden pf-m-visible-on-md">
                 <div class="pf-c-options-menu">
                     <div class="pf-c-options-menu__toggle pf-m-text pf-m-plain">
                         <span class="pf-c-options-menu__toggle-text">
-                            ${t`${this.pages?.startIndex} - ${this.pages?.endIndex} of ${this.pages?.count}`}
+                            ${msg(
+                                str`${this.pages?.startIndex} - ${this.pages?.endIndex} of ${this.pages?.count}`,
+                            )}
                         </span>
                     </div>
                 </div>
@@ -66,7 +60,7 @@ export class TablePagination extends AKElement {
                                 this.pageChangeHandler(this.pages?.previous || 0);
                             }}
                             ?disabled="${(this.pages?.previous || 0) < 1}"
-                            aria-label="${t`Go to previous page`}"
+                            aria-label="${msg("Go to previous page")}"
                         >
                             <i class="fas fa-angle-left" aria-hidden="true"></i>
                         </button>
@@ -78,7 +72,7 @@ export class TablePagination extends AKElement {
                                 this.pageChangeHandler(this.pages?.next || 0);
                             }}
                             ?disabled="${(this.pages?.next || 0) <= 0}"
-                            aria-label="${t`Go to next page`}"
+                            aria-label="${msg("Go to next page")}"
                         >
                             <i class="fas fa-angle-right" aria-hidden="true"></i>
                         </button>

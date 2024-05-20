@@ -1,15 +1,18 @@
-import "@goauthentik/admin/events/EventInfo";
-import { ActionToLabel, EventGeo } from "@goauthentik/admin/events/utils";
+import "@goauthentik/admin/events/EventVolumeChart";
+import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
+import { actionToLabel } from "@goauthentik/common/labels";
 import { uiConfig } from "@goauthentik/common/ui/config";
+import { getRelativeTime } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-event-info";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { t } from "@lingui/macro";
-
-import { TemplateResult, html } from "lit";
+import { msg } from "@lit/localize";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { Event, EventsApi } from "@goauthentik/api";
@@ -19,7 +22,7 @@ export class EventListPage extends TablePage<Event> {
     expandable = true;
 
     pageTitle(): string {
-        return t`Event Log`;
+        return msg("Event Log");
     }
     pageDescription(): string | undefined {
         return;
@@ -34,6 +37,14 @@ export class EventListPage extends TablePage<Event> {
     @property()
     order = "-created";
 
+    static get styles(): CSSResult[] {
+        return super.styles.concat(css`
+            .pf-m-no-padding-bottom {
+                padding-bottom: 0;
+            }
+        `);
+    }
+
     async apiEndpoint(page: number): Promise<PaginatedResponse<Event>> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
             ordering: this.order,
@@ -45,44 +56,48 @@ export class EventListPage extends TablePage<Event> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Action`, "action"),
-            new TableColumn(t`User`, "user"),
-            new TableColumn(t`Creation Date`, "created"),
-            new TableColumn(t`Client IP`, "client_ip"),
-            new TableColumn(t`Tenant`, "tenant_name"),
-            new TableColumn(t`Actions`),
+            new TableColumn(msg("Action"), "action"),
+            new TableColumn(msg("User"), "user"),
+            new TableColumn(msg("Creation Date"), "created"),
+            new TableColumn(msg("Client IP"), "client_ip"),
+            new TableColumn(msg("Brand"), "brand_name"),
+            new TableColumn(msg("Actions")),
         ];
+    }
+
+    renderSectionBefore(): TemplateResult {
+        return html`
+            <div class="pf-c-page__main-section pf-m-no-padding-bottom">
+                <ak-events-volume-chart
+                    .query=${{
+                        page: this.page,
+                        search: this.search,
+                    }}
+                ></ak-events-volume-chart>
+            </div>
+        `;
     }
 
     row(item: EventWithContext): TemplateResult[] {
         return [
-            html`<div>${ActionToLabel(item.action)}</div>
+            html`<div>${actionToLabel(item.action)}</div>
                 <small>${item.app}</small>`,
-            item.user?.username
-                ? html`<div>
-                          <a href="#/identity/users/${item.user.pk}">${item.user?.username}</a>
-                      </div>
-                      ${item.user.on_behalf_of
-                          ? html`<small>
-                                <a href="#/identity/users/${item.user.on_behalf_of.pk}"
-                                    >${t`On behalf of ${item.user.on_behalf_of.username}`}</a
-                                >
-                            </small>`
-                          : html``}`
-                : html`-`,
-            html`<span>${item.created?.toLocaleString()}</span>`,
-            html`<div>${item.clientIp || t`-`}</div>
-
+            EventUser(item),
+            html`<div>${getRelativeTime(item.created)}</div>
+                <small>${item.created.toLocaleString()}</small>`,
+            html`<div>${item.clientIp || msg("-")}</div>
                 <small>${EventGeo(item)}</small>`,
-            html`<span>${item.tenant?.name || t`-`}</span>`,
+            html`<span>${item.brand?.name || msg("-")}</span>`,
             html`<a href="#/events/log/${item.pk}">
-                <i class="fas fa-share-square"></i>
+                <pf-tooltip position="top" content=${msg("Show details")}>
+                    <i class="fas fa-share-square"></i>
+                </pf-tooltip>
             </a>`,
         ];
     }
 
     renderExpanded(item: Event): TemplateResult {
-        return html` <td role="cell" colspan="3">
+        return html` <td role="cell" colspan="5">
                 <div class="pf-c-table__expandable-row-content">
                     <ak-event-info .event=${item as EventWithContext}></ak-event-info>
                 </div>

@@ -4,13 +4,11 @@ title: DokuWiki
 
 <span class="badge badge--secondary">Support level: Community</span>
 
-## What is Service Name
+## What is DokuWiki
 
 From https://en.wikipedia.org/wiki/DokuWiki
 
-:::note
-DokuWiki is a wiki application licensed under GPLv2 and written in the PHP programming language. It works on plain text files and thus does not need a database. Its syntax is similar to the one used by MediaWiki. It is often recommended as a more lightweight, easier to customize alternative to MediaWiki.
-:::
+> DokuWiki is a wiki application licensed under GPLv2 and written in the PHP programming language. It works on plain text files and thus does not need a database. Its syntax is similar to the one used by MediaWiki. It is often recommended as a more lightweight, easier to customize alternative to MediaWiki.
 
 ## Preparation
 
@@ -19,7 +17,7 @@ The following placeholders will be used:
 -   `dokuwiki.company` is the FQDN of the DokiWiki install.
 -   `authentik.company` is the FQDN of the authentik install.
 
-## Service Configuration
+## DokuWiki configuration
 
 In DokuWiki, navigate to the _Extension Manager_ section in the _Administration_ interface and install
 

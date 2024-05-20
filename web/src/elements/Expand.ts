@@ -1,8 +1,7 @@
 import { AKElement } from "@goauthentik/elements/Base";
 
-import { t } from "@lingui/macro";
-
-import { CSSResult, TemplateResult, html } from "lit";
+import { msg } from "@lit/localize";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFExpandableSection from "@patternfly/patternfly/components/ExpandableSection/expandable-section.css";
@@ -14,13 +13,21 @@ export class Expand extends AKElement {
     expanded = false;
 
     @property()
-    textOpen = t`Show less`;
+    textOpen = msg("Show less");
 
     @property()
-    textClosed = t`Show more`;
+    textClosed = msg("Show more");
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFExpandableSection];
+        return [
+            PFBase,
+            PFExpandableSection,
+            css`
+                .pf-c-expandable-section.pf-m-display-lg {
+                    background-color: var(--pf-global--BackgroundColor--100);
+                }
+            `,
+        ];
     }
 
     render(): TemplateResult {
@@ -41,7 +48,7 @@ export class Expand extends AKElement {
                     <i class="fas fa-angle-right" aria-hidden="true"></i>
                 </span>
                 <span class="pf-c-expandable-section__toggle-text"
-                    >${this.expanded ? t`${this.textOpen}` : t`${this.textClosed}`}</span
+                    >${this.expanded ? this.textOpen : this.textClosed}</span
                 >
             </button>
             <div class="pf-c-expandable-section__content" ?hidden=${!this.expanded}>

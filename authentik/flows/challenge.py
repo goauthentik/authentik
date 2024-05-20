@@ -1,4 +1,5 @@
 """Challenge helpers"""
+
 from dataclasses import asdict, is_dataclass
 from enum import Enum
 from typing import TYPE_CHECKING, Optional, TypedDict
@@ -103,7 +104,7 @@ class FlowErrorChallenge(Challenge):
     error = CharField(required=False)
     traceback = CharField(required=False)
 
-    def __init__(self, request: Optional[Request] = None, error: Optional[Exception] = None):
+    def __init__(self, request: Request | None = None, error: Exception | None = None):
         super().__init__(data={})
         if not request or not error:
             return
@@ -132,13 +133,6 @@ class PermissionDict(TypedDict):
     name: str
 
 
-class PermissionSerializer(PassiveSerializer):
-    """Permission used for consent"""
-
-    name = CharField(allow_blank=True)
-    id = CharField()
-
-
 class ChallengeResponse(PassiveSerializer):
     """Base class for all challenge responses"""
 
@@ -154,7 +148,7 @@ class AutosubmitChallenge(Challenge):
     """Autosubmit challenge used to send and navigate a POST request"""
 
     url = CharField()
-    attrs = DictField(child=CharField())
+    attrs = DictField(child=CharField(allow_blank=True), allow_empty=True)
     title = CharField(required=False)
     component = CharField(default="ak-stage-autosubmit")
 

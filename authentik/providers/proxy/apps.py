@@ -1,4 +1,5 @@
 """authentik Proxy app"""
+
 from authentik.blueprints.apps import ManagedAppConfig
 
 

@@ -4,12 +4,11 @@ title: Snipe-IT
 
 <span class="badge badge--secondary">Support level: Community</span>
 
-## What is Service Name
+## What is Snipe-IT
 
-From https://snipeitapp.com
-:::note
-A free open source IT asset/license management system.
-:::
+> A free open source IT asset/license management system.
+>
+> -- https://snipeitapp.com
 
 :::caution
 This setup assumes you will be using HTTPS as Snipe-It dynamically generates the ACS and other settings based on the complete URL.
@@ -116,7 +115,7 @@ You must sync your LDAP database with Snipe-IT. Go to People on the sidebar menu
 
 ## authentik Property Mapping
 
-To create a policy mapping, go to _Customisation/Property Mappings_, click `Create` then `LDAP Property Mapping`. Name is 'sn' and set Object field to sn:
+To create a policy mapping, go to _Customization/Property Mappings_, click `Create` then `LDAP Property Mapping`. Name is 'sn' and set Object field to sn:
 
 ```ini
 def getLastName():

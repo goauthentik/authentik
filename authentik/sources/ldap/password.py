@@ -1,10 +1,14 @@
 """Help validate and update passwords in LDAP"""
+
 from enum import IntFlag
 from re import split
-from typing import Optional
 
 from ldap3 import BASE
-from ldap3.core.exceptions import LDAPAttributeError
+from ldap3.core.exceptions import (
+    LDAPAttributeError,
+    LDAPNoSuchAttributeResult,
+    LDAPUnwillingToPerformResult,
+)
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
@@ -15,6 +19,7 @@ LOGGER = get_logger()
 
 NON_ALPHA = r"~!@#$%^&*_-+=`|\(){}[]:;\"'<>,.?/"
 RE_DISPLAYNAME_SEPARATORS = r",\.–—_\s#\t"
+MIN_TOKEN_SIZE = 3
 
 
 class PwdProperties(IntFlag):
@@ -49,6 +54,11 @@ class LDAPPasswordChanger:
         self._source = source
         self._connection = source.connection()
 
+    @staticmethod
+    def should_check_user(user: User) -> bool:
+        """Check if the user has LDAP parameters and needs to be checked"""
+        return LDAP_DISTINGUISHED_NAME in user.attributes
+
     def get_domain_root_dn(self) -> str:
         """Attempt to get root DN via MS specific fields or generic LDAP fields"""
         info = self._connection.server.info
@@ -69,7 +79,7 @@ class LDAPPasswordChanger:
                 attributes=["pwdProperties"],
             )
             root_attrs = list(root_attrs)[0]
-        except (LDAPAttributeError, KeyError, IndexError):
+        except (LDAPAttributeError, LDAPUnwillingToPerformResult, KeyError, IndexError):
             return False
         raw_pwd_properties = root_attrs.get("attributes", {}).get("pwdProperties", None)
         if not raw_pwd_properties:
@@ -92,7 +102,7 @@ class LDAPPasswordChanger:
             return
         try:
             self._connection.extend.microsoft.modify_password(user_dn, password)
-        except LDAPAttributeError:
+        except (LDAPAttributeError, LDAPUnwillingToPerformResult, LDAPNoSuchAttributeResult):
             self._connection.extend.standard.modify_password(user_dn, new_password=password)
 
     def _ad_check_password_existing(self, password: str, user_dn: str) -> bool:
@@ -109,7 +119,7 @@ class LDAPPasswordChanger:
             raise AssertionError()
         user_attributes = users[0]["attributes"]
         # If sAMAccountName is longer than 3 chars, check if its contained in password
-        if len(user_attributes["sAMAccountName"]) >= 3:
+        if len(user_attributes["sAMAccountName"]) >= MIN_TOKEN_SIZE:
             if password.lower() in user_attributes["sAMAccountName"].lower():
                 return False
         # No display name set, can't check any further
@@ -119,13 +129,13 @@ class LDAPPasswordChanger:
             display_name_tokens = split(RE_DISPLAYNAME_SEPARATORS, display_name)
             for token in display_name_tokens:
                 # Ignore tokens under 3 chars
-                if len(token) < 3:
+                if len(token) < MIN_TOKEN_SIZE:
                     continue
                 if token.lower() in password.lower():
                     return False
         return True
 
-    def ad_password_complexity(self, password: str, user: Optional[User] = None) -> bool:
+    def ad_password_complexity(self, password: str, user: User | None = None) -> bool:
         """Check if password matches Active directory password policies
 
         https://docs.microsoft.com/en-us/windows/security/threat-protection/

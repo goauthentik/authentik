@@ -30,6 +30,7 @@ func updateURL(rawUrl string, scheme string, host string) string {
 func GetOIDCEndpoint(p api.ProxyOutpostConfig, authentikHost string, embedded bool) OIDCEndpoint {
 	authUrl := p.OidcConfiguration.AuthorizationEndpoint
 	endUrl := p.OidcConfiguration.EndSessionEndpoint
+	jwksUri := p.OidcConfiguration.JwksUri
 	issuer := p.OidcConfiguration.Issuer
 	ep := OIDCEndpoint{
 		Endpoint: oauth2.Endpoint{
@@ -38,9 +39,13 @@ func GetOIDCEndpoint(p api.ProxyOutpostConfig, authentikHost string, embedded bo
 			AuthStyle: oauth2.AuthStyleInParams,
 		},
 		EndSessionEndpoint: endUrl,
-		JwksUri:            p.OidcConfiguration.JwksUri,
+		JwksUri:            jwksUri,
 		TokenIntrospection: p.OidcConfiguration.IntrospectionEndpoint,
 		Issuer:             issuer,
+	}
+	aku, err := url.Parse(authentikHost)
+	if err != nil {
+		return ep
 	}
 	// For the embedded outpost, we use the configure `authentik_host` for the browser URLs
 	// and localhost (which is what we've got from the API) for backchannel URLs
@@ -51,27 +56,24 @@ func GetOIDCEndpoint(p api.ProxyOutpostConfig, authentikHost string, embedded bo
 	if !embedded && hostBrowser == "" {
 		return ep
 	}
-	var newHost *url.URL
+	var newHost *url.URL = aku
+	var newBrowserHost *url.URL
 	if embedded {
 		if authentikHost == "" {
 			log.Warning("Outpost has localhost/blank API Connection but no authentik_host is configured.")
 			return ep
 		}
-		aku, err := url.Parse(authentikHost)
-		if err != nil {
-			return ep
-		}
-		newHost = aku
+		newBrowserHost = aku
 	} else if hostBrowser != "" {
-		aku, err := url.Parse(hostBrowser)
+		browser, err := url.Parse(hostBrowser)
 		if err != nil {
 			return ep
 		}
-		newHost = aku
+		newBrowserHost = browser
 	}
 	// Update all browser-accessed URLs to use the new host and scheme
-	ep.AuthURL = updateURL(authUrl, newHost.Scheme, newHost.Host)
-	ep.EndSessionEndpoint = updateURL(endUrl, newHost.Scheme, newHost.Host)
+	ep.AuthURL = updateURL(authUrl, newBrowserHost.Scheme, newBrowserHost.Host)
+	ep.EndSessionEndpoint = updateURL(endUrl, newBrowserHost.Scheme, newBrowserHost.Host)
 	// Update issuer to use the same host and scheme, which would normally break as we don't
 	// change the token URL here, but the token HTTP transport overwrites the Host header
 	//
@@ -79,6 +81,7 @@ func GetOIDCEndpoint(p api.ProxyOutpostConfig, authentikHost string, embedded bo
 	// is routed correctly
 	if embedded {
 		ep.Issuer = updateURL(ep.Issuer, newHost.Scheme, newHost.Host)
+		ep.JwksUri = updateURL(jwksUri, newHost.Scheme, newHost.Host)
 	}
 	return ep
 }

@@ -1,11 +1,11 @@
+import { BasePropertyMappingForm } from "@goauthentik/admin/property-mappings/BasePropertyMappingForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { docLink } from "@goauthentik/common/global";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -13,25 +13,17 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { PropertymappingsApi, SAMLPropertyMapping } from "@goauthentik/api";
 
 @customElement("ak-property-mapping-saml-form")
-export class PropertyMappingSAMLForm extends ModelForm<SAMLPropertyMapping, string> {
+export class PropertyMappingSAMLForm extends BasePropertyMappingForm<SAMLPropertyMapping> {
     loadInstance(pk: string): Promise<SAMLPropertyMapping> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSamlRetrieve({
             pmUuid: pk,
         });
     }
 
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return t`Successfully updated mapping.`;
-        } else {
-            return t`Successfully created mapping.`;
-        }
-    }
-
     async send(data: SAMLPropertyMapping): Promise<SAMLPropertyMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSamlUpdate({
-                pmUuid: this.instance.pk || "",
+                pmUuid: this.instance.pk,
                 sAMLPropertyMappingRequest: data,
             });
         } else {
@@ -42,8 +34,7 @@ export class PropertyMappingSAMLForm extends ModelForm<SAMLPropertyMapping, stri
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -52,7 +43,7 @@ export class PropertyMappingSAMLForm extends ModelForm<SAMLPropertyMapping, stri
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`SAML Attribute Name`}
+                label=${msg("SAML Attribute Name")}
                 ?required=${true}
                 name="samlName"
             >
@@ -63,32 +54,40 @@ export class PropertyMappingSAMLForm extends ModelForm<SAMLPropertyMapping, stri
                     required
                 />
                 <p class="pf-c-form__helper-text">
-                    ${t`Attribute name used for SAML Assertions. Can be a URN OID, a schema reference, or a any other string. If this property mapping is used for NameID Property, this field is discarded.`}
+                    ${msg(
+                        "Attribute name used for SAML Assertions. Can be a URN OID, a schema reference, or a any other string. If this property mapping is used for NameID Property, this field is discarded.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Friendly Name`} name="friendlyName">
+            <ak-form-element-horizontal label=${msg("Friendly Name")} name="friendlyName">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.friendlyName || "")}"
                     class="pf-c-form-control"
                 />
                 <p class="pf-c-form__helper-text">
-                    ${t`Optionally set the 'FriendlyName' value of the Assertion attribute.`}
+                    ${msg("Optionally set the 'FriendlyName' value of the Assertion attribute.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Expression`} ?required=${true} name="expression">
-                <ak-codemirror mode="python" value="${ifDefined(this.instance?.expression)}">
+            <ak-form-element-horizontal
+                label=${msg("Expression")}
+                ?required=${true}
+                name="expression"
+            >
+                <ak-codemirror
+                    mode=${CodeMirrorMode.Python}
+                    value="${ifDefined(this.instance?.expression)}"
+                >
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
-                    ${t`Expression using Python.`}
+                    ${msg("Expression using Python.")}
                     <a
                         target="_blank"
                         href="${docLink("/docs/property-mappings/expression?utm_source=authentik")}"
                     >
-                        ${t`See documentation for a list of all variables.`}
+                        ${msg("See documentation for a list of all variables.")}
                     </a>
                 </p>
-            </ak-form-element-horizontal>
-        </form>`;
+            </ak-form-element-horizontal>`;
     }
 }

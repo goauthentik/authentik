@@ -1,4 +1,5 @@
 """API URLs"""
+
 from authentik.stages.authenticator_static.api import (
     AuthenticatorStaticStageViewSet,
     StaticAdminDeviceViewSet,

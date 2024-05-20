@@ -4,21 +4,31 @@ import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModalForm } from "@goauthentik/elements/forms/ModalForm";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { CoreApi, UserServiceAccountRequest, UserServiceAccountResponse } from "@goauthentik/api";
+import {
+    CoreApi,
+    Group,
+    UserServiceAccountRequest,
+    UserServiceAccountResponse,
+} from "@goauthentik/api";
 
-@customElement("ak-user-service-account")
+@customElement("ak-user-service-account-form")
 export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
     @property({ attribute: false })
     result?: UserServiceAccountResponse;
 
+    @property({ attribute: false })
+    group?: Group;
+
     getSuccessMessage(): string {
-        return t`Successfully created user.`;
+        if (this.group) {
+            return msg(str`Successfully created user and added to group ${this.group.name}`);
+        }
+        return msg("Successfully created user.");
     }
 
     async send(data: UserServiceAccountRequest): Promise<UserServiceAccountResponse> {
@@ -27,6 +37,14 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         });
         this.result = result;
         (this.parentElement as ModalForm).showSubmitButton = false;
+        if (this.group) {
+            await new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
+                groupUuid: this.group.pk,
+                userAccountRequest: {
+                    pk: this.result.userPk,
+                },
+            });
+        }
         return result;
     }
 
@@ -35,12 +53,15 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         this.result = undefined;
     }
 
-    renderRequestForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Username`} ?required=${true} name="name">
+    renderForm(): TemplateResult {
+        return html`<ak-form-element-horizontal
+                label=${msg("Username")}
+                ?required=${true}
+                name="name"
+            >
                 <input type="text" value="" class="pf-c-form-control" required />
                 <p class="pf-c-form__helper-text">
-                    ${t`User's primary identifier. 150 characters or fewer.`}
+                    ${msg("User's primary identifier. 150 characters or fewer.")}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="createGroup">
@@ -51,10 +72,12 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${t`Create group`}</span>
+                    <span class="pf-c-switch__label">${msg("Create group")}</span>
                 </label>
                 <p class="pf-c-form__helper-text">
-                    ${t`Enabling this toggle will create a group named after the user, with the user as member.`}
+                    ${msg(
+                        "Enabling this toggle will create a group named after the user, with the user as member.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="expiring">
@@ -65,29 +88,32 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${t`Expiring`}</span>
+                    <span class="pf-c-switch__label">${msg("Expiring")}</span>
                 </label>
                 <p class="pf-c-form__helper-text">
-                    ${t`If this is selected, the token will expire. Upon expiration, the token will be rotated.`}
+                    ${msg(
+                        "If this is selected, the token will expire. Upon expiration, the token will be rotated.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Expires on`} name="expires">
+            <ak-form-element-horizontal label=${msg("Expires on")} name="expires">
                 <input
                     type="datetime-local"
                     data-type="datetime-local"
                     value="${dateTimeLocal(new Date(Date.now() + 1000 * 60 ** 2 * 24 * 360))}"
                     class="pf-c-form-control"
                 />
-            </ak-form-element-horizontal>
-        </form>`;
+            </ak-form-element-horizontal>`;
     }
 
     renderResponseForm(): TemplateResult {
         return html`<p>
-                ${t`Use the username and password below to authenticate. The password can be retrieved later on the Tokens page.`}
+                ${msg(
+                    "Use the username and password below to authenticate. The password can be retrieved later on the Tokens page.",
+                )}
             </p>
             <form class="pf-c-form pf-m-horizontal">
-                <ak-form-element-horizontal label=${t`Username`}>
+                <ak-form-element-horizontal label=${msg("Username")}>
                     <input
                         type="text"
                         readonly
@@ -95,7 +121,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
                         class="pf-c-form-control"
                     />
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal label=${t`Password`}>
+                <ak-form-element-horizontal label=${msg("Password")}>
                     <input
                         type="text"
                         readonly
@@ -103,16 +129,18 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
                         class="pf-c-form-control"
                     />
                     <p class="pf-c-form__helper-text">
-                        ${t`Valid for 360 days, after which the password will automatically rotate. You can copy the password from the Token List.`}
+                        ${msg(
+                            "Valid for 360 days, after which the password will automatically rotate. You can copy the password from the Token List.",
+                        )}
                     </p>
                 </ak-form-element-horizontal>
             </form>`;
     }
 
-    renderForm(): TemplateResult {
+    renderFormWrapper(): TemplateResult {
         if (this.result) {
             return this.renderResponseForm();
         }
-        return this.renderRequestForm();
+        return super.renderFormWrapper();
     }
 }

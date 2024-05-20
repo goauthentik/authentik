@@ -1,12 +1,12 @@
 """authentik crypto models"""
+
 from binascii import hexlify
 from hashlib import md5
-from typing import Optional
 from uuid import uuid4
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric.types import PRIVATE_KEY_TYPES, PUBLIC_KEY_TYPES
+from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes, PublicKeyTypes
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509 import Certificate, load_pem_x509_certificate
 from django.db import models
@@ -36,9 +36,9 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
         default="",
     )
 
-    _cert: Optional[Certificate] = None
-    _private_key: Optional[PRIVATE_KEY_TYPES] = None
-    _public_key: Optional[PUBLIC_KEY_TYPES] = None
+    _cert: Certificate | None = None
+    _private_key: PrivateKeyTypes | None = None
+    _public_key: PublicKeyTypes | None = None
 
     @property
     def serializer(self) -> Serializer:
@@ -56,7 +56,7 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
         return self._cert
 
     @property
-    def public_key(self) -> Optional[PUBLIC_KEY_TYPES]:
+    def public_key(self) -> PublicKeyTypes | None:
         """Get public key of the private key"""
         if not self._public_key:
             self._public_key = self.private_key.public_key()
@@ -65,7 +65,7 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
     @property
     def private_key(
         self,
-    ) -> Optional[PRIVATE_KEY_TYPES]:
+    ) -> PrivateKeyTypes | None:
         """Get python cryptography PrivateKey instance"""
         if not self._private_key and self.key_data != "":
             try:

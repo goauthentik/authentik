@@ -1,7 +1,11 @@
+import "@goauthentik/admin/applications/ApplicationWizardHint";
 import "@goauthentik/admin/providers/ProviderWizard";
+import "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderForm";
 import "@goauthentik/admin/providers/ldap/LDAPProviderForm";
+import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderViewPage";
 import "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
 import "@goauthentik/admin/providers/proxy/ProxyProviderForm";
+import "@goauthentik/admin/providers/rac/RACProviderForm";
 import "@goauthentik/admin/providers/radius/RadiusProviderForm";
 import "@goauthentik/admin/providers/saml/SAMLProviderForm";
 import "@goauthentik/admin/providers/scim/SCIMProviderForm";
@@ -14,9 +18,9 @@ import "@goauthentik/elements/forms/ProxyForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -28,16 +32,17 @@ export class ProviderListPage extends TablePage<Provider> {
         return true;
     }
     pageTitle(): string {
-        return t`Providers`;
+        return msg("Providers");
     }
     pageDescription(): string {
-        return t`Provide support for protocols like SAML and OAuth to assigned applications.`;
+        return msg("Provide support for protocols like SAML and OAuth to assigned applications.");
     }
     pageIcon(): string {
         return "pf-icon pf-icon-integration";
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "name";
@@ -53,17 +58,17 @@ export class ProviderListPage extends TablePage<Provider> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Name`, "name"),
-            new TableColumn(t`Application`),
-            new TableColumn(t`Type`),
-            new TableColumn(t`Actions`),
+            new TableColumn(msg("Name"), "name"),
+            new TableColumn(msg("Application")),
+            new TableColumn(msg("Type")),
+            new TableColumn(msg("Actions")),
         ];
     }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${t`Provider(s)`}
+            objectLabel=${msg("Provider(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Provider) => {
                 return new ProvidersApi(DEFAULT_CONFIG).providersAllUsedByList({
@@ -77,7 +82,7 @@ export class ProviderListPage extends TablePage<Provider> {
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete`}
+                ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
     }
@@ -85,20 +90,21 @@ export class ProviderListPage extends TablePage<Provider> {
     rowApp(item: Provider): TemplateResult {
         if (item.assignedApplicationName) {
             return html`<i class="pf-icon pf-icon-ok pf-m-success"></i>
-                ${t`Assigned to application `}
+                ${msg("Assigned to application ")}
                 <a href="#/core/applications/${item.assignedApplicationSlug}"
                     >${item.assignedApplicationName}</a
                 >`;
         }
         if (item.assignedBackchannelApplicationName) {
             return html`<i class="pf-icon pf-icon-ok pf-m-success"></i>
-                ${t`Assigned to application (backchannel) `}
+                ${msg("Assigned to application (backchannel) ")}
                 <a href="#/core/applications/${item.assignedBackchannelApplicationSlug}"
                     >${item.assignedBackchannelApplicationName}</a
                 >`;
         }
-        return html`<i class="pf-icon pf-icon-warning-triangle pf-m-warning"></i>
-            ${t`Warning: Provider not assigned to any application.`}`;
+        return html`<i class="pf-icon pf-icon-warning-triangle pf-m-warning"></i> ${msg(
+                "Warning: Provider not assigned to any application.",
+            )}`;
     }
 
     row(item: Provider): TemplateResult[] {
@@ -107,8 +113,8 @@ export class ProviderListPage extends TablePage<Provider> {
             this.rowApp(item),
             html`${item.verboseName}`,
             html`<ak-forms-modal>
-                <span slot="submit"> ${t`Update`} </span>
-                <span slot="header"> ${t`Update ${item.verboseName}`} </span>
+                <span slot="submit"> ${msg("Update")} </span>
+                <span slot="header"> ${msg(str`Update ${item.verboseName}`)} </span>
                 <ak-proxy-form
                     slot="form"
                     .args=${{
@@ -118,7 +124,9 @@ export class ProviderListPage extends TablePage<Provider> {
                 >
                 </ak-proxy-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <i class="fas fa-edit"></i>
+                    <pf-tooltip position="top" content=${msg("Edit")}>
+                        <i class="fas fa-edit"></i>
+                    </pf-tooltip>
                 </button>
             </ak-forms-modal>`,
         ];

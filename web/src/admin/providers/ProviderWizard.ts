@@ -1,20 +1,22 @@
+import "@goauthentik/admin/common/ak-license-notice";
 import "@goauthentik/admin/providers/ldap/LDAPProviderForm";
 import "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
 import "@goauthentik/admin/providers/proxy/ProxyProviderForm";
 import "@goauthentik/admin/providers/saml/SAMLProviderForm";
 import "@goauthentik/admin/providers/saml/SAMLProviderImportForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/elements/Alert";
 import { AKElement } from "@goauthentik/elements/Base";
+import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
 import "@goauthentik/elements/forms/ProxyForm";
 import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
 import "@goauthentik/elements/wizard/FormWizardPage";
 import "@goauthentik/elements/wizard/Wizard";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -26,14 +28,14 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { ProvidersApi, TypeCreate } from "@goauthentik/api";
 
 @customElement("ak-provider-wizard-initial")
-export class InitialProviderWizardPage extends WizardPage {
+export class InitialProviderWizardPage extends WithLicenseSummary(WizardPage) {
     @property({ attribute: false })
     providerTypes: TypeCreate[] = [];
 
     static get styles(): CSSResult[] {
         return [PFBase, PFForm, PFHint, PFButton, PFRadio];
     }
-    sidebarLabel = () => t`Select type`;
+    sidebarLabel = () => msg("Select type");
 
     activeCallback: () => Promise<void> = async () => {
         this.host.isValid = false;
@@ -48,9 +50,11 @@ export class InitialProviderWizardPage extends WizardPage {
 
     renderHint(): TemplateResult {
         return html`<div class="pf-c-hint">
-                <div class="pf-c-hint__title">${t`Try the new application wizard`}</div>
+                <div class="pf-c-hint__title">${msg("Try the new application wizard")}</div>
                 <div class="pf-c-hint__body">
-                    ${t`The new application wizard greatly simplifies the steps required to create applications and providers.`}
+                    ${msg(
+                        "The new application wizard greatly simplifies the steps required to create applications and providers.",
+                    )}
                 </div>
                 <div class="pf-c-hint__footer">
                     <a
@@ -58,7 +62,7 @@ export class InitialProviderWizardPage extends WizardPage {
                         href=${paramURL("/core/applications", {
                             createForm: true,
                         })}
-                        >${t`Try it now`}</a
+                        >${msg("Try it now")}</a
                     >
                 </div>
             </div>
@@ -68,6 +72,7 @@ export class InitialProviderWizardPage extends WizardPage {
     render(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             ${this.providerTypes.map((type) => {
+                const requiresEnterprise = type.requiresEnterprise && !this.hasEnterpriseLicense;
                 return html`<div class="pf-c-radio">
                     <input
                         class="pf-c-radio__input"
@@ -78,9 +83,15 @@ export class InitialProviderWizardPage extends WizardPage {
                             this.host.steps = ["initial", `type-${type.component}`];
                             this.host.isValid = true;
                         }}
+                        ?disabled=${requiresEnterprise}
                     />
                     <label class="pf-c-radio__label" for=${type.component}>${type.name}</label>
-                    <span class="pf-c-radio__description">${type.description}</span>
+                    <span class="pf-c-radio__description"
+                        >${type.description}
+                        ${requiresEnterprise
+                            ? html`<ak-license-notice></ak-license-notice>`
+                            : nothing}
+                    </span>
                 </div>`;
             })}
         </form>`;
@@ -94,7 +105,7 @@ export class ProviderWizard extends AKElement {
     }
 
     @property()
-    createText = t`Create`;
+    createText = msg("Create");
 
     @property({ attribute: false })
     providerTypes: TypeCreate[] = [];
@@ -104,18 +115,16 @@ export class ProviderWizard extends AKElement {
         return Promise.resolve();
     };
 
-    firstUpdated(): void {
-        new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList().then((types) => {
-            this.providerTypes = types;
-        });
+    async firstUpdated(): Promise<void> {
+        this.providerTypes = await new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList();
     }
 
     render(): TemplateResult {
         return html`
             <ak-wizard
                 .steps=${["initial"]}
-                header=${t`New provider`}
-                description=${t`Create a new provider.`}
+                header=${msg("New provider")}
+                description=${msg("Create a new provider.")}
                 .finalHandler=${() => {
                     return this.finalHandler();
                 }}
@@ -126,7 +135,7 @@ export class ProviderWizard extends AKElement {
                     return html`
                         <ak-wizard-page-form
                             slot=${`type-${type.component}`}
-                            .sidebarLabel=${() => t`Create ${type.name}`}
+                            .sidebarLabel=${() => msg(str`Create ${type.name}`)}
                         >
                             <ak-proxy-form type=${type.component}></ak-proxy-form>
                         </ak-wizard-page-form>

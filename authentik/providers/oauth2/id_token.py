@@ -1,12 +1,14 @@
 """id_token utils"""
+
 from dataclasses import asdict, dataclass, field
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from django.db import models
 from django.http import HttpRequest
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from authentik.core.models import default_token_duration
 from authentik.events.signals import get_login_event
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.constants import (
@@ -41,8 +43,7 @@ class SubModes(models.TextChoices):
     )
 
 
-@dataclass
-# pylint: disable=too-many-instance-attributes
+@dataclass(slots=True)
 class IDToken:
     """The primary extension that OpenID Connect makes to OAuth 2.0 to enable End-Users to be
     Authenticated is the ID Token data structure. The ID Token is a security token that contains
@@ -53,42 +54,43 @@ class IDToken:
     https://openid.net/specs/openid-connect-core-1_0.html#IDToken"""
 
     # Issuer, https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.1
-    iss: Optional[str] = None
+    iss: str | None = None
     # Subject, https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.2
-    sub: Optional[str] = None
+    sub: str | None = None
     # Audience, https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.3
-    aud: Optional[str] = None
+    aud: str | list[str] | None = None
     # Expiration time, https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.4
-    exp: Optional[int] = None
+    exp: int | None = None
     # Issued at, https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.6
-    iat: Optional[int] = None
+    iat: int | None = None
     # Time when the authentication occurred,
     # https://openid.net/specs/openid-connect-core-1_0.html#IDToken
-    auth_time: Optional[int] = None
+    auth_time: int | None = None
     # Authentication Context Class Reference,
     # https://openid.net/specs/openid-connect-core-1_0.html#IDToken
-    acr: Optional[str] = ACR_AUTHENTIK_DEFAULT
+    acr: str | None = ACR_AUTHENTIK_DEFAULT
     # Authentication Methods References,
     # https://openid.net/specs/openid-connect-core-1_0.html#IDToken
-    amr: Optional[list[str]] = None
+    amr: list[str] | None = None
     # Code hash value, http://openid.net/specs/openid-connect-core-1_0.html
-    c_hash: Optional[str] = None
+    c_hash: str | None = None
     # Value used to associate a Client session with an ID Token,
     # http://openid.net/specs/openid-connect-core-1_0.html
-    nonce: Optional[str] = None
+    nonce: str | None = None
     # Access Token hash value, http://openid.net/specs/openid-connect-core-1_0.html
-    at_hash: Optional[str] = None
+    at_hash: str | None = None
 
     claims: dict[str, Any] = field(default_factory=dict)
 
     @staticmethod
-    # pylint: disable=too-many-locals
     def new(
         provider: "OAuth2Provider", token: "BaseGrantModel", request: HttpRequest, **kwargs
     ) -> "IDToken":
         """Create ID Token"""
         id_token = IDToken(provider, token, **kwargs)
-        id_token.exp = int(token.expires.timestamp())
+        id_token.exp = int(
+            (token.expires if token.expires is not None else default_token_duration()).timestamp()
+        )
         id_token.iss = provider.get_issuer(request)
         id_token.aud = provider.client_id
         id_token.claims = {}

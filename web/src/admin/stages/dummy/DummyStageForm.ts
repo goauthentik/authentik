@@ -1,10 +1,9 @@
+import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -12,19 +11,11 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { DummyStage, StagesApi } from "@goauthentik/api";
 
 @customElement("ak-stage-dummy-form")
-export class DummyStageForm extends ModelForm<DummyStage, string> {
+export class DummyStageForm extends BaseStageForm<DummyStage> {
     loadInstance(pk: string): Promise<DummyStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesDummyRetrieve({
             stageUuid: pk,
         });
-    }
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return t`Successfully updated stage.`;
-        } else {
-            return t`Successfully created stage.`;
-        }
     }
 
     async send(data: DummyStage): Promise<DummyStage> {
@@ -41,11 +32,12 @@ export class DummyStageForm extends ModelForm<DummyStage, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
-                ${t`Dummy stage used for testing. Shows a simple continue button and always passes.`}
-            </div>
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+        return html` <span>
+                ${msg(
+                    "Dummy stage used for testing. Shows a simple continue button and always passes.",
+                )}
+            </span>
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -65,9 +57,8 @@ export class DummyStageForm extends ModelForm<DummyStage, string> {
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${t`Throw error?`}</span>
+                    <span class="pf-c-switch__label">${msg("Throw error?")}</span>
                 </label>
-            </ak-form-element-horizontal>
-        </form>`;
+            </ak-form-element-horizontal>`;
     }
 }

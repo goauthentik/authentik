@@ -4,8 +4,7 @@ import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -29,16 +28,22 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
 
     timer?: number;
 
+    hasError(field: string): boolean {
+        const errors = (this.challenge?.responseErrors || {})[field];
+        return (errors || []).length > 0;
+    }
+
     renderInput(): HTMLInputElement {
         this.input = document.createElement("input");
         this.input.type = "password";
         this.input.name = "password";
-        this.input.placeholder = t`Please enter your password`;
+        this.input.placeholder = msg("Please enter your password");
         this.input.autofocus = true;
         this.input.autocomplete = "current-password";
         this.input.classList.add("pf-c-form-control");
         this.input.required = true;
         this.input.value = PasswordManagerPrefill.password || "";
+        this.input.setAttribute("aria-invalid", this.hasError("password").toString());
         // This is somewhat of a crude way to get autofocus, but in most cases the `autofocus` attribute
         // isn't enough, due to timing within shadow doms and such.
         this.timer = window.setInterval(() => {
@@ -74,7 +79,8 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
+            </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
@@ -93,7 +99,7 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                     >
                         <div slot="link">
                             <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${t`Not you?`}</a
+                                >${msg("Not you?")}</a
                             >
                         </div>
                     </ak-form-static>
@@ -104,7 +110,7 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                         value="${this.challenge.pendingUser}"
                     />
                     <ak-form-element
-                        label="${t`Password`}"
+                        label="${msg("Password")}"
                         ?required="${true}"
                         class="pf-c-form__group"
                         .errors=${(this.challenge?.responseErrors || {})["password"]}
@@ -113,12 +119,14 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                     </ak-form-element>
 
                     ${this.challenge.recoveryUrl
-                        ? html`<a href="${this.challenge.recoveryUrl}"> ${t`Forgot password?`}</a>`
+                        ? html`<a href="${this.challenge.recoveryUrl}">
+                              ${msg("Forgot password?")}</a
+                          >`
                         : ""}
 
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${t`Continue`}
+                            ${msg("Continue")}
                         </button>
                     </div>
                 </form>

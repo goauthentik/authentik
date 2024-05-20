@@ -1,7 +1,8 @@
 """Flow models"""
+
 from base64 import b64decode, b64encode
 from pickle import dumps, loads  # nosec
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from django.db import models
@@ -31,6 +32,7 @@ class FlowAuthenticationRequirement(models.TextChoices):
     REQUIRE_AUTHENTICATED = "require_authenticated"
     REQUIRE_UNAUTHENTICATED = "require_unauthenticated"
     REQUIRE_SUPERUSER = "require_superuser"
+    REQUIRE_OUTPOST = "require_outpost"
 
 
 class NotConfiguredAction(models.TextChoices):
@@ -81,7 +83,7 @@ class Stage(SerializerModel):
     objects = InheritanceManager()
 
     @property
-    def type(self) -> type["StageView"]:
+    def view(self) -> type["StageView"]:
         """Return StageView class that implements logic for this stage"""
         # This is a bit of a workaround, since we can't set class methods with setattr
         if hasattr(self, "__in_memory_type"):
@@ -93,7 +95,7 @@ class Stage(SerializerModel):
         """Return component used to edit this object"""
         raise NotImplementedError
 
-    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+    def ui_user_settings(self) -> UserSettingSerializer | None:
         """Entrypoint to integrate with User settings. Can either return None if no
         user settings are available, or a challenge."""
         return None
@@ -111,8 +113,8 @@ def in_memory_stage(view: type["StageView"], **kwargs) -> Stage:
     # we set the view as a separate property and reference a generic function
     # that returns that member
     setattr(stage, "__in_memory_type", view)
-    setattr(stage, "name", _("Dynamic In-memory stage: %(doc)s" % {"doc": view.__doc__}))
-    setattr(stage._meta, "verbose_name", class_to_path(view))
+    stage.name = _("Dynamic In-memory stage: {doc}".format_map({"doc": view.__doc__}))
+    stage._meta.verbose_name = class_to_path(view)
     for key, value in kwargs.items():
         setattr(stage, key, value)
     return stage
@@ -194,9 +196,10 @@ class Flow(SerializerModel, PolicyBindingModel):
         verbose_name_plural = _("Flows")
 
         permissions = [
-            ("export_flow", "Can export a Flow"),
-            ("view_flow_cache", "View Flow's cache metrics"),
-            ("clear_flow_cache", "Clear Flow's cache metrics"),
+            ("export_flow", _("Can export a Flow")),
+            ("inspect_flow", _("Can inspect a Flow's execution")),
+            ("view_flow_cache", _("View Flow's cache metrics")),
+            ("clear_flow_cache", _("Clear Flow's cache metrics")),
         ]
 
 

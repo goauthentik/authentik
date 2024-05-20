@@ -1,6 +1,6 @@
-import { t } from "@lingui/macro";
+import { msg } from "@lit/localize";
 
-import { Flow, FlowDesignationEnum, LayoutEnum } from "@goauthentik/api";
+import { Flow, FlowDesignationEnum, FlowLayoutEnum } from "@goauthentik/api";
 
 export function RenderFlowOption(flow: Flow): string {
     return `${flow.slug} (${flow.name})`;
@@ -9,37 +9,37 @@ export function RenderFlowOption(flow: Flow): string {
 export function DesignationToLabel(designation: FlowDesignationEnum): string {
     switch (designation) {
         case FlowDesignationEnum.Authentication:
-            return t`Authentication`;
+            return msg("Authentication");
         case FlowDesignationEnum.Authorization:
-            return t`Authorization`;
+            return msg("Authorization");
         case FlowDesignationEnum.Enrollment:
-            return t`Enrollment`;
+            return msg("Enrollment");
         case FlowDesignationEnum.Invalidation:
-            return t`Invalidation`;
+            return msg("Invalidation");
         case FlowDesignationEnum.Recovery:
-            return t`Recovery`;
+            return msg("Recovery");
         case FlowDesignationEnum.StageConfiguration:
-            return t`Stage Configuration`;
+            return msg("Stage Configuration");
         case FlowDesignationEnum.Unenrollment:
-            return t`Unenrollment`;
+            return msg("Unenrollment");
         case FlowDesignationEnum.UnknownDefaultOpenApi:
-            return t`Unknown designation`;
+            return msg("Unknown designation");
     }
 }
 
-export function LayoutToLabel(layout: LayoutEnum): string {
+export function LayoutToLabel(layout: FlowLayoutEnum): string {
     switch (layout) {
-        case LayoutEnum.Stacked:
-            return t`Stacked`;
-        case LayoutEnum.ContentLeft:
-            return t`Content left`;
-        case LayoutEnum.ContentRight:
-            return t`Content right`;
-        case LayoutEnum.SidebarLeft:
-            return t`Sidebar left`;
-        case LayoutEnum.SidebarRight:
-            return t`Sidebar right`;
-        case LayoutEnum.UnknownDefaultOpenApi:
-            return t`Unknown layout`;
+        case FlowLayoutEnum.Stacked:
+            return msg("Stacked");
+        case FlowLayoutEnum.ContentLeft:
+            return msg("Content left");
+        case FlowLayoutEnum.ContentRight:
+            return msg("Content right");
+        case FlowLayoutEnum.SidebarLeft:
+            return msg("Sidebar left");
+        case FlowLayoutEnum.SidebarRight:
+            return msg("Sidebar right");
+        case FlowLayoutEnum.UnknownDefaultOpenApi:
+            return msg("Unknown layout");
     }
 }

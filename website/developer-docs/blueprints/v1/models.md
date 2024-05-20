@@ -26,6 +26,29 @@ For example:
       intent: api
 ```
 
+### `authentik_core.user`
+
+:::info
+Requires authentik 2023.6
+:::
+
+Via the standard API, a user's password can only be set via the separate `/api/v3/core/users/<id>/set_password/` endpoint. In blueprints, the password of a user can be set using the `password` field.
+
+Keep in mind that if an LDAP Source is configured and the user maps to an LDAP user, this password change will be propagated to the LDAP server.
+
+For example:
+
+```yaml
+# [...]
+- model: authentik_core.user
+  state: present
+  identifiers:
+      username: test-user
+  attrs:
+      name: test user
+      password: this-should-be-a-long-value
+```
+
 ### `authentik_core.application`
 
 :::info

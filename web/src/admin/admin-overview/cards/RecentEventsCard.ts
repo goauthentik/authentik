@@ -1,8 +1,9 @@
-import "@goauthentik/admin/events/EventInfo";
-import { ActionToLabel, EventGeo } from "@goauthentik/admin/events/utils";
+import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
-import { truncate } from "@goauthentik/common/utils";
+import { actionToLabel } from "@goauthentik/common/labels";
+import { getRelativeTime } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-event-info";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/ModalButton";
@@ -10,8 +11,7 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -24,7 +24,7 @@ export class RecentEventsCard extends Table<Event> {
     @property()
     order = "-created";
 
-    @property()
+    @property({ type: Number })
     pageSize = 10;
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<Event>> {
@@ -47,54 +47,47 @@ export class RecentEventsCard extends Table<Event> {
                     --pf-c-card__title--FontSize: var(--pf-global--FontSize--md);
                     --pf-c-card__title--FontWeight: var(--pf-global--FontWeight--bold);
                 }
+                * {
+                    word-break: break-all;
+                }
             `,
         );
     }
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Action`, "action"),
-            new TableColumn(t`User`, "user"),
-            new TableColumn(t`Creation Date`, "created"),
-            new TableColumn(t`Client IP`, "client_ip"),
-            new TableColumn(t`Tenant`, "tenant_name"),
+            new TableColumn(msg("Action"), "action"),
+            new TableColumn(msg("User"), "user"),
+            new TableColumn(msg("Creation Date"), "created"),
+            new TableColumn(msg("Client IP"), "client_ip"),
+            new TableColumn(msg("Brand"), "brand_name"),
         ];
     }
 
     renderToolbar(): TemplateResult {
         return html`<div class="pf-c-card__title">
-            <i class="pf-icon pf-icon-catalog"></i>&nbsp;${t`Recent events`}
+            <i class="pf-icon pf-icon-catalog"></i>&nbsp;${msg("Recent events")}
         </div>`;
     }
 
     row(item: EventWithContext): TemplateResult[] {
         return [
-            html`<div><a href="${`#/events/log/${item.pk}`}">${ActionToLabel(item.action)}</a></div>
+            html`<div><a href="${`#/events/log/${item.pk}`}">${actionToLabel(item.action)}</a></div>
                 <small>${item.app}</small>`,
-            item.user?.username
-                ? html`<div>
-                          <a href="#/identity/users/${item.user.pk}"
-                              >${truncate(item.user?.username, 15)}</a
-                          >
-                      </div>
-                      ${item.user.on_behalf_of
-                          ? html`<small>
-                                <a href="#/identity/users/${item.user.on_behalf_of.pk}"
-                                    >${t`On behalf of ${item.user.on_behalf_of.username}`}</a
-                                >
-                            </small>`
-                          : html``}`
-                : html`-`,
-            html`<span>${item.created?.toLocaleString()}</span>`,
-            html` <div>${item.clientIp || t`-`}</div>
+            EventUser(item),
+            html`<div>${getRelativeTime(item.created)}</div>
+                <small>${item.created.toLocaleString()}</small>`,
+            html` <div>${item.clientIp || msg("-")}</div>
                 <small>${EventGeo(item)}</small>`,
-            html`<span>${item.tenant?.name || t`-`}</span>`,
+            html`<span>${item.brand?.name || msg("-")}</span>`,
         ];
     }
 
     renderEmpty(): TemplateResult {
-        return super.renderEmpty(html`<ak-empty-state header=${t`No Events found.`}>
-            <div slot="body">${t`No matching events could be found.`}</div>
-        </ak-empty-state>`);
+        return super.renderEmpty(
+            html`<ak-empty-state header=${msg("No Events found.")}>
+                <div slot="body">${msg("No matching events could be found.")}</div>
+            </ak-empty-state>`,
+        );
     }
 }
