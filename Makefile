@@ -19,6 +19,7 @@ pg_name := $(shell python -m authentik.lib.config postgresql.name 2>/dev/null)
 CODESPELL_ARGS = -D - -D .github/codespell-dictionary.txt \
 		-I .github/codespell-words.txt \
 		-S 'web/src/locales/**' \
+		-S 'website/developer-docs/api/reference/**' \
 		authentik \
 		internal \
 		cmd \
@@ -46,8 +47,8 @@ test-go:
 	go test -timeout 0 -v -race -cover ./...
 
 test-docker:  ## Run all tests in a docker-compose
-	echo "PG_PASS=$(openssl rand -base64 32)" >> .env
-	echo "AUTHENTIK_SECRET_KEY=$(openssl rand -base64 32)" >> .env
+	echo "PG_PASS=$(shell openssl rand 32 | base64)" >> .env
+	echo "AUTHENTIK_SECRET_KEY=$(shell openssl rand 32 | base64)" >> .env
 	docker compose pull -q
 	docker compose up --no-start
 	docker compose start postgresql redis

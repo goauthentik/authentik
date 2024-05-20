@@ -53,6 +53,7 @@ cache:
 
 # result_backend:
 #   url: ""
+#   transport_options: ""
 
 debug: false
 remote_debug: false

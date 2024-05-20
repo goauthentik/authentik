@@ -9,7 +9,10 @@ from django.db.models.query import QuerySet
 from ldap3 import DEREF_ALWAYS, SUBTREE, Connection
 from structlog.stdlib import BoundLogger, get_logger
 
-from authentik.core.exceptions import PropertyMappingExpressionException
+from authentik.core.expression.exceptions import (
+    PropertyMappingExpressionException,
+    SkipObjectException,
+)
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG, set_path_in_dict
 from authentik.lib.merge import MERGE_LIST_UNIQUE
@@ -171,6 +174,8 @@ class BaseLDAPSynchronizer:
                     set_path_in_dict(properties, object_field, value)
                 else:
                     properties[object_field] = flatten(value)
+            except SkipObjectException as exc:
+                raise exc from exc
             except PropertyMappingExpressionException as exc:
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,
