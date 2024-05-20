@@ -36,9 +36,7 @@ class GoogleWorkspaceGroupClient(
 
     def to_schema(self, obj: Group, creating: bool) -> dict:
         """Convert authentik group"""
-        raw_google_group = {
-            "email": f"{slugify(obj.name)}@{self.provider.default_group_email_domain}"
-        }
+        raw_google_group = {}
         for mapping in (
             self.provider.property_mappings_group.all().order_by("name").select_subclasses()
         ):
@@ -67,7 +65,9 @@ class GoogleWorkspaceGroupClient(
                 raise StopSync(exc, obj, mapping) from exc
         if not raw_google_group:
             raise StopSync(ValueError("No group mappings configured"), obj)
-
+        raw_google_group.setdefault(
+            "email", f"{slugify(obj.name)}@{self.provider.default_group_email_domain}"
+        )
         return raw_google_group
 
     def delete(self, obj: Group):
