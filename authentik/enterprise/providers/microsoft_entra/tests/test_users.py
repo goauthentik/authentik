@@ -94,6 +94,42 @@ class MicrosoftEntraUserTests(TestCase):
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
             user_create.assert_called_once()
 
+    def test_user_not_created(self):
+        """Test without property mappings, no group is created"""
+        self.provider.property_mappings.clear()
+        uid = generate_id()
+        with (
+            patch(
+                "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
+                MagicMock(return_value={"credentials": self.creds}),
+            ),
+            patch(
+                "msgraph.generated.organization.organization_request_builder.OrganizationRequestBuilder.get",
+                AsyncMock(
+                    return_value=OrganizationCollectionResponse(
+                        value=[
+                            Organization(verified_domains=[VerifiedDomain(name="goauthentik.io")])
+                        ]
+                    )
+                ),
+            ),
+            patch(
+                "msgraph.generated.users.users_request_builder.UsersRequestBuilder.post",
+                AsyncMock(return_value=MSUser(id=generate_id())),
+            ) as user_create,
+        ):
+            user = User.objects.create(
+                username=uid,
+                name=f"{uid} {uid}",
+                email=f"{uid}@goauthentik.io",
+            )
+            microsoft_user = MicrosoftEntraProviderUser.objects.filter(
+                provider=self.provider, user=user
+            ).first()
+            self.assertIsNone(microsoft_user)
+            self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
+            user_create.assert_not_called()
+
     def test_user_create_update(self):
         """Test user updating"""
         uid = generate_id()
