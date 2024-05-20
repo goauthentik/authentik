@@ -183,6 +183,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
                                 const args: CoreGroupsListRequest = {
                                     ordering: "name",
+                                    includeUsers: false,
                                 };
                                 if (query !== undefined) {
                                     args.search = query;
