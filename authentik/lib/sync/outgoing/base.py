@@ -82,7 +82,6 @@ class BaseOutgoingSyncClient[
     def to_schema(self, obj: TModel, creating: bool, **defaults) -> TSchema:
         """Convert object to destination schema"""
         raw_final_object = {}
-        raw_final_object.update(defaults)
         try:
             eval_kwargs = {
                 "request": None,
@@ -106,6 +105,8 @@ class BaseOutgoingSyncClient[
             raise StopSync(exc, obj, exc.mapping) from exc
         if not raw_final_object:
             raise StopSync(ValueError("No user mappings configured"), obj)
+        for key, value in defaults.items():
+            raw_final_object.setdefault(key, value)
         return raw_final_object
 
     def discover(self):
