@@ -4405,12 +4405,13 @@ typing-extensions = "*"
 
 [[package]]
 name = "tenant-schemas-celery"
-version = "2.2.0"
+version = "3.0.0"
 description = "Celery integration for django-tenant-schemas and django-tenants"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "tenant-schemas-celery-2.2.0.tar.gz", hash = "sha256:b4fc16959cb98597591afb30f07256f70d8470d97c22c62e3d3af344868cdd6f"},
+    {file = "tenant_schemas_celery-3.0.0-py3-none-any.whl", hash = "sha256:ca0f69e78ef698eb4813468231df5a0ab6a660c08e657b65f5ac92e16887eec8"},
+    {file = "tenant_schemas_celery-3.0.0.tar.gz", hash = "sha256:6be3ae1a5826f262f0f3dd343c6a85a34a1c59b89e04ae37de018f36562fed55"},
 ]
 
 [package.dependencies]
