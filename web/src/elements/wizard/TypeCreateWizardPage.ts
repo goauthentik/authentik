@@ -4,7 +4,7 @@ import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -24,7 +24,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
     @property({ attribute: false })
     types: TypeCreate[] = [];
 
-    @state()
+    @property({ attribute: false })
     selectedType?: TypeCreate;
 
     @property({ type: String })
