@@ -81,7 +81,7 @@ jobs:
         uses: fjogeleit/yaml-update-action@main
         with:
           repository: scribe-security/scribe2
-          branch: ${{ github.ref_name }}
+          branch: main
           commitChange: true
           message: 'Update images versions'
           token: ${{ secrets.K8S_GH_TOKEN }}
