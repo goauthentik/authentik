@@ -49,6 +49,11 @@ ARG GOARCH=$TARGETARCH
 
 WORKDIR /go/src/goauthentik.io
 
+RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/cache/apt \
+    dpkg --add-architecture arm64 && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends crossbuild-essential-arm64 gcc-aarch64-linux-gnu
+
 RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
     --mount=type=bind,target=/go/src/goauthentik.io/go.sum,src=./go.sum \
     --mount=type=cache,target=/go/pkg/mod \
@@ -65,7 +70,9 @@ COPY ./go.sum /go/src/goauthentik.io/go.sum
 
 RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
-    CGO_ENABLED=1 GOEXPERIMENT="systemcrypto" GOFLAGS="-tags=requirefips" GOARM="${TARGETVARIANT#v}" go build -o /go/authentik ./cmd/server
+    if [ "$TARGETARCH" = "arm64" ]; then export CC=aarch64-linux-gnu-gcc && export CC_FOR_TARGET=gcc-aarch64-linux-gnu; fi && \
+    CGO_ENABLED=1 GOEXPERIMENT="systemcrypto" GOFLAGS="-tags=requirefips" GOARM="${TARGETVARIANT#v}" \
+    go build -o /go/authentik ./cmd/server
 
 # Stage 4: MaxMind GeoIP
 FROM --platform=${BUILDPLATFORM} ghcr.io/maxmind/geoipupdate:v7.0.1 as geoip
