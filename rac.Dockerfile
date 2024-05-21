@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build
-FROM docker.io/golang:1.22.2-bookworm AS builder
+FROM docker.io/golang:1.22.3-bookworm AS builder
 
 WORKDIR /go/src/goauthentik.io
 
@@ -18,7 +18,7 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     go build -o /go/rac ./cmd/rac
 
 # Stage 2: Run
-FROM ghcr.io/beryju/guacd:1.5.3
+FROM ghcr.io/beryju/guacd:1.5.5
 
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH

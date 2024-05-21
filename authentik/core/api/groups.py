@@ -17,6 +17,7 @@ from rest_framework.fields import CharField, IntegerField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer, ModelSerializer, ValidationError
+from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
@@ -100,7 +101,10 @@ class GroupSerializer(ModelSerializer):
         extra_kwargs = {
             "users": {
                 "default": list,
-            }
+            },
+            # TODO: This field isn't unique on the database which is hard to backport
+            # hence we just validate the uniqueness here
+            "name": {"validators": [UniqueValidator(Group.objects.all())]},
         }
 
 
@@ -154,11 +158,17 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
 
         pk = IntegerField(required=True)
 
-    queryset = Group.objects.all().select_related("parent").prefetch_related("users")
+    queryset = Group.objects.none()
     serializer_class = GroupSerializer
     search_fields = ["name", "is_superuser"]
     filterset_class = GroupFilter
     ordering = ["name"]
+
+    def get_queryset(self):
+        base_qs = Group.objects.all().select_related("parent").prefetch_related("roles")
+        if self.serializer_class(context={"request": self.request})._should_include_users:
+            base_qs = base_qs.prefetch_related("users")
+        return base_qs
 
     @extend_schema(
         parameters=[
@@ -167,6 +177,14 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter("include_users", bool, default=True),
+        ]
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
     @permission_required("authentik_core.add_user_to_group")
     @extend_schema(

@@ -6,7 +6,7 @@ import { BaseStage } from "@goauthentik/flow/stages/base";
 import type { TurnstileObject } from "turnstile-types";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -42,46 +42,55 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     @state()
     captchaContainer: HTMLDivElement;
 
+    @state()
+    scriptElement?: HTMLScriptElement;
+
     constructor() {
         super();
         this.captchaContainer = document.createElement("div");
         this.captchaContainer.id = captchaContainerID;
     }
 
-    firstUpdated(): void {
-        const script = document.createElement("script");
-        script.src = this.challenge.jsUrl;
-        script.async = true;
-        script.defer = true;
-        script.onload = () => {
-            console.debug("authentik/stages/captcha: script loaded");
-            let found = false;
-            let lastError = undefined;
-            this.handlers.forEach((handler) => {
-                let handlerFound = false;
-                try {
-                    console.debug(`authentik/stages/captcha[${handler.name}]: trying handler`);
-                    handlerFound = handler.apply(this);
-                    if (handlerFound) {
+    updated(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("challenge") && this.challenge !== undefined) {
+            this.scriptElement = document.createElement("script");
+            this.scriptElement.src = this.challenge.jsUrl;
+            this.scriptElement.async = true;
+            this.scriptElement.defer = true;
+            this.scriptElement.dataset.akCaptchaScript = "true";
+            this.scriptElement.onload = () => {
+                console.debug("authentik/stages/captcha: script loaded");
+                let found = false;
+                let lastError = undefined;
+                this.handlers.forEach((handler) => {
+                    let handlerFound = false;
+                    try {
+                        console.debug(`authentik/stages/captcha[${handler.name}]: trying handler`);
+                        handlerFound = handler.apply(this);
+                        if (handlerFound) {
+                            console.debug(
+                                `authentik/stages/captcha[${handler.name}]: handler succeeded`,
+                            );
+                            found = true;
+                        }
+                    } catch (exc) {
                         console.debug(
-                            `authentik/stages/captcha[${handler.name}]: handler succeeded`,
+                            `authentik/stages/captcha[${handler.name}]: handler failed: ${exc}`,
                         );
-                        found = true;
+                        if (handlerFound) {
+                            lastError = exc;
+                        }
                     }
-                } catch (exc) {
-                    console.debug(
-                        `authentik/stages/captcha[${handler.name}]: handler failed: ${exc}`,
-                    );
-                    if (handlerFound) {
-                        lastError = exc;
-                    }
+                });
+                if (!found && lastError) {
+                    this.error = (lastError as Error).toString();
                 }
-            });
-            if (!found && lastError) {
-                this.error = (lastError as Error).toString();
-            }
-        };
-        document.head.appendChild(script);
+            };
+            document.head
+                .querySelectorAll("[data-ak-captcha-script=true]")
+                .forEach((el) => el.remove());
+            document.head.appendChild(this.scriptElement);
+        }
     }
 
     handleGReCaptcha(): boolean {

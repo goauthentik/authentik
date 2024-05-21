@@ -63,8 +63,12 @@ class ProviderFilter(FilterSet):
     """Filter for providers"""
 
     application__isnull = BooleanFilter(method="filter_application__isnull")
-    backchannel_only = BooleanFilter(
-        method="filter_backchannel_only",
+    backchannel = BooleanFilter(
+        method="filter_backchannel",
+        label=_(
+            "When not set all providers are returned. When set to true, only backchannel "
+            "providers are returned. When set to false, backchannel providers are excluded"
+        ),
     )
 
     def filter_application__isnull(self, queryset: QuerySet, name, value):
@@ -75,8 +79,9 @@ class ProviderFilter(FilterSet):
             | Q(application__isnull=value)
         )
 
-    def filter_backchannel_only(self, queryset: QuerySet, name, value):
-        """Only return backchannel providers"""
+    def filter_backchannel(self, queryset: QuerySet, name, value):
+        """By default all providers are returned. When set to true, only backchannel providers are
+        returned. When set to false, backchannel providers are excluded"""
         return queryset.filter(is_backchannel=value)
 
 
