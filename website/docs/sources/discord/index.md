@@ -310,7 +310,7 @@ AVATAR_SIZE = "64"  # Valid values: 16,32,64,128,256,512,1024
 
 # Only change below here if you know what you are doing.
 AVATAR_URL = "https://cdn.discordapp.com/avatars/{id}/{avatar}.png?site={avatar_size}"
-AVATAR_STREAM_CONTENT = "data:image/png;base64,{base64_string}"  # Converts base64 image into html syntax useable with authentik's avatar attributes feature
+AVATAR_STREAM_CONTENT = "data:image/png;base64,{base64_string}"  # Converts base64 image into html syntax usable with authentik's avatar attributes feature
 
 
 def get_as_base64(url):
