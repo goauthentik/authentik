@@ -304,6 +304,12 @@ class ConfigLoader:
         """Wrapper for get that converts value into boolean"""
         return str(self.get(path, default)).lower() == "true"
 
+    def get_keys(self, path: str, sep=".") -> list[str]:
+        """List attribute keys by using yaml path"""
+        root = self.raw
+        attr: Attr = get_path_from_dict(root, path, sep=sep, default=Attr({}))
+        return attr.keys()
+
     def get_dict_from_b64_json(self, path: str, default=None) -> dict:
         """Wrapper for get that converts value from Base64 encoded string into dictionary"""
         config_value = self.get(path)
