@@ -26,30 +26,18 @@ import "@goauthentik/elements/forms/ProxyForm";
 import "@goauthentik/elements/wizard/FormWizardPage";
 import { FormWizardPage } from "@goauthentik/elements/wizard/FormWizardPage";
 import "@goauthentik/elements/wizard/TypeCreateWizardPage";
-import { TypeCreateWizardPage } from "@goauthentik/elements/wizard/TypeCreateWizardPage";
 import "@goauthentik/elements/wizard/Wizard";
+import { Wizard } from "@goauthentik/elements/wizard/Wizard";
 
 import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { CSSResult, TemplateResult, html } from "lit";
-import { property } from "lit/decorators.js";
+import { property, query } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { FlowStageBinding, Stage, StagesApi, TypeCreate } from "@goauthentik/api";
-
-@customElement("ak-stage-wizard-initial")
-export class InitialStageWizardPage extends TypeCreateWizardPage {
-    onSelect(type: TypeCreate): void {
-        const idx = this.host.steps.indexOf("initial") + 1;
-        // Exclude all current steps starting with type-,
-        // this happens when the user selects a type and then goes back
-        this.host.steps = this.host.steps.filter((step) => !step.startsWith("type-"));
-        this.host.steps.splice(idx, 0, `type-${type.component}-${type.modelName}`);
-        this.host.isValid = true;
-    }
-}
 
 @customElement("ak-stage-wizard")
 export class StageWizard extends AKElement {
@@ -69,6 +57,9 @@ export class StageWizard extends AKElement {
     @property({ attribute: false })
     stageTypes: TypeCreate[] = [];
 
+    @query("ak-wizard")
+    wizard?: Wizard;
+
     firstUpdated(): void {
         new StagesApi(DEFAULT_CONFIG).stagesAllTypesList().then((types) => {
             this.stageTypes = types;
@@ -82,8 +73,26 @@ export class StageWizard extends AKElement {
                 header=${msg("New stage")}
                 description=${msg("Create a new stage.")}
             >
-                <ak-stage-wizard-initial slot="initial" .types=${this.stageTypes}>
-                </ak-stage-wizard-initial>
+                <ak-wizard-page-type-create
+                    slot="initial"
+                    .types=${this.stageTypes}
+                    @select=${(ev: CustomEvent<TypeCreate>) => {
+                        if (!this.wizard) return;
+                        const idx = this.wizard.steps.indexOf("initial") + 1;
+                        // Exclude all current steps starting with type-,
+                        // this happens when the user selects a type and then goes back
+                        this.wizard.steps = this.wizard.steps.filter(
+                            (step) => !step.startsWith("type-"),
+                        );
+                        this.wizard.steps.splice(
+                            idx,
+                            0,
+                            `type-${ev.detail.component}-${ev.detail.modelName}`,
+                        );
+                        this.wizard.isValid = true;
+                    }}
+                >
+                </ak-wizard-page-type-create>
                 ${this.stageTypes.map((type) => {
                     return html`
                         <ak-wizard-page-form

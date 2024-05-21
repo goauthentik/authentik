@@ -7,30 +7,19 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/ProxyForm";
 import "@goauthentik/elements/wizard/FormWizardPage";
-import {
-    TypeCreateWizardPage,
-    TypeCreateWizardPageLayouts,
-} from "@goauthentik/elements/wizard/TypeCreateWizardPage";
+import { TypeCreateWizardPageLayouts } from "@goauthentik/elements/wizard/TypeCreateWizardPage";
 import "@goauthentik/elements/wizard/Wizard";
+import type { Wizard } from "@goauthentik/elements/wizard/Wizard";
 
 import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { CSSResult, TemplateResult, html } from "lit";
-import { property } from "lit/decorators.js";
+import { property, query } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { SourcesApi, TypeCreate } from "@goauthentik/api";
-
-@customElement("ak-source-wizard-initial")
-export class InitialSourceWizardPage extends TypeCreateWizardPage {
-    layout = TypeCreateWizardPageLayouts.grid;
-    onSelect(type: TypeCreate): void {
-        this.host.steps = ["initial", `type-${type.component}-${type.modelName}`];
-        this.host.isValid = true;
-    }
-}
 
 @customElement("ak-source-wizard")
 export class SourceWizard extends AKElement {
@@ -40,6 +29,9 @@ export class SourceWizard extends AKElement {
 
     @property({ attribute: false })
     sourceTypes: TypeCreate[] = [];
+
+    @query("ak-wizard")
+    wizard?: Wizard;
 
     firstUpdated(): void {
         new SourcesApi(DEFAULT_CONFIG).sourcesAllTypesList().then((types) => {
@@ -54,8 +46,20 @@ export class SourceWizard extends AKElement {
                 header=${msg("New source")}
                 description=${msg("Create a new source.")}
             >
-                <ak-source-wizard-initial slot="initial" .types=${this.sourceTypes}>
-                </ak-source-wizard-initial>
+                <ak-wizard-page-type-create
+                    slot="initial"
+                    .types=${this.sourceTypes}
+                    layout=${TypeCreateWizardPageLayouts.grid}
+                    @select=${(ev: CustomEvent<TypeCreate>) => {
+                        if (!this.wizard) return;
+                        this.wizard.steps = [
+                            "initial",
+                            `type-${ev.detail.component}-${ev.detail.modelName}`,
+                        ];
+                        this.wizard.isValid = true;
+                    }}
+                >
+                </ak-wizard-page-type-create>
                 ${this.sourceTypes.map((type) => {
                     return html`
                         <ak-wizard-page-form

@@ -4,26 +4,19 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/ProxyForm";
 import "@goauthentik/elements/wizard/FormWizardPage";
-import { TypeCreateWizardPage } from "@goauthentik/elements/wizard/TypeCreateWizardPage";
+import "@goauthentik/elements/wizard/TypeCreateWizardPage";
 import "@goauthentik/elements/wizard/Wizard";
+import type { Wizard } from "@goauthentik/elements/wizard/Wizard";
 
 import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { CSSResult, TemplateResult, html } from "lit";
-import { property } from "lit/decorators.js";
+import { property, query } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { OutpostsApi, TypeCreate } from "@goauthentik/api";
-
-@customElement("ak-service-connection-wizard-initial")
-export class InitialServiceConnectionWizardPage extends TypeCreateWizardPage {
-    onSelect(type: TypeCreate): void {
-        this.host.steps = ["initial", `type-${type.component}-${type.modelName}`];
-        this.host.isValid = true;
-    }
-}
 
 @customElement("ak-service-connection-wizard")
 export class ServiceConnectionWizard extends AKElement {
@@ -36,6 +29,9 @@ export class ServiceConnectionWizard extends AKElement {
 
     @property({ attribute: false })
     connectionTypes: TypeCreate[] = [];
+
+    @query("ak-wizard")
+    wizard?: Wizard;
 
     firstUpdated(): void {
         new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllTypesList().then((types) => {
@@ -50,8 +46,19 @@ export class ServiceConnectionWizard extends AKElement {
                 header=${msg("New outpost integration")}
                 description=${msg("Create a new outpost integration.")}
             >
-                <ak-service-connection-wizard-initial slot="initial" .types=${this.connectionTypes}>
-                </ak-service-connection-wizard-initial>
+                <ak-wizard-page-type-create
+                    slot="initial"
+                    .types=${this.connectionTypes}
+                    @select=${(ev: CustomEvent<TypeCreate>) => {
+                        if (!this.wizard) return;
+                        this.wizard.steps = [
+                            "initial",
+                            `type-${ev.detail.component}-${ev.detail.modelName}`,
+                        ];
+                        this.wizard.isValid = true;
+                    }}
+                >
+                </ak-wizard-page-type-create>
                 ${this.connectionTypes.map((type) => {
                     return html`
                         <ak-wizard-page-form

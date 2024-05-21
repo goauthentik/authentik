@@ -4,7 +4,7 @@ import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
-import { property, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -15,17 +15,19 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { TypeCreate } from "@goauthentik/api";
 
 export enum TypeCreateWizardPageLayouts {
-    list,
-    grid,
+    list = "list",
+    grid = "grid",
 }
 
-export abstract class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
+@customElement("ak-wizard-page-type-create")
+export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
     @property({ attribute: false })
     types: TypeCreate[] = [];
 
     @state()
     selectedType?: TypeCreate;
 
+    @property({ type: String })
     layout: TypeCreateWizardPageLayouts = TypeCreateWizardPageLayouts.list;
 
     static get styles(): CSSResult[] {
@@ -52,11 +54,19 @@ export abstract class TypeCreateWizardPage extends WithLicenseSummary(WizardPage
     activeCallback: () => Promise<void> = async () => {
         this.host.isValid = false;
         if (this.selectedType) {
-            this.onSelect(this.selectedType);
+            this.selectDispatch(this.selectedType);
         }
     };
 
-    abstract onSelect(type: TypeCreate): void;
+    private selectDispatch(type: TypeCreate) {
+        this.dispatchEvent(
+            new CustomEvent("select", {
+                detail: type,
+                bubbles: true,
+                composed: true,
+            }),
+        );
+    }
 
     renderGrid(): TemplateResult {
         return html`<div class="pf-l-grid pf-m-gutter">
@@ -73,7 +83,7 @@ export abstract class TypeCreateWizardPage extends WithLicenseSummary(WizardPage
                         if (requiresEnterprise) {
                             return;
                         }
-                        this.onSelect(type);
+                        this.selectDispatch(type);
                         this.selectedType = type;
                     }}
                 >
@@ -107,7 +117,7 @@ export abstract class TypeCreateWizardPage extends WithLicenseSummary(WizardPage
                         name="type"
                         id=${`${type.component}-${type.modelName}`}
                         @change=${() => {
-                            this.onSelect(type);
+                            this.selectDispatch(type);
                         }}
                         ?disabled=${requiresEnterprise}
                     />

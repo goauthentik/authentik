@@ -10,30 +10,19 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/ProxyForm";
 import "@goauthentik/elements/wizard/FormWizardPage";
 import { FormWizardPage } from "@goauthentik/elements/wizard/FormWizardPage";
-import { TypeCreateWizardPage } from "@goauthentik/elements/wizard/TypeCreateWizardPage";
+import "@goauthentik/elements/wizard/TypeCreateWizardPage";
 import "@goauthentik/elements/wizard/Wizard";
+import type { Wizard } from "@goauthentik/elements/wizard/Wizard";
 
 import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { CSSResult, TemplateResult, html } from "lit";
-import { property } from "lit/decorators.js";
+import { property, query } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { PoliciesApi, Policy, PolicyBinding, TypeCreate } from "@goauthentik/api";
-
-@customElement("ak-policy-wizard-initial")
-export class InitialPolicyWizardPage extends TypeCreateWizardPage {
-    onSelect(type: TypeCreate): void {
-        const idx = this.host.steps.indexOf("initial") + 1;
-        // Exclude all current steps starting with type-,
-        // this happens when the user selects a type and then goes back
-        this.host.steps = this.host.steps.filter((step) => !step.startsWith("type-"));
-        this.host.steps.splice(idx, 0, `type-${type.component}-${type.modelName}`);
-        this.host.isValid = true;
-    }
-}
 
 @customElement("ak-policy-wizard")
 export class PolicyWizard extends AKElement {
@@ -53,6 +42,9 @@ export class PolicyWizard extends AKElement {
     @property({ attribute: false })
     policyTypes: TypeCreate[] = [];
 
+    @query("ak-wizard")
+    wizard?: Wizard;
+
     firstUpdated(): void {
         new PoliciesApi(DEFAULT_CONFIG).policiesAllTypesList().then((types) => {
             this.policyTypes = types;
@@ -66,8 +58,26 @@ export class PolicyWizard extends AKElement {
                 header=${msg("New policy")}
                 description=${msg("Create a new policy.")}
             >
-                <ak-policy-wizard-initial slot="initial" .typesf=${this.policyTypes}>
-                </ak-policy-wizard-initial>
+                <ak-wizard-page-type-create
+                    slot="initial"
+                    .types=${this.policyTypes}
+                    @select=${(ev: CustomEvent<TypeCreate>) => {
+                        if (!this.wizard) return;
+                        const idx = this.wizard.steps.indexOf("initial") + 1;
+                        // Exclude all current steps starting with type-,
+                        // this happens when the user selects a type and then goes back
+                        this.wizard.steps = this.wizard.steps.filter(
+                            (step) => !step.startsWith("type-"),
+                        );
+                        this.wizard.steps.splice(
+                            idx,
+                            0,
+                            `type-${ev.detail.component}-${ev.detail.modelName}`,
+                        );
+                        this.wizard.isValid = true;
+                    }}
+                >
+                </ak-wizard-page-type-create>
                 ${this.policyTypes.map((type) => {
                     return html`
                         <ak-wizard-page-form

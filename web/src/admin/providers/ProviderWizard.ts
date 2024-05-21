@@ -7,52 +7,21 @@ import "@goauthentik/admin/providers/saml/SAMLProviderImportForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/ProxyForm";
-import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
 import "@goauthentik/elements/wizard/FormWizardPage";
-import {
-    TypeCreateWizardPage,
-    TypeCreateWizardPageLayouts,
-} from "@goauthentik/elements/wizard/TypeCreateWizardPage";
+import "@goauthentik/elements/wizard/TypeCreateWizardPage";
+import { TypeCreateWizardPageLayouts } from "@goauthentik/elements/wizard/TypeCreateWizardPage";
 import "@goauthentik/elements/wizard/Wizard";
+import type { Wizard } from "@goauthentik/elements/wizard/Wizard";
 
 import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { CSSResult, TemplateResult, html } from "lit";
-import { property } from "lit/decorators.js";
+import { property, query } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { ProvidersApi, TypeCreate } from "@goauthentik/api";
-
-@customElement("ak-provider-wizard-initial")
-export class InitialProviderWizardPage extends TypeCreateWizardPage {
-    layout = TypeCreateWizardPageLayouts.grid;
-    onSelect(type: TypeCreate): void {
-        this.host.steps = ["initial", `type-${type.component}`];
-        this.host.isValid = true;
-    }
-    renderHint(): TemplateResult {
-        return html`<div class="pf-c-hint">
-                <div class="pf-c-hint__title">${msg("Try the new application wizard")}</div>
-                <div class="pf-c-hint__body">
-                    ${msg(
-                        "The new application wizard greatly simplifies the steps required to create applications and providers.",
-                    )}
-                </div>
-                <div class="pf-c-hint__footer">
-                    <a
-                        class="pf-c-button pf-m-link pf-m-inline"
-                        href=${paramURL("/core/applications", {
-                            createForm: true,
-                        })}
-                        >${msg("Try it now")}</a
-                    >
-                </div>
-            </div>
-            <br />`;
-    }
-}
 
 @customElement("ak-provider-wizard")
 export class ProviderWizard extends AKElement {
@@ -71,6 +40,9 @@ export class ProviderWizard extends AKElement {
         return Promise.resolve();
     };
 
+    @query("ak-wizard")
+    wizard?: Wizard;
+
     async firstUpdated(): Promise<void> {
         this.providerTypes = await new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList();
     }
@@ -85,8 +57,17 @@ export class ProviderWizard extends AKElement {
                     return this.finalHandler();
                 }}
             >
-                <ak-provider-wizard-initial slot="initial" .types=${this.providerTypes}>
-                </ak-provider-wizard-initial>
+                <ak-wizard-page-type-create
+                    slot="initial"
+                    layout=${TypeCreateWizardPageLayouts.grid}
+                    .types=${this.providerTypes}
+                    @select=${(ev: CustomEvent<TypeCreate>) => {
+                        if (!this.wizard) return;
+                        this.wizard.steps = ["initial", `type-${ev.detail.component}`];
+                        this.wizard.isValid = true;
+                    }}
+                >
+                </ak-wizard-page-type-create>
                 ${this.providerTypes.map((type) => {
                     return html`
                         <ak-wizard-page-form

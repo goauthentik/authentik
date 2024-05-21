@@ -37793,10 +37793,6 @@ components:
           type: string
         icon:
           type: string
-          nullable: true
-          description: |-
-            Get the URL to the Icon. If the name is /static or
-            starts with http it is returned as-is
           readOnly: true
         server_uri:
           type: string
