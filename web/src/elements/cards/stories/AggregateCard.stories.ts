@@ -31,7 +31,7 @@ export const DefaultStory: StoryObj = {
         header: "Default",
         headerLink: undefined,
         subtext: undefined,
-        isCenter: false,
+        leftJustified: false,
     },
     render: ({ icon, header, headerLink, subtext, leftJustified }: IAggregateCard) => {
         return html` <div style="background-color: #f0f0f0; padding: 1rem;">

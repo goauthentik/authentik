@@ -58,10 +58,12 @@ const rawCssImportMaps = [
     'import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";',
     'import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";',
     'import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";',
+    'import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";',
     'import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";',
     'import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";',
     'import PFTable from "@patternfly/patternfly/components/Table/table.css";',
     'import PFTabs from "@patternfly/patternfly/components/Tabs/tabs.css";',
+    'import PFText from "@patternfly/patternfly/utilities/Text/text.css";',
     'import PFTitle from "@patternfly/patternfly/components/Title/title.css";',
     'import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";',
     'import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";',
@@ -71,8 +73,10 @@ const rawCssImportMaps = [
     'import styles from "./LibraryPageImpl.css";',
 ];
 
-const cssImportMaps = rawCssImportMaps.reduce((acc, line) => (
-{...acc, [line]: line.replace(/\.css/, ".css?inline")}), {});
+const cssImportMaps = rawCssImportMaps.reduce(
+    (acc, line) => ({ ...acc, [line]: line.replace(/\.css/, ".css?inline") }),
+    {},
+);
 
 export { cssImportMaps };
 export default cssImportMaps;
