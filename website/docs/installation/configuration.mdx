@@ -91,6 +91,8 @@ Additionally, databases used only for read operations can be configured. Increas
 
 Note that `USE_PGBOUNCER` and `USE_PGPOOL` are inherited from the main database configuration and are not overridable per read replica. By default, if read replicas are configured, the main database is not used for reads. If you'd like it to be included for reads, add it as a read replica.
 
+All PostgreSQL settings, apart from `USE_PGBOUNCER` and `USE_PGPOOL`, support hot-reloading. Adding and removing read replicas doesn't support hot-reloading.
+
 ## Redis Settings
 
 -   `AUTHENTIK_REDIS__HOST`: Redis server host when not using configuration URL
