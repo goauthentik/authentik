@@ -43,6 +43,7 @@ REMOTE_AUTH_BACKEND='social_core.backends.open_id_connect.OpenIdConnectAuth'
 SOCIAL_AUTH_OIDC_ENDPOINT='https://authentik.company/application/o/<Application slug>/'
 SOCIAL_AUTH_OIDC_KEY='<Client ID>'
 SOCIAL_AUTH_OIDC_SECRET='<Client Secret>'
+SOCIAL_AUTH_OIDC_SCOPE = ["openid", "profile", "email", "roles"]
 LOGOUT_REDIRECT_URL='https://authentik.company/application/o/<Application slug>/end-session/'
 ```
 
@@ -59,6 +60,7 @@ from os import environ
 SOCIAL_AUTH_OIDC_ENDPOINT = environ.get('SOCIAL_AUTH_OIDC_ENDPOINT')
 SOCIAL_AUTH_OIDC_KEY = environ.get('SOCIAL_AUTH_OIDC_KEY')
 SOCIAL_AUTH_OIDC_SECRET = environ.get('SOCIAL_AUTH_OIDC_SECRET')
+SOCIAL_AUTH_OIDC_SCOPE = ["openid", "profile", "email", "roles"]
 LOGOUT_REDIRECT_URL = environ.get('LOGOUT_REDIRECT_URL')
 
 
