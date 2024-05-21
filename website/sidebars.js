@@ -76,6 +76,39 @@ const docsSidebar = {
             items: [
                 {
                     type: "category",
+                    label: "Google Workspace Provider",
+                    link: {
+                        type: "doc",
+                        id: "providers/gws/index",
+                    },
+                    items: [
+                        "providers/gws/setup-gws",
+                        "providers/gws/add-gws-provider",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "LDAP Provider",
+                    link: {
+                        type: "doc",
+                        id: "providers/ldap/index",
+                    },
+                    items: ["providers/ldap/generic_setup"],
+                },
+                {
+                    type: "category",
+                    label: "Microsoft Entra ID Provider",
+                    link: {
+                        type: "doc",
+                        id: "providers/entra/index",
+                    },
+                    items: [
+                        "providers/entra/setup-entra",
+                        "providers/entra/add-entra-provider",
+                    ],
+                },
+                {
+                    type: "category",
                     label: "OAuth2 Provider",
                     link: {
                         type: "doc",
@@ -113,15 +146,6 @@ const docsSidebar = {
                             ],
                         },
                     ],
-                },
-                {
-                    type: "category",
-                    label: "LDAP Provider",
-                    link: {
-                        type: "doc",
-                        id: "providers/ldap/index",
-                    },
-                    items: ["providers/ldap/generic_setup"],
                 },
                 "providers/scim/index",
                 {

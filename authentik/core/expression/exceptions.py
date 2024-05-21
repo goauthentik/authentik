@@ -6,6 +6,11 @@ from authentik.lib.sentry import SentryIgnoredException
 class PropertyMappingExpressionException(SentryIgnoredException):
     """Error when a PropertyMapping Exception expression could not be parsed or evaluated."""
 
+    def __init__(self, exc: Exception, mapping) -> None:
+        super().__init__()
+        self.exc = exc
+        self.mapping = mapping
+
 
 class SkipObjectException(PropertyMappingExpressionException):
     """Exception which can be raised in a property mapping to skip syncing an object.
