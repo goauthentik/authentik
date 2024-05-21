@@ -83,8 +83,13 @@ LOGOUT_REDIRECT_URL = environ.get('LOGOUT_REDIRECT_URL')
 
 To manage groups in NetBox custom social auth pipelines are required. To create them you have to create the `custom_pipeline.py` file in the NetBox directory with the following content.
 
+:::info
+From Netbox version 4.0.0 Netbox add the custom `Group` models. The following code is compatible with Netbox 4.0.0 and above. For Netbox versions below 4.0.0, the import statement and group adding / deleting of user lines must be changed.
+:::
+
 ```python
-from netbox.authentication import Group
+# from django.contrib.auth.models import Group # For Netbox < 4.0.0
+from netbox.authentication import Group # For Netbox >= 4.0.0
 
 class AuthFailed(Exception):
     pass
@@ -98,7 +103,8 @@ def add_groups(response, user, backend, *args, **kwargs):
     # Add all groups from oAuth token
     for group in groups:
         group, created = Group.objects.get_or_create(name=group)
-        group.users.add(user)
+        # group.user_set.add(user) # For Netbox < 4.0.0
+        user.groups.add(group) # For Netbox >= 4.0.0
 
 def remove_groups(response, user, backend, *args, **kwargs):
     try:
@@ -116,7 +122,8 @@ def remove_groups(response, user, backend, *args, **kwargs):
     # Delete non oAuth token groups
     for delete_group in delete_groups:
         group = Group.objects.get(name=delete_group)
-        group.users.remove(user)
+        # group.user_set.remove(user) # For Netbox < 4.0.0
+        user.groups.remove(group) # For Netbox >= 4.0.0
 
 
 def set_roles(response, user, backend, *args, **kwargs):
