@@ -23,6 +23,6 @@
         "typescript",
         "classProperties",
         "decorators-legacy",
-        "importAssertions"
+        "importAttributes"
     ]
 }
