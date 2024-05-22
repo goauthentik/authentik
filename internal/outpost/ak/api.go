@@ -186,13 +186,13 @@ func (a *APIController) OnRefresh() error {
 
 func (a *APIController) getWebsocketPingArgs() map[string]interface{} {
 	args := map[string]interface{}{
-		"version":         constants.VERSION,
-		"buildHash":       constants.BUILD("tagged"),
-		"uuid":            a.instanceUUID.String(),
-		"golang_version":  runtime.Version(),
-		"openssl_enabled": cryptobackend.OpensslEnabled,
-		"openssl_version": cryptobackend.OpensslVersion(),
-		"fips_enabled":    cryptobackend.FipsEnabled,
+		"version":        constants.VERSION,
+		"buildHash":      constants.BUILD("tagged"),
+		"uuid":           a.instanceUUID.String(),
+		"golangVersion":  runtime.Version(),
+		"opensslEnabled": cryptobackend.OpensslEnabled,
+		"opensslVersion": cryptobackend.OpensslVersion(),
+		"fipsEnabled":    cryptobackend.FipsEnabled,
 	}
 	hostname, err := os.Hostname()
 	if err == nil {

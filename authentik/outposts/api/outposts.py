@@ -117,8 +117,12 @@ class OutpostHealthSerializer(PassiveSerializer):
     uid = CharField(read_only=True)
     last_seen = DateTimeField(read_only=True)
     version = CharField(read_only=True)
-    version_should = CharField(read_only=True)
+    golang_version = CharField(read_only=True)
+    openssl_enabled = CharField(read_only=True)
+    openssl_version = CharField(read_only=True)
+    fips_enabled = CharField(read_only=True)
 
+    version_should = CharField(read_only=True)
     version_outdated = BooleanField(read_only=True)
 
     build_hash = CharField(read_only=True, required=False)
