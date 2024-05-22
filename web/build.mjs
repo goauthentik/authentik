@@ -16,6 +16,8 @@ const isProdBuild = process.env.NODE_ENV === "production";
 // eslint-disable-next-line no-undef
 const apiBasePath = process.env.AK_API_BASE_PATH || "";
 
+const envGitHashKey = "GIT_BUILD_HASH";
+
 const definitions = {
     "process.env.NODE_ENV": JSON.stringify(isProdBuild ? "production" : "development"),
     "process.env.CWD": JSON.stringify(cwd()),
@@ -81,6 +83,14 @@ const baseArgs = {
     format: "esm",
 };
 
+function getVersion() {
+    let version = rootPackage.version;
+    if (process.env[envGitHashKey]) {
+        version = `${version}.${process.env[envGitHashKey]}`;
+    }
+    return version;
+}
+
 async function buildOneSource(source, dest) {
     const DIST = path.join(__dirname, "./dist", dest);
     console.log(`[${new Date(Date.now()).toISOString()}] Starting build for target ${source}`);
@@ -90,7 +100,7 @@ async function buildOneSource(source, dest) {
         await esbuild.build({
             ...baseArgs,
             entryPoints: [`./src/${source}`],
-            entryNames: `[dir]/[name]-${rootPackage.version}`,
+            entryNames: `[dir]/[name]-${getVersion()}`,
             outdir: DIST,
         });
         const end = Date.now();

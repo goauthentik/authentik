@@ -21,4 +21,4 @@ def versioned_script(path: str) -> str:
             f'version={__version__}" type="module"></script>'
         ),
     ]
-    return mark_safe("".join(returned_lines))
+    return mark_safe("".join(returned_lines))  # nosec

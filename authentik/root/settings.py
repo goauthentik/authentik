@@ -1,7 +1,6 @@
 """root settings for authentik"""
 
 import importlib
-import os
 from collections import OrderedDict
 from hashlib import sha512
 from pathlib import Path
@@ -10,7 +9,7 @@ from celery.schedules import crontab
 from django.conf import ImproperlyConfigured
 from sentry_sdk import set_tag
 
-from authentik import ENV_GIT_HASH_KEY, __version__
+from authentik import __version__
 from authentik.lib.config import CONFIG, redis_url
 from authentik.lib.logging import get_logger_config, structlog_configure
 from authentik.lib.sentry import sentry_init
@@ -509,7 +508,6 @@ def _update_settings(app_path: str):
 
 if DEBUG:
     CELERY["task_always_eager"] = True
-    os.environ[ENV_GIT_HASH_KEY] = "dev"
     REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append(
         "rest_framework.renderers.BrowsableAPIRenderer"
     )
