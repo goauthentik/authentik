@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-13 00:08+0000\n"
+"POT-Creation-Date: 2024-05-22 00:07+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/authentik/teams/119923/zh_CN/)\n"
@@ -1781,14 +1781,6 @@ msgstr "系统权限"
 #: authentik/rbac/models.py
 msgid "Can view system info"
 msgstr "可以查看系统信息"
-
-#: authentik/rbac/models.py
-msgid "Can view system tasks"
-msgstr "可以查看系统任务"
-
-#: authentik/rbac/models.py
-msgid "Can run system tasks"
-msgstr "可以运行系统任务"
 
 #: authentik/rbac/models.py
 msgid "Can access admin interface"
