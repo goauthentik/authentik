@@ -1,11 +1,12 @@
 # syntax=docker/dockerfile:1
 
-# Stage 1: Build website
+# Stage 1: Build web
 FROM --platform=${BUILDPLATFORM} docker.io/node:22 as web-builder
 
 ENV NODE_ENV=production
 WORKDIR /static
 
+COPY package.json /
 COPY web/package.json .
 COPY web/package-lock.json .
 RUN --mount=type=bind,target=/static/package.json,src=./web/package.json \

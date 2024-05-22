@@ -31,6 +31,7 @@ RUN --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
     --mount=type=cache,id=npm-web,sharing=shared,target=/root/.npm \
     npm ci --include=dev
 
+COPY ./package.json /work
 COPY ./web /work/web/
 COPY ./website /work/website/
 COPY ./gen-ts-api /work/web/node_modules/@goauthentik/api
