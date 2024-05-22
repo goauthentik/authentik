@@ -6,6 +6,7 @@ import path from "path";
 import { cwd } from "process";
 import process from "process";
 import { fileURLToPath } from "url";
+
 import rootPackage from "../package.json" assert { type: "json" };
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
