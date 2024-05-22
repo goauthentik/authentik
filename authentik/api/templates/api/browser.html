@@ -7,7 +7,7 @@ API Browser - {{ brand.branding_title }}
 {% endblock %}
 
 {% block head %}
-<script src="{% static 'dist/standalone/api-browser/index-%v.js' %}" type="module"></script>
+{% versioned_script "dist/standalone/api-browser/index-%v.js" %}
 <meta name="theme-color" content="#151515" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#151515" media="(prefers-color-scheme: dark)">
 {% endblock %}
