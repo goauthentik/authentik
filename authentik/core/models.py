@@ -378,6 +378,10 @@ class Provider(SerializerModel):
         return None
 
     @property
+    def icon_url(self) -> str | None:
+        return None
+
+    @property
     def component(self) -> str:
         """Return component used to edit this object"""
         raise NotImplementedError
