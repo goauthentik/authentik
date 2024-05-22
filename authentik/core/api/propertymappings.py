@@ -15,12 +15,15 @@ from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.blueprints.api import ManagedSerializer
+from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import MetaNameSerializer, PassiveSerializer, TypeCreateSerializer
+from authentik.core.api.utils import (
+    MetaNameSerializer,
+    PassiveSerializer,
+)
 from authentik.core.expression.evaluator import PropertyMappingEvaluator
 from authentik.core.models import PropertyMapping
 from authentik.events.utils import sanitize_item
-from authentik.lib.utils.reflection import all_subclasses
 from authentik.policies.api.exec import PolicyTestSerializer
 from authentik.rbac.decorators import permission_required
 
@@ -64,6 +67,7 @@ class PropertyMappingSerializer(ManagedSerializer, ModelSerializer, MetaNameSeri
 
 
 class PropertyMappingViewSet(
+    TypesMixin,
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
     UsedByMixin,
@@ -82,23 +86,6 @@ class PropertyMappingViewSet(
 
     def get_queryset(self):  # pragma: no cover
         return PropertyMapping.objects.select_subclasses()
-
-    @extend_schema(responses={200: TypeCreateSerializer(many=True)})
-    @action(detail=False, pagination_class=None, filter_backends=[])
-    def types(self, request: Request) -> Response:
-        """Get all creatable property-mapping types"""
-        data = []
-        for subclass in all_subclasses(self.queryset.model):
-            subclass: PropertyMapping
-            data.append(
-                {
-                    "name": subclass._meta.verbose_name,
-                    "description": subclass.__doc__,
-                    "component": subclass().component,
-                    "model_name": subclass._meta.model_name,
-                }
-            )
-        return Response(TypeCreateSerializer(data, many=True).data)
 
     @permission_required("authentik_core.view_propertymapping")
     @extend_schema(

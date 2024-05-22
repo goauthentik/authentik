@@ -3,7 +3,7 @@ import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
 import { customElement, property, query } from "@lit/reactive-element/decorators.js";
-import { TemplateResult, html, nothing } from "lit";
+import { TemplateResult, css, html, nothing } from "lit";
 import { classMap } from "lit/directives/class-map.js";
 import { map } from "lit/directives/map.js";
 
@@ -31,7 +31,15 @@ import { type WizardButton, WizardStepLabel } from "./types";
 @customElement("ak-wizard-frame")
 export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
     static get styles() {
-        return [...super.styles, PFWizard];
+        return [
+            ...super.styles,
+            PFWizard,
+            css`
+                .pf-c-modal-box {
+                    height: 75%;
+                }
+            `,
+        ];
     }
 
     /**
@@ -84,7 +92,7 @@ export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
             ${this.renderHeader()}
             <div class="pf-c-wizard__outer-wrap">
                 <div class="pf-c-wizard__inner-wrap">
-                    ${this.renderNavigation()} 
+                    ${this.renderNavigation()}
                     ${this.renderMainSection()}
                 </div>
                 ${this.renderFooter()}
