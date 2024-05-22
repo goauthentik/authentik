@@ -54,7 +54,7 @@ class SourceStageView(ChallengeStageView):
     def create_flow_token(self) -> FlowToken:
         """Save the current flow state in a token that can be used to resume this flow"""
         pending_user: User = self.get_pending_user()
-        if pending_user.is_anonymous:
+        if pending_user.is_anonymous or not pending_user.pk:
             pending_user = get_anonymous_user()
         current_stage: SourceStage = self.executor.current_stage
         identifier = slugify(f"ak-source-stage-{current_stage.name}-{str(uuid4())}")
