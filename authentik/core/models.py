@@ -378,6 +378,10 @@ class Provider(SerializerModel):
         return None
 
     @property
+    def icon_url(self) -> str | None:
+        return None
+
+    @property
     def component(self) -> str:
         """Return component used to edit this object"""
         raise NotImplementedError
@@ -768,7 +772,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
         try:
             return evaluator.evaluate(self.expression)
         except Exception as exc:
-            raise PropertyMappingExpressionException(exc) from exc
+            raise PropertyMappingExpressionException(self, exc) from exc
 
     def __str__(self):
         return f"Property Mapping {self.name}"

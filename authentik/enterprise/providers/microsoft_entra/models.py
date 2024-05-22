@@ -6,6 +6,7 @@ from uuid import uuid4
 from azure.identity.aio import ClientSecretCredential
 from django.db import models
 from django.db.models import QuerySet
+from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
@@ -86,6 +87,10 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
                 self.tenant_id, self.client_id, self.client_secret
             )
         }
+
+    @property
+    def icon_url(self) -> str | None:
+        return static("authentik/sources/azuread.svg")
 
     @property
     def component(self) -> str:

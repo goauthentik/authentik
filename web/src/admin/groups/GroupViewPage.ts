@@ -37,6 +37,7 @@ export class GroupViewPage extends AKElement {
         new CoreApi(DEFAULT_CONFIG)
             .coreGroupsRetrieve({
                 groupUuid: id,
+                includeUsers: false,
             })
             .then((group) => {
                 this.group = group;
@@ -199,7 +200,6 @@ export class GroupViewPage extends AKElement {
                     </div>
                 </div>
             </section>
-
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"

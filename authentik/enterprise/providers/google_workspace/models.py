@@ -5,6 +5,7 @@ from uuid import uuid4
 
 from django.db import models
 from django.db.models import QuerySet
+from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from google.oauth2.service_account import Credentials
 from rest_framework.serializers import Serializer
@@ -97,6 +98,10 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
                 self.credentials, scopes=self.scopes.split(",")
             ).with_subject(self.delegated_subject),
         }
+
+    @property
+    def icon_url(self) -> str | None:
+        return static("authentik/sources/google.svg")
 
     @property
     def component(self) -> str:

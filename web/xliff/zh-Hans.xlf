@@ -3519,7 +3519,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s1b14062c44e5ef45">
         <source>Expiring</source>
-        <target>即将过期</target>
+        <target>是否设置过期时间</target>
         
       </trans-unit>
       <trans-unit id="safcc54b2aedb1a17">
@@ -8633,7 +8633,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sa817aa9f6f88a991">
   <source>Credentials</source>
-  <target>证书</target>
+  <target>凭据</target>
 </trans-unit>
 <trans-unit id="sc668815044e218c2">
   <source>Delegated Subject</source>
@@ -8697,45 +8697,59 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s958928ab6208d748">
   <source>Microsoft Entra Provider</source>
+  <target>Microsoft Entra 提供程序</target>
 </trans-unit>
 <trans-unit id="sc7d6bc4aebb58fe9">
   <source>Google Cloud credentials file.</source>
+  <target>Google Cloud 凭据文件。</target>
 </trans-unit>
 <trans-unit id="s2e707072d5a9615d">
   <source>Email address of the user the actions of authentik will be delegated to.</source>
+  <target>接受 authentik 操作委托的用户电子邮件地址。</target>
 </trans-unit>
 <trans-unit id="s03a759e65ceb722d">
   <source>Client ID for the app registration.</source>
+  <target>应用注册的客户端 ID。</target>
 </trans-unit>
 <trans-unit id="s479980cf9252628c">
   <source>Client secret for the app registration.</source>
+  <target>应用注册的客户端密钥。</target>
 </trans-unit>
 <trans-unit id="s25c2392ffcb78df2">
   <source>Tenant ID</source>
+  <target>租户 ID</target>
 </trans-unit>
 <trans-unit id="s89e4e698cdb1187f">
   <source>ID of the tenant accounts will be synced into.</source>
+  <target>将被同步的租户账户 ID。</target>
 </trans-unit>
 <trans-unit id="sf341f5dfc7a11633">
   <source>Microsoft Entra Provider is in preview.</source>
+  <target>Microsoft Entra 提供程序处于预览状态。</target>
 </trans-unit>
 <trans-unit id="s79dd6df244c05ae9">
   <source>Update Microsoft Entra Provider</source>
+  <target>更新 Microsoft Entra 提供程序</target>
 </trans-unit>
 <trans-unit id="saf4b498d81141878">
   <source>Finished successfully</source>
+  <target>成功完成</target>
 </trans-unit>
 <trans-unit id="s46f1d86ffec6223c">
   <source>Finished with errors</source>
+  <target>已完成但有错误</target>
 </trans-unit>
 <trans-unit id="sbd12ed8a1053a108">
   <source>Finished <x id="0" equiv-text="${getRelativeTime(task.finishTimestamp)}"/> (<x id="1" equiv-text="${task.finishTimestamp.toLocaleString()}"/>)</source>
+  <target><x id="0" equiv-text="${getRelativeTime(task.finishTimestamp)}"/>（<x id="1" equiv-text="${task.finishTimestamp.toLocaleString()}"/>） 完成</target>
 </trans-unit>
 <trans-unit id="sc3c334d642866997">
   <source>Sync currently running</source>
+  <target>当前正在同步</target>
 </trans-unit>
 <trans-unit id="sd520a4089006ca93">
   <source>Update Google Workspace Provider</source>
+  <target>Google Workspace 提供程序</target>
 </trans-unit>
     </body>
   </file>
