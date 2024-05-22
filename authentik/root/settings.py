@@ -293,7 +293,7 @@ DATABASES = {
         "NAME": CONFIG.get("postgresql.name"),
         "USER": CONFIG.get("postgresql.user"),
         "PASSWORD": CONFIG.get("postgresql.password"),
-        "PORT": CONFIG.get_int("postgresql.port"),
+        "PORT": CONFIG.get("postgresql.port"),
         "SSLMODE": CONFIG.get("postgresql.sslmode"),
         "SSLROOTCERT": CONFIG.get("postgresql.sslrootcert"),
         "SSLCERT": CONFIG.get("postgresql.sslcert"),
@@ -313,7 +313,23 @@ if CONFIG.get_bool("postgresql.use_pgbouncer", False):
     # https://docs.djangoproject.com/en/4.0/ref/databases/#persistent-connections
     DATABASES["default"]["CONN_MAX_AGE"] = None  # persistent
 
-DATABASE_ROUTERS = ("django_tenants.routers.TenantSyncRouter",)
+for replica in CONFIG.get_keys("postgresql.read_replicas"):
+    _database = DATABASES["default"].copy()
+    for setting in DATABASES["default"].keys():
+        default = object()
+        if setting in ("TEST",):
+            continue
+        override = CONFIG.get(
+            f"postgresql.read_replicas.{replica}.{setting.lower()}", default=default
+        )
+        if override is not default:
+            _database[setting] = override
+    DATABASES[f"replica_{replica}"] = _database
+
+DATABASE_ROUTERS = (
+    "authentik.tenants.db.FailoverRouter",
+    "django_tenants.routers.TenantSyncRouter",
+)
 
 # Email
 # These values should never actually be used, emails are only sent from email stages, which

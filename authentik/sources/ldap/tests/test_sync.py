@@ -11,6 +11,7 @@ from authentik.core.tests.utils import create_test_admin_user
 from authentik.events.models import Event, EventAction, SystemTask
 from authentik.events.system_tasks import TaskStatus
 from authentik.lib.generators import generate_id, generate_key
+from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.lib.utils.reflection import class_to_path
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
@@ -63,12 +64,13 @@ class LDAPSyncTests(TestCase):
         connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             user_sync = UserLDAPSynchronizer(self.source)
-            user_sync.sync_full()
+            with self.assertRaises(StopSync):
+                user_sync.sync_full()
             self.assertFalse(User.objects.filter(username="user0_sn").exists())
             self.assertFalse(User.objects.filter(username="user1_sn").exists())
         events = Event.objects.filter(
             action=EventAction.CONFIGURATION_ERROR,
-            context__message="Failed to evaluate property-mapping: 'name'",
+            context__mapping__pk=mapping.pk.hex,
         )
         self.assertTrue(events.exists())
 

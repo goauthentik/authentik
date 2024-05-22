@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-13 00:08+0000\n"
+"POT-Creation-Date: 2024-05-22 00:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1748,14 +1748,6 @@ msgstr ""
 
 #: authentik/rbac/models.py
 msgid "Can view system info"
-msgstr ""
-
-#: authentik/rbac/models.py
-msgid "Can view system tasks"
-msgstr ""
-
-#: authentik/rbac/models.py
-msgid "Can run system tasks"
 msgstr ""
 
 #: authentik/rbac/models.py

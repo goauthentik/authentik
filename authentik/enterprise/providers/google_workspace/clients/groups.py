@@ -1,28 +1,22 @@
-from deepmerge import always_merger
 from django.db import transaction
 from django.utils.text import slugify
 
-from authentik.core.expression.exceptions import (
-    PropertyMappingExpressionException,
-    SkipObjectException,
-)
 from authentik.core.models import Group
 from authentik.enterprise.providers.google_workspace.clients.base import GoogleWorkspaceSyncClient
 from authentik.enterprise.providers.google_workspace.models import (
+    GoogleWorkspaceProvider,
     GoogleWorkspaceProviderGroup,
     GoogleWorkspaceProviderMapping,
     GoogleWorkspaceProviderUser,
 )
-from authentik.events.models import Event, EventAction
+from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.base import Direction
 from authentik.lib.sync.outgoing.exceptions import (
     NotFoundSyncException,
     ObjectExistsSyncException,
-    StopSync,
     TransientSyncException,
 )
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
-from authentik.lib.utils.errors import exception_to_string
 
 
 class GoogleWorkspaceGroupClient(
@@ -34,41 +28,21 @@ class GoogleWorkspaceGroupClient(
     connection_type_query = "group"
     can_discover = True
 
+    def __init__(self, provider: GoogleWorkspaceProvider) -> None:
+        super().__init__(provider)
+        self.mapper = PropertyMappingManager(
+            self.provider.property_mappings_group.all().order_by("name").select_subclasses(),
+            GoogleWorkspaceProviderMapping,
+            ["group", "provider", "creating"],
+        )
+
     def to_schema(self, obj: Group, creating: bool) -> dict:
         """Convert authentik group"""
-        raw_google_group = {
-            "email": f"{slugify(obj.name)}@{self.provider.default_group_email_domain}"
-        }
-        for mapping in (
-            self.provider.property_mappings_group.all().order_by("name").select_subclasses()
-        ):
-            if not isinstance(mapping, GoogleWorkspaceProviderMapping):
-                continue
-            try:
-                value = mapping.evaluate(
-                    user=None,
-                    request=None,
-                    group=obj,
-                    provider=self.provider,
-                    creating=creating,
-                )
-                if value is None:
-                    continue
-                always_merger.merge(raw_google_group, value)
-            except SkipObjectException as exc:
-                raise exc from exc
-            except (PropertyMappingExpressionException, ValueError) as exc:
-                # Value error can be raised when assigning invalid data to an attribute
-                Event.new(
-                    EventAction.CONFIGURATION_ERROR,
-                    message=f"Failed to evaluate property-mapping {exception_to_string(exc)}",
-                    mapping=mapping,
-                ).save()
-                raise StopSync(exc, obj, mapping) from exc
-        if not raw_google_group:
-            raise StopSync(ValueError("No group mappings configured"), obj)
-
-        return raw_google_group
+        return super().to_schema(
+            obj,
+            creating,
+            email=f"{slugify(obj.name)}@{self.provider.default_group_email_domain}",
+        )
 
     def delete(self, obj: Group):
         """Delete group"""

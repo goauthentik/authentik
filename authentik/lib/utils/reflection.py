@@ -12,7 +12,7 @@ from authentik.lib.config import CONFIG
 SERVICE_HOST_ENV_NAME = "KUBERNETES_SERVICE_HOST"
 
 
-def all_subclasses(cls, sort=True):
+def all_subclasses[T](cls: T, sort=True) -> list[T] | set[T]:
     """Recursively return all subclassess of cls"""
     classes = set(cls.__subclasses__()).union(
         [s for c in cls.__subclasses__() for s in all_subclasses(c, sort=sort)]
