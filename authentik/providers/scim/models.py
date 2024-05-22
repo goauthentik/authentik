@@ -5,6 +5,7 @@ from uuid import uuid4
 
 from django.db import models
 from django.db.models import QuerySet
+from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
@@ -31,6 +32,10 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
         blank=True,
         help_text=_("Property mappings used for group creation/updating."),
     )
+
+    @property
+    def icon_url(self) -> str | None:
+        return static("authentik/sources/scim.png")
 
     def client_for_model(
         self, model: type[User | Group]

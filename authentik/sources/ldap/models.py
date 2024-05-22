@@ -9,6 +9,7 @@ from tempfile import NamedTemporaryFile, mkdtemp
 import pglock
 from django.core.cache import cache
 from django.db import connection, models
+from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from ldap3 import ALL, NONE, RANDOM, Connection, Server, ServerPool, Tls
 from ldap3.core.exceptions import LDAPException, LDAPInsufficientAccessRightsResult, LDAPSchemaError
@@ -126,6 +127,10 @@ class LDAPSource(Source):
         from authentik.sources.ldap.api import LDAPSourceSerializer
 
         return LDAPSourceSerializer
+
+    @property
+    def icon_url(self) -> str:
+        return static("authentik/sources/ldap.png")
 
     def server(self, **kwargs) -> ServerPool:
         """Get LDAP Server/ServerPool"""

@@ -10047,7 +10047,7 @@ paths:
   /outposts/service_connections/all/types/:
     get:
       operationId: outposts_service_connections_all_types_list
-      description: Get all creatable service connection types
+      description: Get all creatable types
       tags:
       - outposts
       security:
@@ -10881,7 +10881,7 @@ paths:
   /policies/all/types/:
     get:
       operationId: policies_all_types_list
-      description: Get all creatable policy types
+      description: Get all creatable types
       tags:
       - policies
       security:
@@ -13439,7 +13439,7 @@ paths:
   /propertymappings/all/types/:
     get:
       operationId: propertymappings_all_types_list
-      description: Get all creatable property-mapping types
+      description: Get all creatable types
       tags:
       - propertymappings
       security:
@@ -15899,7 +15899,7 @@ paths:
   /providers/all/types/:
     get:
       operationId: providers_all_types_list
-      description: Get all creatable provider types
+      description: Get all creatable types
       tags:
       - providers
       security:
@@ -21898,7 +21898,7 @@ paths:
   /sources/all/types/:
     get:
       operationId: sources_all_types_list
-      description: Get all creatable source types
+      description: Get all creatable types
       tags:
       - sources
       security:
@@ -25532,7 +25532,7 @@ paths:
   /stages/all/types/:
     get:
       operationId: stages_all_types_list
-      description: Get all creatable stage types
+      description: Get all creatable types
       tags:
       - stages
       security:
@@ -37793,10 +37793,6 @@ components:
           type: string
         icon:
           type: string
-          nullable: true
-          description: |-
-            Get the URL to the Icon. If the name is /static or
-            starts with http it is returned as-is
           readOnly: true
         server_uri:
           type: string
@@ -39106,9 +39102,6 @@ components:
         icon:
           type: string
           nullable: true
-          description: |-
-            Get the URL to the Icon. If the name is /static or
-            starts with http it is returned as-is
           readOnly: true
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
@@ -43800,10 +43793,6 @@ components:
           type: string
         icon:
           type: string
-          nullable: true
-          description: |-
-            Get the URL to the Icon. If the name is /static or
-            starts with http it is returned as-is
           readOnly: true
         client_id:
           type: string
@@ -45863,10 +45852,6 @@ components:
           type: string
         icon:
           type: string
-          nullable: true
-          description: |-
-            Get the URL to the Icon. If the name is /static or
-            starts with http it is returned as-is
           readOnly: true
         pre_authentication_flow:
           type: string
@@ -47483,6 +47468,8 @@ components:
         component:
           type: string
         model_name:
+          type: string
+        icon_url:
           type: string
         requires_enterprise:
           type: boolean
