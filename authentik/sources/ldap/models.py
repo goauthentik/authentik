@@ -20,6 +20,7 @@ from authentik.core.models import Group, PropertyMapping, Source
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG
 from authentik.lib.models import DomainlessURLValidator
+from authentik.lib.sync.outgoing import LOCK_ACQUIRE_TIMEOUT
 
 LDAP_TIMEOUT = 15
 
@@ -214,15 +215,15 @@ class LDAPSource(Source):
         """Postgres lock for syncing LDAP to prevent multiple parallel syncs happening"""
         return pglock.advisory(
             lock_id=f"goauthentik.io/sources/ldap/sync/{connection.schema_name}-{self.slug}",
-            # Convert task timeout hours to seconds, and multiply times 3
-            # (see authentik/sources/ldap/tasks.py:54)
-            # multiply by 3 to add even more leeway
-            timeout=(60 * 60 * CONFIG.get_int("ldap.task_timeout_hours")) * 3,
+            timeout=LOCK_ACQUIRE_TIMEOUT,
             using=connection.alias,
             side_effect=pglock.Raise,
         ), Lock(
             cache.client.get_client(),
             name=f"goauthentik.io/sources/ldap/sync/{connection.schema_name}-{self.slug}",
+            # Convert task timeout hours to seconds, and multiply times 3
+            # (see authentik/sources/ldap/tasks.py:54)
+            # multiply by 3 to add even more leeway
             timeout=(60 * 60 * CONFIG.get_int("ldap.task_timeout_hours")) * 3,
         )
 
