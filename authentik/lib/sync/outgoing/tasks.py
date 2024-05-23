@@ -4,6 +4,7 @@ from celery.exceptions import Retry
 from celery.result import allow_join_result
 from django.core.paginator import Paginator
 from django.db.models import Model, QuerySet
+from django.db.utils import OperationalError
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from structlog.stdlib import BoundLogger, get_logger
@@ -64,40 +65,40 @@ class SyncTasks:
         ).first()
         if not provider:
             return
-        lock = provider.sync_lock
-        if lock.locked():
-            self.logger.debug("Sync locked, skipping task", source=provider.name)
-            return
         task.set_uid(slugify(provider.name))
         messages = []
         messages.append(_("Starting full provider sync"))
         self.logger.debug("Starting provider sync")
         users_paginator = Paginator(provider.get_object_qs(User), PAGE_SIZE)
         groups_paginator = Paginator(provider.get_object_qs(Group), PAGE_SIZE)
-        with allow_join_result(), lock:
-            try:
-                for page in users_paginator.page_range:
-                    messages.append(_("Syncing page %(page)d of users" % {"page": page}))
-                    for msg in sync_objects.apply_async(
-                        args=(class_to_path(User), page, provider_pk),
-                        time_limit=PAGE_TIMEOUT,
-                        soft_time_limit=PAGE_TIMEOUT,
-                    ).get():
-                        messages.append(msg)
-                for page in groups_paginator.page_range:
-                    messages.append(_("Syncing page %(page)d of groups" % {"page": page}))
-                    for msg in sync_objects.apply_async(
-                        args=(class_to_path(Group), page, provider_pk),
-                        time_limit=PAGE_TIMEOUT,
-                        soft_time_limit=PAGE_TIMEOUT,
-                    ).get():
-                        messages.append(msg)
-            except TransientSyncException as exc:
-                self.logger.warning("transient sync exception", exc=exc)
-                raise task.retry(exc=exc) from exc
-            except StopSync as exc:
-                task.set_error(exc)
-                return
+        try:
+            with allow_join_result(), provider.sync_lock:
+                try:
+                    for page in users_paginator.page_range:
+                        messages.append(_("Syncing page %(page)d of users" % {"page": page}))
+                        for msg in sync_objects.apply_async(
+                            args=(class_to_path(User), page, provider_pk),
+                            time_limit=PAGE_TIMEOUT,
+                            soft_time_limit=PAGE_TIMEOUT,
+                        ).get():
+                            messages.append(msg)
+                    for page in groups_paginator.page_range:
+                        messages.append(_("Syncing page %(page)d of groups" % {"page": page}))
+                        for msg in sync_objects.apply_async(
+                            args=(class_to_path(Group), page, provider_pk),
+                            time_limit=PAGE_TIMEOUT,
+                            soft_time_limit=PAGE_TIMEOUT,
+                        ).get():
+                            messages.append(msg)
+                except TransientSyncException as exc:
+                    self.logger.warning("transient sync exception", exc=exc)
+                    raise task.retry(exc=exc) from exc
+                except StopSync as exc:
+                    task.set_error(exc)
+                    return
+        except OperationalError:
+            self.logger.debug("Failed to acquire sync lock, skipping", provider=provider.name)
+            return
         task.set_status(TaskStatus.SUCCESSFUL, *messages)
 
     def sync_objects(self, object_type: str, page: int, provider_pk: int):
