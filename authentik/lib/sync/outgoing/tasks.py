@@ -65,10 +65,6 @@ class SyncTasks:
         ).first()
         if not provider:
             return
-        pg_lock, redis_lock = provider.sync_lock
-        if redis_lock.locked():
-            self.logger.debug("Sync locked in redis, skipping task", source=provider.name)
-            return
         task.set_uid(slugify(provider.name))
         messages = []
         messages.append(_("Starting full provider sync"))
@@ -76,7 +72,7 @@ class SyncTasks:
         users_paginator = Paginator(provider.get_object_qs(User), PAGE_SIZE)
         groups_paginator = Paginator(provider.get_object_qs(Group), PAGE_SIZE)
         try:
-            with allow_join_result(), pg_lock:
+            with allow_join_result(), provider.sync_lock:
                 try:
                     for page in users_paginator.page_range:
                         messages.append(_("Syncing page %(page)d of users" % {"page": page}))
@@ -101,7 +97,7 @@ class SyncTasks:
                     task.set_error(exc)
                     return
         except OperationalError:
-            self.logger.debug("Failed to acquire sync lock, skipping", source=provider.name)
+            self.logger.debug("Failed to acquire sync lock, skipping", provider=provider.name)
             return
         task.set_status(TaskStatus.SUCCESSFUL, *messages)
 

@@ -1,13 +1,11 @@
 from typing import Any, Self
 
 import pglock
-from django.core.cache import cache
 from django.db import connection
 from django.db.models import Model, QuerySet, TextChoices
-from redis.lock import Lock
 
 from authentik.core.models import Group, User
-from authentik.lib.sync.outgoing import LOCK_ACQUIRE_TIMEOUT, PAGE_TIMEOUT
+from authentik.lib.sync.outgoing import LOCK_ACQUIRE_TIMEOUT
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 
 
@@ -34,15 +32,10 @@ class OutgoingSyncProvider(Model):
         raise NotImplementedError
 
     @property
-    def sync_lock(self) -> tuple[pglock.advisory, Lock]:
+    def sync_lock(self) -> pglock.advisory:
         """Postgres lock for syncing SCIM to prevent multiple parallel syncs happening"""
         return pglock.advisory(
             lock_id=f"goauthentik.io/providers/outgoing-sync/{connection.schema_name}/{str(self.pk)}",
             timeout=LOCK_ACQUIRE_TIMEOUT,
-            using=connection.alias,
             side_effect=pglock.Raise,
-        ), Lock(
-            cache.client.get_client(),
-            name=f"goauthentik.io/providers/outgoing-sync/{connection.schema_name}/{str(self.pk)}",
-            timeout=(60 * 60 * PAGE_TIMEOUT) * 3,
         )

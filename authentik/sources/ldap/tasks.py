@@ -64,12 +64,8 @@ def ldap_sync_single(source_pk: str):
     source: LDAPSource = LDAPSource.objects.filter(pk=source_pk).first()
     if not source:
         return
-    pg_lock, redis_lock = source.sync_lock
-    if redis_lock.locked():
-        LOGGER.debug("LDAP sync locked, skipping task", source=source.slug)
-        return
     try:
-        with pg_lock:
+        with source.sync_lock:
             # Delete all sync tasks from the cache
             DBSystemTask.objects.filter(name="ldap_sync", uid__startswith=source.slug).delete()
             task = chain(
