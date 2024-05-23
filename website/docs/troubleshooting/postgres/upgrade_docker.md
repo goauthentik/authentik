@@ -1,5 +1,5 @@
 ---
-title: Upgrade PostgreSQL on Docker compose
+title: Upgrade PostgreSQL on Docker Compose
 ---
 
 ### Dump your database
