@@ -1532,21 +1532,6 @@
   <target>Śēĺēćţ ţŷƥē</target>
 
       </trans-unit>
-      <trans-unit id="s0b3bf19b31dd6bac">
-        <source>Try the new application wizard</source>
-  <target>Ţŕŷ ţĥē ńēŵ àƥƥĺĩćàţĩōń ŵĩźàŕď</target>
-
-      </trans-unit>
-      <trans-unit id="sa18e1c6e0e6f16cc">
-        <source>The new application wizard greatly simplifies the steps required to create applications and providers.</source>
-  <target>Ţĥē ńēŵ àƥƥĺĩćàţĩōń ŵĩźàŕď ĝŕēàţĺŷ śĩmƥĺĩƒĩēś ţĥē śţēƥś ŕēǫũĩŕēď ţō ćŕēàţē àƥƥĺĩćàţĩōńś àńď ƥŕōvĩďēŕś.</target>
-
-      </trans-unit>
-      <trans-unit id="s01ef54f5d7c6ed47">
-        <source>Try it now</source>
-  <target>Ţŕŷ ĩţ ńōŵ</target>
-
-      </trans-unit>
       <trans-unit id="s382a2aa3984474dd">
         <source>Create</source>
   <target>Ćŕēàţē</target>
@@ -7128,10 +7113,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Send us feedback!</source>
   <target>Śēńď ũś ƒēēďƀàćķ!</target>
 </trans-unit>
-<trans-unit id="s4015746f55a8d89f">
-  <source>Get a license</source>
-  <target>Ĝēţ à ĺĩćēńśē</target>
-</trans-unit>
 <trans-unit id="sb2cbd06f8e25b47e">
   <source>Go to Customer Portal</source>
   <target>Ĝō ţō Ćũśţōmēŕ Ƥōŕţàĺ</target>
@@ -8241,10 +8222,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:</source>
   <target>Ţĥĩś ōƥţĩōń ćōńƒĩĝũŕēś ţĥē ƒōōţēŕ ĺĩńķś ōń ţĥē ƒĺōŵ ēxēćũţōŕ ƥàĝēś. Ĩţ mũśţ ƀē à vàĺĩď ŶÀMĹ ōŕ ĵŚŌŃ ĺĩśţ àńď ćàń ƀē ũśēď àś ƒōĺĺōŵś:</target>
 </trans-unit>
-<trans-unit id="sb2275335377069aa">
-  <source>This feature requires an enterprise license.</source>
-  <target>Ţĥĩś ƒēàţũŕē ŕēǫũĩŕēś àń ēńţēŕƥŕĩśē ĺĩćēńśē.</target>
-</trans-unit>
 <trans-unit id="s6d3f81dc4bcacbda">
   <source>Last used</source>
   <target>Ĺàśţ ũśēď</target>
@@ -8612,5 +8589,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sd520a4089006ca93">
   <source>Update Google Workspace Provider</source>
+</trans-unit>
+<trans-unit id="sfdfa5bb4ddd99d70">
+  <source>Enterprise only</source>
+</trans-unit>
+<trans-unit id="scffa59cfac1951f2">
+  <source><x id="0" equiv-text="${type.name}"/> Icon</source>
 </trans-unit>
 </body></file></xliff>

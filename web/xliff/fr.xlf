@@ -1544,21 +1544,6 @@
         <target>Sélectionnez le type</target>
         
       </trans-unit>
-      <trans-unit id="s0b3bf19b31dd6bac">
-        <source>Try the new application wizard</source>
-        <target>Essayez le nouvel l'assistant d'application</target>
-        
-      </trans-unit>
-      <trans-unit id="sa18e1c6e0e6f16cc">
-        <source>The new application wizard greatly simplifies the steps required to create applications and providers.</source>
-        <target>Le nouvel assistant d'application simplifie grandement les étapes nécessaires à la création d'applications et de fournisseurs.</target>
-        
-      </trans-unit>
-      <trans-unit id="s01ef54f5d7c6ed47">
-        <source>Try it now</source>
-        <target>Essayer maintenant</target>
-        
-      </trans-unit>
       <trans-unit id="s382a2aa3984474dd">
         <source>Create</source>
         <target>Créer</target>
@@ -7184,10 +7169,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Send us feedback!</source>
   <target>Envoyez-nous vos commentaires !</target>
 </trans-unit>
-<trans-unit id="s4015746f55a8d89f">
-  <source>Get a license</source>
-  <target>Obtenir une licence</target>
-</trans-unit>
 <trans-unit id="sb2cbd06f8e25b47e">
   <source>Go to Customer Portal</source>
   <target>Aller au Portail Client</target>
@@ -8297,10 +8278,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:</source>
   <target>Cette option configure les liens de pied de page sur les pages de l'exécuteur de flux. Doit être une liste YAML ou JSON valide et peut être utilisée comme suit :</target>
 </trans-unit>
-<trans-unit id="sb2275335377069aa">
-  <source>This feature requires an enterprise license.</source>
-  <target>Cette fonctionnalité requiert une licence entreprise.</target>
-</trans-unit>
 <trans-unit id="s6d3f81dc4bcacbda">
   <source>Last used</source>
   <target>Utilisé pour la dernière fois</target>
@@ -8717,6 +8694,12 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="sd520a4089006ca93">
   <source>Update Google Workspace Provider</source>
+</trans-unit>
+<trans-unit id="sfdfa5bb4ddd99d70">
+  <source>Enterprise only</source>
+</trans-unit>
+<trans-unit id="scffa59cfac1951f2">
+  <source><x id="0" equiv-text="${type.name}"/> Icon</source>
 </trans-unit>
     </body>
   </file>
