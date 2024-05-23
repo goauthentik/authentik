@@ -38,7 +38,7 @@ Pull new images and re-create the postgresql container: `docker compose pull && 
 
 Apply your backup to the new database: `cat upgrade_backup_12.sql | docker compose exec postgresql psql -U authentik`
 
-Remove the network configuration you made in step 5.
+Remove the network configuration setting `network_mode: none` that you added to the Compose file in the previous step.
 
 ### Recreate authentik
 
