@@ -19,7 +19,7 @@ entries:
             "mail_nickname": request.user.username,
             "user_principal_name": request.user.email,
         }
-        if creating:
+        if not connection:
             user["password_profile"] = PasswordProfile(
                 password=request.user.password
             )

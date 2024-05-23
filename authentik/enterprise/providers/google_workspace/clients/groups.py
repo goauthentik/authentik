@@ -33,14 +33,14 @@ class GoogleWorkspaceGroupClient(
         self.mapper = PropertyMappingManager(
             self.provider.property_mappings_group.all().order_by("name").select_subclasses(),
             GoogleWorkspaceProviderMapping,
-            ["group", "provider", "creating"],
+            ["group", "provider", "connection"],
         )
 
-    def to_schema(self, obj: Group, creating: bool) -> dict:
+    def to_schema(self, obj: Group, connection: GoogleWorkspaceProviderGroup) -> dict:
         """Convert authentik group"""
         return super().to_schema(
             obj,
-            creating,
+            connection=connection,
             email=f"{slugify(obj.name)}@{self.provider.default_group_email_domain}",
         )
 
@@ -61,7 +61,7 @@ class GoogleWorkspaceGroupClient(
 
     def create(self, group: Group):
         """Create group from scratch and create a connection object"""
-        google_group = self.to_schema(group, True)
+        google_group = self.to_schema(group, None)
         self.check_email_valid(google_group["email"])
         with transaction.atomic():
             try:
@@ -89,7 +89,7 @@ class GoogleWorkspaceGroupClient(
 
     def update(self, group: Group, connection: GoogleWorkspaceProviderGroup):
         """Update existing group"""
-        google_group = self.to_schema(group, False)
+        google_group = self.to_schema(group, connection)
         self.check_email_valid(google_group["email"])
         try:
             return self._request(

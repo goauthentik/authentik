@@ -28,15 +28,12 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
         self.mapper = PropertyMappingManager(
             self.provider.property_mappings.all().order_by("name").select_subclasses(),
             GoogleWorkspaceProviderMapping,
-            ["provider", "creating"],
+            ["provider", "connection"],
         )
 
-    def to_schema(self, obj: User, creating: bool) -> dict:
+    def to_schema(self, obj: User, connection: GoogleWorkspaceProviderUser) -> dict:
         """Convert authentik user"""
-        raw_google_user = super().to_schema(obj, creating)
-        if "primaryEmail" not in raw_google_user:
-            raw_google_user["primaryEmail"] = str(obj.email)
-        return delete_none_values(raw_google_user)
+        return delete_none_values(super().to_schema(obj, connection, primaryEmail=obj.email))
 
     def delete(self, obj: User):
         """Delete user"""
@@ -63,7 +60,7 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
 
     def create(self, user: User):
         """Create user from scratch and create a connection object"""
-        google_user = self.to_schema(user, True)
+        google_user = self.to_schema(user, None)
         self.check_email_valid(
             google_user["primaryEmail"], *[x["address"] for x in google_user.get("emails", [])]
         )
@@ -87,7 +84,7 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
 
     def update(self, user: User, connection: GoogleWorkspaceProviderUser):
         """Update existing user"""
-        google_user = self.to_schema(user, False)
+        google_user = self.to_schema(user, connection)
         self.check_email_valid(
             google_user["primaryEmail"], *[x["address"] for x in google_user.get("emails", [])]
         )

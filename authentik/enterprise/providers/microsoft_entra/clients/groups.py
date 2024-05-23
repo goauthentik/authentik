@@ -38,12 +38,12 @@ class MicrosoftEntraGroupClient(
         self.mapper = PropertyMappingManager(
             self.provider.property_mappings_group.all().order_by("name").select_subclasses(),
             MicrosoftEntraProviderMapping,
-            ["group", "provider", "creating"],
+            ["group", "provider", "connection"],
         )
 
-    def to_schema(self, obj: Group, creating: bool) -> MSGroup:
+    def to_schema(self, obj: Group, connection: MicrosoftEntraProviderGroup) -> MSGroup:
         """Convert authentik group"""
-        raw_microsoft_group = super().to_schema(obj, creating)
+        raw_microsoft_group = super().to_schema(obj, connection)
         try:
             return MSGroup(**raw_microsoft_group)
         except TypeError as exc:
@@ -64,7 +64,7 @@ class MicrosoftEntraGroupClient(
 
     def create(self, group: Group):
         """Create group from scratch and create a connection object"""
-        microsoft_group = self.to_schema(group, True)
+        microsoft_group = self.to_schema(group, None)
         with transaction.atomic():
             try:
                 response = self._request(self.client.groups.post(microsoft_group))
@@ -103,7 +103,7 @@ class MicrosoftEntraGroupClient(
 
     def update(self, group: Group, connection: MicrosoftEntraProviderGroup):
         """Update existing group"""
-        microsoft_group = self.to_schema(group, False)
+        microsoft_group = self.to_schema(group, connection)
         microsoft_group.id = connection.microsoft_id
         try:
             return self._request(

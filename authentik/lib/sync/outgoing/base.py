@@ -79,14 +79,14 @@ class BaseOutgoingSyncClient[
         """Delete object from destination"""
         raise NotImplementedError()
 
-    def to_schema(self, obj: TModel, creating: bool, **defaults) -> TSchema:
+    def to_schema(self, obj: TModel, connection: TConnection | None, **defaults) -> TSchema:
         """Convert object to destination schema"""
         raw_final_object = {}
         try:
             eval_kwargs = {
                 "request": None,
                 "provider": self.provider,
-                "creating": creating,
+                "connection": connection,
                 obj._meta.model_name: obj,
             }
             eval_kwargs.setdefault("user", None)
