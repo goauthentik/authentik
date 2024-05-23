@@ -1,14 +1,15 @@
 """MicrosoftEntraProviderGroup API Views"""
 
-from rest_framework.viewsets import ModelViewSet
+from rest_framework import mixins
+from rest_framework.serializers import ModelSerializer
+from rest_framework.viewsets import GenericViewSet
 
-from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserGroupSerializer
 from authentik.enterprise.providers.microsoft_entra.models import MicrosoftEntraProviderGroup
 
 
-class MicrosoftEntraProviderGroupSerializer(SourceSerializer):
+class MicrosoftEntraProviderGroupSerializer(ModelSerializer):
     """MicrosoftEntraProviderGroup Serializer"""
 
     group_obj = UserGroupSerializer(source="group", read_only=True)
@@ -20,10 +21,18 @@ class MicrosoftEntraProviderGroupSerializer(SourceSerializer):
             "id",
             "group",
             "group_obj",
+            "provider",
         ]
 
 
-class MicrosoftEntraProviderGroupViewSet(UsedByMixin, ModelViewSet):
+class MicrosoftEntraProviderGroupViewSet(
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    UsedByMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
     """MicrosoftEntraProviderGroup Viewset"""
 
     queryset = MicrosoftEntraProviderGroup.objects.all().select_related("group")
