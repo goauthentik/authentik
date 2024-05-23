@@ -4,7 +4,7 @@ title: Upgrade PostgreSQL on Docker Compose
 
 ### Dump your database
 
-Dump your existing database with `docker compose exec postgresql pg_dump -U authentik -d authentik -C > upgrade_backup_12.sql`.
+Dump your existing database with `docker compose exec postgresql pg_dump -U authentik -d authentik -cC > upgrade_backup_12.sql`.
 
 ### Stop your authentik stack
 
