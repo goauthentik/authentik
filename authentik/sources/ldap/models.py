@@ -212,7 +212,7 @@ class LDAPSource(Source):
     def sync_lock(self) -> pglock.advisory:
         """Postgres lock for syncing LDAP to prevent multiple parallel syncs happening"""
         return pglock.advisory(
-            lock_id=f"goauthentik.io/sources/ldap/sync/{connection.schema_name}/{self.slug}",
+            lock_id=f"goauthentik.io/{connection.schema_name}/sources/ldap/sync/{self.slug}",
             timeout=LOCK_ACQUIRE_TIMEOUT,
             side_effect=pglock.Raise,
         )

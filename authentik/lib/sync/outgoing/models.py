@@ -35,7 +35,7 @@ class OutgoingSyncProvider(Model):
     def sync_lock(self) -> pglock.advisory:
         """Postgres lock for syncing SCIM to prevent multiple parallel syncs happening"""
         return pglock.advisory(
-            lock_id=f"goauthentik.io/providers/outgoing-sync/{connection.schema_name}/{str(self.pk)}",
+            lock_id=f"goauthentik.io/{connection.schema_name}/providers/outgoing-sync/{str(self.pk)}",
             timeout=LOCK_ACQUIRE_TIMEOUT,
             side_effect=pglock.Raise,
         )
