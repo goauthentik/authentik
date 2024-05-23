@@ -17,6 +17,8 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
         return true;
     }
 
+    expandable = true;
+
     async apiEndpoint(page: number): Promise<PaginatedResponse<GoogleWorkspaceProviderUser>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceUsersList({
             page: page,
@@ -39,5 +41,13 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
             </a>`,
             html`${item.id}`,
         ];
+    }
+
+    renderExpanded(item: GoogleWorkspaceProviderUser): TemplateResult {
+        return html`<td role="cell" colspan="4">
+            <div class="pf-c-table__expandable-row-content">
+                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
+            </div>
+        </td>`;
     }
 }

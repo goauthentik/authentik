@@ -74,11 +74,17 @@ class GoogleWorkspaceGroupClient(
                     self.directory_service.groups().get(groupKey=google_group["email"])
                 )
                 return GoogleWorkspaceProviderGroup.objects.create(
-                    provider=self.provider, group=group, google_id=group_data["id"]
+                    provider=self.provider,
+                    group=group,
+                    google_id=group_data["id"],
+                    attributes=group_data,
                 )
             else:
                 return GoogleWorkspaceProviderGroup.objects.create(
-                    provider=self.provider, group=group, google_id=response["id"]
+                    provider=self.provider,
+                    group=group,
+                    google_id=response["id"],
+                    attributes=response,
                 )
 
     def update(self, group: Group, connection: GoogleWorkspaceProviderGroup):
@@ -204,4 +210,5 @@ class GoogleWorkspaceGroupClient(
             provider=self.provider,
             group=matching_authentik_group,
             google_id=google_id,
+            attributes=group,
         )

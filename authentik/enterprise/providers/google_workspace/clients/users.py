@@ -73,13 +73,16 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
             except ObjectExistsSyncException:
                 # user already exists in google workspace, so we can connect them manually
                 return GoogleWorkspaceProviderUser.objects.create(
-                    provider=self.provider, user=user, google_id=user.email
+                    provider=self.provider, user=user, google_id=user.email, attributes={}
                 )
             except TransientSyncException as exc:
                 raise exc
             else:
                 return GoogleWorkspaceProviderUser.objects.create(
-                    provider=self.provider, user=user, google_id=response["primaryEmail"]
+                    provider=self.provider,
+                    user=user,
+                    google_id=response["primaryEmail"],
+                    attributes=response,
                 )
 
     def update(self, user: User, connection: GoogleWorkspaceProviderUser):
@@ -115,4 +118,5 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
             provider=self.provider,
             user=matching_authentik_user,
             google_id=email,
+            attributes=user,
         )

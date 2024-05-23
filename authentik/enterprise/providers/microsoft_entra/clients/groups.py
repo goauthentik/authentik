@@ -1,3 +1,5 @@
+from dataclasses import asdict
+
 from django.db import transaction
 from msgraph.generated.groups.groups_request_builder import GroupsRequestBuilder
 from msgraph.generated.models.group import Group as MSGroup
@@ -79,17 +81,24 @@ class MicrosoftEntraGroupClient(
                     )
                 )
                 group_data = self._request(self.client.groups.get(request_configuration))
-                if group_data.odata_count < 1:
+                if group_data.odata_count < 1 or len(group_data.value) < 1:
                     self.logger.warning(
                         "Group which could not be created also does not exist", group=group
                     )
                     return
+                ms_group = group_data.value[0]
                 return MicrosoftEntraProviderGroup.objects.create(
-                    provider=self.provider, group=group, microsoft_id=group_data.value[0].id
+                    provider=self.provider,
+                    group=group,
+                    microsoft_id=ms_group.id,
+                    attributes=asdict(ms_group),
                 )
             else:
                 return MicrosoftEntraProviderGroup.objects.create(
-                    provider=self.provider, group=group, microsoft_id=response.id
+                    provider=self.provider,
+                    group=group,
+                    microsoft_id=response.id,
+                    attributes=asdict(response),
                 )
 
     def update(self, group: Group, connection: MicrosoftEntraProviderGroup):
@@ -213,4 +222,5 @@ class MicrosoftEntraGroupClient(
             provider=self.provider,
             group=matching_authentik_group,
             microsoft_id=group.id,
+            attributes=asdict(group),
         )

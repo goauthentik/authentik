@@ -1,3 +1,5 @@
+from dataclasses import asdict
+
 from django.db import transaction
 from msgraph.generated.models.user import User as MSUser
 from msgraph.generated.users.users_request_builder import UsersRequestBuilder
@@ -83,19 +85,26 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
                     )
                 )
                 user_data = self._request(self.client.users.get(request_configuration))
-                if user_data.odata_count < 1:
+                if user_data.odata_count < 1 or len(user_data.value) < 1:
                     self.logger.warning(
                         "User which could not be created also does not exist", user=user
                     )
                     return
+                ms_user = user_data.value[0]
                 return MicrosoftEntraProviderUser.objects.create(
-                    provider=self.provider, user=user, microsoft_id=user_data.value[0].id
+                    provider=self.provider,
+                    user=user,
+                    microsoft_id=ms_user.id,
+                    attributes=asdict(ms_user),
                 )
             except TransientSyncException as exc:
                 raise exc
             else:
                 return MicrosoftEntraProviderUser.objects.create(
-                    provider=self.provider, user=user, microsoft_id=response.id
+                    provider=self.provider,
+                    user=user,
+                    microsoft_id=response.id,
+                    attributes=asdict(ms_user),
                 )
 
     def update(self, user: User, connection: MicrosoftEntraProviderUser):
@@ -125,4 +134,5 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
             provider=self.provider,
             user=matching_authentik_user,
             microsoft_id=user.id,
+            attributes=asdict(user),
         )
