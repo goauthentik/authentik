@@ -34,7 +34,7 @@ Add `network_mode: none` to prevent connections being established to the databas
 
 ### Recreate the database container
 
-Pull new images and re-create the postgresql container: `docker compose pull && docker compose up --force-recreate -d postgresql`
+Pull new images and re-create the PostgreSQL container: `docker compose pull && docker compose up --force-recreate -d postgresql`
 
 Apply your backup to the new database: `cat upgrade_backup_12.sql | docker compose exec postgresql psql -U authentik`
 
