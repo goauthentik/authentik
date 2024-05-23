@@ -19,7 +19,7 @@ If your data is a file path: `cp -a /path/to/v12-data /path/to/v12-backup`
 ### Delete your old database
 
 :::::danger
-Do not execute this step without checking that step 3 completed successfully
+Do not execute this step without checking that the backup (previous step) completed successfully.
 :::::
 
 If you use Docker volumes: `docker volume rm -f authentik_database`.
