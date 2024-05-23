@@ -435,9 +435,9 @@ class OutpostState:
     version_should: Version = field(default=OUR_VERSION)
     build_hash: str = field(default="")
     golang_version: str = field(default="")
-    openssl_enabled: str = field(default="")
+    openssl_enabled: bool = field(default=False)
     openssl_version: str = field(default="")
-    fips_enabled: str = field(default="")
+    fips_enabled: bool = field(default=False)
     hostname: str = field(default="")
     args: dict = field(default_factory=dict)
 

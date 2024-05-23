@@ -39372,13 +39372,13 @@ components:
           type: string
           readOnly: true
         openssl_enabled:
-          type: string
+          type: boolean
           readOnly: true
         openssl_version:
           type: string
           readOnly: true
         fips_enabled:
-          type: string
+          type: boolean
           readOnly: true
         version_should:
           type: string

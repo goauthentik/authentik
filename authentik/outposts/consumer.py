@@ -122,9 +122,9 @@ class OutpostConsumer(JsonWebsocketConsumer):
             state.version = msg.args.pop("version", None)
             state.build_hash = msg.args.pop("buildHash", "")
             state.golang_version = msg.args.pop("golangVersion", "")
-            state.openssl_enabled = msg.args.pop("opensslEnabled", "")
+            state.openssl_enabled = msg.args.pop("opensslEnabled", False)
             state.openssl_version = msg.args.pop("opensslVersion", "")
-            state.fips_enabled = msg.args.pop("fipsEnabled", "")
+            state.fips_enabled = msg.args.pop("fipsEnabled", False)
             state.args.update(msg.args)
         elif msg.instruction == WebsocketMessageInstruction.ACK:
             return
