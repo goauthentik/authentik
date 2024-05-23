@@ -6,7 +6,7 @@ from django.urls import reverse
 from rest_framework.serializers import ValidationError
 from rest_framework.test import APITestCase
 
-from authentik.core.api.propertymappings import PropertyMappingSerializer
+from authentik.core.api.property_mappings import PropertyMappingSerializer
 from authentik.core.models import PropertyMapping
 from authentik.core.tests.utils import create_test_admin_user
 

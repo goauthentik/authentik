@@ -8,7 +8,7 @@ from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.propertymappings import PropertyMappingSerializer
+from authentik.core.api.property_mappings import PropertyMappingSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.providers.oauth2.models import ScopeMapping
 
