@@ -6,13 +6,14 @@ from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from pydantic import ValidationError
 from requests import RequestException, Session
 
-from authentik.lib.sync.outgoing import HTTP_CONFLICT
+from authentik.lib.sync.outgoing import HTTP_CONFLICT, HTTP_NO_CONTENT, HTTP_SERVICE_UNAVAILABLE, HTTP_TOO_MANY_REQUESTS
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
-from authentik.lib.sync.outgoing.exceptions import NotFoundSyncException, ObjectExistsSyncException
+from authentik.lib.sync.outgoing.exceptions import NotFoundSyncException, ObjectExistsSyncException, TransientSyncException
 from authentik.lib.utils.http import get_http_session
 from authentik.providers.scim.clients.exceptions import SCIMRequestException
 from authentik.providers.scim.clients.schema import ServiceProviderConfiguration
 from authentik.providers.scim.models import SCIMProvider
+
 
 if TYPE_CHECKING:
     from django.db.models import Model
@@ -61,13 +62,15 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
         if response.status_code >= HttpResponseBadRequest.status_code:
             if response.status_code == HttpResponseNotFound.status_code:
                 raise NotFoundSyncException(response)
+            if response.status_code in [HTTP_TOO_MANY_REQUESTS, HTTP_SERVICE_UNAVAILABLE]:
+                raise TransientSyncException()
             if response.status_code == HTTP_CONFLICT:
                 raise ObjectExistsSyncException(response)
             self.logger.warning(
                 "Failed to send SCIM request", path=path, method=method, response=response.text
             )
             raise SCIMRequestException(response)
-        if response.status_code == 204:  # noqa: PLR2004
+        if response.status_code == HTTP_NO_CONTENT:
             return {}
         return response.json()
 
