@@ -19,10 +19,16 @@ entries:
             "mail_nickname": request.user.username,
             "user_principal_name": request.user.email,
         }
-        if not connection:
+        if connection:
+            # If there is a connection already made (discover or update), we can use
+            # that connection's immutable_id...
+            user["on_premises_immutable_id"] = connection.attributes.get("on_premises_immutable_id")
+        else:
             user["password_profile"] = PasswordProfile(
                 password=request.user.password
             )
+            # ...otherwise we set an immutable ID based on the user's UID
+            user["on_premises_immutable_id"] = request.user.uid,
         return user
   - identifiers:
       managed: goauthentik.io/providers/microsoft_entra/group
