@@ -7,6 +7,9 @@ from pathlib import Path
 from tempfile import gettempdir
 from typing import TYPE_CHECKING
 
+from cryptography.exceptions import InternalError
+from cryptography.hazmat.backends.openssl.backend import backend
+from defusedxml import defuse_stdlib
 from prometheus_client.values import MultiProcessValue
 
 from authentik import get_full_version
@@ -24,6 +27,13 @@ if TYPE_CHECKING:
     from gunicorn.arbiter import Arbiter
 
     from authentik.root.asgi import AuthentikAsgi
+
+defuse_stdlib()
+
+try:
+    backend._enable_fips()
+except InternalError:
+    pass
 
 wait_for_db()
 

@@ -39368,6 +39368,18 @@ components:
         version:
           type: string
           readOnly: true
+        golang_version:
+          type: string
+          readOnly: true
+        openssl_enabled:
+          type: boolean
+          readOnly: true
+        openssl_version:
+          type: string
+          readOnly: true
+        fips_enabled:
+          type: boolean
+          readOnly: true
         version_should:
           type: string
           readOnly: true
@@ -39386,8 +39398,12 @@ components:
       required:
       - build_hash
       - build_hash_should
+      - fips_enabled
+      - golang_version
       - hostname
       - last_seen
+      - openssl_enabled
+      - openssl_version
       - uid
       - version
       - version_outdated
@@ -47106,8 +47122,6 @@ components:
           properties:
             python_version:
               type: string
-            gunicorn_version:
-              type: string
             environment:
               type: string
             architecture:
@@ -47116,10 +47130,18 @@ components:
               type: string
             uname:
               type: string
+            openssl_version:
+              type: string
+            openssl_fips_mode:
+              type: boolean
+            authentik_version:
+              type: string
           required:
           - architecture
+          - authentik_version
           - environment
-          - gunicorn_version
+          - openssl_fips_mode
+          - openssl_version
           - platform
           - python_version
           - uname
