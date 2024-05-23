@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-22 00:07+0000\n"
+"POT-Creation-Date: 2024-05-23 00:07+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2024\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/authentik/teams/119923/zh-Hans/)\n"
@@ -101,14 +101,6 @@ msgid ""
 "providers are returned. When set to false, backchannel providers are "
 "excluded"
 msgstr "如果未设置，则返回所有提供程序。如果启用，仅返回反向通道提供程序。如果禁用，则返回非反向通道提供程序"
-
-#: authentik/core/api/providers.py
-msgid "SAML Provider from Metadata"
-msgstr "来自元数据的 SAML 提供程序"
-
-#: authentik/core/api/providers.py
-msgid "Create a SAML Provider by importing its Metadata."
-msgstr "通过导入元数据来创建 SAML 提供程序。"
 
 #: authentik/core/api/users.py
 msgid "No leading or trailing slashes allowed."
@@ -1737,6 +1729,14 @@ msgstr "SAML 属性映射"
 #: authentik/providers/saml/models.py
 msgid "SAML Property Mappings"
 msgstr "SAML 属性映射"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Provider from Metadata"
+msgstr "来自元数据的 SAML 提供程序"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Providers from Metadata"
+msgstr "来自元数据的 SAML 提供程序"
 
 #: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
