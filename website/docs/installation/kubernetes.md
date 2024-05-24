@@ -21,9 +21,9 @@ You can also [view a video walk-through](https://www.youtube.com/watch?v=O1qUbrk
 
 Start by generating passwords for the database and cache. You can use either of the following commands:
 
-```
+```shell
 pwgen -s 50 1
-openssl rand -base64 36
+openssl rand 60 | base64
 ```
 
 ### Set Values
@@ -32,7 +32,7 @@ Create a `values.yaml` file with a minimum of these settings:
 
 ```yaml
 authentik:
-    secret_key: "PleaseGenerateA50CharKey"
+    secret_key: "PleaseGenerateASecureKey"
     # This sends anonymous usage-data, stack traces on errors and
     # performance data to sentry.io, and is fully opt-in
     error_reporting:
@@ -40,20 +40,18 @@ authentik:
     postgresql:
         password: "ThisIsNotASecurePassword"
 
-ingress:
-    # Specify kubernetes ingress controller class name
-    ingressClassName: nginx | traefik | kong
-    enabled: true
-    hosts:
-        # Specify external host name
-        - host: authentik.domain.tld
-          paths:
-              - path: "/"
-                pathType: Prefix
+server:
+    ingress:
+        # Specify kubernetes ingress controller class name
+        ingressClassName: nginx | traefik | kong
+        enabled: true
+        hosts:
+            - authentik.domain.tld
 
 postgresql:
     enabled: true
-    postgresqlPassword: "ThisIsNotASecurePassword"
+    auth:
+        password: "ThisIsNotASecurePassword"
 redis:
     enabled: true
 ```
@@ -62,9 +60,9 @@ See all configurable values on [ArtifactHub](https://artifacthub.io/packages/hel
 
 ### Install authentik Helm Chart
 
-Now, execute the following commands to install authentik
+Now, execute the following commands to install authentik:
 
-```
+```shell
 helm repo add authentik https://charts.goauthentik.io
 helm repo update
 helm upgrade --install authentik authentik/authentik -f values.yaml
@@ -74,7 +72,7 @@ During the installation process, the database migrations will be applied automat
 
 ### Accessing authentik
 
-Once the installation is complete, access authentik at `https://<ingress-host-name>/if/flow/initial-setup/`. Here, you can set a password for the default akadmin user.
+After the installation is complete, access authentik at `https://<ingress-host-name>/if/flow/initial-setup/`. Here, you can set a password for the default `akadmin` user.
 
 ### Optional step: Configure global email credentials
 
@@ -89,17 +87,17 @@ email:
     # -- SMTP Server emails are sent from, fully optional
     host: ""
     port: 587
-    # -- SMTP credentials, when left empty, no authentication will be done
+    # -- SMTP credentials. When left empty, no authentication will be done.
     username: ""
-    # -- SMTP credentials, when left empty, no authentication will be done
+    # -- SMTP credentials. When left empty, no authentication will be done.
     password: ""
-    # -- Enable either use_tls or use_ssl, they can't be enabled at the same time.
+    # -- Enable either use_tls or use_ssl. They can't be enabled at the same time.
     use_tls: false
-    # -- Enable either use_tls or use_ssl, they can't be enabled at the same time.
+    # -- Enable either use_tls or use_ssl. They can't be enabled at the same time.
     use_ssl: false
-    # -- Connection timeout
+    # -- Connection timeout in seconds
     timeout: 30
-    # -- Email from address, can either be in the format "foo@bar.baz" or "authentik <foo@bar.baz>"
+    # -- Email 'from' address can either be in the format "foo@bar.baz" or "authentik <foo@bar.baz>"
     from: ""
 ```
 

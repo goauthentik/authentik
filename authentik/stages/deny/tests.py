@@ -1,4 +1,5 @@
 """deny tests"""
+
 from django.urls import reverse
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow

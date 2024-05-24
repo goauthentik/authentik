@@ -3,11 +3,11 @@ import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserPasswordForm";
 import "@goauthentik/admin/users/UserResetEmailForm";
-import { me } from "@goauthentik/app/common/users";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { uiConfig } from "@goauthentik/common/ui/config";
-import { first } from "@goauthentik/common/utils";
+import { me } from "@goauthentik/common/users";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import {
@@ -113,6 +113,7 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
 export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Table<User>)) {
     expandable = true;
     checkbox = true;
+    clearOnRefresh = true;
 
     searchEnabled(): boolean {
         return true;
@@ -144,6 +145,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
             type: this.hideServiceAccounts
                 ? [CoreUsersListTypeEnum.External, CoreUsersListTypeEnum.Internal]
                 : undefined,
+            includeGroups: false,
         });
         this.me = await me();
         return users;
@@ -163,6 +165,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("User(s)")}
             actionLabel=${msg("Remove Users(s)")}
+            action=${msg("removed")}
             actionSubtext=${msg(
                 str`Are you sure you want to remove the selected users from the group ${this.targetGroup?.name}?`,
             )}
@@ -198,7 +201,10 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                 <small>${item.name}</small>
             </a>`,
             html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
-            html`${first(item.lastLogin?.toLocaleString(), msg("-"))}`,
+            html`${item.lastLogin
+                ? html`<div>${getRelativeTime(item.lastLogin)}</div>
+                      <small>${item.lastLogin.toLocaleString()}</small>`
+                : msg("-")}`,
             html`<ak-forms-modal>
                     <span slot="submit"> ${msg("Update")} </span>
                     <span slot="header"> ${msg("Update User")} </span>
@@ -301,7 +307,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                                                   class="pf-m-secondary"
                                                   .apiRequest=${() => {
                                                       return new CoreApi(DEFAULT_CONFIG)
-                                                          .coreUsersRecoveryRetrieve({
+                                                          .coreUsersRecoveryCreate({
                                                               id: item.pk,
                                                           })
                                                           .then((rec) => {

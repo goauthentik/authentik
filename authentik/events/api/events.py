@@ -1,4 +1,5 @@
 """Events API Views"""
+
 from datetime import timedelta
 from json import loads
 
@@ -18,7 +19,8 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.admin.api.metrics import CoordinateSerializer
-from authentik.core.api.utils import PassiveSerializer, TypeCreateSerializer
+from authentik.core.api.object_types import TypeCreateSerializer
+from authentik.core.api.utils import PassiveSerializer
 from authentik.events.models import Event, EventAction
 
 

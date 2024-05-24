@@ -1,4 +1,5 @@
 """policy process tests"""
+
 from django.contrib.auth.models import AnonymousUser
 from django.core.cache import cache
 from django.test import RequestFactory, TestCase

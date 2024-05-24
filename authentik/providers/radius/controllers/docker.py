@@ -1,4 +1,5 @@
 """Radius Provider Docker Controller"""
+
 from authentik.outposts.controllers.base import DeploymentPort
 from authentik.outposts.controllers.docker import DockerController
 from authentik.outposts.models import DockerServiceConnection, Outpost

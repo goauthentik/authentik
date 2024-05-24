@@ -1,5 +1,5 @@
 import "@goauthentik/admin/policies/BoundPoliciesList";
-import "@goauthentik/app/admin/providers/rac/EndpointForm";
+import "@goauthentik/admin/providers/rac/EndpointForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/buttons/SpinnerButton";
@@ -27,6 +27,7 @@ import {
 export class EndpointListPage extends Table<Endpoint> {
     expandable = true;
     checkbox = true;
+    clearOnRefresh = true;
 
     searchEnabled(): boolean {
         return true;

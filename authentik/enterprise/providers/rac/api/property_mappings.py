@@ -1,4 +1,5 @@
 """RAC Provider API Views"""
+
 from django_filters.filters import AllValuesMultipleFilter
 from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes
@@ -6,7 +7,7 @@ from drf_spectacular.utils import extend_schema_field
 from rest_framework.fields import CharField
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.propertymappings import PropertyMappingSerializer
+from authentik.core.api.property_mappings import PropertyMappingSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField
 from authentik.enterprise.providers.rac.models import RACPropertyMapping

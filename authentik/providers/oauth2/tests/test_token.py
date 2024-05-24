@@ -1,4 +1,5 @@
 """Test token view"""
+
 from base64 import b64encode
 from json import dumps
 
@@ -207,7 +208,7 @@ class TestToken(OAuthTestCase):
                 "token_type": TOKEN_TYPE,
                 "expires_in": 3600,
                 "id_token": provider.encode(
-                    refresh.id_token.to_dict(),
+                    access.id_token.to_dict(),
                 ),
             },
         )
@@ -266,7 +267,7 @@ class TestToken(OAuthTestCase):
                 "token_type": TOKEN_TYPE,
                 "expires_in": 3600,
                 "id_token": provider.encode(
-                    refresh.id_token.to_dict(),
+                    access.id_token.to_dict(),
                 ),
             },
         )

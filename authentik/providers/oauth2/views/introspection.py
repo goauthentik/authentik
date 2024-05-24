@@ -1,4 +1,5 @@
 """authentik OAuth2 Token Introspection Views"""
+
 from dataclasses import dataclass, field
 
 from django.http import HttpRequest, HttpResponse

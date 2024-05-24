@@ -1,4 +1,5 @@
 """Metrics view"""
+
 from base64 import b64encode
 
 from django.conf import settings
@@ -46,8 +47,8 @@ class ReadyView(View):
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
         try:
-            db_conn = connections["default"]
-            _ = db_conn.cursor()
+            for db_conn in connections.all():
+                _ = db_conn.cursor()
         except OperationalError:  # pragma: no cover
             return HttpResponse(status=503)
         try:

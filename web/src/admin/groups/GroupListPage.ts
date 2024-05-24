@@ -19,6 +19,7 @@ import { CoreApi, Group } from "@goauthentik/api";
 @customElement("ak-group-list")
 export class GroupListPage extends TablePage<Group> {
     checkbox = true;
+    clearOnRefresh = true;
     searchEnabled(): boolean {
         return true;
     }
@@ -41,6 +42,7 @@ export class GroupListPage extends TablePage<Group> {
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
+            includeUsers: false,
         });
     }
 

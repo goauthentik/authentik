@@ -51,9 +51,9 @@ authentik already provides some default _scopes_ with _claims_ inside them, such
 
 ##### Custom profile scope
 
-If you do not need storage quota or group information in Nextcloud [skip to the next step](#provider-and-application).
+If you do not need storage quota, group information, or to manage already existing users in Nextcloud [skip to the next step](#provider-and-application).
 
-However, if you want to be able to control how much storage users in Nextcloud can use, as well as which users are recognized as Nextcloud administrators, you would need to make this information available in Nextcloud. To achieve this you would need to create a custom `profile` scope. To do so, go to _Customisation_ -> _Property mappings_. Create a _Scope mapping_ with the following parameters:
+However, if you want to be able to control how much storage users in Nextcloud can use, as well as which users are recognized as Nextcloud administrators, you would need to make this information available in Nextcloud. To achieve this you would need to create a custom `profile` scope. To do so, go to _Customization_ -> _Property mappings_. Create a _Scope mapping_ with the following parameters:
 
 -   Name: Nextcloud Profile
 -   Scope name: profile
@@ -74,7 +74,10 @@ return {
     "name": request.user.name,
     "groups": groups,
     # To set a quota set the "nextcloud_quota" property in the user's attributes
-    "quota": user.group_attributes().get("nextcloud_quota", None)
+    "quota": user.group_attributes().get("nextcloud_quota", None),
+    # To connect an already existing user, set the "nextcloud_user_id" property in the
+    # user's attributes to the username of the corresponding user on Nextcloud.
+    "user_id": user.attributes.get("nextcloud_user_id", str(user.uuid)),
 }
 ```
 
@@ -82,6 +85,13 @@ return {
 To set a quota set the "nextcloud_quota" property in the user's attributes. This can be set for individual users or a group of users, as long as the target user is a member of a group which has this attribute set.
 
 If set to a value, for example `1 GB`, user(s) will have 1GB storage quota. If the attribute is not set, user(s) will have unlimited storage.
+:::
+
+:::note
+To connect to an already existing Nextcloud user, set the "nextcloud_user_id" property in the user's attributes. This must be set for each individual user.
+
+The value of `nextcloud_user_id` must match the field `username` of the user on the Nextcloud instance. On Nextcloud, go to _Users_ to see the username of the user you are trying to connect to (Under user's `Display name`).
+If set to a value, for example `goauthentik`, it will try to connect to the `goauthentik` user on the Nextcloud instance. Otherwise, the user's UUID will be used.
 :::
 
 ##### Provider and Application
@@ -98,14 +108,14 @@ Create a provider for Nextcloud. In the Admin Interface, go to _Applications_ ->
         -   `Nextcloud Profile` (or `authentik default Oauth Mapping profile` if you skipped the [custom profile scope](#custom-profile-scope) section)
     -   Subject mode: Based on the User's UUID
         :::danger
-        Nextcloud will use the UUID as username. However, mapping the subject mode to authentik usernames is **not recommended** due to their mutable nature. This can lead to security issues such as user impersonation. If you still wish to map the subject mode to an username, [disable username changing](../../../docs/installation/configuration#authentik_default_user_change_username) in authentik and set this to `Based on the User's username`.
+        Nextcloud will use the UUID as username. However, mapping the subject mode to authentik usernames is **not recommended** due to their mutable nature. This can lead to security issues such as user impersonation. If you still wish to map the subject mode to an username, [disable username changing](../../../docs/core/settings#allow-users-to-change-username) in authentik and set this to `Based on the User's username`.
         :::
     -   Include claims in ID token: ✔️
 
 Before continuing, make sure to take note of your `client ID` and `secret ID`. Don't worry you can go back to see/change them at any time.
 
-:::warning
-Currently there is a bug in the Nextcloud OIDC app, that is [limiting the size of the secret ID](https://github.com/nextcloud/user_oidc/issues/405) token to 64 characters. Since authentik uses 128 characters for a secret ID by default, you will need to trim it down to 64 characters in order to be able to set it in Nextcloud. Don't worry, 64 characters is still sufficiently long and should not compromise security.
+:::note
+There were an issue in the Nextcloud OIDC app that was [limiting the size of the secret ID](https://github.com/nextcloud/user_oidc/issues/405) token to 64 characters. This issue was fixed in December 2023, so make sure you update to the latest version of the [OpenID Connect user backend](https://apps.nextcloud.com/apps/user_oidc) application.
 :::
 
 :::note
@@ -129,7 +139,7 @@ Add a new provider using the `+` button and set the following values:
     :::
 -   Scope: `email`, `profile` (you can safely omit `openid` if you prefer)
 -   Attribute mappings:
-    -   User ID mapping: sub
+    -   User ID mapping: sub (or `user_id` if you need to connect to an already existing Nextcloud user)
     -   Display name mapping: name
     -   Email mapping: email
     -   Quota mapping: quota (leave empty if you have skipped the [custom profile scope](#custom-profile-scope) section)
@@ -137,7 +147,10 @@ Add a new provider using the `+` button and set the following values:
         :::tip
         You need to enable the "Use group provisioning" checkmark to be able to write to this field
         :::
--   Use unique user ID: If you only have one provider you can uncheck this if you prefer.
+-   Use unique user ID: If you only have one provider you can deselect this if you prefer. This will affect your Federated Cloud ID, which you can check under _Personal settings_ -> _Sharing_ -> _Federated Cloud_. If the box is selected, nextcloud will pick a hashed value here (`437218904321784903214789023@nextcloud.instance` for example). Otherwise, it will use the mapped user ID (`<authentik's sub or user_id>@nextcloud.instance`).
+    :::tip
+    To avoid your federated cloud id being a hash value, deselect **Use unique user ID** and use `user_id` in the **User ID mapping** field.
+    :::
 
 At this stage you should be able to login with SSO.
 
@@ -233,7 +246,7 @@ Set the following values:
 
 -   Attribute to map the UID to: `http://schemas.goauthentik.io/2021/02/saml/uid`
     :::danger
-    Nextcloud uses the UID attribute as username. However, mapping it to authentik usernames is **not recommended** due to their mutable nature. This can lead to security issues such as user impersonation. If you still wish to map the UID to an username, [disable username changing](../../../docs/installation/configuration#authentik_default_user_change_username) in authentik and set the UID attribute to "http://schemas.goauthentik.io/2021/02/saml/username".
+    Nextcloud uses the UID attribute as username. However, mapping it to authentik usernames is **not recommended** due to their mutable nature. This can lead to security issues such as user impersonation. If you still wish to map the UID to an username, [disable username changing](../../../docs/core/settings#allow-users-to-change-username) in authentik and set the UID attribute to "http://schemas.goauthentik.io/2021/02/saml/username".
     :::
 -   Optional display name of the identity provider (default: "SSO & SAML log in"): `authentik`
 -   Identifier of the IdP entity (must be a URI): `https://authentik.company`
@@ -286,7 +299,7 @@ Create a custom SAML Property Mapping:
 -   Set the _Expression_ to:
 
 ```python
-for group in user.ak_groups.all():
+for group in request.user.all_groups():
     yield group.name
 if ak_is_group_member(request.user, name="<authentik nextcloud admin group's name>"):
     yield "admin"

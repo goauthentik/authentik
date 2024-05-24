@@ -531,16 +531,6 @@
         <target>Geen medewerkers verbonden. Achtergrondtaken worden niet uitgevoerd.</target>
 
       </trans-unit>
-      <trans-unit id="s2ed8eb02525a920a">
-        <source><x id="0" equiv-text="${ago}"/> hour(s) ago</source>
-        <target><x id="0" equiv-text="${ago}"/> uur geleden</target>
-
-      </trans-unit>
-      <trans-unit id="s1f1c857c0c4250e4">
-        <source><x id="0" equiv-text="${ago}"/> day(s) ago</source>
-        <target><x id="0" equiv-text="${ago}"/> dag(en) geleden</target>
-
-      </trans-unit>
       <trans-unit id="s11bc220e8fa9d797">
         <source>Authorizations</source>
         <target>Autorisaties</target>
@@ -1541,21 +1531,6 @@
         <target>Selecteer type</target>
 
       </trans-unit>
-      <trans-unit id="s0b3bf19b31dd6bac">
-        <source>Try the new application wizard</source>
-        <target>Probeer de nieuwe applicatie-wizard</target>
-
-      </trans-unit>
-      <trans-unit id="sa18e1c6e0e6f16cc">
-        <source>The new application wizard greatly simplifies the steps required to create applications and providers.</source>
-        <target>De nieuwe applicatie-wizard vereenvoudigt sterk de stappen die nodig zijn om applicaties en providers te maken.</target>
-
-      </trans-unit>
-      <trans-unit id="s01ef54f5d7c6ed47">
-        <source>Try it now</source>
-        <target>Probeer het nu</target>
-
-      </trans-unit>
       <trans-unit id="s382a2aa3984474dd">
         <source>Create</source>
         <target>Aanmaken</target>
@@ -2005,11 +1980,6 @@
       <trans-unit id="s59f5eda30a904b75">
         <source>JWKS URL</source>
         <target>JWKS-URL</target>
-
-      </trans-unit>
-      <trans-unit id="s453b0c150a7ca58e">
-        <source>Example JWT payload (for currently authenticated user)</source>
-        <target>Voorbeeld JWT-payload (voor momenteel geauthenticeerde gebruiker)</target>
 
       </trans-unit>
       <trans-unit id="sc6e8a34361c7c272">
@@ -3302,21 +3272,6 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
       <trans-unit id="s31a2d43bc1cf1790">
         <source>Not synced yet.</source>
         <target>Nog niet gesynchroniseerd.</target>
-
-      </trans-unit>
-      <trans-unit id="s388ee787bbf2271b">
-        <source>Task finished with warnings</source>
-        <target>Taak voltooid met waarschuwingen</target>
-
-      </trans-unit>
-      <trans-unit id="s949826fad0fe0909">
-        <source>Task finished with errors</source>
-        <target>Taak voltooid met fouten</target>
-
-      </trans-unit>
-      <trans-unit id="sbedb77365a066648">
-        <source>Last sync: <x id="0" equiv-text="${task.finishTimestamp.toLocaleString()}"/></source>
-        <target>Laatste synchronisatie: <x id="0" equiv-text="${task.finishTimestamp.toLocaleString()}"/></target>
 
       </trans-unit>
       <trans-unit id="sf3fec8353106ac2f">
@@ -4900,11 +4855,6 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
         <target>Laatste validatiedrempel</target>
 
       </trans-unit>
-      <trans-unit id="s951281efc92b03fc">
-        <source>If any of the devices user of the types selected above have been used within this duration, this stage will be skipped.</source>
-        <target>Als een van de geselecteerde apparaattypen in deze periode is gebruikt, wordt deze fase overgeslagen.</target>
-
-      </trans-unit>
       <trans-unit id="s681074b6c1f19c08">
         <source>Not configured action</source>
         <target>Niet geconfigureerde actie</target>
@@ -6011,11 +5961,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
         <target>Het selecteren van een integratie maakt het beheer van de buitenpost mogelijk door authentik.</target>
 
       </trans-unit>
-      <trans-unit id="s554ce268e9727e79">
-        <source>You can only select providers that match the type of the outpost.</source>
-        <target>U kunt alleen providers selecteren die overeenkomen met het type van de buitenpost.</target>
-
-      </trans-unit>
       <trans-unit id="sf9b1c0661a02d9f9">
         <source>Configuration</source>
         <target>Configuratie</target>
@@ -6476,11 +6421,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
         <target>Logboeken</target>
 
       </trans-unit>
-      <trans-unit id="s1823625e6f831d73">
-        <source>Customisation</source>
-        <target>Aanpassing</target>
-
-      </trans-unit>
       <trans-unit id="sc0829ee663ced008">
         <source>Directory</source>
         <target>Map</target>
@@ -6559,11 +6499,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
       <trans-unit id="sa03aa46068460c95">
         <source>Forgot username or password?</source>
         <target>Gebruikersnaam of wachtwoord vergeten?</target>
-
-      </trans-unit>
-      <trans-unit id="s4a87445f3108db7c">
-        <source>Select one of the sources below to login.</source>
-        <target>Selecteer een van de onderstaande bronnen om in te loggen.</target>
 
       </trans-unit>
       <trans-unit id="s091d5407b5b32e84">
@@ -6704,26 +6639,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
       <trans-unit id="s18b910437b73e8e8">
         <source>Return to device picker</source>
         <target>Terug naar apparaatkeuze</target>
-
-      </trans-unit>
-      <trans-unit id="sbcf8604929b6a27a">
-        <source>Sending Duo push notification</source>
-        <target>Duo pushmelding verzenden</target>
-
-      </trans-unit>
-      <trans-unit id="s3b68883dda2682ed">
-        <source>Assertions is empty</source>
-        <target>Beweringen zijn leeg</target>
-
-      </trans-unit>
-      <trans-unit id="sbbb7318812d64e51">
-        <source>Error when creating credential: <x id="0" equiv-text="${err}"/></source>
-        <target>Fout bij aanmaken van referentie: <x id="0" equiv-text="${err}"/></target>
-
-      </trans-unit>
-      <trans-unit id="sfe199b2564b66054">
-        <source>Error when validating assertion on server: <x id="0" equiv-text="${err}"/></source>
-        <target>Fout bij valideren van bewering op server: <x id="0" equiv-text="${err}"/></target>
 
       </trans-unit>
       <trans-unit id="se409d01b52c4e12f">
@@ -6904,11 +6819,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
       <trans-unit id="s9d95f09deb601f34">
         <source>Server validation of credential failed: <x id="0" equiv-text="${err}"/></source>
         <target>Servervalidatie van referentie mislukt: <x id="0" equiv-text="${err}"/></target>
-
-      </trans-unit>
-      <trans-unit id="s6c8f05e3be04f62a">
-        <source>Register device</source>
-        <target>Apparaat registreren</target>
 
       </trans-unit>
       <trans-unit id="s3fb39fc45e840f78">
@@ -7178,10 +7088,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
   <source>License(s)</source>
   <target>Licentie(s)</target>
 </trans-unit>
-<trans-unit id="s3be1d90ffa46b7f1">
-  <source>Enterprise is in preview.</source>
-  <target>Enterprise is in voorbeeldweergave.</target>
-</trans-unit>
 <trans-unit id="sd22bd01bdf28c548">
   <source>Cumulative license expiry</source>
   <target>Cumulatieve licentieverloop</target>
@@ -7213,10 +7119,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="sa1db89262360550b">
   <source>Send us feedback!</source>
   <target>Stuur ons feedback!</target>
-</trans-unit>
-<trans-unit id="s4015746f55a8d89f">
-  <source>Get a license</source>
-  <target>Verkrijg een licentie</target>
 </trans-unit>
 <trans-unit id="sb2cbd06f8e25b47e">
   <source>Go to Customer Portal</source>
@@ -7528,9 +7430,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="s6827a456c9dfc6ee">
   <source>When using IDP-initiated logins, the relay state will be set to this value.</source>
 </trans-unit>
-<trans-unit id="scc7f34824150bfb8">
-  <source>Provider require enterprise.</source>
-</trans-unit>
 <trans-unit id="s31f1afc1bfe1cb3a">
   <source>Learn more</source>
 </trans-unit>
@@ -7744,9 +7643,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="s895514dda9cb9c94">
   <source>Create recovery link</source>
 </trans-unit>
-<trans-unit id="s78ab26da7f067de8">
-  <source>Select permissions to grant</source>
-</trans-unit>
 <trans-unit id="sdeb90bfd8a80b86b">
   <source>Permissions to add</source>
 </trans-unit>
@@ -7776,9 +7672,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 </trans-unit>
 <trans-unit id="se5c795faf2c07514">
   <source>Create Recovery Link</source>
-</trans-unit>
-<trans-unit id="sa3a3e09b88ed9791">
-  <source>Assigned permissions</source>
 </trans-unit>
 <trans-unit id="s9cc631505c17b028">
   <source>Assigned global permissions</source>
@@ -8058,23 +7951,386 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="sa65e7bc7ddd3484d">
   <source>Anonymous user</source>
 </trans-unit>
+<trans-unit id="s0db494ff61b48438">
+  <source>Add All Available</source>
+</trans-unit>
+<trans-unit id="s2f68faa5b84ee9fd">
+  <source>Remove All Available</source>
+</trans-unit>
+<trans-unit id="s0ba85594344a5c02">
+  <source>Remove All</source>
+</trans-unit>
+<trans-unit id="s1efa17e3407e0f56">
+  <source>Available options</source>
+</trans-unit>
+<trans-unit id="s886db4d476f66522">
+  <source>Selected options</source>
+</trans-unit>
+<trans-unit id="sd429eba21dd59f44">
+  <source><x id="0" equiv-text="${availableCount}"/> item(s) marked to add.</source>
+</trans-unit>
+<trans-unit id="s4abfe4e0d0665fd1">
+  <source><x id="0" equiv-text="${selectedTotal}"/> item(s) selected.</source>
+</trans-unit>
+<trans-unit id="s56b3d54118c34b2f">
+  <source><x id="0" equiv-text="${selectedCount}"/> item(s) marked to remove.</source>
+</trans-unit>
+<trans-unit id="scb76a63c68b0d81f">
+  <source>Available Applications</source>
+</trans-unit>
+<trans-unit id="sd176021da2ea0fe3">
+  <source>Selected Applications</source>
+</trans-unit>
 <trans-unit id="s862505f29064fc72">
   <source>This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:</source>
 </trans-unit>
-<trans-unit id="s1c1a6a865befe4de">
-  <source>User directory fields</source>
+<trans-unit id="s6d3f81dc4bcacbda">
+  <source>Last used</source>
 </trans-unit>
-<trans-unit id="s3aa6e148d5849579">
-  <source>This option configures what user fields are shown in the user directory. It must be a valid JSON list and can be used as follows, with all possible values included:</source>
+<trans-unit id="s96b2703420bfbd0c">
+  <source>OAuth Access Tokens</source>
 </trans-unit>
-<trans-unit id="s60a6bca4ce22bb6a">
-  <source>User directory attributes</source>
+<trans-unit id="sd99e668c54f78f6e">
+  <source>Credentials / Tokens</source>
 </trans-unit>
-<trans-unit id="s6f6fef5f45e0af13">
-  <source>This option configures what user attributes are shown in the user directory. It must be a valid JSON list and can be used as follows:</source>
+<trans-unit id="saada50e84c7c646d">
+  <source>Permissions set on users which affect this object.</source>
 </trans-unit>
-<trans-unit id="s107b6ca39a2f017d">
-  <source>User directory</source>
+<trans-unit id="s37d1b74df205b528">
+  <source>Permissions set on roles which affect this object.</source>
+</trans-unit>
+<trans-unit id="sc443bfff8a5dd106">
+  <source>Permissions assigned to this user which affect all object instances of a given type.</source>
+</trans-unit>
+<trans-unit id="s3eba09a350b7d6c9">
+  <source>Permissions assigned to this user affecting specific object instances.</source>
+</trans-unit>
+<trans-unit id="s17032e57ba222d2f">
+  <source>Permissions assigned to this role which affect all object instances of a given type.</source>
+</trans-unit>
+<trans-unit id="sb9b51124d1b3dca0">
+  <source>JWT payload</source>
+</trans-unit>
+<trans-unit id="sbd065743a0c599e3">
+  <source>Preview for user</source>
+</trans-unit>
+<trans-unit id="se16b4d412ad1aba9">
+  <source>Brand name</source>
+</trans-unit>
+<trans-unit id="sb7e68dcad68a638c">
+  <source>Remote Access Provider</source>
+</trans-unit>
+<trans-unit id="sfb1980a471b7dfb6">
+  <source>Remotely access computers/servers via RDP/SSH/VNC</source>
+</trans-unit>
+<trans-unit id="s9ffdea131dddb3c5">
+  <source>Configure Remote Access Provider Provider</source>
+</trans-unit>
+<trans-unit id="s56bc67239b9255a2">
+  <source>Delete authorization on disconnect</source>
+</trans-unit>
+<trans-unit id="s3945449bd524d8a5">
+  <source>When enabled, connection authorizations will be deleted when a client disconnects. This will force clients with flaky internet connections to re-authorize the endpoint.</source>
+</trans-unit>
+<trans-unit id="sc93712b5fbdc6810">
+  <source>Connection Token(s)</source>
+</trans-unit>
+<trans-unit id="s526a525cdc79bbdc">
+  <source>Endpoint</source>
+</trans-unit>
+<trans-unit id="s5c18f85cda6e89be">
+  <source>Connections</source>
+</trans-unit>
+<trans-unit id="s269a190f0086d892">
+  <source>Unconfigured</source>
+</trans-unit>
+<trans-unit id="s9e24bec94ec23dc9">
+  <source>This option will not be changed by this mapping.</source>
+</trans-unit>
+<trans-unit id="sac428446e9e41f54">
+  <source>RAC Connections</source>
+</trans-unit>
+<trans-unit id="s39002897db60bb28">
+  <source>Sending Duo push notification...</source>
+</trans-unit>
+<trans-unit id="sd2b8c1caa0340ed6">
+  <source>Failed to authenticate</source>
+</trans-unit>
+<trans-unit id="sffef1a8596bc58bb">
+  <source>Authenticating...</source>
+</trans-unit>
+<trans-unit id="sd12f594a3184c056">
+  <source>Customization</source>
+</trans-unit>
+<trans-unit id="s363abde8a254ea5f">
+  <source>Authentication failed. Please try again.</source>
+</trans-unit>
+<trans-unit id="sb0821a9e92cac5eb">
+  <source>Failed to register. Please try again.</source>
+</trans-unit>
+<trans-unit id="s238784fc1dc672ae">
+  <source>Registering...</source>
+</trans-unit>
+<trans-unit id="s009bd1c98a9f5de2">
+  <source>Failed to register</source>
+</trans-unit>
+<trans-unit id="sb166ce92e8e807d6">
+  <source>Retry registration</source>
+</trans-unit>
+<trans-unit id="s6ecfc18dbfeedd76">
+  <source>Select one of the options below to continue.</source>
+</trans-unit>
+<trans-unit id="s00bcaadd620a11f8">
+  <source>Latest version unknown</source>
+</trans-unit>
+<trans-unit id="s10fedec3a779ea63">
+  <source>Timestamp</source>
+</trans-unit>
+<trans-unit id="s48e186fb300e5464">
+  <source>Time</source>
+</trans-unit>
+<trans-unit id="saa8aa81ad6f055fd">
+  <source>Level</source>
+</trans-unit>
+<trans-unit id="sd0ea7366ebc403ff">
+  <source>Event</source>
+</trans-unit>
+<trans-unit id="s225f3e57c6a0d635">
+  <source>Logger</source>
+</trans-unit>
+<trans-unit id="s39d6971531a270b6">
+  <source>Update internal password on login</source>
+</trans-unit>
+<trans-unit id="sefe04e319223a3d6">
+  <source>When the user logs in to authentik using this source password backend, update their credentials in authentik.</source>
+</trans-unit>
+<trans-unit id="s5f43af3669b1e098">
+  <source>Source</source>
+</trans-unit>
+<trans-unit id="sd9f752de8448bcc9">
+  <source>Resume timeout</source>
+</trans-unit>
+<trans-unit id="s517954806d7610f2">
+  <source>Amount of time a user can take to return from the source to continue the flow.</source>
+</trans-unit>
+<trans-unit id="s8c4bc6e515949112">
+  <source>Your Install ID</source>
+</trans-unit>
+<trans-unit id="s8cc0075913c67566">
+  <source>Enter the email associated with your account, and we'll send you a link to reset your password.</source>
+</trans-unit>
+<trans-unit id="s06bfe45ffef2cf60">
+  <source>Stage name: <x id="0" equiv-text="${this.challenge.name}"/></source>
+</trans-unit>
+<trans-unit id="s90064dd5c4dde2c6">
+  <source>Please scan the QR code above using the Microsoft Authenticator, Google Authenticator, or other authenticator apps on your device, and enter the code the device displays below to finish setting up the MFA device.</source>
+</trans-unit>
+<trans-unit id="s02160dc6adba3456">
+  <source>Inject an OAuth or SAML Source into the flow execution. This allows for additional user verification, or to dynamically access different sources for different user identifiers (username, email address, etc).</source>
+</trans-unit>
+<trans-unit id="sc7d071fb5cc1f6bf">
+  <source>A selection is required</source>
+</trans-unit>
+<trans-unit id="sa64fb483becc9c2c">
+  <source>Device type restrictions</source>
+</trans-unit>
+<trans-unit id="sbb928551c84cd63f">
+  <source>Available Device types</source>
+</trans-unit>
+<trans-unit id="s6446c35d6b411e53">
+  <source>Selected Device types</source>
+</trans-unit>
+<trans-unit id="s1f4df216b56de4ac">
+  <source>Optionally restrict which WebAuthn device types may be used. When no device types are selected, all devices are allowed.</source>
+</trans-unit>
+<trans-unit id="s23ed998c51cbe38f">
+  <source>If the user has successfully authenticated with a device in the classes listed above within this configured duration, this stage will be skipped.</source>
+</trans-unit>
+<trans-unit id="s4d4f52ccfd9d6adf">
+  <source>WebAuthn-specific settings</source>
+</trans-unit>
+<trans-unit id="sb46d2e64f64c6284">
+  <source>WebAuthn Device type restrictions</source>
+</trans-unit>
+<trans-unit id="s11274960b13cf21a">
+  <source>This restriction only applies to devices created in authentik 2024.4 or later.</source>
+</trans-unit>
+<trans-unit id="s4888252cbd785175">
+  <source>Default token duration</source>
+</trans-unit>
+<trans-unit id="s25c80a16a07871ba">
+  <source>Default duration for generated tokens</source>
+</trans-unit>
+<trans-unit id="se5c9ffc025fdf61d">
+  <source>Default token length</source>
+</trans-unit>
+<trans-unit id="sa6b2c110466d1754">
+  <source>Default length of generated tokens</source>
+</trans-unit>
+<trans-unit id="s1f25e1e20469a9ea">
+  <source>deleted</source>
+</trans-unit>
+<trans-unit id="s0ca04e397298bc43">
+  <source>Select permissions to assign</source>
+</trans-unit>
+<trans-unit id="s676d94e7e31a8075">
+  <source>SCIM Source is in preview.</source>
+</trans-unit>
+<trans-unit id="s31f1afc0a81977c1">
+  <source>Update SCIM Source</source>
+</trans-unit>
+<trans-unit id="s4bb356adc8a7f85b">
+  <source>SCIM Base URL</source>
+</trans-unit>
+<trans-unit id="sb23304fc42c5d6d9">
+  <source>Provisioned Users</source>
+</trans-unit>
+<trans-unit id="s6a81ee82b2e5ecbb">
+  <source>Provisioned Groups</source>
+</trans-unit>
+<trans-unit id="s10154dbd4fbc697b">
+  <source>removed</source>
+</trans-unit>
+<trans-unit id="s30d6ff9e15e0a40a">
+  <source>Verifying...</source>
+</trans-unit>
+<trans-unit id="sc1673c93148583ba">
+  <source>Request failed. Please try again later.</source>
+</trans-unit>
+<trans-unit id="s85be1f5e7a0fa3b1">
+  <source>Available Roles</source>
+</trans-unit>
+<trans-unit id="sa59d53ee922c08b5">
+  <source>Selected Roles</source>
+</trans-unit>
+<trans-unit id="s7bfbf84a8ad5883f">
+  <source>Internal Service accounts are created and managed by authentik and cannot be created manually.</source>
+</trans-unit>
+<trans-unit id="sb0680e5f8782db1e">
+  <source>Private key Algorithm</source>
+</trans-unit>
+<trans-unit id="sa03cbf19feebd249">
+  <source>RSA</source>
+</trans-unit>
+<trans-unit id="sfbfccbd3e395c147">
+  <source>ECDSA</source>
+</trans-unit>
+<trans-unit id="sebea299e52db4242">
+  <source>Algorithm used to generate the private key.</source>
+</trans-unit>
+<trans-unit id="s21e38ec6ffa2b918">
+  <source>Added ID <x id="0" equiv-text="${item}"/></source>
+</trans-unit>
+<trans-unit id="s74918a09ef39ed26">
+  <source>Removed ID <x id="0" equiv-text="${item}"/></source>
+</trans-unit>
+<trans-unit id="s3a20e5d7dd70dcd3">
+  <source>Cleared</source>
+</trans-unit>
+<trans-unit id="s8cfd29891b2c93f0">
+  <source>Google Workspace Provider</source>
+</trans-unit>
+<trans-unit id="sa817aa9f6f88a991">
+  <source>Credentials</source>
+</trans-unit>
+<trans-unit id="sc668815044e218c2">
+  <source>Delegated Subject</source>
+</trans-unit>
+<trans-unit id="se89a9ecf275e4343">
+  <source>Default group email domain</source>
+</trans-unit>
+<trans-unit id="s64a0a6da6ed6d680">
+  <source>Default domain that is used to generate a group's email address. Can be customized using property mappings.</source>
+</trans-unit>
+<trans-unit id="sd061e65955e036ca">
+  <source>User deletion action</source>
+</trans-unit>
+<trans-unit id="s87f86f65b5e19ea7">
+  <source>User is deleted</source>
+</trans-unit>
+<trans-unit id="s3906cd4a102867a3">
+  <source>Suspend</source>
+</trans-unit>
+<trans-unit id="s0bf5b364e2c79392">
+  <source>User is suspended, and connection to user in authentik is removed.</source>
+</trans-unit>
+<trans-unit id="s4acb0250d735c2a9">
+  <source>Do Nothing</source>
+</trans-unit>
+<trans-unit id="s5fe525d19499ed47">
+  <source>The connection is removed but the user is not modified</source>
+</trans-unit>
+<trans-unit id="s676a0127c35d240a">
+  <source>Determines what authentik will do when a User is deleted.</source>
+</trans-unit>
+<trans-unit id="sd1aa04cc32caf2b0">
+  <source>Group deletion action</source>
+</trans-unit>
+<trans-unit id="s874c788479481131">
+  <source>Group is deleted</source>
+</trans-unit>
+<trans-unit id="s0983fa9b84e4a9f7">
+  <source>The connection is removed but the group is not modified</source>
+</trans-unit>
+<trans-unit id="sdb872a9f425937fa">
+  <source>Determines what authentik will do when a Group is deleted.</source>
+</trans-unit>
+<trans-unit id="sa5f28f1ad0bee45b">
+  <source>Google Workspace Provider is in preview.</source>
+</trans-unit>
+<trans-unit id="s958928ab6208d748">
+  <source>Microsoft Entra Provider</source>
+</trans-unit>
+<trans-unit id="sc7d6bc4aebb58fe9">
+  <source>Google Cloud credentials file.</source>
+</trans-unit>
+<trans-unit id="s2e707072d5a9615d">
+  <source>Email address of the user the actions of authentik will be delegated to.</source>
+</trans-unit>
+<trans-unit id="s03a759e65ceb722d">
+  <source>Client ID for the app registration.</source>
+</trans-unit>
+<trans-unit id="s479980cf9252628c">
+  <source>Client secret for the app registration.</source>
+</trans-unit>
+<trans-unit id="s25c2392ffcb78df2">
+  <source>Tenant ID</source>
+</trans-unit>
+<trans-unit id="s89e4e698cdb1187f">
+  <source>ID of the tenant accounts will be synced into.</source>
+</trans-unit>
+<trans-unit id="sf341f5dfc7a11633">
+  <source>Microsoft Entra Provider is in preview.</source>
+</trans-unit>
+<trans-unit id="s79dd6df244c05ae9">
+  <source>Update Microsoft Entra Provider</source>
+</trans-unit>
+<trans-unit id="saf4b498d81141878">
+  <source>Finished successfully</source>
+</trans-unit>
+<trans-unit id="s46f1d86ffec6223c">
+  <source>Finished with errors</source>
+</trans-unit>
+<trans-unit id="sbd12ed8a1053a108">
+  <source>Finished <x id="0" equiv-text="${getRelativeTime(task.finishTimestamp)}"/> (<x id="1" equiv-text="${task.finishTimestamp.toLocaleString()}"/>)</source>
+</trans-unit>
+<trans-unit id="sc3c334d642866997">
+  <source>Sync currently running</source>
+</trans-unit>
+<trans-unit id="sd520a4089006ca93">
+  <source>Update Google Workspace Provider</source>
+</trans-unit>
+<trans-unit id="sfdfa5bb4ddd99d70">
+  <source>Enterprise only</source>
+</trans-unit>
+<trans-unit id="scffa59cfac1951f2">
+  <source><x id="0" equiv-text="${type.name}"/> Icon</source>
+</trans-unit>
+<trans-unit id="s1da3499258024860">
+  <source><x id="0" equiv-text="${versionString}"/> (build <x id="1" equiv-text="${this.outpostHealth.buildHash.substring(0, 8)}"/>)</source>
+</trans-unit>
+<trans-unit id="s001fd928369d4ddc">
+  <source><x id="0" equiv-text="${versionString}"/> (FIPS)</source>
 </trans-unit>
     </body>
   </file>

@@ -1,4 +1,5 @@
 """LDAPProvider API Views"""
+
 from django.db.models import QuerySet
 from django.db.models.query import Q
 from django_filters.filters import BooleanFilter

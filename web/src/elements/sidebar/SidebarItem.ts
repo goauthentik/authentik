@@ -208,7 +208,7 @@ export class SidebarItem extends AKElement {
     }
 
     renderWithLabel() {
-        html`
+        return html`
             <span class="pf-c-nav__link">
                 <slot name="label"></slot>
             </span>

@@ -1,4 +1,5 @@
 """OpenID Connect OAuth Views"""
+
 from typing import Any
 
 from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient

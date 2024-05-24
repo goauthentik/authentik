@@ -1,0 +1,39 @@
+version: 1
+metadata:
+  labels:
+    blueprints.goauthentik.io/system: "true"
+  name: System - Microsoft Entra Provider - Mappings
+entries:
+  - identifiers:
+      managed: goauthentik.io/providers/microsoft_entra/user
+    model: authentik_providers_microsoft_entra.microsoftentraprovidermapping
+    attrs:
+      name: "authentik default Microsoft Entra Mapping: User"
+      # https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0
+      expression: |
+        from msgraph.generated.models.password_profile import PasswordProfile
+
+        user = {
+            "display_name": request.user.name,
+            "account_enabled": request.user.is_active,
+            "mail_nickname": request.user.username,
+            "user_principal_name": request.user.email,
+        }
+        if creating:
+            user["password_profile"] = PasswordProfile(
+                password=request.user.password
+            )
+        return user
+  - identifiers:
+      managed: goauthentik.io/providers/microsoft_entra/group
+    model: authentik_providers_microsoft_entra.microsoftentraprovidermapping
+    attrs:
+      name: "authentik default Microsoft Entra Mapping: Group"
+      # https://learn.microsoft.com/en-us/graph/api/group-post-groups?view=graph-rest-1.0&tabs=http#request-body
+      expression: |
+        return {
+            "display_name": group.name,
+            "mail_enabled": False,
+            "security_enabled": True,
+            "mail_nickname": slugify(group.name),
+        }

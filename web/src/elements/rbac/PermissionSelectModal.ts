@@ -1,6 +1,6 @@
-import { groupBy } from "@goauthentik/app/common/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
+import { groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
@@ -67,7 +67,7 @@ export class PermissionSelectModal extends TableModal<Permission> {
     renderModalInner(): TemplateResult {
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
-                    <h1 class="pf-c-title pf-m-2xl">${msg("Select permissions to grant")}</h1>
+                    <h1 class="pf-c-title pf-m-2xl">${msg("Select permissions to assign")}</h1>
                 </div>
             </section>
             <section class="pf-c-modal-box__body pf-m-light">${this.renderTable()}</section>

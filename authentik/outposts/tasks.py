@@ -1,8 +1,9 @@
 """outpost tasks"""
+
 from os import R_OK, access
 from pathlib import Path
 from socket import gethostname
-from typing import Any, Optional
+from typing import Any
 from urllib.parse import urlparse
 
 from asgiref.sync import async_to_sync
@@ -48,8 +49,7 @@ LOGGER = get_logger()
 CACHE_KEY_OUTPOST_DOWN = "goauthentik.io/outposts/teardown/%s"
 
 
-# pylint: disable=too-many-return-statements
-def controller_for_outpost(outpost: Outpost) -> Optional[type[BaseController]]:
+def controller_for_outpost(outpost: Outpost) -> type[BaseController] | None:
     """Get a controller for the outpost, when a service connection is defined"""
     if not outpost.service_connection:
         return None
@@ -149,10 +149,8 @@ def outpost_controller(
         if not controller_type:
             return
         with controller_type(outpost, outpost.service_connection) as controller:
-            logs = getattr(controller, f"{action}_with_logs")()
             LOGGER.debug("---------------Outpost Controller logs starting----------------")
-            for log in logs:
-                LOGGER.debug(log)
+            logs = getattr(controller, f"{action}_with_logs")()
             LOGGER.debug("-----------------Outpost Controller logs end-------------------")
     except (ControllerException, ServiceConnectionInvalid) as exc:
         self.set_error(exc)
@@ -192,15 +190,15 @@ def outpost_post_save(model_class: str, model_pk: Any):
 
     if isinstance(instance, Outpost):
         LOGGER.debug("Trigger reconcile for outpost", instance=instance)
-        outpost_controller.delay(instance.pk)
+        outpost_controller.delay(str(instance.pk))
 
-    if isinstance(instance, (OutpostModel, Outpost)):
+    if isinstance(instance, OutpostModel | Outpost):
         LOGGER.debug("triggering outpost update from outpostmodel/outpost", instance=instance)
         outpost_send_update(instance)
 
     if isinstance(instance, OutpostServiceConnection):
         LOGGER.debug("triggering ServiceConnection state update", instance=instance)
-        outpost_service_connection_state.delay(instance.pk)
+        outpost_service_connection_state.delay(str(instance.pk))
 
     for field in instance._meta.get_fields():
         # Each field is checked if it has a `related_model` attribute (when ForeginKeys or M2Ms)

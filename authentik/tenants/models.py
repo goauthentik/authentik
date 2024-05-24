@@ -1,9 +1,11 @@
 """Tenant models"""
+
 import re
 from uuid import uuid4
 
 from django.apps import apps
 from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.utils import IntegrityError
 from django.dispatch import receiver
@@ -20,6 +22,9 @@ LOGGER = get_logger()
 
 
 VALID_SCHEMA_NAME = re.compile(r"^t_[a-z0-9]{1,61}$")
+
+DEFAULT_TOKEN_DURATION = "days=1"  # nosec
+DEFAULT_TOKEN_LENGTH = 60
 
 
 def _validate_schema_name(name):
@@ -90,18 +95,22 @@ class Tenant(TenantMixin, SerializerModel):
         blank=True,
     )
     user_directory_attributes = models.JSONField(
-        help_text=_("Attributes to show in the user directory."), default=list, blank=True
+        help_text=_("Attributes to show in the user directory."), default=list, blank=True)
+    default_token_duration = models.TextField(
+        help_text=_("Default token duration"),
+        default=DEFAULT_TOKEN_DURATION,
+        validators=[timedelta_string_validator],
+    )
+    default_token_length = models.PositiveIntegerField(
+        help_text=_("Default token length"),
+        default=DEFAULT_TOKEN_LENGTH,
+        validators=[MinValueValidator(1)],
     )
 
     def save(self, *args, **kwargs):
         if self.schema_name == "template":
             raise IntegrityError("Cannot create schema named template")
         super().save(*args, **kwargs)
-
-    def delete(self, *args, **kwargs):
-        if self.schema_name in ("public", "template"):
-            raise IntegrityError("Cannot delete schema public or template")
-        super().delete(*args, **kwargs)
 
     @property
     def serializer(self) -> Serializer:
@@ -147,7 +156,7 @@ def tenant_needs_sync(sender, tenant, **kwargs):
     with tenant:
         for app in apps.get_app_configs():
             if isinstance(app, ManagedAppConfig):
-                app._reconcile(ManagedAppConfig.RECONCILE_TENANT_PREFIX)
+                app._reconcile(ManagedAppConfig.RECONCILE_TENANT_CATEGORY)
 
     tenant.ready = True
     tenant.save()

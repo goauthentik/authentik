@@ -1,4 +1,5 @@
 """authentik tenants app"""
+
 from django.db import DEFAULT_DB_ALIAS
 from django.db.models.signals import post_migrate
 from django_tenants.utils import get_public_schema_name
@@ -15,7 +16,7 @@ def ensure_default_tenant(*args, using=DEFAULT_DB_ALIAS, **kwargs):
     with schema_context(get_public_schema_name()):
         Tenant.objects.using(using).update_or_create(
             defaults={"name": "Default", "ready": True},
-            schema_name="public",
+            schema_name=get_public_schema_name(),
         )
 
 
@@ -27,11 +28,8 @@ class AuthentikTenantsConfig(ManagedAppConfig):
     verbose_name = "authentik Tenants"
     default = True
 
-    def reconcile_global_load_checks(self):
-        """Load tenant checks"""
-        self.import_module("authentik.tenants.checks")
-
-    def reconcile_global_default_tenant(self):
+    @ManagedAppConfig.reconcile_global
+    def default_tenant(self):
         """Make sure default tenant exists, especially after a migration"""
         post_migrate.connect(ensure_default_tenant)
         ensure_default_tenant()

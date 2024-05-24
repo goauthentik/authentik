@@ -1,4 +1,5 @@
 """Event Matcher models"""
+
 from itertools import chain
 
 from django.apps import apps

@@ -1,4 +1,5 @@
 """API URLs"""
+
 from authentik.brands.api import BrandViewSet
 
 api_urlpatterns = [

@@ -33,7 +33,7 @@ Under _Providers_, create an OAuth2/OpenID provider with these settings:
 
 Create an application which uses this provider. Optionally apply access restrictions to the application.
 
-Set the Launch URL to `https://promox.company:8006`.
+Set the Launch URL to `https://proxmox.company:8006`.
 
 ## Proxmox VE Setup
 

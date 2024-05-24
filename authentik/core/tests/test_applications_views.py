@@ -1,4 +1,5 @@
 """Test Applications API"""
+
 from unittest.mock import MagicMock, patch
 
 from django.urls import reverse

@@ -1,4 +1,5 @@
 """Prompt Stage API Views"""
+
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.request import Request
@@ -8,7 +9,7 @@ from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.exceptions import PropertyMappingExpressionException
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.flows.api.stages import StageSerializer
 from authentik.flows.challenge import ChallengeTypes, HttpChallengeResponse
 from authentik.flows.planner import FlowPlan

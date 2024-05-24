@@ -18,24 +18,29 @@ import { customEvent } from "./helpers";
 
 @customElement("ak-library-list-search")
 export class LibraryPageApplicationList extends AKElement {
-    static styles = [
-        PFBase,
-        PFDisplay,
-        css`
-            input {
-                width: 30ch;
-                box-sizing: border-box;
-                border: 0;
-                border-bottom: 1px solid;
-                border-bottom-color: var(--ak-accent);
-                background-color: transparent;
-                font-size: 1.5rem;
-            }
-            input:focus {
-                outline: 0;
-            }
-        `,
-    ];
+    static get styles() {
+        return [
+            PFBase,
+            PFDisplay,
+            css`
+                input {
+                    width: 30ch;
+                    box-sizing: border-box;
+                    border: 0;
+                    border-bottom: 1px solid;
+                    border-bottom-color: var(--ak-accent);
+                    background-color: transparent;
+                    font-size: 1.5rem;
+                }
+                input:focus {
+                    outline: 0;
+                }
+                :host([theme="dark"]) input {
+                    color: var(--ak-dark-foreground) !important;
+                }
+            `,
+        ];
+    }
 
     @property({ attribute: false })
     set apps(value: Application[]) {

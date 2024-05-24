@@ -4,6 +4,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { actionToLabel } from "@goauthentik/common/labels";
 import { uiConfig } from "@goauthentik/common/ui/config";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-event-info";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
@@ -82,9 +83,9 @@ export class EventListPage extends TablePage<Event> {
             html`<div>${actionToLabel(item.action)}</div>
                 <small>${item.app}</small>`,
             EventUser(item),
-            html`<span>${item.created?.toLocaleString()}</span>`,
+            html`<div>${getRelativeTime(item.created)}</div>
+                <small>${item.created.toLocaleString()}</small>`,
             html`<div>${item.clientIp || msg("-")}</div>
-
                 <small>${EventGeo(item)}</small>`,
             html`<span>${item.brand?.name || msg("-")}</span>`,
             html`<a href="#/events/log/${item.pk}">
@@ -96,7 +97,7 @@ export class EventListPage extends TablePage<Event> {
     }
 
     renderExpanded(item: Event): TemplateResult {
-        return html` <td role="cell" colspan="3">
+        return html` <td role="cell" colspan="5">
                 <div class="pf-c-table__expandable-row-content">
                     <ak-event-info .event=${item as EventWithContext}></ak-event-info>
                 </div>

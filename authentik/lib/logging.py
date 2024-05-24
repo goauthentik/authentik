@@ -1,4 +1,5 @@
 """logging helpers"""
+
 import logging
 from logging import Logger
 from os import getpid
@@ -99,6 +100,8 @@ def get_logger_config():
         "fsevents": "WARNING",
         "uvicorn": "WARNING",
         "gunicorn": "INFO",
+        "requests_mock": "WARNING",
+        "hpack": "WARNING",
     }
     for handler_name, level in handler_level_map.items():
         base_config["loggers"][handler_name] = {

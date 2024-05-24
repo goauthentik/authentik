@@ -1,4 +1,5 @@
 """Apply blueprint from commandline"""
+
 from sys import exit as sys_exit
 
 from django.core.management.base import BaseCommand, no_translations

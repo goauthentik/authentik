@@ -1,7 +1,8 @@
 """Blueprint importer"""
+
 from contextlib import contextmanager
 from copy import deepcopy
-from typing import Any, Optional
+from typing import Any
 
 from dacite.config import Config
 from dacite.core import from_dict
@@ -18,8 +19,6 @@ from guardian.models import UserObjectPermission
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import BaseSerializer, Serializer
 from structlog.stdlib import BoundLogger, get_logger
-from structlog.testing import capture_logs
-from structlog.types import EventDict
 from yaml import load
 
 from authentik.blueprints.v1.common import (
@@ -38,8 +37,18 @@ from authentik.core.models import (
     Source,
     UserSourceConnection,
 )
-from authentik.enterprise.models import LicenseKey, LicenseUsage
+from authentik.enterprise.license import LicenseKey
+from authentik.enterprise.models import LicenseUsage
+from authentik.enterprise.providers.google_workspace.models import (
+    GoogleWorkspaceProviderGroup,
+    GoogleWorkspaceProviderUser,
+)
+from authentik.enterprise.providers.microsoft_entra.models import (
+    MicrosoftEntraProviderGroup,
+    MicrosoftEntraProviderUser,
+)
 from authentik.enterprise.providers.rac.models import ConnectionToken
+from authentik.events.logs import LogEvent, capture_logs
 from authentik.events.models import SystemTask
 from authentik.events.utils import cleanse_dict
 from authentik.flows.models import FlowToken, Stage
@@ -50,6 +59,8 @@ from authentik.policies.models import Policy, PolicyBindingModel
 from authentik.policies.reputation.models import Reputation
 from authentik.providers.oauth2.models import AccessToken, AuthorizationCode, RefreshToken
 from authentik.providers.scim.models import SCIMGroup, SCIMUser
+from authentik.sources.scim.models import SCIMSourceGroup, SCIMSourceUser
+from authentik.stages.authenticator_webauthn.models import WebAuthnDeviceType
 from authentik.tenants.models import Tenant
 
 # Context set when the serializer is created in a blueprint context
@@ -60,7 +71,7 @@ SERIALIZER_CONTEXT_BLUEPRINT = "blueprint_entry"
 def excluded_models() -> list[type[Model]]:
     """Return a list of all excluded models that shouldn't be exposed via API
     or other means (internal only, base classes, non-used objects, etc)"""
-    # pylint: disable=imported-auth-user
+
     from django.contrib.auth.models import Group as DjangoGroup
     from django.contrib.auth.models import User as DjangoUser
 
@@ -83,6 +94,7 @@ def excluded_models() -> list[type[Model]]:
         # Classes that have other dependencies
         AuthenticatedSession,
         # Classes which are only internally managed
+        # FIXME: these shouldn't need to be explicitly listed, but rather based off of a mixin
         FlowToken,
         LicenseUsage,
         SCIMGroup,
@@ -94,12 +106,19 @@ def excluded_models() -> list[type[Model]]:
         AccessToken,
         RefreshToken,
         Reputation,
+        WebAuthnDeviceType,
+        SCIMSourceUser,
+        SCIMSourceGroup,
+        GoogleWorkspaceProviderUser,
+        GoogleWorkspaceProviderGroup,
+        MicrosoftEntraProviderUser,
+        MicrosoftEntraProviderGroup,
     )
 
 
 def is_model_allowed(model: type[Model]) -> bool:
     """Check if model is allowed"""
-    return model not in excluded_models() and issubclass(model, (SerializerModel, BaseMetaModel))
+    return model not in excluded_models() and issubclass(model, SerializerModel | BaseMetaModel)
 
 
 class DoRollback(SentryIgnoredException):
@@ -123,7 +142,7 @@ class Importer:
     logger: BoundLogger
     _import: Blueprint
 
-    def __init__(self, blueprint: Blueprint, context: Optional[dict] = None):
+    def __init__(self, blueprint: Blueprint, context: dict | None = None):
         self.__pk_map: dict[Any, Model] = {}
         self._import = blueprint
         self.logger = get_logger()
@@ -159,14 +178,14 @@ class Importer:
 
         def updater(value) -> Any:
             if value in self.__pk_map:
-                self.logger.debug("updating reference in entry", value=value)
+                self.logger.debug("Updating reference in entry", value=value)
                 return self.__pk_map[value]
             return value
 
         for key, value in attrs.items():
             try:
                 if isinstance(value, dict):
-                    for idx, _inner_key in enumerate(value):
+                    for _, _inner_key in enumerate(value):
                         value[_inner_key] = updater(value[_inner_key])
                 elif isinstance(value, list):
                     for idx, _inner_value in enumerate(value):
@@ -195,8 +214,7 @@ class Importer:
 
         return main_query | sub_query
 
-    # pylint: disable-msg=too-many-locals
-    def _validate_single(self, entry: BlueprintEntry) -> Optional[BaseSerializer]:
+    def _validate_single(self, entry: BlueprintEntry) -> BaseSerializer | None:
         """Validate a single entry"""
         if not entry.check_all_conditions_match(self._import):
             self.logger.debug("One or more conditions of this entry are not fulfilled, skipping")
@@ -249,7 +267,7 @@ class Importer:
         model_instance = existing_models.first()
         if not isinstance(model(), BaseMetaModel) and model_instance:
             self.logger.debug(
-                "initialise serializer with instance",
+                "Initialise serializer with instance",
                 model=model,
                 instance=model_instance,
                 pk=model_instance.pk,
@@ -259,14 +277,14 @@ class Importer:
         elif model_instance and entry.state == BlueprintEntryDesiredState.MUST_CREATED:
             raise EntryInvalidError.from_entry(
                 (
-                    f"state is set to {BlueprintEntryDesiredState.MUST_CREATED} "
+                    f"State is set to {BlueprintEntryDesiredState.MUST_CREATED} "
                     "and object exists already",
                 ),
                 entry,
             )
         else:
             self.logger.debug(
-                "initialised new serializer instance",
+                "Initialised new serializer instance",
                 model=model,
                 **cleanse_dict(updated_identifiers),
             )
@@ -323,7 +341,7 @@ class Importer:
                 model: type[SerializerModel] = registry.get_model(model_app_label, model_name)
             except LookupError:
                 self.logger.warning(
-                    "app or model does not exist", app=model_app_label, model=model_name
+                    "App or Model does not exist", app=model_app_label, model=model_name
                 )
                 return False
             # Validate each single entry
@@ -335,7 +353,7 @@ class Importer:
                 if entry.get_state(self._import) == BlueprintEntryDesiredState.ABSENT:
                     serializer = exc.serializer
                 else:
-                    self.logger.warning(f"entry invalid: {exc}", entry=entry, error=exc)
+                    self.logger.warning(f"Entry invalid: {exc}", entry=entry, error=exc)
                     if raise_errors:
                         raise exc
                     return False
@@ -355,27 +373,27 @@ class Importer:
                     and state == BlueprintEntryDesiredState.CREATED
                 ):
                     self.logger.debug(
-                        "instance exists, skipping",
+                        "Instance exists, skipping",
                         model=model,
                         instance=instance,
                         pk=instance.pk,
                     )
                 else:
                     instance = serializer.save()
-                    self.logger.debug("updated model", model=instance)
+                    self.logger.debug("Updated model", model=instance)
                 if "pk" in entry.identifiers:
                     self.__pk_map[entry.identifiers["pk"]] = instance.pk
                 entry._state = BlueprintEntryState(instance)
             elif state == BlueprintEntryDesiredState.ABSENT:
-                instance: Optional[Model] = serializer.instance
+                instance: Model | None = serializer.instance
                 if instance.pk:
                     instance.delete()
-                    self.logger.debug("deleted model", mode=instance)
+                    self.logger.debug("Deleted model", mode=instance)
                     continue
-                self.logger.debug("entry to delete with no instance, skipping")
+                self.logger.debug("Entry to delete with no instance, skipping")
         return True
 
-    def validate(self, raise_validation_errors=False) -> tuple[bool, list[EventDict]]:
+    def validate(self, raise_validation_errors=False) -> tuple[bool, list[LogEvent]]:
         """Validate loaded blueprint export, ensure all models are allowed
         and serializers have no errors"""
         self.logger.debug("Starting blueprint import validation")
@@ -389,9 +407,7 @@ class Importer:
         ):
             successful = self._apply_models(raise_errors=raise_validation_errors)
             if not successful:
-                self.logger.debug("Blueprint validation failed")
-        for log in logs:
-            getattr(self.logger, log.get("log_level"))(**log)
+                self.logger.warning("Blueprint validation failed")
         self.logger.debug("Finished blueprint import validation")
         self._import = orig_import
         return successful, logs

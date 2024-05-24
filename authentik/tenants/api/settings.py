@@ -1,4 +1,5 @@
 """Serializer for tenants models"""
+
 from django_tenants.utils import get_public_schema_name
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import SAFE_METHODS
@@ -24,6 +25,8 @@ class SettingsSerializer(ModelSerializer):
             "impersonation",
             "user_directory_fields",
             "user_directory_attributes",
+            "default_token_duration",
+            "default_token_length",
         ]
 
 

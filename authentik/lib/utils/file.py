@@ -1,4 +1,5 @@
 """file utils"""
+
 from django.db.models import Model
 from django.http import HttpResponseBadRequest
 from rest_framework.fields import BooleanField, CharField, FileField

@@ -1,10 +1,11 @@
 """authentik core celery"""
+
 import os
+from collections.abc import Callable
 from contextvars import ContextVar
 from logging.config import dictConfig
 from pathlib import Path
 from tempfile import gettempdir
-from typing import Callable
 
 from celery import bootsteps
 from celery.apps.worker import Worker
@@ -62,7 +63,7 @@ def task_prerun_hook(task_id: str, task, *args, **kwargs):
 
 
 @task_postrun.connect
-def task_postrun_hook(task_id, task, *args, retval=None, state=None, **kwargs):
+def task_postrun_hook(task_id: str, task, *args, retval=None, state=None, **kwargs):
     """Log task_id on worker"""
     CTX_TASK_ID.set(...)
     LOGGER.info(
@@ -72,14 +73,16 @@ def task_postrun_hook(task_id, task, *args, retval=None, state=None, **kwargs):
 
 @task_failure.connect
 @task_internal_error.connect
-def task_error_hook(task_id, exception: Exception, traceback, *args, **kwargs):
+def task_error_hook(task_id: str, exception: Exception, traceback, *args, **kwargs):
     """Create system event for failed task"""
     from authentik.events.models import Event, EventAction
 
-    LOGGER.warning("Task failure", exc=exception)
+    LOGGER.warning("Task failure", task_id=task_id.replace("-", ""), exc=exception)
     CTX_TASK_ID.set(...)
     if before_send({}, {"exc_info": (None, exception, None)}) is not None:
-        Event.new(EventAction.SYSTEM_EXCEPTION, message=exception_to_string(exception)).save()
+        Event.new(
+            EventAction.SYSTEM_EXCEPTION, message=exception_to_string(exception), task_id=task_id
+        ).save()
 
 
 def _get_startup_tasks_default_tenant() -> list[Callable]:
@@ -90,13 +93,10 @@ def _get_startup_tasks_default_tenant() -> list[Callable]:
 def _get_startup_tasks_all_tenants() -> list[Callable]:
     """Get all tasks to be run on startup for all tenants"""
     from authentik.admin.tasks import clear_update_notifications
-    from authentik.outposts.tasks import outpost_connection_discovery, outpost_controller_all
     from authentik.providers.proxy.tasks import proxy_set_defaults
 
     return [
         clear_update_notifications,
-        outpost_connection_discovery,
-        outpost_controller_all,
         proxy_set_defaults,
     ]
 

@@ -7,11 +7,10 @@ import "./oauth/ak-application-wizard-authentication-by-oauth";
 import "./proxy/ak-application-wizard-authentication-for-forward-domain-proxy";
 import "./proxy/ak-application-wizard-authentication-for-reverse-proxy";
 import "./proxy/ak-application-wizard-authentication-for-single-forward-proxy";
+import "./rac/ak-application-wizard-authentication-for-rac";
 import "./radius/ak-application-wizard-authentication-by-radius";
 import "./saml/ak-application-wizard-authentication-by-saml-configuration";
 import "./scim/ak-application-wizard-authentication-by-scim";
-
-// prettier-ignore
 
 @customElement("ak-application-wizard-authentication-method")
 export class ApplicationWizardApplicationDetails extends BasePanel {

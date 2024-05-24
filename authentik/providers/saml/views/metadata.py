@@ -1,4 +1,5 @@
 """metadata redirect"""
+
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse

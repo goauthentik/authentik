@@ -1,4 +1,3 @@
-import { first } from "@goauthentik/app/common/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { docLink } from "@goauthentik/common/global";
 import "@goauthentik/elements/CodeMirror";
@@ -6,6 +5,8 @@ import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "@goauthentik/elements/forms/Radio";
+import type { RadioOption } from "@goauthentik/elements/forms/Radio";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -13,6 +14,23 @@ import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import { PropertymappingsApi, RACPropertyMapping } from "@goauthentik/api";
+
+export const staticSettingOptions: RadioOption<string | undefined>[] = [
+    {
+        label: msg("Unconfigured"),
+        value: undefined,
+        default: true,
+        description: html`${msg("This option will not be changed by this mapping.")}`,
+    },
+    {
+        label: msg("Enabled"),
+        value: "true",
+    },
+    {
+        label: msg("Disabled"),
+        value: "false",
+    },
+];
 
 @customElement("ak-property-mapping-rac-form")
 export class PropertyMappingLDAPForm extends ModelForm<RACPropertyMapping, string> {
@@ -33,7 +51,7 @@ export class PropertyMappingLDAPForm extends ModelForm<RACPropertyMapping, strin
     async send(data: RACPropertyMapping): Promise<RACPropertyMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsRacUpdate({
-                pmUuid: this.instance.pk || "",
+                pmUuid: this.instance.pk,
                 rACPropertyMappingRequest: data,
             });
         } else {
@@ -58,7 +76,6 @@ export class PropertyMappingLDAPForm extends ModelForm<RACPropertyMapping, strin
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Username")}
-                        ?required=${true}
                         name="staticSettings.username"
                     >
                         <input
@@ -70,7 +87,6 @@ export class PropertyMappingLDAPForm extends ModelForm<RACPropertyMapping, strin
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Password")}
-                        ?required=${true}
                         name="staticSettings.password"
                     >
                         <input
@@ -85,81 +101,45 @@ export class PropertyMappingLDAPForm extends ModelForm<RACPropertyMapping, strin
             <ak-form-group>
                 <span slot="header"> ${msg("RDP settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal name="staticSettings.ignore-cert">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${first(
-                                    this.instance?.staticSettings["ignore-cert"],
-                                    false,
-                                )}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg("Ignore server certificate")}</span
-                            >
-                        </label>
+                    <ak-form-element-horizontal
+                        label=${msg("Ignore server certificate")}
+                        name="staticSettings.ignore-cert"
+                    >
+                        <ak-radio
+                            .options=${staticSettingOptions}
+                            .value=${this.instance?.staticSettings["ignore-cert"]}
+                        >
+                        </ak-radio>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="staticSettings.enable-wallpaper">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${first(
-                                    this.instance?.staticSettings["enable-wallpaper"],
-                                    false,
-                                )}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label">${msg("Enable wallpaper")}</span>
-                        </label>
+                    <ak-form-element-horizontal
+                        label=${msg("Enable wallpaper")}
+                        name="staticSettings.enable-wallpaper"
+                    >
+                        <ak-radio
+                            .options=${staticSettingOptions}
+                            .value=${this.instance?.staticSettings["enable-wallpaper"]}
+                        >
+                        </ak-radio>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="staticSettings.enable-font-smoothing">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${first(
-                                    this.instance?.staticSettings["enable-font-smoothing"],
-                                    false,
-                                )}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label">${msg("Enable font-smoothing")}</span>
-                        </label>
+                    <ak-form-element-horizontal
+                        label=${msg("Enable font-smoothing")}
+                        name="staticSettings.enable-font-smoothing"
+                    >
+                        <ak-radio
+                            .options=${staticSettingOptions}
+                            .value=${this.instance?.staticSettings["enable-font-smoothing"]}
+                        >
+                        </ak-radio>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="staticSettings.enable-full-window-drag">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${first(
-                                    this.instance?.staticSettings["enable-full-window-drag"],
-                                    false,
-                                )}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg("Enable full window dragging")}</span
-                            >
-                        </label>
+                    <ak-form-element-horizontal
+                        label=${msg("Enable full window dragging")}
+                        name="staticSettings.enable-full-window-drag"
+                    >
+                        <ak-radio
+                            .options=${staticSettingOptions}
+                            .value=${this.instance?.staticSettings["enable-full-window-drag"]}
+                        >
+                        </ak-radio>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

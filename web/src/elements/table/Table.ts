@@ -1,5 +1,5 @@
-import { APIErrorTypes, parseAPIError } from "@goauthentik/app/common/errors";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { APIErrorTypes, parseAPIError } from "@goauthentik/common/errors";
 import { groupBy } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
@@ -119,11 +119,19 @@ export abstract class Table<T> extends AKElement implements TableLike {
     @property({ type: Number })
     page = getURLParam("tablePage", 1);
 
+    /** @prop
+     *
+     * Set if your `selectedElements` use of the selection box is to enable bulk-delete, so that
+     * stale data is cleared out when the API returns a new list minus the deleted entries.
+     */
+    @property({ attribute: "clear-on-refresh", type: Boolean, reflect: true })
+    clearOnRefresh = false;
+
     @property({ type: String })
     order?: string;
 
     @property({ type: String })
-    search: string = getURLParam("search", "");
+    search: string = "";
 
     @property({ type: Boolean })
     checkbox = false;
@@ -172,15 +180,27 @@ export abstract class Table<T> extends AKElement implements TableLike {
                 .pf-c-table tbody .pf-c-table__check input {
                     margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
                 }
+                .pf-c-toolbar__content {
+                    row-gap: var(--pf-global--spacer--sm);
+                }
+                .pf-c-toolbar__item .pf-c-input-group {
+                    padding: 0 var(--pf-global--spacer--sm);
+                }
             `,
         ];
     }
 
     constructor() {
         super();
-        this.addEventListener(EVENT_REFRESH, () => {
-            this.fetch();
+        this.addEventListener(EVENT_REFRESH, async () => {
+            await this.fetch();
+            if (this.clearOnRefresh) {
+                this.selectedElements = [];
+            }
         });
+        if (this.searchEnabled()) {
+            this.search = getURLParam("search", "");
+        }
     }
 
     public groupBy(items: T[]): [string, T[]][] {

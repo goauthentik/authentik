@@ -1,4 +1,5 @@
 """Recovery helper functions."""
+
 from datetime import datetime
 
 from django.urls import reverse

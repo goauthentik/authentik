@@ -1,4 +1,5 @@
 """OAuth Source Exception"""
+
 from authentik.lib.sentry import SentryIgnoredException
 
 

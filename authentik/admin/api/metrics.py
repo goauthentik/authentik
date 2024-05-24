@@ -1,4 +1,5 @@
 """authentik administration metrics"""
+
 from datetime import timedelta
 
 from django.db.models.functions import ExtractHour

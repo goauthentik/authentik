@@ -1,9 +1,11 @@
-import { uiConfig } from "@goauthentik/app/common/ui/config";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { uiConfig } from "@goauthentik/common/ui/config";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/events/LogViewer";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
@@ -30,6 +32,10 @@ export class SystemTaskListPage extends TablePage<SystemTask> {
     }
 
     expandable = true;
+
+    searchEnabled(): boolean {
+        return true;
+    }
 
     @property()
     order = "name";
@@ -86,13 +92,32 @@ export class SystemTaskListPage extends TablePage<SystemTask> {
                         </div>
                         <div class="pf-c-description-list__group">
                             <dt class="pf-c-description-list__term">
+                                <span class="pf-c-description-list__text">${msg("Expiry")}</span>
+                            </dt>
+                            <dd class="pf-c-description-list__description">
+                                <div class="pf-c-description-list__text">
+                                    ${item.expiring
+                                        ? html`
+                                              <pf-tooltip
+                                                  position="top"
+                                                  content=${(
+                                                      item.expires || new Date()
+                                                  ).toLocaleString()}
+                                              >
+                                                  ${getRelativeTime(item.expires || new Date())}
+                                              </pf-tooltip>
+                                          `
+                                        : msg("-")}
+                                </div>
+                            </dd>
+                        </div>
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">
                                 <span class="pf-c-description-list__text">${msg("Messages")}</span>
                             </dt>
                             <dd class="pf-c-description-list__description">
                                 <div class="pf-c-description-list__text">
-                                    ${item.messages.map((m) => {
-                                        return html`<li>${m}</li>`;
-                                    })}
+                                    <ak-log-viewer .logs=${item?.messages}></ak-log-viewer>
                                 </div>
                             </dd>
                         </div>
@@ -105,9 +130,10 @@ export class SystemTaskListPage extends TablePage<SystemTask> {
 
     row(item: SystemTask): TemplateResult[] {
         return [
-            html`${item.name}${item.uid ? `:${item.uid}` : ""}`,
+            html`<pre>${item.name}${item.uid ? `:${item.uid}` : ""}</pre>`,
             html`${item.description}`,
-            html`${item.finishTimestamp.toLocaleString()}`,
+            html`<div>${getRelativeTime(item.finishTimestamp)}</div>
+                <small>${item.finishTimestamp.toLocaleString()}</small>`,
             this.taskStatus(item),
             html`<ak-action-button
                 class="pf-m-plain"

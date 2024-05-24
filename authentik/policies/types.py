@@ -1,8 +1,9 @@
 """policy structures"""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from django.db.models import Model
 from django.http import HttpRequest
@@ -12,6 +13,7 @@ from authentik.events.context_processors.base import get_context_processors
 
 if TYPE_CHECKING:
     from authentik.core.models import User
+    from authentik.events.logs import LogEvent
     from authentik.policies.models import PolicyBinding
 
 LOGGER = get_logger()
@@ -23,8 +25,8 @@ class PolicyRequest:
     """Data-class to hold policy request data"""
 
     user: User
-    http_request: Optional[HttpRequest]
-    obj: Optional[Model]
+    http_request: HttpRequest | None
+    obj: Model | None
     context: dict[str, Any]
     debug: bool
 
@@ -70,10 +72,10 @@ class PolicyResult:
     messages: tuple[str, ...]
     raw_result: Any
 
-    source_binding: Optional["PolicyBinding"]
-    source_results: Optional[list["PolicyResult"]]
+    source_binding: PolicyBinding | None
+    source_results: list[PolicyResult] | None
 
-    log_messages: Optional[list[dict]]
+    log_messages: list[LogEvent] | None
 
     def __init__(self, passing: bool, *messages: str):
         self.passing = passing

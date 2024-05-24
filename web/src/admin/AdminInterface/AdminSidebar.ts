@@ -122,7 +122,7 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(AKElement) {
                 ["/events/log", msg("Logs"), [`^/events/log/(?<id>${UUID_REGEX})$`]],
                 ["/events/rules", msg("Notification Rules")],
                 ["/events/transports", msg("Notification Transports")]]],
-            [null, msg("Customisation"), null, [
+            [null, msg("Customization"), null, [
                 ["/policy/policies", msg("Policies")],
                 ["/core/property-mappings", msg("Property Mappings")],
                 ["/blueprints/instances", msg("Blueprints")],
@@ -166,7 +166,7 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(AKElement) {
             ${this.renderNewVersionMessage()}
             ${this.renderImpersonationMessage()}
             ${map(sidebarContent, renderOneSidebarItem)}
-            ${this.renderEnterpriseMessage()}
+            ${this.renderEnterpriseMenu()}
         `;
     }
 
@@ -199,7 +199,7 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(AKElement) {
             : nothing;
     }
 
-    renderEnterpriseMessage() {
+    renderEnterpriseMenu() {
         return this.can(CapabilitiesEnum.IsEnterprise)
             ? html`
                   <ak-sidebar-item>

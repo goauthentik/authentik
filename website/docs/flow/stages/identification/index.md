@@ -12,7 +12,7 @@ Select which fields the user can use to identify themselves. Multiple fields can
 -   Email
 -   UPN
 
-    UPN will attempt to identify the user based on the `upn` attribute, which can be imported with an [LDAP Source](/integrations/sources/ldap/)
+    UPN will attempt to identify the user based on the `upn` attribute, which can be imported with an [LDAP Source](/docs/sources/ldap/)
 
 ## Password stage
 
@@ -25,14 +25,14 @@ These fields specify if and which flows are linked on the form. The enrollment f
 ## Pretend user exists
 
 :::info
-Requires authentik 2024.1
+Requires authentik 2024.2
 :::
 
 When enabled, any user identifier will be accepted as valid (as long as they match the correct format, i.e. when [User fields](#user-fields) is set to only allow Emails, then the identifier still needs to be an Email). The stage will succeed and the flow will continue to the next stage. Stages like the [Password stage](../password/index.md) and [Email stage](../email/index.mdx) are aware of this "pretend" user and will behave the same as if the user would exist.
 
 ## Source settings
 
-Some sources (like the [OAuth Source](../../../../integrations/sources/oauth/) and [SAML Source](../../../../integrations/sources/saml/)) require user interaction. To make these sources available to users, they can be selected in the Identification stage settings, which will show them below the selected [user field](#user-fields).
+Some sources (like the [OAuth Source](../../../../docs/sources/oauth/) and [SAML Source](../../../../docs/sources/saml/)) require user interaction. To make these sources available to users, they can be selected in the Identification stage settings, which will show them below the selected [user field](#user-fields).
 
 By default, sources are only shown with their icon, which can be changed with the _Show sources' labels_ option.
 

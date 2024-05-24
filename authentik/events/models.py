@@ -1,4 +1,5 @@
 """authentik events models"""
+
 import time
 from collections import Counter
 from datetime import timedelta
@@ -6,11 +7,10 @@ from difflib import get_close_matches
 from functools import lru_cache
 from inspect import currentframe
 from smtplib import SMTPException
-from typing import Optional
 from uuid import uuid4
 
 from django.apps import apps
-from django.db import models
+from django.db import connection, models
 from django.db.models import Count, ExpressionWrapper, F
 from django.db.models.fields import DurationField
 from django.db.models.functions import Extract
@@ -51,6 +51,8 @@ from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()
+DISCORD_FIELD_LIMIT = 25
+NOTIFICATION_SUMMARY_LENGTH = 75
 
 
 def default_event_duration():
@@ -64,7 +66,7 @@ def default_brand():
     return sanitize_dict(model_to_dict(DEFAULT_BRAND))
 
 
-@lru_cache()
+@lru_cache
 def django_app_names() -> list[str]:
     """Get a cached list of all django apps' names (not labels)"""
     return [x.name for x in apps.app_configs.values()]
@@ -197,7 +199,7 @@ class Event(SerializerModel, ExpiringModel):
     @staticmethod
     def new(
         action: str | EventAction,
-        app: Optional[str] = None,
+        app: str | None = None,
         **kwargs,
     ) -> "Event":
         """Create new Event instance from arguments. Instance is NOT saved."""
@@ -209,8 +211,9 @@ class Event(SerializerModel, ExpiringModel):
             app = parent.f_globals["__name__"]
             # Attempt to match the calling module to the django app it belongs to
             # if we can't find a match, keep the module name
-            django_apps = get_close_matches(app, django_app_names(), n=1)
-            if len(django_apps) > 0:
+            django_apps: list[str] = get_close_matches(app, django_app_names(), n=1)
+            # Also ensure that closest django app has the correct prefix
+            if len(django_apps) > 0 and django_apps[0].startswith(app):
                 app = django_apps[0]
         cleaned_kwargs = cleanse_dict(sanitize_dict(kwargs))
         event = Event(action=action, app=app, context=cleaned_kwargs)
@@ -222,7 +225,7 @@ class Event(SerializerModel, ExpiringModel):
         self.user = get_user(user)
         return self
 
-    def from_http(self, request: HttpRequest, user: Optional[User] = None) -> "Event":
+    def from_http(self, request: HttpRequest, user: User | None = None) -> "Event":
         """Add data from a Django-HttpRequest, allowing the creation of
         Events independently from requests.
         `user` arguments optionally overrides user from requests."""
@@ -302,6 +305,16 @@ class Event(SerializerModel, ExpiringModel):
     class Meta:
         verbose_name = _("Event")
         verbose_name_plural = _("Events")
+        indexes = [
+            models.Index(fields=["action"]),
+            models.Index(fields=["user"]),
+            models.Index(fields=["app"]),
+            models.Index(fields=["created"]),
+            models.Index(fields=["client_ip"]),
+            models.Index(
+                models.F("context__authorized_application"), name="authentik_e_ctx_app__idx"
+            ),
+        ]
 
 
 class TransportMode(models.TextChoices):
@@ -416,7 +429,7 @@ class NotificationTransport(SerializerModel):
                 if not isinstance(value, str):
                     continue
                 # https://birdie0.github.io/discord-webhooks-guide/other/field_limits.html
-                if len(fields) >= 25:
+                if len(fields) >= DISCORD_FIELD_LIMIT:
                     continue
                 fields.append({"title": key[:256], "value": value[:1024]})
         body = {
@@ -449,6 +462,13 @@ class NotificationTransport(SerializerModel):
 
     def send_email(self, notification: "Notification") -> list[str]:
         """Send notification via global email configuration"""
+        if notification.user.email.strip() == "":
+            LOGGER.info(
+                "Discarding notification as user has no email address",
+                user=notification.user,
+                notification=notification,
+            )
+            return None
         subject_prefix = "authentik Notification: "
         context = {
             "key_value": {
@@ -470,7 +490,7 @@ class NotificationTransport(SerializerModel):
                     continue
                 context["key_value"][key] = value
         else:
-            context["title"] += notification.body[:75]
+            context["title"] += notification.body[:NOTIFICATION_SUMMARY_LENGTH]
         # TODO: improve permission check
         if notification.user.is_superuser:
             context["source"] = {
@@ -478,7 +498,7 @@ class NotificationTransport(SerializerModel):
             }
         mail = TemplateEmailMessage(
             subject=subject_prefix + context["title"],
-            to=[f"{notification.user.name} <{notification.user.email}>"],
+            to=[(notification.user.name, notification.user.email)],
             language=notification.user.locale(),
             template_name="email/event_notification.html",
             template_context=context,
@@ -487,7 +507,7 @@ class NotificationTransport(SerializerModel):
         try:
             from authentik.stages.email.tasks import send_mail
 
-            return send_mail(mail.__dict__)  # pylint: disable=no-value-for-parameter
+            return send_mail(mail.__dict__)
         except (SMTPException, ConnectionError, OSError) as exc:
             raise NotificationTransportError(exc) from exc
 
@@ -531,8 +551,12 @@ class Notification(SerializerModel):
         return NotificationSerializer
 
     def __str__(self) -> str:
-        body_trunc = (self.body[:75] + "..") if len(self.body) > 75 else self.body
-        return f"Notification for user {self.user}: {body_trunc}"
+        body_trunc = (
+            (self.body[:NOTIFICATION_SUMMARY_LENGTH] + "..")
+            if len(self.body) > NOTIFICATION_SUMMARY_LENGTH
+            else self.body
+        )
+        return f"Notification for user {self.user_id}: {body_trunc}"
 
     class Meta:
         verbose_name = _("Notification")
@@ -618,8 +642,9 @@ class SystemTask(SerializerModel, ExpiringModel):
     name = models.TextField()
     uid = models.TextField(null=True)
 
-    start_timestamp = models.FloatField()
-    finish_timestamp = models.FloatField()
+    start_timestamp = models.DateTimeField(default=now)
+    finish_timestamp = models.DateTimeField(default=now)
+    duration = models.FloatField(default=0)
 
     status = models.TextField(choices=TaskStatus.choices)
 
@@ -639,15 +664,20 @@ class SystemTask(SerializerModel, ExpiringModel):
 
     def update_metrics(self):
         """Update prometheus metrics"""
-        duration = max(self.finish_timestamp - self.start_timestamp, 0)
         # TODO: Deprecated metric - remove in 2024.2 or later
         GAUGE_TASKS.labels(
+            tenant=connection.schema_name,
             task_name=self.name,
             task_uid=self.uid or "",
             status=self.status.lower(),
-        ).set(duration)
-        SYSTEM_TASK_TIME.observe(duration)
+        ).set(self.duration)
+        SYSTEM_TASK_TIME.labels(
+            tenant=connection.schema_name,
+            task_name=self.name,
+            task_uid=self.uid or "",
+        ).observe(self.duration)
         SYSTEM_TASK_STATUS.labels(
+            tenant=connection.schema_name,
             task_name=self.name,
             task_uid=self.uid or "",
             status=self.status.lower(),

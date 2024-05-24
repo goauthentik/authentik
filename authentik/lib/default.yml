@@ -10,6 +10,10 @@ postgresql:
   use_pgpool: false
   test:
     name: test_authentik
+  read_replicas: {}
+  # For example
+  # 0:
+  #   host: replica1.example.com
 
 listen:
   listen_http: 0.0.0.0:9000
@@ -35,6 +39,7 @@ redis:
   password: ""
   tls: false
   tls_reqs: "none"
+  tls_ca_cert: null
 
 # broker:
 #   url: ""
@@ -52,11 +57,14 @@ cache:
 
 # result_backend:
 #   url: ""
+#   transport_options: ""
 
 debug: false
 remote_debug: false
 
 log_level: info
+
+session_storage: cache
 
 error_reporting:
   enabled: false
@@ -110,7 +118,6 @@ events:
     asn: "/geoip/GeoLite2-ASN.mmdb"
 
 cert_discovery_dir: /certs
-default_token_length: 60
 
 tenants:
   enabled: false

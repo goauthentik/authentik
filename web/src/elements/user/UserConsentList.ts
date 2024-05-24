@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
@@ -25,6 +26,7 @@ export class UserConsentList extends Table<UserConsent> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
     order = "-expires";
 
     columns(): TableColumn[] {
@@ -60,7 +62,10 @@ export class UserConsentList extends Table<UserConsent> {
     row(item: UserConsent): TemplateResult[] {
         return [
             html`${item.application.name}`,
-            html`${item.expires?.toLocaleString()}`,
+            html`${item.expires && item.expiring
+                ? html`<div>${getRelativeTime(item.expires)}</div>
+                      <small>${item.expires.toLocaleString()}</small>`
+                : msg("-")}`,
             html`${item.permissions || "-"}`,
         ];
     }

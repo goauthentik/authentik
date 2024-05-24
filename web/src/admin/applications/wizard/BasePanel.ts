@@ -4,7 +4,7 @@ import { KeyUnknown, serializeForm } from "@goauthentik/elements/forms/Form";
 import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
-import { consume } from "@lit-labs/context";
+import { consume } from "@lit/context";
 import { query } from "@lit/reactive-element/decorators.js";
 
 import { styles as AwadStyles } from "./BasePanel.css";

@@ -1,8 +1,9 @@
 """SCIM Sync"""
+
 from structlog.stdlib import get_logger
 
 from authentik.providers.scim.models import SCIMProvider
-from authentik.providers.scim.tasks import scim_sync
+from authentik.providers.scim.tasks import scim_sync, sync_tasks
 from authentik.tenants.management import TenantCommand
 
 LOGGER = get_logger()
@@ -20,4 +21,4 @@ class Command(TenantCommand):
             if not provider:
                 LOGGER.warning("Provider does not exist", name=provider_name)
                 continue
-            scim_sync.delay(provider.pk).get()
+            sync_tasks.trigger_single_task(provider, scim_sync).get()

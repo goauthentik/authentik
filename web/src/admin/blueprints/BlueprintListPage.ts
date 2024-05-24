@@ -2,6 +2,7 @@ import "@goauthentik/admin/blueprints/BlueprintForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { uiConfig } from "@goauthentik/common/ui/config";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
@@ -58,6 +59,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
 
     expandable = true;
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "name";
@@ -143,7 +145,8 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
             html`<div>${item.name}</div>
                 ${description ? html`<small>${description}</small>` : html``}`,
             html`${BlueprintStatus(item)}`,
-            html`${item.lastApplied.toLocaleString()}`,
+            html`<div>${getRelativeTime(item.lastApplied)}</div>
+                <small>${item.lastApplied.toLocaleString()}</small>`,
             html`<ak-status-label ?good=${item.enabled}></ak-status-label>`,
             html`<ak-forms-modal>
                     <span slot="submit"> ${msg("Update")} </span>

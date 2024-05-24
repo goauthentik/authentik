@@ -42,7 +42,7 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
     async send(data: SCIMProvider): Promise<SCIMProvider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersScimUpdate({
-                id: this.instance.pk || 0,
+                id: this.instance.pk,
                 sCIMProviderRequest: data,
             });
         } else {
@@ -119,6 +119,7 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
                                 const args: CoreGroupsListRequest = {
                                     ordering: "name",
+                                    includeUsers: false,
                                 };
                                 if (query !== undefined) {
                                     args.search = query;
@@ -151,7 +152,6 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("User Property Mappings")}
-                        ?required=${true}
                         name="propertyMappings"
                     >
                         <select class="pf-c-form-control" multiple>
@@ -185,7 +185,6 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Group Property Mappings")}
-                        ?required=${true}
                         name="propertyMappingsGroup"
                     >
                         <select class="pf-c-form-control" multiple>

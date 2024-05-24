@@ -44,8 +44,8 @@ In Portainer, under _Settings_, _Authentication_, Select _OAuth_ and _Custom_
 -   Client Secret: Client Secret from step 1
 -   Authorization URL: `https://authentik.company/application/o/authorize/`
 -   Access Token URL: `https://authentik.company/application/o/token/`
--   Redirect URL: `https://portainer.company`
 -   Resource URL: `https://authentik.company/application/o/userinfo/`
+-   Redirect URL: `https://portainer.company/`
 -   Logout URL: `https://authentik.company/application/o/portainer/end-session/`
 -   User Identifier: `preferred_username` (Or `email` if you want to use email addresses as identifiers)
 -   Scopes: `email openid profile`

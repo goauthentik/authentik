@@ -1,4 +1,5 @@
 """Send a test-email with global settings"""
+
 from uuid import uuid4
 
 from django.core.management.base import no_translations
@@ -29,7 +30,7 @@ class Command(TenantCommand):
             delete_stage = True
         message = TemplateEmailMessage(
             subject="authentik Test-Email",
-            to=[options["to"]],
+            to=[("", options["to"])],
             template_name="email/setup.html",
             template_context={},
         )

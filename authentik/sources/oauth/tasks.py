@@ -1,4 +1,5 @@
 """OAuth Source tasks"""
+
 from json import dumps
 
 from requests import RequestException

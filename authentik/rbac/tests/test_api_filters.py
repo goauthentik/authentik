@@ -1,4 +1,5 @@
 """RBAC role tests"""
+
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
@@ -115,6 +116,32 @@ class TestAPIPerms(APITestCase):
         self.client.force_login(self.user)
         res = self.client.post(
             reverse("authentik_api:invitation-list"),
+            data={
+                "name": generate_id(),
+            },
+        )
+        self.assertEqual(res.status_code, 403)
+
+    def test_update_simple(self):
+        """Test update with permission"""
+        self.client.force_login(self.user)
+        inv = Invitation.objects.create(name=generate_id(), created_by=self.superuser)
+        self.role.assign_permission("authentik_stages_invitation.view_invitation", obj=inv)
+        self.role.assign_permission("authentik_stages_invitation.change_invitation", obj=inv)
+        res = self.client.patch(
+            reverse("authentik_api:invitation-detail", kwargs={"pk": inv.pk}),
+            data={
+                "name": generate_id(),
+            },
+        )
+        self.assertEqual(res.status_code, 200)
+
+    def test_update_simple_denied(self):
+        """Test update without assigning permission"""
+        self.client.force_login(self.user)
+        inv = Invitation.objects.create(name=generate_id(), created_by=self.superuser)
+        res = self.client.patch(
+            reverse("authentik_api:invitation-detail", kwargs={"pk": inv.pk}),
             data={
                 "name": generate_id(),
             },

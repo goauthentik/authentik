@@ -1,35 +1,38 @@
 """Custom SCIM schemas"""
-from typing import Optional
 
 from pydanticscim.group import Group as BaseGroup
 from pydanticscim.responses import PatchRequest as BasePatchRequest
 from pydanticscim.responses import SCIMError as BaseSCIMError
-from pydanticscim.service_provider import Bulk, ChangePassword, Filter, Patch
+from pydanticscim.service_provider import Bulk, ChangePassword, Filter, Patch, Sort
 from pydanticscim.service_provider import (
     ServiceProviderConfiguration as BaseServiceProviderConfiguration,
 )
-from pydanticscim.service_provider import Sort
 from pydanticscim.user import User as BaseUser
+
+SCIM_USER_SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:User"
+SCIM_GROUP_SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:Group"
 
 
 class User(BaseUser):
     """Modified User schema with added externalId field"""
 
-    schemas: tuple[str] = ("urn:ietf:params:scim:schemas:core:2.0:User",)
-    externalId: Optional[str] = None
+    schemas: list[str] = [SCIM_USER_SCHEMA]
+    externalId: str | None = None
+    meta: dict | None = None
 
 
 class Group(BaseGroup):
     """Modified Group schema with added externalId field"""
 
-    schemas: tuple[str] = ("urn:ietf:params:scim:schemas:core:2.0:Group",)
-    externalId: Optional[str] = None
+    schemas: list[str] = [SCIM_GROUP_SCHEMA]
+    externalId: str | None = None
+    meta: dict | None = None
 
 
 class ServiceProviderConfiguration(BaseServiceProviderConfiguration):
     """ServiceProviderConfig with fallback"""
 
-    _is_fallback: Optional[bool] = False
+    _is_fallback: bool | None = False
 
     @property
     def is_fallback(self) -> bool:
@@ -60,4 +63,4 @@ class PatchRequest(BasePatchRequest):
 class SCIMError(BaseSCIMError):
     """SCIM error with optional status code"""
 
-    status: Optional[int]
+    status: int | None

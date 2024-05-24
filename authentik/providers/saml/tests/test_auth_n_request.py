@@ -1,4 +1,5 @@
 """Test AuthN Request generator and parser"""
+
 from base64 import b64encode
 
 from django.http.request import QueryDict

@@ -47,7 +47,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
     async send(data: SAMLProvider): Promise<SAMLProvider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersSamlUpdate({
-                id: this.instance.pk || 0,
+                id: this.instance.pk,
                 sAMLProviderRequest: data,
             });
         } else {
@@ -191,7 +191,6 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Property mappings")}
-                        ?required=${true}
                         name="propertyMappings"
                     >
                         <select class="pf-c-form-control" multiple>

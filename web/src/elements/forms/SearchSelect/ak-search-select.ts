@@ -1,8 +1,8 @@
-import { APIErrorTypes, parseAPIError } from "@goauthentik/app/common/errors";
-import { PreventFormSubmit } from "@goauthentik/app/elements/forms/helpers";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { APIErrorTypes, parseAPIError } from "@goauthentik/common/errors";
 import { ascii_letters, digits, groupBy, randomString } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
+import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers";
 import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
@@ -175,6 +175,9 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
         super.connectedCallback();
         this.dropdownContainer = document.createElement("div");
         this.dropdownContainer.dataset["managedBy"] = "ak-search-select";
+        if (this.name) {
+            this.dropdownContainer.dataset["managedFor"] = this.name;
+        }
         document.body.append(this.dropdownContainer);
         this.updateData();
         this.addEventListener(EVENT_REFRESH, this.updateData);

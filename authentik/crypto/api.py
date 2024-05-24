@@ -1,6 +1,6 @@
 """Crypto API Views"""
+
 from datetime import datetime
-from typing import Optional
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
@@ -14,7 +14,13 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, DateTimeField, IntegerField, SerializerMethodField
+from rest_framework.fields import (
+    CharField,
+    ChoiceField,
+    DateTimeField,
+    IntegerField,
+    SerializerMethodField,
+)
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -23,13 +29,13 @@ from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.api.authorization import SecretKeyFilter
-from authentik.api.decorators import permission_required
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.crypto.apps import MANAGED_KEY
-from authentik.crypto.builder import CertificateBuilder
+from authentik.crypto.builder import CertificateBuilder, PrivateKeyAlg
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
+from authentik.rbac.decorators import permission_required
 
 LOGGER = get_logger()
 
@@ -55,25 +61,25 @@ class CertificateKeyPairSerializer(ModelSerializer):
             return True
         return str(request.query_params.get("include_details", "true")).lower() == "true"
 
-    def get_fingerprint_sha256(self, instance: CertificateKeyPair) -> Optional[str]:
+    def get_fingerprint_sha256(self, instance: CertificateKeyPair) -> str | None:
         "Get certificate Hash (SHA256)"
         if not self._should_include_details:
             return None
         return instance.fingerprint_sha256
 
-    def get_fingerprint_sha1(self, instance: CertificateKeyPair) -> Optional[str]:
+    def get_fingerprint_sha1(self, instance: CertificateKeyPair) -> str | None:
         "Get certificate Hash (SHA1)"
         if not self._should_include_details:
             return None
         return instance.fingerprint_sha1
 
-    def get_cert_expiry(self, instance: CertificateKeyPair) -> Optional[datetime]:
+    def get_cert_expiry(self, instance: CertificateKeyPair) -> datetime | None:
         "Get certificate expiry"
         if not self._should_include_details:
             return None
-        return DateTimeField().to_representation(instance.certificate.not_valid_after)
+        return DateTimeField().to_representation(instance.certificate.not_valid_after_utc)
 
-    def get_cert_subject(self, instance: CertificateKeyPair) -> Optional[str]:
+    def get_cert_subject(self, instance: CertificateKeyPair) -> str | None:
         """Get certificate subject as full rfc4514"""
         if not self._should_include_details:
             return None
@@ -83,7 +89,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
         """Show if this keypair has a private key configured or not"""
         return instance.key_data != "" and instance.key_data is not None
 
-    def get_private_key_type(self, instance: CertificateKeyPair) -> Optional[str]:
+    def get_private_key_type(self, instance: CertificateKeyPair) -> str | None:
         """Get the private key's type, if set"""
         if not self._should_include_details:
             return None
@@ -120,7 +126,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
             str(load_pem_x509_certificate(value.encode("utf-8"), default_backend()))
         except ValueError as exc:
             LOGGER.warning("Failed to load certificate", exc=exc)
-            raise ValidationError("Unable to load certificate.")
+            raise ValidationError("Unable to load certificate.") from None
         return value
 
     def validate_key_data(self, value: str) -> str:
@@ -139,7 +145,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
                 )
             except (ValueError, TypeError) as exc:
                 LOGGER.warning("Failed to load private key", exc=exc)
-                raise ValidationError("Unable to load private key (possibly encrypted?).")
+                raise ValidationError("Unable to load private key (possibly encrypted?).") from None
         return value
 
     class Meta:
@@ -178,6 +184,7 @@ class CertificateGenerationSerializer(PassiveSerializer):
     common_name = CharField()
     subject_alt_name = CharField(required=False, allow_blank=True, label=_("Subject-alt name"))
     validity_days = IntegerField(initial=365)
+    alg = ChoiceField(default=PrivateKeyAlg.RSA, choices=PrivateKeyAlg.choices)
 
 
 class CertificateKeyPairFilter(FilterSet):
@@ -240,6 +247,7 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
         raw_san = data.validated_data.get("subject_alt_name", "")
         sans = raw_san.split(",") if raw_san != "" else []
         builder = CertificateBuilder(data.validated_data["common_name"])
+        builder.alg = data.validated_data["alg"]
         builder.build(
             subject_alt_names=sans,
             validity_days=int(data.validated_data["validity_days"]),
@@ -272,9 +280,9 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
             response = HttpResponse(
                 certificate.certificate_data, content_type="application/x-pem-file"
             )
-            response[
-                "Content-Disposition"
-            ] = f'attachment; filename="{certificate.name}_certificate.pem"'
+            response["Content-Disposition"] = (
+                f'attachment; filename="{certificate.name}_certificate.pem"'
+            )
             return response
         return Response(CertificateDataSerializer({"data": certificate.certificate_data}).data)
 
@@ -300,8 +308,8 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
         if "download" in request.query_params:
             # Mime type from https://pki-tutorial.readthedocs.io/en/latest/mime.html
             response = HttpResponse(certificate.key_data, content_type="application/x-pem-file")
-            response[
-                "Content-Disposition"
-            ] = f'attachment; filename="{certificate.name}_private_key.pem"'
+            response["Content-Disposition"] = (
+                f'attachment; filename="{certificate.name}_private_key.pem"'
+            )
             return response
         return Response(CertificateDataSerializer({"data": certificate.key_data}).data)

@@ -2,9 +2,8 @@ import "@goauthentik/admin/applications/ApplicationAuthorizeChart";
 import "@goauthentik/admin/applications/ApplicationCheckAccessForm";
 import "@goauthentik/admin/applications/ApplicationForm";
 import "@goauthentik/admin/policies/BoundPoliciesList";
-import { PFSize } from "@goauthentik/app/elements/Spinner";
-import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { PFSize } from "@goauthentik/common/enums.js";
 import "@goauthentik/components/ak-app-icon";
 import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
@@ -12,9 +11,10 @@ import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -37,37 +37,11 @@ import {
 
 @customElement("ak-application-view")
 export class ApplicationViewPage extends AKElement {
-    @property()
-    set applicationSlug(value: string) {
-        new CoreApi(DEFAULT_CONFIG)
-            .coreApplicationsRetrieve({
-                slug: value,
-            })
-            .then((app) => {
-                this.application = app;
-                if (
-                    app.providerObj &&
-                    [
-                        "authentik_providers_proxy.proxyprovider",
-                        "authentik_providers_ldap.ldapprovider",
-                    ].includes(app.providerObj.metaModelName)
-                ) {
-                    new OutpostsApi(DEFAULT_CONFIG)
-                        .outpostsInstancesList({
-                            providersByPk: [app.provider || 0],
-                            pageSize: 1,
-                        })
-                        .then((outposts) => {
-                            if (outposts.pagination.count < 1) {
-                                this.missingOutpost = true;
-                            }
-                        });
-                }
-            });
-    }
+    @property({ type: String })
+    applicationSlug?: string;
 
-    @property({ attribute: false })
-    application!: Application;
+    @state()
+    application?: Application;
 
     @state()
     missingOutpost = false;
@@ -84,6 +58,40 @@ export class ApplicationViewPage extends AKElement {
             PFGrid,
             PFCard,
         ];
+    }
+
+    fetchIsMissingOutpost(providersByPk: Array<number>) {
+        new OutpostsApi(DEFAULT_CONFIG)
+            .outpostsInstancesList({
+                providersByPk,
+                pageSize: 1,
+            })
+            .then((outposts) => {
+                if (outposts.pagination.count < 1) {
+                    this.missingOutpost = true;
+                }
+            });
+    }
+
+    fetchApplication(slug: string) {
+        new CoreApi(DEFAULT_CONFIG).coreApplicationsRetrieve({ slug }).then((app) => {
+            this.application = app;
+            if (
+                app.providerObj &&
+                [
+                    RbacPermissionsAssignedByUsersListModelEnum.ProvidersProxyProxyprovider.toString(),
+                    RbacPermissionsAssignedByUsersListModelEnum.ProvidersLdapLdapprovider.toString(),
+                ].includes(app.providerObj.metaModelName)
+            ) {
+                this.fetchIsMissingOutpost([app.provider || 0]);
+            }
+        });
+    }
+
+    willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("applicationSlug") && this.applicationSlug) {
+            this.fetchApplication(this.applicationSlug);
+        }
     }
 
     render(): TemplateResult {

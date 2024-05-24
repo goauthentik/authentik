@@ -25,13 +25,14 @@ type Config struct {
 }
 
 type RedisConfig struct {
-	Host     string `yaml:"host" env:"HOST, overwrite"`
-	Port     int    `yaml:"port" env:"PORT, overwrite"`
-	DB       int    `yaml:"db" env:"DB, overwrite"`
-	Username string `yaml:"username" env:"USERNAME, overwrite"`
-	Password string `yaml:"password" env:"PASSWORD, overwrite"`
-	TLS      bool   `yaml:"tls" env:"TLS, overwrite"`
-	TLSReqs  string `yaml:"tls_reqs" env:"TLS_REQS, overwrite"`
+	Host      string  `yaml:"host" env:"HOST, overwrite"`
+	Port      int     `yaml:"port" env:"PORT, overwrite"`
+	DB        int     `yaml:"db" env:"DB, overwrite"`
+	Username  string  `yaml:"username" env:"USERNAME, overwrite"`
+	Password  string  `yaml:"password" env:"PASSWORD, overwrite"`
+	TLS       bool    `yaml:"tls" env:"TLS, overwrite"`
+	TLSReqs   string  `yaml:"tls_reqs" env:"TLS_REQS, overwrite"`
+	TLSCaCert *string `yaml:"tls_ca_certs" env:"TLS_CA_CERT, overwrite"`
 }
 
 type ListenConfig struct {
@@ -50,12 +51,12 @@ type StorageConfig struct {
 }
 
 type StorageMediaConfig struct {
-	Backend string            `yaml:"backend" env:"AUTHENTIK_STORAGE_MEDIA_BACKEND"`
+	Backend string            `yaml:"backend" env:"AUTHENTIK_STORAGE__MEDIA__BACKEND"`
 	File    StorageFileConfig `yaml:"file"`
 }
 
 type StorageFileConfig struct {
-	Path string `yaml:"path" env:"AUTHENTIK_STORAGE_MEDIA_FILE_PATH"`
+	Path string `yaml:"path" env:"AUTHENTIK_STORAGE__MEDIA__FILE__PATH"`
 }
 
 type ErrorReportingConfig struct {
