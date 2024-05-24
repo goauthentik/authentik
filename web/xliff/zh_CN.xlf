@@ -8736,6 +8736,14 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source><x id="0" equiv-text="${type.name}"/> Icon</source>
   <target><x id="0" equiv-text="${type.name}"/> 图标</target>
 </trans-unit>
+<trans-unit id="s1da3499258024860">
+  <source><x id="0" equiv-text="${versionString}"/> (build <x id="1" equiv-text="${this.outpostHealth.buildHash.substring(0, 8)}"/>)</source>
+  <target><x id="0" equiv-text="${versionString}"/>（构建 <x id="1" equiv-text="${this.outpostHealth.buildHash.substring(0, 8)}"/>）</target>
+</trans-unit>
+<trans-unit id="s001fd928369d4ddc">
+  <source><x id="0" equiv-text="${versionString}"/> (FIPS)</source>
+  <target><x id="0" equiv-text="${versionString}"/>（FIPS）</target>
+</trans-unit>
     </body>
   </file>
 </xliff>
