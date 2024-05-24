@@ -1563,7 +1563,7 @@ msgstr "代理提供程序"
 
 #: authentik/providers/radius/models.py
 msgid "Shared secret between clients and server to hash packets."
-msgstr "在客户端和服务端之间共享密钥以哈希数据包。"
+msgstr "用于哈希处理数据包的客户端服务端共享密钥。"
 
 #: authentik/providers/radius/models.py
 msgid ""
