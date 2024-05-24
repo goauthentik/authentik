@@ -143,10 +143,12 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
                 uid__startswith=source.slug,
             )
         )
-        status = {
-            "tasks": tasks,
-            "is_running": source.sync_lock.locked(),
-        }
+        with source.sync_lock as lock_acquired:
+            status = {
+                "tasks": tasks,
+                # If we could not acquire the lock, it means a task is using it, and thus is running
+                "is_running": not lock_acquired,
+            }
         return Response(SyncStatusSerializer(status).data)
 
     @extend_schema(

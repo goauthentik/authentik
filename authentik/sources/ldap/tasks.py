@@ -4,7 +4,6 @@ from uuid import uuid4
 
 from celery import chain, group
 from django.core.cache import cache
-from django.db.utils import OperationalError
 from ldap3.core.exceptions import LDAPException
 from structlog.stdlib import get_logger
 
@@ -64,24 +63,24 @@ def ldap_sync_single(source_pk: str):
     source: LDAPSource = LDAPSource.objects.filter(pk=source_pk).first()
     if not source:
         return
-    try:
-        with source.sync_lock:
-            # Delete all sync tasks from the cache
-            DBSystemTask.objects.filter(name="ldap_sync", uid__startswith=source.slug).delete()
-            task = chain(
-                # User and group sync can happen at once, they have no dependencies on each other
-                group(
-                    ldap_sync_paginator(source, UserLDAPSynchronizer)
-                    + ldap_sync_paginator(source, GroupLDAPSynchronizer),
-                ),
-                # Membership sync needs to run afterwards
-                group(
-                    ldap_sync_paginator(source, MembershipLDAPSynchronizer),
-                ),
-            )
-            task()
-    except OperationalError:
-        LOGGER.debug("Failed to acquire lock for LDAP sync, skipping task", source=source.slug)
+    with source.sync_lock as lock_acquired:
+        if not lock_acquired:
+            LOGGER.debug("Failed to acquire lock for LDAP sync, skipping task", source=source.slug)
+            return
+        # Delete all sync tasks from the cache
+        DBSystemTask.objects.filter(name="ldap_sync", uid__startswith=source.slug).delete()
+        task = chain(
+            # User and group sync can happen at once, they have no dependencies on each other
+            group(
+                ldap_sync_paginator(source, UserLDAPSynchronizer)
+                + ldap_sync_paginator(source, GroupLDAPSynchronizer),
+            ),
+            # Membership sync needs to run afterwards
+            group(
+                ldap_sync_paginator(source, MembershipLDAPSynchronizer),
+            ),
+        )
+        task()
 
 
 def ldap_sync_paginator(source: LDAPSource, sync: type[BaseLDAPSynchronizer]) -> list:
