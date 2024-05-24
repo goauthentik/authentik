@@ -7,9 +7,9 @@ import { cwd } from "process";
 import process from "process";
 import { fileURLToPath } from "url";
 
-const rootPackage = JSON.parse(fs.readFileSync("../package.json"));
-
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
+
+const rootPackage = JSON.parse(fs.readFileSync(path.join(__dirname, "./package.json")));
 
 // eslint-disable-next-line no-undef
 const isProdBuild = process.env.NODE_ENV === "production";
@@ -94,6 +94,7 @@ function getVersion() {
 
 async function buildOneSource(source, dest) {
     const DIST = path.join(__dirname, "./dist", dest);
+    // eslint-disable-next-line no-console
     console.log(`[${new Date(Date.now()).toISOString()}] Starting build for target ${source}`);
 
     try {
@@ -105,10 +106,9 @@ async function buildOneSource(source, dest) {
             outdir: DIST,
         });
         const end = Date.now();
+        // eslint-disable-next-line no-console
         console.log(
-            `[${new Date(end).toISOString()}] Finished build for target ${source} in ${
-                Date.now() - start
-            }ms`,
+            `[${new Date(end).toISOString()}] Finished build for target ${source} in ${Date.now() - start}ms`,
         );
     } catch (exc) {
         console.error(`[${new Date(Date.now()).toISOString()}] Failed to build ${source}: ${exc}`);
@@ -125,12 +125,14 @@ function debouncedBuild() {
         clearTimeout(timeoutId);
     }
     timeoutId = setTimeout(() => {
+        // eslint-disable-next-line no-console
         console.clear();
         buildAuthentik(interfaces);
     }, 250);
 }
 
 if (process.argv.length > 2 && (process.argv[2] === "-h" || process.argv[2] === "--help")) {
+    // eslint-disable-next-line no-console
     console.log(`Build the authentikUI
 
 options:
@@ -142,6 +144,7 @@ options:
 }
 
 if (process.argv.length > 2 && (process.argv[2] === "-w" || process.argv[2] === "--watch")) {
+    // eslint-disable-next-line no-console
     console.log("Watching ./src for changes");
     chokidar.watch("./src").on("all", (event, path) => {
         if (!["add", "change", "unlink"].includes(event)) {
