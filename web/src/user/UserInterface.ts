@@ -159,15 +159,8 @@ class UserInterfacePresentation extends AKElement {
             .otherwise(() => this.me.user.username);
     }
 
-    async firstUpdated(): Promise<void> {
-        this.me = await me();
-        const notifications = await new EventsApi(DEFAULT_CONFIG).eventsNotificationsList({
-            seen: false,
-            ordering: "-created",
-            pageSize: 1,
-            user: this.me.user.pk,
-        });
-        this.notificationsCount = notifications.pagination.count;
+    get canAccessUserDirector() {
+        return this.me.user.isSuperuser || this.me.user.systemPermissions.includes("can_view_user_directory");
     }
 
     get canAccessAdmin() {
@@ -211,67 +204,13 @@ class UserInterfacePresentation extends AKElement {
                     </div>
                     <div class="pf-c-page__header-tools">
                         <div class="pf-c-page__header-tools-group">
-                            <<<<<<< HEAD
-                            ${this.uiConfig.enabledFeatures.apiDrawer
-                                ? html`<div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg">
-                                      <button
-                                          class="pf-c-button pf-m-plain"
-                                          type="button"
-                                          @click=${() => {
-                                              this.apiDrawerOpen = !this.apiDrawerOpen;
-                                              updateURLParams({
-                                                  apiDrawerOpen: this.apiDrawerOpen,
-                                              });
-                                          }}
-                                      >
-                                          <pf-tooltip position="top" content=${msg("Open API drawer")}>
-                                              <i class="fas fa-code" aria-hidden="true"></i>
-                                          </pf-tooltip>
-                                      </button>
-                                  </div>`
-                                : html``}
-                            ${this.uiConfig.enabledFeatures.notificationDrawer
-                                ? html`<div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg">
-                                      <button
-                                          class="pf-c-button pf-m-plain"
-                                          type="button"
-                                          aria-label="${msg("Unread notifications")}"
-                                          @click=${() => {
-                                              this.notificationDrawerOpen = !this.notificationDrawerOpen;
-                                              updateURLParams({
-                                                  notificationDrawerOpen: this.notificationDrawerOpen,
-                                              });
-                                          }}
-                                      >
-                                          <span
-                                              class="pf-c-notification-badge ${this.notificationsCount > 0
-                                                  ? "pf-m-unread"
-                                                  : ""}"
-                                          >
-                                              <pf-tooltip position="top" content=${msg("Open Notification drawer")}>
-                                                  <i class="fas fa-bell" aria-hidden="true"></i>
-                                              </pf-tooltip>
-                                              <span class="pf-c-notification-badge__count"
-                                                  >${this.notificationsCount}</span
-                                              >
-                                          </span>
-                                      </button>
-                                  </div> `
-                                : html``}
-                            ${this.uiConfig.enabledFeatures.settings
-                                ? html` <div class="pf-c-page__header-tools-item">
-                                      <a class="pf-c-button pf-m-plain" type="button" href="#/settings">
-                                          <pf-tooltip position="top" content=${msg("Settings")}>
-                                              <i class="fas fa-cog" aria-hidden="true"></i>
-                                          </pf-tooltip>
-                                      </a>
-                                  </div>`
-                                : html``}
-                            ======= ${this.renderApiDrawerTrigger()}
+                            ${this.renderApiDrawerTrigger()}
                             <!-- -->
                             ${this.renderNotificationDrawerTrigger()}
                             <!-- -->
-                            ${this.renderSettings()} >>>>>>> main
+                            ${this.renderUserDirectory()}
+                            <!-- -->
+                            ${this.renderSettings()}
                             <div class="pf-c-page__header-tools-item">
                                 <a href="/flows/-/default/invalidation/" class="pf-c-button pf-m-plain">
                                     <pf-tooltip position="top" content=${msg("Sign out")}>
@@ -403,10 +342,7 @@ class UserInterfacePresentation extends AKElement {
     }
 
     renderUserDirectory() {
-        const canAccessUserDirectory =
-            this.me.user.isSuperuser || this.me.user.systemPermissions.includes("can_view_user_directory");
-
-        if (!canAccessUserDirectory) {
+        if (!this.canAccessUserDirectory) {
             return nothing;
         }
 
