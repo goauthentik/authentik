@@ -105,7 +105,7 @@ msgstr "如果未设置，则返回所有提供程序。如果启用，仅返回
 
 #: authentik/core/api/users.py
 msgid "No leading or trailing slashes allowed."
-msgstr "不允许前缀或后缀斜线。"
+msgstr "不允许以斜线开始或结尾。"
 
 #: authentik/core/api/users.py
 msgid "No empty segments in user path allowed."
