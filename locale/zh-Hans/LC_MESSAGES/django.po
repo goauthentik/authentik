@@ -1198,7 +1198,7 @@ msgid ""
 "that the numbers aren't too low for POSIX users. Default is 2000 to ensure "
 "that we don't collide with local users uidNumber"
 msgstr ""
-"起始 uidNumbers，这个数字会被添加到 user.pk 中，以确保对于 POSIX 用户来说，这个数字不会太低。默认值为 "
+"起始 uidNumber，这个数字会被添加到 user.pk 中，以确保对于 POSIX 用户来说，这个数字不会太低。默认值为 "
 "2000，以确保我们不会与本地用户的 uidNumber 发生冲突"
 
 #: authentik/providers/ldap/models.py
@@ -1208,7 +1208,7 @@ msgid ""
 "Default is 4000 to ensure that we don't collide with local groups or users "
 "primary groups gidNumber"
 msgstr ""
-"起始 gidNumbers，这个数字会被添加到从 group.pk 生成的数字中，以确保对于 POSIX 用户来说，这个数字不会太低。默认值为 "
+"起始 gidNumber，这个数字会被添加到从 group.pk 生成的数字中，以确保对于 POSIX 用户来说，这个数字不会太低。默认值为 "
 "4000，以确保我们不会与本地群组或用户主组的 gidNumber 发生冲突"
 
 #: authentik/providers/ldap/models.py authentik/providers/radius/models.py
