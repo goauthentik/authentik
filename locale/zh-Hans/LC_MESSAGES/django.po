@@ -1198,8 +1198,8 @@ msgid ""
 "that the numbers aren't too low for POSIX users. Default is 2000 to ensure "
 "that we don't collide with local users uidNumber"
 msgstr ""
-"起始 uidNumber，这个数字会被添加到 user.pk 中，以确保对于 POSIX 用户来说，这个数字不会太低。默认值为 "
-"2000，以确保我们不会与本地用户的 uidNumber 发生冲突"
+"起始 uidNumber，从 user.pk 中生成的数字将和该数字相加后作为用户 uid，以确保对于 POSIX 用户来说，这个数字不会太低。默认值为"
+" 2000，以确保我们不会与本地用户的 uidNumber 发生冲突"
 
 #: authentik/providers/ldap/models.py
 msgid ""
