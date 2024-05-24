@@ -554,7 +554,7 @@ msgstr "（您已经在另一个标签页/窗口连接了）"
 msgid ""
 "Amount of time a user can take to return from the source to continue the "
 "flow (Format: hours=-1;minutes=-2;seconds=-3)"
-msgstr "用户从源返回并继续流程可以消耗的时间（格式：hours=-1;minutes=-2;seconds=-3）"
+msgstr "用户从源返回并继续流程的所需操作时间（格式：hours=-1;minutes=-2;seconds=-3）"
 
 #: authentik/enterprise/stages/source/models.py
 msgid "Source Stage"
