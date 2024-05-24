@@ -304,6 +304,5 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
             SERVER_PORT="9000",
         )
         self.assertEqual(response.status_code, 200)
-        print(response.content)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
         self.assertTrue(WebAuthnDevice.objects.filter(user=self.user).exists())

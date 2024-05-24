@@ -60,6 +60,8 @@ SHARED_APPS = [
     "django_filters",
     "drf_spectacular",
     "django_prometheus",
+    "pgactivity",
+    "pglock",
     "channels",
 ]
 TENANT_APPS = [

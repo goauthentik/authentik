@@ -47,8 +47,10 @@ class OutgoingSyncProviderStatusMixin:
                 uid=slugify(provider.name),
             )
         )
-        status = {
-            "tasks": tasks,
-            "is_running": provider.sync_lock.locked(),
-        }
+        with provider.sync_lock as lock_acquired:
+            status = {
+                "tasks": tasks,
+                # If we could not acquire the lock, it means a task is using it, and thus is running
+                "is_running": not lock_acquired,
+            }
         return Response(SyncStatusSerializer(status).data)

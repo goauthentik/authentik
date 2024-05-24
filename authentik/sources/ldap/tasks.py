@@ -5,7 +5,6 @@ from uuid import uuid4
 from celery import chain, group
 from django.core.cache import cache
 from ldap3.core.exceptions import LDAPException
-from redis.exceptions import LockError
 from structlog.stdlib import get_logger
 
 from authentik.events.models import SystemTask as DBSystemTask
@@ -64,30 +63,24 @@ def ldap_sync_single(source_pk: str):
     source: LDAPSource = LDAPSource.objects.filter(pk=source_pk).first()
     if not source:
         return
-    lock = source.sync_lock
-    if lock.locked():
-        LOGGER.debug("LDAP sync locked, skipping task", source=source.slug)
-        return
-    try:
-        with lock:
-            # Delete all sync tasks from the cache
-            DBSystemTask.objects.filter(name="ldap_sync", uid__startswith=source.slug).delete()
-            task = chain(
-                # User and group sync can happen at once, they have no dependencies on each other
-                group(
-                    ldap_sync_paginator(source, UserLDAPSynchronizer)
-                    + ldap_sync_paginator(source, GroupLDAPSynchronizer),
-                ),
-                # Membership sync needs to run afterwards
-                group(
-                    ldap_sync_paginator(source, MembershipLDAPSynchronizer),
-                ),
-            )
-            task()
-    except LockError:
-        # This should never happen, we check if the lock is locked above so this
-        # would only happen if there was some other timeout
-        LOGGER.debug("Failed to acquire lock for LDAP sync", source=source.slug)
+    with source.sync_lock as lock_acquired:
+        if not lock_acquired:
+            LOGGER.debug("Failed to acquire lock for LDAP sync, skipping task", source=source.slug)
+            return
+        # Delete all sync tasks from the cache
+        DBSystemTask.objects.filter(name="ldap_sync", uid__startswith=source.slug).delete()
+        task = chain(
+            # User and group sync can happen at once, they have no dependencies on each other
+            group(
+                ldap_sync_paginator(source, UserLDAPSynchronizer)
+                + ldap_sync_paginator(source, GroupLDAPSynchronizer),
+            ),
+            # Membership sync needs to run afterwards
+            group(
+                ldap_sync_paginator(source, MembershipLDAPSynchronizer),
+            ),
+        )
+        task()
 
 
 def ldap_sync_paginator(source: LDAPSource, sync: type[BaseLDAPSynchronizer]) -> list:

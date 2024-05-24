@@ -96,16 +96,42 @@ class TestEvaluator(TestCase):
             execution_logging=True,
             expression="ak_message(request.http_request.path)\nreturn True",
         )
-        tmpl = f"""
-        ak_message(request.http_request.path)
-        res = ak_call_policy('{expr.name}')
-        ak_message(request.http_request.path)
-        for msg in res.messages:
-            ak_message(msg)
-        """
-        evaluator = PolicyEvaluator("test")
-        evaluator.set_policy_request(self.request)
-        res = evaluator.evaluate(tmpl)
+        expr2 = ExpressionPolicy.objects.create(
+            name=generate_id(),
+            execution_logging=True,
+            expression=f"""
+            ak_message(request.http_request.path)
+            res = ak_call_policy('{expr.name}')
+            ak_message(request.http_request.path)
+            for msg in res.messages:
+                ak_message(msg)
+            """,
+        )
+        proc = PolicyProcess(PolicyBinding(policy=expr2), request=self.request, connection=None)
+        res = proc.profiling_wrapper()
+        self.assertEqual(res.messages, ("/", "/", "/"))
+
+    def test_call_policy_test_like(self):
+        """test ak_call_policy without `obj` set, as if it was when testing policies"""
+        expr = ExpressionPolicy.objects.create(
+            name=generate_id(),
+            execution_logging=True,
+            expression="ak_message(request.http_request.path)\nreturn True",
+        )
+        expr2 = ExpressionPolicy.objects.create(
+            name=generate_id(),
+            execution_logging=True,
+            expression=f"""
+            ak_message(request.http_request.path)
+            res = ak_call_policy('{expr.name}')
+            ak_message(request.http_request.path)
+            for msg in res.messages:
+                ak_message(msg)
+            """,
+        )
+        self.request.obj = None
+        proc = PolicyProcess(PolicyBinding(policy=expr2), request=self.request, connection=None)
+        res = proc.profiling_wrapper()
         self.assertEqual(res.messages, ("/", "/", "/"))
 
 

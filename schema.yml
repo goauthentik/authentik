@@ -13380,8 +13380,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PolicyTestRequest'
-        required: true
+              $ref: '#/components/schemas/PropertyMappingTestRequest'
       security:
       - authentik: []
       responses:
@@ -39368,6 +39367,18 @@ components:
         version:
           type: string
           readOnly: true
+        golang_version:
+          type: string
+          readOnly: true
+        openssl_enabled:
+          type: boolean
+          readOnly: true
+        openssl_version:
+          type: string
+          readOnly: true
+        fips_enabled:
+          type: boolean
+          readOnly: true
         version_should:
           type: string
           readOnly: true
@@ -39386,8 +39397,12 @@ components:
       required:
       - build_hash
       - build_hash_should
+      - fips_enabled
+      - golang_version
       - hostname
       - last_seen
+      - openssl_enabled
+      - openssl_version
       - uid
       - version
       - version_outdated
@@ -44396,6 +44411,18 @@ components:
           readOnly: true
       required:
       - preview
+    PropertyMappingTestRequest:
+      type: object
+      description: Test property mapping execution for a user/group with context
+      properties:
+        user:
+          type: integer
+        context:
+          type: object
+          additionalProperties: {}
+        group:
+          type: string
+          format: uuid
     PropertyMappingTestResult:
       type: object
       description: Result of a Property-mapping test
@@ -47106,8 +47133,6 @@ components:
           properties:
             python_version:
               type: string
-            gunicorn_version:
-              type: string
             environment:
               type: string
             architecture:
@@ -47116,10 +47141,18 @@ components:
               type: string
             uname:
               type: string
+            openssl_version:
+              type: string
+            openssl_fips_mode:
+              type: boolean
+            authentik_version:
+              type: string
           required:
           - architecture
+          - authentik_version
           - environment
-          - gunicorn_version
+          - openssl_fips_mode
+          - openssl_version
           - platform
           - python_version
           - uname
