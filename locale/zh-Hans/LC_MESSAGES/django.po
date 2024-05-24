@@ -774,7 +774,7 @@ msgstr "启用兼容模式，增强与移动设备上密码管理器的兼容性
 
 #: authentik/flows/models.py
 msgid "Configure what should happen when a flow denies access to a user."
-msgstr "配置当流程拒绝访问一名用户时应该发生什么。"
+msgstr "配置当流程拒绝一名用户访问时应该发生什么。"
 
 #: authentik/flows/models.py
 msgid "Required level of authentication and authorization to access a flow."
