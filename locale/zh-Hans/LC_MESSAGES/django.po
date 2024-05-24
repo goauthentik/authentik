@@ -1248,7 +1248,7 @@ msgstr "基于用户名"
 
 #: authentik/providers/oauth2/id_token.py
 msgid "Based on the User's Email. This is recommended over the UPN method."
-msgstr "基于用户的电子邮箱。建议在 UPN 方法上使用。"
+msgstr "基于用户的电子邮箱。较 UPN 方法更推荐适用此方法。"
 
 #: authentik/providers/oauth2/id_token.py
 msgid ""
