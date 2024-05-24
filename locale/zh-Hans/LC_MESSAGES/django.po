@@ -778,7 +778,7 @@ msgstr "配置当流程拒绝一名用户访问时应该发生什么。"
 
 #: authentik/flows/models.py
 msgid "Required level of authentication and authorization to access a flow."
-msgstr "需要身份验证和授权等级以访问流程。"
+msgstr "访问流程所需要身份验证和授权等级。"
 
 #: authentik/flows/models.py
 msgid "Flows"
