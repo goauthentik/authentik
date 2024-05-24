@@ -8701,6 +8701,12 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="scffa59cfac1951f2">
   <source><x id="0" equiv-text="${type.name}"/> Icon</source>
 </trans-unit>
+<trans-unit id="s1da3499258024860">
+  <source><x id="0" equiv-text="${versionString}"/> (build <x id="1" equiv-text="${this.outpostHealth.buildHash.substring(0, 8)}"/>)</source>
+</trans-unit>
+<trans-unit id="s001fd928369d4ddc">
+  <source><x id="0" equiv-text="${versionString}"/> (FIPS)</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
