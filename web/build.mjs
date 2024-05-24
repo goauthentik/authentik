@@ -9,7 +9,7 @@ import { fileURLToPath } from "url";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
-const rootPackage = JSON.parse(fs.readFileSync(path.join(__dirname, "./package.json")));
+const rootPackage = JSON.parse(fs.readFileSync(path.join(__dirname, "../package.json")));
 
 // eslint-disable-next-line no-undef
 const isProdBuild = process.env.NODE_ENV === "production";
@@ -107,9 +107,7 @@ async function buildOneSource(source, dest) {
         });
         const end = Date.now();
         // eslint-disable-next-line no-console
-        console.log(
-            `[${new Date(end).toISOString()}] Finished build for target ${source} in ${Date.now() - start}ms`,
-        );
+        console.log(`[${new Date(end).toISOString()}] Finished build for target ${source} in ${Date.now() - start}ms`);
     } catch (exc) {
         console.error(`[${new Date(Date.now()).toISOString()}] Failed to build ${source}: ${exc}`);
     }
@@ -157,9 +155,7 @@ if (process.argv.length > 2 && (process.argv[2] === "-w" || process.argv[2] === 
     });
 } else if (process.argv.length > 2 && (process.argv[2] === "-p" || process.argv[2] === "--proxy")) {
     // There's no watch-for-proxy, sorry.
-    await buildAuthentik(
-        interfaces.filter(([_, dest]) => ["standalone/loading", "."].includes(dest)),
-    );
+    await buildAuthentik(interfaces.filter(([_, dest]) => ["standalone/loading", "."].includes(dest)));
     process.exit(0);
 } else {
     // And the fallback: just build it.
