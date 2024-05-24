@@ -1,3 +1,4 @@
+import { execFileSync } from "child_process";
 import * as chokidar from "chokidar";
 import esbuild from "esbuild";
 import fs from "fs";
@@ -9,7 +10,12 @@ import { fileURLToPath } from "url";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
-const rootPackage = JSON.parse(fs.readFileSync(path.join(__dirname, "../package.json")));
+// Use the package.json file in the root folder, as it has the current version information.
+const authentikProjectRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).replace(
+    "\n",
+    ""
+);
+const rootPackage = JSON.parse(fs.readFileSync(path.join(authentikProjectRoot, "./package.json")));
 
 // eslint-disable-next-line no-undef
 const isProdBuild = process.env.NODE_ENV === "production";
