@@ -1366,13 +1366,13 @@ msgstr "对于不访问 userinfo 端点的应用程序，将来自作用域的�
 msgid ""
 "Access codes not valid on or after current time + this value (Format: "
 "hours=1;minutes=2;seconds=3)."
-msgstr "从当前时间经过多久时或之后，访问代码无效（格式：hours=1;minutes=2;seconds=3）。"
+msgstr "从当前时间经过多久时或之后，访问代码失效（格式：hours=1;minutes=2;seconds=3）。"
 
 #: authentik/providers/oauth2/models.py
 msgid ""
 "Tokens not valid on or after current time + this value (Format: "
 "hours=1;minutes=2;seconds=3)."
-msgstr "从当前时间经过多久时或之后，令牌无效（格式：hours=1;minutes=2;seconds=3）。"
+msgstr "从当前时间经过多久时或之后，令牌失效（格式：hours=1;minutes=2;seconds=3）。"
 
 #: authentik/providers/oauth2/models.py
 msgid ""
