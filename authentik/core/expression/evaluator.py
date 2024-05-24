@@ -1,5 +1,6 @@
 """Property Mapping Evaluator"""
 
+from types import CodeType
 from typing import Any
 
 from django.db.models import Model
@@ -24,6 +25,8 @@ class PropertyMappingEvaluator(BaseEvaluator):
     """Custom Evaluator that adds some different context variables."""
 
     dry_run: bool
+    model: Model
+    _compiled: CodeType | None = None
 
     def __init__(
         self,
@@ -33,23 +36,32 @@ class PropertyMappingEvaluator(BaseEvaluator):
         dry_run: bool | None = False,
         **kwargs,
     ):
+        self.model = model
         if hasattr(model, "name"):
             _filename = model.name
         else:
             _filename = str(model)
         super().__init__(filename=_filename)
+        self.dry_run = dry_run
+        self.set_context(user, request, **kwargs)
+
+    def set_context(
+        self,
+        user: User | None = None,
+        request: HttpRequest | None = None,
+        **kwargs,
+    ):
         req = PolicyRequest(user=User())
-        req.obj = model
+        req.obj = self.model
         if user:
             req.user = user
             self._context["user"] = user
         if request:
             req.http_request = request
-        self._context["request"] = req
         req.context.update(**kwargs)
+        self._context["request"] = req
         self._context.update(**kwargs)
         self._globals["SkipObject"] = SkipObjectException
-        self.dry_run = dry_run
 
     def handle_error(self, exc: Exception, expression_source: str):
         """Exception Handler"""
@@ -71,3 +83,9 @@ class PropertyMappingEvaluator(BaseEvaluator):
     def evaluate(self, *args, **kwargs) -> Any:
         with PROPERTY_MAPPING_TIME.labels(mapping_name=self._filename).time():
             return super().evaluate(*args, **kwargs)
+
+    def compile(self, expression: str | None = None) -> Any:
+        if not self._compiled:
+            compiled = super().compile(expression or self.model.expression)
+            self._compiled = compiled
+        return self._compiled

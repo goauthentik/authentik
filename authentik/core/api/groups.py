@@ -178,6 +178,14 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter("include_users", bool, default=True),
+        ]
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
     @permission_required("authentik_core.add_user_to_group")
     @extend_schema(
         request=UserAccountSerializer,

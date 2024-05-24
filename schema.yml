@@ -3733,6 +3733,11 @@ paths:
           format: uuid
         description: A UUID string identifying this Group.
         required: true
+      - in: query
+        name: include_users
+        schema:
+          type: boolean
+          default: true
       tags:
       - core
       security:
@@ -10042,7 +10047,7 @@ paths:
   /outposts/service_connections/all/types/:
     get:
       operationId: outposts_service_connections_all_types_list
-      description: Get all creatable service connection types
+      description: Get all creatable types
       tags:
       - outposts
       security:
@@ -10876,7 +10881,7 @@ paths:
   /policies/all/types/:
     get:
       operationId: policies_all_types_list
-      description: Get all creatable policy types
+      description: Get all creatable types
       tags:
       - policies
       security:
@@ -13375,8 +13380,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PolicyTestRequest'
-        required: true
+              $ref: '#/components/schemas/PropertyMappingTestRequest'
       security:
       - authentik: []
       responses:
@@ -13434,7 +13438,7 @@ paths:
   /propertymappings/all/types/:
     get:
       operationId: propertymappings_all_types_list
-      description: Get all creatable property-mapping types
+      description: Get all creatable types
       tags:
       - propertymappings
       security:
@@ -15894,7 +15898,7 @@ paths:
   /providers/all/types/:
     get:
       operationId: providers_all_types_list
-      description: Get all creatable provider types
+      description: Get all creatable types
       tags:
       - providers
       security:
@@ -21893,7 +21897,7 @@ paths:
   /sources/all/types/:
     get:
       operationId: sources_all_types_list
-      description: Get all creatable source types
+      description: Get all creatable types
       tags:
       - sources
       security:
@@ -25527,7 +25531,7 @@ paths:
   /stages/all/types/:
     get:
       operationId: stages_all_types_list
-      description: Get all creatable stage types
+      description: Get all creatable types
       tags:
       - stages
       security:
@@ -37788,10 +37792,6 @@ components:
           type: string
         icon:
           type: string
-          nullable: true
-          description: |-
-            Get the URL to the Icon. If the name is /static or
-            starts with http it is returned as-is
           readOnly: true
         server_uri:
           type: string
@@ -39101,9 +39101,6 @@ components:
         icon:
           type: string
           nullable: true
-          description: |-
-            Get the URL to the Icon. If the name is /static or
-            starts with http it is returned as-is
           readOnly: true
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
@@ -39370,6 +39367,18 @@ components:
         version:
           type: string
           readOnly: true
+        golang_version:
+          type: string
+          readOnly: true
+        openssl_enabled:
+          type: boolean
+          readOnly: true
+        openssl_version:
+          type: string
+          readOnly: true
+        fips_enabled:
+          type: boolean
+          readOnly: true
         version_should:
           type: string
           readOnly: true
@@ -39388,8 +39397,12 @@ components:
       required:
       - build_hash
       - build_hash_should
+      - fips_enabled
+      - golang_version
       - hostname
       - last_seen
+      - openssl_enabled
+      - openssl_version
       - uid
       - version
       - version_outdated
@@ -43795,10 +43808,6 @@ components:
           type: string
         icon:
           type: string
-          nullable: true
-          description: |-
-            Get the URL to the Icon. If the name is /static or
-            starts with http it is returned as-is
           readOnly: true
         client_id:
           type: string
@@ -44402,6 +44411,18 @@ components:
           readOnly: true
       required:
       - preview
+    PropertyMappingTestRequest:
+      type: object
+      description: Test property mapping execution for a user/group with context
+      properties:
+        user:
+          type: integer
+        context:
+          type: object
+          additionalProperties: {}
+        group:
+          type: string
+          format: uuid
     PropertyMappingTestResult:
       type: object
       description: Result of a Property-mapping test
@@ -45858,10 +45879,6 @@ components:
           type: string
         icon:
           type: string
-          nullable: true
-          description: |-
-            Get the URL to the Icon. If the name is /static or
-            starts with http it is returned as-is
           readOnly: true
         pre_authentication_flow:
           type: string
@@ -47116,8 +47133,6 @@ components:
           properties:
             python_version:
               type: string
-            gunicorn_version:
-              type: string
             environment:
               type: string
             architecture:
@@ -47126,10 +47141,18 @@ components:
               type: string
             uname:
               type: string
+            openssl_version:
+              type: string
+            openssl_fips_mode:
+              type: boolean
+            authentik_version:
+              type: string
           required:
           - architecture
+          - authentik_version
           - environment
-          - gunicorn_version
+          - openssl_fips_mode
+          - openssl_version
           - platform
           - python_version
           - uname
@@ -47478,6 +47501,8 @@ components:
         component:
           type: string
         model_name:
+          type: string
+        icon_url:
           type: string
         requires_enterprise:
           type: boolean

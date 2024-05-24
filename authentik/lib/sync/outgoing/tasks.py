@@ -1,4 +1,5 @@
 from collections.abc import Callable
+from dataclasses import asdict
 
 from celery.exceptions import Retry
 from celery.result import allow_join_result
@@ -64,17 +65,16 @@ class SyncTasks:
         ).first()
         if not provider:
             return
-        lock = provider.sync_lock
-        if lock.locked():
-            self.logger.debug("Sync locked, skipping task", source=provider.name)
-            return
         task.set_uid(slugify(provider.name))
         messages = []
         messages.append(_("Starting full provider sync"))
         self.logger.debug("Starting provider sync")
         users_paginator = Paginator(provider.get_object_qs(User), PAGE_SIZE)
         groups_paginator = Paginator(provider.get_object_qs(Group), PAGE_SIZE)
-        with allow_join_result(), lock:
+        with allow_join_result(), provider.sync_lock as lock_acquired:
+            if not lock_acquired:
+                self.logger.debug("Failed to acquire sync lock, skipping", provider=provider.name)
+                return
             try:
                 for page in users_paginator.page_range:
                     messages.append(_("Syncing page %(page)d of users" % {"page": page}))
@@ -83,7 +83,7 @@ class SyncTasks:
                         time_limit=PAGE_TIMEOUT,
                         soft_time_limit=PAGE_TIMEOUT,
                     ).get():
-                        messages.append(msg)
+                        messages.append(LogEvent(**msg))
                 for page in groups_paginator.page_range:
                     messages.append(_("Syncing page %(page)d of groups" % {"page": page}))
                     for msg in sync_objects.apply_async(
@@ -91,7 +91,7 @@ class SyncTasks:
                         time_limit=PAGE_TIMEOUT,
                         soft_time_limit=PAGE_TIMEOUT,
                     ).get():
-                        messages.append(msg)
+                        messages.append(LogEvent(**msg))
             except TransientSyncException as exc:
                 self.logger.warning("transient sync exception", exc=exc)
                 raise task.retry(exc=exc) from exc
@@ -129,57 +129,63 @@ class SyncTasks:
             except BadRequestSyncException as exc:
                 self.logger.warning("failed to sync object", exc=exc, obj=obj)
                 messages.append(
-                    LogEvent(
-                        _(
-                            (
-                                "Failed to sync {object_type} {object_name} "
-                                "due to error: {error}"
-                            ).format_map(
-                                {
-                                    "object_type": obj._meta.verbose_name,
-                                    "object_name": str(obj),
-                                    "error": str(exc),
-                                }
-                            )
-                        ),
-                        log_level="warning",
-                        logger="",
-                        attributes={"arguments": exc.args[1:]},
+                    asdict(
+                        LogEvent(
+                            _(
+                                (
+                                    "Failed to sync {object_type} {object_name} "
+                                    "due to error: {error}"
+                                ).format_map(
+                                    {
+                                        "object_type": obj._meta.verbose_name,
+                                        "object_name": str(obj),
+                                        "error": str(exc),
+                                    }
+                                )
+                            ),
+                            log_level="warning",
+                            logger="",
+                            attributes={"arguments": exc.args[1:]},
+                        )
                     )
                 )
             except TransientSyncException as exc:
                 self.logger.warning("failed to sync object", exc=exc, user=obj)
                 messages.append(
-                    LogEvent(
-                        _(
-                            (
-                                "Failed to sync {object_type} {object_name} "
-                                "due to transient error: {error}"
-                            ).format_map(
-                                {
-                                    "object_type": obj._meta.verbose_name,
-                                    "object_name": str(obj),
-                                    "error": str(exc),
-                                }
-                            )
-                        ),
-                        log_level="warning",
-                        logger="",
+                    asdict(
+                        LogEvent(
+                            _(
+                                (
+                                    "Failed to sync {object_type} {object_name} "
+                                    "due to transient error: {error}"
+                                ).format_map(
+                                    {
+                                        "object_type": obj._meta.verbose_name,
+                                        "object_name": str(obj),
+                                        "error": str(exc),
+                                    }
+                                )
+                            ),
+                            log_level="warning",
+                            logger="",
+                        )
                     )
                 )
             except StopSync as exc:
                 self.logger.warning("Stopping sync", exc=exc)
                 messages.append(
-                    LogEvent(
-                        _(
-                            "Stopping sync due to error: {error}".format_map(
-                                {
-                                    "error": exc.detail(),
-                                }
-                            )
-                        ),
-                        log_level="warning",
-                        logger="",
+                    asdict(
+                        LogEvent(
+                            _(
+                                "Stopping sync due to error: {error}".format_map(
+                                    {
+                                        "error": exc.detail(),
+                                    }
+                                )
+                            ),
+                            log_level="warning",
+                            logger="",
+                        )
                     )
                 )
                 break

@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-03 00:08+0000\n"
+"POT-Creation-Date: 2024-05-23 00:07+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Anton Babenko, 2024\n"
 "Language-Team: Russian (https://app.transifex.com/authentik/teams/119923/ru/)\n"
@@ -102,12 +102,14 @@ msgid "Brands"
 msgstr "Бренды"
 
 #: authentik/core/api/providers.py
-msgid "SAML Provider from Metadata"
-msgstr "Поставщик SAML из метаданных"
-
-#: authentik/core/api/providers.py
-msgid "Create a SAML Provider by importing its Metadata."
-msgstr "Создайте поставщика SAML импортированием его метаданных."
+msgid ""
+"When not set all providers are returned. When set to true, only backchannel "
+"providers are returned. When set to false, backchannel providers are "
+"excluded"
+msgstr ""
+"Если значение не установлено, возвращаются все провайдеры. Если установлено "
+"значение true, возвращаются только провайдеры обратного канала. При значении"
+" false провайдеры обратного канала исключаются."
 
 #: authentik/core/api/users.py
 msgid "No leading or trailing slashes allowed."
@@ -427,11 +429,11 @@ msgstr ""
 
 #: authentik/crypto/models.py
 msgid "Certificate-Key Pair"
-msgstr "Ключевая пара сертификата"
+msgstr "Пара сертификат-ключ"
 
 #: authentik/crypto/models.py
 msgid "Certificate-Key Pairs"
-msgstr "Ключевые пары сертификата"
+msgstr "Пары сертификат-ключ"
 
 #: authentik/enterprise/api.py
 msgid "Enterprise is required to create/update this object."
@@ -460,6 +462,72 @@ msgstr "Для доступа к этой функции требуется Ente
 #: authentik/enterprise/policy.py
 msgid "Feature only accessible for internal users."
 msgstr "Функция доступна только для внутренних пользователей."
+
+#: authentik/enterprise/providers/google_workspace/models.py
+#: authentik/enterprise/providers/microsoft_entra/models.py
+#: authentik/providers/scim/models.py authentik/sources/ldap/models.py
+msgid "Property mappings used for group creation/updating."
+msgstr "Сопоставления свойств, используемые для создания/обновления групп."
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider"
+msgstr "Google Workspace Провайдер"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Providers"
+msgstr "Google Workspace Провайдеры"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Mapping"
+msgstr "Сопоставление провайдера Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Mappings"
+msgstr "Сопоставления провайдера Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider User"
+msgstr "Пользователь провайдера Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Users"
+msgstr "Пользователи провайдера Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Group"
+msgstr "Группа провайдера Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Groups"
+msgstr "Группы провайдера Google Workspace"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider"
+msgstr "Microsoft Entra Провайдер"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Providers"
+msgstr "Microsoft Entra Провайдеры"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Mapping"
+msgstr "Сопоставление провайдера Microsoft Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Mappings"
+msgstr "Сопоставления провайдера Microsoft Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider User"
+msgstr "Пользователь провайдера Microsoft Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Group"
+msgstr "Группа провайдера Microsoft Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Groups"
+msgstr "Группы провайдера Microsoft Entra"
 
 #: authentik/enterprise/providers/rac/models.py
 #: authentik/stages/user_login/models.py
@@ -829,6 +897,25 @@ msgstr "Токены потока"
 #: authentik/flows/views/executor.py
 msgid "Invalid next URL"
 msgstr "Недопустимый следующий URL-адрес"
+
+#: authentik/lib/sync/outgoing/tasks.py
+msgid "Starting full provider sync"
+msgstr "Запуск полной синхронизации провайдера"
+
+#: authentik/lib/sync/outgoing/tasks.py
+#, python-format
+msgid "Syncing page %(page)d of users"
+msgstr "Синхронизация %(page)d страницы пользователей"
+
+#: authentik/lib/sync/outgoing/tasks.py
+#, python-format
+msgid "Syncing page %(page)d of groups"
+msgstr "Синхронизация %(page)d страницы групп"
+
+#: authentik/lib/sync/outgoing/tasks.py
+#, python-brace-format
+msgid "Stopping sync due to error: {error}"
+msgstr "Остановка синхронизации из-за ошибки: {error}"
 
 #: authentik/lib/utils/time.py
 #, python-format
@@ -1792,6 +1879,14 @@ msgstr "Сопоставление свойств SAML"
 msgid "SAML Property Mappings"
 msgstr "Сопоставления свойств SAML"
 
+#: authentik/providers/saml/models.py
+msgid "SAML Provider from Metadata"
+msgstr "Провайдер SAML из метаданных"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Providers from Metadata"
+msgstr "Провайдеры SAML из метаданных"
+
 #: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr "Базовый URL для запросов SCIM, обычно заканчивается на /v2"
@@ -1799,10 +1894,6 @@ msgstr "Базовый URL для запросов SCIM, обычно закан
 #: authentik/providers/scim/models.py
 msgid "Authentication token"
 msgstr "Токен аутентификации"
-
-#: authentik/providers/scim/models.py authentik/sources/ldap/models.py
-msgid "Property mappings used for group creation/updating."
-msgstr "Сопоставления свойств, используемые для создания/обновления групп."
 
 #: authentik/providers/scim/models.py
 msgid "SCIM Provider"
@@ -1819,39 +1910,6 @@ msgstr "Сопоставление SCIM"
 #: authentik/providers/scim/models.py
 msgid "SCIM Mappings"
 msgstr "Сопоставления SCIM"
-
-#: authentik/providers/scim/tasks.py
-msgid "Starting full SCIM sync"
-msgstr "Запуск полной синхронизации SCIM"
-
-#: authentik/providers/scim/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of users"
-msgstr "Синхронизация %(page)d страницы пользователей"
-
-#: authentik/providers/scim/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of groups"
-msgstr "Синхронизация %(page)d страницы групп"
-
-#: authentik/providers/scim/tasks.py
-#, python-brace-format
-msgid "Failed to sync user {user_name} due to remote error: {error}"
-msgstr ""
-"Не удалось синхронизировать пользователя {user_name} из-за удаленной ошибки:"
-" {error}"
-
-#: authentik/providers/scim/tasks.py
-#, python-brace-format
-msgid "Stopping sync due to error: {error}"
-msgstr "Остановка синхронизации из-за ошибки: {error}"
-
-#: authentik/providers/scim/tasks.py
-#, python-brace-format
-msgid "Failed to sync group {group_name} due to remote error: {error}"
-msgstr ""
-"Не удалось синхронизировать группу {group_name} из-за удаленной ошибки: "
-"{error}"
 
 #: authentik/rbac/models.py
 msgid "Role"
@@ -1872,14 +1930,6 @@ msgstr "Системные разрешения"
 #: authentik/rbac/models.py
 msgid "Can view system info"
 msgstr "Может просматривать информацию о системе"
-
-#: authentik/rbac/models.py
-msgid "Can view system tasks"
-msgstr "Может просматривать системные задачи"
-
-#: authentik/rbac/models.py
-msgid "Can run system tasks"
-msgstr "Может выполнять системные задачи"
 
 #: authentik/rbac/models.py
 msgid "Can access admin interface"
@@ -2560,11 +2610,11 @@ msgstr ""
 
 #: authentik/stages/consent/models.py
 msgid "Consent Stage"
-msgstr "Этап согласования"
+msgstr "Этап согласия"
 
 #: authentik/stages/consent/models.py
 msgid "Consent Stages"
-msgstr "Этапы согласования"
+msgstr "Этапы согласия"
 
 #: authentik/stages/consent/models.py
 msgid "User Consent"
@@ -2572,7 +2622,7 @@ msgstr "Согласие пользователя"
 
 #: authentik/stages/consent/models.py
 msgid "User Consents"
-msgstr "Согласие пользователя"
+msgstr "Согласия пользователя"
 
 #: authentik/stages/deny/models.py
 msgid "Deny Stage"

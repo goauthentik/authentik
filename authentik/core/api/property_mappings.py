@@ -9,18 +9,22 @@ from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.fields import BooleanField, CharField
+from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.blueprints.api import ManagedSerializer
+from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import MetaNameSerializer, PassiveSerializer, TypeCreateSerializer
+from authentik.core.api.utils import (
+    MetaNameSerializer,
+    PassiveSerializer,
+)
 from authentik.core.expression.evaluator import PropertyMappingEvaluator
-from authentik.core.models import PropertyMapping
+from authentik.core.models import Group, PropertyMapping, User
 from authentik.events.utils import sanitize_item
-from authentik.lib.utils.reflection import all_subclasses
 from authentik.policies.api.exec import PolicyTestSerializer
 from authentik.rbac.decorators import permission_required
 
@@ -64,6 +68,7 @@ class PropertyMappingSerializer(ManagedSerializer, ModelSerializer, MetaNameSeri
 
 
 class PropertyMappingViewSet(
+    TypesMixin,
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
     UsedByMixin,
@@ -72,7 +77,13 @@ class PropertyMappingViewSet(
 ):
     """PropertyMapping Viewset"""
 
-    queryset = PropertyMapping.objects.none()
+    class PropertyMappingTestSerializer(PolicyTestSerializer):
+        """Test property mapping execution for a user/group with context"""
+
+        user = PrimaryKeyRelatedField(queryset=User.objects.all(), required=False)
+        group = PrimaryKeyRelatedField(queryset=Group.objects.all(), required=False)
+
+    queryset = PropertyMapping.objects.select_subclasses()
     serializer_class = PropertyMappingSerializer
     search_fields = [
         "name",
@@ -80,29 +91,9 @@ class PropertyMappingViewSet(
     filterset_fields = {"managed": ["isnull"]}
     ordering = ["name"]
 
-    def get_queryset(self):  # pragma: no cover
-        return PropertyMapping.objects.select_subclasses()
-
-    @extend_schema(responses={200: TypeCreateSerializer(many=True)})
-    @action(detail=False, pagination_class=None, filter_backends=[])
-    def types(self, request: Request) -> Response:
-        """Get all creatable property-mapping types"""
-        data = []
-        for subclass in all_subclasses(self.queryset.model):
-            subclass: PropertyMapping
-            data.append(
-                {
-                    "name": subclass._meta.verbose_name,
-                    "description": subclass.__doc__,
-                    "component": subclass().component,
-                    "model_name": subclass._meta.model_name,
-                }
-            )
-        return Response(TypeCreateSerializer(data, many=True).data)
-
     @permission_required("authentik_core.view_propertymapping")
     @extend_schema(
-        request=PolicyTestSerializer(),
+        request=PropertyMappingTestSerializer(),
         responses={
             200: PropertyMappingTestResultSerializer,
             400: OpenApiResponse(description="Invalid parameters"),
@@ -120,29 +111,39 @@ class PropertyMappingViewSet(
         """Test Property Mapping"""
         _mapping: PropertyMapping = self.get_object()
         # Use `get_subclass` to get correct class and correct `.evaluate` implementation
-        mapping = PropertyMapping.objects.get_subclass(pk=_mapping.pk)
+        mapping: PropertyMapping = PropertyMapping.objects.get_subclass(pk=_mapping.pk)
         # FIXME: when we separate policy mappings between ones for sources
         # and ones for providers, we need to make the user field optional for the source mapping
-        test_params = PolicyTestSerializer(data=request.data)
+        test_params = self.PropertyMappingTestSerializer(data=request.data)
         if not test_params.is_valid():
             return Response(test_params.errors, status=400)
 
         format_result = str(request.GET.get("format_result", "false")).lower() == "true"
 
-        # User permission check, only allow mapping testing for users that are readable
-        users = get_objects_for_user(request.user, "authentik_core.view_user").filter(
-            pk=test_params.validated_data["user"].pk
-        )
-        if not users.exists():
-            raise PermissionDenied()
+        context: dict = test_params.validated_data.get("context", {})
+        context.setdefault("user", None)
+
+        if user := test_params.validated_data.get("user"):
+            # User permission check, only allow mapping testing for users that are readable
+            users = get_objects_for_user(request.user, "authentik_core.view_user").filter(
+                pk=user.pk
+            )
+            if not users.exists():
+                raise PermissionDenied()
+            context["user"] = user
+        if group := test_params.validated_data.get("group"):
+            # Group permission check, only allow mapping testing for groups that are readable
+            groups = get_objects_for_user(request.user, "authentik_core.view_group").filter(
+                pk=group.pk
+            )
+            if not groups.exists():
+                raise PermissionDenied()
+            context["group"] = group
+        context["request"] = self.request
 
         response_data = {"successful": True, "result": ""}
         try:
-            result = mapping.evaluate(
-                users.first(),
-                self.request,
-                **test_params.validated_data.get("context", {}),
-            )
+            result = mapping.evaluate(**context)
             response_data["result"] = dumps(
                 sanitize_item(result), indent=(4 if format_result else None)
             )

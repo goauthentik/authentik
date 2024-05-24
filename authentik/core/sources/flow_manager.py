@@ -264,6 +264,7 @@ class SourceFlowManager:
         planner = FlowPlanner(flow)
         # We append some stages so the initial flow we get might be empty
         planner.allow_empty_flows = True
+        planner.use_cache = False
         plan = planner.plan(self.request, kwargs)
         for stage in self.get_stages_to_append(flow):
             plan.append_stage(stage)

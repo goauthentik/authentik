@@ -17,7 +17,7 @@ export class PropertyMappingMicrosoftEntraForm extends BasePropertyMappingForm<M
     loadInstance(pk: string): Promise<MicrosoftEntraProviderMapping> {
         return new PropertymappingsApi(
             DEFAULT_CONFIG,
-        ).propertymappingsProviderGoogleWorkspaceRetrieve({
+        ).propertymappingsProviderMicrosoftEntraRetrieve({
             pmUuid: pk,
         });
     }

@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-08 00:07+0000\n"
+"POT-Creation-Date: 2024-05-23 00:07+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/authentik/teams/119923/zh_CN/)\n"
@@ -96,12 +96,11 @@ msgid "Brands"
 msgstr "品牌"
 
 #: authentik/core/api/providers.py
-msgid "SAML Provider from Metadata"
-msgstr "来自元数据的 SAML 提供程序"
-
-#: authentik/core/api/providers.py
-msgid "Create a SAML Provider by importing its Metadata."
-msgstr "通过导入元数据来创建 SAML 提供程序。"
+msgid ""
+"When not set all providers are returned. When set to true, only backchannel "
+"providers are returned. When set to false, backchannel providers are "
+"excluded"
+msgstr "如果未设置，则返回所有提供程序。如果启用，仅返回反向通道提供程序。如果禁用，则返回非反向通道提供程序"
 
 #: authentik/core/api/users.py
 msgid "No leading or trailing slashes allowed."
@@ -434,6 +433,7 @@ msgid "Feature only accessible for internal users."
 msgstr "仅内部用户能访问此功能。"
 
 #: authentik/enterprise/providers/google_workspace/models.py
+#: authentik/enterprise/providers/microsoft_entra/models.py
 #: authentik/providers/scim/models.py authentik/sources/ldap/models.py
 msgid "Property mappings used for group creation/updating."
 msgstr "用于创建/更新组的属性映射。"
@@ -453,6 +453,50 @@ msgstr "Google Workspace 提供程序映射"
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Provider Mappings"
 msgstr "Google Workspace 提供程序映射"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider User"
+msgstr "Google Workspace 提供程序用户"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Users"
+msgstr "Google Workspace 提供程序用户"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Group"
+msgstr "Google Workspace 提供程序组"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Groups"
+msgstr "Google Workspace 提供程序组"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider"
+msgstr "Microsoft Entra 提供程序"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Providers"
+msgstr "Microsoft Entra 提供程序"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Mapping"
+msgstr "Microsoft Entra 提供程序映射"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Mappings"
+msgstr "Microsoft Entra 提供程序映射"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider User"
+msgstr "Microsoft Entra 提供程序用户"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Group"
+msgstr "Microsoft Entra 提供程序组"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Groups"
+msgstr "Microsoft Entra 提供程序组"
 
 #: authentik/enterprise/providers/rac/models.py
 #: authentik/stages/user_login/models.py
@@ -1686,6 +1730,14 @@ msgstr "SAML 属性映射"
 msgid "SAML Property Mappings"
 msgstr "SAML 属性映射"
 
+#: authentik/providers/saml/models.py
+msgid "SAML Provider from Metadata"
+msgstr "来自元数据的 SAML 提供程序"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Providers from Metadata"
+msgstr "来自元数据的 SAML 提供程序"
+
 #: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr "SCIM 请求的基础 URL，通常以 /v2 结尾"
@@ -1729,14 +1781,6 @@ msgstr "系统权限"
 #: authentik/rbac/models.py
 msgid "Can view system info"
 msgstr "可以查看系统信息"
-
-#: authentik/rbac/models.py
-msgid "Can view system tasks"
-msgstr "可以查看系统任务"
-
-#: authentik/rbac/models.py
-msgid "Can run system tasks"
-msgstr "可以运行系统任务"
 
 #: authentik/rbac/models.py
 msgid "Can access admin interface"

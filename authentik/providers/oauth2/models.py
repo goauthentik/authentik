@@ -15,6 +15,7 @@ from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from dacite.core import from_dict
 from django.db import models
 from django.http import HttpRequest
+from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from jwt import encode
@@ -261,6 +262,10 @@ class OAuth2Provider(Provider):
         except ValueError as exc:
             LOGGER.warning("Failed to format launch url", exc=exc)
             return None
+
+    @property
+    def icon_url(self) -> str | None:
+        return static("authentik/sources/openidconnect.svg")
 
     @property
     def component(self) -> str:
