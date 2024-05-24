@@ -8,6 +8,7 @@
 # 刘松, 2022
 # Jens L. <jens@goauthentik.io>, 2024
 # deluxghost, 2024
+# Tianhao Chai <cth451@gmail.com>, 2024
 # 
 #, fuzzy
 msgid ""
@@ -16,7 +17,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-05-23 00:07+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: deluxghost, 2024\n"
+"Last-Translator: Tianhao Chai <cth451@gmail.com>, 2024\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/authentik/teams/119923/zh-Hans/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -56,7 +57,7 @@ msgid ""
 "by migrations. You can still modify the objects via the API, but expect "
 "changes to be overwritten in a later update."
 msgstr ""
-"由 authentik 管理的对象。这些对象会自动创建和更新。此标记仅仅表明对象可以被 Migration 覆盖。您仍然可以通过 API "
+"由 authentik 管理的对象。这些对象会自动创建和更新。此标记仅仅表明对象可以在迁移时被覆盖。您仍然可以通过 API "
 "修改对象，但这些修改可能会在之后的更新中被覆盖。"
 
 #: authentik/blueprints/models.py
