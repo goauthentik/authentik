@@ -1536,7 +1536,7 @@ msgstr "根据来自 authentik 的值设置自定义 HTTP-Basic 身份验证标�
 
 #: authentik/providers/proxy/models.py
 msgid "HTTP-Basic Username Key"
-msgstr "HTTP-Basic 用户名密钥"
+msgstr "HTTP-Basic 用户名键值"
 
 #: authentik/providers/proxy/models.py
 msgid ""
@@ -1546,7 +1546,7 @@ msgstr "用于 HTTP-Basic 标头用户名部分的用户/组属性。如果未�
 
 #: authentik/providers/proxy/models.py
 msgid "HTTP-Basic Password Key"
-msgstr "HTTP-Basic 密码密钥"
+msgstr "HTTP-Basic 密码键值"
 
 #: authentik/providers/proxy/models.py
 msgid ""
