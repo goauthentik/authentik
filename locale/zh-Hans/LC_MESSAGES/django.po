@@ -741,7 +741,7 @@ msgstr "流程"
 
 #: authentik/flows/exceptions.py
 msgid "Flow does not apply to current user."
-msgstr "流程不应用于当前用户。"
+msgstr "流程不适用于当前用户。"
 
 #: authentik/flows/models.py
 #, python-brace-format
