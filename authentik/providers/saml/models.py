@@ -1,4 +1,4 @@
-"""authentik saml_idp Models"""
+"""authentik SAML Provider Models"""
 
 from django.db import models
 from django.templatetags.static import static
@@ -195,7 +195,7 @@ class SAMLPropertyMapping(PropertyMapping):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.providers.saml.api.property_mapping import SAMLPropertyMappingSerializer
+        from authentik.providers.saml.api.property_mappings import SAMLPropertyMappingSerializer
 
         return SAMLPropertyMappingSerializer
 
