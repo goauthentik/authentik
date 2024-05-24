@@ -18,7 +18,6 @@ from authentik.core.models import Group, PropertyMapping, Source
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG
 from authentik.lib.models import DomainlessURLValidator
-from authentik.lib.sync.outgoing import LOCK_ACQUIRE_TIMEOUT
 
 LDAP_TIMEOUT = 15
 
@@ -213,8 +212,8 @@ class LDAPSource(Source):
         """Postgres lock for syncing LDAP to prevent multiple parallel syncs happening"""
         return pglock.advisory(
             lock_id=f"goauthentik.io/{connection.schema_name}/sources/ldap/sync/{self.slug}",
-            timeout=LOCK_ACQUIRE_TIMEOUT,
-            side_effect=pglock.Raise,
+            timeout=0,
+            side_effect=pglock.Return,
         )
 
     def check_connection(self) -> dict[str, dict[str, str]]:

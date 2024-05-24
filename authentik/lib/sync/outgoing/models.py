@@ -5,7 +5,6 @@ from django.db import connection
 from django.db.models import Model, QuerySet, TextChoices
 
 from authentik.core.models import Group, User
-from authentik.lib.sync.outgoing import LOCK_ACQUIRE_TIMEOUT
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 
 
@@ -36,6 +35,6 @@ class OutgoingSyncProvider(Model):
         """Postgres lock for syncing SCIM to prevent multiple parallel syncs happening"""
         return pglock.advisory(
             lock_id=f"goauthentik.io/{connection.schema_name}/providers/outgoing-sync/{str(self.pk)}",
-            timeout=LOCK_ACQUIRE_TIMEOUT,
-            side_effect=pglock.Raise,
+            timeout=0,
+            side_effect=pglock.Return,
         )
