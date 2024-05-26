@@ -70,13 +70,16 @@ class BaseOAuthClient:
         parsed_url = urlparse(authorization_url)
         parsed_args = parse_qs(parsed_url.query)
         args = self.get_redirect_args()
+        self.logger.info("redirect args1", **args)
         args.update(parameters or {})
+        self.logger.info("redirect args2", **args)
         args.update(parsed_args)
+        self.logger.info("redirect args3", **args)
         # Special handling for scope, since it's set as array
         # to make additional scopes easier
         args["scope"] = " ".join(sorted(set(args["scope"])))
+        self.logger.info("redirect args4", **args)
         params = urlencode(args, quote_via=quote, doseq=True)
-        self.logger.info("redirect args", **args)
         return urlunparse(parsed_url._replace(query=params))
 
     def parse_raw_token(self, raw_token: str) -> dict[str, Any]:
@@ -85,6 +88,7 @@ class BaseOAuthClient:
 
     def do_request(self, method: str, url: str, **kwargs) -> Response:
         """Wrapper around self.session.request, which can add special headers"""
+        self.logger.debug("Executing request", method=method, url=url, **kwargs)
         return self.session.request(method, url, **kwargs)
 
     @property
