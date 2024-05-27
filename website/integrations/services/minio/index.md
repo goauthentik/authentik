@@ -54,12 +54,12 @@ Create an application in authentik. Create an _OAuth2/OpenID Provider_ with the 
 -   Signing Key: Select any available key
 -   Redirect URIs: `https://minio.company/oauth_callback`
 
-Set the scope of the MinIO scope mapping you created in the previous step under Advanced Protocol Settings -> Scopes
+Set the scope of the MinIO scope mapping you created in the previous step under Advanced _Protocol Settings_ -> _Scopes_.
 
 Note the Client ID and Client Secret values. Create an application, using the provider you've created above. Note the slug of the application you've created.
 
 ## MinIO
-You can set up OpenID in two different ways: via the web interface or the command line. Setting it up through the web interface is easier and less error-prone.
+You can set up OpenID in two different ways: via the web interface or the command line.
 
 ### Web Interface
 
@@ -72,13 +72,13 @@ From the main page, go to _Identity_ -> _OpenID_ and click the create button and
 - Scopes: `openid, email, profile, minio`
 - Redirect URI: `https://minio.company/oauth_callback`
 
-Finally, click the save button and follow instructions in the popup to restart your instance.
+Finally, click the save button and follow the instructions in the popup to restart your instance.
 
 ### Command Line
 
-You must install the MinIO binaries from [here](https://min.io/docs/minio/linux/reference/minio-mc.html). You must then create an alias for your instance: `mc alias set myminio https://minio.company <access key> <secret key>`. You can follow [this StackOverflow answer](https://stackoverflow.com/a/77645374) to create a secret and access key.
+You must install the MinIO binaries from [here](https://min.io/docs/minio/linux/reference/minio-mc.html). You then need to create an alias for your instance using: `mc alias set myminio https://minio.company <access key> <secret key>`. You can follow [this StackOverflow answer](https://stackoverflow.com/a/77645374) to create a secret key and access key.
 
-Once that is done, you can run the following command:
+Once that is done, you can run the following command to configure the OpenID provider:
 
 ```
 ~ mc admin config set myminio identity_openid \
