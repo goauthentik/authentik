@@ -482,7 +482,10 @@ const docsSidebar = {
                 {
                     type: "category",
                     label: "PostgreSQL",
-                    items: ["troubleshooting/postgres/upgrade_kubernetes", "troubleshooting/postgres/upgrade_docker"],
+                    items: [
+                        "troubleshooting/postgres/upgrade_kubernetes",
+                        "troubleshooting/postgres/upgrade_docker",
+                    ],
                 },
                 "troubleshooting/access",
                 "troubleshooting/login",
