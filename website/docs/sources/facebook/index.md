@@ -56,7 +56,7 @@ Finally, you need to publish the Facebook app.
     - **Slug**: leave default value (If you choose a different slug then the default, the URL will need to be updated to reflect the change)
     - **User matching mode**: leave default option unless other configuration is needed
     - **User path**: leave default option unless other configuration is needed
-    - **Icon**: optionally you can select a specific icon of logo to display on the login page.
+    - **Icon**: optionally you can select a specific icon of logo to display on the login form.
     - **Protocol settings**
         - **Consumer Key**: enter the **App ID** from Facebook
         - **Consumer Secret**: enter the **App Secret** from Facebook
@@ -69,5 +69,5 @@ Finally, you need to publish the Facebook app.
 You now have Facebook as a source. Verify by checking that appears on the **Directory -> Federation & Social login** page in authentik.
 
 :::note
-For more details on how to display the new source on the authentik Login page refer to [Add Sources to Default Login Page](../index.md#add-sources-to-default-login-page).
+For more details on how to display the new source on the authentik Login page refer to [Add Sources to default Login form](../index.md#add-sources-to-default-login-page).
 :::
