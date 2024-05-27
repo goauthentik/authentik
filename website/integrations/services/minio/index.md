@@ -74,7 +74,7 @@ Finally, click the save button and follow instructions in the popup to restart y
 
 ### Command Line
 
-You must install the MinIO binaries from [here](https://min.io/docs/minio/linux/reference/minio-mc.html). You must then create an alias for your instance: `mc alias set myminio https://minio.company <access key> <secret key>`.
+You must install the MinIO binaries from [here](https://min.io/docs/minio/linux/reference/minio-mc.html). You must then create an alias for your instance: `mc alias set myminio https://minio.company <access key> <secret key>`. You can follow [this StackOverflow answer](https://stackoverflow.com/a/77645374) to create a secret and access key.
 
 Once that is done, you can run the following command:
 
