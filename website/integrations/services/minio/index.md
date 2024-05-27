@@ -59,18 +59,19 @@ Set the scope of the MinIO scope mapping you created in the previous step under 
 Note the Client ID and Client Secret values. Create an application, using the provider you've created above. Note the slug of the application you've created.
 
 ## MinIO
+
 You can set up OpenID in two different ways: via the web interface or the command line.
 
 ### Web Interface
 
 From the main page, go to _Identity_ -> _OpenID_ and click the create button and fill out the configuration as follows:
 
-- Name: MinIO
-- Config URL: `https://minio.company/application/o/<minio slug>/.well-known/openid-configuration`
-- Client ID: Your client ID from the previous step
-- Client Secret: Your client secret from the previous step
-- Scopes: `openid, email, profile, minio`
-- Redirect URI: `https://minio.company/oauth_callback`
+-   Name: MinIO
+-   Config URL: `https://minio.company/application/o/<minio slug>/.well-known/openid-configuration`
+-   Client ID: Your client ID from the previous step
+-   Client Secret: Your client secret from the previous step
+-   Scopes: `openid, email, profile, minio`
+-   Redirect URI: `https://minio.company/oauth_callback`
 
 Finally, click the save button and follow the instructions in the popup to restart your instance.
 
