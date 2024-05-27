@@ -4,7 +4,7 @@ title: Facebook
 
 <span class="badge badge--secondary">Support level: Community</span>
 
-Allows users to authenticate using their Facebook credentials.
+Adding Facebook as a source allows users to authenticate through authentik using their Facebook credentials.
 
 ## Preparation
 
@@ -33,7 +33,7 @@ After you create the app you need to customize the login settings.
 5. Go back to the Dashboard and in the left navigation pane click **Use Cases**.
 6. On the **Use cases** page, click **Customize** under \*\*Authentication and account creation".
 7. On the **Customize** page, click **Go to settings**.
-8. On the **Facebook Login settings** in the **Valid OAuth redirect URIs** field enter your authentik instance URL, and click **Save\*\*.
+8. On the **Facebook Login settings** in the **Valid OAuth redirect URIs** field enter your authentik instance URL, and click \*\*Save\*\*.
 9. Navigate to the **Use cases -> Customize** page.
 10. Under **Permissions** click **Add** for the **email** permission.
 
