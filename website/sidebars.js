@@ -193,6 +193,7 @@ const docsSidebar = {
                         "sources/apple/index",
                         "sources/azure-ad/index",
                         "sources/discord/index",
+                        "sources/facebook/index",
                         "sources/github/index",
                         "sources/google/index",
                         "sources/mailcow/index",
