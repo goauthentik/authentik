@@ -61,13 +61,28 @@ You can set up OpenID in two different ways: via the web interface or the comman
 
 ### Web Interface
 
+From the main page, go to _Identity_ -> _OpenID_ and click the create button and fill out the configuration as follows:
+
+- Name: MinIO
+- Config URL: `https://minio.company/application/o/<minio slug>/.well-known/openid-configuration`
+- Client ID: Your client ID from the previous step
+- Client Secret: Your client secret from the previous step
+- Scopes: `openid, email, profile, minio`
+- Redirect URI: `https://minio.company/oauth_callback`
+
+Finally, click the save button and follow instructions in the popup to restart your instance.
+
 ### Command Line
+
+You must install the MinIO binaries from [here](https://min.io/docs/minio/linux/reference/minio-mc.html). You must then create an alias for your instance: `mc alias set myminio https://minio.company <access key> <secret key>`.
+
+Once that is done, you can run the following command:
 
 ```
 ~ mc admin config set myminio identity_openid \
-  config_url="https://authentik.company/application/o/<applicaiton-slug>/.well-known/openid-configuration" \
-  client_id="<client id from above>" \
-  client_secret="<client secret from above>" \
+  config_url="https://authentik.company/application/o/<minio slug>/.well-known/openid-configuration" \
+  client_id="<client id>" \
+  client_secret="<client secret>" \
   scopes="openid,profile,email,minio"
 ```
 
