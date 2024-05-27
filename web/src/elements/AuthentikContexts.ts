@@ -12,4 +12,8 @@ export const authentikEnterpriseContext = createContext<LicenseSummary>(
 
 export const authentikBrandContext = createContext<CurrentBrand>(Symbol("authentik-brand-context"));
 
+export const authentikLocalStoreContext = createContext<unknown>(
+    Symbol("authentik-local-store-context"),
+);
+
 export default authentikConfigContext;

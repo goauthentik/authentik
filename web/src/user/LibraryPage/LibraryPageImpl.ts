@@ -1,6 +1,7 @@
 import { groupBy } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
+import { tryCatch } from "@goauthentik/elements/utils/tryCatch.js";
 import "@goauthentik/user/LibraryApplication";
 
 import { msg } from "@lit/localize";
@@ -12,6 +13,7 @@ import styles from "./LibraryPageImpl.css";
 
 import type { Application } from "@goauthentik/api";
 
+import "./ApplicationCards";
 import "./ApplicationEmptyState";
 import "./ApplicationList";
 import "./ApplicationSearch";
@@ -19,6 +21,8 @@ import { appHasLaunchUrl } from "./LibraryPageImpl.utils";
 import { SEARCH_ITEM_SELECTED, SEARCH_UPDATED } from "./constants";
 import { isCustomEvent, loading } from "./helpers";
 import type { AppGroupList, PageUIConfig } from "./types";
+
+const VIEW_KEY = "ak-library-page-view-preference";
 
 /**
  * List of Applications available
@@ -53,6 +57,9 @@ export class LibraryPage extends AKElement {
     @state()
     filteredApps: Application[] = [];
 
+    @property()
+    viewPreference?: string;
+
     constructor() {
         super();
         this.searchUpdated = this.searchUpdated.bind(this);
@@ -66,6 +73,12 @@ export class LibraryPage extends AKElement {
     connectedCallback() {
         super.connectedCallback();
         this.filteredApps = this.apps;
+        this.viewPreference =
+            this.viewPreference ??
+            tryCatch(
+                () => window.localStorage.getItem(VIEW_KEY) ?? undefined,
+                (e) => "card",
+            );
         if (this.filteredApps === undefined) {
             throw new Error(
                 "Application.results should never be undefined when passed to the Library Page.",
@@ -110,6 +123,13 @@ export class LibraryPage extends AKElement {
         return groupBy(this.filteredApps.filter(appHasLaunchUrl), (app) => app.group || "");
     }
 
+    setView(view: string) {
+        this.viewPreference = view;
+        tryCatch(() => {
+            window.localStorage.setItem(VIEW_KEY, view);
+        });
+    }
+
     renderEmptyState() {
         return html`<ak-library-application-empty-list
             ?isadmin=${this.isAdmin}
@@ -122,12 +142,17 @@ export class LibraryPage extends AKElement {
         const layout = this.uiConfig.layout as string;
         const background = this.uiConfig.background;
 
-        return html`<ak-library-application-list
-            layout="${layout}"
-            background="${ifDefined(background)}"
-            selected="${ifDefined(selected)}"
-            .apps=${apps}
-        ></ak-library-application-list>`;
+        return this.viewPreference === "list"
+            ? html`<ak-library-application-list
+                  selected="${ifDefined(selected)}"
+                  .apps=${apps}
+              ></ak-library-application-list>`
+            : html`<ak-library-application-cards
+                  layout="${layout}"
+                  background="${ifDefined(background)}"
+                  selected="${ifDefined(selected)}"
+                  .apps=${apps}
+              ></ak-library-application-cards>`;
     }
 
     renderSearch() {
@@ -137,9 +162,15 @@ export class LibraryPage extends AKElement {
     render() {
         return html`<main role="main" class="pf-c-page__main" tabindex="-1" id="main-content">
             <div class="pf-c-content header">
-                <h1 role="heading" aria-level="1" id="library-page-title">
-                    ${msg("My applications")}
-                </h1>
+                <div id="library-page-title">
+                    <h1 role="heading" aria-level="1">${msg("My applications")}</h1>
+                    <a id="card-view" @click=${() => this.setView("card")}
+                        ><i ?checked=${this.viewPreference === "card"} class="fas fa-th-large"></i
+                    ></a>
+                    <a id="list-view" @click=${() => this.setView("list")}
+                        ><i ?checked=${this.viewPreference === "list"} class="fas fa-list"></i
+                    ></a>
+                </div>
                 ${this.uiConfig.searchEnabled ? this.renderSearch() : html``}
             </div>
             <section class="pf-c-page__main-section">

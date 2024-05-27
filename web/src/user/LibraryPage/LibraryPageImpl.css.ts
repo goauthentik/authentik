@@ -34,6 +34,30 @@ export const styles = [PFBase, PFDisplay, PFEmptyState, PFPage, PFContent].conca
     .pf-c-page__main-section {
         background-color: transparent;
     }
+
+    #library-page-title {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+
+    #library-page-title h1 {
+        padding-right: 0.5rem;
+    }
+
+    #library-page-title i {
+        display: inline-block;
+        padding: 0.25rem;
+    }
+
+    #library-page-title i[checked] {
+        border: 3px solid var(--pf-global--BorderColor--100);
+    }
+
+    #library-page-title a,
+    #library-page-title i {
+        vertical-align: bottom;
+    }
 `);
 
 export default styles;
