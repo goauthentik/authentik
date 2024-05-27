@@ -21,7 +21,7 @@ The following placeholders will be used:
 
 The primary way to manage access in MinIO is via [policies](https://min.io/docs/minio/linux/administration/identity-access-management/policy-based-access-control.html#minio-policy). We need to configure authentik to return a list of which MinIO policies should be applied to a user.
 
-Under _Customization_ -> _Property Mappings_, create a _Scope Mapping_. Give it a name like "OIDC-Scope-minio". Set the scope name to `minio` and the expression to the following
+Under _Customization_ -> _Property Mappings_, create a _Scope Mapping_. Give it a name like "OIDC-Scope-minio". Set the scope name to `minio` and the expression to the following:
 
 ```python
 return {
@@ -29,7 +29,7 @@ return {
 }
 ```
 
-This mapping will result in the default MinIO `readwrite` policy being applied to all users. If you want to create a more granular mapping based on authentik groups, use an expression like this
+This mapping will result in the default MinIO `readwrite` policy being applied to all users. If you want to create a more granular mapping based on authentik groups, use an expression like this:
 
 ```python
 if ak_is_group_member(request.user, name="Minio admins"):
@@ -50,13 +50,18 @@ Note that you can assign multiple policies to a user by returning a list, and re
 Create an application in authentik. Create an _OAuth2/OpenID Provider_ with the following parameters:
 
 -   Client Type: `Confidential`
--   Scopes: OpenID, Email, Profile and the scope you created above
+-   Scopes: OpenID, Email, Profile, and the scope you created above
 -   Signing Key: Select any available key
 -   Redirect URIs: `https://minio.company/oauth_callback`
 
 Note the Client ID and Client Secret values. Create an application, using the provider you've created above. Note the slug of the application you've created.
 
 ## MinIO
+You can set up OpenID in two different ways: via the web interface or the command line. Setting it up through the web interface is easier and less error-prone.
+
+### Web Interface
+
+### Command Line
 
 ```
 ~ mc admin config set myminio identity_openid \
