@@ -7,6 +7,8 @@ slug: /
 
 The following is a set of guidelines for contributing to authentik and its components, which are hosted in the [goauthentik Organization](https://github.com/goauthentik) on GitHub. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request.
 
+We appreciate contributions of code, documentation, enhancements, and bug fixes. Read more [below](#how-can-i-contribute) about the many ways to contibute.
+
 ## Code of Conduct
 
 We expect all contributors to act professionally and respectfully in all interactions. If there's something you dislike or think can be done better, tell us! We'd love to hear any suggestions for improvement.
@@ -121,6 +123,8 @@ This is documented in the [developer docs](./setup/frontend-dev-environment.md)
 
 Contributions to the technical documentation are greatly appreciated. Open a PR if you have improvements to make or new content to add. If you have questions or suggestions about the documentation, open an Issue. No contribution is too small.
 
+Please be sure to refer to our [Style Guide](..) for the docs, and use a [template](../docs/templates/index.md) to make it easier for you. The style guidelines are also used for any Integrations documentation, and we have a [template](../../integrations/_template/service.md) for Integrations as well.
+
 ### Pull Requests
 
 The process described here has several goals:
@@ -165,6 +169,14 @@ authentik runs on Python 3.12 at the time of writing this.
 -   Ensure any database migrations work properly from the last stable version (this is checked via CI)
 -   If your code changes central functions, make sure nothing else is broken.
 
-### Documentation Styleguide
+### Documentation Style Guide
 
--   Use [MDX](https://mdxjs.com/) whenever appropriate.
+Refer to the full [Style Guide]() for details, but here are some important highlights:
+
+-  Our product name is authentik, with a lower-case "a" and a "k" on the end. Our company name is Authentik Security.
+
+- We use sentence style case in our titles and headings.
+
+- We use **bold** text to name UI components, and *italic* text for variables.
+
+- Use [MDX](https://mdxjs.com/) whenever appropriate. MDX, which uses React components, is useful for creating tabs, action buttons, and advanced content formatting.
