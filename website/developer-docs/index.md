@@ -123,7 +123,7 @@ This is documented in the [developer docs](./setup/frontend-dev-environment.md)
 
 Contributions to the technical documentation are greatly appreciated. Open a PR if you have improvements to make or new content to add. If you have questions or suggestions about the documentation, open an Issue. No contribution is too small.
 
-Please be sure to refer to our [Style Guide](..) for the docs, and use a [template](../docs/templates/index.md) to make it easier for you. The style guidelines are also used for any Integrations documentation, and we have a [template](../../integrations/_template/service.md) for Integrations as well.
+Please be sure to refer to our [Style Guide](../developer-docs/docs/style-guide.mdx) for the docs, and use a [template](./docs/templates/index.md) to make it easier for you. The style guidelines are also used for any Integrations documentation, and we have a [template](../integrations) for Integrations as well.
 
 ### Pull Requests
 
@@ -148,7 +148,9 @@ While the prerequisites above must be satisfied prior to having your pull reques
 
 -   Use the format of `<package>: <verb> <description>`
     -   See [here](#authentiks-structure) for `package`
-    -   Example: `providers/saml2: fix parsing of requests`
+    -   Examples:
+        `providers/saml2: fix parsing of requests`
+        `website/docs: add config info for GWS`
 
 ### Git Commit Messages
 
@@ -158,7 +160,7 @@ While the prerequisites above must be satisfied prior to having your pull reques
 -   Reference issues and pull requests liberally after the first line
 -   Naming of commits within a PR does not need to adhere to the guidelines as we squash merge PRs
 
-### Python Styleguide
+### Python Style Guide
 
 All Python code is linted with [black](https://black.readthedocs.io/en/stable/) and [Ruff](https://docs.astral.sh/ruff).
 
@@ -171,12 +173,12 @@ authentik runs on Python 3.12 at the time of writing this.
 
 ### Documentation Style Guide
 
-Refer to the full [Style Guide]() for details, but here are some important highlights:
+Refer to the full [Style Guide](../developer-docs/docs/style-guide.mdx) for details, but here are some important highlights:
 
--  Our product name is authentik, with a lower-case "a" and a "k" on the end. Our company name is Authentik Security.
+-   Our product name is authentik, with a lower-case "a" and a "k" on the end. Our company name is Authentik Security.
 
-- We use sentence style case in our titles and headings.
+-   We use sentence style case in our titles and headings.
 
-- We use **bold** text to name UI components, and *italic* text for variables.
+-   We use **bold** text to name UI components, and _italic_ text for variables.
 
-- Use [MDX](https://mdxjs.com/) whenever appropriate. MDX, which uses React components, is useful for creating tabs, action buttons, and advanced content formatting.
+-   Use [MDX](https://mdxjs.com/) whenever appropriate. MDX, which uses React components, is useful for creating tabs, action buttons, and advanced content formatting.

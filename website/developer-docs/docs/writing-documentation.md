@@ -37,12 +37,11 @@ Please refer to our [Style Guide](./style-guide.mdx) for authentik documentation
 
 Following the guidelines will make getting your PRs merged much easier and faster, with fewer edits needed. We appreciate our community contributors helping us keep the Docs consistent, easy-to-use, and high quality.
 
-
 ## Documentation for Integrations
 
 In addition to following the [Style Guide](./style-guide.mdx) please review the following guidelines.
 
-For new Integration documentation, please use the template in `/website/integrations/_template/service.md`.
+For new Integration documentation, please use the [Integrations template](../../integrations/template/service.md).
 
 -   Make sure to add the service to a fitting category in `/website/sidebarsIntegrations.js`. If you do not do this, the Integration will not appear in the Table of Contents to the left.
 
