@@ -148,8 +148,8 @@ class BoundSessionMiddleware(SessionMiddleware):
             if last_asn.network != new_asn.network:
                 raise SessionBindingBroken(
                     "network.asn_network",
-                    last_asn.network,
-                    new_asn.network,
+                    str(last_asn.network),
+                    str(new_asn.network),
                     last_ip,
                     new_ip,
                 )
