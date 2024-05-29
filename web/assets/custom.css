@@ -1,0 +1,100 @@
+.pf-c-login.sidebar_right::before {
+    content: ''; /* Necessary for the pseudo-element to be generated */
+    display: block; /* Treat the pseudo-element like a block-level element */
+    width: 100%; /* Use 100% of the parent width */
+    aspect-ratio: 820 / 608; /* Maintain the aspect ratio of the original image */
+    background-image: url('/media/public/scribe_welcome.svg'); /* The image you want to add */
+    background-size: cover; /* Cover the entire area of the pseudo-element */
+    background-position: center; /* Center the background image */
+    margin: auto; /* Center the pseudo-element horizontally if necessary */
+    max-width: 50rem;
+}
+
+@media screen and (max-width: 1024px) {
+    .pf-c-login.sidebar_right::before {
+        display: none !important;
+    }
+}
+.sidebar_right{
+    padding-left: 30px;
+}
+.ak-login-container {
+    margin-left: 30px;
+}
+
+.ak-login-container::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 1); /* Default light background */
+    animation: fadeOutOverlay 0.5s ease 2s forwards;
+}
+
+
+.ak-login-container::after {
+    content: "";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    aspect-ratio: 1;
+    border: 6px solid rgba(0, 0, 0, .1);
+    border-left-color: transparent;
+    animation: spin89345 1s linear infinite;
+    border-radius: 50%;
+
+
+    z-index: 1001; /* Ensures loader is above the overlay */
+}
+
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+
+@keyframes fadeOutOverlay {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+@keyframes fadeOutLoader {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+@keyframes spin89345 {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+a[href^="https://unsplash.com/@theforestbirds"] {display:none !important}
+a[href^="https://goauthentik.io?utm_source=authentik&utm_medium=flow"] {display:none !important;}
+

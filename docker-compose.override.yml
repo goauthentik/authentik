@@ -1,0 +1,7 @@
+services:
+  server:
+    volumes:
+      - .web/assets/custom.css:/web/dist/custom.css:ro
+      - .web/assets/icons:/web/dist/assets/icons:ro
+      - .web/assets/static-images:/static/dist/assets/images:ro
+      - .web/assets/web-images:/web/dist/assets/images:ro
