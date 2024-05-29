@@ -8,11 +8,15 @@ If you find any documentation that doesn't match these guidelines, feel free to 
 
 To test how the documentation renders use the Netlify Deploy Preview, especially when using Docusaurus-specific features. Or [build it locally and test](./writing-documentation.md#setup-your-local-build), using the `make website-watch` command.
 
-You can use standard [Docusaurus-specific features](https://docusaurus.io/docs/next/markdown-features), which include MDX elements such as tabs and admonitions.
-
 :::info
 Make sure to add any new pages to the `sidebar` file. Otherwise, the new page will not appear in the table of contents to the left.
 :::
+
+## General guidelines
+
+-   Try to order the documentation sections in an order that makes it easiest for the user to configure. That is, order the sections in the same way the actual workflow to accomplish the task is ordered. Use headings (sub-titles) to break up long documents, and make it easier to find a specific section.
+
+-   You can use standard [Docusaurus-specific features](https://docusaurus.io/docs/next/markdown-features), which include MDX elements such as tabs and admonitions.
 
 ## Terminology
 
@@ -27,8 +31,6 @@ Make sure to add any new pages to the `sidebar` file. Otherwise, the new page wi
 -   When referring to external tools, or an industry term or technology, always follow the exact capitalization that the product or company itself uses, or what the industry uses in consensus.
 
 -   Use abbreviations where it makes sense (for commonly used terms like SAML and OAuth) for common terms. If an abbreviation is less-known, spell it out in parentheses after the first use.
-
--   Try to order the documentation sections in an order that makes it easiest for the user to configure. That is, order the sections in the same way the actual workflow to accomplish the task is ordered.
 
 ## Writing style
 
@@ -54,12 +56,23 @@ Formatting in documentation is important; it improves comprehension and readabil
 
 -   When referring to UI elements or components in the authentik UI, such as field names, labels, etc., use **bold** text.
 
--   For variables or placeholders, use angle brackets around the variable and use text that makes it obvious that the user needs to replace it. For example (`http://localhost:<your-port>/if/flow/initial-setup/`). Make sure to specify if the placeholder is something the user needs to define, is something another system defines, or is generated.
+-   Use `code` format when referring to:
+    -   commands
+    -   file paths
+    -   directory names
+    -   code snippets (sinlge line or a block of code)
 
--   When referring to authentik functionality and features, such as flows, stages, sources, or policies, do not cappitalize and do not use bold or italic text. When possible link to the corresponding documentation.
+-   For variables or placeholders use *italic* font for the variable, place angle brackets around it, and use place-holder names that makes it obvious that the user needs to replace it.
+
+    Example: <kbd>https://<em>&lt;company-domain&gt;</em>/source/oauth/callback/<em>&lt;source-slug&gt;</em></kbd>
+
+    Make sure to specify if the placeholder is something the user needs to define, is system-defined or generated.
+
+-   When referring to authentik functionality and features, such as flows, stages, sources, or policies, do not capitalize and do not use bold or italic text. When possible link to the corresponding documentation.
 
 ### Titles and headers
 
--   Both titles and headers (H1, H2, H3) use sentence style capitalization, meaning that only the first word is capitalized.
-
-    -   If the title or header includes a proper noun (name of a product, etc) then capitalize those words.
+-   Both titles and headers (H1, H2, H3) use sentence style capitalization, meaning that only the first word is capitalized. However, if the title or header includes a proper noun (name of a product, etc) then capitalize those words.
+    Examples:
+        -   Configure your provider
+        -   Configure the Google Workspace provider
