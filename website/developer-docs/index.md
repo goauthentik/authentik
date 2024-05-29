@@ -7,7 +7,7 @@ slug: /
 
 The following is a set of guidelines for contributing to authentik and its components, which are hosted in the [goauthentik Organization](https://github.com/goauthentik) on GitHub. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request.
 
-We appreciate contributions of code, documentation, enhancements, and bug fixes. Read more [below](#how-can-i-contribute) about the many ways to contibute.
+We appreciate contributions of code, documentation, enhancements, and bug fixes. Read more [below](#how-can-i-contribute) about the many ways to contribute.
 
 ## Code of Conduct
 
