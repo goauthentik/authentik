@@ -1,5 +1,6 @@
 from asyncio import run
 from collections.abc import Coroutine
+from dataclasses import asdict
 from typing import Any
 
 from azure.core.exceptions import (
@@ -15,6 +16,7 @@ from kiota_authentication_azure.azure_identity_authentication_provider import (
     AzureIdentityAuthenticationProvider,
 )
 from kiota_http.kiota_client_factory import KiotaClientFactory
+from msgraph.generated.models.entity import Entity
 from msgraph.generated.models.o_data_errors.o_data_error import ODataError
 from msgraph.graph_request_adapter import GraphRequestAdapter, options
 from msgraph.graph_service_client import GraphServiceClient
@@ -98,3 +100,10 @@ class MicrosoftEntraSyncClient[TModel: Model, TConnection: Model, TSchema: dict]
         for email in emails:
             if not any(email.endswith(f"@{domain_name}") for domain_name in self.domains):
                 raise BadRequestSyncException(f"Invalid email domain: {email}")
+
+    def entity_as_dict(self, entity: Entity) -> dict:
+        """Create a dictionary of a model instance, making sure to remove (known) things
+        we can't JSON serialize"""
+        raw_data = asdict(entity)
+        raw_data.pop("backing_store", None)
+        return raw_data

@@ -1,5 +1,3 @@
-from dataclasses import asdict
-
 from django.db import transaction
 from msgraph.generated.models.user import User as MSUser
 from msgraph.generated.users.users_request_builder import UsersRequestBuilder
@@ -95,16 +93,17 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
                     provider=self.provider,
                     user=user,
                     microsoft_id=ms_user.id,
-                    attributes=asdict(ms_user),
+                    attributes=self.entity_as_dict(ms_user),
                 )
             except TransientSyncException as exc:
                 raise exc
             else:
+                print(self.entity_as_dict(response))
                 return MicrosoftEntraProviderUser.objects.create(
                     provider=self.provider,
                     user=user,
                     microsoft_id=response.id,
-                    attributes=asdict(ms_user),
+                    attributes=self.entity_as_dict(response),
                 )
 
     def update(self, user: User, connection: MicrosoftEntraProviderUser):
@@ -134,5 +133,5 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
             provider=self.provider,
             user=matching_authentik_user,
             microsoft_id=user.id,
-            attributes=asdict(user),
+            attributes=self.entity_as_dict(user),
         )

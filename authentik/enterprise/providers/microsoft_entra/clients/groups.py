@@ -1,5 +1,3 @@
-from dataclasses import asdict
-
 from django.db import transaction
 from msgraph.generated.groups.groups_request_builder import GroupsRequestBuilder
 from msgraph.generated.models.group import Group as MSGroup
@@ -91,14 +89,14 @@ class MicrosoftEntraGroupClient(
                     provider=self.provider,
                     group=group,
                     microsoft_id=ms_group.id,
-                    attributes=asdict(ms_group),
+                    attributes=self.entity_as_dict(ms_group),
                 )
             else:
                 return MicrosoftEntraProviderGroup.objects.create(
                     provider=self.provider,
                     group=group,
                     microsoft_id=response.id,
-                    attributes=asdict(response),
+                    attributes=self.entity_as_dict(response),
                 )
 
     def update(self, group: Group, connection: MicrosoftEntraProviderGroup):
@@ -222,5 +220,5 @@ class MicrosoftEntraGroupClient(
             provider=self.provider,
             group=matching_authentik_group,
             microsoft_id=group.id,
-            attributes=asdict(group),
+            attributes=self.entity_as_dict(group),
         )
