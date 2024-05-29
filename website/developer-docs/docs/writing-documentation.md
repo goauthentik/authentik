@@ -2,16 +2,19 @@
 title: Writing documentation
 ---
 
-Writing documentation for authentik is a great way for both new and experienced users to improve and contribute to the project. Here are a few guidelines to ensure
-the documentation is easy to read and uses similar phrasing.
+Writing documentation for authentik is a great way for both new and experienced users to improve and contribute to the project.
 
-## Setup
+## Setup your local build
 
 Requirements:
 
 -   Node.js 16 (or greater)
 
-The documentation site is situated in the `/website` folder of the authentik GitHub repository.
+The docs and the code are in the same Github repo, at https://github.com/goauthentik/authentik, so if you have cloned the repo, you already have the docs.
+
+You can do local builds of the documentation to test your changes or review your new content, and to run the required `prettier` and linters before pushing your PR.
+
+The documentation site is situated in the `/website` folder of the repo.
 
 The site is built using npm, below are some useful make commands:
 
@@ -28,12 +31,14 @@ The site is built using npm, below are some useful make commands:
     For real time viewing of changes, as you make them.
 
 :::info
-Be sure to run the formatter before committing changes.
+Be sure to run the formatting command above before committing changes.
 :::
 
 ## Writing guidelines
 
-Please refer to our [Style Guide](./style-guide.mdx) for authentik documentation.
+Please refer to our [Style Guide](./style-guide.mdx) for authentik documentation. Here you will learn important guidelines about not capitalizing authentik, how we format our titles and headers, and much more.
+
+Whenever possible, use one of our [docs templates](./templates/index.md). This makes it a lot easier for you (no blank page frghts!) and keeps the documentation consistent.
 
 Following the guidelines will make getting your PRs merged much easier and faster, with fewer edits needed. We appreciate our community contributors helping us keep the Docs consistent, easy-to-use, and high quality.
 
@@ -41,7 +46,7 @@ Following the guidelines will make getting your PRs merged much easier and faste
 
 In addition to following the [Style Guide](./style-guide.mdx) please review the following guidelines.
 
-For new Integration documentation, please use the [Integrations template](../../integrations/template/service.md).
+For new Integration documentation, please use the Integrations template in our [Github repo](https://github.com/goauthentik/authentik) at `/website/integrations/_template/service.md`.
 
 -   Make sure to add the service to a fitting category in `/website/sidebarsIntegrations.js`. If you do not do this, the Integration will not appear in the Table of Contents to the left.
 
