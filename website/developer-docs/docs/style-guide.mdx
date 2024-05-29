@@ -2,7 +2,7 @@
 title: Style Guide
 ---
 
-Here are a few guidelines to ensure that the documentation is easy to read and uses similar phrasing. Remember to use our templates when possible; they are already set up to follow may of the style guidelines below.
+Here are a few guidelines to ensure that the documentation is easy to read and uses similar phrasing. Remember to use our [docs templates](./templates/index.md) when possible; they are already set up to follow may of the style guidelines below.
 
 If you find any documentation that doesn't match these guidelines, feel free to either open an [Issue](https://github.com/goauthentik/authentik/issues) or a [PR](https://github.com/goauthentik/authentik/pulls) so they can be fixed.
 
@@ -18,13 +18,17 @@ Make sure to add any new pages to the `sidebar` file. Otherwise, the new page wi
 
 ### authentik names
 
--   The product name authentik should always be stylized as `authentik` (with a lower-case "a" and ending with a "k").
+-   The product name authentik should always start with a lower-case "a" and end with a "k". Even if it is the first word in a sentence. :-)
 
 -   Our company name is Authentik Security, Inc. but in non-legal docs you can shorten it to Authentik Security.
 
 ### Industry terms, technology, and other tools
 
 -   When referring to external tools, or an industry term or technology, always follow the exact capitalization that the product or company itself uses, or what the industry uses in consensus.
+
+-   Use abbreviations where it makes sense (for commonly used terms like SAML and OAuth) for common terms. If an abbreviation is less-known, spell it out in parentheses after the first use.
+
+-   Try to order the documentation sections in an order that makes it easiest for the user to configure. That is, order the sections in the same way the actual workflow to accomplish the task is ordered.
 
 ## Writing style
 
@@ -44,15 +48,13 @@ Make sure to add any new pages to the `sidebar` file. Otherwise, the new page wi
 
     -   DO: "We recommend not modifying the default file."
 
--   Use abbreviations where it makes sense (for commonly used terms like SAML and OAuth) for common terms. If an abbreciation is less-known, spell it out in parentheses after the first use.
-
 ## Formatting
 
-Formatting in documentation is important; it improves readability, and allows the brain to more quickly determine what is a command or a configuration setting, what is a field name, or
+Formatting in documentation is important; it improves comprehension and readability, and allows the brain to more quickly determine what is a command or a configuration setting, what is a field name, or what is a variable.
 
 -   When referring to UI elements or components in the authentik UI, such as field names, labels, etc., use **bold** text.
 
--   For variables or placeholders, use angle brackets and italicize the text inside the brackets, to indicate that it is a variable (`_<placeholder-name>_`). Make sure to specify if the placeholder is something the user needs to define, is something another system defines, or is generated.
+-   For variables or placeholders, use angle brackets around the variable and use text that makes it obvious that the user needs to replace it. For example (`http://localhost:<your-port>/if/flow/initial-setup/`). Make sure to specify if the placeholder is something the user needs to define, is something another system defines, or is generated.
 
 -   When referring to authentik functionality and features, such as flows, stages, sources, or policies, do not cappitalize and do not use bold or italic text. When possible link to the corresponding documentation.
 
