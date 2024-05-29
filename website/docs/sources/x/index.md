@@ -22,14 +22,14 @@ You will need to create a new project, and OAuth credentials in the X Developer 
 4. Finish setting up the app by clicking **App settings**. Any of the API keys on this screen are not used by authentik.
 5. Click the **Set up** button
 
-![](./X1.png)
+![](./x1.png)
 
 6. Enable **OAuth 2.0**
 7. Set **Type of App** to _Web_
 8. Set **Callback URI / Redirect URL** to `https://authentik.company/source/oauth/callback/X/`
 9. Set **Website URL** to `https://authentik.company`
 
-![](./X2.png)
+![](./x2.png)
 
 10. Confirm with **Save**
 11. Copy and store **Client ID** and **Client Secret** for later
