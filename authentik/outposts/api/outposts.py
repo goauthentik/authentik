@@ -117,8 +117,12 @@ class OutpostHealthSerializer(PassiveSerializer):
     uid = CharField(read_only=True)
     last_seen = DateTimeField(read_only=True)
     version = CharField(read_only=True)
-    version_should = CharField(read_only=True)
+    golang_version = CharField(read_only=True)
+    openssl_enabled = BooleanField(read_only=True)
+    openssl_version = CharField(read_only=True)
+    fips_enabled = BooleanField(read_only=True)
 
+    version_should = CharField(read_only=True)
     version_outdated = BooleanField(read_only=True)
 
     build_hash = CharField(read_only=True, required=False)
@@ -173,6 +177,10 @@ class OutpostViewSet(UsedByMixin, ModelViewSet):
                     "version_should": state.version_should,
                     "version_outdated": state.version_outdated,
                     "build_hash": state.build_hash,
+                    "golang_version": state.golang_version,
+                    "openssl_enabled": state.openssl_enabled,
+                    "openssl_version": state.openssl_version,
+                    "fips_enabled": state.fips_enabled,
                     "hostname": state.hostname,
                     "build_hash_should": get_build_hash(),
                 }

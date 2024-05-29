@@ -1533,21 +1533,6 @@
         <target>選擇類型</target>
 
       </trans-unit>
-      <trans-unit id="s0b3bf19b31dd6bac">
-        <source>Try the new application wizard</source>
-        <target>試試看新的應用程式精靈</target>
-
-      </trans-unit>
-      <trans-unit id="sa18e1c6e0e6f16cc">
-        <source>The new application wizard greatly simplifies the steps required to create applications and providers.</source>
-        <target>新的應用程式精靈大量簡化了建立應用程式和供應商的所需步驟。</target>
-
-      </trans-unit>
-      <trans-unit id="s01ef54f5d7c6ed47">
-        <source>Try it now</source>
-        <target>立即嘗試</target>
-
-      </trans-unit>
       <trans-unit id="s382a2aa3984474dd">
         <source>Create</source>
         <target>建立</target>
@@ -7127,10 +7112,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Send us feedback!</source>
   <target>提供建議給我們！</target>
 </trans-unit>
-<trans-unit id="s4015746f55a8d89f">
-  <source>Get a license</source>
-  <target>取得授權許可證。</target>
-</trans-unit>
 <trans-unit id="sb2cbd06f8e25b47e">
   <source>Go to Customer Portal</source>
   <target>前往客戶入口網站</target>
@@ -8120,9 +8101,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s862505f29064fc72">
   <source>This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:</source>
 </trans-unit>
-<trans-unit id="sb2275335377069aa">
-  <source>This feature requires an enterprise license.</source>
-</trans-unit>
 <trans-unit id="s6d3f81dc4bcacbda">
   <source>Last used</source>
 </trans-unit>
@@ -8458,6 +8436,18 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sd520a4089006ca93">
   <source>Update Google Workspace Provider</source>
+</trans-unit>
+<trans-unit id="sfdfa5bb4ddd99d70">
+  <source>Enterprise only</source>
+</trans-unit>
+<trans-unit id="scffa59cfac1951f2">
+  <source><x id="0" equiv-text="${type.name}"/> Icon</source>
+</trans-unit>
+<trans-unit id="s1da3499258024860">
+  <source><x id="0" equiv-text="${versionString}"/> (build <x id="1" equiv-text="${this.outpostHealth.buildHash.substring(0, 8)}"/>)</source>
+</trans-unit>
+<trans-unit id="s001fd928369d4ddc">
+  <source><x id="0" equiv-text="${versionString}"/> (FIPS)</source>
 </trans-unit>
     </body>
   </file>

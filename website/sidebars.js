@@ -193,6 +193,7 @@ const docsSidebar = {
                         "sources/apple/index",
                         "sources/azure-ad/index",
                         "sources/discord/index",
+                        "sources/facebook/index",
                         "sources/github/index",
                         "sources/google/index",
                         "sources/mailcow/index",
@@ -482,7 +483,10 @@ const docsSidebar = {
                 {
                     type: "category",
                     label: "PostgreSQL",
-                    items: ["troubleshooting/postgres/upgrade_kubernetes"],
+                    items: [
+                        "troubleshooting/postgres/upgrade_kubernetes",
+                        "troubleshooting/postgres/upgrade_docker",
+                    ],
                 },
                 "troubleshooting/access",
                 "troubleshooting/login",
