@@ -1,4 +1,4 @@
-"""entra OAuth2 Views"""
+"""Entra OAuth2 Views"""
 
 from typing import Any
 
