@@ -76,7 +76,7 @@ module.exports = {
                 id: "docs/writing-documentation",
             },
             items: [
-                    "docs/style-guide",
+                "docs/style-guide",
                 {
                     type: "category",
                     label: "Templates",
