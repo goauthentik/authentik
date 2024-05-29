@@ -13,7 +13,7 @@ from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 
 class XClient(UserprofileHeaderAuthClient):
-    """X has similar quirks to Azure AD, and additionally requires Basic auth on
+    """X has similar quirks to Microsoft Entra ID, and additionally requires Basic auth on
     the access token endpoint for some reason."""
 
     # X has the same quirk as azure and throws an error if the access token

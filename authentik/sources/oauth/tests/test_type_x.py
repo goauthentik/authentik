@@ -3,9 +3,9 @@
 from django.test import TestCase
 
 from authentik.sources.oauth.models import OAuthSource
-from authentik.sources.oauth.types.X import XOAuthCallback
+from authentik.sources.oauth.types.x import XOAuthCallback
 
-# https://developer.X.com/en/docs/X-api/users/lookup/api-reference/get-users-me
+# https://developer.x.com/en/docs/x-api/users/lookup/api-reference/get-users-me
 X_USER = {"data": {"id": "2244994945", "name": "XDev", "username": "X Dev"}}
 
 

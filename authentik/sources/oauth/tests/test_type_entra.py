@@ -1,9 +1,9 @@
-"""azure ad Type tests"""
+"""Microsoft Entra ID Type tests"""
 
 from django.test import TestCase
 
 from authentik.sources.oauth.models import OAuthSource
-from authentik.sources.oauth.types.azure_ad import entraOAuthCallback
+from authentik.sources.oauth.types.entra import entraOAuthCallback
 
 # https://docs.microsoft.com/en-us/graph/api/user-get?view=graph-rest-1.0&tabs=http#response-2
 AAD_USER = {
@@ -47,5 +47,5 @@ class TestTypeentra(TestCase):
         self.assertEqual(ak_context["name"], AAD_USER["displayName"])
 
     def test_user_id(self):
-        """Test azure AD user ID"""
+        """Test Microsoft Entra ID user ID"""
         self.assertEqual(entraOAuthCallback().get_user_id(AAD_USER), AAD_USER["id"])

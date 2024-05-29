@@ -13,7 +13,7 @@ LOGGER = get_logger()
 
 
 class entraOAuthRedirect(OAuthRedirect):
-    """Azure AD OAuth2 Redirect"""
+    """Microsoft Entra ID OAuth2 Redirect"""
 
     def get_additional_parameters(self, source):  # pragma: no cover
         return {
@@ -45,11 +45,11 @@ class entraOAuthCallback(OpenIDConnectOAuth2Callback):
 
 @registry.register()
 class entraType(SourceType):
-    """Azure AD Type definition"""
+    """Microsoft Entra ID Type definition"""
 
     callback_view = entraOAuthCallback
     redirect_view = entraOAuthRedirect
-    verbose_name = "Azure AD"
+    verbose_name = "Microsoft Entra ID"
     name = "entra"
 
     urls_customizable = True
