@@ -11,6 +11,7 @@ on:
         description: Select the Environment for Building the Image
         required: true
         options:
+          - dev2
           - test
           - production
         type: choice
