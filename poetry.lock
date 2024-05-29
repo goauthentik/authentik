@@ -1696,13 +1696,13 @@ grpcio-gcp = ["grpcio-gcp (>=0.2.2,<1.0.dev0)"]
 
 [[package]]
 name = "google-api-python-client"
-version = "2.130.0"
+version = "2.131.0"
 description = "Google API Client Library for Python"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "google-api-python-client-2.130.0.tar.gz", hash = "sha256:2bba3122b82a649c677b8a694b8e2bbf2a5fbf3420265caf3343bb88e2e9f0ae"},
-    {file = "google_api_python_client-2.130.0-py2.py3-none-any.whl", hash = "sha256:7d45a28d738628715944a9c9d73e8696e7e03ac50b7de87f5e3035cefa94ed3a"},
+    {file = "google-api-python-client-2.131.0.tar.gz", hash = "sha256:1c03e24af62238a8817ecc24e9d4c32ddd4cb1f323b08413652d9a9a592fc00d"},
+    {file = "google_api_python_client-2.131.0-py2.py3-none-any.whl", hash = "sha256:e325409bdcef4604d505d9246ce7199960a010a0569ac503b9f319db8dbdc217"},
 ]
 
 [package.dependencies]
