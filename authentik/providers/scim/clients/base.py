@@ -6,14 +6,22 @@ from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from pydantic import ValidationError
 from requests import RequestException, Session
 
-from authentik.lib.sync.outgoing import HTTP_CONFLICT, HTTP_NO_CONTENT, HTTP_SERVICE_UNAVAILABLE, HTTP_TOO_MANY_REQUESTS
+from authentik.lib.sync.outgoing import (
+    HTTP_CONFLICT,
+    HTTP_NO_CONTENT,
+    HTTP_SERVICE_UNAVAILABLE,
+    HTTP_TOO_MANY_REQUESTS,
+)
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
-from authentik.lib.sync.outgoing.exceptions import NotFoundSyncException, ObjectExistsSyncException, TransientSyncException
+from authentik.lib.sync.outgoing.exceptions import (
+    NotFoundSyncException,
+    ObjectExistsSyncException,
+    TransientSyncException,
+)
 from authentik.lib.utils.http import get_http_session
 from authentik.providers.scim.clients.exceptions import SCIMRequestException
 from authentik.providers.scim.clients.schema import ServiceProviderConfiguration
 from authentik.providers.scim.models import SCIMProvider
-
 
 if TYPE_CHECKING:
     from django.db.models import Model
