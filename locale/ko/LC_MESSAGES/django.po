@@ -1787,12 +1787,12 @@ msgid "Mailcow OAuth Sources"
 msgstr "Mailcow OAuth 소스"
 
 #: authentik/sources/oauth/models.py:143
-msgid "Twitter OAuth Source"
-msgstr "Twitter OAuth 소스"
+msgid "X OAuth Source"
+msgstr "X OAuth 소스"
 
 #: authentik/sources/oauth/models.py:144
-msgid "Twitter OAuth Sources"
-msgstr "Twitter OAuth 소스"
+msgid "X OAuth Sources"
+msgstr "X OAuth 소스"
 
 #: authentik/sources/oauth/models.py:152
 msgid "Facebook OAuth Source"

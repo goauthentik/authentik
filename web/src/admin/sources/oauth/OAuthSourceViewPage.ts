@@ -36,7 +36,7 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
             return "";
         case ProviderTypeEnum.Apple:
             return "Apple";
-        case ProviderTypeEnum.Azuread:
+        case ProviderTypeEnum.entra:
             return "Azure Active Directory";
         case ProviderTypeEnum.Discord:
             return "Discord";
@@ -58,8 +58,8 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
             return "Patreon";
         case ProviderTypeEnum.Reddit:
             return "Reddit";
-        case ProviderTypeEnum.Twitter:
-            return "Twitter";
+        case ProviderTypeEnum.X:
+            return "X";
         case ProviderTypeEnum.Twitch:
             return "Twitch";
         case ProviderTypeEnum.UnknownDefaultOpenApi:

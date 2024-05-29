@@ -44557,7 +44557,7 @@ components:
       enum:
       - apple
       - openidconnect
-      - azuread
+      - entra
       - discord
       - facebook
       - github
@@ -44568,7 +44568,7 @@ components:
       - patreon
       - reddit
       - twitch
-      - twitter
+      - x
       type: string
     ProxyMode:
       enum:

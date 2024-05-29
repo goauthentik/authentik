@@ -3,7 +3,7 @@ title: Sources
 slug: /sources
 ---
 
-Sources allow you to connect authentik to an external user directory. Sources can also be used with social login providers such as Facebook, Twitter, or GitHub.
+Sources allow you to connect authentik to an external user directory. Sources can also be used with social login providers such as Facebook, X, or GitHub.
 
 ### Find your source
 
@@ -11,7 +11,7 @@ Sources are in three general categories:
 
 -   **Directory synchronization** (Active Directory, FreeIPA)
 -   **Protocols** (LDAP, OAuth, SAML, and SCIM)
--   **Social logins** (Apple, Discord, Twitch, Twitter, and many others)
+-   **Social logins** (Apple, Discord, Twitch, X, and many others)
 
 For instructions to add a specific source, refer to the documentation links in the left navigation pane.
 

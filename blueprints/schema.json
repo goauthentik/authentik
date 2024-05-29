@@ -4723,7 +4723,7 @@
                     "enum": [
                         "apple",
                         "openidconnect",
-                        "azuread",
+                        "entra",
                         "discord",
                         "facebook",
                         "github",
@@ -4734,7 +4734,7 @@
                         "patreon",
                         "reddit",
                         "twitch",
-                        "twitter"
+                        "X"
                     ],
                     "title": "Provider type"
                 },

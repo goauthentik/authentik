@@ -27,7 +27,7 @@ entries:
       slug: "%(uid)s-source"
     attrs:
       name: "%(uid)s-source"
-      provider_type: azuread
+      provider_type: entra
       consumer_key: "%(uid)s"
       consumer_secret: "%(uid)s"
       icon: https://goauthentik.io/img/icon.png

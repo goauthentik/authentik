@@ -1,4 +1,4 @@
-"""Twitter OAuth Views"""
+"""X OAuth Views"""
 
 from typing import Any
 
@@ -12,11 +12,11 @@ from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 
-class TwitterClient(UserprofileHeaderAuthClient):
-    """Twitter has similar quirks to Azure AD, and additionally requires Basic auth on
+class XClient(UserprofileHeaderAuthClient):
+    """X has similar quirks to Azure AD, and additionally requires Basic auth on
     the access token endpoint for some reason."""
 
-    # Twitter has the same quirk as azure and throws an error if the access token
+    # X has the same quirk as azure and throws an error if the access token
     # is set via query parameter, so we reuse the azure client
     # see https://github.com/goauthentik/authentik/issues/1910
 
@@ -29,8 +29,8 @@ class TwitterClient(UserprofileHeaderAuthClient):
         )
 
 
-class TwitterOAuthRedirect(OAuthRedirect):
-    """Twitter OAuth2 Redirect"""
+class XOAuthRedirect(OAuthRedirect):
+    """X OAuth2 Redirect"""
 
     def get_additional_parameters(self, source):  # pragma: no cover
         self.request.session[SESSION_KEY_OAUTH_PKCE] = generate_id()
@@ -41,10 +41,10 @@ class TwitterOAuthRedirect(OAuthRedirect):
         }
 
 
-class TwitterOAuthCallback(OAuthCallback):
-    """Twitter OAuth2 Callback"""
+class XOAuthCallback(OAuthCallback):
+    """X OAuth2 Callback"""
 
-    client_class = TwitterClient
+    client_class = XClient
 
     def get_user_id(self, info: dict[str, str]) -> str:
         return info.get("data", {}).get("id", "")
@@ -62,14 +62,14 @@ class TwitterOAuthCallback(OAuthCallback):
 
 
 @registry.register()
-class TwitterType(SourceType):
-    """Twitter Type definition"""
+class XType(SourceType):
+    """X Type definition"""
 
-    callback_view = TwitterOAuthCallback
-    redirect_view = TwitterOAuthRedirect
-    verbose_name = "Twitter"
-    name = "twitter"
+    callback_view = XOAuthCallback
+    redirect_view = XOAuthRedirect
+    verbose_name = "X"
+    name = "X"
 
-    authorization_url = "https://twitter.com/i/oauth2/authorize"
-    access_token_url = "https://api.twitter.com/2/oauth2/token"  # nosec
-    profile_url = "https://api.twitter.com/2/users/me"
+    authorization_url = "https://X.com/i/oauth2/authorize"
+    access_token_url = "https://api.X.com/2/oauth2/token"  # nosec
+    profile_url = "https://api.X.com/2/users/me"

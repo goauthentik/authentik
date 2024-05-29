@@ -2144,12 +2144,12 @@ msgid "Mailcow OAuth Sources"
 msgstr "Источники Mailcow OAuth"
 
 #: authentik/sources/oauth/models.py
-msgid "Twitter OAuth Source"
-msgstr "Источник Twitter OAuth"
+msgid "X OAuth Source"
+msgstr "Источник X OAuth"
 
 #: authentik/sources/oauth/models.py
-msgid "Twitter OAuth Sources"
-msgstr "Источники Twitter OAuth"
+msgid "X OAuth Sources"
+msgstr "Источники X OAuth"
 
 #: authentik/sources/oauth/models.py
 msgid "Facebook OAuth Source"

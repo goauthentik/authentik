@@ -3,7 +3,7 @@
 from django.test import TestCase
 
 from authentik.sources.oauth.models import OAuthSource
-from authentik.sources.oauth.types.azure_ad import AzureADOAuthCallback
+from authentik.sources.oauth.types.azure_ad import entraOAuthCallback
 
 # https://docs.microsoft.com/en-us/graph/api/user-get?view=graph-rest-1.0&tabs=http#response-2
 AAD_USER = {
@@ -26,7 +26,7 @@ AAD_USER = {
 }
 
 
-class TestTypeAzureAD(TestCase):
+class TestTypeentra(TestCase):
     """OAuth Source tests"""
 
     def setUp(self):
@@ -41,11 +41,11 @@ class TestTypeAzureAD(TestCase):
 
     def test_enroll_context(self):
         """Test azure_ad Enrollment context"""
-        ak_context = AzureADOAuthCallback().get_user_enroll_context(AAD_USER)
+        ak_context = entraOAuthCallback().get_user_enroll_context(AAD_USER)
         self.assertEqual(ak_context["username"], AAD_USER["userPrincipalName"])
         self.assertEqual(ak_context["email"], AAD_USER["mail"])
         self.assertEqual(ak_context["name"], AAD_USER["displayName"])
 
     def test_user_id(self):
         """Test azure AD user ID"""
-        self.assertEqual(AzureADOAuthCallback().get_user_id(AAD_USER), AAD_USER["id"])
+        self.assertEqual(entraOAuthCallback().get_user_id(AAD_USER), AAD_USER["id"])

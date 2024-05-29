@@ -1961,12 +1961,12 @@ msgid "Mailcow OAuth Sources"
 msgstr "Mailcow OAuth Quellen"
 
 #: authentik/sources/oauth/models.py:143
-msgid "Twitter OAuth Source"
-msgstr "Twitter OAuth Quelle"
+msgid "X OAuth Source"
+msgstr "X OAuth Quelle"
 
 #: authentik/sources/oauth/models.py:144
-msgid "Twitter OAuth Sources"
-msgstr "Twitter OAuth Quellen"
+msgid "X OAuth Sources"
+msgstr "X OAuth Quellen"
 
 #: authentik/sources/oauth/models.py:152
 msgid "Facebook OAuth Source"

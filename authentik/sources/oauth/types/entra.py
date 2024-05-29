@@ -1,4 +1,4 @@
-"""AzureAD OAuth2 Views"""
+"""entra OAuth2 Views"""
 
 from typing import Any
 
@@ -12,7 +12,7 @@ from authentik.sources.oauth.views.redirect import OAuthRedirect
 LOGGER = get_logger()
 
 
-class AzureADOAuthRedirect(OAuthRedirect):
+class entraOAuthRedirect(OAuthRedirect):
     """Azure AD OAuth2 Redirect"""
 
     def get_additional_parameters(self, source):  # pragma: no cover
@@ -21,8 +21,8 @@ class AzureADOAuthRedirect(OAuthRedirect):
         }
 
 
-class AzureADOAuthCallback(OpenIDConnectOAuth2Callback):
-    """AzureAD OAuth2 Callback"""
+class entraOAuthCallback(OpenIDConnectOAuth2Callback):
+    """entra OAuth2 Callback"""
 
     client_class = UserprofileHeaderAuthClient
 
@@ -44,13 +44,13 @@ class AzureADOAuthCallback(OpenIDConnectOAuth2Callback):
 
 
 @registry.register()
-class AzureADType(SourceType):
+class entraType(SourceType):
     """Azure AD Type definition"""
 
-    callback_view = AzureADOAuthCallback
-    redirect_view = AzureADOAuthRedirect
+    callback_view = entraOAuthCallback
+    redirect_view = entraOAuthRedirect
     verbose_name = "Azure AD"
-    name = "azuread"
+    name = "entra"
 
     urls_customizable = True
 

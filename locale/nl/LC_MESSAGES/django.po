@@ -1815,12 +1815,12 @@ msgid "Mailcow OAuth Sources"
 msgstr "Mailcow OAuth-bronnen"
 
 #: authentik/sources/oauth/models.py:144
-msgid "Twitter OAuth Source"
-msgstr "Twitter OAuth-bron"
+msgid "X OAuth Source"
+msgstr "X OAuth-bron"
 
 #: authentik/sources/oauth/models.py:145
-msgid "Twitter OAuth Sources"
-msgstr "Twitter OAuth-bronnen"
+msgid "X OAuth Sources"
+msgstr "X OAuth-bronnen"
 
 #: authentik/sources/oauth/models.py:153
 msgid "Facebook OAuth Source"

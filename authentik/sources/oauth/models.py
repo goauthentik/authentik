@@ -158,13 +158,13 @@ class MailcowOAuthSource(CreatableType, OAuthSource):
         verbose_name_plural = _("Mailcow OAuth Sources")
 
 
-class TwitterOAuthSource(CreatableType, OAuthSource):
-    """Social Login using Twitter.com"""
+class xOAuthSource(CreatableType, OAuthSource):
+    """Social Login using X.com"""
 
     class Meta:
         abstract = True
-        verbose_name = _("Twitter OAuth Source")
-        verbose_name_plural = _("Twitter OAuth Sources")
+        verbose_name = _("X OAuth Source")
+        verbose_name_plural = _("X OAuth Sources")
 
 
 class FacebookOAuthSource(CreatableType, OAuthSource):
@@ -203,7 +203,7 @@ class GoogleOAuthSource(CreatableType, OAuthSource):
         verbose_name_plural = _("Google OAuth Sources")
 
 
-class AzureADOAuthSource(CreatableType, OAuthSource):
+class entraOAuthSource(CreatableType, OAuthSource):
     """Social Login using Azure AD."""
 
     class Meta:

@@ -12,7 +12,7 @@ def update_provider_types(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     for source in OAuthSource.objects.using(db_alias).all():
         changed = False
         if source.provider_type == "azure-ad":
-            source.provider_type = "azuread"
+            source.provider_type = "entra"
             changed = True
         if source.provider_type == "openid-connect":
             source.provider_type = "openidconnect"

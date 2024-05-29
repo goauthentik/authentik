@@ -1949,11 +1949,11 @@ msgid "Mailcow OAuth Sources"
 msgstr ""
 
 #: authentik/sources/oauth/models.py
-msgid "Twitter OAuth Source"
+msgid "X OAuth Source"
 msgstr ""
 
 #: authentik/sources/oauth/models.py
-msgid "Twitter OAuth Sources"
+msgid "X OAuth Sources"
 msgstr ""
 
 #: authentik/sources/oauth/models.py

@@ -1929,12 +1929,12 @@ msgid "Mailcow OAuth Sources"
 msgstr "Sorgenti OAuth di Mailcow"
 
 #: authentik/sources/oauth/models.py:143
-msgid "Twitter OAuth Source"
-msgstr "Sorgente OAuth di Twitter"
+msgid "X OAuth Source"
+msgstr "Sorgente OAuth di X"
 
 #: authentik/sources/oauth/models.py:144
-msgid "Twitter OAuth Sources"
-msgstr "Sorgenti OAuth di Twitter"
+msgid "X OAuth Sources"
+msgstr "Sorgenti OAuth di X"
 
 #: authentik/sources/oauth/models.py:152
 msgid "Facebook OAuth Source"

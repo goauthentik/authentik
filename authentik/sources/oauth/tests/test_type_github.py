@@ -36,7 +36,7 @@ GITHUB_USER = {
     "email": "octocat@github.com",
     "hireable": False,
     "bio": "There once was...",
-    "twitter_username": "monatheoctocat",
+    "X_username": "monatheoctocat",
     "public_repos": 2,
     "public_gists": 1,
     "followers": 20,

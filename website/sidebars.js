@@ -199,7 +199,7 @@ const docsSidebar = {
                         "sources/mailcow/index",
                         "sources/twitch/index",
                         "sources/plex/index",
-                        "sources/twitter/index",
+                        "sources/X/index",
                     ],
                 },
             ],

@@ -1109,12 +1109,12 @@ msgid "GitHub OAuth Sources"
 msgstr "Fontes OAuth GitHub"
 
 #: authentik/sources/oauth/models.py:117
-msgid "Twitter OAuth Source"
-msgstr "Fonte OAuth Twitter"
+msgid "X OAuth Source"
+msgstr "Fonte OAuth X"
 
 #: authentik/sources/oauth/models.py:118
-msgid "Twitter OAuth Sources"
-msgstr "Fontes OAuth Twitter"
+msgid "X OAuth Sources"
+msgstr "Fontes OAuth X"
 
 #: authentik/sources/oauth/models.py:127
 msgid "Facebook OAuth Source"
