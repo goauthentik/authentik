@@ -70,6 +70,6 @@ class XType(SourceType):
     verbose_name = "X"
     name = "X"
 
-    authorization_url = "https://X.com/i/oauth2/authorize"
-    access_token_url = "https://api.X.com/2/oauth2/token"  # nosec
-    profile_url = "https://api.X.com/2/users/me"
+    authorization_url = "https://x.com/i/oauth2/authorize"
+    access_token_url = "https://api.x.com/2/oauth2/token"  # nosec
+    profile_url = "https://api.x.com/2/users/me"
