@@ -1,6 +1,8 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import { getRelativeTime } from "@goauthentik/common/utils";
+import "@goauthentik/elements/chips/Chip";
+import "@goauthentik/elements/chips/ChipGroup";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
@@ -66,7 +68,13 @@ export class UserConsentList extends Table<UserConsent> {
                 ? html`<div>${getRelativeTime(item.expires)}</div>
                       <small>${item.expires.toLocaleString()}</small>`
                 : msg("-")}`,
-            html`${item.permissions || "-"}`,
+            html`${item.permissions
+                ? html`<ak-chip-group>
+                      ${item.permissions.split(" ").map((perm) => {
+                          return html`<ak-chip .removable=${false}>${perm}</ak-chip>`;
+                      })}
+                  </ak-chip-group>`
+                : html`-`}`,
         ];
     }
 }
