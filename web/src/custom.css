@@ -3,7 +3,7 @@
     display: block; /* Treat the pseudo-element like a block-level element */
     width: 100%; /* Use 100% of the parent width */
     aspect-ratio: 820 / 608; /* Maintain the aspect ratio of the original image */
-    background-image: url('/media/public/scribe_welcome.svg'); /* The image you want to add */
+    background-image: url('/static/dist/assets/images/scribe_welcome.svg'); /* The image you want to add */
     background-size: cover; /* Cover the entire area of the pseudo-element */
     background-position: center; /* Center the background image */
     margin: auto; /* Center the pseudo-element horizontally if necessary */
