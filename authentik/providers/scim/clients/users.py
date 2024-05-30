@@ -24,14 +24,14 @@ class SCIMUserClient(SCIMClient[User, SCIMUser, SCIMUserSchema]):
         self.mapper = PropertyMappingManager(
             self.provider.property_mappings.all().order_by("name").select_subclasses(),
             SCIMMapping,
-            ["provider", "creating"],
+            ["provider", "connection"],
         )
 
-    def to_schema(self, obj: User, creating: bool) -> SCIMUserSchema:
+    def to_schema(self, obj: User, connection: SCIMUser) -> SCIMUserSchema:
         """Convert authentik user into SCIM"""
         raw_scim_user = super().to_schema(
             obj,
-            creating,
+            connection,
             schemas=(SCIM_USER_SCHEMA,),
         )
         try:
@@ -54,7 +54,7 @@ class SCIMUserClient(SCIMClient[User, SCIMUser, SCIMUserSchema]):
 
     def create(self, user: User):
         """Create user from scratch and create a connection object"""
-        scim_user = self.to_schema(user, True)
+        scim_user = self.to_schema(user, None)
         response = self._request(
             "POST",
             "/Users",
@@ -70,7 +70,7 @@ class SCIMUserClient(SCIMClient[User, SCIMUser, SCIMUserSchema]):
 
     def update(self, user: User, connection: SCIMUser):
         """Update existing user"""
-        scim_user = self.to_schema(user, False)
+        scim_user = self.to_schema(user, connection)
         scim_user.id = connection.scim_id
         self._request(
             "PUT",

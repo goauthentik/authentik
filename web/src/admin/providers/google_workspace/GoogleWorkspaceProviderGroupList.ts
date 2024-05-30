@@ -13,6 +13,8 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
     @property({ type: Number })
     providerId?: number;
 
+    expandable = true;
+
     searchEnabled(): boolean {
         return true;
     }
@@ -38,5 +40,13 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
             </a>`,
             html`${item.id}`,
         ];
+    }
+
+    renderExpanded(item: GoogleWorkspaceProviderGroup): TemplateResult {
+        return html`<td role="cell" colspan="4">
+            <div class="pf-c-table__expandable-row-content">
+                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
+            </div>
+        </td>`;
     }
 }

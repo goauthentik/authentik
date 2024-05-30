@@ -16369,85 +16369,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-    put:
-      operationId: providers_google_workspace_groups_update
-      description: GoogleWorkspaceProviderGroup Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Google Workspace Provider Group.
-        required: true
-      tags:
-      - providers
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GoogleWorkspaceProviderGroupRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GoogleWorkspaceProviderGroup'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    patch:
-      operationId: providers_google_workspace_groups_partial_update
-      description: GoogleWorkspaceProviderGroup Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Google Workspace Provider Group.
-        required: true
-      tags:
-      - providers
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedGoogleWorkspaceProviderGroupRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GoogleWorkspaceProviderGroup'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
     delete:
       operationId: providers_google_workspace_groups_destroy
       description: GoogleWorkspaceProviderGroup Viewset
@@ -16625,85 +16546,6 @@ paths:
         required: true
       tags:
       - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GoogleWorkspaceProviderUser'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    put:
-      operationId: providers_google_workspace_users_update
-      description: GoogleWorkspaceProviderUser Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Google Workspace Provider User.
-        required: true
-      tags:
-      - providers
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GoogleWorkspaceProviderUserRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GoogleWorkspaceProviderUser'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    patch:
-      operationId: providers_google_workspace_users_partial_update
-      description: GoogleWorkspaceProviderUser Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Google Workspace Provider User.
-        required: true
-      tags:
-      - providers
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedGoogleWorkspaceProviderUserRequest'
       security:
       - authentik: []
       responses:
@@ -17539,85 +17381,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-    put:
-      operationId: providers_microsoft_entra_groups_update
-      description: MicrosoftEntraProviderGroup Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Microsoft Entra Provider Group.
-        required: true
-      tags:
-      - providers
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MicrosoftEntraProviderGroupRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MicrosoftEntraProviderGroup'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    patch:
-      operationId: providers_microsoft_entra_groups_partial_update
-      description: MicrosoftEntraProviderGroup Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Microsoft Entra Provider Group.
-        required: true
-      tags:
-      - providers
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedMicrosoftEntraProviderGroupRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MicrosoftEntraProviderGroup'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
     delete:
       operationId: providers_microsoft_entra_groups_destroy
       description: MicrosoftEntraProviderGroup Viewset
@@ -17795,85 +17558,6 @@ paths:
         required: true
       tags:
       - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MicrosoftEntraProviderUser'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    put:
-      operationId: providers_microsoft_entra_users_update
-      description: MicrosoftEntraProviderUser Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Microsoft Entra Provider User.
-        required: true
-      tags:
-      - providers
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MicrosoftEntraProviderUserRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MicrosoftEntraProviderUser'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    patch:
-      operationId: providers_microsoft_entra_users_partial_update
-      description: MicrosoftEntraProviderUser Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Microsoft Entra Provider User.
-        required: true
-      tags:
-      - providers
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedMicrosoftEntraProviderUserRequest'
       security:
       - authentik: []
       responses:
@@ -36634,10 +36318,16 @@ components:
           allOf:
           - $ref: '#/components/schemas/UserGroup'
           readOnly: true
+        provider:
+          type: integer
+        attributes:
+          readOnly: true
       required:
+      - attributes
       - group
       - group_obj
       - id
+      - provider
     GoogleWorkspaceProviderGroupRequest:
       type: object
       description: GoogleWorkspaceProviderGroup Serializer
@@ -36645,8 +36335,11 @@ components:
         group:
           type: string
           format: uuid
+        provider:
+          type: integer
       required:
       - group
+      - provider
     GoogleWorkspaceProviderMapping:
       type: object
       description: GoogleWorkspaceProviderMapping Serializer
@@ -36773,8 +36466,14 @@ components:
           allOf:
           - $ref: '#/components/schemas/GroupMember'
           readOnly: true
+        provider:
+          type: integer
+        attributes:
+          readOnly: true
       required:
+      - attributes
       - id
+      - provider
       - user
       - user_obj
     GoogleWorkspaceProviderUserRequest:
@@ -36783,7 +36482,10 @@ components:
       properties:
         user:
           type: integer
+        provider:
+          type: integer
       required:
+      - provider
       - user
     Group:
       type: object
@@ -38284,10 +37986,16 @@ components:
           allOf:
           - $ref: '#/components/schemas/UserGroup'
           readOnly: true
+        provider:
+          type: integer
+        attributes:
+          readOnly: true
       required:
+      - attributes
       - group
       - group_obj
       - id
+      - provider
     MicrosoftEntraProviderGroupRequest:
       type: object
       description: MicrosoftEntraProviderGroup Serializer
@@ -38295,8 +38003,11 @@ components:
         group:
           type: string
           format: uuid
+        provider:
+          type: integer
       required:
       - group
+      - provider
     MicrosoftEntraProviderMapping:
       type: object
       description: MicrosoftEntraProviderMapping Serializer
@@ -38420,8 +38131,14 @@ components:
           allOf:
           - $ref: '#/components/schemas/GroupMember'
           readOnly: true
+        provider:
+          type: integer
+        attributes:
+          readOnly: true
       required:
+      - attributes
       - id
+      - provider
       - user
       - user_obj
     MicrosoftEntraProviderUserRequest:
@@ -38430,7 +38147,10 @@ components:
       properties:
         user:
           type: integer
+        provider:
+          type: integer
       required:
+      - provider
       - user
     ModelEnum:
       enum:
@@ -41826,13 +41546,6 @@ components:
             to a challenge. RETRY returns the error message and a similar challenge
             to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT
             restarts the flow while keeping the current context.
-    PatchedGoogleWorkspaceProviderGroupRequest:
-      type: object
-      description: GoogleWorkspaceProviderGroup Serializer
-      properties:
-        group:
-          type: string
-          format: uuid
     PatchedGoogleWorkspaceProviderMappingRequest:
       type: object
       description: GoogleWorkspaceProviderMapping Serializer
@@ -41892,12 +41605,6 @@ components:
         default_group_email_domain:
           type: string
           minLength: 1
-    PatchedGoogleWorkspaceProviderUserRequest:
-      type: object
-      description: GoogleWorkspaceProviderUser Serializer
-      properties:
-        user:
-          type: integer
     PatchedGroupRequest:
       type: object
       description: Group Serializer
@@ -42253,13 +41960,6 @@ components:
         key:
           type: string
           minLength: 1
-    PatchedMicrosoftEntraProviderGroupRequest:
-      type: object
-      description: MicrosoftEntraProviderGroup Serializer
-      properties:
-        group:
-          type: string
-          format: uuid
     PatchedMicrosoftEntraProviderMappingRequest:
       type: object
       description: MicrosoftEntraProviderMapping Serializer
@@ -42316,12 +42016,6 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
-    PatchedMicrosoftEntraProviderUserRequest:
-      type: object
-      description: MicrosoftEntraProviderUser Serializer
-      properties:
-        user:
-          type: integer
     PatchedNotificationRequest:
       type: object
       description: Notification Serializer
