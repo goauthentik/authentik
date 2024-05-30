@@ -6,7 +6,7 @@ title: Service Name
 
 ## What is Service-Name
 
-> Insert a quick overview of what Service Name is and what it does. Simply describe the product and what it is, how it is used, and do not write marketing or sales-oriented content.
+> Insert a quick overview of what Service Name is and what it does. Simply describe the product and what it is, how it is used, and do not include marketing or sales-oriented content.
 >
 > -- https://service.xyz
 

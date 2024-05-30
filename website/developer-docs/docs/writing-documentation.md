@@ -8,7 +8,7 @@ Writing documentation for authentik is a great way for both new and experienced 
 
 Requirements:
 
--   Node.js 16 (or greater)
+-   Node.js 20 (or greater, we use Node.js 22)
 
 The docs and the code are in the same Github repo, at https://github.com/goauthentik/authentik, so if you have cloned the repo, you already have the docs.
 
@@ -48,7 +48,7 @@ In addition to following the [Style Guide](./style-guide.mdx) please review the 
 
 For new integration documentation, please use the Integrations template in our [Github repo](https://github.com/goauthentik/authentik) at `/website/integrations/_template/service.md`.
 
--   Make sure to add the service to a fitting category in `/website/sidebarsIntegrations.js`. If you do not do this, the service will not appear in the table of contents to the left.
+-   Make sure to add the service to a fitting category in `/website/sidebarsIntegrations.js`. If this is not done the service will not appear in the table of contents to the left.
 
 -   For placeholder domains, use `authentik.company` and `app-name.company`, where `app-name` is the name of the application that you are writing documentation for.
 
