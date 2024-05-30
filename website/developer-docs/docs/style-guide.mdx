@@ -9,7 +9,7 @@ If you find any documentation that doesn't match these guidelines, feel free to 
 To test how the documentation renders use the Netlify Deploy Preview, especially when using Docusaurus-specific features. Or [build it locally and test](./writing-documentation.md#setup-your-local-build), using the `make website-watch` command.
 
 :::info
-Make sure to add any new pages to the `sidebar` file. Otherwise, the new page will not appear in the table of contents to the left.
+Make sure to add any new pages to the apprpriate `sidebar` file. Otherwise, the new page will not appear in the table of contents to the left.
 :::
 
 ## General guidelines
@@ -57,16 +57,17 @@ Formatting in documentation is important; it improves comprehension and readabil
 -   When referring to UI elements or components in the authentik UI, such as field names, labels, etc., use **bold** text.
 
 -   Use `code` format when referring to:
+
     -   commands
     -   file paths
     -   directory names
     -   code snippets (single line or a block of code)
 
--   For variables or placeholders use _italic_ font for the variable, place angle brackets around it, and use place-holder names that makes it obvious that the user needs to replace it.
+-   For variables or placeholders use _italic_ font for the variable, and use place-holder names that makes it obvious that the user needs to replace it.
 
-    Example: <kbd>https://<em>&lt;company-domain&gt;</em>/source/oauth/callback/<em>&lt;source-slug&gt;</em></kbd>
+    Example: <kbd>https://<em>company-domain</em>/source/oauth/callback/<em>source-slug</em></kbd>
 
-    Make sure to specify if the placeholder is something the user needs to define, is system-defined or generated.
+    When using variables in code snippets, make sure to specify if the value is something the user needs to define, is system-defined or generated.
 
 -   When referring to authentik functionality and features, such as flows, stages, sources, or policies, do not capitalize and do not use bold or italic text. When possible link to the corresponding documentation.
 
