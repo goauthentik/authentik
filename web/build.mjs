@@ -10,11 +10,15 @@ import { fileURLToPath } from "url";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
-// Use the package.json file in the root folder, as it has the current version information.
-const authentikProjectRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).replace(
-    "\n",
-    ""
-);
+let authentikProjectRoot = __dirname + "../";
+try {
+    // Use the package.json file in the root folder, as it has the current version information.
+    authentikProjectRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
+        encoding: "utf8",
+    }).replace("\n", "");
+} catch (exc) {
+    // We probably don't have a .git folder, which could happen in container builds
+}
 const rootPackage = JSON.parse(fs.readFileSync(path.join(authentikProjectRoot, "./package.json")));
 
 // eslint-disable-next-line no-undef
@@ -113,7 +117,9 @@ async function buildOneSource(source, dest) {
         });
         const end = Date.now();
         // eslint-disable-next-line no-console
-        console.log(`[${new Date(end).toISOString()}] Finished build for target ${source} in ${Date.now() - start}ms`);
+        console.log(
+            `[${new Date(end).toISOString()}] Finished build for target ${source} in ${Date.now() - start}ms`,
+        );
     } catch (exc) {
         console.error(`[${new Date(Date.now()).toISOString()}] Failed to build ${source}: ${exc}`);
     }
@@ -161,7 +167,9 @@ if (process.argv.length > 2 && (process.argv[2] === "-w" || process.argv[2] === 
     });
 } else if (process.argv.length > 2 && (process.argv[2] === "-p" || process.argv[2] === "--proxy")) {
     // There's no watch-for-proxy, sorry.
-    await buildAuthentik(interfaces.filter(([_, dest]) => ["standalone/loading", "."].includes(dest)));
+    await buildAuthentik(
+        interfaces.filter(([_, dest]) => ["standalone/loading", "."].includes(dest)),
+    );
     process.exit(0);
 } else {
     // And the fallback: just build it.
