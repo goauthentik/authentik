@@ -411,7 +411,9 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             webauthn_device: WebAuthnDevice = response.device
             self.logger.debug("Set user from user-less flow", user=webauthn_device.user)
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = webauthn_device.user
-            self.executor.plan.context.setdefault(PLAN_CONTEXT_METHOD, "auth_webauthn_pwl")
+            # We already set a default method in the validator above
+            # so this needs to have higher priority
+            self.executor.plan.context[PLAN_CONTEXT_METHOD] = "auth_webauthn_pwl"
             self.executor.plan.context.setdefault(PLAN_CONTEXT_METHOD_ARGS, {})
             self.executor.plan.context[PLAN_CONTEXT_METHOD_ARGS].update(
                 {
