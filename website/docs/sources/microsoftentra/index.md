@@ -1,5 +1,5 @@
 ---
-title: Azure AD
+title: Microsoft Entra ID
 ---
 
 <span class="badge badge--secondary">Support level: Community</span>
@@ -17,7 +17,7 @@ The following placeholders will be used:
 
     Under _Supported account types_, select whichever account type applies to your use-case.
 
-    ![](./aad_01.png)
+    ![](./msentra01.png)
 
 3. Take note of the _Application (client) ID_ value.
 
@@ -29,12 +29,12 @@ The following placeholders will be used:
 
 ## authentik Setup
 
-In authentik, create a new _Azure AD OAuth Source_ in Resources -> Sources.
+In authentik, create a new _Microsoft Entra OAuth Source_ in Resources -> Sources.
 
 Use the following settings:
 
--   Name: `Azure AD`
--   Slug: `azure-ad` (this must match the URL being used above)
+-   Name: `Microsoft Entra ID`
+-   Slug: `microsoft-entra` (this must match the URL being used above)
 -   Consumer key: `*Application (client) ID* value from above`
 -   Consumer secret: `*Value* of the secret from above`
 
@@ -42,7 +42,7 @@ If you kept the default _Supported account types_ selection of _Single tenant_, 
 
 -   OIDC Well-known URL: `https://login.microsoftonline.com/*Directory (tenant) ID* from above/v2.0/.well-known/openid-configuration`
 
-![](./authentik_01.png)
+![](./msentra02.png)
 
 Save, and you now have Azure AD as a source.
 

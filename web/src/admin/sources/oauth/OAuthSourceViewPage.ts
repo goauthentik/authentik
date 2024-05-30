@@ -36,8 +36,8 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
             return "";
         case ProviderTypeEnum.Apple:
             return "Apple";
-        case ProviderTypeEnum.entra:
-            return "Azure Active Directory";
+        case ProviderTypeEnum.MicrosoftEntra:
+            return "Microsoft Entra ID";
         case ProviderTypeEnum.Discord:
             return "Discord";
         case ProviderTypeEnum.Facebook:

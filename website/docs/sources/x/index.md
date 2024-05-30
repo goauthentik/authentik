@@ -1,5 +1,5 @@
 ---
-title: X
+title: X (formerly Twitter)
 ---
 
 <span class="badge badge--primary">Support level: authentik</span>

@@ -44251,7 +44251,7 @@ components:
       enum:
       - apple
       - openidconnect
-      - entra
+      - microsoftentra
       - discord
       - facebook
       - github

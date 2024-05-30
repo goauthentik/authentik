@@ -191,7 +191,7 @@ const docsSidebar = {
                     label: "Social Logins",
                     items: [
                         "sources/apple/index",
-                        "sources/entra/index",
+                        "sources/microsoftentra/index",
                         "sources/discord/index",
                         "sources/facebook/index",
                         "sources/github/index",
