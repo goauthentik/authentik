@@ -31,12 +31,12 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
         self.mapper = PropertyMappingManager(
             self.provider.property_mappings.all().order_by("name").select_subclasses(),
             MicrosoftEntraProviderMapping,
-            ["provider", "creating"],
+            ["provider", "connection"],
         )
 
-    def to_schema(self, obj: User, creating: bool) -> MSUser:
+    def to_schema(self, obj: User, connection: MicrosoftEntraProviderUser) -> MSUser:
         """Convert authentik user"""
-        raw_microsoft_user = super().to_schema(obj, creating)
+        raw_microsoft_user = super().to_schema(obj, connection)
         try:
             return MSUser(**delete_none_values(raw_microsoft_user))
         except TypeError as exc:
@@ -67,7 +67,7 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
 
     def create(self, user: User):
         """Create user from scratch and create a connection object"""
-        microsoft_user = self.to_schema(user, True)
+        microsoft_user = self.to_schema(user, None)
         self.check_email_valid(microsoft_user.user_principal_name)
         with transaction.atomic():
             try:
@@ -83,24 +83,32 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
                     )
                 )
                 user_data = self._request(self.client.users.get(request_configuration))
-                if user_data.odata_count < 1:
+                if user_data.odata_count < 1 or len(user_data.value) < 1:
                     self.logger.warning(
                         "User which could not be created also does not exist", user=user
                     )
                     return
+                ms_user = user_data.value[0]
                 return MicrosoftEntraProviderUser.objects.create(
-                    provider=self.provider, user=user, microsoft_id=user_data.value[0].id
+                    provider=self.provider,
+                    user=user,
+                    microsoft_id=ms_user.id,
+                    attributes=self.entity_as_dict(ms_user),
                 )
             except TransientSyncException as exc:
                 raise exc
             else:
+                print(self.entity_as_dict(response))
                 return MicrosoftEntraProviderUser.objects.create(
-                    provider=self.provider, user=user, microsoft_id=response.id
+                    provider=self.provider,
+                    user=user,
+                    microsoft_id=response.id,
+                    attributes=self.entity_as_dict(response),
                 )
 
     def update(self, user: User, connection: MicrosoftEntraProviderUser):
         """Update existing user"""
-        microsoft_user = self.to_schema(user, False)
+        microsoft_user = self.to_schema(user, connection)
         self.check_email_valid(microsoft_user.user_principal_name)
         self._request(self.client.users.by_user_id(connection.microsoft_id).patch(microsoft_user))
 
@@ -125,4 +133,5 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
             provider=self.provider,
             user=matching_authentik_user,
             microsoft_id=user.id,
+            attributes=self.entity_as_dict(user),
         )
