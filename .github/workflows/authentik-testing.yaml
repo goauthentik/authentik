@@ -57,7 +57,6 @@ jobs:
     if: ${{ always() && (needs.Build-Authentik.result == 'success') }}
     name: Update Environment Variable with Docker Image Tag
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
     needs: [Build-Authentik]
     steps:
       - name: Install GitHub CLI
