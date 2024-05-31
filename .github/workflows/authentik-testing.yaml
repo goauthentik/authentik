@@ -64,7 +64,7 @@ jobs:
         run: sudo apt-get install -y gh
       
       - name: Authenticate with GitHub CLI
-        run: gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
+        run: gh auth login --with-token <<< "${{ secrets.K8S_GH_TOKEN }}"
       
       - name: Update Docker Image Tag Environment Variable
         run: gh secret set AUTHENTIK_TAG_TEST --body "${{ github.sha }}" --repo scribe-security/scribe2
