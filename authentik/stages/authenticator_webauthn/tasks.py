@@ -32,28 +32,41 @@ def webauthn_mds_import(force=False):
     """Background task to import FIDO Alliance MDS blob into database"""
     with open(MDS_BLOB_PATH, mode="rb") as _raw_blob:
         blob = parse_blob(_raw_blob.read(), mds_ca())
-    with atomic():
-        WebAuthnDeviceType.objects.update_or_create(
+    to_create_update = [
+        WebAuthnDeviceType(
             aaguid=UNKNOWN_DEVICE_TYPE_AAGUID,
-            defaults={
-                "description": "authentik: Unknown devices",
-            },
+            description="authentik: Unknown devices",
         )
-        if cache.get(CACHE_KEY_MDS_NO) == blob.no and not force:
-            return
+    ]
+    to_delete = []
+
+    mds_no = cache.get(CACHE_KEY_MDS_NO)
+    if mds_no != blob.no or force:
         for entry in blob.entries:
             aaguid = entry.aaguid
             if not aaguid:
                 continue
             if not filter_revoked(entry):
-                WebAuthnDeviceType.objects.filter(aaguid=str(aaguid)).delete()
+                to_delete.append(str(aaguid))
                 continue
             metadata = entry.metadata_statement
-            WebAuthnDeviceType.objects.update_or_create(
-                aaguid=str(aaguid),
-                defaults={"description": metadata.description, "icon": metadata.icon},
+            to_create_update.append(
+                WebAuthnDeviceType(
+                    aaguid=str(aaguid),
+                    description=metadata.description,
+                    icon=metadata.icon,
+                )
             )
-    cache.set(CACHE_KEY_MDS_NO, blob.no)
+    with atomic():
+        WebAuthnDeviceType.objects.bulk_create(
+            to_create_update,
+            update_conflicts=True,
+            update_fields=["description", "icon"],
+            unique_fields=["aaguid"],
+        )
+        WebAuthnDeviceType.objects.filter(aaguid__in=to_delete).delete()
+    if mds_no != blob.no:
+        cache.set(CACHE_KEY_MDS_NO, blob.no)
 
 
 @CELERY_APP.task()
