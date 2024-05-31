@@ -19,6 +19,11 @@ on:
         type: boolean
         default: true
         description: Build with SBOM?
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        required: true
 jobs:
   Build-Authentik:
     name: Build Authentik Image
@@ -30,15 +35,39 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Get latest commit SHA
-        id: get-sha
-        run: |
-          echo "::set-output name=sha::$(git rev-parse HEAD)"
+      # - name: Configure AWS credentials
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #     role-to-assume: ${{ secrets.SCRIBE2_GITHUB_ROLE }}
+      #     role-session-name: Github
+      #     aws-region: ${{ secrets.AWS_REGION }}
+
+      # - name: Login to Amazon ECR
+      #   id: login-ecr
+      #   uses: aws-actions/amazon-ecr-login@v2
+      #   with:
+      #     mask-password: 'true'
 
       - name: Build, Tag and Push Authentik Image to Amazon ECR
         id: build-image
         run: |
           echo "Hello"
+
+  # Update-Environment-Variable:
+  #   if: ${{ always() && (needs.Build-Authentik.result == 'success') }}
+  #   name: Update Environment Variable with Docker Image Tag
+  #   runs-on: ubuntu-latest
+  #   needs: [Build-Authentik]
+  #   steps:
+  #     - name: Install GitHub CLI
+  #       run: |
+  #           curl -L \
+  #             -X PATCH \
+  #             -H "Accept: application/vnd.github+json" \
+  #             -H "Authorization: Bearer ${{ secrets.K8S_GH_TOKEN }}" \
+  #             -H "X-GitHub-Api-Version: 2022-11-28" \
+  #             https://api.github.com/repos/scribe-security/scribe2/actions/variables/AUTHENTIK_TAG_TEST \
+  #             -d '{"name":"AUTHENTIK_TAG_TEST","value":"${{ github.sha }}"}'
 
   Update-Environment-Variable:
     if: ${{ always() && (needs.Build-Authentik.result == 'success') }}
@@ -49,10 +78,9 @@ jobs:
       - name: Update Environment Variable
         run: |
           ENV=${{ inputs.environment }}
-          SHA=${{ needs.Build-Authentik.outputs.get-sha.sha }}
           curl -X PATCH \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ secrets.K8S_GH_TOKEN }}" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             "https://api.github.com/repos/scribe-security/scribe2/actions/variables/AUTHENTIK_TAG_${ENV^^}" \
-            -d '{"name":"AUTHENTIK_TAG_'${ENV^^}'","value":"'"$SHA"'"}'
+            -d '{"name":"AUTHENTIK_TAG_'${ENV^^}'","value":"${{ github.sha }}"}'
