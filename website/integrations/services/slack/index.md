@@ -4,7 +4,7 @@ title: Slack
 
 <span class="badge badge--secondary">Support level: authentik</span>
 
-## What is Service-Name
+## What is Slack
 
 > Slack is a platform for collaboration, with chat and real-time video capabilities.
 >
@@ -19,31 +19,49 @@ The following placeholders will be used:
 
 ## authentik configuration
 
-### Step 1: Log in to authentik
+### Step 1: Create custom property mappings
 
-1. Log in to your authentik instance.
-2. Click **Admin interface**.
+Your Slack integration requires property mappings for `User.Email` and `User.Username` so that authetnik can retrieve and map these values from Slack.
+
+1. Log in as admin to your authentik instance and then click **Admin interface**.
+2. Navigate to **Customization -> Property Mappings** and then click **Create***.
+3. On the **New property mapping** modal, choose **SAML Property Mapping** and then click **Next**.
+4. Define the required values. For `User.Email`, in **Exression** use `return request.user.email` and for `User.Username` use `return request.user.username`.
+5. Click **Finish**.
 
 ### Step 2: Create a new authentication provider
 
-3. Under **Application**, click **Providers** and create a new provider.
-4. Choose **SAML Provider** and then click **Next**.
-5. Set the authorization flow to **Authorize Application** (`default-provider-authorization-explicit-consent`).
-6. Under **Protocol settings** define the **ACS URL** to `https:_domain-name_.slack.com/sso/saml` and define the **Issuer** as `https://slack.com`.
-9. Click **Finish** to create the provider.
+1. Navigate to **Applications -> Providers** and then click **Create***.
+2. On the **New provider** modal, choose **SAML Provider** and then click **Next**.
+3. Define the following values (values not listed below can be left as default or empty):
+    -   **Name**: provide a clear name, such as "Slack".
+    -   **Authorization flow**: Authorize Application (`default-provider-authorization-implicit-consent`).
+    -    **Protocol settings** define the following values:
+            -   **ACS URL**: `https:_workspace-name_.slack.com/sso/saml`
+            -   **Issuer**: `https://slack.com`.
+            -   **Service Provider Binding**: select **Post**
+    -   **Advanced protocol settings**
+            -   **Signing Certificate**: select the appproriate certificate for Slack.
+    You can leave the default property mappings and other settings.
+7. Click **Finish** to create the provider.
 
 ### Step 3: Create a new application
 
-10. Create a new application and give it a name.
-11. Set the provider to the one you just created.
-12. Ensure that the **Policy engine mode** is set to **ANY, any policy must match to grant access**.
-13. Click **Create** and then navigate to your [Cloudflare Access dashboard](https://one.dash.cloudflare.com).
+1. Navigate to **Applications -> Applications** and then click **Create***.
+2. Provide a name for the new application.
+2. Set the provider to the one you just created.
+3. Ensure that the **Policy engine mode** is set to **ANY, any policy must match to grant access**.
+4. Click **Create**.
 
-## Cloudflare Access configuration
+## Slack configuration
 
-### Step 4: Configure Cloudflare Access
+### Step 4: Configure Slack
 
-1. Go to the Cloudflare One dashboard.
-2. Click **Settings** at the bottom of the menu, then select **Authentication**.
-
-### Step 5: Add a login method
+1. Log in to the Slack Admin Dashboard.
+2. Navigate to the **Configure SAML Authetnication** page.
+3. Enter the following values:
+    -   **SAML 2.0 Endpoint (HTTP)**: copy/paste in the **SSO URL (Redirect)** URL from authentik.
+    -   **Identity Provider Issuer**: set to https://slack.com
+    -   **Public Certificate**: add the certificate, which you can download from the authentik provider, under **Download signing certificate**.
+4. Optionally, configure the other settings and customize the Sign in button label.
+5. Click **Save**.
