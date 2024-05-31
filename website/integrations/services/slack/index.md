@@ -40,9 +40,8 @@ Your Slack integration requires property mappings for `User.Email` and `User.Use
         - **ACS URL**: `https:_workspace-name_.slack.com/sso/saml`
         - **Issuer**: `https://slack.com`.
         - **Service Provider Binding**: select **Post**
-    - **Advanced protocol settings**
-        - **Signing Certificate**: select the appproriate certificate for Slack.
-    You can leave the default property mappings and other settings.
+    - **Advanced protocol settings** - **Signing Certificate**: select the appproriate certificate for Slack.
+      You can leave the default property mappings and other settings.
 4. Click **Finish** to create the provider.
 
 ### Step 3. Create a new application
@@ -58,9 +57,9 @@ Your Slack integration requires property mappings for `User.Email` and `User.Use
 ### Step 4. Configure Slack
 
 1. Log in to the Slack Admin Dashboard.
-2. Navigate to the **Configure SAML Authetnication** page.
+2. Navigate to the **Configure SAML Authentication** page.
 3. Enter the following values:
-    - **SAML 2.0 Endpoint (HTTP)**: copy/paste in the **SSO URL (Redirect)** URL from authentik.
+    - **SAML 2.0 Endpoint (HTTP)**: copy/paste in the **SSO URL (Redirect)** URL from the provider that you created in authentik.
     - **Identity Provider Issuer**: set to https://slack.com
     - **Public Certificate**: add the certificate, which you can download from the authentik provider, under **Download signing certificate**.
 4. Optionally, configure the other settings and customize the Sign in button label.
