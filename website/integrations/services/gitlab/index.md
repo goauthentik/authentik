@@ -29,7 +29,8 @@ Under _Advanced protocol settings_, set a certificate for _Signing Certificate_.
 ## GitLab Configuration
 
 Paste the following block in your `gitlab.rb` file, after replacing the placeholder values from above. The file is located in `/etc/gitlab`.
-To get the value for `idp_cert_fingerprint`, go to the Certificate list under _Identity & Cryptography_, and expand the selected certificate.
+
+To obtain `idp_cert_fingerprint`, navigate to the admin interface's _System_ section and select _Certificates_. Then, expand the chosen certificate and copy the SHA1 Certificate Fingerprint.
 
 ```ruby
 gitlab_rails['omniauth_enabled'] = true
