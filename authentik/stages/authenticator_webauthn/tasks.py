@@ -74,9 +74,16 @@ def webauthn_aaguid_import(force=False):
     """Background task to import AAGUIDs into database"""
     with open(AAGUID_BLOB_PATH, mode="rb") as _raw_blob:
         entries = loads(_raw_blob.read())
+    to_create_update = [
+        WebAuthnDeviceType(
+            aaguid=str(aaguid), description=details.get("name"), icon=details.get("icon_light")
+        )
+        for aaguid, details in entries.items()
+    ]
     with atomic():
-        for aaguid, details in entries.items():
-            WebAuthnDeviceType.objects.update_or_create(
-                aaguid=str(aaguid),
-                defaults={"description": details.get("name"), "icon": details.get("icon_light")},
-            )
+        WebAuthnDeviceType.objects.bulk_create(
+            to_create_update,
+            update_conflicts=True,
+            update_fields=["description", "icon"],
+            unique_fields=["aaguid"],
+        )
