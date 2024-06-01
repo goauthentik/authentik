@@ -1,0 +1,208 @@
+name: Helm Deploy Workflow Test
+permissions:
+  id-token: write
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Select the Environment to Deploy Helm?
+        required: true
+        options:
+          - dev
+          - dev2
+          - ci
+          - staging
+          - test
+          - research
+        type: choice
+      Scribe:
+        type: boolean
+        default: false
+        description: Deploy Scribe Helm?
+      Authentik:
+        type: boolean
+        default: false
+        description: Deploy Authentik Helm?
+      superset-init:
+        options:
+          - false
+          - true
+        type: choice
+        required: true
+        description: Run init container for dev-superset?
+      Enforcement:
+        type: boolean
+        default: true
+        description: SCRIBE_ENFORCE_BRANCH_NAME
+      
+  workflow_call:
+    inputs:
+      environment:
+        description: Select the Environment to deploy helm?
+        required: true
+        type: string
+      Scribe:
+        type: boolean
+        default: false
+        description: Deploy Scribe Helm?
+      Authentik:
+        type: boolean
+        default: false
+        description: Deploy Authentik Helm?
+      superset-init:
+        type: string
+        required: true
+        description: Run init container for dev-superset?
+      Enforcement:
+        type: boolean
+        default: true
+        description: SCRIBE_ENFORCE_BRANCH_NAME
+
+jobs:
+  Stage-Setup:
+    name: Stage Setup
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    env:
+      stage: ${{ inputs.environment }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check branch and environment
+        if: ${{ inputs.Enforcement }}
+        shell: bash
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" && "${{ env.stage }}" == "dev" ]]; then
+            echo "Branch is ${{ github.ref }} and environment is ${{ env.stage }}. Proceeding with the workflow."
+          elif [[ "${{ github.ref }}" == "refs/heads/release-"* && ("${{ env.stage }}" == "staging" || "${{ env.stage }}" == "production") ]]; then
+            echo "Branch starts with release-* and environment is staging or production. Proceeding with the workflow."
+          else
+            echo "Branch and environment do not meet the required conditions. Workflow failed."
+            exit 1
+          fi
+
+  Deploy-Scribe:
+    if: ${{ inputs.Scribe }}
+    name: Deploy Scribe Helm Chart
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    needs: [Stage-Setup]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.SCRIBE2_GITHUB_ROLE }}
+          role-session-name: Github
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Run AWS CLI commands
+        shell: bash
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          EKS_CLUSTER: ${{ secrets.EKS_CLUSTER }}  
+        run: |
+          aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER }} --region ${{ env.AWS_REGION }}
+          aws ecr get-login-password --region il-central-1 | docker login --username AWS --password-stdin 975050347682.dkr.ecr.il-central-1.amazonaws.com
+
+      - uses: marcofranssen/setup-kubectl@v0.3.0
+        with:
+          enablePlugins: true
+          plugins: aws-auth,grep
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.12.1
+
+      - name: Validate and Apply Scribe Secrets
+        run: |
+          echo '${{ vars.K8S_GO_APP_SECRET }}' | python3 -c "import sys,json;json.loads(sys.stdin.read());print ('OK')"
+          echo '${{ vars.K8S_GO_APP_SECRET }}' > go-app-secret.json
+          kubectl apply -f go-app-secret.json -n ${{ inputs.environment }}
+          echo '${{ vars.K8S_INTERNAL_API_SECRET }}' | python3 -c "import sys,json;json.loads(sys.stdin.read());print ('OK')"
+          echo '${{ vars.K8S_INTERNAL_API_SECRET }}' > internal-api-secret.json
+          kubectl apply -f internal-api-secret.json -n ${{ inputs.environment }}
+          echo '${{ vars.K8S_SH_BACKEND_SECRET }}' | python3 -c "import sys,json;json.loads(sys.stdin.read());print ('OK')"
+          echo '${{ vars.K8S_SH_BACKEND_SECRET }}' > sh-backend-secret.json
+          kubectl apply -f sh-backend-secret.json -n ${{ inputs.environment }}
+          echo '${{ vars.K8S_WEB_APP_SECRET }}' | python3 -c "import sys,json;json.loads(sys.stdin.read());print ('OK')"
+          echo '${{ vars.K8S_WEB_APP_SECRET }}' > web-app-secret.json
+          kubectl apply -f web-app-secret.json -n ${{ inputs.environment }}
+          echo '${{ vars.K8S_SUPERSET_SECRET }}' | python3 -c "import sys,json;json.loads(sys.stdin.read());print ('OK')"
+          echo '${{ vars.K8S_SUPERSET_SECRET }}' > superset-secret.json
+          kubectl apply -f superset-secret.json -n ${{ inputs.environment }}
+          echo '${{ vars.K8S_AIRFLOW_SECRET }}' | python3 -c "import sys,json;json.loads(sys.stdin.read());print ('OK')"
+          echo '${{ vars.K8S_AIRFLOW_SECRET }}' > airflow-secret.json
+          kubectl apply -f airflow-secret.json -n ${{ inputs.environment }}
+
+      - name: Upgrade and Install Helm Charts
+        if: ${{ inputs.Scribe && inputs.environment != 'dev' }}
+        env:
+          HELM_VERSION: ${{ vars.SCRIBE_HELM_VERSION }}
+        run: |
+          helm dep build k8s/helm/scribe
+          helm upgrade -i scribe oci://975050347682.dkr.ecr.il-central-1.amazonaws.com/scribe --version ${{ env.HELM_VERSION }} -n ${{ inputs.environment }} --values k8s/helm/scribe/${{ inputs.environment }}-custom-values.yaml
+      
+      - name: Upgrade and Install Helm Charts for dev
+        if: ${{ inputs.Scribe && inputs.environment == 'dev' }}
+        env:
+          HELM_VERSION: ${{ vars.SCRIBE_HELM_VERSION }}
+        run: |
+          helm dep build k8s/helm/scribe
+          helm upgrade -i scribe oci://975050347682.dkr.ecr.il-central-1.amazonaws.com/scribe --version ${{ env.HELM_VERSION }} -n ${{ inputs.environment }} --values k8s/helm/scribe/${{ inputs.environment }}-custom-values.yaml --set superset.init.enabled=${{ inputs.superset-init }}
+
+  Deploy-Authentik:
+    if: ${{ inputs.Authentik && (inputs.environment == 'test' || inputs.environment == 'dev2') }}
+    name: Deploy Authentik Helm Chart
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    needs: [Stage-Setup]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.SCRIBE2_GITHUB_ROLE }}
+          role-session-name: Github
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Run AWS CLI commands
+        shell: bash
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          EKS_CLUSTER: ${{ secrets.EKS_CLUSTER }}  
+        run: |
+          aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER }} --region ${{ env.AWS_REGION }}
+
+      - uses: marcofranssen/setup-kubectl@v0.3.0
+        with:
+          enablePlugins: true
+          plugins: aws-auth,grep
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.12.1
+      
+      - name: Upgrade and Install Authentik Helm Chart
+        if: ${{ inputs.Authentik }}
+        env:
+          VERSION: 2024.4.0
+        run: |
+          if [[ "${{ inputs.environment }}" == "dev2" ]]; then
+            echo "Setting IMAGE_TAG to ${{ vars.AUTHENTIK_TAG_DEV2 }}"
+            export IMAGE_TAG=${{ vars.AUTHENTIK_TAG_DEV2 }}
+          elif [[ "${{ inputs.environment }}" == "test" ]]; then
+            echo "Setting IMAGE_TAG to ${{ vars.AUTHENTIK_TAG_TEST }}"
+            export IMAGE_TAG=${{ vars.AUTHENTIK_TAG_TEST }}
+          else
+            echo "Using default LATEST_TAG (if set)"
+          fi
