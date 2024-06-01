@@ -118,7 +118,7 @@ gunicorn = "*"
 jsonpatch = "*"
 kubernetes = "*"
 ldap3 = "*"
-lxml = "*"
+lxml = "^5.2.2"
 msgraph-sdk = "*"
 opencontainers = { extras = ["reggie"], version = "*" }
 packaging = "*"
