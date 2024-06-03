@@ -13,6 +13,8 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
     @property({ type: Number })
     providerId?: number;
 
+    expandable = true;
+
     searchEnabled(): boolean {
         return true;
     }
@@ -38,5 +40,13 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
             </a>`,
             html`${item.id}`,
         ];
+    }
+
+    renderExpanded(item: MicrosoftEntraProviderGroup): TemplateResult {
+        return html`<td role="cell" colspan="4">
+            <div class="pf-c-table__expandable-row-content">
+                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
+            </div>
+        </td>`;
     }
 }

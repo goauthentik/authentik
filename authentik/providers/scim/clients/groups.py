@@ -34,14 +34,14 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroup, SCIMGroupSchema]):
         self.mapper = PropertyMappingManager(
             self.provider.property_mappings_group.all().order_by("name").select_subclasses(),
             SCIMMapping,
-            ["group", "provider", "creating"],
+            ["group", "provider", "connection"],
         )
 
-    def to_schema(self, obj: Group, creating: bool) -> SCIMGroupSchema:
+    def to_schema(self, obj: Group, connection: SCIMGroup) -> SCIMGroupSchema:
         """Convert authentik user into SCIM"""
         raw_scim_group = super().to_schema(
             obj,
-            creating,
+            connection,
             schemas=(SCIM_GROUP_SCHEMA,),
         )
         try:
@@ -76,7 +76,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroup, SCIMGroupSchema]):
 
     def create(self, group: Group):
         """Create group from scratch and create a connection object"""
-        scim_group = self.to_schema(group, True)
+        scim_group = self.to_schema(group, None)
         response = self._request(
             "POST",
             "/Groups",
@@ -92,7 +92,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroup, SCIMGroupSchema]):
 
     def update(self, group: Group, connection: SCIMGroup):
         """Update existing group"""
-        scim_group = self.to_schema(group, False)
+        scim_group = self.to_schema(group, connection)
         scim_group.id = connection.scim_id
         try:
             return self._request(
