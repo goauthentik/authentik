@@ -101,10 +101,20 @@ class UserTypes(models.TextChoices):
 
 class GroupQuerySet(CTEQuerySet):
     def with_children_recursive(self):
+        """Recursively get all groups that have the current queryset as parents
+        or are indirectly related."""
+
         def make_cte(cte):
+            """Build the query that ends up in WITH RECURSIVE"""
+            # Start from self, aka the current query
+            # Add a depth attribute to limit the recursion
             return self.annotate(
                 relative_depth=models.Value(0, output_field=models.IntegerField())
             ).union(
+                # Here is the recursive part of the query. cte refers to the previous iteration
+                # Only select groups for which the parent is part of the previous iteration
+                # and increase the depth
+                # Finally, limit the depth
                 cte.join(Group, group_uuid=cte.col.parent_id)
                 .annotate(
                     relative_depth=models.ExpressionWrapper(
@@ -117,7 +127,9 @@ class GroupQuerySet(CTEQuerySet):
                 all=True,
             )
 
+        # Build the recursive query, see above
         cte = With.recursive(make_cte)
+        # Return the result, as a usable queryset for Group.
         return cte.join(Group, group_uuid=cte.col.group_uuid).with_cte(cte)
 
 
