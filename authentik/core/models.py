@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from hashlib import sha256
-from typing import Any, Optional
+from typing import Any, Optional, Self
 from uuid import uuid4
 
 from deepmerge import always_merger
@@ -161,6 +161,13 @@ class Group(SerializerModel):
     def is_member(self, user: "User") -> bool:
         """Recursively check if `user` is member of us, or any parent."""
         return user.all_groups().filter(group_uuid=self.group_uuid).exists()
+
+    def children_recursive(self: Self | QuerySet["Group"]) -> QuerySet["Group"]:
+        """Compatibility layer for Group.objects.with_children_recursive()"""
+        qs = self
+        if not isinstance(self, QuerySet):
+            qs = Group.objects.filter(group_uuid=self.group_uuid)
+        return qs.with_children_recursive()
 
     def __str__(self):
         return f"Group {self.name}"
