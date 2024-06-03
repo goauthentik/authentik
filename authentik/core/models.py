@@ -57,6 +57,8 @@ options.DEFAULT_NAMES = options.DEFAULT_NAMES + (
     "authentik_used_by_shadows",
 )
 
+GROUP_RECURSION_LIMIT = 20
+
 
 def default_token_duration() -> datetime:
     """Default duration a Token is valid"""
@@ -111,7 +113,7 @@ class GroupQuerySet(CTEQuerySet):
                         output_field=models.IntegerField(),
                     )
                 )
-                .filter(relative_depth__lt=20),
+                .filter(relative_depth__lt=GROUP_RECURSION_LIMIT),
                 all=True,
             )
 
