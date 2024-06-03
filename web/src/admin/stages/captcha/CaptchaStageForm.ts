@@ -78,6 +78,40 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Score minimum threshold")}
+                        ?required=${true}
+                        name="scoreMinThreshold"
+                    >
+                        <input
+                            type="number"
+                            value="${ifDefined(this.instance?.scoreMinThreshold || 0.5)}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Public key, acquired from https://www.google.com/recaptcha/intro/v3.html.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Score maximum threshold")}
+                        ?required=${true}
+                        name="scoreMaxThreshold"
+                    >
+                        <input
+                            type="number"
+                            value="${ifDefined(this.instance?.scoreMaxThreshold || -1)}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Public key, acquired from https://www.google.com/recaptcha/intro/v3.html.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             <ak-form-group>
