@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-23 00:07+0000\n"
+"POT-Creation-Date: 2024-06-03 00:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1452,10 +1452,6 @@ msgstr ""
 
 #: authentik/providers/oauth2/views/userinfo.py
 msgid "GitHub Compatibility: Access your Groups"
-msgstr ""
-
-#: authentik/providers/oauth2/views/userinfo.py
-msgid "authentik API Access on behalf of your user"
 msgstr ""
 
 #: authentik/providers/proxy/api.py
