@@ -45,8 +45,9 @@ def rbac_group_role_m2m(
     if action not in ["post_add", "post_remove", "post_clear"]:
         return
     with atomic():
-        group_users = list(
-            instance.children_recursive()
+        group_users = (
+            Group.objects.filter(group_uuid=instance.group_uuid)
+            .with_children_recursive()
             .exclude(users__isnull=True)
             .values_list("users", flat=True)
         )
