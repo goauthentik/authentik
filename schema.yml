@@ -44596,12 +44596,14 @@ components:
       properties:
         user:
           type: integer
+          nullable: true
         context:
           type: object
           additionalProperties: {}
         group:
           type: string
           format: uuid
+          nullable: true
     PropertyMappingTestResult:
       type: object
       description: Result of a Property-mapping test
