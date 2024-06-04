@@ -19,6 +19,7 @@ class MicrosoftEntraProviderUserSerializer(ModelSerializer):
         model = MicrosoftEntraProviderUser
         fields = [
             "id",
+            "microsoft_id",
             "user",
             "user_obj",
             "provider",

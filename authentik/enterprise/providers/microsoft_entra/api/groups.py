@@ -19,6 +19,7 @@ class MicrosoftEntraProviderGroupSerializer(ModelSerializer):
         model = MicrosoftEntraProviderGroup
         fields = [
             "id",
+            "microsoft_id",
             "group",
             "group_obj",
             "provider",
