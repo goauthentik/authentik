@@ -161,19 +161,18 @@ class BaseLDAPSynchronizer:
                 dn=object_dn,
                 source=self._source,
             ):
-                try:
-                    if isinstance(value, (bytes)):
-                        self._logger.warning("property mapping returned bytes", mapping=mapping)
-                        continue
-                    object_field = mapping.object_field
-                    if object_field.startswith("attributes."):
-                        # Because returning a list might desired, we can't
-                        # rely on flatten here. Instead, just save the result as-is
-                        set_path_in_dict(properties, object_field, value)
-                    else:
-                        properties[object_field] = flatten(value)
-                except SkipObjectException as exc:
-                    raise exc from exc
+                if isinstance(value, (bytes)):
+                    self._logger.warning("property mapping returned bytes", mapping=mapping)
+                    continue
+                object_field = mapping.object_field
+                if object_field.startswith("attributes."):
+                    # Because returning a list might desired, we can't
+                    # rely on flatten here. Instead, just save the result as-is
+                    set_path_in_dict(properties, object_field, value)
+                else:
+                    properties[object_field] = flatten(value)
+        except SkipObjectException as exc:
+            raise exc from exc
         except PropertyMappingExpressionException as exc:
             # Value error can be raised when assigning invalid data to an attribute
             Event.new(
