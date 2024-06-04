@@ -51,20 +51,21 @@ class CaptchaChallengeResponse(ChallengeResponse):
             )
             response.raise_for_status()
             data = response.json()
-            if not data.get("success", False):
-                raise ValidationError(
-                    _(
-                        "Failed to validate token: {error}".format(
-                            error=data.get("error-codes", _("Unknown error"))
+            if stage.error_on_invalid_score:
+                if not data.get("success", False):
+                    raise ValidationError(
+                        _(
+                            "Failed to validate token: {error}".format(
+                                error=data.get("error-codes", _("Unknown error"))
+                            )
                         )
                     )
-                )
-            score = float(data.get("score"))
-            if stage.error_on_invalid_score:
-                if stage.score_max_threshold > -1 and score > stage.score_max_threshold:
-                    raise ValidationError(_("Invalid captcha response"))
-                if stage.score_min_threshold > -1 and score < stage.score_min_threshold:
-                    raise ValidationError(_("Invalid captcha response"))
+                if "score" in data:
+                    score = float(data.get("score"))
+                    if stage.score_max_threshold > -1 and score > stage.score_max_threshold:
+                        raise ValidationError(_("Invalid captcha response"))
+                    if stage.score_min_threshold > -1 and score < stage.score_min_threshold:
+                        raise ValidationError(_("Invalid captcha response"))
         except (RequestException, TypeError) as exc:
             raise ValidationError(_("Failed to validate token")) from exc
         return score
