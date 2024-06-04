@@ -165,10 +165,12 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     ordering = ["name"]
 
     def get_queryset(self):
-        base_qs = Group.objects.all().select_related("parent").prefetch_related("roles")
-        if self.serializer_class(context={"request": self.request})._should_include_users:
-            base_qs = base_qs.prefetch_related("users")
-        return base_qs
+        return (
+            Group.objects.all()
+            .select_related("parent")
+            .prefetch_related("roles")
+            .prefetch_related("users")
+        )
 
     @extend_schema(
         parameters=[
