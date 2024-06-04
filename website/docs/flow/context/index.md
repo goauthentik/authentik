@@ -98,7 +98,7 @@ Requires authentik 2024.6
 
 When `error_on_invalid_score` (TODO) is set to false on a captcha stage, after the execution of the captcha stage, this object will be set in the flow context.
 
-It contains two keys, `score` which is the score received from the configured captcha URL, and `stage`, which is a reference to the captcha stage that executed the test.
+It contains two keys, `response` which is the raw response from the specified captcha verification URL, and `stage`, which is a reference to the captcha stage that executed the test.
 
 #### Consent stage
 

@@ -68,7 +68,7 @@ class CaptchaChallengeResponse(ChallengeResponse):
                         raise ValidationError(_("Invalid captcha response"))
         except (RequestException, TypeError) as exc:
             raise ValidationError(_("Failed to validate token")) from exc
-        return score
+        return data
 
 
 class CaptchaStageView(ChallengeStageView):
@@ -86,9 +86,9 @@ class CaptchaStageView(ChallengeStageView):
         )
 
     def challenge_valid(self, response: CaptchaChallengeResponse) -> HttpResponse:
-        score = response.validated_data["token"]
+        response = response.validated_data["token"]
         self.executor.plan.context[PLAN_CONTEXT_CAPTCHA] = {
-            "score": score,
+            "response": response,
             "stage": self.executor.current_stage,
         }
         return self.executor.stage_ok()
