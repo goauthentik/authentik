@@ -34067,6 +34067,18 @@ components:
           type: string
         api_url:
           type: string
+        score_min_threshold:
+          type: number
+          format: double
+        score_max_threshold:
+          type: number
+          format: double
+        error_on_invalid_score:
+          type: boolean
+          description: When enabled and the received captcha score is outside of the
+            given threshold, the stage will show an error message. When not enabled,
+            the flow will continue, but the data from the captcha will be available
+            in the context for policy decisions
       required:
       - component
       - meta_model_name
@@ -34101,6 +34113,18 @@ components:
         api_url:
           type: string
           minLength: 1
+        score_min_threshold:
+          type: number
+          format: double
+        score_max_threshold:
+          type: number
+          format: double
+        error_on_invalid_score:
+          type: boolean
+          description: When enabled and the received captcha score is outside of the
+            given threshold, the stage will show an error message. When not enabled,
+            the flow will continue, but the data from the captcha will be available
+            in the context for policy decisions
       required:
       - name
       - private_key
@@ -41182,6 +41206,18 @@ components:
         api_url:
           type: string
           minLength: 1
+        score_min_threshold:
+          type: number
+          format: double
+        score_max_threshold:
+          type: number
+          format: double
+        error_on_invalid_score:
+          type: boolean
+          description: When enabled and the received captcha score is outside of the
+            given threshold, the stage will show an error message. When not enabled,
+            the flow will continue, but the data from the captcha will be available
+            in the context for policy decisions
     PatchedCertificateKeyPairRequest:
       type: object
       description: CertificateKeyPair Serializer
