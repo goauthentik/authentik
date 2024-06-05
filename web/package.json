@@ -54,7 +54,7 @@
         "codemirror": "^6.0.1",
         "construct-style-sheets-polyfill": "^3.1.0",
         "core-js": "^3.37.1",
-        "country-flag-icons": "^1.5.11",
+        "country-flag-icons": "^1.5.12",
         "fuse.js": "^7.0.0",
         "guacamole-common-js": "^1.5.0",
         "lit": "^3.1.3",
