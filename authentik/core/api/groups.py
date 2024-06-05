@@ -2,6 +2,7 @@
 
 from json import loads
 
+from django.db.models import Prefetch
 from django.http import Http404
 from django_filters.filters import CharFilter, ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
@@ -165,12 +166,16 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     ordering = ["name"]
 
     def get_queryset(self):
-        return (
-            Group.objects.all()
-            .select_related("parent")
-            .prefetch_related("roles")
-            .prefetch_related("users")
-        )
+        base_qs = Group.objects.all().select_related("parent").prefetch_related("roles")
+
+        if self.serializer_class(context={"request": self.request})._should_include_users:
+            base_qs = base_qs.prefetch_related("users")
+        else:
+            base_qs = base_qs.prefetch_related(
+                Prefetch("users", queryset=User.objects.all().only("id"))
+            )
+
+        return base_qs
 
     @extend_schema(
         parameters=[
