@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-03 00:08+0000\n"
+"POT-Creation-Date: 2024-06-05 00:07+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/authentik/teams/119923/zh_CN/)\n"
@@ -2401,12 +2401,37 @@ msgid "Private key, acquired your captcha Provider."
 msgstr "私钥，从您的验证码提供商处取得。"
 
 #: authentik/stages/captcha/models.py
+msgid ""
+"When enabled and the received captcha score is outside of the given "
+"threshold, the stage will show an error message. When not enabled, the flow "
+"will continue, but the data from the captcha will be available in the "
+"context for policy decisions"
+msgstr "启用时，如果接收到的验证码分数超出给定的阈值，此阶段将显示错误信息。未启用时，流程会继续，但来自验证码的数据可在上下文中用于策略决定。"
+
+#: authentik/stages/captcha/models.py
 msgid "Captcha Stage"
 msgstr "验证码阶段"
 
 #: authentik/stages/captcha/models.py
 msgid "Captcha Stages"
 msgstr "验证码阶段"
+
+#: authentik/stages/captcha/stage.py
+msgid "Unknown error"
+msgstr "未知错误"
+
+#: authentik/stages/captcha/stage.py
+#, python-brace-format
+msgid "Failed to validate token: {error}"
+msgstr "验证令牌失败：{error}"
+
+#: authentik/stages/captcha/stage.py
+msgid "Invalid captcha response"
+msgstr "验证码响应无效"
+
+#: authentik/stages/captcha/stage.py
+msgid "Failed to validate token"
+msgstr "验证令牌失败"
 
 #: authentik/stages/consent/models.py
 msgid ""
