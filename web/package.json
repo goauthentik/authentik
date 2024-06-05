@@ -79,7 +79,7 @@
         "@hcaptcha/types": "^1.0.3",
         "@jeysal/storybook-addon-css-user-preferences": "^0.2.0",
         "@lit/localize-tools": "^0.7.2",
-        "@rollup/plugin-replace": "^5.0.5",
+        "@rollup/plugin-replace": "^5.0.6",
         "@spotlightjs/spotlight": "^1.2.17",
         "@storybook/addon-essentials": "^8.1.5",
         "@storybook/addon-links": "^8.1.5",
