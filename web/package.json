@@ -120,7 +120,7 @@
         "storybook": "^8.1.5",
         "storybook-addon-mock": "^5.0.0",
         "ts-lit-plugin": "^2.0.2",
-        "tslib": "^2.6.2",
+        "tslib": "^2.6.3",
         "turnstile-types": "^1.2.1",
         "typescript": "^5.4.5",
         "vite-tsconfig-paths": "^4.3.2"
