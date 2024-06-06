@@ -1,4 +1,4 @@
-"""MicrosoftEntraProviderUser API Views"""
+"""SCIMProviderUser API Views"""
 
 from rest_framework import mixins
 from rest_framework.serializers import ModelSerializer
@@ -6,29 +6,27 @@ from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.groups import GroupMemberSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.enterprise.providers.microsoft_entra.models import MicrosoftEntraProviderUser
+from authentik.providers.scim.models import SCIMProviderUser
 
 
-class MicrosoftEntraProviderUserSerializer(ModelSerializer):
-    """MicrosoftEntraProviderUser Serializer"""
+class SCIMProviderUserSerializer(ModelSerializer):
+    """SCIMProviderUser Serializer"""
 
     user_obj = GroupMemberSerializer(source="user", read_only=True)
 
     class Meta:
 
-        model = MicrosoftEntraProviderUser
+        model = SCIMProviderUser
         fields = [
             "id",
-            "microsoft_id",
+            "scim_id",
             "user",
             "user_obj",
             "provider",
-            "attributes",
         ]
-        extra_kwargs = {"attributes": {"read_only": True}}
 
 
-class MicrosoftEntraProviderUserViewSet(
+class SCIMProviderUserViewSet(
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
@@ -36,10 +34,10 @@ class MicrosoftEntraProviderUserViewSet(
     mixins.ListModelMixin,
     GenericViewSet,
 ):
-    """MicrosoftEntraProviderUser Viewset"""
+    """SCIMProviderUser Viewset"""
 
-    queryset = MicrosoftEntraProviderUser.objects.all().select_related("user")
-    serializer_class = MicrosoftEntraProviderUserSerializer
+    queryset = SCIMProviderUser.objects.all().select_related("user")
+    serializer_class = SCIMProviderUserSerializer
     filterset_fields = ["provider__id", "user__username", "user__id"]
     search_fields = ["provider__name", "user__username"]
     ordering = ["user__username"]

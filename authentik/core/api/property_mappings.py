@@ -80,8 +80,10 @@ class PropertyMappingViewSet(
     class PropertyMappingTestSerializer(PolicyTestSerializer):
         """Test property mapping execution for a user/group with context"""
 
-        user = PrimaryKeyRelatedField(queryset=User.objects.all(), required=False)
-        group = PrimaryKeyRelatedField(queryset=Group.objects.all(), required=False)
+        user = PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True)
+        group = PrimaryKeyRelatedField(
+            queryset=Group.objects.all(), required=False, allow_null=True
+        )
 
     queryset = PropertyMapping.objects.select_subclasses()
     serializer_class = PropertyMappingSerializer
