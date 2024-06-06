@@ -666,7 +666,6 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
             mappings = self.user_property_mappings.all().select_subclasses()
         elif object_type == Group:
             mappings = self.group_property_mappings.all().select_subclasses()
-        print(mappings)
         for mapping in mappings:
             if not isinstance(mapping, self.property_mapping_type):
                 continue

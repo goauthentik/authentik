@@ -9,10 +9,8 @@ from ldap3 import ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE
 from authentik.core.expression.exceptions import SkipObjectException
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
-from authentik.sources.ldap.models import LDAP_UNIQUENESS, flatten
-from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 from authentik.lib.sync.mapper import PropertyMappingManager
-from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
+from authentik.sources.ldap.models import LDAP_UNIQUENESS, LDAPPropertyMapping, LDAPSource, flatten
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 from authentik.sources.ldap.sync.vendor.freeipa import FreeIPA
 from authentik.sources.ldap.sync.vendor.ms_ad import MicrosoftActiveDirectory

@@ -10,9 +10,6 @@ from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.lib.config import CONFIG
 from authentik.lib.merge import MERGE_LIST_UNIQUE
-from authentik.sources.ldap.models import LDAPSource
-from authentik.lib.config import CONFIG
-from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.sources.ldap.models import LDAPSource
 
