@@ -3,6 +3,7 @@
 from uuid import uuid4
 
 from django.db import models
+from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import BaseSerializer
 
@@ -26,6 +27,10 @@ class SCIMSource(Source):
     def component(self) -> str:
         """Return component used to edit this object"""
         return "ak-source-scim-form"
+
+    @property
+    def icon_url(self) -> str:
+        return static("authentik/sources/scim.png")
 
     @property
     def serializer(self) -> BaseSerializer:
@@ -60,7 +65,7 @@ class SCIMSourceUser(SerializerModel):
         unique_together = (("id", "user", "source"),)
 
     def __str__(self) -> str:
-        return f"SCIM User {self.user.username} to {self.source.name}"
+        return f"SCIM User {self.user_id} to {self.source_id}"
 
 
 class SCIMSourceGroup(SerializerModel):
@@ -81,4 +86,4 @@ class SCIMSourceGroup(SerializerModel):
         unique_together = (("id", "group", "source"),)
 
     def __str__(self) -> str:
-        return f"SCIM Group {self.group.name} to {self.source.name}"
+        return f"SCIM Group {self.group_id} to {self.source_id}"

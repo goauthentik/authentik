@@ -23,7 +23,7 @@ export class PropertyMappingSAMLForm extends BasePropertyMappingForm<SAMLPropert
     async send(data: SAMLPropertyMapping): Promise<SAMLPropertyMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSamlUpdate({
-                pmUuid: this.instance.pk || "",
+                pmUuid: this.instance.pk,
                 sAMLPropertyMappingRequest: data,
             });
         } else {

@@ -3,7 +3,7 @@
 from django.test import RequestFactory, TestCase
 from guardian.shortcuts import get_anonymous_user
 
-from authentik.core.exceptions import PropertyMappingExpressionException
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import PropertyMapping
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.events.models import Event, EventAction
@@ -66,14 +66,11 @@ class TestPropertyMappings(TestCase):
             expression="return request.http_request.path",
         )
         http_request = self.factory.get("/")
-        tmpl = (
-            """
-        res = ak_call_policy('%s')
+        tmpl = f"""
+        res = ak_call_policy('{expr.name}')
         result = [request.http_request.path, res.raw_result]
         return result
         """
-            % expr.name
-        )
         evaluator = PropertyMapping(expression=tmpl, name=generate_id())
         res = evaluator.evaluate(self.user, http_request)
         self.assertEqual(res, ["/", "/"])

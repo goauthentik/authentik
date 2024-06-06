@@ -12,6 +12,7 @@ import { CoreApi, CoreGroupsListRequest, Group } from "@goauthentik/api";
 async function fetchObjects(query?: string): Promise<Group[]> {
     const args: CoreGroupsListRequest = {
         ordering: "name",
+        includeUsers: false,
     };
     if (query !== undefined) {
         args.search = query;

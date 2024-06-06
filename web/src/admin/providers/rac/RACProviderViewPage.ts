@@ -129,7 +129,7 @@ export class RACProviderViewPage extends AKElement {
         if (!this.provider) {
             return html``;
         }
-        return html` <div slot="header" class="pf-c-banner pf-m-info">
+        return html`<div slot="header" class="pf-c-banner pf-m-info">
                 ${msg("RAC is in preview.")}
                 <a href="mailto:hello+feature/rac@goauthentik.io">${msg("Send us feedback!")}</a>
             </div>

@@ -6,7 +6,12 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import { CertificateGenerationRequest, CertificateKeyPair, CryptoApi } from "@goauthentik/api";
+import {
+    AlgEnum,
+    CertificateGenerationRequest,
+    CertificateKeyPair,
+    CryptoApi,
+} from "@goauthentik/api";
 
 @customElement("ak-crypto-certificate-generate-form")
 export class CertificateKeyPairForm extends Form<CertificateGenerationRequest> {
@@ -40,6 +45,29 @@ export class CertificateKeyPairForm extends Form<CertificateGenerationRequest> {
                 ?required=${true}
             >
                 <input class="pf-c-form-control" type="number" value="365" />
-            </ak-form-element-horizontal>`;
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${msg("Private key Algorithm")}
+                ?required=${true}
+                name="alg"
+            >
+                <ak-radio
+                    .options=${[
+                        {
+                            label: msg("RSA"),
+                            value: AlgEnum.Rsa,
+                            default: true,
+                        },
+                        {
+                            label: msg("ECDSA"),
+                            value: AlgEnum.Ecdsa,
+                        },
+                    ]}
+                >
+                </ak-radio>
+                <p class="pf-c-form__helper-text">
+                    ${msg("Algorithm used to generate the private key.")}
+                </p>
+            </ak-form-element-horizontal> `;
     }
 }

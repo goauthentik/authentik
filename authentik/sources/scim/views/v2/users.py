@@ -11,6 +11,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from authentik.core.models import User
+from authentik.providers.scim.clients.schema import SCIM_USER_SCHEMA
 from authentik.providers.scim.clients.schema import User as SCIMUserModel
 from authentik.sources.scim.models import SCIMSourceUser
 from authentik.sources.scim.views.v2.base import SCIMView
@@ -33,6 +34,7 @@ class UsersView(SCIMView):
     def user_to_scim(self, scim_user: SCIMSourceUser) -> dict:
         """Convert User to SCIM data"""
         payload = SCIMUserModel(
+            schemas=[SCIM_USER_SCHEMA],
             id=str(scim_user.user.uuid),
             externalId=scim_user.id,
             userName=scim_user.user.username,
@@ -62,10 +64,7 @@ class UsersView(SCIMView):
                 ),
             },
         )
-        final_payload = payload.model_dump(
-            mode="json",
-            exclude_unset=True,
-        )
+        final_payload = payload.model_dump(mode="json", exclude_unset=True)
         final_payload.update(scim_user.attributes)
         return final_payload
 
@@ -99,6 +98,8 @@ class UsersView(SCIMView):
     def update_user(self, connection: SCIMSourceUser | None, data: QueryDict):
         """Partial update a user"""
         user = connection.user if connection else User()
+        if _user := User.objects.filter(username=data.get("userName")).first():
+            user = _user
         user.path = self.source.get_user_path()
         if "userName" in data:
             user.username = data.get("userName")

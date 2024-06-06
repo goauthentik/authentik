@@ -35,7 +35,7 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
     async send(data: LDAPProvider): Promise<LDAPProvider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersLdapUpdate({
-                id: this.instance.pk || 0,
+                id: this.instance.pk,
                 lDAPProviderRequest: data,
             });
         } else {
@@ -78,6 +78,7 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
                     .fetchObjects=${async (query?: string): Promise<Group[]> => {
                         const args: CoreGroupsListRequest = {
                             ordering: "name",
+                            includeUsers: false,
                         };
                         if (query !== undefined) {
                             args.search = query;

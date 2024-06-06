@@ -15,6 +15,10 @@ from authentik.flows.models import Flow
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.sources.saml.processors.constants import (
     DSA_SHA1,
+    ECDSA_SHA1,
+    ECDSA_SHA256,
+    ECDSA_SHA384,
+    ECDSA_SHA512,
     RSA_SHA1,
     RSA_SHA256,
     RSA_SHA384,
@@ -143,8 +147,7 @@ class SAMLSource(Source):
         verbose_name=_("Signing Keypair"),
     )
 
-    digest_algorithm = models.CharField(
-        max_length=50,
+    digest_algorithm = models.TextField(
         choices=(
             (SHA1, _("SHA1")),
             (SHA256, _("SHA256")),
@@ -153,13 +156,16 @@ class SAMLSource(Source):
         ),
         default=SHA256,
     )
-    signature_algorithm = models.CharField(
-        max_length=50,
+    signature_algorithm = models.TextField(
         choices=(
             (RSA_SHA1, _("RSA-SHA1")),
             (RSA_SHA256, _("RSA-SHA256")),
             (RSA_SHA384, _("RSA-SHA384")),
             (RSA_SHA512, _("RSA-SHA512")),
+            (ECDSA_SHA1, _("ECDSA-SHA1")),
+            (ECDSA_SHA256, _("ECDSA-SHA256")),
+            (ECDSA_SHA384, _("ECDSA-SHA384")),
+            (ECDSA_SHA512, _("ECDSA-SHA512")),
             (DSA_SHA1, _("DSA-SHA1")),
         ),
         default=RSA_SHA256,
@@ -174,6 +180,13 @@ class SAMLSource(Source):
         from authentik.sources.saml.api.source import SAMLSourceSerializer
 
         return SAMLSourceSerializer
+
+    @property
+    def icon_url(self) -> str:
+        icon = super().icon_url
+        if not icon:
+            return static("authentik/sources/saml.png")
+        return icon
 
     def get_issuer(self, request: HttpRequest) -> str:
         """Get Source's Issuer, falling back to our Metadata URL if none is set"""
@@ -203,9 +216,6 @@ class SAMLSource(Source):
         )
 
     def ui_user_settings(self) -> UserSettingSerializer | None:
-        icon = self.icon_url
-        if not icon:
-            icon = static(f"authentik/sources/{self.slug}.svg")
         return UserSettingSerializer(
             data={
                 "title": self.name,
@@ -214,7 +224,7 @@ class SAMLSource(Source):
                     "authentik_sources_saml:login",
                     kwargs={"source_slug": self.slug},
                 ),
-                "icon_url": icon,
+                "icon_url": self.icon_url,
             }
         )
 

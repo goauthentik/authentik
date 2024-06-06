@@ -1,6 +1,6 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { MessageLevel } from "@goauthentik/common/messages";
-import { camelToSnake, convertToSlug } from "@goauthentik/common/utils";
+import { camelToSnake, convertToSlug, dateToUTC } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
 import { SearchSelect } from "@goauthentik/elements/forms/SearchSelect";
@@ -80,7 +80,7 @@ export function serializeForm<T extends KeyUnknown>(
         }
 
         if ("akControl" in inputElement.dataset) {
-            assignValue(element, inputElement.value, json);
+            assignValue(element, (inputElement as unknown as AkControlElement).json(), json);
             return;
         }
 
@@ -104,7 +104,7 @@ export function serializeForm<T extends KeyUnknown>(
             inputElement.tagName.toLowerCase() === "input" &&
             inputElement.type === "datetime-local"
         ) {
-            assignValue(inputElement, new Date(inputElement.valueAsNumber), json);
+            assignValue(inputElement, dateToUTC(new Date(inputElement.valueAsNumber)), json);
         } else if (
             inputElement.tagName.toLowerCase() === "input" &&
             "type" in inputElement.dataset &&
@@ -112,7 +112,7 @@ export function serializeForm<T extends KeyUnknown>(
         ) {
             // Workaround for Firefox <93, since 92 and older don't support
             // datetime-local fields
-            assignValue(inputElement, new Date(inputElement.value), json);
+            assignValue(inputElement, dateToUTC(new Date(inputElement.value)), json);
         } else if (
             inputElement.tagName.toLowerCase() === "input" &&
             inputElement.type === "checkbox"

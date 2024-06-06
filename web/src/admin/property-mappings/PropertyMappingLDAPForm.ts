@@ -23,7 +23,7 @@ export class PropertyMappingLDAPForm extends BasePropertyMappingForm<LDAPPropert
     async send(data: LDAPPropertyMapping): Promise<LDAPPropertyMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsLdapUpdate({
-                pmUuid: this.instance.pk || "",
+                pmUuid: this.instance.pk,
                 lDAPPropertyMappingRequest: data,
             });
         } else {

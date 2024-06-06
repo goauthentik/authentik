@@ -1,16 +1,22 @@
-"""authentik saml_idp Models"""
+"""authentik SAML Provider Models"""
 
 from django.db import models
+from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
+from authentik.core.api.object_types import CreatableType
 from authentik.core.models import PropertyMapping, Provider
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.sources.saml.processors.constants import (
     DSA_SHA1,
+    ECDSA_SHA1,
+    ECDSA_SHA256,
+    ECDSA_SHA384,
+    ECDSA_SHA512,
     RSA_SHA1,
     RSA_SHA256,
     RSA_SHA384,
@@ -92,8 +98,7 @@ class SAMLProvider(Provider):
         ),
     )
 
-    digest_algorithm = models.CharField(
-        max_length=50,
+    digest_algorithm = models.TextField(
         choices=(
             (SHA1, _("SHA1")),
             (SHA256, _("SHA256")),
@@ -102,13 +107,16 @@ class SAMLProvider(Provider):
         ),
         default=SHA256,
     )
-    signature_algorithm = models.CharField(
-        max_length=50,
+    signature_algorithm = models.TextField(
         choices=(
             (RSA_SHA1, _("RSA-SHA1")),
             (RSA_SHA256, _("RSA-SHA256")),
             (RSA_SHA384, _("RSA-SHA384")),
             (RSA_SHA512, _("RSA-SHA512")),
+            (ECDSA_SHA1, _("ECDSA-SHA1")),
+            (ECDSA_SHA256, _("ECDSA-SHA256")),
+            (ECDSA_SHA384, _("ECDSA-SHA384")),
+            (ECDSA_SHA512, _("ECDSA-SHA512")),
             (DSA_SHA1, _("DSA-SHA1")),
         ),
         default=RSA_SHA256,
@@ -154,6 +162,10 @@ class SAMLProvider(Provider):
             return None
 
     @property
+    def icon_url(self) -> str | None:
+        return static("authentik/sources/saml.png")
+
+    @property
     def serializer(self) -> type[Serializer]:
         from authentik.providers.saml.api.providers import SAMLProviderSerializer
 
@@ -183,7 +195,7 @@ class SAMLPropertyMapping(PropertyMapping):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.providers.saml.api.property_mapping import SAMLPropertyMappingSerializer
+        from authentik.providers.saml.api.property_mappings import SAMLPropertyMappingSerializer
 
         return SAMLPropertyMappingSerializer
 
@@ -194,3 +206,20 @@ class SAMLPropertyMapping(PropertyMapping):
     class Meta:
         verbose_name = _("SAML Property Mapping")
         verbose_name_plural = _("SAML Property Mappings")
+
+
+class SAMLProviderImportModel(CreatableType, Provider):
+    """Create a SAML Provider by importing its Metadata."""
+
+    @property
+    def component(self):
+        return "ak-provider-saml-import-form"
+
+    @property
+    def icon_url(self) -> str | None:
+        return static("authentik/sources/saml.png")
+
+    class Meta:
+        abstract = True
+        verbose_name = _("SAML Provider from Metadata")
+        verbose_name_plural = _("SAML Providers from Metadata")

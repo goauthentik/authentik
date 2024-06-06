@@ -13,6 +13,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from authentik.core.models import Group, User
+from authentik.providers.scim.clients.schema import SCIM_USER_SCHEMA
 from authentik.providers.scim.clients.schema import Group as SCIMGroupModel
 from authentik.sources.scim.models import SCIMSourceGroup
 from authentik.sources.scim.views.v2.base import SCIMView
@@ -26,9 +27,11 @@ class GroupsView(SCIMView):
     def group_to_scim(self, scim_group: SCIMSourceGroup) -> dict:
         """Convert Group to SCIM data"""
         payload = SCIMGroupModel(
+            schemas=[SCIM_USER_SCHEMA],
             id=str(scim_group.group.pk),
             externalId=scim_group.id,
             displayName=scim_group.group.name,
+            members=[],
             meta={
                 "resourceType": "Group",
                 "location": self.request.build_absolute_uri(
@@ -42,28 +45,24 @@ class GroupsView(SCIMView):
                 ),
             },
         )
-        return payload.model_dump(
-            mode="json",
-            exclude_unset=True,
-        )
+        for member in scim_group.group.users.order_by("pk"):
+            member: User
+            payload.members.append(GroupMember(value=str(member.uuid)))
+        return payload.model_dump(mode="json", exclude_unset=True)
 
     def get(self, request: Request, group_id: str | None = None, **kwargs) -> Response:
         """List Group handler"""
+        base_query = SCIMSourceGroup.objects.select_related("group").prefetch_related(
+            "group__users"
+        )
         if group_id:
-            connection = (
-                SCIMSourceGroup.objects.filter(source=self.source, group__group_uuid=group_id)
-                .select_related("group")
-                .first()
-            )
+            connection = base_query.filter(source=self.source, group__group_uuid=group_id).first()
             if not connection:
                 raise Http404
             return Response(self.group_to_scim(connection))
         connections = (
-            SCIMSourceGroup.objects.filter(source=self.source)
-            .select_related("group")
-            .order_by("pk")
+            base_query.filter(source=self.source).order_by("pk").filter(self.filter_parse(request))
         )
-        connections = connections.filter(self.filter_parse(request))
         page = self.paginate_query(connections)
         return Response(
             {
@@ -79,6 +78,8 @@ class GroupsView(SCIMView):
     def update_group(self, connection: SCIMSourceGroup | None, data: QueryDict):
         """Partial update a group"""
         group = connection.group if connection else Group()
+        if _group := Group.objects.filter(name=data.get("displayName")).first():
+            group = _group
         if "displayName" in data:
             group.name = data.get("displayName")
         if group.name == "":

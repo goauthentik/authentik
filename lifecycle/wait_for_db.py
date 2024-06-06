@@ -3,7 +3,6 @@
 import authentik. This is done by the dockerfile."""
 from sys import exit as sysexit
 from time import sleep
-from urllib.parse import quote_plus
 
 from psycopg import OperationalError, connect
 from redis import Redis
@@ -35,7 +34,7 @@ def check_postgres():
 
 
 def check_redis():
-    url = redis_url(CONFIG.get("redis.db"))
+    url = CONFIG.get("cache.url") or redis_url(CONFIG.get("redis.db"))
     while True:
         try:
             redis = Redis.from_url(url)
@@ -43,10 +42,7 @@ def check_redis():
             break
         except RedisError as exc:
             sleep(1)
-            sanitized_url = url.replace(quote_plus(CONFIG.get("redis.password")), "******")
-            CONFIG.log(
-                "info", f"Redis Connection failed, retrying... ({exc})", redis_url=sanitized_url
-            )
+            CONFIG.log("info", f"Redis Connection failed, retrying... ({exc})")
     CONFIG.log("info", "Redis Connection successful")
 
 

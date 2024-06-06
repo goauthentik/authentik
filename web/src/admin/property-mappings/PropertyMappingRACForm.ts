@@ -51,7 +51,7 @@ export class PropertyMappingLDAPForm extends ModelForm<RACPropertyMapping, strin
     async send(data: RACPropertyMapping): Promise<RACPropertyMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsRacUpdate({
-                pmUuid: this.instance.pk || "",
+                pmUuid: this.instance.pk,
                 rACPropertyMappingRequest: data,
             });
         } else {
