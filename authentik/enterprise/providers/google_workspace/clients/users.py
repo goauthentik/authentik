@@ -88,9 +88,11 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
         self.check_email_valid(
             google_user["primaryEmail"], *[x["address"] for x in google_user.get("emails", [])]
         )
-        self._request(
+        response = self._request(
             self.directory_service.users().update(userKey=connection.google_id, body=google_user)
         )
+        connection.attributes = response
+        connection.save()
 
     def discover(self):
         """Iterate through all users and connect them with authentik users if possible"""
