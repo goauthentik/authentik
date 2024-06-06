@@ -21,11 +21,7 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
 
     def __init__(self, source: LDAPSource):
         super().__init__(source)
-        self.mapper = PropertyMappingManager(
-            self._source.user_property_mappings.all().order_by("name").select_subclasses(),
-            LDAPPropertyMapping,
-            ["ldap", "dn", "source"],
-        )
+        self.mapper = self._source.get_mapper(User, ["ldap", "dn"])
 
     @staticmethod
     def name() -> str:
@@ -66,7 +62,7 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 defaults = {
                     k: flatten(v)
                     for k, v in self._source.build_object_properties(
-                        object_type=User, user=None, request=None, dn=user_dn, ldap=attributes
+                        object_type=User, mapper=self.mapper, user=None, request=None, dn=user_dn, ldap=attributes
                     ).items()
                 }
                 self._logger.debug("Writing user with attributes", **defaults)

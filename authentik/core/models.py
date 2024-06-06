@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from hashlib import sha256
-from typing import Any, Optional, Self
+from typing import Any, Optional, Self, TYPE_CHECKING
 from uuid import uuid4
 
 from deepmerge import always_merger
@@ -38,6 +38,9 @@ from authentik.policies.models import PolicyBindingModel
 from authentik.policies.utils import delete_none_values
 from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
 from authentik.tenants.utils import get_current_tenant, get_unique_identifier
+
+if TYPE_CHECKING:
+    from authentik.lib.sync.mapper import PropertyMappingManager
 
 LOGGER = get_logger()
 USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
@@ -628,6 +631,17 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         user settings are available, or UserSettingSerializer."""
         return None
 
+    def get_mapper(self, object_type: type[User | Group], context_keys: list[str]) -> "PropertyMappingManager":
+        """Get property mapping manager for this source."""
+        from authentik.lib.sync.mapper import PropertyMappingManager
+
+        qs = PropertyMapping.objects.none()
+        if object_type == User:
+            qs = self.user_property_mappings.all().select_subclasses()
+        elif object_type == Group:
+            qs = self.group_property_mappings.all().select_subclasses()
+        return PropertyMappingManager(qs, self.property_mapping_type, ["source", "properties"] + context_keys)
+
     def get_base_user_properties(self, **kwargs) -> dict[str, Any | dict[str, Any]]:
         """Get base properties for a user to build final properties upon."""
         raise NotImplementedError
@@ -651,6 +665,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     def build_object_properties(
         self,
         object_type: type[User | Group],
+        mapper: "PropertyMappingManager | None" = None,
         user: User | None = None,
         request: HttpRequest | None = None,
         **kwargs,
@@ -661,38 +676,33 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         properties = self.get_base_properties(object_type, **kwargs)
         if "attributes" not in properties:
             properties["attributes"] = {}
-        mappings = []
-        if object_type == User:
-            mappings = self.user_property_mappings.all().select_subclasses()
-        elif object_type == Group:
-            mappings = self.group_property_mappings.all().select_subclasses()
-        for mapping in mappings:
-            if not isinstance(mapping, self.property_mapping_type):
-                continue
+
+        if not mapper:
+            mapper = self.get_mapper(object_type, list(kwargs.keys()))
+        evaluations = mapper.iter_eval(user=user, request=request, return_mapping=True, source=self, properties=properties, **kwargs)
+        while True:
             try:
-                value = mapping.evaluate(
-                    user=user,
-                    request=request,
-                    source=self,
-                    properties=properties,
-                    **kwargs,
-                )
-                if not value or not isinstance(value, dict):
-                    LOGGER.debug(
-                        "Mapping evaluated to None or is not a dict. Skipping",
-                        source=self,
-                        mapping=mapping,
-                    )
-                    continue
+                value, mapping = next(evaluations)
+            except StopIteration:
+                break
             except PropertyMappingExpressionException as exc:
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,
-                    message=f"Failed to evaluate property mapping: '{mapping.name}'",
+                    message=f"Failed to evaluate property mapping: '{exc.mapping.name}'",
+                    source=self,
+                    mapping=exc.mapping,
+                ).save()
+                LOGGER.warning("Mapping failed to evaluate", exc=exc, source=self, mapping=exc.mapping)
+                continue
+
+            if not value or not isinstance(value, dict):
+                LOGGER.debug(
+                    "Mapping evaluated to None or is not a dict. Skipping",
                     source=self,
                     mapping=mapping,
-                ).save()
-                LOGGER.warning("Mapping failed to evaluate", exc=exc, source=self, mapping=mapping)
+                )
                 continue
+
             MERGE_LIST_UNIQUE.merge(properties, value)
 
         return delete_none_values(properties)
