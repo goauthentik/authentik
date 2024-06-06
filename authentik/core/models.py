@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from hashlib import sha256
-from typing import Any, Optional, Self, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Optional, Self
 from uuid import uuid4
 
 from deepmerge import always_merger
@@ -631,7 +631,11 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         user settings are available, or UserSettingSerializer."""
         return None
 
-    def get_mapper(self, object_type: type[User | Group], context_keys: list[str]) -> "PropertyMappingManager":
+    def get_mapper(
+            self,
+            object_type: type[User | Group],
+            context_keys: list[str]
+        ) -> "PropertyMappingManager":
         """Get property mapping manager for this source."""
         from authentik.lib.sync.mapper import PropertyMappingManager
 
@@ -640,7 +644,11 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
             qs = self.user_property_mappings.all().select_subclasses()
         elif object_type == Group:
             qs = self.group_property_mappings.all().select_subclasses()
-        return PropertyMappingManager(qs, self.property_mapping_type, ["source", "properties"] + context_keys)
+        return PropertyMappingManager(
+            qs,
+            self.property_mapping_type,
+            ["source", "properties"] + context_keys,
+        )
 
     def get_base_user_properties(self, **kwargs) -> dict[str, Any | dict[str, Any]]:
         """Get base properties for a user to build final properties upon."""
@@ -679,7 +687,14 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
 
         if not mapper:
             mapper = self.get_mapper(object_type, list(kwargs.keys()))
-        evaluations = mapper.iter_eval(user=user, request=request, return_mapping=True, source=self, properties=properties, **kwargs)
+        evaluations = mapper.iter_eval(
+            user=user,
+            request=request,
+            return_mapping=True,
+            source=self,
+            properties=properties,
+            **kwargs,
+        )
         while True:
             try:
                 value, mapping = next(evaluations)
@@ -692,7 +707,12 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
                     source=self,
                     mapping=exc.mapping,
                 ).save()
-                LOGGER.warning("Mapping failed to evaluate", exc=exc, source=self, mapping=exc.mapping)
+                LOGGER.warning(
+                    "Mapping failed to evaluate",
+                    exc=exc,
+                    source=self,
+                    mapping=exc.mapping,
+                )
                 continue
 
             if not value or not isinstance(value, dict):

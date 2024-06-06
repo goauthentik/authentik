@@ -140,11 +140,11 @@ class LDAPSource(Source):
         return LDAPPropertyMapping
 
     def update_properties_with_uniqueness_field(self, properties, dn, ldap, **kwargs):
+        properties.setdefault("attributes", {})[LDAP_DISTINGUISHED_NAME] = dn
         if self.object_uniqueness_field in ldap:
-            properties.setdefault("attributes", {})[LDAP_UNIQUENESS] = flatten(
+            properties["attributes"][LDAP_UNIQUENESS] = flatten(
                 ldap.get(self.object_uniqueness_field)
             )
-        properties.setdefault("attributes", {})[LDAP_DISTINGUISHED_NAME] = dn
         return properties
 
     def get_base_user_properties(self, **kwargs):
