@@ -3,7 +3,7 @@
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
 from django.views import View
-from rest_framework.exceptions import ErrorDetail
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, IntegerField
 from structlog.stdlib import get_logger
 
@@ -57,6 +57,7 @@ def validate_code(code: int, request: HttpRequest) -> HttpResponse | None:
     scope_descriptions = UserInfoView().get_scope_descriptions(token.scope, token.provider)
     planner = FlowPlanner(token.provider.authorization_flow)
     planner.allow_empty_flows = True
+    planner.use_cache = False
     try:
         plan = planner.plan(
             request,
@@ -128,6 +129,13 @@ class OAuthDeviceCodeChallengeResponse(ChallengeResponse):
     code = IntegerField()
     component = CharField(default="ak-provider-oauth2-device-code")
 
+    def validate_code(self, code: int) -> HttpResponse | None:
+        """Validate code and save the returned http response"""
+        response = validate_code(code, self.stage.request)
+        if not response:
+            raise ValidationError(_("Invalid code"), "invalid")
+        return response
+
 
 class OAuthDeviceCodeStage(ChallengeStageView):
     """Flow challenge for users to enter device codes"""
@@ -143,12 +151,4 @@ class OAuthDeviceCodeStage(ChallengeStageView):
         )
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
-        code = response.validated_data["code"]
-        validation = validate_code(code, self.request)
-        if not validation:
-            response._errors.setdefault("code", [])
-            response._errors["code"].append(ErrorDetail(_("Invalid code"), "invalid"))
-            return self.challenge_invalid(response)
-        # Run cancel to cleanup the current flow
-        self.executor.cancel()
-        return validation
+        return response.validated_data["code"]

@@ -9,6 +9,7 @@ from unittest.mock import PropertyMock, patch
 
 from django.conf import settings
 from django.core.mail.backends.locmem import EmailBackend
+from django.core.mail.message import sanitize_address
 from django.urls import reverse
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
@@ -19,6 +20,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.email.models import EmailStage, get_template_choices
+from authentik.stages.email.utils import TemplateEmailMessage
 
 
 def get_templates_setting(temp_dir: str) -> dict[str, Any]:
@@ -89,3 +91,12 @@ class TestEmailStageTemplates(FlowTestCase):
                     event.context["message"], "Exception occurred while rendering E-mail template"
                 )
                 self.assertEqual(event.context["template"], "invalid.html")
+
+    def test_template_address(self):
+        """Test addresses are correctly parsed"""
+        message = TemplateEmailMessage(to=[("foo@bar.baz", "foo@bar.baz")])
+        [sanitize_address(addr, "utf-8") for addr in message.recipients()]
+        self.assertEqual(message.recipients(), ['"foo@bar.baz" <foo@bar.baz>'])
+        message = TemplateEmailMessage(to=[("some-name", "foo@bar.baz")])
+        [sanitize_address(addr, "utf-8") for addr in message.recipients()]
+        self.assertEqual(message.recipients(), ["some-name <foo@bar.baz>"])

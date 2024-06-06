@@ -4,9 +4,11 @@ title: Manage users
 
 The following topics are for the basic management of users: how to create, modify, delete or deactivate users, and using a recovery email.
 
+[Policies](../../policies/index.md) can be used to further manage how users are authenticated. For example, by default authentik does not require email addresses be unique, but you can use a policy to [enforce unique email addresses](../../policies/working_with_policies/unique_email.md).
+
 ### Create a user
 
-> If you want to automate user creation, you can do that either by [invitations](./invitations.md), [`user_write` stage](../../flow/stages/user_write), or [using the API](/developer-docs/api/browser).
+> If you want to automate user creation, you can do that either by [invitations](./invitations.md), [`user_write` stage](../../flow/stages/user_write), or [using the API](/developer-docs/api/reference/core-users-create).
 
 1. In the Admin interface of your authentik instance, select **Directory > Users** in the left side menu.
 2. Select the folder where you want to create a user.

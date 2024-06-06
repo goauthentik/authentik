@@ -1532,21 +1532,6 @@
   <target>Śēĺēćţ ţŷƥē</target>
 
       </trans-unit>
-      <trans-unit id="s0b3bf19b31dd6bac">
-        <source>Try the new application wizard</source>
-  <target>Ţŕŷ ţĥē ńēŵ àƥƥĺĩćàţĩōń ŵĩźàŕď</target>
-
-      </trans-unit>
-      <trans-unit id="sa18e1c6e0e6f16cc">
-        <source>The new application wizard greatly simplifies the steps required to create applications and providers.</source>
-  <target>Ţĥē ńēŵ àƥƥĺĩćàţĩōń ŵĩźàŕď ĝŕēàţĺŷ śĩmƥĺĩƒĩēś ţĥē śţēƥś ŕēǫũĩŕēď ţō ćŕēàţē àƥƥĺĩćàţĩōńś àńď ƥŕōvĩďēŕś.</target>
-
-      </trans-unit>
-      <trans-unit id="s01ef54f5d7c6ed47">
-        <source>Try it now</source>
-  <target>Ţŕŷ ĩţ ńōŵ</target>
-
-      </trans-unit>
       <trans-unit id="s382a2aa3984474dd">
         <source>Create</source>
   <target>Ćŕēàţē</target>
@@ -3289,21 +3274,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <target>Ńōţ śŷńćēď ŷēţ.</target>
 
       </trans-unit>
-      <trans-unit id="s388ee787bbf2271b">
-        <source>Task finished with warnings</source>
-  <target>Ţàśķ ƒĩńĩśĥēď ŵĩţĥ ŵàŕńĩńĝś</target>
-
-      </trans-unit>
-      <trans-unit id="s949826fad0fe0909">
-        <source>Task finished with errors</source>
-  <target>Ţàśķ ƒĩńĩśĥēď ŵĩţĥ ēŕŕōŕś</target>
-
-      </trans-unit>
-      <trans-unit id="sbedb77365a066648">
-        <source>Last sync: <x id="0" equiv-text="${task.finishTimestamp.toLocaleString()}"/></source>
-  <target>Ĺàśţ śŷńć: <x id="0" equiv-text="${task.finishTimestamp.toLocaleString()}"/></target>
-
-      </trans-unit>
       <trans-unit id="sf3fec8353106ac2f">
         <source>OAuth Source <x id="0" equiv-text="${this.source.name}"/></source>
   <target>ŌÀũţĥ Śōũŕćē <x id="0" equiv-text="${this.source.name}"/></target>
@@ -4885,11 +4855,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="se2e9f5a32c93e5f7">
         <source>Last validation threshold</source>
   <target>Ĺàśţ vàĺĩďàţĩōń ţĥŕēśĥōĺď</target>
-
-      </trans-unit>
-      <trans-unit id="s951281efc92b03fc">
-        <source>If any of the devices user of the types selected above have been used within this duration, this stage will be skipped.</source>
-  <target>Ĩƒ àńŷ ōƒ ţĥē ďēvĩćēś ũśēŕ ōƒ ţĥē ţŷƥēś śēĺēćţēď àƀōvē ĥàvē ƀēēń ũśēď ŵĩţĥĩń ţĥĩś ďũŕàţĩōń, ţĥĩś śţàĝē ŵĩĺĺ ƀē śķĩƥƥēď.</target>
 
       </trans-unit>
       <trans-unit id="s681074b6c1f19c08">
@@ -7116,10 +7081,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>License(s)</source>
   <target>Ĺĩćēńśē(ś)</target>
 </trans-unit>
-<trans-unit id="s3be1d90ffa46b7f1">
-  <source>Enterprise is in preview.</source>
-  <target>Ēńţēŕƥŕĩśē ĩś ĩń ƥŕēvĩēŵ.</target>
-</trans-unit>
 <trans-unit id="sd22bd01bdf28c548">
   <source>Cumulative license expiry</source>
   <target>Ćũmũĺàţĩvē ĺĩćēńśē ēxƥĩŕŷ</target>
@@ -7151,10 +7112,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sa1db89262360550b">
   <source>Send us feedback!</source>
   <target>Śēńď ũś ƒēēďƀàćķ!</target>
-</trans-unit>
-<trans-unit id="s4015746f55a8d89f">
-  <source>Get a license</source>
-  <target>Ĝēţ à ĺĩćēńśē</target>
 </trans-unit>
 <trans-unit id="sb2cbd06f8e25b47e">
   <source>Go to Customer Portal</source>
@@ -7531,10 +7488,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Editing is disabled for managed tokens</source>
   <target>Ēďĩţĩńĝ ĩś ďĩśàƀĺēď ƒōŕ màńàĝēď ţōķēńś</target>
 </trans-unit>
-<trans-unit id="s78ab26da7f067de8">
-  <source>Select permissions to grant</source>
-  <target>Śēĺēćţ ƥēŕmĩśśĩōńś ţō ĝŕàńţ</target>
-</trans-unit>
 <trans-unit id="sdeb90bfd8a80b86b">
   <source>Permissions to add</source>
   <target>Ƥēŕmĩśśĩōńś ţō àďď</target>
@@ -7857,409 +7810,814 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s7513372fe60f6387">
   <source>Event volume</source>
+  <target>Ēvēńţ vōĺũmē</target>
 </trans-unit>
 <trans-unit id="s047a5f0211fedc72">
   <source>Require Outpost (flow can only be executed from an outpost).</source>
+  <target>Ŕēǫũĩŕē Ōũţƥōśţ (ƒĺōŵ ćàń ōńĺŷ ƀē ēxēćũţēď ƒŕōm àń ōũţƥōśţ).</target>
 </trans-unit>
 <trans-unit id="s3271da6c18c25b18">
   <source>Connection settings.</source>
+  <target>Ćōńńēćţĩōń śēţţĩńĝś.</target>
 </trans-unit>
 <trans-unit id="s2f4ca2148183d692">
   <source>Successfully updated endpoint.</source>
+  <target>Śũććēśśƒũĺĺŷ ũƥďàţēď ēńďƥōĩńţ.</target>
 </trans-unit>
 <trans-unit id="s5adee855dbe191d9">
   <source>Successfully created endpoint.</source>
+  <target>Śũććēśśƒũĺĺŷ ćŕēàţēď ēńďƥōĩńţ.</target>
 </trans-unit>
 <trans-unit id="s61e136c0658e27d5">
   <source>Protocol</source>
+  <target>Ƥŕōţōćōĺ</target>
 </trans-unit>
 <trans-unit id="sa062b019ff0c8809">
   <source>RDP</source>
+  <target>ŔĎƤ</target>
 </trans-unit>
 <trans-unit id="s97f9bf19fa5b57d1">
   <source>SSH</source>
+  <target>ŚŚĤ</target>
 </trans-unit>
 <trans-unit id="s7c100119e9ffcc32">
   <source>VNC</source>
+  <target>VŃĆ</target>
 </trans-unit>
 <trans-unit id="s6b05f9d8801fc14f">
   <source>Host</source>
+  <target>Ĥōśţ</target>
 </trans-unit>
 <trans-unit id="sb474f652a2c2fc76">
   <source>Hostname/IP to connect to.</source>
+  <target>Ĥōśţńàmē/ĨƤ ţō ćōńńēćţ ţō.</target>
 </trans-unit>
 <trans-unit id="s8276649077e8715c">
   <source>Endpoint(s)</source>
+  <target>Ēńďƥōĩńţ(ś)</target>
 </trans-unit>
 <trans-unit id="sf1dabfe0fe8a75ad">
   <source>Update Endpoint</source>
+  <target>Ũƥďàţē Ēńďƥōĩńţ</target>
 </trans-unit>
 <trans-unit id="s008496c7716b9812">
   <source>These bindings control which users will have access to this endpoint. Users must also have access to the application.</source>
+  <target>Ţĥēśē ƀĩńďĩńĝś ćōńţŕōĺ ŵĥĩćĥ ũśēŕś ŵĩĺĺ ĥàvē àććēśś ţō ţĥĩś ēńďƥōĩńţ. Ũśēŕś mũśţ àĺśō ĥàvē àććēśś ţō ţĥē àƥƥĺĩćàţĩōń.</target>
 </trans-unit>
 <trans-unit id="s38e7cd1a24e70faa">
   <source>Create Endpoint</source>
+  <target>Ćŕēàţē Ēńďƥōĩńţ</target>
 </trans-unit>
 <trans-unit id="s4770c10e5b1c028c">
   <source>RAC is in preview.</source>
+  <target>ŔÀĆ ĩś ĩń ƥŕēvĩēŵ.</target>
 </trans-unit>
 <trans-unit id="s168565f5ac74a89f">
   <source>Update RAC Provider</source>
+  <target>Ũƥďàţē ŔÀĆ Ƥŕōvĩďēŕ</target>
 </trans-unit>
 <trans-unit id="s8465a2caa2d9ea5d">
   <source>Endpoints</source>
+  <target>Ēńďƥōĩńţś</target>
 </trans-unit>
 <trans-unit id="s9857d883d8eb98fc">
   <source>General settings</source>
+  <target>Ĝēńēŕàĺ śēţţĩńĝś</target>
 </trans-unit>
 <trans-unit id="sd2066881798a1b96">
   <source>RDP settings</source>
+  <target>ŔĎƤ śēţţĩńĝś</target>
 </trans-unit>
 <trans-unit id="sb864dc36a463a155">
   <source>Ignore server certificate</source>
+  <target>Ĩĝńōŕē śēŕvēŕ ćēŕţĩƒĩćàţē</target>
 </trans-unit>
 <trans-unit id="s20366a8d1eaaca54">
   <source>Enable wallpaper</source>
+  <target>Ēńàƀĺē ŵàĺĺƥàƥēŕ</target>
 </trans-unit>
 <trans-unit id="s1e44c5350ef7598c">
   <source>Enable font-smoothing</source>
+  <target>Ēńàƀĺē ƒōńţ-śmōōţĥĩńĝ</target>
 </trans-unit>
 <trans-unit id="s04ff5d6ae711e6d6">
   <source>Enable full window dragging</source>
+  <target>Ēńàƀĺē ƒũĺĺ ŵĩńďōŵ ďŕàĝĝĩńĝ</target>
 </trans-unit>
 <trans-unit id="s663ccbfdf27e8dd0">
   <source>Network binding</source>
+  <target>Ńēţŵōŕķ ƀĩńďĩńĝ</target>
 </trans-unit>
 <trans-unit id="sb108a06693c67753">
   <source>No binding</source>
+  <target>Ńō ƀĩńďĩńĝ</target>
 </trans-unit>
 <trans-unit id="s5aab90c74f1233b8">
   <source>Bind ASN</source>
+  <target>ßĩńď ÀŚŃ</target>
 </trans-unit>
 <trans-unit id="s488303b048afe83b">
   <source>Bind ASN and Network</source>
+  <target>ßĩńď ÀŚŃ àńď Ńēţŵōŕķ</target>
 </trans-unit>
 <trans-unit id="s3268dcfe0c8234dc">
   <source>Bind ASN, Network and IP</source>
+  <target>ßĩńď ÀŚŃ, Ńēţŵōŕķ àńď ĨƤ</target>
 </trans-unit>
 <trans-unit id="s226381aca231644f">
   <source>Configure if sessions created by this stage should be bound to the Networks they were created in.</source>
+  <target>Ćōńƒĩĝũŕē ĩƒ śēśśĩōńś ćŕēàţēď ƀŷ ţĥĩś śţàĝē śĥōũĺď ƀē ƀōũńď ţō ţĥē Ńēţŵōŕķś ţĥēŷ ŵēŕē ćŕēàţēď ĩń.</target>
 </trans-unit>
 <trans-unit id="s2555a1f20f3fd93e">
   <source>GeoIP binding</source>
+  <target>ĜēōĨƤ ƀĩńďĩńĝ</target>
 </trans-unit>
 <trans-unit id="s3d63c78f93c9a92e">
   <source>Bind Continent</source>
+  <target>ßĩńď Ćōńţĩńēńţ</target>
 </trans-unit>
 <trans-unit id="s395d5863b3a259b5">
   <source>Bind Continent and Country</source>
+  <target>ßĩńď Ćōńţĩńēńţ àńď Ćōũńţŕŷ</target>
 </trans-unit>
 <trans-unit id="s625ea0c32b4b136c">
   <source>Bind Continent, Country and City</source>
+  <target>ßĩńď Ćōńţĩńēńţ, Ćōũńţŕŷ àńď Ćĩţŷ</target>
 </trans-unit>
 <trans-unit id="s4bc7a1a88961be90">
   <source>Configure if sessions created by this stage should be bound to their GeoIP-based location</source>
+  <target>Ćōńƒĩĝũŕē ĩƒ śēśśĩōńś ćŕēàţēď ƀŷ ţĥĩś śţàĝē śĥōũĺď ƀē ƀōũńď ţō ţĥēĩŕ ĜēōĨƤ-ƀàśēď ĺōćàţĩōń</target>
 </trans-unit>
 <trans-unit id="sa06cd519ff151b6d">
   <source>RAC</source>
+  <target>ŔÀĆ</target>
 </trans-unit>
 <trans-unit id="s28b99b59541f54ca">
   <source>Connection failed after <x id="0" equiv-text="${this.connectionAttempt}"/> attempts.</source>
+  <target>Ćōńńēćţĩōń ƒàĩĺēď àƒţēŕ <x id="0" equiv-text="${this.connectionAttempt}"/> àţţēmƥţś.</target>
 </trans-unit>
 <trans-unit id="s7c7d956418e1c8c8">
   <source>Re-connecting in <x id="0" equiv-text="${Math.max(1, delay / 1000)}"/> second(s).</source>
+  <target>Ŕē-ćōńńēćţĩńĝ ĩń <x id="0" equiv-text="${Math.max(1, delay / 1000)}"/> śēćōńď(ś).</target>
 </trans-unit>
 <trans-unit id="sfc003381f593d943">
   <source>Connecting...</source>
+  <target>Ćōńńēćţĩńĝ...</target>
 </trans-unit>
 <trans-unit id="s31aa94a0b3c7edb2">
   <source>Select endpoint to connect to</source>
+  <target>Śēĺēćţ ēńďƥōĩńţ ţō ćōńńēćţ ţō</target>
 </trans-unit>
 <trans-unit id="sa2ea0fcd3ffa80e0">
   <source>Connection expiry</source>
+  <target>Ćōńńēćţĩōń ēxƥĩŕŷ</target>
 </trans-unit>
 <trans-unit id="s6dd297c217729828">
   <source>Determines how long a session lasts before being disconnected and requiring re-authorization.</source>
+  <target>Ďēţēŕmĩńēś ĥōŵ ĺōńĝ à śēśśĩōń ĺàśţś ƀēƒōŕē ƀēĩńĝ ďĩśćōńńēćţēď àńď ŕēǫũĩŕĩńĝ ŕē-àũţĥōŕĩźàţĩōń.</target>
 </trans-unit>
 <trans-unit id="s31f1afc1bfe1cb3a">
   <source>Learn more</source>
+  <target>Ĺēàŕń mōŕē</target>
 </trans-unit>
 <trans-unit id="sc39f6abf0daedb0f">
   <source>Maximum concurrent connections</source>
+  <target>Màxĩmũm ćōńćũŕŕēńţ ćōńńēćţĩōńś</target>
 </trans-unit>
 <trans-unit id="s62418cbcd2a25498">
   <source>Maximum concurrent allowed connections to this endpoint. Can be set to -1 to disable the limit.</source>
+  <target>Màxĩmũm ćōńćũŕŕēńţ àĺĺōŵēď ćōńńēćţĩōńś ţō ţĥĩś ēńďƥōĩńţ. Ćàń ƀē śēţ ţō -1 ţō ďĩśàƀĺē ţĥē ĺĩmĩţ.</target>
 </trans-unit>
 <trans-unit id="s94d61907ee22a8c1">
   <source>Korean</source>
+  <target>Ķōŕēàń</target>
 </trans-unit>
 <trans-unit id="s95d56e58f816d211">
   <source>Dutch</source>
+  <target>Ďũţćĥ</target>
 </trans-unit>
 <trans-unit id="s16a15af46bc9aeef">
   <source>Failed to fetch objects: <x id="0" equiv-text="${this.error.detail}"/></source>
+  <target>Ƒàĩĺēď ţō ƒēţćĥ ōƀĴēćţś: <x id="0" equiv-text="${this.error.detail}"/></target>
 </trans-unit>
 <trans-unit id="s744401846fea6e76">
   <source>Brand</source>
+  <target>ßŕàńď</target>
 </trans-unit>
 <trans-unit id="sab21e1f62676b56c">
   <source>Successfully updated brand.</source>
+  <target>Śũććēśśƒũĺĺŷ ũƥďàţēď ƀŕàńď.</target>
 </trans-unit>
 <trans-unit id="sa43e43fd3a23e22d">
   <source>Successfully created brand.</source>
+  <target>Śũććēśśƒũĺĺŷ ćŕēàţēď ƀŕàńď.</target>
 </trans-unit>
 <trans-unit id="s41b3f9b4c98aabd9">
   <source>Use this brand for each domain that doesn't have a dedicated brand.</source>
+  <target>Ũśē ţĥĩś ƀŕàńď ƒōŕ ēàćĥ ďōmàĩń ţĥàţ ďōēśń'ţ ĥàvē à ďēďĩćàţēď ƀŕàńď.</target>
 </trans-unit>
 <trans-unit id="s17260b71484b307f">
   <source>Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this brand.</source>
+  <target>Śēţ ćũśţōm àţţŕĩƀũţēś ũśĩńĝ ŶÀMĹ ōŕ ĵŚŌŃ. Àńŷ àţţŕĩƀũţēś śēţ ĥēŕē ŵĩĺĺ ƀē ĩńĥēŕĩţēď ƀŷ ũśēŕś, ĩƒ ţĥē ŕēǫũēśţ ĩś ĥàńďĺēď ƀŷ ţĥĩś ƀŕàńď.</target>
 </trans-unit>
 <trans-unit id="s79fc990a2b58f27f">
   <source>Brands</source>
+  <target>ßŕàńďś</target>
 </trans-unit>
 <trans-unit id="s02774bc46a167346">
   <source>Brand(s)</source>
+  <target>ßŕàńď(ś)</target>
 </trans-unit>
 <trans-unit id="s801bf3d03f4a3ff1">
   <source>Update Brand</source>
+  <target>Ũƥďàţē ßŕàńď</target>
 </trans-unit>
 <trans-unit id="s5c3efec5330e0000">
   <source>Create Brand</source>
+  <target>Ćŕēàţē ßŕàńď</target>
 </trans-unit>
 <trans-unit id="sa9d13ce9e83aac17">
   <source>To let a user directly reset a their password, configure a recovery flow on the currently active brand.</source>
+  <target>Ţō ĺēţ à ũśēŕ ďĩŕēćţĺŷ ŕēśēţ à ţĥēĩŕ ƥàśśŵōŕď, ćōńƒĩĝũŕē à ŕēćōvēŕŷ ƒĺōŵ ōń ţĥē ćũŕŕēńţĺŷ àćţĩvē ƀŕàńď.</target>
 </trans-unit>
 <trans-unit id="s6709b81e1ed4e39f">
   <source>The current brand must have a recovery flow configured to use a recovery link</source>
+  <target>Ţĥē ćũŕŕēńţ ƀŕàńď mũśţ ĥàvē à ŕēćōvēŕŷ ƒĺōŵ ćōńƒĩĝũŕēď ţō ũśē à ŕēćōvēŕŷ ĺĩńķ</target>
 </trans-unit>
 <trans-unit id="s634e2fd82c397576">
   <source>Successfully updated settings.</source>
+  <target>Śũććēśśƒũĺĺŷ ũƥďàţēď śēţţĩńĝś.</target>
 </trans-unit>
 <trans-unit id="sb8e4edaea6f1d935">
   <source>Avatars</source>
+  <target>Àvàţàŕś</target>
 </trans-unit>
 <trans-unit id="s945856050217c828">
   <source>Configure how authentik should show avatars for users. The following values can be set:</source>
+  <target>Ćōńƒĩĝũŕē ĥōŵ àũţĥēńţĩķ śĥōũĺď śĥōŵ àvàţàŕś ƒōŕ ũśēŕś. Ţĥē ƒōĺĺōŵĩńĝ vàĺũēś ćàń ƀē śēţ:</target>
 </trans-unit>
 <trans-unit id="sf4ef4c8ce713f775">
   <source>Disables per-user avatars and just shows a 1x1 pixel transparent picture</source>
+  <target>Ďĩśàƀĺēś ƥēŕ-ũśēŕ àvàţàŕś àńď Ĵũśţ śĥōŵś à 1x1 ƥĩxēĺ ţŕàńśƥàŕēńţ ƥĩćţũŕē</target>
 </trans-unit>
 <trans-unit id="s5446842a7e4a963b">
   <source>Uses gravatar with the user's email address</source>
+  <target>Ũśēś ĝŕàvàţàŕ ŵĩţĥ ţĥē ũśēŕ'ś ēmàĩĺ àďďŕēśś</target>
 </trans-unit>
 <trans-unit id="s35363b9e1cc2abd3">
   <source>Generated avatars based on the user's name</source>
+  <target>Ĝēńēŕàţēď àvàţàŕś ƀàśēď ōń ţĥē ũśēŕ'ś ńàmē</target>
 </trans-unit>
 <trans-unit id="s48110ca292cad513">
   <source>Any URL: If you want to use images hosted on another server, you can set any URL. Additionally, these placeholders can be used:</source>
+  <target>Àńŷ ŨŔĹ: Ĩƒ ŷōũ ŵàńţ ţō ũśē ĩmàĝēś ĥōśţēď ōń àńōţĥēŕ śēŕvēŕ, ŷōũ ćàń śēţ àńŷ ŨŔĹ. Àďďĩţĩōńàĺĺŷ, ţĥēśē ƥĺàćēĥōĺďēŕś ćàń ƀē ũśēď:</target>
 </trans-unit>
 <trans-unit id="sbe1dfda044bdc93b">
   <source>The user's username</source>
+  <target>Ţĥē ũśēŕ'ś ũśēŕńàmē</target>
 </trans-unit>
 <trans-unit id="s653f257c9c2d4dc5">
   <source>The email address, md5 hashed</source>
+  <target>Ţĥē ēmàĩĺ àďďŕēśś, mď5 ĥàśĥēď</target>
 </trans-unit>
 <trans-unit id="s9c9183cd80916b4f">
   <source>The user's UPN, if set (otherwise an empty string)</source>
+  <target>Ţĥē ũśēŕ'ś ŨƤŃ, ĩƒ śēţ (ōţĥēŕŵĩśē àń ēmƥţŷ śţŕĩńĝ)</target>
 </trans-unit>
 <trans-unit id="h4963ed14d7e239a9">
   <source>An attribute path like
                                     <x id="0" equiv-text="&lt;code&gt;"/>attributes.something.avatar<x id="1" equiv-text="&lt;/code&gt;"/>, which can be used in
                                     combination with the file field to allow users to upload custom
                                     avatars for themselves.</source>
+  <target>Àń àţţŕĩƀũţē ƥàţĥ ĺĩķē
+                                    <x id="0" equiv-text="&lt;code&gt;"/>àţţŕĩƀũţēś.śōmēţĥĩńĝ.àvàţàŕ<x id="1" equiv-text="&lt;/code&gt;"/>, ŵĥĩćĥ ćàń ƀē ũśēď ĩń
+                                    ćōmƀĩńàţĩōń ŵĩţĥ ţĥē ƒĩĺē ƒĩēĺď ţō àĺĺōŵ ũśēŕś ţō ũƥĺōàď ćũśţōm
+                                    àvàţàŕś ƒōŕ ţĥēmśēĺvēś.</target>
 </trans-unit>
 <trans-unit id="s4c80c34a67a6f1c9">
   <source>Multiple values can be set, comma-separated, and authentik will fallback to the next mode when no avatar could be found.</source>
+  <target>Mũĺţĩƥĺē vàĺũēś ćàń ƀē śēţ, ćōmmà-śēƥàŕàţēď, àńď àũţĥēńţĩķ ŵĩĺĺ ƒàĺĺƀàćķ ţō ţĥē ńēxţ mōďē ŵĥēń ńō àvàţàŕ ćōũĺď ƀē ƒōũńď.</target>
 </trans-unit>
 <trans-unit id="h2fafcc3ebafea2f8">
   <source>For example, setting this to <x id="0" equiv-text="&lt;code&gt;"/>gravatar,initials<x id="1" equiv-text="&lt;/code&gt;"/> will
                                 attempt to get an avatar from Gravatar, and if the user has not
                                 configured on there, it will fallback to a generated avatar.</source>
+  <target>Ƒōŕ ēxàmƥĺē, śēţţĩńĝ ţĥĩś ţō <x id="0" equiv-text="&lt;code&gt;"/>ĝŕàvàţàŕ,ĩńĩţĩàĺś<x id="1" equiv-text="&lt;/code&gt;"/> ŵĩĺĺ
+                                àţţēmƥţ ţō ĝēţ àń àvàţàŕ ƒŕōm Ĝŕàvàţàŕ, àńď ĩƒ ţĥē ũśēŕ ĥàś ńōţ
+                                ćōńƒĩĝũŕēď ōń ţĥēŕē, ĩţ ŵĩĺĺ ƒàĺĺƀàćķ ţō à ĝēńēŕàţēď àvàţàŕ.</target>
 </trans-unit>
 <trans-unit id="s5faec5eb5faf62ac">
   <source>Allow users to change name</source>
+  <target>Àĺĺōŵ ũśēŕś ţō ćĥàńĝē ńàmē</target>
 </trans-unit>
 <trans-unit id="s078ffec0257621c0">
   <source>Enable the ability for users to change their name.</source>
+  <target>Ēńàƀĺē ţĥē àƀĩĺĩţŷ ƒōŕ ũśēŕś ţō ćĥàńĝē ţĥēĩŕ ńàmē.</target>
 </trans-unit>
 <trans-unit id="s456d88f3679190fd">
   <source>Allow users to change email</source>
+  <target>Àĺĺōŵ ũśēŕś ţō ćĥàńĝē ēmàĩĺ</target>
 </trans-unit>
 <trans-unit id="s5fc6c14d106f40d3">
   <source>Enable the ability for users to change their email.</source>
+  <target>Ēńàƀĺē ţĥē àƀĩĺĩţŷ ƒōŕ ũśēŕś ţō ćĥàńĝē ţĥēĩŕ ēmàĩĺ.</target>
 </trans-unit>
 <trans-unit id="s628e414bb2367057">
   <source>Allow users to change username</source>
+  <target>Àĺĺōŵ ũśēŕś ţō ćĥàńĝē ũśēŕńàmē</target>
 </trans-unit>
 <trans-unit id="s6d816a95ca43a99d">
   <source>Enable the ability for users to change their username.</source>
+  <target>Ēńàƀĺē ţĥē àƀĩĺĩţŷ ƒōŕ ũśēŕś ţō ćĥàńĝē ţĥēĩŕ ũśēŕńàmē.</target>
 </trans-unit>
 <trans-unit id="s57b52b60ed5e2bc7">
   <source>Footer links</source>
+  <target>Ƒōōţēŕ ĺĩńķś</target>
 </trans-unit>
 <trans-unit id="s166b59f3cc5d8ec3">
   <source>GDPR compliance</source>
+  <target>ĜĎƤŔ ćōmƥĺĩàńćē</target>
 </trans-unit>
 <trans-unit id="sb8b23770f899e5bb">
   <source>When enabled, all the events caused by a user will be deleted upon the user's deletion.</source>
+  <target>Ŵĥēń ēńàƀĺēď, àĺĺ ţĥē ēvēńţś ćàũśēď ƀŷ à ũśēŕ ŵĩĺĺ ƀē ďēĺēţēď ũƥōń ţĥē ũśēŕ'ś ďēĺēţĩōń.</target>
 </trans-unit>
 <trans-unit id="s29501761df0fe837">
   <source>Impersonation</source>
+  <target>Ĩmƥēŕśōńàţĩōń</target>
 </trans-unit>
 <trans-unit id="s8f503553d8432487">
   <source>Globally enable/disable impersonation.</source>
+  <target>Ĝĺōƀàĺĺŷ ēńàƀĺē/ďĩśàƀĺē ĩmƥēŕśōńàţĩōń.</target>
 </trans-unit>
 <trans-unit id="see1eb81c1f734079">
   <source>System settings</source>
+  <target>Śŷśţēm śēţţĩńĝś</target>
 </trans-unit>
 <trans-unit id="s47fb5504f693775b">
   <source>Changes made:</source>
+  <target>Ćĥàńĝēś màďē:</target>
 </trans-unit>
 <trans-unit id="s506b6a19d12f414c">
   <source>Key</source>
+  <target>Ķēŷ</target>
 </trans-unit>
 <trans-unit id="s4fc9dc73245eab09">
   <source>Previous value</source>
+  <target>Ƥŕēvĩōũś vàĺũē</target>
 </trans-unit>
 <trans-unit id="scb3b0671d7b7f640">
   <source>New value</source>
+  <target>Ńēŵ vàĺũē</target>
 </trans-unit>
 <trans-unit id="s4a642406b0745917">
   <source>Raw event info</source>
+  <target>Ŕàŵ ēvēńţ ĩńƒō</target>
 </trans-unit>
 <trans-unit id="sa65e7bc7ddd3484d">
   <source>Anonymous user</source>
+  <target>Àńōńŷmōũś ũśēŕ</target>
 </trans-unit>
 <trans-unit id="s0db494ff61b48438">
   <source>Add All Available</source>
+  <target>Àďď Àĺĺ Àvàĩĺàƀĺē</target>
 </trans-unit>
 <trans-unit id="s2f68faa5b84ee9fd">
   <source>Remove All Available</source>
+  <target>Ŕēmōvē Àĺĺ Àvàĩĺàƀĺē</target>
 </trans-unit>
 <trans-unit id="s0ba85594344a5c02">
   <source>Remove All</source>
+  <target>Ŕēmōvē Àĺĺ</target>
 </trans-unit>
 <trans-unit id="s1efa17e3407e0f56">
   <source>Available options</source>
+  <target>Àvàĩĺàƀĺē ōƥţĩōńś</target>
 </trans-unit>
 <trans-unit id="s886db4d476f66522">
   <source>Selected options</source>
+  <target>Śēĺēćţēď ōƥţĩōńś</target>
 </trans-unit>
 <trans-unit id="sd429eba21dd59f44">
   <source><x id="0" equiv-text="${availableCount}"/> item(s) marked to add.</source>
+  <target><x id="0" equiv-text="${availableCount}"/> ĩţēm(ś) màŕķēď ţō àďď.</target>
 </trans-unit>
 <trans-unit id="s4abfe4e0d0665fd1">
   <source><x id="0" equiv-text="${selectedTotal}"/> item(s) selected.</source>
+  <target><x id="0" equiv-text="${selectedTotal}"/> ĩţēm(ś) śēĺēćţēď.</target>
 </trans-unit>
 <trans-unit id="s56b3d54118c34b2f">
   <source><x id="0" equiv-text="${selectedCount}"/> item(s) marked to remove.</source>
+  <target><x id="0" equiv-text="${selectedCount}"/> ĩţēm(ś) màŕķēď ţō ŕēmōvē.</target>
 </trans-unit>
 <trans-unit id="scb76a63c68b0d81f">
   <source>Available Applications</source>
+  <target>Àvàĩĺàƀĺē Àƥƥĺĩćàţĩōńś</target>
 </trans-unit>
 <trans-unit id="sd176021da2ea0fe3">
   <source>Selected Applications</source>
+  <target>Śēĺēćţēď Àƥƥĺĩćàţĩōńś</target>
 </trans-unit>
 <trans-unit id="s862505f29064fc72">
   <source>This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:</source>
-</trans-unit>
-<trans-unit id="sb2275335377069aa">
-  <source>This feature requires an enterprise license.</source>
+  <target>Ţĥĩś ōƥţĩōń ćōńƒĩĝũŕēś ţĥē ƒōōţēŕ ĺĩńķś ōń ţĥē ƒĺōŵ ēxēćũţōŕ ƥàĝēś. Ĩţ mũśţ ƀē à vàĺĩď ŶÀMĹ ōŕ ĵŚŌŃ ĺĩśţ àńď ćàń ƀē ũśēď àś ƒōĺĺōŵś:</target>
 </trans-unit>
 <trans-unit id="s6d3f81dc4bcacbda">
   <source>Last used</source>
+  <target>Ĺàśţ ũśēď</target>
 </trans-unit>
 <trans-unit id="s96b2703420bfbd0c">
   <source>OAuth Access Tokens</source>
+  <target>ŌÀũţĥ Àććēśś Ţōķēńś</target>
 </trans-unit>
 <trans-unit id="sd99e668c54f78f6e">
   <source>Credentials / Tokens</source>
+  <target>Ćŕēďēńţĩàĺś / Ţōķēńś</target>
 </trans-unit>
 <trans-unit id="saada50e84c7c646d">
   <source>Permissions set on users which affect this object.</source>
+  <target>Ƥēŕmĩśśĩōńś śēţ ōń ũśēŕś ŵĥĩćĥ àƒƒēćţ ţĥĩś ōƀĴēćţ.</target>
 </trans-unit>
 <trans-unit id="s37d1b74df205b528">
   <source>Permissions set on roles which affect this object.</source>
+  <target>Ƥēŕmĩśśĩōńś śēţ ōń ŕōĺēś ŵĥĩćĥ àƒƒēćţ ţĥĩś ōƀĴēćţ.</target>
 </trans-unit>
 <trans-unit id="sc443bfff8a5dd106">
   <source>Permissions assigned to this user which affect all object instances of a given type.</source>
+  <target>Ƥēŕmĩśśĩōńś àśśĩĝńēď ţō ţĥĩś ũśēŕ ŵĥĩćĥ àƒƒēćţ àĺĺ ōƀĴēćţ ĩńśţàńćēś ōƒ à ĝĩvēń ţŷƥē.</target>
 </trans-unit>
 <trans-unit id="s3eba09a350b7d6c9">
   <source>Permissions assigned to this user affecting specific object instances.</source>
+  <target>Ƥēŕmĩśśĩōńś àśśĩĝńēď ţō ţĥĩś ũśēŕ àƒƒēćţĩńĝ śƥēćĩƒĩć ōƀĴēćţ ĩńśţàńćēś.</target>
 </trans-unit>
 <trans-unit id="s17032e57ba222d2f">
   <source>Permissions assigned to this role which affect all object instances of a given type.</source>
+  <target>Ƥēŕmĩśśĩōńś àśśĩĝńēď ţō ţĥĩś ŕōĺē ŵĥĩćĥ àƒƒēćţ àĺĺ ōƀĴēćţ ĩńśţàńćēś ōƒ à ĝĩvēń ţŷƥē.</target>
 </trans-unit>
 <trans-unit id="sb9b51124d1b3dca0">
   <source>JWT payload</source>
+  <target>ĵŴŢ ƥàŷĺōàď</target>
 </trans-unit>
 <trans-unit id="sbd065743a0c599e3">
   <source>Preview for user</source>
+  <target>Ƥŕēvĩēŵ ƒōŕ ũśēŕ</target>
 </trans-unit>
 <trans-unit id="se16b4d412ad1aba9">
   <source>Brand name</source>
+  <target>ßŕàńď ńàmē</target>
 </trans-unit>
 <trans-unit id="sb7e68dcad68a638c">
   <source>Remote Access Provider</source>
+  <target>Ŕēmōţē Àććēśś Ƥŕōvĩďēŕ</target>
 </trans-unit>
 <trans-unit id="sfb1980a471b7dfb6">
   <source>Remotely access computers/servers via RDP/SSH/VNC</source>
+  <target>Ŕēmōţēĺŷ àććēśś ćōmƥũţēŕś/śēŕvēŕś vĩà ŔĎƤ/ŚŚĤ/VŃĆ</target>
 </trans-unit>
 <trans-unit id="s9ffdea131dddb3c5">
   <source>Configure Remote Access Provider Provider</source>
+  <target>Ćōńƒĩĝũŕē Ŕēmōţē Àććēśś Ƥŕōvĩďēŕ Ƥŕōvĩďēŕ</target>
 </trans-unit>
 <trans-unit id="s56bc67239b9255a2">
   <source>Delete authorization on disconnect</source>
+  <target>Ďēĺēţē àũţĥōŕĩźàţĩōń ōń ďĩśćōńńēćţ</target>
 </trans-unit>
 <trans-unit id="s3945449bd524d8a5">
   <source>When enabled, connection authorizations will be deleted when a client disconnects. This will force clients with flaky internet connections to re-authorize the endpoint.</source>
+  <target>Ŵĥēń ēńàƀĺēď, ćōńńēćţĩōń àũţĥōŕĩźàţĩōńś ŵĩĺĺ ƀē ďēĺēţēď ŵĥēń à ćĺĩēńţ ďĩśćōńńēćţś. Ţĥĩś ŵĩĺĺ ƒōŕćē ćĺĩēńţś ŵĩţĥ ƒĺàķŷ ĩńţēŕńēţ ćōńńēćţĩōńś ţō ŕē-àũţĥōŕĩźē ţĥē ēńďƥōĩńţ.</target>
 </trans-unit>
 <trans-unit id="sc93712b5fbdc6810">
   <source>Connection Token(s)</source>
+  <target>Ćōńńēćţĩōń Ţōķēń(ś)</target>
 </trans-unit>
 <trans-unit id="s526a525cdc79bbdc">
   <source>Endpoint</source>
+  <target>Ēńďƥōĩńţ</target>
 </trans-unit>
 <trans-unit id="s5c18f85cda6e89be">
   <source>Connections</source>
+  <target>Ćōńńēćţĩōńś</target>
 </trans-unit>
 <trans-unit id="s269a190f0086d892">
   <source>Unconfigured</source>
+  <target>Ũńćōńƒĩĝũŕēď</target>
 </trans-unit>
 <trans-unit id="s9e24bec94ec23dc9">
   <source>This option will not be changed by this mapping.</source>
+  <target>Ţĥĩś ōƥţĩōń ŵĩĺĺ ńōţ ƀē ćĥàńĝēď ƀŷ ţĥĩś màƥƥĩńĝ.</target>
 </trans-unit>
 <trans-unit id="sac428446e9e41f54">
   <source>RAC Connections</source>
+  <target>ŔÀĆ Ćōńńēćţĩōńś</target>
 </trans-unit>
 <trans-unit id="s39002897db60bb28">
   <source>Sending Duo push notification...</source>
+  <target>Śēńďĩńĝ Ďũō ƥũśĥ ńōţĩƒĩćàţĩōń...</target>
 </trans-unit>
 <trans-unit id="sd2b8c1caa0340ed6">
   <source>Failed to authenticate</source>
+  <target>Ƒàĩĺēď ţō àũţĥēńţĩćàţē</target>
 </trans-unit>
 <trans-unit id="sffef1a8596bc58bb">
   <source>Authenticating...</source>
+  <target>Àũţĥēńţĩćàţĩńĝ...</target>
 </trans-unit>
 <trans-unit id="sd12f594a3184c056">
   <source>Customization</source>
+  <target>Ćũśţōmĩźàţĩōń</target>
 </trans-unit>
 <trans-unit id="s363abde8a254ea5f">
   <source>Authentication failed. Please try again.</source>
+  <target>Àũţĥēńţĩćàţĩōń ƒàĩĺēď. Ƥĺēàśē ţŕŷ àĝàĩń.</target>
 </trans-unit>
 <trans-unit id="sb0821a9e92cac5eb">
   <source>Failed to register. Please try again.</source>
+  <target>Ƒàĩĺēď ţō ŕēĝĩśţēŕ. Ƥĺēàśē ţŕŷ àĝàĩń.</target>
 </trans-unit>
 <trans-unit id="s238784fc1dc672ae">
   <source>Registering...</source>
+  <target>Ŕēĝĩśţēŕĩńĝ...</target>
 </trans-unit>
 <trans-unit id="s009bd1c98a9f5de2">
   <source>Failed to register</source>
+  <target>Ƒàĩĺēď ţō ŕēĝĩśţēŕ</target>
 </trans-unit>
 <trans-unit id="sb166ce92e8e807d6">
   <source>Retry registration</source>
+  <target>Ŕēţŕŷ ŕēĝĩśţŕàţĩōń</target>
 </trans-unit>
 <trans-unit id="s6ecfc18dbfeedd76">
   <source>Select one of the options below to continue.</source>
+  <target>Śēĺēćţ ōńē ōƒ ţĥē ōƥţĩōńś ƀēĺōŵ ţō ćōńţĩńũē.</target>
+</trans-unit>
+<trans-unit id="s00bcaadd620a11f8">
+  <source>Latest version unknown</source>
+</trans-unit>
+<trans-unit id="s10fedec3a779ea63">
+  <source>Timestamp</source>
+</trans-unit>
+<trans-unit id="s48e186fb300e5464">
+  <source>Time</source>
+</trans-unit>
+<trans-unit id="saa8aa81ad6f055fd">
+  <source>Level</source>
+</trans-unit>
+<trans-unit id="sd0ea7366ebc403ff">
+  <source>Event</source>
+</trans-unit>
+<trans-unit id="s225f3e57c6a0d635">
+  <source>Logger</source>
+</trans-unit>
+<trans-unit id="s39d6971531a270b6">
+  <source>Update internal password on login</source>
+</trans-unit>
+<trans-unit id="sefe04e319223a3d6">
+  <source>When the user logs in to authentik using this source password backend, update their credentials in authentik.</source>
+</trans-unit>
+<trans-unit id="s5f43af3669b1e098">
+  <source>Source</source>
+</trans-unit>
+<trans-unit id="sd9f752de8448bcc9">
+  <source>Resume timeout</source>
+</trans-unit>
+<trans-unit id="s517954806d7610f2">
+  <source>Amount of time a user can take to return from the source to continue the flow.</source>
+</trans-unit>
+<trans-unit id="s8c4bc6e515949112">
+  <source>Your Install ID</source>
+</trans-unit>
+<trans-unit id="s8cc0075913c67566">
+  <source>Enter the email associated with your account, and we'll send you a link to reset your password.</source>
+</trans-unit>
+<trans-unit id="s06bfe45ffef2cf60">
+  <source>Stage name: <x id="0" equiv-text="${this.challenge.name}"/></source>
+</trans-unit>
+<trans-unit id="s90064dd5c4dde2c6">
+  <source>Please scan the QR code above using the Microsoft Authenticator, Google Authenticator, or other authenticator apps on your device, and enter the code the device displays below to finish setting up the MFA device.</source>
+</trans-unit>
+<trans-unit id="s02160dc6adba3456">
+  <source>Inject an OAuth or SAML Source into the flow execution. This allows for additional user verification, or to dynamically access different sources for different user identifiers (username, email address, etc).</source>
+</trans-unit>
+<trans-unit id="sc7d071fb5cc1f6bf">
+  <source>A selection is required</source>
+</trans-unit>
+<trans-unit id="sa64fb483becc9c2c">
+  <source>Device type restrictions</source>
+</trans-unit>
+<trans-unit id="sbb928551c84cd63f">
+  <source>Available Device types</source>
+</trans-unit>
+<trans-unit id="s6446c35d6b411e53">
+  <source>Selected Device types</source>
+</trans-unit>
+<trans-unit id="s1f4df216b56de4ac">
+  <source>Optionally restrict which WebAuthn device types may be used. When no device types are selected, all devices are allowed.</source>
+</trans-unit>
+<trans-unit id="s23ed998c51cbe38f">
+  <source>If the user has successfully authenticated with a device in the classes listed above within this configured duration, this stage will be skipped.</source>
+</trans-unit>
+<trans-unit id="s4d4f52ccfd9d6adf">
+  <source>WebAuthn-specific settings</source>
+</trans-unit>
+<trans-unit id="sb46d2e64f64c6284">
+  <source>WebAuthn Device type restrictions</source>
+</trans-unit>
+<trans-unit id="s11274960b13cf21a">
+  <source>This restriction only applies to devices created in authentik 2024.4 or later.</source>
+</trans-unit>
+<trans-unit id="s4888252cbd785175">
+  <source>Default token duration</source>
+</trans-unit>
+<trans-unit id="s25c80a16a07871ba">
+  <source>Default duration for generated tokens</source>
+</trans-unit>
+<trans-unit id="se5c9ffc025fdf61d">
+  <source>Default token length</source>
+</trans-unit>
+<trans-unit id="sa6b2c110466d1754">
+  <source>Default length of generated tokens</source>
+</trans-unit>
+<trans-unit id="s1f25e1e20469a9ea">
+  <source>deleted</source>
+</trans-unit>
+<trans-unit id="s0ca04e397298bc43">
+  <source>Select permissions to assign</source>
+</trans-unit>
+<trans-unit id="s676d94e7e31a8075">
+  <source>SCIM Source is in preview.</source>
+</trans-unit>
+<trans-unit id="s31f1afc0a81977c1">
+  <source>Update SCIM Source</source>
+</trans-unit>
+<trans-unit id="s4bb356adc8a7f85b">
+  <source>SCIM Base URL</source>
+</trans-unit>
+<trans-unit id="sb23304fc42c5d6d9">
+  <source>Provisioned Users</source>
+</trans-unit>
+<trans-unit id="s6a81ee82b2e5ecbb">
+  <source>Provisioned Groups</source>
+</trans-unit>
+<trans-unit id="s10154dbd4fbc697b">
+  <source>removed</source>
+</trans-unit>
+<trans-unit id="s30d6ff9e15e0a40a">
+  <source>Verifying...</source>
+</trans-unit>
+<trans-unit id="sc1673c93148583ba">
+  <source>Request failed. Please try again later.</source>
+</trans-unit>
+<trans-unit id="s85be1f5e7a0fa3b1">
+  <source>Available Roles</source>
+</trans-unit>
+<trans-unit id="sa59d53ee922c08b5">
+  <source>Selected Roles</source>
+</trans-unit>
+<trans-unit id="s7bfbf84a8ad5883f">
+  <source>Internal Service accounts are created and managed by authentik and cannot be created manually.</source>
+</trans-unit>
+<trans-unit id="sb0680e5f8782db1e">
+  <source>Private key Algorithm</source>
+</trans-unit>
+<trans-unit id="sa03cbf19feebd249">
+  <source>RSA</source>
+</trans-unit>
+<trans-unit id="sfbfccbd3e395c147">
+  <source>ECDSA</source>
+</trans-unit>
+<trans-unit id="sebea299e52db4242">
+  <source>Algorithm used to generate the private key.</source>
+</trans-unit>
+<trans-unit id="s21e38ec6ffa2b918">
+  <source>Added ID <x id="0" equiv-text="${item}"/></source>
+</trans-unit>
+<trans-unit id="s74918a09ef39ed26">
+  <source>Removed ID <x id="0" equiv-text="${item}"/></source>
+</trans-unit>
+<trans-unit id="s3a20e5d7dd70dcd3">
+  <source>Cleared</source>
+</trans-unit>
+<trans-unit id="s8cfd29891b2c93f0">
+  <source>Google Workspace Provider</source>
+</trans-unit>
+<trans-unit id="sa817aa9f6f88a991">
+  <source>Credentials</source>
+</trans-unit>
+<trans-unit id="sc668815044e218c2">
+  <source>Delegated Subject</source>
+</trans-unit>
+<trans-unit id="se89a9ecf275e4343">
+  <source>Default group email domain</source>
+</trans-unit>
+<trans-unit id="s64a0a6da6ed6d680">
+  <source>Default domain that is used to generate a group's email address. Can be customized using property mappings.</source>
+</trans-unit>
+<trans-unit id="sd061e65955e036ca">
+  <source>User deletion action</source>
+</trans-unit>
+<trans-unit id="s87f86f65b5e19ea7">
+  <source>User is deleted</source>
+</trans-unit>
+<trans-unit id="s3906cd4a102867a3">
+  <source>Suspend</source>
+</trans-unit>
+<trans-unit id="s0bf5b364e2c79392">
+  <source>User is suspended, and connection to user in authentik is removed.</source>
+</trans-unit>
+<trans-unit id="s4acb0250d735c2a9">
+  <source>Do Nothing</source>
+</trans-unit>
+<trans-unit id="s5fe525d19499ed47">
+  <source>The connection is removed but the user is not modified</source>
+</trans-unit>
+<trans-unit id="s676a0127c35d240a">
+  <source>Determines what authentik will do when a User is deleted.</source>
+</trans-unit>
+<trans-unit id="sd1aa04cc32caf2b0">
+  <source>Group deletion action</source>
+</trans-unit>
+<trans-unit id="s874c788479481131">
+  <source>Group is deleted</source>
+</trans-unit>
+<trans-unit id="s0983fa9b84e4a9f7">
+  <source>The connection is removed but the group is not modified</source>
+</trans-unit>
+<trans-unit id="sdb872a9f425937fa">
+  <source>Determines what authentik will do when a Group is deleted.</source>
+</trans-unit>
+<trans-unit id="sa5f28f1ad0bee45b">
+  <source>Google Workspace Provider is in preview.</source>
+</trans-unit>
+<trans-unit id="s958928ab6208d748">
+  <source>Microsoft Entra Provider</source>
+</trans-unit>
+<trans-unit id="sc7d6bc4aebb58fe9">
+  <source>Google Cloud credentials file.</source>
+</trans-unit>
+<trans-unit id="s2e707072d5a9615d">
+  <source>Email address of the user the actions of authentik will be delegated to.</source>
+</trans-unit>
+<trans-unit id="s03a759e65ceb722d">
+  <source>Client ID for the app registration.</source>
+</trans-unit>
+<trans-unit id="s479980cf9252628c">
+  <source>Client secret for the app registration.</source>
+</trans-unit>
+<trans-unit id="s25c2392ffcb78df2">
+  <source>Tenant ID</source>
+</trans-unit>
+<trans-unit id="s89e4e698cdb1187f">
+  <source>ID of the tenant accounts will be synced into.</source>
+</trans-unit>
+<trans-unit id="sf341f5dfc7a11633">
+  <source>Microsoft Entra Provider is in preview.</source>
+</trans-unit>
+<trans-unit id="s79dd6df244c05ae9">
+  <source>Update Microsoft Entra Provider</source>
+</trans-unit>
+<trans-unit id="saf4b498d81141878">
+  <source>Finished successfully</source>
+</trans-unit>
+<trans-unit id="s46f1d86ffec6223c">
+  <source>Finished with errors</source>
+</trans-unit>
+<trans-unit id="sbd12ed8a1053a108">
+  <source>Finished <x id="0" equiv-text="${getRelativeTime(task.finishTimestamp)}"/> (<x id="1" equiv-text="${task.finishTimestamp.toLocaleString()}"/>)</source>
+</trans-unit>
+<trans-unit id="sc3c334d642866997">
+  <source>Sync currently running</source>
+</trans-unit>
+<trans-unit id="sd520a4089006ca93">
+  <source>Update Google Workspace Provider</source>
+</trans-unit>
+<trans-unit id="sfdfa5bb4ddd99d70">
+  <source>Enterprise only</source>
+</trans-unit>
+<trans-unit id="scffa59cfac1951f2">
+  <source><x id="0" equiv-text="${type.name}"/> Icon</source>
+</trans-unit>
+<trans-unit id="s1da3499258024860">
+  <source><x id="0" equiv-text="${versionString}"/> (build <x id="1" equiv-text="${this.outpostHealth.buildHash.substring(0, 8)}"/>)</source>
+</trans-unit>
+<trans-unit id="s001fd928369d4ddc">
+  <source><x id="0" equiv-text="${versionString}"/> (FIPS)</source>
+</trans-unit>
+<trans-unit id="sce17c2bdea3e6ace">
+  <source>Score minimum threshold</source>
+</trans-unit>
+<trans-unit id="sf2fcb974c62625fc">
+  <source>Minimum required score to allow continuing</source>
+</trans-unit>
+<trans-unit id="s7452199a73ce8b78">
+  <source>Score maximum threshold</source>
+</trans-unit>
+<trans-unit id="s2d3a6cd50b46b44d">
+  <source>Maximum allowed score to allow continuing</source>
+</trans-unit>
+<trans-unit id="s9d6e40d9a9a58fbf">
+  <source>Error on invalid score</source>
+</trans-unit>
+<trans-unit id="s2af59e2f9f12847a">
+  <source>When enabled and the resultant score is outside the threshold, the user will not be able to continue. When disabled, the user will be able to continue and the score can be used in policies to customize further stages.</source>
 </trans-unit>
 </body></file></xliff>

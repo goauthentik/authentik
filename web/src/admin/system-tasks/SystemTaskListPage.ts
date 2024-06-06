@@ -1,10 +1,11 @@
-import { uiConfig } from "@goauthentik/app/common/ui/config";
-import { getRelativeTime } from "@goauthentik/app/common/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { uiConfig } from "@goauthentik/common/ui/config";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/events/LogViewer";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
@@ -91,13 +92,32 @@ export class SystemTaskListPage extends TablePage<SystemTask> {
                         </div>
                         <div class="pf-c-description-list__group">
                             <dt class="pf-c-description-list__term">
+                                <span class="pf-c-description-list__text">${msg("Expiry")}</span>
+                            </dt>
+                            <dd class="pf-c-description-list__description">
+                                <div class="pf-c-description-list__text">
+                                    ${item.expiring
+                                        ? html`
+                                              <pf-tooltip
+                                                  position="top"
+                                                  content=${(
+                                                      item.expires || new Date()
+                                                  ).toLocaleString()}
+                                              >
+                                                  ${getRelativeTime(item.expires || new Date())}
+                                              </pf-tooltip>
+                                          `
+                                        : msg("-")}
+                                </div>
+                            </dd>
+                        </div>
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">
                                 <span class="pf-c-description-list__text">${msg("Messages")}</span>
                             </dt>
                             <dd class="pf-c-description-list__description">
                                 <div class="pf-c-description-list__text">
-                                    ${item.messages.map((m) => {
-                                        return html`<li>${m}</li>`;
-                                    })}
+                                    <ak-log-viewer .logs=${item?.messages}></ak-log-viewer>
                                 </div>
                             </dd>
                         </div>

@@ -26,8 +26,13 @@ from authentik.stages.authenticator_validate.stage import (
     PLAN_CONTEXT_DEVICE_CHALLENGES,
     AuthenticatorValidateStageView,
 )
-from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnDevice
+from authentik.stages.authenticator_webauthn.models import (
+    UserVerification,
+    WebAuthnDevice,
+    WebAuthnDeviceType,
+)
 from authentik.stages.authenticator_webauthn.stage import SESSION_KEY_WEBAUTHN_CHALLENGE
+from authentik.stages.authenticator_webauthn.tasks import webauthn_mds_import
 from authentik.stages.identification.models import IdentificationStage, UserFields
 from authentik.stages.user_login.models import UserLoginStage
 
@@ -120,7 +125,55 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
                 {}, StageView(FlowExecutorView(current_stage=stage), request=request), self.user
             )
 
-    def test_get_challenge(self):
+    def test_device_challenge_webauthn_restricted(self):
+        """Test webauthn (getting device challenges with a webauthn
+        device that is not allowed due to aaguid restrictions)"""
+        webauthn_mds_import.delay(force=True).get()
+        request = get_request("/")
+        request.user = self.user
+
+        WebAuthnDevice.objects.create(
+            user=self.user,
+            public_key=bytes_to_base64url(b"qwerqwerqre"),
+            credential_id=bytes_to_base64url(b"foobarbaz"),
+            sign_count=0,
+            rp_id=generate_id(),
+            device_type=WebAuthnDeviceType.objects.get(
+                aaguid="2fc0579f-8113-47ea-b116-bb5a8db9202a"
+            ),
+        )
+        flow = create_test_flow()
+        stage = AuthenticatorValidateStage.objects.create(
+            name=generate_id(),
+            last_auth_threshold="milliseconds=0",
+            not_configured_action=NotConfiguredAction.DENY,
+            device_classes=[DeviceClasses.WEBAUTHN],
+            webauthn_user_verification=UserVerification.PREFERRED,
+        )
+        stage.webauthn_allowed_device_types.set(
+            WebAuthnDeviceType.objects.filter(
+                description="Android Authenticator with SafetyNet Attestation"
+            )
+        )
+        session = self.client.session
+        plan = FlowPlan(flow_pk=flow.pk.hex)
+        plan.append_stage(stage)
+        plan.append_stage(UserLoginStage(name=generate_id()))
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        self.assertStageResponse(
+            response,
+            flow,
+            component="ak-stage-access-denied",
+            error_message="No (allowed) MFA authenticator configured.",
+        )
+
+    def test_raw_get_challenge(self):
         """Test webauthn"""
         request = get_request("/")
         request.user = self.user
@@ -190,17 +243,20 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
             },
         )
 
-    def test_validate_challenge(self):
-        """Test webauthn"""
+    def test_validate_challenge_unrestricted(self):
+        """Test webauthn authentication (unrestricted webauthn device)"""
+        webauthn_mds_import.delay(force=True).get()
         device = WebAuthnDevice.objects.create(
             user=self.user,
             public_key=(
-                "pQECAyYgASFYIGsBLkklToCQkT7qJT_bJYN1sEc1oJdbnmoOc43i0J"
-                "H6IlggLTXytuhzFVYYAK4PQNj8_coGrbbzSfUxdiPAcZTQCyU"
+                "pQECAyYgASFYIF-N4GvQJdTJMAmTOxFX9_boL00zBiSrP0DY9xvJl_FFIlggnyZloVSVofdJNTLMeMdjQHgW2Rzmd5_Xt5AWtNztcdo"
             ),
-            credential_id="QKZ97ASJAOIDyipAs6mKUxDUZgDrWrbAsUb5leL7-oU",
-            sign_count=4,
+            credential_id="X43ga9Al1MkwCZM7EXD1r8Sxj7aXnNsuR013XM7he4kZ-GS9TaA-u3i36wsswjPm",
+            sign_count=2,
             rp_id=generate_id(),
+            device_type=WebAuthnDeviceType.objects.get(
+                aaguid="2fc0579f-8113-47ea-b116-bb5a8db9202a"
+            ),
         )
         flow = create_test_flow()
         stage = AuthenticatorValidateStage.objects.create(
@@ -222,7 +278,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
         ]
         session[SESSION_KEY_PLAN] = plan
         session[SESSION_KEY_WEBAUTHN_CHALLENGE] = base64url_to_bytes(
-            "g98I51mQvZXo5lxLfhrD2zfolhZbLRyCgqkkYap1jwSaJ13BguoJWCF9_Lg3AgO4Wh-Bqa556JE20oKsYbl6RA"
+            "aCC6ak_DP45xMH1qyxzUM5iC2xc4QthQb09v7m4qDBmY8FvWvhxFzSuFlDYQmclrh5fWS5q0TPxgJGF4vimcFQ"
         )
         session.save()
 
@@ -230,24 +286,23 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             data={
                 "webauthn": {
-                    "id": "QKZ97ASJAOIDyipAs6mKUxDUZgDrWrbAsUb5leL7-oU",
-                    "rawId": "QKZ97ASJAOIDyipAs6mKUxDUZgDrWrbAsUb5leL7-oU",
+                    "id": "X43ga9Al1MkwCZM7EXD1r8Sxj7aXnNsuR013XM7he4kZ-GS9TaA-u3i36wsswjPm",
+                    "rawId": "X43ga9Al1MkwCZM7EXD1r8Sxj7aXnNsuR013XM7he4kZ-GS9TaA-u3i36wsswjPm",
                     "type": "public-key",
                     "assertionClientExtensions": "{}",
                     "response": {
                         "clientDataJSON": (
-                            "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiZzk4STUxbVF2WlhvN"
-                            "Wx4TGZockQyemZvbGhaYkxSeUNncWtrWWFwMWp3U2FKMTNCZ3VvSldDRjlfTGczQW"
-                            "dPNFdoLUJxYTU1NkpFMjBvS3NZYmw2UkEiLCJvcmlnaW4iOiJodHRwOi8vbG9jYWx"
-                            "ob3N0OjkwMDAiLCJjcm9zc09yaWdpbiI6ZmFsc2UsIm90aGVyX2tleXNfY2FuX2Jl"
-                            "X2FkZGVkX2hlcmUiOiJkbyBub3QgY29tcGFyZSBjbGllbnREYXRhSlNPTiBhZ2Fpb"
-                            "nN0IGEgdGVtcGxhdGUuIFNlZSBodHRwczovL2dvby5nbC95YWJQZXgifQ=="
+                            "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiYUNDN"
+                            "mFrX0RQNDV4TUgxcXl4elVNNWlDMnhjNFF0aFFiMDl2N200cURCbV"
+                            "k4RnZXdmh4RnpTdUZsRFlRbWNscmg1ZldTNXEwVFB4Z0pHRjR2aW1"
+                            "jRlEiLCJvcmlnaW4iOiJodHRwOi8vbG9jYWxob3N0OjkwMDAiLCJj"
+                            "cm9zc09yaWdpbiI6ZmFsc2V9"
                         ),
                         "signature": (
-                            "MEQCIFNlrHf9ablJAalXLWkrqvHB8oIu8kwvRpH3X3rbJVpI"
-                            "AiAqtOK6mIZPk62kZN0OzFsHfuvu_RlOl7zlqSNzDdz_Ag=="
+                            "MEQCIAHQCGfE_PX1z6mBDaXUNqK_NrllhXylNOmETUD3Khv9AiBTl"
+                            "rX3GDRj5OaOfTToOwUwAhtd74tu0T6DZAVHPb_hlQ=="
                         ),
-                        "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MFAAAABQ==",
+                        "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MFAAAABg==",
                         "userHandle": None,
                     },
                 },
@@ -260,6 +315,95 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+
+    def test_validate_challenge_restricted(self):
+        """Test webauthn authentication (restricted device type, failure)"""
+        webauthn_mds_import.delay(force=True).get()
+        device = WebAuthnDevice.objects.create(
+            user=self.user,
+            public_key=(
+                "pQECAyYgASFYIF-N4GvQJdTJMAmTOxFX9_boL00zBiSrP0DY9xvJl_FFIlggnyZloVSVofdJNTLMeMdjQHgW2Rzmd5_Xt5AWtNztcdo"
+            ),
+            credential_id="X43ga9Al1MkwCZM7EXD1r8Sxj7aXnNsuR013XM7he4kZ-GS9TaA-u3i36wsswjPm",
+            sign_count=2,
+            rp_id=generate_id(),
+            device_type=WebAuthnDeviceType.objects.get(
+                aaguid="2fc0579f-8113-47ea-b116-bb5a8db9202a"
+            ),
+        )
+        flow = create_test_flow()
+        stage = AuthenticatorValidateStage.objects.create(
+            name=generate_id(),
+            not_configured_action=NotConfiguredAction.CONFIGURE,
+            device_classes=[DeviceClasses.WEBAUTHN],
+        )
+        stage.webauthn_allowed_device_types.set(
+            WebAuthnDeviceType.objects.filter(
+                description="Android Authenticator with SafetyNet Attestation"
+            )
+        )
+        session = self.client.session
+        plan = FlowPlan(flow_pk=flow.pk.hex)
+        plan.append_stage(stage)
+        plan.append_stage(UserLoginStage(name=generate_id()))
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        plan.context[PLAN_CONTEXT_DEVICE_CHALLENGES] = [
+            {
+                "device_class": device.__class__.__name__.lower().replace("device", ""),
+                "device_uid": device.pk,
+                "challenge": {},
+            }
+        ]
+        session[SESSION_KEY_PLAN] = plan
+        session[SESSION_KEY_WEBAUTHN_CHALLENGE] = base64url_to_bytes(
+            "aCC6ak_DP45xMH1qyxzUM5iC2xc4QthQb09v7m4qDBmY8FvWvhxFzSuFlDYQmclrh5fWS5q0TPxgJGF4vimcFQ"
+        )
+        session.save()
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            data={
+                "webauthn": {
+                    "id": "X43ga9Al1MkwCZM7EXD1r8Sxj7aXnNsuR013XM7he4kZ-GS9TaA-u3i36wsswjPm",
+                    "rawId": "X43ga9Al1MkwCZM7EXD1r8Sxj7aXnNsuR013XM7he4kZ-GS9TaA-u3i36wsswjPm",
+                    "type": "public-key",
+                    "assertionClientExtensions": "{}",
+                    "response": {
+                        "clientDataJSON": (
+                            "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiYUNDN"
+                            "mFrX0RQNDV4TUgxcXl4elVNNWlDMnhjNFF0aFFiMDl2N200cURCbV"
+                            "k4RnZXdmh4RnpTdUZsRFlRbWNscmg1ZldTNXEwVFB4Z0pHRjR2aW1"
+                            "jRlEiLCJvcmlnaW4iOiJodHRwOi8vbG9jYWxob3N0OjkwMDAiLCJj"
+                            "cm9zc09yaWdpbiI6ZmFsc2V9"
+                        ),
+                        "signature": (
+                            "MEQCIAHQCGfE_PX1z6mBDaXUNqK_NrllhXylNOmETUD3Khv9AiBTl"
+                            "rX3GDRj5OaOfTToOwUwAhtd74tu0T6DZAVHPb_hlQ=="
+                        ),
+                        "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MFAAAABg==",
+                        "userHandle": None,
+                    },
+                }
+            },
+            SERVER_NAME="localhost",
+            SERVER_PORT="9000",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(
+            response,
+            flow,
+            component="ak-stage-authenticator-validate",
+            response_errors={
+                "webauthn": [
+                    {
+                        "string": (
+                            "Invalid device type. Contact your authentik administrator for help."
+                        ),
+                        "code": "invalid",
+                    }
+                ]
+            },
+        )
 
     def test_validate_challenge_userless(self):
         """Test webauthn"""

@@ -9,6 +9,7 @@ PY_SOURCES = authentik tests scripts lifecycle .github
 DOCKER_IMAGE ?= "authentik:test"
 
 GEN_API_TS = "gen-ts-api"
+GEN_API_PY = "gen-py-api"
 GEN_API_GO = "gen-go-api"
 
 pg_user := $(shell python -m authentik.lib.config postgresql.user 2>/dev/null)
@@ -18,6 +19,7 @@ pg_name := $(shell python -m authentik.lib.config postgresql.name 2>/dev/null)
 CODESPELL_ARGS = -D - -D .github/codespell-dictionary.txt \
 		-I .github/codespell-words.txt \
 		-S 'web/src/locales/**' \
+		-S 'website/developer-docs/api/reference/**' \
 		authentik \
 		internal \
 		cmd \
@@ -45,12 +47,12 @@ test-go:
 	go test -timeout 0 -v -race -cover ./...
 
 test-docker:  ## Run all tests in a docker-compose
-	echo "PG_PASS=$(openssl rand -base64 32)" >> .env
-	echo "AUTHENTIK_SECRET_KEY=$(openssl rand -base64 32)" >> .env
-	docker-compose pull -q
-	docker-compose up --no-start
-	docker-compose start postgresql redis
-	docker-compose run -u root server test-all
+	echo "PG_PASS=$(shell openssl rand 32 | base64)" >> .env
+	echo "AUTHENTIK_SECRET_KEY=$(shell openssl rand 32 | base64)" >> .env
+	docker compose pull -q
+	docker compose up --no-start
+	docker compose start postgresql redis
+	docker compose run -u root server test-all
 	rm -f .env
 
 test: ## Run the server tests and produce a coverage report (locally)
@@ -64,7 +66,7 @@ lint-fix:  ## Lint and automatically fix errors in the python source code. Repor
 	codespell -w $(CODESPELL_ARGS)
 
 lint: ## Lint the python and golang sources
-	bandit -r $(PY_SOURCES) -x node_modules
+	bandit -r $(PY_SOURCES) -x web/node_modules -x tests/wdio/node_modules -x website/node_modules
 	golangci-lint run -v
 
 core-install:
@@ -137,7 +139,10 @@ gen-clean-ts:  ## Remove generated API client for Typescript
 gen-clean-go:  ## Remove generated API client for Go
 	rm -rf ./${GEN_API_GO}/
 
-gen-clean: gen-clean-ts gen-clean-go  ## Remove generated API clients
+gen-clean-py:  ## Remove generated API client for Python
+	rm -rf ./${GEN_API_PY}/
+
+gen-clean: gen-clean-ts gen-clean-go gen-clean-py  ## Remove generated API clients
 
 gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescript into the authentik UI Application
 	docker run \
@@ -154,6 +159,20 @@ gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescri
 	mkdir -p web/node_modules/@goauthentik/api
 	cd ./${GEN_API_TS} && npm i
 	\cp -rf ./${GEN_API_TS}/* web/node_modules/@goauthentik/api
+
+gen-client-py: gen-clean-py ## Build and install the authentik API for Python
+	docker run \
+		--rm -v ${PWD}:/local \
+		--user ${UID}:${GID} \
+		docker.io/openapitools/openapi-generator-cli:v7.4.0 generate \
+		-i /local/schema.yml \
+		-g python \
+		-o /local/${GEN_API_PY} \
+		-c /local/scripts/api-py-config.yaml \
+		--additional-properties=packageVersion=${NPM_VERSION} \
+		--git-repo-id authentik \
+		--git-user-id goauthentik
+	pip install ./${GEN_API_PY}
 
 gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
 	mkdir -p ./${GEN_API_GO} ./${GEN_API_GO}/templates
@@ -234,6 +253,7 @@ website-watch:  ## Build and watch the documentation website, updating automatic
 #########################
 
 docker:  ## Build a docker image of the current source tree
+	mkdir -p ${GEN_API_TS}
 	DOCKER_BUILDKIT=1 docker build . --progress plain --tag ${DOCKER_IMAGE}
 
 #########################

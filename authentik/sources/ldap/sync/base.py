@@ -10,6 +10,7 @@ from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.lib.config import CONFIG
 from authentik.lib.merge import MERGE_LIST_UNIQUE
+from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.sources.ldap.models import LDAPSource
 
 
@@ -20,6 +21,7 @@ class BaseLDAPSynchronizer:
     _logger: BoundLogger
     _connection: Connection
     _messages: list[str]
+    mapper: PropertyMappingManager
 
     def __init__(self, source: LDAPSource):
         self._source = source
@@ -126,7 +128,6 @@ class BaseLDAPSynchronizer:
         data: dict[str, Any],
     ) -> tuple[Model, bool]:
         """Same as django's update_or_create but correctly update attributes by merging dicts"""
-        print(data)
         instance = obj.objects.filter(**query).first()
         if not instance:
             return (obj.objects.create(**data), True)

@@ -32,7 +32,7 @@ const docsSidebar = {
         },
         {
             type: "category",
-            label: "Core Concepts",
+            label: "Core Concepts & Tasks",
             collapsed: true,
             items: [
                 "core/terminology",
@@ -40,6 +40,7 @@ const docsSidebar = {
                 "core/certificates",
                 "core/geoip",
                 "core/architecture",
+                "core/settings",
             ],
         },
         {
@@ -68,7 +69,44 @@ const docsSidebar = {
         {
             type: "category",
             label: "Providers",
+            link: {
+                type: "doc",
+                id: "providers/index",
+            },
             items: [
+                {
+                    type: "category",
+                    label: "Google Workspace Provider",
+                    link: {
+                        type: "doc",
+                        id: "providers/gws/index",
+                    },
+                    items: [
+                        "providers/gws/setup-gws",
+                        "providers/gws/add-gws-provider",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "LDAP Provider",
+                    link: {
+                        type: "doc",
+                        id: "providers/ldap/index",
+                    },
+                    items: ["providers/ldap/generic_setup"],
+                },
+                {
+                    type: "category",
+                    label: "Microsoft Entra ID Provider",
+                    link: {
+                        type: "doc",
+                        id: "providers/entra/index",
+                    },
+                    items: [
+                        "providers/entra/setup-entra",
+                        "providers/entra/add-entra-provider",
+                    ],
+                },
                 {
                     type: "category",
                     label: "OAuth2 Provider",
@@ -109,17 +147,61 @@ const docsSidebar = {
                         },
                     ],
                 },
+                "providers/scim/index",
                 {
                     type: "category",
-                    label: "LDAP Provider",
+                    label: "RAC (Remote Access Control) Provider",
                     link: {
                         type: "doc",
-                        id: "providers/ldap/index",
+                        id: "providers/rac/index",
                     },
-                    items: ["providers/ldap/generic_setup"],
+                    items: ["providers/rac/how-to-rac"],
                 },
-                "providers/scim/index",
-                "providers/rac/index",
+            ],
+        },
+        {
+            type: "category",
+            label: "Sources",
+            collapsed: true,
+            link: {
+                type: "doc",
+                id: "sources/index",
+            },
+            items: [
+                {
+                    type: "category",
+                    label: "Directory synchronization",
+                    items: [
+                        "sources/active-directory/index",
+                        "sources/freeipa/index",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Protocols",
+                    items: [
+                        "sources/ldap/index",
+                        "sources/oauth/index",
+                        "sources/saml/index",
+                        "sources/scim/index",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Social Logins",
+                    items: [
+                        "sources/apple/index",
+                        "sources/azure-ad/index",
+                        "sources/discord/index",
+                        "sources/facebook/index",
+                        "sources/github/index",
+                        "sources/google/index",
+                        "sources/mailcow/index",
+                        "sources/twitch/index",
+                        "sources/plex/index",
+                        "sources/twitter/index",
+                    ],
+                },
             ],
         },
         {
@@ -200,6 +282,7 @@ const docsSidebar = {
                 "flow/stages/invitation/index",
                 "flow/stages/password/index",
                 "flow/stages/prompt/index",
+                "flow/stages/source/index",
                 "flow/stages/user_delete",
                 "flow/stages/user_login/index",
                 "flow/stages/user_logout",
@@ -217,13 +300,16 @@ const docsSidebar = {
                 {
                     type: "category",
                     label: "Working with policies",
-                    items: ["policies/working_with_policies/whitelist_email"],
                     link: {
                         type: "generated-index",
                         title: "Working with policies",
                         slug: "policies/working_with_policies",
                         description: "Overview of policies configuration",
                     },
+                    items: [
+                        "policies/working_with_policies/whitelist_email",
+                        "policies/working_with_policies/unique_email",
+                    ],
                 },
                 "policies/expression",
             ],
@@ -326,13 +412,14 @@ const docsSidebar = {
                 description: "Release notes for recent authentik versions",
             },
             items: [
+                "releases/2024/v2024.4",
                 "releases/2024/v2024.2",
                 "releases/2023/v2023.10",
-                "releases/2023/v2023.8",
                 {
                     type: "category",
                     label: "Previous versions",
                     items: [
+                        "releases/2023/v2023.8",
                         "releases/2023/v2023.6",
                         "releases/2023/v2023.5",
                         "releases/2023/v2023.4",
@@ -396,7 +483,10 @@ const docsSidebar = {
                 {
                     type: "category",
                     label: "PostgreSQL",
-                    items: ["troubleshooting/postgres/upgrade_kubernetes"],
+                    items: [
+                        "troubleshooting/postgres/upgrade_kubernetes",
+                        "troubleshooting/postgres/upgrade_docker",
+                    ],
                 },
                 "troubleshooting/access",
                 "troubleshooting/login",
@@ -417,6 +507,7 @@ const docsSidebar = {
                 slug: "security",
             },
             items: [
+                "security/security-hardening",
                 "security/policy",
                 "security/CVE-2024-23647",
                 "security/CVE-2024-21637",

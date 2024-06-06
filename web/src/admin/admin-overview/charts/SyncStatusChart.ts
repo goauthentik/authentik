@@ -1,14 +1,15 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKChart } from "@goauthentik/elements/charts/Chart";
 import "@goauthentik/elements/forms/ConfirmationForm";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { ChartData, ChartOptions } from "chart.js";
 
 import { msg } from "@lit/localize";
 import { customElement } from "lit/decorators.js";
 
-import { ProvidersApi, SourcesApi, SystemTaskStatusEnum } from "@goauthentik/api";
+import { ProvidersApi, SourcesApi, SyncStatus, SystemTaskStatusEnum } from "@goauthentik/api";
 
-export interface SyncStatus {
+export interface SummarizedSyncStatus {
     healthy: number;
     failed: number;
     unsynced: number;
@@ -17,7 +18,7 @@ export interface SyncStatus {
 }
 
 @customElement("ak-admin-status-chart-sync")
-export class LDAPSyncStatusChart extends AKChart<SyncStatus[]> {
+export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
     getChartType(): string {
         return "doughnut";
     }
@@ -33,99 +34,104 @@ export class LDAPSyncStatusChart extends AKChart<SyncStatus[]> {
         };
     }
 
-    async ldapStatus(): Promise<SyncStatus> {
-        const api = new SourcesApi(DEFAULT_CONFIG);
-        const sources = await api.sourcesLdapList({});
+    async fetchStatus<T>(
+        listObjects: () => Promise<PaginatedResponse<T>>,
+        fetchSyncStatus: (element: T) => Promise<SyncStatus>,
+        label: string,
+    ): Promise<SummarizedSyncStatus> {
+        const objects = await listObjects();
         const metrics: { [key: string]: number } = {
             healthy: 0,
             failed: 0,
             unsynced: 0,
         };
         await Promise.all(
-            sources.results.map(async (element) => {
+            objects.results.map(async (element) => {
+                // Each source should have 3 successful tasks, so the worst task overwrites
+                let objectKey = "healthy";
                 try {
-                    const health = await api.sourcesLdapSyncStatusRetrieve({
-                        slug: element.slug,
-                    });
-
-                    health.tasks.forEach((task) => {
+                    const status = await fetchSyncStatus(element);
+                    status.tasks.forEach((task) => {
                         if (task.status !== SystemTaskStatusEnum.Successful) {
-                            metrics.failed += 1;
+                            objectKey = "failed";
                         }
                         const now = new Date().getTime();
                         const maxDelta = 3600000; // 1 hour
-                        if (!health || now - task.finishTimestamp.getTime() > maxDelta) {
-                            metrics.unsynced += 1;
-                        } else {
-                            metrics.healthy += 1;
+                        if (!status || now - task.finishTimestamp.getTime() > maxDelta) {
+                            objectKey = "unsynced";
                         }
                     });
-                    if (health.tasks.length < 1) {
-                        metrics.unsynced += 1;
-                    }
                 } catch {
-                    metrics.unsynced += 1;
+                    objectKey = "unsynced";
                 }
+                metrics[objectKey] += 1;
             }),
         );
         return {
             healthy: metrics.healthy,
             failed: metrics.failed,
-            unsynced: sources.pagination.count === 0 ? 1 : metrics.unsynced,
-            total: sources.pagination.count,
-            label: msg("LDAP Source"),
+            unsynced: objects.pagination.count === 0 ? 1 : metrics.unsynced,
+            total: objects.pagination.count,
+            label: label,
         };
     }
 
-    async scimStatus(): Promise<SyncStatus> {
-        const api = new ProvidersApi(DEFAULT_CONFIG);
-        const providers = await api.providersScimList({});
-        const metrics: { [key: string]: number } = {
-            healthy: 0,
-            failed: 0,
-            unsynced: 0,
-        };
-        await Promise.all(
-            providers.results.map(async (element) => {
-                // Each source should have 3 successful tasks, so the worst task overwrites
-                let sourceKey = "healthy";
-                try {
-                    const health = await api.providersScimSyncStatusRetrieve({
+    async apiRequest(): Promise<SummarizedSyncStatus[]> {
+        const statuses = [
+            await this.fetchStatus(
+                () => {
+                    return new ProvidersApi(DEFAULT_CONFIG).providersScimList();
+                },
+                (element) => {
+                    return new ProvidersApi(DEFAULT_CONFIG).providersScimSyncStatusRetrieve({
                         id: element.pk,
                     });
-                    health.tasks.forEach((task) => {
-                        if (task.status !== SystemTaskStatusEnum.Successful) {
-                            sourceKey = "failed";
-                        }
-                        const now = new Date().getTime();
-                        const maxDelta = 3600000; // 1 hour
-                        if (!health || now - task.finishTimestamp.getTime() > maxDelta) {
-                            sourceKey = "unsynced";
-                        }
+                },
+                msg("SCIM Provider"),
+            ),
+            await this.fetchStatus(
+                () => {
+                    return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceList();
+                },
+                (element) => {
+                    return new ProvidersApi(
+                        DEFAULT_CONFIG,
+                    ).providersGoogleWorkspaceSyncStatusRetrieve({
+                        id: element.pk,
                     });
-                } catch {
-                    sourceKey = "unsynced";
-                }
-                metrics[sourceKey] += 1;
-            }),
-        );
-        return {
-            healthy: metrics.healthy,
-            failed: metrics.failed,
-            unsynced: providers.pagination.count === 0 ? 1 : metrics.unsynced,
-            total: providers.pagination.count,
-            label: msg("SCIM Provider"),
-        };
+                },
+                msg("Google Workspace Provider"),
+            ),
+            await this.fetchStatus(
+                () => {
+                    return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraList();
+                },
+                (element) => {
+                    return new ProvidersApi(
+                        DEFAULT_CONFIG,
+                    ).providersMicrosoftEntraSyncStatusRetrieve({
+                        id: element.pk,
+                    });
+                },
+                msg("Microsoft Entra Provider"),
+            ),
+            await this.fetchStatus(
+                () => {
+                    return new SourcesApi(DEFAULT_CONFIG).sourcesLdapList();
+                },
+                (element) => {
+                    return new SourcesApi(DEFAULT_CONFIG).sourcesLdapSyncStatusRetrieve({
+                        slug: element.slug,
+                    });
+                },
+                msg("LDAP Source"),
+            ),
+        ];
+        this.centerText = statuses.reduce((total, el) => (total += el.total), 0).toString();
+        return statuses;
     }
 
-    async apiRequest(): Promise<SyncStatus[]> {
-        const ldapStatus = await this.ldapStatus();
-        const scimStatus = await this.scimStatus();
-        this.centerText = (ldapStatus.total + scimStatus.total).toString();
-        return [ldapStatus, scimStatus];
-    }
-
-    getChartData(data: SyncStatus[]): ChartData {
+    getChartData(data: SummarizedSyncStatus[]): ChartData {
         return {
             labels: [msg("Healthy"), msg("Failed"), msg("Unsynced / N/A")],
             datasets: data.map((d) => {

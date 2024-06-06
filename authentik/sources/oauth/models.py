@@ -8,6 +8,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
+from authentik.core.api.object_types import CreatableType, NonCreatableType
 from authentik.core.models import PropertyMapping, Source, UserSourceConnection
 from authentik.core.types import UILoginButton, UserSettingSerializer
 
@@ -15,7 +16,7 @@ if TYPE_CHECKING:
     from authentik.sources.oauth.types.registry import SourceType
 
 
-class OAuthSource(Source):
+class OAuthSource(NonCreatableType, Source):
     """Login using a Generic OAuth provider."""
 
     provider_type = models.CharField(max_length=255)
@@ -92,23 +93,35 @@ class OAuthSource(Source):
     def get_base_group_properties(self, **kwargs):
         return self.source_type.get_base_group_properties(source=self, **kwargs)
 
+    @property
+    def icon_url(self) -> str | None:
+        # When listing source types, this property might be retrieved from an abstract
+        # model. In that case we can't check self.provider_type or self.icon_url
+        # and as such we attempt to find the correct provider type based on the mode name
+        if self.Meta.abstract:
+            from authentik.sources.oauth.types.registry import registry
+
+            provider_type = registry.find_type(
+                self._meta.model_name.replace(OAuthSource._meta.model_name, "")
+            )
+            return provider_type().icon_url()
+        icon = super().icon_url
+        if not icon:
+            provider_type = self.source_type
+            provider = provider_type()
+            icon = provider.icon_url()
+        return icon
+
     def ui_login_button(self, request: HttpRequest) -> UILoginButton:
         provider_type = self.source_type
         provider = provider_type()
-        icon = self.icon_url
-        if not icon:
-            icon = provider.icon_url()
         return UILoginButton(
             name=self.name,
             challenge=provider.login_challenge(self, request),
-            icon_url=icon,
+            icon_url=self.icon_url,
         )
 
     def ui_user_settings(self) -> UserSettingSerializer | None:
-        provider_type = self.source_type
-        icon = self.icon_url
-        if not icon:
-            icon = provider_type().icon_url()
         return UserSettingSerializer(
             data={
                 "title": self.name,
@@ -117,7 +130,7 @@ class OAuthSource(Source):
                     "authentik_sources_oauth:oauth-client-login",
                     kwargs={"source_slug": self.slug},
                 ),
-                "icon_url": icon,
+                "icon_url": self.icon_url,
             }
         )
 
@@ -129,7 +142,7 @@ class OAuthSource(Source):
         verbose_name_plural = _("OAuth Sources")
 
 
-class GitHubOAuthSource(OAuthSource):
+class GitHubOAuthSource(CreatableType, OAuthSource):
     """Social Login using GitHub.com or a GitHub-Enterprise Instance."""
 
     class Meta:
@@ -138,7 +151,7 @@ class GitHubOAuthSource(OAuthSource):
         verbose_name_plural = _("GitHub OAuth Sources")
 
 
-class GitLabOAuthSource(OAuthSource):
+class GitLabOAuthSource(CreatableType, OAuthSource):
     """Social Login using GitLab.com or a GitLab Instance."""
 
     class Meta:
@@ -147,7 +160,7 @@ class GitLabOAuthSource(OAuthSource):
         verbose_name_plural = _("GitLab OAuth Sources")
 
 
-class TwitchOAuthSource(OAuthSource):
+class TwitchOAuthSource(CreatableType, OAuthSource):
     """Social Login using Twitch."""
 
     class Meta:
@@ -156,7 +169,7 @@ class TwitchOAuthSource(OAuthSource):
         verbose_name_plural = _("Twitch OAuth Sources")
 
 
-class MailcowOAuthSource(OAuthSource):
+class MailcowOAuthSource(CreatableType, OAuthSource):
     """Social Login using Mailcow."""
 
     class Meta:
@@ -165,7 +178,7 @@ class MailcowOAuthSource(OAuthSource):
         verbose_name_plural = _("Mailcow OAuth Sources")
 
 
-class TwitterOAuthSource(OAuthSource):
+class TwitterOAuthSource(CreatableType, OAuthSource):
     """Social Login using Twitter.com"""
 
     class Meta:
@@ -174,7 +187,7 @@ class TwitterOAuthSource(OAuthSource):
         verbose_name_plural = _("Twitter OAuth Sources")
 
 
-class FacebookOAuthSource(OAuthSource):
+class FacebookOAuthSource(CreatableType, OAuthSource):
     """Social Login using Facebook.com."""
 
     class Meta:
@@ -183,7 +196,7 @@ class FacebookOAuthSource(OAuthSource):
         verbose_name_plural = _("Facebook OAuth Sources")
 
 
-class DiscordOAuthSource(OAuthSource):
+class DiscordOAuthSource(CreatableType, OAuthSource):
     """Social Login using Discord."""
 
     class Meta:
@@ -192,7 +205,7 @@ class DiscordOAuthSource(OAuthSource):
         verbose_name_plural = _("Discord OAuth Sources")
 
 
-class PatreonOAuthSource(OAuthSource):
+class PatreonOAuthSource(CreatableType, OAuthSource):
     """Social Login using Patreon."""
 
     class Meta:
@@ -201,7 +214,7 @@ class PatreonOAuthSource(OAuthSource):
         verbose_name_plural = _("Patreon OAuth Sources")
 
 
-class GoogleOAuthSource(OAuthSource):
+class GoogleOAuthSource(CreatableType, OAuthSource):
     """Social Login using Google or Google Workspace (GSuite)."""
 
     class Meta:
@@ -210,7 +223,7 @@ class GoogleOAuthSource(OAuthSource):
         verbose_name_plural = _("Google OAuth Sources")
 
 
-class AzureADOAuthSource(OAuthSource):
+class AzureADOAuthSource(CreatableType, OAuthSource):
     """Social Login using Azure AD."""
 
     class Meta:
@@ -219,7 +232,7 @@ class AzureADOAuthSource(OAuthSource):
         verbose_name_plural = _("Azure AD OAuth Sources")
 
 
-class OpenIDConnectOAuthSource(OAuthSource):
+class OpenIDConnectOAuthSource(CreatableType, OAuthSource):
     """Login using a Generic OpenID-Connect compliant provider."""
 
     class Meta:
@@ -228,7 +241,7 @@ class OpenIDConnectOAuthSource(OAuthSource):
         verbose_name_plural = _("OpenID OAuth Sources")
 
 
-class AppleOAuthSource(OAuthSource):
+class AppleOAuthSource(CreatableType, OAuthSource):
     """Social Login using Apple."""
 
     class Meta:
@@ -237,7 +250,7 @@ class AppleOAuthSource(OAuthSource):
         verbose_name_plural = _("Apple OAuth Sources")
 
 
-class OktaOAuthSource(OAuthSource):
+class OktaOAuthSource(CreatableType, OAuthSource):
     """Social Login using Okta."""
 
     class Meta:
@@ -246,7 +259,7 @@ class OktaOAuthSource(OAuthSource):
         verbose_name_plural = _("Okta OAuth Sources")
 
 
-class RedditOAuthSource(OAuthSource):
+class RedditOAuthSource(CreatableType, OAuthSource):
     """Social Login using reddit.com."""
 
     class Meta:
@@ -264,7 +277,7 @@ class OAuthSourcePropertyMapping(PropertyMapping):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.oauth.api.property_mapping import (
+        from authentik.sources.oauth.api.property_mappings import (
             OAuthSourcePropertyMappingSerializer,
         )
 

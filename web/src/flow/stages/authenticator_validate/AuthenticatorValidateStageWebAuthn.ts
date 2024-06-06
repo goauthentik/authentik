@@ -1,13 +1,13 @@
-import { BaseDeviceStage } from "@goauthentik/app/flow/stages/authenticator_validate/base";
 import {
     checkWebAuthnSupport,
     transformAssertionForServer,
     transformCredentialRequestOptions,
 } from "@goauthentik/common/helpers/webauthn";
 import "@goauthentik/elements/EmptyState";
+import { BaseDeviceStage } from "@goauthentik/flow/stages/authenticator_validate/base";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html, nothing } from "lit";
+import { PropertyValues, TemplateResult, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import {
@@ -72,14 +72,16 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
         }
     }
 
-    firstUpdated(): void {
-        // convert certain members of the PublicKeyCredentialRequestOptions into
-        // byte arrays as expected by the spec.
-        const credentialRequestOptions = this.deviceChallenge
-            ?.challenge as PublicKeyCredentialRequestOptions;
-        this.transformedCredentialRequestOptions =
-            transformCredentialRequestOptions(credentialRequestOptions);
-        this.authenticateWrapper();
+    updated(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("challenge") && this.challenge !== undefined) {
+            // convert certain members of the PublicKeyCredentialRequestOptions into
+            // byte arrays as expected by the spec.
+            const credentialRequestOptions = this.deviceChallenge
+                ?.challenge as PublicKeyCredentialRequestOptions;
+            this.transformedCredentialRequestOptions =
+                transformCredentialRequestOptions(credentialRequestOptions);
+            this.authenticateWrapper();
+        }
     }
 
     async authenticateWrapper(): Promise<void> {

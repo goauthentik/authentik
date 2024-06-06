@@ -6,25 +6,26 @@ from typing import Any
 
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from structlog.stdlib import get_logger
+from structlog.stdlib import BoundLogger, get_logger
 from tenant_schemas_celery.task import TenantTask
 
+from authentik.events.logs import LogEvent
 from authentik.events.models import Event, EventAction, TaskStatus
 from authentik.events.models import SystemTask as DBSystemTask
 from authentik.events.utils import sanitize_item
 from authentik.lib.utils.errors import exception_to_string
 
-LOGGER = get_logger()
-
 
 class SystemTask(TenantTask):
     """Task which can save its state to the cache"""
+
+    logger: BoundLogger
 
     # For tasks that should only be listed if they failed, set this to False
     save_on_success: bool
 
     _status: TaskStatus
-    _messages: list[str]
+    _messages: list[LogEvent]
 
     _uid: str | None
     # Precise start time from perf_counter
@@ -44,19 +45,25 @@ class SystemTask(TenantTask):
         """Set UID, so in the case of an unexpected error its saved correctly"""
         self._uid = uid
 
-    def set_status(self, status: TaskStatus, *messages: str):
+    def set_status(self, status: TaskStatus, *messages: LogEvent):
         """Set result for current run, will overwrite previous result."""
         self._status = status
-        self._messages = messages
+        self._messages = list(messages)
+        for idx, msg in enumerate(self._messages):
+            if not isinstance(msg, LogEvent):
+                self._messages[idx] = LogEvent(msg, logger=self.__name__, log_level="info")
 
     def set_error(self, exception: Exception):
         """Set result to error and save exception"""
         self._status = TaskStatus.ERROR
-        self._messages = [exception_to_string(exception)]
+        self._messages = [
+            LogEvent(exception_to_string(exception), logger=self.__name__, log_level="error")
+        ]
 
     def before_start(self, task_id, args, kwargs):
         self._start_precise = perf_counter()
         self._start = now()
+        self.logger = get_logger().bind(task_id=task_id)
         return super().before_start(task_id, args, kwargs)
 
     def db(self) -> DBSystemTask | None:
@@ -98,8 +105,7 @@ class SystemTask(TenantTask):
     def on_failure(self, exc, task_id, args, kwargs, einfo):
         super().on_failure(exc, task_id, args, kwargs, einfo=einfo)
         if not self._status:
-            self._status = TaskStatus.ERROR
-            self._messages = exception_to_string(exc)
+            self.set_error(exc)
         DBSystemTask.objects.update_or_create(
             name=self.__name__,
             uid=self._uid,
@@ -114,7 +120,7 @@ class SystemTask(TenantTask):
                 "task_call_kwargs": sanitize_item(kwargs),
                 "status": self._status,
                 "messages": sanitize_item(self._messages),
-                "expires": now() + timedelta(hours=self.result_timeout_hours),
+                "expires": now() + timedelta(hours=self.result_timeout_hours + 3),
                 "expiring": True,
             },
         )

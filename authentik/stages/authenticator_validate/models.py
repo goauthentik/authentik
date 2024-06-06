@@ -71,6 +71,9 @@ class AuthenticatorValidateStage(Stage):
         choices=UserVerification.choices,
         default=UserVerification.PREFERRED,
     )
+    webauthn_allowed_device_types = models.ManyToManyField(
+        "authentik_stages_authenticator_webauthn.WebAuthnDeviceType", blank=True
+    )
 
     @property
     def serializer(self) -> type[BaseSerializer]:

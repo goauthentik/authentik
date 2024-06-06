@@ -14,26 +14,27 @@ import (
 )
 
 func (ws *WebServer) configureStatic() {
-	statRouter := ws.lh.NewRoute().Subrouter()
-	statRouter.Use(ws.staticHeaderMiddleware)
-	indexLessRouter := statRouter.NewRoute().Subrouter()
-	indexLessRouter.Use(web.DisableIndex)
-	distFs := http.FileServer(http.Dir("./web/dist"))
-	distHandler := http.StripPrefix("/static/dist/", distFs)
-	authentikHandler := http.StripPrefix("/static/authentik/", http.FileServer(http.Dir("./web/authentik")))
-	helpHandler := http.FileServer(http.Dir("./website/help/"))
-	indexLessRouter.PathPrefix("/static/dist/").Handler(distHandler)
-	indexLessRouter.PathPrefix("/static/authentik/").Handler(authentikHandler)
+	staticRouter := ws.lh.NewRoute().Subrouter()
+	staticRouter.Use(ws.staticHeaderMiddleware)
+	staticRouter.Use(web.DisableIndex)
 
-	// Prevent font-loading issues on safari, which loads fonts relatively to the URL the browser is on
-	indexLessRouter.PathPrefix("/if/flow/{flow_slug}/assets").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+	distFs := http.FileServer(http.Dir("./web/dist"))
+	authentikHandler := http.StripPrefix("/static/authentik/", http.FileServer(http.Dir("./web/authentik")))
+
+	// Root file paths, from which they should be accessed
+	staticRouter.PathPrefix("/static/dist/").Handler(http.StripPrefix("/static/dist/", distFs))
+	staticRouter.PathPrefix("/static/authentik/").Handler(authentikHandler)
+
+	// Also serve assets folder in specific interfaces since fonts in patternfly are imported
+	// with a relative path
+	staticRouter.PathPrefix("/if/flow/{flow_slug}/assets").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 
 		web.DisableIndex(http.StripPrefix(fmt.Sprintf("/if/flow/%s", vars["flow_slug"]), distFs)).ServeHTTP(rw, r)
 	})
-	indexLessRouter.PathPrefix("/if/admin/assets").Handler(http.StripPrefix("/if/admin", distFs))
-	indexLessRouter.PathPrefix("/if/user/assets").Handler(http.StripPrefix("/if/user", distFs))
-	indexLessRouter.PathPrefix("/if/rac/{app_slug}/assets").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+	staticRouter.PathPrefix("/if/admin/assets").Handler(http.StripPrefix("/if/admin", distFs))
+	staticRouter.PathPrefix("/if/user/assets").Handler(http.StripPrefix("/if/user", distFs))
+	staticRouter.PathPrefix("/if/rac/{app_slug}/assets").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 
 		web.DisableIndex(http.StripPrefix(fmt.Sprintf("/if/rac/%s", vars["app_slug"]), distFs)).ServeHTTP(rw, r)
@@ -42,12 +43,13 @@ func (ws *WebServer) configureStatic() {
 	// Media files, if backend is file
 	if config.Get().Storage.Media.Backend == "file" {
 		fsMedia := http.FileServer(http.Dir(config.Get().Storage.Media.File.Path))
-		indexLessRouter.PathPrefix("/media/").Handler(http.StripPrefix("/media", fsMedia))
+		staticRouter.PathPrefix("/media/").Handler(http.StripPrefix("/media", fsMedia))
 	}
 
-	statRouter.PathPrefix("/if/help/").Handler(http.StripPrefix("/if/help/", helpHandler))
-	statRouter.PathPrefix("/help").Handler(http.RedirectHandler("/if/help/", http.StatusMovedPermanently))
+	staticRouter.PathPrefix("/if/help/").Handler(http.StripPrefix("/if/help/", http.FileServer(http.Dir("./website/help/"))))
+	staticRouter.PathPrefix("/help").Handler(http.RedirectHandler("/if/help/", http.StatusMovedPermanently))
 
+	// Static misc files
 	ws.lh.Path("/robots.txt").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		rw.Header()["Content-Type"] = []string{"text/plain"}
 		rw.WriteHeader(200)

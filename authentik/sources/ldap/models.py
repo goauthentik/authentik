@@ -7,12 +7,12 @@ from ssl import CERT_REQUIRED
 from tempfile import NamedTemporaryFile, mkdtemp
 from typing import Any
 
-from django.core.cache import cache
+import pglock
 from django.db import connection, models
+from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from ldap3 import ALL, NONE, RANDOM, Connection, Server, ServerPool, Tls
 from ldap3.core.exceptions import LDAPException, LDAPInsufficientAccessRightsResult, LDAPSchemaError
-from redis.lock import Lock
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import Group, PropertyMapping, Source
@@ -105,6 +105,11 @@ class LDAPSource(Source):
         default="objectSid", help_text=_("Field which contains a unique Identifier.")
     )
 
+    password_login_update_internal_password = models.BooleanField(
+        default=False,
+        help_text=_("Update internal authentik password when login succeeds with LDAP"),
+    )
+
     sync_users = models.BooleanField(default=True)
     sync_users_password = models.BooleanField(
         default=True,
@@ -133,11 +138,11 @@ class LDAPSource(Source):
         return LDAPSourcePropertyMapping
 
     def update_properties_with_uniqueness_field(self, properties, dn, ldap, **kwargs):
+        properties.setdefault("attributes", {})[LDAP_DISTINGUISHED_NAME] = dn
         if self.object_uniqueness_field in ldap:
-            properties.setdefault("attributes", {})[LDAP_UNIQUENESS] = flatten(
+            properties["attributes"][LDAP_UNIQUENESS] = flatten(
                 ldap.get(self.object_uniqueness_field)
             )
-        properties.setdefault("attributes", {})[LDAP_DISTINGUISHED_NAME] = dn
         return properties
 
     def get_base_user_properties(self, **kwargs):
@@ -150,6 +155,10 @@ class LDAPSource(Source):
             },
             **kwargs,
         )
+
+    @property
+    def icon_url(self) -> str:
+        return static("authentik/sources/ldap.png")
 
     def server(self, **kwargs) -> ServerPool:
         """Get LDAP Server/ServerPool"""
@@ -229,15 +238,12 @@ class LDAPSource(Source):
         return RuntimeError("Failed to bind")
 
     @property
-    def sync_lock(self) -> Lock:
-        """Redis lock for syncing LDAP to prevent multiple parallel syncs happening"""
-        return Lock(
-            cache.client.get_client(),
-            name=f"goauthentik.io/sources/ldap/sync/{connection.schema_name}-{self.slug}",
-            # Convert task timeout hours to seconds, and multiply times 3
-            # (see authentik/sources/ldap/tasks.py:54)
-            # multiply by 3 to add even more leeway
-            timeout=(60 * 60 * CONFIG.get_int("ldap.task_timeout_hours")) * 3,
+    def sync_lock(self) -> pglock.advisory:
+        """Postgres lock for syncing LDAP to prevent multiple parallel syncs happening"""
+        return pglock.advisory(
+            lock_id=f"goauthentik.io/{connection.schema_name}/sources/ldap/sync/{self.slug}",
+            timeout=0,
+            side_effect=pglock.Return,
         )
 
     def check_connection(self) -> dict[str, dict[str, str]]:

@@ -85,7 +85,7 @@ class UserGroupSerializer(ModelSerializer):
     """Simplified Group Serializer for user's groups"""
 
     attributes = JSONDictField(required=False)
-    parent_name = CharField(source="parent.name", read_only=True)
+    parent_name = CharField(source="parent.name", read_only=True, allow_null=True)
 
     class Meta:
         model = Group
@@ -113,12 +113,25 @@ class UserSerializer(ModelSerializer):
         queryset=Group.objects.all().order_by("name"),
         default=list,
     )
-    groups_obj = ListSerializer(child=UserGroupSerializer(), read_only=True, source="ak_groups")
+    groups_obj = SerializerMethodField(allow_null=True)
     uid = CharField(read_only=True)
     username = CharField(
         max_length=150,
         validators=[UniqueValidator(queryset=User.objects.all().order_by("username"))],
     )
+
+    @property
+    def _should_include_groups(self) -> bool:
+        request: Request = self.context.get("request", None)
+        if not request:
+            return True
+        return str(request.query_params.get("include_groups", "true")).lower() == "true"
+
+    @extend_schema_field(UserGroupSerializer(many=True))
+    def get_groups_obj(self, instance: User) -> list[UserGroupSerializer] | None:
+        if not self._should_include_groups:
+            return None
+        return UserGroupSerializer(instance.ak_groups, many=True).data
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -394,8 +407,19 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     search_fields = ["username", "name", "is_active", "email", "uuid"]
     filterset_class = UsersFilter
 
-    def get_queryset(self):  # pragma: no cover
-        return User.objects.all().exclude_anonymous().prefetch_related("ak_groups")
+    def get_queryset(self):
+        base_qs = User.objects.all().exclude_anonymous()
+        if self.serializer_class(context={"request": self.request})._should_include_groups:
+            base_qs = base_qs.prefetch_related("ak_groups")
+        return base_qs
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter("include_groups", bool, default=True),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     def _create_recovery_link(self) -> tuple[str, Token]:
         """Create a recovery link (when the current brand has a recovery flow set),
@@ -605,7 +629,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         email_stage: EmailStage = stages.first()
         message = TemplateEmailMessage(
             subject=_(email_stage.subject),
-            to=[for_user.email],
+            to=[(for_user.name, for_user.email)],
             template_name=email_stage.template,
             language=for_user.locale(request),
             template_context={

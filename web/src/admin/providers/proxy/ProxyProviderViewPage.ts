@@ -1,6 +1,5 @@
 import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/proxy/ProxyProviderForm";
-import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { convertToSlug } from "@goauthentik/common/utils";
@@ -22,11 +21,12 @@ import { Replacer } from "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -75,21 +75,10 @@ export function isForward(mode: ProxyMode): boolean {
 
 @customElement("ak-provider-proxy-view")
 export class ProxyProviderViewPage extends AKElement {
-    @property()
-    set args(value: { [key: string]: number }) {
-        this.providerID = value.id;
-    }
-
     @property({ type: Number })
-    set providerID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
-            .providersProxyRetrieve({
-                id: value,
-            })
-            .then((prov) => (this.provider = prov));
-    }
+    providerID?: number;
 
-    @property({ attribute: false })
+    @state()
     provider?: ProxyProvider;
 
     static get styles(): CSSResult[] {
@@ -116,35 +105,54 @@ export class ProxyProviderViewPage extends AKElement {
         });
     }
 
+    fetchProvider(id: number) {
+        new ProvidersApi(DEFAULT_CONFIG)
+            .providersProxyRetrieve({ id })
+            .then((prov) => (this.provider = prov));
+    }
+
+    willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("providerID") && this.providerID) {
+            this.fetchProvider(this.providerID);
+        }
+    }
+
     renderConfig(): TemplateResult {
         const serves = [
             {
                 label: msg("Nginx (Ingress)"),
                 md: MDNginxIngress,
+                meta: "providers/proxy/_nginx_ingress.md",
             },
             {
                 label: msg("Nginx (Proxy Manager)"),
                 md: MDNginxPM,
+                meta: "providers/proxy/_nginx_proxy_manager.md",
             },
             {
                 label: msg("Nginx (standalone)"),
                 md: MDNginxStandalone,
+                meta: "providers/proxy/_nginx_standalone.md",
             },
             {
                 label: msg("Traefik (Ingress)"),
                 md: MDTraefikIngress,
+                meta: "providers/proxy/_traefik_ingress.md",
             },
             {
                 label: msg("Traefik (Compose)"),
                 md: MDTraefikCompose,
+                meta: "providers/proxy/_traefik_compose.md",
             },
             {
                 label: msg("Traefik (Standalone)"),
                 md: MDTraefikStandalone,
+                meta: "providers/proxy/_traefik_standalone.md",
             },
             {
                 label: msg("Caddy (Standalone)"),
                 md: MDCaddyStandalone,
+                meta: "providers/proxy/_caddy_standalone.md",
             },
         ];
         const replacers: Replacer[] = [
@@ -182,7 +190,11 @@ export class ProxyProviderViewPage extends AKElement {
                     data-tab-title="${server.label}"
                     class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
                 >
-                    <ak-markdown .replacers=${replacers} .md=${server.md}></ak-markdown>
+                    <ak-markdown
+                        .replacers=${replacers}
+                        .md=${server.md}
+                        meta=${server.meta}
+                    ></ak-markdown>
                 </section>`;
             })}</ak-tabs
         >`;
@@ -248,7 +260,10 @@ export class ProxyProviderViewPage extends AKElement {
             </div>
             <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                 <div class="pf-c-card__body">
-                    <ak-markdown .md=${MDHeaderAuthentication}></ak-markdown>
+                    <ak-markdown
+                        .md=${MDHeaderAuthentication}
+                        meta="proxy/header_authentication.md"
+                    ></ak-markdown>
                 </div>
             </div>
         </div>`;

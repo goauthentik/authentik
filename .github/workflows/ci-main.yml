@@ -7,8 +7,6 @@ on:
       - main
       - next
       - version-*
-    paths-ignore:
-      - website/**
   pull_request:
     branches:
       - main
@@ -52,7 +50,6 @@ jobs:
       fail-fast: false
       matrix:
         psql:
-          - 12-alpine
           - 15-alpine
           - 16-alpine
     steps:
@@ -106,7 +103,6 @@ jobs:
       fail-fast: false
       matrix:
         psql:
-          - 12-alpine
           - 15-alpine
           - 16-alpine
     steps:
@@ -132,7 +128,7 @@ jobs:
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Create k8s Kind Cluster
-        uses: helm/kind-action@v1.9.0
+        uses: helm/kind-action@v1.10.0
       - name: run integration
         run: |
           poetry run coverage run manage.py test tests/integration
@@ -162,6 +158,8 @@ jobs:
             glob: tests/e2e/test_provider_ldap* tests/e2e/test_source_ldap*
           - name: radius
             glob: tests/e2e/test_provider_radius*
+          - name: scim
+            glob: tests/e2e/test_source_scim*
           - name: flows
             glob: tests/e2e/test_flows*
     steps:
@@ -170,7 +168,7 @@ jobs:
         uses: ./.github/actions/setup
       - name: Setup e2e env (chrome, etc)
         run: |
-          docker-compose -f tests/e2e/docker-compose.yml up -d
+          docker compose -f tests/e2e/docker-compose.yml up -d
       - id: cache-web
         uses: actions/cache@v4
         with:
@@ -252,8 +250,8 @@ jobs:
           push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=registry,ref=ghcr.io/goauthentik/dev-server:buildcache
+          cache-to: type=registry,ref=ghcr.io/goauthentik/dev-server:buildcache,mode=max
           platforms: linux/${{ matrix.arch }}
   pr-comment:
     needs:

@@ -1,84 +1,58 @@
-import { EVENT_REFRESH_ENTERPRISE } from "@goauthentik/app/common/constants";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { brand, config } from "@goauthentik/common/api/config";
 import { UIConfig, uiConfig } from "@goauthentik/common/ui/config";
-import {
-    authentikBrandContext,
-    authentikConfigContext,
-    authentikEnterpriseContext,
-} from "@goauthentik/elements/AuthentikContexts";
-import type { AdoptedStyleSheetsElement } from "@goauthentik/elements/types";
+import { ModalOrchestrationController } from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
 import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
 
-import { ContextProvider } from "@lit-labs/context";
 import { state } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import type { Config, CurrentBrand, LicenseSummary } from "@goauthentik/api";
-import { EnterpriseApi, UiThemeEnum } from "@goauthentik/api";
+import { UiThemeEnum } from "@goauthentik/api";
 
 import { AKElement } from "../Base";
+import { BrandContextController } from "./BrandContextController";
+import { ConfigContextController } from "./ConfigContextController";
+import { EnterpriseContextController } from "./EnterpriseContextController";
 
-type AkInterface = HTMLElement & {
+export type AkInterface = HTMLElement & {
     getTheme: () => Promise<UiThemeEnum>;
     brand?: CurrentBrand;
     uiConfig?: UIConfig;
     config?: Config;
 };
 
+const brandContext = Symbol("brandContext");
+const configContext = Symbol("configContext");
+const modalController = Symbol("modalController");
+
 export class Interface extends AKElement implements AkInterface {
     @state()
     uiConfig?: UIConfig;
 
-    _configContext = new ContextProvider(this, {
-        context: authentikConfigContext,
-        initialValue: undefined,
-    });
+    [brandContext]!: BrandContextController;
 
-    _config?: Config;
+    [configContext]!: ConfigContextController;
 
-    @state()
-    set config(c: Config) {
-        this._config = c;
-        this._configContext.setValue(c);
-        this.requestUpdate();
-    }
-
-    get config(): Config | undefined {
-        return this._config;
-    }
-
-    _brandContext = new ContextProvider(this, {
-        context: authentikBrandContext,
-        initialValue: undefined,
-    });
-
-    _brand?: CurrentBrand;
+    [modalController]!: ModalOrchestrationController;
 
     @state()
-    set brand(c: CurrentBrand) {
-        this._brand = c;
-        this._brandContext.setValue(c);
-        this.requestUpdate();
-    }
+    config?: Config;
 
-    get brand(): CurrentBrand | undefined {
-        return this._brand;
-    }
+    @state()
+    brand?: CurrentBrand;
 
     constructor() {
         super();
         document.adoptedStyleSheets = [...document.adoptedStyleSheets, ensureCSSStyleSheet(PFBase)];
-        brand().then((brand) => (this.brand = brand));
-        config().then((config) => (this.config = config));
-
+        this[brandContext] = new BrandContextController(this);
+        this[configContext] = new ConfigContextController(this);
+        this[modalController] = new ModalOrchestrationController(this);
         this.dataset.akInterfaceRoot = "true";
     }
 
-    _activateTheme(root: AdoptedStyleSheetsElement, theme: UiThemeEnum): void {
+    _activateTheme(root: DocumentOrShadowRoot, theme: UiThemeEnum): void {
         super._activateTheme(root, theme);
-        super._activateTheme(document, theme);
+        super._activateTheme(document as unknown as DocumentOrShadowRoot, theme);
     }
 
     async getTheme(): Promise<UiThemeEnum> {
@@ -89,37 +63,20 @@ export class Interface extends AKElement implements AkInterface {
     }
 }
 
-export class EnterpriseAwareInterface extends Interface {
-    _licenseSummaryContext = new ContextProvider(this, {
-        context: authentikEnterpriseContext,
-        initialValue: undefined,
-    });
+export type AkEnterpriseInterface = AkInterface & {
+    licenseSummary?: LicenseSummary;
+};
 
-    _licenseSummary?: LicenseSummary;
+const enterpriseContext = Symbol("enterpriseContext");
+
+export class EnterpriseAwareInterface extends Interface {
+    [enterpriseContext]!: EnterpriseContextController;
 
     @state()
-    set licenseSummary(c: LicenseSummary) {
-        this._licenseSummary = c;
-        this._licenseSummaryContext.setValue(c);
-        this.requestUpdate();
-    }
-
-    get licenseSummary(): LicenseSummary | undefined {
-        return this._licenseSummary;
-    }
+    licenseSummary?: LicenseSummary;
 
     constructor() {
         super();
-        const refreshStatus = () => {
-            new EnterpriseApi(DEFAULT_CONFIG)
-                .enterpriseLicenseSummaryRetrieve()
-                .then((enterprise) => {
-                    this.licenseSummary = enterprise;
-                });
-        };
-        refreshStatus();
-        window.addEventListener(EVENT_REFRESH_ENTERPRISE, () => {
-            refreshStatus();
-        });
+        this[enterpriseContext] = new EnterpriseContextController(this);
     }
 }

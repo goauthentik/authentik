@@ -6,9 +6,10 @@ from django.core.exceptions import FieldError
 from django.db.utils import IntegrityError
 from ldap3 import ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE
 
+from authentik.core.expression.exceptions import SkipObjectException
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
-from authentik.sources.ldap.models import LDAP_UNIQUENESS, flatten
+from authentik.sources.ldap.models import LDAP_UNIQUENESS, LDAPSource, flatten
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 from authentik.sources.ldap.sync.vendor.freeipa import FreeIPA
 from authentik.sources.ldap.sync.vendor.ms_ad import MicrosoftActiveDirectory
@@ -16,6 +17,10 @@ from authentik.sources.ldap.sync.vendor.ms_ad import MicrosoftActiveDirectory
 
 class UserLDAPSynchronizer(BaseLDAPSynchronizer):
     """Sync LDAP Users into authentik"""
+
+    def __init__(self, source: LDAPSource):
+        super().__init__(source)
+        self.mapper = self._source.get_mapper(User, ["ldap", "dn"])
 
     @staticmethod
     def name() -> str:
@@ -56,7 +61,12 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 defaults = {
                     k: flatten(v)
                     for k, v in self._source.build_object_properties(
-                        object_type=User, user=None, request=None, dn=user_dn, ldap=attributes
+                        object_type=User,
+                        mapper=self.mapper,
+                        user=None,
+                        request=None,
+                        dn=user_dn,
+                        ldap=attributes,
                     ).items()
                 }
                 self._logger.debug("Writing user with attributes", **defaults)
@@ -65,6 +75,8 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 ak_user, created = self.update_or_create_attributes(
                     User, {f"attributes__{LDAP_UNIQUENESS}": uniq}, defaults
                 )
+            except SkipObjectException:
+                continue
             except (IntegrityError, FieldError, TypeError, AttributeError) as exc:
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,

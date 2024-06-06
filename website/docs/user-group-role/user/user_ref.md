@@ -70,6 +70,14 @@ Optional flag, when set to false, Tokens created by the user will not expire.
 
 Only applies when the token creation is triggered by the user with this attribute set. Additionally, the flag does not apply to superusers.
 
+### `goauthentik.io/user/token-maximum-lifetime`:
+
+Optional flag, when set, defines the maximum lifetime of user-created tokens. Defaults to the system setting if not set.
+
+Only applies when `goauthentik.io/user/token-expires` set to true.
+
+Format is string of format `days=10;hours=1;minute=3;seconds=5`.
+
 ### `goauthentik.io/user/debug`:
 
 See [Troubleshooting access problems](../../troubleshooting/access), when set, the user gets a more detailed explanation of access decisions.
@@ -85,11 +93,11 @@ underneath `additionalHeaders`:
 
 #### Example:
 
-```
+```yaml
 additionalHeaders:
-  REMOTE-USER: joe.smith
-  REMOTE-EMAIL: joe@jsmith.com
-  REMOTE-NAME: Joseph
+    REMOTE-USER: joe.smith
+    REMOTE-EMAIL: joe@jsmith.com
+    REMOTE-NAME: Joseph
 ```
 
 These headers will now be passed to the application when the user logs in. Most applications will need to be configured to accept these headers. Some examples of applications that can accept additional headers from an authentik Proxy Provider are [Grafana](https://grafana.com/docs/grafana/latest/auth/auth-proxy/) and [Tandoor Recipes](https://docs.tandoor.dev/features/authentication/).

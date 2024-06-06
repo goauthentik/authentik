@@ -4,20 +4,17 @@ import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserApplicationTable";
 import "@goauthentik/admin/users/UserChart";
 import "@goauthentik/admin/users/UserForm";
-import "@goauthentik/admin/users/UserPasswordForm";
 import {
     renderRecoveryEmailRequest,
     requestRecoveryLink,
-} from "@goauthentik/app/admin/users/UserListPage";
-import { me } from "@goauthentik/app/common/users";
-import { getRelativeTime } from "@goauthentik/app/common/utils";
-import "@goauthentik/app/elements/oauth/UserAccessTokenList";
-import "@goauthentik/app/elements/oauth/UserRefreshTokenList";
-import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
-import "@goauthentik/app/elements/user/sources/SourceSettings";
+} from "@goauthentik/admin/users/UserListPage";
+import "@goauthentik/admin/users/UserPasswordForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { PFSize } from "@goauthentik/common/enums.js";
 import { userTypeToLabel } from "@goauthentik/common/labels";
+import { me } from "@goauthentik/common/users";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/DescriptionList";
 import {
     type DescriptionPair,
@@ -30,13 +27,16 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import { WithCapabilitiesConfig } from "@goauthentik/elements/Interface/capabilitiesProvider";
 import "@goauthentik/elements/PageHeader";
-import { PFSize } from "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/oauth/UserAccessTokenList";
+import "@goauthentik/elements/oauth/UserRefreshTokenList";
+import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 import "@goauthentik/elements/user/SessionList";
 import "@goauthentik/elements/user/UserConsentList";
+import "@goauthentik/elements/user/sources/SourceSettings";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, css, html, nothing } from "lit";

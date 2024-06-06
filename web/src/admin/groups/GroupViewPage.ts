@@ -1,6 +1,5 @@
 import "@goauthentik/admin/groups/GroupForm";
-import "@goauthentik/app/admin/groups/RelatedUserList";
-import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
+import "@goauthentik/admin/groups/RelatedUserList";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/ak-status-label";
@@ -12,6 +11,7 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -37,6 +37,7 @@ export class GroupViewPage extends AKElement {
         new CoreApi(DEFAULT_CONFIG)
             .coreGroupsRetrieve({
                 groupUuid: id,
+                includeUsers: false,
             })
             .then((group) => {
                 this.group = group;
@@ -199,7 +200,6 @@ export class GroupViewPage extends AKElement {
                     </div>
                 </div>
             </section>
-
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"

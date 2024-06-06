@@ -224,10 +224,12 @@ class ResponseProcessor:
             identifier=name_id.text,
             enroll_info={
                 "root": self._root,
-                "name_id": name_id,
+                "name_id": name_id.text,
             },
             groups_info=[],
-            policy_context={},
+            policy_context={
+                "saml_response": self._root,
+            },
         )
 
 

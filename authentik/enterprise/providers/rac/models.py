@@ -7,11 +7,12 @@ from deepmerge import always_merger
 from django.db import models
 from django.db.models import QuerySet
 from django.http import HttpRequest
+from django.templatetags.static import static
 from django.utils.translation import gettext as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
-from authentik.core.exceptions import PropertyMappingExpressionException
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import ExpiringModel, PropertyMapping, Provider, User, default_token_key
 from authentik.events.models import Event, EventAction
 from authentik.lib.models import SerializerModel
@@ -62,6 +63,10 @@ class RACProvider(Provider):
         """URL to this provider and initiate authorization for the user.
         Can return None for providers that are not URL-based"""
         return "goauthentik.io://providers/rac/launch"
+
+    @property
+    def icon_url(self) -> str | None:
+        return static("authentik/sources/rac.svg")
 
     @property
     def component(self) -> str:
@@ -201,10 +206,7 @@ class ConnectionToken(ExpiringModel):
         return settings
 
     def __str__(self):
-        return (
-            f"RAC Connection token {self.session.user} to "
-            f"{self.endpoint.provider.name}/{self.endpoint.name}"
-        )
+        return f"RAC Connection token {self.session_id} to {self.provider_id}/{self.endpoint_id}"
 
     class Meta:
         verbose_name = _("RAC Connection token")

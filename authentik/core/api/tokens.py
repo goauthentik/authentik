@@ -2,6 +2,7 @@
 
 from typing import Any
 
+from django.utils.timezone import now
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from guardian.shortcuts import assign_perm, get_anonymous_user
@@ -20,9 +21,17 @@ from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import PassiveSerializer
-from authentik.core.models import USER_ATTRIBUTE_TOKEN_EXPIRING, Token, TokenIntents
+from authentik.core.models import (
+    USER_ATTRIBUTE_TOKEN_EXPIRING,
+    USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME,
+    Token,
+    TokenIntents,
+    User,
+    default_token_duration,
+)
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import model_to_dict
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.rbac.decorators import permission_required
 
 
@@ -49,6 +58,32 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
         attrs.setdefault("intent", TokenIntents.INTENT_API)
         if attrs.get("intent") not in [TokenIntents.INTENT_API, TokenIntents.INTENT_APP_PASSWORD]:
             raise ValidationError({"intent": f"Invalid intent {attrs.get('intent')}"})
+
+        if attrs.get("intent") == TokenIntents.INTENT_APP_PASSWORD:
+            # user IS in attrs
+            user: User = attrs.get("user")
+            max_token_lifetime = user.group_attributes(request).get(
+                USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME,
+            )
+            max_token_lifetime_dt = default_token_duration()
+            if max_token_lifetime is not None:
+                try:
+                    max_token_lifetime_dt = now() + timedelta_from_string(max_token_lifetime)
+                except ValueError:
+                    pass
+
+            if "expires" in attrs and attrs.get("expires") > max_token_lifetime_dt:
+                raise ValidationError(
+                    {
+                        "expires": (
+                            f"Token expires exceeds maximum lifetime ({max_token_lifetime_dt} UTC)."
+                        )
+                    }
+                )
+        elif attrs.get("intent") == TokenIntents.INTENT_API:
+            # For API tokens, expires cannot be overridden
+            attrs["expires"] = default_token_duration()
+
         return attrs
 
     class Meta:

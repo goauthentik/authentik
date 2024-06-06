@@ -10,7 +10,6 @@ entries:
     attrs:
       name: "authentik default LDAP Mapping: DN to User Path"
       expression: |
-        dn = ldap.get("distinguishedName")
         path_elements = []
         for pair in dn.split(","):
             attr, _, value = pair.partition("=")

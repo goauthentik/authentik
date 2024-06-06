@@ -1,6 +1,7 @@
 """Radius Provider"""
 
 from django.db import models
+from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
@@ -45,6 +46,10 @@ class RadiusProvider(OutpostModel, Provider):
     @property
     def component(self) -> str:
         return "ak-provider-radius-form"
+
+    @property
+    def icon_url(self) -> str | None:
+        return static("authentik/sources/radius.svg")
 
     @property
     def serializer(self) -> type[Serializer]:

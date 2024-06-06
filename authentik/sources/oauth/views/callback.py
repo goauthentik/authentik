@@ -54,7 +54,7 @@ class OAuthCallback(OAuthClientMixin, View):
                 raw_profile=exc.doc,
             ).from_http(self.request)
             return self.handle_login_failure("Could not retrieve profile.")
-        identifier = self.get_user_id(raw_info)
+        identifier = self.get_user_id(info=raw_info)
         if identifier is None:
             return self.handle_login_failure("Could not determine id.")
         sfm = OAuthSourceFlowManager(
@@ -76,6 +76,7 @@ class OAuthCallback(OAuthClientMixin, View):
             },
         )
         return sfm.get_flow(
+            raw_info=raw_info,
             access_token=self.token.get("access_token"),
         )
 
@@ -118,6 +119,7 @@ class OAuthSourceFlowManager(SourceFlowManager):
         self,
         connection: UserOAuthSourceConnection,
         access_token: str | None = None,
+        **_,
     ) -> UserOAuthSourceConnection:
         """Set the access_token on the connection"""
         connection.access_token = access_token

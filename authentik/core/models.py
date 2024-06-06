@@ -1,8 +1,8 @@
 """authentik core models"""
 
-from datetime import timedelta
+from datetime import datetime
 from hashlib import sha256
-from typing import Any, Optional, Self
+from typing import TYPE_CHECKING, Any, Optional, Self
 from uuid import uuid4
 
 from deepmerge import always_merger
@@ -15,6 +15,7 @@ from django.http import HttpRequest
 from django.utils.functional import SimpleLazyObject, cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from django_cte import CTEQuerySet, With
 from guardian.conf import settings
 from guardian.mixins import GuardianUserMixin
 from model_utils.managers import InheritanceManager
@@ -22,10 +23,9 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.models import ManagedModel
-from authentik.core.exceptions import PropertyMappingExpressionException
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
-from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
 from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.lib.models import (
@@ -33,9 +33,14 @@ from authentik.lib.models import (
     DomainlessFormattedURLValidator,
     SerializerModel,
 )
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
 from authentik.policies.utils import delete_none_values
-from authentik.root.install_id import get_install_id
+from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
+from authentik.tenants.utils import get_current_tenant, get_unique_identifier
+
+if TYPE_CHECKING:
+    from authentik.lib.sync.mapper import PropertyMappingManager
 
 LOGGER = get_logger()
 USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
@@ -44,33 +49,44 @@ USER_ATTRIBUTE_EXPIRES = "goauthentik.io/user/expires"
 USER_ATTRIBUTE_DELETE_ON_LOGOUT = "goauthentik.io/user/delete-on-logout"
 USER_ATTRIBUTE_SOURCES = "goauthentik.io/user/sources"
 USER_ATTRIBUTE_TOKEN_EXPIRING = "goauthentik.io/user/token-expires"  # nosec
+USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME = "goauthentik.io/user/token-maximum-lifetime"  # nosec
 USER_ATTRIBUTE_CHANGE_USERNAME = "goauthentik.io/user/can-change-username"
 USER_ATTRIBUTE_CHANGE_NAME = "goauthentik.io/user/can-change-name"
 USER_ATTRIBUTE_CHANGE_EMAIL = "goauthentik.io/user/can-change-email"
 USER_PATH_SYSTEM_PREFIX = "goauthentik.io"
 USER_PATH_SERVICE_ACCOUNT = USER_PATH_SYSTEM_PREFIX + "/service-accounts"
 
-
 options.DEFAULT_NAMES = options.DEFAULT_NAMES + (
     # used_by API that allows models to specify if they shadow an object
     # for example the proxy provider which is built on top of an oauth provider
     "authentik_used_by_shadows",
-    # List fields for which changes are not logged (due to them having dedicated objects)
-    # for example user's password and last_login
-    "authentik_signals_ignored_fields",
 )
 
+GROUP_RECURSION_LIMIT = 20
 
-def default_token_duration():
+
+def default_token_duration() -> datetime:
     """Default duration a Token is valid"""
-    return now() + timedelta(minutes=30)
+    current_tenant = get_current_tenant()
+    token_duration = (
+        current_tenant.default_token_duration
+        if hasattr(current_tenant, "default_token_duration")
+        else DEFAULT_TOKEN_DURATION
+    )
+    return now() + timedelta_from_string(token_duration)
 
 
-def default_token_key():
+def default_token_key() -> str:
     """Default token key"""
+    current_tenant = get_current_tenant()
+    token_length = (
+        current_tenant.default_token_length
+        if hasattr(current_tenant, "default_token_length")
+        else DEFAULT_TOKEN_LENGTH
+    )
     # We use generate_id since the chars in the key should be easy
     # to use in Emails (for verification) and URLs (for recovery)
-    return generate_id(CONFIG.get_int("default_token_length"))
+    return generate_id(token_length)
 
 
 class UserTypes(models.TextChoices):
@@ -116,6 +132,40 @@ class AttributesMixin(models.Model):
         return instance, False
 
 
+class GroupQuerySet(CTEQuerySet):
+    def with_children_recursive(self):
+        """Recursively get all groups that have the current queryset as parents
+        or are indirectly related."""
+
+        def make_cte(cte):
+            """Build the query that ends up in WITH RECURSIVE"""
+            # Start from self, aka the current query
+            # Add a depth attribute to limit the recursion
+            return self.annotate(
+                relative_depth=models.Value(0, output_field=models.IntegerField())
+            ).union(
+                # Here is the recursive part of the query. cte refers to the previous iteration
+                # Only select groups for which the parent is part of the previous iteration
+                # and increase the depth
+                # Finally, limit the depth
+                cte.join(Group, group_uuid=cte.col.parent_id)
+                .annotate(
+                    relative_depth=models.ExpressionWrapper(
+                        cte.col.relative_depth
+                        + models.Value(1, output_field=models.IntegerField()),
+                        output_field=models.IntegerField(),
+                    )
+                )
+                .filter(relative_depth__lt=GROUP_RECURSION_LIMIT),
+                all=True,
+            )
+
+        # Build the recursive query, see above
+        cte = With.recursive(make_cte)
+        # Return the result, as a usable queryset for Group.
+        return cte.join(Group, group_uuid=cte.col.group_uuid).with_cte(cte)
+
+
 class Group(SerializerModel, AttributesMixin):
     """Group model which supports a basic hierarchy and has attributes"""
 
@@ -137,6 +187,8 @@ class Group(SerializerModel, AttributesMixin):
         related_name="children",
     )
 
+    objects = GroupQuerySet.as_manager()
+
     @property
     def serializer(self) -> Serializer:
         from authentik.core.api.groups import GroupSerializer
@@ -155,36 +207,11 @@ class Group(SerializerModel, AttributesMixin):
         return user.all_groups().filter(group_uuid=self.group_uuid).exists()
 
     def children_recursive(self: Self | QuerySet["Group"]) -> QuerySet["Group"]:
-        """Recursively get all groups that have this as parent or are indirectly related"""
-        direct_groups = []
-        if isinstance(self, QuerySet):
-            direct_groups = list(x for x in self.all().values_list("pk", flat=True).iterator())
-        else:
-            direct_groups = [self.pk]
-        if len(direct_groups) < 1:
-            return Group.objects.none()
-        query = """
-        WITH RECURSIVE parents AS (
-            SELECT authentik_core_group.*, 0 AS relative_depth
-            FROM authentik_core_group
-            WHERE authentik_core_group.group_uuid = ANY(%s)
-
-            UNION ALL
-
-            SELECT authentik_core_group.*, parents.relative_depth + 1
-            FROM authentik_core_group, parents
-            WHERE (
-                authentik_core_group.group_uuid = parents.parent_id and
-                parents.relative_depth < 20
-            )
-        )
-        SELECT group_uuid
-        FROM parents
-        GROUP BY group_uuid, name
-        ORDER BY name;
-        """
-        group_pks = [group.pk for group in Group.objects.raw(query, [direct_groups]).iterator()]
-        return Group.objects.filter(pk__in=group_pks)
+        """Compatibility layer for Group.objects.with_children_recursive()"""
+        qs = self
+        if not isinstance(self, QuerySet):
+            qs = Group.objects.filter(group_uuid=self.group_uuid)
+        return qs.with_children_recursive()
 
     def __str__(self):
         return f"Group {self.name}"
@@ -196,8 +223,13 @@ class Group(SerializerModel, AttributesMixin):
                 "parent",
             ),
         )
+        indexes = [models.Index(fields=["name"])]
         verbose_name = _("Group")
         verbose_name_plural = _("Groups")
+        permissions = [
+            ("add_user_to_group", _("Add user to group")),
+            ("remove_user_from_group", _("Remove user from group")),
+        ]
 
 
 class UserQuerySet(models.QuerySet):
@@ -224,7 +256,7 @@ class UserManager(DjangoUserManager):
         return self.get_queryset().exclude_anonymous()
 
 
-class User(SerializerModel, GuardianUserMixin, AbstractUser, AttributesMixin):
+class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
     """authentik User model, based on django's contrib auth user model."""
 
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
@@ -244,10 +276,8 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser, AttributesMixin):
         return User._meta.get_field("path").default
 
     def all_groups(self) -> QuerySet[Group]:
-        """Recursively get all groups this user is a member of.
-        At least one query is done to get the direct groups of the user, with groups
-        there are at most 3 queries done"""
-        return Group.children_recursive(self.ak_groups.all())
+        """Recursively get all groups this user is a member of."""
+        return self.ak_groups.all().with_children_recursive()
 
     def group_attributes(self, request: HttpRequest | None = None) -> dict[str, Any]:
         """Get a dictionary containing the attributes from all groups the user belongs to,
@@ -303,7 +333,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser, AttributesMixin):
     @property
     def uid(self) -> str:
         """Generate a globally unique UID, based on the user ID and the hashed secret key"""
-        return sha256(f"{self.id}-{get_install_id()}".encode("ascii")).hexdigest()
+        return sha256(f"{self.id}-{get_unique_identifier()}".encode("ascii")).hexdigest()
 
     def locale(self, request: HttpRequest | None = None) -> str:
         """Get the locale the user has configured"""
@@ -332,13 +362,12 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser, AttributesMixin):
             ("preview_user", _("Can preview user data sent to providers")),
             ("view_user_applications", _("View applications the user has access to")),
         ]
-        authentik_signals_ignored_fields = [
-            # Logged by the events `password_set`
-            # the `password_set` action/signal doesn't currently convey which user
-            # initiated the password change, so for now we'll log two actions
-            # ("password", "password_change_date"),
-            # Logged by `login`
-            ("last_login",),
+        indexes = [
+            models.Index(fields=["last_login"]),
+            models.Index(fields=["password_change_date"]),
+            models.Index(fields=["uuid"]),
+            models.Index(fields=["path"]),
+            models.Index(fields=["type"]),
         ]
 
 
@@ -388,6 +417,10 @@ class Provider(SerializerModel):
     def launch_url(self) -> str | None:
         """URL to this provider and initiate authorization for the user.
         Can return None for providers that are not URL-based"""
+        return None
+
+    @property
+    def icon_url(self) -> str | None:
         return None
 
     @property
@@ -623,6 +656,25 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         user settings are available, or UserSettingSerializer."""
         return None
 
+    def get_mapper(
+            self,
+            object_type: type[User | Group],
+            context_keys: list[str]
+        ) -> "PropertyMappingManager":
+        """Get property mapping manager for this source."""
+        from authentik.lib.sync.mapper import PropertyMappingManager
+
+        qs = PropertyMapping.objects.none()
+        if object_type == User:
+            qs = self.user_property_mappings.all().select_subclasses()
+        elif object_type == Group:
+            qs = self.group_property_mappings.all().select_subclasses()
+        return PropertyMappingManager(
+            qs,
+            self.property_mapping_type,
+            ["source", "properties"] + context_keys,
+        )
+
     def get_base_user_properties(self, **kwargs) -> dict[str, Any | dict[str, Any]]:
         """Get base properties for a user to build final properties upon."""
         raise NotImplementedError
@@ -646,6 +698,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     def build_object_properties(
         self,
         object_type: type[User | Group],
+        mapper: "PropertyMappingManager | None" = None,
         user: User | None = None,
         request: HttpRequest | None = None,
         **kwargs,
@@ -656,39 +709,45 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         properties = self.get_base_properties(object_type, **kwargs)
         if "attributes" not in properties:
             properties["attributes"] = {}
-        mappings = []
-        if object_type == User:
-            mappings = self.user_property_mappings.all().select_subclasses()
-        elif object_type == Group:
-            mappings = self.group_property_mappings.all().select_subclasses()
-        print(mappings)
-        for mapping in mappings:
-            if not isinstance(mapping, self.property_mapping_type):
-                continue
+
+        if not mapper:
+            mapper = self.get_mapper(object_type, list(kwargs.keys()))
+        evaluations = mapper.iter_eval(
+            user=user,
+            request=request,
+            return_mapping=True,
+            source=self,
+            properties=properties,
+            **kwargs,
+        )
+        while True:
             try:
-                value = mapping.evaluate(
-                    user=user,
-                    request=request,
-                    source=self,
-                    properties=properties,
-                    **kwargs,
-                )
-                if not value or not isinstance(value, dict):
-                    LOGGER.debug(
-                        "Mapping evaluated to None or is not a dict. Skipping",
-                        source=self,
-                        mapping=mapping,
-                    )
-                    continue
+                value, mapping = next(evaluations)
+            except StopIteration:
+                break
             except PropertyMappingExpressionException as exc:
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,
-                    message=f"Failed to evaluate property mapping: '{mapping.name}'",
+                    message=f"Failed to evaluate property mapping: '{exc.mapping.name}'",
+                    source=self,
+                    mapping=exc.mapping,
+                ).save()
+                LOGGER.warning(
+                    "Mapping failed to evaluate",
+                    exc=exc,
+                    source=self,
+                    mapping=exc.mapping,
+                )
+                continue
+
+            if not value or not isinstance(value, dict):
+                LOGGER.debug(
+                    "Mapping evaluated to None or is not a dict. Skipping",
                     source=self,
                     mapping=mapping,
-                ).save()
-                LOGGER.warning("Mapping failed to evaluate", exc=exc, source=self, mapping=mapping)
+                )
                 continue
+
             MERGE_LIST_UNIQUE.merge(properties, value)
 
         return delete_none_values(properties)
@@ -724,6 +783,9 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
         """Get serializer for this model"""
         raise NotImplementedError
 
+    def __str__(self) -> str:
+        return f"User-source connection (user={self.user_id}, source={self.source_id})"
+
     class Meta:
         unique_together = (("user", "source"),)
 
@@ -731,7 +793,7 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
 class ExpiringModel(models.Model):
     """Base Model which can expire, and is automatically cleaned up."""
 
-    expires = models.DateTimeField(default=default_token_duration)
+    expires = models.DateTimeField(default=None, null=True)
     expiring = models.BooleanField(default=True)
 
     class Meta:
@@ -745,7 +807,7 @@ class ExpiringModel(models.Model):
         return self.delete(*args, **kwargs)
 
     @classmethod
-    def filter_not_expired(cls, **kwargs) -> QuerySet:
+    def filter_not_expired(cls, **kwargs) -> QuerySet["Token"]:
         """Filer for tokens which are not expired yet or are not expiring,
         and match filters in `kwargs`"""
         for obj in cls.objects.filter(**kwargs).filter(Q(expires__lt=now(), expiring=True)):
@@ -858,7 +920,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
         try:
             return evaluator.evaluate(self.expression)
         except Exception as exc:
-            raise PropertyMappingExpressionException(exc) from exc
+            raise PropertyMappingExpressionException(self, exc) from exc
 
     def __str__(self):
         return f"Property Mapping {self.name}"
