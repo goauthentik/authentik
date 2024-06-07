@@ -19,6 +19,7 @@ class GoogleWorkspaceProviderUserSerializer(ModelSerializer):
         model = GoogleWorkspaceProviderUser
         fields = [
             "id",
+            "google_id",
             "user",
             "user_obj",
             "provider",

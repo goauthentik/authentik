@@ -104,9 +104,11 @@ class MicrosoftEntraGroupClient(
         microsoft_group = self.to_schema(group, connection)
         microsoft_group.id = connection.microsoft_id
         try:
-            return self._request(
+            response = self._request(
                 self.client.groups.by_group_id(connection.microsoft_id).patch(microsoft_group)
             )
+            connection.attributes = self.entity_as_dict(response)
+            connection.save()
         except NotFoundSyncException:
             # Resource missing is handled by self.write, which will re-create the group
             raise

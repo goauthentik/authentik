@@ -110,7 +110,11 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
         """Update existing user"""
         microsoft_user = self.to_schema(user, connection)
         self.check_email_valid(microsoft_user.user_principal_name)
-        self._request(self.client.users.by_user_id(connection.microsoft_id).patch(microsoft_user))
+        response = self._request(
+            self.client.users.by_user_id(connection.microsoft_id).patch(microsoft_user)
+        )
+        connection.attributes = self.entity_as_dict(response)
+        connection.save()
 
     def discover(self):
         """Iterate through all users and connect them with authentik users if possible"""
