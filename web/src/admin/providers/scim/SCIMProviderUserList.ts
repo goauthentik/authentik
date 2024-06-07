@@ -9,7 +9,7 @@ import { customElement, property } from "lit/decorators.js";
 
 import { ProvidersApi, SCIMProviderUser } from "@goauthentik/api";
 
-@customElement("ak-provider-google-workspace-users-list")
+@customElement("ak-provider-scim-users-list")
 export class SCIMProviderUserList extends Table<SCIMProviderUser> {
     @property({ type: Number })
     providerId?: number;
