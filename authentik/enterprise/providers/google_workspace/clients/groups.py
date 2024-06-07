@@ -92,12 +92,14 @@ class GoogleWorkspaceGroupClient(
         google_group = self.to_schema(group, connection)
         self.check_email_valid(google_group["email"])
         try:
-            return self._request(
+            response = self._request(
                 self.directory_service.groups().update(
                     groupKey=connection.google_id,
                     body=google_group,
                 )
             )
+            connection.attributes = response
+            connection.save()
         except NotFoundSyncException:
             # Resource missing is handled by self.write, which will re-create the group
             raise
