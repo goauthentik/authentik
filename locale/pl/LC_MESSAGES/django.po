@@ -2269,7 +2269,7 @@ msgstr "Powiązanie przekierowania"
 
 #: authentik/sources/saml/models.py
 msgid "POST Binding"
-msgstr "POST binding"
+msgstr "Wiązanie POST"
 
 #: authentik/sources/saml/models.py
 msgid "POST Binding with auto-confirmation"
