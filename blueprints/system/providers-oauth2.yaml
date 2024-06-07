@@ -56,3 +56,14 @@ entries:
         # This scope grants the application a refresh token that can be used to refresh user data
         # and let the application access authentik without the users interaction
         return {}
+  - identifiers:
+      managed: goauthentik.io/providers/oauth2/scope-authentik_api
+    model: authentik_providers_oauth2.scopemapping
+    attrs:
+      name: "authentik default OAuth Mapping: authentik API access"
+      scope_name: goauthentik.io/api
+      description: "authentik API Access on behalf of your user"
+      expression: |
+        # This scope grants the application the ability to access the authentik API
+        # on behalf of the authorizing user
+        return {}

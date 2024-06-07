@@ -2,6 +2,8 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
+import "@goauthentik/elements/chips/Chip";
+import "@goauthentik/elements/chips/ChipGroup";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
@@ -86,12 +88,21 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
     row(item: TokenModel): TemplateResult[] {
         return [
             html`<a href="#/core/providers/${item.provider?.pk}"> ${item.provider?.name} </a>`,
-            html`<ak-status-label type="warning" ?good=${item.revoked}></ak-status-label>`,
+            html`<ak-status-label
+                type="warning"
+                ?good=${!item.revoked}
+                good-label=${msg("No")}
+                bad-label=${msg("Yes")}
+            ></ak-status-label>`,
             html`${item.expires
                 ? html`<div>${getRelativeTime(item.expires)}</div>
                       <small>${item.expires.toLocaleString()}</small>`
                 : msg("-")}`,
-            html`${item.scope.join(", ")}`,
+            html`<ak-chip-group>
+                ${item.scope.map((scope) => {
+                    return html`<ak-chip .removable=${false}>${scope}</ak-chip>`;
+                })}
+            </ak-chip-group>`,
         ];
     }
 }

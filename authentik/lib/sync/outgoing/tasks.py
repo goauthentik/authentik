@@ -125,6 +125,7 @@ class SyncTasks:
             try:
                 client.write(obj)
             except SkipObjectException:
+                self.logger.debug("skipping object due to SkipObject", obj=obj)
                 continue
             except BadRequestSyncException as exc:
                 self.logger.warning("failed to sync object", exc=exc, obj=obj)
