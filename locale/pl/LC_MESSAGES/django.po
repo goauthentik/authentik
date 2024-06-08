@@ -3270,7 +3270,7 @@ msgstr "Domyślny czas trwania tokena"
 
 #: authentik/tenants/models.py
 msgid "Default token length"
-msgstr "Domyślny długość tokena"
+msgstr "Domyślna długość tokena"
 
 #: authentik/tenants/models.py
 msgid "Tenant"
