@@ -113,8 +113,9 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
         response = self._request(
             self.client.users.by_user_id(connection.microsoft_id).patch(microsoft_user)
         )
-        connection.attributes = self.entity_as_dict(response)
-        connection.save()
+        if response:
+            connection.attributes = self.entity_as_dict(response)
+            connection.save()
 
     def discover(self):
         """Iterate through all users and connect them with authentik users if possible"""
