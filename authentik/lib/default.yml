@@ -50,7 +50,6 @@ cache:
   timeout: 300
   timeout_flows: 300
   timeout_policies: 300
-  timeout_reputation: 300
 
 # channel:
 #   url: ""
