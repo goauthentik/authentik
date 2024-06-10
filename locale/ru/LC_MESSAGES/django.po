@@ -9,16 +9,16 @@
 # Nicholas Winterhalter, 2023
 # Ренат Шарафутдинов, 2023
 # Stepan Karavaev, 2024
-# Anton Babenko, 2024
+# Anton, 2024
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-03 00:08+0000\n"
+"POT-Creation-Date: 2024-06-05 00:07+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: Anton Babenko, 2024\n"
+"Last-Translator: Anton, 2024\n"
 "Language-Team: Russian (https://app.transifex.com/authentik/teams/119923/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2590,12 +2590,41 @@ msgid "Private key, acquired your captcha Provider."
 msgstr "Закрытый ключ, полученный от вашего провайдера капчи."
 
 #: authentik/stages/captcha/models.py
+msgid ""
+"When enabled and the received captcha score is outside of the given "
+"threshold, the stage will show an error message. When not enabled, the flow "
+"will continue, but the data from the captcha will be available in the "
+"context for policy decisions"
+msgstr ""
+"Когда эта опция включена, и полученная оценка капчи находится за пределами "
+"заданного порогового значения, на этом этапе будет показано сообщение об "
+"ошибке. Когда эта опция не включена, поток будет продолжаться, но данные "
+"капчи будут доступны в контексте для принятия решений политики"
+
+#: authentik/stages/captcha/models.py
 msgid "Captcha Stage"
 msgstr "Этап с каптчей"
 
 #: authentik/stages/captcha/models.py
 msgid "Captcha Stages"
 msgstr "Этапы с каптчей"
+
+#: authentik/stages/captcha/stage.py
+msgid "Unknown error"
+msgstr "Неизвестная ошибка"
+
+#: authentik/stages/captcha/stage.py
+#, python-brace-format
+msgid "Failed to validate token: {error}"
+msgstr "Ошибка валидации токена: {error}"
+
+#: authentik/stages/captcha/stage.py
+msgid "Invalid captcha response"
+msgstr "Неверный ответ на капчу"
+
+#: authentik/stages/captcha/stage.py
+msgid "Failed to validate token"
+msgstr "Ошибка валидации токена"
 
 #: authentik/stages/consent/models.py
 msgid ""
