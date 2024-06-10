@@ -162,7 +162,7 @@ msgstr "Сбросить пароль"
 
 #: authentik/core/models.py
 msgid "Can impersonate other users"
-msgstr "Может выдавать себя за других пользователей"
+msgstr "Может имитировать других пользователей"
 
 #: authentik/core/models.py authentik/rbac/models.py
 msgid "Can assign permissions to users"
@@ -3115,7 +3115,7 @@ msgid ""
 msgstr ""
 "По желанию предварительно заполните поле ввода начальным значением. При "
 "создании поля с фиксированным выбором включите интерпретацию как выражение и"
-" возврат списка, чтобы вернуть несколько вариантов по умолчанию."
+" возвращайте список, чтобы вернуть несколько вариантов по умолчанию."
 
 #: authentik/stages/prompt/models.py
 msgid "Prompt"
