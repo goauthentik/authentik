@@ -46,7 +46,7 @@
         "@open-wc/lit-helpers": "^0.7.0",
         "@patternfly/elements": "^3.0.1",
         "@patternfly/patternfly": "^4.224.2",
-        "@sentry/browser": "^8.7.0",
+        "@sentry/browser": "^8.8.0",
         "@webcomponents/webcomponentsjs": "^2.8.0",
         "base64-js": "^1.5.1",
         "chart.js": "^4.4.3",
@@ -65,7 +65,7 @@
         "style-mod": "^4.1.2",
         "ts-pattern": "^5.1.2",
         "webcomponent-qr-code": "^1.2.0",
-        "yaml": "^2.4.3"
+        "yaml": "^2.4.5"
     },
     "devDependencies": {
         "@babel/core": "^7.24.7",
@@ -100,7 +100,7 @@
         "babel-plugin-tsconfig-paths": "^1.0.3",
         "chokidar": "^3.6.0",
         "cross-env": "^7.0.3",
-        "esbuild": "^0.21.4",
+        "esbuild": "^0.21.5",
         "eslint": "^8.57.0",
         "eslint-config-google": "^0.14.0",
         "eslint-plugin-custom-elements": "0.0.8",
