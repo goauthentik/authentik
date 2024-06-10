@@ -1,4 +1,6 @@
 import "@goauthentik/admin/providers/scim/SCIMProviderForm";
+import "@goauthentik/admin/providers/scim/SCIMProviderGroupList";
+import "@goauthentik/admin/providers/scim/SCIMProviderUserList";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
@@ -100,6 +102,28 @@ export class SCIMProviderViewPage extends AKElement {
                         >
                         </ak-object-changelog>
                     </div>
+                </div>
+            </section>
+            <section
+                slot="page-users"
+                data-tab-title="${msg("Provisioned Users")}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-l-grid pf-m-gutter">
+                    <ak-provider-scim-users-list
+                        providerId=${this.provider.pk}
+                    ></ak-provider-scim-users-list>
+                </div>
+            </section>
+            <section
+                slot="page-groups"
+                data-tab-title="${msg("Provisioned Groups")}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-l-grid pf-m-gutter">
+                    <ak-provider-scim-groups-list
+                        providerId=${this.provider.pk}
+                    ></ak-provider-scim-groups-list>
                 </div>
             </section>
             <ak-rbac-object-permission-page

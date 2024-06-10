@@ -153,6 +153,7 @@ class GoogleWorkspaceProviderUser(SerializerModel):
     google_id = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     provider = models.ForeignKey(GoogleWorkspaceProvider, on_delete=models.CASCADE)
+    attributes = models.JSONField(default=dict)
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -178,6 +179,7 @@ class GoogleWorkspaceProviderGroup(SerializerModel):
     google_id = models.TextField()
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     provider = models.ForeignKey(GoogleWorkspaceProvider, on_delete=models.CASCADE)
+    attributes = models.JSONField(default=dict)
 
     @property
     def serializer(self) -> type[Serializer]:

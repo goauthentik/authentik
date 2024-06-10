@@ -126,6 +126,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
     renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("User")} name="user">
                 <ak-search-select
+                    blankable
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
                         const args: CoreUsersListRequest = {
                             ordering: "username",
@@ -153,6 +154,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Group")} name="group">
                 <ak-search-select
+                    blankable
                     .fetchObjects=${async (query?: string): Promise<Group[]> => {
                         const args: CoreGroupsListRequest = {
                             ordering: "name",
