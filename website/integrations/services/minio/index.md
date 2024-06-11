@@ -29,7 +29,7 @@ return {
 }
 ```
 
-This mapping will result in the default MinIO `readwrite` policy being applied to all users. If you want to create a more granular mapping based on authentik groups, use an expression like this:
+This mapping applies the default MinIO `readwrite` policy to all users. If you want to create a more granular mapping based on authentik groups, use an expression like this:
 
 ```python
 if ak_is_group_member(request.user, name="Minio admins"):
