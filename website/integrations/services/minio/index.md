@@ -64,7 +64,7 @@ You can set up OpenID in two different ways: via the web interface or the comman
 
 ### Web Interface
 
-From the main page, go to _Identity_ -> _OpenID_ and click the create button and fill out the configuration as follows:
+From the main page, go to **Identity -> OpenID**, click **Create**, and then define the configuration as follows:
 
 -   Name: MinIO
 -   Config URL: `https://minio.company/application/o/<minio slug>/.well-known/openid-configuration`
