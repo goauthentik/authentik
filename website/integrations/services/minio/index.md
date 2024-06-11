@@ -47,7 +47,7 @@ Note that you can assign multiple policies to a user by returning a list, and re
 
 ### Creating application and provider
 
-Create an application in authentik. Create an _OAuth2/OpenID Provider_ with the following parameters:
+Create an application in authentik. Create an OAuth2/OpenID provider with the following parameters:
 
 -   Client Type: `Confidential`
 -   Scopes: OpenID, Email, Profile, and the scope you created above
