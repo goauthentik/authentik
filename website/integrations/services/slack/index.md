@@ -10,10 +10,9 @@ title: Slack
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholder will be used:
 
--   `slack.company` is the FQDN of the Slack install.
--   `authentik.company` is the FQDN of the authentik install.
+-   slack.company or my-workspace.slack.com is the FQDN of your Slack instance.
 
 ## authentik configuration
 
@@ -24,15 +23,16 @@ Your Slack integration requires two property mappings, one each for `User.Email`
 1. Log in as admin to your authentik instance and then click **Admin interface**.
 2. Navigate to **Customization -> Property Mappings**
 3. Create the property mapping for `User.Email`.
-    1.  On the **Property Mappings** page, click **Create**.
-    2.  On the **New property mapping** modal, select **SAML Property Mapping** and then click **Next**.
-    3.  Define the required values. In the **Expression** field, define `User.Email` as `return request.user.email`.
-5. Click **Finish**.
-6. Create the property mapping for `User.Username`.
-    1.  On the **Property Mappings** page, click **Create**.
-    2.  On the **New property mapping** modal, select **SAML Property Mapping** and then click **Next**.
-    3.  Define the required values. In the **Expression** field, define `User.Username` as `return request.user.username`.
-7. Click **Finish**.
+    1. On the **Property Mappings** page, click **Create**.
+    2. On the **New property mapping** modal, select **SAML Property Mapping** and then click **Next**.
+    3. Define the required values. In the **Expression** field, define `User.Email` as `return request.user.email`.
+4. Click **Finish**.
+5. Create the property mapping for `User.Username`.
+    1. On the **Property Mappings** page, click **Create**.
+    2. On the **New property mapping** modal, select **SAML Property Mapping** and then click **Next**.
+    3. Define the required values. In the **Expression** field, define `User.Username` as `return request.user.username`.
+6. Click **Finish**.
+
 ### Step 2. Create a new authentication provider
 
 1. Navigate to **Applications -> Providers** and then click **Create**.
