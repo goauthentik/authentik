@@ -18,7 +18,7 @@ This is based on authentik 2021.7.3 and Vikunja V0.17.1 using the Docker-Compose
 
 The following placeholders will be used:
 
--   `vik.company` is the FQDN of Vikunja.
+-   `vikunja.company` is the FQDN of Vikunja.
 -   `authentik.company` is the FQDN of authentik.
 -   `authentik Login` is the name shown on Vikunja set in config.yml, and used for the Redirect URI. If the name set in config.yml has capitalization or spaces like in this example, they will be set to lowercase and no spaces in the callback URL, like `authentiklogin`.
 
@@ -39,7 +39,7 @@ Only settings that have been modified from default have been listed.
 -   Redirect URIs/Origins:
 
 ```
-https://vik.company/auth/openid/authentiklogin
+https://vikunja.company/auth/openid/authentiklogin
 ```
 
 ![](./img/vikunja-01.png)
@@ -95,4 +95,4 @@ In authentik, create an application which uses this provider. Optionally apply a
 -   Name: Vikunja
 -   Slug: vikunja
 -   Provider: vikunja
--   Launch URL: https://vik.company
+-   Launch URL: https://vikunja.company
