@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
+import "@goauthentik/elements/forms/DeleteBulkForm";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 
 import { msg } from "@lit/localize";
@@ -17,6 +18,23 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
 
     searchEnabled(): boolean {
         return true;
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${msg("Microsoft Entra Group(s)")}
+            .objects=${this.selectedElements}
+            .delete=${(item: MicrosoftEntraProviderGroup) => {
+                return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraGroupsDestroy({
+                    id: item.id,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${msg("Delete")}
+            </button>
+        </ak-forms-delete-bulk>`;
     }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<MicrosoftEntraProviderGroup>> {

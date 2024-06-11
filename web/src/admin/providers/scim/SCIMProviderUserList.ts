@@ -7,10 +7,10 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { GoogleWorkspaceProviderUser, ProvidersApi } from "@goauthentik/api";
+import { ProvidersApi, SCIMProviderUser } from "@goauthentik/api";
 
-@customElement("ak-provider-google-workspace-users-list")
-export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProviderUser> {
+@customElement("ak-provider-scim-users-list")
+export class SCIMProviderUserList extends Table<SCIMProviderUser> {
     @property({ type: Number })
     providerId?: number;
 
@@ -18,18 +18,16 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
         return true;
     }
 
-    expandable = true;
-
     checkbox = true;
     clearOnRefresh = true;
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Google Workspace User(s)")}
+            objectLabel=${msg("SCIM User(s)")}
             .objects=${this.selectedElements}
-            .delete=${(item: GoogleWorkspaceProviderUser) => {
-                return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceUsersDestroy({
+            .delete=${(item: SCIMProviderUser) => {
+                return new ProvidersApi(DEFAULT_CONFIG).providersScimUsersDestroy({
                     id: item.id,
                 });
             }}
@@ -40,8 +38,8 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
         </ak-forms-delete-bulk>`;
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<GoogleWorkspaceProviderUser>> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceUsersList({
+    async apiEndpoint(page: number): Promise<PaginatedResponse<SCIMProviderUser>> {
+        return new ProvidersApi(DEFAULT_CONFIG).providersScimUsersList({
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,
             ordering: this.order,
@@ -54,7 +52,7 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
         return [new TableColumn(msg("Username")), new TableColumn(msg("ID"))];
     }
 
-    row(item: GoogleWorkspaceProviderUser): TemplateResult[] {
+    row(item: SCIMProviderUser): TemplateResult[] {
         return [
             html`<a href="#/identity/users/${item.userObj.pk}">
                 <div>${item.userObj.username}</div>
@@ -62,13 +60,5 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
             </a>`,
             html`${item.id}`,
         ];
-    }
-
-    renderExpanded(item: GoogleWorkspaceProviderUser): TemplateResult {
-        return html`<td role="cell" colspan="4">
-            <div class="pf-c-table__expandable-row-content">
-                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
-            </div>
-        </td>`;
     }
 }

@@ -10,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import BackchannelProvider, Group, PropertyMapping, User, UserTypes
+from authentik.lib.models import SerializerModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 
@@ -106,7 +107,7 @@ class SCIMMapping(PropertyMapping):
         verbose_name_plural = _("SCIM Mappings")
 
 
-class SCIMUser(models.Model):
+class SCIMProviderUser(SerializerModel):
     """Mapping of a user and provider to a SCIM user ID"""
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -114,14 +115,20 @@ class SCIMUser(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     provider = models.ForeignKey(SCIMProvider, on_delete=models.CASCADE)
 
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.providers.scim.api.users import SCIMProviderUserSerializer
+
+        return SCIMProviderUserSerializer
+
     class Meta:
         unique_together = (("scim_id", "user", "provider"),)
 
     def __str__(self) -> str:
-        return f"SCIM User {self.user_id} to {self.provider_id}"
+        return f"SCIM Provider User {self.user_id} to {self.provider_id}"
 
 
-class SCIMGroup(models.Model):
+class SCIMProviderGroup(SerializerModel):
     """Mapping of a group and provider to a SCIM user ID"""
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -129,8 +136,14 @@ class SCIMGroup(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     provider = models.ForeignKey(SCIMProvider, on_delete=models.CASCADE)
 
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.providers.scim.api.groups import SCIMProviderGroupSerializer
+
+        return SCIMProviderGroupSerializer
+
     class Meta:
         unique_together = (("scim_id", "group", "provider"),)
 
     def __str__(self) -> str:
-        return f"SCIM Group {self.group_id} to {self.provider_id}"
+        return f"SCIM Provider Group {self.group_id} to {self.provider_id}"
