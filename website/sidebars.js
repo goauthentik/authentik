@@ -409,7 +409,7 @@ const docsSidebar = {
                 type: "generated-index",
                 title: "Releases",
                 slug: "releases",
-                description: "Release notes for recent authentik versions",
+                description: "Release Notes for recent authentik versions",
             },
             items: [
                 "releases/2024/v2024.6",
