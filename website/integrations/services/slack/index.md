@@ -12,7 +12,7 @@ title: Slack
 
 The following placeholder will be used:
 
--   slack.company or my-workspace.slack.com is the FQDN of your Slack instance.
+-   You can use <kbd>slack.<em>company</em>></kbd> or <kbd><em>my-workspace</em>.slack.com</kbd> as the FQDN of your Slack instance.
 
 ## authentik configuration
 
