@@ -21,16 +21,18 @@ entries:
         if " " in request.user.name:
             givenName, _, familyName = request.user.name.partition(" ")
             formatted = request.user.name
-        return {
+        user = {
             "name": {
                 "fullName": formatted,
                 "familyName": familyName.strip(),
                 "givenName": givenName.strip(),
                 "displayName": formatted,
             },
-            "password": request.user.password,
             "suspended": not request.user.is_active,
         }
+        if not connection:
+            user["password"] = request.user.password
+        return user
   - identifiers:
       managed: goauthentik.io/providers/google_workspace/group
     model: authentik_providers_google_workspace.googleworkspaceprovidermapping
