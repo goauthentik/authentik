@@ -8,7 +8,7 @@ from structlog.stdlib import get_logger
 from authentik.core.signals import login_failed
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR
 from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR
-from authentik.policies.reputation.models import Reputation
+from authentik.policies.reputation.models import Reputation, reputation_expiry
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.identification.signals import identification_failed
 
@@ -26,6 +26,7 @@ def update_score(request: HttpRequest, identifier: str, amount: int):
             "score": amount,
             "ip_geo_data": GEOIP_CONTEXT_PROCESSOR.city_dict(remote_ip) or {},
             "ip_asn_data": ASN_CONTEXT_PROCESSOR.asn_dict(remote_ip) or {},
+            "expires": reputation_expiry(),
         }
     )
     LOGGER.debug("Updated score", amount=amount, for_user=identifier, for_ip=remote_ip)
