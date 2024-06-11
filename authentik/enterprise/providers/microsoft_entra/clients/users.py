@@ -1,3 +1,4 @@
+from deepmerge import always_merger
 from django.db import transaction
 from msgraph.generated.models.user import User as MSUser
 from msgraph.generated.users.users_request_builder import UsersRequestBuilder
@@ -114,7 +115,7 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
             self.client.users.by_user_id(connection.microsoft_id).patch(microsoft_user)
         )
         if response:
-            connection.attributes = self.entity_as_dict(response)
+            always_merger.merge(connection.attributes, self.entity_as_dict(response))
             connection.save()
 
     def discover(self):
