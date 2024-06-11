@@ -54,7 +54,7 @@ Create an application in authentik. Create an _OAuth2/OpenID Provider_ with the 
 -   Signing Key: Select any available key
 -   Redirect URIs: `https://minio.company/oauth_callback`
 
-Set the scope of the MinIO scope mapping you created in the previous step under Advanced _Protocol Settings_ -> _Scopes_.
+Set the scope of the MinIO scope mapping that you created in the provider (previous step) in the **Advanced** area under **Protocol Settings -> Scopes**.
 
 Note the Client ID and Client Secret values. Create an application, using the provider you've created above. Note the slug of the application you've created.
 
