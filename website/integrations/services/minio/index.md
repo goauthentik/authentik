@@ -79,7 +79,7 @@ Finally, click the save button and follow the instructions in the popup to resta
 
 You must install the MinIO binaries from [here](https://min.io/docs/minio/linux/reference/minio-mc.html). You then need to create an alias for your instance using: `mc alias set myminio https://minio.company <access key> <secret key>`. You can follow [this StackOverflow answer](https://stackoverflow.com/a/77645374) to create a secret key and access key.
 
-Once that is done, you can run the following command to configure the OpenID provider:
+After that is done, run the following command to configure the OpenID provider:
 
 ```
 ~ mc admin config set myminio identity_openid \
