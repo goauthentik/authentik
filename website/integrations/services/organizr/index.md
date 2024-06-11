@@ -30,17 +30,17 @@ _Optionally_, create a new group like `organizr users` to scope access to the or
 ## authentik Configuration
 
 1. Create a new Proxy Provider for `https://organizr.company`
-   ![](./organizr1.png)
+   ![](./img/organizr-01.png)
    _Optionally_, add the regular expression to allow api calls in the advanced protocol settings.
-   ![](./organizr2.png)
+   ![](./img/organizr-02.png)
 2. Create a new Application for the `https://organizr.company` Provider.
-   ![](./organizr3.png)
+   ![](./img/organizr-03.png)
    :::tip
    _Optionally_, bind the group to control access to the organizr to the application.
-   ![](./organizr4.png)
+   ![](./img/organizr-04.png)
    :::
 
-![](./organizr5.png)
+![](./img/organizr-05.png)
 ::: 3. Add the Application to the authentik Embedded Outpost.
 
 ## organizr Configuration
@@ -55,7 +55,7 @@ Auth Proxy Header Name: `X-authentik-username`
 Auth Proxy Whitelist: _your network subnet in CIDR notation IE_ `10.0.0.0/8`
 Auth Proxy Header Name for Email: `X-authentik-email`
 Logout URL: `/outpost.goauthentik.io/sign_out`
-![](./organizr6.png)
+![](./img/organizr-06.png)
 
 2. Setup Authentication in organizr _system settings_ -> _main_ -> _Authentication_
 
@@ -68,7 +68,7 @@ Account Suffix: `,ou=users,dc=ldap,dc=goauthentik,dc=io`
 Bind Username: `cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io`
 Bind Password: `<LDAP bind account password>`
 LDAP Backend Type: `OpenLDAP`
-![](./organizr7.png)
+![](./img/organizr-07.png)
 
 :::info
 Access for authentik users is managed locally within organizr under _User Management_. By default, new users are assigned the `User` group.

@@ -28,4 +28,4 @@ Note the Client ID and Client Secret values. Create an application, using the pr
 
 ## Harbor
 
-![](./harbor.png)
+![](./img/harbor-01.png)

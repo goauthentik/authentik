@@ -45,7 +45,7 @@ For _Oauthgeneric_:
 -   plugin»oauthgeneric»json-mail: email
 -   plugin»oauthgeneric»json-grps: groups
 
-![](./dokuwiki_oauth_generic.png)
+![](./img/dokuwiki-01.png)
 
 In the _Configuration Settings_ section in the _Administration_ interface navigate to _Authentication_ and activate _oauth_ in _Authentication backend_.
 

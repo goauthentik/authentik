@@ -42,7 +42,7 @@ Only settings that have been modified from default have been listed.
 https://vik.company/auth/openid/authentiklogin
 ```
 
-![](./vikunja1.png)
+![](./img/vikunja-01.png)
 
 ### Step 2
 

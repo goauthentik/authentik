@@ -106,7 +106,7 @@ Attributes:
 ### QNAP Web UI
 
 Configure the following values and "Apply"
-![qnap domain security](./qnap-ldap-configuration.png)
+![qnap domain security](./img/qnap-01.png)
 
 :::caution
 With each save (Apply) in the UI the `/etc/config/nss_ldap.conf` will be overwritten with default values.
