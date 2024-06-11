@@ -2,6 +2,7 @@
 
 from json import loads
 
+from django.db.models import Prefetch
 from django.http import Http404
 from django_filters.filters import CharFilter, ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
@@ -166,8 +167,14 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
 
     def get_queryset(self):
         base_qs = Group.objects.all().select_related("parent").prefetch_related("roles")
+
         if self.serializer_class(context={"request": self.request})._should_include_users:
             base_qs = base_qs.prefetch_related("users")
+        else:
+            base_qs = base_qs.prefetch_related(
+                Prefetch("users", queryset=User.objects.all().only("id"))
+            )
+
         return base_qs
 
     @extend_schema(
@@ -177,6 +184,14 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter("include_users", bool, default=True),
+        ]
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
     @permission_required("authentik_core.add_user_to_group")
     @extend_schema(

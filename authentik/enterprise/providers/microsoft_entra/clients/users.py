@@ -3,24 +3,20 @@ from django.db import transaction
 from msgraph.generated.models.user import User as MSUser
 from msgraph.generated.users.users_request_builder import UsersRequestBuilder
 
-from authentik.core.expression.exceptions import (
-    PropertyMappingExpressionException,
-    SkipObjectException,
-)
 from authentik.core.models import User
 from authentik.enterprise.providers.microsoft_entra.clients.base import MicrosoftEntraSyncClient
 from authentik.enterprise.providers.microsoft_entra.models import (
+    MicrosoftEntraProvider,
     MicrosoftEntraProviderMapping,
     MicrosoftEntraProviderUser,
 )
-from authentik.events.models import Event, EventAction
+from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.exceptions import (
     ObjectExistsSyncException,
     StopSync,
     TransientSyncException,
 )
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
-from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.utils import delete_none_values
 
 
@@ -31,34 +27,17 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
     connection_type_query = "user"
     can_discover = True
 
-    def to_schema(self, obj: User, creating: bool) -> MSUser:
+    def __init__(self, provider: MicrosoftEntraProvider) -> None:
+        super().__init__(provider)
+        self.mapper = PropertyMappingManager(
+            self.provider.property_mappings.all().order_by("name").select_subclasses(),
+            MicrosoftEntraProviderMapping,
+            ["provider", "connection"],
+        )
+
+    def to_schema(self, obj: User, connection: MicrosoftEntraProviderUser) -> MSUser:
         """Convert authentik user"""
-        raw_microsoft_user = {}
-        for mapping in self.provider.property_mappings.all().order_by("name").select_subclasses():
-            if not isinstance(mapping, MicrosoftEntraProviderMapping):
-                continue
-            try:
-                value = mapping.evaluate(
-                    user=obj,
-                    request=None,
-                    provider=self.provider,
-                    creating=creating,
-                )
-                if value is None:
-                    continue
-                always_merger.merge(raw_microsoft_user, value)
-            except SkipObjectException as exc:
-                raise exc from exc
-            except (PropertyMappingExpressionException, ValueError) as exc:
-                # Value error can be raised when assigning invalid data to an attribute
-                Event.new(
-                    EventAction.CONFIGURATION_ERROR,
-                    message=f"Failed to evaluate property-mapping {exception_to_string(exc)}",
-                    mapping=mapping,
-                ).save()
-                raise StopSync(exc, obj, mapping) from exc
-        if not raw_microsoft_user:
-            raise StopSync(ValueError("No user mappings configured"), obj)
+        raw_microsoft_user = super().to_schema(obj, connection)
         try:
             return MSUser(**delete_none_values(raw_microsoft_user))
         except TypeError as exc:
@@ -89,7 +68,7 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
 
     def create(self, user: User):
         """Create user from scratch and create a connection object"""
-        microsoft_user = self.to_schema(user, True)
+        microsoft_user = self.to_schema(user, None)
         self.check_email_valid(microsoft_user.user_principal_name)
         with transaction.atomic():
             try:
@@ -105,26 +84,39 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
                     )
                 )
                 user_data = self._request(self.client.users.get(request_configuration))
-                if user_data.odata_count < 1:
+                if user_data.odata_count < 1 or len(user_data.value) < 1:
                     self.logger.warning(
                         "User which could not be created also does not exist", user=user
                     )
                     return
+                ms_user = user_data.value[0]
                 return MicrosoftEntraProviderUser.objects.create(
-                    provider=self.provider, user=user, microsoft_id=user_data.value[0].id
+                    provider=self.provider,
+                    user=user,
+                    microsoft_id=ms_user.id,
+                    attributes=self.entity_as_dict(ms_user),
                 )
             except TransientSyncException as exc:
                 raise exc
             else:
+                print(self.entity_as_dict(response))
                 return MicrosoftEntraProviderUser.objects.create(
-                    provider=self.provider, user=user, microsoft_id=response.id
+                    provider=self.provider,
+                    user=user,
+                    microsoft_id=response.id,
+                    attributes=self.entity_as_dict(response),
                 )
 
     def update(self, user: User, connection: MicrosoftEntraProviderUser):
         """Update existing user"""
-        microsoft_user = self.to_schema(user, False)
+        microsoft_user = self.to_schema(user, connection)
         self.check_email_valid(microsoft_user.user_principal_name)
-        self._request(self.client.users.by_user_id(connection.microsoft_id).patch(microsoft_user))
+        response = self._request(
+            self.client.users.by_user_id(connection.microsoft_id).patch(microsoft_user)
+        )
+        if response:
+            always_merger.merge(connection.attributes, self.entity_as_dict(response))
+            connection.save()
 
     def discover(self):
         """Iterate through all users and connect them with authentik users if possible"""
@@ -147,4 +139,5 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
             provider=self.provider,
             user=matching_authentik_user,
             microsoft_id=user.id,
+            attributes=self.entity_as_dict(user),
         )

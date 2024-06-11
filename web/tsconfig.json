@@ -2,7 +2,6 @@
     "extends": "./tsconfig.base.json",
     "compilerOptions": {
         "paths": {
-            "@goauthentik/authentik/*": ["src/*"],
             "@goauthentik/admin/*": ["src/admin/*"],
             "@goauthentik/common/*": ["src/common/*"],
             "@goauthentik/components/*": ["src/components/*"],

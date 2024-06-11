@@ -12,8 +12,6 @@ import "./radius/ak-application-wizard-authentication-by-radius";
 import "./saml/ak-application-wizard-authentication-by-saml-configuration";
 import "./scim/ak-application-wizard-authentication-by-scim";
 
-// prettier-ignore
-
 @customElement("ak-application-wizard-authentication-method")
 export class ApplicationWizardApplicationDetails extends BasePanel {
     render() {

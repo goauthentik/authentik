@@ -10,13 +10,3 @@ class AuthentikStageAuthenticatorWebAuthnConfig(ManagedAppConfig):
     label = "authentik_stages_authenticator_webauthn"
     verbose_name = "authentik Stages.Authenticator.WebAuthn"
     default = True
-
-    @ManagedAppConfig.reconcile_tenant
-    def webauthn_device_types(self):
-        from authentik.stages.authenticator_webauthn.tasks import (
-            webauthn_aaguid_import,
-            webauthn_mds_import,
-        )
-
-        webauthn_mds_import.delay()
-        webauthn_aaguid_import.delay()

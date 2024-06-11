@@ -6,6 +6,7 @@ from uuid import uuid4
 from azure.identity.aio import ClientSecretCredential
 from django.db import models
 from django.db.models import QuerySet
+from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
@@ -88,6 +89,10 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
         }
 
     @property
+    def icon_url(self) -> str | None:
+        return static("authentik/sources/azuread.svg")
+
+    @property
     def component(self) -> str:
         return "ak-provider-microsoft-entra-form"
 
@@ -137,6 +142,7 @@ class MicrosoftEntraProviderUser(SerializerModel):
     microsoft_id = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     provider = models.ForeignKey(MicrosoftEntraProvider, on_delete=models.CASCADE)
+    attributes = models.JSONField(default=dict)
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -162,6 +168,7 @@ class MicrosoftEntraProviderGroup(SerializerModel):
     microsoft_id = models.TextField()
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     provider = models.ForeignKey(MicrosoftEntraProvider, on_delete=models.CASCADE)
+    attributes = models.JSONField(default=dict)
 
     @property
     def serializer(self) -> type[Serializer]:

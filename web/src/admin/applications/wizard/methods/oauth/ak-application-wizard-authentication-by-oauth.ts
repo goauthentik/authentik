@@ -3,6 +3,7 @@ import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import {
     clientTypeOptions,
+    defaultScopes,
     issuerModeOptions,
     redirectUriHelp,
     subjectModeOptions,
@@ -225,10 +226,9 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                                 ${this.propertyMappings?.results.map((scope) => {
                                     let selected = false;
                                     if (!provider?.propertyMappings) {
-                                        selected =
-                                            scope.managed?.startsWith(
-                                                "goauthentik.io/providers/oauth2/scope-",
-                                            ) || false;
+                                        selected = scope.managed
+                                            ? defaultScopes.includes(scope.managed)
+                                            : false;
                                     } else {
                                         selected = Array.from(provider?.propertyMappings).some(
                                             (su) => {
