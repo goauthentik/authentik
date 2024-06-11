@@ -6,7 +6,7 @@ title: GitHub Enterprise Cloud
 
 ## What is GitHub Enterprise Cloud
 
-> GitHub is a complete developer platform to build, scale, and deliver secure software. Businesses use our suite of products to support the entire software development lifecycle, increasing development velocity and improving code quality.
+> GitHub Enterprise Cloud is a cloud-based version of GitHub tailored for enterprise use.
 >
 > -- https://docs.github.com/en/enterprise-cloud@latest/admin/overview/about-github-for-enterprises
 

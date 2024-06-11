@@ -6,9 +6,7 @@ title: GlobalProtect
 
 ## What is GlobalProtect
 
-> GlobalProtect enables you to use Palo Alto Networks next-gen firewalls or Prisma Access to secure your mobile workforce.
->
-> Palo Alto Networks GlobalProtect platform is a paid enterprise product.
+> GlobalProtect, developed by Palo Alto Networks, is a comprehensive remote access VPN solution designed to secure mobile users, branch offices, and remote networks. 
 >
 > -- https://docs.paloaltonetworks.com/globalprotect
 

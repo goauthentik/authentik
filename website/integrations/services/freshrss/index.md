@@ -8,7 +8,7 @@ title: FreshRSS
 
 > FreshRSS is a self-hosted RSS feed aggregator.
 >
-> -- https://github.com/FreshRSS/FreshRSS
+> -- https://freshrss.org/index.html
 
 ## Preparation
 

@@ -6,7 +6,7 @@ title: Amazon Web Services
 
 ## What is AWS
 
-> Amazon Web Services (AWS) is the world’s most comprehensive and broadly adopted cloud, with more than 200 fully featured services available from data centers globally. Millions of customers—including the fastest-growing startups, largest enterprises, and leading government agencies—are using AWS to lower costs, increase security, become more agile, and innovate faster.
+> AWS, or Amazon Web Services, is a leading cloud computing platform providing diverse services such as computing power, storage, and databases, enabling businesses to leverage scalable and reliable infrastructure for their applications and operations.
 >
 > -- https://www.aboutamazon.com/what-we-do/amazon-web-services
 

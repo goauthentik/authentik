@@ -4,6 +4,7 @@ title: GitLab
 
 <span class="badge badge--primary">Support level: authentik</span>
 
+# gitlab description will be fixed by one of my previous prs
 ## What is GitLab
 
 > GitLab is a complete DevOps platform, delivered as a single application. This makes GitLab unique and makes Concurrent DevOps possible, unlocking your organization from the constraints of a pieced together toolchain. Join us for a live Q&A to learn how GitLab can give you unmatched visibility and higher levels of efficiency in a single application across the DevOps lifecycle.

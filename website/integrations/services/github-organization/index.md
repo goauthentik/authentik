@@ -6,7 +6,7 @@ title: GitHub Organization
 
 ## What is GitHub Organizations
 
-> Organizations are shared accounts where businesses and open-source projects can collaborate across many projects at once, with sophisticated security and administrative features.
+> GitHub organizations are collective spaces on GitHub where teams and individuals collaborate on projects, manage access permissions, and organize repositories under a unified identity.
 >
 > -- https://docs.github.com/en/organizations/collaborating-with-groups-in-organizations/about-organizations
 

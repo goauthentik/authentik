@@ -6,9 +6,9 @@ title: Grafana
 
 ## What is Grafana
 
-> Grafana is a multi-platform open source analytics and interactive visualization web application. It provides charts, graphs, and alerts for the web when connected to supported data sources, Grafana Enterprise version with additional capabilities is also available. It is expandable through a plug-in system.
+> Grafana is an open-source analytics and visualization platform that allows users to query, visualize, and alert on data collected from various sources such as databases, cloud services, and IoT devices. 
 >
-> -- https://en.wikipedia.org/wiki/Grafana
+> -- https://grafana.com
 
 ## Preparation
 

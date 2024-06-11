@@ -6,9 +6,9 @@ title: Bookstack
 
 ## What is Bookstack
 
-> BookStack is a free and open-source wiki software aimed for a simple, self-hosted, and easy-to-use platform. Based on Laravel, a PHP framework, BookStack is released under the MIT License. It uses the ideas of books to organise pages and store information. BookStack is multilingual and available in over thirty languages. For the simplicity, BookStack is considered as suitable for smaller businesses or freelancers.
+> BookStack is a self-hosted and open-source platform for organizing and documenting information, providing a user-friendly interface for creating and managing documentation, wikis, and knowledge bases within teams and organizations.
 >
-> -- https://en.wikipedia.org/wiki/BookStack
+> -- https://www.bookstackapp.com
 
 :::note
 This is based on authentik 2021.7.2 and BookStack V21.05.3. Instructions may differ between versions.

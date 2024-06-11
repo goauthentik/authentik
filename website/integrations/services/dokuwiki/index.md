@@ -6,9 +6,9 @@ title: DokuWiki
 
 ## What is DokuWiki
 
-From https://en.wikipedia.org/wiki/DokuWiki
-
-> DokuWiki is a wiki application licensed under GPLv2 and written in the PHP programming language. It works on plain text files and thus does not need a database. Its syntax is similar to the one used by MediaWiki. It is often recommended as a more lightweight, easier to customize alternative to MediaWiki.
+> DokuWiki is an open-source wiki platform designed for simplicity and ease of use, enabling users to create and manage documentation and knowledge bases without the need for a database
+>
+> -- https://www.dokuwiki.org/dokuwiki
 
 ## Preparation
 

@@ -6,7 +6,7 @@ title: Glitchtip
 
 ## What is Glitchtip
 
-> Bugs are inevitable in web development. The important thing is to catch them when they appear. With GlitchTip, you can rest easy knowing that if your web app throws an error or goes down, you will be notified immediately. GlitchTip combines error tracking and uptime monitoring in one open-source package to keep you and your team fully up-to-date on the status of your projects.
+> GlitchTip is an open-source error monitoring and reporting tool designed to help developers track and manage application errors in real-time.
 >
 > -- https://glitchtip.com/documentation
 
