@@ -44,8 +44,9 @@ Your Slack integration requires two property mappings, one each for `User.Email`
         - **ACS URL**: `https:_workspace-name_.slack.com/sso/saml`
         - **Issuer**: `https://slack.com`.
         - **Service Provider Binding**: select **Post**
-    - **Advanced protocol settings** - **Signing Certificate**: select the appproriate certificate for Slack.
-      You can leave the default property mappings and other settings.
+    - **Advanced protocol settings**
+        - **Signing Certificate**: select the appproriate certificate for Slack.
+        - **Property mappings**: Select the property mappings that you created in Step 1. You can leave the default property mappings and other settings.
 4. Click **Finish** to create the provider.
 
 ### Step 3. Create a new application
