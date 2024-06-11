@@ -6,9 +6,7 @@ title: Slack
 
 ## What is Slack
 
-> Slack is a platform for collaboration, with chat and real-time video capabilities.
->
-> -- https://slack.com
+> Slack is a platform for collaboration, with chat and real-time video capabilities. To learn more, visit https://slack.com.
 
 ## Preparation
 
@@ -21,20 +19,26 @@ The following placeholders will be used:
 
 ### Step 1. Create custom property mappings
 
-Your Slack integration requires property mappings for `User.Email` and `User.Username` so that authetnik can retrieve and map these values from Slack.
+Your Slack integration requires two property mappings, one each for `User.Email` and `User.Username`, so that authentik can retrieve and map these values from Slack.
 
 1. Log in as admin to your authentik instance and then click **Admin interface**.
-2. Navigate to **Customization -> Property Mappings** and then click **Create**.
-3. On the **New property mapping** modal, select **SAML Property Mapping** and then click **Next**.
-4. Define the required values. For **Expression** define `User.Email`, with `return request.user.email` and for `User.Username` use `return request.user.username`.
+2. Navigate to **Customization -> Property Mappings**
+3. Create the property mapping for `User.Email`.
+    1.  On the **Property Mappings** page, click **Create**.
+    2.  On the **New property mapping** modal, select **SAML Property Mapping** and then click **Next**.
+    3.  Define the required values. In the **Expression** field, define `User.Email` as `return request.user.email`.
 5. Click **Finish**.
-
+6. Create the property mapping for `User.Username`.
+    1.  On the **Property Mappings** page, click **Create**.
+    2.  On the **New property mapping** modal, select **SAML Property Mapping** and then click **Next**.
+    3.  Define the required values. In the **Expression** field, define `User.Username` as `return request.user.username`.
+7. Click **Finish**.
 ### Step 2. Create a new authentication provider
 
 1. Navigate to **Applications -> Providers** and then click **Create**.
 2. On the **New provider** modal, select **SAML Provider** and then click **Next**.
 3. Define the following values (values not listed below can be left as default or empty):
-    - **Name**: provide a clear name, such as "Slack".
+    - **Name**: provide a clear name, such as "slack".
     - **Authorization flow**: Authorize Application (`default-provider-authorization-implicit-consent`).
     - **Protocol settings** define the following values:
         - **ACS URL**: `https:_workspace-name_.slack.com/sso/saml`
@@ -52,6 +56,10 @@ Your Slack integration requires property mappings for `User.Email` and `User.Use
 4. Ensure that the **Policy engine mode** is set to **ANY, any policy must match to grant access**.
 5. Click **Create**.
 
+:::info
+After you have created the provider and application, and the application is connected to the provider (Step 3 above) the **Overview** tab on the provider's detail page in the Admin UI will display additional information that you will need to configure Slack, using the following steps.
+:::
+
 ## Slack configuration
 
 ### Step 4. Configure Slack
@@ -60,7 +68,7 @@ Your Slack integration requires property mappings for `User.Email` and `User.Use
 2. Navigate to the **Configure SAML Authentication** page.
 3. Enter the following values:
     - **SAML 2.0 Endpoint (HTTP)**: copy/paste in the **SSO URL (Redirect)** URL from the provider that you created in authentik.
-    - **Identity Provider Issuer**: set to https://slack.com
+    - **Identity Provider Issuer**: set to `https://slack.com`
     - **Public Certificate**: add the certificate, which you can download from the authentik provider, under **Download signing certificate**.
 4. Optionally, configure the other settings and customize the Sign in button label.
 5. Click **Save**.
