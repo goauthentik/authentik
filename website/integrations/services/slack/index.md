@@ -2,7 +2,7 @@
 title: Slack
 ---
 
-<span class="badge badge--secondary">Support level: authentik</span>
+<span class="badge badge--primary">Support level: authentik</span>
 
 ## What is Slack
 
