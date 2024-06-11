@@ -21,7 +21,7 @@ The following placeholders will be used:
 
 The primary way to manage access in MinIO is via [policies](https://min.io/docs/minio/linux/administration/identity-access-management/policy-based-access-control.html#minio-policy). We need to configure authentik to return a list of which MinIO policies should be applied to a user.
 
-Under _Customization_ -> _Property Mappings_, create a _Scope Mapping_. Give it a name like "OIDC-Scope-minio". Set the scope name to `minio` and the expression to the following:
+Create a Scope Mapping: in the authentik Admin interface, navigate to **Customization -> Property Mappings**, click **Create**, and then select **Scope Mapping**.  Give the property mapping a name like "OIDC-Scope-minio". Set the scope name to `minio` and the **Expression** to the following:
 
 ```python
 return {
