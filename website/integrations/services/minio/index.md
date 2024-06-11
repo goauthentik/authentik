@@ -73,7 +73,7 @@ From the main page, go to _Identity_ -> _OpenID_ and click the create button and
 -   Scopes: `openid, email, profile, minio`
 -   Redirect URI: `https://minio.company/oauth_callback`
 
-Finally, click the save button and follow the instructions in the popup to restart your instance.
+Finally, click **Save** and follow the instructions in the popup to restart your instance.
 
 ### Command Line
 
