@@ -4,7 +4,7 @@ title: Writing documentation
 
 Writing documentation for authentik is a great way for both new and experienced users to improve and contribute to the project.
 
-## Setup your local build
+## Set up your local build
 
 Requirements:
 
@@ -39,6 +39,8 @@ Be sure to run the formatting command above before committing changes.
 Please refer to our [Style Guide](./style-guide.mdx) for authentik documentation. Here you will learn important guidelines about not capitalizing authentik, how we format our titles and headers, and much more.
 
 Whenever possible, use one of our [docs templates](./templates/index.md). This makes it a lot easier for you (no blank page frights!) and keeps the documentation consistent.
+
+Make sure to add the new pages to the appropriate place in `/website/sidebars.js`. Otherwise, the content will not appear in the table of contents to the left.
 
 Following the guidelines will make getting your PRs merged much easier and faster, with fewer edits needed. We appreciate our community contributors helping us keep the Docs consistent, easy-to-use, and high quality.
 
