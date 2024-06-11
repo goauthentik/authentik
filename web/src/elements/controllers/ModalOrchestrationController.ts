@@ -94,22 +94,24 @@ export class ModalOrchestrationController implements ReactiveController {
     }
 
     removeTopmostModal() {
-        let checking = true;
-        while (checking) {
-            const modal = this.knownModals.pop();
+        const knownModals = [...this.knownModals];
+        // Pop off modals until you find the first live one, schedule it to be closed, and make that
+        // cleaned list the current state. Since this is our *only* state object, this has the
+        // effect of creating a new "knownModals" collection with some semantics.
+        while (true) {
+            const modal = knownModals.pop();
             if (!modal) {
                 break;
             }
             if (!modalIsLive(modal)) {
                 continue;
             }
-
             if (modal.closeModal() !== false) {
                 this.scheduleCleanup(modal);
             }
-            checking = false;
             break;
         }
+        this.knownModals = knownModals;
     }
 
     @bound
