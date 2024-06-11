@@ -7,7 +7,7 @@ There are two main types of integrations with authentik: **Applications** and **
 
 ## Applications
 
-authentik integrates with many applications. For a full list, and to learn more about adding documentation for a new application, refer to the [Applications](../integrations/services/index.mdx) documentation.
+authentik integrates with many applications. For a full list, and to learn more about adding documentation for a new application, refer to the [Applications](../integrations/services/index.md) documentation.
 
 ![](./apps-logo.png)
 
