@@ -21,7 +21,7 @@ The following placeholder will be used:
 Your Slack integration requires two property mappings, one each for `User.Email` and `User.Username`, so that authentik can retrieve and map these values from Slack.
 
 1. Log in as admin to your authentik instance and then click **Admin interface**.
-2. Navigate to **Customization -> Property Mappings**
+2. Navigate to **Customization -> Property Mappings**.
 3. Create the property mapping for `User.Email`.
     1. On the **Property Mappings** page, click **Create**.
     2. On the **New property mapping** modal, select **SAML Property Mapping** and then click **Next**.
