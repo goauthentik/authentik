@@ -9,8 +9,9 @@ entries:
     model: authentik_providers_microsoft_entra.microsoftentraprovidermapping
     attrs:
       name: "authentik default Microsoft Entra Mapping: User"
-      # https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0
       expression: |
+        # Field reference: (note that keys have to converted to snake_case)
+        # https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0
         from msgraph.generated.models.password_profile import PasswordProfile
 
         user = {
@@ -35,8 +36,9 @@ entries:
     model: authentik_providers_microsoft_entra.microsoftentraprovidermapping
     attrs:
       name: "authentik default Microsoft Entra Mapping: Group"
-      # https://learn.microsoft.com/en-us/graph/api/group-post-groups?view=graph-rest-1.0&tabs=http#request-body
       expression: |
+        # Field reference: (note that keys have to converted to snake_case)
+        # https://learn.microsoft.com/en-us/graph/api/group-post-groups?view=graph-rest-1.0&tabs=http#request-body
         return {
             "display_name": group.name,
             "mail_enabled": False,
