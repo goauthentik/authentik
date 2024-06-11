@@ -58,7 +58,7 @@ Set the scope of the MinIO scope mapping that you created in the provider (previ
 
 Note the Client ID and Client Secret values. Create an application, using the provider you've created above. Note the slug of the application you've created.
 
-## MinIO
+## MinIO configuration
 
 You can set up OpenID in two different ways: via the web interface or the command line.
 
