@@ -152,3 +152,6 @@ class TestAPIPerms(APITestCase):
         """Test anonymous user denied"""
         res = self.client.get(reverse("authentik_api:invitation-list"))
         self.assertEqual(res.status_code, 403)
+
+        res = self.client.get(reverse("authentik_api:user-detail", kwargs={"pk": self.user.pk}))
+        self.assertEqual(res.status_code, 403)
