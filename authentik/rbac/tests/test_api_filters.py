@@ -147,3 +147,8 @@ class TestAPIPerms(APITestCase):
             },
         )
         self.assertEqual(res.status_code, 403)
+
+    def test_anonymous_user_denied(self):
+        """Test anonymous user denied"""
+        res = self.client.get(reverse("authentik_api:invitation-list"))
+        self.assertEqual(res.status_code, 403)
