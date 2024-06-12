@@ -27,7 +27,7 @@ def update_score(request: HttpRequest, identifier: str, amount: int):
             "ip_geo_data": GEOIP_CONTEXT_PROCESSOR.city_dict(remote_ip) or {},
             "ip_asn_data": ASN_CONTEXT_PROCESSOR.asn_dict(remote_ip) or {},
             "expires": reputation_expiry(),
-        }
+        },
     )
     LOGGER.debug("Updated score", amount=amount, for_user=identifier, for_ip=remote_ip)
 
