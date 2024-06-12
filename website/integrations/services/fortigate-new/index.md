@@ -2,6 +2,9 @@
 title: FortiGate
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 <Tabs defaultValue="admin-login" groupId="fortigate">
   <TabItem value="admin-login" label="Admin Login">
   
