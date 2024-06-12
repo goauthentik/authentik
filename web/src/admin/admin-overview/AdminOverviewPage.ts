@@ -40,7 +40,7 @@ export function versionFamily(): string {
 
 const AdminOverviewBase = WithLicenseSummary(AKElement);
 
-type Renderer = (args?: { [key: string]: string | undefined }) => TemplateResult | typeof nothing;
+type Renderer = () => TemplateResult | typeof nothing;
 
 @customElement("ak-admin-overview")
 export class AdminOverviewPage extends AdminOverviewBase {
@@ -137,7 +137,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
                         <ak-aggregate-card
                             icon="pf-icon pf-icon-server"
                             header=${msg(
-                                "Logins and authorizations over the last week (per 8 hours)"
+                                "Logins and authorizations over the last week (per 8 hours)",
                             )}
                         >
                             <ak-charts-admin-login-authorization></ak-charts-admin-login-authorization>
@@ -197,18 +197,19 @@ export class AdminOverviewPage extends AdminOverviewBase {
         ];
 
         const action = ([label, url]: [string, string]) => {
-            const ex = (istrue: Renderer, isfalse: Renderer) =>
-                when(url.startsWith("https://"), istrue, isfalse);
+            const isExternal = url.startsWith("https://");
+            const ex = (truecase: Renderer, falsecase: Renderer) =>
+                when(isExternal, truecase, falsecase);
 
             const content = html`${label}${ex(
                 () => html`<i class="fas fa-external-link-alt ak-external-link"></i>`,
-                () => nothing
+                () => nothing,
             )}`;
 
             return html`<li>
                 ${ex(
                     () => html`<a href="${url}" class="pf-u-mb-xl" target="_blank">${content}</a>`,
-                    () => html`<a href="${url}" class="pf-u-mb-xl" )>${content}</a>`
+                    () => html`<a href="${url}" class="pf-u-mb-xl" )>${content}</a>`,
                 )}
             </li>`;
         };
