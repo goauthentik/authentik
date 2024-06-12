@@ -17,9 +17,18 @@ The following placeholders will be used:
 -   `gatus.company` is the FQDN of the Gatus install.
 -   `authentik.company` is the FQDN of the authentik install.
 
+## authentik configuration
+
+Create an OIDC provider with the following settings:
+
+-   Name: 'gatus'
+-   Redirect URL: 'https://gatus.company/authorization-code/callback'
+
+Everything else is up to you and what you want, just don't forget to grab the client ID and secret!
+
 ## Gatus configuration
 
-1. Within the main configuration file of Gatus add this to it:
+In the config.yml file of Gatus, add the following:
 
 ```yml
 security:
@@ -32,14 +41,5 @@ security:
 ```
 
 :::note
-Gatus auto updates the configuration about every 30 seconds but it does not pick up the changes just restart the instance
+Gatus auto-updates the configuration about every 30 seconds. However, if it does not pick up the changes, just restart the instance.
 :::
-
-## authentik configuration
-
-1. Create an OIDC provider with the following settings:
-
--   Name: 'gatus'
--   Redirect URL: 'https://gatus.company/authorization-code/callback'
-
-Everything else is up to you and what you want, just don't forget to grab the client ID and secret!
