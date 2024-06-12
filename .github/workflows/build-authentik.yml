@@ -1,4 +1,5 @@
 name: Build-Authentik
+run-name: Build Authentik for ${{ inputs.environment }} environment from ${{ github.ref_name }} branch
 
 permissions:
   id-token: write
