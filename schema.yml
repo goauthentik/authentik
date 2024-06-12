@@ -47406,6 +47406,7 @@ components:
               type: string
             openssl_fips_mode:
               type: boolean
+              nullable: true
             authentik_version:
               type: string
           required:
