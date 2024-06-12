@@ -108,7 +108,6 @@ module.exports = {
                         "services/fortigate-admin/index",
                         "services/fortigate-ssl/index",
                         "services/fortimanager/index",
-                        "services/fortigate-new/index",
                         "services/opnsense/index",
                         "services/pfsense/index",
                     ],
