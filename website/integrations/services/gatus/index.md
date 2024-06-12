@@ -23,21 +23,23 @@ The following placeholders will be used:
 
 ```yml
 security:
-  oidc:
-    issuer-url: https://authentik.company/application/o/gatus/
-    client-id: "CLIENT_ID"
-    client-secret: "CLIENT_SECRET"
-    redirect-url: https://gatus.company/authorization-code/callback
-    scopes: [openid]
+    oidc:
+        issuer-url: https://authentik.company/application/o/gatus/
+        client-id: "CLIENT_ID"
+        client-secret: "CLIENT_SECRET"
+        redirect-url: https://gatus.company/authorization-code/callback
+        scopes: [openid]
 ```
 
-::::note Gatus auto updates the configuration about every 30 seconds but it does not pick up the changes just restart the instance. ::::
+:::note
+Gatus auto updates the configuration about every 30 seconds but it does not pick up the changes just restart the instance
+:::
 
 ## authentik configuration
 
 1. Create an OIDC provider with the following settings:
 
-- Name: 'gatus'
-- Redirect URL: 'https://gatus.company/authorization-code/callback'
+-   Name: 'gatus'
+-   Redirect URL: 'https://gatus.company/authorization-code/callback'
 
 Everything else is up to you and what you want, just don't forget to grab the client ID and secret!
