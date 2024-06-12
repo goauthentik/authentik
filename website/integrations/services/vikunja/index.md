@@ -6,7 +6,7 @@ title: Vikunja
 
 ## What is Vikunja
 
-> Vikunja is an Open-Source, self-hosted To-Do list application for all platforms. It is licensed under the GPLv3.
+> Vikunja is an Open-Source, self-hosted To-Do list application for all platforms.
 >
 > -- https://vikunja.io/
 

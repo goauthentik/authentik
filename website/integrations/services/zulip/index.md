@@ -6,8 +6,7 @@ title: Zulip
 
 ## What is Zulip
 
-> **Zulip**: Chat for distributed teams. Zulip combines the immediacy of real-time chat with an email threading model.
-> With Zulip, you can catch up on important conversations while ignoring irrelevant ones.
+> Zulip is an open-source team communication platform that combines the immediacy of chat with the organization of threaded conversations.
 >
 > -- https://zulip.com
 

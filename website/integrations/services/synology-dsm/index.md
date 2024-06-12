@@ -6,7 +6,7 @@ title: Synology DSM (DiskStation Manager)
 
 ## What is Synology DSM
 
-> Synology Inc. is a Taiwanese corporation that specializes in network-attached storage (NAS) appliances. Synology's line of NAS is known as the DiskStation for desktop models, FlashStation for all-flash models, and RackStation for rack-mount models. Synology's products are distributed worldwide and localized in several languages.
+> Synology DiskStation Manager is an intuitive web-based operating system used to manage Synology NAS devices.
 >
 > -- https://www.synology.com/en-global/dsm
 

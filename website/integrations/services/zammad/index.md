@@ -6,8 +6,7 @@ title: Zammad
 
 ## What is Zammad
 
-> Zammad is a web-based, open source user support/ticketing solution.
-> Download and install it on your own servers. For free.
+> Zammad is an open-source help desk and ticketing system designed to streamline customer support operations, offering features such as ticket management, customer communication channels, knowledge base, and reporting tools.
 >
 > -- https://zammad.org/
 

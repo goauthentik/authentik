@@ -6,7 +6,7 @@ title: Skyhigh Security
 
 ## What is Skyhigh Security
 
-> Skyhigh Security is a Security Services Edge (SSE), Cloud Access Security Broker (CASB), and Secure Web Gateway (SWG), and Private Access (PA / ZTNA) cloud provider.
+> Skylight Security is a comprehensive cybersecurity platform designed to protect organizations from digital threats, offering features such as threat detection, vulnerability management, and incident response to safeguard sensitive data and infrastructure.
 >
 > -- https://www.skyhighsecurity.com/en-us/about.html
 

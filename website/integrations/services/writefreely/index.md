@@ -6,7 +6,7 @@ title: Writefreely
 
 ## What is Writefreely
 
-> An open source platform for building a writing space on the web.
+> WriteFreely is an open source platform for building a writing space on the web.
 >
 > -- https://writefreely.org/
 

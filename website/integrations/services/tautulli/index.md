@@ -6,7 +6,7 @@ title: Tautulli
 
 ## What is Tautulli
 
-> Tautulli is a 3rd party application that you can run alongside your Plex Media Server to monitor activity and track various statistics. Most importantly, these statistics include what has been watched, who watched it, when and where they watched it, and how it was watched. The only thing missing is "why they watched it", but who am I to question your 42 plays of Frozen. All statistics are presented in a nice and clean interface with many tables and graphs, which makes it easy to brag about your server to everyone else.
+> Tautulli is an open-source monitoring and analytics tool for Plex Media Server, providing detailed insights into media usage, user activity, and server performance, helping users optimize their Plex experience and track viewing habits.
 >
 > -- https://tautulli.com/
 

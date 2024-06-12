@@ -6,7 +6,7 @@ title: Snipe-IT
 
 ## What is Snipe-IT
 
-> A free open source IT asset/license management system.
+> Snipe-IT is an open-source asset management software designed to help organizations track and manage their IT assets.
 >
 > -- https://snipeitapp.com
 

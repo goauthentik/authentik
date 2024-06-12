@@ -6,9 +6,9 @@ title: WordPress
 
 ## What is WordPress
 
-> WordPress is a free and open-source content management system written in PHP and paired with a MySQL or MariaDB database. Features include a plugin architecture and a template system, referred to within WordPress as Themes
+> WordPress is a free and open-source content management system written in PHP and paired with a MySQL or MariaDB database.
 >
-> -- https://en.wikipedia.org/wiki/WordPress
+> -- https://wordpress.com
 
 :::note
 There are many different plugins for WordPress that allow you to setup SSO using different authentication methods. The plugin that is explained in this tutorial is "OpenID Connect Generic" version 3.8.5 by daggerhart. This plugin uses OpenID/OAUTH2 and is free without paywalls or subscriptions at the time of writing this. The plugin is available for free in the WordPress Plugin gallery.

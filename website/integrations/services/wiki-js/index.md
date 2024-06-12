@@ -6,7 +6,7 @@ title: Wiki.js
 
 ## What is Wiki.js
 
-> Wiki.js is a wiki engine running on Node.js and written in JavaScript. It is free software released under the Affero GNU General Public License. It is available as a self-hosted solution or using "single-click" install on the DigitalOcean and AWS marketplace.
+> Wiki.js is an open-source wiki software that enables teams to collaboratively create and manage documentation, knowledge bases, and wikis.
 >
 > -- https://en.wikipedia.org/wiki/Wiki.js
 
