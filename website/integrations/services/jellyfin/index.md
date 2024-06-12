@@ -26,9 +26,9 @@ An LDAP outpost must be deployed to use the Jellyfin LDAP plugin
 
 The following placeholders will be used:
 
--   `jellyfin.company.com` is the FQDN of the Jellyfin install.
--   `authentik.company.com` is the FQDN of the authentik install.
--   `ldap.company.com` the FQDN of the LDAP outpost.
+-   `jellyfin.company` is the FQDN of the Jellyfin install.
+-   `authentik.company` is the FQDN of the authentik install.
+-   `ldap.company` the FQDN of the LDAP outpost.
 -   `dc=company,dc=com` the Base DN of the LDAP outpost.
 -   `ldap_bind_user` the username of the desired LDAP Bind User
 
@@ -45,7 +45,7 @@ The following placeholders will be used:
 5. Install the plugin. You may need to restart Jellyfin to finish installation.
 6. Once finished, navigate back to the plugins section of the admin dashboard, click the 3 dots on the "LDAP-Auth Plugin" card, and click settings.
 7. Configure the LDAP Settings as follows:
-    - `LDAP Server`: `ldap.company.com`
+    - `LDAP Server`: `ldap.company`
     - `LDAP Port`: 636
     - `Secure LDAP`: **Checked**
     - `StartTLS`: Unchecked
@@ -111,7 +111,7 @@ https://raw.githubusercontent.com/9p4/jellyfin-plugin-sso/manifest-release/manif
 8. Fill out the Add / Update Provider Configuration:
 
     - Name of OID Provider: `authentik`
-    - OID Endpoint: `https://authentik.company.com/application/o/jellyfin/.well-known/openid-configuration`
+    - OID Endpoint: `https://authentik.company/application/o/jellyfin/.well-known/openid-configuration`
     - OpenID Client ID: ClientID from provider
     - OID Secret: Client Secret from provider
     - Enabled: **CHECKED**
@@ -128,7 +128,7 @@ https://raw.githubusercontent.com/9p4/jellyfin-plugin-sso/manifest-release/manif
 12. In the login disclaimer put this code and making sure to change the url at the top:
 
 ```
-<form action="https://jellyfin.company.com/sso/OID/start/authentik">
+<form action="https://jellyfin.company/sso/OID/start/authentik">
   <button class="raised block emby-button button-submit">
     Sign in with SSO
   </button>
@@ -157,31 +157,14 @@ If you have problems check your logs which are under the **Administration** -> *
 
 ### authentik Configuration
 
-To use the role claim within Jellyfin we will have to add a custom property. This is not needed but does allow admins to be set for SSO users automatically. It can also deny access if they don't have a role, but this should be done though authentik instead.
-
-1. In the Admin interface, go to **Customization** -> **Property Mappings**.
-2. Create a **Scope Mapping**.
-3. Assign these values:
-    - name: `Group Membership`
-    - scope name: `groups`
-    - description: `See which groups you belong to`
-    - expression: `return [group.name for group in user.ak_groups.all()]`
-
-![](./jellyfin_mapping.png)
-
 **Provider Settings**
 
 In authentik under **Providers**, create an OAuth2/OpenID Provider with these settings:
 
 -   Name: `jellyfin`
--   Redirect URI: `https://jellyfin.company.com/sso/OID/redirect/authentik`
--   Signing Key: Select any available key
+-   Redirect URI: `https://jellyfin.company/sso/OID/redirect/authentik`
 
-For the Group Membership scope we just created go into **Advanced Protocol Settings** and add "Group Membership" to the **Scopes**.
-
-![](./jellyfin_scopes.png)
-
-Make sure to grab the Client ID and the Client Secret!
+Everything else is up to you, just make sure to grab the client ID and the client secret!
 
 :::note
 The last part of the URI is the name you use when making the provider in Jellyfin so make sure they are the same.
@@ -189,6 +172,6 @@ The last part of the URI is the name you use when making the provider in Jellyfi
 
 **Application Settings**
 
-Create an application that uses `jellyfin`. Optionally apply access restrictions to the application.
+Create an application that uses `jellyfin` provider. Optionally apply access restrictions to the application.
 
-Set the launch URL to `https://jellyfin.company.com/sso/OID/start/authentik`
+Set the launch URL to `https://jellyfin.company/sso/OID/start/authentik`
