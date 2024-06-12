@@ -24,7 +24,7 @@ The site is built using npm, below are some useful make commands:
 
 -   **Formatting**: `make website` or `make website-lint-fix`
 
-    Run this command before committing, to ensure consistent syntax, clean formatting, and verify links. Note that if the formatting command is not run, the build will fail with an error about linting.
+    Run a formatting command before committing, to ensure consistent syntax, clean formatting, and verify links. Note that if the formatting command is not run, the build will fail with an error about linting.
 
 -   **Live editing**: `make website-watch`
 
@@ -38,7 +38,7 @@ Be sure to run a formatting command before committing changes.
 
 Please refer to our [Style Guide](./style-guide.mdx) for authentik documentation. Here you will learn important guidelines about not capitalizing authentik, how we format our titles and headers, and much more.
 
-Whenever possible, use one of our [docs templates](./templates/index.md). This makes it a lot easier for you (no blank page frights!) and keeps the documentation consistent.
+Whenever possible, use one of our [doc templates](./templates/index.md). This makes it a lot easier for you (no blank page frights!) and keeps the documentation consistent.
 
 Make sure to add the new pages to the appropriate place in `/website/sidebars.js`. Otherwise, the content will not appear in the table of contents to the left.
 
