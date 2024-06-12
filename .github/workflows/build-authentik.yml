@@ -11,8 +11,11 @@ on:
         description: Select the Environment for Building the Image
         required: true
         options:
+          - dev
           - dev2
+          - ci
           - test
+          - staging
           - production
         type: choice
       with-sbom:
