@@ -6,7 +6,7 @@ title: Proxmox VE
 
 ## What is Proxmox VE
 
-> Proxmox Virtual Environment is an open source server virtualization management solution based on QEMU/KVM and LXC. You can manage virtual machines, containers, highly available clusters, storage and networks with an integrated, easy-to-use web interface or via CLI. Proxmox VE code is licensed under the GNU Affero General Public License, version 3. The project is developed and maintained by Proxmox Server Solutions GmbH.
+> Proxmox VE is an open-source virtualization platform that combines virtualization, containerization, and software-defined storage in a single solution, offering a powerful and flexible infrastructure for running and managing virtual machines, containers, and virtualized environments.
 >
 > -- https://pve.proxmox.com/wiki/Main_Page
 

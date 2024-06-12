@@ -6,18 +6,9 @@ title: SharePoint Server SE
 
 ## What is Microsoft SharePoint
 
-> SharePoint is a proprietary, web-based collaborative platform that integrates natively with Microsoft 365.
+> Microsoft SharePoint is a proprietary web-based collaboration and document management platform that allows teams to create, share, and manage content, workflows, and applications within their organization.
 >
-> Launched in 2001, SharePoint is primarily sold as a document management and storage system, although it is also used for sharing information through an intranet, implementing internal applications, and for implementing business processes.
->
-> -- https://en.wikipedia.org/wiki/SharePoint
-
-> Organizations use Microsoft SharePoint to create websites.
->
-> You can use it as a secure place to store, organize, share, and access information from any device.
-> All you need is a web browser, such as Microsoft Edge, Internet Explorer, Chrome, or Firefox.
->
-> -- https://support.microsoft.com/en-us/office/what-is-sharepoint-97b915e6-651b-43b2-827d-fb25777f446f
+> -- https://www.microsoft.com/en-ca/microsoft-365/sharepoint/collaboration
 
 :::note
 There are many ways to implement SSO mechanism within Microsoft SharePoint Server Subscription Edition.

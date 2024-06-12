@@ -6,9 +6,9 @@ title: Rocket.chat
 
 ## What is Rocket.chat
 
-> Rocket.Chat is an open-source fully customizable communications platform developed in JavaScript for organizations with high standards of data protection. It is licensed under the MIT License with some other licenses mixed in. See [Rocket.chat GitHub](https://github.com/RocketChat/Rocket.Chat/blob/develop/LICENSE) for licensing information.
+> Rocket.Chat is an open-source team collaboration platform, offering chat, video conferencing, and file-sharing capabilities.
 >
-> -- https://github.com/RocketChat/Rocket.Chat
+> -- https://www.rocket.chat/
 
 :::note
 This is based on authentik 2022.3.1 and Rocket.chat 4.5.1 using the [Docker-Compose install](https://docs.rocket.chat/quick-start/installing-and-updating/rapid-deployment-methods/docker-and-docker-compose/docker-containers). Instructions may differ between versions.

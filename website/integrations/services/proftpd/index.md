@@ -6,9 +6,9 @@ title: ProFTPD
 
 ## What is ProFTPD
 
-> ProFTPD is a high-performance, extremely configurable, and most of all a secure FTP server, featuring Apache-like configuration and blazing performance.
+> ProFTPD is an open-source FTP server software designed for Unix-like operating systems.
 >
-> -- From http://www.proftpd.org
+> -- http://www.proftpd.org
 
 This integration leverages authentik's LDAP for the identity provider to achieve an SSO experience. See [ldap provider generic setup](../../../docs/providers/ldap/generic_setup) for setting up the LDAP provider.
 

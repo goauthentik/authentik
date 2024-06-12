@@ -6,9 +6,9 @@ title: organizr
 
 ## What is organizr
 
-> Organizr allows you to setup "Tabs" that will be loaded all in one webpage.
+> Organizr is a self-hosted web application that serves as a customizable homepage and dashboard for managing and accessing various web services, applications, and utilities in a unified interface.
 >
-> -- https://github.com/causefx/Organizr
+> -- https://docs.organizr.app
 
 This integration leverages authentik's LDAP for the identity provider to achieve an SSO experience. See [ldap provider generic setup](../../../docs/providers/ldap/generic_setup) for setting up the LDAP provider.
 

@@ -6,8 +6,7 @@ title: Outline
 
 ## What is Outline
 
-> Your team's knowledge base.
-> Lost in a mess of Docs? Never quite sure who has access? Colleagues requesting the same information repeatedly in chat? It’s time to get your team’s knowledge organized.
+> Outline is a knowledge management platform designed to help teams organize their documentation and streamline access to information.
 >
 > -- https://www.getoutline.com
 

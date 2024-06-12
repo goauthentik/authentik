@@ -6,7 +6,7 @@ title: pfSense
 
 ## What is pfSense
 
-> The pfSense project is a free network firewall distribution, based on the FreeBSD operating system with a custom kernel and including third party free software packages for additional functionality.
+> pfSense is an open-source firewall and router software distribution based on FreeBSD, providing features such as firewalling, routing, VPN, and traffic shaping.
 >
 > -- https://www.pfsense.org/
 

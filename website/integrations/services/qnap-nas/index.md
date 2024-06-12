@@ -4,9 +4,9 @@ title: QNAP NAS
 
 ## What is QNAP NAS
 
-> QNAP Systems, Inc. is a Taiwanese corporation that specializes in network-attached storage appliances used for file sharing, virtualization, storage management and surveillance applications.
+> QNAP NAS is a series of network-attached storage devices manufactured by QNAP Systems.
 >
-> -- https://en.wikipedia.org/wiki/QNAP_Systems
+> -- https://www.qnap.com/en/product
 
 Connecting a QNAP NAS to an LDAP Directory is a little bit special as it is **not** (well) documented what really is done behind the scenes of QNAP.
 

@@ -6,8 +6,7 @@ title: Rancher
 
 ## What is Rancher
 
-> An enterprise platform for managing Kubernetes Everywhere
-> Rancher is a platform built to address the needs of the DevOps teams deploying applications with Kubernetes, and the IT staff responsible for delivering an enterprise-critical service.
+> Rancher is an open-source container management platform that simplifies the deployment, management, and scaling of containerized applications across any infrastructure.
 >
 > -- https://rancher.com/products/rancher
 
