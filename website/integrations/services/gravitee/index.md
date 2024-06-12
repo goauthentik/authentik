@@ -6,11 +6,9 @@ title: Gravitee
 
 ## What is Gravitee
 
-> Gravitee.io API Management is a flexible, lightweight and blazing-fast Open Source solution that helps your organization control who, when and how users access your APIs.
+> Gravitee.io API Management is an open-source platform facilitating API governance, including access control, rate limiting, caching, and OAuth integration.
 >
-> It offers an easy to use GUI to setup proxies for APIs, rate limiting, api keys, caching, OAUTH rules, a portal that can be opened to the public for people to subscribe to APIs, and much more.
->
-> -- https://github.com/gravitee-io/gravitee-api-management
+> -- https://www.gravitee.io/
 
 ## Preparation
 

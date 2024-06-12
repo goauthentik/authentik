@@ -6,7 +6,7 @@ title: Mastodon
 
 ## What is Mastodon
 
-> Mastodon is free and open-source software for running self-hosted social networking services. It has microblogging features similar to Twitter
+> Mastodon is free and open-source software for running self-hosted social networking services
 >
 > -- https://joinmastodon.org/
 

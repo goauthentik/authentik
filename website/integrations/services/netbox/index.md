@@ -6,7 +6,7 @@ title: NetBox
 
 ## What is NetBox
 
-> NetBox is the leading solution for modeling and documenting modern networks.
+> NetBox is a widely-used open-source platform designed for modeling and documenting modern networks, offering comprehensive features for network inventory, IP address management, and infrastructure visualization.
 >
 > -- https://github.com/netbox-community/netbox
 

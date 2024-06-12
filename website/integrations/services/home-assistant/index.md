@@ -6,7 +6,7 @@ title: Home Assistant
 
 ## What is Home Assistant
 
-> Open source home automation that puts local control and privacy first. Powered by a worldwide community of tinkerers and DIY enthusiasts. Perfect to run on a Raspberry Pi or a local server.
+> Home Assistant is an open source home automation that puts local control and privacy first.
 >
 > -- https://www.home-assistant.io/
 
