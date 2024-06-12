@@ -31,7 +31,7 @@ The site is built using npm, below are some useful make commands:
     For real time viewing of changes, as you make them.
 
 :::info
-Be sure to run the formatting command above before committing changes.
+Be sure to run a formatting command before committing changes.
 :::
 
 ## Writing guidelines
