@@ -114,3 +114,6 @@ class BaseOutgoingSyncClient[
         pre-link any users/groups in the remote system with the respective
         object in authentik based on a common identifier"""
         raise NotImplementedError()
+
+    def fetch_single(self, uid: str) -> TSchema:
+        raise NotImplementedError

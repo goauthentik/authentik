@@ -141,3 +141,6 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
             microsoft_id=user.id,
             attributes=self.entity_as_dict(user),
         )
+
+    def fetch_single(self, uid: str) -> MSUser:
+        return self._request(self.client.users.by_user_id(uid).get())
