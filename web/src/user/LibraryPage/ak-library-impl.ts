@@ -18,10 +18,6 @@ import "./ak-library-application-list.js";
 import "./ak-library-application-search-empty.js";
 import "./ak-library-application-search.js";
 import {
-    AK_LIBRARY_SEARCH_EMPTY,
-    AK_LIBRARY_SEARCH_ITEM_SELECTED,
-    AK_LIBRARY_SEARCH_RESET,
-    AK_LIBRARY_SEARCH_UPDATED,
     LibraryPageSearchEmpty,
     LibraryPageSearchReset,
     LibraryPageSearchSelected,
@@ -89,17 +85,17 @@ export class LibraryPage extends AKElement {
                 "Application.results should never be undefined when passed to the Library Page.",
             );
         }
-        this.addEventListener(AK_LIBRARY_SEARCH_UPDATED, this.searchUpdated);
-        this.addEventListener(AK_LIBRARY_SEARCH_RESET, this.searchReset);
-        this.addEventListener(AK_LIBRARY_SEARCH_EMPTY, this.searchEmpty);
-        this.addEventListener(AK_LIBRARY_SEARCH_ITEM_SELECTED, this.launchRequest);
+        this.addEventListener(LibraryPageSearchUpdated.eventName, this.searchUpdated);
+        this.addEventListener(LibraryPageSearchReset.eventName, this.searchReset);
+        this.addEventListener(LibraryPageSearchEmpty.eventName, this.searchEmpty);
+        this.addEventListener(LibraryPageSearchSelected.eventName, this.launchRequest);
     }
 
     disconnectedCallback() {
-        this.removeEventListener(AK_LIBRARY_SEARCH_UPDATED, this.searchUpdated);
-        this.removeEventListener(AK_LIBRARY_SEARCH_RESET, this.searchReset);
-        this.removeEventListener(AK_LIBRARY_SEARCH_EMPTY, this.searchEmpty);
-        this.removeEventListener(AK_LIBRARY_SEARCH_ITEM_SELECTED, this.launchRequest);
+        this.removeEventListener(LibraryPageSearchUpdated.eventName, this.searchUpdated);
+        this.removeEventListener(LibraryPageSearchReset.eventName, this.searchReset);
+        this.removeEventListener(LibraryPageSearchEmpty.eventName, this.searchEmpty);
+        this.removeEventListener(LibraryPageSearchSelected.eventName, this.launchRequest);
         super.disconnectedCallback();
     }
 

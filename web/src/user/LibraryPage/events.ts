@@ -1,74 +1,72 @@
 import type { Application } from "@goauthentik/api";
 
-export const AK_LIBRARY_SEARCH_UPDATED = "authentik.library.search-updated";
-export const AK_LIBRARY_SEARCH_RESET = "authentik.library.search-reset";
-export const AK_LIBRARY_SEARCH_EMPTY = "authentik.library.search-empty";
-export const AK_LIBRARY_SEARCH_ITEM_SELECTED = "authentik.library.search-item-selected";
-
 /**
  * @class LibraryPageSearchUpdated
  *
- * Indicates that the user has made a query that resulted in some applications being filtered-for.
+ * Indicates that the user has made a query that resulted in some
+ * applications being filtered-for.
  *
  */
 export class LibraryPageSearchUpdated extends Event {
+    static readonly eventName = "authentik.library.search-updated";
     /**
-     * The list of those entries found by the current search.
-     *
-     * @attr
+     * @attr apps: The list of those entries found by the current search.
      */
-    public apps: Application[];
-
-    constructor(apps: Application[]) {
-        super(AK_LIBRARY_SEARCH_UPDATED, { composed: true, bubbles: true });
-        this.apps = apps;
+    constructor(public apps: Application[]) {
+        super(LibraryPageSearchUpdated.eventName, { composed: true, bubbles: true });
     }
 }
 
 /**
  * @class LibraryPageSearchReset
  *
- * Indicates that the user has emptied the search field. Intended to signal that all available apps
- * to be displayed.
+ * Indicates that the user has emptied the search field. Intended to
+ * signal that all available apps are to be displayed.
  *
  */
 export class LibraryPageSearchReset extends Event {
+    static readonly eventName = "authentik.library.search-reset";
     constructor() {
-        super(AK_LIBRARY_SEARCH_RESET, { composed: true, bubbles: true });
+        super(LibraryPageSearchReset.eventName, { composed: true, bubbles: true });
     }
 }
 
 /**
  * @class LibraryPageSearchEmpty
  *
- * Indicates that the user has made a query that resulted in an empty list being returned. Intended
- * to signal that an alternative "No matching applications found" message be displayed.
+ * Indicates that the user has made a query that resulted in an empty
+ * list being returned. Intended to signal that an alternative "No
+ * matching applications found" message be displayed.
  *
  */
 export class LibraryPageSearchEmpty extends Event {
+    static readonly eventName = "authentik.library.search-empty";
+
     constructor() {
-        super(AK_LIBRARY_SEARCH_EMPTY, { composed: true, bubbles: true });
+        super(LibraryPageSearchEmpty.eventName, { composed: true, bubbles: true });
     }
 }
 
 /**
  * @class LibraryPageSearchEmpty
  *
- * Indicates that the user has pressed "Enter" while focused on the search box. Intended to signal
- * that the currently highlighted search entry (if any) should be activated.
+ * Indicates that the user has pressed "Enter" while focused on the
+ * search box. Intended to signal that the currently highlighted search
+ * entry (if any) should be activated.
  *
  */
 export class LibraryPageSearchSelected extends Event {
+    static readonly eventName = "authentik.library.search-item-selected";
     constructor() {
-        super(AK_LIBRARY_SEARCH_ITEM_SELECTED, { composed: true, bubbles: true });
+        super(LibraryPageSearchSelected.eventName, { composed: true, bubbles: true });
     }
 }
 
 declare global {
     interface GlobalEventHandlersEventMap {
-        [AK_LIBRARY_SEARCH_UPDATED]: LibraryPageSearchUpdated;
-        [AK_LIBRARY_SEARCH_RESET]: LibraryPageSearchReset;
-        [AK_LIBRARY_SEARCH_EMPTY]: LibraryPageSearchEmpty;
-        [AK_LIBRARY_SEARCH_ITEM_SELECTED]: LibraryPageSearchSelected;
+        [LibraryPageSearchUpdated.eventName]: LibraryPageSearchUpdated;
+        [LibraryPageSearchReset.eventName]: LibraryPageSearchReset;
+        [LibraryPageSearchEmpty.eventName]: LibraryPageSearchEmpty;
+        [LibraryPageSearchSelected.eventName]: LibraryPageSearchSelected;
     }
 }
