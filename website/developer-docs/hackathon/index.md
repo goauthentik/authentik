@@ -31,7 +31,7 @@ Online, in our [GitHub repo](https://github.com/goauthentik/authentik), and on D
 
 ## Take a look on GitHub
 
-If you already know what you and/or your team want to work on, you can open an [Issue](https://github.com/goauthentik/authentik/issues) using our template for all hackathon Issues at any time (why not now?) and add the `hackathon` label. Then, when you register, enter the Issue number that you opened on your registration form. This way, on Kickoff Day we can easily match particpants with their Issue of interest.
+If you already know what you and/or your team want to work on, you can open an [Issue](https://github.com/goauthentik/authentik/issues) using our template for all hackathon Issues at any time (why not now?) and add the `hackathon` label. Then, when you register, enter the Issue number that you opened on your registration form. This way, on Kickoff Day we can easily match participants with their Issue of interest.
 
 During the Kickoff call, there will be time to peruse existing Issues and add emotes to indicate your interest in working on it (or having it worked on!)
 

@@ -12,6 +12,10 @@ When configuring SCIM, you'll get an endpoint and a token from the application t
 
 The token given by the application will be sent with all outgoing SCIM requests to authenticate them.
 
+:::info
+When adding the SCIM provider, you must define the **Backchannel provider using the name of the SCIM provider that you created in authentik. Do NOT add any value in the **Provider** field (doing so will cause the provider to display as an application on the user interface, under **My apps\*\*, which is not supported for SCIM).
+:::
+
 ### Syncing
 
 Data is synchronized in multiple ways:

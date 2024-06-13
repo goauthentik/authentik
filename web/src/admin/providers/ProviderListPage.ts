@@ -1,6 +1,8 @@
 import "@goauthentik/admin/applications/ApplicationWizardHint";
 import "@goauthentik/admin/providers/ProviderWizard";
+import "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderForm";
 import "@goauthentik/admin/providers/ldap/LDAPProviderForm";
+import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderViewPage";
 import "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
 import "@goauthentik/admin/providers/proxy/ProxyProviderForm";
 import "@goauthentik/admin/providers/rac/RACProviderForm";

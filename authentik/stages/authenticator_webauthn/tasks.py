@@ -8,6 +8,8 @@ from django.core.cache import cache
 from django.db.transaction import atomic
 from fido2.mds3 import filter_revoked, parse_blob
 
+from authentik.events.models import TaskStatus
+from authentik.events.system_tasks import SystemTask, prefill_task
 from authentik.root.celery import CELERY_APP
 from authentik.stages.authenticator_webauthn.models import (
     UNKNOWN_DEVICE_TYPE_AAGUID,
@@ -27,43 +29,68 @@ def mds_ca() -> bytes:
         return _raw_root.read()
 
 
-@CELERY_APP.task()
-def webauthn_mds_import(force=False):
-    """Background task to import FIDO Alliance MDS blob into database"""
+@CELERY_APP.task(
+    bind=True,
+    base=SystemTask,
+)
+@prefill_task
+def webauthn_mds_import(self: SystemTask, force=False):
+    """Background task to import FIDO Alliance MDS blob and AAGUIDs into database"""
     with open(MDS_BLOB_PATH, mode="rb") as _raw_blob:
         blob = parse_blob(_raw_blob.read(), mds_ca())
-    with atomic():
-        WebAuthnDeviceType.objects.update_or_create(
+    to_create_update = [
+        WebAuthnDeviceType(
             aaguid=UNKNOWN_DEVICE_TYPE_AAGUID,
-            defaults={
-                "description": "authentik: Unknown devices",
-            },
+            description="authentik: Unknown devices",
         )
-        if cache.get(CACHE_KEY_MDS_NO) == blob.no and not force:
-            return
+    ]
+    to_delete = []
+
+    mds_no = cache.get(CACHE_KEY_MDS_NO)
+    if mds_no != blob.no or force:
         for entry in blob.entries:
             aaguid = entry.aaguid
             if not aaguid:
                 continue
             if not filter_revoked(entry):
-                WebAuthnDeviceType.objects.filter(aaguid=str(aaguid)).delete()
+                to_delete.append(str(aaguid))
                 continue
             metadata = entry.metadata_statement
-            WebAuthnDeviceType.objects.update_or_create(
-                aaguid=str(aaguid),
-                defaults={"description": metadata.description, "icon": metadata.icon},
+            to_create_update.append(
+                WebAuthnDeviceType(
+                    aaguid=str(aaguid),
+                    description=metadata.description,
+                    icon=metadata.icon,
+                )
             )
-    cache.set(CACHE_KEY_MDS_NO, blob.no)
+    with atomic():
+        WebAuthnDeviceType.objects.bulk_create(
+            to_create_update,
+            update_conflicts=True,
+            update_fields=["description", "icon"],
+            unique_fields=["aaguid"],
+        )
+        WebAuthnDeviceType.objects.filter(aaguid__in=to_delete).delete()
+    if mds_no != blob.no:
+        cache.set(CACHE_KEY_MDS_NO, blob.no)
 
-
-@CELERY_APP.task()
-def webauthn_aaguid_import(force=False):
-    """Background task to import AAGUIDs into database"""
     with open(AAGUID_BLOB_PATH, mode="rb") as _raw_blob:
         entries = loads(_raw_blob.read())
+    to_create_update = [
+        WebAuthnDeviceType(
+            aaguid=str(aaguid), description=details.get("name"), icon=details.get("icon_light")
+        )
+        for aaguid, details in entries.items()
+    ]
     with atomic():
-        for aaguid, details in entries.items():
-            WebAuthnDeviceType.objects.update_or_create(
-                aaguid=str(aaguid),
-                defaults={"description": details.get("name"), "icon": details.get("icon_light")},
-            )
+        WebAuthnDeviceType.objects.bulk_create(
+            to_create_update,
+            update_conflicts=True,
+            update_fields=["description", "icon"],
+            unique_fields=["aaguid"],
+        )
+
+    self.set_status(
+        TaskStatus.SUCCESSFUL,
+        "Successfully imported FIDO Alliance MDS blobs and AAGUIDs.",
+    )

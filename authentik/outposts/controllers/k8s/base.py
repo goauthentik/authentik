@@ -124,7 +124,6 @@ class KubernetesObjectReconciler(Generic[T]):
                 self.update(current, reference)
                 self.logger.debug("Updating")
             except (OpenApiException, HTTPError) as exc:
-
                 if isinstance(exc, ApiException) and exc.status == 422:  # noqa: PLR2004
                     self.logger.debug("Failed to update current, triggering re-create")
                     self._recreate(current=current, reference=reference)

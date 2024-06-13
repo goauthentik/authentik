@@ -21,7 +21,7 @@ export class ProviderSelectModal extends TableModal<Provider> {
     }
 
     @property({ type: Boolean })
-    backchannelOnly = false;
+    backchannel?: boolean;
 
     @property()
     confirm!: (selectedItems: Provider[]) => Promise<unknown>;
@@ -34,7 +34,7 @@ export class ProviderSelectModal extends TableModal<Provider> {
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
-            backchannelOnly: this.backchannelOnly,
+            backchannel: this.backchannel,
         });
     }
 
