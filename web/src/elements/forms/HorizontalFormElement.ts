@@ -36,6 +36,22 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  * 
  */
 
+const isAkControl = (el: unknown): boolean =>
+    el instanceof HTMLElement &&
+    "dataset" in el &&
+    el.dataset instanceof DOMStringMap &&
+    "akControl" in el.dataset;
+
+const nameables = new Set([
+    "input",
+    "textarea",
+    "select",
+    "ak-codemirror",
+    "ak-chip-group",
+    "ak-search-select",
+    "ak-radio",
+]);
+
 @customElement("ak-form-element-horizontal")
 export class HorizontalFormElement extends AKElement {
     static get styles(): CSSResult[] {
@@ -112,19 +128,18 @@ export class HorizontalFormElement extends AKElement {
             });
         }
         this.querySelectorAll("*").forEach((input) => {
-            switch (input.tagName.toLowerCase()) {
-                case "input":
-                case "textarea":
-                case "select":
-                case "ak-codemirror":
-                case "ak-chip-group":
-                case "ak-search-select":
-                case "ak-radio":
-                    input.setAttribute("name", this.name);
-                    break;
-                default:
-                    return;
+            if (isAkControl(input) && !input.getAttribute("name")) {
+                input.setAttribute("name", this.name);
+                // This is fine; writeOnly won't apply to anything built this way.
+                return;
             }
+
+            if (nameables.has(input.tagName.toLowerCase())) {
+                input.setAttribute("name", this.name);
+            } else {
+                return;
+            }
+
             if (this.writeOnly && !this.writeOnlyActivated) {
                 const i = input as HTMLInputElement;
                 i.setAttribute("hidden", "true");

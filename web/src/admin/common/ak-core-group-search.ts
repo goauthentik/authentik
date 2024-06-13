@@ -12,6 +12,7 @@ import { CoreApi, CoreGroupsListRequest, Group } from "@goauthentik/api";
 async function fetchObjects(query?: string): Promise<Group[]> {
     const args: CoreGroupsListRequest = {
         ordering: "name",
+        includeUsers: false,
     };
     if (query !== undefined) {
         args.search = query;
@@ -57,7 +58,6 @@ export class CoreGroupSearch extends CustomListenerElement(AKElement) {
         super();
         this.selected = this.selected.bind(this);
         this.handleSearchUpdate = this.handleSearchUpdate.bind(this);
-        this.addCustomListener("ak-change", this.handleSearchUpdate);
     }
 
     get value() {
@@ -94,6 +94,7 @@ export class CoreGroupSearch extends CustomListenerElement(AKElement) {
                 .renderElement=${renderElement}
                 .value=${renderValue}
                 .selected=${this.selected}
+                @ak-change=${this.handleSearchUpdate}
                 ?blankable=${true}
             >
             </ak-search-select>

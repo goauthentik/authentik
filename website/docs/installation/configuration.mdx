@@ -25,7 +25,7 @@ import TabItem from "@theme/TabItem";
     If you are using Docker Compose, edit your <code>.env</code> file to append any keys that you want to add, and then run the following command to apply them:
 
     ```
-    docker-compose up -d
+    docker compose up -d
     ```
 
   </TabItem>
@@ -49,7 +49,7 @@ To check if your config has been applied correctly, you can run the following co
   <TabItem value="docker-compose" label="Docker Compose" default>
 
     ```
-    docker-compose run --rm worker dump_config
+    docker compose run --rm worker dump_config
     ```
 
   </TabItem>
@@ -72,10 +72,30 @@ To check if your config has been applied correctly, you can run the following co
 -   `AUTHENTIK_POSTGRESQL__PASSWORD`: Database password, defaults to the environment variable `POSTGRES_PASSWORD`
 -   `AUTHENTIK_POSTGRESQL__USE_PGBOUNCER`: Adjust configuration to support connection to PgBouncer
 -   `AUTHENTIK_POSTGRESQL__USE_PGPOOL`: Adjust configuration to support connection to Pgpool
--   `AUTHENTIK_POSTGRESQL__SSLMODE`: Strictness of ssl verification. Defaults to `verify-ca`
+-   `AUTHENTIK_POSTGRESQL__SSLMODE`: Strictness of ssl verification. Defaults to `"verify-ca"`
 -   `AUTHENTIK_POSTGRESQL__SSLROOTCERT`: CA root for server ssl verification
 -   `AUTHENTIK_POSTGRESQL__SSLCERT`: Path to x509 client certificate to authenticate to server
 -   `AUTHENTIK_POSTGRESQL__SSLKEY`: Path to private key of `SSLCERT` certificate
+
+All PostgreSQL settings, apart from `USE_PGBOUNCER` and `USE_PGPOOL`, support hot-reloading. Adding and removing read replicas doesn't support hot-reloading.
+
+### Read replicas
+
+Additional databases used only for read operations can be configured. Increase the number (by default `0`) in the following configuration settings for each read replica.
+
+If read replicas are configured, the main database is not used for reads. If you'd like the main database to be included for reads, add it as a read replica.
+
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__HOST`: same as above
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__NAME`: same as above
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__USER`: same as above
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__PORT`: same as above
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__PASSWORD`: same as above
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLMODE`: same as above
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLROOTCERT`: same as above
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLCERT`: same as above
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLKEY`: same as above
+
+Note that `USE_PGBOUNCER` and `USE_PGPOOL` are inherited from the main database configuration and are _not_ overridable on read replicas.
 
 ## Redis Settings
 
@@ -85,7 +105,8 @@ To check if your config has been applied correctly, you can run the following co
 -   `AUTHENTIK_REDIS__USERNAME`: Redis server username when not using configuration URL
 -   `AUTHENTIK_REDIS__PASSWORD`: Redis server password when not using configuration URL
 -   `AUTHENTIK_REDIS__TLS`: Redis server connection using TLS when not using configuration URL
--   `AUTHENTIK_REDIS__TLS_REQS`: Redis server TLS connection requirements when not using configuration URL
+-   `AUTHENTIK_REDIS__TLS_REQS`: Redis server TLS connection requirements when not using configuration URL. Defaults to `"none"`. Allowed values are `"none"` and `"required"`.
+-   `AUTHENTIK_REDIS__TLS_CA_CERT`: Path to the Redis server TLS CA root when not using configuration URL. Defaults to `null`.
 
 ## Result Backend Settings
 
@@ -110,13 +131,13 @@ To check if your config has been applied correctly, you can run the following co
 ## Broker Settings
 
 -   `AUTHENTIK_BROKER__URL`: Broker configuration URL, defaults to Redis using [the respective settings](#redis-settings)
--   `AUTHENTIK_BROKER__TRANSPORT_OPTIONS`: Base64 encoded broker transport options
+-   `AUTHENTIK_BROKER__TRANSPORT_OPTIONS`: Base64-encoded broker transport options
 
     :::info
     `AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION` only applies to the cache expiry, see [`AUTHENTIK_REPUTATION__EXPIRY`](#authentik_reputation__expiry) to control how long reputation is persisted for.
     :::
 
-## Listen Setting
+## Listen Settings
 
 -   `AUTHENTIK_LISTEN__HTTP`: Listening address:port (e.g. `0.0.0.0:9000`) for HTTP (Applies to Server and Proxy outpost)
 -   `AUTHENTIK_LISTEN__HTTPS`: Listening address:port (e.g. `0.0.0.0:9443`) for HTTPS (Applies to Server and Proxy outpost)
@@ -124,23 +145,43 @@ To check if your config has been applied correctly, you can run the following co
 -   `AUTHENTIK_LISTEN__LDAPS`: Listening address:port (e.g. `0.0.0.0:6636`) for LDAPS (Applies to LDAP outpost)
 -   `AUTHENTIK_LISTEN__METRICS`: Listening address:port (e.g. `0.0.0.0:9300`) for Prometheus metrics (Applies to All)
 -   `AUTHENTIK_LISTEN__DEBUG`: Listening address:port (e.g. `0.0.0.0:9900`) for Go Debugging metrics (Applies to All)
--   `AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS`: List of CIDRs that proxy headers should be accepted from (Applies to Server)
+-   `AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS`: List of comma-separated CIDRs that proxy headers should be accepted from (Applies to Server)
 
     Defaults to `127.0.0.0/8`, `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `fe80::/10`, `::1/128`.
 
     Requests directly coming from one an address within a CIDR specified here are able to set proxy headers, such as `X-Forwarded-For`. Requests coming from other addresses will not be able to set these headers.
 
+## Media Storage Settings
+
+These settings affect where media files are stored. Those files include applications and sources icons. By default, they are stored on disk in the `/media` directory of the authentik container. S3 storage is also supported.
+
+-   `AUTHENTIK_STORAGE__MEDIA__BACKEND`: Where to store files. Valid values are `file` and `s3`. For `file` storage, files are stored in a `/media` directory in the container. For `s3`, see below.
+-   `AUTHENTIK_STORAGE__MEDIA__S3__REGION`: S3 region where the bucket has been created. May be omitted depending on which S3 provider you use. No default.
+-   `AUTHENTIK_STORAGE__MEDIA__S3__USE_SSL`: Whether to use HTTPS when talking to the S3 storage providers. Defaults to `true`.
+-   `AUTHENTIK_STORAGE__MEDIA__S3__ENDPOINT`: Endpoint to use to talk to the S3 storage provider. Override the previous region and use_ssl settings. Must be a valid URL in the form of `https://s3.provider`. No default.
+-   `AUTHENTIK_STORAGE__MEDIA__S3__SESSION_PROFILE`: Profile to use when using AWS SDK authentication. No default. Supports hot-reloading.
+-   `AUTHENTIK_STORAGE__MEDIA__S3__ACCESS_KEY`: Access key to authenticate to S3. May be omitted if using AWS SDK authentication. Supports hot-reloading.
+-   `AUTHENTIK_STORAGE__MEDIA__S3__SECRET_KEY`: Secret key to authenticate to S3. May be omitted if using AWS SDK authentication. Supports hot-reloading.
+-   `AUTHENTIK_STORAGE__MEDIA__S3__SECURITY_TOKEN`: Security token to authenticate to S3. May be omitted. Supports hot-reloading.
+-   `AUTHENTIK_STORAGE__MEDIA__S3__BUCKET_NAME`: Name of the bucket to use to store files.
+-   `AUTHENTIK_STORAGE__MEDIA__S3__CUSTOM_DOMAIN`: Domain to use to create URLs for users. Mainly useful for non-AWS providers. May include a port. Must include the bucket. Example: `s3.company:8080/authentik-media`.
+-   `AUTHENTIK_STORAGE__MEDIA__S3__SECURE_URLS`: Whether URLs created use HTTPS (set to `true` by default) or HTTP.
+
 ## authentik Settings
 
 ### `AUTHENTIK_SECRET_KEY`
 
-Secret key used for cookie signing and unique user IDs, don't change this after the first install.
+Secret key used for cookie signing. Changing this will invalidate active sessions.
+
+:::caution
+Prior to 2023.6.0 the secret key was also used for unique user IDs. When running a pre-2023.6.0 version of authentik the key should _not_ be changed after the first install.
+:::
 
 ### `AUTHENTIK_LOG_LEVEL`
 
-Log level for the server and worker containers. Possible values: debug, info, warning, error
+Log level for the server and worker containers. Possible values: `debug`, `info`, `warning`, `error`.
 
-Starting with 2021.12.3, you can also set the log level to _trace_. This has no affect on the core authentik server, but shows additional messages for the embedded outpost.
+Starting with 2021.12.3, you can also set the log level to `trace`. This has no effect on the core authentik server, but shows additional messages for the embedded outpost.
 
 :::danger
 Setting the log level to `trace` will include sensitive details in logs, so it shouldn't be used in most cases.
@@ -172,7 +213,7 @@ Disable the inbuilt update-checker. Defaults to `false`.
 
     Enable error reporting. Defaults to `false`.
 
-    Error reports are sent to https://sentry.io, and are used for debugging and general feedback. Anonymous performance data is also sent.
+    Error reports are sent to https://sentry.io and are used for debugging and general feedback. Anonymous performance data is also sent.
 
 -   `AUTHENTIK_ERROR_REPORTING__SENTRY_DSN`
 
@@ -186,8 +227,7 @@ Disable the inbuilt update-checker. Defaults to `false`.
 
     The environment tag associated with all data sent to Sentry. Defaults to `customer`.
 
-    When error reporting has been enabled to aid in debugging issues, this should be set to a unique
-    value, such as an e-mail address.
+    When error reporting has been enabled to aid in debugging issues, this should be set to a unique value, such as an email address.
 
 -   `AUTHENTIK_ERROR_REPORTING__SEND_PII`
 
@@ -253,89 +293,6 @@ Disable the inbuilt update-checker. Defaults to `false`.
     -   Kubeconfig
     -   Existence of a docker socket
 
-### `AUTHENTIK_AVATARS`
-
-Configure how authentik should show avatars for users. Following values can be set:
-
-Default: `gravatar,initials`
-
--   `none`: Disables per-user avatars and just shows a 1x1 pixel transparent picture
--   `gravatar`: Uses gravatar with the user's email address
--   `initials`: Generated avatars based on the user's name
--   Any URL: If you want to use images hosted on another server, you can set any URL.
-
-    Additionally, these placeholders can be used:
-
-    -   `%(username)s`: The user's username
-    -   `%(mail_hash)s`: The email address, md5 hashed
-    -   `%(upn)s`: The user's UPN, if set (otherwise an empty string)
-
-Starting with authentik 2022.8, you can also use an attribute path like `attributes.something.avatar`, which can be used in combination with the file field to allow users to upload custom avatars for themselves.
-
-Starting with authentik 2023.2, multiple modes can be set, and authentik will fallback to the next mode when no avatar could be found. For example, setting this to `gravatar,initials` will attempt to get an avatar from Gravatar, and if the user has not configured on there, it will fallback to a generated avatar.
-
-### `AUTHENTIK_DEFAULT_USER_CHANGE_NAME`
-
-:::info
-Requires authentik 2021.12.5
-:::
-
-Enable the ability for users to change their name, defaults to `true`.
-
-### `AUTHENTIK_DEFAULT_USER_CHANGE_EMAIL`
-
-:::info
-Requires authentik 2021.12.1
-:::
-
-Enable the ability for users to change their Email address, defaults to `false`.
-
-### `AUTHENTIK_DEFAULT_USER_CHANGE_USERNAME`
-
-:::info
-Requires authentik 2021.12.1
-:::
-
-Enable the ability for users to change their Usernames, defaults to `false`.
-
-### `AUTHENTIK_GDPR_COMPLIANCE`
-
-:::info
-Requires authentik 2021.12.1
-:::
-
-When enabled, all the events caused by a user will be deleted upon the user's deletion. Defaults to `true`.
-
-### `AUTHENTIK_DEFAULT_TOKEN_LENGTH`
-
-:::info
-Requires authentik 2022.4.1
-:::
-
-Configure the length of generated tokens. Defaults to 60.
-
-### `AUTHENTIK_IMPERSONATION`
-
-:::info
-Requires authentik 2022.4.2
-:::
-
-Globally enable/disable impersonation. Defaults to `true`.
-
-### `AUTHENTIK_FOOTER_LINKS`
-
-:::info
-Requires authentik 2021.12.1
-:::
-
-This option configures the footer links on the flow executor pages.
-
-The setting can be used as follows:
-
-```
-AUTHENTIK_FOOTER_LINKS='[{"name": "Link Name","href":"https://goauthentik.io"}]'
-```
-
 ### `AUTHENTIK_LDAP__TASK_TIMEOUT_HOURS`
 
 :::info
@@ -376,6 +333,14 @@ Configure how long reputation scores should be saved for in seconds. Note that t
 
 Defaults to `86400`.
 
+### `AUTHENTIK_SESSION_STORAGE`
+
+:::info
+Requires authentik 2024.4
+:::
+
+Configure if the sessions are stored in the cache or the database. Defaults to `cache`. Allowed values are `cache` and `db`. Note that changing this value will invalidate all previous sessions.
+
 ### `AUTHENTIK_WEB__WORKERS`
 
 :::info
@@ -384,8 +349,7 @@ Requires authentik 2022.9
 
 Configure how many gunicorn worker processes should be started (see https://docs.gunicorn.org/en/stable/design.html).
 
-If running in Kubernetes, the default value is set to 2 and should in most cases not be changed, as scaling can be done with multiple pods running the web server.
-Otherwise, authentik will use 1 worker for each 4 CPU cores + 1 as a value below 2 workers is not recommended.
+Defaults to 2. A value below 2 workers is not recommended. In environments where scaling with multiple replicas of the authentik server is not possible, this number can be increased to handle higher loads.
 
 ### `AUTHENTIK_WEB__THREADS`
 
@@ -407,9 +371,17 @@ Configure Celery worker concurrency for authentik worker (see https://docs.celer
 
 Defaults to 2.
 
+## System settings
+
+:::info
+Requires authentik 2024.2
+:::
+
+Additional settings are configurable using the Admin interface, under **System** -> **Settings** or using the API.
+
 ## Custom python settings
 
-To modify additional settings further than the options above allow, you can create a custom python file and mount it to `/data/user_settings.py`. This file will be loaded on startup by both the server and the worker. All default settings are [here](https://github.com/goauthentik/authentik/blob/main/authentik/root/settings.py)
+To modify additional settings further than the options above allow, you can create a custom Python file and mount it to `/data/user_settings.py`. This file will be loaded on startup by both the server and the worker. All default settings are [here](https://github.com/goauthentik/authentik/blob/main/authentik/root/settings.py)
 
 :::caution
 Using these custom settings is not supported and can prevent your authentik instance from starting. Use with caution.

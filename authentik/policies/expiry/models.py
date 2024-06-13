@@ -1,4 +1,5 @@
 """authentik password_expiry_policy Models"""
+
 from datetime import timedelta
 
 from django.db import models

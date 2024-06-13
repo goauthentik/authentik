@@ -2,8 +2,10 @@ import { docLink } from "@goauthentik/common/global";
 import "@goauthentik/elements/Alert";
 import { Level } from "@goauthentik/elements/Alert";
 import { AKElement } from "@goauthentik/elements/Base";
+import { matter } from "md-front-matter";
+import * as showdown from "showdown";
 
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { CSSResult, PropertyValues, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
@@ -11,21 +13,27 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 
 export interface MarkdownDocument {
-    html: string;
-    metadata: { [key: string]: string };
-    filename: string;
     path: string;
 }
 
 export type Replacer = (input: string, md: MarkdownDocument) => string;
 
+const isRelativeLink = /href="(\.[^"]*)"/gm;
+const isFile = /[^/]+\.md/;
+
 @customElement("ak-markdown")
 export class Markdown extends AKElement {
-    @property({ attribute: false })
-    md?: MarkdownDocument;
+    @property()
+    md: string = "";
+
+    @property()
+    meta: string = "";
 
     @property({ attribute: false })
     replacers: Replacer[] = [];
+
+    docHtml = "";
+    docTitle = "";
 
     defaultReplacers: Replacer[] = [
         this.replaceAdmonitions,
@@ -45,8 +53,10 @@ export class Markdown extends AKElement {
         ];
     }
 
+    converter = new showdown.Converter({ metadata: true, tables: true });
+
     replaceAdmonitions(input: string): string {
-        const admonitionStart = /:::(\w+)<br\s\/>/gm;
+        const admonitionStart = /:::(\w+)(<br\s*\/>|\s*$)/gm;
         const admonitionEnd = /:::/gm;
         return (
             input
@@ -62,31 +72,35 @@ export class Markdown extends AKElement {
     }
 
     replaceRelativeLinks(input: string, md: MarkdownDocument): string {
-        const relativeLink = /href=".(.*)"/gm;
-        const cwd = process.env.CWD as string;
-        // cwd will point to $root/web, but the docs are in $root/website/docs
-        let relPath = md.path.replace(cwd + "site", "");
-        if (md.filename === "index.md") {
-            relPath = relPath.replace("index.md", "");
-        }
-        const baseURL = docLink("");
-        const fullURL = `${baseURL}${relPath}.$1`;
-        return input.replace(relativeLink, `href="${fullURL}" target="_blank"`);
+        const baseName = md.path.replace(isFile, "");
+        const baseUrl = docLink("");
+        return input.replace(isRelativeLink, (_match, path) => {
+            const pathName = path.replace(".md", "");
+            const link = `docs/${baseName}${pathName}`;
+            const url = new URL(link, baseUrl).toString();
+            return `href="${url}" _target="blank"`;
+        });
     }
 
-    render(): TemplateResult {
-        if (!this.md) {
-            return html``;
+    willUpdate(properties: PropertyValues<this>) {
+        if (properties.has("md") || properties.has("meta")) {
+            const parsedContent = matter(this.md);
+            const parsedHTML = this.converter.makeHtml(parsedContent.content);
+            const replacers = [...this.defaultReplacers, ...this.replacers];
+            this.docTitle = parsedContent?.data?.title ?? "";
+            this.docHtml = replacers.reduce(
+                (html, replacer) => replacer(html, { path: this.meta }),
+                parsedHTML,
+            );
         }
-        let finalHTML = this.md.html;
-        const replacers = [...this.defaultReplacers, ...this.replacers];
-        replacers.forEach((r) => {
-            if (!this.md) {
-                return;
-            }
-            finalHTML = r(finalHTML, this.md);
-        });
-        return html`${this.md?.metadata.title ? html`<h2>${this.md.metadata.title}</h2>` : html``}
-        ${unsafeHTML(finalHTML)}`;
+    }
+
+    render() {
+        if (!this.md) {
+            return nothing;
+        }
+
+        return html`${this.docTitle ? html`<h2>${this.docTitle}</h2>` : nothing}
+        ${unsafeHTML(this.docHtml)}`;
     }
 }

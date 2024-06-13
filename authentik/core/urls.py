@@ -1,4 +1,5 @@
 """authentik URL Configuration"""
+
 from channels.auth import AuthMiddleware
 from channels.sessions import CookieMiddleware
 from django.conf import settings
@@ -11,7 +12,7 @@ from authentik.core.api.applications import ApplicationViewSet
 from authentik.core.api.authenticated_sessions import AuthenticatedSessionViewSet
 from authentik.core.api.devices import AdminDeviceViewSet, DeviceViewSet
 from authentik.core.api.groups import GroupViewSet
-from authentik.core.api.propertymappings import PropertyMappingViewSet
+from authentik.core.api.property_mappings import PropertyMappingViewSet
 from authentik.core.api.providers import ProviderViewSet
 from authentik.core.api.sources import SourceViewSet, UserSourceConnectionViewSet
 from authentik.core.api.tokens import TokenViewSet

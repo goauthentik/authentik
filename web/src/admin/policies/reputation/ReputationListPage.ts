@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -41,6 +42,7 @@ export class ReputationListPage extends TablePage<Reputation> {
     order = "identifier";
 
     checkbox = true;
+    clearOnRefresh = true;
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<Reputation>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesReputationScoresList({
@@ -91,10 +93,11 @@ export class ReputationListPage extends TablePage<Reputation> {
                 : html``}
             ${item.ip}`,
             html`${item.score}`,
-            html`${item.updated.toLocaleString()}`,
+            html`<div>${getRelativeTime(item.updated)}</div>
+                <small>${item.updated.toLocaleString()}</small>`,
             html`
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.PoliciesReputationReputation}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.PoliciesReputationReputationpolicy}
                     objectPk=${item.pk || ""}
                 >
                 </ak-rbac-object-permission-modal>

@@ -1,4 +1,5 @@
 """websocket Message consumer"""
+
 from channels.generic.websocket import JsonWebsocketConsumer
 from django.core.cache import cache
 

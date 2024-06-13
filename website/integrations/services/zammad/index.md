@@ -22,7 +22,7 @@ The following placeholders will be used:
 
 ### Step 1 - Property Mappings
 
-Create two Mappings (under _Customisation/Property Mappings_) with these settings:
+Create two Mappings (under _Customization/Property Mappings_) with these settings:
 
 #### name mapping
 
@@ -64,6 +64,7 @@ Configure Zammad SAML settings by going to settings (the gear icon), and selecti
 
 -   Display name: authentik
 -   IDP SSO target URL: https://authentik.company/application/saml/zammad/sso/binding/init/
+-   IDP single logout target URL: https://zammad.company/auth/saml/slo
 -   IDP certificate: ----BEGIN CERTIFICATE---- …
 -   IDP certificate fingerprint: empty
 -   Name Identifier Format: empty

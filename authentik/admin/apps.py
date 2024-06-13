@@ -1,4 +1,5 @@
 """authentik admin app config"""
+
 from prometheus_client import Gauge, Info
 
 from authentik.blueprints.apps import ManagedAppConfig
@@ -14,7 +15,3 @@ class AuthentikAdminConfig(ManagedAppConfig):
     label = "authentik_admin"
     verbose_name = "authentik Admin"
     default = True
-
-    def reconcile_load_admin_signals(self):
-        """Load admin signals"""
-        self.import_module("authentik.admin.signals")

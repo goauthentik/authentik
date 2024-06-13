@@ -1,4 +1,5 @@
 """Outpost Websocket URLS"""
+
 from django.urls import path
 
 from authentik.core.channels import TokenOutpostMiddleware

@@ -1,13 +1,16 @@
 """authentik events models"""
+
 import time
 from collections import Counter
 from datetime import timedelta
+from difflib import get_close_matches
+from functools import lru_cache
 from inspect import currentframe
 from smtplib import SMTPException
-from typing import TYPE_CHECKING, Optional
 from uuid import uuid4
 
-from django.db import models
+from django.apps import apps
+from django.db import connection, models
 from django.db.models import Count, ExpressionWrapper, F
 from django.db.models.fields import DurationField
 from django.db.models.functions import Extract
@@ -18,14 +21,18 @@ from django.http.request import QueryDict
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from requests import RequestException
+from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik import get_full_version
+from authentik.brands.models import Brand
+from authentik.brands.utils import DEFAULT_BRAND
 from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_ORIGINAL_USER,
     SESSION_KEY_IMPERSONATE_USER,
 )
 from authentik.core.models import ExpiringModel, Group, PropertyMapping, User
+from authentik.events.apps import GAUGE_TASKS, SYSTEM_TASK_STATUS, SYSTEM_TASK_TIME
 from authentik.events.context_processors.base import get_context_processors
 from authentik.events.utils import (
     cleanse_dict,
@@ -42,22 +49,27 @@ from authentik.policies.models import PolicyBindingModel
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.tenants.models import Tenant
-from authentik.tenants.utils import DEFAULT_TENANT
 
 LOGGER = get_logger()
-if TYPE_CHECKING:
-    from rest_framework.serializers import Serializer
+DISCORD_FIELD_LIMIT = 25
+NOTIFICATION_SUMMARY_LENGTH = 75
 
 
 def default_event_duration():
     """Default duration an Event is saved.
-    This is used as a fallback when no tenant is available"""
+    This is used as a fallback when no brand is available"""
     return now() + timedelta(days=365)
 
 
-def default_tenant():
-    """Get a default value for tenant"""
-    return sanitize_dict(model_to_dict(DEFAULT_TENANT))
+def default_brand():
+    """Get a default value for brand"""
+    return sanitize_dict(model_to_dict(DEFAULT_BRAND))
+
+
+@lru_cache
+def django_app_names() -> list[str]:
+    """Get a cached list of all django apps' names (not labels)"""
+    return [x.name for x in apps.app_configs.values()]
 
 
 class NotificationTransportError(SentryIgnoredException):
@@ -171,7 +183,7 @@ class Event(SerializerModel, ExpiringModel):
     context = models.JSONField(default=dict, blank=True)
     client_ip = models.GenericIPAddressField(null=True)
     created = models.DateTimeField(auto_now_add=True)
-    tenant = models.JSONField(default=default_tenant, blank=True)
+    brand = models.JSONField(default=default_brand, blank=True)
 
     # Shadow the expires attribute from ExpiringModel to override the default duration
     expires = models.DateTimeField(default=default_event_duration)
@@ -187,7 +199,7 @@ class Event(SerializerModel, ExpiringModel):
     @staticmethod
     def new(
         action: str | EventAction,
-        app: Optional[str] = None,
+        app: str | None = None,
         **kwargs,
     ) -> "Event":
         """Create new Event instance from arguments. Instance is NOT saved."""
@@ -197,6 +209,12 @@ class Event(SerializerModel, ExpiringModel):
             current = currentframe()
             parent = current.f_back
             app = parent.f_globals["__name__"]
+            # Attempt to match the calling module to the django app it belongs to
+            # if we can't find a match, keep the module name
+            django_apps: list[str] = get_close_matches(app, django_app_names(), n=1)
+            # Also ensure that closest django app has the correct prefix
+            if len(django_apps) > 0 and django_apps[0].startswith(app):
+                app = django_apps[0]
         cleaned_kwargs = cleanse_dict(sanitize_dict(kwargs))
         event = Event(action=action, app=app, context=cleaned_kwargs)
         return event
@@ -207,7 +225,7 @@ class Event(SerializerModel, ExpiringModel):
         self.user = get_user(user)
         return self
 
-    def from_http(self, request: HttpRequest, user: Optional[User] = None) -> "Event":
+    def from_http(self, request: HttpRequest, user: User | None = None) -> "Event":
         """Add data from a Django-HttpRequest, allowing the creation of
         Events independently from requests.
         `user` arguments optionally overrides user from requests."""
@@ -231,7 +249,9 @@ class Event(SerializerModel, ExpiringModel):
             # hence we set self.created to now and then use it
             self.created = now()
             self.expires = self.created + timedelta_from_string(tenant.event_retention)
-            self.tenant = sanitize_dict(model_to_dict(tenant))
+        if hasattr(request, "brand"):
+            brand: Brand = request.brand
+            self.brand = sanitize_dict(model_to_dict(brand))
         if hasattr(request, "user"):
             original_user = None
             if hasattr(request, "session"):
@@ -267,7 +287,7 @@ class Event(SerializerModel, ExpiringModel):
         super().save(*args, **kwargs)
 
     @property
-    def serializer(self) -> "Serializer":
+    def serializer(self) -> type[Serializer]:
         from authentik.events.api.events import EventSerializer
 
         return EventSerializer
@@ -285,6 +305,16 @@ class Event(SerializerModel, ExpiringModel):
     class Meta:
         verbose_name = _("Event")
         verbose_name_plural = _("Events")
+        indexes = [
+            models.Index(fields=["action"]),
+            models.Index(fields=["user"]),
+            models.Index(fields=["app"]),
+            models.Index(fields=["created"]),
+            models.Index(fields=["client_ip"]),
+            models.Index(
+                models.F("context__authorized_application"), name="authentik_e_ctx_app__idx"
+            ),
+        ]
 
 
 class TransportMode(models.TextChoices):
@@ -399,7 +429,7 @@ class NotificationTransport(SerializerModel):
                 if not isinstance(value, str):
                     continue
                 # https://birdie0.github.io/discord-webhooks-guide/other/field_limits.html
-                if len(fields) >= 25:
+                if len(fields) >= DISCORD_FIELD_LIMIT:
                     continue
                 fields.append({"title": key[:256], "value": value[:1024]})
         body = {
@@ -432,6 +462,13 @@ class NotificationTransport(SerializerModel):
 
     def send_email(self, notification: "Notification") -> list[str]:
         """Send notification via global email configuration"""
+        if notification.user.email.strip() == "":
+            LOGGER.info(
+                "Discarding notification as user has no email address",
+                user=notification.user,
+                notification=notification,
+            )
+            return None
         subject_prefix = "authentik Notification: "
         context = {
             "key_value": {
@@ -453,7 +490,7 @@ class NotificationTransport(SerializerModel):
                     continue
                 context["key_value"][key] = value
         else:
-            context["title"] += notification.body[:75]
+            context["title"] += notification.body[:NOTIFICATION_SUMMARY_LENGTH]
         # TODO: improve permission check
         if notification.user.is_superuser:
             context["source"] = {
@@ -461,7 +498,7 @@ class NotificationTransport(SerializerModel):
             }
         mail = TemplateEmailMessage(
             subject=subject_prefix + context["title"],
-            to=[f"{notification.user.name} <{notification.user.email}>"],
+            to=[(notification.user.name, notification.user.email)],
             language=notification.user.locale(),
             template_name="email/event_notification.html",
             template_context=context,
@@ -470,12 +507,12 @@ class NotificationTransport(SerializerModel):
         try:
             from authentik.stages.email.tasks import send_mail
 
-            return send_mail(mail.__dict__)  # pylint: disable=no-value-for-parameter
+            return send_mail(mail.__dict__)
         except (SMTPException, ConnectionError, OSError) as exc:
             raise NotificationTransportError(exc) from exc
 
     @property
-    def serializer(self) -> "Serializer":
+    def serializer(self) -> type[Serializer]:
         from authentik.events.api.notification_transports import NotificationTransportSerializer
 
         return NotificationTransportSerializer
@@ -508,14 +545,18 @@ class Notification(SerializerModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     @property
-    def serializer(self) -> "Serializer":
+    def serializer(self) -> type[Serializer]:
         from authentik.events.api.notifications import NotificationSerializer
 
         return NotificationSerializer
 
     def __str__(self) -> str:
-        body_trunc = (self.body[:75] + "..") if len(self.body) > 75 else self.body
-        return f"Notification for user {self.user}: {body_trunc}"
+        body_trunc = (
+            (self.body[:NOTIFICATION_SUMMARY_LENGTH] + "..")
+            if len(self.body) > NOTIFICATION_SUMMARY_LENGTH
+            else self.body
+        )
+        return f"Notification for user {self.user_id}: {body_trunc}"
 
     class Meta:
         verbose_name = _("Notification")
@@ -551,7 +592,7 @@ class NotificationRule(SerializerModel, PolicyBindingModel):
     )
 
     @property
-    def serializer(self) -> "Serializer":
+    def serializer(self) -> type[Serializer]:
         from authentik.events.api.notification_rules import NotificationRuleSerializer
 
         return NotificationRuleSerializer
@@ -572,7 +613,7 @@ class NotificationWebhookMapping(PropertyMapping):
         return "ak-property-mapping-notification-form"
 
     @property
-    def serializer(self) -> type["Serializer"]:
+    def serializer(self) -> type[type[Serializer]]:
         from authentik.events.api.notification_mappings import NotificationWebhookMappingSerializer
 
         return NotificationWebhookMappingSerializer
@@ -583,3 +624,72 @@ class NotificationWebhookMapping(PropertyMapping):
     class Meta:
         verbose_name = _("Webhook Mapping")
         verbose_name_plural = _("Webhook Mappings")
+
+
+class TaskStatus(models.TextChoices):
+    """Possible states of tasks"""
+
+    UNKNOWN = "unknown"
+    SUCCESSFUL = "successful"
+    WARNING = "warning"
+    ERROR = "error"
+
+
+class SystemTask(SerializerModel, ExpiringModel):
+    """Info about a system task running in the background along with details to restart the task"""
+
+    uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+    name = models.TextField()
+    uid = models.TextField(null=True)
+
+    start_timestamp = models.DateTimeField(default=now)
+    finish_timestamp = models.DateTimeField(default=now)
+    duration = models.FloatField(default=0)
+
+    status = models.TextField(choices=TaskStatus.choices)
+
+    description = models.TextField(null=True)
+    messages = models.JSONField()
+
+    task_call_module = models.TextField()
+    task_call_func = models.TextField()
+    task_call_args = models.JSONField(default=list)
+    task_call_kwargs = models.JSONField(default=dict)
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.events.api.tasks import SystemTaskSerializer
+
+        return SystemTaskSerializer
+
+    def update_metrics(self):
+        """Update prometheus metrics"""
+        # TODO: Deprecated metric - remove in 2024.2 or later
+        GAUGE_TASKS.labels(
+            tenant=connection.schema_name,
+            task_name=self.name,
+            task_uid=self.uid or "",
+            status=self.status.lower(),
+        ).set(self.duration)
+        SYSTEM_TASK_TIME.labels(
+            tenant=connection.schema_name,
+            task_name=self.name,
+            task_uid=self.uid or "",
+        ).observe(self.duration)
+        SYSTEM_TASK_STATUS.labels(
+            tenant=connection.schema_name,
+            task_name=self.name,
+            task_uid=self.uid or "",
+            status=self.status.lower(),
+        ).inc()
+
+    def __str__(self) -> str:
+        return f"System Task {self.name}"
+
+    class Meta:
+        unique_together = (("name", "uid"),)
+        # Remove "add", "change" and "delete" permissions as those are not used
+        default_permissions = ["view"]
+        permissions = [("run_task", _("Run task"))]
+        verbose_name = _("System Task")
+        verbose_name_plural = _("System Tasks")

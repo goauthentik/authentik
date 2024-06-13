@@ -2,10 +2,16 @@ import { config } from "@goauthentik/common/api/config";
 import { VERSION } from "@goauthentik/common/constants";
 import { SentryIgnoredError } from "@goauthentik/common/errors";
 import { me } from "@goauthentik/common/users";
-import * as Sentry from "@sentry/browser";
-import { Integrations } from "@sentry/tracing";
+import {
+    ErrorEvent,
+    EventHint,
+    browserTracingIntegration,
+    init,
+    setTag,
+    setUser,
+} from "@sentry/browser";
 
-import { Config, ResponseError } from "@goauthentik/api";
+import { CapabilitiesEnum, Config, ResponseError } from "@goauthentik/api";
 
 export const TAG_SENTRY_COMPONENT = "authentik.component";
 export const TAG_SENTRY_CAPABILITIES = "authentik.capabilities";
@@ -13,7 +19,7 @@ export const TAG_SENTRY_CAPABILITIES = "authentik.capabilities";
 export async function configureSentry(canDoPpi = false): Promise<Config> {
     const cfg = await config();
     if (cfg.errorReporting.enabled) {
-        Sentry.init({
+        init({
             dsn: cfg.errorReporting.sentryDsn,
             ignoreErrors: [
                 /network/gi,
@@ -28,16 +34,18 @@ export async function configureSentry(canDoPpi = false): Promise<Config> {
             ],
             release: `authentik@${VERSION}`,
             integrations: [
-                new Integrations.BrowserTracing({
-                    tracingOrigins: [window.location.host, "localhost"],
+                browserTracingIntegration({
+                    shouldCreateSpanForRequest: (url: string) => {
+                        return url.startsWith(window.location.host);
+                    },
                 }),
             ],
             tracesSampleRate: cfg.errorReporting.tracesSampleRate,
             environment: cfg.errorReporting.environment,
-            beforeSend: async (
-                event: Sentry.Event,
-                hint: Sentry.EventHint | undefined,
-            ): Promise<Sentry.Event | null> => {
+            beforeSend: (
+                event: ErrorEvent,
+                hint: EventHint,
+            ): ErrorEvent | PromiseLike<ErrorEvent | null> | null => {
                 if (!hint) {
                     return event;
                 }
@@ -53,16 +61,18 @@ export async function configureSentry(canDoPpi = false): Promise<Config> {
                 return event;
             },
         });
-        Sentry.setTag(TAG_SENTRY_CAPABILITIES, cfg.capabilities.join(","));
+        setTag(TAG_SENTRY_CAPABILITIES, cfg.capabilities.join(","));
         if (window.location.pathname.includes("if/")) {
-            Sentry.setTag(TAG_SENTRY_COMPONENT, `web/${currentInterface()}`);
-            Sentry.configureScope((scope) =>
-                scope.setTransactionName(`authentik.web.if.${currentInterface()}`),
-            );
+            setTag(TAG_SENTRY_COMPONENT, `web/${currentInterface()}`);
+        }
+        if (cfg.capabilities.includes(CapabilitiesEnum.CanDebug)) {
+            const Spotlight = await import("@spotlightjs/spotlight");
+
+            Spotlight.init({ injectImmediately: true });
         }
         if (cfg.errorReporting.sendPii && canDoPpi) {
             me().then((user) => {
-                Sentry.setUser({ email: user.user.email });
+                setUser({ email: user.user.email });
                 console.debug("authentik/config: Sentry with PII enabled.");
             });
         } else {

@@ -1,4 +1,5 @@
 """Test tasks"""
+
 from time import mktime
 
 from django.utils.timezone import now

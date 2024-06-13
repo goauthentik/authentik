@@ -1,7 +1,7 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-tenanted-flow-search";
-import { first } from "@goauthentik/app/common/utils";
+import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -18,23 +18,18 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     FlowsInstancesListDesignationEnum,
-    PaginatedEndpointList,
     PaginatedRACPropertyMappingList,
     PropertymappingsApi,
     ProvidersApi,
     RACProvider,
-    RacApi,
 } from "@goauthentik/api";
 
 @customElement("ak-provider-rac-form")
 export class RACProviderFormPage extends ModelForm<RACProvider, number> {
     @state()
-    endpoints?: PaginatedEndpointList;
-
     propertyMappings?: PaginatedRACPropertyMappingList;
 
     async load(): Promise<void> {
-        this.endpoints = await new RacApi(DEFAULT_CONFIG).racEndpointsList({});
         this.propertyMappings = await new PropertymappingsApi(
             DEFAULT_CONFIG,
         ).propertymappingsRacList({
@@ -59,7 +54,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
     async send(data: RACProvider): Promise<RACProvider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersRacUpdate({
-                id: this.instance.pk || 0,
+                id: this.instance.pk,
                 rACProviderRequest: data,
             });
         } else {
@@ -112,13 +107,34 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                 </p>
                 <ak-utils-time-delta-help></ak-utils-time-delta-help>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal name="deleteTokenOnDisconnect">
+                <label class="pf-c-switch">
+                    <input
+                        class="pf-c-switch__input"
+                        type="checkbox"
+                        ?checked=${first(this.instance?.deleteTokenOnDisconnect, false)}
+                    />
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label"
+                        >${msg("Delete authorization on disconnect")}</span
+                    >
+                </label>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "When enabled, connection authorizations will be deleted when a client disconnects. This will force clients with flaky internet connections to re-authorize the endpoint.",
+                    )}
+                </p>
+            </ak-form-element-horizontal>
 
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Property mappings")}
-                        ?required=${true}
                         name="propertyMappings"
                     >
                         <select class="pf-c-form-control" multiple>

@@ -1,4 +1,5 @@
 """core Configs API"""
+
 from pathlib import Path
 
 from django.conf import settings
@@ -67,12 +68,16 @@ class ConfigView(APIView):
         """Get all capabilities this server instance supports"""
         caps = []
         deb_test = settings.DEBUG or settings.TEST
-        if Path(settings.MEDIA_ROOT).is_mount() or deb_test:
+        if (
+            CONFIG.get("storage.media.backend", "file") == "s3"
+            or Path(settings.STORAGES["default"]["OPTIONS"]["location"]).is_mount()
+            or deb_test
+        ):
             caps.append(Capabilities.CAN_SAVE_MEDIA)
         for processor in get_context_processors():
             if cap := processor.capability():
                 caps.append(cap)
-        if CONFIG.get_bool("impersonation"):
+        if self.request.tenant.impersonation:
             caps.append(Capabilities.CAN_IMPERSONATE)
         if settings.DEBUG:  # pragma: no cover
             caps.append(Capabilities.CAN_DEBUG)

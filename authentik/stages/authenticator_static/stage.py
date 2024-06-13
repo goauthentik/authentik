@@ -1,4 +1,5 @@
 """Static OTP Setup stage"""
+
 from django.http import HttpRequest, HttpResponse
 from rest_framework.fields import CharField, ListField
 

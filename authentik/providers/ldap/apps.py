@@ -1,4 +1,5 @@
 """authentik ldap provider app config"""
+
 from django.apps import AppConfig
 
 

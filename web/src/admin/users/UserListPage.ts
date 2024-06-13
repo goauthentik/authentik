@@ -4,20 +4,20 @@ import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserPasswordForm";
 import "@goauthentik/admin/users/UserResetEmailForm";
-import { me } from "@goauthentik/app/common/users";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { PFSize } from "@goauthentik/common/enums.js";
 import { userTypeToLabel } from "@goauthentik/common/labels";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { DefaultUIConfig, uiConfig } from "@goauthentik/common/ui/config";
-import { first } from "@goauthentik/common/utils";
+import { me } from "@goauthentik/common/users";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import { rootInterface } from "@goauthentik/elements/Base";
+import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
 } from "@goauthentik/elements/Interface/capabilitiesProvider";
-import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider";
-import { PFSize } from "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/TreeView";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -42,7 +42,7 @@ import { CoreApi, ResponseError, SessionUser, User, UserPath } from "@goauthenti
 
 export const requestRecoveryLink = (user: User) =>
     new CoreApi(DEFAULT_CONFIG)
-        .coreUsersRecoveryRetrieve({
+        .coreUsersRecoveryCreate({
             id: user.pk,
         })
         .then((rec) =>
@@ -61,7 +61,7 @@ export const requestRecoveryLink = (user: User) =>
                 showMessage({
                     level: MessageLevel.error,
                     message: msg(
-                        "The current tenant must have a recovery flow configured to use a recovery link",
+                        "The current brand must have a recovery flow configured to use a recovery link",
                     ),
                 }),
             ),
@@ -91,9 +91,10 @@ const recoveryButtonStyles = css`
 `;
 
 @customElement("ak-user-list")
-export class UserListPage extends WithTenantConfig(WithCapabilitiesConfig(TablePage<User>)) {
+export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePage<User>)) {
     expandable = true;
     checkbox = true;
+    clearOnRefresh = true;
 
     searchEnabled(): boolean {
         return true;
@@ -145,6 +146,7 @@ export class UserListPage extends WithTenantConfig(WithCapabilitiesConfig(TableP
             search: this.search || "",
             pathStartswith: getURLParam("path", ""),
             isActive: this.hideDeactivated ? true : undefined,
+            includeGroups: false,
         });
         this.userPaths = await new CoreApi(DEFAULT_CONFIG).coreUsersPathsRetrieve({
             search: this.search,
@@ -158,6 +160,7 @@ export class UserListPage extends WithTenantConfig(WithCapabilitiesConfig(TableP
             new TableColumn(msg("Name"), "username"),
             new TableColumn(msg("Active"), "is_active"),
             new TableColumn(msg("Last login"), "last_login"),
+            new TableColumn(msg("Type"), "type"),
             new TableColumn(msg("Actions")),
         ];
     }
@@ -245,11 +248,15 @@ export class UserListPage extends WithTenantConfig(WithCapabilitiesConfig(TableP
             this.can(CapabilitiesEnum.CanImpersonate) && item.pk !== this.me?.user.pk;
         return [
             html`<a href="#/identity/users/${item.pk}">
-                    <div>${item.username}</div>
-                    <small>${item.name === "" ? msg("<No name set>") : item.name}</small> </a
-                >&nbsp;<small>${userTypeToLabel(item.type)}</small>`,
+                <div>${item.username}</div>
+                <small>${item.name === "" ? msg("<No name set>") : item.name}</small>
+            </a>`,
             html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
-            html`${first(item.lastLogin?.toLocaleString(), msg("-"))}`,
+            html`${item.lastLogin
+                ? html`<div>${getRelativeTime(item.lastLogin)}</div>
+                      <small>${item.lastLogin.toLocaleString()}</small>`
+                : msg("-")}`,
+            html`${userTypeToLabel(item.type)}`,
             html`<ak-forms-modal>
                     <span slot="submit"> ${msg("Update")} </span>
                     <span slot="header"> ${msg("Update User")} </span>
@@ -352,7 +359,7 @@ export class UserListPage extends WithTenantConfig(WithCapabilitiesConfig(TableP
                                             ${msg("Set password")}
                                         </button>
                                     </ak-forms-modal>
-                                    ${this.tenant.flowRecovery
+                                    ${this.brand.flowRecovery
                                         ? html`
                                               <ak-action-button
                                                   class="pf-m-secondary"
@@ -370,7 +377,7 @@ export class UserListPage extends WithTenantConfig(WithCapabilitiesConfig(TableP
                                           `
                                         : html` <p>
                                               ${msg(
-                                                  "To let a user directly reset a their password, configure a recovery flow on the currently active tenant.",
+                                                  "To let a user directly reset a their password, configure a recovery flow on the currently active brand.",
                                               )}
                                           </p>`}
                                 </div>

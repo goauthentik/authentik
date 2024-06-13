@@ -24,6 +24,7 @@ export class AkFlowSearchNoDefault<T extends Flow> extends FlowSearch<T> {
                 .renderElement=${renderElement}
                 .renderDescription=${renderDescription}
                 .value=${getFlowValue}
+                @ak-change=${this.handleSearchUpdate}
                 ?blankable=${!this.required}
             >
             </ak-search-select>

@@ -1,4 +1,4 @@
-import { PFSize } from "@goauthentik/elements/Spinner";
+import { PFSize } from "@goauthentik/common/enums.js";
 import "@goauthentik/elements/Spinner";
 import { AggregateCard } from "@goauthentik/elements/cards/AggregateCard";
 

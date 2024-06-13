@@ -1,6 +1,6 @@
 [[redirects]]
-  from = "/discord"
-  to = "https://discord.gg/jg33eMhnj6"
+  from = "/blog/*"
+  to = "https://goauthentik.io/blog/:splat"
 
 # Migration from docs to separate directory
 [[redirects]]
@@ -29,39 +29,6 @@
   status = 301
   force = true
 
-# Container registry
-[[redirects]]
-  from = "/v2"
-  to = "/.netlify/functions/oci-proxy"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/v2/*"
-  to = "https://ghcr.io/v2/goauthentik/:splat"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/version/*"
-  to = "https://raw.githubusercontent.com/goauthentik/authentik/version-:splat"
-
-[[redirects]]
-  from = "/js/script.js"
-  to = "https://plausible.a7k.io/js/plausible.outbound-links.js"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/event"
-  to = "https://plausible.a7k.io/api/event"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/community/show_setup"
-  to = "https://docs.google.com/forms/d/1g5W3kz-7EJ3zay8S3C5aN2vIdZQuzT_MJljb6yv80_I"
-
 [[headers]]
   for = "/*"
   [headers.values]
@@ -71,3 +38,15 @@
   command = "npm run watch"
   targetPort = 3000
   publish = "build"
+
+# Moving doc files
+[[redirects]]
+  from = "/docs/core/applications"
+  to = "/docs/applications"
+  status = 302
+
+# Moved Sources from Integrations to Docs
+[[redirects]]
+   from = "/integrations/sources/*"
+   to = "/docs/sources/:splat"
+   status = 302

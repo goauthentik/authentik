@@ -1,19 +1,19 @@
 import "@goauthentik/admin/flows/BoundStagesList";
 import "@goauthentik/admin/flows/FlowDiagram";
 import "@goauthentik/admin/flows/FlowForm";
+import { DesignationToLabel } from "@goauthentik/admin/flows/utils";
 import "@goauthentik/admin/policies/BoundPoliciesList";
-import { DesignationToLabel } from "@goauthentik/app/admin/flows/utils";
-import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { CSSResult, PropertyValues, TemplateResult, css, html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -32,18 +32,10 @@ import {
 
 @customElement("ak-flow-view")
 export class FlowViewPage extends AKElement {
-    @property()
-    set flowSlug(value: string) {
-        new FlowsApi(DEFAULT_CONFIG)
-            .flowsInstancesRetrieve({
-                slug: value,
-            })
-            .then((flow) => {
-                this.flow = flow;
-            });
-    }
+    @property({ type: String })
+    flowSlug?: string;
 
-    @property({ attribute: false })
+    @state()
     flow!: Flow;
 
     static get styles(): CSSResult[] {
@@ -55,6 +47,18 @@ export class FlowViewPage extends AKElement {
                 height: 100%;
             }
         `);
+    }
+
+    fetchFlow(slug: string) {
+        new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({ slug }).then((flow) => {
+            this.flow = flow;
+        });
+    }
+
+    willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("flowSlug") && this.flowSlug) {
+            this.fetchFlow(this.flowSlug);
+        }
     }
 
     render(): TemplateResult {

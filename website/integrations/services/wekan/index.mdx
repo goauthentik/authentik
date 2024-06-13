@@ -49,8 +49,8 @@ environment: OAUTH2_ENABLED=true
     OAUTH2_USERINFO_ENDPOINT=/application/o/userinfo/
     OAUTH2_TOKEN_ENDPOINT=/application/o/token/
     OAUTH2_SECRET=<Client Secret from above>
-    OAUTH2_ID_MAP=preferred_username
-    OAUTH2_USERNAME_MAP=preferred_username
+    OAUTH2_ID_MAP=sub
+    OAUTH2_USERNAME_MAP=email
     OAUTH2_FULLNAME_MAP=given_name
     OAUTH2_EMAIL_MAP=email
 ```
@@ -70,8 +70,8 @@ edit `.env` and add the following:
       OAUTH2_USERINFO_ENDPOINT='/application/o/userinfo/'
       OAUTH2_TOKEN_ENDPOINT='/application/o/token/'
       OAUTH2_SECRET='<Client Secret from above>'
-      OAUTH2_ID_MAP='preferred_username'
-      OAUTH2_USERNAME_MAP='preferred_username'
+      OAUTH2_ID_MAP='sub'
+      OAUTH2_USERNAME_MAP='email'
       OAUTH2_FULLNAME_MAP='given_name'
       OAUTH2_EMAIL_MAP='email'
 ```

@@ -1,6 +1,6 @@
 """SCIM Membership tests"""
+
 from django.test import TestCase
-from guardian.shortcuts import get_anonymous_user
 from requests_mock import Mocker
 
 from authentik.blueprints.tests import apply_blueprint
@@ -8,7 +8,8 @@ from authentik.core.models import Application, Group, User
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.clients.schema import ServiceProviderConfiguration
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
-from authentik.providers.scim.tasks import scim_sync
+from authentik.providers.scim.tasks import scim_sync, sync_tasks
+from authentik.tenants.models import Tenant
 
 
 class SCIMMembershipTests(TestCase):
@@ -20,8 +21,9 @@ class SCIMMembershipTests(TestCase):
     def setUp(self) -> None:
         # Delete all users and groups as the mocked HTTP responses only return one ID
         # which will cause errors with multiple users
-        User.objects.all().exclude(pk=get_anonymous_user().pk).delete()
+        User.objects.all().exclude_anonymous().delete()
         Group.objects.all().delete()
+        Tenant.objects.update(avatars="none")
 
     @apply_blueprint("system/providers-scim.yaml")
     def configure(self) -> None:
@@ -47,7 +49,7 @@ class SCIMMembershipTests(TestCase):
     def test_member_add(self):
         """Test member add"""
         config = ServiceProviderConfiguration.default()
-        # pylint: disable=assigning-non-slot
+
         config.patch.supported = True
         user_scim_id = generate_id()
         group_scim_id = generate_id()
@@ -77,7 +79,7 @@ class SCIMMembershipTests(TestCase):
             )
 
             self.configure()
-            scim_sync.delay(self.provider.pk).get()
+            sync_tasks.trigger_single_task(self.provider, scim_sync).get()
 
             self.assertEqual(mocker.call_count, 6)
             self.assertEqual(mocker.request_history[0].method, "GET")
@@ -137,7 +139,7 @@ class SCIMMembershipTests(TestCase):
     def test_member_remove(self):
         """Test member remove"""
         config = ServiceProviderConfiguration.default()
-        # pylint: disable=assigning-non-slot
+
         config.patch.supported = True
         user_scim_id = generate_id()
         group_scim_id = generate_id()
@@ -167,7 +169,7 @@ class SCIMMembershipTests(TestCase):
             )
 
             self.configure()
-            scim_sync.delay(self.provider.pk).get()
+            sync_tasks.trigger_single_task(self.provider, scim_sync).get()
 
             self.assertEqual(mocker.call_count, 6)
             self.assertEqual(mocker.request_history[0].method, "GET")

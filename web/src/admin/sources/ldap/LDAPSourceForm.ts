@@ -86,6 +86,28 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     <span class="pf-c-switch__label">${msg("Enabled")}</span>
                 </label>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal name="passwordLoginUpdateInternalPassword">
+                <label class="pf-c-switch">
+                    <input
+                        class="pf-c-switch__input"
+                        type="checkbox"
+                        ?checked=${first(this.instance?.passwordLoginUpdateInternalPassword, false)}
+                    />
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label"
+                        >${msg("Update internal password on login")}</span
+                    >
+                </label>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "When the user logs in to authentik using this source password backend, update their credentials in authentik.",
+                    )}
+                </p>
+            </ak-form-element-horizontal>
             <ak-form-element-horizontal name="syncUsers">
                 <label class="pf-c-switch">
                     <input
@@ -253,7 +275,6 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("User Property Mappings")}
-                        ?required=${true}
                         name="propertyMappings"
                     >
                         <select class="pf-c-form-control" multiple>
@@ -292,7 +313,6 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Group Property Mappings")}
-                        ?required=${true}
                         name="propertyMappingsGroup"
                     >
                         <select class="pf-c-form-control" multiple>
@@ -334,6 +354,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
                                 const args: CoreGroupsListRequest = {
                                     ordering: "name",
+                                    includeUsers: false,
                                 };
                                 if (query !== undefined) {
                                     args.search = query;

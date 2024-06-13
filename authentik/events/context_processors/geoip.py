@@ -1,4 +1,5 @@
 """events GeoIP Reader"""
+
 from typing import TYPE_CHECKING, Optional, TypedDict
 
 from django.http import HttpRequest
@@ -44,9 +45,9 @@ class GeoIPContextProcessor(MMDBContextProcessor):
 
     def enrich_context(self, request: HttpRequest) -> dict:
         # Different key `geoip` vs `geo` for legacy reasons
-        return {"geoip": self.city(ClientIPMiddleware.get_client_ip(request))}
+        return {"geoip": self.city_dict(ClientIPMiddleware.get_client_ip(request))}
 
-    def city(self, ip_address: str) -> Optional[City]:
+    def city(self, ip_address: str) -> City | None:
         """Wrapper for Reader.city"""
         with Hub.current.start_span(
             op="authentik.events.geo.city",
@@ -75,7 +76,7 @@ class GeoIPContextProcessor(MMDBContextProcessor):
             city_dict["city"] = city.city.name
         return city_dict
 
-    def city_dict(self, ip_address: str) -> Optional[GeoIPDict]:
+    def city_dict(self, ip_address: str) -> GeoIPDict | None:
         """Wrapper for self.city that returns a dict"""
         city = self.city(ip_address)
         if not city:

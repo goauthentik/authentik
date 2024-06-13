@@ -1,4 +1,5 @@
 """Test ASN Wrapper"""
+
 from django.test import TestCase
 
 from authentik.events.context_processors.asn import ASNContextProcessor

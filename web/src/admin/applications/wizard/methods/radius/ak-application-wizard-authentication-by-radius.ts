@@ -1,9 +1,9 @@
 import "@goauthentik/admin/applications/wizard/ak-wizard-title";
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-tenanted-flow-search";
+import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-text-input";
-import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider";
+import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -17,7 +17,7 @@ import { FlowsInstancesListDesignationEnum, RadiusProvider } from "@goauthentik/
 import BaseProviderPanel from "../BaseProviderPanel";
 
 @customElement("ak-application-wizard-authentication-by-radius")
-export class ApplicationWizardAuthenticationByRadius extends WithTenantConfig(BaseProviderPanel) {
+export class ApplicationWizardAuthenticationByRadius extends WithBrandConfig(BaseProviderPanel) {
     render() {
         const provider = this.wizard.provider as RadiusProvider | undefined;
         const errors = this.wizard.errors.provider;
@@ -39,12 +39,12 @@ export class ApplicationWizardAuthenticationByRadius extends WithTenantConfig(Ba
                     name="authorizationFlow"
                     .errorMessages=${errors?.authorizationFlow ?? []}
                 >
-                    <ak-tenanted-flow-search
+                    <ak-branded-flow-search
                         flowType=${FlowsInstancesListDesignationEnum.Authentication}
                         .currentFlow=${provider?.authorizationFlow}
-                        .tenantFlow=${this.tenant.flowAuthentication}
+                        .brandFlow=${this.brand.flowAuthentication}
                         required
-                    ></ak-tenanted-flow-search>
+                    ></ak-branded-flow-search>
                     <p class="pf-c-form__helper-text">
                         ${msg("Flow used for users to authenticate.")}
                     </p>

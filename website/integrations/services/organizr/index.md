@@ -74,5 +74,5 @@ LDAP Backend Type: `OpenLDAP`
 Access for authentik users is managed locally within organizr under _User Management_. By default, new users are assigned the `User` group.
 :::
 :::tip
-Consider front-ending your application with a [forward auth provider](../../../docs/providers/proxy/forward_auth#nginx) for an SSO experience.
+Consider front-ending your application with a [forward auth provider](../../../docs/providers/proxy/forward_auth) for an SSO experience.
 :::

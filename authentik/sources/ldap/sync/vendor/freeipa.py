@@ -1,8 +1,8 @@
 """FreeIPA specific"""
-from datetime import datetime
-from typing import Any, Generator
 
-from pytz import UTC
+from collections.abc import Generator
+from datetime import UTC, datetime
+from typing import Any
 
 from authentik.core.models import User
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer, flatten

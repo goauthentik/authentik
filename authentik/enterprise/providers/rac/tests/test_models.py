@@ -1,4 +1,5 @@
 """Test RAC Models"""
+
 from django.test import TransactionTestCase
 
 from authentik.core.models import Application, AuthenticatedSession

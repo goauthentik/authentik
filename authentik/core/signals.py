@@ -1,4 +1,5 @@
 """authentik core signals"""
+
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.contrib.sessions.backends.cache import KEY_PREFIX
 from django.core.cache import cache
@@ -9,7 +10,14 @@ from django.dispatch import receiver
 from django.http.request import HttpRequest
 from structlog.stdlib import get_logger
 
-from authentik.core.models import Application, AuthenticatedSession, BackchannelProvider, User
+from authentik.core.models import (
+    Application,
+    AuthenticatedSession,
+    BackchannelProvider,
+    ExpiringModel,
+    User,
+    default_token_duration,
+)
 
 # Arguments: user: User, password: str
 password_changed = Signal()
@@ -60,3 +68,12 @@ def backchannel_provider_pre_save(sender: type[Model], instance: Model, **_):
     if not isinstance(instance, BackchannelProvider):
         return
     instance.is_backchannel = True
+
+
+@receiver(pre_save)
+def expiring_model_pre_save(sender: type[Model], instance: Model, **_):
+    """Ensure expires is set on ExpiringModels that are set to expire"""
+    if not issubclass(sender, ExpiringModel):
+        return
+    if instance.expiring and instance.expires is None:
+        instance.expires = default_token_duration()

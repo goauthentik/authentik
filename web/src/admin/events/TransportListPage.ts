@@ -38,6 +38,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "name";

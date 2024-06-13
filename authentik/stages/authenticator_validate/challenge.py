@@ -1,5 +1,6 @@
 """Validation stage challenge checking"""
-from typing import Optional
+
+from json import loads
 from urllib.parse import urlencode
 
 from django.http import HttpRequest
@@ -10,15 +11,18 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
+from webauthn import options_to_json
 from webauthn.authentication.generate_authentication_options import generate_authentication_options
 from webauthn.authentication.verify_authentication_response import verify_authentication_response
+from webauthn.helpers import parse_authentication_credential_json
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
-from webauthn.helpers.exceptions import InvalidAuthenticationResponse
-from webauthn.helpers.structs import AuthenticationCredential
+from webauthn.helpers.exceptions import InvalidAuthenticationResponse, InvalidJSONStructure
+from webauthn.helpers.structs import UserVerificationRequirement
 
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Application, User
 from authentik.core.signals import login_failed
+from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE
@@ -62,20 +66,15 @@ def get_webauthn_challenge_without_user(
     authentication_options = generate_authentication_options(
         rp_id=get_rp_id(request),
         allow_credentials=[],
-        user_verification=stage.webauthn_user_verification,
+        user_verification=UserVerificationRequirement(stage.webauthn_user_verification),
     )
     request.session[SESSION_KEY_WEBAUTHN_CHALLENGE] = authentication_options.challenge
 
-    return authentication_options.model_dump(
-        mode="json",
-        by_alias=True,
-        exclude_unset=False,
-        exclude_none=True,
-    )
+    return loads(options_to_json(authentication_options))
 
 
 def get_webauthn_challenge(
-    request: HttpRequest, stage: AuthenticatorValidateStage, device: Optional[WebAuthnDevice] = None
+    request: HttpRequest, stage: AuthenticatorValidateStage, device: WebAuthnDevice | None = None
 ) -> dict:
     """Send the client a challenge that we'll check later"""
     request.session.pop(SESSION_KEY_WEBAUTHN_CHALLENGE, None)
@@ -91,17 +90,12 @@ def get_webauthn_challenge(
     authentication_options = generate_authentication_options(
         rp_id=get_rp_id(request),
         allow_credentials=allowed_credentials,
-        user_verification=stage.webauthn_user_verification,
+        user_verification=UserVerificationRequirement(stage.webauthn_user_verification),
     )
 
     request.session[SESSION_KEY_WEBAUTHN_CHALLENGE] = authentication_options.challenge
 
-    return authentication_options.model_dump(
-        mode="json",
-        by_alias=True,
-        exclude_unset=False,
-        exclude_none=True,
-    )
+    return loads(options_to_json(authentication_options))
 
 
 def select_challenge(request: HttpRequest, device: Device):
@@ -128,7 +122,9 @@ def validate_challenge_code(code: str, stage_view: StageView, user: User) -> Dev
             stage=stage_view.executor.current_stage,
             device_class=DeviceClasses.TOTP.value,
         )
-        raise ValidationError(_("Invalid Token"))
+        raise ValidationError(
+            _("Invalid Token. Please ensure the time on your device is accurate and try again.")
+        )
     return device
 
 
@@ -136,23 +132,40 @@ def validate_challenge_webauthn(data: dict, stage_view: StageView, user: User) -
     """Validate WebAuthn Challenge"""
     request = stage_view.request
     challenge = request.session.get(SESSION_KEY_WEBAUTHN_CHALLENGE)
-    credential_id = data.get("id")
+    stage: AuthenticatorValidateStage = stage_view.executor.current_stage
+    try:
+        credential = parse_authentication_credential_json(data)
+    except InvalidJSONStructure as exc:
+        LOGGER.warning("Invalid WebAuthn challenge response", exc=exc)
+        raise ValidationError("Invalid device", "invalid") from None
 
-    device = WebAuthnDevice.objects.filter(credential_id=credential_id).first()
+    device = WebAuthnDevice.objects.filter(credential_id=credential.id).first()
     if not device:
-        raise ValidationError("Invalid device")
+        raise ValidationError("Invalid device", "invalid")
     # We can only check the device's user if the user we're given isn't anonymous
     # as this validation is also used for password-less login where webauthn is the very first
     # step done by a user. Only if this validation happens at a later stage we can check
     # that the device belongs to the user
     if not user.is_anonymous and device.user != user:
-        raise ValidationError("Invalid device")
-
-    stage: AuthenticatorValidateStage = stage_view.executor.current_stage
-
+        raise ValidationError("Invalid device", "invalid")
+    # When a device_type was set when creating the device (2024.4+), and we have a limitation,
+    # make sure the device type is allowed.
+    if (
+        device.device_type
+        and stage.webauthn_allowed_device_types.exists()
+        and not stage.webauthn_allowed_device_types.filter(pk=device.device_type.pk).exists()
+    ):
+        raise ValidationError(
+            _(
+                "Invalid device type. Contact your {brand} administrator for help.".format(
+                    brand=stage_view.request.brand.branding_title
+                )
+            ),
+            "invalid",
+        )
     try:
         authentication_verification = verify_authentication_response(
-            credential=AuthenticationCredential.model_validate(data),
+            credential=credential,
             expected_challenge=challenge,
             expected_rp_id=get_rp_id(request),
             expected_origin=get_origin(request),
@@ -169,10 +182,12 @@ def validate_challenge_webauthn(data: dict, stage_view: StageView, user: User) -
             stage=stage_view.executor.current_stage,
             device=device,
             device_class=DeviceClasses.WEBAUTHN.value,
+            device_type=device.device_type,
         )
         raise ValidationError("Assertion failed") from exc
 
-    device.set_sign_count(authentication_verification.new_sign_count)
+    with audit_ignore():
+        device.set_sign_count(authentication_verification.new_sign_count)
     return device
 
 
@@ -199,10 +214,11 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
             user_id=device.duo_user_id,
             ipaddr=ClientIPMiddleware.get_client_ip(stage_view.request),
             type=__(
-                "%(brand_name)s Login request"
-                % {
-                    "brand_name": stage_view.request.tenant.branding_title,
-                }
+                "{brand_name} Login request".format_map(
+                    {
+                        "brand_name": stage_view.request.brand.branding_title,
+                    }
+                )
             ),
             display_username=user.username,
             device="auto",
@@ -227,4 +243,4 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
             message=f"Failed to DUO authenticate user: {str(exc)}",
             user=user,
         ).from_http(stage_view.request, user)
-        raise ValidationError("Duo denied access", code="denied")
+        raise ValidationError("Duo denied access", code="denied") from exc

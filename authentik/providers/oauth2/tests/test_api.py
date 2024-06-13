@@ -1,4 +1,5 @@
 """Test OAuth2 API"""
+
 from json import loads
 from sys import version_info
 from unittest import skipUnless

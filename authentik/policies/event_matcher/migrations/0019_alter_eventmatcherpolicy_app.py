@@ -39,6 +39,7 @@ class Migration(migrations.Migration):
                     ("authentik.sources.oauth", "authentik Sources.OAuth"),
                     ("authentik.sources.plex", "authentik Sources.Plex"),
                     ("authentik.sources.saml", "authentik Sources.SAML"),
+                    ("authentik.sources.scim", "authentik Sources.SCIM"),
                     ("authentik.stages.authenticator_duo", "authentik Stages.Authenticator.Duo"),
                     ("authentik.stages.authenticator_sms", "authentik Stages.Authenticator.SMS"),
                     (
@@ -67,7 +68,7 @@ class Migration(migrations.Migration):
                     ("authentik.stages.user_login", "authentik Stages.User Login"),
                     ("authentik.stages.user_logout", "authentik Stages.User Logout"),
                     ("authentik.stages.user_write", "authentik Stages.User Write"),
-                    ("authentik.tenants", "authentik Tenants"),
+                    ("authentik.brands", "authentik Brands"),
                     ("authentik.blueprints", "authentik Blueprints"),
                     ("authentik.core", "authentik Core"),
                 ],

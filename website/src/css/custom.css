@@ -37,24 +37,6 @@
     stroke: var(--white);
 }
 
-.hero--primary {
-    background: radial-gradient(
-        circle,
-        rgba(47, 6, 75, 1) 0%,
-        var(--ifm-color-primary) 50%
-    );
-    padding-bottom: 5.3rem !important;
-    /* fix aliasing at the edge */
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 3vw));
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 3vw));
-}
-
-.before-after-slider img {
-    max-width: none;
-}
-
 .header-github-link:hover {
     opacity: 0.6;
 }

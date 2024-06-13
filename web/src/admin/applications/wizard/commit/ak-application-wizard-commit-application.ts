@@ -1,5 +1,5 @@
-import { EVENT_REFRESH } from "@goauthentik/app/common/constants";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
@@ -9,7 +9,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 
 import { msg } from "@lit/localize";
 import { customElement, state } from "@lit/reactive-element/decorators.js";
-import { TemplateResult, css, html, nothing } from "lit";
+import { PropertyValues, TemplateResult, css, html, nothing } from "lit";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
@@ -94,8 +94,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
 
     response?: TransactionApplicationResponse;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    willUpdate(_changedProperties: Map<string, any>) {
+    willUpdate(_changedProperties: PropertyValues<this>) {
         if (this.commitState === idleState) {
             this.response = undefined;
             this.commitState = runningState;

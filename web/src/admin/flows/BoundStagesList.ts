@@ -21,6 +21,9 @@ import { FlowStageBinding, FlowsApi } from "@goauthentik/api";
 export class BoundStagesList extends Table<FlowStageBinding> {
     expandable = true;
     checkbox = true;
+    clearOnRefresh = true;
+
+    order = "order";
 
     @property()
     target?: string;
@@ -28,7 +31,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
     async apiEndpoint(page: number): Promise<PaginatedResponse<FlowStageBinding>> {
         return new FlowsApi(DEFAULT_CONFIG).flowsBindingsList({
             target: this.target || "",
-            ordering: "order",
+            ordering: this.order,
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,
         });
@@ -36,8 +39,8 @@ export class BoundStagesList extends Table<FlowStageBinding> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(msg("Order")),
-            new TableColumn(msg("Name")),
+            new TableColumn(msg("Order"), "order"),
+            new TableColumn(msg("Name"), "stage__name"),
             new TableColumn(msg("Type")),
             new TableColumn(msg("Actions")),
         ];

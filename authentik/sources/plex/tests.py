@@ -1,4 +1,5 @@
 """plex Source tests"""
+
 from django.test import TestCase
 from requests.exceptions import RequestException
 from requests_mock import Mocker
@@ -38,6 +39,11 @@ class TestPlexSource(TestCase):
             name="test",
             slug="test",
         )
+
+    def test_login_challenge(self):
+        """Test login_challenge"""
+        ui_login_button = self.source.ui_login_button(None)
+        self.assertTrue(ui_login_button.challenge.is_valid(raise_exception=True))
 
     def test_get_user_info(self):
         """Test get_user_info"""

@@ -1,4 +1,5 @@
 """Error Response schema, from https://github.com/axnsan12/drf-yasg/issues/224"""
+
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.generators import SchemaGenerator
 from drf_spectacular.plumbing import (
@@ -11,6 +12,7 @@ from drf_spectacular.settings import spectacular_settings
 from drf_spectacular.types import OpenApiTypes
 from rest_framework.settings import api_settings
 
+from authentik.api.apps import AuthentikAPIConfig
 from authentik.api.pagination import PAGINATION_COMPONENT_NAME, PAGINATION_SCHEMA
 
 
@@ -100,3 +102,12 @@ def postprocess_schema_responses(result, generator: SchemaGenerator, **kwargs): 
             comp = result["components"]["schemas"][component]
             comp["additionalProperties"] = {}
     return result
+
+
+def preprocess_schema_exclude_non_api(endpoints, **kwargs):
+    """Filter out all API Views which are not mounted under /api"""
+    return [
+        (path, path_regex, method, callback)
+        for path, path_regex, method, callback in endpoints
+        if path.startswith("/" + AuthentikAPIConfig.mountpoint)
+    ]

@@ -1,9 +1,9 @@
 """test SAML Source"""
+
 from time import sleep
-from typing import Any, Optional
+from typing import Any
 
 from docker.types import Healthcheck
-from guardian.utils import get_anonymous_user
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
@@ -77,7 +77,7 @@ class TestSourceSAML(SeleniumTestCase):
         self.slug = generate_id()
         super().setUp()
 
-    def get_container_specs(self) -> Optional[dict[str, Any]]:
+    def get_container_specs(self) -> dict[str, Any] | None:
         return {
             "image": "kristophjunge/test-saml-idp:1.15",
             "detach": True,
@@ -161,7 +161,7 @@ class TestSourceSAML(SeleniumTestCase):
         self.assert_user(
             User.objects.exclude(username="akadmin")
             .exclude(username__startswith="ak-outpost")
-            .exclude(pk=get_anonymous_user().pk)
+            .exclude_anonymous()
             .exclude(pk=self.user.pk)
             .first()
         )
@@ -244,7 +244,7 @@ class TestSourceSAML(SeleniumTestCase):
         self.assert_user(
             User.objects.exclude(username="akadmin")
             .exclude(username__startswith="ak-outpost")
-            .exclude(pk=get_anonymous_user().pk)
+            .exclude_anonymous()
             .exclude(pk=self.user.pk)
             .first()
         )
@@ -314,7 +314,7 @@ class TestSourceSAML(SeleniumTestCase):
         self.assert_user(
             User.objects.exclude(username="akadmin")
             .exclude(username__startswith="ak-outpost")
-            .exclude(pk=get_anonymous_user().pk)
+            .exclude_anonymous()
             .exclude(pk=self.user.pk)
             .first()
         )

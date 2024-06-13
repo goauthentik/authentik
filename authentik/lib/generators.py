@@ -1,4 +1,5 @@
 """ID/Secret Generators"""
+
 import string
 from random import SystemRandom
 

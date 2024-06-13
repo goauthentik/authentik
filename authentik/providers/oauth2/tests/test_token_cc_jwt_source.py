@@ -1,4 +1,5 @@
 """Test token view"""
+
 from datetime import datetime, timedelta
 from json import loads
 

@@ -2,7 +2,7 @@ import "@goauthentik/admin/applications/wizard/ak-wizard-title";
 import "@goauthentik/admin/applications/wizard/ak-wizard-title";
 import "@goauthentik/admin/common/ak-core-group-search";
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-tenanted-flow-search";
+import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/components/ak-multi-select";
 import "@goauthentik/components/ak-number-input";
@@ -194,7 +194,6 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
                         <ak-multi-select
                             label=${msg("Property Mappings")}
                             name="propertyMappings"
-                            required
                             .options=${propertyPairs}
                             .values=${pmValues}
                             .richhelp=${html` <p class="pf-c-form__helper-text">

@@ -3,17 +3,17 @@ import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserPasswordForm";
 import "@goauthentik/admin/users/UserResetEmailForm";
-import { me } from "@goauthentik/app/common/users";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { uiConfig } from "@goauthentik/common/ui/config";
-import { first } from "@goauthentik/common/utils";
+import { me } from "@goauthentik/common/users";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
+import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
 } from "@goauthentik/elements/Interface/capabilitiesProvider";
-import { WithTenantConfig } from "@goauthentik/elements/Interface/tenantProvider";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -110,9 +110,10 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
 }
 
 @customElement("ak-user-related-list")
-export class RelatedUserList extends WithTenantConfig(WithCapabilitiesConfig(Table<User>)) {
+export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Table<User>)) {
     expandable = true;
     checkbox = true;
+    clearOnRefresh = true;
 
     searchEnabled(): boolean {
         return true;
@@ -144,6 +145,7 @@ export class RelatedUserList extends WithTenantConfig(WithCapabilitiesConfig(Tab
             type: this.hideServiceAccounts
                 ? [CoreUsersListTypeEnum.External, CoreUsersListTypeEnum.Internal]
                 : undefined,
+            includeGroups: false,
         });
         this.me = await me();
         return users;
@@ -163,6 +165,7 @@ export class RelatedUserList extends WithTenantConfig(WithCapabilitiesConfig(Tab
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("User(s)")}
             actionLabel=${msg("Remove Users(s)")}
+            action=${msg("removed")}
             actionSubtext=${msg(
                 str`Are you sure you want to remove the selected users from the group ${this.targetGroup?.name}?`,
             )}
@@ -198,7 +201,10 @@ export class RelatedUserList extends WithTenantConfig(WithCapabilitiesConfig(Tab
                 <small>${item.name}</small>
             </a>`,
             html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
-            html`${first(item.lastLogin?.toLocaleString(), msg("-"))}`,
+            html`${item.lastLogin
+                ? html`<div>${getRelativeTime(item.lastLogin)}</div>
+                      <small>${item.lastLogin.toLocaleString()}</small>`
+                : msg("-")}`,
             html`<ak-forms-modal>
                     <span slot="submit"> ${msg("Update")} </span>
                     <span slot="header"> ${msg("Update User")} </span>
@@ -295,13 +301,13 @@ export class RelatedUserList extends WithTenantConfig(WithCapabilitiesConfig(Tab
                                             ${msg("Set password")}
                                         </button>
                                     </ak-forms-modal>
-                                    ${this.tenant?.flowRecovery
+                                    ${this.brand?.flowRecovery
                                         ? html`
                                               <ak-action-button
                                                   class="pf-m-secondary"
                                                   .apiRequest=${() => {
                                                       return new CoreApi(DEFAULT_CONFIG)
-                                                          .coreUsersRecoveryRetrieve({
+                                                          .coreUsersRecoveryCreate({
                                                               id: item.pk,
                                                           })
                                                           .then((rec) => {
@@ -357,7 +363,7 @@ export class RelatedUserList extends WithTenantConfig(WithCapabilitiesConfig(Tab
                                           `
                                         : html` <p>
                                               ${msg(
-                                                  "To let a user directly reset a their password, configure a recovery flow on the currently active tenant.",
+                                                  "To let a user directly reset a their password, configure a recovery flow on the currently active brand.",
                                               )}
                                           </p>`}
                                 </div>

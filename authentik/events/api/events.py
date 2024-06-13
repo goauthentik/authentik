@@ -1,4 +1,5 @@
 """Events API Views"""
+
 from datetime import timedelta
 from json import loads
 
@@ -18,7 +19,8 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.admin.api.metrics import CoordinateSerializer
-from authentik.core.api.utils import PassiveSerializer, TypeCreateSerializer
+from authentik.core.api.object_types import TypeCreateSerializer
+from authentik.core.api.utils import PassiveSerializer
 from authentik.events.models import Event, EventAction
 
 
@@ -36,7 +38,7 @@ class EventSerializer(ModelSerializer):
             "client_ip",
             "created",
             "expires",
-            "tenant",
+            "brand",
         ]
 
 
@@ -77,10 +79,10 @@ class EventsFilter(django_filters.FilterSet):
         field_name="action",
         lookup_expr="icontains",
     )
-    tenant_name = django_filters.CharFilter(
-        field_name="tenant",
+    brand_name = django_filters.CharFilter(
+        field_name="brand",
         lookup_expr="name",
-        label="Tenant name",
+        label="Brand name",
     )
 
     def filter_context_model_pk(self, queryset, name, value):

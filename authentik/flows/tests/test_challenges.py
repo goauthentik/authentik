@@ -1,4 +1,5 @@
 """flow views tests"""
+
 from django.test import TestCase
 
 from authentik.flows.challenge import AutosubmitChallenge, ChallengeTypes

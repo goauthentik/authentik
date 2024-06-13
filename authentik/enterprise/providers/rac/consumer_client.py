@@ -1,4 +1,5 @@
 """RAC Client consumer"""
+
 from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
 from channels.exceptions import ChannelFull, DenyConnection
@@ -42,6 +43,7 @@ class RACClientConsumer(AsyncWebsocketConsumer):
     logger: BoundLogger
 
     async def connect(self):
+        self.logger = get_logger()
         await self.accept("guacamole")
         await self.channel_layer.group_add(RAC_CLIENT_GROUP, self.channel_name)
         await self.channel_layer.group_add(
@@ -63,9 +65,11 @@ class RACClientConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def init_outpost_connection(self):
         """Initialize guac connection settings"""
-        self.token = ConnectionToken.filter_not_expired(
-            token=self.scope["url_route"]["kwargs"]["token"]
-        ).first()
+        self.token = (
+            ConnectionToken.filter_not_expired(token=self.scope["url_route"]["kwargs"]["token"])
+            .select_related("endpoint", "provider", "session", "session__user")
+            .first()
+        )
         if not self.token:
             raise DenyConnection()
         self.provider = self.token.provider
@@ -106,6 +110,9 @@ class RACClientConsumer(AsyncWebsocketConsumer):
                 OUTPOST_GROUP_INSTANCE % {"outpost_pk": str(outpost.pk), "instance": states[0].uid},
                 msg,
             )
+        if self.provider and self.provider.delete_token_on_disconnect:
+            self.logger.info("Deleting connection token to prevent reconnect", token=self.token)
+            self.token.delete()
 
     async def receive(self, text_data=None, bytes_data=None):
         """Mirror data received from client to the dest_channel_id

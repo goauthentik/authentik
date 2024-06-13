@@ -1,4 +1,5 @@
 """RAC Views"""
+
 from typing import Any
 
 from django.http import Http404, HttpRequest, HttpResponse
@@ -15,7 +16,7 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import RedirectChallenge
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
-from authentik.flows.planner import FlowPlanner
+from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlanner
 from authentik.flows.stage import RedirectStage
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.utils.time import timedelta_from_string
@@ -39,9 +40,14 @@ class RACStartView(EnterprisePolicyAccessView):
         planner = FlowPlanner(self.provider.authorization_flow)
         planner.allow_empty_flows = True
         try:
-            plan = planner.plan(self.request)
+            plan = planner.plan(
+                self.request,
+                {
+                    PLAN_CONTEXT_APPLICATION: self.application,
+                },
+            )
         except FlowNonApplicableException:
-            raise Http404
+            raise Http404 from None
         plan.insert_stage(
             in_memory_stage(
                 RACFinalStage,
@@ -98,14 +104,15 @@ class RACFinalStage(RedirectStage):
         # Check if we're already at the maximum connection limit
         all_tokens = ConnectionToken.filter_not_expired(
             endpoint=self.endpoint,
-        ).exclude(endpoint__maximum_connections__lte=-1)
-        if all_tokens.count() >= self.endpoint.maximum_connections:
-            msg = [_("Maximum connection limit reached.")]
-            # Check if any other tokens exist for the current user, and inform them
-            # they are already connected
-            if all_tokens.filter(session__user=self.request.user).exists():
-                msg.append(_("(You are already connected in another tab/window)"))
-            return self.executor.stage_invalid(" ".join(msg))
+        )
+        if self.endpoint.maximum_connections > -1:
+            if all_tokens.count() >= self.endpoint.maximum_connections:
+                msg = [_("Maximum connection limit reached.")]
+                # Check if any other tokens exist for the current user, and inform them
+                # they are already connected
+                if all_tokens.filter(session__user=self.request.user).exists():
+                    msg.append(_("(You are already connected in another tab/window)"))
+                return self.executor.stage_invalid(" ".join(msg))
         return super().dispatch(request, *args, **kwargs)
 
     def get_challenge(self, *args, **kwargs) -> RedirectChallenge:
@@ -125,16 +132,7 @@ class RACFinalStage(RedirectStage):
             flow=self.executor.plan.flow_pk,
             endpoint=self.endpoint.name,
         ).from_http(self.request)
-        setattr(
-            self.executor.current_stage,
-            "destination",
-            self.request.build_absolute_uri(
-                reverse(
-                    "authentik_providers_rac:if-rac",
-                    kwargs={
-                        "token": str(token.token),
-                    },
-                )
-            ),
+        self.executor.current_stage.destination = self.request.build_absolute_uri(
+            reverse("authentik_providers_rac:if-rac", kwargs={"token": str(token.token)})
         )
         return super().get_challenge(*args, **kwargs)

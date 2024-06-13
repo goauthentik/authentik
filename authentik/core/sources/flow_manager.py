@@ -1,6 +1,7 @@
 """Source decision helper"""
+
 from enum import Enum
-from typing import Any, Optional
+from typing import Any
 
 from django.contrib import messages
 from django.db import IntegrityError
@@ -12,11 +13,12 @@ from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Source, SourceUserMatchingModes, User, UserSourceConnection
-from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION, PostUserEnrollmentStage
+from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION, PostSourceStage
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
-from authentik.flows.models import Flow, Stage, in_memory_stage
+from authentik.flows.models import Flow, FlowToken, Stage, in_memory_stage
 from authentik.flows.planner import (
+    PLAN_CONTEXT_IS_RESTORED,
     PLAN_CONTEXT_PENDING_USER,
     PLAN_CONTEXT_REDIRECT,
     PLAN_CONTEXT_SOURCE,
@@ -33,6 +35,8 @@ from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 from authentik.stages.user_write.stage import PLAN_CONTEXT_USER_PATH
+
+SESSION_KEY_OVERRIDE_FLOW_TOKEN = "authentik/flows/source_override_flow_token"  # nosec
 
 
 class Action(Enum):
@@ -89,16 +93,13 @@ class SourceFlowManager:
         self._logger = get_logger().bind(source=source, identifier=identifier)
         self.policy_context = {}
 
-    # pylint: disable=too-many-return-statements
-    def get_action(self, **kwargs) -> tuple[Action, Optional[UserSourceConnection]]:
+    def get_action(self, **kwargs) -> tuple[Action, UserSourceConnection | None]:  # noqa: PLR0911
         """decide which action should be taken"""
         new_connection = self.connection_type(source=self.source, identifier=self.identifier)
         # When request is authenticated, always link
         if self.request.user.is_authenticated:
             new_connection.user = self.request.user
             new_connection = self.update_connection(new_connection, **kwargs)
-            # pylint: disable=no-member
-            new_connection.save()
             return Action.LINK, new_connection
 
         existing_connections = self.connection_type.objects.filter(
@@ -145,7 +146,6 @@ class SourceFlowManager:
         ]:
             new_connection.user = user
             new_connection = self.update_connection(new_connection, **kwargs)
-            new_connection.save()
             return Action.LINK, new_connection
         if self.source.user_matching_mode in [
             SourceUserMatchingModes.EMAIL_DENY,
@@ -187,8 +187,10 @@ class SourceFlowManager:
         # Default case, assume deny
         error = Exception(
             _(
-                "Request to authenticate with %(source)s has been denied. Please authenticate "
-                "with the source you've previously signed up with." % {"source": self.source.name}
+                "Request to authenticate with {source} has been denied. Please authenticate "
+                "with the source you've previously signed up with.".format_map(
+                    {"source": self.source.name}
+                )
             ),
         )
         return self.error_handler(error)
@@ -204,38 +206,55 @@ class SourceFlowManager:
 
     def get_stages_to_append(self, flow: Flow) -> list[Stage]:
         """Hook to override stages which are appended to the flow"""
-        if not self.source.enrollment_flow:
-            return []
-        if flow.slug == self.source.enrollment_flow.slug:
-            return [
-                in_memory_stage(PostUserEnrollmentStage),
-            ]
-        return []
+        return [
+            in_memory_stage(PostSourceStage),
+        ]
 
     def _prepare_flow(
         self,
         flow: Flow,
         connection: UserSourceConnection,
-        stages: Optional[list[StageView]] = None,
+        stages: list[StageView] | None = None,
         **kwargs,
     ) -> HttpResponse:
         """Prepare Authentication Plan, redirect user FlowExecutor"""
-        # Ensure redirect is carried through when user was trying to
-        # authorize application
-        final_redirect = self.request.session.get(SESSION_KEY_GET, {}).get(
-            NEXT_ARG_NAME, "authentik_core:if-user"
-        )
         kwargs.update(
             {
                 # Since we authenticate the user by their token, they have no backend set
                 PLAN_CONTEXT_AUTHENTICATION_BACKEND: BACKEND_INBUILT,
                 PLAN_CONTEXT_SSO: True,
                 PLAN_CONTEXT_SOURCE: self.source,
-                PLAN_CONTEXT_REDIRECT: final_redirect,
                 PLAN_CONTEXT_SOURCES_CONNECTION: connection,
             }
         )
         kwargs.update(self.policy_context)
+        if SESSION_KEY_OVERRIDE_FLOW_TOKEN in self.request.session:
+            token: FlowToken = self.request.session.get(SESSION_KEY_OVERRIDE_FLOW_TOKEN)
+            self._logger.info("Replacing source flow with overridden flow", flow=token.flow.slug)
+            plan = token.plan
+            plan.context[PLAN_CONTEXT_IS_RESTORED] = token
+            plan.context.update(kwargs)
+            for stage in self.get_stages_to_append(flow):
+                plan.append_stage(stage)
+            if stages:
+                for stage in stages:
+                    plan.append_stage(stage)
+            self.request.session[SESSION_KEY_PLAN] = plan
+            flow_slug = token.flow.slug
+            token.delete()
+            return redirect_with_qs(
+                "authentik_core:if-flow",
+                self.request.GET,
+                flow_slug=flow_slug,
+            )
+        # Ensure redirect is carried through when user was trying to
+        # authorize application
+        final_redirect = self.request.session.get(SESSION_KEY_GET, {}).get(
+            NEXT_ARG_NAME, "authentik_core:if-user"
+        )
+        if PLAN_CONTEXT_REDIRECT not in kwargs:
+            kwargs[PLAN_CONTEXT_REDIRECT] = final_redirect
+
         if not flow:
             return bad_request_message(
                 self.request,
@@ -243,6 +262,9 @@ class SourceFlowManager:
             )
         # We run the Flow planner here so we can pass the Pending user in the context
         planner = FlowPlanner(flow)
+        # We append some stages so the initial flow we get might be empty
+        planner.allow_empty_flows = True
+        planner.use_cache = False
         plan = planner.plan(self.request, kwargs)
         for stage in self.get_stages_to_append(flow):
             plan.append_stage(stage)
@@ -269,7 +291,9 @@ class SourceFlowManager:
                 in_memory_stage(
                     MessageStage,
                     message=_(
-                        "Successfully authenticated with %(source)s!" % {"source": self.source.name}
+                        "Successfully authenticated with {source}!".format_map(
+                            {"source": self.source.name}
+                        )
                     ),
                 )
             ],
@@ -293,13 +317,13 @@ class SourceFlowManager:
         ).from_http(self.request)
         messages.success(
             self.request,
-            _("Successfully linked %(source)s!" % {"source": self.source.name}),
+            _("Successfully linked {source}!".format_map({"source": self.source.name})),
         )
         return redirect(
             reverse(
                 "authentik_core:if-user",
             )
-            + f"#/settings;page-{self.source.slug}"
+            + "#/settings;page-sources"
         )
 
     def handle_enroll(
@@ -321,7 +345,9 @@ class SourceFlowManager:
                 in_memory_stage(
                     MessageStage,
                     message=_(
-                        "Successfully authenticated with %(source)s!" % {"source": self.source.name}
+                        "Successfully authenticated with {source}!".format_map(
+                            {"source": self.source.name}
+                        )
                     ),
                 )
             ],

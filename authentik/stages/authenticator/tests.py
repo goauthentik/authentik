@@ -1,4 +1,5 @@
 """Base authenticator tests"""
+
 from datetime import timedelta
 from threading import Thread
 

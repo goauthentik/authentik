@@ -1,4 +1,5 @@
 """authentik multi-stage authentication engine"""
+
 from datetime import timedelta
 from uuid import uuid4
 
@@ -110,7 +111,7 @@ class EmailStageView(ChallengeStageView):
         try:
             message = TemplateEmailMessage(
                 subject=_(current_stage.subject),
-                to=[f"{pending_user.name} <{email}>"],
+                to=[(pending_user.name, email)],
                 language=pending_user.locale(self.request),
                 template_name=current_stage.template,
                 template_context={

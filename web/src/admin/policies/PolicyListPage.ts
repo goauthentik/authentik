@@ -44,6 +44,7 @@ export class PolicyListPage extends TablePage<Policy> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "name";

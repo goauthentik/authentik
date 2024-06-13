@@ -1,4 +1,5 @@
 """delete tests"""
+
 from unittest.mock import patch
 
 from django.urls import reverse

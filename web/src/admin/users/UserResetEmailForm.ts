@@ -10,7 +10,7 @@ import { customElement, property } from "lit/decorators.js";
 
 import {
     CoreApi,
-    CoreUsersRecoveryEmailRetrieveRequest,
+    CoreUsersRecoveryEmailCreateRequest,
     Stage,
     StagesAllListRequest,
     StagesApi,
@@ -18,7 +18,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-user-reset-email-form")
-export class UserResetEmailForm extends Form<CoreUsersRecoveryEmailRetrieveRequest> {
+export class UserResetEmailForm extends Form<CoreUsersRecoveryEmailCreateRequest> {
     @property({ attribute: false })
     user!: User;
 
@@ -26,9 +26,9 @@ export class UserResetEmailForm extends Form<CoreUsersRecoveryEmailRetrieveReque
         return msg("Successfully sent email.");
     }
 
-    async send(data: CoreUsersRecoveryEmailRetrieveRequest): Promise<void> {
+    async send(data: CoreUsersRecoveryEmailCreateRequest): Promise<void> {
         data.id = this.user.pk;
-        return new CoreApi(DEFAULT_CONFIG).coreUsersRecoveryEmailRetrieve(data);
+        return new CoreApi(DEFAULT_CONFIG).coreUsersRecoveryEmailCreate(data);
     }
 
     renderForm(): TemplateResult {

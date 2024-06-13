@@ -1,4 +1,5 @@
 """Test SMS API"""
+
 from unittest.mock import MagicMock, patch
 from urllib.parse import parse_qsl
 

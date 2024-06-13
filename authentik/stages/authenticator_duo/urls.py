@@ -1,4 +1,5 @@
 """API URLs"""
+
 from authentik.stages.authenticator_duo.api import (
     AuthenticatorDuoStageViewSet,
     DuoAdminDeviceViewSet,

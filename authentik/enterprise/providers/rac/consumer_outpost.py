@@ -1,4 +1,5 @@
 """RAC consumer"""
+
 from channels.exceptions import ChannelFull
 from channels.generic.websocket import AsyncWebsocketConsumer
 
