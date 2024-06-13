@@ -138,92 +138,7 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(AKElement) {
         this.classList.add(this.open ? "pf-m-expanded" : "pf-m-collapsed");
     }
 
-    renderSidebarItems(): TemplateResult {
-        // The second attribute type is of string[] to help with the 'activeWhen' control, which was
-        // commonplace and singular enough to merit its own handler.
-        type SidebarEntry = [
-            path: string | null,
-            label: string,
-            attributes?: Record<string, any> | string[] | null, // eslint-disable-line
-            children?: SidebarEntry[],
-        ];
-
-        // prettier-ignore
-        const sidebarContent: SidebarEntry[] = [
-            ["/if/user/", msg("User interface"), { "?isAbsoluteLink": true, "?highlight": true }],
-            [null, msg("Dashboards"), { "?expanded": true }, [
-                ["/administration/overview", msg("Overview")],
-                ["/administration/dashboard/users", msg("User Statistics")],
-                ["/administration/system-tasks", msg("System Tasks")]]],
-            [null, msg("Applications"), null, [
-                ["/core/applications", msg("Applications"), [`^/core/applications/(?<slug>${SLUG_REGEX})$`]],
-                ["/core/providers", msg("Providers"), [`^/core/providers/(?<id>${ID_REGEX})$`]],
-                ["/outpost/outposts", msg("Outposts")]]],
-            [null, msg("Events"), null, [
-                ["/events/log", msg("Logs"), [`^/events/log/(?<id>${UUID_REGEX})$`]],
-                ["/events/rules", msg("Notification Rules")],
-                ["/events/transports", msg("Notification Transports")]]],
-            [null, msg("Customization"), null, [
-                ["/policy/policies", msg("Policies")],
-                ["/core/property-mappings", msg("Property Mappings")],
-                ["/blueprints/instances", msg("Blueprints")],
-                ["/policy/reputation", msg("Reputation scores")]]],
-            [null, msg("Flows and Stages"), null, [
-                ["/flow/flows", msg("Flows"), [`^/flow/flows/(?<slug>${SLUG_REGEX})$`]],
-                ["/flow/stages", msg("Stages")],
-                ["/flow/stages/prompts", msg("Prompts")]]],
-            [null, msg("Directory"), null, [
-                ["/identity/users", msg("Users"), [`^/identity/users/(?<id>${ID_REGEX})$`]],
-                ["/identity/groups", msg("Groups"), [`^/identity/groups/(?<id>${UUID_REGEX})$`]],
-                ["/identity/roles", msg("Roles"), [`^/identity/roles/(?<id>${UUID_REGEX})$`]],
-                ["/core/sources", msg("Federation and Social login"), [`^/core/sources/(?<slug>${SLUG_REGEX})$`]],
-                ["/core/tokens", msg("Tokens and App passwords")],
-                ["/flow/stages/invitations", msg("Invitations")]]],
-            [null, msg("System"), null, [
-                ["/core/brands", msg("Brands")],
-                ["/crypto/certificates", msg("Certificates")],
-                ["/outpost/integrations", msg("Outpost Integrations")],
-                ["/admin/settings", msg("Settings")]]],
-        ];
-
-        // Typescript requires the type here to correctly type the recursive path
-        type SidebarRenderer = (_: SidebarEntry) => TemplateResult;
-
-        const renderOneSidebarItem: SidebarRenderer = ([path, label, attributes, children]) => {
-            const properties = Array.isArray(attributes)
-                ? { ".activeWhen": attributes }
-                : attributes ?? {};
-            if (path) {
-                properties["path"] = path;
-            }
-            return html`<ak-sidebar-item ${spread(properties)}>
-                ${label ? html`<span slot="label">${label}</span>` : nothing}
-                ${map(children, renderOneSidebarItem)}
-            </ak-sidebar-item>`;
-        };
-
-        // prettier-ignore
-        return html`
-            ${this.renderNewVersionMessage()}
-            ${this.renderImpersonationMessage()}
-            ${map(sidebarContent, renderOneSidebarItem)}
-            ${this.renderEnterpriseMenu()}
-        `;
-    }
-
-    renderNewVersionMessage() {
-        return this.version && this.version !== VERSION
-            ? html`
-                  <ak-sidebar-item ?highlight=${true}>
-                      <span slot="label"
-                          >${msg("A newer version of the frontend is available.")}</span
-                      >
-                  </ak-sidebar-item>
-              `
-            : nothing;
-    }
-
-    renderImpersonationMessage() {
+    get sidebarItems(): SidebarEntry[] {
         const reload = () =>
             new CoreApi(DEFAULT_CONFIG).coreUsersImpersonateEndRetrieve().then(() => {
                 window.location.reload();
@@ -289,10 +204,11 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(AKElement) {
                 ["/core/sources", msg("Federation and Social login"), [`^/core/sources(/(?<slug>${SLUG_REGEX}))?$`], this.sourceTypes.entries()],
                 ["/core/tokens", msg("Tokens and App passwords")],
                 ["/flow/stages/invitations", msg("Invitations")]]],
-            [null, msg("System"), null, [
-                ["/core/tenants", msg("Tenants")],
-                ["/crypto/certificates", msg("Certificates")],
-                ["/outpost/integrations", msg("Outpost Integrations"), null, this.connectionTypes.entries()]]],
+             [null, msg("System"), null, [
+                 ["/core/brands", msg("Brands")],
+                 ["/crypto/certificates", msg("Certificates")],
+                 ["/outpost/integrations", msg("Outpost Integrations"), null, this.connectionTypes.entries()],
+                 ["/admin/settings", msg("Settings")]]],
             ...(enterpriseMenu)
         ];
 

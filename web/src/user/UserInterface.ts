@@ -282,7 +282,7 @@ class UserInterfacePresentation extends AKElement {
         const onClick = (ev: Event) => {
             ev.stopPropagation();
             this.dispatchEvent(
-                new Event(EVENT_API_DRAWER_TOGGLE, { bubbles: true, composed: true })
+                new Event(EVENT_API_DRAWER_TOGGLE, { bubbles: true, composed: true }),
             );
         };
 
@@ -303,7 +303,7 @@ class UserInterfacePresentation extends AKElement {
         const onClick = (ev: Event) => {
             ev.stopPropagation();
             this.dispatchEvent(
-                new Event(EVENT_NOTIFICATION_DRAWER_TOGGLE, { bubbles: true, composed: true })
+                new Event(EVENT_NOTIFICATION_DRAWER_TOGGLE, { bubbles: true, composed: true }),
             );
         };
 
