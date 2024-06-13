@@ -3,9 +3,9 @@ import "@goauthentik/admin/policies/PolicyBindingForm";
 import "@goauthentik/admin/policies/PolicyWizard";
 import "@goauthentik/admin/users/UserForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { PFSize } from "@goauthentik/common/enums.js";
 import { uiConfig } from "@goauthentik/common/ui/config";
-import { PFColor } from "@goauthentik/elements/Label";
-import { PFSize } from "@goauthentik/elements/Spinner";
+import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
@@ -29,11 +29,14 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     policyOnly = false;
 
     checkbox = true;
+    clearOnRefresh = true;
+
+    order = "order";
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<PolicyBinding>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsList({
             target: this.target || "",
-            ordering: "order",
+            ordering: this.order,
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,
         });
@@ -145,11 +148,9 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
 
     row(item: PolicyBinding): TemplateResult[] {
         return [
-            html`${item.order}`,
+            html`<pre>${item.order}</pre>`,
             html`${this.getPolicyUserGroupRow(item)}`,
-            html` <ak-label color=${item.enabled ? PFColor.Green : PFColor.Orange}>
-                ${item.enabled ? msg("Yes") : msg("No")}
-            </ak-label>`,
+            html`<ak-status-label type="warning" ?good=${item.enabled}></ak-status-label>`,
             html`${item.timeout}`,
             html` ${this.getObjectEditButton(item)}
                 <ak-forms-modal size=${PFSize.Medium}>
@@ -170,32 +171,31 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     }
 
     renderEmpty(): TemplateResult {
-        return super.renderEmpty(html`<ak-empty-state
-            header=${msg("No Policies bound.")}
-            icon="pf-icon-module"
-        >
-            <div slot="body">${msg("No policies are currently bound to this object.")}</div>
-            <div slot="primary">
-                <ak-forms-modal size=${PFSize.Medium}>
-                    <span slot="submit"> ${msg("Create")} </span>
-                    <span slot="header"> ${msg("Create Binding")} </span>
-                    <ak-policy-binding-form
-                        slot="form"
-                        targetPk=${ifDefined(this.target)}
-                        ?policyOnly=${this.policyOnly}
-                    >
-                    </ak-policy-binding-form>
-                    <button slot="trigger" class="pf-c-button pf-m-primary">
-                        ${msg("Create Binding")}
-                    </button>
-                </ak-forms-modal>
-            </div>
-        </ak-empty-state>`);
+        return super.renderEmpty(
+            html`<ak-empty-state header=${msg("No Policies bound.")} icon="pf-icon-module">
+                <div slot="body">${msg("No policies are currently bound to this object.")}</div>
+                <div slot="primary">
+                    <ak-forms-modal size=${PFSize.Medium}>
+                        <span slot="submit"> ${msg("Create")} </span>
+                        <span slot="header"> ${msg("Create Binding")} </span>
+                        <ak-policy-binding-form
+                            slot="form"
+                            targetPk=${ifDefined(this.target)}
+                            ?policyOnly=${this.policyOnly}
+                        >
+                        </ak-policy-binding-form>
+                        <button slot="trigger" class="pf-c-button pf-m-primary">
+                            ${msg("Create Binding")}
+                        </button>
+                    </ak-forms-modal>
+                </div>
+            </ak-empty-state>`,
+        );
     }
 
     renderToolbar(): TemplateResult {
         return html`<ak-policy-wizard
-                createText=${msg("Create & bind Policy")}
+                createText=${msg("Create and bind Policy")}
                 ?showBindingPage=${true}
                 bindingTarget=${ifDefined(this.target)}
             ></ak-policy-wizard>

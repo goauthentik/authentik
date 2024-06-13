@@ -1,7 +1,8 @@
-import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
+import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { dateTimeLocal, first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -11,14 +12,7 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import {
-    Flow,
-    FlowsApi,
-    FlowsInstancesListDesignationEnum,
-    FlowsInstancesListRequest,
-    Invitation,
-    StagesApi,
-} from "@goauthentik/api";
+import { FlowsInstancesListDesignationEnum, Invitation, StagesApi } from "@goauthentik/api";
 
 @customElement("ak-invitation-form")
 export class InvitationForm extends ModelForm<Invitation, string> {
@@ -29,11 +23,9 @@ export class InvitationForm extends ModelForm<Invitation, string> {
     }
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated invitation.");
-        } else {
-            return msg("Successfully created invitation.");
-        }
+        return this.instance
+            ? msg("Successfully updated invitation.")
+            : msg("Successfully created invitation.");
     }
 
     async send(data: Invitation): Promise<Invitation> {
@@ -50,8 +42,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal
+        return html` <ak-form-element-horizontal
                 ?slugMode=${true}
                 label=${msg("Name")}
                 ?required=${true}
@@ -74,43 +65,20 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                     value="${dateTimeLocal(first(this.instance?.expires, new Date()))}"
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Flow")} ?required=${true} name="flow">
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                        const args: FlowsInstancesListRequest = {
-                            ordering: "slug",
-                            designation: FlowsInstancesListDesignationEnum.Enrollment,
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(args);
-                        return flows.results;
-                    }}
-                    .renderElement=${(flow: Flow): string => {
-                        return RenderFlowOption(flow);
-                    }}
-                    .renderDescription=${(flow: Flow): TemplateResult => {
-                        return html`${flow.name}`;
-                    }}
-                    .value=${(flow: Flow | undefined): string | undefined => {
-                        return flow?.pk;
-                    }}
-                    .selected=${(flow: Flow): boolean => {
-                        return flow.pk === this.instance?.flow;
-                    }}
-                    ?blankable=${true}
-                >
-                </ak-search-select>
+            <ak-form-element-horizontal label=${msg("Flow")} name="flow">
+                <ak-flow-search
+                    flowType=${FlowsInstancesListDesignationEnum.Enrollment}
+                    .currentFlow=${this.instance?.flow}
+                ></ak-flow-search>
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         "When selected, the invite will only be usable with the flow. By default the invite is accepted on all flows with invitation stages.",
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Attributes")} name="fixedData">
+            <ak-form-element-horizontal label=${msg("Custom attributes")} name="fixedData">
                 <ak-codemirror
-                    mode="yaml"
+                    mode=${CodeMirrorMode.YAML}
                     value="${YAML.stringify(first(this.instance?.fixedData, {}))}"
                 >
                 </ak-codemirror>
@@ -137,7 +105,6 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                 <p class="pf-c-form__helper-text">
                     ${msg("When enabled, the invitation will be deleted after usage.")}
                 </p>
-            </ak-form-element-horizontal>
-        </form>`;
+            </ak-form-element-horizontal>`;
     }
 }

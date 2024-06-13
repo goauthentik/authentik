@@ -1,10 +1,11 @@
-body {
-    background-color: var(--ak-dark-background) !important;
-}
 :root {
     --pf-global--Color--100: var(--ak-dark-foreground) !important;
+    --ak-global--Color--100: var(--ak-dark-foreground) !important;
     --pf-c-page__main-section--m-light--BackgroundColor: var(--ak-dark-background-darker);
     --pf-global--link--Color: var(--ak-dark-foreground-link) !important;
+}
+body {
+    background-color: var(--ak-dark-background) !important;
 }
 .pf-c-radio {
     --pf-c-radio__label--Color: var(--ak-dark-foreground);
@@ -156,6 +157,10 @@ select[multiple] option:checked {
 .pf-c-switch__input:checked ~ .pf-c-switch__label {
     --pf-c-switch__input--checked__label--Color: var(--ak-dark-foreground);
 }
+input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
 /* select toggle */
 .pf-c-select__toggle::before {
     --pf-c-select__toggle--before--BorderTopColor: var(--ak-dark-background-lighter);
@@ -182,6 +187,9 @@ select[multiple] option:checked {
 .pf-c-select__menu-item.pf-m-focus {
     --pf-c-select__menu-item--focus--BackgroundColor: var(--ak-dark-background-light-ish);
 }
+.pf-c-button:disabled {
+    color: var(--ak-dark-background-lighter);
+}
 .pf-c-button.pf-m-plain:hover {
     color: var(--ak-dark-foreground);
 }
@@ -205,9 +213,6 @@ select[multiple] option:checked {
     color: var(--ak-dark-foreground);
 }
 .pf-c-check__label {
-    color: var(--ak-dark-foreground);
-}
-.form-help-text {
     color: var(--ak-dark-foreground);
 }
 .pf-c-dropdown__toggle::before {
@@ -259,11 +264,12 @@ select[multiple] option:checked {
 .pf-c-login__main-header-desc {
     color: var(--ak-dark-foreground);
 }
-.pf-c-login__main-footer-links-item img {
+.pf-c-login__main-footer-links-item img,
+.pf-c-login__main-footer-links-item .fas {
     filter: invert(1);
 }
 .pf-c-login__main-footer-band {
-    background-color: var(--ak-dark-background-lighter);
+    --pf-c-login__main-footer-band--BackgroundColor: var(--ak-dark-background-lighter);
     color: var(--ak-dark-foreground);
 }
 .form-control-static {
@@ -289,6 +295,7 @@ select[multiple] option:checked {
 }
 /* data list */
 .pf-c-data-list {
+    padding-inline-start: 0;
     border-top-color: var(--ak-dark-background-lighter);
 }
 .pf-c-data-list__item {
@@ -312,10 +319,20 @@ select[multiple] option:checked {
     --pf-c-wizard__nav-link--before--BackgroundColor: transparent;
 }
 /* tree view */
+.pf-c-tree-view__node {
+    --pf-c-tree-view__node--Color: var(--ak-dark-foreground);
+}
+.pf-c-tree-view__node-toggle {
+    --pf-c-tree-view__node-toggle--Color: var(--ak-dark-foreground);
+}
 .pf-c-tree-view__node:focus {
     --pf-c-tree-view__node--focus--BackgroundColor: var(--ak-dark-background-light-ish);
 }
 .pf-c-tree-view__content:hover,
 .pf-c-tree-view__content:focus-within {
     --pf-c-tree-view__node--hover--BackgroundColor: var(--ak-dark-background-light-ish);
+}
+/* stepper */
+.pf-c-progress-stepper__step-title {
+    --pf-c-progress-stepper__step-title--Color: var(--ak-dark-foreground);
 }

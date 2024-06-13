@@ -16,7 +16,11 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
-import { ConsentChallenge, ConsentChallengeResponseRequest, Permission } from "@goauthentik/api";
+import {
+    ConsentChallenge,
+    ConsentChallengeResponseRequest,
+    ConsentPermission,
+} from "@goauthentik/api";
 
 @customElement("ak-stage-consent")
 export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeResponseRequest> {
@@ -24,7 +28,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
         return [PFBase, PFLogin, PFList, PFForm, PFSpacing, PFFormControl, PFTitle, PFButton];
     }
 
-    renderPermissions(perms: Permission[]): TemplateResult {
+    renderPermissions(perms: ConsentPermission[]): TemplateResult {
         return html`${perms.map((permission) => {
             if (permission.name === "") {
                 return html``;

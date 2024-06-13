@@ -1,7 +1,7 @@
+import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
 
 import { msg } from "@lit/localize";
@@ -12,7 +12,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { ConsentStage, ConsentStageModeEnum, StagesApi } from "@goauthentik/api";
 
 @customElement("ak-stage-consent-form")
-export class ConsentStageForm extends ModelForm<ConsentStage, string> {
+export class ConsentStageForm extends BaseStageForm<ConsentStage> {
     loadInstance(pk: string): Promise<ConsentStage> {
         return new StagesApi(DEFAULT_CONFIG)
             .stagesConsentRetrieve({
@@ -26,14 +26,6 @@ export class ConsentStageForm extends ModelForm<ConsentStage, string> {
 
     @property({ type: Boolean })
     showExpiresIn = false;
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated stage.");
-        } else {
-            return msg("Successfully created stage.");
-        }
-    }
 
     async send(data: ConsentStage): Promise<ConsentStage> {
         if (this.instance) {
@@ -49,12 +41,11 @@ export class ConsentStageForm extends ModelForm<ConsentStage, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
+        return html` <span>
                 ${msg(
                     "Prompt for the user's consent. The consent can either be permanent or expire in a defined amount of time.",
                 )}
-            </div>
+            </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
@@ -120,7 +111,6 @@ export class ConsentStageForm extends ModelForm<ConsentStage, string> {
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

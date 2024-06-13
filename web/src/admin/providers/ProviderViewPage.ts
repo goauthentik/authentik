@@ -1,6 +1,9 @@
+import "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderViewPage";
 import "@goauthentik/admin/providers/ldap/LDAPProviderViewPage";
+import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderViewPage";
 import "@goauthentik/admin/providers/oauth2/OAuth2ProviderViewPage";
 import "@goauthentik/admin/providers/proxy/ProxyProviderViewPage";
+import "@goauthentik/admin/providers/rac/RACProviderViewPage";
 import "@goauthentik/admin/providers/radius/RadiusProviderViewPage";
 import "@goauthentik/admin/providers/saml/SAMLProviderViewPage";
 import "@goauthentik/admin/providers/scim/SCIMProviderViewPage";
@@ -65,6 +68,18 @@ export class ProviderViewPage extends AKElement {
                 return html`<ak-provider-radius-view
                     providerID=${ifDefined(this.provider.pk)}
                 ></ak-provider-radius-view>`;
+            case "ak-provider-rac-form":
+                return html`<ak-provider-rac-view
+                    providerID=${ifDefined(this.provider.pk)}
+                ></ak-provider-rac-view>`;
+            case "ak-provider-google-workspace-form":
+                return html`<ak-provider-google-workspace-view
+                    providerID=${ifDefined(this.provider.pk)}
+                ></ak-provider-google-workspace-view>`;
+            case "ak-provider-microsoft-entra-form":
+                return html`<ak-provider-microsoft-entra-view
+                    providerID=${ifDefined(this.provider.pk)}
+                ></ak-provider-microsoft-entra-view>`;
             default:
                 return html`<p>Invalid provider type ${this.provider?.component}</p>`;
         }

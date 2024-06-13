@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import YAML from "yaml";
@@ -24,11 +25,9 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
     }
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated integration.");
-        } else {
-            return msg("Successfully created integration.");
-        }
+        return this.instance
+            ? msg("Successfully updated integration.")
+            : msg("Successfully created integration.");
     }
 
     async send(data: KubernetesServiceConnection): Promise<KubernetesServiceConnection> {
@@ -45,8 +44,7 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -76,7 +74,7 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Kubeconfig")} name="kubeconfig">
                 <ak-codemirror
-                    mode="yaml"
+                    mode=${CodeMirrorMode.YAML}
                     value="${YAML.stringify(first(this.instance?.kubeconfig, {}))}"
                 >
                 </ak-codemirror>
@@ -100,7 +98,6 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
                         >${msg("Verify Kubernetes API SSL Certificate")}</span
                     >
                 </label>
-            </ak-form-element-horizontal>
-        </form>`;
+            </ak-form-element-horizontal>`;
     }
 }

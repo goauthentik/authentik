@@ -35,7 +35,7 @@ func (pi *ProviderInstance) GetVirtualGroupDN(group string) string {
 	return fmt.Sprintf("cn=%s,%s", group, pi.VirtualGroupDN)
 }
 
-func (pi *ProviderInstance) GetUidNumber(user api.User) string {
+func (pi *ProviderInstance) GetUserUidNumber(user api.User) string {
 	uidNumber, ok := user.GetAttributes()["uidNumber"].(string)
 
 	if ok {
@@ -45,7 +45,17 @@ func (pi *ProviderInstance) GetUidNumber(user api.User) string {
 	return strconv.FormatInt(int64(pi.uidStartNumber+user.Pk), 10)
 }
 
-func (pi *ProviderInstance) GetGidNumber(group api.Group) string {
+func (pi *ProviderInstance) GetUserGidNumber(user api.User) string {
+	gidNumber, ok := user.GetAttributes()["gidNumber"].(string)
+
+	if ok {
+		return gidNumber
+	}
+
+	return pi.GetUserUidNumber(user)
+}
+
+func (pi *ProviderInstance) GetGroupGidNumber(group api.Group) string {
 	gidNumber, ok := group.GetAttributes()["gidNumber"].(string)
 
 	if ok {

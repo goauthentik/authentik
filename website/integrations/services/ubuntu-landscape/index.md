@@ -6,11 +6,9 @@ title: Ubuntu Landscape
 
 ## What is Ubuntu Landscape
 
-From https://en.wikipedia.org/wiki/Landscape_(software)
-
-:::note
-Landscape is a systems management tool developed by Canonical. It can be run on-premises or in the cloud depending on the needs of the user. It is primarily designed for use with Ubuntu derivatives such as Desktop, Server, and Core.
-:::
+> Landscape is a systems management tool developed by Canonical. It can be run on-premises or in the cloud depending on the needs of the user. It is primarily designed for use with Ubuntu derivatives such as Desktop, Server, and Core.
+>
+> -- https://en.wikipedia.org/wiki/Landscape_(software)
 
 :::caution
 This requires authentik 0.10.3 or newer.

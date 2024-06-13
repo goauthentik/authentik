@@ -1,18 +1,20 @@
 """authentik managed models tests"""
-from typing import Callable, Type
+
+from collections.abc import Callable
 
 from django.apps import apps
 from django.test import TestCase
 
 from authentik.blueprints.v1.importer import is_model_allowed
 from authentik.lib.models import SerializerModel
+from authentik.providers.oauth2.models import RefreshToken
 
 
 class TestModels(TestCase):
     """Test Models"""
 
 
-def serializer_tester_factory(test_model: Type[SerializerModel]) -> Callable:
+def serializer_tester_factory(test_model: type[SerializerModel]) -> Callable:
     """Test serializer"""
 
     def tester(self: TestModels):
@@ -21,6 +23,9 @@ def serializer_tester_factory(test_model: Type[SerializerModel]) -> Callable:
         model_class = test_model()
         self.assertTrue(isinstance(model_class, SerializerModel))
         self.assertIsNotNone(model_class.serializer)
+        if model_class.serializer.Meta().model == RefreshToken:
+            return
+        self.assertEqual(model_class.serializer.Meta().model, test_model)
 
     return tester
 

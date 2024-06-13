@@ -2,6 +2,7 @@ import "@goauthentik/admin/sources/ldap/LDAPSourceViewPage";
 import "@goauthentik/admin/sources/oauth/OAuthSourceViewPage";
 import "@goauthentik/admin/sources/plex/PlexSourceViewPage";
 import "@goauthentik/admin/sources/saml/SAMLSourceViewPage";
+import "@goauthentik/admin/sources/scim/SCIMSourceViewPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
@@ -13,18 +14,6 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import { Source, SourcesApi } from "@goauthentik/api";
-
-export function renderSourceIcon(name: string, iconUrl: string | undefined | null): TemplateResult {
-    const icon = html`<i class="fas fa-share-square" title="${name}"></i>`;
-    if (iconUrl) {
-        if (iconUrl.startsWith("fa://")) {
-            const url = iconUrl.replaceAll("fa://", "");
-            return html`<i class="fas ${url}" title="${name}"></i>`;
-        }
-        return html`<img src="${iconUrl}" alt="${name}" />`;
-    }
-    return icon;
-}
 
 @customElement("ak-source-view")
 export class SourceViewPage extends AKElement {
@@ -63,6 +52,10 @@ export class SourceViewPage extends AKElement {
                 return html`<ak-source-plex-view
                     sourceSlug=${this.source.slug}
                 ></ak-source-plex-view>`;
+            case "ak-source-scim-form":
+                return html`<ak-source-scim-view
+                    sourceSlug=${this.source.slug}
+                ></ak-source-scim-view>`;
             default:
                 return html`<p>Invalid source type ${this.source.component}</p>`;
         }

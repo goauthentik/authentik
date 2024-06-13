@@ -1,25 +1,30 @@
 ---
 title: Applications
-slug: /
 ---
 
 import DocCardList from "@theme/DocCardList";
-import { useCurrentSidebarCategory } from "@docusaurus/theme-common";
 
-Below is a list of all applications that are known to work with authentik.
+Below is a list of all applications that are known to work with authentik. All app integrations will have one of these badges:
 
-All integrations will have a combination of these badges:
+-   <span class="badge badge--secondary">Support level: Community</span> The
+    integration is community maintained.
 
--   <span class="badge badge--secondary">Support level: Community</span>
+-   <span class="badge badge--info">Support level: Vendor</span> The integration
+    is supported by the vendor.
 
-    The integration is community maintained.
+-   <span class="badge badge--primary">Support level: authentik</span> The
+    integration is regularly tested by the authentik team.
 
--   <span class="badge badge--info">Support level: Vendor</span>
+### Add a new application
 
-    The integration is supported by the vendor.
+To add documentation for a new application (with support level Community or Vendor), please use the integration template [`service.md`](https://github.com/goauthentik/authentik/blob/main/website/integrations/_template/service.md) file from our GitHub repo. You can download the template file using the following command:
 
--   <span class="badge badge--primary">Support level: authentik</span>
+```shell
+wget https://raw.githubusercontent.com/goauthentik/authentik/main/website/integrations/_template/service.md
+```
 
-    The integration is regularly tested by the authentik team.
+Don't forget to edit the `sidebarsIntegrations.js` file to add your new integration to the lefthand navigation bar.
 
-<DocCardList items={useCurrentSidebarCategory().items} />
+## Integration categories
+
+<DocCardList />

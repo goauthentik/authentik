@@ -1,5 +1,8 @@
+import "@goauthentik/admin/property-mappings/PropertyMappingGoogleWorkspaceForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingLDAPForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingMicrosoftEntraForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingNotification";
+import "@goauthentik/admin/property-mappings/PropertyMappingRACForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingSAMLForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingSCIMForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingScopeForm";
@@ -10,10 +13,12 @@ import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/forms/ProxyForm";
+import "@goauthentik/elements/rbac/ObjectPermissionModal";
 import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -38,6 +43,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "name";
@@ -101,16 +107,22 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                     >
                     </ak-proxy-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <i class="fas fa-edit"></i>
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit"></i>
+                        </pf-tooltip>
                     </button>
                 </ak-forms-modal>
+                <ak-rbac-object-permission-modal model=${item.metaModelName} objectPk=${item.pk}>
+                </ak-rbac-object-permission-modal>
                 <ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
                     <span slot="submit"> ${msg("Test")} </span>
                     <span slot="header"> ${msg("Test Property Mapping")} </span>
                     <ak-property-mapping-test-form slot="form" .mapping=${item}>
                     </ak-property-mapping-test-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <i class="fas fa-vial" aria-hidden="true"></i>
+                        <pf-tooltip position="top" content=${msg("Test")}>
+                            <i class="fas fa-vial" aria-hidden="true"></i>
+                        </pf-tooltip>
                     </button>
                 </ak-forms-modal>`,
         ];

@@ -1,8 +1,8 @@
+import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -12,7 +12,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { EmailStage, StagesApi, TypeCreate } from "@goauthentik/api";
 
 @customElement("ak-stage-email-form")
-export class EmailStageForm extends ModelForm<EmailStage, string> {
+export class EmailStageForm extends BaseStageForm<EmailStage> {
     async loadInstance(pk: string): Promise<EmailStage> {
         const stage = await new StagesApi(DEFAULT_CONFIG).stagesEmailRetrieve({
             stageUuid: pk,
@@ -29,14 +29,6 @@ export class EmailStageForm extends ModelForm<EmailStage, string> {
 
     @property({ type: Boolean })
     showConnectionSettings = false;
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated stage.");
-        } else {
-            return msg("Successfully created stage.");
-        }
-    }
 
     async send(data: EmailStage): Promise<EmailStage> {
         if (this.instance) {
@@ -147,12 +139,11 @@ export class EmailStageForm extends ModelForm<EmailStage, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
+        return html` <span>
                 ${msg(
                     "Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity.",
                 )}
-            </div>
+            </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
@@ -256,7 +247,6 @@ export class EmailStageForm extends ModelForm<EmailStage, string> {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            ${this.renderConnectionSettings()}
-        </form>`;
+            ${this.renderConnectionSettings()}`;
     }
 }

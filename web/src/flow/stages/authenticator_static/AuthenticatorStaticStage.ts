@@ -40,6 +40,7 @@ export class AuthenticatorStaticStage extends BaseStage<
                     columns: 2;
                     -webkit-columns: 2;
                     -moz-columns: 2;
+                    column-width: 1em;
                     margin-left: var(--pf-global--spacer--xs);
                 }
                 ul li {

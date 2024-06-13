@@ -2,7 +2,8 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { refreshMe } from "@goauthentik/common/users";
-import { AKElement, rootInterface } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base";
+import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { StageHost } from "@goauthentik/flow/stages/base";
 import "@goauthentik/user/user-settings/details/stages/prompt/PromptStage";
@@ -30,7 +31,10 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-user-settings-flow-executor")
-export class UserSettingsFlowExecutor extends AKElement implements StageHost {
+export class UserSettingsFlowExecutor
+    extends WithBrandConfig(AKElement, true)
+    implements StageHost
+{
     @property()
     flowSlug?: string;
 
@@ -83,8 +87,7 @@ export class UserSettingsFlowExecutor extends AKElement implements StageHost {
     }
 
     firstUpdated(): void {
-        const tenant = rootInterface()?.tenant;
-        this.flowSlug = tenant?.flowUserSettings;
+        this.flowSlug = this.brand?.flowUserSettings;
         if (!this.flowSlug) {
             return;
         }
@@ -177,7 +180,7 @@ export class UserSettingsFlowExecutor extends AKElement implements StageHost {
                             `authentik/user/flows: unsupported stage type ${this.challenge.component}`,
                         );
                         return html`
-                            <a href="/if/flow/${this.flowSlug}" class="pf-c-button pf-m-primary">
+                            <a href="/if/flow/${this.flowSlug}/" class="pf-c-button pf-m-primary">
                                 ${msg("Open settings")}
                             </a>
                         `;

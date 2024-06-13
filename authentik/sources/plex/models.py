@@ -1,5 +1,4 @@
 """Plex source"""
-from typing import Optional
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
@@ -61,33 +60,34 @@ class PlexSource(Source):
 
         return PlexSourceSerializer
 
-    def ui_login_button(self, request: HttpRequest) -> UILoginButton:
-        icon = self.get_icon
+    @property
+    def icon_url(self) -> str:
+        icon = super().icon_url
         if not icon:
             icon = static("authentik/sources/plex.svg")
+        return icon
+
+    def ui_login_button(self, request: HttpRequest) -> UILoginButton:
         return UILoginButton(
             challenge=PlexAuthenticationChallenge(
-                {
+                data={
                     "type": ChallengeTypes.NATIVE.value,
                     "component": "ak-source-plex",
                     "client_id": self.client_id,
                     "slug": self.slug,
                 }
             ),
-            icon_url=icon,
+            icon_url=self.icon_url,
             name=self.name,
         )
 
-    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
-        icon = self.get_icon
-        if not icon:
-            icon = static("authentik/sources/plex.svg")
+    def ui_user_settings(self) -> UserSettingSerializer | None:
         return UserSettingSerializer(
             data={
                 "title": self.name,
                 "component": "ak-user-settings-source-plex",
                 "configure_url": self.client_id,
-                "icon_url": icon,
+                "icon_url": self.icon_url,
             }
         )
 

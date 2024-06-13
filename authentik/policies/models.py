@@ -1,4 +1,5 @@
 """Policy base models"""
+
 from uuid import uuid4
 
 from django.db import models
@@ -39,12 +40,12 @@ class PolicyBindingModel(models.Model):
 
     objects = InheritanceManager()
 
-    def __str__(self) -> str:
-        return f"PolicyBindingModel {self.pbm_uuid}"
-
     class Meta:
         verbose_name = _("Policy Binding Model")
         verbose_name_plural = _("Policy Binding Models")
+
+    def __str__(self) -> str:
+        return f"PolicyBindingModel {self.pbm_uuid}"
 
 
 class PolicyBinding(SerializerModel):
@@ -85,8 +86,11 @@ class PolicyBinding(SerializerModel):
         default=False,
         help_text=_("Negates the outcome of the policy. Messages are unaffected."),
     )
-    timeout = models.IntegerField(
+    timeout = models.PositiveIntegerField(
         default=30, help_text=_("Timeout after which Policy execution is terminated.")
+    )
+    failure_result = models.BooleanField(
+        default=False, help_text=_("Result if the Policy execution fails.")
     )
 
     order = models.IntegerField()
@@ -134,7 +138,7 @@ class PolicyBinding(SerializerModel):
         suffix = f"{self.target_type.title()} {self.target_name}"
         try:
             return f"Binding from {self.target} #{self.order} to {suffix}"
-        except PolicyBinding.target.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+        except PolicyBinding.target.RelatedObjectDoesNotExist:
             return f"Binding - #{self.order} to {suffix}"
         return ""
 
@@ -187,8 +191,8 @@ class Policy(SerializerModel, CreatedUpdatedModel):
         verbose_name_plural = _("Policies")
 
         permissions = [
-            ("view_policy_cache", "View Policy's cache metrics"),
-            ("clear_policy_cache", "Clear Policy's cache metrics"),
+            ("view_policy_cache", _("View Policy's cache metrics")),
+            ("clear_policy_cache", _("Clear Policy's cache metrics")),
         ]
 
     class PolicyMeta:

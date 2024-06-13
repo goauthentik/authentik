@@ -1,8 +1,9 @@
-import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
+import "@goauthentik/admin/common/ak-crypto-certificate-search";
+import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
+import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
@@ -13,14 +14,8 @@ import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
-    CertificateKeyPair,
-    CryptoApi,
-    CryptoCertificatekeypairsListRequest,
     DigestAlgorithmEnum,
-    Flow,
-    FlowsApi,
     FlowsInstancesListDesignationEnum,
-    FlowsInstancesListRequest,
     PaginatedSAMLPropertyMappingList,
     PropertymappingsApi,
     PropertymappingsSamlListRequest,
@@ -32,7 +27,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-provider-saml-form")
-export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
+export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
     loadInstance(pk: number): Promise<SAMLProvider> {
         return new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({
             id: pk,
@@ -49,18 +44,10 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
 
     propertyMappings?: PaginatedSAMLPropertyMappingList;
 
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated provider.");
-        } else {
-            return msg("Successfully created provider.");
-        }
-    }
-
     async send(data: SAMLProvider): Promise<SAMLProvider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersSamlUpdate({
-                id: this.instance.pk || 0,
+                id: this.instance.pk,
                 sAMLProviderRequest: data,
             });
         } else {
@@ -71,8 +58,7 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -85,32 +71,11 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                 ?required=${false}
                 name="authenticationFlow"
             >
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                        const args: FlowsInstancesListRequest = {
-                            ordering: "slug",
-                            designation: FlowsInstancesListDesignationEnum.Authentication,
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(args);
-                        return flows.results;
-                    }}
-                    .renderElement=${(flow: Flow): string => {
-                        return RenderFlowOption(flow);
-                    }}
-                    .renderDescription=${(flow: Flow): TemplateResult => {
-                        return html`${flow.name}`;
-                    }}
-                    .value=${(flow: Flow | undefined): string | undefined => {
-                        return flow?.pk;
-                    }}
-                    .selected=${(flow: Flow): boolean => {
-                        return flow.pk === this.instance?.authenticationFlow;
-                    }}
-                >
-                </ak-search-select>
+                <ak-flow-search
+                    flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                    .currentFlow=${this.instance?.authenticationFlow}
+                    required
+                ></ak-flow-search>
                 <p class="pf-c-form__helper-text">
                     ${msg("Flow used when a user access this provider and is not authenticated.")}
                 </p>
@@ -120,32 +85,11 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                 ?required=${true}
                 name="authorizationFlow"
             >
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                        const args: FlowsInstancesListRequest = {
-                            ordering: "slug",
-                            designation: FlowsInstancesListDesignationEnum.Authorization,
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(args);
-                        return flows.results;
-                    }}
-                    .renderElement=${(flow: Flow): string => {
-                        return RenderFlowOption(flow);
-                    }}
-                    .renderDescription=${(flow: Flow): TemplateResult => {
-                        return html`${flow.name}`;
-                    }}
-                    .value=${(flow: Flow | undefined): string | undefined => {
-                        return flow?.pk;
-                    }}
-                    .selected=${(flow: Flow): boolean => {
-                        return flow.pk === this.instance?.authorizationFlow;
-                    }}
-                >
-                </ak-search-select>
+                <ak-flow-search
+                    flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                    .currentFlow=${this.instance?.authorizationFlow}
+                    required
+                ></ak-flow-search>
                 <p class="pf-c-form__helper-text">
                     ${msg("Flow used when authorizing this provider.")}
                 </p>
@@ -222,35 +166,9 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                         label=${msg("Signing Certificate")}
                         name="signingKp"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (
-                                query?: string,
-                            ): Promise<CertificateKeyPair[]> => {
-                                const args: CryptoCertificatekeypairsListRequest = {
-                                    ordering: "name",
-                                    hasKey: true,
-                                    includeDetails: false,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const certificates = await new CryptoApi(
-                                    DEFAULT_CONFIG,
-                                ).cryptoCertificatekeypairsList(args);
-                                return certificates.results;
-                            }}
-                            .renderElement=${(item: CertificateKeyPair): string => {
-                                return item.name;
-                            }}
-                            .value=${(item: CertificateKeyPair | undefined): string | undefined => {
-                                return item?.pk;
-                            }}
-                            .selected=${(item: CertificateKeyPair): boolean => {
-                                return item.pk === this.instance?.signingKp;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-crypto-certificate-search
+                            .certificate=${this.instance?.signingKp}
+                        ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Certificate used to sign outgoing Responses going to the Service Provider.",
@@ -261,44 +179,18 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                         label=${msg("Verification Certificate")}
                         name="verificationKp"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (
-                                query?: string,
-                            ): Promise<CertificateKeyPair[]> => {
-                                const args: CryptoCertificatekeypairsListRequest = {
-                                    ordering: "name",
-                                    includeDetails: false,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const certificates = await new CryptoApi(
-                                    DEFAULT_CONFIG,
-                                ).cryptoCertificatekeypairsList(args);
-                                return certificates.results;
-                            }}
-                            .renderElement=${(item: CertificateKeyPair): string => {
-                                return item.name;
-                            }}
-                            .value=${(item: CertificateKeyPair | undefined): string | undefined => {
-                                return item?.pk;
-                            }}
-                            .selected=${(item: CertificateKeyPair): boolean => {
-                                return item.pk === this.instance?.verificationKp;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-crypto-certificate-search
+                            .certificate=${this.instance?.verificationKp}
+                            nokey
+                        ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
-
                     <ak-form-element-horizontal
                         label=${msg("Property mappings")}
-                        ?required=${true}
                         name="propertyMappings"
                     >
                         <select class="pf-c-form-control" multiple>
@@ -416,6 +308,24 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Default relay state")}
+                        ?required=${true}
+                        name="defaultRelayState"
+                    >
+                        <input
+                            type="text"
+                            value="${this.instance?.defaultRelayState || ""}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "When using IDP-initiated logins, the relay state will be set to this value.",
+                            )}
+                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
+                    </ak-form-element-horizontal>
 
                     <ak-form-element-horizontal
                         label=${msg("Digest algorithm")}
@@ -480,7 +390,6 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                         </ak-radio>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

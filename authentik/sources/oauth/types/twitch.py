@@ -1,17 +1,18 @@
 """Twitch OAuth Views"""
+
 from json import dumps
-from typing import Any, Optional
+from typing import Any
 
 from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
+from authentik.sources.oauth.types.oidc import OpenIDConnectOAuth2Callback
 from authentik.sources.oauth.types.registry import SourceType, registry
-from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 
 class TwitchClient(UserprofileHeaderAuthClient):
     """Twitch needs the token_type to be capitalized for the request header."""
 
-    def get_profile_info(self, token: dict[str, str]) -> Optional[dict[str, Any]]:
+    def get_profile_info(self, token: dict[str, str]) -> dict[str, Any] | None:
         token["token_type"] = token["token_type"].capitalize()
         return super().get_profile_info(token)
 
@@ -27,13 +28,10 @@ class TwitchOAuthRedirect(OAuthRedirect):
         }
 
 
-class TwitchOAuth2Callback(OAuthCallback):
+class TwitchOAuth2Callback(OpenIDConnectOAuth2Callback):
     """Twitch OAuth2 Callback"""
 
     client_class = TwitchClient
-
-    def get_user_id(self, info: dict[str, str]) -> str:
-        return info.get("sub", "")
 
     def get_user_enroll_context(
         self,
@@ -52,8 +50,8 @@ class TwitchType(SourceType):
 
     callback_view = TwitchOAuth2Callback
     redirect_view = TwitchOAuthRedirect
-    name = "Twitch"
-    slug = "twitch"
+    verbose_name = "Twitch"
+    name = "twitch"
 
     authorization_url = "https://id.twitch.tv/oauth2/authorize"
     access_token_url = "https://id.twitch.tv/oauth2/token"  # nosec

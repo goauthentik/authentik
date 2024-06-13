@@ -4,15 +4,17 @@ import "@goauthentik/admin/outposts/OutpostForm";
 import "@goauthentik/admin/outposts/OutpostHealth";
 import "@goauthentik/admin/outposts/OutpostHealthSimple";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { PFSize } from "@goauthentik/common/enums.js";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import { PFColor } from "@goauthentik/elements/Label";
-import { PFSize } from "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/rbac/ObjectPermissionModal";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult } from "lit";
@@ -22,7 +24,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { Outpost, OutpostHealth, OutpostTypeEnum, OutpostsApi } from "@goauthentik/api";
+import {
+    Outpost,
+    OutpostHealth,
+    OutpostTypeEnum,
+    OutpostsApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+} from "@goauthentik/api";
 
 export function TypeToLabel(type?: OutpostTypeEnum): string {
     if (!type) return "";
@@ -33,6 +41,8 @@ export function TypeToLabel(type?: OutpostTypeEnum): string {
             return msg("LDAP");
         case OutpostTypeEnum.Radius:
             return msg("Radius");
+        case OutpostTypeEnum.Rac:
+            return msg("RAC");
         case OutpostTypeEnum.UnknownDefaultOpenApi:
             return msg("Unknown type");
     }
@@ -97,6 +107,7 @@ export class OutpostListPage extends TablePage<Outpost> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "name";
@@ -135,9 +146,16 @@ export class OutpostListPage extends TablePage<Outpost> {
                     >
                     </ak-outpost-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <i class="fas fa-edit"></i>
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit"></i>
+                        </pf-tooltip>
                     </button>
                 </ak-forms-modal>
+                <ak-rbac-object-permission-modal
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.OutpostsOutpost}
+                    objectPk=${item.pk}
+                >
+                </ak-rbac-object-permission-modal>
                 ${item.managed !== "goauthentik.io/outposts/embedded"
                     ? html`<ak-outpost-deployment-modal .outpost=${item} size=${PFSize.Medium}>
                           <button slot="trigger" class="pf-c-button pf-m-tertiary">

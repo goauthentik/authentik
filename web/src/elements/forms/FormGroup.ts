@@ -8,10 +8,25 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+/**
+ * Form Group
+ *
+ * Mostly visual effects, with a single interaction for opening/closing the view.
+ *
+ */
+
+/**
+ * TODO: Listen for custom events from its children about 'invalidation' events, and
+ * trigger the `expanded` property as needed.
+ */
+
 @customElement("ak-form-group")
 export class FormGroup extends AKElement {
-    @property({ type: Boolean })
+    @property({ type: Boolean, reflect: true })
     expanded = false;
+
+    @property({ type: String, attribute: "aria-label", reflect: true })
+    ariaLabel = "Details";
 
     static get styles(): CSSResult[] {
         return [
@@ -35,7 +50,7 @@ export class FormGroup extends AKElement {
                         class="pf-c-button pf-m-plain"
                         type="button"
                         aria-expanded="${this.expanded}"
-                        aria-label="Details"
+                        aria-label=${this.ariaLabel}
                         @click=${() => {
                             this.expanded = !this.expanded;
                         }}

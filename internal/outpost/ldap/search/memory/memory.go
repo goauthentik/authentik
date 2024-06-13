@@ -38,8 +38,8 @@ func NewMemorySearcher(si server.LDAPServerInstance) *MemorySearcher {
 		ds:  direct.NewDirectSearcher(si),
 	}
 	ms.log.Debug("initialised memory searcher")
-	ms.users = paginator.FetchUsers(ms.si.GetAPIClient().CoreApi.CoreUsersList(context.TODO()))
-	ms.groups = paginator.FetchGroups(ms.si.GetAPIClient().CoreApi.CoreGroupsList(context.TODO()))
+	ms.users = paginator.FetchUsers(ms.si.GetAPIClient().CoreApi.CoreUsersList(context.TODO()).IncludeGroups(true))
+	ms.groups = paginator.FetchGroups(ms.si.GetAPIClient().CoreApi.CoreGroupsList(context.TODO()).IncludeUsers(true))
 	return ms
 }
 
@@ -143,11 +143,15 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 				// as a member.
 				for _, u := range g.UsersObj {
 					if flag.UserPk == u.Pk {
-						//TODO: Is there a better way to clone this object?
-						fg := api.NewGroup(g.Pk, g.NumPk, g.Name, g.ParentName, []api.GroupMember{u})
+						// TODO: Is there a better way to clone this object?
+						fg := api.NewGroup(g.Pk, g.NumPk, g.Name, g.ParentName, []api.GroupMember{u}, []api.Role{})
 						fg.SetUsers([]int32{flag.UserPk})
 						if g.Parent.IsSet() {
-							fg.SetParent(*g.Parent.Get())
+							if p := g.Parent.Get(); p != nil {
+								fg.SetParent(*p)
+							} else {
+								fg.SetParentNil()
+							}
 						}
 						fg.SetAttributes(g.Attributes)
 						fg.SetIsSuperuser(*g.IsSuperuser)

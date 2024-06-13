@@ -1,5 +1,10 @@
 import "@goauthentik/elements/Divider";
 import "@goauthentik/elements/EmptyState";
+import {
+    CapabilitiesEnum,
+    WithCapabilitiesConfig,
+} from "@goauthentik/elements/Interface/capabilitiesProvider";
+import { LOCALES } from "@goauthentik/elements/ak-locale-context/definitions";
 import "@goauthentik/elements/forms/FormElement";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
@@ -32,7 +37,9 @@ import {
 } from "./helpers";
 
 @customElement("ak-stage-prompt")
-export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeResponseRequest> {
+export class PromptStage extends WithCapabilitiesConfig(
+    BaseStage<PromptChallenge, PromptChallengeResponseRequest>,
+) {
     static get styles(): CSSResult[] {
         return [
             PFBase,

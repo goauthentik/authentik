@@ -1,11 +1,14 @@
 """authentik OAuth2 Token views"""
-from base64 import urlsafe_b64encode
+
+from base64 import b64decode, urlsafe_b64encode
+from binascii import Error
 from dataclasses import InitVar, dataclass
 from datetime import datetime
 from hashlib import sha256
 from re import error as RegexError
 from re import fullmatch
-from typing import Any, Optional
+from typing import Any
+from urllib.parse import urlparse
 
 from django.http import HttpRequest, HttpResponse
 from django.utils import timezone
@@ -17,14 +20,18 @@ from jwt import PyJWK, PyJWT, PyJWTError, decode
 from sentry_sdk.hub import Hub
 from structlog.stdlib import get_logger
 
+from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.core.models import (
     USER_ATTRIBUTE_EXPIRES,
     USER_ATTRIBUTE_GENERATED,
+    USER_PATH_SYSTEM_PREFIX,
     Application,
     Token,
     TokenIntents,
     User,
+    UserTypes,
 )
+from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import get_login_event
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
@@ -40,6 +47,7 @@ from authentik.providers.oauth2.constants import (
     GRANT_TYPE_PASSWORD,
     GRANT_TYPE_REFRESH_TOKEN,
     PKCE_METHOD_S256,
+    SCOPE_OFFLINE_ACCESS,
     TOKEN_TYPE,
 )
 from authentik.providers.oauth2.errors import DeviceCodeError, TokenError, UserAuthError
@@ -53,6 +61,7 @@ from authentik.providers.oauth2.models import (
     RefreshToken,
 )
 from authentik.providers.oauth2.utils import TokenResponse, cors_allow, extract_client_auth
+from authentik.providers.oauth2.views.authorize import FORBIDDEN_URI_SCHEMES
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
@@ -60,7 +69,6 @@ LOGGER = get_logger()
 
 
 @dataclass(slots=True)
-# pylint: disable=too-many-instance-attributes
 class TokenParams:
     """Token params"""
 
@@ -73,16 +81,16 @@ class TokenParams:
 
     provider: OAuth2Provider
 
-    authorization_code: Optional[AuthorizationCode] = None
-    refresh_token: Optional[RefreshToken] = None
-    device_code: Optional[DeviceToken] = None
-    user: Optional[User] = None
+    authorization_code: AuthorizationCode | None = None
+    refresh_token: RefreshToken | None = None
+    device_code: DeviceToken | None = None
+    user: User | None = None
 
-    code_verifier: Optional[str] = None
+    code_verifier: str | None = None
 
     raw_code: InitVar[str] = ""
     raw_token: InitVar[str] = ""
-    request: InitVar[Optional[HttpRequest]] = None
+    request: InitVar[HttpRequest | None] = None
 
     @staticmethod
     def parse(
@@ -202,7 +210,11 @@ class TokenParams:
                     message="Invalid redirect_uri configured",
                     provider=self.provider,
                 ).from_http(request)
-                raise TokenError("invalid_client")
+                raise TokenError("invalid_client") from None
+
+        # Check against forbidden schemes
+        if urlparse(self.redirect_uri).scheme in FORBIDDEN_URI_SCHEMES:
+            raise TokenError("invalid_request")
 
         self.authorization_code = AuthorizationCode.objects.filter(code=raw_code).first()
         if not self.authorization_code:
@@ -221,7 +233,10 @@ class TokenParams:
             raise TokenError("invalid_grant")
 
         # Validate PKCE parameters.
-        if self.code_verifier:
+        if self.authorization_code.code_challenge:
+            # Authorization code had PKCE but we didn't get one
+            if not self.code_verifier:
+                raise TokenError("invalid_grant")
             if self.authorization_code.code_challenge_method == PKCE_METHOD_S256:
                 new_code_challenge = (
                     urlsafe_b64encode(sha256(self.code_verifier.encode("ascii")).digest())
@@ -234,6 +249,10 @@ class TokenParams:
             if new_code_challenge != self.authorization_code.code_challenge:
                 LOGGER.warning("Code challenge not matching")
                 raise TokenError("invalid_grant")
+        # Token request had a code_verifier but code did not have a code challenge
+        # Prevent downgrade
+        if not self.authorization_code.code_challenge and self.code_verifier:
+            raise TokenError("invalid_grant")
 
     def __post_init_refresh(self, raw_token: str, request: HttpRequest):
         if not raw_token:
@@ -270,11 +289,29 @@ class TokenParams:
             raise TokenError("invalid_grant")
 
     def __post_init_client_credentials(self, request: HttpRequest):
+        # client_credentials flow with client assertion
         if request.POST.get(CLIENT_ASSERTION_TYPE, "") != "":
             return self.__post_init_client_credentials_jwt(request)
+        # authentik-custom-ish client credentials flow
+        if request.POST.get("username", "") != "":
+            return self.__post_init_client_credentials_creds(
+                request, request.POST.get("username"), request.POST.get("password")
+            )
+        # Standard method which creates an automatic user
+        if self.client_secret == self.provider.client_secret:
+            return self.__post_init_client_credentials_generated(request)
+        # Standard workaround method which stores username:password
+        # as client_secret
+        try:
+            user, _, password = b64decode(self.client_secret).decode("utf-8").partition(":")
+            return self.__post_init_client_credentials_creds(request, user, password)
+        except (ValueError, Error):
+            raise TokenError("invalid_grant") from None
+
+    def __post_init_client_credentials_creds(
+        self, request: HttpRequest, username: str, password: str
+    ):
         # Authenticate user based on credentials
-        username = request.POST.get("username")
-        password = request.POST.get("password")
         user = User.objects.filter(username=username).first()
         if not user:
             raise TokenError("invalid_grant")
@@ -300,9 +337,7 @@ class TokenParams:
                 PLAN_CONTEXT_APPLICATION: app,
             },
         ).from_http(request, user=user)
-        return None
 
-    # pylint: disable=too-many-locals
     def __post_init_client_credentials_jwt(self, request: HttpRequest):
         assertion_type = request.POST.get(CLIENT_ASSERTION_TYPE, "")
         if assertion_type != CLIENT_ASSERTION_TYPE_JWT:
@@ -317,8 +352,8 @@ class TokenParams:
 
         token = None
 
-        source: Optional[OAuthSource] = None
-        parsed_key: Optional[PyJWK] = None
+        source: OAuthSource | None = None
+        parsed_key: PyJWK | None = None
 
         # Fully decode the JWT without verifying the signature, so we can get access to
         # the header.
@@ -332,7 +367,7 @@ class TokenParams:
             )
         except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
             LOGGER.warning("failed to parse JWT for kid lookup", exc=exc)
-            raise TokenError("invalid_grant")
+            raise TokenError("invalid_grant") from None
         expected_kid = decode_unvalidated["header"]["kid"]
         for source in self.provider.jwks_sources.filter(
             oidc_jwks__keys__contains=[{"kid": expected_kid}]
@@ -393,6 +428,35 @@ class TokenParams:
             },
         ).from_http(request, user=self.user)
 
+    def __post_init_client_credentials_generated(self, request: HttpRequest):
+        # Authorize user access
+        app = Application.objects.filter(provider=self.provider).first()
+        if not app or not app.provider:
+            raise TokenError("invalid_grant")
+        self.user, _ = User.objects.update_or_create(
+            # trim username to ensure the entire username is max 150 chars
+            # (22 chars being the length of the "template")
+            username=f"ak-{self.provider.name[:150-22]}-client_credentials",
+            defaults={
+                "attributes": {
+                    USER_ATTRIBUTE_GENERATED: True,
+                },
+                "last_login": timezone.now(),
+                "name": f"Autogenerated user from application {app.name} (client credentials)",
+                "path": f"{USER_PATH_SYSTEM_PREFIX}/apps/{app.slug}",
+                "type": UserTypes.SERVICE_ACCOUNT,
+            },
+        )
+        self.__check_policy_access(app, request)
+
+        Event.new(
+            action=EventAction.LOGIN,
+            **{
+                PLAN_CONTEXT_METHOD: "oauth_client_secret",
+                PLAN_CONTEXT_APPLICATION: app,
+            },
+        ).from_http(request, user=self.user)
+
     def __post_init_device_code(self, request: HttpRequest):
         device_code = request.POST.get("device_code", "")
         code = DeviceToken.objects.filter(device_code=device_code, provider=self.provider).first()
@@ -402,29 +466,33 @@ class TokenParams:
 
     def __create_user_from_jwt(self, token: dict[str, Any], app: Application, source: OAuthSource):
         """Create user from JWT"""
-        exp = token.get("exp")
-        self.user, created = User.objects.update_or_create(
-            username=f"{self.provider.name}-{token.get('sub')}",
-            defaults={
-                "attributes": {
-                    USER_ATTRIBUTE_GENERATED: True,
+        with audit_ignore():
+            self.user, created = User.objects.update_or_create(
+                username=f"{self.provider.name}-{token.get('sub')}",
+                defaults={
+                    "attributes": {
+                        USER_ATTRIBUTE_GENERATED: True,
+                    },
+                    "last_login": timezone.now(),
+                    "name": (
+                        f"Autogenerated user from application {app.name} (client credentials JWT)"
+                    ),
+                    "path": source.get_user_path(),
+                    "type": UserTypes.SERVICE_ACCOUNT,
                 },
-                "last_login": timezone.now(),
-                "name": f"Autogenerated user from application {app.name} (client credentials JWT)",
-                "path": source.get_user_path(),
-            },
-        )
-        if created and exp:
-            self.user.attributes[USER_ATTRIBUTE_EXPIRES] = exp
-            self.user.save()
+            )
+            exp = token.get("exp")
+            if created and exp:
+                self.user.attributes[USER_ATTRIBUTE_EXPIRES] = exp
+                self.user.save()
 
 
 @method_decorator(csrf_exempt, name="dispatch")
 class TokenView(View):
     """Generate tokens for clients"""
 
-    provider: Optional[OAuth2Provider] = None
-    params: Optional[TokenParams] = None
+    provider: OAuth2Provider | None = None
+    params: TokenParams | None = None
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         response = super().dispatch(request, *args, **kwargs)
@@ -448,24 +516,25 @@ class TokenView(View):
                 if not self.provider:
                     LOGGER.warning("OAuth2Provider does not exist", client_id=client_id)
                     raise TokenError("invalid_client")
+                CTX_AUTH_VIA.set("oauth_client_secret")
                 self.params = TokenParams.parse(request, self.provider, client_id, client_secret)
 
             with Hub.current.start_span(
                 op="authentik.providers.oauth2.post.response",
             ):
                 if self.params.grant_type == GRANT_TYPE_AUTHORIZATION_CODE:
-                    LOGGER.debug("Converting authorization code to refresh token")
+                    LOGGER.debug("Converting authorization code to access token")
                     return TokenResponse(self.create_code_response())
                 if self.params.grant_type == GRANT_TYPE_REFRESH_TOKEN:
                     LOGGER.debug("Refreshing refresh token")
                     return TokenResponse(self.create_refresh_response())
-                if self.params.grant_type == GRANT_TYPE_CLIENT_CREDENTIALS:
-                    LOGGER.debug("Client credentials grant")
+                if self.params.grant_type in [GRANT_TYPE_CLIENT_CREDENTIALS, GRANT_TYPE_PASSWORD]:
+                    LOGGER.debug("Client credentials/password grant")
                     return TokenResponse(self.create_client_credentials_response())
                 if self.params.grant_type == GRANT_TYPE_DEVICE_CODE:
                     LOGGER.debug("Device code grant")
                     return TokenResponse(self.create_device_code_response())
-                raise ValueError(f"Invalid grant_type: {self.params.grant_type}")
+                raise TokenError("unsupported_grant_type")
         except (TokenError, DeviceCodeError) as error:
             return TokenResponse(error.create_dict(), status=400)
         except UserAuthError as error:
@@ -482,48 +551,57 @@ class TokenView(View):
             # Keep same scopes as previous token
             scope=self.params.authorization_code.scope,
             auth_time=self.params.authorization_code.auth_time,
+            session_id=self.params.authorization_code.session_id,
         )
-        access_token.id_token = IDToken.new(
+        access_id_token = IDToken.new(
             self.provider,
             access_token,
             self.request,
         )
+        access_id_token.nonce = self.params.authorization_code.nonce
+        access_token.id_token = access_id_token
         access_token.save()
 
-        refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
-        refresh_token = RefreshToken(
-            user=self.params.authorization_code.user,
-            scope=self.params.authorization_code.scope,
-            expires=refresh_token_expiry,
-            provider=self.provider,
-            auth_time=self.params.authorization_code.auth_time,
-        )
-        id_token = IDToken.new(
-            self.provider,
-            refresh_token,
-            self.request,
-        )
-        id_token.nonce = self.params.authorization_code.nonce
-        id_token.at_hash = access_token.at_hash
-        refresh_token.id_token = id_token
-        refresh_token.save()
-
-        # Delete old code
-        self.params.authorization_code.delete()
-        return {
+        response = {
             "access_token": access_token.token,
-            "refresh_token": refresh_token.token,
             "token_type": TOKEN_TYPE,
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
-            "id_token": id_token.to_jwt(self.provider),
+            "id_token": access_token.id_token.to_jwt(self.provider),
         }
+
+        if SCOPE_OFFLINE_ACCESS in self.params.authorization_code.scope:
+            refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
+            refresh_token = RefreshToken(
+                user=self.params.authorization_code.user,
+                scope=self.params.authorization_code.scope,
+                expires=refresh_token_expiry,
+                provider=self.provider,
+                auth_time=self.params.authorization_code.auth_time,
+                session_id=self.params.authorization_code.session_id,
+            )
+            id_token = IDToken.new(
+                self.provider,
+                refresh_token,
+                self.request,
+            )
+            id_token.nonce = self.params.authorization_code.nonce
+            id_token.at_hash = access_token.at_hash
+            refresh_token.id_token = id_token
+            refresh_token.save()
+            response["refresh_token"] = refresh_token.token
+
+        # Delete old code
+        self.params.authorization_code.delete()
+        return response
 
     def create_refresh_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc6749#section-6"""
         unauthorized_scopes = set(self.params.scope) - set(self.params.refresh_token.scope)
         if unauthorized_scopes:
+            raise TokenError("invalid_scope")
+        if SCOPE_OFFLINE_ACCESS not in self.params.scope:
             raise TokenError("invalid_scope")
         now = timezone.now()
         access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
@@ -534,6 +612,7 @@ class TokenView(View):
             # Keep same scopes as previous token
             scope=self.params.refresh_token.scope,
             auth_time=self.params.refresh_token.auth_time,
+            session_id=self.params.refresh_token.session_id,
         )
         access_token.id_token = IDToken.new(
             self.provider,
@@ -549,6 +628,7 @@ class TokenView(View):
             expires=refresh_token_expiry,
             provider=self.provider,
             auth_time=self.params.refresh_token.auth_time,
+            session_id=self.params.refresh_token.session_id,
         )
         id_token = IDToken.new(
             self.provider,
@@ -571,7 +651,7 @@ class TokenView(View):
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
-            "id_token": id_token.to_jwt(self.provider),
+            "id_token": access_token.id_token.to_jwt(self.provider),
         }
 
     def create_client_credentials_response(self) -> dict[str, Any]:
@@ -621,31 +701,34 @@ class TokenView(View):
         )
         access_token.save()
 
-        refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
-        refresh_token = RefreshToken(
-            user=self.params.device_code.user,
-            scope=self.params.device_code.scope,
-            expires=refresh_token_expiry,
-            provider=self.provider,
-            auth_time=auth_event.created if auth_event else now,
-        )
-        id_token = IDToken.new(
-            self.provider,
-            refresh_token,
-            self.request,
-        )
-        id_token.at_hash = access_token.at_hash
-        refresh_token.id_token = id_token
-        refresh_token.save()
-
-        # Delete device code
-        self.params.device_code.delete()
-        return {
+        response = {
             "access_token": access_token.token,
-            "refresh_token": refresh_token.token,
             "token_type": TOKEN_TYPE,
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
-            "id_token": id_token.to_jwt(self.provider),
+            "id_token": access_token.id_token.to_jwt(self.provider),
         }
+
+        if SCOPE_OFFLINE_ACCESS in self.params.scope:
+            refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
+            refresh_token = RefreshToken(
+                user=self.params.device_code.user,
+                scope=self.params.device_code.scope,
+                expires=refresh_token_expiry,
+                provider=self.provider,
+                auth_time=auth_event.created if auth_event else now,
+            )
+            id_token = IDToken.new(
+                self.provider,
+                refresh_token,
+                self.request,
+            )
+            id_token.at_hash = access_token.at_hash
+            refresh_token.id_token = id_token
+            refresh_token.save()
+            response["refresh_token"] = refresh_token.token
+
+        # Delete device code
+        self.params.device_code.delete()
+        return response

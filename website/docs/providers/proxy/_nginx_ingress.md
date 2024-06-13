@@ -9,20 +9,25 @@ spec:
     rules:
         - host: app.company
           http:
-              paths: /outpost.goauthentik.io
-              pathType: Prefix
-              backend:
-                  # Or, to use an external Outpost, create an ExternalName service and reference that here.
-                  # See https://kubernetes.io/docs/concepts/services-networking/service/#externalname
-                  service:
-                      name: ak-outpost-example-outpost
-                      port:
-                          number: 9000
+              paths:
+                  - path: /outpost.goauthentik.io
+                    pathType: Prefix
+                    backend:
+                        # Or, to use an external Outpost, create an ExternalName service and reference that here.
+                        # See https://kubernetes.io/docs/concepts/services-networking/service/#externalname
+                        service:
+                            name: ak-outpost-example-outpost
+                            port:
+                                number: 9000
 ```
 
 This ingress handles authentication requests, and the sign-in flow.
 
 Add these annotations to the ingress you want to protect
+
+:::warning
+This configuration requires that you enable [`allow-snippet-annotations`](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#allow-snippet-annotations), for example by setting `controller.allowSnippetAnnotations` to `true` in your helm values for the ingress-nginx installation.
+:::
 
 ```yaml
 metadata:

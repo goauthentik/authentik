@@ -65,6 +65,7 @@ func NewProxyServer(ac *ak.APIController) *ProxyServer {
 	globalMux.PathPrefix("/outpost.goauthentik.io/static").HandlerFunc(s.HandleStatic)
 	globalMux.Path("/outpost.goauthentik.io/ping").HandlerFunc(sentryutils.SentryNoSample(s.HandlePing))
 	rootMux.PathPrefix("/").HandlerFunc(s.Handle)
+	ac.AddWSHandler(s.handleWSMessage)
 	return s
 }
 
@@ -73,7 +74,7 @@ func (ps *ProxyServer) HandleHost(rw http.ResponseWriter, r *http.Request) bool 
 	if a == nil {
 		return false
 	}
-	if a.HasQuerySignature(r) || a.Mode() == api.PROXYMODE_PROXY {
+	if a.ShouldHandleURL(r) || a.Mode() == api.PROXYMODE_PROXY {
 		a.ServeHTTP(rw, r)
 		return true
 	}

@@ -1,5 +1,6 @@
 """ProxyProvider API Views"""
-from typing import Any, Optional
+
+from typing import Any
 
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema_field
@@ -59,7 +60,9 @@ class ProxyProviderSerializer(ProviderSerializer):
             attrs.get("mode", ProxyMode.PROXY) == ProxyMode.PROXY
             and attrs.get("internal_host", "") == ""
         ):
-            raise ValidationError(_("Internal host cannot be empty when forward auth is disabled."))
+            raise ValidationError(
+                {"internal_host": _("Internal host cannot be empty when forward auth is disabled.")}
+            )
         return attrs
 
     def create(self, validated_data: dict):
@@ -140,7 +143,7 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
         """Embed OpenID Connect provider information"""
         return ProviderInfoView(request=self.context["request"]._request).get_info(obj)
 
-    def get_access_token_validity(self, obj: ProxyProvider) -> Optional[float]:
+    def get_access_token_validity(self, obj: ProxyProvider) -> float | None:
         """Get token validity as second count"""
         return timedelta_from_string(obj.access_token_validity).total_seconds()
 

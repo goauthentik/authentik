@@ -1,9 +1,10 @@
+import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import { placeholderHelperText } from "@goauthentik/admin/helperText";
+import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { msg } from "@lit/localize";
@@ -12,11 +13,8 @@ import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
-    CertificateKeyPair,
     CoreApi,
     CoreGroupsListRequest,
-    CryptoApi,
-    CryptoCertificatekeypairsListRequest,
     Group,
     LDAPSource,
     LDAPSourceRequest,
@@ -26,7 +24,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-source-ldap-form")
-export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
+export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
     loadInstance(pk: string): Promise<LDAPSource> {
         return new SourcesApi(DEFAULT_CONFIG).sourcesLdapRetrieve({
             slug: pk,
@@ -43,14 +41,6 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
 
     propertyMappings?: PaginatedLDAPPropertyMappingList;
 
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated source.");
-        } else {
-            return msg("Successfully created source.");
-        }
-    }
-
     async send(data: LDAPSource): Promise<LDAPSource> {
         if (this.instance) {
             return new SourcesApi(DEFAULT_CONFIG).sourcesLdapPartialUpdate({
@@ -65,8 +55,7 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -96,6 +85,28 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                     </span>
                     <span class="pf-c-switch__label">${msg("Enabled")}</span>
                 </label>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal name="passwordLoginUpdateInternalPassword">
+                <label class="pf-c-switch">
+                    <input
+                        class="pf-c-switch__input"
+                        type="checkbox"
+                        ?checked=${first(this.instance?.passwordLoginUpdateInternalPassword, false)}
+                    />
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label"
+                        >${msg("Update internal password on login")}</span
+                    >
+                </label>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "When the user logs in to authentik using this source password backend, update their credentials in authentik.",
+                    )}
+                </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="syncUsers">
                 <label class="pf-c-switch">
@@ -208,34 +219,10 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                         label=${msg("TLS Verification Certificate")}
                         name="peerCertificate"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (
-                                query?: string,
-                            ): Promise<CertificateKeyPair[]> => {
-                                const args: CryptoCertificatekeypairsListRequest = {
-                                    ordering: "name",
-                                    includeDetails: false,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const certificates = await new CryptoApi(
-                                    DEFAULT_CONFIG,
-                                ).cryptoCertificatekeypairsList(args);
-                                return certificates.results;
-                            }}
-                            .renderElement=${(item: CertificateKeyPair): string => {
-                                return item.name;
-                            }}
-                            .value=${(item: CertificateKeyPair | undefined): string | undefined => {
-                                return item?.pk;
-                            }}
-                            .selected=${(item: CertificateKeyPair): boolean => {
-                                return item.pk === this.instance?.peerCertificate;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-crypto-certificate-search
+                            .certificate=${this.instance?.peerCertificate}
+                            nokey
+                        ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate.",
@@ -246,35 +233,9 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                         label=${msg("TLS Client authentication certificate")}
                         name="clientCertificate"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (
-                                query?: string,
-                            ): Promise<CertificateKeyPair[]> => {
-                                const args: CryptoCertificatekeypairsListRequest = {
-                                    ordering: "name",
-                                    hasKey: true,
-                                    includeDetails: false,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const certificates = await new CryptoApi(
-                                    DEFAULT_CONFIG,
-                                ).cryptoCertificatekeypairsList(args);
-                                return certificates.results;
-                            }}
-                            .renderElement=${(item: CertificateKeyPair): string => {
-                                return item.name;
-                            }}
-                            .value=${(item: CertificateKeyPair | undefined): string | undefined => {
-                                return item?.pk;
-                            }}
-                            .selected=${(item: CertificateKeyPair): boolean => {
-                                return item.pk === this.instance?.clientCertificate;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-crypto-certificate-search
+                            .certificate=${this.instance?.clientCertificate}
+                        ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Client certificate keypair to authenticate against the LDAP Server's Certificate.",
@@ -314,7 +275,6 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("User Property Mappings")}
-                        ?required=${true}
                         name="propertyMappings"
                     >
                         <select class="pf-c-form-control" multiple>
@@ -353,7 +313,6 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Group Property Mappings")}
-                        ?required=${true}
                         name="propertyMappingsGroup"
                     >
                         <select class="pf-c-form-control" multiple>
@@ -395,6 +354,7 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
                                 const args: CoreGroupsListRequest = {
                                     ordering: "name",
+                                    includeUsers: false,
                                 };
                                 if (query !== undefined) {
                                     args.search = query;
@@ -520,7 +480,6 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                         </p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

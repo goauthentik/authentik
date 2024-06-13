@@ -25,7 +25,7 @@ export class UserPasswordForm extends Form<UserPasswordSetRequest> {
         });
     }
 
-    renderInlineForm(): TemplateResult {
+    renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal
             label=${msg("Password")}
             ?required=${true}

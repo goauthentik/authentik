@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { docLink } from "@goauthentik/common/global";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
@@ -20,17 +21,15 @@ export class PropertyMappingNotification extends ModelForm<NotificationWebhookMa
     }
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated mapping.");
-        } else {
-            return msg("Successfully created mapping.");
-        }
+        return this.instance
+            ? msg("Successfully updated mapping.")
+            : msg("Successfully created mapping.");
     }
 
     async send(data: NotificationWebhookMapping): Promise<NotificationWebhookMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsNotificationUpdate({
-                pmUuid: this.instance.pk || "",
+                pmUuid: this.instance.pk,
                 notificationWebhookMappingRequest: data,
             });
         } else {
@@ -41,8 +40,7 @@ export class PropertyMappingNotification extends ModelForm<NotificationWebhookMa
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -55,7 +53,10 @@ export class PropertyMappingNotification extends ModelForm<NotificationWebhookMa
                 ?required=${true}
                 name="expression"
             >
-                <ak-codemirror mode="python" value="${ifDefined(this.instance?.expression)}">
+                <ak-codemirror
+                    mode=${CodeMirrorMode.Python}
+                    value="${ifDefined(this.instance?.expression)}"
+                >
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
                     ${msg("Expression using Python.")}
@@ -66,7 +67,6 @@ export class PropertyMappingNotification extends ModelForm<NotificationWebhookMa
                         ${msg("See documentation for a list of all variables.")}
                     </a>
                 </p>
-            </ak-form-element-horizontal>
-        </form>`;
+            </ak-form-element-horizontal>`;
     }
 }

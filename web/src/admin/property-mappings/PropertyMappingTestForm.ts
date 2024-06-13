@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -13,16 +14,18 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     CoreApi,
+    CoreGroupsListRequest,
     CoreUsersListRequest,
-    PolicyTestRequest,
+    Group,
     PropertyMapping,
+    PropertyMappingTestRequest,
     PropertyMappingTestResult,
     PropertymappingsApi,
     User,
 } from "@goauthentik/api";
 
 @customElement("ak-property-mapping-test-form")
-export class PolicyTestForm extends Form<PolicyTestRequest> {
+export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
     @property({ attribute: false })
     mapping?: PropertyMapping;
 
@@ -30,17 +33,17 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
     result?: PropertyMappingTestResult;
 
     @property({ attribute: false })
-    request?: PolicyTestRequest;
+    request?: PropertyMappingTestRequest;
 
     getSuccessMessage(): string {
         return msg("Successfully sent test-request.");
     }
 
-    async send(data: PolicyTestRequest): Promise<PropertyMappingTestResult> {
+    async send(data: PropertyMappingTestRequest): Promise<PropertyMappingTestResult> {
         this.request = data;
         const result = await new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllTestCreate({
             pmUuid: this.mapping?.pk || "",
-            policyTestRequest: data,
+            propertyMappingTestRequest: data,
             formatResult: true,
         });
         return (this.result = result);
@@ -50,7 +53,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
         return html`<ak-form-element-horizontal label=${msg("Result")}>
             ${this.result?.successful
                 ? html`<ak-codemirror
-                      mode="javascript"
+                      mode=${CodeMirrorMode.JavaScript}
                       ?readOnly=${true}
                       value="${ifDefined(this.result?.result)}"
                   >
@@ -83,12 +86,14 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                         user: this.request?.user || 0,
                         context: {
                             ldap: {
-                                name: "test-user",
-                                objectSid: "S-1-5-21-2611707862-2219215769-354220275-1137",
-                                objectClass: "person",
                                 displayName: "authentik test user",
-                                sAMAccountName: "sAMAccountName",
                                 distinguishedName: "cn=user,ou=users,dc=goauthentik,dc=io",
+                                givenName: "test",
+                                name: "test-user",
+                                objectClass: "person",
+                                objectSid: "S-1-5-21-2611707862-2219215769-354220275-1137",
+                                sAMAccountName: "sAMAccountName",
+                                sn: "user",
                             },
                         },
                     };
@@ -118,9 +123,10 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
         `;
     }
 
-    renderInlineForm(): TemplateResult {
-        return html`<ak-form-element-horizontal label=${msg("User")} ?required=${true} name="user">
+    renderForm(): TemplateResult {
+        return html`<ak-form-element-horizontal label=${msg("User")} name="user">
                 <ak-search-select
+                    blankable
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
                         const args: CoreUsersListRequest = {
                             ordering: "username",
@@ -141,14 +147,39 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                         return user?.pk;
                     }}
                     .selected=${(user: User): boolean => {
-                        return this.request?.user.toString() === user.pk.toString();
+                        return this.request?.user?.toString() === user.pk.toString();
+                    }}
+                >
+                </ak-search-select>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${msg("Group")} name="group">
+                <ak-search-select
+                    blankable
+                    .fetchObjects=${async (query?: string): Promise<Group[]> => {
+                        const args: CoreGroupsListRequest = {
+                            ordering: "name",
+                        };
+                        if (query !== undefined) {
+                            args.search = query;
+                        }
+                        const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(args);
+                        return groups.results;
+                    }}
+                    .renderElement=${(group: Group): string => {
+                        return group.name;
+                    }}
+                    .value=${(group: Group | undefined): string | undefined => {
+                        return group?.pk;
+                    }}
+                    .selected=${(group: Group): boolean => {
+                        return this.request?.group?.toString() === group.pk.toString();
                     }}
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Context")} name="context">
                 <ak-codemirror
-                    mode="yaml"
+                    mode=${CodeMirrorMode.YAML}
                     value=${YAML.stringify(first(this.request?.context, {}))}
                 >
                 </ak-codemirror>

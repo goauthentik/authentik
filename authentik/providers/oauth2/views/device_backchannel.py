@@ -1,5 +1,5 @@
 """Device flow views"""
-from typing import Optional
+
 from urllib.parse import urlencode
 
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, JsonResponse
@@ -27,7 +27,7 @@ class DeviceView(View):
     provider: OAuth2Provider
     scopes: list[str] = []
 
-    def parse_request(self) -> Optional[HttpResponse]:
+    def parse_request(self) -> HttpResponse | None:
         """Parse incoming request"""
         client_id = self.request.POST.get("client_id", None)
         if not client_id:
@@ -46,7 +46,7 @@ class DeviceView(View):
 
     def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         throttle = AnonRateThrottle()
-        throttle.rate = CONFIG.y("throttle.providers.oauth2.device", "20/hour")
+        throttle.rate = CONFIG.get("throttle.providers.oauth2.device", "20/hour")
         throttle.num_requests, throttle.duration = throttle.parse_rate(throttle.rate)
         if not throttle.allow_request(request, self):
             return HttpResponse(status=429)

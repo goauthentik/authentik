@@ -1,4 +1,5 @@
 """Kubernetes Prometheus ServiceMonitor Reconciler"""
+
 from dataclasses import asdict, dataclass, field
 from typing import TYPE_CHECKING
 
@@ -24,7 +25,6 @@ class PrometheusServiceMonitorSpecEndpoint:
 class PrometheusServiceMonitorSpecSelector:
     """Prometheus ServiceMonitor selector spec"""
 
-    # pylint: disable=invalid-name
     matchLabels: dict
 
 
@@ -33,7 +33,7 @@ class PrometheusServiceMonitorSpec:
     """Prometheus ServiceMonitor spec"""
 
     endpoints: list[PrometheusServiceMonitorSpecEndpoint]
-    # pylint: disable=invalid-name
+
     selector: PrometheusServiceMonitorSpecSelector
 
 
@@ -50,7 +50,6 @@ class PrometheusServiceMonitorMetadata:
 class PrometheusServiceMonitor:
     """Prometheus ServiceMonitor"""
 
-    # pylint: disable=invalid-name
     apiVersion: str
     kind: str
     metadata: PrometheusServiceMonitorMetadata
@@ -71,9 +70,16 @@ class PrometheusServiceMonitorReconciler(KubernetesObjectReconciler[PrometheusSe
         self.api_ex = ApiextensionsV1Api(controller.client)
         self.api = CustomObjectsApi(controller.client)
 
+    @staticmethod
+    def reconciler_name() -> str:
+        return "prometheus servicemonitor"
+
     @property
     def noop(self) -> bool:
-        return (not self._crd_exists()) or (self.is_embedded)
+        if not self._crd_exists():
+            self.logger.debug("CRD doesn't exist")
+            return True
+        return self.is_embedded
 
     def _crd_exists(self) -> bool:
         """Check if the Prometheus ServiceMonitor exists"""

@@ -43,7 +43,7 @@ kubernetes_replicas: 1
 kubernetes_namespace: authentik
 # Any additional annotations to add to the ingress object, for example cert-manager
 kubernetes_ingress_annotations: {}
-# Name of the secret that is used for TLS connections
+# Name of the secret that is used for TLS connections, leave empty to disable TLS
 kubernetes_ingress_secret_name: authentik-outpost-tls
 # Service kind created, can be set to LoadBalancer for LDAP outposts for example
 kubernetes_service_type: ClusterIP
@@ -64,4 +64,26 @@ kubernetes_image_pull_secrets: []
 # (Available with 2022.11.0+)
 # Applies to: proxy outposts
 kubernetes_ingress_class_name: null
+# Optionally apply an RFC 6902 compliant patch to the Kubernetes objects.
+# For an understanding of how this works, refer to the link below:
+# https://github.com/kubernetes-sigs/kustomize/blob/master/examples/jsonpatch.md
+#
+# This value expects a mapping where the key represents
+# the Kubernetes component that shall be patched.
+# It can be any of the same values supported by `kubernetes_disabled_components`.
+#
+# For example use this patch to add custom resource requests and limits
+# to the outpost deployment:
+#
+# deployment:
+#   - op: add
+#     path: "/spec/template/spec/containers/0/resources"
+#     value:
+#       requests:
+#         cpu: 2000m
+#         memory: 2000Mi
+#       limits:
+#         cpu: 4000m
+#         memory: 8000Mi
+kubernetes_json_patches: null
 ```

@@ -22,3 +22,4 @@ yarn-error.log*
 
 static/docker-compose.yml
 static/schema.yaml
+developer-docs/api/reference/**

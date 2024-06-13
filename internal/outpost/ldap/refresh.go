@@ -30,9 +30,9 @@ func (ls *LDAPServer) getCurrentProvider(pk int32) *ProviderInstance {
 }
 
 func (ls *LDAPServer) getInvalidationFlow() string {
-	req, _, err := ls.ac.Client.CoreApi.CoreTenantsCurrentRetrieve(context.Background()).Execute()
+	req, _, err := ls.ac.Client.CoreApi.CoreBrandsCurrentRetrieve(context.Background()).Execute()
 	if err != nil {
-		ls.log.WithError(err).Warning("failed to fetch tenant config")
+		ls.log.WithError(err).Warning("failed to fetch brand config")
 		return ""
 	}
 	flow := req.GetFlowInvalidation()

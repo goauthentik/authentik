@@ -1,34 +1,70 @@
-# update website/docs/installation/configuration.md
+# update website/docs/installation/configuration.mdx
 # This is the default configuration file
 postgresql:
   host: localhost
   name: authentik
   user: authentik
   port: 5432
-  password: 'env://POSTGRES_PASSWORD'
+  password: "env://POSTGRES_PASSWORD"
   use_pgbouncer: false
+  use_pgpool: false
+  test:
+    name: test_authentik
+  read_replicas: {}
+  # For example
+  # 0:
+  #   host: replica1.example.com
 
 listen:
   listen_http: 0.0.0.0:9000
   listen_https: 0.0.0.0:9443
+  listen_ldap: 0.0.0.0:3389
+  listen_ldaps: 0.0.0.0:6636
+  listen_radius: 0.0.0.0:1812
   listen_metrics: 0.0.0.0:9300
+  listen_debug: 0.0.0.0:9900
+  trusted_proxy_cidrs:
+    - 127.0.0.0/8
+    - 10.0.0.0/8
+    - 172.16.0.0/12
+    - 192.168.0.0/16
+    - fe80::/10
+    - ::1/128
 
 redis:
   host: localhost
   port: 6379
-  password: ''
+  db: 0
+  username: ""
+  password: ""
   tls: false
   tls_reqs: "none"
-  db: 0
-  cache_timeout: 300
-  cache_timeout_flows: 300
-  cache_timeout_policies: 300
-  cache_timeout_reputation: 300
+  tls_ca_cert: null
+
+# broker:
+#   url: ""
+#   transport_options: ""
+
+cache:
+  # url: ""
+  timeout: 300
+  timeout_flows: 300
+  timeout_policies: 300
+  timeout_reputation: 300
+
+# channel:
+#   url: ""
+
+# result_backend:
+#   url: ""
+#   transport_options: ""
 
 debug: false
 remote_debug: false
 
 log_level: info
+
+session_storage: cache
 
 error_reporting:
   enabled: false
@@ -66,25 +102,26 @@ outposts:
 
 ldap:
   task_timeout_hours: 2
+  page_size: 50
   tls:
     ciphers: null
+
+reputation:
+  expiry: 86400
 
 cookie_domain: null
 disable_update_check: false
 disable_startup_analytics: false
-avatars: env://AUTHENTIK_AUTHENTIK__AVATARS?gravatar,initials
-geoip: "/geoip/GeoLite2-City.mmdb"
+events:
+  context_processors:
+    geoip: "/geoip/GeoLite2-City.mmdb"
+    asn: "/geoip/GeoLite2-ASN.mmdb"
 
-footer_links: []
-
-default_user_change_name: true
-default_user_change_email: false
-default_user_change_username: false
-
-gdpr_compliance: true
 cert_discovery_dir: /certs
-default_token_length: 60
-impersonation: true
+
+tenants:
+  enabled: false
+  api_key: ""
 
 blueprints_dir: /blueprints
 
@@ -92,3 +129,23 @@ web:
   # No default here as it's set dynamically
   # workers: 2
   threads: 4
+
+worker:
+  concurrency: 2
+
+storage:
+  media:
+    backend: file # or s3
+    file:
+      path: ./media
+    s3:
+      # How to talk to s3
+      # region: "us-east-1"
+      # use_ssl: True
+      # endpoint: "https://s3.us-east-1.amazonaws.com"
+      # access_key: ""
+      # secret_key: ""
+      # bucket_name: "authentik-media"
+      # How to render file URLs
+      # custom_domain: null
+      secure_urls: True

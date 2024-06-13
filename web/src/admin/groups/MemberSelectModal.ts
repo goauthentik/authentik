@@ -1,7 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
-import { first } from "@goauthentik/common/utils";
-import { PFColor } from "@goauthentik/elements/Label";
+import { getRelativeTime } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
@@ -33,13 +33,14 @@ export class MemberSelectTable extends TableModal<User> {
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
+            includeGroups: false,
         });
     }
 
     columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "username"),
-            new TableColumn(msg("Active"), "active"),
+            new TableColumn(msg("Active"), "is_active"),
             new TableColumn(msg("Last login"), "last_login"),
         ];
     }
@@ -48,10 +49,11 @@ export class MemberSelectTable extends TableModal<User> {
         return [
             html`<div>${item.username}</div>
                 <small>${item.name}</small>`,
-            html` <ak-label color=${item.isActive ? PFColor.Green : PFColor.Orange}>
-                ${item.isActive ? msg("Yes") : msg("No")}
-            </ak-label>`,
-            html`${first(item.lastLogin?.toLocaleString(), msg("-"))}`,
+            html` <ak-status-label type="warning" ?good=${item.isActive}></ak-status-label>`,
+            html`${item.lastLogin
+                ? html`<div>${getRelativeTime(item.lastLogin)}</div>
+                      <small>${item.lastLogin.toLocaleString()}</small>`
+                : msg("-")}`,
         ];
     }
 

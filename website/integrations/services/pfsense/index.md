@@ -6,11 +6,9 @@ title: pfSense
 
 ## What is pfSense
 
-From https://www.pfsense.org/
-
-:::note
-The pfSense project is a free network firewall distribution, based on the FreeBSD operating system with a custom kernel and including third party free software packages for additional functionality.
-:::
+> The pfSense project is a free network firewall distribution, based on the FreeBSD operating system with a custom kernel and including third party free software packages for additional functionality.
+>
+> -- https://www.pfsense.org/
 
 :::note
 This is based on authentik 2022.3.31 and pfSense 2.6.0-amd64
@@ -72,6 +70,7 @@ Change the following fields
 -   Port value: 389
 -   Transport: Standard TCP
 -   Base DN: `DC=ldap,DC=goauthentik,DC=io`
+-   Search Scope: Subtree
 -   Authentication containers: `OU=users,DC=ldap,DC=goauthentik,DC=io`
 -   Bind anonymous: **unticked**
 -   Bind credentials:
@@ -130,6 +129,7 @@ Change the following fields
 -   Transport: SSL/TLS Encrypted
 -   Peer Certificate Authority: `pfSense CA`
 -   Base DN: `DC=ldap,DC=goauthentik,DC=io`
+-   Search Scope: Subtree
 -   Authentication containers: `OU=users,DC=ldap,DC=goauthentik,DC=io`
 -   Bind anonymous: **unticked**
 -   Bind credentials:

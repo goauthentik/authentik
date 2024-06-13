@@ -12,6 +12,9 @@ export class AdminModelPerDay extends AKChart<Coordinate[]> {
     @property()
     action: EventActions = EventActions.ModelCreated;
 
+    @property()
+    label?: string;
+
     @property({ attribute: false })
     query?: { [key: string]: unknown } | undefined;
 
@@ -33,7 +36,7 @@ export class AdminModelPerDay extends AKChart<Coordinate[]> {
         return {
             datasets: [
                 {
-                    label: msg("Objects created"),
+                    label: this.label || msg("Objects created"),
                     backgroundColor: "rgba(189, 229, 184, .5)",
                     spanGaps: true,
                     data:

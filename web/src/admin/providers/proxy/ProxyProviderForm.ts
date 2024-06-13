@@ -1,31 +1,25 @@
-import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
+import "@goauthentik/admin/common/ak-crypto-certificate-search";
+import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
+import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-toggle-group";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
 
 import { msg } from "@lit/localize";
-import { CSSResult, css } from "lit";
-import { TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 import {
-    CertificateKeyPair,
-    CryptoApi,
-    CryptoCertificatekeypairsListRequest,
-    Flow,
-    FlowsApi,
     FlowsInstancesListDesignationEnum,
-    FlowsInstancesListRequest,
     PaginatedOAuthSourceList,
     PaginatedScopeMappingList,
     PropertymappingsApi,
@@ -36,19 +30,9 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-provider-proxy-form")
-export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
+export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
     static get styles(): CSSResult[] {
-        return super.styles.concat(
-            PFToggleGroup,
-            PFContent,
-            PFList,
-            PFSpacing,
-            css`
-                .pf-c-toggle-group {
-                    justify-content: center;
-                }
-            `,
-        );
+        return [...super.styles, PFContent, PFList, PFSpacing];
     }
 
     async loadInstance(pk: number): Promise<ProxyProvider> {
@@ -81,14 +65,6 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
     @state()
     mode: ProxyMode = ProxyMode.Proxy;
 
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated provider.");
-        } else {
-            return msg("Successfully created provider.");
-        }
-    }
-
     async send(data: ProxyProvider): Promise<ProxyProvider> {
         data.mode = this.mode;
         if (this.mode !== ProxyMode.ForwardDomain) {
@@ -96,7 +72,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
         }
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersProxyUpdate({
-                id: this.instance.pk || 0,
+                id: this.instance.pk,
                 proxyProviderRequest: data,
             });
         } else {
@@ -107,84 +83,40 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
     }
 
     renderHttpBasic(): TemplateResult {
-        return html`<ak-form-element-horizontal
-                label=${msg("HTTP-Basic Username Key")}
+        return html`<ak-text-input
                 name="basicAuthUserAttribute"
+                label=${msg("HTTP-Basic Username Key")}
+                value="${ifDefined(this.instance?.basicAuthUserAttribute)}"
+                help=${msg(
+                    "User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.",
+                )}
             >
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.basicAuthUserAttribute)}"
-                    class="pf-c-form-control"
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("HTTP-Basic Password Key")}
+            </ak-text-input>
+
+            <ak-text-input
                 name="basicAuthPasswordAttribute"
+                label=${msg("HTTP-Basic Password Key")}
+                value="${ifDefined(this.instance?.basicAuthPasswordAttribute)}"
+                help=${msg(
+                    "User/Group Attribute used for the password part of the HTTP-Basic Header.",
+                )}
             >
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.basicAuthPasswordAttribute)}"
-                    class="pf-c-form-control"
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "User/Group Attribute used for the password part of the HTTP-Basic Header.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>`;
+            </ak-text-input>`;
     }
 
     renderModeSelector(): TemplateResult {
-        return html` <div class="pf-c-toggle-group__item">
-                <button
-                    class="pf-c-toggle-group__button ${this.mode === ProxyMode.Proxy
-                        ? "pf-m-selected"
-                        : ""}"
-                    type="button"
-                    @click=${() => {
-                        this.mode = ProxyMode.Proxy;
-                    }}
-                >
-                    <span class="pf-c-toggle-group__text">${msg("Proxy")}</span>
-                </button>
-            </div>
-            <div class="pf-c-divider pf-m-vertical" role="separator"></div>
-            <div class="pf-c-toggle-group__item">
-                <button
-                    class="pf-c-toggle-group__button ${this.mode === ProxyMode.ForwardSingle
-                        ? "pf-m-selected"
-                        : ""}"
-                    type="button"
-                    @click=${() => {
-                        this.mode = ProxyMode.ForwardSingle;
-                    }}
-                >
-                    <span class="pf-c-toggle-group__text"
-                        >${msg("Forward auth (single application)")}</span
-                    >
-                </button>
-            </div>
-            <div class="pf-c-divider pf-m-vertical" role="separator"></div>
-            <div class="pf-c-toggle-group__item">
-                <button
-                    class="pf-c-toggle-group__button ${this.mode === ProxyMode.ForwardDomain
-                        ? "pf-m-selected"
-                        : ""}"
-                    type="button"
-                    @click=${() => {
-                        this.mode = ProxyMode.ForwardDomain;
-                    }}
-                >
-                    <span class="pf-c-toggle-group__text"
-                        >${msg("Forward auth (domain level)")}</span
-                    >
-                </button>
-            </div>`;
+        const setMode = (ev: CustomEvent<{ value: ProxyMode }>) => {
+            this.mode = ev.detail.value;
+        };
+
+        // prettier-ignore
+        return html`
+            <ak-toggle-group value=${this.mode} @ak-toggle=${setMode}>
+                <option value=${ProxyMode.Proxy}>${msg("Proxy")}</option>
+                <option value=${ProxyMode.ForwardSingle}>${msg("Forward auth (single application)")}</option>
+                <option value=${ProxyMode.ForwardDomain}>${msg("Forward auth (domain level)")}</option>
+            </ak-toggle-group>
+        `;
     }
 
     renderSettings(): TemplateResult {
@@ -250,7 +182,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
             case ProxyMode.ForwardSingle:
                 return html`<p class="pf-u-mb-xl">
                         ${msg(
-                            "Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /outpost.goauthentik.io must be routed to the outpost (when using a manged outpost, this is done for you).",
+                            "Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /outpost.goauthentik.io must be routed to the outpost (when using a managed outpost, this is done for you).",
                         )}
                     </p>
                     <ak-form-element-horizontal
@@ -326,8 +258,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -340,32 +271,11 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                 ?required=${false}
                 name="authenticationFlow"
             >
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                        const args: FlowsInstancesListRequest = {
-                            ordering: "slug",
-                            designation: FlowsInstancesListDesignationEnum.Authentication,
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(args);
-                        return flows.results;
-                    }}
-                    .renderElement=${(flow: Flow): string => {
-                        return RenderFlowOption(flow);
-                    }}
-                    .renderDescription=${(flow: Flow): TemplateResult => {
-                        return html`${flow.name}`;
-                    }}
-                    .value=${(flow: Flow | undefined): string | undefined => {
-                        return flow?.pk;
-                    }}
-                    .selected=${(flow: Flow): boolean => {
-                        return flow.pk === this.instance?.authenticationFlow;
-                    }}
-                >
-                </ak-search-select>
+                <ak-flow-search
+                    flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                    .currentFlow=${this.instance?.authenticationFlow}
+                    required
+                ></ak-flow-search>
                 <p class="pf-c-form__helper-text">
                     ${msg("Flow used when a user access this provider and is not authenticated.")}
                 </p>
@@ -375,41 +285,18 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                 ?required=${true}
                 name="authorizationFlow"
             >
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                        const args: FlowsInstancesListRequest = {
-                            ordering: "slug",
-                            designation: FlowsInstancesListDesignationEnum.Authorization,
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(args);
-                        return flows.results;
-                    }}
-                    .renderElement=${(flow: Flow): string => {
-                        return RenderFlowOption(flow);
-                    }}
-                    .renderDescription=${(flow: Flow): TemplateResult => {
-                        return html`${flow.name}`;
-                    }}
-                    .value=${(flow: Flow | undefined): string | undefined => {
-                        return flow?.pk;
-                    }}
-                    .selected=${(flow: Flow): boolean => {
-                        return flow.pk === this.instance?.authorizationFlow;
-                    }}
-                >
-                </ak-search-select>
+                <ak-flow-search
+                    flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                    .currentFlow=${this.instance?.authorizationFlow}
+                    required
+                ></ak-flow-search>
                 <p class="pf-c-form__helper-text">
                     ${msg("Flow used when authorizing this provider.")}
                 </p>
             </ak-form-element-horizontal>
 
             <div class="pf-c-card pf-m-selectable pf-m-selected">
-                <div class="pf-c-card__body">
-                    <div class="pf-c-toggle-group">${this.renderModeSelector()}</div>
-                </div>
+                <div class="pf-c-card__body">${this.renderModeSelector()}</div>
                 <div class="pf-c-card__footer">${this.renderSettings()}</div>
             </div>
             <ak-form-element-horizontal label=${msg("Token validity")} name="accessTokenValidity">
@@ -428,35 +315,9 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                 <span slot="header">${msg("Advanced protocol settings")}</span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Certificate")} name="certificate">
-                        <ak-search-select
-                            .fetchObjects=${async (
-                                query?: string,
-                            ): Promise<CertificateKeyPair[]> => {
-                                const args: CryptoCertificatekeypairsListRequest = {
-                                    ordering: "name",
-                                    hasKey: true,
-                                    includeDetails: false,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const certificates = await new CryptoApi(
-                                    DEFAULT_CONFIG,
-                                ).cryptoCertificatekeypairsList(args);
-                                return certificates.results;
-                            }}
-                            .renderElement=${(item: CertificateKeyPair): string => {
-                                return item.name;
-                            }}
-                            .value=${(item: CertificateKeyPair | undefined): string | undefined => {
-                                return item?.pk;
-                            }}
-                            .selected=${(item: CertificateKeyPair): boolean => {
-                                return item.pk === this.instance?.certificate;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-crypto-certificate-search
+                            .certificate=${this.instance?.certificate}
+                        ></ak-crypto-certificate-search>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Additional scopes")}
@@ -587,7 +448,6 @@ ${this.instance?.skipPathRegex}</textarea
                         </p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

@@ -2,9 +2,10 @@ package ldap
 
 import (
 	"net"
+	"time"
 
-	"github.com/getsentry/sentry-go"
 	"beryju.io/ldap"
+	"github.com/getsentry/sentry-go"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/ldap/bind"
@@ -20,7 +21,7 @@ func (ls *LDAPServer) Unbind(boundDN string, conn net.Conn) (ldap.LDAPResultCode
 			"outpost_name": ls.ac.Outpost.Name,
 			"type":         "unbind",
 			"app":          selectedApp,
-		}).Observe(float64(span.EndTime.Sub(span.StartTime)))
+		}).Observe(float64(span.EndTime.Sub(span.StartTime)) / float64(time.Second))
 		req.Log().WithField("took-ms", span.EndTime.Sub(span.StartTime).Milliseconds()).Info("Unbind request")
 	}()
 

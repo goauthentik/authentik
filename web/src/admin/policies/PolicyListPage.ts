@@ -13,9 +13,11 @@ import "@goauthentik/elements/forms/ConfirmationForm";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/forms/ProxyForm";
+import "@goauthentik/elements/rbac/ObjectPermissionModal";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -42,6 +44,7 @@ export class PolicyListPage extends TablePage<Policy> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "name";
@@ -86,15 +89,22 @@ export class PolicyListPage extends TablePage<Policy> {
                     >
                     </ak-proxy-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit"></i>
+                        </pf-tooltip>
                     </button>
                 </ak-forms-modal>
+
+                <ak-rbac-object-permission-modal model=${item.metaModelName} objectPk=${item.pk}>
+                </ak-rbac-object-permission-modal>
                 <ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
                     <span slot="submit"> ${msg("Test")} </span>
                     <span slot="header"> ${msg("Test Policy")} </span>
                     <ak-policy-test-form slot="form" .policy=${item}> </ak-policy-test-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <i class="fas fa-vial" aria-hidden="true"></i>
+                        <pf-tooltip position="top" content=${msg("Test")}>
+                            <i class="fas fa-vial" aria-hidden="true"></i>
+                        </pf-tooltip>
                     </button>
                 </ak-forms-modal>`,
         ];

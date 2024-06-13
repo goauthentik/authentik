@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { dateTimeLocal } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
@@ -21,15 +22,14 @@ export class UserTokenForm extends ModelForm<Token, string> {
     }
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated token.");
-        } else {
-            return msg("Successfully created token.");
-        }
+        return this.instance
+            ? msg("Successfully updated token.")
+            : msg("Successfully created token.");
     }
 
     async send(data: Token): Promise<Token> {
         if (this.instance) {
+            data.intent = this.instance.intent;
             return new CoreApi(DEFAULT_CONFIG).coreTokensUpdate({
                 identifier: this.instance.identifier,
                 tokenRequest: data,
@@ -43,8 +43,12 @@ export class UserTokenForm extends ModelForm<Token, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal
+        const now = new Date();
+        const expiringDate = this.instance?.expires
+            ? new Date(this.instance.expires.getTime())
+            : new Date(now.getTime() + 30 * 60000);
+
+        return html` <ak-form-element-horizontal
                 label=${msg("Identifier")}
                 ?required=${true}
                 name="identifier"
@@ -63,6 +67,15 @@ export class UserTokenForm extends ModelForm<Token, string> {
                     class="pf-c-form-control"
                 />
             </ak-form-element-horizontal>
-        </form>`;
+            ${this.intent == IntentEnum.AppPassword
+                ? html`<ak-form-element-horizontal label=${msg("Expiring")} name="expires">
+                      <input
+                          type="datetime-local"
+                          value="${dateTimeLocal(expiringDate)}"
+                          min="${dateTimeLocal(now)}"
+                          class="pf-c-form-control"
+                      />
+                  </ak-form-element-horizontal>`
+                : html``}`;
     }
 }

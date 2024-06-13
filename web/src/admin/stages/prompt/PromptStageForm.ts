@@ -1,9 +1,9 @@
+import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import "@goauthentik/admin/stages/prompt/PromptForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/ModalForm";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -19,7 +19,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-stage-prompt-form")
-export class PromptStageForm extends ModelForm<PromptStage, string> {
+export class PromptStageForm extends BaseStageForm<PromptStage> {
     loadInstance(pk: string): Promise<PromptStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesPromptStagesRetrieve({
             stageUuid: pk,
@@ -38,14 +38,6 @@ export class PromptStageForm extends ModelForm<PromptStage, string> {
     prompts?: PaginatedPromptList;
     policies?: PaginatedPolicyList;
 
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated stage.");
-        } else {
-            return msg("Successfully created stage.");
-        }
-    }
-
     async send(data: PromptStage): Promise<PromptStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesPromptStagesUpdate({
@@ -60,12 +52,11 @@ export class PromptStageForm extends ModelForm<PromptStage, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
+        return html` <span>
                 ${msg(
                     "Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable.",
                 )}
-            </div>
+            </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
@@ -146,7 +137,6 @@ export class PromptStageForm extends ModelForm<PromptStage, string> {
                         </p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

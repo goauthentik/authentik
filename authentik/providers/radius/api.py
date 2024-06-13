@@ -1,4 +1,5 @@
 """RadiusProvider API Views"""
+
 from rest_framework.fields import CharField, ListField
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
@@ -21,6 +22,7 @@ class RadiusProviderSerializer(ProviderSerializer):
             # an admin might have to view it
             "shared_secret",
             "outpost_set",
+            "mfa_support",
         ]
         extra_kwargs = ProviderSerializer.Meta.extra_kwargs
 
@@ -55,6 +57,7 @@ class RadiusOutpostConfigSerializer(ModelSerializer):
             "auth_flow_slug",
             "client_networks",
             "shared_secret",
+            "mfa_support",
         ]
 
 

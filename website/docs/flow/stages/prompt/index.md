@@ -20,7 +20,7 @@ The prompt can be any of the following types:
 | Number                | Numerical textbox.                                                                         |
 | Checkbox              | Simple checkbox.                                                                           |
 | Radio Button Group    | Similar to checkboxes, but allows selecting a value from a set of predefined values.       |
-| Dropdwon              | A simple dropdown menu filled with predefined values.                                      |
+| Dropdown              | A simple dropdown menu filled with predefined values.                                      |
 | Date                  | Same as text, except the client renders a date-picker                                      |
 | Date-time             | Same as text, except the client renders a date-time-picker                                 |
 | File                  | Allow users to upload a file, which will be available as base64-encoded data in the flow . |

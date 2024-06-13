@@ -1,4 +1,5 @@
 """Test Applications API"""
+
 from json import loads
 
 from django.core.files.base import ContentFile

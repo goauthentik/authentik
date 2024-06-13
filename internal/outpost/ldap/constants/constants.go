@@ -25,6 +25,7 @@ const (
 )
 
 const (
+	OCPerson        = "person"
 	OCUser          = "user"
 	OCOrgPerson     = "organizationalPerson"
 	OCInetOrgPerson = "inetOrgPerson"
@@ -54,6 +55,8 @@ func GetContainerOCs() map[string]bool {
 
 func GetUserOCs() map[string]bool {
 	return map[string]bool{
+		OCTop:           true,
+		OCPerson:        true,
 		OCUser:          true,
 		OCOrgPerson:     true,
 		OCInetOrgPerson: true,

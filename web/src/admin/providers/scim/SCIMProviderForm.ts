@@ -1,8 +1,8 @@
+import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 
@@ -22,7 +22,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-provider-scim-form")
-export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
+export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
     loadInstance(pk: number): Promise<SCIMProvider> {
         return new ProvidersApi(DEFAULT_CONFIG).providersScimRetrieve({
             id: pk,
@@ -39,18 +39,10 @@ export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
 
     propertyMappings?: PaginatedSCIMMappingList;
 
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated provider.");
-        } else {
-            return msg("Successfully created provider.");
-        }
-    }
-
     async send(data: SCIMProvider): Promise<SCIMProvider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersScimUpdate({
-                id: this.instance.pk || 0,
+                id: this.instance.pk,
                 sCIMProviderRequest: data,
             });
         } else {
@@ -61,8 +53,7 @@ export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -128,6 +119,7 @@ export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
                                 const args: CoreGroupsListRequest = {
                                     ordering: "name",
+                                    includeUsers: false,
                                 };
                                 if (query !== undefined) {
                                     args.search = query;
@@ -160,7 +152,6 @@ export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("User Property Mappings")}
-                        ?required=${true}
                         name="propertyMappings"
                     >
                         <select class="pf-c-form-control" multiple>
@@ -194,7 +185,6 @@ export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Group Property Mappings")}
-                        ?required=${true}
                         name="propertyMappingsGroup"
                     >
                         <select class="pf-c-form-control" multiple>
@@ -226,7 +216,6 @@ export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
                         </p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

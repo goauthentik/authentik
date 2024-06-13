@@ -1,12 +1,13 @@
 """Apply Blueprint meta model"""
+
 from typing import TYPE_CHECKING
 
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import BooleanField, JSONField
+from rest_framework.fields import BooleanField
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.v1.meta.registry import BaseMetaModel, MetaResult, registry
-from authentik.core.api.utils import PassiveSerializer, is_dict
+from authentik.core.api.utils import JSONDictField, PassiveSerializer
 
 if TYPE_CHECKING:
     from authentik.blueprints.models import BlueprintInstance
@@ -17,7 +18,7 @@ LOGGER = get_logger()
 class ApplyBlueprintMetaSerializer(PassiveSerializer):
     """Serializer for meta apply blueprint model"""
 
-    identifiers = JSONField(validators=[is_dict])
+    identifiers = JSONDictField()
     required = BooleanField(default=True)
 
     # We cannot override `instance` as that will confuse rest_framework
@@ -31,7 +32,7 @@ class ApplyBlueprintMetaSerializer(PassiveSerializer):
         required = attrs["required"]
         instance = BlueprintInstance.objects.filter(**identifiers).first()
         if not instance and required:
-            raise ValidationError("Required blueprint does not exist")
+            raise ValidationError({"identifiers": "Required blueprint does not exist"})
         self.blueprint_instance = instance
         return super().validate(attrs)
 
@@ -42,7 +43,7 @@ class ApplyBlueprintMetaSerializer(PassiveSerializer):
             LOGGER.info("Blueprint does not exist, but not required")
             return MetaResult()
         LOGGER.debug("Applying blueprint from meta model", blueprint=self.blueprint_instance)
-        # pylint: disable=no-value-for-parameter
+
         apply_blueprint(str(self.blueprint_instance.pk))
         return MetaResult()
 

@@ -1,13 +1,17 @@
 """authentik LDAP Models"""
+
 from os import chmod
+from os.path import dirname, exists
+from shutil import rmtree
 from ssl import CERT_REQUIRED
 from tempfile import NamedTemporaryFile, mkdtemp
-from typing import Optional
 
-from django.db import models
+import pglock
+from django.db import connection, models
+from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from ldap3 import ALL, NONE, RANDOM, Connection, Server, ServerPool, Tls
-from ldap3.core.exceptions import LDAPInsufficientAccessRightsResult, LDAPSchemaError
+from ldap3.core.exceptions import LDAPException, LDAPInsufficientAccessRightsResult, LDAPSchemaError
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import Group, PropertyMapping, Source
@@ -94,6 +98,11 @@ class LDAPSource(Source):
         help_text=_("Property mappings used for group creation/updating."),
     )
 
+    password_login_update_internal_password = models.BooleanField(
+        default=False,
+        help_text=_("Update internal authentik password when login succeeds with LDAP"),
+    )
+
     sync_users = models.BooleanField(default=True)
     sync_users_password = models.BooleanField(
         default=True,
@@ -117,7 +126,11 @@ class LDAPSource(Source):
 
         return LDAPSourceSerializer
 
-    def server(self, **kwargs) -> Server:
+    @property
+    def icon_url(self) -> str:
+        return static("authentik/sources/ldap.png")
+
+    def server(self, **kwargs) -> ServerPool:
         """Get LDAP Server/ServerPool"""
         servers = []
         tls_kwargs = {}
@@ -136,7 +149,7 @@ class LDAPSource(Source):
                 chmod(private_key_file, 0o600)
             tls_kwargs["local_private_key_file"] = private_key_file
             tls_kwargs["local_certificate_file"] = certificate_file
-        if ciphers := CONFIG.y("ldap.tls.ciphers", None):
+        if ciphers := CONFIG.get("ldap.tls.ciphers", None):
             tls_kwargs["ciphers"] = ciphers.strip()
         if self.sni:
             tls_kwargs["sni"] = self.server_uri.split(",", maxsplit=1)[0].strip()
@@ -154,7 +167,10 @@ class LDAPSource(Source):
         return ServerPool(servers, RANDOM, active=5, exhaust=True)
 
     def connection(
-        self, server_kwargs: Optional[dict] = None, connection_kwargs: Optional[dict] = None
+        self,
+        server: Server | None = None,
+        server_kwargs: dict | None = None,
+        connection_kwargs: dict | None = None,
     ) -> Connection:
         """Get a fully connected and bound LDAP Connection"""
         server_kwargs = server_kwargs or {}
@@ -163,19 +179,19 @@ class LDAPSource(Source):
             connection_kwargs.setdefault("user", self.bind_cn)
         if self.bind_password is not None:
             connection_kwargs.setdefault("password", self.bind_password)
-        connection = Connection(
-            self.server(**server_kwargs),
+        conn = Connection(
+            server or self.server(**server_kwargs),
             raise_exceptions=True,
             receive_timeout=LDAP_TIMEOUT,
             **connection_kwargs,
         )
 
         if self.start_tls:
-            connection.start_tls(read_server_info=False)
+            conn.start_tls(read_server_info=False)
         try:
-            successful = connection.bind()
+            successful = conn.bind()
             if successful:
-                return connection
+                return conn
         except (LDAPSchemaError, LDAPInsufficientAccessRightsResult) as exc:
             # Schema error, so try connecting without schema info
             # See https://github.com/goauthentik/authentik/issues/4590
@@ -183,8 +199,56 @@ class LDAPSource(Source):
             if server_kwargs.get("get_info", ALL) == NONE:
                 raise exc
             server_kwargs["get_info"] = NONE
-            return self.connection(server_kwargs, connection_kwargs)
+            return self.connection(server, server_kwargs, connection_kwargs)
+        finally:
+            if conn.server.tls.certificate_file is not None and exists(
+                conn.server.tls.certificate_file
+            ):
+                rmtree(dirname(conn.server.tls.certificate_file))
         return RuntimeError("Failed to bind")
+
+    @property
+    def sync_lock(self) -> pglock.advisory:
+        """Postgres lock for syncing LDAP to prevent multiple parallel syncs happening"""
+        return pglock.advisory(
+            lock_id=f"goauthentik.io/{connection.schema_name}/sources/ldap/sync/{self.slug}",
+            timeout=0,
+            side_effect=pglock.Return,
+        )
+
+    def check_connection(self) -> dict[str, dict[str, str]]:
+        """Check LDAP Connection"""
+        from authentik.sources.ldap.sync.base import flatten
+
+        servers = self.server()
+        server_info = {}
+        # Check each individual server
+        for server in servers.servers:
+            server: Server
+            try:
+                conn = self.connection(server=server)
+                server_info[server.host] = {
+                    "vendor": str(flatten(conn.server.info.vendor_name)),
+                    "version": str(flatten(conn.server.info.vendor_version)),
+                    "status": "ok",
+                }
+            except LDAPException as exc:
+                server_info[server.host] = {
+                    "status": str(exc),
+                }
+        # Check server pool
+        try:
+            conn = self.connection()
+            server_info["__all__"] = {
+                "vendor": str(flatten(conn.server.info.vendor_name)),
+                "version": str(flatten(conn.server.info.vendor_version)),
+                "status": "ok",
+            }
+        except LDAPException as exc:
+            server_info["__all__"] = {
+                "status": str(exc),
+            }
+        return server_info
 
     class Meta:
         verbose_name = _("LDAP Source")

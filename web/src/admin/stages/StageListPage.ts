@@ -5,7 +5,7 @@ import "@goauthentik/admin/stages/authenticator_sms/AuthenticatorSMSStageForm";
 import "@goauthentik/admin/stages/authenticator_static/AuthenticatorStaticStageForm";
 import "@goauthentik/admin/stages/authenticator_totp/AuthenticatorTOTPStageForm";
 import "@goauthentik/admin/stages/authenticator_validate/AuthenticatorValidateStageForm";
-import "@goauthentik/admin/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm";
+import "@goauthentik/admin/stages/authenticator_webauthn/AuthenticatorWebAuthnStageForm";
 import "@goauthentik/admin/stages/captcha/CaptchaStageForm";
 import "@goauthentik/admin/stages/consent/ConsentStageForm";
 import "@goauthentik/admin/stages/deny/DenyStageForm";
@@ -15,6 +15,7 @@ import "@goauthentik/admin/stages/identification/IdentificationStageForm";
 import "@goauthentik/admin/stages/invitation/InvitationStageForm";
 import "@goauthentik/admin/stages/password/PasswordStageForm";
 import "@goauthentik/admin/stages/prompt/PromptStageForm";
+import "@goauthentik/admin/stages/source/SourceStageForm";
 import "@goauthentik/admin/stages/user_delete/UserDeleteStageForm";
 import "@goauthentik/admin/stages/user_login/UserLoginStageForm";
 import "@goauthentik/admin/stages/user_logout/UserLogoutStageForm";
@@ -24,9 +25,11 @@ import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/forms/ProxyForm";
+import "@goauthentik/elements/rbac/ObjectPermissionModal";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -53,6 +56,7 @@ export class StageListPage extends TablePage<Stage> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "name";
@@ -108,7 +112,9 @@ export class StageListPage extends TablePage<Stage> {
                     >
                     </ak-stage-authenticator-duo-device-import-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <i class="fas fa-file-import"></i>
+                        <pf-tooltip position="top" content=${msg("Import devices")}>
+                            <i class="fas fa-file-import" aria-hidden="true"></i>
+                        </pf-tooltip>
                     </button>
                 </ak-forms-modal>`;
             default:
@@ -141,9 +147,13 @@ export class StageListPage extends TablePage<Stage> {
                     >
                     </ak-proxy-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <i class="fas fa-edit"></i>
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit"></i>
+                        </pf-tooltip>
                     </button>
                 </ak-forms-modal>
+                <ak-rbac-object-permission-modal model=${item.metaModelName} objectPk=${item.pk}>
+                </ak-rbac-object-permission-modal>
                 ${this.renderStageActions(item)}`,
         ];
     }

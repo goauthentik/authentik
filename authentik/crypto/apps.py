@@ -1,12 +1,9 @@
 """authentik crypto app config"""
-from datetime import datetime
-from typing import TYPE_CHECKING, Optional
+
+from datetime import UTC, datetime
 
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.generators import generate_id
-
-if TYPE_CHECKING:
-    from authentik.crypto.models import CertificateKeyPair
 
 MANAGED_KEY = "goauthentik.io/crypto/jwt-managed"
 
@@ -19,39 +16,41 @@ class AuthentikCryptoConfig(ManagedAppConfig):
     verbose_name = "authentik Crypto"
     default = True
 
-    def reconcile_load_crypto_tasks(self):
-        """Load crypto tasks"""
-        self.import_module("authentik.crypto.tasks")
-
-    def _create_update_cert(self, cert: Optional["CertificateKeyPair"] = None):
+    def _create_update_cert(self):
         from authentik.crypto.builder import CertificateBuilder
         from authentik.crypto.models import CertificateKeyPair
 
-        builder = CertificateBuilder("authentik Internal JWT Certificate")
+        common_name = "authentik Internal JWT Certificate"
+        builder = CertificateBuilder(common_name)
         builder.build(
             subject_alt_names=["goauthentik.io"],
             validity_days=360,
         )
-        if not cert:
-            cert = CertificateKeyPair()
-        builder.cert = cert
-        builder.cert.managed = MANAGED_KEY
-        builder.save()
+        CertificateKeyPair.objects.update_or_create(
+            managed=MANAGED_KEY,
+            defaults={
+                "name": common_name,
+                "certificate_data": builder.certificate,
+                "key_data": builder.private_key,
+            },
+        )
 
-    def reconcile_managed_jwt_cert(self):
+    @ManagedAppConfig.reconcile_tenant
+    def managed_jwt_cert(self):
         """Ensure managed JWT certificate"""
         from authentik.crypto.models import CertificateKeyPair
 
-        certs = CertificateKeyPair.objects.filter(managed=MANAGED_KEY)
-        if not certs.exists():
+        cert: CertificateKeyPair | None = CertificateKeyPair.objects.filter(
+            managed=MANAGED_KEY
+        ).first()
+        now = datetime.now(tz=UTC)
+        if not cert or (
+            now < cert.certificate.not_valid_after_utc or now > cert.certificate.not_valid_after_utc
+        ):
             self._create_update_cert()
-            return
-        cert: CertificateKeyPair = certs.first()
-        now = datetime.now()
-        if now < cert.certificate.not_valid_before or now > cert.certificate.not_valid_after:
-            self._create_update_cert(cert)
 
-    def reconcile_self_signed(self):
+    @ManagedAppConfig.reconcile_tenant
+    def self_signed(self):
         """Create self-signed keypair"""
         from authentik.crypto.builder import CertificateBuilder
         from authentik.crypto.models import CertificateKeyPair
@@ -61,4 +60,10 @@ class AuthentikCryptoConfig(ManagedAppConfig):
             return
         builder = CertificateBuilder(name)
         builder.build(subject_alt_names=[f"{generate_id()}.self-signed.goauthentik.io"])
-        builder.save()
+        CertificateKeyPair.objects.get_or_create(
+            name=name,
+            defaults={
+                "certificate_data": builder.certificate,
+                "key_data": builder.private_key,
+            },
+        )

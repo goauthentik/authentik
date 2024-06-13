@@ -53,6 +53,7 @@ class TestFlowInspector(APITestCase):
                     "title": flow.title,
                     "layout": "stacked",
                 },
+                "flow_designation": "authentication",
                 "type": ChallengeTypes.NATIVE.value,
                 "password_fields": False,
                 "primary_action": "Log in",

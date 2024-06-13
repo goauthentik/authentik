@@ -1,10 +1,11 @@
+import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { docLink } from "@goauthentik/common/global";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -14,19 +15,11 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { ExpressionPolicy, PoliciesApi } from "@goauthentik/api";
 
 @customElement("ak-policy-expression-form")
-export class ExpressionPolicyForm extends ModelForm<ExpressionPolicy, string> {
+export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
     loadInstance(pk: string): Promise<ExpressionPolicy> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesExpressionRetrieve({
             policyUuid: pk,
         });
-    }
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated policy.");
-        } else {
-            return msg("Successfully created policy.");
-        }
     }
 
     async send(data: ExpressionPolicy): Promise<ExpressionPolicy> {
@@ -43,12 +36,11 @@ export class ExpressionPolicyForm extends ModelForm<ExpressionPolicy, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
+        return html` <span>
                 ${msg(
                     "Executes the python snippet to determine whether to allow or deny a request.",
                 )}
-            </div>
+            </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
@@ -86,7 +78,7 @@ export class ExpressionPolicyForm extends ModelForm<ExpressionPolicy, string> {
                         name="expression"
                     >
                         <ak-codemirror
-                            mode="python"
+                            mode=${CodeMirrorMode.Python}
                             value="${ifDefined(this.instance?.expression)}"
                         >
                         </ak-codemirror>
@@ -101,7 +93,6 @@ export class ExpressionPolicyForm extends ModelForm<ExpressionPolicy, string> {
                         </p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

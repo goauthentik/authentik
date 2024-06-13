@@ -1,16 +1,16 @@
 """authentik consent stage"""
-from typing import Optional
+
 from uuid import uuid4
 
 from django.http import HttpRequest, HttpResponse
 from django.utils.timezone import now
 from rest_framework.fields import CharField
 
+from authentik.core.api.utils import PassiveSerializer
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
     ChallengeTypes,
-    PermissionSerializer,
     WithUserInfoChallenge,
 )
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
@@ -25,12 +25,19 @@ PLAN_CONTEXT_CONSENT_EXTRA_PERMISSIONS = "consent_additional_permissions"
 SESSION_KEY_CONSENT_TOKEN = "authentik/stages/consent/token"  # nosec
 
 
+class ConsentPermissionSerializer(PassiveSerializer):
+    """Permission used for consent"""
+
+    name = CharField(allow_blank=True)
+    id = CharField()
+
+
 class ConsentChallenge(WithUserInfoChallenge):
     """Challenge info for consent screens"""
 
     header_text = CharField(required=False)
-    permissions = PermissionSerializer(many=True)
-    additional_permissions = PermissionSerializer(many=True)
+    permissions = ConsentPermissionSerializer(many=True)
+    additional_permissions = ConsentPermissionSerializer(many=True)
     component = CharField(default="ak-stage-consent")
     token = CharField(required=True)
 
@@ -91,7 +98,7 @@ class ConsentStageView(ChallengeStageView):
         if PLAN_CONTEXT_PENDING_USER in self.executor.plan.context:
             user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
 
-        consent: Optional[UserConsent] = UserConsent.filter_not_expired(
+        consent: UserConsent | None = UserConsent.filter_not_expired(
             user=user, application=application
         ).first()
         self.executor.plan.context[PLAN_CONTEXT_CONSENT] = consent

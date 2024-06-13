@@ -25,8 +25,11 @@ export class APIDrawer extends AKElement {
             PFContent,
             PFDropdown,
             css`
+                :host {
+                    --header-height: 114px;
+                }
                 .pf-c-notification-drawer__header {
-                    height: 114px;
+                    height: var(--header-height);
                     align-items: center;
                 }
                 .pf-c-notification-drawer__header-action,
@@ -37,6 +40,12 @@ export class APIDrawer extends AKElement {
                 .pf-c-notification-drawer__list-item-description {
                     white-space: pre-wrap;
                     font-family: monospace;
+                }
+                .pf-c-notification-drawer__body {
+                    overflow-x: hidden;
+                }
+                .pf-c-notification-drawer__list {
+                    max-height: calc(100vh - var(--header-height));
                 }
             `,
         ];

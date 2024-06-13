@@ -38,7 +38,6 @@ func (cs *CryptoStore) AddKeypair(uuid string) error {
 	if err != nil {
 		return err
 	}
-	cs.fingerprints[uuid] = cs.getFingerprint(uuid)
 	return nil
 }
 
@@ -54,7 +53,7 @@ func (cs *CryptoStore) getFingerprint(uuid string) string {
 func (cs *CryptoStore) Fetch(uuid string) error {
 	cfp := cs.getFingerprint(uuid)
 	if cfp == cs.fingerprints[uuid] {
-		cs.log.WithField("uuid", uuid).Info("Fingerprint hasn't changed, not fetching cert")
+		cs.log.WithField("uuid", uuid).Debug("Fingerprint hasn't changed, not fetching cert")
 		return nil
 	}
 	cs.log.WithField("uuid", uuid).Info("Fetching certificate and private key")
@@ -73,6 +72,7 @@ func (cs *CryptoStore) Fetch(uuid string) error {
 		return err
 	}
 	cs.certificates[uuid] = &x509cert
+	cs.fingerprints[uuid] = cfp
 	return nil
 }
 

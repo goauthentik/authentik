@@ -19,11 +19,9 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
     }
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated certificate-key pair.");
-        } else {
-            return msg("Successfully created certificate-key pair.");
-        }
+        return this.instance
+            ? msg("Successfully updated certificate-key pair.")
+            : msg("Successfully created certificate-key pair.");
     }
 
     async send(data: CertificateKeyPair): Promise<CertificateKeyPair> {
@@ -40,8 +38,7 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} name="name" ?required=${true}>
+        return html` <ak-form-element-horizontal label=${msg("Name")} name="name" ?required=${true}>
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -69,7 +66,6 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
                         "Optional Private Key. If this is set, you can use this keypair for encryption.",
                     )}
                 </p>
-            </ak-form-element-horizontal>
-        </form>`;
+            </ak-form-element-horizontal>`;
     }
 }

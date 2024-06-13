@@ -1,10 +1,12 @@
 """authentik proxy models"""
+
 import string
+from collections.abc import Iterable
 from random import SystemRandom
-from typing import Iterable, Optional
 from urllib.parse import urljoin
 
 from django.db import models
+from django.templatetags.static import static
 from django.utils.translation import gettext as _
 from rest_framework.serializers import Serializer
 
@@ -115,13 +117,17 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         return "ak-provider-proxy-form"
 
     @property
+    def icon_url(self) -> str | None:
+        return static("authentik/sources/proxy.svg")
+
+    @property
     def serializer(self) -> type[Serializer]:
         from authentik.providers.proxy.api import ProxyProviderSerializer
 
         return ProxyProviderSerializer
 
     @property
-    def launch_url(self) -> Optional[str]:
+    def launch_url(self) -> str | None:
         """Use external_host as launch URL"""
         return self.external_host
 

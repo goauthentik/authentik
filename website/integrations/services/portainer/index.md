@@ -6,11 +6,9 @@ title: Portainer
 
 ## What is Portainer
 
-From https://www.portainer.io/
-
-:::note
-Portainer is a powerful, GUI-based Container-as-a-Service solution that helps organizations manage and deploy cloud-native applications easily and securely.
-:::
+> Portainer is a powerful, GUI-based Container-as-a-Service solution that helps organizations manage and deploy cloud-native applications easily and securely.
+>
+> -- https://www.portainer.io/
 
 :::note
 This is based on authentik 2021.7.3 and Portainer 2.6.x-CE. Portainer 2.6 supports OAuth without additional licenses, 1.x Series requires a paid license for OAuth.
@@ -46,8 +44,8 @@ In Portainer, under _Settings_, _Authentication_, Select _OAuth_ and _Custom_
 -   Client Secret: Client Secret from step 1
 -   Authorization URL: `https://authentik.company/application/o/authorize/`
 -   Access Token URL: `https://authentik.company/application/o/token/`
--   Redirect URL: `https://portainer.company`
 -   Resource URL: `https://authentik.company/application/o/userinfo/`
+-   Redirect URL: `https://portainer.company/`
 -   Logout URL: `https://authentik.company/application/o/portainer/end-session/`
 -   User Identifier: `preferred_username` (Or `email` if you want to use email addresses as identifiers)
 -   Scopes: `email openid profile`

@@ -53,32 +53,3 @@ func (ls *LDAPServer) searchRoute(req *search.Request, pi *ProviderInstance) (ld
 	req.Log().Trace("routing to default")
 	return pi.searcher.Search(req)
 }
-
-func (ls *LDAPServer) filterResultAttributes(req *search.Request, result ldap.ServerSearchResult) ldap.ServerSearchResult {
-	allowedAttributes := []string{}
-	if len(req.Attributes) == 1 && req.Attributes[0] == constants.SearchAttributeNone {
-		allowedAttributes = []string{"objectClass"}
-	}
-	if len(req.Attributes) > 0 {
-		// Only strictly filter allowed attributes if we haven't already narrowed the attributes
-		// down
-		if len(allowedAttributes) < 1 {
-			allowedAttributes = req.Attributes
-		}
-		// Filter LDAP returned attributes by search requested attributes, taking "1.1"
-		// into consideration
-		return req.FilterLDAPAttributes(result, func(attr *ldap.EntryAttribute) bool {
-			for _, allowed := range allowedAttributes {
-				if allowed == constants.SearchAttributeAllUser ||
-					allowed == constants.SearchAttributeAllOperational {
-					return true
-				}
-				if strings.EqualFold(allowed, attr.Name) {
-					return true
-				}
-			}
-			return false
-		})
-	}
-	return result
-}

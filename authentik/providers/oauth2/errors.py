@@ -1,5 +1,5 @@
 """OAuth errors"""
-from typing import Optional
+
 from urllib.parse import quote, urlparse
 
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
@@ -26,7 +26,7 @@ class OAuth2Error(SentryIgnoredException):
     def __repr__(self) -> str:
         return self.error
 
-    def to_event(self, message: Optional[str] = None, **kwargs) -> Event:
+    def to_event(self, message: str | None = None, **kwargs) -> Event:
         """Create configuration_error Event."""
         return Event.new(
             EventAction.CONFIGURATION_ERROR,
@@ -127,7 +127,7 @@ class AuthorizeError(OAuth2Error):
         "account_selection_required": (
             "The End-User is required to select a session at the Authorization Server"
         ),
-        "consent_required": "The Authorization Server requires End-Userconsent",
+        "consent_required": "The Authorization Server requires End-User consent",
         "invalid_request_uri": (
             "The request_uri in the Authorization Request returns an error or contains invalid data"
         ),
@@ -141,14 +141,13 @@ class AuthorizeError(OAuth2Error):
         ),
     }
 
-    # pylint: disable=too-many-arguments
     def __init__(
         self,
         redirect_uri: str,
         error: str,
         grant_type: str,
         state: str,
-        description: Optional[str] = None,
+        description: str | None = None,
     ):
         super().__init__()
         self.error = error

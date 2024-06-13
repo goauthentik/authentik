@@ -6,11 +6,9 @@ title: PowerDNS-Admin
 
 ## What is PowerDNS-Admin
 
-From https://github.com/ngoduykhanh/PowerDNS-Admin
-
-:::note
-A PowerDNS web interface with advanced features.
-:::
+> A PowerDNS web interface with advanced features.
+>
+> -- https://github.com/ngoduykhanh/PowerDNS-Admin
 
 ## Preparation
 
@@ -62,10 +60,9 @@ You must mount the certificate selected in authentik as a file in the Docker con
 ### docker-compose
 
 ```yaml
-version: "3.3"
 services:
     powerdns-admin:
-        image: ngoduykhanh/powerdns-admin:latest
+        image: powerdnsadmin/pda-legacy:latest
         restart: always
         ports:
             - 80:80

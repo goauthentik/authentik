@@ -1,8 +1,8 @@
+import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -12,19 +12,11 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { PasswordExpiryPolicy, PoliciesApi } from "@goauthentik/api";
 
 @customElement("ak-policy-password-expiry-form")
-export class PasswordExpiryPolicyForm extends ModelForm<PasswordExpiryPolicy, string> {
+export class PasswordExpiryPolicyForm extends BasePolicyForm<PasswordExpiryPolicy> {
     loadInstance(pk: string): Promise<PasswordExpiryPolicy> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordExpiryRetrieve({
             policyUuid: pk,
         });
-    }
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated policy.");
-        } else {
-            return msg("Successfully created policy.");
-        }
     }
 
     async send(data: PasswordExpiryPolicy): Promise<PasswordExpiryPolicy> {
@@ -41,12 +33,11 @@ export class PasswordExpiryPolicyForm extends ModelForm<PasswordExpiryPolicy, st
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
+        return html` <span>
                 ${msg(
                     "Checks if the request's user's password has been changed in the last x days, and denys based on settings.",
                 )}
-            </div>
+            </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
@@ -110,7 +101,6 @@ export class PasswordExpiryPolicyForm extends ModelForm<PasswordExpiryPolicy, st
                         </label>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

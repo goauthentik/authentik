@@ -19,9 +19,11 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { SessionUser } from "@goauthentik/api";
 
@@ -35,23 +37,28 @@ export function versionFamily(): string {
 export class AdminOverviewPage extends AKElement {
     static get styles(): CSSResult[] {
         return [
+            PFBase,
             PFGrid,
             PFPage,
             PFContent,
             PFList,
+            PFDivider,
             css`
-                .row-divider {
-                    margin-top: -4px;
-                    margin-bottom: -4px;
+                .pf-l-grid__item {
+                    height: 100%;
                 }
-                .graph-container {
-                    height: 20em;
-                }
-                .big-graph-container {
+                .pf-l-grid__item.big-graph-container {
                     height: 35em;
                 }
                 .card-container {
                     max-height: 10em;
+                }
+                .ak-external-link {
+                    display: inline-block;
+                    margin-left: 0.175rem;
+                    vertical-align: super;
+                    line-height: normal;
+                    font-size: var(--pf-global--icon--FontSize--sm);
                 }
             `,
         ];
@@ -65,20 +72,17 @@ export class AdminOverviewPage extends AKElement {
     }
 
     render(): TemplateResult {
-        let name = this.user?.user.username;
-        if (this.user?.user.name) {
-            name = this.user.user.name;
-        }
+        const name = this.user?.user.name ?? this.user?.user.username;
         return html`<ak-page-header icon="" header="" description=${msg("General system status")}>
                 <span slot="header"> ${msg(str`Welcome, ${name}.`)} </span>
             </ak-page-header>
             <section class="pf-c-page__main-section">
                 <div class="pf-l-grid pf-m-gutter">
                     <!-- row 1 -->
-                    <div class="pf-l-grid__item pf-m-6-col pf-l-grid pf-m-gutter">
-                        <div
-                            class="pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl pf-m-4-col-on-2xl graph-container"
-                        >
+                    <div
+                        class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl pf-l-grid pf-m-gutter"
+                    >
+                        <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl">
                             <ak-aggregate-card
                                 icon="fa fa-share"
                                 header=${msg("Quick actions")}
@@ -104,8 +108,10 @@ export class AdminOverviewPage extends AKElement {
                                             class="pf-u-mb-xl"
                                             target="_blank"
                                             href="https://goauthentik.io/integrations/"
-                                            >${msg("Explore integrations")}</a
-                                        >
+                                            >${msg("Explore integrations")}<i
+                                                class="fas fa-external-link-alt ak-external-link"
+                                            ></i
+                                        ></a>
                                     </li>
                                     <li>
                                         <a class="pf-u-mb-xl" href=${paramURL("/identity/users")}
@@ -120,15 +126,15 @@ export class AdminOverviewPage extends AKElement {
                                                 ".",
                                                 "",
                                             )}"
-                                            >${msg("Check release notes")}</a
-                                        >
+                                            >${msg("Check the release notes")}<i
+                                                class="fas fa-external-link-alt ak-external-link"
+                                            ></i
+                                        ></a>
                                     </li>
                                 </ul>
                             </ak-aggregate-card>
                         </div>
-                        <div
-                            class="pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl pf-m-4-col-on-2xl graph-container"
-                        >
+                        <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl">
                             <ak-aggregate-card
                                 icon="pf-icon pf-icon-zone"
                                 header=${msg("Outpost status")}
@@ -138,14 +144,14 @@ export class AdminOverviewPage extends AKElement {
                             </ak-aggregate-card>
                         </div>
                         <div
-                            class="pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl pf-m-4-col-on-2xl graph-container"
+                            class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-4-col-on-2xl"
                         >
                             <ak-aggregate-card icon="fa fa-sync-alt" header=${msg("Sync status")}>
                                 <ak-admin-status-chart-sync></ak-admin-status-chart-sync>
                             </ak-aggregate-card>
                         </div>
-                        <div class="pf-l-grid__item pf-m-12-col row-divider">
-                            <hr />
+                        <div class="pf-l-grid__item pf-m-12-col">
+                            <hr class="pf-c-divider" />
                         </div>
                         <div
                             class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-4-col-on-xl card-container"
@@ -163,11 +169,11 @@ export class AdminOverviewPage extends AKElement {
                             <ak-admin-status-card-workers> </ak-admin-status-card-workers>
                         </div>
                     </div>
-                    <div class="pf-l-grid__item pf-m-6-col">
+                    <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl">
                         <ak-recent-events pageSize="6"></ak-recent-events>
                     </div>
-                    <div class="pf-l-grid__item pf-m-12-col row-divider">
-                        <hr />
+                    <div class="pf-l-grid__item pf-m-12-col">
+                        <hr class="pf-c-divider" />
                     </div>
                     <!-- row 3 -->
                     <div

@@ -9,6 +9,8 @@ context:
     mapping:
       key1: value
       key2: 2
+    context1: context-nested-value
+    context2: !Context context1
 entries:
     - model: !Format ["%s", authentik_sources_oauth.oauthsource]
       state: !Format ["%s", present]
@@ -34,6 +36,7 @@ entries:
       model: authentik_policies_expression.expressionpolicy
     - attrs:
           attributes:
+              env_null: !Env [bar-baz, null]
               policy_pk1:
                   !Format [
                       "%s-%s",
@@ -97,6 +100,7 @@ entries:
                       [list, with, items, !Format ["foo-%s", !Context foo]],
                   ]
               if_true_simple: !If [!Context foo, true, text]
+              if_short: !If [!Context foo]
               if_false_simple: !If [null, false, 2]
               enumerate_mapping_to_mapping: !Enumerate [
                   !Context mapping,
@@ -141,6 +145,7 @@ entries:
                       ]
                   ]
               ]
+              nested_context: !Context context2
       identifiers:
           name: test
       conditions:

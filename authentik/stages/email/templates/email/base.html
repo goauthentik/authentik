@@ -1,34 +1,131 @@
 {% load authentik_stages_email %}
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <meta name="viewport" content="width=device-width" />
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title></title>
-        <style>{% inline_static_ascii "stages/email/css/base.css" %}</style>
-    </head>
-    <body itemscope itemtype="http://schema.org/EmailMessage">
-        <table class="body-wrap">
+<html xmlns="http://www.w3.org/1999/xhtm=l">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width">
+
+    <style type="text/css">
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        color: #212124;
+      }
+
+      h2 {
+        display: inline-block;
+        font-family: Arial, sans-serif;
+        font-size: 28px;
+        line-height: 125%;
+        font-weight: 700;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        margin: 0;
+      }
+
+      .flexibleImage {
+        height: auto;
+      }
+
+      img.logo {
+        max-width: 100%;
+        max-height: 35px;
+      }
+
+      .properties-table {
+        width: 100%;
+        text-align: left;
+        font-size: 14px;
+        font-weight: 400;
+        font-family: Arial, sans-serif;
+        border-collapse: collapse;
+      }
+
+      .properties-table tr:first-child {
+        border-top: 1px solid rgba(196, 196, 196, 0.2);
+      }
+
+      .properties-table tr:first-child>td {
+        padding-top: 24px;
+      }
+
+      .properties-table tr:last-child {
+        border-bottom: 1px solid rgba(196, 196, 196, 0.2);
+      }
+
+      .properties-table tr:last-child>td {
+        padding-bottom: 24px;
+      }
+
+      .properties-table td {
+        line-height: 24px;
+        vertical-align: top;
+        padding: 4px 15px;
+      }
+
+      .td-right {
+        text-align: right;
+        white-space: nowrap;
+      }
+      .btn-primary {
+        text-decoration: none;
+        color: #FFF;
+        background-color: #348eda;
+        border: solid #348eda;
+        width: 100%;
+        line-height: 2em;
+        font-weight: bold;
+        text-align: center;
+        cursor: pointer;
+        display: inline-block;
+        text-transform: capitalize;
+      }
+      .btn-primary a {
+        color: #fff;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <center>
+        <div style="-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; table-layout: fixed; width: 100%; max-width: 448px; padding: 60px 20px; font-size: 14px;">
+          <table border="0" align="center" width="100%">
             <tr>
-                <td></td>
-                <td class="container" width="600">
-                    <div class="content">
-                        <table class="main" width="100%" cellpadding="0" cellspacing="0" itemprop="action" itemscope itemtype="http://schema.org/ConfirmAction">
-                            {% block content %}
-                            {% endblock %}
-                        </table>
-                        <div class="footer">
-                            <table width="100%">
-                                <tr>
-                                    <td class="align-center content-block">Powered by <a href="https://goauthentik.io?utm_source=authentik&utm_medium=email">authentik</a>.</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </td>
-                <td></td>
+              <td style="padding: 20px;border: 1px solid #c1c1c1;">
+                <table width="100%" style="background-color: #FFFFFF; border-spacing: 0; margin-top: 15px;">
+                  <tr height="80">
+                    <td align="center" style="padding: 20px 0;">
+                      <img src="{% block logo_url %}cid:logo.png{% endblock %}" border="0=" alt="authentik logo" class="flexibleImage logo">
+                    </td>
+                  </tr>
+                  {% block content %}
+                  {% endblock %}
+                </table>
+              </td>
             </tr>
-        </table>
-    </body>
+            <tr>
+              <td>
+                <table border="0" style="margin-top: 10px;" width="100%">
+                  <tr>
+                    <td style="background: #FAFBFB;">
+                      <table style="width: 100%;">
+                        {% block sub_content %}
+                        {% endblock %}
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td align="center">
+                Powered by <a href="https://goauthentik.io?utm_source=authentik&utm_medium=email">authentik</a>.
+              </td>
+            </tr>
+          </table>
+        </div>
+      </center>
+    </div>
+  </body>
 </html>

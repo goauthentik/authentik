@@ -1,4 +1,5 @@
 """authentik oauth_client config"""
+
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.apps import ManagedAppConfig
@@ -11,6 +12,7 @@ AUTHENTIK_SOURCES_OAUTH_TYPES = [
     "authentik.sources.oauth.types.discord",
     "authentik.sources.oauth.types.facebook",
     "authentik.sources.oauth.types.github",
+    "authentik.sources.oauth.types.gitlab",
     "authentik.sources.oauth.types.google",
     "authentik.sources.oauth.types.mailcow",
     "authentik.sources.oauth.types.oidc",
@@ -31,10 +33,10 @@ class AuthentikSourceOAuthConfig(ManagedAppConfig):
     mountpoint = "source/oauth/"
     default = True
 
-    def reconcile_sources_loaded(self):
-        """Load source_types from config file"""
+    def import_related(self):
         for source_type in AUTHENTIK_SOURCES_OAUTH_TYPES:
             try:
                 self.import_module(source_type)
             except ImportError as exc:
                 LOGGER.warning("Failed to load OAuth Source", exc=exc)
+        return super().import_related()

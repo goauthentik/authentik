@@ -1,4 +1,5 @@
 """SAML Provider API Tests"""
+
 from json import loads
 from tempfile import TemporaryFile
 
@@ -89,7 +90,7 @@ class TestSAMLProviderAPI(APITestCase):
                 {
                     "file": metadata,
                     "name": generate_id(),
-                    "authorization_flow": create_test_flow(FlowDesignation.AUTHORIZATION).slug,
+                    "authorization_flow": create_test_flow(FlowDesignation.AUTHORIZATION).pk,
                 },
                 format="multipart",
             )
@@ -106,7 +107,7 @@ class TestSAMLProviderAPI(APITestCase):
                 {
                     "file": metadata,
                     "name": generate_id(),
-                    "authorization_flow": create_test_flow().slug,
+                    "authorization_flow": create_test_flow().pk,
                 },
                 format="multipart",
             )

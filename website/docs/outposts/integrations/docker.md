@@ -9,7 +9,7 @@ This integration has the advantage over manual deployments of automatic updates 
 The following outpost settings are used:
 
 -   `object_naming_template`: Configures how the container is called
--   `container_image`: Optionally overwrites the standard container image (see [Configuration](../../installation/configuration.md#authentik_outposts) to configure the global default)
+-   `container_image`: Optionally overwrites the standard container image (see [Configuration](../../installation/configuration.mdx#authentik_outposts) to configure the global default)
 -   `docker_network`: The Docker network the container should be added to. This needs to be modified if you plan to connect to authentik using the internal hostname.
 -   `docker_map_ports`: Enable/disable the mapping of ports. When using a proxy outpost with Traefik for example, you might not want to bind ports as they are routed through Traefik.
 -   `docker_labels`: Optional additional labels that can be applied to the container.

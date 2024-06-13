@@ -1,4 +1,5 @@
 """Flow Binding API Views"""
+
 from typing import Any
 
 from rest_framework.exceptions import ValidationError
@@ -45,3 +46,5 @@ class FlowStageBindingViewSet(UsedByMixin, ModelViewSet):
     serializer_class = FlowStageBindingSerializer
     filterset_fields = "__all__"
     search_fields = ["stage__name"]
+    ordering = ["order"]
+    ordering_fields = ["order", "stage__name"]

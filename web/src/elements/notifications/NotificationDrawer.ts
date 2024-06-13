@@ -1,11 +1,13 @@
-import { ActionToLabel } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_NOTIFICATION_DRAWER_TOGGLE, EVENT_REFRESH } from "@goauthentik/common/constants";
+import { actionToLabel } from "@goauthentik/common/labels";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { me } from "@goauthentik/common/users";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -28,31 +30,30 @@ export class NotificationDrawer extends AKElement {
     unread = 0;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFNotificationDrawer, PFContent, PFDropdown].concat(
-            css`
-                .pf-c-drawer__body {
-                    height: 100%;
-                }
-                .pf-c-notification-drawer__body {
-                    flex-grow: 1;
-                }
-                .pf-c-notification-drawer__header {
-                    height: 114px;
-                    align-items: center;
-                }
-                .pf-c-notification-drawer__header-action,
-                .pf-c-notification-drawer__header-action-close,
-                .pf-c-notification-drawer__header-action-close > .pf-c-button.pf-m-plain {
-                    height: 100%;
-                }
-                .pf-c-notification-drawer__list-item-description {
-                    white-space: pre-wrap;
-                }
-                .pf-c-notification-drawer__footer {
-                    margin: 1rem;
-                }
-            `,
-        );
+        return [PFBase, PFButton, PFNotificationDrawer, PFContent, PFDropdown].concat(css`
+            .pf-c-drawer__body {
+                height: 100%;
+            }
+            .pf-c-notification-drawer__body {
+                flex-grow: 1;
+                overflow-x: hidden;
+            }
+            .pf-c-notification-drawer__header {
+                height: 114px;
+                align-items: center;
+            }
+            .pf-c-notification-drawer__header-action,
+            .pf-c-notification-drawer__header-action-close,
+            .pf-c-notification-drawer__header-action-close > .pf-c-button.pf-m-plain {
+                height: 100%;
+            }
+            .pf-c-notification-drawer__list-item-description {
+                white-space: pre-wrap;
+            }
+            .pf-c-notification-drawer__footer {
+                margin: 1rem;
+            }
+        `);
     }
 
     firstUpdated(): void {
@@ -91,7 +92,7 @@ export class NotificationDrawer extends AKElement {
                     <i class="fas fa-info-circle" aria-hidden="true"></i>
                 </span>
                 <h2 class="pf-c-notification-drawer__list-item-header-title">
-                    ${ActionToLabel(item.event?.action)}
+                    ${actionToLabel(item.event?.action)}
                 </h2>
             </div>
             <div class="pf-c-notification-drawer__list-item-action">
@@ -101,7 +102,9 @@ export class NotificationDrawer extends AKElement {
                         class="pf-c-dropdown__toggle pf-m-plain"
                         href="/if/admin/#/events/log/${item.event?.pk}"
                     >
-                        <i class="fas fa-share-square"></i>
+                        <pf-tooltip position="top" content=${msg("Show details")}>
+                            <i class="fas fa-share-square"></i>
+                        </pf-tooltip>
                     </a>
                 `}
                 <button
@@ -131,7 +134,9 @@ export class NotificationDrawer extends AKElement {
             </div>
             <p class="pf-c-notification-drawer__list-item-description">${item.body}</p>
             <small class="pf-c-notification-drawer__list-item-timestamp"
-                >${item.created?.toLocaleString()}</small
+                ><pf-tooltip position="top" .content=${item.created?.toLocaleString()}>
+                    ${getRelativeTime(item.created!)}
+                </pf-tooltip></small
             >
         </li>`;
     }

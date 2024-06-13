@@ -1,6 +1,7 @@
 """authentik sentry integration"""
+
 from asyncio.exceptions import CancelledError
-from typing import Any, Optional
+from typing import Any
 
 from billiard.exceptions import SoftTimeLimitExceeded, WorkerLostError
 from celery.exceptions import CeleryError
@@ -51,18 +52,18 @@ class SentryTransport(HttpTransport):
 
 def sentry_init(**sentry_init_kwargs):
     """Configure sentry SDK"""
-    sentry_env = CONFIG.y("error_reporting.environment", "customer")
+    sentry_env = CONFIG.get("error_reporting.environment", "customer")
     kwargs = {
         "environment": sentry_env,
-        "send_default_pii": CONFIG.y_bool("error_reporting.send_pii", False),
+        "send_default_pii": CONFIG.get_bool("error_reporting.send_pii", False),
         "_experiments": {
-            "profiles_sample_rate": float(CONFIG.y("error_reporting.sample_rate", 0.1)),
+            "profiles_sample_rate": float(CONFIG.get("error_reporting.sample_rate", 0.1)),
         },
     }
     kwargs.update(**sentry_init_kwargs)
-    # pylint: disable=abstract-class-instantiated
+
     sentry_sdk_init(
-        dsn=CONFIG.y("error_reporting.sentry_dsn"),
+        dsn=CONFIG.get("error_reporting.sentry_dsn"),
         integrations=[
             ArgvIntegration(),
             StdlibIntegration(),
@@ -92,13 +93,13 @@ def traces_sampler(sampling_context: dict) -> float:
         return 0
     if _type == "websocket":
         return 0
-    return float(CONFIG.y("error_reporting.sample_rate", 0.1))
+    return float(CONFIG.get("error_reporting.sample_rate", 0.1))
 
 
-def before_send(event: dict, hint: dict) -> Optional[dict]:
+def before_send(event: dict, hint: dict) -> dict | None:
     """Check if error is database error, and ignore if so"""
-    # pylint: disable=no-name-in-module
-    from psycopg2.errors import Error
+
+    from psycopg.errors import Error
 
     ignored_classes = (
         # Inbuilt types

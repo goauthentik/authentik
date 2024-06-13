@@ -2,6 +2,7 @@ package ldap
 
 import (
 	"net"
+	"time"
 
 	"beryju.io/ldap"
 	"github.com/getsentry/sentry-go"
@@ -20,7 +21,7 @@ func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LD
 			"outpost_name": ls.ac.Outpost.Name,
 			"type":         "bind",
 			"app":          selectedApp,
-		}).Observe(float64(span.EndTime.Sub(span.StartTime)))
+		}).Observe(float64(span.EndTime.Sub(span.StartTime)) / float64(time.Second))
 		req.Log().WithField("took-ms", span.EndTime.Sub(span.StartTime).Milliseconds()).Info("Bind request")
 	}()
 

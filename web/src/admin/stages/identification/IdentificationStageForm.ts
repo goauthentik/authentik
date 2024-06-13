@@ -1,21 +1,19 @@
-import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
+import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
+import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first, groupBy } from "@goauthentik/common/utils";
+import "@goauthentik/elements/ak-checkbox-group/ak-checkbox-group.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
-    Flow,
-    FlowsApi,
     FlowsInstancesListDesignationEnum,
-    FlowsInstancesListRequest,
     IdentificationStage,
     PaginatedSourceList,
     SourcesApi,
@@ -26,7 +24,18 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-stage-identification-form")
-export class IdentificationStageForm extends ModelForm<IdentificationStage, string> {
+export class IdentificationStageForm extends BaseStageForm<IdentificationStage> {
+    static get styles() {
+        return [
+            ...super.styles,
+            css`
+                ak-checkbox-group::part(checkbox-group) {
+                    padding-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
+                }
+            `,
+        ];
+    }
+
     loadInstance(pk: string): Promise<IdentificationStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesIdentificationRetrieve({
             stageUuid: pk,
@@ -40,14 +49,6 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
     }
 
     sources?: PaginatedSourceList;
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated stage.");
-        } else {
-            return msg("Successfully created stage.");
-        }
-    }
 
     async send(data: IdentificationStage): Promise<IdentificationStage> {
         if (this.instance) {
@@ -71,10 +72,15 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
+        const userSelectFields = [
+            { name: UserFieldsEnum.Username, label: msg("Username") },
+            { name: UserFieldsEnum.Email, label: msg("Email") },
+            { name: UserFieldsEnum.Upn, label: msg("UPN") },
+        ];
+
+        return html`<span>
                 ${msg("Let the user identify themselves with their username or Email address.")}
-            </div>
+            </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
@@ -87,33 +93,17 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("User fields")} name="userFields">
-                        <select class="pf-c-form-control" multiple>
-                            <option
-                                value=${UserFieldsEnum.Username}
-                                ?selected=${this.isUserFieldSelected(UserFieldsEnum.Username)}
-                            >
-                                ${msg("Username")}
-                            </option>
-                            <option
-                                value=${UserFieldsEnum.Email}
-                                ?selected=${this.isUserFieldSelected(UserFieldsEnum.Email)}
-                            >
-                                ${msg("Email")}
-                            </option>
-                            <option
-                                value=${UserFieldsEnum.Upn}
-                                ?selected=${this.isUserFieldSelected(UserFieldsEnum.Upn)}
-                            >
-                                ${msg("UPN")}
-                            </option>
-                        </select>
+                        <ak-checkbox-group
+                            class="user-field-select"
+                            .options=${userSelectFields}
+                            .value=${userSelectFields
+                                .map(({ name }) => name)
+                                .filter((name) => this.isUserFieldSelected(name))}
+                        ></ak-checkbox-group>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources.",
                             )}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Password stage")} name="passwordStage">
@@ -173,6 +163,26 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                             )}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal name="pretendUserExists">
+                        <label class="pf-c-switch">
+                            <input
+                                class="pf-c-switch__input"
+                                type="checkbox"
+                                ?checked=${first(this.instance?.pretendUserExists, true)}
+                            />
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label">${msg("Pretend user exists")}</span>
+                        </label>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "When enabled, the stage will always accept the given user identifier and continue.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="showMatchedUser">
                         <label class="pf-c-switch">
                             <input
@@ -204,28 +214,23 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                         name="sources"
                     >
                         <select class="pf-c-form-control" multiple>
-                            ${this.sources?.results.map((source) => {
-                                let selected = Array.from(this.instance?.sources || []).some(
-                                    (su) => {
-                                        return su == source.pk;
-                                    },
-                                );
-                                // Creating a new instance, auto-select built-in source
-                                // Only when no other sources exist
-                                if (
-                                    !this.instance &&
-                                    source.component === "" &&
-                                    (this.sources?.results || []).length < 2
-                                ) {
-                                    selected = true;
-                                }
-                                return html`<option
-                                    value=${ifDefined(source.pk)}
-                                    ?selected=${selected}
-                                >
-                                    ${source.name}
-                                </option>`;
-                            })}
+                            ${this.sources?.results
+                                .filter((source) => {
+                                    return source.component !== "";
+                                })
+                                .map((source) => {
+                                    const selected = Array.from(this.instance?.sources || []).some(
+                                        (su) => {
+                                            return su == source.pk;
+                                        },
+                                    );
+                                    return html`<option
+                                        value=${ifDefined(source.pk)}
+                                        ?selected=${selected}
+                                    >
+                                        ${source.name}
+                                    </option>`;
+                                })}
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${msg(
@@ -265,35 +270,10 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                         label=${msg("Passwordless flow")}
                         name="passwordlessFlow"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation: FlowsInstancesListDesignationEnum.Authentication,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return RenderFlowOption(flow);
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                return this.instance?.passwordlessFlow == flow.pk;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                            .currentFlow=${this.instance?.passwordlessFlow}
+                        ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Optional passwordless flow, which is linked at the bottom of the page. When configured, users can use this flow to authenticate with a WebAuthn authenticator, without entering any details.",
@@ -304,35 +284,11 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                         label=${msg("Enrollment flow")}
                         name="enrollmentFlow"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation: FlowsInstancesListDesignationEnum.Enrollment,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return flow.slug;
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                return this.instance?.enrollmentFlow == flow.pk;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Enrollment}
+                            .currentFlow=${this.instance?.enrollmentFlow}
+                        ></ak-flow-search>
+
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Optional enrollment flow, which is linked at the bottom of the page.",
@@ -340,35 +296,10 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Recovery flow")} name="recoveryFlow">
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation: FlowsInstancesListDesignationEnum.Recovery,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return flow.slug;
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                return this.instance?.recoveryFlow == flow.pk;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Recovery}
+                            .currentFlow=${this.instance?.recoveryFlow}
+                        ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Optional recovery flow, which is linked at the bottom of the page.",
@@ -376,7 +307,6 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                         </p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

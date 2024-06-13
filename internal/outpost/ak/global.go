@@ -14,8 +14,10 @@ import (
 	webutils "goauthentik.io/internal/utils/web"
 )
 
-var initialSetup = false
-var tlsTransport *http.RoundTripper = nil
+var (
+	initialSetup                    = false
+	tlsTransport *http.RoundTripper = nil
+)
 
 func doGlobalSetup(outpost api.Outpost, globalConfig *api.Config) {
 	l := log.WithField("logger", "authentik.outpost")

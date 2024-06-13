@@ -1,4 +1,5 @@
 """Test blueprints v1"""
+
 from django.test import TransactionTestCase
 
 from authentik.blueprints.v1.importer import Importer
@@ -15,7 +16,7 @@ class TestBlueprintsV1State(TransactionTestCase):
         flow_slug = generate_id()
         import_yaml = load_fixture("fixtures/state_present.yaml", id=flow_slug)
 
-        importer = Importer(import_yaml)
+        importer = Importer.from_string(import_yaml)
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
         # Ensure object exists
@@ -30,7 +31,7 @@ class TestBlueprintsV1State(TransactionTestCase):
         self.assertEqual(flow.title, "bar")
 
         # Ensure importer updates it
-        importer = Importer(import_yaml)
+        importer = Importer.from_string(import_yaml)
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
         flow: Flow = Flow.objects.filter(slug=flow_slug).first()
@@ -41,7 +42,7 @@ class TestBlueprintsV1State(TransactionTestCase):
         flow_slug = generate_id()
         import_yaml = load_fixture("fixtures/state_created.yaml", id=flow_slug)
 
-        importer = Importer(import_yaml)
+        importer = Importer.from_string(import_yaml)
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
         # Ensure object exists
@@ -56,7 +57,7 @@ class TestBlueprintsV1State(TransactionTestCase):
         self.assertEqual(flow.title, "bar")
 
         # Ensure importer doesn't update it
-        importer = Importer(import_yaml)
+        importer = Importer.from_string(import_yaml)
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
         flow: Flow = Flow.objects.filter(slug=flow_slug).first()
@@ -67,7 +68,7 @@ class TestBlueprintsV1State(TransactionTestCase):
         flow_slug = generate_id()
         import_yaml = load_fixture("fixtures/state_created.yaml", id=flow_slug)
 
-        importer = Importer(import_yaml)
+        importer = Importer.from_string(import_yaml)
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
         # Ensure object exists
@@ -75,7 +76,7 @@ class TestBlueprintsV1State(TransactionTestCase):
         self.assertEqual(flow.slug, flow_slug)
 
         import_yaml = load_fixture("fixtures/state_absent.yaml", id=flow_slug)
-        importer = Importer(import_yaml)
+        importer = Importer.from_string(import_yaml)
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
         flow: Flow = Flow.objects.filter(slug=flow_slug).first()

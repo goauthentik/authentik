@@ -1,8 +1,10 @@
 """core Configs API"""
+
 from pathlib import Path
 
 from django.conf import settings
 from django.db import models
+from django.dispatch import Signal
 from drf_spectacular.utils import extend_schema
 from rest_framework.fields import (
     BooleanField,
@@ -18,8 +20,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentik.core.api.utils import PassiveSerializer
-from authentik.events.geo import GEOIP_READER
+from authentik.events.context_processors.base import get_context_processors
 from authentik.lib.config import CONFIG
+
+capabilities = Signal()
 
 
 class Capabilities(models.TextChoices):
@@ -27,6 +31,7 @@ class Capabilities(models.TextChoices):
 
     CAN_SAVE_MEDIA = "can_save_media"
     CAN_GEO_IP = "can_geo_ip"
+    CAN_ASN = "can_asn"
     CAN_IMPERSONATE = "can_impersonate"
     CAN_DEBUG = "can_debug"
     IS_ENTERPRISE = "is_enterprise"
@@ -63,16 +68,24 @@ class ConfigView(APIView):
         """Get all capabilities this server instance supports"""
         caps = []
         deb_test = settings.DEBUG or settings.TEST
-        if Path(settings.MEDIA_ROOT).is_mount() or deb_test:
+        if (
+            CONFIG.get("storage.media.backend", "file") == "s3"
+            or Path(settings.STORAGES["default"]["OPTIONS"]["location"]).is_mount()
+            or deb_test
+        ):
             caps.append(Capabilities.CAN_SAVE_MEDIA)
-        if GEOIP_READER.enabled:
-            caps.append(Capabilities.CAN_GEO_IP)
-        if CONFIG.y_bool("impersonation"):
+        for processor in get_context_processors():
+            if cap := processor.capability():
+                caps.append(cap)
+        if self.request.tenant.impersonation:
             caps.append(Capabilities.CAN_IMPERSONATE)
         if settings.DEBUG:  # pragma: no cover
             caps.append(Capabilities.CAN_DEBUG)
         if "authentik.enterprise" in settings.INSTALLED_APPS:
             caps.append(Capabilities.IS_ENTERPRISE)
+        for _, result in capabilities.send(sender=self):
+            if result:
+                caps.append(result)
         return caps
 
     def get_config(self) -> ConfigSerializer:
@@ -80,17 +93,17 @@ class ConfigView(APIView):
         return ConfigSerializer(
             {
                 "error_reporting": {
-                    "enabled": CONFIG.y("error_reporting.enabled"),
-                    "sentry_dsn": CONFIG.y("error_reporting.sentry_dsn"),
-                    "environment": CONFIG.y("error_reporting.environment"),
-                    "send_pii": CONFIG.y("error_reporting.send_pii"),
-                    "traces_sample_rate": float(CONFIG.y("error_reporting.sample_rate", 0.4)),
+                    "enabled": CONFIG.get("error_reporting.enabled"),
+                    "sentry_dsn": CONFIG.get("error_reporting.sentry_dsn"),
+                    "environment": CONFIG.get("error_reporting.environment"),
+                    "send_pii": CONFIG.get("error_reporting.send_pii"),
+                    "traces_sample_rate": float(CONFIG.get("error_reporting.sample_rate", 0.4)),
                 },
                 "capabilities": self.get_capabilities(),
-                "cache_timeout": int(CONFIG.y("redis.cache_timeout")),
-                "cache_timeout_flows": int(CONFIG.y("redis.cache_timeout_flows")),
-                "cache_timeout_policies": int(CONFIG.y("redis.cache_timeout_policies")),
-                "cache_timeout_reputation": int(CONFIG.y("redis.cache_timeout_reputation")),
+                "cache_timeout": CONFIG.get_int("cache.timeout"),
+                "cache_timeout_flows": CONFIG.get_int("cache.timeout_flows"),
+                "cache_timeout_policies": CONFIG.get_int("cache.timeout_policies"),
+                "cache_timeout_reputation": CONFIG.get_int("cache.timeout_reputation"),
             }
         )
 

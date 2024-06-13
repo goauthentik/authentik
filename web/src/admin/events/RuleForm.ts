@@ -1,5 +1,5 @@
-import { SeverityToLabel } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { severityToLabel } from "@goauthentik/common/labels";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
@@ -37,11 +37,9 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
     }
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated rule.");
-        } else {
-            return msg("Successfully created rule.");
-        }
+        return this.instance
+            ? msg("Successfully updated rule.")
+            : msg("Successfully created rule.");
     }
 
     async send(data: NotificationRule): Promise<NotificationRule> {
@@ -58,8 +56,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -72,6 +69,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                     .fetchObjects=${async (query?: string): Promise<Group[]> => {
                         const args: CoreGroupsListRequest = {
                             ordering: "name",
+                            includeUsers: false,
                         };
                         if (query !== undefined) {
                             args.search = query;
@@ -125,23 +123,22 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                 <ak-radio
                     .options=${[
                         {
-                            label: SeverityToLabel(SeverityEnum.Alert),
+                            label: severityToLabel(SeverityEnum.Alert),
                             value: SeverityEnum.Alert,
                             default: true,
                         },
                         {
-                            label: SeverityToLabel(SeverityEnum.Warning),
+                            label: severityToLabel(SeverityEnum.Warning),
                             value: SeverityEnum.Warning,
                         },
                         {
-                            label: SeverityToLabel(SeverityEnum.Notice),
+                            label: severityToLabel(SeverityEnum.Notice),
                             value: SeverityEnum.Notice,
                         },
                     ]}
                     .value=${this.instance?.severity}
                 >
                 </ak-radio>
-            </ak-form-element-horizontal>
-        </form>`;
+            </ak-form-element-horizontal>`;
     }
 }

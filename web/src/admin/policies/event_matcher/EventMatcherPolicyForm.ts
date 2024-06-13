@@ -1,8 +1,8 @@
+import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { msg } from "@lit/localize";
@@ -20,22 +20,18 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-policy-event-matcher-form")
-export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string> {
+export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
     loadInstance(pk: string): Promise<EventMatcherPolicy> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherRetrieve({
             policyUuid: pk,
         });
     }
 
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated policy.");
-        } else {
-            return msg("Successfully created policy.");
-        }
-    }
-
     async send(data: EventMatcherPolicy): Promise<EventMatcherPolicy> {
+        if (data.action?.toString() === "") data.action = null;
+        if (data.clientIp?.toString() === "") data.clientIp = null;
+        if (data.app?.toString() === "") data.app = null;
+        if (data.model?.toString() === "") data.model = null;
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherUpdate({
                 policyUuid: this.instance.pk || "",
@@ -49,12 +45,11 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
+        return html` <span>
                 ${msg(
                     "Matches an event against a set of criteria. If any of the configured values match, the policy passes.",
                 )}
-            </div>
+            </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
@@ -183,7 +178,6 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
                         </p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

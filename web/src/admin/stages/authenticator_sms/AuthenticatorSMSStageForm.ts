@@ -1,9 +1,9 @@
 import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
+import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 
@@ -26,7 +26,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-sms-form")
-export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, string> {
+export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSStage> {
     loadInstance(pk: string): Promise<AuthenticatorSMSStage> {
         return new StagesApi(DEFAULT_CONFIG)
             .stagesAuthenticatorSmsRetrieve({
@@ -44,14 +44,6 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
 
     @property({ attribute: false })
     authType?: AuthTypeEnum;
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated stage.");
-        } else {
-            return msg("Successfully created stage.");
-        }
-    }
 
     async send(data: AuthenticatorSMSStage): Promise<AuthenticatorSMSStage> {
         if (this.instance) {
@@ -207,10 +199,9 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
+        return html` <span>
                 ${msg("Stage used to configure an SMS-based TOTP authenticator.")}
-            </div>
+            </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
@@ -343,7 +334,6 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                         </p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

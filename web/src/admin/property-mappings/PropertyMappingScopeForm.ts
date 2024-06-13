@@ -1,8 +1,9 @@
+import { BasePropertyMappingForm } from "@goauthentik/admin/property-mappings/BasePropertyMappingForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { docLink } from "@goauthentik/common/global";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -12,25 +13,17 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { PropertymappingsApi, ScopeMapping } from "@goauthentik/api";
 
 @customElement("ak-property-mapping-scope-form")
-export class PropertyMappingScopeForm extends ModelForm<ScopeMapping, string> {
+export class PropertyMappingScopeForm extends BasePropertyMappingForm<ScopeMapping> {
     loadInstance(pk: string): Promise<ScopeMapping> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsScopeRetrieve({
             pmUuid: pk,
         });
     }
 
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated mapping.");
-        } else {
-            return msg("Successfully created mapping.");
-        }
-    }
-
     async send(data: ScopeMapping): Promise<ScopeMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsScopeUpdate({
-                pmUuid: this.instance.pk || "",
+                pmUuid: this.instance.pk,
                 scopeMappingRequest: data,
             });
         } else {
@@ -41,8 +34,7 @@ export class PropertyMappingScopeForm extends ModelForm<ScopeMapping, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -82,7 +74,10 @@ export class PropertyMappingScopeForm extends ModelForm<ScopeMapping, string> {
                 ?required=${true}
                 name="expression"
             >
-                <ak-codemirror mode="python" value="${ifDefined(this.instance?.expression)}">
+                <ak-codemirror
+                    mode=${CodeMirrorMode.Python}
+                    value="${ifDefined(this.instance?.expression)}"
+                >
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
                     ${msg("Expression using Python.")}
@@ -93,7 +88,6 @@ export class PropertyMappingScopeForm extends ModelForm<ScopeMapping, string> {
                         ${msg("See documentation for a list of all variables.")}
                     </a>
                 </p>
-            </ak-form-element-horizontal>
-        </form>`;
+            </ak-form-element-horizontal>`;
     }
 }

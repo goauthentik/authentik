@@ -2,10 +2,6 @@
 title: Radius Provider
 ---
 
-:::info
-This feature is still in technical preview, so please report any Bugs you run into on [GitHub](https://github.com/goauthentik/authentik/issues)
-:::
-
 You can configure a Radius Provider for applications that don't support any other protocols or require Radius.
 
 :::info

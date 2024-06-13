@@ -42,10 +42,10 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
     }
 
     renderForm(): TemplateResult {
-        return html` <form class="pf-c-form pf-m-horizontal">
-            ${this.instance?.adminIntegrationKey !== "" ? this.renderFormAutomatic() : html``}
-            ${this.renderFormManual()}
-        </form>`;
+        return html` ${this.instance?.adminIntegrationKey !== ""
+            ? this.renderFormAutomatic()
+            : html``}
+        ${this.renderFormManual()}`;
     }
 
     renderFormManual(): TemplateResult {

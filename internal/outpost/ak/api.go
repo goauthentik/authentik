@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"os"
 	"os/signal"
+	"runtime"
 	"syscall"
 	"time"
 
@@ -15,12 +16,15 @@ import (
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 	"github.com/prometheus/client_golang/prometheus"
+	log "github.com/sirupsen/logrus"
+
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/constants"
+	cryptobackend "goauthentik.io/internal/crypto/backend"
 	"goauthentik.io/internal/utils/web"
-
-	log "github.com/sirupsen/logrus"
 )
+
+type WSHandler func(ctx context.Context, args map[string]interface{})
 
 const ConfigLogLevel = "log_level"
 
@@ -42,6 +46,7 @@ type APIController struct {
 	lastWsReconnect     time.Time
 	wsIsReconnecting    bool
 	wsBackoffMultiplier int
+	wsHandlers          []WSHandler
 	refreshHandlers     []func()
 
 	instanceUUID uuid.UUID
@@ -73,7 +78,6 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	// Because we don't know the outpost UUID, we simply do a list and pick the first
 	// The service account this token belongs to should only have access to a single outpost
 	outposts, _, err := apiClient.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
-
 	if err != nil {
 		log.WithError(err).Error("Failed to fetch outpost configuration, retrying in 3 seconds")
 		time.Sleep(time.Second * 3)
@@ -106,6 +110,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 		reloadOffset:        time.Duration(rand.Intn(10)) * time.Second,
 		instanceUUID:        uuid.New(),
 		Outpost:             outpost,
+		wsHandlers:          []WSHandler{},
 		wsBackoffMultiplier: 1,
 		refreshHandlers:     make([]func(), 0),
 	}
@@ -156,11 +161,14 @@ func (a *APIController) AddRefreshHandler(handler func()) {
 	a.refreshHandlers = append(a.refreshHandlers, handler)
 }
 
+func (a *APIController) Token() string {
+	return a.token
+}
+
 func (a *APIController) OnRefresh() error {
 	// Because we don't know the outpost UUID, we simply do a list and pick the first
 	// The service account this token belongs to should only have access to a single outpost
 	outposts, _, err := a.Client.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
-
 	if err != nil {
 		log.WithError(err).Error("Failed to fetch outpost configuration")
 		return err
@@ -176,11 +184,15 @@ func (a *APIController) OnRefresh() error {
 	return err
 }
 
-func (a *APIController) getWebsocketArgs() map[string]interface{} {
+func (a *APIController) getWebsocketPingArgs() map[string]interface{} {
 	args := map[string]interface{}{
-		"version":   constants.VERSION,
-		"buildHash": constants.BUILD("tagged"),
-		"uuid":      a.instanceUUID.String(),
+		"version":        constants.VERSION,
+		"buildHash":      constants.BUILD("tagged"),
+		"uuid":           a.instanceUUID.String(),
+		"golangVersion":  runtime.Version(),
+		"opensslEnabled": cryptobackend.OpensslEnabled,
+		"opensslVersion": cryptobackend.OpensslVersion(),
+		"fipsEnabled":    cryptobackend.FipsEnabled,
 	}
 	hostname, err := os.Hostname()
 	if err == nil {

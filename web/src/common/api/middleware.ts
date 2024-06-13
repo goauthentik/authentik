@@ -2,7 +2,7 @@ import { EVENT_REQUEST_POST } from "@goauthentik/common/constants";
 import { getCookie } from "@goauthentik/common/utils";
 
 import {
-    CurrentTenant,
+    CurrentBrand,
     FetchParams,
     Middleware,
     RequestContext,
@@ -18,15 +18,20 @@ export interface RequestInfo {
 }
 
 export class LoggingMiddleware implements Middleware {
-    tenant: CurrentTenant;
-    constructor(tenant: CurrentTenant) {
-        this.tenant = tenant;
+    brand: CurrentBrand;
+    constructor(brand: CurrentBrand) {
+        this.brand = brand;
     }
 
     post(context: ResponseContext): Promise<Response | void> {
-        let msg = `authentik/api[${this.tenant.matchedDomain}]: `;
-        msg += `${context.response.status} ${context.init.method} ${context.url}`;
-        console.debug(msg);
+        let msg = `authentik/api[${this.brand.matchedDomain}]: `;
+        // https://developer.mozilla.org/en-US/docs/Web/API/console#styling_console_output
+        msg += `%c${context.response.status}%c ${context.init.method} ${context.url}`;
+        let style = "";
+        if (context.response.status >= 400) {
+            style = "color: red; font-weight: bold;";
+        }
+        console.debug(msg, style, "");
         return Promise.resolve(context.response);
     }
 }

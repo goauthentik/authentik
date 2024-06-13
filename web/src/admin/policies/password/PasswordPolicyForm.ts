@@ -1,8 +1,8 @@
+import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -12,7 +12,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { PasswordPolicy, PoliciesApi } from "@goauthentik/api";
 
 @customElement("ak-policy-password-form")
-export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
+export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
     @state()
     showStatic = true;
 
@@ -22,25 +22,14 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
     @state()
     showZxcvbn = false;
 
-    loadInstance(pk: string): Promise<PasswordPolicy> {
-        return new PoliciesApi(DEFAULT_CONFIG)
-            .policiesPasswordRetrieve({
-                policyUuid: pk,
-            })
-            .then((policy) => {
-                this.showStatic = policy.checkStaticRules || false;
-                this.showHIBP = policy.checkHaveIBeenPwned || false;
-                this.showZxcvbn = policy.checkZxcvbn || false;
-                return policy;
-            });
-    }
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated policy.");
-        } else {
-            return msg("Successfully created policy.");
-        }
+    async loadInstance(pk: string): Promise<PasswordPolicy> {
+        const policy = await new PoliciesApi(DEFAULT_CONFIG).policiesPasswordRetrieve({
+            policyUuid: pk,
+        });
+        this.showStatic = policy.checkStaticRules || false;
+        this.showHIBP = policy.checkHaveIBeenPwned || false;
+        this.showZxcvbn = policy.checkZxcvbn || false;
+        return policy;
     }
 
     async send(data: PasswordPolicy): Promise<PasswordPolicy> {
@@ -200,26 +189,26 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
                             )}
                         </p>
                         <p class="pf-c-form__helper-text">
-                            ${msg("0: Too guessable: risky password. (guesses < 10^3)")}
+                            ${msg("0: Too guessable: risky password. (guesses &lt; 10^3)")}
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "1: Very guessable: protection from throttled online attacks. (guesses < 10^6)",
+                                "1: Very guessable: protection from throttled online attacks. (guesses &lt; 10^6)",
                             )}
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "2: Somewhat guessable: protection from unthrottled online attacks. (guesses < 10^8)",
+                                "2: Somewhat guessable: protection from unthrottled online attacks. (guesses &lt; 10^8)",
                             )}
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses < 10^10)",
+                                "3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &lt; 10^10)",
                             )}
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "4: Very unguessable: strong protection from offline slow-hash scenario. (guesses >= 10^10)",
+                                "4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &gt;= 10^10)",
                             )}
                         </p>
                     </ak-form-element-horizontal>
@@ -229,12 +218,11 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
+        return html` <span>
                 ${msg(
                     "Checks the value from the policy request against several rules, mostly used to ensure password strength.",
                 )}
-            </div>
+            </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
@@ -348,7 +336,6 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
             </ak-form-element-horizontal>
             ${this.showStatic ? this.renderStaticRules() : html``}
             ${this.showHIBP ? this.renderHIBP() : html``}
-            ${this.showZxcvbn ? this.renderZxcvbn() : html``}
-        </form>`;
+            ${this.showZxcvbn ? this.renderZxcvbn() : html``}`;
     }
 }

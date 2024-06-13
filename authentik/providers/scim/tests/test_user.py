@@ -1,8 +1,8 @@
 """SCIM User tests"""
+
 from json import loads
 
 from django.test import TestCase
-from guardian.shortcuts import get_anonymous_user
 from jsonschema import validate
 from requests_mock import Mocker
 
@@ -10,7 +10,8 @@ from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
-from authentik.providers.scim.tasks import scim_sync
+from authentik.providers.scim.tasks import scim_sync, sync_tasks
+from authentik.tenants.models import Tenant
 
 
 class SCIMUserTests(TestCase):
@@ -20,7 +21,8 @@ class SCIMUserTests(TestCase):
     def setUp(self) -> None:
         # Delete all users and groups as the mocked HTTP responses only return one ID
         # which will cause errors with multiple users
-        User.objects.all().exclude(pk=get_anonymous_user().pk).delete()
+        Tenant.objects.update(avatars="none")
+        User.objects.all().exclude_anonymous().delete()
         Group.objects.all().delete()
         self.provider: SCIMProvider = SCIMProvider.objects.create(
             name=generate_id(),
@@ -57,7 +59,7 @@ class SCIMUserTests(TestCase):
         uid = generate_id()
         user = User.objects.create(
             username=uid,
-            name=uid,
+            name=f"{uid} {uid}",
             email=f"{uid}@goauthentik.io",
         )
         self.assertEqual(mock.call_count, 2)
@@ -66,6 +68,7 @@ class SCIMUserTests(TestCase):
         self.assertJSONEqual(
             mock.request_history[1].body,
             {
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
                 "active": True,
                 "emails": [
                     {
@@ -76,11 +79,77 @@ class SCIMUserTests(TestCase):
                 ],
                 "externalId": user.uid,
                 "name": {
-                    "familyName": "",
-                    "formatted": uid,
+                    "familyName": uid,
+                    "formatted": f"{uid} {uid}",
                     "givenName": uid,
                 },
-                "displayName": uid,
+                "displayName": f"{uid} {uid}",
+                "userName": uid,
+            },
+        )
+
+    @Mocker()
+    def test_user_create_different_provider_same_id(self, mock: Mocker):
+        """Test user creation with multiple providers that happen
+        to return the same object ID"""
+        # Create duplicate provider
+        provider: SCIMProvider = SCIMProvider.objects.create(
+            name=generate_id(),
+            url="https://localhost",
+            token=generate_id(),
+            exclude_users_service_account=True,
+        )
+        app: Application = Application.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+        )
+        app.backchannel_providers.add(provider)
+        provider.property_mappings.add(
+            SCIMMapping.objects.get(managed="goauthentik.io/providers/scim/user")
+        )
+        provider.property_mappings_group.add(
+            SCIMMapping.objects.get(managed="goauthentik.io/providers/scim/group")
+        )
+
+        scim_id = generate_id()
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={},
+        )
+        mock.post(
+            "https://localhost/Users",
+            json={
+                "id": scim_id,
+            },
+        )
+        uid = generate_id()
+        user = User.objects.create(
+            username=uid,
+            name=f"{uid} {uid}",
+            email=f"{uid}@goauthentik.io",
+        )
+        self.assertEqual(mock.call_count, 4)
+        self.assertEqual(mock.request_history[0].method, "GET")
+        self.assertEqual(mock.request_history[1].method, "POST")
+        self.assertJSONEqual(
+            mock.request_history[1].body,
+            {
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+                "active": True,
+                "emails": [
+                    {
+                        "primary": True,
+                        "type": "other",
+                        "value": f"{uid}@goauthentik.io",
+                    }
+                ],
+                "externalId": user.uid,
+                "name": {
+                    "familyName": uid,
+                    "formatted": f"{uid} {uid}",
+                    "givenName": uid,
+                },
+                "displayName": f"{uid} {uid}",
                 "userName": uid,
             },
         )
@@ -109,7 +178,7 @@ class SCIMUserTests(TestCase):
         uid = generate_id()
         user = User.objects.create(
             username=uid,
-            name=uid,
+            name=f"{uid} {uid}",
             email=f"{uid}@goauthentik.io",
         )
         self.assertEqual(mock.call_count, 2)
@@ -121,6 +190,7 @@ class SCIMUserTests(TestCase):
         self.assertEqual(
             body,
             {
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
                 "active": True,
                 "emails": [
                     {
@@ -129,11 +199,11 @@ class SCIMUserTests(TestCase):
                         "value": f"{uid}@goauthentik.io",
                     }
                 ],
-                "displayName": uid,
+                "displayName": f"{uid} {uid}",
                 "externalId": user.uid,
                 "name": {
-                    "familyName": "",
-                    "formatted": uid,
+                    "familyName": uid,
+                    "formatted": f"{uid} {uid}",
                     "givenName": uid,
                 },
                 "userName": uid,
@@ -160,11 +230,11 @@ class SCIMUserTests(TestCase):
                 "id": scim_id,
             },
         )
-        mock.delete("https://localhost/Users", status_code=204)
+        mock.delete(f"https://localhost/Users/{scim_id}", status_code=204)
         uid = generate_id()
         user = User.objects.create(
             username=uid,
-            name=uid,
+            name=f"{uid} {uid}",
             email=f"{uid}@goauthentik.io",
         )
         self.assertEqual(mock.call_count, 2)
@@ -173,6 +243,7 @@ class SCIMUserTests(TestCase):
         self.assertJSONEqual(
             mock.request_history[1].body,
             {
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
                 "active": True,
                 "emails": [
                     {
@@ -183,11 +254,11 @@ class SCIMUserTests(TestCase):
                 ],
                 "externalId": user.uid,
                 "name": {
-                    "familyName": "",
-                    "formatted": uid,
+                    "familyName": uid,
+                    "formatted": f"{uid} {uid}",
                     "givenName": uid,
                 },
-                "displayName": uid,
+                "displayName": f"{uid} {uid}",
                 "userName": uid,
             },
         )
@@ -227,11 +298,11 @@ class SCIMUserTests(TestCase):
         )
         user = User.objects.create(
             username=uid,
-            name=uid,
+            name=f"{uid} {uid}",
             email=f"{uid}@goauthentik.io",
         )
 
-        scim_sync.delay(self.provider.pk).get()
+        sync_tasks.trigger_single_task(self.provider, scim_sync).get()
 
         self.assertEqual(mock.call_count, 5)
         self.assertEqual(mock.request_history[0].method, "GET")
@@ -240,6 +311,7 @@ class SCIMUserTests(TestCase):
         self.assertJSONEqual(
             mock.request_history[1].body,
             {
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
                 "active": True,
                 "emails": [
                     {
@@ -250,11 +322,11 @@ class SCIMUserTests(TestCase):
                 ],
                 "externalId": user.uid,
                 "name": {
-                    "familyName": "",
-                    "formatted": uid,
+                    "familyName": uid,
+                    "formatted": f"{uid} {uid}",
                     "givenName": uid,
                 },
-                "displayName": uid,
+                "displayName": f"{uid} {uid}",
                 "userName": uid,
             },
         )

@@ -1,4 +1,5 @@
 """authentik URL Configuration"""
+
 from channels.auth import AuthMiddleware
 from channels.sessions import CookieMiddleware
 from django.conf import settings
@@ -11,10 +12,11 @@ from authentik.core.api.applications import ApplicationViewSet
 from authentik.core.api.authenticated_sessions import AuthenticatedSessionViewSet
 from authentik.core.api.devices import AdminDeviceViewSet, DeviceViewSet
 from authentik.core.api.groups import GroupViewSet
-from authentik.core.api.propertymappings import PropertyMappingViewSet
+from authentik.core.api.property_mappings import PropertyMappingViewSet
 from authentik.core.api.providers import ProviderViewSet
 from authentik.core.api.sources import SourceViewSet, UserSourceConnectionViewSet
 from authentik.core.api.tokens import TokenViewSet
+from authentik.core.api.transactional_applications import TransactionalApplicationView
 from authentik.core.api.users import UserViewSet
 from authentik.core.views import apps
 from authentik.core.views.debug import AccessDeniedView
@@ -70,6 +72,11 @@ urlpatterns = [
 api_urlpatterns = [
     ("core/authenticated_sessions", AuthenticatedSessionViewSet),
     ("core/applications", ApplicationViewSet),
+    path(
+        "core/transactional/applications/",
+        TransactionalApplicationView.as_view(),
+        name="core-transactional-application",
+    ),
     ("core/groups", GroupViewSet),
     ("core/users", UserViewSet),
     ("core/tokens", TokenViewSet),

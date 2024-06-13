@@ -1,5 +1,6 @@
 """Write stage logic"""
-from typing import Any, Optional
+
+from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
 from django.db import transaction
@@ -9,11 +10,13 @@ from django.utils.translation import gettext as _
 from rest_framework.exceptions import ValidationError
 
 from authentik.core.middleware import SESSION_KEY_IMPERSONATE_USER
-from authentik.core.models import USER_ATTRIBUTE_SOURCES, User, UserSourceConnection
+from authentik.core.models import USER_ATTRIBUTE_SOURCES, User, UserSourceConnection, UserTypes
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
+from authentik.events.utils import sanitize_item
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import FlowExecutorView
+from authentik.lib.config import set_path_in_dict
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
@@ -21,6 +24,7 @@ from authentik.stages.user_write.models import UserCreationMode
 from authentik.stages.user_write.signals import user_write
 
 PLAN_CONTEXT_GROUPS = "groups"
+PLAN_CONTEXT_USER_TYPE = "user_type"
 PLAN_CONTEXT_USER_PATH = "user_path"
 
 
@@ -44,18 +48,9 @@ class UserWriteStageView(StageView):
         # this is just a sanity check to ensure that is removed
         if parts[0] == "attributes":
             parts = parts[1:]
-        attrs = user.attributes
-        for comp in parts[:-1]:
-            if comp not in attrs:
-                attrs[comp] = {}
-            attrs = attrs.get(comp)
-        attrs[parts[-1]] = value
+        set_path_in_dict(user.attributes, ".".join(parts), sanitize_item(value))
 
-    def post(self, request: HttpRequest) -> HttpResponse:
-        """Wrapper for post requests"""
-        return self.get(request)
-
-    def ensure_user(self) -> tuple[Optional[User], bool]:
+    def ensure_user(self) -> tuple[User | None, bool]:
         """Ensure a user exists"""
         user_created = False
         path = self.executor.plan.context.get(
@@ -63,6 +58,19 @@ class UserWriteStageView(StageView):
         )
         if path == "":
             path = User.default_path()
+
+        try:
+            user_type = UserTypes(
+                self.executor.plan.context.get(
+                    PLAN_CONTEXT_USER_TYPE,
+                    self.executor.current_stage.user_type,
+                )
+            )
+        except ValueError:
+            user_type = self.executor.current_stage.user_type
+        if user_type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
+            user_type = UserTypes.SERVICE_ACCOUNT
+
         if not self.request.user.is_anonymous:
             self.executor.plan.context.setdefault(PLAN_CONTEXT_PENDING_USER, self.request.user)
         if (
@@ -74,6 +82,7 @@ class UserWriteStageView(StageView):
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = User(
                 is_active=not self.executor.current_stage.create_users_as_inactive,
                 path=path,
+                type=user_type,
             )
             self.executor.plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = BACKEND_INBUILT
             self.logger.debug(
@@ -127,7 +136,7 @@ class UserWriteStageView(StageView):
             if connection.source.name not in user.attributes[USER_ATTRIBUTE_SOURCES]:
                 user.attributes[USER_ATTRIBUTE_SOURCES].append(connection.source.name)
 
-    def get(self, request: HttpRequest) -> HttpResponse:
+    def dispatch(self, request: HttpRequest) -> HttpResponse:
         """Save data in the current flow to the currently pending user. If no user is pending,
         a new user is created."""
         if PLAN_CONTEXT_PROMPT not in self.executor.plan.context:

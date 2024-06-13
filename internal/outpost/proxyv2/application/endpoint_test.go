@@ -82,7 +82,7 @@ func TestEndpointEmbedded(t *testing.T) {
 	assert.Equal(t, "https://authentik-host.test.goauthentik.io/application/o/authorize/", ep.AuthURL)
 	assert.Equal(t, "https://authentik-host.test.goauthentik.io/application/o/test-app/", ep.Issuer)
 	assert.Equal(t, "https://test.goauthentik.io/application/o/token/", ep.TokenURL)
-	assert.Equal(t, "https://test.goauthentik.io/application/o/test-app/jwks/", ep.JwksUri)
+	assert.Equal(t, "https://authentik-host.test.goauthentik.io/application/o/test-app/jwks/", ep.JwksUri)
 	assert.Equal(t, "https://authentik-host.test.goauthentik.io/application/o/test-app/end-session/", ep.EndSessionEndpoint)
 	assert.Equal(t, "https://test.goauthentik.io/application/o/introspect/", ep.TokenIntrospection)
 }

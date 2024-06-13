@@ -36,11 +36,9 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
     showWebhook = false;
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated transport.");
-        } else {
-            return msg("Successfully created transport.");
-        }
+        return this.instance
+            ? msg("Successfully updated transport.")
+            : msg("Successfully created transport.");
     }
 
     async send(data: NotificationTransport): Promise<NotificationTransport> {
@@ -68,8 +66,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -79,8 +76,8 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Mode")} ?required=${true} name="mode">
                 <ak-radio
-                    @change=${(ev: CustomEvent<NotificationTransportModeEnum>) => {
-                        this.onModeChange(ev.detail);
+                    @change=${(ev: CustomEvent<{ value: NotificationTransportModeEnum }>) => {
+                        this.onModeChange(ev.detail.value);
                     }}
                     .options=${[
                         {
@@ -169,7 +166,6 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                         "Only send notification once, for example when sending a webhook into a chat channel.",
                     )}
                 </p>
-            </ak-form-element-horizontal>
-        </form>`;
+            </ak-form-element-horizontal>`;
     }
 }

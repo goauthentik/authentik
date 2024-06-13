@@ -6,11 +6,9 @@ title: phpIPAM
 
 ## What is phpIPAM
 
-From https://phpipam.net/
-
-:::note
-phpipam is an open-source web IP address management application (IPAM). Its goal is to provide light, modern and useful IP address management. It is php-based application with MySQL database backend, using jQuery libraries, ajax and HTML5/CSS3 features.
-:::
+> phpipam is an open-source web IP address management application (IPAM). Its goal is to provide light, modern and useful IP address management. It is php-based application with MySQL database backend, using jQuery libraries, ajax and HTML5/CSS3 features.
+>
+> -- https://phpipam.net/
 
 ## Preparation
 
@@ -194,8 +192,8 @@ Select Create New -> SAML2 Authentication
 -   Client ID: https://phpipam.company/
 -   Strict Mode: Off
 -   IDP Issuer: https://authentik.company
--   IDP Login url: https://authentik.company/application/saml/<application_name>/sso/binding/redirect/
--   IDP Logout url: https://authentik.company/application/saml/<application_name>/slo/binding/redirect/
+-   IDP Login url: https://authentik.company/application/saml/*application_name*/sso/binding/redirect/
+-   IDP Logout url: https://authentik.company/application/saml/*application_name*/slo/binding/redirect/
 -   IDP X.509 public cert: This will be the .pem contents of the cert used as the signing certificate
     1. To get this cert, access the authentik installation at authentik.company
     2. Select Applications -> Providers -> phpipam-saml

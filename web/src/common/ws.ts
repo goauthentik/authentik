@@ -30,7 +30,7 @@ export class WebsocketClient {
             this.retryDelay = 200;
         });
         this.messageSocket.addEventListener("close", (e) => {
-            console.debug(`authentik/ws: closed ws connection: ${e}`);
+            console.debug("authentik/ws: closed ws connection", e);
             if (this.retryDelay > 6000) {
                 window.dispatchEvent(
                     new CustomEvent(EVENT_MESSAGE, {

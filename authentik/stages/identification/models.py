@@ -54,6 +54,13 @@ class IdentificationStage(Stage):
             "entered will be shown"
         ),
     )
+    pretend_user_exists = models.BooleanField(
+        default=True,
+        help_text=_(
+            "When enabled, the stage will succeed and continue even when incorrect user info "
+            "is entered."
+        ),
+    )
 
     enrollment_flow = models.ForeignKey(
         Flow,
@@ -95,7 +102,7 @@ class IdentificationStage(Stage):
         return IdentificationStageSerializer
 
     @property
-    def type(self) -> type[View]:
+    def view(self) -> type[View]:
         from authentik.stages.identification.stage import IdentificationStageView
 
         return IdentificationStageView

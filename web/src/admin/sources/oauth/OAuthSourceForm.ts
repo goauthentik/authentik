@@ -1,26 +1,26 @@
-import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
+import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
 import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
+import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
 import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
-import { rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+import {
+    CapabilitiesEnum,
+    WithCapabilitiesConfig,
+} from "@goauthentik/elements/Interface/capabilitiesProvider";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { PropertyValues, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
-    CapabilitiesEnum,
-    Flow,
-    FlowsApi,
     FlowsInstancesListDesignationEnum,
-    FlowsInstancesListRequest,
     OAuthSource,
     OAuthSourceRequest,
     ProviderTypeEnum,
@@ -30,7 +30,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-source-oauth-form")
-export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
+export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuthSource>) {
     async loadInstance(pk: string): Promise<OAuthSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthRetrieve({
             slug: pk,
@@ -40,22 +40,8 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
         return source;
     }
 
-    _modelName?: string;
-
     @property()
-    set modelName(v: string | undefined) {
-        this._modelName = v;
-        new SourcesApi(DEFAULT_CONFIG)
-            .sourcesOauthSourceTypesList({
-                name: v?.replace("oauthsource", ""),
-            })
-            .then((type) => {
-                this.providerType = type[0];
-            });
-    }
-    get modelName(): string | undefined {
-        return this._modelName;
-    }
+    modelName?: string;
 
     @property({ attribute: false })
     providerType: SourceType | null = null;
@@ -63,16 +49,8 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
     @state()
     clearIcon = false;
 
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated source.");
-        } else {
-            return msg("Successfully created source.");
-        }
-    }
-
     async send(data: OAuthSource): Promise<OAuthSource> {
-        data.providerType = (this.providerType?.slug || "") as ProviderTypeEnum;
+        data.providerType = (this.providerType?.name || "") as ProviderTypeEnum;
         let source: OAuthSource;
         if (this.instance) {
             source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
@@ -105,6 +83,22 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
         return source;
     }
 
+    fetchProviderType(v: string | undefined) {
+        new SourcesApi(DEFAULT_CONFIG)
+            .sourcesOauthSourceTypesList({
+                name: v?.replace("oauthsource", ""),
+            })
+            .then((type) => {
+                this.providerType = type[0];
+            });
+    }
+
+    willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("modelName")) {
+            this.fetchProviderType(this.modelName);
+        }
+    }
+
     renderUrlOptions(): TemplateResult {
         if (!this.providerType?.urlsCustomizable) {
             return html``;
@@ -114,7 +108,6 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
             <div slot="body" class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Authorization URL")}
-                    ?required=${true}
                     name="authorizationUrl"
                 >
                     <input
@@ -125,17 +118,12 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                             "",
                         )}"
                         class="pf-c-form-control"
-                        required
                     />
                     <p class="pf-c-form__helper-text">
                         ${msg("URL the user is redirect to to consent the authorization.")}
                     </p>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Access token URL")}
-                    ?required=${true}
-                    name="accessTokenUrl"
-                >
+                <ak-form-element-horizontal label=${msg("Access token URL")} name="accessTokenUrl">
                     <input
                         type="text"
                         value="${first(
@@ -144,17 +132,12 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                             "",
                         )}"
                         class="pf-c-form-control"
-                        required
                     />
                     <p class="pf-c-form__helper-text">
                         ${msg("URL used by authentik to retrieve tokens.")}
                     </p>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Profile URL")}
-                    ?required=${true}
-                    name="profileUrl"
-                >
+                <ak-form-element-horizontal label=${msg("Profile URL")} name="profileUrl">
                     <input
                         type="text"
                         value="${first(
@@ -163,7 +146,6 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                             "",
                         )}"
                         class="pf-c-form-control"
-                        required
                     />
                     <p class="pf-c-form__helper-text">
                         ${msg("URL used by authentik to get user information.")}
@@ -186,30 +168,41 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                           </p>
                       </ak-form-element-horizontal> `
                     : html``}
-                ${this.providerType.slug === ProviderTypeEnum.Openidconnect
-                    ? html`
-                          <ak-form-element-horizontal
-                              label=${msg("OIDC Well-known URL")}
-                              name="oidcWellKnownUrl"
-                          >
-                              <input
-                                  type="text"
-                                  value="${ifDefined(this.instance?.oidcWellKnownUrl)}"
-                                  class="pf-c-form-control"
-                              />
-                              <p class="pf-c-form__helper-text">
-                                  ${msg(
-                                      "OIDC well-known configuration URL. Can be used to automatically configure the URLs above.",
-                                  )}
-                              </p>
-                          </ak-form-element-horizontal>
-                          <ak-form-element-horizontal
+                ${this.providerType.name === ProviderTypeEnum.Openidconnect ||
+                this.providerType.oidcWellKnownUrl !== ""
+                    ? html`<ak-form-element-horizontal
+                          label=${msg("OIDC Well-known URL")}
+                          name="oidcWellKnownUrl"
+                      >
+                          <input
+                              type="text"
+                              value="${first(
+                                  this.instance?.oidcWellKnownUrl,
+                                  this.providerType.oidcWellKnownUrl,
+                                  "",
+                              )}"
+                              class="pf-c-form-control"
+                          />
+                          <p class="pf-c-form__helper-text">
+                              ${msg(
+                                  "OIDC well-known configuration URL. Can be used to automatically configure the URLs above.",
+                              )}
+                          </p>
+                      </ak-form-element-horizontal>`
+                    : html``}
+                ${this.providerType.name === ProviderTypeEnum.Openidconnect ||
+                this.providerType.oidcJwksUrl !== ""
+                    ? html`<ak-form-element-horizontal
                               label=${msg("OIDC JWKS URL")}
                               name="oidcJwksUrl"
                           >
                               <input
                                   type="text"
-                                  value="${ifDefined(this.instance?.oidcJwksUrl)}"
+                                  value="${first(
+                                      this.instance?.oidcJwksUrl,
+                                      this.providerType.oidcJwksUrl,
+                                      "",
+                                  )}"
                                   class="pf-c-form-control"
                               />
                               <p class="pf-c-form__helper-text">
@@ -218,24 +211,21 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                                   )}
                               </p>
                           </ak-form-element-horizontal>
-
                           <ak-form-element-horizontal label=${msg("OIDC JWKS")} name="oidcJwks">
                               <ak-codemirror
-                                  mode="javascript"
+                                  mode=${CodeMirrorMode.JavaScript}
                                   value="${JSON.stringify(first(this.instance?.oidcJwks, {}))}"
                               >
                               </ak-codemirror>
                               <p class="pf-c-form__helper-text">${msg("Raw JWKS data.")}</p>
-                          </ak-form-element-horizontal>
-                      `
+                          </ak-form-element-horizontal>`
                     : html``}
             </div>
         </ak-form-group>`;
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -320,7 +310,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                 />
                 <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
             </ak-form-element-horizontal>
-            ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanSaveMedia)
+            ${this.can(CapabilitiesEnum.CanSaveMedia)
                 ? html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
                           <input type="file" value="" class="pf-c-form-control" />
                           ${this.instance?.icon
@@ -381,6 +371,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                             class="pf-c-form-control"
                             required
                         />
+                        <p class="pf-c-form__helper-text">${msg("Also known as Client ID.")}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Consumer secret")}
@@ -389,6 +380,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         name="consumerSecret"
                     >
                         <textarea class="pf-c-form-control"></textarea>
+                        <p class="pf-c-form__helper-text">${msg("Also known as Client Secret.")}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Scopes")} name="additionalScopes">
                         <input
@@ -413,43 +405,12 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         ?required=${true}
                         name="authenticationFlow"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation: FlowsInstancesListDesignationEnum.Authentication,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return RenderFlowOption(flow);
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                let selected = this.instance?.authenticationFlow === flow.pk;
-                                if (
-                                    !this.instance?.pk &&
-                                    !this.instance?.authenticationFlow &&
-                                    flow.slug === "default-source-authentication"
-                                ) {
-                                    selected = true;
-                                }
-                                return selected;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-source-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                            .currentFlow=${this.instance?.authenticationFlow}
+                            .instanceId=${this.instance?.pk}
+                            fallback="default-source-authentication"
+                        ></ak-source-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg("Flow to use when authenticating existing users.")}
                         </p>
@@ -459,49 +420,17 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                         ?required=${true}
                         name="enrollmentFlow"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation: FlowsInstancesListDesignationEnum.Enrollment,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return RenderFlowOption(flow);
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                let selected = this.instance?.enrollmentFlow === flow.pk;
-                                if (
-                                    !this.instance?.pk &&
-                                    !this.instance?.enrollmentFlow &&
-                                    flow.slug === "default-source-enrollment"
-                                ) {
-                                    selected = true;
-                                }
-                                return selected;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-source-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Enrollment}
+                            .currentFlow=${this.instance?.enrollmentFlow}
+                            .instanceId=${this.instance?.pk}
+                            fallback="default-source-enrollment"
+                        ></ak-source-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg("Flow to use when enrolling new users.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

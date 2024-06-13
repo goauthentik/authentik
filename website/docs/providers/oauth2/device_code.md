@@ -6,7 +6,7 @@ This type of authentication flow is useful for devices with limited input abilit
 
 ### Requirements
 
-This device flow is only possible if the active tenant has a device code flow setup. This device code flow is run _after_ the user logs in, and before the user authenticates.
+This device flow is only possible if the active brand has a device code flow setup. This device code flow is run _after_ the user logs in, and before the user authenticates.
 
 authentik doesn't ship with a default flow for this usecase, so it is recommended to create a new flow for this usecase with the designation of _Stage configuration_
 

@@ -22,4 +22,4 @@ Users can create tokens to authenticate as any user with a static key, which can
 
 ### JWT Token
 
-OAuth2 clients can request the scope `goauthentik.io/api`, which allows their OAuth Refresh token to be used to authenticate to the API.
+OAuth2 clients can request the scope `goauthentik.io/api`, which allows their OAuth Access token to be used to authenticate to the API.

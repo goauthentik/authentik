@@ -1,18 +1,20 @@
 """Send a test-email with global settings"""
+
 from uuid import uuid4
 
-from django.core.management.base import BaseCommand, no_translations
+from django.core.management.base import no_translations
 
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mail
 from authentik.stages.email.utils import TemplateEmailMessage
+from authentik.tenants.management import TenantCommand
 
 
-class Command(BaseCommand):
+class Command(TenantCommand):
     """Send a test-email with global settings"""
 
     @no_translations
-    def handle(self, *args, **options):
+    def handle_per_tenant(self, *args, **options):
         """Send a test-email with global settings"""
         delete_stage = False
         if options["stage"]:
@@ -28,7 +30,7 @@ class Command(BaseCommand):
             delete_stage = True
         message = TemplateEmailMessage(
             subject="authentik Test-Email",
-            to=[options["to"]],
+            to=[("", options["to"])],
             template_name="email/setup.html",
             template_context={},
         )
@@ -40,4 +42,4 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("to", type=str)
-        parser.add_argument("-s", "--stage", type=str)
+        parser.add_argument("-S", "--stage", type=str)

@@ -1,9 +1,9 @@
 import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
+import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { msg } from "@lit/localize";
@@ -21,19 +21,11 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-totp-form")
-export class AuthenticatorTOTPStageForm extends ModelForm<AuthenticatorTOTPStage, string> {
+export class AuthenticatorTOTPStageForm extends BaseStageForm<AuthenticatorTOTPStage> {
     loadInstance(pk: string): Promise<AuthenticatorTOTPStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorTotpRetrieve({
             stageUuid: pk,
         });
-    }
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated stage.");
-        } else {
-            return msg("Successfully created stage.");
-        }
     }
 
     async send(data: AuthenticatorTOTPStage): Promise<AuthenticatorTOTPStage> {
@@ -50,12 +42,11 @@ export class AuthenticatorTOTPStageForm extends ModelForm<AuthenticatorTOTPStage
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
+        return html` <span>
                 ${msg(
                     "Stage used to configure a TOTP authenticator (i.e. Authy/Google Authenticator).",
                 )}
-            </div>
+            </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
@@ -90,14 +81,14 @@ export class AuthenticatorTOTPStageForm extends ModelForm<AuthenticatorTOTPStage
                     >
                         <select name="users" class="pf-c-form-control">
                             <option
-                                value="${DigitsEnum.NUMBER_6}"
-                                ?selected=${this.instance?.digits === DigitsEnum.NUMBER_6}
+                                value="${DigitsEnum._6}"
+                                ?selected=${this.instance?.digits === DigitsEnum._6}
                             >
                                 ${msg("6 digits, widely compatible")}
                             </option>
                             <option
-                                value="${DigitsEnum.NUMBER_8}"
-                                ?selected=${this.instance?.digits === DigitsEnum.NUMBER_8}
+                                value="${DigitsEnum._8}"
+                                ?selected=${this.instance?.digits === DigitsEnum._8}
                             >
                                 ${msg(
                                     "8 digits, not compatible with apps like Google Authenticator",
@@ -146,7 +137,6 @@ export class AuthenticatorTOTPStageForm extends ModelForm<AuthenticatorTOTPStage
                         </p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

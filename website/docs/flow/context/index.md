@@ -22,7 +22,7 @@ Keys prefixed with `goauthentik.io` are used internally by authentik and are sub
 
 ### Common keys
 
-#### `pending_user` ([User object](../../user-group/user.md))
+#### `pending_user` ([User object](../../user-group-role/user/user_ref.md#object-properties))
 
 `pending_user` is used by multiple stages. In the context of most flow executions, it represents the data of the user that is executing the flow. This value is not set automatically, it is set via the [Identification stage](../stages/identification/).
 
@@ -72,16 +72,6 @@ Set when a flow execution is continued from a token. This happens for example wh
 
 ### Stage-specific keys
 
-#### Consent stage
-
-##### `consent_header` (string)
-
-The title of the consent prompt shown. Set automatically when the consent stage is used with a OAuth2, Proxy or SAML provider.
-
-##### `consent_permissions` (List of PermissionDict)
-
-An optional list of all permissions that will be given to the application by granting consent. Not supported with SAML. When used with an OAuth2 or Proxy provider, this will be set based on the configured scopes.
-
 #### Autosubmit stage
 
 The autosubmit stage is an internal stage type that is not configurable via the API/Web interface. It is used in certain situations, where a POST request is sent from the browser, such as with SAML POST bindings. This works by using an HTML form that is submitted automatically.
@@ -98,17 +88,57 @@ URL that the form will be submitted to.
 
 Key-value pairs of the data that is included in the form and will be submitted to `url`.
 
+#### Captcha stage
+
+:::info
+Requires authentik 2024.6
+:::
+
+##### `captcha` (dictionary)
+
+When `error_on_invalid_score` (TODO) is set to false on a captcha stage, after the execution of the captcha stage, this object will be set in the flow context.
+
+It contains two keys, `response` which is the raw response from the specified captcha verification URL, and `stage`, which is a reference to the captcha stage that executed the test.
+
+#### Consent stage
+
+##### `consent_header` (string)
+
+The title of the consent prompt shown. Set automatically when the consent stage is used with a OAuth2, Proxy or SAML provider.
+
+##### `consent_permissions` (List of PermissionDict)
+
+An optional list of all permissions that will be given to the application by granting consent. Not supported with SAML. When used with an OAuth2 or Proxy provider, this will be set based on the configured scopes.
+
+#### Deny stage
+
+##### `deny_message` (string)
+
+:::info
+Requires authentik 2023.10
+:::
+
+Optionally overwrite the deny message shown, has a higher priority than the message configured in the stage.
+
 #### User write stage
 
-##### `groups` (List of [Group objects](../../user-group/group.md))
+##### `groups` (List of [Group objects](../../user-group-role/groups/index.mdx))
 
-See [Group](../../user-group/group.md). If set in the flow context, the `pending_user` will be added to all the groups in this list.
+See [Group](../../user-group-role/groups/index.mdx). If set in the flow context, the `pending_user` will be added to all the groups in this list.
 
 If set, this must be a list of group objects and not group names.
 
 ##### `user_path` (string)
 
 Path the `pending_user` will be written to. If not set in the flow, falls back to the value set in the user_write stage, and otherwise to the `users` path.
+
+##### `user_type` (string)
+
+:::info
+Requires authentik 2023.10
+:::
+
+Type the `pending_user` will be created as. Must be one of `internal`, `external` or `service_account`.
 
 #### Password stage
 

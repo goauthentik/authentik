@@ -25,10 +25,10 @@ For bigger setups, there is a Helm Chart [here](https://github.com/goauthentik/h
 
 ## Screenshots
 
-| Light                                                  | Dark                                                  |
-| ------------------------------------------------------ | ----------------------------------------------------- |
-| ![](https://goauthentik.io/img/screen_apps_light.jpg)  | ![](https://goauthentik.io/img/screen_apps_dark.jpg)  |
-| ![](https://goauthentik.io/img/screen_admin_light.jpg) | ![](https://goauthentik.io/img/screen_admin_dark.jpg) |
+| Light                                                       | Dark                                                       |
+| ----------------------------------------------------------- | ---------------------------------------------------------- |
+| ![](https://docs.goauthentik.io/img/screen_apps_light.jpg)  | ![](https://docs.goauthentik.io/img/screen_apps_dark.jpg)  |
+| ![](https://docs.goauthentik.io/img/screen_admin_light.jpg) | ![](https://docs.goauthentik.io/img/screen_admin_dark.jpg) |
 
 ## Development
 
@@ -41,15 +41,3 @@ See [SECURITY.md](SECURITY.md)
 ## Adoption and Contributions
 
 Your organization uses authentik? We'd love to add your logo to the readme and our website! Email us @ hello@goauthentik.io or open a GitHub Issue/PR! For more information on how to contribute to authentik, please refer to our [CONTRIBUTING.md file](./CONTRIBUTING.md).
-
-## Sponsors
-
-This project is proudly sponsored by:
-
-<p>
-    <a href="https://www.digitalocean.com/?utm_medium=opensource&utm_source=goauthentik.io">
-        <img src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/SVG/DO_Logo_horizontal_blue.svg" width="201px">
-    </a>
-</p>
-
-DigitalOcean provides development and testing resources for authentik.
