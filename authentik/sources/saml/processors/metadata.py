@@ -46,7 +46,7 @@ class MetadataProcessor:
             return key_descriptor
         return None
 
-    def get_encryption_key_descriptor(self) -> Element | None:
+    def get_encryption_key_descriptor(self) -> Optional[Element]:
         """Get Encryption KeyDescriptor, if encrypted assertion is requested"""
         if self.source.request_encrypted_assertions:
             key_descriptor = Element(f"{{{NS_SAML_METADATA}}}KeyDescriptor")
