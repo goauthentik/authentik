@@ -32,11 +32,11 @@ export class FipsStatusCard extends AdminStatusCard<SystemInfo> {
         return value.runtime.opensslFipsMode
             ? this.setStatus(msg("OK"), {
                   icon: "fa fa-check-circle pf-m-success",
-                  message: html`${msg("FIPS Compliance is active")}`,
+                  message: html`${msg("FIPS compliance: passing")}`,
               })
-            : this.setStatus(msg("Unavailable"), {
+            : this.setStatus(msg("Unverified"), {
                   icon: "fa fa-info-circle pf-m-warning",
-                  message: html`${msg("FIPS Compliance is not available")}`,
+                  message: html`${msg("FIPS compliance: unverified")}`,
               });
     }
 
