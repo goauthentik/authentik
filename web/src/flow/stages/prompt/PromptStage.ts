@@ -1,10 +1,6 @@
 import "@goauthentik/elements/Divider";
 import "@goauthentik/elements/EmptyState";
-import {
-    CapabilitiesEnum,
-    WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
-import { LOCALES } from "@goauthentik/elements/ak-locale-context/definitions";
+import { WithCapabilitiesConfig } from "@goauthentik/elements/Interface/capabilitiesProvider";
 import "@goauthentik/elements/forms/FormElement";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 

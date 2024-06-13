@@ -1,5 +1,5 @@
-import { LOCALES } from "@goauthentik/common/ui/locale";
 import { rootInterface } from "@goauthentik/elements/Base";
+import { LOCALES } from "@goauthentik/elements/ak-locale-context/helpers";
 import "@goauthentik/elements/password-match-indicator";
 import "@goauthentik/elements/password-strength-indicator";
 
@@ -229,13 +229,12 @@ export function renderAkLocale(prompt: StagePrompt) {
     // TODO: External reference.
     const inDebug = rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanDebug);
     const locales = inDebug ? LOCALES : LOCALES.filter((locale) => locale.code !== "debug");
+
     const options = locales.map(
-        (locale) => html`<option
-            value=${locale.code}
-            ?selected=${locale.code === prompt.initialValue}
-        >
-            ${locale.code.toUpperCase()} - ${locale.label()}
-        </option> `,
+        (locale) =>
+            html`<option value=${locale.code} ?selected=${locale.code === prompt.initialValue}>
+                ${locale.code.toUpperCase()} - ${locale.label()}
+            </option> `,
     );
 
     return html`<select class="pf-c-form-control" name="${prompt.fieldKey}">

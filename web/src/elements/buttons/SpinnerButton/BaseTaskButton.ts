@@ -3,7 +3,7 @@ import { PFSize } from "@goauthentik/common/enums.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
-import { Task, TaskStatus } from "@lit/task";
+import { Task, TaskStatus, initialState } from "@lit/task";
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";
 
@@ -67,7 +67,7 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
         this.onError = this.onError.bind(this);
         this.onClick = this.onClick.bind(this);
         this.actionTask = new Task(this, {
-            task: () => this.callAction(),
+            task: () => this.runCallAction(),
             args: () => [],
             autoRun: false,
             onComplete: (r: unknown) => this.onSuccess(r),
@@ -77,7 +77,6 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
 
     onComplete() {
         setTimeout(() => {
-            this.actionTask.status = TaskStatus.INITIAL;
             this.dispatchCustomEvent(`${this.eventPrefix}-reset`);
             this.requestUpdate();
         }, SPINNER_TIMEOUT);
@@ -97,10 +96,12 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
         this.onComplete();
     }
 
+    async runCallAction() {
+        await this.callAction();
+        return initialState;
+    }
+
     onClick() {
-        if (this.actionTask.status !== TaskStatus.INITIAL) {
-            return;
-        }
         this.dispatchCustomEvent(`${this.eventPrefix}-click`);
         this.actionTask.run();
     }
@@ -113,7 +114,7 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
         return [
             ...this.classList,
             StatusMap.get(this.actionTask.status),
-            this.actionTask.status === TaskStatus.INITIAL ? "" : "working",
+            this.actionTask.status === TaskStatus.PENDING ? "working" : "",
         ]
             .join(" ")
             .trim();
