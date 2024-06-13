@@ -76,10 +76,37 @@ class ResponseProcessor:
         self._root_xml = b64decode(raw_response.encode())
         self._root = fromstring(self._root_xml)
 
+        if self._source.request_encrypted_assertions == True:
+            self._decrypt_response()
+
         if self._source.verification_kp:
             self._verify_signed()
         self._verify_request_id()
         self._verify_status()
+
+    def _decrypt_response(self):
+        """Decrypt SAMLResponse EncryptedAssertion Element"""
+
+        manager = xmlsec.KeysManager()
+        key = xmlsec.Key.from_memory(
+            self._source.signing_kp.key_data,
+            xmlsec.constants.KeyDataFormatPem,
+        )
+
+        manager.add_key(key)
+        encryption_context = xmlsec.EncryptionContext(manager)
+
+        encrypted_assertion = self._root.find(".//{urn:oasis:names:tc:SAML:2.0:assertion}EncryptedAssertion")
+        encrypted_data = xmlsec.tree.find_child(encrypted_assertion, "EncryptedData", xmlsec.constants.EncNs)
+        decrypted_assertion = encryption_context.decrypt(encrypted_data)
+
+
+        index_of = self._root.index(encrypted_assertion)
+        self._root.remove(encrypted_assertion)
+        self._root.insert(
+                index_of,
+                decrypted_assertion,
+        )
 
     def _verify_signed(self):
         """Verify SAML Response's Signature"""

@@ -102,6 +102,14 @@ class SAMLSource(Source):
         verbose_name=_("SLO URL"),
         help_text=_("Optional URL if your IDP supports Single-Logout."),
     )
+    request_encrypted_assertions = models.BooleanField(
+        default=False,
+        help_text=_(
+          "When enabled, the SAML IdP will encrypt the assertion element using the public "
+          "key of the SP signing keypair. The SAMLResponse will contain an EncryptedAssertion "
+          "element, which will be decrypted by the private key of the service provider."
+        ),
+    )
 
     allow_idp_initiated = models.BooleanField(
         default=False,
