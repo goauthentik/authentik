@@ -44,3 +44,9 @@
   from = "/docs/core/applications"
   to = "/docs/applications"
   status = 302
+
+# Moved Sources from Integrations to Docs
+[[redirects]]
+   from = "/integrations/sources/*"
+   to = "/docs/sources/:splat"
+   status = 302

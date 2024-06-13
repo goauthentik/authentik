@@ -52,6 +52,12 @@ export const clientTypeOptions = [
     },
 ];
 
+export const defaultScopes = [
+    "goauthentik.io/providers/oauth2/scope-openid",
+    "goauthentik.io/providers/oauth2/scope-email",
+    "goauthentik.io/providers/oauth2/scope-profile",
+];
+
 export const subjectModeOptions = [
     {
         label: msg("Based on the User's hashed ID"),
@@ -144,7 +150,7 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
     async send(data: OAuth2Provider): Promise<OAuth2Provider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersOauth2Update({
-                id: this.instance.pk || 0,
+                id: this.instance.pk,
                 oAuth2ProviderRequest: data,
             });
         } else {

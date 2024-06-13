@@ -10,18 +10,17 @@ from drf_spectacular.utils import extend_schema, extend_schema_field, inline_ser
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import BooleanField, DictField, ListField, SerializerMethodField
+from rest_framework.fields import DictField, ListField, SerializerMethodField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.propertymappings import PropertyMappingSerializer
+from authentik.core.api.property_mappings import PropertyMappingSerializer
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import PassiveSerializer
 from authentik.crypto.models import CertificateKeyPair
-from authentik.events.api.tasks import SystemTaskSerializer
+from authentik.lib.sync.outgoing.api import SyncStatusSerializer
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 from authentik.sources.ldap.tasks import CACHE_KEY_STATUS, SYNC_CLASSES
 
@@ -89,13 +88,6 @@ class LDAPSourceSerializer(SourceSerializer):
         extra_kwargs = {"bind_password": {"write_only": True}}
 
 
-class LDAPSyncStatusSerializer(PassiveSerializer):
-    """LDAP Source sync status"""
-
-    is_running = BooleanField(read_only=True)
-    tasks = SystemTaskSerializer(many=True, read_only=True)
-
-
 class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
     """LDAP Source Viewset"""
 
@@ -132,10 +124,16 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
 
     @extend_schema(
         responses={
-            200: LDAPSyncStatusSerializer(),
+            200: SyncStatusSerializer(),
         }
     )
-    @action(methods=["GET"], detail=True, pagination_class=None, filter_backends=[])
+    @action(
+        methods=["GET"],
+        detail=True,
+        pagination_class=None,
+        url_path="sync/status",
+        filter_backends=[],
+    )
     def sync_status(self, request: Request, slug: str) -> Response:
         """Get source's sync status"""
         source: LDAPSource = self.get_object()
@@ -145,11 +143,13 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
                 uid__startswith=source.slug,
             )
         )
-        status = {
-            "tasks": tasks,
-            "is_running": source.sync_lock.locked(),
-        }
-        return Response(LDAPSyncStatusSerializer(status).data)
+        with source.sync_lock as lock_acquired:
+            status = {
+                "tasks": tasks,
+                # If we could not acquire the lock, it means a task is using it, and thus is running
+                "is_running": not lock_acquired,
+            }
+        return Response(SyncStatusSerializer(status).data)
 
     @extend_schema(
         responses={

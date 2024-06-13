@@ -60,6 +60,8 @@ class SystemTaskSerializer(ModelSerializer):
             "duration",
             "status",
             "messages",
+            "expires",
+            "expiring",
         ]
 
 
