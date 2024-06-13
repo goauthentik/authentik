@@ -11,10 +11,6 @@ title: VMware vCenter
 > -- https://en.wikipedia.org/wiki/VCenter
 
 :::caution
-This requires authentik 0.10.3 or newer.
-:::
-
-:::caution
 This requires VMware vCenter 7.0.0 or newer.
 :::
 
