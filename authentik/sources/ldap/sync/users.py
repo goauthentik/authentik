@@ -6,8 +6,11 @@ from django.core.exceptions import FieldError
 from django.db.utils import IntegrityError
 from ldap3 import ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE
 
+from authentik.core.expression.exceptions import SkipObjectException
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
+from authentik.lib.sync.mapper import PropertyMappingManager
+from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 from authentik.sources.ldap.sync.base import LDAP_UNIQUENESS, BaseLDAPSynchronizer, flatten
 from authentik.sources.ldap.sync.vendor.freeipa import FreeIPA
 from authentik.sources.ldap.sync.vendor.ms_ad import MicrosoftActiveDirectory
@@ -15,6 +18,14 @@ from authentik.sources.ldap.sync.vendor.ms_ad import MicrosoftActiveDirectory
 
 class UserLDAPSynchronizer(BaseLDAPSynchronizer):
     """Sync LDAP Users into authentik"""
+
+    def __init__(self, source: LDAPSource):
+        super().__init__(source)
+        self.mapper = PropertyMappingManager(
+            self._source.property_mappings.all().order_by("name").select_subclasses(),
+            LDAPPropertyMapping,
+            ["ldap", "dn", "source"],
+        )
 
     @staticmethod
     def name() -> str:
@@ -59,6 +70,8 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 ak_user, created = self.update_or_create_attributes(
                     User, {f"attributes__{LDAP_UNIQUENESS}": uniq}, defaults
                 )
+            except SkipObjectException:
+                continue
             except (IntegrityError, FieldError, TypeError, AttributeError) as exc:
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,

@@ -6,8 +6,16 @@ from django.db.models import Model
 from drf_spectacular.extensions import OpenApiSerializerFieldExtension
 from drf_spectacular.plumbing import build_basic_type
 from drf_spectacular.types import OpenApiTypes
-from rest_framework.fields import BooleanField, CharField, IntegerField, JSONField
-from rest_framework.serializers import Serializer, SerializerMethodField, ValidationError
+from rest_framework.fields import (
+    CharField,
+    IntegerField,
+    JSONField,
+    SerializerMethodField,
+)
+from rest_framework.serializers import (
+    Serializer,
+    ValidationError,
+)
 
 
 def is_dict(value: Any):
@@ -66,16 +74,6 @@ class MetaNameSerializer(PassiveSerializer):
     def get_meta_model_name(self, obj: Model) -> str:
         """Return internal model name"""
         return f"{obj._meta.app_label}.{obj._meta.model_name}"
-
-
-class TypeCreateSerializer(PassiveSerializer):
-    """Types of an object that can be created"""
-
-    name = CharField(required=True)
-    description = CharField(required=True)
-    component = CharField(required=True)
-    model_name = CharField(required=True)
-    requires_enterprise = BooleanField(default=False)
 
 
 class CacheSerializer(PassiveSerializer):
