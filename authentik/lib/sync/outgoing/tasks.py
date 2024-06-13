@@ -14,6 +14,7 @@ from authentik.core.models import Group, User
 from authentik.events.logs import LogEvent
 from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask
+from authentik.events.utils import sanitize_item
 from authentik.lib.sync.outgoing import PAGE_SIZE, PAGE_TIMEOUT
 from authentik.lib.sync.outgoing.base import Direction
 from authentik.lib.sync.outgoing.exceptions import (
@@ -125,6 +126,7 @@ class SyncTasks:
             try:
                 client.write(obj)
             except SkipObjectException:
+                self.logger.debug("skipping object due to SkipObject", obj=obj)
                 continue
             except BadRequestSyncException as exc:
                 self.logger.warning("failed to sync object", exc=exc, obj=obj)
@@ -144,8 +146,8 @@ class SyncTasks:
                                 )
                             ),
                             log_level="warning",
-                            logger="",
-                            attributes={"arguments": exc.args[1:]},
+                            logger=f"{provider._meta.verbose_name}@{object_type}",
+                            attributes={"arguments": exc.args[1:], "obj": sanitize_item(obj)},
                         )
                     )
                 )
@@ -167,7 +169,8 @@ class SyncTasks:
                                 )
                             ),
                             log_level="warning",
-                            logger="",
+                            logger=f"{provider._meta.verbose_name}@{object_type}",
+                            attributes={"obj": sanitize_item(obj)},
                         )
                     )
                 )
@@ -184,7 +187,8 @@ class SyncTasks:
                                 )
                             ),
                             log_level="warning",
-                            logger="",
+                            logger=f"{provider._meta.verbose_name}@{object_type}",
+                            attributes={"obj": sanitize_item(obj)},
                         )
                     )
                 )

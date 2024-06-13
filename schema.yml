@@ -16369,85 +16369,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-    put:
-      operationId: providers_google_workspace_groups_update
-      description: GoogleWorkspaceProviderGroup Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Google Workspace Provider Group.
-        required: true
-      tags:
-      - providers
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GoogleWorkspaceProviderGroupRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GoogleWorkspaceProviderGroup'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    patch:
-      operationId: providers_google_workspace_groups_partial_update
-      description: GoogleWorkspaceProviderGroup Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Google Workspace Provider Group.
-        required: true
-      tags:
-      - providers
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedGoogleWorkspaceProviderGroupRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GoogleWorkspaceProviderGroup'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
     delete:
       operationId: providers_google_workspace_groups_destroy
       description: GoogleWorkspaceProviderGroup Viewset
@@ -16625,85 +16546,6 @@ paths:
         required: true
       tags:
       - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GoogleWorkspaceProviderUser'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    put:
-      operationId: providers_google_workspace_users_update
-      description: GoogleWorkspaceProviderUser Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Google Workspace Provider User.
-        required: true
-      tags:
-      - providers
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GoogleWorkspaceProviderUserRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GoogleWorkspaceProviderUser'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    patch:
-      operationId: providers_google_workspace_users_partial_update
-      description: GoogleWorkspaceProviderUser Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Google Workspace Provider User.
-        required: true
-      tags:
-      - providers
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedGoogleWorkspaceProviderUserRequest'
       security:
       - authentik: []
       responses:
@@ -17539,85 +17381,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-    put:
-      operationId: providers_microsoft_entra_groups_update
-      description: MicrosoftEntraProviderGroup Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Microsoft Entra Provider Group.
-        required: true
-      tags:
-      - providers
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MicrosoftEntraProviderGroupRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MicrosoftEntraProviderGroup'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    patch:
-      operationId: providers_microsoft_entra_groups_partial_update
-      description: MicrosoftEntraProviderGroup Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Microsoft Entra Provider Group.
-        required: true
-      tags:
-      - providers
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedMicrosoftEntraProviderGroupRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MicrosoftEntraProviderGroup'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
     delete:
       operationId: providers_microsoft_entra_groups_destroy
       description: MicrosoftEntraProviderGroup Viewset
@@ -17795,85 +17558,6 @@ paths:
         required: true
       tags:
       - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MicrosoftEntraProviderUser'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    put:
-      operationId: providers_microsoft_entra_users_update
-      description: MicrosoftEntraProviderUser Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Microsoft Entra Provider User.
-        required: true
-      tags:
-      - providers
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MicrosoftEntraProviderUserRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MicrosoftEntraProviderUser'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    patch:
-      operationId: providers_microsoft_entra_users_partial_update
-      description: MicrosoftEntraProviderUser Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Microsoft Entra Provider User.
-        required: true
-      tags:
-      - providers
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedMicrosoftEntraProviderUserRequest'
       security:
       - authentik: []
       responses:
@@ -20016,6 +19700,403 @@ paths:
         schema:
           type: integer
         description: A unique integer value identifying this SCIM Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/scim_groups/:
+    get:
+      operationId: providers_scim_groups_list
+      description: SCIMProviderGroup Viewset
+      parameters:
+      - in: query
+        name: group__group_uuid
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: group__name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: provider__id
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSCIMProviderGroupList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: providers_scim_groups_create
+      description: SCIMProviderGroup Viewset
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SCIMProviderGroupRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMProviderGroup'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/scim_groups/{id}/:
+    get:
+      operationId: providers_scim_groups_retrieve
+      description: SCIMProviderGroup Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this scim provider group.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMProviderGroup'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: providers_scim_groups_destroy
+      description: SCIMProviderGroup Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this scim provider group.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/scim_groups/{id}/used_by/:
+    get:
+      operationId: providers_scim_groups_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this scim provider group.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/scim_users/:
+    get:
+      operationId: providers_scim_users_list
+      description: SCIMProviderUser Viewset
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: provider__id
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: user__id
+        schema:
+          type: integer
+      - in: query
+        name: user__username
+        schema:
+          type: string
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSCIMProviderUserList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: providers_scim_users_create
+      description: SCIMProviderUser Viewset
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SCIMProviderUserRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMProviderUser'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/scim_users/{id}/:
+    get:
+      operationId: providers_scim_users_retrieve
+      description: SCIMProviderUser Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this scim provider user.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMProviderUser'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: providers_scim_users_destroy
+      description: SCIMProviderUser Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this scim provider user.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/scim_users/{id}/used_by/:
+    get:
+      operationId: providers_scim_users_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this scim provider user.
         required: true
       tags:
       - providers
@@ -34383,6 +34464,18 @@ components:
           type: string
         api_url:
           type: string
+        score_min_threshold:
+          type: number
+          format: double
+        score_max_threshold:
+          type: number
+          format: double
+        error_on_invalid_score:
+          type: boolean
+          description: When enabled and the received captcha score is outside of the
+            given threshold, the stage will show an error message. When not enabled,
+            the flow will continue, but the data from the captcha will be available
+            in the context for policy decisions
       required:
       - component
       - meta_model_name
@@ -34417,6 +34510,18 @@ components:
         api_url:
           type: string
           minLength: 1
+        score_min_threshold:
+          type: number
+          format: double
+        score_max_threshold:
+          type: number
+          format: double
+        error_on_invalid_score:
+          type: boolean
+          description: When enabled and the received captcha score is outside of the
+            given threshold, the stage will show an error message. When not enabled,
+            the flow will continue, but the data from the captcha will be available
+            in the context for policy decisions
       required:
       - name
       - private_key
@@ -36627,6 +36732,8 @@ components:
           type: string
           format: uuid
           readOnly: true
+        google_id:
+          type: string
         group:
           type: string
           format: uuid
@@ -36634,19 +36741,33 @@ components:
           allOf:
           - $ref: '#/components/schemas/UserGroup'
           readOnly: true
+        provider:
+          type: integer
+        attributes:
+          readOnly: true
       required:
+      - attributes
+      - google_id
       - group
       - group_obj
       - id
+      - provider
     GoogleWorkspaceProviderGroupRequest:
       type: object
       description: GoogleWorkspaceProviderGroup Serializer
       properties:
+        google_id:
+          type: string
+          minLength: 1
         group:
           type: string
           format: uuid
+        provider:
+          type: integer
       required:
+      - google_id
       - group
+      - provider
     GoogleWorkspaceProviderMapping:
       type: object
       description: GoogleWorkspaceProviderMapping Serializer
@@ -36767,23 +36888,39 @@ components:
           type: string
           format: uuid
           readOnly: true
+        google_id:
+          type: string
         user:
           type: integer
         user_obj:
           allOf:
           - $ref: '#/components/schemas/GroupMember'
           readOnly: true
+        provider:
+          type: integer
+        attributes:
+          readOnly: true
       required:
+      - attributes
+      - google_id
       - id
+      - provider
       - user
       - user_obj
     GoogleWorkspaceProviderUserRequest:
       type: object
       description: GoogleWorkspaceProviderUser Serializer
       properties:
+        google_id:
+          type: string
+          minLength: 1
         user:
           type: integer
+        provider:
+          type: integer
       required:
+      - google_id
+      - provider
       - user
     Group:
       type: object
@@ -38277,6 +38414,8 @@ components:
           type: string
           format: uuid
           readOnly: true
+        microsoft_id:
+          type: string
         group:
           type: string
           format: uuid
@@ -38284,19 +38423,33 @@ components:
           allOf:
           - $ref: '#/components/schemas/UserGroup'
           readOnly: true
+        provider:
+          type: integer
+        attributes:
+          readOnly: true
       required:
+      - attributes
       - group
       - group_obj
       - id
+      - microsoft_id
+      - provider
     MicrosoftEntraProviderGroupRequest:
       type: object
       description: MicrosoftEntraProviderGroup Serializer
       properties:
+        microsoft_id:
+          type: string
+          minLength: 1
         group:
           type: string
           format: uuid
+        provider:
+          type: integer
       required:
       - group
+      - microsoft_id
+      - provider
     MicrosoftEntraProviderMapping:
       type: object
       description: MicrosoftEntraProviderMapping Serializer
@@ -38414,23 +38567,39 @@ components:
           type: string
           format: uuid
           readOnly: true
+        microsoft_id:
+          type: string
         user:
           type: integer
         user_obj:
           allOf:
           - $ref: '#/components/schemas/GroupMember'
           readOnly: true
+        provider:
+          type: integer
+        attributes:
+          readOnly: true
       required:
+      - attributes
       - id
+      - microsoft_id
+      - provider
       - user
       - user_obj
     MicrosoftEntraProviderUserRequest:
       type: object
       description: MicrosoftEntraProviderUser Serializer
       properties:
+        microsoft_id:
+          type: string
+          minLength: 1
         user:
           type: integer
+        provider:
+          type: integer
       required:
+      - microsoft_id
+      - provider
       - user
     ModelEnum:
       enum:
@@ -40422,6 +40591,18 @@ components:
       required:
       - pagination
       - results
+    PaginatedSCIMProviderGroupList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SCIMProviderGroup'
+      required:
+      - pagination
+      - results
     PaginatedSCIMProviderList:
       type: object
       properties:
@@ -40431,6 +40612,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SCIMProvider'
+      required:
+      - pagination
+      - results
+    PaginatedSCIMProviderUserList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SCIMProviderUser'
       required:
       - pagination
       - results
@@ -41462,6 +41655,18 @@ components:
         api_url:
           type: string
           minLength: 1
+        score_min_threshold:
+          type: number
+          format: double
+        score_max_threshold:
+          type: number
+          format: double
+        error_on_invalid_score:
+          type: boolean
+          description: When enabled and the received captcha score is outside of the
+            given threshold, the stage will show an error message. When not enabled,
+            the flow will continue, but the data from the captcha will be available
+            in the context for policy decisions
     PatchedCertificateKeyPairRequest:
       type: object
       description: CertificateKeyPair Serializer
@@ -41826,13 +42031,6 @@ components:
             to a challenge. RETRY returns the error message and a similar challenge
             to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT
             restarts the flow while keeping the current context.
-    PatchedGoogleWorkspaceProviderGroupRequest:
-      type: object
-      description: GoogleWorkspaceProviderGroup Serializer
-      properties:
-        group:
-          type: string
-          format: uuid
     PatchedGoogleWorkspaceProviderMappingRequest:
       type: object
       description: GoogleWorkspaceProviderMapping Serializer
@@ -41892,12 +42090,6 @@ components:
         default_group_email_domain:
           type: string
           minLength: 1
-    PatchedGoogleWorkspaceProviderUserRequest:
-      type: object
-      description: GoogleWorkspaceProviderUser Serializer
-      properties:
-        user:
-          type: integer
     PatchedGroupRequest:
       type: object
       description: Group Serializer
@@ -42253,13 +42445,6 @@ components:
         key:
           type: string
           minLength: 1
-    PatchedMicrosoftEntraProviderGroupRequest:
-      type: object
-      description: MicrosoftEntraProviderGroup Serializer
-      properties:
-        group:
-          type: string
-          format: uuid
     PatchedMicrosoftEntraProviderMappingRequest:
       type: object
       description: MicrosoftEntraProviderMapping Serializer
@@ -42316,12 +42501,6 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
-    PatchedMicrosoftEntraProviderUserRequest:
-      type: object
-      description: MicrosoftEntraProviderUser Serializer
-      properties:
-        user:
-          type: integer
     PatchedNotificationRequest:
       type: object
       description: Notification Serializer
@@ -44417,12 +44596,14 @@ components:
       properties:
         user:
           type: integer
+          nullable: true
         context:
           type: object
           additionalProperties: {}
         group:
           type: string
           format: uuid
+          nullable: true
     PropertyMappingTestResult:
       type: object
       description: Result of a Property-mapping test
@@ -46176,6 +46357,47 @@ components:
       - url
       - verbose_name
       - verbose_name_plural
+    SCIMProviderGroup:
+      type: object
+      description: SCIMProviderGroup Serializer
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        scim_id:
+          type: string
+        group:
+          type: string
+          format: uuid
+        group_obj:
+          allOf:
+          - $ref: '#/components/schemas/UserGroup'
+          readOnly: true
+        provider:
+          type: integer
+      required:
+      - group
+      - group_obj
+      - id
+      - provider
+      - scim_id
+    SCIMProviderGroupRequest:
+      type: object
+      description: SCIMProviderGroup Serializer
+      properties:
+        scim_id:
+          type: string
+          minLength: 1
+        group:
+          type: string
+          format: uuid
+        provider:
+          type: integer
+      required:
+      - group
+      - provider
+      - scim_id
     SCIMProviderRequest:
       type: object
       description: SCIMProvider Serializer
@@ -46212,6 +46434,45 @@ components:
       - name
       - token
       - url
+    SCIMProviderUser:
+      type: object
+      description: SCIMProviderUser Serializer
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        scim_id:
+          type: string
+        user:
+          type: integer
+        user_obj:
+          allOf:
+          - $ref: '#/components/schemas/GroupMember'
+          readOnly: true
+        provider:
+          type: integer
+      required:
+      - id
+      - provider
+      - scim_id
+      - user
+      - user_obj
+    SCIMProviderUserRequest:
+      type: object
+      description: SCIMProviderUser Serializer
+      properties:
+        scim_id:
+          type: string
+          minLength: 1
+        user:
+          type: integer
+        provider:
+          type: integer
+      required:
+      - provider
+      - scim_id
+      - user
     SCIMSource:
       type: object
       description: SCIMSource Serializer

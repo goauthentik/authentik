@@ -253,6 +253,7 @@ website-watch:  ## Build and watch the documentation website, updating automatic
 #########################
 
 docker:  ## Build a docker image of the current source tree
+	mkdir -p ${GEN_API_TS}
 	DOCKER_BUILDKIT=1 docker build . --progress plain --tag ${DOCKER_IMAGE}
 
 #########################
