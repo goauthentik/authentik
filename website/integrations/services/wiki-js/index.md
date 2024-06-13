@@ -10,10 +10,6 @@ title: Wiki.js
 >
 > -- https://en.wikipedia.org/wiki/Wiki.js
 
-:::note
-This is based on authentik 2022.11 and Wiki.js 2.5. Instructions may differ between versions.
-:::
-
 ## Preparation
 
 The following placeholders will be used:
