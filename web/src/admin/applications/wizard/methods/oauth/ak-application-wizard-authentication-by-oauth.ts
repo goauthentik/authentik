@@ -2,16 +2,16 @@ import "@goauthentik/admin/applications/wizard/ak-wizard-title";
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import {
+    makeOAuth2PropertyMappingsSelector,
+    oauth2PropertyMappingsProvider,
+} from "@goauthentik/admin/providers/oauth2/OAuth2PropertyMappings.js";
+import {
     clientTypeOptions,
     issuerModeOptions,
     redirectUriHelp,
     subjectModeOptions,
 } from "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
-import {
-    makeOAuth2PropertyMappingsSelector,
-    oauth2PropertyMappingsProvider,
-} from "@goauthentik/admin/providers/oauth2/Oauth2PropertyMappings.js";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { oauth2SourcesProvider } from "@goauthentik/admin/providers/oauth2/OAuth2Sources.js";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-number-input";
 import "@goauthentik/components/ak-radio-input";
@@ -27,8 +27,8 @@ import { customElement, state } from "@lit/reactive-element/decorators.js";
 import { html, nothing } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { ClientTypeEnum, FlowsInstancesListDesignationEnum, SourcesApi } from "@goauthentik/api";
-import { type OAuth2Provider, type PaginatedOAuthSourceList } from "@goauthentik/api";
+import { ClientTypeEnum, FlowsInstancesListDesignationEnum } from "@goauthentik/api";
+import { type OAuth2Provider } from "@goauthentik/api";
 
 import BaseProviderPanel from "../BaseProviderPanel";
 
@@ -36,21 +36,6 @@ import BaseProviderPanel from "../BaseProviderPanel";
 export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
     @state()
     showClientSecret = true;
-
-    @state()
-    oauthSources?: PaginatedOAuthSourceList;
-
-    constructor() {
-        super();
-        new SourcesApi(DEFAULT_CONFIG)
-            .sourcesOauthList({
-                ordering: "name",
-                hasJwks: true,
-            })
-            .then((oauthSources: PaginatedOAuthSourceList) => {
-                this.oauthSources = oauthSources;
-            });
-    }
 
     render() {
         const provider = this.wizard.provider as OAuth2Provider | undefined;
@@ -262,23 +247,16 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                             name="jwksSources"
                             .errorMessages=${errors?.jwksSources ?? []}
                         >
-                            <select class="pf-c-form-control" multiple>
-                                ${this.oauthSources?.results.map((source) => {
-                                    const selected = (provider?.jwksSources || []).some((su) => {
-                                        return su == source.pk;
-                                    });
-                                    return html`<option value=${source.pk} ?selected=${selected}>
-                                        ${source.name} (${source.slug})
-                                    </option>`;
-                                })}
-                            </select>
+                            <ak-dual-select-provider
+                                .provider=${oauth2SourcesProvider}
+                                .selected=${provider?.jwksSources}
+                                available-label=${msg("Available Sources")}
+                                selected-label=${msg("Selected Sources")}
+                            ></ak-dual-select-provider>
                             <p class="pf-c-form__helper-text">
                                 ${msg(
                                     "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.",
                                 )}
-                            </p>
-                            <p class="pf-c-form__helper-text">
-                                ${msg("Hold control/command to select multiple items.")}
                             </p>
                         </ak-form-element-horizontal>
                     </div>
