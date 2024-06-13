@@ -48,8 +48,7 @@ Provide metadata in the `SAML Service Provider Organization Info` field:
 }
 ```
 
-Provide metadata in the `SAML Service Provider Technical Contact` and `SAML Service Provider Technical Contact` fields:
-
+Provide metadata in the **SAML Service Provider Technical Contact** and **SAML Service Provider Technical Contact** fields:
 ```json
 {
     "givenName": "Admin Name",
@@ -57,8 +56,7 @@ Provide metadata in the `SAML Service Provider Technical Contact` and `SAML Serv
 }
 ```
 
-In the `SAML Enabled Identity Providers` paste the following configuration:
-
+In the **SAML Enabled Identity Providers** paste the following configuration:
 ```json
 {
     "authentik": {
