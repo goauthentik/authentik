@@ -10,10 +10,6 @@ title: Bookstack
 >
 > -- https://www.bookstackapp.com
 
-:::note
-This is based on authentik 2021.7.2 and BookStack V21.05.3. Instructions may differ between versions.
-:::
-
 ## Preparation
 
 The following placeholders will be used:

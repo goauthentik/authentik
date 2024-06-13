@@ -10,10 +10,6 @@ title: OnlyOffice
 >
 > -- https://en.wikipedia.org/wiki/OnlyOffice
 
-:::note
-This is based on authentik 2021.10.4 and OnlyOffice 11.5.4.1582. Instructions may differ between versions.
-:::
-
 ## Preparation
 
 The following placeholders will be used:

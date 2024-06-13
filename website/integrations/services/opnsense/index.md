@@ -10,10 +10,6 @@ title: OPNsense
 >
 > -- https://opnsense.org/
 
-:::note
-This is based on authentik 2024.2.2 and OPNsense 24.1.3_1-amd64 installed using https://docs.opnsense.org/manual/install.html. Instructions may differ between versions.
-:::
-
 ## Preparation
 
 The following placeholders will be used:

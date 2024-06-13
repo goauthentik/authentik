@@ -15,6 +15,7 @@ This setup only works, when Nextcloud is running with HTTPS enabled. See [here](
 :::
 
 :::info
+note to self: same as other. mabye move to paragraph
 In case something goes wrong with the configuration, you can use the URL `http://nextcloud.company/login?direct=1` to log in using the built-in authentication.
 :::
 

@@ -27,5 +27,6 @@ Create an OAuth2/OpenID provider with the following parameters:
 Note the Client ID and Client Secret values. Create an application, using the provider you've created above.
 
 ## Harbor
+note to self: mabye describe things a little bit
 
 ![](./img/harbor-01.png)

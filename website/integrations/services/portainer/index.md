@@ -10,10 +10,6 @@ title: Portainer
 >
 > -- https://www.portainer.io
 
-:::note
-This is based on authentik 2021.7.3 and Portainer 2.6.x-CE. Portainer 2.6 supports OAuth without additional licenses, 1.x Series requires a paid license for OAuth.
-:::
-
 ## Preparation
 
 The following placeholders will be used:

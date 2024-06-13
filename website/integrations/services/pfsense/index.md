@@ -10,10 +10,6 @@ title: pfSense
 >
 > -- https://www.pfsense.org/
 
-:::note
-This is based on authentik 2022.3.31 and pfSense 2.6.0-amd64
-:::
-
 ## Preparation
 
 The following placeholders will be used:

@@ -11,7 +11,8 @@ title: Hashicorp Vault
 > -- https://vaultproject.io
 
 :::note
-This is based on authentik 2022.2.1 and Vault 1.9.3. Instructions may differ between versions. This guide does not cover vault policies. See https://learn.hashicorp.com/tutorials/vault/oidc-auth?in=vault/auth-methods for a more in depth vault guide
+note to self: is this needed
+This guide does not cover vault policies. See https://learn.hashicorp.com/tutorials/vault/oidc-auth?in=vault/auth-methods for a more in depth vault guide
 :::
 
 ## Preparation

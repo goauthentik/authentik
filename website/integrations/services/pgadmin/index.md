@@ -10,10 +10,6 @@ title: pgAdmin
 >
 > -- https://www.pgadmin.org/
 
-:::note
-This is based on authentik 2022.3.3 and pgAdmin4 6.19
-:::
-
 ## Preparation
 
 The following placeholders will be used:

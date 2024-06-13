@@ -10,10 +10,6 @@ title: Vikunja
 >
 > -- https://vikunja.io/
 
-:::note
-This is based on authentik 2021.7.3 and Vikunja V0.17.1 using the Docker-Compose install https://vikunja.io/docs/full-docker-example/. Instructions may differ between versions.
-:::
-
 ## Preparation
 
 The following placeholders will be used:
