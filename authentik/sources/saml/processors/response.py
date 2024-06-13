@@ -76,7 +76,7 @@ class ResponseProcessor:
         self._root_xml = b64decode(raw_response.encode())
         self._root = fromstring(self._root_xml)
 
-        if self._source.request_encrypted_assertions == True:
+        if self._source.request_encrypted_assertions:
             self._decrypt_response()
 
         if self._source.verification_kp:
@@ -96,16 +96,19 @@ class ResponseProcessor:
         manager.add_key(key)
         encryption_context = xmlsec.EncryptionContext(manager)
 
-        encrypted_assertion = self._root.find(".//{urn:oasis:names:tc:SAML:2.0:assertion}EncryptedAssertion")
-        encrypted_data = xmlsec.tree.find_child(encrypted_assertion, "EncryptedData", xmlsec.constants.EncNs)
+        encrypted_assertion = self._root.find(
+            ".//{urn:oasis:names:tc:SAML:2.0:assertion}EncryptedAssertion"
+        )
+        encrypted_data = xmlsec.tree.find_child(
+            encrypted_assertion, "EncryptedData", xmlsec.constants.EncNs
+        )
         decrypted_assertion = encryption_context.decrypt(encrypted_data)
-
 
         index_of = self._root.index(encrypted_assertion)
         self._root.remove(encrypted_assertion)
         self._root.insert(
-                index_of,
-                decrypted_assertion,
+            index_of,
+            decrypted_assertion,
         )
 
     def _verify_signed(self):
