@@ -39547,6 +39547,8 @@ components:
           readOnly: true
         fips_enabled:
           type: boolean
+          nullable: true
+          description: Get FIPS enabled
           readOnly: true
         version_should:
           type: string
@@ -47406,6 +47408,7 @@ components:
               type: string
             openssl_fips_mode:
               type: boolean
+              nullable: true
             authentik_version:
               type: string
           required:

@@ -114,3 +114,8 @@ class BaseOutgoingSyncClient[
         pre-link any users/groups in the remote system with the respective
         object in authentik based on a common identifier"""
         raise NotImplementedError()
+
+    def update_single_attribute(self, connection: TConnection):
+        """Update connection attributes on a connection object, when the connection
+        is manually created"""
+        raise NotImplementedError
