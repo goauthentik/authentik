@@ -29,7 +29,7 @@ export class FipsStatusCard extends AdminStatusCard<SystemInfo> {
     }
 
     getStatus(value: SystemInfo): Promise<AdminStatus> {
-        return value.runtime.opensslFipsMode
+        return value.runtime.opensslFipsEnabled
             ? this.setStatus(msg("OK"), {
                   icon: "fa fa-check-circle pf-m-success",
                   message: html`${msg("FIPS compliance: passing")}`,
