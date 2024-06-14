@@ -30,8 +30,8 @@ class GoogleWorkspaceProviderGroupSerializer(ModelSerializer):
 
 
 class GoogleWorkspaceProviderGroupViewSet(
-    OutgoingSyncConnectionCreateMixin,
     mixins.CreateModelMixin,
+    OutgoingSyncConnectionCreateMixin,
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
     UsedByMixin,

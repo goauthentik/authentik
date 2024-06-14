@@ -58,6 +58,7 @@ class OutgoingSyncProviderStatusMixin:
 
 
 class OutgoingSyncConnectionCreateMixin:
+    """Mixin for connection objects that fetches remote data upon creation"""
 
     def perform_create(self, serializer: ModelSerializer):
         super().perform_create(serializer)

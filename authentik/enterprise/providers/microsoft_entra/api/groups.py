@@ -30,8 +30,8 @@ class MicrosoftEntraProviderGroupSerializer(ModelSerializer):
 
 
 class MicrosoftEntraProviderGroupViewSet(
-    OutgoingSyncConnectionCreateMixin,
     mixins.CreateModelMixin,
+    OutgoingSyncConnectionCreateMixin,
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
     UsedByMixin,

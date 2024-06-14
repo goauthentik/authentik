@@ -28,8 +28,8 @@ class SCIMProviderUserSerializer(ModelSerializer):
 
 
 class SCIMProviderUserViewSet(
-    OutgoingSyncConnectionCreateMixin,
     mixins.CreateModelMixin,
+    OutgoingSyncConnectionCreateMixin,
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
     UsedByMixin,

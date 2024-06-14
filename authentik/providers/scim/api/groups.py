@@ -28,8 +28,8 @@ class SCIMProviderGroupSerializer(ModelSerializer):
 
 
 class SCIMProviderGroupViewSet(
-    OutgoingSyncConnectionCreateMixin,
     mixins.CreateModelMixin,
+    OutgoingSyncConnectionCreateMixin,
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
     UsedByMixin,
