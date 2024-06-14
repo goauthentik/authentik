@@ -5,7 +5,7 @@ go 1.22.2
 require (
 	beryju.io/ldap v0.1.0
 	github.com/coreos/go-oidc v2.2.1+incompatible
-	github.com/getsentry/sentry-go v0.28.0
+	github.com/getsentry/sentry-go v0.28.1
 	github.com/go-http-utils/etag v0.0.0-20161124023236-513ea8f21eb1
 	github.com/go-ldap/ldap/v3 v3.4.8
 	github.com/go-openapi/runtime v0.28.0
@@ -16,7 +16,7 @@ require (
 	github.com/gorilla/mux v1.8.1
 	github.com/gorilla/securecookie v1.1.2
 	github.com/gorilla/sessions v1.2.2
-	github.com/gorilla/websocket v1.5.2
+	github.com/gorilla/websocket v1.5.3
 	github.com/jellydator/ttlcache/v3 v3.2.0
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/nmcclain/asn1-ber v0.0.0-20170104154839-2661553a0484

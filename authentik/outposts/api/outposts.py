@@ -6,7 +6,7 @@ from django_filters.filters import ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import BooleanField, CharField, DateTimeField
+from rest_framework.fields import BooleanField, CharField, DateTimeField, SerializerMethodField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -18,6 +18,7 @@ from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Provider
+from authentik.enterprise.license import LicenseKey
 from authentik.enterprise.providers.rac.models import RACProvider
 from authentik.outposts.api.service_connections import ServiceConnectionSerializer
 from authentik.outposts.apps import MANAGED_OUTPOST, MANAGED_OUTPOST_NAME
@@ -120,7 +121,7 @@ class OutpostHealthSerializer(PassiveSerializer):
     golang_version = CharField(read_only=True)
     openssl_enabled = BooleanField(read_only=True)
     openssl_version = CharField(read_only=True)
-    fips_enabled = BooleanField(read_only=True)
+    fips_enabled = SerializerMethodField()
 
     version_should = CharField(read_only=True)
     version_outdated = BooleanField(read_only=True)
@@ -129,6 +130,12 @@ class OutpostHealthSerializer(PassiveSerializer):
     build_hash_should = CharField(read_only=True, required=False)
 
     hostname = CharField(read_only=True, required=False)
+
+    def get_fips_enabled(self, obj: dict) -> bool | None:
+        """Get FIPS enabled"""
+        if not LicenseKey.get_total().is_valid():
+            return None
+        return obj["fips_enabled"]
 
 
 class OutpostFilter(FilterSet):
