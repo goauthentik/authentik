@@ -81,11 +81,11 @@ All PostgreSQL settings, apart from `USE_PGBOUNCER` and `USE_PGPOOL`, support ho
 
 ### Read replicas
 
-You can configure additional read replica databases that are used only for read operations. To configure authentik to use replicas, add the settings below to your [configuration file](./configuration.mdx#set-your-environment-variables). If you have multiple replicas, add an additional setting for each replica, replacing the default `0` with a unique value for each additional replica.
+You can configure additional read replica databases that are used only for read operations. To configure authentik to use replicas, add the settings below to your [configuration file](./configuration.mdx#set-your-environment-variables). If you have multiple replicas, add additional settings for each replica, replacing the default `0` with a unique value for each additional replica.
 
 If read replicas are configured, the main database is not used for reads. If you'd like the main database to be included for reads, add it as a read replica.
 
-Just as with your regular PostgreSQL settings described above, the same configuration settings are used for each read replica.
+The same PostgreSQL settings as described above are used for each read replica.
 
 -   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__HOST`: same as above
 -   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__NAME`: same as above
