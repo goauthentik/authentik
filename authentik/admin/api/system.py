@@ -33,7 +33,7 @@ class RuntimeDict(TypedDict):
     platform: str
     uname: str
     openssl_version: str
-    openssl_fips_mode: bool | None
+    openssl_fips_enabled: bool | None
     authentik_version: str
 
 
@@ -72,7 +72,7 @@ class SystemInfoSerializer(PassiveSerializer):
             "architecture": platform.machine(),
             "authentik_version": get_full_version(),
             "environment": get_env(),
-            "openssl_fips_mode": (
+            "openssl_fips_enabled": (
                 backend._fips_enabled if LicenseKey.get_total().is_valid() else None
             ),
             "openssl_version": OPENSSL_VERSION,
