@@ -226,3 +226,7 @@ class MicrosoftEntraGroupClient(
             microsoft_id=group.id,
             attributes=self.entity_as_dict(group),
         )
+
+    def update_single_attribute(self, connection: MicrosoftEntraProviderGroup):
+        data = self._request(self.client.groups.by_group_id(connection.microsoft_id).get())
+        connection.attributes = self.entity_as_dict(data)

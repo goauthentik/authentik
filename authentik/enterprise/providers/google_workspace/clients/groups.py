@@ -214,3 +214,7 @@ class GoogleWorkspaceGroupClient(
             google_id=google_id,
             attributes=group,
         )
+
+    def update_single_attribute(self, connection: GoogleWorkspaceProviderUser):
+        group = self.directory_service.groups().get(connection.google_id)
+        connection.attributes = group
