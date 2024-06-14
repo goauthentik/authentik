@@ -8790,6 +8790,18 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>SCIM User(s)</source>
   <target>Utilisateur(s) du fournisseur SCIM</target>
 </trans-unit>
+<trans-unit id="s35f47dbd321aaf15">
+  <source>FIPS compliance: passing</source>
+</trans-unit>
+<trans-unit id="sc94578030c702562">
+  <source>Unverified</source>
+</trans-unit>
+<trans-unit id="s16749cce7c4c1589">
+  <source>FIPS compliance: unverified</source>
+</trans-unit>
+<trans-unit id="s0b2ad58c3deaa8dd">
+  <source>FIPS Status</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
