@@ -7,6 +7,7 @@ from rest_framework.viewsets import GenericViewSet
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserGroupSerializer
 from authentik.enterprise.providers.google_workspace.models import GoogleWorkspaceProviderGroup
+from authentik.lib.sync.outgoing.api import OutgoingSyncConnectionCreateMixin
 
 
 class GoogleWorkspaceProviderGroupSerializer(ModelSerializer):
@@ -30,6 +31,7 @@ class GoogleWorkspaceProviderGroupSerializer(ModelSerializer):
 
 class GoogleWorkspaceProviderGroupViewSet(
     mixins.CreateModelMixin,
+    OutgoingSyncConnectionCreateMixin,
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
     UsedByMixin,
