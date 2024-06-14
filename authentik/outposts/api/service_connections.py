@@ -15,9 +15,12 @@ from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
+from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import MetaNameSerializer, PassiveSerializer, TypeCreateSerializer
-from authentik.lib.utils.reflection import all_subclasses
+from authentik.core.api.utils import (
+    MetaNameSerializer,
+    PassiveSerializer,
+)
 from authentik.outposts.models import (
     DockerServiceConnection,
     KubernetesServiceConnection,
@@ -57,6 +60,7 @@ class ServiceConnectionStateSerializer(PassiveSerializer):
 
 
 class ServiceConnectionViewSet(
+    TypesMixin,
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
     UsedByMixin,
@@ -69,23 +73,6 @@ class ServiceConnectionViewSet(
     serializer_class = ServiceConnectionSerializer
     search_fields = ["name"]
     filterset_fields = ["name"]
-
-    @extend_schema(responses={200: TypeCreateSerializer(many=True)})
-    @action(detail=False, pagination_class=None, filter_backends=[])
-    def types(self, request: Request) -> Response:
-        """Get all creatable service connection types"""
-        data = []
-        for subclass in all_subclasses(self.queryset.model):
-            subclass: OutpostServiceConnection
-            data.append(
-                {
-                    "name": subclass._meta.verbose_name,
-                    "description": subclass.__doc__,
-                    "component": subclass().component,
-                    "model_name": subclass._meta.model_name,
-                }
-            )
-        return Response(TypeCreateSerializer(data, many=True).data)
 
     @extend_schema(responses={200: ServiceConnectionStateSerializer(many=False)})
     @action(detail=True, pagination_class=None, filter_backends=[])

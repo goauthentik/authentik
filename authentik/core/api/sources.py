@@ -17,8 +17,9 @@ from structlog.stdlib import get_logger
 
 from authentik.api.authorization import OwnerFilter, OwnerSuperuserPermissions
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
+from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
+from authentik.core.api.utils import MetaNameSerializer
 from authentik.core.models import Source, UserSourceConnection
 from authentik.core.types import UserSettingSerializer
 from authentik.lib.utils.file import (
@@ -27,7 +28,6 @@ from authentik.lib.utils.file import (
     set_file,
     set_file_url,
 )
-from authentik.lib.utils.reflection import all_subclasses
 from authentik.policies.engine import PolicyEngine
 from authentik.rbac.decorators import permission_required
 
@@ -74,6 +74,7 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
 
 
 class SourceViewSet(
+    TypesMixin,
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
     UsedByMixin,
@@ -131,30 +132,6 @@ class SourceViewSet(
         """Set source icon (as URL)"""
         source: Source = self.get_object()
         return set_file_url(request, source, "icon")
-
-    @extend_schema(responses={200: TypeCreateSerializer(many=True)})
-    @action(detail=False, pagination_class=None, filter_backends=[])
-    def types(self, request: Request) -> Response:
-        """Get all creatable source types"""
-        data = []
-        for subclass in all_subclasses(self.queryset.model):
-            subclass: Source
-            component = ""
-            if len(subclass.__subclasses__()) > 0:
-                continue
-            if subclass._meta.abstract:
-                component = subclass.__bases__[0]().component
-            else:
-                component = subclass().component
-            data.append(
-                {
-                    "name": subclass._meta.verbose_name,
-                    "description": subclass.__doc__,
-                    "component": component,
-                    "model_name": subclass._meta.model_name,
-                }
-            )
-        return Response(TypeCreateSerializer(data, many=True).data)
 
     @extend_schema(responses={200: UserSettingSerializer(many=True)})
     @action(detail=False, pagination_class=None, filter_backends=[])

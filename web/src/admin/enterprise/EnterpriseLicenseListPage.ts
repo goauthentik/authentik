@@ -248,7 +248,8 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
             ].join("");
 
         const renderCard = (installID: string) => html`
-            <div class="pf-c-card__title">${msg("Get a license")}</div>
+            <div class="pf-c-card__title">${msg("Your Install ID")}</div>
+            <div class="pf-c-card__body install-id">${installID}</div>
             <div class="pf-c-card__body">
                 <a
                     target="_blank"
@@ -257,8 +258,11 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                     >${msg("Go to Customer Portal")}</a
                 >
             </div>
-            <div class="pf-c-card__title">${msg("Your Install ID")}</div>
-            <div class="pf-c-card__body install-id">${installID}</div>
+            <div class="pf-c-card__body">
+                <a target="_blank" href="https://docs.goauthentik.io/docs/enterprise/get-started"
+                    >${msg("Learn more")}</a
+                >
+            </div>
         `;
 
         return html`<div class="pf-l-grid__item pf-c-card">

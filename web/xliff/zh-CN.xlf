@@ -1261,15 +1261,6 @@
 <trans-unit id="s74475586afc1fb0f">
   <source>Select type</source>
 </trans-unit>
-<trans-unit id="s0b3bf19b31dd6bac">
-  <source>Try the new application wizard</source>
-</trans-unit>
-<trans-unit id="sa18e1c6e0e6f16cc">
-  <source>The new application wizard greatly simplifies the steps required to create applications and providers.</source>
-</trans-unit>
-<trans-unit id="s01ef54f5d7c6ed47">
-  <source>Try it now</source>
-</trans-unit>
 <trans-unit id="s31f1afc1bfe1cb3a">
   <source>Learn more</source>
 </trans-unit>
@@ -2009,15 +2000,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s31a2d43bc1cf1790">
   <source>Not synced yet.</source>
-</trans-unit>
-<trans-unit id="s388ee787bbf2271b">
-  <source>Task finished with warnings</source>
-</trans-unit>
-<trans-unit id="s949826fad0fe0909">
-  <source>Task finished with errors</source>
-</trans-unit>
-<trans-unit id="sbedb77365a066648">
-  <source>Last sync: <x id="0" equiv-text="${task.finishTimestamp.toLocaleString()}"/></source>
 </trans-unit>
 <trans-unit id="s2f0f6691de0b0388">
   <source>Warning: Provider is not assigned to an application as backchannel provider.</source>
@@ -4580,9 +4562,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sd49099e9522635f4">
   <source>License(s)</source>
 </trans-unit>
-<trans-unit id="s4015746f55a8d89f">
-  <source>Get a license</source>
-</trans-unit>
 <trans-unit id="sb2cbd06f8e25b47e">
   <source>Go to Customer Portal</source>
 </trans-unit>
@@ -5146,9 +5125,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s862505f29064fc72">
   <source>This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:</source>
 </trans-unit>
-<trans-unit id="sb2275335377069aa">
-  <source>This feature requires an enterprise license.</source>
-</trans-unit>
 <trans-unit id="s6d3f81dc4bcacbda">
   <source>Last used</source>
 </trans-unit>
@@ -5382,6 +5358,168 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sebea299e52db4242">
   <source>Algorithm used to generate the private key.</source>
+</trans-unit>
+<trans-unit id="s21e38ec6ffa2b918">
+  <source>Added ID <x id="0" equiv-text="${item}"/></source>
+</trans-unit>
+<trans-unit id="s74918a09ef39ed26">
+  <source>Removed ID <x id="0" equiv-text="${item}"/></source>
+</trans-unit>
+<trans-unit id="s3a20e5d7dd70dcd3">
+  <source>Cleared</source>
+</trans-unit>
+<trans-unit id="s8cfd29891b2c93f0">
+  <source>Google Workspace Provider</source>
+</trans-unit>
+<trans-unit id="sa817aa9f6f88a991">
+  <source>Credentials</source>
+</trans-unit>
+<trans-unit id="sc668815044e218c2">
+  <source>Delegated Subject</source>
+</trans-unit>
+<trans-unit id="se89a9ecf275e4343">
+  <source>Default group email domain</source>
+</trans-unit>
+<trans-unit id="s64a0a6da6ed6d680">
+  <source>Default domain that is used to generate a group's email address. Can be customized using property mappings.</source>
+</trans-unit>
+<trans-unit id="sd061e65955e036ca">
+  <source>User deletion action</source>
+</trans-unit>
+<trans-unit id="s87f86f65b5e19ea7">
+  <source>User is deleted</source>
+</trans-unit>
+<trans-unit id="s3906cd4a102867a3">
+  <source>Suspend</source>
+</trans-unit>
+<trans-unit id="s0bf5b364e2c79392">
+  <source>User is suspended, and connection to user in authentik is removed.</source>
+</trans-unit>
+<trans-unit id="s4acb0250d735c2a9">
+  <source>Do Nothing</source>
+</trans-unit>
+<trans-unit id="s5fe525d19499ed47">
+  <source>The connection is removed but the user is not modified</source>
+</trans-unit>
+<trans-unit id="s676a0127c35d240a">
+  <source>Determines what authentik will do when a User is deleted.</source>
+</trans-unit>
+<trans-unit id="sd1aa04cc32caf2b0">
+  <source>Group deletion action</source>
+</trans-unit>
+<trans-unit id="s874c788479481131">
+  <source>Group is deleted</source>
+</trans-unit>
+<trans-unit id="s0983fa9b84e4a9f7">
+  <source>The connection is removed but the group is not modified</source>
+</trans-unit>
+<trans-unit id="sdb872a9f425937fa">
+  <source>Determines what authentik will do when a Group is deleted.</source>
+</trans-unit>
+<trans-unit id="sa5f28f1ad0bee45b">
+  <source>Google Workspace Provider is in preview.</source>
+</trans-unit>
+<trans-unit id="s958928ab6208d748">
+  <source>Microsoft Entra Provider</source>
+</trans-unit>
+<trans-unit id="sc7d6bc4aebb58fe9">
+  <source>Google Cloud credentials file.</source>
+</trans-unit>
+<trans-unit id="s2e707072d5a9615d">
+  <source>Email address of the user the actions of authentik will be delegated to.</source>
+</trans-unit>
+<trans-unit id="s03a759e65ceb722d">
+  <source>Client ID for the app registration.</source>
+</trans-unit>
+<trans-unit id="s479980cf9252628c">
+  <source>Client secret for the app registration.</source>
+</trans-unit>
+<trans-unit id="s25c2392ffcb78df2">
+  <source>Tenant ID</source>
+</trans-unit>
+<trans-unit id="s89e4e698cdb1187f">
+  <source>ID of the tenant accounts will be synced into.</source>
+</trans-unit>
+<trans-unit id="sf341f5dfc7a11633">
+  <source>Microsoft Entra Provider is in preview.</source>
+</trans-unit>
+<trans-unit id="s79dd6df244c05ae9">
+  <source>Update Microsoft Entra Provider</source>
+</trans-unit>
+<trans-unit id="saf4b498d81141878">
+  <source>Finished successfully</source>
+</trans-unit>
+<trans-unit id="s46f1d86ffec6223c">
+  <source>Finished with errors</source>
+</trans-unit>
+<trans-unit id="sbd12ed8a1053a108">
+  <source>Finished <x id="0" equiv-text="${getRelativeTime(task.finishTimestamp)}"/> (<x id="1" equiv-text="${task.finishTimestamp.toLocaleString()}"/>)</source>
+</trans-unit>
+<trans-unit id="sc3c334d642866997">
+  <source>Sync currently running</source>
+</trans-unit>
+<trans-unit id="sd520a4089006ca93">
+  <source>Update Google Workspace Provider</source>
+</trans-unit>
+<trans-unit id="sfdfa5bb4ddd99d70">
+  <source>Enterprise only</source>
+</trans-unit>
+<trans-unit id="scffa59cfac1951f2">
+  <source><x id="0" equiv-text="${type.name}"/> Icon</source>
+</trans-unit>
+<trans-unit id="s1da3499258024860">
+  <source><x id="0" equiv-text="${versionString}"/> (build <x id="1" equiv-text="${this.outpostHealth.buildHash.substring(0, 8)}"/>)</source>
+</trans-unit>
+<trans-unit id="s001fd928369d4ddc">
+  <source><x id="0" equiv-text="${versionString}"/> (FIPS)</source>
+</trans-unit>
+<trans-unit id="sce17c2bdea3e6ace">
+  <source>Score minimum threshold</source>
+</trans-unit>
+<trans-unit id="sf2fcb974c62625fc">
+  <source>Minimum required score to allow continuing</source>
+</trans-unit>
+<trans-unit id="s7452199a73ce8b78">
+  <source>Score maximum threshold</source>
+</trans-unit>
+<trans-unit id="s2d3a6cd50b46b44d">
+  <source>Maximum allowed score to allow continuing</source>
+</trans-unit>
+<trans-unit id="s9d6e40d9a9a58fbf">
+  <source>Error on invalid score</source>
+</trans-unit>
+<trans-unit id="s2af59e2f9f12847a">
+  <source>When enabled and the resultant score is outside the threshold, the user will not be able to continue. When disabled, the user will be able to continue and the score can be used in policies to customize further stages.</source>
+</trans-unit>
+<trans-unit id="s10092327ad833090">
+  <source>Microsoft Entra Group(s)</source>
+</trans-unit>
+<trans-unit id="s811c45ad24a5feae">
+  <source>Microsoft Entra User(s)</source>
+</trans-unit>
+<trans-unit id="s7d2d3d298fdccfc8">
+  <source>Google Workspace Group(s)</source>
+</trans-unit>
+<trans-unit id="s8c9cf2c004755526">
+  <source>Google Workspace User(s)</source>
+</trans-unit>
+<trans-unit id="sd000b42fea07c34a">
+  <source>SCIM Group(s)</source>
+</trans-unit>
+<trans-unit id="s146769fb55f1ee50">
+  <source>SCIM User(s)</source>
+</trans-unit>
+<trans-unit id="s35f47dbd321aaf15">
+  <source>FIPS compliance: passing</source>
+</trans-unit>
+<trans-unit id="sc94578030c702562">
+  <source>Unverified</source>
+</trans-unit>
+<trans-unit id="s16749cce7c4c1589">
+  <source>FIPS compliance: unverified</source>
+</trans-unit>
+<trans-unit id="s0b2ad58c3deaa8dd">
+  <source>FIPS Status</source>
 </trans-unit>
 </body>
 </file>

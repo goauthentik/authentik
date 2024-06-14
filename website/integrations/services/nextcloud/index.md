@@ -77,7 +77,7 @@ return {
     "quota": user.group_attributes().get("nextcloud_quota", None),
     # To connect an already existing user, set the "nextcloud_user_id" property in the
     # user's attributes to the username of the corresponding user on Nextcloud.
-    "user_id": user.attributes.get("nextcloud_user_id", user.uuid),
+    "user_id": user.attributes.get("nextcloud_user_id", str(user.uuid)),
 }
 ```
 

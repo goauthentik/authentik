@@ -39,6 +39,14 @@ from authentik.core.models import (
 )
 from authentik.enterprise.license import LicenseKey
 from authentik.enterprise.models import LicenseUsage
+from authentik.enterprise.providers.google_workspace.models import (
+    GoogleWorkspaceProviderGroup,
+    GoogleWorkspaceProviderUser,
+)
+from authentik.enterprise.providers.microsoft_entra.models import (
+    MicrosoftEntraProviderGroup,
+    MicrosoftEntraProviderUser,
+)
 from authentik.enterprise.providers.rac.models import ConnectionToken
 from authentik.events.logs import LogEvent, capture_logs
 from authentik.events.models import SystemTask
@@ -50,7 +58,7 @@ from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
 from authentik.policies.reputation.models import Reputation
 from authentik.providers.oauth2.models import AccessToken, AuthorizationCode, RefreshToken
-from authentik.providers.scim.models import SCIMGroup, SCIMUser
+from authentik.providers.scim.models import SCIMProviderGroup, SCIMProviderUser
 from authentik.sources.scim.models import SCIMSourceGroup, SCIMSourceUser
 from authentik.stages.authenticator_webauthn.models import WebAuthnDeviceType
 from authentik.tenants.models import Tenant
@@ -86,10 +94,11 @@ def excluded_models() -> list[type[Model]]:
         # Classes that have other dependencies
         AuthenticatedSession,
         # Classes which are only internally managed
+        # FIXME: these shouldn't need to be explicitly listed, but rather based off of a mixin
         FlowToken,
         LicenseUsage,
-        SCIMGroup,
-        SCIMUser,
+        SCIMProviderGroup,
+        SCIMProviderUser,
         Tenant,
         SystemTask,
         ConnectionToken,
@@ -100,6 +109,10 @@ def excluded_models() -> list[type[Model]]:
         WebAuthnDeviceType,
         SCIMSourceUser,
         SCIMSourceGroup,
+        GoogleWorkspaceProviderUser,
+        GoogleWorkspaceProviderGroup,
+        MicrosoftEntraProviderUser,
+        MicrosoftEntraProviderGroup,
     )
 
 

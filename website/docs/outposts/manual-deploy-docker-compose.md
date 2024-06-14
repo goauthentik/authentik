@@ -9,8 +9,6 @@ You can also run the outpost in a separate docker-compose project, you just have
 ### Proxy outpost
 
 ```yaml
-version: "3.5"
-
 services:
     authentik_proxy:
         image: ghcr.io/goauthentik/proxy
@@ -33,8 +31,6 @@ services:
 ### LDAP outpost
 
 ```yaml
-version: "3.5"
-
 services:
     authentik_ldap:
         image: ghcr.io/goauthentik/ldap
@@ -45,6 +41,24 @@ services:
         ports:
             - 389:3389
             - 636:6636
+        environment:
+            AUTHENTIK_HOST: https://your-authentik.tld
+            AUTHENTIK_INSECURE: "false"
+            AUTHENTIK_TOKEN: token-generated-by-authentik
+```
+
+### RADIUS outpost
+
+```yaml
+services:
+    radius_outpost:
+        image: ghcr.io/goauthentik/radius
+        # Optionally specify which networks the container should be
+        # might be needed to reach the core authentik server
+        # networks:
+        #   - foo
+        ports:
+            - 1812:1812/udp
         environment:
             AUTHENTIK_HOST: https://your-authentik.tld
             AUTHENTIK_INSECURE: "false"

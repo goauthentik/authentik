@@ -79,7 +79,7 @@ export function serializeForm<T extends KeyUnknown>(
         }
 
         if ("akControl" in inputElement.dataset) {
-            assignValue(inputElement, inputElement.json(), json);
+            assignValue(element, (inputElement as unknown as AkControlElement).json(), json);
             return;
         }
 
