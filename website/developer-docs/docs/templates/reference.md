@@ -9,7 +9,7 @@ title: "Reference topic"
 wget https://raw.githubusercontent.com/goauthentik/authentik/main/website/developer-docs/docs/templates/reference.tmpl.md
 ```
 
-Edit your markdown file as you work, reading this page for the descriptions of each section. You can build out a "stub file" with just headers, then gradually add content to each section. Use screenshots sparingly, only for complex UIs where it is difficult to describe a UI element with words. Refer to our [General Guidelines](../writing-documentation#general-guidelines) for writing tips and authentik-specific rules.
+Edit your markdown file as you work, reading this page for the descriptions of each section. You can build out a "stub file" with just headers, then gradually add content to each section. Use screenshots sparingly, only for complex UIs where it is difficult to describe a UI element with words. Refer to our [General Guidelines](../writing-documentation#writing-guidelines) for writing tips and authentik-specific rules.
 :::
 
 Create a title that specifies the component you are documenting. For example, "Group attributes".
