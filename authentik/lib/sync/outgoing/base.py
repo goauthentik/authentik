@@ -115,5 +115,7 @@ class BaseOutgoingSyncClient[
         object in authentik based on a common identifier"""
         raise NotImplementedError()
 
-    def fetch_single(self, uid: str) -> TSchema:
+    def update_single_attribute(self, connection: TConnection):
+        """Update connection attributes on a connection object, when the connection
+        is manually created"""
         raise NotImplementedError

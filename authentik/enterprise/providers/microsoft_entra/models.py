@@ -48,15 +48,16 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
     )
 
     def client_for_model(
-        self, model: type[User | Group]
+        self,
+        model: type[User | Group | "MicrosoftEntraProviderUser" | "MicrosoftEntraProviderGroup"],
     ) -> BaseOutgoingSyncClient[User | Group, Any, Any, Self]:
-        if issubclass(model, User):
+        if issubclass(model, User | MicrosoftEntraProviderUser):
             from authentik.enterprise.providers.microsoft_entra.clients.users import (
                 MicrosoftEntraUserClient,
             )
 
             return MicrosoftEntraUserClient(self)
-        if issubclass(model, Group):
+        if issubclass(model, Group | MicrosoftEntraProviderGroup):
             from authentik.enterprise.providers.microsoft_entra.clients.groups import (
                 MicrosoftEntraGroupClient,
             )

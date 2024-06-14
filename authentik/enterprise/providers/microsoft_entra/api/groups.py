@@ -6,9 +6,8 @@ from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserGroupSerializer
-from authentik.core.models import Group
-from authentik.enterprise.providers.microsoft_entra.clients.groups import MicrosoftEntraGroupClient
 from authentik.enterprise.providers.microsoft_entra.models import MicrosoftEntraProviderGroup
+from authentik.lib.sync.outgoing.api import OutgoingSyncConnectionCreateMixin
 
 
 class MicrosoftEntraProviderGroupSerializer(ModelSerializer):
@@ -31,6 +30,7 @@ class MicrosoftEntraProviderGroupSerializer(ModelSerializer):
 
 
 class MicrosoftEntraProviderGroupViewSet(
+    OutgoingSyncConnectionCreateMixin,
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
@@ -45,11 +45,3 @@ class MicrosoftEntraProviderGroupViewSet(
     filterset_fields = ["provider__id", "group__name", "group__group_uuid"]
     search_fields = ["provider__name", "group__name"]
     ordering = ["group__name"]
-
-    def perform_create(self, serializer: MicrosoftEntraProviderGroupSerializer):
-        super().perform_create(serializer)
-        instance: MicrosoftEntraProviderGroup = serializer.instance
-        client: MicrosoftEntraGroupClient = instance.provider.client_for_model(Group)
-        ms_group = client.fetch_single(instance.microsoft_id)
-        instance.attributes = client.entity_as_dict(ms_group)
-        instance.save()

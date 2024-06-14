@@ -166,10 +166,13 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
             attributes=self.entity_as_dict(user),
         )
 
-    def fetch_single(self, uid: str) -> MSUser:
+    def update_single_attribute(self, connection: MicrosoftEntraProviderUser):
         request_configuration = UsersRequestBuilder.UsersRequestBuilderGetRequestConfiguration(
             query_parameters=UsersRequestBuilder.UsersRequestBuilderGetQueryParameters(
                 select=self.get_select_fields(),
             ),
         )
-        return self._request(self.client.users.by_user_id(uid).get(request_configuration))
+        data = self._request(
+            self.client.users.by_user_id(connection.microsoft_id).get(request_configuration)
+        )
+        connection.attributes = self.entity_as_dict(data)

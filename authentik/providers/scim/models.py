@@ -39,13 +39,13 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
         return static("authentik/sources/scim.png")
 
     def client_for_model(
-        self, model: type[User | Group]
+        self, model: type[User | Group | "SCIMProviderUser" | "SCIMProviderGroup"]
     ) -> BaseOutgoingSyncClient[User | Group, Any, Any, Self]:
-        if issubclass(model, User):
+        if issubclass(model, User | SCIMProviderUser):
             from authentik.providers.scim.clients.users import SCIMUserClient
 
             return SCIMUserClient(self)
-        if issubclass(model, Group):
+        if issubclass(model, Group | SCIMProviderGroup):
             from authentik.providers.scim.clients.groups import SCIMGroupClient
 
             return SCIMGroupClient(self)

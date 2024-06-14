@@ -59,15 +59,16 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
     )
 
     def client_for_model(
-        self, model: type[User | Group]
+        self,
+        model: type[User | Group | "GoogleWorkspaceProviderUser" | "GoogleWorkspaceProviderGroup"],
     ) -> BaseOutgoingSyncClient[User | Group, Any, Any, Self]:
-        if issubclass(model, User):
+        if issubclass(model, User | GoogleWorkspaceProviderUser):
             from authentik.enterprise.providers.google_workspace.clients.users import (
                 GoogleWorkspaceUserClient,
             )
 
             return GoogleWorkspaceUserClient(self)
-        if issubclass(model, Group):
+        if issubclass(model, Group | GoogleWorkspaceProviderGroup):
             from authentik.enterprise.providers.google_workspace.clients.groups import (
                 GoogleWorkspaceGroupClient,
             )
