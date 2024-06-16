@@ -39547,6 +39547,8 @@ components:
           readOnly: true
         fips_enabled:
           type: boolean
+          nullable: true
+          description: Get FIPS enabled
           readOnly: true
         version_should:
           type: string
@@ -47404,15 +47406,16 @@ components:
               type: string
             openssl_version:
               type: string
-            openssl_fips_mode:
+            openssl_fips_enabled:
               type: boolean
+              nullable: true
             authentik_version:
               type: string
           required:
           - architecture
           - authentik_version
           - environment
-          - openssl_fips_mode
+          - openssl_fips_enabled
           - openssl_version
           - platform
           - python_version
