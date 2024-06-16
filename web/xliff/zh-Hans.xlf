@@ -8770,21 +8770,39 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s10092327ad833090">
   <source>Microsoft Entra Group(s)</source>
+  <target>Microsoft Entra 组</target>
 </trans-unit>
 <trans-unit id="s811c45ad24a5feae">
   <source>Microsoft Entra User(s)</source>
+  <target>Microsoft Entra 用户</target>
 </trans-unit>
 <trans-unit id="s7d2d3d298fdccfc8">
   <source>Google Workspace Group(s)</source>
+  <target>Google Workspace 组</target>
 </trans-unit>
 <trans-unit id="s8c9cf2c004755526">
   <source>Google Workspace User(s)</source>
+  <target>Google Workspace 用户</target>
 </trans-unit>
 <trans-unit id="sd000b42fea07c34a">
   <source>SCIM Group(s)</source>
+  <target>SCIM 组</target>
 </trans-unit>
 <trans-unit id="s146769fb55f1ee50">
   <source>SCIM User(s)</source>
+  <target>SCIM 用户</target>
+</trans-unit>
+<trans-unit id="s35f47dbd321aaf15">
+  <source>FIPS compliance: passing</source>
+</trans-unit>
+<trans-unit id="sc94578030c702562">
+  <source>Unverified</source>
+</trans-unit>
+<trans-unit id="s16749cce7c4c1589">
+  <source>FIPS compliance: unverified</source>
+</trans-unit>
+<trans-unit id="s0b2ad58c3deaa8dd">
+  <source>FIPS Status</source>
 </trans-unit>
     </body>
   </file>
