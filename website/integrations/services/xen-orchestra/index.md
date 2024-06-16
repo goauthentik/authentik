@@ -1,4 +1,3 @@
----
 title: Xen Orchestra
 ---
 
@@ -26,20 +25,18 @@ The following placeholders will be used:
 
 ### 1. Provider
 
-Under _Providers_, create an OAuth2/OpenID provider with these settings:
+Under **Applications -> Providers**, create an OAuth2/OpenID provider with these settings:
 
--   Name: Provider for XenOrchestra
--   Authorization Flow: Select one of the available Flows.
--   Client type: Confidential
--   Redirect URIs/Origins: `https://xenorchestra.company/signin/oidc/callback`
-
-Take note of the Client ID and the Client Secret, because we need them for the configuration of Xen Orchestra.
+-   **Name**: Provider for XenOrchestra
+-   **Authorization Flow**: Select one of the available Flows.
+-   **Client type**: Confidential
+-   **Redirect URIs/Origins**: `https://xenorchestra.company/signin/oidc/callback`
 
 ### 2. Application
 
 Create an application with the following details:
 
--   Slug: `xenorchestra` (If you want to choose a different slug, your URLs for the Xen Orchestra Configuration may vary.)
+-   Slug: `zenorchestra` (If you want to choose a different slug, your URLs for the Xen Orchestra Configuration may vary.)
 -   Provider: Select the one we have created in Step 1
 -   Set the Launch URL to `https://xenorchestra.company/`
 
@@ -58,12 +55,12 @@ All of the URLs mentioned below can be copied & pasted from authentik (_Applicat
 -   Set the `Client identifier (key)` to the Client ID from your notes.
 -   Set the `Client secret` to the Client Secret from your notes.
 -   Check the `Fill information (optional)`-Checkbox to open the advanced menu.
--   Set the `Username field` to `username`
--   Set the `Scopes` to `openid profile email`
+-   Set the `Username field` to `*username*`
+-   Set the `Scopes` to `*openid profile email*`
 
 4. Enable the `auth-oidc`-Plugin by toggling the switch above the configuration.
 5. You should be able to login with OIDC.
 
 :::note
-The first time a user signs in, Xen Orchesta will create a new user with the same username used in authentik. If you want to map the users by their e-mail-address instead of their username, you have to set the `Username field` to `email` in the Xen Orchestra plugin configuration.
+The first time a user signs in, Xen Orchesta will create a new user with the same username used in authentik. If you want to map the users by their e-mail-address instead of their username, you have to set the `Username field` to `*email*` in the Xen Orchestra plugin configuration.
 :::
