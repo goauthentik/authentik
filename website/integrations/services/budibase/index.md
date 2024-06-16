@@ -24,7 +24,7 @@ Create an application in authentik. Create an OAuth2/OpenID provider with the fo
 -   Signing Key: Select any available key
 -   Redirect URIs: `https://budibase.company/api/global/auth/oidc/callback`
 
-Note the Client ID and Client Secret values. Create an application, using the provider you've created above.
+Note the Client ID and Client Secret values. Create an application using the provider you created above.
 
 ## Budibase
 

@@ -60,7 +60,7 @@ Obtain your Metadata URL from authentik.
 
 Edit the `.env` file inside of the `www` folder of Bookstack.
 
-Modify the following Example SAML config and paste incorporate into your `.env` file
+Modify the following example SAML config and incorporate it into your .env file
 
 ```bash
 # Set authentication method to be saml2

@@ -56,7 +56,7 @@ Provide metadata in the **SAML Service Provider Technical Contact** and **SAML S
 }
 ```
 
-In the **SAML Enabled Identity Providers** paste the following configuration:
+Paste the following configuration into the SAML Enabled Identity Providers:
 ```json
 {
     "authentik": {
@@ -71,4 +71,4 @@ In the **SAML Enabled Identity Providers** paste the following configuration:
 }
 ```
 
-`x509cert` is the certificate configured in authentik. Remove the `--BEGIN CERTIFICATE--` and `--END CERTIFICATE--` headers, then enter the cert as one non-breaking string.
+`x509cert` is the certificate configured in authentik. Remove the `--BEGIN CERTIFICATE--` and `--END CERTIFICATE--` headers, and enter the certificate as a single continuous string.

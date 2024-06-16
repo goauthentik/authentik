@@ -31,11 +31,11 @@ You can use a custom signing certificate and adjust durations as needed.
 
 Create a role with the permissions you desire, and note the ARN.
 
-After you've created the Property Mappings below, add them to the Provider.
+After configuring the Property Mappings, add them to the SAML Provider in AWS.
 
 Create an application, assign policies, and assign this provider.
 
-Export the metadata from authentik, and create an Identity Provider [here](https://console.aws.amazon.com/iam/home#/providers).
+Export the metadata from authentik and create a new Identity Provider in the AWS Management Console.
 
 #### Role Mapping
 
@@ -110,7 +110,7 @@ Now go back to your AWS instance
 - Under **Identity provider metadata**, upload both the **Metadata** file and **Signing Certificate** that authentik gave you.
 - Click **Next**.
 - In your settings pane, under the tab **Identity Source**, click **Actions** -> **Manage Authentication**.
-- Take note of the **AWS access portal sign-in URL** (this is especially important if you changed it from the default).
+- Note the AWS access portal sign-in URL (especially if you have customized it).
 
 Now go back to your authentik instance.
 
@@ -119,7 +119,7 @@ Now go back to your authentik instance.
 
 ## Caveats and Troubleshooting
 
-- Users need to already exist in AWS in order to use them through authentik. AWS will throw an error if it doesn't recognize the user.
+- Ensure users already exist in AWS for authentication through authentik. AWS will throw an error if the user is unrecognized.
 - In case you're stuck, you can see the SSO logs in Amazon CloudTrail -> Event History. Look for `ExtenalIdPDirectoryLogin`.
 
 ## Optional: Automated provisioning with SCIM
@@ -129,7 +129,7 @@ SCIM allows you to synchronize (part of) your directory to AWS's IAM, saving you
 To do so, take the following steps in your AWS Identity Center:
 
 - In your **Settings** pane, locate the **Automatic Provisioning** information box. Click **Enable**.
-- AWS will give you an **SCIM Endpoint** and an **Access Token**. Take note of these values.
+- AWS provides an SCIM Endpoint and an Access Token. Note these values.
 
 Go back to your authentik instance
 
