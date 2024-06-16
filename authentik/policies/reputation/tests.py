@@ -43,7 +43,9 @@ class TestReputationPolicy(TestCase):
         """test reputation update"""
         Reputation.objects.create(identifier=self.test_username, ip=self.test_ip, score=43)
         # Trigger negative reputation
-        authenticate(self.request, self.backends, username=self.test_username, password=self.test_username)
+        authenticate(
+            self.request, self.backends, username=self.test_username, password=self.test_username
+        )
         self.assertEqual(Reputation.objects.get(identifier=self.test_username).score, 42)
 
     def test_policy(self):
