@@ -35,7 +35,7 @@ After configuring the Property Mappings, add them to the SAML Provider in AWS.
 
 Create an application, assign policies, and assign this provider.
 
-Export the metadata from authentik and create a new Identity Provider in the AWS Management Console.
+Export the metadata from authentik and create a new Identity Provider [here](https://console.aws.amazon.com/iam/home#/providers).
 
 #### Role Mapping
 
