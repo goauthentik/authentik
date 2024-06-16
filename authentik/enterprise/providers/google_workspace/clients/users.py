@@ -119,3 +119,7 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
             google_id=email,
             attributes=user,
         )
+
+    def update_single_attribute(self, connection: GoogleWorkspaceProviderUser):
+        user = self.directory_service.users().get(connection.google_id)
+        connection.attributes = user
