@@ -62,6 +62,7 @@ class OutpostConfig:
 
     log_level: str = CONFIG.get("log_level")
     object_naming_template: str = field(default="ak-outpost-%(name)s")
+    refresh_interval: str = "minutes=5"
 
     container_image: str | None = field(default=None)
 
@@ -259,13 +260,6 @@ class Outpost(SerializerModel, ManagedModel):
             "Leave empty if authentik should not handle the deployment."
         ),
         on_delete=models.SET_DEFAULT,
-    )
-    refresh_interval = models.TextField(
-        default="minutes=5",
-        validators=[timedelta_string_validator],
-        help_text=_(
-            "Outpost configuration refresh interval. (Format: weeks=3;days=2;hours=3,seconds=2)."
-        ),
     )
 
     _config = models.JSONField(default=default_outpost_config)

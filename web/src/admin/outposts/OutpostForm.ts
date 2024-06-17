@@ -1,7 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { docLink } from "@goauthentik/common/global";
 import { groupBy } from "@goauthentik/common/utils";
-import "@goauthentik/components/ak-text-input";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider";
@@ -11,7 +10,6 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
@@ -254,19 +252,6 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                             >
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-text-input
-                        name="refreshInterval"
-                        label=${msg("Refresh interval")}
-                        required
-                        value="${ifDefined(this.instance?.refreshInterval)}"
-                        .bighelp=${html`<p class="pf-c-form__helper-text">
-                                ${msg(
-                                    "Interval at which the outpost will refresh its configuration. For caching outposts, this will also refresh the cache.",
-                                )}
-                            </p>
-                            <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
-                    >
-                    </ak-text-input>
                 </div>
             </ak-form-group>`;
     }
