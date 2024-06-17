@@ -13,6 +13,7 @@ title: Slack
 The following placeholder will be used:
 
 -   You can use <kbd>slack.<em>company</em>></kbd> or <kbd><em>my-workspace</em>.slack.com</kbd> as the FQDN of your Slack instance.
+-   You can use `authentik.company` as the FQDN of the authentik install.
 
 ## authentik configuration
 
@@ -41,7 +42,7 @@ Your Slack integration requires two property mappings, one each for `User.Email`
     - **Name**: provide a clear name, such as "slack".
     - **Authorization flow**: Authorize Application (`default-provider-authorization-implicit-consent`).
     - **Protocol settings** define the following values:
-        - **ACS URL**: `https:_workspace-name_.slack.com/sso/saml`
+        - **ACS URL**: `https://_workspace-name_.slack.com/sso/saml`
         - **Issuer**: `https://slack.com`.
         - **Service Provider Binding**: select **Post**
     - **Advanced protocol settings**
@@ -54,7 +55,6 @@ Your Slack integration requires two property mappings, one each for `User.Email`
 1. Navigate to **Applications -> Applications** and then click **Create**.
 2. Provide a name for the new application.
 3. Set the provider to the one you just created.
-4. Ensure that the **Policy engine mode** is set to **ANY, any policy must match to grant access**.
 5. Click **Create**.
 
 :::info
@@ -69,6 +69,7 @@ After you have created the provider and application, and the application is conn
 2. Navigate to the **Configure SAML Authentication** page.
 3. Enter the following values:
     - **SAML 2.0 Endpoint (HTTP)**: copy/paste in the **SSO URL (Redirect)** URL from the provider that you created in authentik.
+    Example: `https://_authentik.company_/applications/saml/slack/sso/binding/redirect/`
     - **Identity Provider Issuer**: set to `https://slack.com`
     - **Public Certificate**: add the certificate, which you can download from the authentik provider, under **Download signing certificate**.
 4. Optionally, configure the other settings and customize the Sign in button label.
