@@ -17,12 +17,12 @@ from rest_framework.decorators import action
 from rest_framework.fields import CharField, IntegerField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ListSerializer, ModelSerializer, ValidationError
+from rest_framework.serializers import ListSerializer, ValidationError
 from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import JSONDictField, PassiveSerializer
+from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSerializer
 from authentik.core.models import Group, User
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
