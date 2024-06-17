@@ -15,6 +15,8 @@ The following placeholder will be used:
 -   You can use <kbd>slack.<em>company</em>></kbd> or <kbd><em>my-workspace</em>.slack.com</kbd> as the FQDN of your Slack instance.
 -   You can use <kbd>authentik.company</kbd> as the FQDN of the authentik install.
 
+For additional information about integrating with Slack, refer to their [documentation](https://slack.com/help/articles/205168057-Custom-SAML-single-sign-on).
+
 ## authentik configuration
 
 ### Step 1. Create custom property mappings
@@ -68,8 +70,7 @@ After you have created the provider and application, and the application is conn
 1. Log in to the Slack Admin Dashboard.
 2. Navigate to the **Configure SAML Authentication** page.
 3. Enter the following values:
-    - **SAML 2.0 Endpoint (HTTP)**: copy/paste in the **SSO URL (Redirect)** URL from the provider that you created in authentik.
-    Example: `https://_authentik.company_/applications/saml/slack/sso/binding/redirect/`
+    - **SAML 2.0 Endpoint (HTTP)**: copy/paste in the **SSO URL (Redirect)** URL from the provider that you created in authentik. **Example**: `https://_authentik.company_/applications/saml/slack/sso/binding/redirect/`
     - **Identity Provider Issuer**: set to `https://slack.com`
     - **Public Certificate**: add the certificate, which you can download from the authentik provider, under **Download signing certificate**.
 4. Optionally, configure the other settings and customize the Sign in button label.
