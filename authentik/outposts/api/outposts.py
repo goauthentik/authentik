@@ -1,5 +1,6 @@
 """Outpost API Views"""
 
+
 from dacite.core import from_dict
 from dacite.exceptions import DaciteError
 from django_filters.filters import ModelMultipleChoiceFilter
@@ -20,6 +21,7 @@ from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Provider
 from authentik.enterprise.license import LicenseKey
 from authentik.enterprise.providers.rac.models import RACProvider
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.outposts.api.service_connections import ServiceConnectionSerializer
 from authentik.outposts.apps import MANAGED_OUTPOST, MANAGED_OUTPOST_NAME
 from authentik.outposts.models import (
@@ -49,6 +51,10 @@ class OutpostSerializer(ModelSerializer):
     service_connection_obj = ServiceConnectionSerializer(
         source="service_connection", read_only=True
     )
+    refresh_interval_s = SerializerMethodField()
+
+    def get_refresh_interval_s(self, obj: Outpost) -> int:
+        return int(timedelta_from_string(obj.refresh_interval).total_seconds())
 
     def validate_name(self, name: str) -> str:
         """Validate name (especially for embedded outpost)"""
@@ -99,6 +105,8 @@ class OutpostSerializer(ModelSerializer):
             "providers_obj",
             "service_connection",
             "service_connection_obj",
+            "refresh_interval",
+            "refresh_interval_s",
             "token_identifier",
             "config",
             "managed",

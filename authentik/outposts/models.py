@@ -36,6 +36,7 @@ from authentik.lib.config import CONFIG
 from authentik.lib.models import InheritanceForeignKey, SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.errors import exception_to_string
+from authentik.lib.utils.time import timedelta_string_validator
 from authentik.outposts.controllers.k8s.utils import get_namespace
 
 OUR_VERSION = parse(__version__)
@@ -258,6 +259,13 @@ class Outpost(SerializerModel, ManagedModel):
             "Leave empty if authentik should not handle the deployment."
         ),
         on_delete=models.SET_DEFAULT,
+    )
+    refresh_interval = models.TextField(
+        default="minutes=5",
+        validators=[timedelta_string_validator],
+        help_text=_(
+            "Outpost configuration refresh interval. (Format: weeks=3;days=2;hours=3,seconds=2)."
+        ),
     )
 
     _config = models.JSONField(default=default_outpost_config)

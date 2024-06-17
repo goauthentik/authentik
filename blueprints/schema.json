@@ -3318,6 +3318,12 @@
                     "title": "Service connection",
                     "description": "Select Service-Connection authentik should use to manage this outpost. Leave empty if authentik should not handle the deployment."
                 },
+                "refresh_interval": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Refresh interval",
+                    "description": "Outpost configuration refresh interval. (Format: weeks=3;days=2;hours=3,seconds=2)."
+                },
                 "config": {
                     "type": "object",
                     "additionalProperties": true,

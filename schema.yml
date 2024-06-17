@@ -39488,6 +39488,12 @@ components:
           allOf:
           - $ref: '#/components/schemas/ServiceConnection'
           readOnly: true
+        refresh_interval:
+          type: string
+          description: 'Outpost configuration refresh interval. (Format: weeks=3;days=2;hours=3,seconds=2).'
+        refresh_interval_s:
+          type: integer
+          readOnly: true
         token_identifier:
           type: string
           description: Get Token identifier
@@ -39509,6 +39515,7 @@ components:
       - pk
       - providers
       - providers_obj
+      - refresh_interval_s
       - service_connection_obj
       - token_identifier
       - type
@@ -39597,6 +39604,10 @@ components:
           nullable: true
           description: Select Service-Connection authentik should use to manage this
             outpost. Leave empty if authentik should not handle the deployment.
+        refresh_interval:
+          type: string
+          minLength: 1
+          description: 'Outpost configuration refresh interval. (Format: weeks=3;days=2;hours=3,seconds=2).'
         config:
           type: object
           additionalProperties: {}
@@ -42738,6 +42749,10 @@ components:
           nullable: true
           description: Select Service-Connection authentik should use to manage this
             outpost. Leave empty if authentik should not handle the deployment.
+        refresh_interval:
+          type: string
+          minLength: 1
+          description: 'Outpost configuration refresh interval. (Format: weeks=3;days=2;hours=3,seconds=2).'
         config:
           type: object
           additionalProperties: {}
