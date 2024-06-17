@@ -2,9 +2,10 @@ import { autoUpdate, computePosition, flip, hide } from "@floating-ui/dom";
 
 import { LitElement, html, nothing, render } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 import { Ref, createRef, ref } from "lit/directives/ref.js";
 
-import { SearchSelectCloseEvent } from "./SearchSelectEvents.js";
+import { KeyboardControllerCloseEvent } from "./SearchKeyboardControllerEvents.js";
 import "./ak-search-select-menu.js";
 import { type SearchSelectMenu } from "./ak-search-select-menu.js";
 import type { SearchOptions } from "./types.js";
@@ -16,8 +17,8 @@ import type { SearchOptions } from "./types.js";
  * DOTADIW: it tracks the top-of-DOM object into which we render our menu, guaranteeing that it
  * appears above everything else, and operates the positioning control for it.
  *
- * @fires ak-search-select-close - Fired when the tethered end loses focus. Clients can do with this
- * information as they wish.
+ * - @fires ak-search-select-close - Fired (by the keyboard controller) when the tethered end loses
+ *   focus. Clients can do with this information as they wish.
  */
 
 @customElement("ak-search-select-menu-position")
@@ -64,12 +65,12 @@ export class SearchSelectMenuPosition extends LitElement {
     emptyOption?: string;
 
     /**
-     * If undefined, there will be no empty option shown
+     * Whether or not the menu is visible
      *
      * @attr
      */
     @property({ type: Boolean, reflect: true })
-    hidden = false;
+    open = false;
 
     /**
      * The name; used mostly for the management layer.
@@ -136,7 +137,7 @@ export class SearchSelectMenuPosition extends LitElement {
     }
 
     updated() {
-        if (!this.hidden) {
+        if (this.anchor && this.dropdownContainer && !this.hidden) {
             this.setPosition();
         }
     }
@@ -150,18 +151,23 @@ export class SearchSelectMenuPosition extends LitElement {
     }
 
     onFocusOut() {
-        this.host.dispatchEvent(new SearchSelectCloseEvent());
+        this.dispatchEvent(new KeyboardControllerCloseEvent());
     }
 
     render() {
+        // The 'hidden' attribute is a little weird and the current Typescript definition for
+        // it is incompatible with actual implementations, so we drill `open` all the way down,
+        // but we set the hidden attribute here, and on the actual menu use CSS and the
+        // the attribute's presence to hide/show as needed.
         render(
             html`<ak-search-select-menu
                 .options=${this.options}
-                .value=${this.value}
+                value=${ifDefined(this.value)}
                 .host=${this.host}
                 .emptyOption=${this.emptyOption}
                 @focusout=${this.onFocusOut}
-                ?hidden=${this.hidden}
+                ?open=${this.open}
+                ?hidden=${!this.open}
                 ${ref(this.menuRef)}
             ></ak-search-select-menu>`,
             this.dropdownContainer,

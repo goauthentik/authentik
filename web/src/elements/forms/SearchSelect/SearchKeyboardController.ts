@@ -8,7 +8,7 @@ import {
     KeyboardControllerSelectEvent,
 } from "./SearchKeyboardControllerEvents.js";
 
-type ReactiveElementHost = Partial<ReactiveControllerHost> & LitElement;
+type ReactiveElementHost = Partial<ReactiveControllerHost> & LitElement & { value?: string };
 type ValuedHtmlElement = HTMLElement & { value: string };
 
 /**
@@ -64,9 +64,10 @@ export class AkKeyboardController implements ReactiveController {
 
     hostUpdated() {
         this.items = Array.from(this.host.renderRoot.querySelectorAll(this.selector));
-        // If the update changed the number of items such that our index is greater than the count,
-        // bring the index in.
-        this.index = Math.min(this.index, this.items.length - 1);
+        const current = this.items.findIndex((item) => item.value === this.host.value);
+        if (current >= 0) {
+            this.index = current;
+        }
     }
 
     hostConnected() {
@@ -75,6 +76,10 @@ export class AkKeyboardController implements ReactiveController {
 
     hostDisconnected() {
         this.host.removeEventListener("keydown", this.onKeydown);
+    }
+
+    hostVisible() {
+        this.items[this.index].focus();
     }
 
     get current() {

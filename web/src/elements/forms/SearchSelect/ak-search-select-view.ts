@@ -163,11 +163,6 @@ export class SearchSelectView extends AKElement {
         }
     }
 
-    onCloseEvent(event: Event) {
-        event.stopPropagation();
-        this.open = false;
-    }
-
     @bound
     onSelect(event: SearchSelectSelectMenuEvent) {
         this.open = false;
@@ -179,6 +174,7 @@ export class SearchSelectView extends AKElement {
     @bound
     onClose(event: SearchSelectCloseEvent) {
         event.stopPropagation();
+        this.inputRef.value?.focus();
         this.open = false;
     }
 
@@ -214,7 +210,7 @@ export class SearchSelectView extends AKElement {
             if (!this.menuRef.value?.hasFocus()) {
                 this.open = false;
             }
-        }, 100);
+        }, 0);
     }
 
     willUpdate(changed: PropertyValues<this>) {
@@ -258,12 +254,12 @@ export class SearchSelectView extends AKElement {
             <ak-search-select-menu-position
                 name=${ifDefined(this.name)}
                 .options=${this.options}
-                .value=${this.value}
+                value=${ifDefined(this.value)}
                 .host=${this}
                 .anchor=${this.inputRef.value}
                 .emptyOption=${(this.blankable && this.emptyOption) || undefined}
                 ${ref(this.menuRef)}
-                ?hidden=${!this.open}
+                ?open=${this.open}
             ></ak-search-select-menu-position> `;
     }
 }

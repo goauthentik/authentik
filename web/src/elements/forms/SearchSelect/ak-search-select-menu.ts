@@ -1,7 +1,7 @@
 import { AKElement } from "@goauthentik/elements/Base.js";
 import { bound } from "@goauthentik/elements/decorators/bound.js";
 
-import { css, html, nothing } from "lit";
+import { PropertyValues, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
@@ -74,6 +74,9 @@ export class SearchSelectMenu extends AKElement {
     @property()
     emptyOption?: string;
 
+    @property({ type: Boolean, reflect: true })
+    open = false;
+
     private keyboardController: AkKeyboardController;
 
     constructor() {
@@ -94,13 +97,14 @@ export class SearchSelectMenu extends AKElement {
     onClick(event: Event, value: string) {
         event.stopPropagation();
         this.host.dispatchEvent(new SearchSelectSelectMenuEvent(value));
-        this.keyboardController.value = value;
+        this.value = value;
     }
 
     @bound
     onEmptyClick(event: Event) {
         event.stopPropagation();
         this.host.dispatchEvent(new SearchSelectSelectMenuEvent(undefined));
+        this.value = undefined;
     }
 
     @bound
@@ -114,6 +118,12 @@ export class SearchSelectMenu extends AKElement {
     onKeyClose(event: KeyboardControllerCloseEvent) {
         event.stopPropagation();
         this.host.dispatchEvent(new SearchSelectCloseEvent());
+    }
+
+    updated(changed: PropertyValues<this>) {
+        if (changed.has("open") && this.open) {
+            this.keyboardController.hostVisible();
+        }
     }
 
     renderEmptyMenuItem() {
