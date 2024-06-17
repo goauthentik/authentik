@@ -13,7 +13,7 @@ title: Slack
 The following placeholder will be used:
 
 -   You can use <kbd>slack.<em>company</em>></kbd> or <kbd><em>my-workspace</em>.slack.com</kbd> as the FQDN of your Slack instance.
--   You can use `authentik.company` as the FQDN of the authentik install.
+-   You can use <kbd>authentik.company</kbd> as the FQDN of the authentik install.
 
 ## authentik configuration
 
@@ -55,7 +55,7 @@ Your Slack integration requires two property mappings, one each for `User.Email`
 1. Navigate to **Applications -> Applications** and then click **Create**.
 2. Provide a name for the new application.
 3. Set the provider to the one you just created.
-5. Click **Create**.
+4. Click **Create**.
 
 :::info
 After you have created the provider and application, and the application is connected to the provider (Step 3 above) the **Overview** tab on the provider's detail page in the Admin UI will display additional information that you will need to configure Slack, using the following steps.
