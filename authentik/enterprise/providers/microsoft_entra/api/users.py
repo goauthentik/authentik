@@ -7,6 +7,7 @@ from rest_framework.viewsets import GenericViewSet
 from authentik.core.api.groups import GroupMemberSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.enterprise.providers.microsoft_entra.models import MicrosoftEntraProviderUser
+from authentik.lib.sync.outgoing.api import OutgoingSyncConnectionCreateMixin
 
 
 class MicrosoftEntraProviderUserSerializer(ModelSerializer):
@@ -29,6 +30,7 @@ class MicrosoftEntraProviderUserSerializer(ModelSerializer):
 
 
 class MicrosoftEntraProviderUserViewSet(
+    OutgoingSyncConnectionCreateMixin,
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,

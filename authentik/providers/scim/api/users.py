@@ -6,6 +6,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.groups import GroupMemberSerializer
 from authentik.core.api.used_by import UsedByMixin
+from authentik.lib.sync.outgoing.api import OutgoingSyncConnectionCreateMixin
 from authentik.providers.scim.models import SCIMProviderUser
 
 
@@ -28,6 +29,7 @@ class SCIMProviderUserSerializer(ModelSerializer):
 
 class SCIMProviderUserViewSet(
     mixins.CreateModelMixin,
+    OutgoingSyncConnectionCreateMixin,
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
     UsedByMixin,

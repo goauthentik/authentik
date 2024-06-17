@@ -8792,6 +8792,18 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>SCIM User(s)</source>
   <target>SCIM 用户</target>
 </trans-unit>
+<trans-unit id="s35f47dbd321aaf15">
+  <source>FIPS compliance: passing</source>
+</trans-unit>
+<trans-unit id="sc94578030c702562">
+  <source>Unverified</source>
+</trans-unit>
+<trans-unit id="s16749cce7c4c1589">
+  <source>FIPS compliance: unverified</source>
+</trans-unit>
+<trans-unit id="s0b2ad58c3deaa8dd">
+  <source>FIPS Status</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
