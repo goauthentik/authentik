@@ -57,6 +57,8 @@ class PropertyMappingManager:
             mapping.set_context(user, request, **kwargs)
             try:
                 value = mapping.evaluate(mapping.model.expression)
+            except PropertyMappingExpressionException as exc:
+                raise exc from exc
             except Exception as exc:
                 raise PropertyMappingExpressionException(exc, mapping.model) from exc
             if value is None:

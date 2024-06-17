@@ -128,8 +128,8 @@ class PolicyProcess(PROCESS_CLASS):
                 binding_order=self.binding.order,
                 binding_target_type=self.binding.target_type,
                 binding_target_name=self.binding.target_name,
-                object_pk=str(self.request.obj.pk),
-                object_type=class_to_path(self.request.obj.__class__),
+                object_pk=str(self.request.obj.pk) if self.request.obj else "",
+                object_type=class_to_path(self.request.obj.__class__) if self.request.obj else "",
                 mode="execute_process",
             ).time(),
         ):

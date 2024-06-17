@@ -79,22 +79,21 @@ class BaseOutgoingSyncClient[
         """Delete object from destination"""
         raise NotImplementedError()
 
-    def to_schema(self, obj: TModel, creating: bool, **defaults) -> TSchema:
+    def to_schema(self, obj: TModel, connection: TConnection | None, **defaults) -> TSchema:
         """Convert object to destination schema"""
         raw_final_object = {}
         try:
             eval_kwargs = {
                 "request": None,
                 "provider": self.provider,
-                "creating": creating,
+                "connection": connection,
                 obj._meta.model_name: obj,
             }
             eval_kwargs.setdefault("user", None)
             for value in self.mapper.iter_eval(**eval_kwargs):
-                try:
-                    always_merger.merge(raw_final_object, value)
-                except SkipObjectException as exc:
-                    raise exc from exc
+                always_merger.merge(raw_final_object, value)
+        except SkipObjectException as exc:
+            raise exc from exc
         except PropertyMappingExpressionException as exc:
             # Value error can be raised when assigning invalid data to an attribute
             Event.new(
@@ -104,7 +103,7 @@ class BaseOutgoingSyncClient[
             ).save()
             raise StopSync(exc, obj, exc.mapping) from exc
         if not raw_final_object:
-            raise StopSync(ValueError("No user mappings configured"), obj)
+            raise StopSync(ValueError("No mappings configured"), obj)
         for key, value in defaults.items():
             raw_final_object.setdefault(key, value)
         return raw_final_object
@@ -115,3 +114,8 @@ class BaseOutgoingSyncClient[
         pre-link any users/groups in the remote system with the respective
         object in authentik based on a common identifier"""
         raise NotImplementedError()
+
+    def update_single_attribute(self, connection: TConnection):
+        """Update connection attributes on a connection object, when the connection
+        is manually created"""
+        raise NotImplementedError

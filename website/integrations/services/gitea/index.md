@@ -168,7 +168,7 @@ gitea:
           provider: "openidConnect"
           key: "CLIENT_ID_FROM_AUTHENTIK" #Step 1
           secret: "CLIENT_SECRET_FROM_AUTHENTIK" #Step 1
-          autoDiscoveryUrl: "https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration"
+          autoDiscoverUrl: "https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration"
           iconUrl: "https://goauthentik.io/img/icon.png"
           scopes: "email profile"
 ```
@@ -198,7 +198,7 @@ gitea:
         - name: "authentik"
           provider: "openidConnect"
           existingSecret: gitea-authentik-secret
-          autoDiscoveryUrl: "https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration"
+          autoDiscoverUrl: "https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration"
           iconUrl: "https://goauthentik.io/img/icon.png"
           scopes: "email profile"
 ```
