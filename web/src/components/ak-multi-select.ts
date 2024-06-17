@@ -1,4 +1,4 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AkControlElement } from "@goauthentik/elements/AkControlElement.js";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
 import { TemplateResult, css, html, nothing } from "lit";
@@ -25,7 +25,7 @@ const selectStyles = css`
  * @part select - The select itself, to override the height specified above.
  */
 @customElement("ak-multi-select")
-export class AkMultiSelect extends AKElement {
+export class AkMultiSelect extends AkControlElement {
     constructor() {
         super();
         this.dataset.akControl = "true";

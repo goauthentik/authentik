@@ -77,6 +77,7 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
 
     onComplete() {
         setTimeout(() => {
+            // @ts-expect-error
             this.actionTask.status = TaskStatus.INITIAL;
             this.dispatchCustomEvent(`${this.eventPrefix}-reset`);
             this.requestUpdate();
