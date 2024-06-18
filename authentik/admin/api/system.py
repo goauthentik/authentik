@@ -33,7 +33,7 @@ class RuntimeDict(TypedDict):
     platform: str
     uname: str
     openssl_version: str
-    openssl_fips_mode: bool | None
+    openssl_fips_enabled: bool | None
     authentik_version: str
 
 
