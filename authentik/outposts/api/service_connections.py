@@ -12,13 +12,13 @@ from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, ReadOnlyField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
     MetaNameSerializer,
+    ModelSerializer,
     PassiveSerializer,
 )
 from authentik.outposts.models import (
