@@ -7,9 +7,8 @@ from rest_framework.decorators import action
 from rest_framework.fields import BooleanField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
 
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.events.api.tasks import SystemTaskSerializer
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 
