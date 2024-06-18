@@ -8,6 +8,7 @@ postgresql:
   password: "env://POSTGRES_PASSWORD"
   use_pgbouncer: false
   use_pgpool: false
+  pgbouncer_conn_max_age: null
   test:
     name: test_authentik
   read_replicas: {}

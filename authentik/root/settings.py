@@ -312,7 +312,7 @@ if CONFIG.get_bool("postgresql.use_pgbouncer", False):
     # https://docs.djangoproject.com/en/4.0/ref/databases/#transaction-pooling-server-side-cursors
     DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
     # https://docs.djangoproject.com/en/4.0/ref/databases/#persistent-connections
-    DATABASES["default"]["CONN_MAX_AGE"] = None  # persistent
+    DATABASES["default"]["CONN_MAX_AGE"] = CONFIG.get("postgresql.pgbouncer_conn_max_age", None)
 
 for replica in CONFIG.get_keys("postgresql.read_replicas"):
     _database = DATABASES["default"].copy()
