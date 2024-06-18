@@ -199,7 +199,9 @@ class AuditMiddleware:
         thread.kwargs.update(thread_kwargs or {})
         thread.run()
 
-    def pre_delete_handler(self, request: HttpRequest, sender, instance: Model, thread_kwargs: dict | None = None, **_):
+    def pre_delete_handler(
+        self, request: HttpRequest, sender, instance: Model, thread_kwargs: dict | None = None, **_
+    ):
         """Signal handler for all object's pre_delete"""
         if not should_log_model(instance):  # pragma: no cover
             return

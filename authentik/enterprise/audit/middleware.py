@@ -110,7 +110,6 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
             thread_kwargs["diff"] = diff
         return super().post_save_handler(request, sender, instance, created, thread_kwargs, **_)
 
-
     def pre_delete_handler(self, request: HttpRequest, sender, instance: Model, **_):
         """Signal handler for all object's pre_delete"""
         if not should_log_model(instance):  # pragma: no cover
