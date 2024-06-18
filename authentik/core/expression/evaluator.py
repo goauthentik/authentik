@@ -76,7 +76,10 @@ class PropertyMappingEvaluator(BaseEvaluator):
         )
         if "request" in self._context:
             req: PolicyRequest = self._context["request"]
-            event.from_http(req.http_request, req.user)
+            if req.http_request:
+                event.from_http(req.http_request, req.user)
+            elif req.user:
+                event.set_user(req.user)
             return
         event.save()
 
