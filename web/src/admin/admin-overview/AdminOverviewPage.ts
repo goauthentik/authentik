@@ -41,7 +41,7 @@ export function versionFamily(): string {
 
 const RELEASE = `${VERSION.split(".").slice(0, -1).join(".")}#fixed-in-${VERSION.replaceAll(
     ".",
-    ""
+    "",
 )}`;
 
 const AdminOverviewBase = WithLicenseSummary(AKElement);
@@ -143,7 +143,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
                         <ak-aggregate-card
                             icon="pf-icon pf-icon-server"
                             header=${msg(
-                                "Logins and authorizations over the last week (per 8 hours)"
+                                "Logins and authorizations over the last week (per 8 hours)",
                             )}
                         >
                             <ak-charts-admin-login-authorization></ak-charts-admin-login-authorization>
@@ -209,13 +209,13 @@ export class AdminOverviewPage extends AdminOverviewBase {
 
             const content = html`${label}${ex(
                 () => html`<i class="fas fa-external-link-alt ak-external-link"></i>`,
-                () => nothing
+                () => nothing,
             )}`;
 
             return html`<li>
                 ${ex(
                     () => html`<a href="${url}" class="pf-u-mb-xl" target="_blank">${content}</a>`,
-                    () => html`<a href="${url}" class="pf-u-mb-xl" )>${content}</a>`
+                    () => html`<a href="${url}" class="pf-u-mb-xl" )>${content}</a>`,
                 )}
             </li>`;
         };
