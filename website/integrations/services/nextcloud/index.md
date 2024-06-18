@@ -19,12 +19,13 @@ note to self: same as other. mabye move to paragraph
 In case something goes wrong with the configuration, you can use the URL `http://nextcloud.company/login?direct=1` to log in using the built-in authentication.
 :::
 
-## Authentication
+## Preparation
 
-There are 2 ways to setup single sign on (SSO) for Nextcloud:
+The following placeholders will be used:
 
--   [via OIDC Connect (OAuth)](#openid-connect-auth)
--   [via SAML](#saml-auth)
+-   `nextcloud.company` is the FQDN of the Nextcloud install.
+-   `authentik.company` is the FQDN of the authentik install.
+-   `authentik.local` is the internal FQDN of the authentik install (only relevant when running authentik and Nextcloud behind a reverse proxy)
 
 ### OpenID Connect auth
 
@@ -216,13 +217,6 @@ If you do not have any relying parties accessing authentik from the outside, you
 :::
 
 ### SAML auth
-
-#### Preparation
-
-The following placeholders will be used:
-
--   `nextcloud.company` is the FQDN of the Nextcloud install.
--   `authentik.company` is the FQDN of the authentik install.
 
 Create an application in authentik and note the slug you choose, as this will be used later. In the Admin Interface, go to _Applications_ -> _Providers_. Create a _SAML provider_ with the following parameters:
 
