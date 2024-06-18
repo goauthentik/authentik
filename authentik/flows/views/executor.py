@@ -24,11 +24,8 @@ from sentry_sdk.api import set_tag
 from sentry_sdk.hub import Hub
 from structlog.stdlib import BoundLogger, get_logger
 
-<<<<<<< HEAD
 from authentik.api.authentication import TokenAuthentication
-=======
 from authentik.brands.models import Brand
->>>>>>> main
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction, cleanse_dict
 from authentik.flows.apps import HIST_FLOW_EXECUTION_STAGE_TIME
