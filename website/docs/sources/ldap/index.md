@@ -73,6 +73,22 @@ By default, authentik ships with [pre-configured mappings](../../property-mappin
 
 You can assign the value of a mapping to any user attribute, or save it as a custom attribute by prefixing the object field with `attribute.` Keep in mind though, data types from the LDAP server will be carried over. This means that with some implementations, where fields are stored as array in LDAP, they will be saved as array in authentik. To prevent this, use the built-in `list_flatten` function.
 
+### Custom LDAP Property Mapping
+
+If the default source mapping is not enough, you can set your own custom LDAP property mapping.
+
+For example the setting `ldap-displayName-mapping:name`  means that the LDAP source field `displayName` will be mapped to the `name` field in authentik.
+
+Here are the steps:
+
+1. In authentik, open the Admin interface, and then navigate to **Customization -> Property Mappings**.
+2. Click **Create**, select **LDAP Property Mapping**, and then click **Next**.
+3. Type a unique and meaningful **Name**, such as `ldap-displayName-mapping:name`.
+4. In the**Object field** field, type the name of an existing authentik field, such as `name`. If you want to add more extended attributes, you can type `attributes.mobile` for example.
+5. In the **Expression**  field enter Python expressions to retrieve the value from LDAP source. For example `return list_flatten(ldap.get("displayName"))`.
+
+`list_flatten(["input string array"])` will convert a string array to a single string. If you are not sure whether the LDAP field is an array or not, you can map the field to any `attributes.xxx` and then check the sync result in authentik UI.
+
 ## Password login
 
 By default, authentik doesn't update the password it stores for a user when they log in using their LDAP credentials. That means that if the LDAP server is not reachable by authentik, users will not be able to log in. This behavior can be turned on with the **Update internal password on login** setting on the LDAP source.
