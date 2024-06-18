@@ -31,7 +31,7 @@ export class AggregateCard extends AKElement implements IAggregateCard {
      * the header.
      *
      * @attr
-     */ 
+     */
     @property()
     icon?: string;
 
@@ -39,7 +39,7 @@ export class AggregateCard extends AKElement implements IAggregateCard {
      * The title of the card.
      *
      * @attr
-     */ 
+     */
     @property()
     header?: string;
 
@@ -47,7 +47,7 @@ export class AggregateCard extends AKElement implements IAggregateCard {
      * If this is non-empty, a link icon will be shown in the upper-right corner of the card.
      *
      * @attr
-     */ 
+     */
     @property()
     headerLink?: string;
 
@@ -55,7 +55,7 @@ export class AggregateCard extends AKElement implements IAggregateCard {
      * If this is non-empty, a small-text footer will be shown at the bottom of the card
      *
      * @attr
-     */ 
+     */
     @property()
     subtext?: string;
 
@@ -64,7 +64,7 @@ export class AggregateCard extends AKElement implements IAggregateCard {
      * centered by default.
      *
      * @attr
-     */ 
+     */
     @property({ type: Boolean, attribute: "left-justified" })
     leftJustified = false;
 
