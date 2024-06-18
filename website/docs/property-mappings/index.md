@@ -23,7 +23,7 @@ LDAP Property Mappings are used when you define a LDAP Source. These mappings de
 
 These are configured with most common LDAP setups.
 
-You can also configure [custom LDAP property mappings](../sources/ldap/).
+You can also configure [custom LDAP property mappings](../sources/ldap/index.md#custom-ldap-property-mapping).
 
 ## Scope Mapping
 
