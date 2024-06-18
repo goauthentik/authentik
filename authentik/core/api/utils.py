@@ -52,7 +52,11 @@ class ModelSerializer(BaseModelSerializer):
         # updated instance and we do not want it to collide with .update()
         for attr, value in m2m_fields:
             field = getattr(instance, attr)
-            field.set(value, bulk=False)
+            # We can't check for inheritance here as m2m managers are generated dynamically
+            if field.__class__.__name__ == "RelatedManager":
+                field.set(value, bulk=False)
+            else:
+                field.set(value)
 
         return instance
 
