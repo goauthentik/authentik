@@ -11,6 +11,8 @@ scripts/                        @goauthentik/backend
 tests/                          @goauthentik/backend
 pyproject.toml                  @goauthentik/backend
 poetry.lock                     @goauthentik/backend
+go.mod                          @goauthentik/backend
+go.sum                          @goauthentik/backend
 # Infrastructure
 .github/                        @goauthentik/infrastructure
 Dockerfile                      @goauthentik/infrastructure

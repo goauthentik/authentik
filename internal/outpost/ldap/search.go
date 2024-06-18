@@ -78,5 +78,4 @@ func (ls *LDAPServer) fallbackRootDSE(req *search.Request) (ldap.ServerSearchRes
 		},
 		Referrals: []string{}, Controls: []ldap.Control{}, ResultCode: ldap.LDAPResultSuccess,
 	}, nil
-
 }

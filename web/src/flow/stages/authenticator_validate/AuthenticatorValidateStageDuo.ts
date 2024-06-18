@@ -1,20 +1,10 @@
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
-import "@goauthentik/flow/FormStatic";
-import { AuthenticatorValidateStage } from "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import { BaseDeviceStage } from "@goauthentik/flow/stages/authenticator_validate/base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import { PropertyValues, TemplateResult, html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 import {
     AuthenticatorValidationChallenge,
@@ -23,7 +13,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-validate-duo")
-export class AuthenticatorValidateStageWebDuo extends BaseStage<
+export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest
 > {
@@ -33,14 +23,26 @@ export class AuthenticatorValidateStageWebDuo extends BaseStage<
     @property({ type: Boolean })
     showBackButton = false;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
-    }
+    @state()
+    authenticating = false;
 
-    firstUpdated(): void {
-        this.host?.submit({
-            duo: this.deviceChallenge?.deviceUid,
-        });
+    updated(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("challenge") && this.challenge !== undefined) {
+            this.authenticating = true;
+            this.host
+                ?.submit(
+                    {
+                        duo: this.deviceChallenge?.deviceUid,
+                    },
+                    { invisible: true },
+                )
+                .then(() => {
+                    this.authenticating = false;
+                })
+                .catch(() => {
+                    this.authenticating = false;
+                });
+        }
     }
 
     render(): TemplateResult {
@@ -49,56 +51,25 @@ export class AuthenticatorValidateStageWebDuo extends BaseStage<
             </ak-empty-state>`;
         }
         const errors = this.challenge.responseErrors?.duo || [];
+        const errorMessage = errors.map((err) => err.string);
         return html`<div class="pf-c-login__main-body">
-                <form
-                    class="pf-c-form"
-                    @submit=${(e: Event) => {
-                        this.submitForm(e);
-                    }}
+            <form
+                class="pf-c-form"
+                @submit=${(e: Event) => {
+                    this.submitForm(e);
+                }}
+            >
+                ${this.renderUserInfo()}
+                <ak-empty-state
+                    ?loading="${this.authenticating}"
+                    header=${this.authenticating
+                        ? msg("Sending Duo push notification...")
+                        : errorMessage.join(", ") || msg("Failed to authenticate")}
+                    icon="fas fa-times"
                 >
-                    <ak-form-static
-                        class="pf-c-form__group"
-                        userAvatar="${this.challenge.pendingUserAvatar}"
-                        user=${this.challenge.pendingUser}
-                    >
-                        <div slot="link">
-                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${msg("Not you?")}</a
-                            >
-                        </div>
-                    </ak-form-static>
-
-                    ${errors.length > 0
-                        ? errors.map((err) => {
-                              if (err.code === "denied") {
-                                  return html` <ak-stage-access-denied-icon
-                                      errorMessage=${err.string}
-                                  >
-                                  </ak-stage-access-denied-icon>`;
-                              }
-                              return html`<p>${err.string}</p>`;
-                          })
-                        : html`${msg("Sending Duo push notification")}`}
-                </form>
-            </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links">
-                    ${this.showBackButton
-                        ? html`<li class="pf-c-login__main-footer-links-item">
-                              <button
-                                  class="pf-c-button pf-m-secondary pf-m-block"
-                                  @click=${() => {
-                                      if (!this.host) return;
-                                      (
-                                          this.host as AuthenticatorValidateStage
-                                      ).selectedDeviceChallenge = undefined;
-                                  }}
-                              >
-                                  ${msg("Return to device picker")}
-                              </button>
-                          </li>`
-                        : html``}
-                </ul>
-            </footer>`;
+                </ak-empty-state>
+                <div class="pf-c-form__group pf-m-action">${this.renderReturnToDevicePicker()}</div>
+            </form>
+        </div>`;
     }
 }

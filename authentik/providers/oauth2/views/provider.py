@@ -1,4 +1,5 @@
 """authentik OAuth2 OpenID well-known views"""
+
 from typing import Any
 
 from django.http import HttpRequest, HttpResponse, JsonResponse
@@ -7,7 +8,7 @@ from django.views import View
 from guardian.shortcuts import get_anonymous_user
 from structlog.stdlib import get_logger
 
-from authentik.core.exceptions import PropertyMappingExpressionException
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Application
 from authentik.providers.oauth2.constants import (
     ACR_AUTHENTIK_DEFAULT,

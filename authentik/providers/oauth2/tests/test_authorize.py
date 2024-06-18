@@ -1,10 +1,12 @@
 """Test authorize view"""
+
 from unittest.mock import MagicMock, patch
 
 from django.test import RequestFactory
 from django.urls import reverse
 from django.utils.timezone import now
 
+from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.events.models import Event, EventAction
@@ -18,6 +20,7 @@ from authentik.providers.oauth2.models import (
     AuthorizationCode,
     GrantTypes,
     OAuth2Provider,
+    ScopeMapping,
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 from authentik.providers.oauth2.views.authorize import OAuthAuthorizationParams
@@ -33,8 +36,21 @@ class TestAuthorize(OAuthTestCase):
 
     def test_invalid_grant_type(self):
         """Test with invalid grant type"""
+        OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            authorization_flow=create_test_flow(),
+            redirect_uris="http://local.invalid/Foo",
+        )
         with self.assertRaises(AuthorizeError):
-            request = self.factory.get("/", data={"response_type": "invalid"})
+            request = self.factory.get(
+                "/",
+                data={
+                    "response_type": "invalid",
+                    "client_id": "test",
+                    "redirect_uri": "http://local.invalid/Foo",
+                },
+            )
             OAuthAuthorizationParams.from_request(request)
 
     def test_invalid_client_id(self):
@@ -81,6 +97,25 @@ class TestAuthorize(OAuthTestCase):
                     "response_type": "code",
                     "client_id": "test",
                     "redirect_uri": "http://localhost",
+                },
+            )
+            OAuthAuthorizationParams.from_request(request)
+
+    def test_blocked_redirect_uri(self):
+        """test missing/invalid redirect URI"""
+        OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            authorization_flow=create_test_flow(),
+            redirect_uris="data:local.invalid",
+        )
+        with self.assertRaises(RedirectUriError):
+            request = self.factory.get(
+                "/",
+                data={
+                    "response_type": "code",
+                    "client_id": "test",
+                    "redirect_uri": "data:localhost",
                 },
             )
             OAuthAuthorizationParams.from_request(request)
@@ -172,13 +207,23 @@ class TestAuthorize(OAuthTestCase):
         )
         OAuthAuthorizationParams.from_request(request)
 
+    @apply_blueprint("system/providers-oauth2.yaml")
     def test_response_type(self):
         """test response_type"""
-        OAuth2Provider.objects.create(
+        provider = OAuth2Provider.objects.create(
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid/Foo",
+        )
+        provider.property_mappings.set(
+            ScopeMapping.objects.filter(
+                managed__in=[
+                    "goauthentik.io/providers/oauth2/scope-openid",
+                    "goauthentik.io/providers/oauth2/scope-email",
+                    "goauthentik.io/providers/oauth2/scope-profile",
+                ]
+            )
         )
         request = self.factory.get(
             "/",
@@ -292,6 +337,7 @@ class TestAuthorize(OAuthTestCase):
             delta=5,
         )
 
+    @apply_blueprint("system/providers-oauth2.yaml")
     def test_full_implicit(self):
         """Test full authorization"""
         flow = create_test_flow()
@@ -302,7 +348,21 @@ class TestAuthorize(OAuthTestCase):
             redirect_uris="http://localhost",
             signing_key=self.keypair,
         )
-        Application.objects.create(name="app", slug="app", provider=provider)
+        provider.property_mappings.set(
+            ScopeMapping.objects.filter(
+                managed__in=[
+                    "goauthentik.io/providers/oauth2/scope-openid",
+                    "goauthentik.io/providers/oauth2/scope-email",
+                    "goauthentik.io/providers/oauth2/scope-profile",
+                ]
+            )
+        )
+        provider.property_mappings.add(
+            ScopeMapping.objects.create(
+                name=generate_id(), scope_name="test", expression="""return {"sub": "foo"}"""
+            )
+        )
+        Application.objects.create(name=generate_id(), slug=generate_id(), provider=provider)
         state = generate_id()
         user = create_test_admin_user()
         self.client.force_login(user)
@@ -323,7 +383,7 @@ class TestAuthorize(OAuthTestCase):
                     "response_type": "id_token",
                     "client_id": "test",
                     "state": state,
-                    "scope": "openid",
+                    "scope": "openid test",
                     "redirect_uri": "http://localhost",
                     "nonce": generate_id(),
                 },
@@ -348,6 +408,7 @@ class TestAuthorize(OAuthTestCase):
             )
             jwt = self.validate_jwt(token, provider)
             self.assertEqual(jwt["amr"], ["pwd"])
+            self.assertEqual(jwt["sub"], "foo")
             self.assertAlmostEqual(
                 jwt["exp"] - now().timestamp(),
                 expires,
@@ -409,6 +470,7 @@ class TestAuthorize(OAuthTestCase):
                 delta=5,
             )
 
+    @apply_blueprint("system/providers-oauth2.yaml")
     def test_full_form_post_id_token(self):
         """Test full authorization (form_post response)"""
         flow = create_test_flow()
@@ -418,6 +480,15 @@ class TestAuthorize(OAuthTestCase):
             authorization_flow=flow,
             redirect_uris="http://localhost",
             signing_key=self.keypair,
+        )
+        provider.property_mappings.set(
+            ScopeMapping.objects.filter(
+                managed__in=[
+                    "goauthentik.io/providers/oauth2/scope-openid",
+                    "goauthentik.io/providers/oauth2/scope-email",
+                    "goauthentik.io/providers/oauth2/scope-profile",
+                ]
+            )
         )
         app = Application.objects.create(name=generate_id(), slug=generate_id(), provider=provider)
         state = generate_id()
@@ -440,6 +511,7 @@ class TestAuthorize(OAuthTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
         token: AccessToken = AccessToken.objects.filter(user=user).first()
+        self.assertIsNotNone(token)
         self.assertJSONEqual(
             response.content.decode(),
             {

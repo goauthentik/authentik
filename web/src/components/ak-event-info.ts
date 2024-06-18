@@ -1,10 +1,10 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { VERSION } from "@goauthentik/common/constants";
+import { PFSize } from "@goauthentik/common/enums.js";
 import { EventContext, EventModel, EventWithContext } from "@goauthentik/common/events";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Expand";
 import "@goauthentik/elements/Spinner";
-import { PFSize } from "@goauthentik/elements/Spinner";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -16,7 +16,9 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
+import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
+import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { EventActions, FlowsApi } from "@goauthentik/api";
@@ -78,7 +80,9 @@ export class EventInfo extends AKElement {
             PFButton,
             PFFlex,
             PFCard,
+            PFTable,
             PFList,
+            PFSplit,
             PFDescriptionList,
             css`
                 code {
@@ -243,11 +247,78 @@ export class EventInfo extends AKElement {
     }
 
     renderModelChanged() {
+        const diff = this.event.context.diff as unknown as {
+            [key: string]: {
+                new_value: unknown;
+                previous_value: unknown;
+                add?: unknown[];
+                remove?: unknown[];
+                clear?: boolean;
+            };
+        };
+        let diffBody = html``;
+        if (diff) {
+            diffBody = html`<div class="pf-l-split__item pf-m-fill">
+                    <div class="pf-c-card__title">${msg("Changes made:")}</div>
+                    <table class="pf-c-table pf-m-compact pf-m-grid-md" role="grid">
+                        <thead>
+                            <tr role="row">
+                                <th role="columnheader" scope="col">${msg("Key")}</th>
+                                <th role="columnheader" scope="col">${msg("Previous value")}</th>
+                                <th role="columnheader" scope="col">${msg("New value")}</th>
+                            </tr>
+                        </thead>
+                        <tbody role="rowgroup">
+                            ${Object.keys(diff).map((key) => {
+                                const value = diff[key];
+                                const previousCol = value.previous_value
+                                    ? JSON.stringify(value.previous_value, null, 4)
+                                    : msg("-");
+                                let newCol = html``;
+                                if (value.add || value.remove) {
+                                    newCol = html`<ul class="pf-c-list">
+                                        ${(value.add || value.remove)?.map((item) => {
+                                            let itemLabel = "";
+                                            if (value.add) {
+                                                itemLabel = msg(str`Added ID ${item}`);
+                                            } else if (value.remove) {
+                                                itemLabel = msg(str`Removed ID ${item}`);
+                                            }
+                                            return html`<li>${itemLabel}</li>`;
+                                        })}
+                                    </ul>`;
+                                } else if (value.clear) {
+                                    newCol = html`${msg("Cleared")}`;
+                                } else {
+                                    newCol = html`<pre>
+${JSON.stringify(value.new_value, null, 4)}</pre
+                                    >`;
+                                }
+                                return html` <tr role="row">
+                                    <td role="cell"><pre>${key}</pre></td>
+                                    <td role="cell">
+                                        <pre>${previousCol}</pre>
+                                    </td>
+                                    <td role="cell">${newCol}</td>
+                                </tr>`;
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+                </div>`;
+        }
         return html`
-            <div class="pf-c-card__title">${msg("Affected model:")}</div>
-            <div class="pf-c-card__body">
-                ${this.getModelInfo(this.event.context?.model as EventModel)}
+            <div class="pf-l-split">
+                <div class="pf-l-split__item pf-m-fill">
+                    <div class="pf-c-card__title">${msg("Affected model:")}</div>
+                    <div class="pf-c-card__body">
+                        ${this.getModelInfo(this.event.context?.model as EventModel)}
+                    </div>
+                </div>
+                ${diffBody}
             </div>
+            <br />
+            <ak-expand>${this.renderDefaultResponse()}</ak-expand>
         `;
     }
 
@@ -285,10 +356,12 @@ export class EventInfo extends AKElement {
     }
 
     renderEmailSent() {
+        let body = this.event.context.body as string;
+        body = body.replace("cid:logo.png", "/static/dist/assets/icons/icon_left_brand.png");
         return html`<div class="pf-c-card__title">${msg("Email info:")}</div>
             <div class="pf-c-card__body">${this.getEmailInfo(this.event.context)}</div>
             <ak-expand>
-                <iframe srcdoc=${this.event.context.body}></iframe>
+                <iframe srcdoc=${body}></iframe>
             </ak-expand>`;
     }
 

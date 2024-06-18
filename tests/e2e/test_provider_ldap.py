@@ -1,8 +1,7 @@
 """LDAP and Outpost e2e tests"""
+
 from dataclasses import asdict
-from sys import platform
 from time import sleep
-from unittest.case import skipUnless
 
 from docker.client import DockerClient, from_env
 from docker.models.containers import Container
@@ -14,13 +13,13 @@ from authentik.blueprints.tests import apply_blueprint, reconcile_app
 from authentik.core.models import Application, User
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow
+from authentik.lib.generators import generate_id
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
 from authentik.providers.ldap.models import APIAccessMode, LDAPProvider
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
-@skipUnless(platform.startswith("linux"), "requires local docker")
 class TestProviderLDAP(SeleniumTestCase):
     """LDAP and Outpost e2e tests"""
 
@@ -37,7 +36,10 @@ class TestProviderLDAP(SeleniumTestCase):
         container = client.containers.run(
             image=self.get_container_image("ghcr.io/goauthentik/dev-ldap"),
             detach=True,
-            network_mode="host",
+            ports={
+                "3389": "3389",
+                "6636": "6636",
+            },
             environment={
                 "AUTHENTIK_HOST": self.live_server_url,
                 "AUTHENTIK_TOKEN": outpost.token.key,
@@ -51,15 +53,15 @@ class TestProviderLDAP(SeleniumTestCase):
         self.user.save()
 
         ldap: LDAPProvider = LDAPProvider.objects.create(
-            name="ldap_provider",
+            name=generate_id(),
             authorization_flow=Flow.objects.get(slug="default-authentication-flow"),
             search_group=self.user.ak_groups.first(),
             search_mode=APIAccessMode.CACHED,
         )
         # we need to create an application to actually access the ldap
-        Application.objects.create(name="ldap", slug="ldap", provider=ldap)
+        Application.objects.create(name=generate_id(), slug=generate_id(), provider=ldap)
         outpost: Outpost = Outpost.objects.create(
-            name="ldap_outpost",
+            name=generate_id(),
             type=OutpostType.LDAP,
             _config=asdict(OutpostConfig(log_level="debug")),
         )
@@ -69,7 +71,7 @@ class TestProviderLDAP(SeleniumTestCase):
 
         # Wait until outpost healthcheck succeeds
         healthcheck_retries = 0
-        while healthcheck_retries < 50:
+        while healthcheck_retries < 50:  # noqa: PLR2004
             if len(outpost.state) > 0:
                 state = outpost.state[0]
                 if state.last_seen:
@@ -182,7 +184,12 @@ class TestProviderLDAP(SeleniumTestCase):
         self.assertTrue(
             Event.objects.filter(
                 action=EventAction.LOGIN_FAILED,
-                user={"pk": anon.pk, "email": anon.email, "username": anon.username},
+                user={
+                    "pk": anon.pk,
+                    "email": anon.email,
+                    "username": anon.username,
+                    "is_anonymous": True,
+                },
             ).exists(),
         )
 
@@ -191,6 +198,7 @@ class TestProviderLDAP(SeleniumTestCase):
         "default/flow-default-authentication-flow.yaml",
         "default/flow-default-invalidation-flow.yaml",
     )
+    @reconcile_app("authentik_tenants")
     @reconcile_app("authentik_outposts")
     def test_ldap_bind_search(self):
         """Test simple bind + search"""
@@ -339,6 +347,7 @@ class TestProviderLDAP(SeleniumTestCase):
         "default/flow-default-authentication-flow.yaml",
         "default/flow-default-invalidation-flow.yaml",
     )
+    @reconcile_app("authentik_tenants")
     @reconcile_app("authentik_outposts")
     def test_ldap_schema(self):
         """Test LDAP Schema"""
@@ -360,6 +369,7 @@ class TestProviderLDAP(SeleniumTestCase):
         "default/flow-default-authentication-flow.yaml",
         "default/flow-default-invalidation-flow.yaml",
     )
+    @reconcile_app("authentik_tenants")
     @reconcile_app("authentik_outposts")
     def test_ldap_search_attrs_filter(self):
         """Test search with attributes filtering"""

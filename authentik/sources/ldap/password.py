@@ -1,10 +1,14 @@
 """Help validate and update passwords in LDAP"""
+
 from enum import IntFlag
 from re import split
-from typing import Optional
 
 from ldap3 import BASE
-from ldap3.core.exceptions import LDAPAttributeError, LDAPUnwillingToPerformResult
+from ldap3.core.exceptions import (
+    LDAPAttributeError,
+    LDAPNoSuchAttributeResult,
+    LDAPUnwillingToPerformResult,
+)
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
@@ -15,6 +19,7 @@ LOGGER = get_logger()
 
 NON_ALPHA = r"~!@#$%^&*_-+=`|\(){}[]:;\"'<>,.?/"
 RE_DISPLAYNAME_SEPARATORS = r",\.–—_\s#\t"
+MIN_TOKEN_SIZE = 3
 
 
 class PwdProperties(IntFlag):
@@ -97,7 +102,7 @@ class LDAPPasswordChanger:
             return
         try:
             self._connection.extend.microsoft.modify_password(user_dn, password)
-        except (LDAPAttributeError, LDAPUnwillingToPerformResult):
+        except (LDAPAttributeError, LDAPUnwillingToPerformResult, LDAPNoSuchAttributeResult):
             self._connection.extend.standard.modify_password(user_dn, new_password=password)
 
     def _ad_check_password_existing(self, password: str, user_dn: str) -> bool:
@@ -114,7 +119,7 @@ class LDAPPasswordChanger:
             raise AssertionError()
         user_attributes = users[0]["attributes"]
         # If sAMAccountName is longer than 3 chars, check if its contained in password
-        if len(user_attributes["sAMAccountName"]) >= 3:
+        if len(user_attributes["sAMAccountName"]) >= MIN_TOKEN_SIZE:
             if password.lower() in user_attributes["sAMAccountName"].lower():
                 return False
         # No display name set, can't check any further
@@ -124,13 +129,13 @@ class LDAPPasswordChanger:
             display_name_tokens = split(RE_DISPLAYNAME_SEPARATORS, display_name)
             for token in display_name_tokens:
                 # Ignore tokens under 3 chars
-                if len(token) < 3:
+                if len(token) < MIN_TOKEN_SIZE:
                     continue
                 if token.lower() in password.lower():
                     return False
         return True
 
-    def ad_password_complexity(self, password: str, user: Optional[User] = None) -> bool:
+    def ad_password_complexity(self, password: str, user: User | None = None) -> bool:
         """Check if password matches Active directory password policies
 
         https://docs.microsoft.com/en-us/windows/security/threat-protection/

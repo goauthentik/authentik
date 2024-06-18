@@ -1,4 +1,5 @@
 """authentik administration overview"""
+
 from django.conf import settings
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework.fields import IntegerField

@@ -1,5 +1,6 @@
 """Twitter OAuth Views"""
-from typing import Any, Optional
+
+from typing import Any
 
 from authentik.lib.generators import generate_id
 from authentik.sources.oauth.clients.oauth2 import (
@@ -19,7 +20,7 @@ class TwitterClient(UserprofileHeaderAuthClient):
     # is set via query parameter, so we reuse the azure client
     # see https://github.com/goauthentik/authentik/issues/1910
 
-    def get_access_token(self, **request_kwargs) -> Optional[dict[str, Any]]:
+    def get_access_token(self, **request_kwargs) -> dict[str, Any] | None:
         return super().get_access_token(
             auth=(
                 self.source.consumer_key,
@@ -66,8 +67,8 @@ class TwitterType(SourceType):
 
     callback_view = TwitterOAuthCallback
     redirect_view = TwitterOAuthRedirect
-    name = "Twitter"
-    slug = "twitter"
+    verbose_name = "Twitter"
+    name = "twitter"
 
     authorization_url = "https://twitter.com/i/oauth2/authorize"
     access_token_url = "https://api.twitter.com/2/oauth2/token"  # nosec

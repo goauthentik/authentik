@@ -1,18 +1,19 @@
 """policy structures"""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from django.db.models import Model
 from django.http import HttpRequest
 from structlog.stdlib import get_logger
 
-from authentik.events.geo import GEOIP_READER
-from authentik.lib.utils.http import get_client_ip
+from authentik.events.context_processors.base import get_context_processors
 
 if TYPE_CHECKING:
     from authentik.core.models import User
+    from authentik.events.logs import LogEvent
     from authentik.policies.models import PolicyBinding
 
 LOGGER = get_logger()
@@ -24,8 +25,8 @@ class PolicyRequest:
     """Data-class to hold policy request data"""
 
     user: User
-    http_request: Optional[HttpRequest]
-    obj: Optional[Model]
+    http_request: HttpRequest | None
+    obj: Model | None
     context: dict[str, Any]
     debug: bool
 
@@ -39,12 +40,8 @@ class PolicyRequest:
     def set_http_request(self, request: HttpRequest):  # pragma: no cover
         """Load data from HTTP request, including geoip when enabled"""
         self.http_request = request
-        if not GEOIP_READER.enabled:
-            return
-        client_ip = get_client_ip(request)
-        if not client_ip:
-            return
-        self.context["geoip"] = GEOIP_READER.city(client_ip)
+        for processor in get_context_processors():
+            self.context.update(processor.enrich_context(request))
 
     @property
     def should_cache(self) -> bool:
@@ -75,10 +72,10 @@ class PolicyResult:
     messages: tuple[str, ...]
     raw_result: Any
 
-    source_binding: Optional["PolicyBinding"]
-    source_results: Optional[list["PolicyResult"]]
+    source_binding: PolicyBinding | None
+    source_results: list[PolicyResult] | None
 
-    log_messages: Optional[list[dict]]
+    log_messages: list[LogEvent] | None
 
     def __init__(self, passing: bool, *messages: str):
         self.passing = passing

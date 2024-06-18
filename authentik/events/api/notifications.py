@@ -1,4 +1,5 @@
 """Notification API Views"""
+
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
@@ -8,11 +9,11 @@ from rest_framework.fields import ReadOnlyField
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.core.api.used_by import UsedByMixin
+from authentik.core.api.utils import ModelSerializer
 from authentik.events.api.events import EventSerializer
 from authentik.events.models import Notification
 

@@ -1,4 +1,6 @@
 """SAMLProvider API Views"""
+
+from copy import copy
 from xml.etree.ElementTree import ParseError  # nosec
 
 from defusedxml.ElementTree import fromstring
@@ -9,6 +11,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
+from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, FileField, SerializerMethodField
 from rest_framework.parsers import MultiPartParser
@@ -19,7 +22,6 @@ from rest_framework.serializers import PrimaryKeyRelatedField, ValidationError
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
-from authentik.api.decorators import permission_required
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
@@ -30,6 +32,7 @@ from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
 from authentik.providers.saml.processors.metadata import MetadataProcessor
 from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
+from authentik.rbac.decorators import permission_required
 from authentik.sources.saml.processors.constants import SAML_BINDING_POST, SAML_BINDING_REDIRECT
 
 LOGGER = get_logger()
@@ -67,7 +70,7 @@ class SAMLProviderSerializer(ProviderSerializer):
                     kwargs={"application_slug": instance.application.slug},
                 )
             )
-        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+        except Provider.application.RelatedObjectDoesNotExist:
             return "-"
 
     def get_url_sso_redirect(self, instance: SAMLProvider) -> str:
@@ -82,7 +85,7 @@ class SAMLProviderSerializer(ProviderSerializer):
                     kwargs={"application_slug": instance.application.slug},
                 )
             )
-        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+        except Provider.application.RelatedObjectDoesNotExist:
             return "-"
 
     def get_url_sso_init(self, instance: SAMLProvider) -> str:
@@ -97,7 +100,7 @@ class SAMLProviderSerializer(ProviderSerializer):
                     kwargs={"application_slug": instance.application.slug},
                 )
             )
-        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+        except Provider.application.RelatedObjectDoesNotExist:
             return "-"
 
     def get_url_slo_post(self, instance: SAMLProvider) -> str:
@@ -112,7 +115,7 @@ class SAMLProviderSerializer(ProviderSerializer):
                     kwargs={"application_slug": instance.application.slug},
                 )
             )
-        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+        except Provider.application.RelatedObjectDoesNotExist:
             return "-"
 
     def get_url_slo_redirect(self, instance: SAMLProvider) -> str:
@@ -127,7 +130,7 @@ class SAMLProviderSerializer(ProviderSerializer):
                     kwargs={"application_slug": instance.application.slug},
                 )
             )
-        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+        except Provider.application.RelatedObjectDoesNotExist:
             return "-"
 
     class Meta:
@@ -213,19 +216,19 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         try:
             provider = get_object_or_404(SAMLProvider, pk=pk)
         except ValueError:
-            raise Http404
+            raise Http404 from None
         try:
             proc = MetadataProcessor(provider, request)
             proc.force_binding = request.query_params.get("force_binding", None)
             metadata = proc.build_entity_descriptor()
             if "download" in request.query_params:
                 response = HttpResponse(metadata, content_type="application/xml")
-                response[
-                    "Content-Disposition"
-                ] = f'attachment; filename="{provider.name}_authentik_meta.xml"'
+                response["Content-Disposition"] = (
+                    f'attachment; filename="{provider.name}_authentik_meta.xml"'
+                )
                 return response
             return Response({"metadata": metadata})
-        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+        except Provider.application.RelatedObjectDoesNotExist:
             return Response({"metadata": ""})
 
     @permission_required(
@@ -255,7 +258,7 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         try:
             fromstring(file.read())
         except ParseError:
-            raise ValidationError(_("Invalid XML Syntax"))
+            raise ValidationError(_("Invalid XML Syntax")) from None
         file.seek(0)
         try:
             metadata = ServiceProviderMetadataParser().parse(file.read().decode())
@@ -265,8 +268,8 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         except ValueError as exc:  # pragma: no cover
             LOGGER.warning(str(exc))
             raise ValidationError(
-                _("Failed to import Metadata: %(message)s" % {"message": str(exc)}),
-            )
+                _("Failed to import Metadata: {messages}".format_map({"message": str(exc)})),
+            ) from None
         return Response(status=204)
 
     @permission_required(
@@ -277,12 +280,35 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
             200: PropertyMappingPreviewSerializer(),
             400: OpenApiResponse(description="Bad request"),
         },
+        parameters=[
+            OpenApiParameter(
+                name="for_user",
+                location=OpenApiParameter.QUERY,
+                type=OpenApiTypes.INT,
+            )
+        ],
     )
     @action(detail=True, methods=["GET"])
     def preview_user(self, request: Request, pk: int) -> Response:
         """Preview user data for provider"""
         provider: SAMLProvider = self.get_object()
-        processor = AssertionProcessor(provider, request._request, AuthNRequest())
+        for_user = request.user
+        if "for_user" in request.query_params:
+            try:
+                for_user = (
+                    get_objects_for_user(request.user, "authentik_core.preview_user")
+                    .filter(pk=request.query_params.get("for_user"))
+                    .first()
+                )
+                if not for_user:
+                    raise ValidationError({"for_user": "User not found"})
+            except ValueError:
+                raise ValidationError({"for_user": "input must be numerical"}) from None
+
+        new_request = copy(request._request)
+        new_request.user = for_user
+
+        processor = AssertionProcessor(provider, new_request, AuthNRequest())
         attributes = processor.get_attributes()
         name_id = processor.get_name_id()
         data = []

@@ -87,6 +87,7 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
 @customElement("ak-group-related-list")
 export class RelatedGroupList extends Table<Group> {
     checkbox = true;
+    clearOnRefresh = true;
     searchEnabled(): boolean {
         return true;
     }
@@ -104,6 +105,7 @@ export class RelatedGroupList extends Table<Group> {
             pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
             membersByPk: this.targetUser ? [this.targetUser.pk] : [],
+            includeUsers: false,
         });
     }
 
@@ -124,6 +126,7 @@ export class RelatedGroupList extends Table<Group> {
             actionSubtext=${msg(
                 str`Are you sure you want to remove user ${this.targetUser?.username} from the following groups?`,
             )}
+            buttonLabel=${msg("Remove")}
             .objects=${this.selectedElements}
             .delete=${(item: Group) => {
                 if (!this.targetUser) return;

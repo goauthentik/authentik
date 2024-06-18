@@ -1,4 +1,5 @@
 """Test revoke view"""
+
 import json
 from base64 import b64encode
 from dataclasses import asdict

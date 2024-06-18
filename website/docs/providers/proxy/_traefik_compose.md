@@ -1,8 +1,7 @@
 ```yaml
-version: "3.7"
 services:
     traefik:
-        image: traefik:v2.2
+        image: traefik:v3.0
         container_name: traefik
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock

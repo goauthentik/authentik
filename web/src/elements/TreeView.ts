@@ -50,7 +50,7 @@ export class TreeViewNode extends AKElement {
         return pathItems.reverse().join(this.separator);
     }
 
-    protected createRenderRoot(): Element {
+    protected createRenderRoot() {
         return this;
     }
 
@@ -171,8 +171,7 @@ export class TreeView extends AKElement {
             }
             return item;
         } else {
-            const child = this.createNode(path, parentItem.childItems[idx], level + 1);
-            return child;
+            return this.createNode(path, parentItem.childItems[idx], level + 1);
         }
     }
 

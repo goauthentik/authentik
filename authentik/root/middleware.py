@@ -1,23 +1,26 @@
 """Dynamically set SameSite depending if the upstream connection is TLS or not"""
-from hashlib import sha512
-from time import time
-from timeit import default_timer
-from typing import Callable
 
+from collections.abc import Callable
+from hashlib import sha512
+from time import perf_counter, time
+from typing import Any
+
+from channels.exceptions import DenyConnection
 from django.conf import settings
 from django.contrib.sessions.backends.base import UpdateError
 from django.contrib.sessions.exceptions import SessionInterrupted
 from django.contrib.sessions.middleware import SessionMiddleware as UpstreamSessionMiddleware
 from django.http.request import HttpRequest
-from django.http.response import HttpResponse
+from django.http.response import HttpResponse, HttpResponseServerError
 from django.middleware.csrf import CSRF_SESSION_KEY
 from django.middleware.csrf import CsrfViewMiddleware as UpstreamCsrfViewMiddleware
 from django.utils.cache import patch_vary_headers
 from django.utils.http import http_date
 from jwt import PyJWTError, decode, encode
+from sentry_sdk.hub import Hub
 from structlog.stdlib import get_logger
 
-from authentik.lib.utils.http import get_client_ip
+from authentik.core.models import Token, TokenIntents, User, UserTypes
 
 LOGGER = get_logger("authentik.asgi")
 ACR_AUTHENTIK_SESSION = "goauthentik.io/core/default"
@@ -55,7 +58,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
             pass
         return session_key
 
-    def process_request(self, request):
+    def process_request(self, request: HttpRequest):
         raw_session = request.COOKIES.get(settings.SESSION_COOKIE_NAME)
         session_key = SessionMiddleware.decode_session_key(raw_session)
         request.session = self.SessionStore(session_key)
@@ -98,7 +101,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
                     expires = http_date(expires_time)
                 # Save the session data and refresh the client cookie.
                 # Skip session save for 500 responses, refs #3881.
-                if response.status_code != 500:
+                if response.status_code != HttpResponseServerError.status_code:
                     try:
                         request.session.save()
                     except UpdateError:
@@ -106,7 +109,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
                             "The request's session was deleted before the "
                             "request completed. The user may have logged "
                             "out in a concurrent request, for example."
-                        )
+                        ) from None
                     payload = {
                         "sid": request.session.session_key,
                         "iss": "authentik",
@@ -156,6 +159,111 @@ class CsrfViewMiddleware(UpstreamCsrfViewMiddleware):
             patch_vary_headers(response, ("Cookie",))
 
 
+class ClientIPMiddleware:
+    """Set a "known-good" client IP on the request, by default based off of x-forwarded-for
+    which is set by the go proxy, but also allowing the remote IP to be overridden by an outpost
+    for protocols like LDAP"""
+
+    get_response: Callable[[HttpRequest], HttpResponse]
+    outpost_remote_ip_header = "HTTP_X_AUTHENTIK_REMOTE_IP"
+    outpost_token_header = "HTTP_X_AUTHENTIK_OUTPOST_TOKEN"  # nosec
+    default_ip = "255.255.255.255"
+
+    request_attr_client_ip = "client_ip"
+    request_attr_outpost_user = "outpost_user"
+
+    def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]):
+        self.get_response = get_response
+
+    def _get_client_ip_from_meta(self, meta: dict[str, Any]) -> str:
+        """Attempt to get the client's IP by checking common HTTP Headers.
+        Returns none if no IP Could be found
+
+        No additional validation is done here as requests are expected to only arrive here
+        via the go proxy, which deals with validating these headers for us"""
+        headers = (
+            "HTTP_X_FORWARDED_FOR",
+            "REMOTE_ADDR",
+        )
+        for _header in headers:
+            if _header in meta:
+                ips: list[str] = meta.get(_header).split(",")
+                return ips[0].strip()
+        return self.default_ip
+
+    # FIXME: this should probably not be in `root` but rather in a middleware in `outposts`
+    # but for now it's fine
+    def _get_outpost_override_ip(self, request: HttpRequest) -> str | None:
+        """Get the actual remote IP when set by an outpost. Only
+        allowed when the request is authenticated, by an outpost internal service account"""
+        if (
+            self.outpost_remote_ip_header not in request.META
+            or self.outpost_token_header not in request.META
+        ):
+            return None
+        delegated_ip = request.META[self.outpost_remote_ip_header]
+        token = (
+            Token.filter_not_expired(
+                key=request.META.get(self.outpost_token_header), intent=TokenIntents.INTENT_API
+            )
+            .select_related("user")
+            .first()
+        )
+        if not token:
+            LOGGER.warning("Attempted remote-ip override without token", delegated_ip=delegated_ip)
+            return None
+        user: User = token.user
+        if user.type != UserTypes.INTERNAL_SERVICE_ACCOUNT:
+            LOGGER.warning(
+                "Remote-IP override: user doesn't have permission",
+                user=user,
+                delegated_ip=delegated_ip,
+            )
+            return None
+        # Update sentry scope to include correct IP
+        user = Hub.current.scope._user
+        if not user:
+            user = {}
+        user["ip_address"] = delegated_ip
+        Hub.current.scope.set_user(user)
+        # Set the outpost service account on the request
+        setattr(request, self.request_attr_outpost_user, user)
+        return delegated_ip
+
+    def _get_client_ip(self, request: HttpRequest | None) -> str:
+        """Attempt to get the client's IP by checking common HTTP Headers.
+        Returns none if no IP Could be found"""
+        if not request:
+            return self.default_ip
+        override = self._get_outpost_override_ip(request)
+        if override:
+            return override
+        return self._get_client_ip_from_meta(request.META)
+
+    @staticmethod
+    def get_outpost_user(request: HttpRequest) -> User | None:
+        """Get outpost user that authenticated this request"""
+        return getattr(request, ClientIPMiddleware.request_attr_outpost_user, None)
+
+    @staticmethod
+    def get_client_ip(request: HttpRequest) -> str:
+        """Get correct client IP, including any overrides from outposts that
+        have the permission to do so"""
+        if request and not hasattr(request, ClientIPMiddleware.request_attr_client_ip):
+            ClientIPMiddleware(lambda request: request).set_ip(request)
+        return getattr(
+            request, ClientIPMiddleware.request_attr_client_ip, ClientIPMiddleware.default_ip
+        )
+
+    def set_ip(self, request: HttpRequest):
+        """Set the IP"""
+        setattr(request, self.request_attr_client_ip, self._get_client_ip(request))
+
+    def __call__(self, request: HttpRequest) -> HttpResponse:
+        self.set_ip(request)
+        return self.get_response(request)
+
+
 class ChannelsLoggingMiddleware:
     """Logging middleware for channels"""
 
@@ -164,7 +272,11 @@ class ChannelsLoggingMiddleware:
 
     async def __call__(self, scope, receive, send):
         self.log(scope)
-        return await self.inner(scope, receive, send)
+        try:
+            return await self.inner(scope, receive, send)
+        except Exception as exc:
+            LOGGER.warning("Exception in ASGI application", exc=exc)
+            raise DenyConnection() from None
 
     def log(self, scope: dict, **kwargs):
         """Log request"""
@@ -187,21 +299,21 @@ class LoggingMiddleware:
         self.get_response = get_response
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
-        start = default_timer()
+        start = perf_counter()
         response = self.get_response(request)
         status_code = response.status_code
         kwargs = {
-            "request_id": request.request_id,
+            "request_id": getattr(request, "request_id", None),
         }
         kwargs.update(getattr(response, "ak_context", {}))
-        self.log(request, status_code, int((default_timer() - start) * 1000), **kwargs)
+        self.log(request, status_code, int((perf_counter() - start) * 1000), **kwargs)
         return response
 
     def log(self, request: HttpRequest, status_code: int, runtime: int, **kwargs):
         """Log request"""
         LOGGER.info(
             request.get_full_path(),
-            remote=get_client_ip(request),
+            remote=ClientIPMiddleware.get_client_ip(request),
             method=request.method,
             scheme=request.scheme,
             status=status_code,

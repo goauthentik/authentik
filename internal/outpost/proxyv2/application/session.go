@@ -2,6 +2,8 @@ package application
 
 import (
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"fmt"
 	"math"
 	"net/http"
@@ -13,11 +15,13 @@ import (
 	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
 	"github.com/redis/go-redis/v9"
+
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/proxyv2/codecs"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 	"goauthentik.io/internal/outpost/proxyv2/redisstore"
+	"goauthentik.io/internal/utils"
 )
 
 const RedisKeyPrefix = "authentik_proxy_session_"
@@ -30,17 +34,46 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 		maxAge = int(*t) + 1
 	}
 	if a.isEmbedded {
+		var tls *tls.Config
+		if config.Get().Redis.TLS {
+			tls = utils.GetTLSConfig()
+			switch strings.ToLower(config.Get().Redis.TLSReqs) {
+			case "none":
+			case "false":
+				tls.InsecureSkipVerify = true
+			case "required":
+				break
+			}
+			ca := config.Get().Redis.TLSCaCert
+			if ca != nil {
+				// Get the SystemCertPool, continue with an empty pool on error
+				rootCAs, _ := x509.SystemCertPool()
+				if rootCAs == nil {
+					rootCAs = x509.NewCertPool()
+				}
+				certs, err := os.ReadFile(*ca)
+				if err != nil {
+					a.log.WithError(err).Fatalf("Failed to append %s to RootCAs", *ca)
+				}
+				// Append our cert to the system pool
+				if ok := rootCAs.AppendCertsFromPEM(certs); !ok {
+					a.log.Println("No certs appended, using system certs only")
+				}
+				tls.RootCAs = rootCAs
+			}
+		}
 		client := redis.NewClient(&redis.Options{
-			Addr: fmt.Sprintf("%s:%d", config.Get().Redis.Host, config.Get().Redis.Port),
-			// Username: config.Get().Redis.Password,
-			Password: config.Get().Redis.Password,
-			DB:       config.Get().Redis.DB,
+			Addr:      fmt.Sprintf("%s:%d", config.Get().Redis.Host, config.Get().Redis.Port),
+			Username:  config.Get().Redis.Username,
+			Password:  config.Get().Redis.Password,
+			DB:        config.Get().Redis.DB,
+			TLSConfig: tls,
 		})
 
 		// New default RedisStore
 		rs, err := redisstore.NewRedisStore(context.Background(), client)
 		if err != nil {
-			panic(err)
+			a.log.WithError(err).Panic("failed to connect to redis")
 		}
 
 		rs.KeyPrefix(RedisKeyPrefix)
@@ -62,7 +95,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 	// https://github.com/markbates/goth/commit/7276be0fdf719ddff753f3574ef0f967e4a5a5f7
 	// set the maxLength of the cookies stored on the disk to a larger number to prevent issues with:
 	// securecookie: the value is too long
-	// when using OpenID Connect , since this can contain a large amount of extra information in the id_token
+	// when using OpenID Connect, since this can contain a large amount of extra information in the id_token
 
 	// Note, when using the FilesystemStore only the session.ID is written to a browser cookie, so this is explicit for the storage on disk
 	cs.MaxLength(math.MaxInt)

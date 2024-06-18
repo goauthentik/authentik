@@ -59,12 +59,12 @@ func (a *Application) addHeaders(headers http.Header, c *Claims) {
 	userAttributes := c.Proxy.UserAttributes
 	a.setAuthorizationHeader(headers, c)
 	// Check if user has additional headers set that we should sent
-	if additionalHeaders, ok := userAttributes["additionalHeaders"].(map[string]interface{}); ok {
+	if additionalHeaders, ok := userAttributes["additionalHeaders"]; ok {
 		a.log.WithField("headers", additionalHeaders).Trace("setting additional headers")
 		if additionalHeaders == nil {
 			return
 		}
-		for key, value := range additionalHeaders {
+		for key, value := range additionalHeaders.(map[string]interface{}) {
 			headers.Set(key, toString(value))
 		}
 	}

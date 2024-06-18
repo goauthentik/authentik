@@ -1,7 +1,7 @@
 import "@goauthentik/admin/admin-overview/AdminOverviewPage";
-import "@goauthentik/app/common/oauth/callback";
-import { adminSettings } from "@goauthentik/app/common/oauth/settings";
-import "@goauthentik/app/common/oauth/signout";
+import "@goauthentik/components/oauth/callback";
+import { adminSettings } from "@goauthentik/components/oauth/settings";
+import "@goauthentik/components/oauth/signout";
 import { ID_REGEX, Route, SLUG_REGEX, UUID_REGEX } from "@goauthentik/elements/router/Route";
 
 import { html } from "lit";
@@ -64,9 +64,9 @@ export const ROUTES: Route[] = [
         await import("@goauthentik/admin/tokens/TokenListPage");
         return html`<ak-token-list></ak-token-list>`;
     }),
-    new Route(new RegExp("^/core/tenants$"), async () => {
-        await import("@goauthentik/admin/tenants/TenantListPage");
-        return html`<ak-tenant-list></ak-tenant-list>`;
+    new Route(new RegExp("^/core/brands"), async () => {
+        await import("@goauthentik/admin/brands/BrandListPage");
+        return html`<ak-brand-list></ak-brand-list>`;
     }),
     new Route(new RegExp("^/policy/policies$"), async () => {
         await import("@goauthentik/admin/policies/PolicyListPage");
@@ -147,6 +147,10 @@ export const ROUTES: Route[] = [
     new Route(new RegExp("^/crypto/certificates$"), async () => {
         await import("@goauthentik/admin/crypto/CertificateKeyPairListPage");
         return html`<ak-crypto-certificate-list></ak-crypto-certificate-list>`;
+    }),
+    new Route(new RegExp("^/admin/settings$"), async () => {
+        await import("@goauthentik/admin/admin-settings/AdminSettingsPage");
+        return html`<ak-admin-settings></ak-admin-settings>`;
     }),
     new Route(new RegExp("^/blueprints/instances$"), async () => {
         await import("@goauthentik/admin/blueprints/BlueprintListPage");

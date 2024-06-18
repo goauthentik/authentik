@@ -1,5 +1,4 @@
 """common RBAC serializers"""
-from typing import Optional
 
 from django.apps import apps
 from django_filters.filters import NumberFilter
@@ -24,7 +23,10 @@ class ExtraUserObjectPermissionSerializer(UserObjectPermissionSerializer):
 
     def get_app_label_verbose(self, instance: UserObjectPermission) -> str:
         """Get app label from permission's model"""
-        return apps.get_app_config(instance.content_type.app_label).verbose_name
+        try:
+            return apps.get_app_config(instance.content_type.app_label).verbose_name
+        except LookupError:
+            return instance.content_type.app_label
 
     def get_model_verbose(self, instance: UserObjectPermission) -> str:
         """Get model label from permission's model"""
@@ -35,7 +37,7 @@ class ExtraUserObjectPermissionSerializer(UserObjectPermissionSerializer):
         except LookupError:
             return f"{instance.content_type.app_label}.{instance.content_type.model}"
 
-    def get_object_description(self, instance: UserObjectPermission) -> Optional[str]:
+    def get_object_description(self, instance: UserObjectPermission) -> str | None:
         """Get model description from attached model. This operation takes at least
         one additional query, and the description is only shown if the user/role has the
         view_ permission on the object"""

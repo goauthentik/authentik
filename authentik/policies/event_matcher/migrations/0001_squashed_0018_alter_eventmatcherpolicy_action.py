@@ -161,7 +161,7 @@ class Migration(migrations.Migration):
                             ("authentik.stages.user_login", "authentik Stages.User Login"),
                             ("authentik.stages.user_logout", "authentik Stages.User Logout"),
                             ("authentik.stages.user_write", "authentik Stages.User Write"),
-                            ("authentik.tenants", "authentik Tenants"),
+                            ("authentik.brands", "authentik Brands"),
                             ("authentik.core", "authentik Core"),
                             ("authentik.blueprints", "authentik Blueprints"),
                         ],

@@ -1,9 +1,9 @@
 import { ERROR_CLASS, PROGRESS_CLASS, SUCCESS_CLASS } from "@goauthentik/common/constants";
+import { PFSize } from "@goauthentik/common/enums.js";
 import { AKElement } from "@goauthentik/elements/Base";
-import { PFSize } from "@goauthentik/elements/Spinner";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
-import { Task, TaskStatus } from "@lit-labs/task";
+import { Task, TaskStatus } from "@lit/task";
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";
 
@@ -66,7 +66,11 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
         this.onSuccess = this.onSuccess.bind(this);
         this.onError = this.onError.bind(this);
         this.onClick = this.onClick.bind(this);
-        this.actionTask = new Task(this, {
+        this.actionTask = this.buildTask();
+    }
+
+    buildTask() {
+        return new Task(this, {
             task: () => this.callAction(),
             args: () => [],
             autoRun: false,
@@ -77,8 +81,9 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
 
     onComplete() {
         setTimeout(() => {
-            this.actionTask.status = TaskStatus.INITIAL;
             this.dispatchCustomEvent(`${this.eventPrefix}-reset`);
+            // set-up for the next task...
+            this.actionTask = this.buildTask();
             this.requestUpdate();
         }, SPINNER_TIMEOUT);
     }
@@ -98,7 +103,8 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
     }
 
     onClick() {
-        if (this.actionTask.status !== TaskStatus.INITIAL) {
+        // Don't accept clicks when a task is in progress..
+        if (this.actionTask.status === TaskStatus.PENDING) {
             return;
         }
         this.dispatchCustomEvent(`${this.eventPrefix}-click`);

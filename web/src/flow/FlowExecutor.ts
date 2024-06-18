@@ -8,17 +8,17 @@ import { globalAK } from "@goauthentik/common/global";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
-import { Interface } from "@goauthentik/elements/Base";
+import { Interface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/LoadingOverlay";
 import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/flow/sources/apple/AppleLoginInit";
 import "@goauthentik/flow/sources/plex/PlexLoginInit";
 import "@goauthentik/flow/stages/FlowErrorStage";
 import "@goauthentik/flow/stages/RedirectStage";
-import { StageHost } from "@goauthentik/flow/stages/base";
+import { StageHost, SubmitOptions } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
@@ -32,13 +32,15 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
+    CapabilitiesEnum,
     ChallengeChoices,
     ChallengeTypes,
     ContextualFlowInfo,
+    FetchError,
     FlowChallengeResponseRequest,
     FlowErrorChallenge,
+    FlowLayoutEnum,
     FlowsApi,
-    LayoutEnum,
     ResponseError,
     ShellChallenge,
     UiThemeEnum,
@@ -55,9 +57,9 @@ export class FlowExecutor extends Interface implements StageHost {
     set challenge(value: ChallengeTypes | undefined) {
         this._challenge = value;
         if (value?.flowInfo?.title) {
-            document.title = `${value.flowInfo?.title} - ${this.tenant?.brandingTitle}`;
+            document.title = `${value.flowInfo?.title} - ${this.brand?.brandingTitle}`;
         } else {
-            document.title = this.tenant?.brandingTitle || TITLE_DEFAULT;
+            document.title = this.brand?.brandingTitle || TITLE_DEFAULT;
         }
         this.requestUpdate();
     }
@@ -72,24 +74,8 @@ export class FlowExecutor extends Interface implements StageHost {
     @state()
     inspectorOpen = false;
 
-    _flowInfo?: ContextualFlowInfo;
-
     @state()
-    set flowInfo(value: ContextualFlowInfo | undefined) {
-        this._flowInfo = value;
-        if (!value) {
-            return;
-        }
-        this.shadowRoot
-            ?.querySelectorAll<HTMLDivElement>(".pf-c-background-image")
-            .forEach((bg) => {
-                bg.style.setProperty("--ak-flow-background", `url('${value?.background}')`);
-            });
-    }
-
-    get flowInfo(): ContextualFlowInfo | undefined {
-        return this._flowInfo;
-    }
+    flowInfo?: ContextualFlowInfo;
 
     ws: WebsocketClient;
 
@@ -115,8 +101,10 @@ export class FlowExecutor extends Interface implements StageHost {
                 background-color: transparent;
             }
             /* layouts */
-            .pf-c-login.stacked .pf-c-login__main {
-                margin-top: 13rem;
+            @media (min-height: 60rem) {
+                .pf-c-login.stacked .pf-c-login__main {
+                    margin-top: 13rem;
+                }
             }
             .pf-c-login__container.content-right {
                 grid-template-areas:
@@ -176,7 +164,7 @@ export class FlowExecutor extends Interface implements StageHost {
         super();
         this.ws = new WebsocketClient();
         if (window.location.search.includes("inspector")) {
-            this.inspectorOpen = !this.inspectorOpen;
+            this.inspectorOpen = true;
         }
         this.addEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, () => {
             this.inspectorOpen = !this.inspectorOpen;
@@ -184,15 +172,20 @@ export class FlowExecutor extends Interface implements StageHost {
     }
 
     async getTheme(): Promise<UiThemeEnum> {
-        return globalAK()?.tenant.uiTheme || UiThemeEnum.Automatic;
+        return globalAK()?.brand.uiTheme || UiThemeEnum.Automatic;
     }
 
-    async submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
+    async submit(
+        payload?: FlowChallengeResponseRequest,
+        options?: SubmitOptions,
+    ): Promise<boolean> {
         if (!payload) return Promise.reject();
         if (!this.challenge) return Promise.reject();
-        // @ts-ignore
+        // @ts-expect-error
         payload.component = this.challenge.component;
-        this.loading = true;
+        if (!options?.invisible) {
+            this.loading = true;
+        }
         try {
             const challenge = await new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolve({
                 flowSlug: this.flowSlug,
@@ -211,12 +204,9 @@ export class FlowExecutor extends Interface implements StageHost {
             if (this.challenge.flowInfo) {
                 this.flowInfo = this.challenge.flowInfo;
             }
-            if (this.challenge.responseErrors) {
-                return false;
-            }
-            return true;
+            return !this.challenge.responseErrors;
         } catch (exc: unknown) {
-            this.errorMessage(exc as Error | ResponseError);
+            this.errorMessage(exc as Error | ResponseError | FetchError);
             return false;
         } finally {
             this.loading = false;
@@ -225,6 +215,9 @@ export class FlowExecutor extends Interface implements StageHost {
 
     async firstUpdated(): Promise<void> {
         configureSentry();
+        if (this.config?.capabilities.includes(CapabilitiesEnum.CanDebug)) {
+            this.inspectorOpen = true;
+        }
         this.loading = true;
         try {
             const challenge = await new FlowsApi(DEFAULT_CONFIG).flowsExecutorGet({
@@ -245,15 +238,17 @@ export class FlowExecutor extends Interface implements StageHost {
             }
         } catch (exc: unknown) {
             // Catch JSON or Update errors
-            this.errorMessage(exc as Error | ResponseError);
+            this.errorMessage(exc as Error | ResponseError | FetchError);
         } finally {
             this.loading = false;
         }
     }
 
-    async errorMessage(error: Error | ResponseError): Promise<void> {
+    async errorMessage(error: Error | ResponseError | FetchError): Promise<void> {
         let body = "";
-        if (error instanceof ResponseError) {
+        if (error instanceof FetchError) {
+            body = msg("Request failed. Please try again later.");
+        } else if (error instanceof ResponseError) {
             body = await error.response.text();
         } else if (error instanceof Error) {
             body = error.message;
@@ -265,6 +260,24 @@ export class FlowExecutor extends Interface implements StageHost {
             requestId: "",
         };
         this.challenge = challenge as ChallengeTypes;
+    }
+
+    setShadowStyles(value: ContextualFlowInfo) {
+        if (!value) {
+            return;
+        }
+        this.shadowRoot
+            ?.querySelectorAll<HTMLDivElement>(".pf-c-background-image")
+            .forEach((bg) => {
+                bg.style.setProperty("--ak-flow-background", `url('${value?.background}')`);
+            });
+    }
+
+    // DOM post-processing has to happen after the render.
+    updated(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("flowInfo") && this.flowInfo !== undefined) {
+            this.setShadowStyles(this.flowInfo);
+        }
     }
 
     async renderChallengeNativeElement(): Promise<TemplateResult> {
@@ -405,7 +418,8 @@ export class FlowExecutor extends Interface implements StageHost {
 
     async renderChallenge(): Promise<TemplateResult> {
         if (!this.challenge) {
-            return html``;
+            return html`<ak-empty-state ?loading=${true} header=${msg("Loading")}>
+            </ak-empty-state>`;
         }
         switch (this.challenge.type) {
             case ChallengeChoices.Redirect:
@@ -421,14 +435,16 @@ export class FlowExecutor extends Interface implements StageHost {
                 return await this.renderChallengeNativeElement();
             default:
                 console.debug(`authentik/flows: unexpected data type ${this.challenge.type}`);
-                break;
+                return html``;
         }
-        return html``;
     }
 
     renderChallengeWrapper(): TemplateResult {
         const logo = html`<div class="pf-c-login__main-header pf-c-brand ak-brand">
-            <img src="${first(this.tenant?.brandingLogo, "")}" alt="authentik Logo" />
+            <img
+                src="${first(this.brand?.brandingLogo, globalAK()?.brand.brandingLogo, "")}"
+                alt="authentik Logo"
+            />
         </div>`;
         if (!this.challenge) {
             return html`${logo}<ak-empty-state ?loading=${true} header=${msg("Loading")}>
@@ -451,7 +467,7 @@ export class FlowExecutor extends Interface implements StageHost {
     }
 
     getLayout(): string {
-        const prefilledFlow = globalAK()?.flow?.layout || LayoutEnum.Stacked;
+        const prefilledFlow = globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
         if (this.challenge) {
             return this.challenge?.flowInfo?.layout || prefilledFlow;
         }
@@ -461,11 +477,11 @@ export class FlowExecutor extends Interface implements StageHost {
     getLayoutClass(): string {
         const layout = this.getLayout();
         switch (layout) {
-            case LayoutEnum.ContentLeft:
+            case FlowLayoutEnum.ContentLeft:
                 return "pf-c-login__container";
-            case LayoutEnum.ContentRight:
+            case FlowLayoutEnum.ContentRight:
                 return "pf-c-login__container content-right";
-            case LayoutEnum.Stacked:
+            case FlowLayoutEnum.Stacked:
             default:
                 return "ak-login-container";
         }
@@ -486,7 +502,7 @@ export class FlowExecutor extends Interface implements StageHost {
                                         </div>
                                         <footer class="pf-c-login__footer">
                                             <ul class="pf-c-list pf-m-inline">
-                                                ${this.tenant?.uiFooterLinks?.map((link) => {
+                                                ${this.brand?.uiFooterLinks?.map((link) => {
                                                     return html`<li>
                                                         <a href="${link.href || ""}"
                                                             >${link.name}</a
@@ -503,7 +519,7 @@ export class FlowExecutor extends Interface implements StageHost {
                                                     ? html`
                                                           <li>
                                                               <a
-                                                                  href="https://unsplash.com/@federize"
+                                                                  href="https://unsplash.com/@sorasagano"
                                                                   >${msg("Background image")}</a
                                                               >
                                                           </li>

@@ -1,5 +1,6 @@
 """authentik OAuth2 OpenID Userinfo views"""
-from typing import Any, Optional
+
+from typing import Any
 
 from deepmerge import always_merger
 from django.http import HttpRequest, HttpResponse
@@ -10,11 +11,10 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
-from authentik.core.exceptions import PropertyMappingExpressionException
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import PermissionDict
 from authentik.providers.oauth2.constants import (
-    SCOPE_AUTHENTIK_API,
     SCOPE_GITHUB_ORG_READ,
     SCOPE_GITHUB_USER,
     SCOPE_GITHUB_USER_EMAIL,
@@ -38,7 +38,7 @@ class UserInfoView(View):
     """Create a dictionary with all the requested claims about the End-User.
     See: http://openid.net/specs/openid-connect-core-1_0.html#UserInfoResponse"""
 
-    token: Optional[RefreshToken]
+    token: RefreshToken | None
 
     def get_scope_descriptions(
         self, scopes: list[str], provider: OAuth2Provider
@@ -56,7 +56,6 @@ class UserInfoView(View):
             SCOPE_GITHUB_USER_READ: _("GitHub Compatibility: Access your User Information"),
             SCOPE_GITHUB_USER_EMAIL: _("GitHub Compatibility: Access you Email addresses"),
             SCOPE_GITHUB_ORG_READ: _("GitHub Compatibility: Access your Groups"),
-            SCOPE_AUTHENTIK_API: _("authentik API Access on behalf of your user"),
         }
         for scope in scopes:
             if scope in special_scope_map:
@@ -100,8 +99,8 @@ class UserInfoView(View):
                     value=value,
                 )
                 continue
-            LOGGER.debug("updated scope", scope=scope)
             always_merger.merge(final_claims, value)
+            LOGGER.debug("updated scope", scope=scope)
         return final_claims
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
@@ -120,8 +119,9 @@ class UserInfoView(View):
         """Handle GET Requests for UserInfo"""
         if not self.token:
             return HttpResponseBadRequest()
-        claims = self.get_claims(self.token.provider, self.token)
-        claims["sub"] = self.token.id_token.sub
+        claims = {}
+        claims.setdefault("sub", self.token.id_token.sub)
+        claims.update(self.get_claims(self.token.provider, self.token))
         if self.token.id_token.nonce:
             claims["nonce"] = self.token.id_token.nonce
         response = TokenResponse(claims)

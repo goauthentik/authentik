@@ -1,9 +1,9 @@
 import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/saml/SAMLProviderForm";
-import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { MessageLevel } from "@goauthentik/common/messages";
+import renderDescriptionList from "@goauthentik/components/DescriptionList";
 import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
@@ -14,9 +14,10 @@ import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -34,11 +35,14 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
     CertificateKeyPair,
+    CoreApi,
+    CoreUsersListRequest,
     CryptoApi,
     ProvidersApi,
     RbacPermissionsAssignedByUsersListModelEnum,
     SAMLMetadata,
     SAMLProvider,
+    User,
 } from "@goauthentik/api";
 
 interface SAMLPreviewAttribute {
@@ -51,37 +55,10 @@ interface SAMLPreviewAttribute {
 
 @customElement("ak-provider-saml-view")
 export class SAMLProviderViewPage extends AKElement {
-    @property()
-    set args(value: { [key: string]: number }) {
-        this.providerID = value.id;
-    }
-
     @property({ type: Number })
-    set providerID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
-            .providersSamlRetrieve({
-                id: value,
-            })
-            .then((prov) => {
-                this.provider = prov;
-                if (prov.signingKp) {
-                    new CryptoApi(DEFAULT_CONFIG)
-                        .cryptoCertificatekeypairsRetrieve({
-                            kpUuid: prov.signingKp,
-                        })
-                        .then((kp) => (this.signer = kp));
-                }
-                if (prov.verificationKp) {
-                    new CryptoApi(DEFAULT_CONFIG)
-                        .cryptoCertificatekeypairsRetrieve({
-                            kpUuid: prov.verificationKp,
-                        })
-                        .then((kp) => (this.verifier = kp));
-                }
-            });
-    }
+    providerID?: number;
 
-    @property({ attribute: false })
+    @state()
     provider?: SAMLProvider;
 
     @state()
@@ -95,6 +72,9 @@ export class SAMLProviderViewPage extends AKElement {
 
     @state()
     verifier?: CertificateKeyPair;
+
+    @state()
+    previewUser?: User;
 
     static get styles(): CSSResult[] {
         return [
@@ -118,6 +98,47 @@ export class SAMLProviderViewPage extends AKElement {
             if (!this.provider?.pk) return;
             this.providerID = this.provider?.pk;
         });
+    }
+
+    fetchPreview(): void {
+        new ProvidersApi(DEFAULT_CONFIG)
+            .providersSamlPreviewUserRetrieve({
+                id: this.provider?.pk || 0,
+                forUser: this.previewUser?.pk,
+            })
+            .then((preview) => {
+                this.preview = preview.preview as SAMLPreviewAttribute;
+            });
+    }
+
+    fetchCertificate(kpUuid: string) {
+        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsRetrieve({ kpUuid });
+    }
+
+    fetchSigningCertificate(kpUuid: string) {
+        this.fetchCertificate(kpUuid).then((kp) => (this.signer = kp));
+    }
+
+    fetchVerificationCertificate(kpUuid: string) {
+        this.fetchCertificate(kpUuid).then((kp) => (this.verifier = kp));
+    }
+
+    fetchProvider(id: number) {
+        new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({ id }).then((prov) => {
+            this.provider = prov;
+            if (this.provider.signingKp) {
+                this.fetchSigningCertificate(this.provider.signingKp);
+            }
+            if (this.provider.verificationKp) {
+                this.fetchVerificationCertificate(this.provider.verificationKp);
+            }
+        });
+    }
+
+    willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("providerID") && this.providerID) {
+            this.fetchProvider(this.providerID);
+        }
     }
 
     renderRelatedObjects(): TemplateResult {
@@ -203,13 +224,7 @@ export class SAMLProviderViewPage extends AKElement {
                 slot="page-preview"
                 data-tab-title="${msg("Preview")}"
                 @activate=${() => {
-                    new ProvidersApi(DEFAULT_CONFIG)
-                        .providersSamlPreviewUserRetrieve({
-                            id: this.provider?.pk || 0,
-                        })
-                        .then((preview) => {
-                            this.preview = preview.preview as SAMLPreviewAttribute;
-                        });
+                    this.fetchPreview();
                 }}
             >
                 ${this.renderTabPreview()}
@@ -494,6 +509,47 @@ export class SAMLProviderViewPage extends AKElement {
         >
             <div class="pf-c-card">
                 <div class="pf-c-card__title">${msg("Example SAML attributes")}</div>
+                <div class="pf-c-card__body">
+                    ${renderDescriptionList([
+                        [
+                            "Preview for user",
+                            html`
+                                <ak-search-select
+                                    .fetchObjects=${async (query?: string): Promise<User[]> => {
+                                        const args: CoreUsersListRequest = {
+                                            ordering: "username",
+                                        };
+                                        if (query !== undefined) {
+                                            args.search = query;
+                                        }
+                                        const users = await new CoreApi(
+                                            DEFAULT_CONFIG,
+                                        ).coreUsersList(args);
+                                        return users.results;
+                                    }}
+                                    .renderElement=${(user: User): string => {
+                                        return user.username;
+                                    }}
+                                    .renderDescription=${(user: User): TemplateResult => {
+                                        return html`${user.name}`;
+                                    }}
+                                    .value=${(user: User | undefined): number | undefined => {
+                                        return user?.pk;
+                                    }}
+                                    .selected=${(user: User): boolean => {
+                                        return user.pk === this.previewUser?.pk;
+                                    }}
+                                    ?blankable=${true}
+                                    @ak-change=${(ev: CustomEvent) => {
+                                        this.previewUser = ev.detail.value;
+                                        this.fetchPreview();
+                                    }}
+                                >
+                                </ak-search-select>
+                            `,
+                        ],
+                    ])}
+                </div>
                 <div class="pf-c-card__body">
                     <dl class="pf-c-description-list pf-m-2-col-on-lg">
                         <div class="pf-c-description-list__group">

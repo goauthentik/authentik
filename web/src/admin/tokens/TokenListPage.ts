@@ -2,6 +2,7 @@ import "@goauthentik/admin/tokens/TokenForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { intentToLabel } from "@goauthentik/common/labels";
 import { uiConfig } from "@goauthentik/common/ui/config";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/TokenCopyButton";
@@ -42,6 +43,7 @@ export class TokenListPage extends TablePage<Token> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "expires";
@@ -110,7 +112,10 @@ export class TokenListPage extends TablePage<Token> {
                     : html``}`,
             html`<a href="#/identity/users/${item.userObj?.pk}">${item.userObj?.username}</a>`,
             html`<ak-status-label type="warning" ?good=${item.expiring}></ak-status-label>`,
-            html`${item.expiring ? item.expires?.toLocaleString() : msg("-")}`,
+            html`${item.expires && item.expiring
+                ? html`<div>${getRelativeTime(item.expires)}</div>
+                      <small>${item.expires.toLocaleString()}</small>`
+                : msg("-")}`,
             html`${intentToLabel(item.intent ?? IntentEnum.Api)}`,
             html`
                 ${!item.managed

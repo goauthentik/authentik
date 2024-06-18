@@ -7,6 +7,7 @@ from django.core.cache import cache
 from django.urls.base import reverse
 from rest_framework.test import APITestCase
 
+from authentik.brands.models import Brand
 from authentik.core.models import (
     USER_ATTRIBUTE_TOKEN_EXPIRING,
     AuthenticatedSession,
@@ -14,11 +15,10 @@ from authentik.core.models import (
     User,
     UserTypes,
 )
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_tenant
+from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
 from authentik.flows.models import FlowDesignation
 from authentik.lib.generators import generate_id, generate_key
 from authentik.stages.email.models import EmailStage
-from authentik.tenants.models import Tenant
 
 
 class TestUsersAPI(APITestCase):
@@ -41,6 +41,12 @@ class TestUsersAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+    def test_list_with_groups(self):
+        """Test listing with groups"""
+        self.client.force_login(self.admin)
+        response = self.client.get(reverse("authentik_api:user-list"), {"include_groups": "true"})
+        self.assertEqual(response.status_code, 200)
+
     def test_metrics(self):
         """Test user's metrics"""
         self.client.force_login(self.admin)
@@ -60,10 +66,11 @@ class TestUsersAPI(APITestCase):
     def test_recovery_no_flow(self):
         """Test user recovery link (no recovery flow set)"""
         self.client.force_login(self.admin)
-        response = self.client.get(
+        response = self.client.post(
             reverse("authentik_api:user-recovery", kwargs={"pk": self.user.pk})
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(response.content, {"non_field_errors": "No recovery flow set."})
 
     def test_set_password(self):
         """Test Direct password set"""
@@ -80,11 +87,11 @@ class TestUsersAPI(APITestCase):
     def test_recovery(self):
         """Test user recovery link (no recovery flow set)"""
         flow = create_test_flow(FlowDesignation.RECOVERY)
-        tenant: Tenant = create_test_tenant()
-        tenant.flow_recovery = flow
-        tenant.save()
+        brand: Brand = create_test_brand()
+        brand.flow_recovery = flow
+        brand.save()
         self.client.force_login(self.admin)
-        response = self.client.get(
+        response = self.client.post(
             reverse("authentik_api:user-recovery", kwargs={"pk": self.user.pk})
         )
         self.assertEqual(response.status_code, 200)
@@ -92,44 +99,49 @@ class TestUsersAPI(APITestCase):
     def test_recovery_email_no_flow(self):
         """Test user recovery link (no recovery flow set)"""
         self.client.force_login(self.admin)
-        response = self.client.get(
+        response = self.client.post(
             reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk})
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content, {"non_field_errors": "User does not have an email address set."}
+        )
         self.user.email = "foo@bar.baz"
         self.user.save()
-        response = self.client.get(
+        response = self.client.post(
             reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk})
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(response.content, {"non_field_errors": "No recovery flow set."})
 
     def test_recovery_email_no_stage(self):
         """Test user recovery link (no email stage)"""
         self.user.email = "foo@bar.baz"
         self.user.save()
         flow = create_test_flow(designation=FlowDesignation.RECOVERY)
-        tenant: Tenant = create_test_tenant()
-        tenant.flow_recovery = flow
-        tenant.save()
+        brand: Brand = create_test_brand()
+        brand.flow_recovery = flow
+        brand.save()
         self.client.force_login(self.admin)
-        response = self.client.get(
+        response = self.client.post(
             reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk})
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(response.content, {"non_field_errors": "Email stage does not exist."})
 
     def test_recovery_email(self):
         """Test user recovery link"""
         self.user.email = "foo@bar.baz"
         self.user.save()
         flow = create_test_flow(FlowDesignation.RECOVERY)
-        tenant: Tenant = create_test_tenant()
-        tenant.flow_recovery = flow
-        tenant.save()
+        brand: Brand = create_test_brand()
+        brand.flow_recovery = flow
+        brand.save()
 
         stage = EmailStage.objects.create(name="email")
 
         self.client.force_login(self.admin)
-        response = self.client.get(
+        response = self.client.post(
             reverse(
                 "authentik_api:user-recovery-email",
                 kwargs={"pk": self.user.pk},
@@ -261,7 +273,14 @@ class TestUsersAPI(APITestCase):
             reverse("authentik_api:user-paths"),
         )
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(response.content.decode(), {"paths": ["users"]})
+        expected = list(
+            User.objects.all()
+            .values("path")
+            .distinct()
+            .order_by("path")
+            .values_list("path", flat=True)
+        )
+        self.assertJSONEqual(response.content.decode(), {"paths": expected})
 
     def test_path_valid(self):
         """Test path"""

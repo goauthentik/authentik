@@ -1,4 +1,5 @@
 """Source flow manager stages"""
+
 from django.http import HttpRequest, HttpResponse
 
 from authentik.core.models import User, UserSourceConnection
@@ -9,7 +10,7 @@ from authentik.flows.stage import StageView
 PLAN_CONTEXT_SOURCES_CONNECTION = "goauthentik.io/sources/connection"
 
 
-class PostUserEnrollmentStage(StageView):
+class PostSourceStage(StageView):
     """Dynamically injected stage which saves the Connection after
     the user has been enrolled."""
 
@@ -20,10 +21,12 @@ class PostUserEnrollmentStage(StageView):
         ]
         user: User = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
         connection.user = user
+        linked = connection.pk is None
         connection.save()
-        Event.new(
-            EventAction.SOURCE_LINKED,
-            message="Linked Source",
-            source=connection.source,
-        ).from_http(self.request)
+        if linked:
+            Event.new(
+                EventAction.SOURCE_LINKED,
+                message="Linked Source",
+                source=connection.source,
+            ).from_http(self.request)
         return self.executor.stage_ok()

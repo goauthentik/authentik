@@ -1,4 +1,5 @@
 """api v3 urls"""
+
 from importlib import import_module
 
 from django.urls import path
@@ -32,7 +33,7 @@ for _authentik_app in get_apps():
             app_name=_authentik_app.name,
         )
         continue
-    urls: list = getattr(api_urls, "api_urlpatterns")
+    urls: list = api_urls.api_urlpatterns
     for url in urls:
         if isinstance(url, URLPattern):
             _other_urls.append(url)

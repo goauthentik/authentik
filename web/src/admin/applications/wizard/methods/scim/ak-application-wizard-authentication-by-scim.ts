@@ -1,7 +1,7 @@
 import "@goauthentik/admin/applications/wizard/ak-wizard-title";
 import "@goauthentik/admin/common/ak-core-group-search";
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-tenanted-flow-search";
+import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-multi-select";
@@ -123,7 +123,6 @@ export class ApplicationWizardAuthenticationBySCIM extends BaseProviderPanel {
                     <div slot="body" class="pf-c-form">
                         <ak-multi-select
                             label=${msg("User Property Mappings")}
-                            required
                             name="propertyMappings"
                             .options=${propertyPairs}
                             .values=${pmUserValues}
@@ -136,7 +135,6 @@ export class ApplicationWizardAuthenticationBySCIM extends BaseProviderPanel {
                         ></ak-multi-select>
                         <ak-multi-select
                             label=${msg("Group Property Mappings")}
-                            required
                             name="propertyMappingsGroup"
                             .options=${propertyPairs}
                             .values=${pmGroupValues}

@@ -1,4 +1,5 @@
 """identification tests"""
+
 from django.urls import reverse
 from rest_framework.exceptions import ValidationError
 
@@ -71,6 +72,42 @@ class TestIdentificationStage(FlowTestCase):
         self.stage.save()
         form_data = {
             "uid_field": self.user.email,
+            "password": self.user.username + "test",
+        }
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        response = self.client.post(url, form_data)
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-identification",
+            password_fields=True,
+            primary_action="Log in",
+            response_errors={
+                "non_field_errors": [{"code": "invalid", "string": "Failed to authenticate."}]
+            },
+            sources=[
+                {
+                    "challenge": {
+                        "component": "xak-flow-redirect",
+                        "to": "/source/oauth/login/test/",
+                        "type": ChallengeTypes.REDIRECT.value,
+                    },
+                    "icon_url": "/static/authentik/sources/default.svg",
+                    "name": "test",
+                }
+            ],
+            show_source_labels=False,
+            user_fields=["email"],
+        )
+
+    def test_invalid_with_password_pretend(self):
+        """Test with invalid email and invalid password in single step (with pretend_user_exists)"""
+        self.stage.pretend_user_exists = True
+        pw_stage = PasswordStage.objects.create(name="password", backends=[BACKEND_INBUILT])
+        self.stage.password_stage = pw_stage
+        self.stage.save()
+        form_data = {
+            "uid_field": self.user.email + "test",
             "password": self.user.username + "test",
         }
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})

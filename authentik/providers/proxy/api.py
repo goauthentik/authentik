@@ -1,16 +1,16 @@
 """ProxyProvider API Views"""
-from typing import Any, Optional
+
+from typing import Any
 
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema_field
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ListField, ReadOnlyField, SerializerMethodField
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.models import ScopeMapping
 from authentik.providers.oauth2.views.provider import ProviderInfoView
@@ -142,7 +142,7 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
         """Embed OpenID Connect provider information"""
         return ProviderInfoView(request=self.context["request"]._request).get_info(obj)
 
-    def get_access_token_validity(self, obj: ProxyProvider) -> Optional[float]:
+    def get_access_token_validity(self, obj: ProxyProvider) -> float | None:
         """Get token validity as second count"""
         return timedelta_from_string(obj.access_token_validity).total_seconds()
 

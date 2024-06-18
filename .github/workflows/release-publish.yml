@@ -1,3 +1,4 @@
+---
 name: authentik-on-release
 
 on:
@@ -19,6 +20,10 @@ jobs:
       - name: prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        with:
+          image-name: ghcr.io/goauthentik/server,beryju/authentik
       - name: Docker Login Registry
         uses: docker/login-action@v3
         with:
@@ -35,24 +40,15 @@ jobs:
           mkdir -p ./gen-ts-api
           mkdir -p ./gen-go-api
       - name: Build Docker Image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
-          push: ${{ github.event_name == 'release' }}
+          push: true
           secrets: |
             GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
             GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
-          tags: |
-            beryju/authentik:${{ steps.ev.outputs.version }},
-            beryju/authentik:${{ steps.ev.outputs.versionFamily }},
-            beryju/authentik:latest,
-            ghcr.io/goauthentik/server:${{ steps.ev.outputs.version }},
-            ghcr.io/goauthentik/server:${{ steps.ev.outputs.versionFamily }},
-            ghcr.io/goauthentik/server:latest
+          tags: ${{ steps.ev.outputs.imageTags }}
           platforms: linux/amd64,linux/arm64
-          build-args: |
-            VERSION=${{ steps.ev.outputs.version }}
-            VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
   build-outpost:
     runs-on: ubuntu-latest
     permissions:
@@ -65,6 +61,7 @@ jobs:
           - proxy
           - ldap
           - radius
+          - rac
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -77,6 +74,10 @@ jobs:
       - name: prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        with:
+          image-name: ghcr.io/goauthentik/${{ matrix.type }},beryju/authentik-${{ matrix.type }}
       - name: make empty clients
         run: |
           mkdir -p ./gen-ts-api
@@ -93,22 +94,13 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Docker Image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
-          push: ${{ github.event_name == 'release' }}
-          tags: |
-            beryju/authentik-${{ matrix.type }}:${{ steps.ev.outputs.version }},
-            beryju/authentik-${{ matrix.type }}:${{ steps.ev.outputs.versionFamily }},
-            beryju/authentik-${{ matrix.type }}:latest,
-            ghcr.io/goauthentik/${{ matrix.type }}:${{ steps.ev.outputs.version }},
-            ghcr.io/goauthentik/${{ matrix.type }}:${{ steps.ev.outputs.versionFamily }},
-            ghcr.io/goauthentik/${{ matrix.type }}:latest
+          push: true
+          tags: ${{ steps.ev.outputs.imageTags }}
           file: ${{ matrix.type }}.Dockerfile
           platforms: linux/amd64,linux/arm64
           context: .
-          build-args: |
-            VERSION=${{ steps.ev.outputs.version }}
-            VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
   build-outpost-binary:
     timeout-minutes: 120
     runs-on: ubuntu-latest
@@ -163,12 +155,12 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run test suite in final docker images
         run: |
-          echo "PG_PASS=$(openssl rand -base64 32)" >> .env
-          echo "AUTHENTIK_SECRET_KEY=$(openssl rand -base64 32)" >> .env
-          docker-compose pull -q
-          docker-compose up --no-start
-          docker-compose start postgresql redis
-          docker-compose run -u root server test-all
+          echo "PG_PASS=$(openssl rand 32 | base64)" >> .env
+          echo "AUTHENTIK_SECRET_KEY=$(openssl rand 32 | base64)" >> .env
+          docker compose pull -q
+          docker compose up --no-start
+          docker compose start postgresql redis
+          docker compose run -u root server test-all
   sentry-release:
     needs:
       - build-server
@@ -180,15 +172,18 @@ jobs:
       - name: prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        with:
+          image-name: ghcr.io/goauthentik/server
       - name: Get static files from docker image
         run: |
-          docker pull ghcr.io/goauthentik/server:latest
-          container=$(docker container create ghcr.io/goauthentik/server:latest)
+          docker pull ${{ steps.ev.outputs.imageMainTag }}
+          container=$(docker container create ${{ steps.ev.outputs.imageMainTag }})
           docker cp ${container}:web/ .
       - name: Create a Sentry.io release
         uses: getsentry/action-release@v1
         continue-on-error: true
-        if: ${{ github.event_name == 'release' }}
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: authentik-security-inc

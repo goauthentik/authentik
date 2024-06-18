@@ -1,4 +1,4 @@
-import { FlowExecutor } from "@goauthentik/app/flow/FlowExecutor";
+import { FlowExecutor } from "@goauthentik/flow/FlowExecutor";
 
 import { customElement, property } from "lit/decorators.js";
 

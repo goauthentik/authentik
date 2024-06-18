@@ -4,9 +4,9 @@ import "@goauthentik/admin/outposts/OutpostForm";
 import "@goauthentik/admin/outposts/OutpostHealth";
 import "@goauthentik/admin/outposts/OutpostHealthSimple";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { PFSize } from "@goauthentik/common/enums.js";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import { PFColor } from "@goauthentik/elements/Label";
-import { PFSize } from "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
@@ -41,6 +41,8 @@ export function TypeToLabel(type?: OutpostTypeEnum): string {
             return msg("LDAP");
         case OutpostTypeEnum.Radius:
             return msg("Radius");
+        case OutpostTypeEnum.Rac:
+            return msg("RAC");
         case OutpostTypeEnum.UnknownDefaultOpenApi:
             return msg("Unknown type");
     }
@@ -105,6 +107,7 @@ export class OutpostListPage extends TablePage<Outpost> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "name";

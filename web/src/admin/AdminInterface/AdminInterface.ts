@@ -1,6 +1,4 @@
 import { ROUTES } from "@goauthentik/admin/Routes";
-import { OAuthInterface } from "@goauthentik/app/common/oauth/interface";
-import { adminSettings } from "@goauthentik/app/common/oauth/settings";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import {
     EVENT_API_DRAWER_TOGGLE,
@@ -9,6 +7,9 @@ import {
 import { configureSentry } from "@goauthentik/common/sentry";
 import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
+import { OAuthLoginController } from "@goauthentik/components/oauth/controller";
+import { adminSettings } from "@goauthentik/components/oauth/settings";
+import { EnterpriseAwareInterface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/elements/enterprise/EnterpriseStatusBanner";
 import "@goauthentik/elements/messages/MessageContainer";
@@ -19,7 +20,6 @@ import { getURLParam, updateURLParams } from "@goauthentik/elements/router/Route
 import "@goauthentik/elements/router/RouterOutlet";
 import "@goauthentik/elements/sidebar/Sidebar";
 import "@goauthentik/elements/sidebar/SidebarItem";
-import { UserManagerSettings } from "oidc-client-ts";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
@@ -35,7 +35,7 @@ import { AdminApi, SessionUser, UiThemeEnum, Version } from "@goauthentik/api";
 import "./AdminSidebar";
 
 @customElement("ak-interface-admin")
-export class AdminInterface extends OAuthInterface {
+export class AdminInterface extends EnterpriseAwareInterface {
     @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 
@@ -50,9 +50,7 @@ export class AdminInterface extends OAuthInterface {
     @state()
     user?: SessionUser;
 
-    get oauthSettings(): UserManagerSettings {
-        return adminSettings;
-    }
+    oauthController: OAuthLoginController;
 
     static get styles(): CSSResult[] {
         return [
@@ -84,6 +82,7 @@ export class AdminInterface extends OAuthInterface {
     constructor() {
         super();
         this.ws = new WebsocketClient();
+        this.oauthController = new OAuthLoginController(this, adminSettings);
         window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, () => {
             this.notificationDrawerOpen = !this.notificationDrawerOpen;
             updateURLParams({

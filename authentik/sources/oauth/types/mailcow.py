@@ -1,5 +1,6 @@
 """Mailcow OAuth Views"""
-from typing import Any, Optional
+
+from typing import Any
 
 from requests.exceptions import RequestException
 from structlog.stdlib import get_logger
@@ -24,7 +25,7 @@ class MailcowOAuthRedirect(OAuthRedirect):
 class MailcowOAuth2Client(OAuth2Client):
     """MailcowOAuth2Client, for some reason, mailcow does not like the default headers"""
 
-    def get_profile_info(self, token: dict[str, str]) -> Optional[dict[str, Any]]:
+    def get_profile_info(self, token: dict[str, str]) -> dict[str, Any] | None:
         "Fetch user profile information."
         profile_url = self.source.source_type.profile_url or ""
         if self.source.source_type.urls_customizable and self.source.profile_url:
@@ -63,7 +64,7 @@ class MailcowType(SourceType):
 
     callback_view = MailcowOAuth2Callback
     redirect_view = MailcowOAuthRedirect
-    name = "Mailcow"
-    slug = "mailcow"
+    verbose_name = "Mailcow"
+    name = "mailcow"
 
     urls_customizable = True

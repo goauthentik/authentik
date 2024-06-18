@@ -2,3 +2,6 @@ keypair
 keypairs
 hass
 warmup
+ontext
+singed
+assertIn

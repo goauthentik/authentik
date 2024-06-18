@@ -1,16 +1,17 @@
 """LDAP Sync tasks"""
-from typing import Optional
+
 from uuid import uuid4
 
 from celery import chain, group
 from django.core.cache import cache
 from ldap3.core.exceptions import LDAPException
-from redis.exceptions import LockError
 from structlog.stdlib import get_logger
 
-from authentik.events.monitored_tasks import CACHE_KEY_PREFIX as CACHE_KEY_PREFIX_TASKS
-from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
+from authentik.events.models import SystemTask as DBSystemTask
+from authentik.events.models import TaskStatus
+from authentik.events.system_tasks import SystemTask
 from authentik.lib.config import CONFIG
+from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.reflection import class_to_path, path_to_class
 from authentik.root.celery import CELERY_APP
@@ -34,11 +35,11 @@ CACHE_KEY_STATUS = "goauthentik.io/sources/ldap/status/"
 def ldap_sync_all():
     """Sync all sources"""
     for source in LDAPSource.objects.filter(enabled=True):
-        ldap_sync_single.apply_async(args=[source.pk])
+        ldap_sync_single.apply_async(args=[str(source.pk)])
 
 
 @CELERY_APP.task()
-def ldap_connectivity_check(pk: Optional[str] = None):
+def ldap_connectivity_check(pk: str | None = None):
     """Check connectivity for LDAP Sources"""
     # 2 hour timeout, this task should run every hour
     timeout = 60 * 60 * 2
@@ -62,31 +63,24 @@ def ldap_sync_single(source_pk: str):
     source: LDAPSource = LDAPSource.objects.filter(pk=source_pk).first()
     if not source:
         return
-    lock = source.sync_lock
-    if lock.locked():
-        LOGGER.debug("LDAP sync locked, skipping task", source=source.slug)
-        return
-    try:
-        with lock:
-            # Delete all sync tasks from the cache
-            keys = cache.keys(f"{CACHE_KEY_PREFIX_TASKS}ldap_sync:{source.slug}*")
-            cache.delete_many(keys)
-            task = chain(
-                # User and group sync can happen at once, they have no dependencies on each other
-                group(
-                    ldap_sync_paginator(source, UserLDAPSynchronizer)
-                    + ldap_sync_paginator(source, GroupLDAPSynchronizer),
-                ),
-                # Membership sync needs to run afterwards
-                group(
-                    ldap_sync_paginator(source, MembershipLDAPSynchronizer),
-                ),
-            )
-            task()
-    except LockError:
-        # This should never happen, we check if the lock is locked above so this
-        # would only happen if there was some other timeout
-        LOGGER.debug("Failed to acquire lock for LDAP sync", source=source.slug)
+    with source.sync_lock as lock_acquired:
+        if not lock_acquired:
+            LOGGER.debug("Failed to acquire lock for LDAP sync, skipping task", source=source.slug)
+            return
+        # Delete all sync tasks from the cache
+        DBSystemTask.objects.filter(name="ldap_sync", uid__startswith=source.slug).delete()
+        task = chain(
+            # User and group sync can happen at once, they have no dependencies on each other
+            group(
+                ldap_sync_paginator(source, UserLDAPSynchronizer)
+                + ldap_sync_paginator(source, GroupLDAPSynchronizer),
+            ),
+            # Membership sync needs to run afterwards
+            group(
+                ldap_sync_paginator(source, MembershipLDAPSynchronizer),
+            ),
+        )
+        task()
 
 
 def ldap_sync_paginator(source: LDAPSource, sync: type[BaseLDAPSynchronizer]) -> list:
@@ -96,18 +90,18 @@ def ldap_sync_paginator(source: LDAPSource, sync: type[BaseLDAPSynchronizer]) ->
     for page in sync_inst.get_objects():
         page_cache_key = CACHE_KEY_PREFIX + str(uuid4())
         cache.set(page_cache_key, page, 60 * 60 * CONFIG.get_int("ldap.task_timeout_hours"))
-        page_sync = ldap_sync.si(source.pk, class_to_path(sync), page_cache_key)
+        page_sync = ldap_sync.si(str(source.pk), class_to_path(sync), page_cache_key)
         signatures.append(page_sync)
     return signatures
 
 
 @CELERY_APP.task(
     bind=True,
-    base=MonitoredTask,
+    base=SystemTask,
     soft_time_limit=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours"),
     task_time_limit=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours"),
 )
-def ldap_sync(self: MonitoredTask, source_pk: str, sync_class: str, page_cache_key: str):
+def ldap_sync(self: SystemTask, source_pk: str, sync_class: str, page_cache_key: str):
     """Synchronization of an LDAP Source"""
     self.result_timeout_hours = CONFIG.get_int("ldap.task_timeout_hours")
     source: LDAPSource = LDAPSource.objects.filter(pk=source_pk).first()
@@ -127,20 +121,18 @@ def ldap_sync(self: MonitoredTask, source_pk: str, sync_class: str, page_cache_k
                 + "Try increasing ldap.task_timeout_hours"
             )
             LOGGER.warning(error_message)
-            self.set_status(TaskResult(TaskResultStatus.ERROR, [error_message]))
+            self.set_status(TaskStatus.ERROR, error_message)
             return
         cache.touch(page_cache_key)
         count = sync_inst.sync(page)
         messages = sync_inst.messages
         messages.append(f"Synced {count} objects.")
         self.set_status(
-            TaskResult(
-                TaskResultStatus.SUCCESSFUL,
-                messages,
-            )
+            TaskStatus.SUCCESSFUL,
+            *messages,
         )
         cache.delete(page_cache_key)
-    except LDAPException as exc:
+    except (LDAPException, StopSync) as exc:
         # No explicit event is created here as .set_status with an error will do that
         LOGGER.warning(exception_to_string(exc))
-        self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
+        self.set_error(exc)

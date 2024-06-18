@@ -1,36 +1,25 @@
-import { config, tenant } from "@goauthentik/common/api/config";
 import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
-import { UIConfig, uiConfig } from "@goauthentik/common/ui/config";
+import { UIConfig } from "@goauthentik/common/ui/config";
 import { adaptCSS } from "@goauthentik/common/utils";
-import { authentikConfigContext } from "@goauthentik/elements/AuthentikContexts";
+import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
 
-import { ContextProvider } from "@lit-labs/context";
 import { localized } from "@lit/localize";
-import { CSSResult, LitElement } from "lit";
-import { state } from "lit/decorators.js";
+import { LitElement, ReactiveElement } from "lit";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import ThemeDark from "@goauthentik/common/styles/theme-dark.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { Config, CurrentTenant, UiThemeEnum } from "@goauthentik/api";
+import { Config, CurrentBrand, UiThemeEnum } from "@goauthentik/api";
 
 type AkInterface = HTMLElement & {
     getTheme: () => Promise<UiThemeEnum>;
-    tenant?: CurrentTenant;
+    brand?: CurrentBrand;
     uiConfig?: UIConfig;
     config?: Config;
 };
 
 export const rootInterface = <T extends AkInterface>(): T | undefined =>
     (document.body.querySelector("[data-ak-interface-root]") as T) ?? undefined;
-
-export function ensureCSSStyleSheet(css: CSSStyleSheet | CSSResult): CSSStyleSheet {
-    if (css instanceof CSSResult) {
-        return css.styleSheet!;
-    }
-    return css;
-}
 
 let css: Promise<string[]> | undefined;
 function fetchCustomCSS(): Promise<string[]> {
@@ -52,10 +41,6 @@ function fetchCustomCSS(): Promise<string[]> {
     return css;
 }
 
-export interface AdoptedStyleSheetsElement {
-    adoptedStyleSheets: readonly CSSStyleSheet[];
-}
-
 const QUERY_MEDIA_COLOR_LIGHT = "(prefers-color-scheme: light)";
 
 @localized()
@@ -72,18 +57,22 @@ export class AKElement extends LitElement {
         super();
     }
 
-    protected createRenderRoot(): ShadowRoot | Element {
-        const root = super.createRenderRoot() as ShadowRoot;
-        let styleRoot: AdoptedStyleSheetsElement = root;
-        if ("ShadyDOM" in window) {
-            styleRoot = document;
-        }
+    setInitialStyles(root: DocumentOrShadowRoot) {
+        const styleRoot: DocumentOrShadowRoot = (
+            "ShadyDOM" in window ? document : root
+        ) as DocumentOrShadowRoot;
         styleRoot.adoptedStyleSheets = adaptCSS([
             ...styleRoot.adoptedStyleSheets,
             ensureCSSStyleSheet(AKGlobal),
         ]);
         this._initTheme(styleRoot);
         this._initCustomCSS(styleRoot);
+    }
+
+    protected createRenderRoot() {
+        this.fixElementStyles();
+        const root = super.createRenderRoot();
+        this.setInitialStyles(root as unknown as DocumentOrShadowRoot);
         return root;
     }
 
@@ -91,7 +80,14 @@ export class AKElement extends LitElement {
         return rootInterface()?.getTheme() || UiThemeEnum.Automatic;
     }
 
-    async _initTheme(root: AdoptedStyleSheetsElement): Promise<void> {
+    fixElementStyles() {
+        // Ensure all style sheets being passed are really style sheets.
+        (this.constructor as typeof ReactiveElement).elementStyles = (
+            this.constructor as typeof ReactiveElement
+        ).elementStyles.map(ensureCSSStyleSheet);
+    }
+
+    async _initTheme(root: DocumentOrShadowRoot): Promise<void> {
         // Early activate theme based on media query to prevent light flash
         // when dark is preferred
         this._activateTheme(
@@ -103,7 +99,7 @@ export class AKElement extends LitElement {
         this._applyTheme(root, await this.getTheme());
     }
 
-    private async _initCustomCSS(root: AdoptedStyleSheetsElement): Promise<void> {
+    private async _initCustomCSS(root: DocumentOrShadowRoot): Promise<void> {
         const sheets = await fetchCustomCSS();
         sheets.map((css) => {
             if (css === "") {
@@ -115,7 +111,7 @@ export class AKElement extends LitElement {
         });
     }
 
-    _applyTheme(root: AdoptedStyleSheetsElement, theme?: UiThemeEnum): void {
+    _applyTheme(root: DocumentOrShadowRoot, theme?: UiThemeEnum): void {
         if (!theme) {
             theme = UiThemeEnum.Automatic;
         }
@@ -150,7 +146,7 @@ export class AKElement extends LitElement {
         return undefined;
     }
 
-    _activateTheme(root: AdoptedStyleSheetsElement, theme: UiThemeEnum) {
+    _activateTheme(root: DocumentOrShadowRoot, theme: UiThemeEnum) {
         if (theme === this._activeTheme) {
             return;
         }
@@ -173,51 +169,5 @@ export class AKElement extends LitElement {
         }
         this._activeTheme = theme;
         this.requestUpdate();
-    }
-}
-
-export class Interface extends AKElement implements AkInterface {
-    @state()
-    tenant?: CurrentTenant;
-
-    @state()
-    uiConfig?: UIConfig;
-
-    _configContext = new ContextProvider(this, {
-        context: authentikConfigContext,
-        initialValue: undefined,
-    });
-
-    _config?: Config;
-
-    @state()
-    set config(c: Config) {
-        this._config = c;
-        this._configContext.setValue(c);
-        this.requestUpdate();
-    }
-
-    get config(): Config | undefined {
-        return this._config;
-    }
-
-    constructor() {
-        super();
-        document.adoptedStyleSheets = [...document.adoptedStyleSheets, ensureCSSStyleSheet(PFBase)];
-        tenant().then((tenant) => (this.tenant = tenant));
-        config().then((config) => (this.config = config));
-        this.dataset.akInterfaceRoot = "true";
-    }
-
-    _activateTheme(root: AdoptedStyleSheetsElement, theme: UiThemeEnum): void {
-        super._activateTheme(root, theme);
-        super._activateTheme(document, theme);
-    }
-
-    async getTheme(): Promise<UiThemeEnum> {
-        if (!this.uiConfig) {
-            this.uiConfig = await uiConfig();
-        }
-        return this.uiConfig.theme?.base || UiThemeEnum.Automatic;
     }
 }

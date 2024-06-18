@@ -14,12 +14,10 @@ import (
 	"goauthentik.io/internal/utils/sentry"
 )
 
-var (
-	Requests = promauto.NewHistogramVec(prometheus.HistogramOpts{
-		Name: "authentik_main_request_duration_seconds",
-		Help: "API request latencies in seconds",
-	}, []string{"dest"})
-)
+var Requests = promauto.NewHistogramVec(prometheus.HistogramOpts{
+	Name: "authentik_main_request_duration_seconds",
+	Help: "API request latencies in seconds",
+}, []string{"dest"})
 
 func (ws *WebServer) runMetricsServer() {
 	m := mux.NewRouter()

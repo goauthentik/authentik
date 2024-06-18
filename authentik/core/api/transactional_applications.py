@@ -1,4 +1,5 @@
 """transactional application and provider creation"""
+
 from django.apps import apps
 from drf_spectacular.utils import PolymorphicProxySerializer, extend_schema, extend_schema_field
 from rest_framework.exceptions import ValidationError
@@ -64,7 +65,7 @@ class TransactionApplicationSerializer(PassiveSerializer):
                 raise ValidationError("Invalid provider model")
             self._provider_model = model
         except LookupError:
-            raise ValidationError("Invalid provider model")
+            raise ValidationError("Invalid provider model") from None
         return fq_model_name
 
     def validate(self, attrs: dict) -> dict:
@@ -105,7 +106,7 @@ class TransactionApplicationSerializer(PassiveSerializer):
                 {
                     exc.entry_id: exc.validation_error.detail,
                 }
-            )
+            ) from None
         return blueprint
 
 

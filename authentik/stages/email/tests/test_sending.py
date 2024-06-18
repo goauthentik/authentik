@@ -1,4 +1,5 @@
 """email tests"""
+
 from smtplib import SMTPException
 from unittest.mock import MagicMock, PropertyMock, patch
 
@@ -38,6 +39,7 @@ class TestEmailStageSending(FlowTestCase):
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
+        Event.objects.filter(action=EventAction.EMAIL_SENT).delete()
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         with patch(
@@ -58,9 +60,11 @@ class TestEmailStageSending(FlowTestCase):
             events = Event.objects.filter(action=EventAction.EMAIL_SENT)
             self.assertEqual(len(events), 1)
             event = events.first()
-            self.assertEqual(event.context["message"], f"Email to {self.user.email} sent")
+            self.assertEqual(
+                event.context["message"], f"Email to {self.user.name} <{self.user.email}> sent"
+            )
             self.assertEqual(event.context["subject"], "authentik")
-            self.assertEqual(event.context["to_email"], [self.user.email])
+            self.assertEqual(event.context["to_email"], [f"{self.user.name} <{self.user.email}>"])
             self.assertEqual(event.context["from_email"], "system@authentik.local")
 
     def test_pending_fake_user(self):

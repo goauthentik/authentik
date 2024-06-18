@@ -305,7 +305,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="event",
             name="tenant",
-            field=models.JSONField(blank=True, default=authentik.events.models.default_tenant),
+            field=models.JSONField(blank=True, default=authentik.events.models.default_brand),
         ),
         migrations.AlterField(
             model_name="event",

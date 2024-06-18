@@ -1,8 +1,11 @@
 import { DesignationToLabel, LayoutToLabel } from "@goauthentik/admin/flows/utils";
 import { AuthenticationEnum } from "@goauthentik/api/dist/models/AuthenticationEnum";
-import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
-import { rootInterface } from "@goauthentik/elements/Base";
+import {
+    CapabilitiesEnum,
+    WithCapabilitiesConfig,
+} from "@goauthentik/elements/Interface/capabilitiesProvider";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -14,17 +17,16 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
-    CapabilitiesEnum,
     DeniedActionEnum,
     Flow,
     FlowDesignationEnum,
+    FlowLayoutEnum,
     FlowsApi,
-    LayoutEnum,
     PolicyEngineMode,
 } from "@goauthentik/api";
 
 @customElement("ak-flow-form")
-export class FlowForm extends ModelForm<Flow, string> {
+export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
     async loadInstance(pk: string): Promise<Flow> {
         const flow = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({
             slug: pk,
@@ -54,8 +56,8 @@ export class FlowForm extends ModelForm<Flow, string> {
                 flowRequest: data,
             });
         }
-        const c = await config();
-        if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
+
+        if (this.can(CapabilitiesEnum.CanSaveMedia)) {
             const icon = this.getFormFiles()["background"];
             if (icon || this.clearBackground) {
                 await new FlowsApi(DEFAULT_CONFIG).flowsInstancesSetBackgroundCreate({
@@ -196,6 +198,13 @@ export class FlowForm extends ModelForm<Flow, string> {
                     >
                         ${msg("Require superuser.")}
                     </option>
+                    <option
+                        value=${AuthenticationEnum.RequireOutpost}
+                        ?selected=${this.instance?.authentication ===
+                        AuthenticationEnum.RequireOutpost}
+                    >
+                        ${msg("Require Outpost (flow can only be executed from an outpost).")}
+                    </option>
                 </select>
                 <p class="pf-c-form__helper-text">
                     ${msg("Required authentication level for this flow.")}
@@ -302,38 +311,38 @@ export class FlowForm extends ModelForm<Flow, string> {
                     >
                         <select class="pf-c-form-control">
                             <option
-                                value=${LayoutEnum.Stacked}
-                                ?selected=${this.instance?.layout === LayoutEnum.Stacked}
+                                value=${FlowLayoutEnum.Stacked}
+                                ?selected=${this.instance?.layout === FlowLayoutEnum.Stacked}
                             >
-                                ${LayoutToLabel(LayoutEnum.Stacked)}
+                                ${LayoutToLabel(FlowLayoutEnum.Stacked)}
                             </option>
                             <option
-                                value=${LayoutEnum.ContentLeft}
-                                ?selected=${this.instance?.layout === LayoutEnum.ContentLeft}
+                                value=${FlowLayoutEnum.ContentLeft}
+                                ?selected=${this.instance?.layout === FlowLayoutEnum.ContentLeft}
                             >
-                                ${LayoutToLabel(LayoutEnum.ContentLeft)}
+                                ${LayoutToLabel(FlowLayoutEnum.ContentLeft)}
                             </option>
                             <option
-                                value=${LayoutEnum.ContentRight}
-                                ?selected=${this.instance?.layout === LayoutEnum.ContentRight}
+                                value=${FlowLayoutEnum.ContentRight}
+                                ?selected=${this.instance?.layout === FlowLayoutEnum.ContentRight}
                             >
-                                ${LayoutToLabel(LayoutEnum.ContentRight)}
+                                ${LayoutToLabel(FlowLayoutEnum.ContentRight)}
                             </option>
                             <option
-                                value=${LayoutEnum.SidebarLeft}
-                                ?selected=${this.instance?.layout === LayoutEnum.SidebarLeft}
+                                value=${FlowLayoutEnum.SidebarLeft}
+                                ?selected=${this.instance?.layout === FlowLayoutEnum.SidebarLeft}
                             >
-                                ${LayoutToLabel(LayoutEnum.SidebarLeft)}
+                                ${LayoutToLabel(FlowLayoutEnum.SidebarLeft)}
                             </option>
                             <option
-                                value=${LayoutEnum.SidebarRight}
-                                ?selected=${this.instance?.layout === LayoutEnum.SidebarRight}
+                                value=${FlowLayoutEnum.SidebarRight}
+                                ?selected=${this.instance?.layout === FlowLayoutEnum.SidebarRight}
                             >
-                                ${LayoutToLabel(LayoutEnum.SidebarRight)}
+                                ${LayoutToLabel(FlowLayoutEnum.SidebarRight)}
                             </option>
                         </select>
                     </ak-form-element-horizontal>
-                    ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanSaveMedia)
+                    ${this.can(CapabilitiesEnum.CanSaveMedia)
                         ? html`<ak-form-element-horizontal
                                   label=${msg("Background")}
                                   name="background"

@@ -1,5 +1,5 @@
-import { APIErrorTypes, parseAPIError } from "@goauthentik/app/common/errors";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { APIErrorTypes, parseAPIError } from "@goauthentik/common/errors";
 import { groupBy } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
@@ -27,6 +27,11 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { Pagination, ResponseError } from "@goauthentik/api";
 
+export interface TableLike {
+    order?: string;
+    fetch: () => void;
+}
+
 export class TableColumn {
     title: string;
     orderBy?: string;
@@ -38,7 +43,7 @@ export class TableColumn {
         this.orderBy = orderBy;
     }
 
-    headerClickHandler(table: Table<unknown>): void {
+    headerClickHandler(table: TableLike): void {
         if (!this.orderBy) {
             return;
         }
@@ -46,7 +51,7 @@ export class TableColumn {
         table.fetch();
     }
 
-    private getSortIndicator(table: Table<unknown>): string {
+    private getSortIndicator(table: TableLike): string {
         switch (table.order) {
             case this.orderBy:
                 return "fa-long-arrow-alt-down";
@@ -57,7 +62,7 @@ export class TableColumn {
         }
     }
 
-    renderSortable(table: Table<unknown>): TemplateResult {
+    renderSortable(table: TableLike): TemplateResult {
         return html` <button
             class="pf-c-table__button"
             @click=${() => this.headerClickHandler(table)}
@@ -71,7 +76,7 @@ export class TableColumn {
         </button>`;
     }
 
-    render(table: Table<unknown>): TemplateResult {
+    render(table: TableLike): TemplateResult {
         const classes = {
             "pf-c-table__sort": !!this.orderBy,
             "pf-m-selected": table.order === this.orderBy || table.order === `-${this.orderBy}`,
@@ -89,7 +94,7 @@ export interface PaginatedResponse<T> {
     results: Array<T>;
 }
 
-export abstract class Table<T> extends AKElement {
+export abstract class Table<T> extends AKElement implements TableLike {
     abstract apiEndpoint(page: number): Promise<PaginatedResponse<T>>;
     abstract columns(): TableColumn[];
     abstract row(item: T): TemplateResult[];
@@ -114,14 +119,28 @@ export abstract class Table<T> extends AKElement {
     @property({ type: Number })
     page = getURLParam("tablePage", 1);
 
+    /** @prop
+     *
+     * Set if your `selectedElements` use of the selection box is to enable bulk-delete, so that
+     * stale data is cleared out when the API returns a new list minus the deleted entries.
+     */
+    @property({ attribute: "clear-on-refresh", type: Boolean, reflect: true })
+    clearOnRefresh = false;
+
     @property({ type: String })
     order?: string;
 
     @property({ type: String })
-    search: string = getURLParam("search", "");
+    search: string = "";
 
     @property({ type: Boolean })
     checkbox = false;
+
+    @property({ type: Boolean })
+    clickable = false;
+
+    @property({ attribute: false })
+    clickHandler: (item: T) => void = () => {};
 
     @property({ type: Boolean })
     radioSelect = false;
@@ -161,15 +180,27 @@ export abstract class Table<T> extends AKElement {
                 .pf-c-table tbody .pf-c-table__check input {
                     margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
                 }
+                .pf-c-toolbar__content {
+                    row-gap: var(--pf-global--spacer--sm);
+                }
+                .pf-c-toolbar__item .pf-c-input-group {
+                    padding: 0 var(--pf-global--spacer--sm);
+                }
             `,
         ];
     }
 
     constructor() {
         super();
-        this.addEventListener(EVENT_REFRESH, () => {
-            this.fetch();
+        this.addEventListener(EVENT_REFRESH, async () => {
+            await this.fetch();
+            if (this.clearOnRefresh) {
+                this.selectedElements = [];
+            }
         });
+        if (this.searchEnabled()) {
+            this.search = getURLParam("search", "");
+        }
     }
 
     public groupBy(items: T[]): [string, T[]][] {
@@ -356,8 +387,12 @@ export abstract class Table<T> extends AKElement {
             return html`<tbody role="rowgroup" class="${classMap(expandedClass)}">
                 <tr
                     role="row"
-                    class="${this.checkbox ? "pf-m-hoverable" : ""}"
-                    @click=${itemSelectHandler}
+                    class="${this.checkbox || this.clickable ? "pf-m-hoverable" : ""}"
+                    @click=${this.clickable
+                        ? () => {
+                              this.clickHandler(item);
+                          }
+                        : itemSelectHandler}
                 >
                     ${this.checkbox ? renderCheckbox() : html``}
                     ${this.expandable ? renderExpansion() : html``}

@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"beryju.io/ldap"
+
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/utils"
@@ -49,8 +50,8 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 			constants.OCPosixAccount,
 			constants.OCAKUser,
 		},
-		"uidNumber":     {pi.GetUidNumber(u)},
-		"gidNumber":     {pi.GetUidNumber(u)},
+		"uidNumber":     {pi.GetUserUidNumber(u)},
+		"gidNumber":     {pi.GetUserGidNumber(u)},
 		"homeDirectory": {fmt.Sprintf("/home/%s", u.Username)},
 		"sn":            {u.Name},
 	})

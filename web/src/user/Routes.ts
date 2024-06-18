@@ -1,6 +1,6 @@
-import "@goauthentik/app/common/oauth/callback";
-import { userSettings } from "@goauthentik/app/common/oauth/settings";
-import "@goauthentik/app/common/oauth/signout";
+import "@goauthentik/components/oauth/callback";
+import { userSettings } from "@goauthentik/components/oauth/settings";
+import "@goauthentik/components/oauth/signout";
 import { Route } from "@goauthentik/elements/router/Route";
 import "@goauthentik/user/LibraryPage/LibraryPage";
 

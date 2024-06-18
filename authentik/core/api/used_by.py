@@ -1,4 +1,5 @@
 """used_by mixin"""
+
 from enum import Enum
 from inspect import getmembers
 
@@ -31,19 +32,19 @@ class UsedBySerializer(PassiveSerializer):
     model_name = CharField()
     pk = CharField()
     name = CharField()
-    action = ChoiceField(choices=[(x.name, x.name) for x in DeleteAction])
+    action = ChoiceField(choices=[(x.value, x.name) for x in DeleteAction])
 
 
 def get_delete_action(manager: Manager) -> str:
     """Get the delete action from the Foreign key, falls back to cascade"""
     if hasattr(manager, "field"):
         if manager.field.remote_field.on_delete.__name__ == SET_NULL.__name__:
-            return DeleteAction.SET_NULL.name
+            return DeleteAction.SET_NULL.value
         if manager.field.remote_field.on_delete.__name__ == SET_DEFAULT.__name__:
-            return DeleteAction.SET_DEFAULT.name
+            return DeleteAction.SET_DEFAULT.value
     if hasattr(manager, "source_field"):
-        return DeleteAction.CASCADE_MANY.name
-    return DeleteAction.CASCADE.name
+        return DeleteAction.CASCADE_MANY.value
+    return DeleteAction.CASCADE.value
 
 
 class UsedByMixin:
@@ -53,7 +54,6 @@ class UsedByMixin:
         responses={200: UsedBySerializer(many=True)},
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
-    # pylint: disable=too-many-locals
     def used_by(self, request: Request, *args, **kwargs) -> Response:
         """Get a list of all objects that use this object"""
         model: Model = self.get_object()

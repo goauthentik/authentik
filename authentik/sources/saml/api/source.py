@@ -1,4 +1,5 @@
 """SAMLSource API Views"""
+
 from django.urls import reverse
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action

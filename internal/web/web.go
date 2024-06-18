@@ -15,11 +15,12 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/pires/go-proxyproto"
 	log "github.com/sirupsen/logrus"
+
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/gounicorn"
 	"goauthentik.io/internal/outpost/proxyv2"
 	"goauthentik.io/internal/utils/web"
-	"goauthentik.io/internal/web/tenant_tls"
+	"goauthentik.io/internal/web/brand_tls"
 )
 
 type WebServer struct {
@@ -29,7 +30,7 @@ type WebServer struct {
 	stop chan struct{} // channel for waiting shutdown
 
 	ProxyServer *proxyv2.ProxyServer
-	TenantTLS   *tenant_tls.Watcher
+	BrandTLS    *brand_tls.Watcher
 
 	g   *gounicorn.GoUnicorn
 	gr  bool

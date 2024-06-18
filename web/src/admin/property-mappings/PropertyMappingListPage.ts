@@ -1,5 +1,8 @@
+import "@goauthentik/admin/property-mappings/PropertyMappingGoogleWorkspaceForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingLDAPForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingMicrosoftEntraForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingNotification";
+import "@goauthentik/admin/property-mappings/PropertyMappingRACForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingSAMLForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingSCIMForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingScopeForm";
@@ -40,6 +43,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "name";

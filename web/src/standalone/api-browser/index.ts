@@ -2,9 +2,9 @@ import { CSRFHeaderName } from "@goauthentik/common/api/middleware";
 import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
 import { first, getCookie } from "@goauthentik/common/utils";
-import { Interface } from "@goauthentik/elements/Base";
+import { Interface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/ak-locale-context";
-import { DefaultTenant } from "@goauthentik/elements/sidebar/SidebarBrand";
+import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 import "rapidoc";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -59,7 +59,7 @@ export class APIBrowser extends Interface {
     }
 
     async getTheme(): Promise<UiThemeEnum> {
-        return globalAK()?.tenant.uiTheme || UiThemeEnum.Automatic;
+        return globalAK()?.brand.uiTheme || UiThemeEnum.Automatic;
     }
 
     render(): TemplateResult {
@@ -103,7 +103,7 @@ export class APIBrowser extends Interface {
                         <img
                             alt="authentik Logo"
                             class="logo"
-                            src="${first(this.tenant?.brandingLogo, DefaultTenant.brandingLogo)}"
+                            src="${first(this.brand?.brandingLogo, DefaultBrand.brandingLogo)}"
                         />
                     </div>
                 </rapi-doc>

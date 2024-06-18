@@ -1,4 +1,5 @@
 """Radius Provider Kubernetes Controller"""
+
 from authentik.outposts.controllers.base import DeploymentPort
 from authentik.outposts.controllers.kubernetes import KubernetesController
 from authentik.outposts.models import KubernetesServiceConnection, Outpost

@@ -1,5 +1,5 @@
 import { globalAK } from "@goauthentik/common/global";
-import { Interface } from "@goauthentik/elements/Base";
+import { Interface } from "@goauthentik/elements/Interface";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -29,7 +29,7 @@ export class Loading extends Interface {
     }
 
     async getTheme(): Promise<UiThemeEnum> {
-        return globalAK()?.tenant.uiTheme || UiThemeEnum.Automatic;
+        return globalAK()?.brand.uiTheme || UiThemeEnum.Automatic;
     }
 
     render(): TemplateResult {

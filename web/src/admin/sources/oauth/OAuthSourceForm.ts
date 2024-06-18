@@ -4,20 +4,22 @@ import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
 import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
-import { rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+import {
+    CapabilitiesEnum,
+    WithCapabilitiesConfig,
+} from "@goauthentik/elements/Interface/capabilitiesProvider";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { PropertyValues, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
-    CapabilitiesEnum,
     FlowsInstancesListDesignationEnum,
     OAuthSource,
     OAuthSourceRequest,
@@ -28,7 +30,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-source-oauth-form")
-export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
+export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuthSource>) {
     async loadInstance(pk: string): Promise<OAuthSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthRetrieve({
             slug: pk,
@@ -38,22 +40,8 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
         return source;
     }
 
-    _modelName?: string;
-
     @property()
-    set modelName(v: string | undefined) {
-        this._modelName = v;
-        new SourcesApi(DEFAULT_CONFIG)
-            .sourcesOauthSourceTypesList({
-                name: v?.replace("oauthsource", ""),
-            })
-            .then((type) => {
-                this.providerType = type[0];
-            });
-    }
-    get modelName(): string | undefined {
-        return this._modelName;
-    }
+    modelName?: string;
 
     @property({ attribute: false })
     providerType: SourceType | null = null;
@@ -62,7 +50,7 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
     clearIcon = false;
 
     async send(data: OAuthSource): Promise<OAuthSource> {
-        data.providerType = (this.providerType?.slug || "") as ProviderTypeEnum;
+        data.providerType = (this.providerType?.name || "") as ProviderTypeEnum;
         let source: OAuthSource;
         if (this.instance) {
             source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
@@ -95,6 +83,22 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
         return source;
     }
 
+    fetchProviderType(v: string | undefined) {
+        new SourcesApi(DEFAULT_CONFIG)
+            .sourcesOauthSourceTypesList({
+                name: v?.replace("oauthsource", ""),
+            })
+            .then((type) => {
+                this.providerType = type[0];
+            });
+    }
+
+    willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("modelName")) {
+            this.fetchProviderType(this.modelName);
+        }
+    }
+
     renderUrlOptions(): TemplateResult {
         if (!this.providerType?.urlsCustomizable) {
             return html``;
@@ -104,7 +108,6 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
             <div slot="body" class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Authorization URL")}
-                    ?required=${true}
                     name="authorizationUrl"
                 >
                     <input
@@ -115,17 +118,12 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                             "",
                         )}"
                         class="pf-c-form-control"
-                        required
                     />
                     <p class="pf-c-form__helper-text">
                         ${msg("URL the user is redirect to to consent the authorization.")}
                     </p>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Access token URL")}
-                    ?required=${true}
-                    name="accessTokenUrl"
-                >
+                <ak-form-element-horizontal label=${msg("Access token URL")} name="accessTokenUrl">
                     <input
                         type="text"
                         value="${first(
@@ -134,17 +132,12 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                             "",
                         )}"
                         class="pf-c-form-control"
-                        required
                     />
                     <p class="pf-c-form__helper-text">
                         ${msg("URL used by authentik to retrieve tokens.")}
                     </p>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Profile URL")}
-                    ?required=${true}
-                    name="profileUrl"
-                >
+                <ak-form-element-horizontal label=${msg("Profile URL")} name="profileUrl">
                     <input
                         type="text"
                         value="${first(
@@ -153,7 +146,6 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                             "",
                         )}"
                         class="pf-c-form-control"
-                        required
                     />
                     <p class="pf-c-form__helper-text">
                         ${msg("URL used by authentik to get user information.")}
@@ -176,7 +168,7 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                           </p>
                       </ak-form-element-horizontal> `
                     : html``}
-                ${this.providerType.slug === ProviderTypeEnum.Openidconnect ||
+                ${this.providerType.name === ProviderTypeEnum.Openidconnect ||
                 this.providerType.oidcWellKnownUrl !== ""
                     ? html`<ak-form-element-horizontal
                           label=${msg("OIDC Well-known URL")}
@@ -198,7 +190,7 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                           </p>
                       </ak-form-element-horizontal>`
                     : html``}
-                ${this.providerType.slug === ProviderTypeEnum.Openidconnect ||
+                ${this.providerType.name === ProviderTypeEnum.Openidconnect ||
                 this.providerType.oidcJwksUrl !== ""
                     ? html`<ak-form-element-horizontal
                               label=${msg("OIDC JWKS URL")}
@@ -318,7 +310,7 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                 />
                 <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
             </ak-form-element-horizontal>
-            ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanSaveMedia)
+            ${this.can(CapabilitiesEnum.CanSaveMedia)
                 ? html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
                           <input type="file" value="" class="pf-c-form-control" />
                           ${this.instance?.icon

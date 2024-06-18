@@ -10,7 +10,7 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import { StagesApi, UserLoginStage } from "@goauthentik/api";
+import { GeoipBindingEnum, NetworkBindingEnum, StagesApi, UserLoginStage } from "@goauthentik/api";
 
 @customElement("ak-stage-user-login-form")
 export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
@@ -92,6 +92,74 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
                             )}
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Network binding")}
+                        ?required=${true}
+                        name="networkBinding"
+                    >
+                        <ak-radio
+                            .options=${[
+                                {
+                                    label: msg("No binding"),
+                                    value: NetworkBindingEnum.NoBinding,
+                                },
+                                {
+                                    label: msg("Bind ASN"),
+                                    value: NetworkBindingEnum.BindAsn,
+                                    default: true,
+                                },
+                                {
+                                    label: msg("Bind ASN and Network"),
+                                    value: NetworkBindingEnum.BindAsnNetwork,
+                                },
+                                {
+                                    label: msg("Bind ASN, Network and IP"),
+                                    value: NetworkBindingEnum.BindAsnNetworkIp,
+                                },
+                            ]}
+                            .value=${this.instance?.networkBinding}
+                        >
+                        </ak-radio>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Configure if sessions created by this stage should be bound to the Networks they were created in.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("GeoIP binding")}
+                        ?required=${true}
+                        name="geoipBinding"
+                    >
+                        <ak-radio
+                            .options=${[
+                                {
+                                    label: msg("No binding"),
+                                    value: GeoipBindingEnum.NoBinding,
+                                },
+                                {
+                                    label: msg("Bind Continent"),
+                                    value: GeoipBindingEnum.BindContinent,
+                                    default: true,
+                                },
+                                {
+                                    label: msg("Bind Continent and Country"),
+                                    value: GeoipBindingEnum.BindContinentCountry,
+                                },
+                                {
+                                    label: msg("Bind Continent, Country and City"),
+                                    value: GeoipBindingEnum.BindContinentCountryCity,
+                                },
+                            ]}
+                            .value=${this.instance?.geoipBinding}
+                        >
+                        </ak-radio>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Configure if sessions created by this stage should be bound to their GeoIP-based location",
+                            )}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="terminateOtherSessions">
                         <label class="pf-c-switch">

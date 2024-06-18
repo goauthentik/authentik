@@ -1,4 +1,5 @@
 """Kubernetes Traefik Middleware Reconciler"""
+
 from dataclasses import asdict, dataclass, field
 from typing import TYPE_CHECKING
 
@@ -19,11 +20,11 @@ class TraefikMiddlewareSpecForwardAuth:
     """traefik middleware forwardAuth spec"""
 
     address: str
-    # pylint: disable=invalid-name
+
     authResponseHeadersRegex: str = field(default="")
-    # pylint: disable=invalid-name
+
     authResponseHeaders: list[str] = field(default_factory=list)
-    # pylint: disable=invalid-name
+
     trustForwardHeader: bool = field(default=True)
 
 
@@ -31,7 +32,6 @@ class TraefikMiddlewareSpecForwardAuth:
 class TraefikMiddlewareSpec:
     """Traefik middleware spec"""
 
-    # pylint: disable=invalid-name
     forwardAuth: TraefikMiddlewareSpecForwardAuth
 
 
@@ -48,7 +48,6 @@ class TraefikMiddlewareMetadata:
 class TraefikMiddleware:
     """Traefik Middleware"""
 
-    # pylint: disable=invalid-name
     apiVersion: str
     kind: str
     metadata: TraefikMiddlewareMetadata

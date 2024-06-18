@@ -1,6 +1,7 @@
 """Source type manager"""
+
+from collections.abc import Callable
 from enum import Enum
-from typing import Callable, Optional, Type
 
 from django.http.request import HttpRequest
 from django.templatetags.static import static
@@ -28,25 +29,25 @@ class SourceType:
     callback_view = OAuthCallback
     redirect_view = OAuthRedirect
     name: str = "default"
-    slug: str = "default"
+    verbose_name: str = "Default source type"
 
     urls_customizable = False
 
-    request_token_url: Optional[str] = None
-    authorization_url: Optional[str] = None
-    access_token_url: Optional[str] = None
-    profile_url: Optional[str] = None
-    oidc_well_known_url: Optional[str] = None
-    oidc_jwks_url: Optional[str] = None
+    request_token_url: str | None = None
+    authorization_url: str | None = None
+    access_token_url: str | None = None
+    profile_url: str | None = None
+    oidc_well_known_url: str | None = None
+    oidc_jwks_url: str | None = None
 
     def icon_url(self) -> str:
         """Get Icon URL for login"""
-        return static(f"authentik/sources/{self.slug}.svg")
+        return static(f"authentik/sources/{self.name}.svg")
 
     def login_challenge(self, source: OAuthSource, request: HttpRequest) -> Challenge:
         """Allow types to return custom challenges"""
         return RedirectChallenge(
-            instance={
+            data={
                 "type": ChallengeTypes.REDIRECT.value,
                 "to": reverse(
                     "authentik_sources_oauth:oauth-client-login",
@@ -77,20 +78,20 @@ class SourceTypeRegistry:
 
     def get_name_tuple(self):
         """Get list of tuples of all registered names"""
-        return [(x.slug, x.name) for x in self.__sources]
+        return [(x.name, x.verbose_name) for x in self.__sources]
 
-    def find_type(self, type_name: str) -> Type[SourceType]:
+    def find_type(self, type_name: str) -> type[SourceType]:
         """Find type based on source"""
         found_type = None
         for src_type in self.__sources:
-            if src_type.slug == type_name:
+            if src_type.name == type_name:
                 return src_type
         if not found_type:
             found_type = SourceType
             LOGGER.warning(
                 "no matching type found, using default",
                 wanted=type_name,
-                have=[x.slug for x in self.__sources],
+                have=[x.name for x in self.__sources],
             )
         return found_type
 

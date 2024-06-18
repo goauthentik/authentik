@@ -1,4 +1,5 @@
 """email tests"""
+
 from unittest.mock import MagicMock, PropertyMock, patch
 
 from django.core import mail
@@ -94,7 +95,7 @@ class TestEmailStage(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "authentik")
-        self.assertEqual(mail.outbox[0].to, [self.user.email])
+        self.assertEqual(mail.outbox[0].to, [f"{self.user.name} <{self.user.email}>"])
 
     @patch(
         "authentik.stages.email.models.EmailStage.backend_class",
@@ -114,7 +115,7 @@ class TestEmailStage(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "authentik")
-        self.assertEqual(mail.outbox[0].to, ["foo@bar.baz"])
+        self.assertEqual(mail.outbox[0].to, [f"{self.user.name} <foo@bar.baz>"])
 
     @patch(
         "authentik.stages.email.models.EmailStage.backend_class",

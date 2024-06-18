@@ -5,7 +5,10 @@ import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
 import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
-import { rootInterface } from "@goauthentik/elements/Base";
+import {
+    CapabilitiesEnum,
+    WithCapabilitiesConfig,
+} from "@goauthentik/elements/Interface/capabilitiesProvider";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
@@ -18,7 +21,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     BindingTypeEnum,
-    CapabilitiesEnum,
     DigestAlgorithmEnum,
     FlowsInstancesListDesignationEnum,
     NameIdPolicyEnum,
@@ -29,7 +31,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-source-saml-form")
-export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
+export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSource>) {
     @state()
     clearIcon = false;
 
@@ -149,7 +151,7 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                     </option>
                 </select>
             </ak-form-element-horizontal>
-            ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanSaveMedia)
+            ${this.can(CapabilitiesEnum.CanSaveMedia)
                 ? html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
                           <input type="file" value="" class="pf-c-form-control" />
                           ${this.instance?.icon

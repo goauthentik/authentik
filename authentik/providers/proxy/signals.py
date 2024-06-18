@@ -1,4 +1,5 @@
 """Proxy provider signals"""
+
 from django.contrib.auth.signals import user_logged_out
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver

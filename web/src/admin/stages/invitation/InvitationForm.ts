@@ -65,7 +65,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                     value="${dateTimeLocal(first(this.instance?.expires, new Date()))}"
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Flow")} ?required=${true} name="flow">
+            <ak-form-element-horizontal label=${msg("Flow")} name="flow">
                 <ak-flow-search
                     flowType=${FlowsInstancesListDesignationEnum.Enrollment}
                     .currentFlow=${this.instance?.flow}

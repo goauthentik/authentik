@@ -1,15 +1,14 @@
 import "@goauthentik/admin/applications/ApplicationForm";
-import { PFSize } from "@goauthentik/app/elements/Spinner";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { PFSize } from "@goauthentik/common/enums.js";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/components/ak-app-icon";
-import MDApplication from "@goauthentik/docs/core/applications.md";
+import MDApplication from "@goauthentik/docs/applications/index.md";
 import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
-// import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
@@ -24,6 +23,22 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import { Application, CoreApi } from "@goauthentik/api";
 
 import "./ApplicationWizardHint";
+
+export const applicationListStyle = css`
+    /* Fix alignment issues with images in tables */
+    .pf-c-table tbody > tr > * {
+        vertical-align: middle;
+    }
+    tr td:first-child {
+        width: auto;
+        min-width: 0px;
+        text-align: center;
+        vertical-align: middle;
+    }
+    .pf-c-sidebar.pf-m-gutter > .pf-c-sidebar__main > * + * {
+        margin-left: calc(var(--pf-c-sidebar__main--child--MarginLeft) / 2);
+    }
+`;
 
 @customElement("ak-application-list")
 export class ApplicationListPage extends TablePage<Application> {
@@ -43,6 +58,7 @@ export class ApplicationListPage extends TablePage<Application> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "name";
@@ -58,24 +74,7 @@ export class ApplicationListPage extends TablePage<Application> {
     }
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(
-            PFCard,
-            css`
-                /* Fix alignment issues with images in tables */
-                .pf-c-table tbody > tr > * {
-                    vertical-align: middle;
-                }
-                tr td:first-child {
-                    width: auto;
-                    min-width: 0px;
-                    text-align: center;
-                    vertical-align: middle;
-                }
-                .pf-c-sidebar.pf-m-gutter > .pf-c-sidebar__main > * + * {
-                    margin-left: calc(var(--pf-c-sidebar__main--child--MarginLeft) / 2);
-                }
-            `,
-        );
+        return super.styles.concat(PFCard, applicationListStyle);
     }
 
     columns(): TableColumn[] {
@@ -94,13 +93,10 @@ export class ApplicationListPage extends TablePage<Application> {
     }
 
     renderSidebarAfter(): TemplateResult {
-        // Rendering the wizard with .open here, as if we set the attribute in
-        // renderObjectCreate() it'll open two wizards, since that function gets called twice
-
         return html`<div class="pf-c-sidebar__panel pf-m-width-25">
             <div class="pf-c-card">
                 <div class="pf-c-card__body">
-                    <ak-markdown .md=${MDApplication}></ak-markdown>
+                    <ak-markdown .md=${MDApplication} meta="applications/index.md"></ak-markdown>
                 </div>
             </div>
         </div>`;

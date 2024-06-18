@@ -1,7 +1,7 @@
-import { DEFAULT_CONFIG } from "@goauthentik/app/common/api/config";
-import { groupBy } from "@goauthentik/app/common/utils";
-import { PaginatedResponse, Table, TableColumn } from "@goauthentik/app/elements/table/Table";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/DeleteBulkForm";
+import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
@@ -16,6 +16,7 @@ export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPer
     userId?: number;
 
     checkbox = true;
+    clearOnRefresh = true;
 
     apiEndpoint(page: number): Promise<PaginatedResponse<ExtraUserObjectPermission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsUsersList({
@@ -85,7 +86,7 @@ export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPer
                   >
                       <pre>${item.objectPk}</pre>
                   </pf-tooltip>`}`,
-            html`✓`,
+            html`<i class="fas fa-check pf-m-success"></i>`,
         ];
     }
 }

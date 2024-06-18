@@ -1,4 +1,5 @@
 """Patreon OAuth Views"""
+
 from typing import Any
 
 from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
@@ -43,8 +44,8 @@ class PatreonType(SourceType):
 
     callback_view = PatreonOAuthCallback
     redirect_view = PatreonOAuthRedirect
-    name = "Patreon"
-    slug = "patreon"
+    verbose_name = "Patreon"
+    name = "patreon"
 
     authorization_url = "https://www.patreon.com/oauth2/authorize"
     access_token_url = "https://www.patreon.com/api/oauth2/token"  # nosec

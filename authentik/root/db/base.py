@@ -1,5 +1,6 @@
 """authentik database backend"""
-from django_prometheus.db.backends.postgresql.base import DatabaseWrapper as BaseDatabaseWrapper
+
+from django_tenants.postgresql_backend.base import DatabaseWrapper as BaseDatabaseWrapper
 
 from authentik.lib.config import CONFIG
 
@@ -8,8 +9,16 @@ class DatabaseWrapper(BaseDatabaseWrapper):
     """database backend which supports rotating credentials"""
 
     def get_connection_params(self):
-        CONFIG.refresh("postgresql.password")
+        """Refresh DB credentials before getting connection params"""
         conn_params = super().get_connection_params()
-        conn_params["user"] = CONFIG.get("postgresql.user")
-        conn_params["password"] = CONFIG.get("postgresql.password")
+
+        prefix = "postgresql"
+        if self.alias.startswith("replica_"):
+            prefix = f"postgresql.read_replicas.{self.alias.removeprefix('replica_')}"
+
+        for setting in ("host", "port", "user", "password"):
+            conn_params[setting] = CONFIG.refresh(f"{prefix}.{setting}")
+            if conn_params[setting] is None and self.alias.startswith("replica_"):
+                conn_params[setting] = CONFIG.refresh(f"postgresql.{setting}")
+
         return conn_params

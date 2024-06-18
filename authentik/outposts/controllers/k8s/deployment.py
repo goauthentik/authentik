@@ -1,4 +1,5 @@
 """Kubernetes Deployment Reconciler"""
+
 from typing import TYPE_CHECKING
 
 from django.utils.text import slugify
@@ -42,6 +43,10 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         super().__init__(controller)
         self.api = AppsV1Api(controller.client)
         self.outpost = self.controller.outpost
+
+    @property
+    def noop(self) -> bool:
+        return self.is_embedded
 
     @staticmethod
     def reconciler_name() -> str:
