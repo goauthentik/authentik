@@ -8,11 +8,10 @@ from guardian.shortcuts import get_objects_for_user
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.fields import BooleanField, CharField
+from rest_framework.fields import BooleanField, CharField, SerializerMethodField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.blueprints.api import ManagedSerializer
@@ -20,6 +19,7 @@ from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
     MetaNameSerializer,
+    ModelSerializer,
     PassiveSerializer,
 )
 from authentik.core.expression.evaluator import PropertyMappingEvaluator

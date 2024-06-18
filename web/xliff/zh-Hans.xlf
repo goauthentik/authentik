@@ -8794,15 +8794,19 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s35f47dbd321aaf15">
   <source>FIPS compliance: passing</source>
+  <target>FIPS 合规性：通过</target>
 </trans-unit>
 <trans-unit id="sc94578030c702562">
   <source>Unverified</source>
+  <target>未验证</target>
 </trans-unit>
 <trans-unit id="s16749cce7c4c1589">
   <source>FIPS compliance: unverified</source>
+  <target>FIPS 合规性：未验证</target>
 </trans-unit>
 <trans-unit id="s0b2ad58c3deaa8dd">
   <source>FIPS Status</source>
+  <target>FIPS 状态</target>
 </trans-unit>
     </body>
   </file>
