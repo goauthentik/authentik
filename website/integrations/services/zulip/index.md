@@ -60,3 +60,11 @@ The certificate file name must match the idp identifier name you set in the conf
 :::note
 Remember to restart Zulip.
 :::
+
+## Additional Resources
+
+Please refer to the following for further information:
+
+-   https://zulip.com/
+-   https://zulip.readthedocs.io
+-   https://chat.zulip.org/ (Official public Zulip Chat instance)

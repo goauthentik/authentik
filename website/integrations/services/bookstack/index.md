@@ -10,6 +10,10 @@ title: Bookstack
 >
 > -- https://www.bookstackapp.com
 
+:::note
+This is based on authentik 2021.7.2 and BookStack V21.05.3. Instructions may differ between versions.
+:::
+
 ## Preparation
 
 The following placeholders will be used:
@@ -60,7 +64,7 @@ Obtain your Metadata URL from authentik.
 
 Edit the `.env` file inside of the `www` folder of Bookstack.
 
-Modify the following example SAML config and incorporate it into your .env file
+Modify the following example SAML config and incorporate it into your `.env` file
 
 ```bash
 # Set authentication method to be saml2

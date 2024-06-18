@@ -71,4 +71,4 @@ Paste the following configuration into the SAML Enabled Identity Providers:
 }
 ```
 
-`x509cert` is the certificate configured in authentik. Remove the `--BEGIN CERTIFICATE--` and `--END CERTIFICATE--` headers, and enter the certificate as a single continuous string.
+`x509cert` is the certificate configured in authentik. Remove the `--BEGIN CERTIFICATE--` and `--END CERTIFICATE--` headers, and then enter the certificate as a single continuous string.

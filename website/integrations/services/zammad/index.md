@@ -21,7 +21,7 @@ The following placeholders will be used:
 
 ### Step 1 - Property mappings
 
-Create two proprety mappings (under **Customization -> Property Mappings**) with these settings:
+Create two property mappings (under **Customization -> Property Mappings**) with these settings:
 
 #### name mapping
 
@@ -67,3 +67,8 @@ Configure Zammad SAML settings by going to settings (the gear icon), and selecti
 -   **IDP certificate**: `----BEGIN CERTIFICATE---- …`
 -   **IDP certificate fingerprint**: *leave empty*
 -   **Name Identifier Format**: *leave empty*
+
+## Additional Resources
+
+-   https://admin-docs.zammad.org/en/latest/settings/security/third-party/saml.html
+-   https://community.zammad.org/t/saml-authentication-with-authentik-saml-login-url-and-auto-assign-permission/10876/3

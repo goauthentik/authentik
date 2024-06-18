@@ -32,7 +32,7 @@ In authentik, create an _OAuth2/OpenID Provider_ (under _Applications/Providers_
 - **Signing Key**: Select any available key
 - **Redirect URIs**: https://argocd.company/api/dex/callback and http://localhost:8085/auth/callback
 
-After creating the provider, take note of the `Client ID` and `Client Secret`. You'll need to provide them to ArgoCD in the _ArgoCD Configuration_ field.
+After creating the provider, take note of the `Client ID` and `Client Secret`. You'll need to provide them to ArgoCD in the **ArgoCD Configuration** field.
 
 ### Step 2 - Application creation
 
@@ -45,7 +45,7 @@ Create a new _Application_ (under _Applications/Applications_) with these settin
 
 ### Step 3 - ArgoCD Group creation
 
-Create a new _Group_ (under _Directory/Groups_) that'll be used as the admin group for ArgoCD (if you already have an "admin" group, you can skip this part!)
+Create a new group (under **Directory -> Groups**) that will be used as the admin group for ArgoCD (if you already have an admin group, you can skip this part!)
 
 - **Name**: ArgoCD Admins
 - **Members**: Add your user and/or any user that should be an ArgoCD admin
