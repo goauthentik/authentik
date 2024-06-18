@@ -32,7 +32,7 @@ In authentik, under _Providers_, create an _OAuth2/OpenID Provider_ with these s
 
 Note the _client ID_ and _client secret_, then save the provider. If you need to retrieve these values, you can do so by editing the provider.
 
-![](./img/wikijs-01.png)
+![](./wikijs-01.png)
 
 ### Step 3
 
@@ -48,7 +48,7 @@ In Wiki.js, configure the authentication strategy with these settings:
 -   Allow self-registration: Enabled
 -   Assign to group: The group to which new users logging in from authentik should be assigned.
 
-![](./img/wikijs-02.png)
+![](./wikijs-02.png)
 
 :::note
 You do not have to enable "Allow self-registration" and select a group to which new users should be assigned, but if you don't you will have to manually provision users in Wiki.js and ensure that their emails match the email they have in authentik.
@@ -64,4 +64,4 @@ In authentik, create an application which uses this provider. Optionally apply a
 
 Set the Launch URL to the _Callback URL / Redirect URI_ without the `/callback` at the end, as shown below. This will skip Wiki.js' login prompt and log you in directly.
 
-![](./img/wikijs-03.png)
+![](./wikijs-03.png)

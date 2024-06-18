@@ -36,7 +36,7 @@ Only settings that have been modified from default have been listed.
 https://rocket.company/_oauth/authentik
 ```
 
-![](./img/rocketchat-01.png)
+![](./rocketchat-01.png)
 
 ### Step 2
 
@@ -54,7 +54,7 @@ https://rocket.company/_oauth/authentik
 
 ```
 
-![](./img/rocketchat-02.png)
+![](./rocketchat-02.png)
 
 ### Step 3
 
@@ -74,7 +74,7 @@ In Rocket.chat, follow the procedure below:
 
 4. Give your new oauth the name of _Authentik_, then click _Send_
 
-![](./img/rocketchat-03.png)
+![](./rocketchat-03.png)
 
 5. Scroll down to the new OAuth application, expand the dropdown, and enter the following settings:
 
@@ -103,13 +103,13 @@ In Rocket.chat, follow the procedure below:
     - Merge users: Turn the radio button to the _on_ position
     - Show Button on Login Page: Turn the radio button to the _on_ position
 
-    ![](./img/rocketchat-04.png)
+    ![](./rocketchat-04.png)
 
-    ![](./img/rocketchat-05.png)
+    ![](./rocketchat-05.png)
 
-    ![](./img/rocketchat-06.png)
+    ![](./rocketchat-06.png)
 
-    ![](./img/rocketchat-07.png)
+    ![](./rocketchat-07.png)
 
 6. Click _Save changes_ in the top right corner of the screen
 

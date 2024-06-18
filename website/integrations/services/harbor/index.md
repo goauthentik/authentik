@@ -29,4 +29,4 @@ Note the Client ID and Client Secret values. Create an application, using the pr
 ## Harbor
 note to self: mabye describe things a little bit
 
-![](./img/harbor-01.png)
+![](./harbor-01.png)

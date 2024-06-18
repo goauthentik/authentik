@@ -38,7 +38,7 @@ Only settings that have been modified from default have been listed.
 https://vikunja.company/auth/openid/authentiklogin
 ```
 
-![](./img/vikunja-01.png)
+![](./vikunja-01.png)
 
 ### Step 2
 

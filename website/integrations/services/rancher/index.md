@@ -53,4 +53,4 @@ Copy the metadata from authentik, and paste it in the metadata field.
 
 Click on save to test the authentication.
 
-![](./img/rancher-01.png)
+![](./rancher-01.png)

@@ -35,7 +35,7 @@ Under _Advanced protocol settings_, set the following:
 
 Navigate to Settings -> Auth, and click on Configure next to SAML2
 
-![](./img/sentry-01.png)
+![](./sentry-01.png)
 
 In authentik, get the Metadata URL by right-clicking `Download Metadata` and selecting Copy Link Address, and paste that URL into Sentry.
 

@@ -105,7 +105,7 @@ All other field can be left blank.
 
 In pfsense, export the public **and** the private key of the certificate by going under _System/Cert. Manager_ and then to the _Certificate_ tab.
 
-![](./img/pfsense-01.png)
+![](./pfsense-01.png)
 
 In authentik, import the public **and** the private key by going under _System/Certificates_ and then click on `create`.
 

@@ -73,7 +73,7 @@ Under _Providers_, create an OAuth2/OpenID provider with these settings:
 -   Scopes: Select the Scope Mapping you've created in Step 1
 -   Signing Key: Select any available key
 
-![](./img/vmwarecenter-01.png)
+![](./vmwarecenter-01.png)
 
 ### Step 4
 
@@ -97,6 +97,6 @@ Fill in the Client Identifier and Shared Secret from the Provider in authentik. 
 
 On the next page, fill in your Active Directory Connection Details. These should be similar to what you have set in authentik.
 
-![](./img/vmwarecenter-02.png)
+![](./vmwarecenter-02.png)
 
 If your vCenter was already setup with LDAP beforehand, your Role assignments will continue to work.

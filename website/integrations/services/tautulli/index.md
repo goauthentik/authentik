@@ -46,7 +46,7 @@ Enable the `Set HTTP-Basic Authentication` option. Set and `HTTP-Basic Username`
 
 In Tautulli, navigate to Settings and enable the "Show Advanced" option. Navigate to "Web Interface" on the sidebar, and ensure the Option `Use Basic Authentication` is checked.
 
-![](./img/tautulli-01.png)
+![](./tautulli-01.png)
 
 Save the settings, and restart Tautulli if prompted.
 

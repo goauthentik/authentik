@@ -35,7 +35,7 @@ In authentik, under _Providers_, create a _SAML Provider_ with these settings:
 -   Signing Certificate: Choose your certificate or the default authentik Self-signed Certificate
     All other options as default.
 
-![](./img/bookstack-01.png)
+![](./bookstack-01.png)
 
 ### Step 2
 
@@ -54,7 +54,7 @@ Obtain your Metadata URL from authentik.
 2. Click the Metadata Tab
 3. Click Copy download URL (This URL is the `METADATAURL` required in Step 4)
 
-![](./img/bookstack-02.png)
+![](./bookstack-02.png)
 
 ### Step 4
 

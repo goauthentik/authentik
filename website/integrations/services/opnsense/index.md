@@ -80,13 +80,13 @@ Change the following fields
 -   Authentication containers: OU=users,DC=ldap,DC=goauthentik,DC=io;OU=groups,DC=ldap,DC=goauthentik,DC=io
 -   Extended Query: &(objectClass=user)
 
-![](./img/opnsense-01.png)
+![](./opnsense-01.png)
 
 ### Step 6
 
 In OPNsense, go to _System/Settings/Administration_ and under _Authentication_ at the bottom of that page, add `authentik` to the Server list
 
-![](./img/opnsense-02.png)
+![](./opnsense-02.png)
 
 ### Step 7
 
